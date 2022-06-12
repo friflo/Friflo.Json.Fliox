@@ -363,8 +363,12 @@ namespace Friflo.Json.Fliox.Hub.Client
             var set     = GetSyncSet();
             var task    = new DetectPatchesTask(set);
             var peers   = Peers();
+            set.AddDetectPatches(task);
             using (var pooled = intern.store.ObjectMapper.Get()) {
-                set.DetectSetPatches(peers, task, pooled.instance);
+                foreach (var peerPair in peers) {
+                    Peer<T> peer = peerPair.Value;
+                    set.DetectPeerPatches(peer, task, pooled.instance);
+                }
             }
             intern.store.AddTask(task);
             return task;
@@ -378,7 +382,10 @@ namespace Friflo.Json.Fliox.Hub.Client
             if (!TryGetPeerByKey(key, out var peer))        throw new ArgumentException($"entity is not tracked. key: {key}");
             var set     = GetSyncSet();
             var task    = new DetectPatchesTask(set);
-            set.DetectEntityPatches(peer, task);
+            set.AddDetectPatches(task);
+            using (var pooled = intern.store.ObjectMapper.Get()) {
+                set.DetectPeerPatches(peer, task, pooled.instance);
+            }
             intern.store.AddTask(task);
             return task;
         }
@@ -386,19 +393,19 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// <summary> Detect <see cref="DetectPatchesTask.Patches"/> for the passed tracked <paramref name="entities"/> </summary>
         public DetectPatchesTask DetectPatches(ICollection<T> entities) {
             if(entities == null)                            throw new ArgumentNullException(nameof(entities));
-            var peers = new List<Peer<T>>(entities.Count);
-            int n = 0;
-            foreach (var entity in entities) {
-                if (entity == null)                         throw new ArgumentException($"entities[{n}] is null");
-                var key     = EntityKeyTMap.GetKey(entity);
-                if (KeyConvert.IsKeyNull(key))              throw new ArgumentException($"entity key must not be null. entities[{n}]");
-                if (!TryGetPeerByKey(key, out var peer))    throw new ArgumentException($"entity is not tracked. entities[{n}] key: {key}");
-                peers.Add(peer);
-                n++;
-            }
+            int n       = 0;
             var set     = GetSyncSet();
             var task    = new DetectPatchesTask(set);
-            set.DetectEntitiesPatches(peers, task);
+            using (var pooled = intern.store.ObjectMapper.Get()) {
+                foreach (var entity in entities) {
+                    if (entity == null)                         throw new ArgumentException($"entities[{n}] is null");
+                    var key     = EntityKeyTMap.GetKey(entity);
+                    if (KeyConvert.IsKeyNull(key))              throw new ArgumentException($"entity key must not be null. entities[{n}]");
+                    if (!TryGetPeerByKey(key, out var peer))    throw new ArgumentException($"entity is not tracked. entities[{n}] key: {key}");
+                    set.DetectPeerPatches(peer, task, pooled.instance);
+                    n++;
+                }
+            }
             intern.store.AddTask(task);
             return task;
         }

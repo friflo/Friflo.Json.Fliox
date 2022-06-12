@@ -246,28 +246,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         }
 
         // - detect patches
-        internal void DetectSetPatches(Dictionary<TKey, Peer<T>> peers, DetectPatchesTask detectPatchesTask, ObjectMapper mapper) {
+        internal void AddDetectPatches(DetectPatchesTask detectPatchesTask) {
             DetectPatchesTasks().Add(detectPatchesTask);
-            foreach (var peerPair in peers) {
-                Peer<T> peer = peerPair.Value;
-                DetectPeerPatches(peer, detectPatchesTask, mapper);
-            }
-        }
-
-        internal void DetectEntityPatches(Peer<T> peer, DetectPatchesTask detectPatchesTask) {
-            DetectPatchesTasks().Add(detectPatchesTask);
-            using (var pooled = set.intern.store.ObjectMapper.Get()) {
-                DetectPeerPatches(peer, detectPatchesTask, pooled.instance);
-            }
-        }
-        
-        internal void DetectEntitiesPatches(List<Peer<T>> peers, DetectPatchesTask detectPatchesTask) {
-            DetectPatchesTasks().Add(detectPatchesTask);
-            using (var pooled = set.intern.store.ObjectMapper.Get()) {
-                foreach (var peer in peers) {
-                    DetectPeerPatches(peer, detectPatchesTask, pooled.instance);
-                }
-            }
         }
 
         // Deprecated comment - preserve for now to remember history of Ref{TKey,T} and Tracer
@@ -275,7 +255,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         //   the entity to find changes in referenced entities in <see cref="Ref{TKey,T}"/> fields of the given entity.
         //   In these cases <see cref="Map.RefMapper{TKey,T}.Trace"/> add untracked entities (== have no <see cref="Peer{T}"/>)
         //   which is not already assigned)
-        private void DetectPeerPatches(Peer<T> peer, DetectPatchesTask detectPatchesTask, ObjectMapper mapper) {
+        internal void DetectPeerPatches(Peer<T> peer, DetectPatchesTask detectPatchesTask, ObjectMapper mapper) {
             if ((peer.state & (PeerState.Created | PeerState.Updated)) != 0) {
                 // tracer.Trace(peer.Entity);
                 return;
