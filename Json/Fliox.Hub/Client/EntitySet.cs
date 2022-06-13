@@ -361,7 +361,7 @@ namespace Friflo.Json.Fliox.Hub.Client
     #region - Patch detection
         /// <summary>
         /// Detect <see cref="DetectPatchesTask{T}.Patches"/> made to all tracked entities. <br/>
-        /// Detected patches are applied to the container when calling <see cref="FlioxClient.SyncTasks"/> or <see cref="FlioxClient.TrySyncTasks"/>
+        /// Detected patches are applied to the container when calling <see cref="FlioxClient.SyncTasks"/>
         /// </summary>
         /// <remarks> Consider using <see cref="DetectPatches(T)"/> or <see cref="DetectPatches(IEnumerable{T})"/>
         /// as this method run detection on all tracked entities </remarks>
@@ -382,7 +382,7 @@ namespace Friflo.Json.Fliox.Hub.Client
 
         /// <summary>
         /// Detect <see cref="DetectPatchesTask{T}.Patches"/> made to the passed tracked <paramref name="entity"/>. <br/>
-        /// Detected patches are applied to the container when calling <see cref="FlioxClient.SyncTasks"/> or <see cref="FlioxClient.TrySyncTasks"/>
+        /// Detected patches are applied to the container when calling <see cref="FlioxClient.SyncTasks"/>
         /// </summary>
         public DetectPatchesTask<T> DetectPatches(T entity) {
             if (entity == null)                             throw new ArgumentNullException(nameof(entity));
@@ -401,7 +401,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         
         /// <summary>
         /// Detect <see cref="DetectPatchesTask{T}.Patches"/> made to the passed tracked <paramref name="entities"/> <br/>
-        /// Detected patches are applied to the container when calling <see cref="FlioxClient.SyncTasks"/> or <see cref="FlioxClient.TrySyncTasks"/>
+        /// Detected patches are applied to the container when calling <see cref="FlioxClient.SyncTasks"/>
         /// </summary>
         public DetectPatchesTask<T> DetectPatches(IEnumerable<T> entities) {
             if(entities == null)                            throw new ArgumentNullException(nameof(entities));

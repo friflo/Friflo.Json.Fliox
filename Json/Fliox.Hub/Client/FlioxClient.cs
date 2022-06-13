@@ -103,8 +103,10 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// <summary> Return the number of pending <see cref="SyncTasks"/> and <see cref="TrySyncTasks"/> calls </summary>
         public  int     GetPendingSyncCount()   => _intern.pendingSyncs.Count;
 
-        /// <summary> Execute all tasks initiated by methods of <see cref="EntitySet{TKey,T}"/> and <see cref="FlioxClient"/> </summary>
-        /// <remarks> In case any task failed a <see cref="SyncTasksException"/> is thrown. <br/>
+        /// <summary> Execute all tasks created by methods of <see cref="EntitySet{TKey,T}"/> and <see cref="FlioxClient"/> </summary>
+        /// <remarks>
+        /// In case any task failed a <see cref="SyncTasksException"/> is thrown. <br/>
+        /// As an alternative use <see cref="TrySyncTasks"/> to execute tasks which does not throw an exception. <br/>
         /// The method can be called without awaiting the result of a previous call. </remarks>
         public async Task<SyncResult> SyncTasks() {
             var syncRequest = CreateSyncRequest(out SyncStore syncStore);
@@ -118,8 +120,10 @@ namespace Friflo.Json.Fliox.Hub.Client
             return result;
         }
         
-        /// <summary> Execute all tasks initiated by methods of <see cref="EntitySet{TKey,T}"/> and <see cref="FlioxClient"/> </summary>
-        /// <remarks> Failed tasks are available via the returned <see cref="SyncResult"/> in the field <see cref="SyncResult.failed"/> <br/>
+        /// <summary> Execute all tasks created by methods of <see cref="EntitySet{TKey,T}"/> and <see cref="FlioxClient"/> </summary>
+        /// <remarks>
+        /// Failed tasks are available via the returned <see cref="SyncResult"/> in the field <see cref="SyncResult.failed"/> <br/>
+        /// In performance critical application this method should be used instead of <see cref="SyncTasks"/> as throwing exceptions is expensive. <br/> 
         /// The method can be called without awaiting the result of a previous call. </remarks>
         public async Task<SyncResult> TrySyncTasks() {
             var syncRequest = CreateSyncRequest(out SyncStore syncStore);
@@ -185,7 +189,7 @@ namespace Friflo.Json.Fliox.Hub.Client
     #region - detect all patches
         /// <summary>
         /// Detect the <b>Patches</b> made to all tracked entities in all <b>EntitySet</b>s of the client. <br/>
-        /// Detected patches are applied to the database containers when calling <see cref="FlioxClient.SyncTasks"/> or <see cref="FlioxClient.TrySyncTasks"/>
+        /// Detected patches are applied to the database containers when calling <see cref="FlioxClient.SyncTasks"/>.
         /// </summary>
         public DetectAllPatches DetectAllPatches() {
             var task = _intern.syncStore.CreateDetectAllPatchesTask();
