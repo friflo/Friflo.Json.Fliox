@@ -20,17 +20,18 @@ namespace Friflo.Json.Fliox.Hub.Client
     /// <summary>
     /// An EntitySet represents a collection (table) of entities (records) with a specific type <typeparamref name="T"/>. <br/>
     /// <br/>
-    /// The methods of an <see cref="EntitySet{TKey,T}"/> enable to create, read, upsert or delete container entities. <br/>
+    /// The methods of an <see cref="EntitySet{TKey,T}"/> enable to create, read, upsert, delete, patch and aggregate container entities. <br/>
     /// It also allows to subscribe to entity changes made by other database clients. <br/>
     /// <br/>
     /// <see cref="EntitySet{TKey,T}"/>'s are designed to be used as fields or properties inside a <see cref="FlioxClient"/>. <br/>
     /// The type <typeparamref name="T"/> of a container entity need to be a class containing a field or property used as its key
-    /// usually named <b>id</b>. <br/>
+    /// - the primary key. <br/>
+    /// This key field is usually named <b>id</b>. Using a different name for the primary key requires the field annotation <b>[Key]</b>.<br/>
     /// Supported <typeparamref name="TKey"/> types are:
     /// <see cref="string"/>, <see cref="long"/>, <see cref="int"/>, <see cref="short"/>, <see cref="byte"/>
     /// and <see cref="Guid"/>.
     /// <br/>
-    /// The key type <typeparamref name="TKey"/> must match the <see cref="Type"/> used for the key field / property in an entity class.
+    /// The key type <typeparamref name="TKey"/> must match the <see cref="Type"/> used for the key field / property in an entity class. <br/>
     /// In case of a type mismatch a runtime exceptions is thrown.
     /// </summary>
 #if !UNITY_5_3_OR_NEWER
