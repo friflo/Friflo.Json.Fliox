@@ -425,7 +425,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
         #endregion
         
-    #region - Relation
+    #region - Read relations
         public RelationPath<TRef> RelationPath<TRefKey, TRef>(
             EntitySet<TRefKey, TRef>        relation,
             Expression<Func<T, TRefKey>>    selector) where TRef : class
