@@ -87,6 +87,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             _intern.Dispose();
         }
         
+        /// <summary> Remove all tasks and all tracked entities of the <see cref="FlioxClient"/> </summary>
         public void Reset() {
             foreach (var setPair in _intern.setByType) {
                 EntitySet set = setPair.Value;
@@ -97,9 +98,14 @@ namespace Friflo.Json.Fliox.Hub.Client
         #endregion
 
     #region - sync tasks
+        /// <summary> Return the number of calls to <see cref="SyncTasks"/> and <see cref="TrySyncTasks"/> </summary>
         public  int     GetSyncCount()          => _intern.syncCount;
+        /// <summary> Return the number of pending <see cref="SyncTasks"/> and <see cref="TrySyncTasks"/> calls </summary>
         public  int     GetPendingSyncCount()   => _intern.pendingSyncs.Count;
 
+        /// <summary> Execute all tasks initiated by methods of <see cref="EntitySet{TKey,T}"/> and <see cref="FlioxClient"/> </summary>
+        /// <remarks> In case any task failed a <see cref="SyncTasksException"/> is thrown. <br/>
+        /// The method can be called without awaiting the result of a previous call. </remarks>
         public async Task<SyncResult> SyncTasks() {
             var syncRequest = CreateSyncRequest(out SyncStore syncStore);
             var syncContext = new SyncContext(_intern.pool, _intern.eventTarget, _intern.sharedCache, _intern.clientId);
@@ -112,6 +118,9 @@ namespace Friflo.Json.Fliox.Hub.Client
             return result;
         }
         
+        /// <summary> Execute all tasks initiated by methods of <see cref="EntitySet{TKey,T}"/> and <see cref="FlioxClient"/> </summary>
+        /// <remarks> Failed tasks are available via the returned <see cref="SyncResult"/> in the field <see cref="SyncResult.failed"/> <br/>
+        /// The method can be called without awaiting the result of a previous call. </remarks>
         public async Task<SyncResult> TrySyncTasks() {
             var syncRequest = CreateSyncRequest(out SyncStore syncStore);
             var syncContext = new SyncContext(_intern.pool, _intern.eventTarget, _intern.sharedCache, _intern.clientId);
@@ -122,6 +131,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             return result;
         }
         
+        /// <summary> Cancel execution of pending calls to <see cref="SyncTasks"/> and <see cref="TrySyncTasks"/> </summary>
         public async Task CancelPendingSyncs() {
             foreach (var pair in _intern.pendingSyncs) {
                 var syncContext = pair.Value;
@@ -173,6 +183,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         #endregion
 
     #region - detect all patches
+        /// <summary> Detect the <b>Patches</b> made to all tracked entities in all <b>EntitySet</b>s of the client</summary>
         public DetectAllPatches DetectAllPatches() {
             var task = _intern.syncStore.CreateDetectAllPatchesTask();
             using (var pooled = ObjectMapper.Get()) {
@@ -186,7 +197,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         #endregion
 
     #region - subscription event handling
-        /// <summary> <see cref="SubscriptionEventHandler"/> is called for all events received by a <see cref="FlioxClient"/></summary>
+        /// <summary> <see cref="SubscriptionEventHandler"/> is called for all subscription events received by the <see cref="FlioxClient"/></summary>
         [DebuggerBrowsable(Never)] public SubscriptionEventHandler SubscriptionEventHandler {
             get => _intern.subscriptionEventHandler;
             set => _intern.subscriptionEventHandler = value;
@@ -237,6 +248,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         #endregion
 
     #region - subscribe messages / commands
+        /// <summary> Subscribe messages with the given <paramref name="name"/> send to the <b>FlioxHub</b> used by the client </summary>
         /// <seealso cref="FlioxClient.SetEventProcessor"/>
         public SubscribeMessageTask SubscribeMessage<TMessage>  (string name, MessageSubscriptionHandler<TMessage> handler) {
             AssertSubscription();
@@ -246,6 +258,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             return task;
         }
         
+        /// <summary> Subscribe messages with the given <paramref name="name"/> send to the <b>FlioxHub</b> used by the client </summary>
         /// <seealso cref="FlioxClient.SetEventProcessor"/>
         public SubscribeMessageTask SubscribeMessage            (string name, MessageSubscriptionHandler handler) {
             AssertSubscription();
@@ -256,12 +269,14 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
         
         // --- UnsubscribeMessage
+        /// <summary> Remove subscription of messages with the given <paramref name="name"/> send to the <b>FlioxHub</b> used by the client </summary>
         public SubscribeMessageTask UnsubscribeMessage<TMessage>(string name, MessageSubscriptionHandler<TMessage> handler) {
             var task = _intern.RemoveCallbackHandler(name, handler);
             AddTask(task);
             return task;
         }
         
+        /// <summary> Remove subscription of messages with the given <paramref name="name"/> send to the <b>FlioxHub</b> used by the client </summary>
         public SubscribeMessageTask UnsubscribeMessage          (string name, MessageSubscriptionHandler handler) {
             var task = _intern.RemoveCallbackHandler(name, handler);
             AddTask(task);
@@ -270,6 +285,11 @@ namespace Friflo.Json.Fliox.Hub.Client
         #endregion
 
     #region - send message
+        /// <summary>Send a message with the given <paramref name="name"/> (without a value) to the attached <see cref="FlioxHub"/>.</summary>
+        /// <remarks>
+        /// The method can be used directly for rapid prototyping. <br/>For production grade code encapsulate call by adding a message method to
+        /// the <see cref="FlioxClient"/> subclass. This adds the message and its API to the <see cref="DatabaseSchema"/>. 
+        /// </remarks>
         public MessageTask SendMessage(string name) {
             var task = new MessageTask(name, new JsonValue());
             _intern.syncStore.MessageTasks().Add(task);
@@ -277,10 +297,15 @@ namespace Friflo.Json.Fliox.Hub.Client
             return task;
         }
         
-        public MessageTask SendMessage<TMessage>(string name, TMessage message) {
+        /// <summary> Send a message with the given <paramref name="name"/> and <paramref name="param"/> value to the attached <see cref="FlioxHub"/>. </summary>
+        /// <remarks>
+        /// The method can be used directly for rapid prototyping. <br/> For production grade code encapsulate call by adding a message method to
+        /// the <see cref="FlioxClient"/> subclass. Doing this adds the message and its signature to the <see cref="DatabaseSchema"/>. 
+        /// </remarks>
+        public MessageTask SendMessage<TMessage>(string name, TMessage param) {
             using (var pooled = ObjectMapper.Get()) {
                 var writer  = pooled.instance.writer;
-                var json    = writer.WriteAsArray(message);
+                var json    = writer.WriteAsArray(param);
                 var task    = new MessageTask(name, new JsonValue(json));
                 _intern.syncStore.MessageTasks().Add(task);
                 AddTask(task);
@@ -290,11 +315,11 @@ namespace Friflo.Json.Fliox.Hub.Client
         #endregion
 
     #region - send command
-        /// <summary>
-        /// Send a command with the given <paramref name="name"/> (without a command value) to the attached <see cref="FlioxHub"/>.
-        /// The method can be used directly for rapid prototyping. For production grade encapsulate call by a command method to
-        /// the <see cref="FlioxClient"/> subclass. Doing this adds the command and its API to the <see cref="DatabaseSchema"/>. 
-        /// </summary>
+        /// <summary> Send a command with the given <paramref name="name"/> (without a command value) to the attached <see cref="FlioxHub"/>.</summary>
+        /// <remarks>
+        /// The method can be used directly for rapid prototyping. <br/> For production grade code encapsulate call by adding a message method to
+        /// the <see cref="FlioxClient"/> subclass. This adds the command and its API to the <see cref="DatabaseSchema"/>. 
+        /// </remarks>
         public CommandTask<TResult> SendCommand<TResult>(string name) {
             var task    = new CommandTask<TResult>(name, new JsonValue(), _intern.pool);
             _intern.syncStore.MessageTasks().Add(task);
@@ -302,11 +327,11 @@ namespace Friflo.Json.Fliox.Hub.Client
             return task;
         }
         
-        /// <summary>
-        /// Send a command with the given <paramref name="name"/> and <paramref name="param"/> value to the attached <see cref="FlioxHub"/>. <br/>
-        /// The method can be used directly for rapid prototyping. For production grade encapsulate its call by a method added to
+        /// <summary> Send a command with the given <paramref name="name"/> and <paramref name="param"/> value to the attached <see cref="FlioxHub"/>. </summary>
+        /// <remarks>
+        /// The method can be used directly for rapid prototyping. <br/> For production grade code encapsulate call by adding a message method to
         /// the <see cref="FlioxClient"/> subclass. Doing this adds the command and its signature to the <see cref="DatabaseSchema"/>. 
-        /// </summary>
+        /// </remarks>
         public CommandTask<TResult> SendCommand<TParam, TResult>(string name, TParam param) {
             using (var pooled = ObjectMapper.Get()) {
                 var mapper  = pooled.instance;
