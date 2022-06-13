@@ -62,7 +62,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
 
         private     Dictionary<JsonKey, EntityPatch>_patches;
         private     List<PatchTask<T>>              _patchTasks;
-        private     List<DetectPatchesTask>         _detectPatchesTasks;
+        private     List<DetectPatchesTask<T>>      _detectPatchesTasks;
 
         private     HashSet<TKey>                   _deletes;
         private     List<DeleteTask<TKey, T>>       _deleteTasks;
@@ -88,7 +88,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
 
         private     Dictionary<JsonKey, EntityPatch>Patches()           => _patches            ?? (_patches           = new Dictionary<JsonKey, EntityPatch>(JsonKey.Equality));
         private     List<PatchTask<T>>              PatchTasks()        => _patchTasks         ?? (_patchTasks         = new List<PatchTask<T>>());
-        private     List<DetectPatchesTask>         DetectPatchesTasks()=> _detectPatchesTasks ?? (_detectPatchesTasks = new List<DetectPatchesTask>());
+        private     List<DetectPatchesTask<T>>      DetectPatchesTasks()=> _detectPatchesTasks ?? (_detectPatchesTasks = new List<DetectPatchesTask<T>>());
 
         private     HashSet<TKey>                   Deletes()       => _deletes     ?? (_deletes     = CreateHashSet<TKey>(0));
         private     List<DeleteTask<TKey, T>>       DeleteTasks()   => _deleteTasks ?? (_deleteTasks = new List<DeleteTask<TKey, T>>());
@@ -246,7 +246,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         }
 
         // - detect patches
-        internal void AddDetectPatches(DetectPatchesTask detectPatchesTask) {
+        internal void AddDetectPatches(DetectPatchesTask<T> detectPatchesTask) {
             DetectPatchesTasks().Add(detectPatchesTask);
         }
 
@@ -255,7 +255,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         //   the entity to find changes in referenced entities in <see cref="Ref{TKey,T}"/> fields of the given entity.
         //   In these cases <see cref="Map.RefMapper{TKey,T}.Trace"/> add untracked entities (== have no <see cref="Peer{T}"/>)
         //   which is not already assigned)
-        internal void DetectPeerPatches(Peer<T> peer, DetectPatchesTask detectPatchesTask, ObjectMapper mapper) {
+        internal void DetectPeerPatches(Peer<T> peer, DetectPatchesTask<T> detectPatchesTask, ObjectMapper mapper) {
             if ((peer.state & (PeerState.Created | PeerState.Updated)) != 0) {
                 // tracer.Trace(peer.Entity);
                 return;
@@ -278,7 +278,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 entityPatch = new EntityPatch { id = id, patches = patchList };
                 patches[id] = entityPatch;
             }
-            detectPatchesTask.AddPatch(entityPatch);
+            detectPatchesTask.AddPatch(entityPatch, entity);
             // tracer.Trace(entity);
         }
 
@@ -496,7 +496,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                         patch = new EntityPatch { id = id, patches = new List<JsonPatch>() };
                         entityPatches.Add(id, patch);
                     }
-                    var patchInfo = new EntityPatchInfo(patch);
+                    var patchInfo = new EntityPatchInfo<T>(patch, entity);
                     taskPatches.Add(patchInfo);
                     var key = KeyConvert.IdToKey(id);
                     if (set.TryGetPeerByKey(key, out var peer)) {

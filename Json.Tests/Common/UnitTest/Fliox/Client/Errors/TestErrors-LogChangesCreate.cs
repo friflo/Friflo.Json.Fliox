@@ -42,7 +42,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
 
                 var sync = await store.TrySyncTasks();
 
-                AreEqual("tasks: 2, failed: 1", sync.ToString());
+                AreEqual("tasks: 1, failed: 1", sync.ToString());
                 AreEqual(TaskErrorType.DatabaseError, producerError.Error.type);
                 AreEqual(@"DatabaseError ~ simulated create task error", producerError.Error.Message);
             } {
@@ -55,10 +55,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
                 var storePatches = store.DetectAllPatches();
                 AreEqual("DetectAllPatchesTask (patches: 1)", storePatches.ToString());
 
-                AreEqual(2, store.Tasks.Count);
+                AreEqual(1, store.Tasks.Count);
                 var sync = await store.TrySyncTasks(); // ----------------
 
-                AreEqual("tasks: 2, failed: 1", sync.ToString());
+                AreEqual("tasks: 1, failed: 1", sync.ToString());
                 AreEqual(TaskErrorType.UnhandledException, producerException.Error.type);
                 AreEqualTrimStack(@"UnhandledException ~ SimulationException: simulated create task exception", producerException.Error.Message);
             }

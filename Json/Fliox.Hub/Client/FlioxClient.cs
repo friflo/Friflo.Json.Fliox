@@ -173,7 +173,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         #endregion
 
     #region - detect all patches
-        public DetectAllPatchesTask DetectAllPatches() {
+        public DetectAllPatches DetectAllPatches() {
             var task = _intern.syncStore.CreateDetectAllPatchesTask();
             using (var pooled = ObjectMapper.Get()) {
                 foreach (var setPair in _intern.setByType) {
@@ -181,7 +181,6 @@ namespace Friflo.Json.Fliox.Hub.Client
                     set.DetectSetPatchesInternal(task, pooled.instance);
                 }
             }
-            AddTask(task);
             return task;
         }
         #endregion

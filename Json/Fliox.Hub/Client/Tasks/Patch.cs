@@ -18,20 +18,20 @@ namespace Friflo.Json.Fliox.Hub.Client
 #endif
     public sealed class PatchTask<T> : SyncTask where T : class
     {
-        public              IReadOnlyList<EntityPatchInfo>  Patches => patches;
+        public              IReadOnlyList<EntityPatchInfo<T>>   Patches => patches;
         
-        internal readonly   MemberSelection<T>              selection;
+        internal readonly   MemberSelection<T>                  selection;
         [DebuggerBrowsable(Never)]
-        internal readonly   List<EntityPatchInfo>           patches;
-        private  readonly   SyncSetBase<T>                  syncSet;
+        internal readonly   List<EntityPatchInfo<T>>            patches;
+        private  readonly   SyncSetBase<T>                      syncSet;
 
         [DebuggerBrowsable(Never)]
-        internal            TaskState                       state;
-        internal override   TaskState                       State   => state;
-        public   override   string                          Details => GetDetails();
+        internal            TaskState                           state;
+        internal override   TaskState                           State   => state;
+        public   override   string                              Details => GetDetails();
         
         internal PatchTask(SyncSetBase<T> syncSet, MemberSelection<T> selection) {
-            patches         = new List<EntityPatchInfo>();
+            patches         = new List<EntityPatchInfo<T>>();
             this.syncSet    = syncSet;
             this.selection  = selection;
         }

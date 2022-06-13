@@ -3,49 +3,54 @@
 
 using System.Collections.Generic;
 using System.Diagnostics;
-using Friflo.Json.Fliox.Hub.Client.Internal;
-using Friflo.Json.Fliox.Hub.Protocol.Models;
 using static System.Diagnostics.DebuggerBrowsableState;
 
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.Client
 {
-    public sealed class DetectAllPatchesTask : SyncTask
+    public sealed class DetectAllPatches
     {
-        public              IReadOnlyList<DetectPatchesTask>    EntitySetPatches => entitySetPatches;
-        public              int                                 PatchCount       => GetPatchCount();
-
-        [DebuggerBrowsable(Never)]
-        internal readonly   List<DetectPatchesTask>             entitySetPatches = new List<DetectPatchesTask>();
+        public              IReadOnlyList<DetectPatchesTask>    EntitySetPatches    => entitySetPatches;
+        public              int                                 PatchCount          => GetPatchCount();
+        public              bool                                Success             => GetSuccess();
         
-        [DebuggerBrowsable(Never)]
-        private             TaskState                           state;
-        internal override   TaskState                           State   => state;
-        public   override   string                              Details => $"DetectAllPatchesTask (patches: {GetPatchCount()})";
+        [DebuggerBrowsable(Never)] private  bool                                isExecuted;
+        [DebuggerBrowsable(Never)] private  bool                                success;
+        [DebuggerBrowsable(Never)] internal readonly List<DetectPatchesTask>    entitySetPatches = new List<DetectPatchesTask>();
+        
+        public   override   string                              ToString() => $"DetectAllPatchesTask (patches: {GetPatchCount()})";
 
-        internal DetectAllPatchesTask() { }
+        internal DetectAllPatches() { }
+        
+        public DetectPatchesTask<T> GetPatches<TKey,T>(EntitySet<TKey,T> entitySet) where T : class {
+            foreach (var detectPatchesTask in entitySetPatches) {
+                if (detectPatchesTask.Container != entitySet.name)
+                    continue;
+                return (DetectPatchesTask<T>)detectPatchesTask;
+            }
+            return null;
+        }
+        
+        private bool GetSuccess() {
+            if (!isExecuted)    throw new TaskNotSyncedException("DetectAllPatchesTask");
+            return success;
+        }
 
         internal void SetResult() {
-            var entityErrorInfo = new TaskErrorInfo();
+            isExecuted = true;
+            success = true;
             foreach (var patchesTask in entitySetPatches) {
-                var syncSet = patchesTask.syncSet;
-                foreach (var patch in patchesTask.patches) {
-                    if (syncSet.errorsPatch.TryGetValue(patch.entityPatch.id, out EntityError error)) {
-                        entityErrorInfo.AddEntityError(error);
-                    }
-                }
-            }
-            if (entityErrorInfo.HasErrors) {
-                state.SetError(entityErrorInfo);
-            } else {
-                state.Executed = true;
+                if (patchesTask.Success)
+                    continue;
+                success = false;
+                return;
             }
         }
         
         private int GetPatchCount() {
             int result = 0;
             foreach (var patchesTask in entitySetPatches) {
-                result += patchesTask.patches.Count;
+                result += patchesTask.GetPatchCount();
             }
             return result;
         } 

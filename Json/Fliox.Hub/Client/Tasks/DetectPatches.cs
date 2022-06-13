@@ -12,29 +12,47 @@ using static System.Diagnostics.DebuggerBrowsableState;
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.Client
 {
-    public sealed class DetectPatchesTask : SyncTask
+    public abstract class DetectPatchesTask : SyncTask
     {
-        public              IReadOnlyList<EntityPatchInfo>  Patches     => patches;
-        public              string                          Container   => syncSet.EntitySet.name;
-        [DebuggerBrowsable(Never)]
-        internal readonly   List<EntityPatchInfo>           patches;
         internal readonly   SyncSet                         syncSet;
+        public              string                          Container   => syncSet.EntitySet.name;
+        public   abstract   IReadOnlyList<EntityPatchInfo>  GetPatches();
+        internal abstract   int                             GetPatchCount();
         
-        [DebuggerBrowsable(Never)]
-        internal            TaskState                       state;
-        internal override   TaskState                       State   => state;
-        public   override   string                          Details => $"DetectPatchesTask (container: {Container}, patches: {patches.Count})";
-        
-
         internal DetectPatchesTask(SyncSet syncSet) {
-            patches         = new List<EntityPatchInfo>();
             this.syncSet    = syncSet;
         }
+    }
+    
+    public class DetectPatchesTask<T> : DetectPatchesTask  where T : class
+    {
+        public              IReadOnlyList<EntityPatchInfo<T>>   Patches     => patches;
+        [DebuggerBrowsable(Never)]
+        internal readonly   List<EntityPatchInfo<T>>            patches;
 
-        internal void AddPatch(EntityPatch entityPatch) {
+        [DebuggerBrowsable(Never)]
+        internal            TaskState                           state;
+        internal override   TaskState                           State   => state;
+        public   override   string                              Details => $"DetectPatchesTask (container: {Container}, patches: {patches.Count})";
+        
+        internal override   int                                 GetPatchCount() => patches.Count;
+
+        internal DetectPatchesTask(SyncSet syncSet) : base(syncSet) {
+            patches         = new List<EntityPatchInfo<T>>();
+        }
+        
+        public override IReadOnlyList<EntityPatchInfo> GetPatches() {
+            var result = new List<EntityPatchInfo>(patches.Count);
+            foreach (var patch in patches) {
+                result.Add(new EntityPatchInfo(patch.entityPatch));
+            }
+            return result;
+        }
+
+        internal void AddPatch(EntityPatch entityPatch, T entity) {
             if (entityPatch.id.IsNull())
                 throw new ArgumentException("id must not be null");
-            var patch = new EntityPatchInfo(entityPatch);
+            var patch = new EntityPatchInfo<T>(entityPatch, entity);
             patches.Add(patch);
         }
         

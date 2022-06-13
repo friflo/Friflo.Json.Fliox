@@ -356,12 +356,12 @@ namespace Friflo.Json.Fliox.Hub.Client
         #endregion
         
     #region - Patch detection
-        /// <summary> Detect <see cref="DetectPatchesTask.Patches"/> for all tracked entities </summary>
+        /// <summary> Detect <see cref="DetectPatchesTask{T}.Patches"/> for all tracked entities </summary>
         /// <remarks> Consider using <see cref="DetectPatches(T)"/> <see cref="DetectPatches(ICollection{T})"/>
         /// as this method run detection on all tracked entities </remarks>
-        public DetectPatchesTask DetectPatches() {
+        public DetectPatchesTask<T> DetectPatches() {
             var set     = GetSyncSet();
-            var task    = new DetectPatchesTask(set);
+            var task    = new DetectPatchesTask<T>(set);
             var peers   = Peers();
             set.AddDetectPatches(task);
             using (var pooled = intern.store.ObjectMapper.Get()) {
@@ -374,14 +374,14 @@ namespace Friflo.Json.Fliox.Hub.Client
             return task;
         }
 
-        /// <summary> Detect <see cref="DetectPatchesTask.Patches"/> for the passed tracked <paramref name="entity"/> </summary>
-        public DetectPatchesTask DetectPatches(T entity) {
+        /// <summary> Detect <see cref="DetectPatchesTask{T}.Patches"/> for the passed tracked <paramref name="entity"/> </summary>
+        public DetectPatchesTask<T> DetectPatches(T entity) {
             if (entity == null)                             throw new ArgumentNullException(nameof(entity));
             var key     = EntityKeyTMap.GetKey(entity);
             if (KeyConvert.IsKeyNull(key))                  throw new ArgumentException($"entity key must not be null.");
             if (!TryGetPeerByKey(key, out var peer))        throw new ArgumentException($"entity is not tracked. key: {key}");
             var set     = GetSyncSet();
-            var task    = new DetectPatchesTask(set);
+            var task    = new DetectPatchesTask<T>(set);
             set.AddDetectPatches(task);
             using (var pooled = intern.store.ObjectMapper.Get()) {
                 set.DetectPeerPatches(peer, task, pooled.instance);
@@ -390,12 +390,12 @@ namespace Friflo.Json.Fliox.Hub.Client
             return task;
         }
         
-        /// <summary> Detect <see cref="DetectPatchesTask.Patches"/> for the passed tracked <paramref name="entities"/> </summary>
-        public DetectPatchesTask DetectPatches(ICollection<T> entities) {
+        /// <summary> Detect <see cref="DetectPatchesTask{T}.Patches"/> for the passed tracked <paramref name="entities"/> </summary>
+        public DetectPatchesTask<T> DetectPatches(ICollection<T> entities) {
             if(entities == null)                            throw new ArgumentNullException(nameof(entities));
             int n       = 0;
             var set     = GetSyncSet();
-            var task    = new DetectPatchesTask(set);
+            var task    = new DetectPatchesTask<T>(set);
             set.AddDetectPatches(task);
             using (var pooled = intern.store.ObjectMapper.Get()) {
                 foreach (var entity in entities) {

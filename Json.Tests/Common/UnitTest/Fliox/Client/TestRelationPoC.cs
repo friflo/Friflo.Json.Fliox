@@ -131,11 +131,18 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             AreEqual("articles", entityPatches.Container);
             
             var articlePatches  = articles.DetectPatches();
-            AreEqual(1, articlePatches.Patches.Count);
+            var articlePatchList = articlePatches.Patches;
+            AreEqual(1,             articlePatchList.Count);
+            AreEqual("article-1",   articlePatchList[0].Id.ToString());
+            AreEqual("article-1",   articlePatchList[0].Entity.id);
+            AreEqual(2,             articlePatchList[0].Members.Count);
+            AreEqual("/name",       articlePatchList[0].Members[0].path);
             AreEqual("DetectPatchesTask (container: articles, patches: 1)", articlePatches.ToString());
 
             var storePatches3 = store.DetectAllPatches();
             AreEqual(1, storePatches3.PatchCount);
+            var articlePatches2 = storePatches3.GetPatches(articles);
+            AreEqual(1,             articlePatches2.Patches.Count);
             
             var storePatches4 = store.DetectAllPatches();
             AreEqual(1, storePatches4.PatchCount);
@@ -220,6 +227,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             var patches = patchNotebook.Patches;
             AreEqual(1, patches.Count);
             AreEqual("article-notebook-💻-unicode", patches[0].Id.AsString());
+            AreEqual("Galaxy Book",                 patches[0].Entity.name);
             var patchMembers = patches[0].Members;
             AreEqual(2, patchMembers.Count);
             AreEqual(".name",     patchMembers[0].path); AreEqual("\"Galaxy Book\"",      patchMembers[0].value.AsString());
