@@ -360,7 +360,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         
     #region - Patch detection
         /// <summary> Detect <see cref="DetectPatchesTask{T}.Patches"/> for all tracked entities </summary>
-        /// <remarks> Consider using <see cref="DetectPatches(T)"/> <see cref="DetectPatches(ICollection{T})"/>
+        /// <remarks> Consider using <see cref="DetectPatches(T)"/> or <see cref="DetectPatches(IEnumerable{T})"/>
         /// as this method run detection on all tracked entities </remarks>
         public DetectPatchesTask<T> DetectPatches() {
             var set     = GetSyncSet();
