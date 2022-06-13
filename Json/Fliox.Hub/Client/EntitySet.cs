@@ -388,7 +388,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
         
         /// <summary> Detect <see cref="DetectPatchesTask{T}.Patches"/> for the passed tracked <paramref name="entities"/> </summary>
-        public DetectPatchesTask<T> DetectPatches(ICollection<T> entities) {
+        public DetectPatchesTask<T> DetectPatches(IEnumerable<T> entities) {
             if(entities == null)                            throw new ArgumentNullException(nameof(entities));
             int n       = 0;
             var set     = GetSyncSet();
