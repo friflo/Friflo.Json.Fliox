@@ -359,7 +359,10 @@ namespace Friflo.Json.Fliox.Hub.Client
         #endregion
         
     #region - Patch detection
-        /// <summary> Detect <see cref="DetectPatchesTask{T}.Patches"/> made to all tracked entities </summary>
+        /// <summary>
+        /// Detect <see cref="DetectPatchesTask{T}.Patches"/> made to all tracked entities. <br/>
+        /// Detected patches are applied to the container when calling <see cref="FlioxClient.SyncTasks"/> or <see cref="FlioxClient.TrySyncTasks"/>
+        /// </summary>
         /// <remarks> Consider using <see cref="DetectPatches(T)"/> or <see cref="DetectPatches(IEnumerable{T})"/>
         /// as this method run detection on all tracked entities </remarks>
         public DetectPatchesTask<T> DetectPatches() {
@@ -377,7 +380,10 @@ namespace Friflo.Json.Fliox.Hub.Client
             return task;
         }
 
-        /// <summary> Detect <see cref="DetectPatchesTask{T}.Patches"/> made to the passed tracked <paramref name="entity"/> </summary>
+        /// <summary>
+        /// Detect <see cref="DetectPatchesTask{T}.Patches"/> made to the passed tracked <paramref name="entity"/>. <br/>
+        /// Detected patches are applied to the container when calling <see cref="FlioxClient.SyncTasks"/> or <see cref="FlioxClient.TrySyncTasks"/>
+        /// </summary>
         public DetectPatchesTask<T> DetectPatches(T entity) {
             if (entity == null)                             throw new ArgumentNullException(nameof(entity));
             var key     = EntityKeyTMap.GetKey(entity);
@@ -393,7 +399,10 @@ namespace Friflo.Json.Fliox.Hub.Client
             return task;
         }
         
-        /// <summary> Detect <see cref="DetectPatchesTask{T}.Patches"/> made to the passed tracked <paramref name="entities"/> </summary>
+        /// <summary>
+        /// Detect <see cref="DetectPatchesTask{T}.Patches"/> made to the passed tracked <paramref name="entities"/> <br/>
+        /// Detected patches are applied to the container when calling <see cref="FlioxClient.SyncTasks"/> or <see cref="FlioxClient.TrySyncTasks"/>
+        /// </summary>
         public DetectPatchesTask<T> DetectPatches(IEnumerable<T> entities) {
             if(entities == null)                            throw new ArgumentNullException(nameof(entities));
             int n       = 0;
