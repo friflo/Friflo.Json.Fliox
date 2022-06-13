@@ -256,7 +256,7 @@ namespace Friflo.Json.Fliox.Hub.Client
 
     #region - subscribe messages / commands
         /// <summary> Subscribe messages with the given <paramref name="name"/> send to the database used by the client </summary>
-        /// <seealso cref="FlioxClient.SetEventProcessor"/>
+        /// <seealso cref="SetEventProcessor"/>
         public SubscribeMessageTask SubscribeMessage<TMessage>  (string name, MessageSubscriptionHandler<TMessage> handler) {
             AssertSubscription();
             var callbackHandler = new GenericMessageCallback<TMessage>(name, handler);
@@ -266,7 +266,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
         
         /// <summary> Subscribe messages with the given <paramref name="name"/> send to the database used by the client </summary>
-        /// <seealso cref="FlioxClient.SetEventProcessor"/>
+        /// <seealso cref="SetEventProcessor"/>
         public SubscribeMessageTask SubscribeMessage            (string name, MessageSubscriptionHandler handler) {
             AssertSubscription();
             var callbackHandler = new NonGenericMessageCallback(name, handler);
