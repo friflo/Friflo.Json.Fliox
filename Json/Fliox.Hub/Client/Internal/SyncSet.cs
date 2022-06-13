@@ -534,7 +534,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             }
             if (_detectPatchesTasks != null) {
                 foreach (var task in _detectPatchesTasks) {
-                    if (task.patches.Count == 0)
+                    if (task.Patches.Count == 0)
                         task.state.Executed = true;
                 }
             }

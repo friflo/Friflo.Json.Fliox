@@ -133,7 +133,7 @@ namespace Friflo.Json.Fliox.Hub.Client
                 Peer<T> peer = peerPair.Value;
                 set.DetectPeerPatches(peer, task, mapper);
             }
-            if (task.patches.Count > 0) {
+            if (task.Patches.Count > 0) {
                 allPatches.entitySetPatches.Add(task);    
             }
         }

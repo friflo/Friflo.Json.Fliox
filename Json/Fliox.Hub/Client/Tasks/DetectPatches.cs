@@ -28,7 +28,7 @@ namespace Friflo.Json.Fliox.Hub.Client
     {
         public              IReadOnlyList<EntityPatchInfo<T>>   Patches     => patches;
         [DebuggerBrowsable(Never)]
-        internal readonly   List<EntityPatchInfo<T>>            patches;
+        private  readonly   List<EntityPatchInfo<T>>            patches;
 
         [DebuggerBrowsable(Never)]
         internal            TaskState                           state;
