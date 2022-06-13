@@ -84,7 +84,7 @@ namespace Friflo.Json.Fliox.Hub.Client
                 var entityType = entityChanges.GetEntityType();
                 if (!client._intern.TryGetSetByType(entityType, out var entitySet))
                     continue;
-                entityChanges.ApplyChangesTo(entitySet);
+                entityChanges.ApplyChangesToInternal(entitySet);
             }
         }
     }

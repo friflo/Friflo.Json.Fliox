@@ -180,6 +180,8 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// To unsubscribe from receiving change events set <paramref name="change"/> to <see cref="ChangeFlags.None"/>.
         /// <seealso cref="FlioxClient.SetEventProcessor"/>
         /// </summary>
+        /// <remarks> The <see cref="Changes{TKey,T}"/> of a subscription event can be applied to an <see cref="EntitySet{TKey,T}"/>
+        /// with <see cref="Changes{TKey,T}.ApplyChangesTo"/> </remarks>
         public SubscribeChangesTask<T> SubscribeChangesFilter(Change change, Expression<Func<T, bool>> filter, ChangeSubscriptionHandler<TKey, T> handler) {
             if (handler == null) throw new ArgumentNullException(nameof(handler));
             if (filter == null)  throw new ArgumentNullException(nameof(filter));
@@ -196,6 +198,8 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// To unsubscribe from receiving change events set <paramref name="change"/> to <see cref="ChangeFlags.None"/>.
         /// <seealso cref="FlioxClient.SetEventProcessor"/>
         /// </summary>
+        /// <remarks> The <see cref="Changes{TKey,T}"/> of a subscription event can be applied to an <see cref="EntitySet{TKey,T}"/>
+        /// with <see cref="Changes{TKey,T}.ApplyChangesTo"/> </remarks>
         public SubscribeChangesTask<T> SubscribeChangesByFilter(Change change, EntityFilter<T> filter, ChangeSubscriptionHandler<TKey, T> handler) {
             if (handler == null) throw new ArgumentNullException(nameof(handler));
             if (filter == null)  throw new ArgumentNullException(nameof(filter));
@@ -211,6 +215,8 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// To unsubscribe from receiving change events set <paramref name="change"/> to <see cref="ChangeFlags.None"/>.
         /// <seealso cref="FlioxClient.SetEventProcessor"/>
         /// </summary>
+        /// <remarks> The <see cref="Changes{TKey,T}"/> of a subscription event can be applied to an <see cref="EntitySet{TKey,T}"/>
+        /// with <see cref="Changes{TKey,T}.ApplyChangesTo"/> </remarks>
         public SubscribeChangesTask<T> SubscribeChanges(Change change, ChangeSubscriptionHandler<TKey, T> handler) {
             if (handler == null) throw new ArgumentNullException(nameof(handler));
             intern.store.AssertSubscription();

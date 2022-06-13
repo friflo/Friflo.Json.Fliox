@@ -49,7 +49,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         internal  abstract  void    Clear       ();
         internal  abstract  void    AddDeletes  (HashSet<JsonKey> ids);
         internal  abstract  void    AddPatches  (List<EntityPatch> patches);
-        internal  abstract  void    ApplyChangesTo  (EntitySet entitySet);
+        internal  abstract  void    ApplyChangesToInternal  (EntitySet entitySet);
     }
     
     /// <summary>
@@ -147,7 +147,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             changeInfo.patches += entityPatches.Count;
         }
         
-        internal override void ApplyChangesTo  (EntitySet entitySet) {
+        internal override void ApplyChangesToInternal  (EntitySet entitySet) {
             var set = (EntitySet<TKey, T>)entitySet;
             ApplyChangesTo(set);
         }
