@@ -251,7 +251,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         #endregion
 
     #region - subscribe messages / commands
-        /// <summary> Subscribe messages with the given <paramref name="name"/> send to the <b>FlioxHub</b> used by the client </summary>
+        /// <summary> Subscribe messages with the given <paramref name="name"/> send to the database used by the client </summary>
         /// <seealso cref="FlioxClient.SetEventProcessor"/>
         public SubscribeMessageTask SubscribeMessage<TMessage>  (string name, MessageSubscriptionHandler<TMessage> handler) {
             AssertSubscription();
@@ -261,7 +261,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             return task;
         }
         
-        /// <summary> Subscribe messages with the given <paramref name="name"/> send to the <b>FlioxHub</b> used by the client </summary>
+        /// <summary> Subscribe messages with the given <paramref name="name"/> send to the database used by the client </summary>
         /// <seealso cref="FlioxClient.SetEventProcessor"/>
         public SubscribeMessageTask SubscribeMessage            (string name, MessageSubscriptionHandler handler) {
             AssertSubscription();
@@ -272,14 +272,14 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
         
         // --- UnsubscribeMessage
-        /// <summary> Remove subscription of messages with the given <paramref name="name"/> send to the <b>FlioxHub</b> used by the client </summary>
+        /// <summary> Remove subscription of messages with the given <paramref name="name"/> send to the database used by the client </summary>
         public SubscribeMessageTask UnsubscribeMessage<TMessage>(string name, MessageSubscriptionHandler<TMessage> handler) {
             var task = _intern.RemoveCallbackHandler(name, handler);
             AddTask(task);
             return task;
         }
         
-        /// <summary> Remove subscription of messages with the given <paramref name="name"/> send to the <b>FlioxHub</b> used by the client </summary>
+        /// <summary> Remove subscription of messages with the given <paramref name="name"/> send to the database used by the client </summary>
         public SubscribeMessageTask UnsubscribeMessage          (string name, MessageSubscriptionHandler handler) {
             var task = _intern.RemoveCallbackHandler(name, handler);
             AddTask(task);
@@ -288,7 +288,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         #endregion
 
     #region - send message
-        /// <summary>Send a message with the given <paramref name="name"/> (without a value) to the attached <see cref="FlioxHub"/>.</summary>
+        /// <summary>Send a message with the given <paramref name="name"/> (without a value) to the database used by the client.</summary>
         /// <remarks>
         /// The method can be used directly for rapid prototyping. <br/>For production grade code encapsulate call by adding a message method to
         /// the <see cref="FlioxClient"/> subclass. This adds the message and its API to the <see cref="DatabaseSchema"/>. 
@@ -300,7 +300,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             return task;
         }
         
-        /// <summary> Send a message with the given <paramref name="name"/> and <paramref name="param"/> value to the attached <see cref="FlioxHub"/>. </summary>
+        /// <summary> Send a message with the given <paramref name="name"/> and <paramref name="param"/> value to the database used by the client. </summary>
         /// <remarks>
         /// The method can be used directly for rapid prototyping. <br/> For production grade code encapsulate call by adding a message method to
         /// the <see cref="FlioxClient"/> subclass. Doing this adds the message and its signature to the <see cref="DatabaseSchema"/>. 
@@ -318,7 +318,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         #endregion
 
     #region - send command
-        /// <summary> Send a command with the given <paramref name="name"/> (without a command value) to the attached <see cref="FlioxHub"/>.</summary>
+        /// <summary> Send a command with the given <paramref name="name"/> (without a command value) to the database used by the client.</summary>
         /// <remarks>
         /// The method can be used directly for rapid prototyping. <br/> For production grade code encapsulate call by adding a message method to
         /// the <see cref="FlioxClient"/> subclass. This adds the command and its API to the <see cref="DatabaseSchema"/>. 
@@ -330,7 +330,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             return task;
         }
         
-        /// <summary> Send a command with the given <paramref name="name"/> and <paramref name="param"/> value to the attached <see cref="FlioxHub"/>. </summary>
+        /// <summary> Send a command with the given <paramref name="name"/> and <paramref name="param"/> value to the database used by the client. </summary>
         /// <remarks>
         /// The method can be used directly for rapid prototyping. <br/> For production grade code encapsulate call by adding a message method to
         /// the <see cref="FlioxClient"/> subclass. Doing this adds the command and its signature to the <see cref="DatabaseSchema"/>. 
