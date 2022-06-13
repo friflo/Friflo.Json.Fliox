@@ -141,6 +141,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
 
             var storePatches3 = store.DetectAllPatches();
             AreEqual(1, storePatches3.PatchCount);
+            AreEqual(1, storePatches3.EntitySetPatches.Count);
             var articlePatches2 = storePatches3.GetPatches(articles);
             AreEqual(1,             articlePatches2.Patches.Count);
             
