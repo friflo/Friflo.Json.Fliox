@@ -24,14 +24,14 @@ namespace Friflo.Json.Fliox.Hub.Client
     /// It also allows to subscribe to entity changes made by other database clients. <br/>
     /// <br/>
     /// <see cref="EntitySet{TKey,T}"/>'s are designed to be used as fields or properties inside a <see cref="FlioxClient"/>. <br/>
-    /// The type <typeparamref name="T"/> of a container entity need to be a class containing a field or property used as its key
+    /// The type <typeparamref name="T"/> of a container entity need to be a class containing a field or property used as its <b>key</b>
     /// - the primary key. <br/>
     /// This key field is usually named <b>id</b>. Using a different name for the primary key requires the field annotation <b>[Key]</b>.<br/>
     /// Supported <typeparamref name="TKey"/> types are:
     /// <see cref="string"/>, <see cref="long"/>, <see cref="int"/>, <see cref="short"/>, <see cref="byte"/>
     /// and <see cref="Guid"/>.
     /// <br/>
-    /// The key type <typeparamref name="TKey"/> must match the <see cref="Type"/> used for the key field / property in an entity class. <br/>
+    /// The type of <typeparamref name="TKey"/> must match the <see cref="Type"/> used for the <b>key</b> field / property in an entity class. <br/>
     /// In case of a type mismatch a runtime exceptions is thrown.
     /// </summary>
 #if !UNITY_5_3_OR_NEWER
