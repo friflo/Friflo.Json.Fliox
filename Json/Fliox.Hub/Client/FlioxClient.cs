@@ -219,8 +219,7 @@ namespace Friflo.Json.Fliox.Hub.Client
     #region - subscribe all changes
         /// <summary>
         /// Subscribe to database changes of all <see cref="EntityContainer"/>'s with the given <paramref name="change"/>.
-        /// By default these changes are applied to the <see cref="FlioxClient"/>.
-        /// To unsubscribe from receiving change events set <paramref name="change"/> to null.
+        /// To unsubscribe from receiving change events set <paramref name="change"/> to <see cref="ChangeFlags.None"/>.
         /// <seealso cref="FlioxClient.SetEventProcessor"/>
         /// </summary>
         public List<SyncTask> SubscribeAllChanges(Change change, ChangeSubscriptionHandler handler) {

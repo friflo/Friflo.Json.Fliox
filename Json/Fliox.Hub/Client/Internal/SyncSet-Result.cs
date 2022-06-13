@@ -85,7 +85,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         }
         
         /// In case of a <see cref="TaskErrorResult"/> add entity errors to <see cref="SyncSet.errorsCreate"/> for all
-        /// <see cref="Creates"/> to enable setting <see cref="DetectPatchesTask"/> to error state via <see cref="DetectPatchesTask.SetResult"/>. 
+        /// <see cref="Creates"/> to enable setting <see cref="DetectPatchesTask"/> to error state via <see cref="DetectPatchesTask{T}.SetResult"/>. 
         internal override void CreateEntitiesResult(CreateEntities task, SyncTaskResult result, ObjectMapper mapper) {
             CreateUpsertEntitiesResult(task.entityKeys, task.entities, result, CreateTasks(), errorsCreate, mapper);
             var creates = Creates();
@@ -347,7 +347,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         }
 
         /// In case of a <see cref="TaskErrorResult"/> add entity errors to <see cref="SyncSet.errorsPatch"/> for all
-        /// <see cref="Patches"/> to enable setting <see cref="DetectPatchesTask"/> to error state via <see cref="DetectPatchesTask.SetResult"/>. 
+        /// <see cref="Patches"/> to enable setting <see cref="DetectPatchesTask"/> to error state via <see cref="DetectPatchesTask{T}.SetResult"/>. 
         internal override void PatchEntitiesResult(PatchEntities task, SyncTaskResult result) {
             var patchTasks          = PatchTasks();
             var detectPatchesTasks  = DetectPatchesTasks();

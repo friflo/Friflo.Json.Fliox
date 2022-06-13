@@ -70,7 +70,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     /// <summary>Contains predefined sets of common database <see cref="Change"/> filters.</summary>
     public static class ChangeFlags
     {
-        /// <summary>Shortcut to subscribe to all types database changes. These ase <see cref="Change.create"/>,
+        /// <summary>Shortcut to subscribe to all types of database changes. These ase <see cref="Change.create"/>,
         /// <see cref="Change.upsert"/>, <see cref="Change.patch"/> and <see cref="Change.delete"/></summary>
         public const Change All = Change.create | Change.upsert | Change.delete | Change.patch;
 
