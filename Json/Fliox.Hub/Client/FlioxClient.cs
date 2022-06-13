@@ -189,8 +189,12 @@ namespace Friflo.Json.Fliox.Hub.Client
     #region - detect all patches
         /// <summary>
         /// Detect the <b>Patches</b> made to all tracked entities in all <b>EntitySet</b>s of the client. <br/>
-        /// Detected patches are applied to the database containers when calling <see cref="FlioxClient.SyncTasks"/>.
+        /// Detected patches are applied to the database containers when calling <see cref="FlioxClient.SyncTasks"/>.        
         /// </summary>
+        /// <remarks>
+        /// Consider using one of the <see cref="EntitySet{TKey,T}.DetectPatches()"/> methods as this method
+        /// run detection on all tracked entities in all <see cref="EntitySet{TKey,T}"/>s.
+        /// </remarks>
         public DetectAllPatches DetectAllPatches() {
             var task = _intern.syncStore.CreateDetectAllPatchesTask();
             using (var pooled = ObjectMapper.Get()) {
