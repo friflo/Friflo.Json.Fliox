@@ -60,7 +60,7 @@ These container operations are:
 - **Delete** entities
 - **Patch** entities - update only specific entity fields (columns)
 - **Query** entities using a LINQ filter - optionally using a cursor to iterate large datasets
-- Return entities **referenced by entities** returned by a **Read** or **Query** task.  
+- **Read relations** - read entities referenced by entities returned by a **Read** or **Query** task.  
   This is the analog method to a **JOIN** in **SQL**.
 - **Aggregate** / **Count** entities using a **LINQ filter**
 - **Subscribe** to entity changes - **create**, **upsert**, **delete** & **patch** - made by other clients
