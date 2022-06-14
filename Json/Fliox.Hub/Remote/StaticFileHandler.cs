@@ -42,9 +42,9 @@ namespace Friflo.Json.Fliox.Hub.Remote
             fileHandler = new ZipFileHandler(zipStream, baseFolder);
         }
         
-        public StaticFileHandler CacheControl(string cacheControl) {
-            this.cacheControl   = cacheControl;
-            return this;
+        public string CacheControl {
+            get => cacheControl;
+            set => cacheControl = value;
         }
         
         private static List<FileExt> DefaultFileExtensions() {

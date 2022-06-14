@@ -31,7 +31,7 @@ namespace Fliox.TodoHub
             hub.EventDispatcher     = new EventDispatcher(true);    // optional - enables sending events for subscriptions
             
             var httpHost            = new HttpHost(hub, "/fliox/") { CacheControl = c.cache };
-            httpHost.AddHandler      (new StaticFileHandler(c.www).CacheControl(c.cache)); // optional - serve static web files of Hub Explorer
+            httpHost.AddHandler      (new StaticFileHandler(c.www) { CacheControl = c.cache }); // optional - serve static web files of Hub Explorer
             return httpHost;
         }
         

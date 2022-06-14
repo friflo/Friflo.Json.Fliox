@@ -56,7 +56,7 @@ namespace Fliox.DemoHub
             
             var httpHost            = new HttpHost(hub, "/fliox/") { CacheControl = c.cache };
             httpHost.AddHandler      (new GraphQLHandler());
-            httpHost.AddHandler      (new StaticFileHandler(c.www).CacheControl(c.cache)); // optional - serve static web files of Hub Explorer
+            httpHost.AddHandler      (new StaticFileHandler(c.www) { CacheControl = c.cache }); // optional - serve static web files of Hub Explorer
             return httpHost;
         }
         
