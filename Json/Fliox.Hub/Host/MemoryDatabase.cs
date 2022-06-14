@@ -23,6 +23,12 @@ namespace Friflo.Json.Fliox.Hub.Host
     /// </list>
     /// <see cref="MemoryDatabase"/> has no third party dependencies.
     /// </summary>
+    /// <remarks>
+    /// <i>Storage characteristics</i> <br/>
+    /// <b>Keys</b> are stored as <see cref="JsonKey"/> - keys that can be converted to <see cref="long"/> or <see cref="Guid"/>
+    /// are stored without heap allocation. Otherwise a <see cref="string"/> is allocated <br/>
+    /// <b>Values</b> are stored as <see cref="JsonValue"/> - essentially a <see cref="byte"/>[]
+    /// </remarks>
     public sealed class MemoryDatabase : EntityDatabase
     {
         private  readonly   bool        pretty;
