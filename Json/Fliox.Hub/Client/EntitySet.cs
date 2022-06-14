@@ -79,6 +79,10 @@ namespace Friflo.Json.Fliox.Hub.Client
         #endregion
         
     #region - Cache    
+        /// <summary>
+        /// Get the <paramref name="entity"/> with the passed <paramref name="key"/> from the <see cref="EntitySet"/>. <br/>
+        /// Return true if the <see cref="EntitySet{TKey,T}"/> contains an entity with the given key. Otherwise false.
+        /// </summary>
         public bool TryGet (TKey key, out T entity) {
             var peers = Peers();
             if (peers.TryGetValue(key, out Peer<T> peer)) {
@@ -89,11 +93,17 @@ namespace Friflo.Json.Fliox.Hub.Client
             return false;
         }
         
+        /// <summary>
+        /// Return true if the <see cref="EntitySet{TKey,T}"/> contains an entity with the passed <paramref name="key"/>
+        /// </summary>
         public bool Contains (TKey key) {
             var peers = Peers();
             return peers.ContainsKey(key);
         }
-        
+
+        /// <summary>
+        /// Return all tracked entities of the <see cref="EntitySet{TKey,T}"/>
+        /// </summary>
         public List<T> ToList() {
             var peers   = Peers();
             var result  = new List<T>(peers.Count);
@@ -108,6 +118,9 @@ namespace Friflo.Json.Fliox.Hub.Client
         #endregion
         
     #region - Read
+        /// <summary>
+        /// Create a <see cref="ReadTask{TKey,T}"/> used to read entities <b>by id</b> added with <see cref="ReadTask{TKey,T}.Find"/> subsequently
+        /// </summary>
         public ReadTask<TKey, T> Read() {
             // ReadTasks<> are not added with intern.store.AddTask(task) as it only groups the tasks created via its
             // methods like: Find(), FindRange(), ReadRefTask() & ReadRefsTask().
@@ -117,6 +130,9 @@ namespace Friflo.Json.Fliox.Hub.Client
         #endregion
 
     #region - Query
+        /// <summary>
+        /// Create a <see cref="QueryTask{T}"/> with the given LINQ query <paramref name="filter"/>
+        /// </summary>
         public QueryTask<T> Query(Expression<Func<T, bool>> filter) {
             if (filter == null)
                 throw new ArgumentException($"EntitySet.Query() filter must not be null. EntitySet: {name}");
@@ -126,6 +142,9 @@ namespace Friflo.Json.Fliox.Hub.Client
             return task;
         }
         
+        /// <summary>
+        /// Create a <see cref="QueryTask{T}"/> with the given <see cref="EntityFilter{T}"/>
+        /// </summary>
         public QueryTask<T> QueryByFilter(EntityFilter<T> filter) {
             if (filter == null)
                 throw new ArgumentException($"EntitySet.QueryByFilter() filter must not be null. EntitySet: {name}");
@@ -134,6 +153,9 @@ namespace Friflo.Json.Fliox.Hub.Client
             return task;
         }
         
+        /// <summary>
+        /// Create a <see cref="QueryTask{T}"/> to query all entities of an container
+        /// </summary>
         public QueryTask<T> QueryAll() {
             var all = Operation.FilterTrue;
             var task = GetSyncSet().QueryFilter(all);
@@ -141,6 +163,9 @@ namespace Friflo.Json.Fliox.Hub.Client
             return task;
         }
         
+        /// <summary>
+        /// Close the <paramref name="cursors"/> returned by <see cref="QueryTask{T}.ResultCursor"/> of a <see cref="QueryTask{T}"/>
+        /// </summary>
         public CloseCursorsTask CloseCursors(IEnumerable<string> cursors) {
             var task = GetSyncSet().CloseCursors(cursors);
             intern.store.AddTask(task);
@@ -149,6 +174,9 @@ namespace Friflo.Json.Fliox.Hub.Client
         #endregion
 
     #region - Aggregate
+        /// <summary>
+        /// Create a <see cref="CountTask{T}"/> counting all entities matching to the given LINQ query <paramref name="filter"/>
+        /// </summary>
         public CountTask<T> Count(Expression<Func<T, bool>> filter) {
             if (filter == null)
                 throw new ArgumentException($"EntitySet.Aggregate() filter must not be null. EntitySet: {name}");
@@ -158,7 +186,10 @@ namespace Friflo.Json.Fliox.Hub.Client
             return task;
         }
 
-        // ReSharper disable once UnusedMember.Local - may be public in future 
+        /// <summary>
+        /// Create a <see cref="CountTask{T}"/> counting all entities matching to the given  <see cref="EntityFilter{T}"/>
+        /// </summary>
+        // ReSharper disable once UnusedMember.Local - may be public in future
         private CountTask<T> CountByFilter(EntityFilter<T> filter) {
             if (filter == null)
                 throw new ArgumentException($"EntitySet.AggregateByFilter() filter must not be null. EntitySet: {name}");
@@ -167,6 +198,9 @@ namespace Friflo.Json.Fliox.Hub.Client
             return task;
         }
         
+        /// <summary>
+        /// Create a <see cref="CountTask{T}"/> counting all entities in a container
+        /// </summary>
         public CountTask<T> CountAll() {
             var all = Operation.FilterTrue;
             var task = GetSyncSet().CountFilter(all);
@@ -238,6 +272,9 @@ namespace Friflo.Json.Fliox.Hub.Client
         #endregion
 
     #region - Create
+        /// <summary>
+        /// Return a <see cref="CreateTask{T}"/> used to create the given <paramref name="entity"/> in the container
+        /// </summary>
         public CreateTask<T> Create(T entity) {
             if (entity == null)
                 throw new ArgumentException($"EntitySet.Create() entity must not be null. EntitySet: {name}");
@@ -246,6 +283,9 @@ namespace Friflo.Json.Fliox.Hub.Client
             return task;
         }
         
+        /// <summary>
+        /// Return a <see cref="CreateTask{T}"/> used to to create the given <paramref name="entities"/> in the container
+        /// </summary>
         public CreateTask<T> CreateRange(ICollection<T> entities) {
             if (entities == null)
                 throw new ArgumentException($"EntitySet.CreateRange() entity must not be null. EntitySet: {name}");
@@ -260,6 +300,9 @@ namespace Friflo.Json.Fliox.Hub.Client
         #endregion
         
     #region - Upsert
+        /// <summary>
+        /// Create a <see cref="UpsertTask{T}"/> used to upsert the given <paramref name="entity"/> in the container
+        /// </summary>
         public UpsertTask<T> Upsert(T entity) {
             if (entity == null)
                 throw new ArgumentException($"EntitySet.Upsert() entity must not be null. EntitySet: {name}");
@@ -270,6 +313,9 @@ namespace Friflo.Json.Fliox.Hub.Client
             return task;
         }
         
+        /// <summary>
+        /// Create a <see cref="UpsertTask{T}"/> used to upsert the given <paramref name="entities"/> in the container
+        /// </summary>
         public UpsertTask<T> UpsertRange(ICollection<T> entities) {
             if (entities == null)
                 throw new ArgumentException($"EntitySet.UpsertRange() entity must not be null. EntitySet: {name}");
@@ -284,6 +330,9 @@ namespace Friflo.Json.Fliox.Hub.Client
         #endregion
         
     #region - Delete
+        /// <summary>
+        /// Create a <see cref="DeleteTask{TKey,T}"/> to delete the given <paramref name="entity"/> in the container
+        /// </summary>
         public DeleteTask<TKey, T> Delete(T entity) {
             if (entity == null)
                 throw new ArgumentException($"EntitySet.Delete() entity must not be null. EntitySet: {name}");
@@ -295,6 +344,9 @@ namespace Friflo.Json.Fliox.Hub.Client
             return task;
         }
 
+        /// <summary>
+        /// Create a <see cref="DeleteTask{TKey,T}"/> to delete the entity with the passed <paramref name="key"/> in the container
+        /// </summary>
         public DeleteTask<TKey, T> Delete(TKey key) {
             if (key == null)
                 throw new ArgumentException($"EntitySet.Delete() id must not be null. EntitySet: {name}");
@@ -303,6 +355,9 @@ namespace Friflo.Json.Fliox.Hub.Client
             return task;
         }
         
+        /// <summary>
+        /// Create a <see cref="DeleteTask{TKey,T}"/> to delete the given <paramref name="entities"/> in the container
+        /// </summary>
         public DeleteTask<TKey, T> DeleteRange(ICollection<T> entities) {
             if (entities == null)
                 throw new ArgumentException($"EntitySet.DeleteRange() entities must not be null. EntitySet: {name}");
@@ -319,6 +374,9 @@ namespace Friflo.Json.Fliox.Hub.Client
             return task;
         }
         
+        /// <summary>
+        /// Create a <see cref="DeleteTask{TKey,T}"/> to delete the entities with the passed <paramref name="keys"/> in the container
+        /// </summary>
         public DeleteTask<TKey, T> DeleteRange(ICollection<TKey> keys) {
             if (keys == null)
                 throw new ArgumentException($"EntitySet.DeleteRange() ids must not be null. EntitySet: {name}");
@@ -330,6 +388,9 @@ namespace Friflo.Json.Fliox.Hub.Client
             return task;
         }
         
+        /// <summary>
+        /// Create a <see cref="DeleteAllTask{TKey,T}"/> to delete all entities in the container
+        /// </summary>
         public DeleteAllTask<TKey, T> DeleteAll() {
             var task = GetSyncSet().DeleteAll();
             intern.store.AddTask(task);
