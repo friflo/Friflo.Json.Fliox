@@ -47,7 +47,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         public   readonly   string              name;   // non null
         
         /// <summary> map of of containers identified by their container name </summary>
-        private  readonly   Dictionary<string, EntityContainer> containers = new Dictionary<string, EntityContainer>();
+        private  readonly   Dictionary<string, EntityContainer> containers;
         
         /// <summary>
         /// An optional <see cref="DatabaseSchema"/> used to validate the JSON payloads in all write operations
@@ -65,9 +65,9 @@ namespace Friflo.Json.Fliox.Hub.Host
         
         /// <summary>
         /// The <see cref="handler"/> execute all <see cref="SyncRequest.tasks"/> send by a client.
-        /// An <see cref="EntityDatabase"/> implementation is able to assign as custom handler by constructor
+        /// An <see cref="EntityDatabase"/> implementation can assign as custom handler by its constructor
         /// </summary>
-        public   readonly   TaskHandler         handler;
+        internal readonly   TaskHandler         handler;    // never null
         
         public   virtual    string              StorageName => GetType().Name;     
         
@@ -76,6 +76,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// pass null by implementations.
         /// </summary>
         protected EntityDatabase(string name, TaskHandler handler, DbOpt opt){
+            containers          = new Dictionary<string, EntityContainer>();
             this.name           = name ?? throw new ArgumentNullException(nameof(name));
             customContainerName = (opt ?? DbOpt.Default).customContainerName;
             this.handler        = handler ?? new TaskHandler();
