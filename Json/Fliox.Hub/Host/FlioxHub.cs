@@ -18,15 +18,32 @@ using static System.Diagnostics.DebuggerBrowsableState;
 namespace Friflo.Json.Fliox.Hub.Host
 {
     /// <summary>
-    /// A <see cref="FlioxHub"/> instance is the single entry point used to handle <b>all</b> requests send by a client -
+    /// A <see cref="FlioxHub"/> is the single entry point used to handle <b>all</b> requests send by clients -
     /// e.g. a <see cref="Client.FlioxClient"/> or a web browser. <br/>
     /// The <see cref="FlioxHub"/> features and utilization is available at
     /// <a href="https://github.com/friflo/Friflo.Json.Fliox/blob/main/Json/Fliox.Hub/Host/README.md#flioxhub">Host README.md</a><br/>
     /// <br/>
-    /// When instantiating a <see cref="FlioxHub"/> a default
-    /// <see cref="EntityDatabase"/> is assigned to the instance and all operations / tasks requested by a client
-    /// are applied to this <see cref="database"/>.
-    /// <br/>
+    /// When creating a <see cref="FlioxHub"/> a <b>default <see cref="EntityDatabase"/></b> is assigned to the instance
+    /// and all tasks requested by a client are applied to this <see cref="database"/>. <br/>
+    /// A <see cref="FlioxHub"/> can be configured to support:
+    /// <list type="bullet">
+    ///   <item>
+    ///     <b>Pub-Sub</b> to send events of database changes or messages to clients by assigning an
+    ///     <see cref="Event.EventDispatcher"/> to <see cref="EventDispatcher"/>. <br/>
+    ///     Note: A client need to subscribe events in order to receive them. 
+    ///   </item>
+    ///   <item>
+    ///     <b>User authentication</b> and <b>task authorization</b>. Each task is authorized individually. <br/>
+    ///     To enable this assign a <see cref="DB.UserAuth.UserAuthenticator"/> to <see cref="Authenticator"/>.
+    ///   </item>
+    ///   <item>
+    ///     <b>Monitoring</b> of database access (requests) by adding a <see cref="MonitorDB"/> with
+    ///     <see cref="AddExtensionDB"/>.
+    ///   </item>
+    /// </list>
+    /// </summary>
+    /// 
+    /// <remarks>
     /// A <see cref="FlioxHub"/> instance handle client requests by its <see cref="ExecuteSync"/> method. <br/>
     /// A request is represented by a <see cref="SyncRequest"/> and its <see cref="SyncRequest.tasks"/> are executed
     /// on the given <see cref="SyncRequest.database"/>. <br/>
@@ -37,27 +54,10 @@ namespace Friflo.Json.Fliox.Hub.Host
     /// The <see cref="FlioxHub"/> execute these tasks by the <see cref="EntityDatabase.handler"/> of the
     /// specified <see cref="database"/>.<br/>
     /// <br/>
-    /// Instances of <see cref="FlioxHub"/> and all its implementation are designed to be thread safe enabling multiple
-    /// clients e.g. <see cref="Client.FlioxClient"/> operating on the same <see cref="FlioxHub"/> instance. <br/>
+    /// Instances of <see cref="FlioxHub"/> are <b>thread-safe</b> enabling multiple clients e.g. <see cref="Client.FlioxClient"/>
+    /// operating on the same <see cref="FlioxHub"/> instance. <br/>
     /// To maintain thread safety <see cref="FlioxHub"/> implementations must not have any mutable state.
-    /// <br/>
-    /// The <see cref="FlioxHub"/> can be configured to support.
-    /// <list type="bullet">
-    ///   <item>
-    ///     A Pub-Sub implementation to send events of database changes or messages to clients by assigning an
-    ///     <see cref="Event.EventDispatcher"/> to <see cref="EventDispatcher"/>. <br/>
-    ///     Note: A client need to subscribe events in order to receive them. 
-    ///   </item>
-    ///   <item>
-    ///     User authentication and task authorization. Each task is authorized individually. To enable this assign 
-    ///     a <see cref="DB.UserAuth.UserAuthenticator"/> to <see cref="Authenticator"/>.
-    ///   </item>
-    ///   <item>
-    ///     Monitoring of database access (requests) by adding a <see cref="MonitorDB"/> with
-    ///     <see cref="AddExtensionDB"/>.
-    ///   </item>
-    /// </list>
-    /// </summary>
+    /// </remarks>
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
