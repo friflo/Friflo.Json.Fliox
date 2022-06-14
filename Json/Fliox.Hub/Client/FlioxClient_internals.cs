@@ -12,9 +12,16 @@ using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Hub.Remote;
 using Friflo.Json.Fliox.Mapper;
 
+#if !UNITY_5_3_OR_NEWER
+[assembly: CLSCompliant(true)]
+#endif
+
 namespace Friflo.Json.Fliox.Hub.Client
 {
     // --------------------------------- FlioxClient internals ---------------------------------
+#if !UNITY_5_3_OR_NEWER
+    [CLSCompliant(true)]
+#endif
     public partial class FlioxClient
     {
         private void SetWritePretty (bool value) {

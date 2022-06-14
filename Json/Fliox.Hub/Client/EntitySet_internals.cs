@@ -88,6 +88,9 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
 namespace Friflo.Json.Fliox.Hub.Client
 {
     // ---------------------------------- EntitySet<TKey, T> internals ----------------------------------
+#if !UNITY_5_3_OR_NEWER
+    [CLSCompliant(true)]
+#endif
     public partial class EntitySet<TKey, T>
     {
         private SetInfo GetSetInfo() {

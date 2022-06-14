@@ -34,9 +34,6 @@ namespace Friflo.Json.Fliox.Hub.Client
     /// The type of <typeparamref name="TKey"/> must match the <see cref="Type"/> used for the <b>key</b> field / property in an entity class. <br/>
     /// In case of a type mismatch a runtime exceptions is thrown.
     /// </summary>
-#if !UNITY_5_3_OR_NEWER
-    [CLSCompliant(true)]
-#endif
     [TypeMapper(typeof(EntitySetMatcher))]
     public sealed partial class EntitySet<TKey, T> : EntitySetBase<T>  where T : class
     {

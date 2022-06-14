@@ -14,10 +14,6 @@ using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Utils;
 using static System.Diagnostics.DebuggerBrowsableState;
 
-#if !UNITY_5_3_OR_NEWER
-[assembly: CLSCompliant(true)]
-#endif
-
 // ReSharper disable UseObjectOrCollectionInitializer
 namespace Friflo.Json.Fliox.Hub.Client
 {
@@ -40,9 +36,6 @@ namespace Friflo.Json.Fliox.Hub.Client
     /// The <see cref="FlioxClient"/> features and utilization available at
     /// <a href="https://github.com/friflo/Friflo.Json.Fliox/blob/main/Json/Fliox.Hub/Client/README.md">Client README.md</a>
     /// </summary>
-#if !UNITY_5_3_OR_NEWER
-    [CLSCompliant(true)]
-#endif
     [TypeMapper(typeof(FlioxClientMatcher))]
     public partial class FlioxClient : IDisposable, IResetable, ILogSource
     {
