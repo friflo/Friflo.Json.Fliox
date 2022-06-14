@@ -11,8 +11,8 @@ namespace Fliox.TodoHub
     internal  static class  Program
     {
         public static void Main() {
-            var hostHub = CreateHttpHost();
-            HttpListenerHost.RunHost("http://+:8010/", hostHub);
+            var httpHost = CreateHttpHost();
+            HttpListenerHost.RunHost("http://+:8010/", httpHost);
         }
 
         /// <summary>

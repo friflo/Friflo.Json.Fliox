@@ -16,8 +16,8 @@ namespace Fliox.DemoHub
     {
         public static void Main(string[] args) {
             if (args.Contains("HttpListener")) {
-                var hostHub = CreateHttpHost();
-                HttpListenerHost.RunHost("http://+:8010/", hostHub);
+                var httpHost = CreateHttpHost();
+                HttpListenerHost.RunHost("http://+:8010/", httpHost);
                 return;
             }
             Startup.RunAspNetCore(args);
