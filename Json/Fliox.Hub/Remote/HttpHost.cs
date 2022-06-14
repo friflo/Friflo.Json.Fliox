@@ -108,9 +108,9 @@ namespace Friflo.Json.Fliox.Hub.Remote
             return null;
         }
 
-        public HttpHost CacheControl(string cacheControl) {
-            schemaHandler.CacheControl(cacheControl);
-            return this;
+        public string CacheControl {
+            get => schemaHandler.CacheControl;
+            set => schemaHandler.CacheControl = value;
         }
         
         public void AddHandler(IRequestHandler requestHandler) {

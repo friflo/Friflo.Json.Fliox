@@ -16,22 +16,21 @@ namespace Friflo.Json.Fliox.Hub.Remote
 
     internal sealed class SchemaHandler : IRequestHandler
     {
-        private   const     string                              SchemaBase = "/schema";
-        internal            string                              image = "explorer/img/Json-Fliox-53x43.svg";
+        private   const     string                              SchemaBase  = "/schema";
+        internal            string                              image       = "explorer/img/Json-Fliox-53x43.svg";
         internal  readonly  CreateZip                           zip;
         private   readonly  Dictionary<string, SchemaResource>  schemas         = new Dictionary<string, SchemaResource>();
         private   readonly  List<CustomGenerator>               generators      = new List<CustomGenerator>();
         private             string                              cacheControl    = HttpHost.DefaultCacheControl;
-        
         internal            ICollection<CustomGenerator>        Generators      => generators;
 
         internal SchemaHandler() {
             this.zip = ZipUtils.Zip;
         }
         
-        public SchemaHandler CacheControl(string cacheControl) {
-            this.cacheControl   = cacheControl;
-            return this;
+        public string CacheControl {
+            get => cacheControl;
+            set => cacheControl   = value; 
         }
         
         public string[]  Routes => new []{ SchemaBase };

@@ -54,7 +54,7 @@ namespace Fliox.DemoHub
                 .SubscribeUserDbChanges(hub.EventDispatcher);       // optional - apply user_db changes instantaneously
             hub.AddExtensionDB(userDB);                             // optional - expose userStore as extension database
             
-            var httpHost            = new HttpHost(hub, "/fliox/").CacheControl(c.cache);
+            var httpHost            = new HttpHost(hub, "/fliox/") { CacheControl = c.cache };
             httpHost.AddHandler      (new GraphQLHandler());
             httpHost.AddHandler      (new StaticFileHandler(c.www).CacheControl(c.cache)); // optional - serve static web files of Hub Explorer
             return httpHost;
