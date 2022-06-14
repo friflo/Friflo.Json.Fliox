@@ -27,8 +27,8 @@ namespace Fliox.TodoHub
     public class Todo {
         [Required]  public  long        id { get; set; }
         [Required]  public  string      title;
-                    public  string      description;
                     public  bool?       completed;
                     public  DateTime?   created;
+                    public  string      description;
     }
 }
