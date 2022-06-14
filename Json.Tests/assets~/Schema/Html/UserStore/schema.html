@@ -907,7 +907,7 @@ It also allows subscribing database changes by <b>subscribeChanges</b>
         </tr>
         <tr>
             <td><field>containers</field></td>
-            <td><type>key ➞ <a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.ContainerAccess'>ContainerAccess</a></type></td>
+            <td><type><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.ContainerAccess'>ContainerAccess</a>[]</type></td>
             <td><docs>grant execution of operations and subscriptions on listed <b>containers</b></docs></td>
         </tr>
     </table>
@@ -920,6 +920,11 @@ It also allows subscribing database changes by <b>subscribeChanges</b>
     <desc>Grant execution of specific container operations and subscriptions
     </desc>
     <table class='fields'>
+        <tr>
+            <td><field>name</field></td>
+            <td><type><predef>string</predef></type></td>
+            <td><docs>Container name</docs></td>
+        </tr>
         <tr>
             <td><field>operations</field></td>
             <td><type><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.OperationType'>OperationType</a>[] | null</type></td>

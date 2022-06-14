@@ -73,11 +73,12 @@ Right <|-- OperationRight
 class OperationRight {
     type         : "operation"
     database     : string
-    containers   : string ➞ ContainerAccess
+    containers   : ContainerAccess[]
 }
 OperationRight *-- "0..*" ContainerAccess : containers
 
 class ContainerAccess {
+    name              : string
     operations?       : OperationType[]
     subscribeChanges? : Change[]
 }

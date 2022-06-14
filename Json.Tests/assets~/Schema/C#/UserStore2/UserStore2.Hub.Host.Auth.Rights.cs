@@ -47,12 +47,14 @@ public class SubscribeMessageRight : Right {
 
 public class OperationRight : Right {
     [Required]
-    string                               database;
+    string                 database;
     [Required]
-    Dictionary<string, ContainerAccess>  containers;
+    List<ContainerAccess>  containers;
 }
 
 public class ContainerAccess {
+    [Required]
+    string               name;
     List<OperationType>  operations;
     List<Change>         subscribeChanges;
 }

@@ -181,22 +181,24 @@ input SubscribeMessageRightInput {
 
 type OperationRight {
     database    : String!
-    containers  : Any
+    containers  : [ContainerAccess!]!
     description : String
 }
 
 input OperationRightInput {
     database    : String!
-    containers  : Any
+    containers  : [ContainerAccessInput!]!
     description : String
 }
 
 type ContainerAccess {
+    name             : String!
     operations       : [OperationType!]
     subscribeChanges : [Change!]
 }
 
 input ContainerAccessInput {
+    name             : String!
     operations       : [OperationType!]
     subscribeChanges : [Change!]
 }

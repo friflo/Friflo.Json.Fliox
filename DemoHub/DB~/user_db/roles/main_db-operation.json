@@ -5,9 +5,9 @@
         {
             "type": "operation",
             "database": "main_db",
-            "containers": {
-                "articles": { "operations": ["read", "upsert"], "subscribeChanges": ["upsert"] }
-            }
+            "containers": [
+                { "name": "articles", "operations": ["read", "upsert"], "subscribeChanges": ["upsert"] }
+            ]
         }
     ]
 }

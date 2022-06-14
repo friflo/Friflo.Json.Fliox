@@ -46,12 +46,13 @@ data class SubscribeMessageRight (
 @SerialName("operation")
 data class OperationRight (
               val database    : String,
-              val containers  : HashMap<String, ContainerAccess>,
+              val containers  : List<ContainerAccess>,
     override  val description : String? = null,
 ) : Right()
 
 @Serializable
 data class ContainerAccess (
+              val name             : String,
               val operations       : List<OperationType>? = null,
               val subscribeChanges : List<Change>? = null,
 )

@@ -5,10 +5,10 @@
         {
             "type": "operation",
             "database": "user_db",
-            "containers": {
-                "permissions": { "operations": ["read", "query"] },
-                "roles":       { "operations": ["read", "query"] }
-            }
+            "containers": [
+                { "name": "permissions", "operations": ["read", "query"] },
+                { "name": "roles",       "operations": ["read", "query"] }
+            ]
         },
         {
             "type":     "sendMessage",

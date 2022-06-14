@@ -71,8 +71,9 @@
             "rights": [
                 {
                     "database": "main_db",
-                    "containers": {
-                        "articles": {
+                    "containers": [
+                        {
+                            "name": "articles",
                             "operations": [
                                 "read",
                                 "upsert"
@@ -81,7 +82,7 @@
                                 "upsert"
                             ]
                         }
-                    },
+                    ],
                     "__typename": "OperationRight"
                 }
             ]
@@ -145,18 +146,20 @@
             "rights": [
                 {
                     "database": "user_db",
-                    "containers": {
-                        "permissions": {
+                    "containers": [
+                        {
+                            "name": "permissions",
                             "operations": [
                                 "full"
                             ]
                         },
-                        "roles": {
+                        {
+                            "name": "roles",
                             "operations": [
                                 "full"
                             ]
                         }
-                    },
+                    ],
                     "__typename": "OperationRight"
                 },
                 {
@@ -174,20 +177,22 @@
             "rights": [
                 {
                     "database": "user_db",
-                    "containers": {
-                        "permissions": {
+                    "containers": [
+                        {
+                            "name": "permissions",
                             "operations": [
                                 "read",
                                 "query"
                             ]
                         },
-                        "roles": {
+                        {
+                            "name": "roles",
                             "operations": [
                                 "read",
                                 "query"
                             ]
                         }
-                    },
+                    ],
                     "__typename": "OperationRight"
                 },
                 {

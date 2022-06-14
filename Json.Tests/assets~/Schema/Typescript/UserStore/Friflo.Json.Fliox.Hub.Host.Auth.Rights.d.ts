@@ -87,11 +87,13 @@ export class OperationRight extends Right {
     /** a specific database: 'test_db', multiple databases by prefix: 'test_*', all databases: '*' */
     database     : string;
     /** grant execution of operations and subscriptions on listed **containers** */
-    containers   : { [key: string]: ContainerAccess };
+    containers   : ContainerAccess[];
 }
 
 /** Grant execution of specific container operations and subscriptions */
 export class ContainerAccess {
+    /** Container name */
+    name              : string;
     /** Set of granted operation types */
     operations?       : OperationType[] | null;
     /** Set of granted change subscriptions */

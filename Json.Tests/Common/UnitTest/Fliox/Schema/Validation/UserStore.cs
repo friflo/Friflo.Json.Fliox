@@ -150,30 +150,30 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema.Validation
             AreEqual("Element must not be null. at TaskRight > rights[0].types[0], pos: 45", error);
             
             
-            // ----------------------------- test dictionary elements (values) -----------------------------
+            // ----------------------------- test array elements (values) -----------------------------
             json = AsJson(@"{'rights': [ { 'type': 'operation', 'containers': true } ] }");
             IsFalse(validator.ValidateObject(json,                  test.roleType, out error));
-            AreEqual("Incorrect type. was: true, expect: ContainerAccess at OperationRight > rights[0].containers, pos: 54", error);
+            AreEqual("Incorrect type. was: true, expect: ContainerAccess[] at OperationRight > rights[0].containers, pos: 54", error);
             
             json = AsJson(@"{'rights': [ { 'type': 'operation', 'containers': { 'key': true } } ] }");
             IsFalse(validator.ValidateObject(json,                  test.roleType, out error));
-            AreEqual("Incorrect type. was: true, expect: ContainerAccess at OperationRight > rights[0].containers.key, pos: 63", error);
+            AreEqual("Incorrect type. was: object, expect: ContainerAccess[] at OperationRight > rights[0].containers, pos: 51", error);
             
             json = AsJson(@"{'rights': [ { 'type': 'operation', 'containers': 123 } ] }");
             IsFalse(validator.ValidateObject(json,                  test.roleType, out error));
-            AreEqual("Incorrect type. was: 123, expect: ContainerAccess at OperationRight > rights[0].containers, pos: 53", error);
+            AreEqual("Incorrect type. was: 123, expect: ContainerAccess[] at OperationRight > rights[0].containers, pos: 53", error);
             
             json = AsJson(@"{'rights': [ { 'type': 'operation', 'containers': { 'key': 456 } } ] }");
             IsFalse(validator.ValidateObject(json,                  test.roleType, out error));
-            AreEqual("Incorrect type. was: 456, expect: ContainerAccess at OperationRight > rights[0].containers.key, pos: 62", error);
+            AreEqual("Incorrect type. was: object, expect: ContainerAccess[] at OperationRight > rights[0].containers, pos: 51", error);
             
             json = AsJson(@"{'rights': [ { 'type': 'operation', 'containers': [] } ] }");
             IsFalse(validator.ValidateObject(json,                  test.roleType, out error));
-            AreEqual("Incorrect type. was: array, expect: ContainerAccess at OperationRight > rights[0].containers[], pos: 51", error);
+            AreEqual("Missing required fields: [database] at OperationRight > rights[0], pos: 54", error);
             
             json = AsJson(@"{'rights': [ { 'type': 'operation', 'containers': { 'key': [] } } ] }");
             IsFalse(validator.ValidateObject(json,                  test.roleType, out error));
-            AreEqual("Found array as array item. expect: ContainerAccess at OperationRight > rights[0].containers.key[], pos: 60", error); // todo
+            AreEqual("Incorrect type. was: object, expect: ContainerAccess[] at OperationRight > rights[0].containers, pos: 51", error); // todo
 
         }
         
@@ -187,7 +187,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema.Validation
             internal    readonly JsonValue   jsonObject;
             internal    readonly JsonValue   roleDatabase    = new JsonValue(AsJson(
 @"{'id': 'db-operation','description': 'test',
-    'rights': [ { 'type': 'operation', 'database':'main_db', 'containers': {'Article': { 'operations': ['read', 'upsert'], 'subscribeChanges': ['upsert'] }}} ]
+    'rights': [ { 'type': 'operation', 'database':'main_db', 'containers': [{'name': 'articles', 'operations': ['read', 'upsert'], 'subscribeChanges': ['upsert']}]} ]
 }"));
             
             internal TestTypes() {

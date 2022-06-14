@@ -94,7 +94,7 @@
             "properties": {
                 "type":        { "enum": ["operation"] },
                 "database":    { "type": "string", "description": "a specific database: 'test_db', multiple databases by prefix: 'test_*', all databases: '*'" },
-                "containers":  { "additionalProperties": { "$ref": "#/definitions/ContainerAccess" }, "type": "object", "description": "grant execution of operations and subscriptions on listed <b>containers</b>" },
+                "containers":  { "type": "array", "items": { "$ref": "#/definitions/ContainerAccess" }, "description": "grant execution of operations and subscriptions on listed <b>containers</b>" },
                 "description": { "type": ["string", "null"], "description": "optional description explaining the Right" }
             },
             "required": [
@@ -108,9 +108,13 @@
             "type": "object",
             "description": "Grant execution of specific container operations and subscriptions",
             "properties": {
+                "name":             { "type": "string", "description": "Container name" },
                 "operations":       { "type": ["array", "null"], "items": { "$ref": "#/definitions/OperationType" }, "description": "Set of granted operation types" },
                 "subscribeChanges": { "type": ["array", "null"], "items": { "$ref": "./Friflo.Json.Fliox.Hub.Protocol.Tasks.json#/definitions/Change" }, "description": "Set of granted change subscriptions" }
             },
+            "required": [
+                "name"
+            ],
             "additionalProperties": false
         },
         "OperationType": {

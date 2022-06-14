@@ -13,7 +13,7 @@ var exampleRole: Role = {
         {
             type:           "operation",
             database:       "db",
-            containers:     { "Article": { operations:["read", "query", "upsert"], subscribeChanges: ["upsert"] }}
+            containers:     [ { name: "articles", operations:["read", "query", "upsert"], subscribeChanges: ["upsert"] }]
         },
         {
             type:           "sendMessage",

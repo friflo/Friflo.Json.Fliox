@@ -89,12 +89,13 @@
         "OperationRight": {
             "properties": {
                 "database":    { "type": "string" },
-                "containers":  { "values": { "ref":  "ContainerAccess" } },
+                "containers":  { "elements": { "ref":  "ContainerAccess" } },
                 "description": { "type": "string", "nullable": true }
             }
         },
         "ContainerAccess": {
             "properties": {
+                "name":             { "type": "string" },
                 "operations":       { "elements": { "ref":  "OperationType" }, "nullable": true },
                 "subscribeChanges": { "elements": { "ref":  "Change" }, "nullable": true }
             }

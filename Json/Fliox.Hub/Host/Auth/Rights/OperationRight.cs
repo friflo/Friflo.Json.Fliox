@@ -21,17 +21,16 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth.Rights
     public sealed class OperationRight : Right
     {
         /// <summary>a specific database: 'test_db', multiple databases by prefix: 'test_*', all databases: '*'</summary>
-        [Required]  public              string                              database;
+        [Required]  public              string                  database;
         /// <summary>grant execution of operations and subscriptions on listed <see cref="containers"/> </summary>
-        [Required]  public              Dictionary<string, ContainerAccess> containers;
-                    public  override    RightType                           RightType => RightType.operation;
+        [Required]  public              List<ContainerAccess>   containers;
+                    public  override    RightType               RightType => RightType.operation;
         
         public override Authorizer ToAuthorizer() {
             var databaseName = database;
             var list = new List<Authorizer>(containers.Count);
-            foreach (var pair in containers) {
-                var name        = pair.Key;
-                var container   = pair.Value;
+            foreach (var container in containers) {
+                var name        = container.name;
                 var access      = container.operations;
                 if (access != null && access.Count > 0) {
                     list.Add(new AuthorizeContainer(name, access, databaseName));
@@ -52,10 +51,14 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth.Rights
     /// <summary>Grant execution of specific container operations and subscriptions</summary>
     public sealed class ContainerAccess
     {
+        /// <summary>Container name</summary>
+        [Required]  public  string              name;
         /// <summary>Set of granted operation types</summary>
-        public          List<OperationType>     operations;
+                    public  List<OperationType> operations;
         /// <summary>Set of granted change subscriptions</summary>
-        public          List<Change>            subscribeChanges;
+                    public  List<Change>        subscribeChanges;
+
+        public override     string              ToString() => name; 
     }
     
     // ReSharper disable InconsistentNaming
