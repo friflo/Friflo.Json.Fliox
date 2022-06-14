@@ -259,7 +259,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         #endregion
 
     #region - subscribe messages / commands
-        /// <summary> Subscribe messages with the given <paramref name="name"/> send to the database used by the client </summary>
+        /// <summary> Subscribe message / command with the given <paramref name="name"/> send to the database used by the client </summary>
         /// <seealso cref="SetEventProcessor"/>
         public SubscribeMessageTask SubscribeMessage<TMessage>  (string name, MessageSubscriptionHandler<TMessage> handler) {
             AssertSubscription();
@@ -269,7 +269,11 @@ namespace Friflo.Json.Fliox.Hub.Client
             return task;
         }
         
-        /// <summary> Subscribe messages with the given <paramref name="name"/> send to the database used by the client </summary>
+        /// <summary> Subscribe message / command with the given <paramref name="name"/> send to the database used by the client </summary>
+        /// <remarks>
+        /// Subscribe multiple messages by prefix. e.g. <paramref name="name"/> = <c>"std.*"</c> <br/>
+        /// Subscribe all messages with <paramref name="name"/> = <c>"*"</c>
+        /// </remarks>
         /// <seealso cref="SetEventProcessor"/>
         public SubscribeMessageTask SubscribeMessage            (string name, MessageSubscriptionHandler handler) {
             AssertSubscription();
@@ -280,14 +284,17 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
         
         // --- UnsubscribeMessage
-        /// <summary> Remove subscription of messages with the given <paramref name="name"/> send to the database used by the client </summary>
+        /// <summary> Remove subscription of message / command with the given <paramref name="name"/> send to the database used by the client </summary>
         public SubscribeMessageTask UnsubscribeMessage<TMessage>(string name, MessageSubscriptionHandler<TMessage> handler) {
             var task = _intern.RemoveCallbackHandler(name, handler);
             AddTask(task);
             return task;
         }
         
-        /// <summary> Remove subscription of messages with the given <paramref name="name"/> send to the database used by the client </summary>
+        /// <summary> Remove subscription of message / command with the given <paramref name="name"/> send to the database used by the client </summary>
+        /// <remarks>
+        /// Remove a prefix subscription. E.g: <paramref name="name"/> = <c>"std.*"</c> or <c>"*"</c> <br/>
+        /// </remarks>
         public SubscribeMessageTask UnsubscribeMessage          (string name, MessageSubscriptionHandler handler) {
             var task = _intern.RemoveCallbackHandler(name, handler);
             AddTask(task);
