@@ -77,7 +77,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             return (Changes<TKey, T>)processor.GetChanges(entitySet);
         }
         
-        /// <summary> Apply all <see cref="Changes"/> the given <paramref name="client"/> </summary>
+        /// <summary> Apply all <see cref="Changes"/> of the <see cref="EventContext"/> the given <paramref name="client"/> </summary>
         public void ApplyChangesTo(FlioxClient client)
         {
             foreach (var entityChanges in processor.contextChanges) {
