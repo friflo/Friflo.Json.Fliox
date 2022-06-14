@@ -42,7 +42,7 @@ namespace Friflo.Json.Fliox.Hub.Client
     /// <list type="bullet">
     ///   <item>
     ///     In case of UI applications like WinForms, WPF or Unity <see cref="SynchronizationContext.Current"/> is not-null.<br/>
-    ///     These application types utilize <see cref="SynchronizationContext.Current"/> to enables calling all UI methods
+    ///     These application types utilize <see cref="SynchronizationContext.Current"/> to enable calling all UI methods
     ///     on the UI thread.
     ///   </item> 
     ///   <item>
