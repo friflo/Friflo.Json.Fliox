@@ -38,13 +38,13 @@ namespace Friflo.Json.Fliox
     
 
     // -------------------------------- field & property attributes ------------------------------
-    /// <summary> Used serialize the attributed private / internal member as a JSON field </summary>
+    /// <summary> Serialize the annotated private / internal member as a JSON field </summary>
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
     public sealed class SerializeAttribute : Attribute {
         public string       Name        { get; set; }
     }
     
-    /// <summary> Used to ignore the annotated public member from JSON serialization </summary>
+    /// <summary> Ignore the annotated public member from JSON serialization </summary>
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
     public sealed class IgnoreAttribute : Attribute {
     }
