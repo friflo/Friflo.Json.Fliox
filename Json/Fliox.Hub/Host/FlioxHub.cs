@@ -101,7 +101,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         
         public   readonly   string                  Version = "0.0.1";
         
-        /// <summary>General Hub information. Clients can request this information with the command <b>std.HostDetails</b></summary>
+        /// <summary>General Hub information. Clients can request this information with the command <b>std.Details</b></summary>
         public              HubInfo                 Info { get => info; set => info = value ?? throw new ArgumentNullException(nameof(Info)); }
         
         public              IReadOnlyList<string>   Routes => routes;
