@@ -32,9 +32,10 @@ namespace Friflo.Json.Fliox.Hub.Remote
     /// <br/>
     /// A <see cref="HttpHost"/> can be accessed remotely by: <br/>
     /// <list type="bullet">
-    ///   <item>HTTP POST via a single path ./ enabling batching multiple tasks in a single request </item>
-    ///   <item>Send batch requests containing multiple tasks via a WebSocket </item>
-    ///   <item>Common REST API to POST, GET, PUT, DELETE and PATCH with via a path like ./rest/database/container/id </item>
+    ///   <item>Send <b>Batch</b> requests using a <b>POST</b> to <b><c>./fliox</c></b> - containing multiple tasks </item>
+    ///   <item>Send <b>Batch</b> requests containing multiple tasks via a <b>WebSocket</b> at <b><c>./fliox</c></b></item>
+    ///   <item><b>REST</b> API to POST, GET, PUT, DELETE and PATCH with via a path like <b><c>./fliox/rest/database/container/id</c></b> </item>
+    ///   <item><b>GraphQL</b> via an endpoint like <b><c>/fliox/graphql/database</c></b> - requires package: Friflo.Json.Fliox.Hub.GraphQL</item>
     /// </list>
     /// </summary>
     public sealed class HttpHost : RemoteHost
