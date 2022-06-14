@@ -36,14 +36,14 @@ namespace Fliox.TodoHub
         }
         
         private class Config {
-            internal readonly string  dbPath              = "./DB~/main_db";
+            internal readonly string  mainDbPath          = "./DB~/main_db";
             internal readonly string  www                 = HubExplorer.Path;
             internal readonly string  cache               = null; // "max-age=600"; // HTTP Cache-Control
             internal readonly bool    useMemoryDbClone    = false;
         }
         
         private static EntityDatabase CreateDatabase(Config c, DatabaseSchema schema, TaskHandler handler) {
-            var fileDb = new FileDatabase("main_db", c.dbPath, handler);
+            var fileDb = new FileDatabase("main_db", c.mainDbPath, handler);
             fileDb.Schema = schema;
             if (!c.useMemoryDbClone)
                 return fileDb;
