@@ -226,9 +226,11 @@ export class Explorer {
         if (range.entity) {
             app.entityEditor.revealRange(range.entity);
         }
-        if (range.value) {
-            app.entityEditor.setSelection(range.value);
-            app.entityEditor.revealRange(range.value);
+        const valueRange = range.value;
+        if (valueRange) {
+            app.entityEditor.setSelection(valueRange);
+            const rangeStart = { lineNumber: valueRange.startLineNumber, column: valueRange.startColumn };
+            app.entityEditor.revealPosition(rangeStart);
         }
         else {
             // clear editor selection as focused cell not found in editor value
