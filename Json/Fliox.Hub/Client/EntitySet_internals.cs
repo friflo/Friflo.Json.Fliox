@@ -137,7 +137,8 @@ namespace Friflo.Json.Fliox.Hub.Client
                 set.DetectPeerPatches(peer, task, mapper);
             }
             if (task.Patches.Count > 0) {
-                allPatches.entitySetPatches.Add(task);    
+                allPatches.entitySetPatches.Add(task);
+                intern.store.AddTask(task);
             }
         }
         

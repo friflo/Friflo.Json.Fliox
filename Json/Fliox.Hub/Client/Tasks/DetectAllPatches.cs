@@ -8,6 +8,11 @@ using static System.Diagnostics.DebuggerBrowsableState;
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.Client
 {
+    /// <summary>
+    /// <see cref="DetectAllPatches"/> is a container of <see cref="DetectPatchesTask"/>'s. <br/>
+    /// It is returned by <see cref="FlioxClient.DetectAllPatches"/> and contain <see cref="EntitySetPatches"/> for
+    /// all <see cref="EntitySet{TKey,T}"/>'s where entity patches are found.
+    /// </summary>
     public sealed class DetectAllPatches
     {
         public              IReadOnlyList<DetectPatchesTask>    EntitySetPatches    => entitySetPatches;
