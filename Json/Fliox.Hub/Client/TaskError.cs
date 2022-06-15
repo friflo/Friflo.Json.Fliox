@@ -68,7 +68,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         public   readonly   string                              taskMessage;
         /// Return the stacktrace for an <see cref="TaskErrorType.UnhandledException"/> if provided. Otherwise null.
         private  readonly   string                              stacktrace;
-        /// Note: Does not contain <see cref="stacktrace"/> in any case to avoid leaking internals when using <see cref="Message"/>
+        /// Note: Does contain an exception <see cref="stacktrace"/> in case the used <see cref="FlioxHub"/> provide a stacktrace.
         public              string                              Message     => GetMessage(true);
         public   override   string                              ToString()  => GetMessage(true);
        
