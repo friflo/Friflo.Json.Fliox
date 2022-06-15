@@ -18,9 +18,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
     public partial class TestErrors
     {
         // ------ Test each topic individual - using a FileDatabase
-        [Test] public async Task TestLogChangesCreate(){ await Test(async (store, database) => await AssertLogChangesCreate (store, database)); }
+        [Test] public async Task TestCreateError(){ await Test(async (store, database) => await AssertCreateError (store, database)); }
 
-        private static async Task AssertLogChangesCreate(PocStore store, TestDatabaseHub testHub) {
+        private static async Task AssertCreateError(PocStore store, TestDatabaseHub testHub) {
             testHub.ClearErrors();
             TestContainer testProducers = testHub.GetTestContainer(nameof(PocStore.producers));
             var articles = store.articles;

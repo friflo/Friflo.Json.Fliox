@@ -75,8 +75,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             await AssertTaskError       (useStore, testHub);
             await AssertEntityWrite     (useStore, testHub);
             await AssertEntityPatch     (useStore, testHub);
-            await AssertLogChangesPatch (useStore, testHub);
-            await AssertLogChangesCreate(useStore, testHub);
+            await AssertPatchError      (useStore, testHub);
+            await AssertCreateError     (useStore, testHub);
             await AssertSyncErrors      (useStore, testHub);
         }
         
