@@ -41,13 +41,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             
             var galaxy          = new Article  { id = "article-galaxy",   name = "Galaxy S10", producer = samsung.id};
             var createGalaxy    = articles.Upsert(galaxy);
-            AreSimilar("entities: 2, tasks: 2",                         store);
+            AreSimilar("entities: 2, tasks: 2 [container: 2]",          store);
             AreSimilar("articles: 1, tasks: 1 [upsert #1]",             articles);
 
             var storePatches = store.DetectAllPatches();
             AreEqual(0, storePatches.PatchCount);
             
-            AreSimilar("entities:  2, tasks: 2",                        store);
+            AreSimilar("entities:  2, tasks: 2 [container: 2]",         store);
             AreSimilar("producers: 1, tasks: 1 [create #1]",            producers);
 
             var steveJobs       = new Employee { id = "apple-0001", firstName = "Steve", lastName = "Jobs"};
@@ -61,7 +61,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             
             var logStore2 = store.DetectAllPatches();
             AreEqual(0, logStore2.PatchCount);
-            AreSimilar("entities:  5, tasks: 5",                        store);
+            AreSimilar("entities:  5, tasks: 5 [container: 5]",         store);
             AreSimilar("articles:  2, tasks: 2 [upsert #2]",            articles);
             AreSimilar("employees: 1, tasks: 1 [create #1]",            employees);
             AreSimilar("producers: 2, tasks: 2 [create #2]",            producers);
@@ -105,7 +105,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             // StoreInfo is accessible via property an ToString()
             AreEqual(11, store.StoreInfo.peers);
             AreEqual(7,  store.StoreInfo.tasks); 
-            AreSimilar("entities: 11, tasks: 7",                                    store);
+            AreSimilar("entities: 11, tasks: 7 [container: 7]",                     store);
             AreSimilar("articles:  7, tasks: 6 [create #2, upsert #3, reads: 1]",   articles);
             AreSimilar("producers: 3, tasks: 1 [create #1]",                        producers);
             AreSimilar("employees: 1",                                              employees);
@@ -118,7 +118,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             
 
             articles.DeleteRange(newBulkArticles);
-            AreSimilar("entities: 12, tasks: 1",                        store);
+            AreSimilar("entities: 12, tasks: 1 [container: 1]",         store);
             AreSimilar("articles:  8, tasks: 1 [delete #1]",            articles);
             
             await store.SyncTasks(); // ----------------
@@ -163,7 +163,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             AreSimilar("articles: 5",                           articles);
             var readArticles2   = articles.Read();
             var cameraNotSynced = readArticles2.Find("article-1");
-            AreSimilar("entities: 9, tasks: 1",                 store);
+            AreSimilar("entities: 9, tasks: 1 [container: 1]",  store);
             AreSimilar("articles: 5, tasks: 1 [reads: 1]",      articles);
             
             var e = Throws<TaskNotSyncedException>(() => { var _ = cameraNotSynced.Result; });
@@ -184,30 +184,30 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             order.items.AddRange(new [] { item1, item2, item3 });
             order.customer = customer.id;
             
-            AreSimilar("entities: 11, tasks: 3",                        store);
+            AreSimilar("entities: 11, tasks: 3 [container: 3]",         store);
             
             AreSimilar("orders:    0",                                  orders);
             orders.Upsert(order);
             types.Upsert(type1);
-            AreSimilar("entities: 13, tasks: 5",                        store);
+            AreSimilar("entities: 13, tasks: 5 [container: 5]",         store);
             AreSimilar("orders:    1, tasks: 1 [upsert #1]",            orders);     // created order
             
             AreSimilar("articles:  6, tasks: 2 [create #1, reads: 1]",  articles);
             AreSimilar("customers: 1, tasks: 1 [create #1]",            customers);
             var orderPatches = orders.DetectPatches();
             AreEqual(0, orderPatches.Patches.Count);
-            AreSimilar("entities: 13, tasks: 5",                        store);
+            AreSimilar("entities: 13, tasks: 5 [container: 5]",         store);
             AreSimilar("articles:  6, tasks: 2 [create #1, reads: 1]",  articles);
             AreSimilar("customers: 1, tasks: 1 [create #1]" ,           customers);
             
-            AreSimilar("entities: 13, tasks: 5",                        store);
+            AreSimilar("entities: 13, tasks: 5 [container: 5]",         store);
             var storePatches1 = store.DetectAllPatches();
             AreEqual(0, storePatches1.PatchCount);
             
             var storePatches2 = store.DetectAllPatches();
             AreEqual(0, storePatches2.PatchCount);
             
-            AreSimilar("entities: 13, tasks: 5",                        store);      // no new changes
+            AreSimilar("entities: 13, tasks: 5 [container: 5]",         store);      // no new changes
 
             await store.SyncTasks(); // ----------------
             
@@ -239,7 +239,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             AreEqual("PatchTask<Article> patches: 1, selection: [.producer]",   patchArticles.ToString());
             
             AreSimilar("articles:  6, tasks: 1 [patch #1]",             articles);
-            AreSimilar("entities: 13, tasks: 1",                        store);      // tasks executed and cleared
+            AreSimilar("entities: 13, tasks: 1 [container: 1]",         store);      // tasks executed and cleared
             
             await store.SyncTasks(); // ----------------
             AreSimilar("entities: 13",                                  store);      // tasks executed and cleared

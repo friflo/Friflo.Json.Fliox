@@ -147,13 +147,13 @@ namespace Friflo.Json.Fliox.Hub.Client
             if (tasks > 0) {
                 bool first = false;
                 SetInfo.AppendTasks(sb, "tasks", tasks, ref first);
-                if (messages > 0 || commands > 0) {
-                    first = true;
-                    sb.Append(" [");
-                    SetInfo.AppendTasks(sb, "message",  messages,   ref first);
-                    SetInfo.AppendTasks(sb, "command",  commands,   ref first);
-                    sb.Append(']');
-                }
+                sb.Append(" [");
+                first = true;
+                SetInfo.AppendTasks(sb, "message",  messages,   ref first);
+                SetInfo.AppendTasks(sb, "command",  commands,   ref first);
+                var containerTasks = tasks - messages - commands;
+                SetInfo.AppendTasks(sb, "container",  containerTasks, ref first);
+                sb.Append(']');
             }
             return sb.ToString();
         }
