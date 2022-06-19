@@ -39,12 +39,12 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         private     readonly EntitySet<TKey, T>     set;
 
         // --- backing fields for lazy-initialized getters
-        private     List<ReadTask<TKey, T>>         _reads;
+        private     List<ReadTask<TKey, T>>         _readTasks;
 
-        private     List<QueryTask<T>>              _queries;
+        private     List<QueryTask<T>>              _queryTasks;
         private     int                             queriesTasksIndex;
 
-        private     List<AggregateTask>             _aggregates;
+        private     List<AggregateTask>             _aggregateTasks;
         private     int                             aggregatesTasksIndex;
 
         private     List<CloseCursorsTask>          _closeCursors;
@@ -68,11 +68,11 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         private     List<DeleteTask<TKey, T>>       _deleteTasks;
 
         // --- lazy-initialized getters => they behave like readonly fields
-        private     List<ReadTask<TKey, T>>         Reads()         => _reads       ?? (_reads       = new List<ReadTask<TKey, T>>());
+        private     List<ReadTask<TKey, T>>         Reads()         => _readTasks   ?? (_readTasks  = new List<ReadTask<TKey, T>>());
 
-        private     List<QueryTask<T>>              Queries()       => _queries     ?? (_queries     = new List<QueryTask<T>>());
+        private     List<QueryTask<T>>              Queries()       => _queryTasks  ?? (_queryTasks = new List<QueryTask<T>>());
 
-        private     List<AggregateTask>             Aggregates()    => _aggregates  ?? (_aggregates  = new List<AggregateTask>());
+        private     List<AggregateTask>             Aggregates()    => _aggregateTasks?? (_aggregateTasks  = new List<AggregateTask>());
 
         private     List<CloseCursorsTask>          CloseCursors()  =>_closeCursors ?? (_closeCursors= new List<CloseCursorsTask>());
 
@@ -380,18 +380,18 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         }
 
         private void ReadEntities(List<SyncRequestTask> tasks) {
-            if (_reads == null || _reads.Count == 0)
+            if (_readTasks == null || _readTasks.Count == 0)
                 return;
             var readList = new ReadEntities {
-                sets       = new List<ReadEntitiesSet>(_reads.Count),
+                sets       = new List<ReadEntitiesSet>(_readTasks.Count),
                 container   = set.name,
                 keyName     = SyncKeyName(set.GetKeyName()),
                 isIntKey    = IsIntKey(set.IsIntKey())
             };
-            foreach (var read in _reads) {
+            foreach (var read in _readTasks) {
                 List<References> references = null;
                 if (read.refsTask.subRefs.Count > 0) {
-                    references = new List<References>(_reads.Count);
+                    references = new List<References>(_readTasks.Count);
                     AddReferences(references, read.refsTask.subRefs);
                 }
                 var ids = Helper.CreateHashSet(read.result.Keys.Count, JsonKey.Equality);
@@ -409,9 +409,9 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         }
 
         private void QueryEntities(List<SyncRequestTask> tasks) {
-            if (_queries == null || _queries.Count == 0)
+            if (_queryTasks == null || _queryTasks.Count == 0)
                 return;
-            foreach (var query in _queries) {
+            foreach (var query in _queryTasks) {
                 var subRefs = query.refsTask.subRefs;
                 List<References> references = null;
                 if (subRefs.Count > 0) {
@@ -439,9 +439,9 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         }
 
         private void AggregateEntities(List<SyncRequestTask> tasks) {
-            if (_aggregates == null || _aggregates.Count == 0)
+            if (_aggregateTasks == null || _aggregateTasks.Count == 0)
                 return;
-            foreach (var aggregate in _aggregates) {
+            foreach (var aggregate in _aggregateTasks) {
                 var aggregateFilter = aggregate.filter;
                 if (aggregate.filter is Filter filter) {
                     aggregateFilter = filter.body;
@@ -608,9 +608,9 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         internal void SetTaskInfo(ref SetInfo info) {
             info.tasks =
                 (_reserveKeys   != null ? 1 : 0) +
-                SetInfo.Count(_reads)       +
-                SetInfo.Count(_queries)     +
-                SetInfo.Count(_aggregates)  +
+                SetInfo.Count(_readTasks)       +
+                SetInfo.Count(_queryTasks)     +
+                SetInfo.Count(_aggregateTasks)  +
                 SetInfo.Count(_closeCursors)+
                 SetInfo.Count(_createTasks) +  SetInfo.Any  (_autos) +
                 SetInfo.Count(_upsertTasks) +
@@ -619,9 +619,9 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 (_deleteTaskAll   != null ? 1 : 0) +
                 (subscribeChanges != null ? 1 : 0);
             //
-            info.reads          = SetInfo.Count(_reads);
-            info.queries        = SetInfo.Count(_queries);
-            info.aggregates     = SetInfo.Count(_aggregates);
+            info.reads          = SetInfo.Count(_readTasks);
+            info.queries        = SetInfo.Count(_queryTasks);
+            info.aggregates     = SetInfo.Count(_aggregateTasks);
             info.closeCursors   = SetInfo.Count(_closeCursors);
             info.create         = SetInfo.Count(_createTasks) + SetInfo.Count(_autos);
             info.upsert         = SetInfo.Count(_upsertTasks);
