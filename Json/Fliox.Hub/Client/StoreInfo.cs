@@ -115,13 +115,23 @@ namespace Friflo.Json.Fliox.Hub.Client
     {
         public  int     peers;
         public  int     tasks;
+        public  int     commands;
+        public  int     messages;
 
         internal StoreInfo(SyncStore sync, Dictionary<Type, EntitySet> setByType) {
-            peers = 0;
-            tasks = 0;
+            peers       = 0;
+            tasks       = 0;
+            commands    = 0;    
+            messages    = 0;
             tasks += SetInfo.Count(sync.messageTasks);
             foreach (var pair in setByType)
                 Add(pair.Value.SetInfo);
+            foreach (var function in sync.functions) {
+                switch (function) {
+                    case CommandTask _: commands++; break;
+                    case MessageTask _: messages++; break;
+                }
+            }
         }
         
         private void Add(in SetInfo info) {
@@ -137,6 +147,13 @@ namespace Friflo.Json.Fliox.Hub.Client
             if (tasks > 0) {
                 bool first = false;
                 SetInfo.AppendTasks(sb, "tasks", tasks, ref first);
+                if (messages > 0 || commands > 0) {
+                    first = true;
+                    sb.Append(" [");
+                    SetInfo.AppendTasks(sb, "message",  messages,   ref first);
+                    SetInfo.AppendTasks(sb, "command",  commands,   ref first);
+                    sb.Append(']');
+                }
             }
             return sb.ToString();
         }
