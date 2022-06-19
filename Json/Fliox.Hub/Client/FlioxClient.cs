@@ -47,11 +47,11 @@ namespace Friflo.Json.Fliox.Hub.Client
         // ReSharper disable once InconsistentNaming
         internal            ClientIntern                _intern;
         public              string                      DatabaseName    => _intern.database ?? _intern.hub.DatabaseName;
-        public              StoreInfo                   StoreInfo       => new StoreInfo(_intern.syncStore, _intern.setByType); 
         public              IReadOnlyList<SyncTask>     Tasks           => GetTasks();
         public              IReadOnlyList<SyncFunction> Functions       => _intern.syncStore.functions;
         public   readonly   StdCommands                 std;
         
+        [DebuggerBrowsable(Never)]  public      StoreInfo                   StoreInfo       => new StoreInfo(_intern.syncStore, _intern.setByType); 
         [DebuggerBrowsable(Never)]  public      bool                        WritePretty { set => SetWritePretty(value); }
         [DebuggerBrowsable(Never)]  public      bool                        WriteNull   { set => SetWriteNull(value); }
         [DebuggerBrowsable(Never)]  internal    readonly   Type             type;
