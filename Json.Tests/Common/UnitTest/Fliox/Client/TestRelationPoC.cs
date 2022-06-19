@@ -42,13 +42,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             var galaxy          = new Article  { id = "article-galaxy",   name = "Galaxy S10", producer = samsung.id};
             var createGalaxy    = articles.Upsert(galaxy);
             AreSimilar("entities: 2, tasks: 2 [container: 2]",          store);
-            AreSimilar("articles: 1, tasks: 1 [upsert #1]",             articles);
+            AreSimilar("articles: 1, tasks: 1 [upsert: 1]",             articles);
 
             var storePatches = store.DetectAllPatches();
             AreEqual(0, storePatches.PatchCount);
             
             AreSimilar("entities:  2, tasks: 2 [container: 2]",         store);
-            AreSimilar("producers: 1, tasks: 1 [create #1]",            producers);
+            AreSimilar("producers: 1, tasks: 1 [create: 1]",            producers);
 
             var steveJobs       = new Employee { id = "apple-0001", firstName = "Steve", lastName = "Jobs"};
             employees.Create(steveJobs);
@@ -57,14 +57,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             producers.Create(apple);
             var ipad            = new Article  { id = "article-ipad",   name = "iPad Pro", producer = apple.id};
             var createIPad      = articles.Upsert(ipad);
-            AreSimilar("articles: 2, tasks: 2 [upsert #2]",             articles);
+            AreSimilar("articles: 2, tasks: 2 [upsert: 2]",             articles);
             
             var logStore2 = store.DetectAllPatches();
             AreEqual(0, logStore2.PatchCount);
             AreSimilar("entities:  5, tasks: 5 [container: 5]",         store);
-            AreSimilar("articles:  2, tasks: 2 [upsert #2]",            articles);
-            AreSimilar("employees: 1, tasks: 1 [create #1]",            employees);
-            AreSimilar("producers: 2, tasks: 2 [create #2]",            producers);
+            AreSimilar("articles:  2, tasks: 2 [upsert: 2]",            articles);
+            AreSimilar("employees: 1, tasks: 1 [create: 1]",            employees);
+            AreSimilar("producers: 2, tasks: 2 [create: 2]",            producers);
 
             await store.SyncTasks(); // ----------------
             AreSimilar("entities: 5",                                   store);   // tasks executed and cleared
@@ -106,8 +106,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             AreEqual(11, store.StoreInfo.peers);
             AreEqual(7,  store.StoreInfo.tasks); 
             AreSimilar("entities: 11, tasks: 7 [container: 7]",                     store);
-            AreSimilar("articles:  7, tasks: 6 [create #2, upsert #3, reads: 1]",   articles);
-            AreSimilar("producers: 3, tasks: 1 [create #1]",                        producers);
+            AreSimilar("articles:  7, tasks: 6 [create: 2, upsert: 3, reads: 1]",   articles);
+            AreSimilar("producers: 3, tasks: 1 [create: 1]",                        producers);
             AreSimilar("employees: 1",                                              employees);
             
             await store.SyncTasks(); // ----------------
@@ -119,7 +119,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
 
             articles.DeleteRange(newBulkArticles);
             AreSimilar("entities: 12, tasks: 1 [container: 1]",         store);
-            AreSimilar("articles:  8, tasks: 1 [delete #1]",            articles);
+            AreSimilar("articles:  8, tasks: 1 [delete: 1]",            articles);
             
             await store.SyncTasks(); // ----------------
             AreSimilar("entities: 10",                                  store); // tasks cleared
@@ -190,15 +190,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             orders.Upsert(order);
             types.Upsert(type1);
             AreSimilar("entities: 13, tasks: 5 [container: 5]",         store);
-            AreSimilar("orders:    1, tasks: 1 [upsert #1]",            orders);     // created order
+            AreSimilar("orders:    1, tasks: 1 [upsert: 1]",            orders);     // created order
             
-            AreSimilar("articles:  6, tasks: 2 [create #1, reads: 1]",  articles);
-            AreSimilar("customers: 1, tasks: 1 [create #1]",            customers);
+            AreSimilar("articles:  6, tasks: 2 [create: 1, reads: 1]",  articles);
+            AreSimilar("customers: 1, tasks: 1 [create: 1]",            customers);
             var orderPatches = orders.DetectPatches();
             AreEqual(0, orderPatches.Patches.Count);
             AreSimilar("entities: 13, tasks: 5 [container: 5]",         store);
-            AreSimilar("articles:  6, tasks: 2 [create #1, reads: 1]",  articles);
-            AreSimilar("customers: 1, tasks: 1 [create #1]" ,           customers);
+            AreSimilar("articles:  6, tasks: 2 [create: 1, reads: 1]",  articles);
+            AreSimilar("customers: 1, tasks: 1 [create: 1]" ,           customers);
             
             AreSimilar("entities: 13, tasks: 5 [container: 5]",         store);
             var storePatches1 = store.DetectAllPatches();
