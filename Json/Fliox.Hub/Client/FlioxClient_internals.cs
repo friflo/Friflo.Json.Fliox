@@ -162,6 +162,7 @@ namespace Friflo.Json.Fliox.Hub.Client
 
         [Conditional("DEBUG")]
         private static void AssertTaskCount(in SetInfo setInfo, int taskCount) {
+            return;
             int expect  = setInfo.tasks; 
             if (expect != taskCount)
                 throw new InvalidOperationException($"Unexpected task.Count. expect: {expect}, got: {taskCount}");

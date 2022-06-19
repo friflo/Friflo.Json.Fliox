@@ -57,14 +57,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             producers.Create(apple);
             var ipad            = new Article  { id = "article-ipad",   name = "iPad Pro", producer = apple.id};
             var createIPad      = articles.Upsert(ipad);
-            AreSimilar("articles: 2, tasks: 1 [upsert #2]",             articles);
+            AreSimilar("articles: 2, tasks: 2 [upsert #2]",             articles);
             
             var logStore2 = store.DetectAllPatches();
             AreEqual(0, logStore2.PatchCount);
-            AreSimilar("entities:  5, tasks: 3",                        store);
-            AreSimilar("articles:  2, tasks: 1 [upsert #2]",            articles);
+            AreSimilar("entities:  5, tasks: 5",                        store);
+            AreSimilar("articles:  2, tasks: 2 [upsert #2]",            articles);
             AreSimilar("employees: 1, tasks: 1 [create #1]",            employees);
-            AreSimilar("producers: 2, tasks: 1 [create #2]",            producers);
+            AreSimilar("producers: 2, tasks: 2 [create #2]",            producers);
 
             await store.SyncTasks(); // ----------------
             AreSimilar("entities: 5",                                   store);   // tasks executed and cleared
@@ -104,9 +104,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             articles.Upsert(camForDelete);
             // StoreInfo is accessible via property an ToString()
             AreEqual(11, store.StoreInfo.peers);
-            AreEqual(4,  store.StoreInfo.tasks); 
-            AreSimilar("entities: 11, tasks: 4",                                    store);
-            AreSimilar("articles:  7, tasks: 3 [create #1, upsert #4, reads: 1]",   articles);
+            AreEqual(7,  store.StoreInfo.tasks); 
+            AreSimilar("entities: 11, tasks: 7",                                    store);
+            AreSimilar("articles:  7, tasks: 6 [create #2, upsert #3, reads: 1]",   articles);
             AreSimilar("producers: 3, tasks: 1 [create #1]",                        producers);
             AreSimilar("employees: 1",                                              employees);
             
@@ -119,7 +119,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
 
             articles.DeleteRange(newBulkArticles);
             AreSimilar("entities: 12, tasks: 1",                        store);
-            AreSimilar("articles:  8, tasks: 1 [delete #2]",            articles);
+            AreSimilar("articles:  8, tasks: 1 [delete #1]",            articles);
             
             await store.SyncTasks(); // ----------------
             AreSimilar("entities: 10",                                  store); // tasks cleared
