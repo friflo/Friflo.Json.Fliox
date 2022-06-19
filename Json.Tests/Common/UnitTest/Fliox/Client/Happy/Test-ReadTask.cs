@@ -73,12 +73,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             var articleSetIds   = new [] {duplicateId, duplicateId, "article-ipad"};
             var articleSet      = readTask.FindRange(articleSetIds)                         .TaskName("articleSet");
 
-            AreEqual(@"order1
+            AreEqual(@"readOrders
+order1
 readOrders -> .items[*].article
 readOrders -> .items[*].article -> .producer
+readTask
 galaxy
 article1And2
-articleSet", string.Join("\n", store.Tasks));
+articleSet", string.Join("\n", store.Functions));
 
             await store.SyncTasks(); // ----------------
         

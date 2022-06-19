@@ -15,7 +15,7 @@ namespace Friflo.Json.Fliox.Hub.Client
     /// an <see cref="EntityDatabase"/> by <see cref="FlioxClient.SendMessage"/>.<br/>
     /// It is used to send to the message (or command) as en event to all clients which successful subscribed the
     /// message by its <see cref="name"/>.
-    /// If the message was sent successful <see cref="SyncTask.Success"/> is true.
+    /// If the message was sent successful <see cref="SyncFunction.Success"/> is true.
     /// <br/>
     /// <b>Note</b>: A message returns no result. To get a result send a command by <see cref="FlioxClient.SendCommand{TParam,TResult}"/> 
     /// </summary>

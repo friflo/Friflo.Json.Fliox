@@ -9,7 +9,7 @@ using static System.Diagnostics.DebuggerBrowsableState;
 
 namespace Friflo.Json.Fliox.Hub.Client
 {
-    public abstract class SyncTask
+    public abstract class SyncFunction
     {
                                     internal            string      taskName;
                                     internal            string      GetLabel() => taskName ?? Details;
@@ -47,13 +47,15 @@ namespace Friflo.Json.Fliox.Hub.Client
         internal Exception AlreadySyncedError() {
             return new TaskAlreadySyncedException($"Task already executed. {GetLabel()}");
         }
-
-        internal virtual void AddFailedTask(List<SyncTask> failed) {
+        
+        internal void AddFailedTask(List<SyncFunction> failed) {
             if (!State.Error.HasErrors)
                 return;
             failed.Add(this);
-        }
+        }  
     }
+    
+    public abstract class SyncTask : SyncFunction { }
     
     public static class SyncTaskExtension
     {
@@ -65,7 +67,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// The library itself doesnt use the <paramref name="name"/> internally - its purpose is only to enhance debugging
         /// or post-mortem debugging of application code.
         /// </summary>
-        public static T TaskName<T> (this T task, string name) where T : SyncTask {
+        public static T TaskName<T> (this T task, string name) where T : SyncFunction {
             task.taskName = name;
             return task;
         }

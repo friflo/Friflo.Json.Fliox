@@ -72,8 +72,22 @@ namespace Friflo.Json.Fliox.Hub.Client
             return count;
         }
         
+        internal List<SyncTask> GetTasks() {
+            var functions = _intern.syncStore.functions;
+            var result = new List<SyncTask>(functions.Count);
+            foreach (var function in functions) {
+                if (function is SyncTask syncTask)
+                    result.Add(syncTask);
+            }
+            return result;
+        }
+        
         internal void AddTask(SyncTask task) {
-            _intern.syncStore.appTasks.Add(task);
+            _intern.syncStore.functions.Add(task);
+        }
+        
+        internal void AddFunction(SyncFunction task) {
+            _intern.syncStore.functions.Add(task);
         }
         
         internal EntitySet GetEntitySet(string name) {
@@ -281,11 +295,11 @@ namespace Friflo.Json.Fliox.Hub.Client
                     syncStore.DetectPatchesResults();
                 }
                 finally {
-                    var failed = new List<SyncTask>();
-                    foreach (SyncTask task in syncStore.appTasks) {
+                    var failed = new List<SyncFunction>();
+                    foreach (var task in syncStore.functions) {
                         task.AddFailedTask(failed);
                     }
-                    syncResult = new SyncResult(syncStore.appTasks, failed, response.error);
+                    syncResult = new SyncResult(syncStore.functions, failed, response.error);
                 }
                 return syncResult;
             }

@@ -13,7 +13,7 @@ using static System.Diagnostics.DebuggerBrowsableState;
 namespace Friflo.Json.Fliox.Hub.Client
 {
     
-    public abstract  class FindTask<TKey, T> : SyncTask where T : class {
+    public abstract  class FindFunction<TKey, T> : SyncFunction where T : class {
         [DebuggerBrowsable(Never)]
         internal                    TaskState   findState;
         
@@ -26,7 +26,7 @@ namespace Friflo.Json.Fliox.Hub.Client
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
-    public sealed class Find<TKey, T> : FindTask<TKey, T> where T : class
+    public sealed class Find<TKey, T> : FindFunction<TKey, T> where T : class
     {
         private  readonly   TKey        key;
         private             T           result;
@@ -62,7 +62,7 @@ namespace Friflo.Json.Fliox.Hub.Client
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
-    public sealed class FindRange<TKey, T> : FindTask<TKey, T> where T : class
+    public sealed class FindRange<TKey, T> : FindFunction<TKey, T> where T : class
     {
         private  readonly   Dictionary<TKey, T>                 results;
         private             Dictionary<JsonKey, EntityValue>    entities;
@@ -128,7 +128,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         private  readonly   EntitySet<TKey, T>      set;
         internal            RefsTask                refsTask;
         internal readonly   Dictionary<TKey, T>     result      = SyncSet.CreateDictionary<TKey,T>();
-        internal readonly   List<FindTask<TKey, T>> findTasks   = new List<FindTask<TKey, T>>();
+        internal readonly   List<FindFunction<TKey, T>> findTasks   = new List<FindFunction<TKey, T>>();
 
         public              Dictionary<TKey, T>     Result      => IsOk("ReadTask.Result", out Exception e) ? result      : throw e;
 
@@ -149,7 +149,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             result.Add(key, null);
             var find = new Find<TKey, T>(key);
             findTasks.Add(find);
-            set.intern.store.AddTask(find);
+            set.intern.store.AddFunction(find);
             return find;
         }
         
@@ -166,52 +166,52 @@ namespace Friflo.Json.Fliox.Hub.Client
             }
             var find = new FindRange<TKey, T>(keys);
             findTasks.Add(find);
-            set.intern.store.AddTask(find);
+            set.intern.store.AddFunction(find);
             return find;
         }
         
         
         // --- Relation
-        public ReadRelationTask<TRef> ReadRelation<TRefKey, TRef>(EntitySet<TRefKey, TRef> relation, Expression<Func<T, TRefKey>> selector) where TRef : class {
+        public ReadRelation<TRef> ReadRelation<TRefKey, TRef>(EntitySet<TRefKey, TRef> relation, Expression<Func<T, TRefKey>> selector) where TRef : class {
             if (State.IsExecuted()) throw AlreadySyncedError();
             string path = ExpressionSelector.PathFromExpression(selector, out _);
             return ReadRefByPath<TRef>(relation, path);
         }
         
-        public ReadRelationTask<TRef> ReadRelation<TRefKey, TRef> (EntitySet<TRefKey, TRef> relation, Expression<Func<T, TRefKey?>> selector) where TRef : class   where TRefKey : struct {
+        public ReadRelation<TRef> ReadRelation<TRefKey, TRef> (EntitySet<TRefKey, TRef> relation, Expression<Func<T, TRefKey?>> selector) where TRef : class   where TRefKey : struct {
             if (State.IsExecuted()) throw AlreadySyncedError();
             string path = ExpressionSelector.PathFromExpression(selector, out _);
             return ReadRefByPath<TRef>(relation, path);
         }
         
-        public ReadRelationTask<TRef> ReadRelation<TRefKey, TRef>(EntitySet<TRefKey, TRef> relation, RelationPath<TRef> selector) where TRef : class {
+        public ReadRelation<TRef> ReadRelation<TRefKey, TRef>(EntitySet<TRefKey, TRef> relation, RelationPath<TRef> selector) where TRef : class {
             if (State.IsExecuted()) throw AlreadySyncedError();
             return ReadRefByPath<TRef>(relation, selector.path);
         }
         
         
         // --- IReadRelationsTask<T>
-        public ReadRelationsTask<TRef> ReadRelations<TRefKey, TRef>(EntitySet<TRefKey, TRef> relation, Expression<Func<T, TRefKey>> selector) where TRef : class {
+        public ReadRelations<TRef> ReadRelations<TRefKey, TRef>(EntitySet<TRefKey, TRef> relation, Expression<Func<T, TRefKey>> selector) where TRef : class {
             if (State.IsExecuted()) throw AlreadySyncedError();
             return refsTask.ReadRefsByExpression<TRef>(relation, selector, set.intern.store);
         }
         
-        public ReadRelationsTask<TRef> ReadRelations<TRefKey, TRef>(EntitySet<TRefKey, TRef> relation, Expression<Func<T, TRefKey?>> selector) where TRef : class where TRefKey : struct {
+        public ReadRelations<TRef> ReadRelations<TRefKey, TRef>(EntitySet<TRefKey, TRef> relation, Expression<Func<T, TRefKey?>> selector) where TRef : class where TRefKey : struct {
             if (State.IsExecuted()) throw AlreadySyncedError();
             return refsTask.ReadRefsByExpression<TRef>(relation, selector, set.intern.store);
         }
        
-        public ReadRelationsTask<TRef> ReadRelations<TRefKey, TRef>(EntitySet<TRefKey, TRef> relation, Expression<Func<T, IEnumerable<TRefKey>>> selector) where TRef : class {
+        public ReadRelations<TRef> ReadRelations<TRefKey, TRef>(EntitySet<TRefKey, TRef> relation, Expression<Func<T, IEnumerable<TRefKey>>> selector) where TRef : class {
             if (State.IsExecuted()) throw AlreadySyncedError();
             return refsTask.ReadRefsByExpression<TRef>(relation, selector, set.intern.store);
         }
         
-        public ReadRelationsTask<TRef> ReadRelations<TRefKey, TRef>(EntitySet<TRefKey, TRef> relation, Expression<Func<T, IEnumerable<TRefKey?>>> selector) where TRef : class  where TRefKey : struct {
+        public ReadRelations<TRef> ReadRelations<TRefKey, TRef>(EntitySet<TRefKey, TRef> relation, Expression<Func<T, IEnumerable<TRefKey?>>> selector) where TRef : class  where TRefKey : struct {
             if (State.IsExecuted()) throw AlreadySyncedError();
             return refsTask.ReadRefsByExpression<TRef>(relation, selector, set.intern.store);
         }
         
-        public ReadRelationsTask<TRef> ReadRelations<TRefKey, TRef>(EntitySet<TRefKey, TRef> relation, RelationsPath<TRef> selector) where TRef : class {
+        public ReadRelations<TRef> ReadRelations<TRefKey, TRef>(EntitySet<TRefKey, TRef> relation, RelationsPath<TRef> selector) where TRef : class {
             if (State.IsExecuted()) throw AlreadySyncedError();
             return refsTask.ReadRefsByPath<TRef>(relation, selector.path, set.intern.store);
         }
@@ -229,24 +229,16 @@ namespace Friflo.Json.Fliox.Hub.Client
             throw new NotImplementedException("ReadAllRefs() planned to be implemented");
         } */
         
-        private ReadRelationTask<TRef> ReadRefByPath<TRef>(EntitySet relation, string path) where TRef : class {
-            if (refsTask.subRefs.TryGetTask(path, out ReadRelationsTask subRelationsTask))
-                return (ReadRelationTask<TRef>)subRelationsTask;
+        private ReadRelation<TRef> ReadRefByPath<TRef>(EntitySet relation, string path) where TRef : class {
+            if (refsTask.subRefs.TryGetTask(path, out ReadRelationsFunction subRelationsTask))
+                return (ReadRelation<TRef>)subRelationsTask;
             // var relation = set.intern.store._intern.GetSetByType(typeof(TRef));
             var keyName     = relation.GetKeyName();
             var isIntKey    = relation.IsIntKey();
-            var newQueryRefs = new ReadRelationTask<TRef>(this, path, relation.name, keyName, isIntKey, set.intern.store);
+            var newQueryRefs = new ReadRelation<TRef>(this, path, relation.name, keyName, isIntKey, set.intern.store);
             refsTask.subRefs.AddTask(path, newQueryRefs);
-            set.intern.store.AddTask(newQueryRefs);
+            set.intern.store.AddFunction(newQueryRefs);
             return newQueryRefs;
-        }
-        
-        internal override void AddFailedTask(List<SyncTask> failed) {
-            /*foreach (var findTask in findTasks) {
-                if (findTask.State.Error.HasErrors) {
-                    failed.Add(findTask);
-                }
-            }*/
         }
     }
 }

@@ -58,10 +58,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             AreEqual("SyncTask.Error requires SyncTasks(). createError", e.Message);
 
             AreEqual(5, store.Tasks.Count);
+            AreEqual(6, store.Functions.Count);
             var sync = await store.TrySyncTasks(); // ----------------
             
-            AreEqual("tasks: 5, failed: 5", sync.ToString());
-            AreEqualTrimStack(@"SyncTasks() failed with task errors. Count: 5
+            AreEqual("tasks: 6, failed: 6", sync.ToString());
+            AreEqualTrimStack(@"SyncTasks() failed with task errors. Count: 6
+|- readCustomers # UnhandledException ~ SimulationException: simulated read task exception
 |- customerRead # UnhandledException ~ SimulationException: simulated read task exception
 |- customerQuery # UnhandledException ~ SimulationException: simulated query exception
 |- createError # UnhandledException ~ SimulationException: simulated create task exception

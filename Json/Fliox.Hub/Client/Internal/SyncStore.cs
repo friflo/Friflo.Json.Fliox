@@ -10,7 +10,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
     {
         internal    IDictionary<string,SyncSet> SyncSets { get; private set; }
         
-        internal readonly   List<SyncTask>      appTasks            = new List<SyncTask>();
+        internal readonly   List<SyncFunction>  functions           = new List<SyncFunction>();
         
         private     List<DetectAllPatches>      detectAllPatches;
         private     List<DetectAllPatches>      DetectAllPatches()  => detectAllPatches ?? (detectAllPatches = new List<DetectAllPatches>());

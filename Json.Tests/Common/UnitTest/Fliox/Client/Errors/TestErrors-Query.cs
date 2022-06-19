@@ -99,12 +99,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             var producerEmployees = articleProducer.ReadRelations(employees, p => p.employeeList)   .TaskName("producerEmployees");
             AreEqual("articleProducer -> .employees[*]", producerEmployees.Details);
             
-            AreEqual(14, store.Tasks.Count);
+            AreEqual(9,  store.Tasks.Count);
+            AreEqual(16, store.Functions.Count);
             var sync = await store.TrySyncTasks(); // ----------------
             
             IsFalse(sync.Success);
-            AreEqual("tasks: 14, failed: 5", sync.ToString());
-            AreEqual(14, sync.tasks.Count);
+            AreEqual("tasks: 16, failed: 5", sync.ToString());
+            AreEqual(16, sync.functions.Count);
             AreEqual(5,  sync.failed.Count);
             const string msg = @"SyncTasks() failed with task errors. Count: 5
 |- allArticles # EntityErrors ~ count: 2

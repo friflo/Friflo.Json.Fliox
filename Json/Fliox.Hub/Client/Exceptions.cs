@@ -28,9 +28,9 @@ namespace Friflo.Json.Fliox.Hub.Client
 
     public sealed class SyncTasksException : Exception
     {
-        public readonly     List<SyncTask>  failed;
+        public readonly     List<SyncFunction>  failed;
 
-        internal SyncTasksException(ErrorResponse errorResponse, List<SyncTask> failed)
+        internal SyncTasksException(ErrorResponse errorResponse, List<SyncFunction> failed)
             : base(SyncResult.GetMessage(errorResponse, failed))
         {
             this.failed = failed;

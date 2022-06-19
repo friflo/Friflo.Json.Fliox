@@ -48,11 +48,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             var deleteError     = customers.Delete(new Customer{id = deleteTaskError})  .TaskName("deleteError");
             
             AreEqual(5, store.Tasks.Count);
+            AreEqual(6, store.Functions.Count);
             var sync = await store.TrySyncTasks(); // ----------------
             
-            AreEqual("tasks: 5, failed: 5", sync.ToString());
-            AreEqual("tasks: 5, failed: 5", sync.ToString());
-            AreEqual(@"SyncTasks() failed with task errors. Count: 5
+            AreEqual("tasks: 6, failed: 6", sync.ToString());
+            AreEqual(@"SyncTasks() failed with task errors. Count: 6
+|- readCustomers # DatabaseError ~ simulated read task error
 |- customerRead # DatabaseError ~ simulated read task error
 |- customerQuery # DatabaseError ~ simulated query error
 |- createError # DatabaseError ~ simulated create task error

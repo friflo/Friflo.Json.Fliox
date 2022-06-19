@@ -120,10 +120,9 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// </summary>
         /// <remarks> To execute the task call <see cref="FlioxClient.SyncTasks"/> </remarks>
         public ReadTask<TKey, T> Read() {
-            // ReadTasks<> are not added with intern.store.AddTask(task) as it only groups the tasks created via its
-            // methods like: Find(), FindRange(), ReadRefTask() & ReadRefsTask().
-            // A ReadTask<> its self cannot fail.
-            return GetSyncSet().Read();
+            var task = GetSyncSet().Read();
+            intern.store.AddTask(task);
+            return task;
         }
         #endregion
 
