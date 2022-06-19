@@ -17,7 +17,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         private             T           entity;
         private   readonly  SyncTask    parent;
     
-        public              T           Result  => IsOk("ReadRelationTask.Result", out Exception e) ? entity  : throw e;
+        public              T           Result  => IsOk("ReadRelation.Result", out Exception e) ? entity  : throw e;
                 
         internal  override  TaskState   State   => state;
         public    override  string      Details => $"{parent.GetLabel()} -> {Selector}";

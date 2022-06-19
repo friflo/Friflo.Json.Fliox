@@ -39,27 +39,27 @@ namespace Friflo.Json.Fliox.Hub.Client
         // --- IReadRelationsTask<T>
         public ReadRelations<TRef> ReadRelations<TRefKey, TRef>(EntitySet<TRefKey, TRef> relation, Expression<Func<T, TRefKey>> selector) where TRef : class {
             if (State.IsExecuted()) throw AlreadySyncedError();
-            return refsTask.ReadRefsByExpression<TRef>(relation, selector, store);
+            return refsTask.ReadRelationsByExpression<TRef>(relation, selector, store);
         }
         
         public ReadRelations<TRef> ReadRelations<TRefKey, TRef>(EntitySet<TRefKey, TRef> relation, Expression<Func<T, TRefKey?>> selector) where TRef : class where TRefKey : struct {
             if (State.IsExecuted()) throw AlreadySyncedError();
-            return refsTask.ReadRefsByExpression<TRef>(relation, selector, store);
+            return refsTask.ReadRelationsByExpression<TRef>(relation, selector, store);
         }
         
         public ReadRelations<TRef> ReadRelations<TRefKey, TRef>(EntitySet<TRefKey, TRef> relation, Expression<Func<T, IEnumerable<TRefKey>>> selector) where TRef : class {
             if (State.IsExecuted()) throw AlreadySyncedError();
-            return refsTask.ReadRefsByExpression<TRef>(relation, selector, store);
+            return refsTask.ReadRelationsByExpression<TRef>(relation, selector, store);
         }
         
         public ReadRelations<TRef> ReadRelations<TRefKey, TRef>(EntitySet<TRefKey, TRef> relation, Expression<Func<T, IEnumerable<TRefKey?>>> selector) where TRef : class where TRefKey : struct {
             if (State.IsExecuted()) throw AlreadySyncedError();
-            return refsTask.ReadRefsByExpression<TRef>(relation, selector, store);
+            return refsTask.ReadRelationsByExpression<TRef>(relation, selector, store);
         }
         
         public ReadRelations<TRef> ReadRelations<TRefKey, TRef>(EntitySet<TRefKey, TRef> relation, RelationsPath<TRef> selector) where TRef : class {
             if (State.IsExecuted()) throw AlreadySyncedError();
-            return refsTask.ReadRefsByPath<TRef>(relation, selector.path, store);
+            return refsTask.ReadRelationsByPath<TRef>(relation, selector.path, store);
         }
     }
 
@@ -82,7 +82,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         private             List<T>         result;
         private   readonly  SyncFunction    parent;
             
-        public              List<T>     Result  => IsOk("ReadRelationsTask.Result", out Exception e) ? result      : throw e;
+        public              List<T>     Result  => IsOk("ReadRelations.Result", out Exception e) ? result      : throw e;
         
         internal  override  TaskState   State   => state;
         public    override  string      Details => $"{parent.GetLabel()} -> {Selector}";

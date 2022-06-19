@@ -74,7 +74,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             AreEqual("readOrders -> .items[*].article", orderArticles.Details);
 
             e = Throws<TaskNotSyncedException>(() => { var _ = orderArticles.Result; });
-            AreEqual("ReadRelationsTask.Result requires SyncTasks(). orderArticles", e.Message);
+            AreEqual("ReadRelations.Result requires SyncTasks(). orderArticles", e.Message);
 
             var articleProducer = orderArticles.ReadRelations(producers, a => a.producer)           .TaskName("articleProducer");
             AreEqual("orderArticles -> .producer", articleProducer.Details);

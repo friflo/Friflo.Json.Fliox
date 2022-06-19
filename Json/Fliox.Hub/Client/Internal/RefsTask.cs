@@ -17,21 +17,21 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             this.subRefs    = new SubRefs();
         }
 
-        internal ReadRelations<TRef> ReadRefsByExpression<TRef>(EntitySet relation, Expression expression, FlioxClient store) where TRef : class {
+        internal ReadRelations<TRef> ReadRelationsByExpression<TRef>(EntitySet relation, Expression expression, FlioxClient store) where TRef : class {
             string path = ExpressionSelector.PathFromExpression(expression, out _);
-            return ReadRefsByPath<TRef>(relation, path, store);
+            return ReadRelationsByPath<TRef>(relation, path, store);
         }
         
-        internal ReadRelations<TRef> ReadRefsByPath<TRef>(EntitySet relation, string selector, FlioxClient store) where TRef : class {
+        internal ReadRelations<TRef> ReadRelationsByPath<TRef>(EntitySet relation, string selector, FlioxClient store) where TRef : class {
             if (subRefs.TryGetTask(selector, out ReadRelationsFunction subRelationsTask))
                 return (ReadRelations<TRef>)subRelationsTask;
             // var relation = store._intern.GetSetByType(typeof(TValue));
-            var keyName     = relation.GetKeyName();
-            var isIntKey    = relation.IsIntKey();
-            var newQueryRefs = new ReadRelations<TRef>(task, selector, relation.name, keyName, isIntKey, store);
-            subRefs.AddTask(selector, newQueryRefs);
-            store.AddFunction(newQueryRefs);
-            return newQueryRefs;
+            var keyName         = relation.GetKeyName();
+            var isIntKey        = relation.IsIntKey();
+            var readRelations   = new ReadRelations<TRef>(task, selector, relation.name, keyName, isIntKey, store);
+            subRefs.AddReadRelations(selector, readRelations);
+            store.AddFunction(readRelations);
+            return readRelations;
         }
     }
     
@@ -40,7 +40,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         /// key: <see cref="ReadRelationsFunction.Selector"/>
         private     Dictionary<string, ReadRelationsFunction>   map; // map == null if no tasks added
         
-        internal    int                                     Count => map?.Count ?? 0;
+        internal    int                                         Count => map?.Count ?? 0;
         internal    ReadRelationsFunction                       this[string key] => map[key];
         
         internal bool TryGetTask(string selector, out ReadRelationsFunction subRelationsTask) {
@@ -51,11 +51,11 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             return map.TryGetValue(selector, out subRelationsTask);
         }
         
-        internal void AddTask(string selector, ReadRelationsFunction subRelationsTask) {
+        internal void AddReadRelations(string selector, ReadRelationsFunction readRelations) {
             if (map == null) {
                 map = new Dictionary<string, ReadRelationsFunction>();
             }
-            map.Add(selector, subRelationsTask);
+            map.Add(selector, readRelations);
         }
 
         // return ValueIterator instead of IEnumerator<ReadRefsTask> to avoid boxing 
