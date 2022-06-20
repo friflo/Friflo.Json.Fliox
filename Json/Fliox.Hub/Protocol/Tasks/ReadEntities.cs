@@ -85,7 +85,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         /// <see cref="EntityValue.Json"/> value of <see cref="entities"/> is valid JSON.
         /// 
         /// E.g. <see cref="FileContainer"/> cannot ensure this, as the file content can be written
-        /// or modified from extern processes - for example by manually changing its JSON content with an editor.
+        /// or modified from external processes - for example by manually changing its JSON content with an editor.
         /// 
         /// A <see cref="MemoryContainer"/> does not require validation as its key/values are always written via
         /// Fliox.Hub.Client library - which generate valid JSON.
