@@ -56,6 +56,7 @@ namespace Friflo.Json.Fliox.Hub.Client
 
         internal override   SyncSet                     SyncSet         => syncSet;
         internal override   SetInfo                     SetInfo         => GetSetInfo();
+        internal            IReadOnlyList<SyncTask>     Tasks           => syncSet?.tasks;
 
         [DebuggerBrowsable(Never)] internal override    Type    KeyType      => typeof(TKey);
         [DebuggerBrowsable(Never)] internal override    Type    EntityType   => typeof(T);

@@ -7,6 +7,7 @@ using System.Linq.Expressions;
 using Friflo.Json.Fliox.Hub.Client.Internal;
 using Friflo.Json.Fliox.Hub.Client.Internal.Key;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
+using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using static System.Diagnostics.DebuggerBrowsableState;
 
 // ReSharper disable once CheckNamespace
@@ -125,6 +126,9 @@ namespace Friflo.Json.Fliox.Hub.Client
     {
         [DebuggerBrowsable(Never)]
         internal            TaskState               state;
+        [DebuggerBrowsable(Never)]
+        private  readonly   SyncSet<TKey, T>        syncSet;
+        [DebuggerBrowsable(Never)]
         private  readonly   EntitySet<TKey, T>      set;
         internal            Relations               relations;
         internal readonly   Dictionary<TKey, T>     result      = SyncSet.CreateDictionary<TKey,T>();
@@ -136,9 +140,10 @@ namespace Friflo.Json.Fliox.Hub.Client
         public   override   string                  Details     => $"ReadTask<{typeof(T).Name}> (#ids: {result.Count})";
         
 
-        internal ReadTask(EntitySet<TKey, T> set) {
-            relations   = new Relations(this);
-            this.set    = set;
+        internal ReadTask(SyncSet<TKey, T> syncSet) {
+            relations       = new Relations(this);
+            this.syncSet    = syncSet;
+            this.set        = syncSet.set;
         }
 
         public Find<TKey, T> Find(TKey key) {
@@ -170,6 +175,9 @@ namespace Friflo.Json.Fliox.Hub.Client
             return find;
         }
         
+        internal override SyncRequestTask CreateRequestTask() {
+            return syncSet.ReadEntities(this);
+        }
         
         // --- Relation
         public ReadRelation<TRef> ReadRelation<TRefKey, TRef>(EntitySet<TRefKey, TRef> relation, Expression<Func<T, TRefKey>> selector) where TRef : class {

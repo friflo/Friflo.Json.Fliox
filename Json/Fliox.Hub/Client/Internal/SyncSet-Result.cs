@@ -19,13 +19,13 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         internal    IDictionary<JsonKey, EntityError>    errorsPatch  = NoErrors;
         internal    IDictionary<JsonKey, EntityError>    errorsDelete = NoErrors;
 
-        internal  abstract  EntitySet EntitySet { get; }
+        internal  abstract  EntitySet               EntitySet   { get; }
 
         internal  abstract  void    AddTasks                (List<SyncRequestTask> tasks, ObjectMapper mapper);
         
         internal  abstract  void    ReserveKeysResult       (ReserveKeys        task, SyncTaskResult result);
-        internal  abstract void     CreateEntitiesResult    (CreateEntities     task, SyncTaskResult result, ObjectMapper mapper);
-        internal  abstract void     UpsertEntitiesResult    (UpsertEntities     task, SyncTaskResult result, ObjectMapper mapper);
+        internal  abstract  void    CreateEntitiesResult    (CreateEntities     task, SyncTaskResult result, ObjectMapper mapper);
+        internal  abstract  void    UpsertEntitiesResult    (UpsertEntities     task, SyncTaskResult result, ObjectMapper mapper);
         internal  abstract  void    ReadEntitiesResult      (ReadEntities       task, SyncTaskResult result, ContainerEntities readEntities);
         internal  abstract  void    QueryEntitiesResult     (QueryEntities      task, SyncTaskResult result, ContainerEntities queryEntities);
         internal  abstract  void    AggregateEntitiesResult (AggregateEntities  task, SyncTaskResult result);
@@ -163,12 +163,9 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         }
 
         internal override void ReadEntitiesResult(ReadEntities task, SyncTaskResult result, ContainerEntities readEntities) {
-            var reads       = Reads();
-            var readTask    = reads[readTasksIndex++];
+            var readTask    = (ReadTask<TKey,T>)task.syncTask;
             if (result is TaskErrorResult taskError) {
-                foreach (var read in reads) {
-                    SetReadTaskError(read, taskError);
-                }
+                SetReadTaskError(readTask, taskError);
                 return;
             }
             var readResult = (ReadEntitiesResult) result;

@@ -3,6 +3,7 @@
 
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Friflo.Json.Fliox.Hub.Client;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
 
@@ -34,6 +35,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
                     public     JsonValue    info;
         [Ignore]    public     int          index;
         [Ignore]    internal   JsonValue?   json;
+        [Ignore]    internal   SyncTask     syncTask;
         
         internal abstract Task<SyncTaskResult> Execute(EntityDatabase database, SyncResponse response, SyncContext syncContext);
         internal    abstract   TaskType     TaskType { get; }

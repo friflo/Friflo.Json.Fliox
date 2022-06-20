@@ -149,6 +149,16 @@ namespace Friflo.Json.Fliox.Hub.Client
                 }
                 AssertTaskCount(setInfo, tasks.Count - curTaskCount);
             }
+
+            foreach (var function in syncStore.functions) {
+                if (function is SyncTask task) {
+                    var requestTask = task.CreateRequestTask();
+                    if (requestTask == null)
+                        continue;
+                    tasks.Add(requestTask);
+                }
+            }
+            
             syncStore.AddTasks(tasks);
             
             // --- create new SyncStore and SyncSet's to collect future SyncTask's and execute them via the next SyncTasks() call 
@@ -297,10 +307,11 @@ namespace Friflo.Json.Fliox.Hub.Client
                 }
                 finally {
                     var failed = new List<SyncFunction>();
-                    foreach (var task in syncStore.functions) {
+                    var functions = syncStore.functions;
+                    foreach (var task in functions) {
                         task.AddFailedTask(failed);
                     }
-                    syncResult = new SyncResult(syncStore.functions, failed, response.error);
+                    syncResult = new SyncResult(functions, failed, response.error);
                 }
                 return syncResult;
             }

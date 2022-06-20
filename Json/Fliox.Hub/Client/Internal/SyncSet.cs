@@ -36,11 +36,12 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         // All fields & getters must be private by all means to ensure that all scheduled tasks of a SyncTasks() call
         // managed by this instance can be mapped to their task results safely.
 
-        private     readonly EntitySet<TKey, T>     set;
+        internal    readonly EntitySet<TKey, T>     set;
+        internal    readonly List<SyncTask>         tasks  = new List<SyncTask>();
 
         // --- backing fields for lazy-initialized getters
-        private     List<ReadTask<TKey, T>>         _readTasks;
-        private     int                             readTasksIndex;
+    //  private     List<ReadTask<TKey, T>>         _readTasks;
+    //  private     int                             readTasksIndex;
 
         private     List<QueryTask<T>>              _queryTasks;
         private     int                             queriesTasksIndex;
@@ -69,7 +70,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         private     List<DeleteTask<TKey, T>>       _deleteTasks;
 
         // --- lazy-initialized getters => they behave like readonly fields
-        private     List<ReadTask<TKey, T>>         Reads()         => _readTasks   ?? (_readTasks  = new List<ReadTask<TKey, T>>());
+    //  private     List<ReadTask<TKey, T>>         Reads()         => _readTasks   ?? (_readTasks  = new List<ReadTask<TKey, T>>());
 
         private     List<QueryTask<T>>              Queries()       => _queryTasks  ?? (_queryTasks = new List<QueryTask<T>>());
 
@@ -100,7 +101,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         internal SyncSet(EntitySet<TKey, T> set) {
             this.set = set;
         }
-        internal  override  EntitySet EntitySet => set;
+        internal  override  EntitySet               EntitySet => set;
 
         internal override void AddCreate (Peer<T> peer) {
             Creates().TryAdd(peer.id, peer);    // sole place a peer (entity) is added
@@ -124,8 +125,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
 
         // --- Read
         internal ReadTask<TKey, T> Read() {
-            var read = new ReadTask<TKey, T>(set);
-            Reads().Add(read);
+            var read = new ReadTask<TKey, T>(this);
+            tasks.Add(read);
             return read;
         }
 
@@ -294,7 +295,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             DeleteEntities      (tasks);
             DeleteAll           (tasks);
             // --- read tasks
-            ReadEntities        (tasks);
+        //  ReadEntities        (tasks);
             QueryEntities       (tasks);
             AggregateEntities   (tasks);
             SubscribeChanges    (tasks);
@@ -380,30 +381,25 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             tasks.Add(req);
         }
 
-        private void ReadEntities(List<SyncRequestTask> tasks) {
-            if (_readTasks == null || _readTasks.Count == 0)
-                return;
-
-            foreach (var read in _readTasks) {
-                List<References> references = null;
-                if (read.relations.subRelations.Count > 0) {
-                    references = new List<References>(_readTasks.Count);
-                    AddReferences(references, read.relations.subRelations);
-                }
-                var ids = new List<JsonKey>(read.result.Keys.Count);
-                foreach (var key in read.result.Keys) {
-                    var id = KeyConvert.KeyToId(key);
-                    ids.Add(id);
-                }
-                var readList = new ReadEntities {
-                    container   = set.name,
-                    keyName     = SyncKeyName(set.GetKeyName()),
-                    isIntKey    = IsIntKey(set.IsIntKey()),
-                    ids         = ids,
-                    references  = references
-                };
-                tasks.Add(readList);
+        internal SyncRequestTask ReadEntities(ReadTask<TKey,T> read) {
+            List<References> references = null;
+            if (read.relations.subRelations.Count > 0) {
+                references = new List<References>(read.relations.subRelations.Count);
+                AddReferences(references, read.relations.subRelations);
             }
+            var ids = new List<JsonKey>(read.result.Keys.Count);
+            foreach (var key in read.result.Keys) {
+                var id = KeyConvert.KeyToId(key);
+                ids.Add(id);
+            }
+            return new ReadEntities {
+                container   = set.name,
+                keyName     = SyncKeyName(set.GetKeyName()),
+                isIntKey    = IsIntKey(set.IsIntKey()),
+                ids         = ids,
+                references  = references,
+                syncTask    = read
+            };
         }
 
         private void QueryEntities(List<SyncRequestTask> tasks) {
@@ -604,20 +600,9 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         }
 
         internal void SetTaskInfo(ref SetInfo info) {
-            info.tasks =
-                (_reserveKeys   != null ? 1 : 0) +
-                SetInfo.Count(_readTasks)       +
-                SetInfo.Count(_queryTasks)     +
-                SetInfo.Count(_aggregateTasks)  +
-                SetInfo.Count(_closeCursors)+
-                SetInfo.Count(_createTasks) +  SetInfo.Any  (_autos) +
-                SetInfo.Count(_upsertTasks) +
-                SetInfo.Any  (_patches)     +
-                SetInfo.Count(_deleteTasks) +
-                (_deleteTaskAll   != null ? 1 : 0) +
-                (subscribeChanges != null ? 1 : 0);
-            //
-            info.read           = SetInfo.Count(_readTasks);
+            foreach (var syncTask in tasks) {
+                if (syncTask is ReadTask<TKey,T>) info.read++; break;
+            }
             info.query          = SetInfo.Count(_queryTasks);
             info.aggregate      = SetInfo.Count(_aggregateTasks);
             info.closeCursors   = SetInfo.Count(_closeCursors);
@@ -625,7 +610,19 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             info.upsert         = SetInfo.Count(_upsertTasks);
             info.patch          = SetInfo.Count(_patches);
             info.delete         = SetInfo.Count(_deleteTasks);
-            // info.readRefs    = readRefsMap.Count;
+            
+            info.tasks =
+                (_reserveKeys   != null ? 1 : 0)    +
+                info.read                           +
+                SetInfo.Count(_queryTasks)          +
+                SetInfo.Count(_aggregateTasks)      +
+                SetInfo.Count(_closeCursors)        +
+                SetInfo.Count(_createTasks)         +  SetInfo.Any  (_autos) +
+                SetInfo.Count(_upsertTasks)         +
+                SetInfo.Any  (_patches)             +
+                SetInfo.Count(_deleteTasks)         +
+                (_deleteTaskAll   != null ? 1 : 0)  +
+                (subscribeChanges != null ? 1 : 0);
         }
     }
 }

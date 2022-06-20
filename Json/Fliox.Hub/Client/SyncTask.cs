@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using Friflo.Json.Fliox.Hub.Client.Internal;
+using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using static System.Diagnostics.DebuggerBrowsableState;
 
 namespace Friflo.Json.Fliox.Hub.Client
@@ -55,7 +56,9 @@ namespace Friflo.Json.Fliox.Hub.Client
         }  
     }
     
-    public abstract class SyncTask : SyncFunction { }
+    public abstract class SyncTask : SyncFunction {
+        internal virtual SyncRequestTask CreateRequestTask() => null; // todo make abstract after SyncSet refactoring
+    }
     
     public static class SyncTaskExtension
     {
