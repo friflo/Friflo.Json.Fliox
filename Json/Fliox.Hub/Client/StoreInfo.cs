@@ -24,22 +24,24 @@ namespace Friflo.Json.Fliox.Hub.Client
         public  int     query;
         public  int     aggregate;
         public  int     closeCursors;
+        public  int     subscribeChanges;
         public  int     patch;
         public  int     delete;
 
         internal SetInfo(string name) {
-            Name        = name;
-            peers       = 0;
-            tasks       = 0;
+            Name            = name;
+            peers           = 0;
+            tasks           = 0;
             //
-            create      = 0;
-            upsert      = 0;
-            read        = 0;
-            query       = 0;
-            aggregate   = 0;
-            closeCursors= 0;
-            patch       = 0;
-            delete      = 0;
+            create          = 0;
+            upsert          = 0;
+            read            = 0;
+            query           = 0;
+            aggregate       = 0;
+            closeCursors    = 0;
+            subscribeChanges= 0;
+            patch           = 0;
+            delete          = 0;
         }
         
         internal static void  AppendName(StringBuilder sb, string name) {

@@ -419,6 +419,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         }
         
         internal override void SubscribeChangesResult (SubscribeChanges task, SyncTaskResult result) {
+            var subscribeChanges   = (SubscribeChangesTask<T>)task.syncTask;
             if (result is TaskErrorResult taskError) {
                 subscribeChanges.state.SetError(new TaskErrorInfo(taskError));
                 return;

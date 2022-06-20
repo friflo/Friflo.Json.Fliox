@@ -22,7 +22,9 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         internal abstract void AddUpsert (Peer<T> peer);
         internal abstract void AddCreate (Peer<T> peer);
         internal abstract void AddEntityPatches(PatchTask<T> patchTask, ICollection<T> entities);
-        internal abstract QueryEntities   QueryEntities   (QueryTask<T> query);
+        
+        internal abstract QueryEntities     QueryEntities   (QueryTask<T> query);
+        internal abstract SubscribeChanges  SubscribeChanges(SubscribeChangesTask<T> sub);
     }
 
     /// Multiple instances of this class can be created when calling <see cref="FlioxClient.SyncTasks"/> without
@@ -79,7 +81,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
 
     //  private     List<CloseCursorsTask>          CloseCursors()  =>_closeCursors ?? (_closeCursors= new List<CloseCursorsTask>());
 
-        private     SubscribeChangesTask<T>         subscribeChanges;
+    //  private     SubscribeChangesTask<T>         subscribeChanges;
 
         private     HashSet<T>                      Autos()         => _autos       ?? (_autos       = new HashSet<T>(EntityEqualityComparer<T>.Instance));
 
@@ -153,10 +155,10 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
 
         // --- SubscribeChanges
         internal SubscribeChangesTask<T> SubscribeChangesFilter(Change change, FilterOperation filter) {
-            if (subscribeChanges == null)
-                subscribeChanges = new SubscribeChangesTask<T>();
+            var subscribeChanges = new SubscribeChangesTask<T>(this);
             var changes = ChangeFlags.ToList(change);
             subscribeChanges.Set(changes, filter);
+            tasks.Add(subscribeChanges);
             return subscribeChanges;
         }
 
@@ -296,7 +298,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         //  ReadEntities        (tasks);
         //  QueryEntities       (tasks);
         //  AggregateEntities   (tasks);
-            SubscribeChanges    (tasks);
+        //  SubscribeChanges    (tasks);
         }
 
 
@@ -548,17 +550,14 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             tasks.Add(req);
         }
 
-        private void SubscribeChanges(List<SyncRequestTask> tasks) {
-            var sub = subscribeChanges;
-            if (sub == null)
-                return;
+        internal override SubscribeChanges SubscribeChanges(SubscribeChangesTask<T> sub) {
             var filterJson = FilterToJson(sub.filter);
-            var req = new SubscribeChanges {
+            return new SubscribeChanges {
                 container   = set.name,
                 filter      = filterJson,
-                changes     = sub.changes
+                changes     = sub.changes,
+                syncTask    = sub 
             };
-            tasks.Add(req);
         }
 
         // ----------------------------------- helper methods -----------------------------------
@@ -587,10 +586,11 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
 
         internal void SetTaskInfo(ref SetInfo info) {
             foreach (var syncTask in tasks) {
-                if (syncTask is ReadTask<TKey,T>)   { info.read++;          continue; }
-                if (syncTask is QueryTask<T>)       { info.query++;         continue; }
-                if (syncTask is AggregateTask)      { info.aggregate++;     continue; }
-                if (syncTask is CloseCursorsTask)   { info.closeCursors++;  continue; }
+                if (syncTask is ReadTask<TKey,T>)       { info.read++;              continue; }
+                if (syncTask is QueryTask<T>)           { info.query++;             continue; }
+                if (syncTask is AggregateTask)          { info.aggregate++;         continue; }
+                if (syncTask is CloseCursorsTask)       { info.closeCursors++;      continue; }
+                if (syncTask is SubscribeChangesTask<T>){ info.subscribeChanges++;  continue; }
             }
             info.create         = SetInfo.Count(_createTasks) + SetInfo.Count(_autos);
             info.upsert         = SetInfo.Count(_upsertTasks);
@@ -608,7 +608,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 SetInfo.Any  (_patches)             +
                 SetInfo.Count(_deleteTasks)         +
                 (_deleteTaskAll   != null ? 1 : 0)  +
-                (subscribeChanges != null ? 1 : 0);
+                info.subscribeChanges;
         }
     }
 }

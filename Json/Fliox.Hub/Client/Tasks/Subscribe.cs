@@ -19,16 +19,24 @@ namespace Friflo.Json.Fliox.Hub.Client
         internal            List<Change>    changes;
         internal            FilterOperation filter;
         private             string          filterLinq; // use as string identifier of a filter
+        [DebuggerBrowsable(Never)]
+        private readonly    SyncSetBase<T>  syncSet;
             
         internal override   TaskState       State   => state;
         public   override   string          Details => $"SubscribeChangesTask<{typeof(T).Name}> (filter: {filterLinq})";
         
-        internal  SubscribeChangesTask() { }
+        internal  SubscribeChangesTask(SyncSetBase<T> syncSet) {
+            this.syncSet    = syncSet;
+        }
             
         internal void Set(IEnumerable<Change> changes, FilterOperation filter) {
             this.changes    = changes != null ? changes.ToList() : new List<Change>();
             this.filter     = filter;
             this.filterLinq = filter.Linq;
+        }
+        
+        internal override SyncRequestTask CreateRequestTask() {
+            return syncSet.SubscribeChanges(this);
         }
     }
     
