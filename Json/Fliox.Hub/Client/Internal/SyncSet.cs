@@ -47,8 +47,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
     //  private     List<QueryTask<T>>              _queryTasks;
     //  private     int                             queriesTasksIndex;
 
-        private     List<AggregateTask>             _aggregateTasks;
-        private     int                             aggregatesTasksIndex;
+    //  private     List<AggregateTask>             _aggregateTasks;
+    //  private     int                             aggregatesTasksIndex;
 
         private     List<CloseCursorsTask>          _closeCursors;
         private     int                             closeCursorsIndex;
@@ -75,7 +75,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
 
     //  private     List<QueryTask<T>>              Queries()       => _queryTasks  ?? (_queryTasks = new List<QueryTask<T>>());
 
-        private     List<AggregateTask>             Aggregates()    => _aggregateTasks?? (_aggregateTasks  = new List<AggregateTask>());
+    //  private     List<AggregateTask>             Aggregates()    => _aggregateTasks?? (_aggregateTasks  = new List<AggregateTask>());
 
         private     List<CloseCursorsTask>          CloseCursors()  =>_closeCursors ?? (_closeCursors= new List<CloseCursorsTask>());
 
@@ -147,9 +147,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
 
         // --- Aggregate
         internal CountTask<T> CountFilter(FilterOperation filter) {
-            var aggregates  = Aggregates();
-            var aggregate   = new CountTask<T>(filter);
-            aggregates.Add(aggregate);
+            var aggregate   = new CountTask<T>(filter, this);
+            tasks.Add(aggregate);
             return  aggregate;
         }
 
@@ -297,7 +296,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             // --- read tasks
         //  ReadEntities        (tasks);
         //  QueryEntities       (tasks);
-            AggregateEntities   (tasks);
+        //  AggregateEntities   (tasks);
             SubscribeChanges    (tasks);
         }
 
@@ -428,25 +427,21 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             };
         }
 
-        private void AggregateEntities(List<SyncRequestTask> tasks) {
-            if (_aggregateTasks == null || _aggregateTasks.Count == 0)
-                return;
-            foreach (var aggregate in _aggregateTasks) {
-                var aggregateFilter = aggregate.filter;
-                if (aggregate.filter is Filter filter) {
-                    aggregateFilter = filter.body;
-                }
-                var filterTree  = FilterToJson(aggregateFilter);
-                var req = new AggregateEntities {
-                    container   = set.name,
-                    type        = aggregate.Type,
-                //  keyName     = SyncKeyName(set.GetKeyName()),
-                //  isIntKey    = IsIntKey(set.IsIntKey()),
-                    filterTree  = filterTree,
-                    filter      = aggregate.filterLinq
-                };
-                tasks.Add(req);
+        internal override AggregateEntities AggregateEntities(AggregateTask aggregate) {
+            var aggregateFilter = aggregate.filter;
+            if (aggregate.filter is Filter filter) {
+                aggregateFilter = filter.body;
             }
+            var filterTree  = FilterToJson(aggregateFilter);
+            return new AggregateEntities {
+                container   = set.name,
+                type        = aggregate.Type,
+            //  keyName     = SyncKeyName(set.GetKeyName()),
+            //  isIntKey    = IsIntKey(set.IsIntKey()),
+                filterTree  = filterTree,
+                filter      = aggregate.filterLinq,
+                syncTask    = aggregate 
+            };
         }
         
         private JsonValue FilterToJson(FilterOperation filter) {
@@ -597,10 +592,10 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
 
         internal void SetTaskInfo(ref SetInfo info) {
             foreach (var syncTask in tasks) {
-                if (syncTask is ReadTask<TKey,T>)   { info.read++;  continue; }
-                if (syncTask is QueryTask<T>)       { info.query++; continue; }
+                if (syncTask is ReadTask<TKey,T>)   { info.read++;      continue; }
+                if (syncTask is QueryTask<T>)       { info.query++;     continue; }
+                if (syncTask is AggregateTask)      { info.aggregate++; continue; }
             }
-            info.aggregate      = SetInfo.Count(_aggregateTasks);
             info.closeCursors   = SetInfo.Count(_closeCursors);
             info.create         = SetInfo.Count(_createTasks) + SetInfo.Count(_autos);
             info.upsert         = SetInfo.Count(_upsertTasks);
@@ -611,7 +606,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 (_reserveKeys   != null ? 1 : 0)    +
                 info.read                           +
                 info.query                          +
-                SetInfo.Count(_aggregateTasks)      +
+                info.aggregate                      +
                 SetInfo.Count(_closeCursors)        +
                 SetInfo.Count(_createTasks)         +  SetInfo.Any  (_autos) +
                 SetInfo.Count(_upsertTasks)         +

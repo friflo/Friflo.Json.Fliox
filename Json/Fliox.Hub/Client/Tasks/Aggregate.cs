@@ -22,15 +22,22 @@ namespace Friflo.Json.Fliox.Hub.Client
         internal readonly   FilterOperation filter;
         internal readonly   string          filterLinq; // use as string identifier of a filter 
         internal            double?         result;
+        [DebuggerBrowsable(Never)]
+        private readonly    SyncSet         syncSet;
 
         internal override   TaskState       State       => state;
         public              QueryFormat     DebugQuery  => filter.query;
         
         internal abstract   AggregateType   Type        { get; }
 
-        internal AggregateTask(FilterOperation filter) {
+        internal AggregateTask(FilterOperation filter, SyncSet syncSet) {
             this.filter     = filter;
             this.filterLinq = filter.Linq;
+            this.syncSet    = syncSet;
+        }
+        
+        internal override SyncRequestTask CreateRequestTask() {
+            return syncSet.AggregateEntities(this);
         }
     }
     
@@ -41,8 +48,8 @@ namespace Friflo.Json.Fliox.Hub.Client
         public   override   string          Details => $"CountTask<{typeof(T).Name}> (filter: {filterLinq})";
         internal override   AggregateType   Type    => AggregateType.count;
 
-        internal CountTask(FilterOperation filter)
-            : base(filter)
+        internal CountTask(FilterOperation filter, SyncSet syncSet)
+            : base(filter, syncSet)
         { }
     }
 }
