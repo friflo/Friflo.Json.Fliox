@@ -76,9 +76,8 @@ export class UpsertEntities extends SyncRequestTask {
 
 /**
  * Read entities by id from the specified **container** using given list of **ids**  
- * To return also entities referenced by entities listed in **ids** use
- * **references**.   
- * This mimic the functionality of a **JOIN** in **SQL**
+ * To return also entities referenced by entities listed in **ids** use **references**.   
+ * This mimic the functionality of a **LEFT JOIN** in **SQL**
  */
 export class ReadEntities extends SyncRequestTask {
     /** task type */
