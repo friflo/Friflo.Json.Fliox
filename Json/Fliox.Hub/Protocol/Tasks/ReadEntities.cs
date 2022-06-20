@@ -45,32 +45,26 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
                 return error;
 
             var entityContainer = database.GetOrCreateContainer(container);
-            var combinedResult = await entityContainer.ReadEntities(this, syncContext).ConfigureAwait(false);
-            if (combinedResult.Error != null) {
-                return TaskError(combinedResult.Error);
-            }
-            var combinedEntities = combinedResult.entities;
-            combinedResult.entities = null;
-            var containerResult = response.GetContainerResult(container);
-            containerResult.AddEntities(combinedEntities);
+            var readResult      = await entityContainer.ReadEntities(this, syncContext).ConfigureAwait(false);
             
-
-            var readResult  = new ReadEntitiesResult {
-                entities = new Dictionary<JsonKey, EntityValue>(ids.Count, JsonKey.Equality)
-            };
-            // distribute combinedEntities
-            var entities = readResult.entities;
-            foreach (var id in ids) {
-                entities.Add(id, combinedEntities[id]);
+            if (readResult.Error != null) {
+                return TaskError(readResult.Error);
             }
+            var entities = readResult.entities;
+            readResult.entities = null;
+            var containerResult = response.GetContainerResult(container);
+            containerResult.AddEntities(entities);
+
+            var result  = new ReadEntitiesResult { entities = entities };
+
             if (references != null && references.Count > 0) {
                 var readRefResults =
                     await entityContainer.ReadReferences(references, entities, entityContainer.name, "", response, syncContext).ConfigureAwait(false);
                 // returned readRefResults.references is always set. Each references[] item contain either a result or an error.
-                readResult.references = readRefResults.references;
+                result.references = readRefResults.references;
             }
-            readResult.entities = null;
-            return readResult;
+            result.entities = null;
+            return result;
         }
     }
     
