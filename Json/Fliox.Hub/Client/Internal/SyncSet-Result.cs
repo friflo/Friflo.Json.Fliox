@@ -224,13 +224,13 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 return;
             }
             read.state.Executed = true;
-            AddReferencesResult(task.references, result.references, read.refsTask.subRefs);
+            AddReferencesResult(task.references, result.references, read.relations.subRelations);
         }
 
         private static void SetReadTaskError(ReadTask<TKey, T> read, TaskErrorResult taskError) {
             TaskErrorInfo error = new TaskErrorInfo(taskError);
             read.state.SetError(error);
-            SetSubRefsError(read.refsTask.subRefs, error);
+            SetSubRelationsError(read.relations.subRelations, error);
             foreach (var findTask in read.findTasks) {
                 findTask.findState.SetError(error);
             }
@@ -249,7 +249,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             if (result is TaskErrorResult taskError) {
                 var taskErrorInfo = new TaskErrorInfo(taskError);
                 query.state.SetError(taskErrorInfo);
-                SetSubRefsError(query.refsTask.subRefs, taskErrorInfo);
+                SetSubRelationsError(query.relations.subRelations, taskErrorInfo);
                 return;
             }
             var queryResult     = (QueryEntitiesResult)result;
@@ -275,14 +275,14 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             }
             if (entityErrorInfo.HasErrors) {
                 query.state.SetError(entityErrorInfo);
-                SetSubRefsError(query.refsTask.subRefs, entityErrorInfo);
+                SetSubRelationsError(query.relations.subRelations, entityErrorInfo);
                 return;
             }
-            AddReferencesResult(task.references, queryResult.references, query.refsTask.subRefs);
+            AddReferencesResult(task.references, queryResult.references, query.relations.subRelations);
             query.state.Executed = true;
         }
 
-        private void AddReferencesResult(List<References> references, List<ReferencesResult> referencesResult, SubRefs refs) {
+        private void AddReferencesResult(List<References> references, List<ReferencesResult> referencesResult, SubRelations relations) {
             // in case (references != null &&  referencesResult == null) => no reference ids found for references 
             if (references == null || referencesResult == null)
                 return;
@@ -290,7 +290,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 References              reference    = references[n];
                 ReferencesResult        refResult    = referencesResult[n];
                 EntitySet               refContainer = set.intern.store._intern.GetSetByName(reference.container);
-                ReadRelationsFunction   subRelation  = refs[reference.selector];
+                ReadRelationsFunction   subRelation  = relations[reference.selector];
                 if (refResult.error != null) {
                     var taskError       = new TaskErrorResult (TaskErrorResultType.DatabaseError, refResult.error);
                     var taskErrorInfo   = new TaskErrorInfo (taskError);
@@ -303,22 +303,22 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 if (subRefError.HasErrors) {
                     if (subRefError.TaskError.type != TaskErrorType.EntityErrors)
                         throw new InvalidOperationException("Expect subRef Error.type == EntityErrors");
-                    SetSubRefsError(subRelation.SubRefs, subRefError);
+                    SetSubRelationsError(subRelation.SubRelations, subRefError);
                     continue;
                 }
                 subRelation.state.Executed = true;
                 var subReferences = reference.references;
                 if (subReferences != null) {
-                    var readRefs = subRelation.SubRefs;
+                    var readRefs = subRelation.SubRelations;
                     AddReferencesResult(subReferences, refResult.references, readRefs);
                 }
             }
         }
 
-        private static void SetSubRefsError(SubRefs refs, TaskErrorInfo taskErrorInfo) {
-            foreach (var subRef in refs) {
+        private static void SetSubRelationsError(SubRelations relations, TaskErrorInfo taskErrorInfo) {
+            foreach (var subRef in relations) {
                 subRef.state.SetError(taskErrorInfo);
-                SetSubRefsError(subRef.SubRefs, taskErrorInfo);
+                SetSubRelationsError(subRef.SubRelations, taskErrorInfo);
             }
         }
         

@@ -7,14 +7,14 @@ using System.Linq.Expressions;
 
 namespace Friflo.Json.Fliox.Hub.Client.Internal
 {
-    internal struct RefsTask
+    internal struct Relations
     {
         private  readonly   SyncFunction    task;
-        internal            SubRefs         subRefs;
+        internal            SubRelations    subRelations;
 
-        internal RefsTask(SyncFunction task) {
+        internal Relations(SyncFunction task) {
             this.task       = task ?? throw new InvalidOperationException("Expect task not null");
-            this.subRefs    = new SubRefs();
+            this.subRelations    = new SubRelations();
         }
 
         internal ReadRelations<TRef> ReadRelationsByExpression<TRef>(EntitySet relation, Expression expression, FlioxClient store) where TRef : class {
@@ -23,19 +23,19 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         }
         
         internal ReadRelations<TRef> ReadRelationsByPath<TRef>(EntitySet relation, string selector, FlioxClient store) where TRef : class {
-            if (subRefs.TryGetTask(selector, out ReadRelationsFunction subRelationsTask))
-                return (ReadRelations<TRef>)subRelationsTask;
+            if (subRelations.TryGetTask(selector, out ReadRelationsFunction readRelationsFunction))
+                return (ReadRelations<TRef>)readRelationsFunction;
             // var relation = store._intern.GetSetByType(typeof(TValue));
             var keyName         = relation.GetKeyName();
             var isIntKey        = relation.IsIntKey();
             var readRelations   = new ReadRelations<TRef>(task, selector, relation.name, keyName, isIntKey, store);
-            subRefs.AddReadRelations(selector, readRelations);
+            subRelations.AddReadRelations(selector, readRelations);
             store.AddFunction(readRelations);
             return readRelations;
         }
     }
     
-    internal struct SubRefs // : IEnumerable <BinaryPair>   <- not implemented to avoid boxing
+    internal struct SubRelations // : IEnumerable <BinaryPair>   <- not implemented to avoid boxing
     {
         /// key: <see cref="ReadRelationsFunction.Selector"/>
         private     Dictionary<string, ReadRelationsFunction>   map; // map == null if no tasks added

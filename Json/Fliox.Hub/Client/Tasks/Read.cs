@@ -126,7 +126,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         [DebuggerBrowsable(Never)]
         internal            TaskState               state;
         private  readonly   EntitySet<TKey, T>      set;
-        internal            RefsTask                refsTask;
+        internal            Relations               relations;
         internal readonly   Dictionary<TKey, T>     result      = SyncSet.CreateDictionary<TKey,T>();
         internal readonly   List<FindFunction<TKey, T>> findTasks   = new List<FindFunction<TKey, T>>();
 
@@ -137,7 +137,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         
 
         internal ReadTask(EntitySet<TKey, T> set) {
-            refsTask    = new RefsTask(this);
+            relations   = new Relations(this);
             this.set    = set;
         }
 
@@ -193,27 +193,27 @@ namespace Friflo.Json.Fliox.Hub.Client
         // --- IReadRelationsTask<T>
         public ReadRelations<TRef> ReadRelations<TRefKey, TRef>(EntitySet<TRefKey, TRef> relation, Expression<Func<T, TRefKey>> selector) where TRef : class {
             if (State.IsExecuted()) throw AlreadySyncedError();
-            return refsTask.ReadRelationsByExpression<TRef>(relation, selector, set.intern.store);
+            return relations.ReadRelationsByExpression<TRef>(relation, selector, set.intern.store);
         }
         
         public ReadRelations<TRef> ReadRelations<TRefKey, TRef>(EntitySet<TRefKey, TRef> relation, Expression<Func<T, TRefKey?>> selector) where TRef : class where TRefKey : struct {
             if (State.IsExecuted()) throw AlreadySyncedError();
-            return refsTask.ReadRelationsByExpression<TRef>(relation, selector, set.intern.store);
+            return relations.ReadRelationsByExpression<TRef>(relation, selector, set.intern.store);
         }
        
         public ReadRelations<TRef> ReadRelations<TRefKey, TRef>(EntitySet<TRefKey, TRef> relation, Expression<Func<T, IEnumerable<TRefKey>>> selector) where TRef : class {
             if (State.IsExecuted()) throw AlreadySyncedError();
-            return refsTask.ReadRelationsByExpression<TRef>(relation, selector, set.intern.store);
+            return relations.ReadRelationsByExpression<TRef>(relation, selector, set.intern.store);
         }
         
         public ReadRelations<TRef> ReadRelations<TRefKey, TRef>(EntitySet<TRefKey, TRef> relation, Expression<Func<T, IEnumerable<TRefKey?>>> selector) where TRef : class  where TRefKey : struct {
             if (State.IsExecuted()) throw AlreadySyncedError();
-            return refsTask.ReadRelationsByExpression<TRef>(relation, selector, set.intern.store);
+            return relations.ReadRelationsByExpression<TRef>(relation, selector, set.intern.store);
         }
         
         public ReadRelations<TRef> ReadRelations<TRefKey, TRef>(EntitySet<TRefKey, TRef> relation, RelationsPath<TRef> selector) where TRef : class {
             if (State.IsExecuted()) throw AlreadySyncedError();
-            return refsTask.ReadRelationsByPath<TRef>(relation, selector.path, set.intern.store);
+            return relations.ReadRelationsByPath<TRef>(relation, selector.path, set.intern.store);
         }
 
 
@@ -230,13 +230,13 @@ namespace Friflo.Json.Fliox.Hub.Client
         } */
         
         private ReadRelation<TRef> ReadRefByPath<TRef>(EntitySet relation, string path) where TRef : class {
-            if (refsTask.subRefs.TryGetTask(path, out ReadRelationsFunction subRelationsTask))
-                return (ReadRelation<TRef>)subRelationsTask;
+            if (relations.subRelations.TryGetTask(path, out ReadRelationsFunction readRelationsFunction))
+                return (ReadRelation<TRef>)readRelationsFunction;
             // var relation = set.intern.store._intern.GetSetByType(typeof(TRef));
             var keyName         = relation.GetKeyName();
             var isIntKey        = relation.IsIntKey();
             var readRelation    = new ReadRelation<TRef>(this, path, relation.name, keyName, isIntKey, set.intern.store);
-            refsTask.subRefs.AddReadRelations(path, readRelation);
+            relations.subRelations.AddReadRelations(path, readRelation);
             set.intern.store.AddFunction(readRelation);
             return readRelation;
         }

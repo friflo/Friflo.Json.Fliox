@@ -27,12 +27,12 @@ namespace Friflo.Json.Fliox.Hub.Client
         internal  override  string      KeyName     { get; }
         internal  override  bool        IsIntKey    { get; }
 
-        internal override   SubRefs     SubRefs => refsTask.subRefs;
+        internal override   SubRelations SubRelations => relations.subRelations;
 
         internal ReadRelation(SyncTask parent, string selector, string container, string keyName, bool isIntKey, FlioxClient store)
             : base(store)
         {
-            refsTask        = new RefsTask(this);
+            relations       = new Relations(this);
             this.parent     = parent;
             this.Selector   = selector;
             this.Container  = container;

@@ -390,9 +390,9 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             };
             foreach (var read in _readTasks) {
                 List<References> references = null;
-                if (read.refsTask.subRefs.Count > 0) {
+                if (read.relations.subRelations.Count > 0) {
                     references = new List<References>(_readTasks.Count);
-                    AddReferences(references, read.refsTask.subRefs);
+                    AddReferences(references, read.relations.subRelations);
                 }
                 var ids = Helper.CreateHashSet(read.result.Keys.Count, JsonKey.Equality);
                 foreach (var key in read.result.Keys) {
@@ -412,11 +412,11 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             if (_queryTasks == null || _queryTasks.Count == 0)
                 return;
             foreach (var query in _queryTasks) {
-                var subRefs = query.refsTask.subRefs;
+                var subRelations = query.relations.subRelations;
                 List<References> references = null;
-                if (subRefs.Count > 0) {
-                    references = new List<References>(subRefs.Count);
-                    AddReferences(references, subRefs);
+                if (subRelations.Count > 0) {
+                    references = new List<References>(subRelations.Count);
+                    AddReferences(references, subRelations);
                 }
                 var queryFilter = query.filter;
                 if (query.filter is Filter filter) {
@@ -582,8 +582,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         }
 
         // ----------------------------------- helper methods -----------------------------------
-        private static void AddReferences(List<References> references, SubRefs refs) {
-            foreach (var readRefs in refs) {
+        private static void AddReferences(List<References> references, SubRelations relations) {
+            foreach (var readRefs in relations) {
                 var queryReference = new References {
                     container   = readRefs.Container,
                     keyName     = SyncKeyName(readRefs.KeyName),
@@ -591,7 +591,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                     selector    = readRefs.Selector
                 };
                 references.Add(queryReference);
-                var subRefsMap = readRefs.SubRefs;
+                var subRefsMap = readRefs.SubRelations;
                 if (subRefsMap.Count > 0) {
                     queryReference.references = new List<References>(subRefsMap.Count);
                     AddReferences(queryReference.references, subRefsMap);
