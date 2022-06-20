@@ -106,7 +106,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             AreEqual(11, store.StoreInfo.peers);
             AreEqual(7,  store.StoreInfo.tasks); 
             AreSimilar("entities: 11, tasks: 7 [container: 7]",                     store);
-            AreSimilar("articles:  7, tasks: 6 [create: 2, upsert: 3, reads: 1]",   articles);
+            AreSimilar("articles:  7, tasks: 6 [create: 2, upsert: 3, read: 1]",    articles);
             AreSimilar("producers: 3, tasks: 1 [create: 1]",                        producers);
             AreSimilar("employees: 1",                                              employees);
             
@@ -164,7 +164,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             var readArticles2   = articles.Read();
             var cameraNotSynced = readArticles2.Find("article-1");
             AreSimilar("entities: 9, tasks: 1 [container: 1]",  store);
-            AreSimilar("articles: 5, tasks: 1 [reads: 1]",      articles);
+            AreSimilar("articles: 5, tasks: 1 [read: 1]",       articles);
             
             var e = Throws<TaskNotSyncedException>(() => { var _ = cameraNotSynced.Result; });
             AreSimilar("Find.Result requires SyncTasks(). Find<Article> (id: 'article-1')", e.Message);
@@ -192,12 +192,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             AreSimilar("entities: 13, tasks: 5 [container: 5]",         store);
             AreSimilar("orders:    1, tasks: 1 [upsert: 1]",            orders);     // created order
             
-            AreSimilar("articles:  6, tasks: 2 [create: 1, reads: 1]",  articles);
+            AreSimilar("articles:  6, tasks: 2 [create: 1, read: 1]",   articles);
             AreSimilar("customers: 1, tasks: 1 [create: 1]",            customers);
             var orderPatches = orders.DetectPatches();
             AreEqual(0, orderPatches.Patches.Count);
             AreSimilar("entities: 13, tasks: 5 [container: 5]",         store);
-            AreSimilar("articles:  6, tasks: 2 [create: 1, reads: 1]",  articles);
+            AreSimilar("articles:  6, tasks: 2 [create: 1, read: 1]",   articles);
             AreSimilar("customers: 1, tasks: 1 [create: 1]" ,           customers);
             
             AreSimilar("entities: 13, tasks: 5 [container: 5]",         store);

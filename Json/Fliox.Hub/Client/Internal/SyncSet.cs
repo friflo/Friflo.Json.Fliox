@@ -617,9 +617,9 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 (_deleteTaskAll   != null ? 1 : 0) +
                 (subscribeChanges != null ? 1 : 0);
             //
-            info.reads          = SetInfo.Count(_readTasks);
-            info.queries        = SetInfo.Count(_queryTasks);
-            info.aggregates     = SetInfo.Count(_aggregateTasks);
+            info.read           = SetInfo.Count(_readTasks);
+            info.query          = SetInfo.Count(_queryTasks);
+            info.aggregate      = SetInfo.Count(_aggregateTasks);
             info.closeCursors   = SetInfo.Count(_closeCursors);
             info.create         = SetInfo.Count(_createTasks) + SetInfo.Count(_autos);
             info.upsert         = SetInfo.Count(_upsertTasks);
