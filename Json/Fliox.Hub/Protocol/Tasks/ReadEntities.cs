@@ -55,15 +55,13 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
             var containerResult = response.GetContainerResult(container);
             containerResult.AddEntities(entities);
 
-            var result  = new ReadEntitiesResult { entities = entities };
-
+            var result  = new ReadEntitiesResult ();
             if (references != null && references.Count > 0) {
                 var readRefResults =
                     await entityContainer.ReadReferences(references, entities, entityContainer.name, "", response, syncContext).ConfigureAwait(false);
                 // returned readRefResults.references is always set. Each references[] item contain either a result or an error.
                 result.references = readRefResults.references;
             }
-            result.entities = null;
             return result;
         }
     }
