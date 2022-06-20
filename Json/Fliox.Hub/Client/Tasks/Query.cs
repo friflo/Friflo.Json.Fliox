@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.Linq.Expressions;
 using Friflo.Json.Fliox.Hub.Client.Internal;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
+using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Transform;
 using static System.Diagnostics.DebuggerBrowsableState;
 
@@ -40,6 +41,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         internal            Dictionary<JsonKey, EntityValue>    entities;
         internal            string          resultCursor;
         private  readonly   FlioxClient     store;
+        private  readonly   SyncSetBase<T>  syncSet;
 
         public              List<T>         Result          => IsOk("QueryTask.Result",   out Exception e) ? result : throw e;
         public              List<JsonValue> RawResult       => IsOk("QueryTask.RawResult",out Exception e) ? GetRawValues() : throw e;
@@ -53,11 +55,12 @@ namespace Friflo.Json.Fliox.Hub.Client
         public              QueryFormat     DebugQuery      => filter.query;
         
 
-        internal QueryTask(FilterOperation filter, FlioxClient store) {
+        internal QueryTask(FilterOperation filter, FlioxClient store, SyncSetBase<T> syncSet) {
             relations       = new Relations(this);
             this.filter     = filter;
             this.filterLinq = filter.Linq;
             this.store      = store;
+            this.syncSet    = syncSet;
         }
 
         private List<JsonValue> GetRawValues() {
@@ -67,6 +70,10 @@ namespace Friflo.Json.Fliox.Hub.Client
                 jsonResult.Add(entity.Json);
             }
             return jsonResult;
+        }
+        
+        internal override SyncRequestTask CreateRequestTask() {
+            return syncSet.QueryEntities(this);
         }
         
         // --- IReadRelationsTask<T>

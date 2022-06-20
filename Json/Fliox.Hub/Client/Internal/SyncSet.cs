@@ -22,6 +22,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         internal abstract void AddUpsert (Peer<T> peer);
         internal abstract void AddCreate (Peer<T> peer);
         internal abstract void AddEntityPatches(PatchTask<T> patchTask, ICollection<T> entities);
+        internal abstract QueryEntities   QueryEntities   (QueryTask<T> query);
     }
 
     /// Multiple instances of this class can be created when calling <see cref="FlioxClient.SyncTasks"/> without
@@ -43,8 +44,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
     //  private     List<ReadTask<TKey, T>>         _readTasks;
     //  private     int                             readTasksIndex;
 
-        private     List<QueryTask<T>>              _queryTasks;
-        private     int                             queriesTasksIndex;
+    //  private     List<QueryTask<T>>              _queryTasks;
+    //  private     int                             queriesTasksIndex;
 
         private     List<AggregateTask>             _aggregateTasks;
         private     int                             aggregatesTasksIndex;
@@ -72,7 +73,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         // --- lazy-initialized getters => they behave like readonly fields
     //  private     List<ReadTask<TKey, T>>         Reads()         => _readTasks   ?? (_readTasks  = new List<ReadTask<TKey, T>>());
 
-        private     List<QueryTask<T>>              Queries()       => _queryTasks  ?? (_queryTasks = new List<QueryTask<T>>());
+    //  private     List<QueryTask<T>>              Queries()       => _queryTasks  ?? (_queryTasks = new List<QueryTask<T>>());
 
         private     List<AggregateTask>             Aggregates()    => _aggregateTasks?? (_aggregateTasks  = new List<AggregateTask>());
 
@@ -132,9 +133,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
 
         // --- Query
         internal QueryTask<T> QueryFilter(FilterOperation filter) {
-            var queries = Queries();
-            var query   = new QueryTask<T>(filter, set.intern.store);
-            queries.Add(query);
+            var query = new QueryTask<T>(filter, set.intern.store, this);
+            tasks.Add(query);
             return query;
         }
 
@@ -296,7 +296,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             DeleteAll           (tasks);
             // --- read tasks
         //  ReadEntities        (tasks);
-            QueryEntities       (tasks);
+        //  QueryEntities       (tasks);
             AggregateEntities   (tasks);
             SubscribeChanges    (tasks);
         }
@@ -402,34 +402,30 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             };
         }
 
-        private void QueryEntities(List<SyncRequestTask> tasks) {
-            if (_queryTasks == null || _queryTasks.Count == 0)
-                return;
-            foreach (var query in _queryTasks) {
-                var subRelations = query.relations.subRelations;
-                List<References> references = null;
-                if (subRelations.Count > 0) {
-                    references = new List<References>(subRelations.Count);
-                    AddReferences(references, subRelations);
-                }
-                var queryFilter = query.filter;
-                if (query.filter is Filter filter) {
-                    queryFilter = filter.body;
-                }
-                var filterTree  = FilterToJson(queryFilter);
-                var req = new QueryEntities {
-                    container   = set.name,
-                    keyName     = SyncKeyName(set.GetKeyName()),
-                    isIntKey    = IsIntKey(set.IsIntKey()),
-                    filterTree  = filterTree,
-                    filter      = query.filterLinq,
-                    references  = references,
-                    limit       = query.limit,
-                    maxCount    = query.maxCount,
-                    cursor      = query.cursor
-                };
-                tasks.Add(req);
+        internal override QueryEntities QueryEntities(QueryTask<T> query) {
+            var subRelations = query.relations.subRelations;
+            List<References> references = null;
+            if (subRelations.Count > 0) {
+                references = new List<References>(subRelations.Count);
+                AddReferences(references, subRelations);
             }
+            var queryFilter = query.filter;
+            if (query.filter is Filter filter) {
+                queryFilter = filter.body;
+            }
+            var filterTree  = FilterToJson(queryFilter);
+            return new QueryEntities {
+                container   = set.name,
+                keyName     = SyncKeyName(set.GetKeyName()),
+                isIntKey    = IsIntKey(set.IsIntKey()),
+                filterTree  = filterTree,
+                filter      = query.filterLinq,
+                references  = references,
+                limit       = query.limit,
+                maxCount    = query.maxCount,
+                cursor      = query.cursor,
+                syncTask    = query 
+            };
         }
 
         private void AggregateEntities(List<SyncRequestTask> tasks) {
@@ -601,9 +597,9 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
 
         internal void SetTaskInfo(ref SetInfo info) {
             foreach (var syncTask in tasks) {
-                if (syncTask is ReadTask<TKey,T>) info.read++; break;
+                if (syncTask is ReadTask<TKey,T>)   { info.read++;  continue; }
+                if (syncTask is QueryTask<T>)       { info.query++; continue; }
             }
-            info.query          = SetInfo.Count(_queryTasks);
             info.aggregate      = SetInfo.Count(_aggregateTasks);
             info.closeCursors   = SetInfo.Count(_closeCursors);
             info.create         = SetInfo.Count(_createTasks) + SetInfo.Count(_autos);
@@ -614,7 +610,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             info.tasks =
                 (_reserveKeys   != null ? 1 : 0)    +
                 info.read                           +
-                SetInfo.Count(_queryTasks)          +
+                info.query                          +
                 SetInfo.Count(_aggregateTasks)      +
                 SetInfo.Count(_closeCursors)        +
                 SetInfo.Count(_createTasks)         +  SetInfo.Any  (_autos) +
