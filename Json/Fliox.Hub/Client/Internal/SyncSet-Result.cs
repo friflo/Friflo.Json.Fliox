@@ -172,10 +172,10 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 return;
             }
             var readResult = (ReadEntitiesResult) result;
-            ReadEntitiesSetResult(task, readResult, readTask, readEntities);
+            ReadEntitiesResult(task, readResult, readTask, readEntities);
         }
 
-        private void ReadEntitiesSetResult(ReadEntities task, ReadEntitiesResult result, ReadTask<TKey, T> read, ContainerEntities readEntities) {
+        private void ReadEntitiesResult(ReadEntities task, ReadEntitiesResult result, ReadTask<TKey, T> read, ContainerEntities readEntities) {
             if (result.Error != null) {
                 var taskError = SyncRequestTask.TaskError(result.Error);
                 SetReadTaskError(read, taskError);

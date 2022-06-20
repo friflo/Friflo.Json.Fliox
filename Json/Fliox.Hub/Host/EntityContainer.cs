@@ -119,7 +119,7 @@ namespace Friflo.Json.Fliox.Hub.Host
                 foreach (var entity in entities) {
                     var key = entity.Key;
                     if (!idSet.Contains(key))
-                        throw new InvalidOperationException($"PatchEntities: Unexpected key in ReadEntitiesSet response: key: {key}");
+                        throw new InvalidOperationException($"PatchEntities: Unexpected key in ReadEntities response: key: {key}");
                     var patch = entityPatches[key];
                     var value = entity.Value;
                     var error = value.Error; 
@@ -319,7 +319,7 @@ namespace Friflo.Json.Fliox.Hub.Host
                 var readRefIds  = new ReadEntities { ids = refIdList, keyName = reference.keyName, isIntKey = reference.isIntKey};
                 var refEntities = await refCont.ReadEntities(readRefIds, syncContext).ConfigureAwait(false);
                 var subPath = $"{selectorPath} -> {reference.selector}";
-                // In case of ReadEntitiesSet error: Assign error to result and continue with other references.
+                // In case of ReadEntities error: Assign error to result and continue with other references.
                 // Resolving other references are independent may be successful.
                 if (refEntities.Error != null) {
                     var message = $"read references failed: '{container}{subPath}' - {refEntities.Error.message}";
