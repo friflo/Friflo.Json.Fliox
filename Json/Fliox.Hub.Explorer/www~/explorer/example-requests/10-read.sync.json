@@ -4,12 +4,8 @@
     {
       "task":       "read",
       "container":  "articles",
-      "sets": [
-        {
-            "ids": [
-                "article-galaxy"
-            ]
-        }
+      "ids": [
+        "article-galaxy"
       ]
     }
   ],

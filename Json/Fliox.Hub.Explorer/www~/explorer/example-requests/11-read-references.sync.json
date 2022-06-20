@@ -4,15 +4,11 @@
     {
       "task":       "read",
       "container":  "orders",
-      "sets": [
+      "ids":        ["order-1"],
+      "references": [
         {
-          "ids": ["order-1"],
-          "references": [
-            {
-              "selector": ".customer",
-              "container": "customers"
-            }
-          ]
+          "selector": ".customer",
+          "container": "customers"
         }
       ]
     }

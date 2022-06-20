@@ -12,23 +12,17 @@ var exampleSync: ProtocolMessage_Union =
         },
         {
             "task":         "read",
-            "container":    "Article",
-            "sets": [
-                { "ids": ["article-galaxy", "article-ipad"] }
-            ]
+            "container":    "Article",            
+            "ids": ["article-galaxy", "article-ipad"]            
         },
         {
             "task":         "read",
             "container":    "Order",
-            "sets": [
+            "ids": ["order-1"],
+            "references": [
                 {
-                    "ids": ["order-1"],
-                    "references": [
-                        {
-                            "selector": ".customer",
-                            "container": "Customer"
-                        }
-                    ]
+                    "selector": ".customer",
+                    "container": "Customer"
                 }
             ]
         },
