@@ -50,8 +50,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
     //  private     List<AggregateTask>             _aggregateTasks;
     //  private     int                             aggregatesTasksIndex;
 
-        private     List<CloseCursorsTask>          _closeCursors;
-        private     int                             closeCursorsIndex;
+    //  private     List<CloseCursorsTask>          _closeCursors;
+    //  private     int                             closeCursorsIndex;
 
         private     HashSet<T>                      _autos;
 
@@ -77,7 +77,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
 
     //  private     List<AggregateTask>             Aggregates()    => _aggregateTasks?? (_aggregateTasks  = new List<AggregateTask>());
 
-        private     List<CloseCursorsTask>          CloseCursors()  =>_closeCursors ?? (_closeCursors= new List<CloseCursorsTask>());
+    //  private     List<CloseCursorsTask>          CloseCursors()  =>_closeCursors ?? (_closeCursors= new List<CloseCursorsTask>());
 
         private     SubscribeChangesTask<T>         subscribeChanges;
 
@@ -139,9 +139,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         }
 
         internal CloseCursorsTask CloseCursors(IEnumerable<string> cursors) {
-            var closeCursors = CloseCursors();
-            var closeCursor = new CloseCursorsTask(cursors);
-            closeCursors.Add(closeCursor);
+            var closeCursor = new CloseCursorsTask(cursors, this);
+            tasks.Add(closeCursor);
             return closeCursor;
         }
 
@@ -285,7 +284,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
 
         // ----------------------------------- add tasks methods -----------------------------------
         internal override void AddTasks(List<SyncRequestTask> tasks, ObjectMapper mapper) {
-            CloseCursors        (tasks);
+        //  CloseCursors        (tasks);
             ReserveKeys         (tasks);
             // --- mutate tasks
             CreateEntities      (tasks, mapper);
@@ -452,16 +451,12 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             }
         }
 
-        private void CloseCursors(List<SyncRequestTask> tasks) {
-            if (_closeCursors == null || _closeCursors.Count == 0)
-                return;
-            foreach (var closeCursor in _closeCursors) {
-                var req = new CloseCursors {
-                    container   = set.name,
-                    cursors     = closeCursor.cursors
-                };
-                tasks.Add(req);
-            }
+        internal override CloseCursors CloseCursors(CloseCursorsTask closeCursor) {
+            return new CloseCursors {
+                container   = set.name,
+                cursors     = closeCursor.cursors,
+                syncTask    = closeCursor 
+            };
         }
         
         internal override void AddEntityPatches(PatchTask<T> patchTask, ICollection<T> entities) {
@@ -592,11 +587,11 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
 
         internal void SetTaskInfo(ref SetInfo info) {
             foreach (var syncTask in tasks) {
-                if (syncTask is ReadTask<TKey,T>)   { info.read++;      continue; }
-                if (syncTask is QueryTask<T>)       { info.query++;     continue; }
-                if (syncTask is AggregateTask)      { info.aggregate++; continue; }
+                if (syncTask is ReadTask<TKey,T>)   { info.read++;          continue; }
+                if (syncTask is QueryTask<T>)       { info.query++;         continue; }
+                if (syncTask is AggregateTask)      { info.aggregate++;     continue; }
+                if (syncTask is CloseCursorsTask)   { info.closeCursors++;  continue; }
             }
-            info.closeCursors   = SetInfo.Count(_closeCursors);
             info.create         = SetInfo.Count(_createTasks) + SetInfo.Count(_autos);
             info.upsert         = SetInfo.Count(_upsertTasks);
             info.patch          = SetInfo.Count(_patches);
@@ -607,7 +602,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 info.read                           +
                 info.query                          +
                 info.aggregate                      +
-                SetInfo.Count(_closeCursors)        +
+                info.closeCursors                   +
                 SetInfo.Count(_createTasks)         +  SetInfo.Any  (_autos) +
                 SetInfo.Count(_upsertTasks)         +
                 SetInfo.Any  (_patches)             +

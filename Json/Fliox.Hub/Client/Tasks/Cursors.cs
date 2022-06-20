@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using Friflo.Json.Fliox.Hub.Client.Internal;
+using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using static System.Diagnostics.DebuggerBrowsableState;
 
 // ReSharper disable once CheckNamespace
@@ -19,13 +20,20 @@ namespace Friflo.Json.Fliox.Hub.Client
         internal            TaskState       state;
         internal override   TaskState       State   => state;
         internal            int             count;
+        [DebuggerBrowsable(Never)]
+        private readonly    SyncSet         syncSet;
         
         public   override   string          Details => $"CloseCursorsTask ()";
         public              int             Count   => IsOk("CloseCursorsTask.Count", out Exception e) ? count : throw e;
 
 
-        internal CloseCursorsTask(IEnumerable<string> cursors) {
-            this.cursors = cursors != null ? new List<string>(cursors) : null;
+        internal CloseCursorsTask(IEnumerable<string> cursors, SyncSet syncSet) {
+            this.cursors    = cursors != null ? new List<string>(cursors) : null;
+            this.syncSet    = syncSet;
+        }
+        
+        internal override SyncRequestTask CreateRequestTask() {
+            return syncSet.CloseCursors(this);
         }
     }
 }

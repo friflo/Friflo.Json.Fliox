@@ -23,7 +23,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
 
         internal  abstract  void    AddTasks                (List<SyncRequestTask> tasks, ObjectMapper mapper);
         
-        internal  abstract AggregateEntities AggregateEntities(AggregateTask aggregate);
+        internal  abstract AggregateEntities    AggregateEntities   (AggregateTask      aggregate);
+        internal  abstract CloseCursors         CloseCursors        (CloseCursorsTask   closeCursor);
         
         internal  abstract  void    ReserveKeysResult       (ReserveKeys        task, SyncTaskResult result);
         internal  abstract  void    CreateEntitiesResult    (CreateEntities     task, SyncTaskResult result, ObjectMapper mapper);
@@ -322,13 +323,12 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         }
         
         internal override void CloseCursorsResult (CloseCursors task, SyncTaskResult result) {
-            var closeCursors = CloseCursors();
+            var closeCursor   = (CloseCursorsTask)task.syncTask;
             if (result is TaskErrorResult taskError) {
                 // todo set error
                 return;
             }
             var closeResult             = (CloseCursorsResult) result;
-            var closeCursor             = closeCursors[closeCursorsIndex++];
             closeCursor.count           = closeResult.count; 
             closeCursor.state.Executed  = true;
         }
