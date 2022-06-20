@@ -21,11 +21,12 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     {
         /// <summary>container name</summary>
         [Required]  public  string                  container;
-        /// <summary>name of the primary key property of the returned entities</summary>
+        /// <summary> name of the primary key property of the returned entities </summary>
                     public  string                  keyName;
                     public  bool?                   isIntKey;
+        /// <summary> list of requested entity <see cref="ids"/> </summary>
         [Required]  public  List<JsonKey>           ids;
-                    /// <summary>used to request the entities referenced by properties of a read task result</summary>
+        /// <summary> used to request the entities referenced by properties of a read task result </summary>
                     public  List<References>        references;
         
         internal override   TaskType                TaskType => TaskType.read;
@@ -73,10 +74,9 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     public sealed class ReadEntitiesResult : SyncTaskResult
     {
                     public  List<ReferencesResult>          references;
-        [Ignore]    public  CommandError                    Error { get; set; }
-
         [Ignore]    public  Dictionary<JsonKey,EntityValue> entities;
         
+        [Ignore]    public  CommandError                    Error { get; set; }
         internal override   TaskType                        TaskType => TaskType.read;
         
         /// <summary>

@@ -88,6 +88,7 @@ export class ReadEntities extends SyncRequestTask {
     /** name of the primary key property of the returned entities */
     keyName?    : string | null;
     isIntKey?   : boolean | null;
+    /** list of requested entity **ids** */
     ids         : string[];
     /** used to request the entities referenced by properties of a read task result */
     references? : References[] | null;
