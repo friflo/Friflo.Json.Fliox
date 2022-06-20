@@ -24,7 +24,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         /// <summary>name of the primary key property of the returned entities</summary>
                     public  string                  keyName;
                     public  bool?                   isIntKey;
-        [Required]  public  HashSet<JsonKey>        ids = new HashSet<JsonKey>(JsonKey.Equality);
+        [Required]  public  List<JsonKey>           ids;
                     /// <summary>used to request the entities referenced by properties of a read task result</summary>
                     public  List<References>        references;
         

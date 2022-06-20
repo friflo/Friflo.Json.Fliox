@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.Auth;
@@ -56,7 +57,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
         internal static bool FindTask(string container, JsonKey dbKey, List<SyncRequestTask> tasks) {
             foreach (var task in tasks) {
                 if (task is ReadEntities read && read.container == container) {
-                    return read.ids.Contains(dbKey);
+                    return read.ids.Contains(dbKey, JsonKey.Equality);
                 }
                 if (task is QueryEntities query && query.container == container)
                     return true;

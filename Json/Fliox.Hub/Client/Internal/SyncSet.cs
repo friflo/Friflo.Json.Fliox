@@ -390,7 +390,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                     references = new List<References>(_readTasks.Count);
                     AddReferences(references, read.relations.subRelations);
                 }
-                var ids = Helper.CreateHashSet(read.result.Keys.Count, JsonKey.Equality);
+                var ids = new List<JsonKey>(read.result.Keys.Count);
                 foreach (var key in read.result.Keys) {
                     var id = KeyConvert.KeyToId(key);
                     ids.Add(id);
@@ -542,7 +542,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             var deletes = _deletes;
             if (deletes == null || deletes.Count == 0)
                 return;
-            var ids = Helper.CreateHashSet (deletes.Count, JsonKey.Equality);
+            var ids = new List<JsonKey>(deletes.Count);
             foreach (var key in deletes) {
                 var id = KeyConvert.KeyToId(key);
                 ids.Add(id);

@@ -47,7 +47,7 @@ namespace Friflo.Json.Fliox.Hub.Client
 
         internal  abstract  Type    GetEntityType();
         internal  abstract  void    Clear       ();
-        internal  abstract  void    AddDeletes  (HashSet<JsonKey> ids);
+        internal  abstract  void    AddDeletes  (List<JsonKey> ids);
         internal  abstract  void    AddPatches  (List<EntityPatch> patches);
         internal  abstract  void    ApplyChangesToInternal  (EntitySet entitySet);
     }
@@ -129,7 +129,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             return upserts;
         }
 
-        internal override void AddDeletes  (HashSet<JsonKey> ids) {
+        internal override void AddDeletes  (List<JsonKey> ids) {
             foreach (var id in ids) {
                 TKey    key      = KeyConvert.IdToKey(id);
                 Deletes.Add(key);

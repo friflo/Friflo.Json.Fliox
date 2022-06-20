@@ -114,7 +114,7 @@ namespace Friflo.Json.Fliox.Hub.Cosmos
             }
             // optimization: single item read requires no parsing of Response message
             var entities        = new Dictionary<JsonKey, EntityValue>(keys.Count, JsonKey.Equality);
-            var key             = keys.First();
+            var key             = keys[0];
             var id              = key.AsString();
             var partitionKey    = new PartitionKey(id);
             // todo handle error;

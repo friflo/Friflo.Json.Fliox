@@ -94,8 +94,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         private static async Task GetEntitiesById(RequestContext context, string database, string container, JsonKey[] keys) {
             if (database == context.hub.DatabaseName)
                 database = null;
-            var readEntities = new ReadEntities () { container = container};
-            readEntities.ids.EnsureCapacity(keys.Length);
+            var readEntities = new ReadEntities { container = container, ids = new List<JsonKey>(keys.Length)};
             foreach (var id in keys) {
                 readEntities.ids.Add(id);    
             }
@@ -234,8 +233,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             if (database == context.hub.DatabaseName)
                 database = null;
             var entityId        = new JsonKey(id);
-            var readEntities = new ReadEntities { container = container };
-            readEntities.ids.Add(entityId);
+            var readEntities = new ReadEntities { container = container, ids = new List<JsonKey> {entityId}};
             var syncRequest = CreateSyncRequest(context, database, readEntities, out var syncContext);
             var syncResult  = await context.hub.ExecuteSync(syncRequest, syncContext).ConfigureAwait(false);
             
@@ -262,8 +260,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         private static async Task DeleteEntities(RequestContext context, string database, string container, JsonKey[] keys) {
             if (database == context.hub.DatabaseName)
                 database = null;
-            var deleteEntities  = new DeleteEntities { container = container };
-            deleteEntities.ids.EnsureCapacity(keys.Length);
+            var deleteEntities  = new DeleteEntities { container = container, ids = new List<JsonKey>(keys.Length) };
             foreach (var key in keys) {
                 deleteEntities.ids.Add(key);
             }

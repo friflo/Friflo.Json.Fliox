@@ -96,7 +96,8 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// </summary>
         public virtual async Task<PatchEntitiesResult> PatchEntities   (PatchEntities patchEntities, SyncResponse response, SyncContext syncContext) {
             var entityPatches = patchEntities.patches.ToDictionary(patch => patch.id, JsonKey.Equality);
-            var ids = entityPatches.Select(patch => patch.Key).ToHashSet(JsonKey.Equality);
+            var idSet   = entityPatches.Select(patch => patch.Key).ToHashSet(JsonKey.Equality);
+            var ids     = idSet.ToList();
             // Read entities to be patched
             var readTask    = new ReadEntities { ids = ids, keyName = patchEntities.keyName };
             var readResult  = await ReadEntities(readTask, syncContext).ConfigureAwait(false);
@@ -117,7 +118,7 @@ namespace Friflo.Json.Fliox.Hub.Host
                 JsonPatcher patcher = pooled.instance;
                 foreach (var entity in entities) {
                     var key = entity.Key;
-                    if (!ids.Contains(key))
+                    if (!idSet.Contains(key))
                         throw new InvalidOperationException($"PatchEntities: Unexpected key in ReadEntitiesSet response: key: {key}");
                     var patch = entityPatches[key];
                     var value = entity.Value;
@@ -314,7 +315,7 @@ namespace Friflo.Json.Fliox.Hub.Host
                 var ids = referenceResult.ids;
                 if (ids.Count == 0)
                     continue;
-                var refIdList   = ids;
+                var refIdList   = ids.ToList();
                 var readRefIds  = new ReadEntities { ids = refIdList, keyName = reference.keyName, isIntKey = reference.isIntKey};
                 var refEntities = await refCont.ReadEntities(readRefIds, syncContext).ConfigureAwait(false);
                 var subPath = $"{selectorPath} -> {reference.selector}";

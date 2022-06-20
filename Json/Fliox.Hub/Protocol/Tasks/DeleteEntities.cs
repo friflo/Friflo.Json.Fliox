@@ -19,7 +19,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         /// <summary>container name</summary>
         [Required]  public  string              container;
         /// <summary>list of <see cref="ids"/> requested for deletion</summary>
-                    public  HashSet<JsonKey>    ids = new HashSet<JsonKey>(JsonKey.Equality);
+                    public  List<JsonKey>       ids;
         /// <summary>if true all entities in the specified <see cref="container"/> are deleted</summary>
                     public  bool?               all;
         

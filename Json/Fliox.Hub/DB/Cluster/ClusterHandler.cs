@@ -57,7 +57,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
             var authorizedDatabases = Helper.CreateHashSet(4, AuthorizeDatabaseComparer.Instance);
             syncContext.authState.authorizer.AddAuthorizedDatabases(authorizedDatabases);
 
-            var ids = Helper.CreateHashSet(read.ids.Count, JsonKey.Equality);
+            var ids = new List<JsonKey>(read.ids.Count);
             foreach (var id in read.ids) {
                 var database    = id.AsString();
                 if (AuthorizeDatabase.IsAuthorizedDatabase(authorizedDatabases, database)) {

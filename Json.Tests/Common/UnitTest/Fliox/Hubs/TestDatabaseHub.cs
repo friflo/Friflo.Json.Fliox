@@ -124,7 +124,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs
 
         public override Task<CreateEntitiesResult> CreateEntities(CreateEntities command, SyncContext syncContext) {
             AssertEntityCounts(command.entityKeys, command.entities);
-            var error = SimulateWriteErrors(command.entityKeys.ToHashSet(JsonKey.Equality), out var errors);
+            var error = SimulateWriteErrors(command.entityKeys, out var errors);
             if (error != null)
                 return Task.FromResult(new CreateEntitiesResult { Error = error });
             if (errors != null)
@@ -134,7 +134,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs
 
         public override Task<UpsertEntitiesResult> UpsertEntities(UpsertEntities command, SyncContext syncContext) {
             AssertEntityCounts(command.entityKeys, command.entities);
-            var error = SimulateWriteErrors(command.entityKeys.ToHashSet(JsonKey.Equality), out var errors);
+            var error = SimulateWriteErrors(command.entityKeys, out var errors);
             if (error != null)
                 return Task.FromResult(new UpsertEntitiesResult { Error = error });
             if (errors != null)
@@ -210,11 +210,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs
             return error;
         }
         
-        private CommandError SimulateWriteErrors(HashSet<JsonKey> entities, out List<EntityError> errors) {
+        private CommandError SimulateWriteErrors(List<JsonKey> entities, out List<EntityError> errors) {
             errors = null;
             foreach (var pair in writeEntityErrors) {
                 var id = new JsonKey(pair.Key);
-                if (entities.Contains(id)) {
+                if (entities.Contains(id, JsonKey.Equality)) {
                     if (errors == null)
                         errors = new List<EntityError>();
                     var fcn = pair.Value;
@@ -224,7 +224,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs
             }
             foreach (var pair in writeTaskErrors) {
                 var id = new JsonKey(pair.Key);
-                if (entities.Contains(id)) {
+                if (entities.Contains(id, JsonKey.Equality)) {
                     var func = pair.Value;
                     return func();
                 }

@@ -393,8 +393,11 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 }
                 return;
             }
-            foreach (var id in task.ids) {
-                set.DeletePeer(id);
+            var ids = task.ids;
+            if (ids != null) {
+                foreach (var id in ids) {
+                    set.DeletePeer(id);
+                }
             }
             var keysBuf = set.intern.GetKeysBuf();
             foreach (var deleteTask in DeleteTasks()) {
