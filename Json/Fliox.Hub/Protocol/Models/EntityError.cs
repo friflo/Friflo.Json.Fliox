@@ -14,7 +14,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Models
     /// </summary>
     /// <remarks> 
     /// An <see cref="EntityError"/> needs to be set only, if the access to <see cref="EntityValue"/>'s
-    /// returned by a previous call to <see cref="EntityContainer.ReadEntitiesSet"/> or
+    /// returned by a previous call to <see cref="EntityContainer.ReadEntities"/> or
     /// <see cref="EntityContainer.QueryEntities"/> fails.
     /// This implies that the previous read or query call was successful.
     /// </remarks> 

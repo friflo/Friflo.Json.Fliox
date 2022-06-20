@@ -40,6 +40,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
 
         // --- backing fields for lazy-initialized getters
         private     List<ReadTask<TKey, T>>         _readTasks;
+        private     int                             readTasksIndex;
 
         private     List<QueryTask<T>>              _queryTasks;
         private     int                             queriesTasksIndex;
@@ -382,12 +383,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         private void ReadEntities(List<SyncRequestTask> tasks) {
             if (_readTasks == null || _readTasks.Count == 0)
                 return;
-            var readList = new ReadEntities {
-                sets       = new List<ReadEntitiesSet>(_readTasks.Count),
-                container   = set.name,
-                keyName     = SyncKeyName(set.GetKeyName()),
-                isIntKey    = IsIntKey(set.IsIntKey())
-            };
+
             foreach (var read in _readTasks) {
                 List<References> references = null;
                 if (read.relations.subRelations.Count > 0) {
@@ -399,13 +395,15 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                     var id = KeyConvert.KeyToId(key);
                     ids.Add(id);
                 }
-                var req = new ReadEntitiesSet {
+                var readList = new ReadEntities {
+                    container   = set.name,
+                    keyName     = SyncKeyName(set.GetKeyName()),
+                    isIntKey    = IsIntKey(set.IsIntKey()),
                     ids         = ids,
                     references  = references
                 };
-                readList.sets.Add(req);
+                tasks.Add(readList);
             }
-            tasks.Add(readList);
         }
 
         private void QueryEntities(List<SyncRequestTask> tasks) {

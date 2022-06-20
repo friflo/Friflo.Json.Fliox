@@ -102,7 +102,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             return Task.FromResult(result);
         }
 
-        public override Task<ReadEntitiesSetResult> ReadEntitiesSet(ReadEntitiesSet command, SyncContext syncContext) {
+        public override Task<ReadEntitiesResult> ReadEntities(ReadEntities command, SyncContext syncContext) {
             var keys = command.ids;
             var entities = new Dictionary<JsonKey, EntityValue>(keys.Count, JsonKey.Equality);
             foreach (var key in keys) {
@@ -110,7 +110,7 @@ namespace Friflo.Json.Fliox.Hub.Host
                 var entry = new EntityValue(payload);
                 entities.TryAdd(key, entry);
             }
-            var result = new ReadEntitiesSetResult{entities = entities};
+            var result = new ReadEntitiesResult{entities = entities};
             return Task.FromResult(result);
         }
         

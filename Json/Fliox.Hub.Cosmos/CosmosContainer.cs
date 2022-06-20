@@ -106,7 +106,7 @@ namespace Friflo.Json.Fliox.Hub.Cosmos
             return new UpsertEntitiesResult();
         }
 
-        public override async Task<ReadEntitiesSetResult> ReadEntitiesSet(ReadEntitiesSet command, SyncContext syncContext) {
+        public override async Task<ReadEntitiesResult> ReadEntities(ReadEntities command, SyncContext syncContext) {
             await EnsureContainerExists().ConfigureAwait(false);
             var keys = command.ids;
             if (keys.Count > 1) {
@@ -132,10 +132,10 @@ namespace Friflo.Json.Fliox.Hub.Cosmos
                     entities.TryAdd(key, entry);
                 }
             }
-            return new ReadEntitiesSetResult{entities = entities};
+            return new ReadEntitiesResult{entities = entities};
         }
         
-        private async Task<ReadEntitiesSetResult> ReadManyEntities(ReadEntitiesSet command, SyncContext syncContext) {
+        private async Task<ReadEntitiesResult> ReadManyEntities(ReadEntities command, SyncContext syncContext) {
             var keys        = command.ids;
             var entities    = new Dictionary<JsonKey, EntityValue>(keys.Count, JsonKey.Equality);
             var list        = new List<(string, PartitionKey)>(keys.Count);
@@ -155,7 +155,7 @@ namespace Friflo.Json.Fliox.Hub.Cosmos
                     entities.Add(key, new EntityValue());
                 }
             }
-            return new ReadEntitiesSetResult{entities = entities};
+            return new ReadEntitiesResult{entities = entities};
         }
 
         private readonly bool filterByClient = false; // true: used for development => query all and filter thereafter

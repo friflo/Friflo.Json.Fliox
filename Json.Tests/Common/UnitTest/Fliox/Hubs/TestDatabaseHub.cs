@@ -153,8 +153,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs
 
         /// Validation of JSON entity values in result set is required, as this this implementation is able to
         /// simulate assign invalid JSON via .<see cref="SimulateReadErrors"/>.
-        public override async Task<ReadEntitiesSetResult> ReadEntitiesSet(ReadEntitiesSet command, SyncContext syncContext) {
-            var result = await local.ReadEntitiesSet(command, syncContext).ConfigureAwait(false);
+        public override async Task<ReadEntitiesResult> ReadEntities(ReadEntities command, SyncContext syncContext) {
+            var result = await local.ReadEntities(command, syncContext).ConfigureAwait(false);
             var databaseError = SimulateReadErrors(result.entities);
             if (databaseError != null)
                 result.Error = databaseError;

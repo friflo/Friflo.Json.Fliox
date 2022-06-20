@@ -7,7 +7,6 @@ using System;
 using System.Collections.Generic;
 using Friflo.Json.Burst;
 using Friflo.Json.Fliox.Hub.Protocol;
-using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Schema.Definition;
@@ -157,8 +156,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             if (!RequestArgs.TryGetIds  (cx, "ids",       out var ids,       out error)) return error;
             if (!RequestArgs.TryGetBool (cx, "selectAll", out var selectAll, out error)) return error;
             
-            var sets    = new List<ReadEntitiesSet> { new ReadEntitiesSet { ids = ids } };
-            var task    = new ReadEntities { container = cx.resolver.container, sets = sets };
+            var task    = new ReadEntities { container = cx.resolver.container, ids = ids };
             return new QueryRequest(task, selectAll);
         }
         

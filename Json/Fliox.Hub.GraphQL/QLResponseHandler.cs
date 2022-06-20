@@ -111,7 +111,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
         private static JsonValue ReadEntitiesResult (in ResultContext cx) {
             var readTask        = (ReadEntities)cx.query.task;
             var entities        = cx.synResponse.resultMap[cx.query.container].entityMap;
-            var ids             = readTask.sets[0].ids;
+            var ids             = readTask.ids;
             var list            = new List<JsonValue>(ids.Count);
             foreach (var id in ids) {
                 var entity = entities[id].Json;

@@ -85,12 +85,6 @@ class EventMessage {
 }
 EventMessage *-- "0..*" SyncRequestTask : tasks
 
-class ReadEntitiesSet {
-    ids         : string[]
-    references? : References[]
-}
-ReadEntitiesSet *-- "0..*" References : references
-
 class References {
     selector    : string
     container   : string
@@ -117,11 +111,6 @@ class EntityErrorType:::cssEnum {
     PatchError
 }
 
-
-class ReadEntitiesSetResult {
-    references? : ReferencesResult[]
-}
-ReadEntitiesSetResult *-- "0..*" ReferencesResult : references
 
 class ReferencesResult {
     error?      : string
@@ -156,13 +145,14 @@ class UpsertEntities {
 
 SyncRequestTask <|-- ReadEntities
 class ReadEntities {
-    task       : "read"
-    container  : string
-    keyName?   : string
-    isIntKey?  : boolean
-    sets       : ReadEntitiesSet[]
+    task        : "read"
+    container   : string
+    keyName?    : string
+    isIntKey?   : boolean
+    ids         : string[]
+    references? : References[]
 }
-ReadEntities *-- "0..*" ReadEntitiesSet : sets
+ReadEntities *-- "0..*" References : references
 
 SyncRequestTask <|-- QueryEntities
 class QueryEntities {
@@ -294,10 +284,10 @@ UpsertEntitiesResult *-- "0..*" EntityError : errors
 
 SyncTaskResult <|-- ReadEntitiesResult
 class ReadEntitiesResult {
-    task  : "read"
-    sets  : ReadEntitiesSetResult[]
+    task        : "read"
+    references? : ReferencesResult[]
 }
-ReadEntitiesResult *-- "0..*" ReadEntitiesSetResult : sets
+ReadEntitiesResult *-- "0..*" ReferencesResult : references
 
 SyncTaskResult <|-- QueryEntitiesResult
 class QueryEntitiesResult {

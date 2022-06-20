@@ -162,30 +162,20 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             }
         }
 
-        internal override void ReadEntitiesResult(ReadEntities taskList, SyncTaskResult result, ContainerEntities readEntities) {
-            var reads = Reads();
+        internal override void ReadEntitiesResult(ReadEntities task, SyncTaskResult result, ContainerEntities readEntities) {
+            var reads       = Reads();
+            var readTask    = reads[readTasksIndex++];
             if (result is TaskErrorResult taskError) {
                 foreach (var read in reads) {
                     SetReadTaskError(read, taskError);
                 }
                 return;
             }
-            var readListResult = (ReadEntitiesResult) result;
-            var expect = reads.Count;
-            var actual = taskList.sets.Count;
-            if (expect != actual) {
-                throw new InvalidOperationException($"Expect reads.Count == result.reads.Count. expect: {expect}, actual: {actual}");
-            }
-
-            for (int i = 0; i < taskList.sets.Count; i++) {
-                var task = taskList.sets[i];
-                var read = reads[i];
-                var readResult = readListResult.sets[i];
-                ReadEntitiesSetResult(task, readResult, read, readEntities);
-            }
+            var readResult = (ReadEntitiesResult) result;
+            ReadEntitiesSetResult(task, readResult, readTask, readEntities);
         }
 
-        private void ReadEntitiesSetResult(ReadEntitiesSet task, ReadEntitiesSetResult result, ReadTask<TKey, T> read, ContainerEntities readEntities) {
+        private void ReadEntitiesSetResult(ReadEntities task, ReadEntitiesResult result, ReadTask<TKey, T> read, ContainerEntities readEntities) {
             if (result.Error != null) {
                 var taskError = SyncRequestTask.TaskError(result.Error);
                 SetReadTaskError(read, taskError);

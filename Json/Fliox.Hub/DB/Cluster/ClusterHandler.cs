@@ -56,18 +56,17 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
             var deniedIds           = new HashSet<JsonKey>(JsonKey.Equality);
             var authorizedDatabases = Helper.CreateHashSet(4, AuthorizeDatabaseComparer.Instance);
             syncContext.authState.authorizer.AddAuthorizedDatabases(authorizedDatabases);
-            foreach (var set in read.sets) {
-                var ids = Helper.CreateHashSet(set.ids.Count, JsonKey.Equality);
-                foreach (var id in set.ids) {
-                    var database    = id.AsString();
-                    if (AuthorizeDatabase.IsAuthorizedDatabase(authorizedDatabases, database)) {
-                        ids.Add(id);
-                    } else {
-                        deniedIds.Add(id);
-                    }
+
+            var ids = Helper.CreateHashSet(read.ids.Count, JsonKey.Equality);
+            foreach (var id in read.ids) {
+                var database    = id.AsString();
+                if (AuthorizeDatabase.IsAuthorizedDatabase(authorizedDatabases, database)) {
+                    ids.Add(id);
+                } else {
+                    deniedIds.Add(id);
                 }
-                set.ids = ids;
             }
+            read.ids = ids;
             return deniedIds;
         }
         

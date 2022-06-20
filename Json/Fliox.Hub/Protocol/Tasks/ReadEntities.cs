@@ -5,16 +5,16 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
+using Friflo.Json.Fliox.Hub.Host.Utils;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
 
 namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
 {
     // ----------------------------------- task -----------------------------------
     /// <summary>
-    /// Read entities by id from the specified <see cref="container"/> using read <see cref="sets"/><br/>
-    /// Each <see cref="ReadEntitiesSet"/> contains a list of <see cref="ReadEntitiesSet.ids"/><br/>
-    /// To return also entities referenced by entities listed in <see cref="ReadEntitiesSet.ids"/> use
-    /// <see cref="ReadEntitiesSet.references"/> in <see cref="sets"/>. <br/>
+    /// Read entities by id from the specified <see cref="container"/> using given list of <see cref="ids"/><br/>
+    /// To return also entities referenced by entities listed in <see cref="ReadEntities.ids"/> use
+    /// <see cref="ReadEntities.references"/>. <br/>
     /// This mimic the functionality of a <b>JOIN</b> in <b>SQL</b>
     /// </summary>
     public sealed class ReadEntities : SyncRequestTask
@@ -24,8 +24,9 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         /// <summary>name of the primary key property of the returned entities</summary>
                     public  string                  keyName;
                     public  bool?                   isIntKey;
-        /// <summary>contains the <see cref="ReadEntitiesSet.ids"/> of requested entities</summary>               
-        [Required]  public  List<ReadEntitiesSet>   sets;
+        [Required]  public  HashSet<JsonKey>        ids = new HashSet<JsonKey>(JsonKey.Equality);
+                    /// <summary>used to request the entities referenced by properties of a read task result</summary>
+                    public  List<References>        references;
         
         internal override   TaskType                TaskType => TaskType.read;
         public   override   string                  TaskName =>  $"container: '{container}'";
@@ -33,34 +34,18 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         internal override async Task<SyncTaskResult> Execute(EntityDatabase database, SyncResponse response, SyncContext syncContext) {
             if (container == null)
                 return MissingContainer();
-            if (sets == null)
-                return MissingField(nameof(sets));
-            var result = new ReadEntitiesResult {
-                sets = new List<ReadEntitiesSetResult>(sets.Count)
-            };
-            // Optimization:
-            // Count & Combine all reads to a single read to call ReadEntitiesSet() only once instead of #reads times
-            var combineCount = 0;
-            foreach (var read in sets) {
-                if (read == null)
-                    return InvalidTask("elements in reads must not be null");
-                if (read.ids == null)
-                    return MissingField(nameof(read.ids));
-                foreach (var id in read.ids) {
-                    if (id.IsNull())
-                        return InvalidTask("elements in ids must not be null");
-                }
-                if (!ValidReferences(read.references, out var error))
-                    return error;
-                combineCount += read.ids.Count;
+
+            if (ids == null)
+                return MissingField(nameof(ids));
+            foreach (var id in ids) {
+                if (id.IsNull())
+                    return InvalidTask("elements in ids must not be null");
             }
-            // Combine
-            var combinedRead = new ReadEntitiesSet { keyName = keyName, isIntKey = isIntKey, ids = Helper.CreateHashSet(combineCount, JsonKey.Equality) };
-            foreach (var read in sets) {
-                combinedRead.ids.UnionWith(read.ids);
-            }
+            if (!ValidReferences(references, out var error))
+                return error;
+
             var entityContainer = database.GetOrCreateContainer(container);
-            var combinedResult = await entityContainer.ReadEntitiesSet(combinedRead, syncContext).ConfigureAwait(false);
+            var combinedResult = await entityContainer.ReadEntities(this, syncContext).ConfigureAwait(false);
             if (combinedResult.Error != null) {
                 return TaskError(combinedResult.Error);
             }
@@ -69,26 +54,23 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
             var containerResult = response.GetContainerResult(container);
             containerResult.AddEntities(combinedEntities);
             
-            foreach (var read in sets) {
-                var readResult  = new ReadEntitiesSetResult {
-                    entities = new Dictionary<JsonKey, EntityValue>(read.ids.Count, JsonKey.Equality)
-                };
-                // distribute combinedEntities
-                var entities = readResult.entities;
-                foreach (var id in read.ids) {
-                    entities.Add(id, combinedEntities[id]);
-                }
-                var references = read.references;
-                if (references != null && references.Count > 0) {
-                    var readRefResults =
-                        await entityContainer.ReadReferences(references, entities, entityContainer.name, "", response, syncContext).ConfigureAwait(false);
-                    // returned readRefResults.references is always set. Each references[] item contain either a result or an error.
-                    readResult.references = readRefResults.references;
-                }
-                readResult.entities = null;
-                result.sets.Add(readResult);
+
+            var readResult  = new ReadEntitiesResult {
+                entities = new Dictionary<JsonKey, EntityValue>(ids.Count, JsonKey.Equality)
+            };
+            // distribute combinedEntities
+            var entities = readResult.entities;
+            foreach (var id in ids) {
+                entities.Add(id, combinedEntities[id]);
             }
-            return result;
+            if (references != null && references.Count > 0) {
+                var readRefResults =
+                    await entityContainer.ReadReferences(references, entities, entityContainer.name, "", response, syncContext).ConfigureAwait(false);
+                // returned readRefResults.references is always set. Each references[] item contain either a result or an error.
+                readResult.references = readRefResults.references;
+            }
+            readResult.entities = null;
+            return readResult;
         }
     }
     
@@ -98,8 +80,55 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     /// </summary>
     public sealed class ReadEntitiesResult : SyncTaskResult
     {
-        [Required]  public  List<ReadEntitiesSetResult> sets;
+                    public  List<ReferencesResult>          references;
+        [Ignore]    public  CommandError                    Error { get; set; }
+
+        [Ignore]    public  Dictionary<JsonKey,EntityValue> entities;
         
-        internal override   TaskType                    TaskType => TaskType.read;
+        internal override   TaskType                        TaskType => TaskType.read;
+        
+        /// <summary>
+        /// Validate all <see cref="EntityValue.value"/>'s in the result set.
+        /// Validation is required for all <see cref="EntityContainer"/> implementations which cannot ensure that the
+        /// <see cref="EntityValue.Json"/> value of <see cref="entities"/> is valid JSON.
+        /// 
+        /// E.g. <see cref="FileContainer"/> cannot ensure this, as the file content can be written
+        /// or modified from extern processes - for example by manually changing its JSON content with an editor.
+        /// 
+        /// A <see cref="MemoryContainer"/> does not require validation as its key/values are always written via
+        /// Fliox.Hub.Client library - which generate valid JSON.
+        /// 
+        /// So database adapters which can ensure the JSON value is always valid made calling <see cref="ValidateEntities"/>
+        /// obsolete - like Postgres/JSONB, Azure Cosmos DB or MongoDB.
+        /// </summary>
+        public void ValidateEntities(string container, string keyName, SyncContext syncContext) {
+            using (var pooled = syncContext.EntityProcessor.Get()) {
+                EntityProcessor processor = pooled.instance;
+                foreach (var entityEntry in entities) {
+                    var entity = entityEntry.Value;
+                    if (entity.Error != null) {
+                        continue;
+                    }
+                    var json    = entity.Json;
+                    if (json.IsNull()) {
+                        continue;
+                    }
+                    keyName = keyName ?? "id";
+                    if (processor.Validate(json, keyName, out JsonKey payloadId, out string error)) {
+                        var id      = entityEntry.Key;
+                        if (id.IsEqual(payloadId))
+                            continue;
+                        error = $"entity key mismatch. '{keyName}': '{payloadId.AsString()}'";
+                    }
+                    var entityError = new EntityError {
+                        type        = EntityErrorType.ParseError,
+                        message     = error,
+                        id          = entityEntry.Key,
+                        container   = container
+                    };
+                    entity.SetError(entityError);
+                }
+            }
+        }
     }
 }

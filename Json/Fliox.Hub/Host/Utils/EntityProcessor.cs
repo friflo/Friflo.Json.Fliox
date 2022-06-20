@@ -4,7 +4,7 @@
 using System;
 using System.Collections.Generic;
 using Friflo.Json.Burst;
-using Friflo.Json.Fliox.Hub.Protocol.Models;
+using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Mapper;
 
 namespace Friflo.Json.Fliox.Hub.Host.Utils
@@ -16,10 +16,10 @@ namespace Friflo.Json.Fliox.Hub.Host.Utils
     }
     
     /// <summary>
-    /// Is used to ensure that <see cref="ReadEntitiesSetResult"/> returned by <see cref="EntityContainer.ReadEntitiesSet"/>
-    /// contains valid <see cref="ReadEntitiesSetResult.entities"/>.
+    /// Is used to ensure that <see cref="ReadEntitiesResult"/> returned by <see cref="EntityContainer.ReadEntities"/>
+    /// contains valid <see cref="ReadEntitiesResult.entities"/>.
     /// Validation is required for <see cref="FlioxHub"/> implementations which cannot ensure that the value of
-    /// its key/values are JSON. See <see cref="ReadEntitiesSetResult.ValidateEntities"/>.
+    /// its key/values are JSON. See <see cref="ReadEntitiesResult.ValidateEntities"/>.
     /// </summary>
     public sealed class EntityProcessor : IDisposable
     {

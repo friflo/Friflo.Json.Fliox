@@ -75,17 +75,12 @@
         },
         "ReadEntities": {
             "properties": {
-                "container": { "type": "string" },
-                "keyName":   { "type": "string", "nullable": true },
-                "isIntKey":  { "type": "boolean", "nullable": true },
-                "sets":      { "elements": { "ref":  "ReadEntitiesSet" } },
-                "info":      { "nullable": true }
-            }
-        },
-        "ReadEntitiesSet": {
-            "properties": {
+                "container":  { "type": "string" },
+                "keyName":    { "type": "string", "nullable": true },
+                "isIntKey":   { "type": "boolean", "nullable": true },
                 "ids":        { "elements": { "type": "string" } },
-                "references": { "elements": { "ref":  "References" }, "nullable": true }
+                "references": { "elements": { "ref":  "References" }, "nullable": true },
+                "info":       { "nullable": true }
             }
         },
         "References": {
@@ -325,11 +320,6 @@
             }
         },
         "ReadEntitiesResult": {
-            "properties": {
-                "sets": { "elements": { "ref":  "ReadEntitiesSetResult" } }
-            }
-        },
-        "ReadEntitiesSetResult": {
             "properties": {
                 "references": { "elements": { "ref":  "ReferencesResult" }, "nullable": true }
             }

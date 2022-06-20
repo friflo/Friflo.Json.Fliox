@@ -5,12 +5,6 @@ import kotlinx.serialization.*
 import CustomSerializer.*
 
 @Serializable
-data class ReadEntitiesSet (
-              val ids        : List<String>,
-              val references : List<References>? = null,
-)
-
-@Serializable
 data class References (
               val selector   : String,
               val container  : String,
@@ -34,11 +28,6 @@ enum class EntityErrorType {
     DeleteError,
     PatchError,
 }
-
-@Serializable
-data class ReadEntitiesSetResult (
-              val references : List<ReferencesResult>? = null,
-)
 
 @Serializable
 data class ReferencesResult (

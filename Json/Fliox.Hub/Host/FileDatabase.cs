@@ -134,7 +134,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             return new UpsertEntitiesResult{ errors = upsertErrors };
         }
 
-        public override async Task<ReadEntitiesSetResult> ReadEntitiesSet(ReadEntitiesSet command, SyncContext syncContext) {
+        public override async Task<ReadEntitiesResult> ReadEntities(ReadEntities command, SyncContext syncContext) {
             var keys        = command.ids;
             var entities    = new Dictionary<JsonKey, EntityValue>(keys.Count, JsonKey.Equality);
             await rwLock.AcquireReaderLock().ConfigureAwait(false);
@@ -158,7 +158,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             } finally {
                 rwLock.ReleaseReaderLock();
             }
-            var result = new ReadEntitiesSetResult{entities = entities};
+            var result = new ReadEntitiesResult{entities = entities};
             result.ValidateEntities(name, command.keyName, syncContext);
             return result;
         }

@@ -37,11 +37,12 @@ data class UpsertEntities (
 @Serializable
 @SerialName("read")
 data class ReadEntities (
-              val container : String,
-              val keyName   : String? = null,
-              val isIntKey  : Boolean? = null,
-              val sets      : List<ReadEntitiesSet>,
-    override  val info      : JsonElement? = null,
+              val container  : String,
+              val keyName    : String? = null,
+              val isIntKey   : Boolean? = null,
+              val ids        : List<String>,
+              val references : List<References>? = null,
+    override  val info       : JsonElement? = null,
 ) : SyncRequestTask()
 
 @Serializable
@@ -180,7 +181,7 @@ data class UpsertEntitiesResult (
 @Serializable
 @SerialName("read")
 data class ReadEntitiesResult (
-              val sets : List<ReadEntitiesSetResult>,
+              val references : List<ReferencesResult>? = null,
 ) : SyncTaskResult()
 
 @Serializable

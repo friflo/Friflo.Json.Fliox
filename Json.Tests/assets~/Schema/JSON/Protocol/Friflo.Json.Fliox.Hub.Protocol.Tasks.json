@@ -68,19 +68,20 @@
         "ReadEntities": {
             "type": "object",
             "extends": { "$ref": "#/definitions/SyncRequestTask" },
-            "description": "Read entities by id from the specified <b>container</b> using read <b>sets</b><br/>\nEach <b>ReadEntitiesSet</b> contains a list of <b>ids</b><br/>\nTo return also entities referenced by entities listed in <b>ids</b> use\n<b>references</b> in <b>sets</b>. <br/>\nThis mimic the functionality of a <b>JOIN</b> in <b>SQL</b>",
+            "description": "Read entities by id from the specified <b>container</b> using given list of <b>ids</b><br/>\nTo return also entities referenced by entities listed in <b>ids</b> use\n<b>references</b>. <br/>\nThis mimic the functionality of a <b>JOIN</b> in <b>SQL</b>",
             "properties": {
-                "task":      { "enum": ["read"] },
-                "container": { "type": "string", "description": "container name" },
-                "keyName":   { "type": ["string", "null"], "description": "name of the primary key property of the returned entities" },
-                "isIntKey":  { "type": ["boolean", "null"] },
-                "sets":      { "type": "array", "items": { "$ref": "./Friflo.Json.Fliox.Hub.Protocol.Models.json#/definitions/ReadEntitiesSet" }, "description": "contains the <b>ids</b> of requested entities" },
-                "info":      {  }
+                "task":       { "enum": ["read"] },
+                "container":  { "type": "string", "description": "container name" },
+                "keyName":    { "type": ["string", "null"], "description": "name of the primary key property of the returned entities" },
+                "isIntKey":   { "type": ["boolean", "null"] },
+                "ids":        { "type": "array", "items": { "type": "string" } },
+                "references": { "type": ["array", "null"], "items": { "$ref": "./Friflo.Json.Fliox.Hub.Protocol.Models.json#/definitions/References" }, "description": "used to request the entities referenced by properties of a read task result" },
+                "info":       {  }
             },
             "required": [
                 "task",
                 "container",
-                "sets"
+                "ids"
             ],
             "additionalProperties": false
         },
@@ -369,12 +370,11 @@
             "extends": { "$ref": "#/definitions/SyncTaskResult" },
             "description": "Result of a <b>ReadEntities</b> task",
             "properties": {
-                "task": { "enum": ["read"] },
-                "sets": { "type": "array", "items": { "$ref": "./Friflo.Json.Fliox.Hub.Protocol.Models.json#/definitions/ReadEntitiesSetResult" } }
+                "task":       { "enum": ["read"] },
+                "references": { "type": ["array", "null"], "items": { "$ref": "./Friflo.Json.Fliox.Hub.Protocol.Models.json#/definitions/ReferencesResult" } }
             },
             "required": [
-                "task",
-                "sets"
+                "task"
             ],
             "additionalProperties": false
         },

@@ -94,15 +94,11 @@ namespace Friflo.Json.Fliox.Hub.Remote
         private static async Task GetEntitiesById(RequestContext context, string database, string container, JsonKey[] keys) {
             if (database == context.hub.DatabaseName)
                 database = null;
-            var readEntitiesSet = new ReadEntitiesSet ();
-            readEntitiesSet.ids.EnsureCapacity(keys.Length);
+            var readEntities = new ReadEntities () { container = container};
+            readEntities.ids.EnsureCapacity(keys.Length);
             foreach (var id in keys) {
-                readEntitiesSet.ids.Add(id);    
+                readEntities.ids.Add(id);    
             }
-            var readEntities = new ReadEntities {
-                container   = container,
-                sets        = new List<ReadEntitiesSet> { readEntitiesSet }
-            };
             var syncRequest = CreateSyncRequest(context, database, readEntities, out var syncContext);
             var syncResult  = await context.hub.ExecuteSync(syncRequest, syncContext).ConfigureAwait(false);
             
@@ -110,8 +106,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             if (restResult.taskResult == null)
                 return;
             var readResult  = (ReadEntitiesResult)restResult.taskResult;
-            var resultSet   = readResult.sets[0];
-            var resultError = resultSet.Error;
+            var resultError = readResult.Error;
             if (resultError != null) {
                 context.WriteError("read error", resultError.message, 500);
                 return;
@@ -239,12 +234,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
             if (database == context.hub.DatabaseName)
                 database = null;
             var entityId        = new JsonKey(id);
-            var readEntitiesSet = new ReadEntitiesSet ();
-            readEntitiesSet.ids.Add(entityId);
-            var readEntities = new ReadEntities {
-                container   = container,
-                sets        = new List<ReadEntitiesSet> { readEntitiesSet }
-            };
+            var readEntities = new ReadEntities { container = container };
+            readEntities.ids.Add(entityId);
             var syncRequest = CreateSyncRequest(context, database, readEntities, out var syncContext);
             var syncResult  = await context.hub.ExecuteSync(syncRequest, syncContext).ConfigureAwait(false);
             
@@ -252,8 +243,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             if (restResult.taskResult == null)
                 return;
             var readResult  = (ReadEntitiesResult)restResult.taskResult;
-            var resultSet   = readResult.sets[0];
-            var resultError = resultSet.Error;
+            var resultError = readResult.Error;
             if (resultError != null) {
                 context.WriteError("read error", resultError.message, 500);
                 return;

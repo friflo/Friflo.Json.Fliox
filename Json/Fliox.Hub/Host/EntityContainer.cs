@@ -42,7 +42,7 @@ namespace Friflo.Json.Fliox.Hub.Host
     ///   </para>
     ///   
     ///   All ...Result types returned by the interface methods of <see cref="EntityContainer"/> like
-    ///   <see cref="CreateEntities"/>, <see cref="ReadEntitiesSet"/>, ... implement <see cref="ICommandResult"/>.
+    ///   <see cref="CreateEntities"/>, <see cref="ReadEntities"/>, ... implement <see cref="ICommandResult"/>.
     ///   In case a database command fails completely  <see cref="ICommandResult.Error"/> needs to be set.
     ///   See <see cref="FlioxHub.ExecuteSync"/> for proper error handling.
     /// </para>
@@ -69,7 +69,7 @@ namespace Friflo.Json.Fliox.Hub.Host
 
         public abstract Task<CreateEntitiesResult>    CreateEntities   (CreateEntities    command, SyncContext syncContext);
         public abstract Task<UpsertEntitiesResult>    UpsertEntities   (UpsertEntities    command, SyncContext syncContext);
-        public abstract Task<ReadEntitiesSetResult>   ReadEntitiesSet  (ReadEntitiesSet   command, SyncContext syncContext);
+        public abstract Task<ReadEntitiesResult>      ReadEntities     (ReadEntities      command, SyncContext syncContext);
         public abstract Task<DeleteEntitiesResult>    DeleteEntities   (DeleteEntities    command, SyncContext syncContext);
         public abstract Task<QueryEntitiesResult>     QueryEntities    (QueryEntities     command, SyncContext syncContext);
         public abstract Task<AggregateEntitiesResult> AggregateEntities(AggregateEntities command, SyncContext syncContext);
@@ -98,8 +98,8 @@ namespace Friflo.Json.Fliox.Hub.Host
             var entityPatches = patchEntities.patches.ToDictionary(patch => patch.id, JsonKey.Equality);
             var ids = entityPatches.Select(patch => patch.Key).ToHashSet(JsonKey.Equality);
             // Read entities to be patched
-            var readTask    = new ReadEntitiesSet { ids = ids, keyName = patchEntities.keyName };
-            var readResult  = await ReadEntitiesSet(readTask, syncContext).ConfigureAwait(false);
+            var readTask    = new ReadEntities { ids = ids, keyName = patchEntities.keyName };
+            var readResult  = await ReadEntities(readTask, syncContext).ConfigureAwait(false);
             if (readResult.Error != null) {
                 return new PatchEntitiesResult { Error = readResult.Error };
             }
@@ -315,8 +315,8 @@ namespace Friflo.Json.Fliox.Hub.Host
                 if (ids.Count == 0)
                     continue;
                 var refIdList   = ids;
-                var readRefIds  = new ReadEntitiesSet { ids = refIdList, keyName = reference.keyName, isIntKey = reference.isIntKey};
-                var refEntities = await refCont.ReadEntitiesSet(readRefIds, syncContext).ConfigureAwait(false);
+                var readRefIds  = new ReadEntities { ids = refIdList, keyName = reference.keyName, isIntKey = reference.isIntKey};
+                var refEntities = await refCont.ReadEntities(readRefIds, syncContext).ConfigureAwait(false);
                 var subPath = $"{selectorPath} -> {reference.selector}";
                 // In case of ReadEntitiesSet error: Assign error to result and continue with other references.
                 // Resolving other references are independent may be successful.
