@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.Text;
 using Friflo.Json.Fliox.Hub.Client.Internal;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
+using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using static System.Diagnostics.DebuggerBrowsableState;
 
 // ReSharper disable once CheckNamespace
@@ -29,6 +30,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         internal            TaskState                           state;
         internal override   TaskState                           State   => state;
         public   override   string                              Details => GetDetails();
+        internal override   TaskType                            TaskType=> TaskType.patch;
         
         internal PatchTask(SyncSetBase<T> syncSet, MemberSelection<T> selection) {
             patches         = new List<EntityPatchInfo<T>>();

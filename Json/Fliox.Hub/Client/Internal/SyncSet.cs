@@ -586,11 +586,18 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
 
         internal void SetTaskInfo(ref SetInfo info) {
             foreach (var syncTask in tasks) {
-                if (syncTask is ReadTask<TKey,T>)       { info.read++;              continue; }
-                if (syncTask is QueryTask<T>)           { info.query++;             continue; }
-                if (syncTask is AggregateTask)          { info.aggregate++;         continue; }
-                if (syncTask is CloseCursorsTask)       { info.closeCursors++;      continue; }
-                if (syncTask is SubscribeChangesTask<T>){ info.subscribeChanges++;  continue; }
+                switch (syncTask.TaskType) {
+                    case TaskType.read:             info.read++;                break;
+                    case TaskType.query:            info.query++;               break;
+                    case TaskType.aggregate:        info.aggregate++;           break;
+                    case TaskType.create:           info.create++;              break;
+                    case TaskType.upsert:           info.upsert++;              break;
+                    case TaskType.patch:            info.patch++;               break;
+                    case TaskType.delete:           info.delete++;              break;
+                    case TaskType.closeCursors:     info.closeCursors++;        break;
+                    case TaskType.subscribeChanges: info.subscribeChanges++;    break;
+                //  case TaskType.reserveKeys:      info.reserveKeys++;         break;
+                }
             }
             info.create         = SetInfo.Count(_createTasks) + SetInfo.Count(_autos);
             info.upsert         = SetInfo.Count(_upsertTasks);

@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using Friflo.Json.Fliox.Hub.Client.Internal;
+using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using static System.Diagnostics.DebuggerBrowsableState;
 
 // ReSharper disable once CheckNamespace
@@ -21,10 +22,10 @@ namespace Friflo.Json.Fliox.Hub.Client
         [DebuggerBrowsable(Never)]
         internal            TaskState           state;
         internal override   TaskState           State       => state;
-
         public   override   string              Details     => $"DeleteTask<{typeof(T).Name}> (#keys: {keys.Count})";
-        
-        
+        internal override   TaskType            TaskType    => TaskType.delete;
+
+
         internal DeleteTask(List<TKey> ids, SyncSet<TKey, T> syncSet) {
             this.syncSet    = syncSet;
             this.keys       = ids;
@@ -52,6 +53,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         internal override   TaskState           State       => state;
 
         public   override   string              Details     => $"DeleteAllTask<{typeof(T).Name}>";
+        internal override   TaskType            TaskType    => TaskType.delete;
 
         internal DeleteAllTask() {
         }

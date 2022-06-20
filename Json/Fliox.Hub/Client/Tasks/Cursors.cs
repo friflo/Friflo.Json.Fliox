@@ -24,6 +24,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         private readonly    SyncSet         syncSet;
         
         public   override   string          Details => $"CloseCursorsTask ()";
+        internal override   TaskType        TaskType=> TaskType.closeCursors;
         public              int             Count   => IsOk("CloseCursorsTask.Count", out Exception e) ? count : throw e;
 
 

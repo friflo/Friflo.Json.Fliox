@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using Friflo.Json.Fliox.Hub.Client.Internal;
+using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using static System.Diagnostics.DebuggerBrowsableState;
 
 // ReSharper disable once CheckNamespace
@@ -27,6 +28,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         private readonly    List<T>             entities;
 
         public   override   string              Details => $"CreateTask<{typeof(T).Name}> (#keys: {entities.Count})";
+        internal override   TaskType            TaskType=> TaskType.create;
         
         
         internal CreateTask(List<T> entities, EntitySetBase<T> set) {

@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using Friflo.Json.Fliox.Hub.Client.Internal;
+using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.Client
@@ -18,6 +19,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         private  readonly   List<T>             entities;
 
         public   override   string              Details     => $"UpsertTask<{typeof(T).Name}> (#keys: {entities.Count})";
+        internal override   TaskType            TaskType    => TaskType.upsert;
         
         
         internal UpsertTask(List<T> entities, EntitySetBase<T> set) {

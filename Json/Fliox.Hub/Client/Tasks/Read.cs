@@ -138,6 +138,7 @@ namespace Friflo.Json.Fliox.Hub.Client
 
         internal override   TaskState               State       => state;
         public   override   string                  Details     => $"ReadTask<{typeof(T).Name}> (#ids: {result.Count})";
+        internal override   TaskType                TaskType    => TaskType.read;
         
 
         internal ReadTask(SyncSet<TKey, T> syncSet) {

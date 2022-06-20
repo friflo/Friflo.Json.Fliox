@@ -153,7 +153,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             foreach (var function in syncStore.functions) {
                 if (function is SyncTask task) {
                     var requestTask = task.CreateRequestTask();
-                    if (requestTask == null)
+                    if (requestTask == null)    // todo remove condition after SyncSet refactoring
                         continue;
                     tasks.Add(requestTask);
                 }

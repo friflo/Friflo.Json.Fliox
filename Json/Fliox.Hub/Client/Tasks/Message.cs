@@ -4,6 +4,7 @@ using System;
 using System.Diagnostics;
 using Friflo.Json.Fliox.Hub.Client.Internal;
 using Friflo.Json.Fliox.Hub.Host;
+using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Mapper;
 using static System.Diagnostics.DebuggerBrowsableState;
 
@@ -29,6 +30,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         internal override   TaskState       State       => state;
         
         public   override   string          Details     => $"MessageTask (name: {name})";
+        internal override   TaskType        TaskType    => TaskType.message;
 
         
         internal MessageTask(string name, JsonValue param) {

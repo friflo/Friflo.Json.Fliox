@@ -26,6 +26,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         private readonly    SyncSet         syncSet;
 
         internal override   TaskState       State       => state;
+        internal override   TaskType        TaskType    => TaskType.aggregate;
         public              QueryFormat     DebugQuery  => filter.query;
         
         internal abstract   AggregateType   Type        { get; }

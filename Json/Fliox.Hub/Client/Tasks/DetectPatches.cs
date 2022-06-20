@@ -34,6 +34,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         internal            TaskState                           state;
         internal override   TaskState                           State   => state;
         public   override   string                              Details => $"DetectPatchesTask (container: {Container}, patches: {patches.Count})";
+        internal override   TaskType                            TaskType=> TaskType.patch;
         
         internal override   int                                 GetPatchCount() => patches.Count;
 

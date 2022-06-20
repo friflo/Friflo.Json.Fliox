@@ -52,6 +52,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             
         internal override   TaskState       State           => state;
         public   override   string          Details         => $"QueryTask<{typeof(T).Name}> (filter: {filterLinq})";
+        internal override   TaskType        TaskType        => TaskType.query;
         public              QueryFormat     DebugQuery      => filter.query;
         
 
