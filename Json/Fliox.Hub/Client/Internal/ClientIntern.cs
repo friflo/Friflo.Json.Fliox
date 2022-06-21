@@ -234,7 +234,6 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             if (!subs.TryGetValue(name, out var subscriber)) {
                 subscriber = new MessageSubscriber(name);
                 subs.Add(name, subscriber);
-                syncStore.SubscribeMessage().Add(task);
             } else {
                 task.state.Executed = true;
             }
@@ -270,7 +269,6 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             }
             if (subscriber.callbackHandlers.Count == 0) {
                 subs.Remove(name);
-                syncStore.SubscribeMessage().Add(task);
             } else {
                 task.state.Executed = true;
             }

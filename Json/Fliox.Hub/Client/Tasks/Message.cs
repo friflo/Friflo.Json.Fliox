@@ -23,7 +23,7 @@ namespace Friflo.Json.Fliox.Hub.Client
     public class MessageTask : SyncTask
     {
         internal readonly   string          name;
-        internal readonly   JsonValue       param;
+        private  readonly   JsonValue       param;
         
         [DebuggerBrowsable(Never)]
         internal            TaskState       state;

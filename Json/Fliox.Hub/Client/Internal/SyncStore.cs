@@ -15,10 +15,6 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         private     List<DetectAllPatches>      detectAllPatches;
         private     List<DetectAllPatches>      DetectAllPatches()  => detectAllPatches ?? (detectAllPatches = new List<DetectAllPatches>());
         
-        private     List<SubscribeMessageTask>  subscribeMessage;
-        internal    List<SubscribeMessageTask>  SubscribeMessage()  => subscribeMessage ?? (subscribeMessage = new List<SubscribeMessageTask>());
-        private     int                         subscribeMessageIndex;
-        
         internal void SetSyncSets(FlioxClient store) {
             SyncSets = store._intern.CreateSyncSets();
         }
@@ -38,11 +34,6 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         }
         
         // ----------------------------------- add tasks methods -----------------------------------
-        internal void AddTasks(List<SyncRequestTask> tasks) {
-        //  Message             (tasks);
-            SubscribeMessage    (tasks);
-        }
-                
         // --- Message
         internal void MessageResult (SyncMessageTask task, SyncTaskResult result) {
             var messageTask = (MessageTask)task.syncTask;
@@ -58,21 +49,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         }
         
         // --- SubscribeMessage
-        private void SubscribeMessage(List<SyncRequestTask> tasks) {
-            if (subscribeMessage == null)
-                return;
-            foreach (var subscribe in subscribeMessage) {
-                var req = new SubscribeMessage{ name = subscribe.name, remove = subscribe.remove };
-                tasks.Add(req);
-            }
-        }
-        
         internal void SubscribeMessageResult (SubscribeMessage task, SyncTaskResult result) {
-            // consider invalid response
-            if (subscribeMessage == null || subscribeMessageIndex >= subscribeMessage.Count)
-                return;
-            var index = subscribeMessageIndex++;
-            var subscribeTask = subscribeMessage[index];
+            var subscribeTask = (SubscribeMessageTask)task.syncTask;
             if (result is TaskErrorResult taskError) {
                 subscribeTask.state.SetError(new TaskErrorInfo(taskError));
                 return;

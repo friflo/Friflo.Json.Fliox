@@ -43,8 +43,8 @@ namespace Friflo.Json.Fliox.Hub.Client
     
     public sealed class SubscribeMessageTask : SyncTask
     {
-        internal readonly   string      name;
-        internal readonly   bool?       remove;
+        private  readonly   string      name;
+        private  readonly   bool?       remove;
         [DebuggerBrowsable(Never)]
         internal            TaskState   state;
             
@@ -56,6 +56,10 @@ namespace Friflo.Json.Fliox.Hub.Client
         internal SubscribeMessageTask(string name, bool? remove) {
             this.name   = name;
             this.remove = remove;
+        }
+        
+        internal override SyncRequestTask CreateRequestTask() {
+            return new SubscribeMessage{ name = name, remove = remove, syncTask = this };
         }
     }
 }
