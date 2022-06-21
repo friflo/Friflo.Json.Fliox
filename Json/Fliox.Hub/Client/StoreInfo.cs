@@ -121,7 +121,6 @@ namespace Friflo.Json.Fliox.Hub.Client
             tasks       = 0;
             commands    = 0;    
             messages    = 0;
-            tasks += SetInfo.Count(sync.messageTasks);
             foreach (var pair in setByType)
                 Add(pair.Value.SetInfo);
             foreach (var function in sync.functions) {
@@ -130,6 +129,7 @@ namespace Friflo.Json.Fliox.Hub.Client
                     case MessageTask _: messages++; break;
                 }
             }
+            tasks += commands + messages;
         }
         
         private void Add(in SetInfo info) {

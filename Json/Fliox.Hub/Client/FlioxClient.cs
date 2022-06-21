@@ -304,7 +304,6 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// </remarks>
         public MessageTask SendMessage(string name) {
             var task = new MessageTask(name, new JsonValue());
-            _intern.syncStore.MessageTasks().Add(task);
             AddTask(task);
             return task;
         }
@@ -319,7 +318,6 @@ namespace Friflo.Json.Fliox.Hub.Client
                 var writer  = pooled.instance.writer;
                 var json    = writer.WriteAsArray(param);
                 var task    = new MessageTask(name, new JsonValue(json));
-                _intern.syncStore.MessageTasks().Add(task);
                 AddTask(task);
                 return task;
             }
@@ -334,7 +332,6 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// </remarks>
         public CommandTask<TResult> SendCommand<TResult>(string name) {
             var task    = new CommandTask<TResult>(name, new JsonValue(), _intern.pool);
-            _intern.syncStore.MessageTasks().Add(task);
             AddTask(task);
             return task;
         }
@@ -349,7 +346,6 @@ namespace Friflo.Json.Fliox.Hub.Client
                 var mapper  = pooled.instance;
                 var json    = mapper.WriteAsArray(param);
                 var task    = new CommandTask<TResult>(name, new JsonValue(json), _intern.pool);
-                _intern.syncStore.MessageTasks().Add(task);
                 AddTask(task);
                 return task;
             }

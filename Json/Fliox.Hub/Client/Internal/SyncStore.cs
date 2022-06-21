@@ -15,10 +15,6 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         private     List<DetectAllPatches>      detectAllPatches;
         private     List<DetectAllPatches>      DetectAllPatches()  => detectAllPatches ?? (detectAllPatches = new List<DetectAllPatches>());
         
-        internal    List<MessageTask>           messageTasks;
-        internal    List<MessageTask>           MessageTasks()      => messageTasks ?? (messageTasks = new List<MessageTask>());
-        private     int                         messageTasksIndex;
-        
         private     List<SubscribeMessageTask>  subscribeMessage;
         internal    List<SubscribeMessageTask>  SubscribeMessage()  => subscribeMessage ?? (subscribeMessage = new List<SubscribeMessageTask>());
         private     int                         subscribeMessageIndex;
@@ -43,31 +39,13 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         
         // ----------------------------------- add tasks methods -----------------------------------
         internal void AddTasks(List<SyncRequestTask> tasks) {
-            Message             (tasks);
+        //  Message             (tasks);
             SubscribeMessage    (tasks);
         }
                 
         // --- Message
-        private void Message(List<SyncRequestTask> tasks) {
-            if (messageTasks == null)
-                return;
-            foreach (var messageTask in messageTasks) {
-                SyncMessageTask msg;
-                if (messageTask is CommandTask) {
-                    msg = new SendCommand { name  = messageTask.name, param = messageTask.param };
-                } else {
-                    msg = new SendMessage { name  = messageTask.name, param = messageTask.param };
-                }
-                tasks.Add(msg);
-            }
-        }
-        
         internal void MessageResult (SyncMessageTask task, SyncTaskResult result) {
-            // consider invalid response
-            if (messageTasks == null || messageTasksIndex >= messageTasks.Count)
-                return;
-            var index = messageTasksIndex++;
-            var messageTask = messageTasks[index];
+            var messageTask = (MessageTask)task.syncTask;
             if (result is TaskErrorResult taskError) {
                 messageTask.state.SetError(new TaskErrorInfo(taskError));
                 return;

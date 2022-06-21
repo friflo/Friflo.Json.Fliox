@@ -138,16 +138,14 @@ namespace Friflo.Json.Fliox.Hub.Client
                 eventAck    = _intern.lastEventSeq
             };
 
+            // todo remove loop after SyncSet refactoring
             foreach (var setPair in _intern.setByType) {
                 EntitySet set       = setPair.Value;
-                var setInfo         = set.SetInfo;
-                var curTaskCount    = tasks.Count;
                 var syncSet         = set.SyncSet;
                 // ReSharper disable once UseNullPropagation
                 if (syncSet != null) {
                     syncSet.AddTasks(tasks, mapper);
                 }
-                AssertTaskCount(setInfo, tasks.Count - curTaskCount);
             }
 
             foreach (var function in syncStore.functions) {
@@ -170,14 +168,6 @@ namespace Friflo.Json.Fliox.Hub.Client
             return syncRequest;
         }
 
-        [Conditional("DEBUG")]
-        private static void AssertTaskCount(in SetInfo setInfo, int taskCount) {
-            return;
-            int expect  = setInfo.tasks; 
-            if (expect != taskCount)
-                throw new InvalidOperationException($"Unexpected task.Count. expect: {expect}, got: {taskCount}");
-        }
-        
         private static void CopyEntityErrorsToMap(List<EntityError> errors, string container, ref IDictionary<JsonKey, EntityError> errorMap) {
             foreach (var error in errors) {
                 // error .container is not serialized as it is redundant data.
