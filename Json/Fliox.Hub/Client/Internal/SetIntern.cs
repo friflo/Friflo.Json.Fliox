@@ -20,6 +20,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         internal            bool                writePretty;
         internal            bool                writeNull;
         
+        public    override  string              ToString()  => "";
+        
         internal List<TKey>     GetKeysBuf()    => keysBuf      ?? (keysBuf = new List<TKey>());
         internal TypeMapper<T>  GetMapper()     => typeMapper   ?? (typeMapper = (TypeMapper<T>)store._intern.typeStore.GetTypeMapper(typeof(T)));
 

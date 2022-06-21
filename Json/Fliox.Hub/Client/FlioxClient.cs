@@ -48,8 +48,8 @@ namespace Friflo.Json.Fliox.Hub.Client
         internal            ClientIntern                _intern;
         public              string                      DatabaseName    => _intern.database ?? _intern.hub.DatabaseName;
         public              IReadOnlyList<SyncTask>     Tasks           => GetTasks();
-        public   readonly   StdCommands                 std;
-        
+
+        [DebuggerBrowsable(Never)]  public readonly   StdCommands           std;
         [DebuggerBrowsable(Never)]  public      IReadOnlyList<SyncFunction> Functions       => _intern.syncStore.functions;
         [DebuggerBrowsable(Never)]  public      StoreInfo                   StoreInfo       => new StoreInfo(_intern.syncStore, _intern.setByType); 
         [DebuggerBrowsable(Never)]  public      bool                        WritePretty { set => SetWritePretty(value); }

@@ -55,6 +55,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         internal ObjectPatcher          ObjectPatcher()         => objectPatcher         ?? (objectPatcher         = new ObjectPatcher());
         internal SubscriptionProcessor  SubscriptionProcessor() => subscriptionProcessor ?? (subscriptionProcessor = new SubscriptionProcessor());
 
+        public   override string        ToString()              => "";
+
         private static readonly Dictionary<Type, IEntitySetMapper[]> MapperCache = new Dictionary<Type, IEntitySetMapper[]>();
         private static readonly DirectEventProcessor                 DefaultEventProcessor = new DirectEventProcessor();
 

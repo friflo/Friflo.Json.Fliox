@@ -41,6 +41,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         internal  readonly  List<SyncTask>      tasks  = new List<SyncTask>();
 
         internal  override  EntitySet           EntitySet => set;
+        public    override  string              ToString()  => "";
 
         internal SyncSet(EntitySet<TKey, T> set) {
             this.set = set;

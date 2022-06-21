@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System.Diagnostics;
 using Friflo.Json.Fliox;
 using Friflo.Json.Fliox.Hub.Client;
 using Friflo.Json.Fliox.Hub.Host;
@@ -39,6 +40,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             test = new TestCommands(this);
         }
         
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         public readonly TestCommands    test;
         
         // --- commands
