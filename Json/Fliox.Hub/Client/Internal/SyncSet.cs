@@ -36,19 +36,15 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         private static readonly EntityKeyT<TKey, T> EntityKeyTMap   = EntityKey.GetEntityKeyT<TKey, T>();
         private static readonly KeyConverter<TKey>  KeyConvert      = KeyConverter.GetConverter<TKey>();
 
-        // --- private members
-        // Note!
-        // All fields & getters must be private by all means to ensure that all scheduled tasks of a SyncTasks() call
-        // managed by this instance can be mapped to their task results safely.
+        // --- internal fields
+        internal  readonly  EntitySet<TKey, T>  set;
+        internal  readonly  List<SyncTask>      tasks  = new List<SyncTask>();
 
-        internal    readonly EntitySet<TKey, T>     set;
-        internal    readonly List<SyncTask>         tasks  = new List<SyncTask>();
+        internal  override  EntitySet           EntitySet => set;
 
         internal SyncSet(EntitySet<TKey, T> set) {
             this.set = set;
         }
-        
-        internal  override  EntitySet               EntitySet => set;
 
         // --- Read
         internal ReadTask<TKey, T> Read() {

@@ -323,11 +323,16 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             closeCursor.state.Executed  = true;
         }
 
+        /// <summary>
         /// In case of a <see cref="TaskErrorResult"/> add entity errors to <see cref="SyncSet.errorsPatch"/> for all
-        /// <see cref="Patches"/> to enable setting <see cref="DetectPatchesTask"/> to error state via <see cref="DetectPatchesTask{T}.SetResult"/>. 
+        /// <see cref="DetectPatchesTask{T}.entityPatches"/> to enable setting <see cref="DetectPatchesTask"/> to
+        /// error state via <see cref="DetectPatchesTask{T}.SetResult"/>.
+        /// </summary> 
         internal override void PatchEntitiesResult(PatchEntities task, SyncTaskResult result) {
+            // task is either a PatchTask<T> or a DetectPatchesTask<T>
             var patchTask       = task.syncTask as PatchTask<T>;
             var detectPatches   = task.syncTask as DetectPatchesTask<T>;
+            // ReSharper disable once PossibleNullReferenceException
             var patches         = patchTask != null ? patchTask.entityPatches : detectPatches.entityPatches;
             if (result is TaskErrorResult taskError)
             {

@@ -25,7 +25,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         [DebuggerBrowsable(Never)]
         private  readonly   List<EntityPatchInfo<T>>            patches;
         internal readonly   Dictionary<JsonKey, EntityPatch>    entityPatches;
-        internal readonly   SyncSetBase<T>                      syncSet;
+        private  readonly   SyncSetBase<T>                      syncSet;
 
         [DebuggerBrowsable(Never)]
         internal            TaskState                           state;
