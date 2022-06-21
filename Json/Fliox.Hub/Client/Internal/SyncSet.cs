@@ -43,63 +43,17 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         internal    readonly List<SyncTask>         tasks  = new List<SyncTask>();
 
         // --- backing fields for lazy-initialized getters
-    //  private     List<ReadTask<TKey, T>>         _readTasks;
-    //  private     int                             readTasksIndex;
-
-    //  private     List<QueryTask<T>>              _queryTasks;
-    //  private     int                             queriesTasksIndex;
-
-    //  private     List<AggregateTask>             _aggregateTasks;
-    //  private     int                             aggregatesTasksIndex;
-
-    //  private     List<CloseCursorsTask>          _closeCursors;
-    //  private     int                             closeCursorsIndex;
-
-    //  private     HashSet<T>                      _autos;
 
         private     ReserveKeysTask<TKey,T>         _reserveKeys;
-
-    //  private     Dictionary<JsonKey, Peer<T>>    _creates;
-    //  private     List<WriteTask<T>>              _createTasks;
-
-    //  private     Dictionary<JsonKey, Peer<T>>    _upserts;
-    //  private     List<WriteTask<T>>              _upsertTasks;
 
         private     Dictionary<JsonKey, EntityPatch>_patches;
         private     List<PatchTask<T>>              _patchTasks;
         private     List<DetectPatchesTask<T>>      _detectPatchesTasks;
 
-    //  private     HashSet<TKey>                   _deletes;
-    //  private     List<DeleteTask<TKey, T>>       _deleteTasks;
-
         // --- lazy-initialized getters => they behave like readonly fields
-    //  private     List<ReadTask<TKey, T>>         Reads()         => _readTasks   ?? (_readTasks  = new List<ReadTask<TKey, T>>());
-
-    //  private     List<QueryTask<T>>              Queries()       => _queryTasks  ?? (_queryTasks = new List<QueryTask<T>>());
-
-    //  private     List<AggregateTask>             Aggregates()    => _aggregateTasks?? (_aggregateTasks  = new List<AggregateTask>());
-
-    //  private     List<CloseCursorsTask>          CloseCursors()  =>_closeCursors ?? (_closeCursors= new List<CloseCursorsTask>());
-
-    //  private     SubscribeChangesTask<T>         subscribeChanges;
-
-    //  private     HashSet<T>                      Autos()         => _autos       ?? (_autos       = new HashSet<T>(EntityEqualityComparer<T>.Instance));
-
-    //  private     Dictionary<JsonKey, Peer<T>>    Creates()       => _creates     ?? (_creates     = new Dictionary<JsonKey, Peer<T>>(JsonKey.Equality));
-    //  private     List<WriteTask<T>>              CreateTasks()   => _createTasks ?? (_createTasks = new List<WriteTask<T>>());
-
-    //  private     Dictionary<JsonKey, Peer<T>>    Upserts()       => _upserts     ?? (_upserts     = new Dictionary<JsonKey, Peer<T>>(JsonKey.Equality));
-    //  private     List<WriteTask<T>>              UpsertTasks()   => _upsertTasks ?? (_upsertTasks = new List<WriteTask<T>>());
-
         private     Dictionary<JsonKey, EntityPatch>Patches()           => _patches            ?? (_patches           = new Dictionary<JsonKey, EntityPatch>(JsonKey.Equality));
         private     List<PatchTask<T>>              PatchTasks()        => _patchTasks         ?? (_patchTasks         = new List<PatchTask<T>>());
         private     List<DetectPatchesTask<T>>      DetectPatchesTasks()=> _detectPatchesTasks ?? (_detectPatchesTasks = new List<DetectPatchesTask<T>>());
-
-    //  private     HashSet<TKey>                   Deletes()       => _deletes     ?? (_deletes     = CreateHashSet<TKey>(0));
-    //  private     List<DeleteTask<TKey, T>>       DeleteTasks()   => _deleteTasks ?? (_deleteTasks = new List<DeleteTask<TKey, T>>());
-
-    //  private     DeleteAllTask<TKey, T>          _deleteTaskAll;
-        
 
         internal SyncSet(EntitySet<TKey, T> set) {
             this.set = set;
