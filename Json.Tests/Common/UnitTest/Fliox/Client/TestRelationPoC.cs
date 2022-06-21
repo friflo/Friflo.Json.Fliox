@@ -84,8 +84,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             var type1           = new TestType { id = "type-1", dateTime = new DateTime(2021, 7, 22, 6, 0, 0, DateTimeKind.Utc), derivedClass = derivedClass };
             var createCam1      = articles.Create(cameraCreate);
                                   articles.Upsert(notebook);
-            var createCam2      = articles.Create(cameraCreate);   // Create new CreateTask for same entity
-            AreNotSame(createCam1, createCam2);               
             AreEqual("CreateTask<Article> (#keys: 1)", createCam1.ToString());
 
             var newBulkArticles = new List<Article>();
@@ -104,9 +102,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             articles.Upsert(camForDelete);
             // StoreInfo is accessible via property an ToString()
             AreEqual(11, store.StoreInfo.peers);
-            AreEqual(7,  store.StoreInfo.tasks); 
-            AreSimilar("entities: 11, tasks: 7 [container: 7]",                     store);
-            AreSimilar("articles:  7, tasks: 6 [create: 2, upsert: 3, read: 1]",    articles);
+            AreEqual(6,  store.StoreInfo.tasks); 
+            AreSimilar("entities: 11, tasks: 6 [container: 6]",                     store);
+            AreSimilar("articles:  7, tasks: 5 [create: 1, upsert: 3, read: 1]",    articles);
             AreSimilar("producers: 3, tasks: 1 [create: 1]",                        producers);
             AreSimilar("employees: 1",                                              employees);
             

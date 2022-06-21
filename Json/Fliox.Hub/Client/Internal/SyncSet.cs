@@ -19,12 +19,12 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
 {
     internal abstract class SyncSetBase <T> : SyncSet where T : class
     {
-        internal abstract void AddUpsert (Peer<T> peer);
-        internal abstract void AddCreate (Peer<T> peer);
         internal abstract void AddEntityPatches(PatchTask<T> patchTask, ICollection<T> entities);
         
         internal abstract QueryEntities     QueryEntities   (QueryTask<T> query);
         internal abstract SubscribeChanges  SubscribeChanges(SubscribeChangesTask<T> sub);
+        internal abstract CreateEntities    CreateEntities  (CreateTask<T> create);
+        internal abstract UpsertEntities    UpsertEntities  (UpsertTask<T> upsert);
     }
 
     /// Multiple instances of this class can be created when calling <see cref="FlioxClient.SyncTasks"/> without
@@ -55,15 +55,15 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
     //  private     List<CloseCursorsTask>          _closeCursors;
     //  private     int                             closeCursorsIndex;
 
-        private     HashSet<T>                      _autos;
+    //  private     HashSet<T>                      _autos;
 
         private     ReserveKeysTask<TKey,T>         _reserveKeys;
 
-        private     Dictionary<JsonKey, Peer<T>>    _creates;
-        private     List<WriteTask>                 _createTasks;
+    //  private     Dictionary<JsonKey, Peer<T>>    _creates;
+    //  private     List<WriteTask<T>>              _createTasks;
 
-        private     Dictionary<JsonKey, Peer<T>>    _upserts;
-        private     List<WriteTask>                 _upsertTasks;
+    //  private     Dictionary<JsonKey, Peer<T>>    _upserts;
+    //  private     List<WriteTask<T>>              _upsertTasks;
 
         private     Dictionary<JsonKey, EntityPatch>_patches;
         private     List<PatchTask<T>>              _patchTasks;
@@ -83,13 +83,13 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
 
     //  private     SubscribeChangesTask<T>         subscribeChanges;
 
-        private     HashSet<T>                      Autos()         => _autos       ?? (_autos       = new HashSet<T>(EntityEqualityComparer<T>.Instance));
+    //  private     HashSet<T>                      Autos()         => _autos       ?? (_autos       = new HashSet<T>(EntityEqualityComparer<T>.Instance));
 
-        private     Dictionary<JsonKey, Peer<T>>    Creates()       => _creates     ?? (_creates     = new Dictionary<JsonKey, Peer<T>>(JsonKey.Equality));
-        private     List<WriteTask>                 CreateTasks()   => _createTasks ?? (_createTasks = new List<WriteTask>());
+    //  private     Dictionary<JsonKey, Peer<T>>    Creates()       => _creates     ?? (_creates     = new Dictionary<JsonKey, Peer<T>>(JsonKey.Equality));
+    //  private     List<WriteTask<T>>              CreateTasks()   => _createTasks ?? (_createTasks = new List<WriteTask<T>>());
 
-        private     Dictionary<JsonKey, Peer<T>>    Upserts()       => _upserts     ?? (_upserts     = new Dictionary<JsonKey, Peer<T>>(JsonKey.Equality));
-        private     List<WriteTask>                 UpsertTasks()   => _upsertTasks ?? (_upsertTasks = new List<WriteTask>());
+    //  private     Dictionary<JsonKey, Peer<T>>    Upserts()       => _upserts     ?? (_upserts     = new Dictionary<JsonKey, Peer<T>>(JsonKey.Equality));
+    //  private     List<WriteTask<T>>              UpsertTasks()   => _upsertTasks ?? (_upsertTasks = new List<WriteTask<T>>());
 
         private     Dictionary<JsonKey, EntityPatch>Patches()           => _patches            ?? (_patches           = new Dictionary<JsonKey, EntityPatch>(JsonKey.Equality));
         private     List<PatchTask<T>>              PatchTasks()        => _patchTasks         ?? (_patchTasks         = new List<PatchTask<T>>());
@@ -105,16 +105,6 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             this.set = set;
         }
         internal  override  EntitySet               EntitySet => set;
-
-        internal override void AddCreate (Peer<T> peer) {
-            Creates().TryAdd(peer.id, peer);    // sole place a peer (entity) is added
-            peer.state = PeerState.Created;     // sole place Created is set
-        }
-
-        internal override void AddUpsert (Peer<T> peer) {
-            Upserts().TryAdd(peer.id, peer);    // sole place a peer (entity) is added
-            peer.state = PeerState.Updated;     // sole place Updated is set
-        }
 
         internal void AddDelete (TKey id) {
             Deletes().Add(id);
@@ -175,45 +165,45 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         // --- Create
         internal CreateTask<T> Create(T entity) {
             if (set.intern.autoIncrement) {
-                set.NewEntities().Add(entity);
-                Autos().Add(entity);
-                var create1 = new CreateTask<T>(new List<T>{entity}, set);
-                CreateTasks().Add(create1);
-                return create1;
+                //  set.NewEntities().Add(entity);
+                //  Autos().Add(entity);
+                //  var create1 = new CreateTask<T>(new List<T>{entity}, set, this);
+                //  CreateTasks().Add(create1);
+                //  return create1;
             }
-            var peer = set.CreatePeer(entity);
-            AddCreate(peer);
-            var create = new CreateTask<T>(new List<T>{entity}, set);
-            CreateTasks().Add(create);
+            var create  = new CreateTask<T>(new List<T>{entity}, set, this);
+            var peer    = set.CreatePeer(entity);
+            create.AddPeer(peer, PeerState.Created);
+            tasks.Add(create);
             return create;
         }
 
         internal CreateTask<T> CreateRange(ICollection<T> entities) {
+            var create = new CreateTask<T>(entities.ToList(), set, this);
             foreach (var entity in entities) {
                 var peer = set.CreatePeer(entity);
-                AddCreate(peer);
+                create.AddPeer(peer, PeerState.Created);
             }
-            var create = new CreateTask<T>(entities.ToList(), set);
-            CreateTasks().Add(create);
+            tasks.Add(create);
             return create;
         }
 
         // --- Upsert
         internal UpsertTask<T> Upsert(T entity) {
-            var peer = set.CreatePeer(entity);
-            AddUpsert(peer);
-            var upsert = new UpsertTask<T>(new List<T>{entity}, set);
-            UpsertTasks().Add(upsert);
+            var upsert  = new UpsertTask<T>(new List<T>{entity}, set, this);
+            var peer    = set.CreatePeer(entity);
+            upsert.AddPeer(peer, PeerState.Updated);
+            tasks.Add(upsert);
             return upsert;
         }
 
         internal UpsertTask<T> UpsertRange(ICollection<T> entities) {
+            var upsert = new UpsertTask<T>(entities.ToList(), set, this);
             foreach (var entity in entities) {
                 var peer = set.CreatePeer(entity);
-                AddUpsert(peer);
+                upsert.AddPeer(peer, PeerState.Updated);
             }
-            var upsert = new UpsertTask<T>(entities.ToList(), set);
-            UpsertTasks().Add(upsert);
+            tasks.Add(upsert);
             return upsert;
         }
 
@@ -289,8 +279,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         //  CloseCursors        (tasks);
             ReserveKeys         (tasks);
             // --- mutate tasks
-            CreateEntities      (tasks, mapper);
-            UpsertEntities      (tasks, mapper);
+        //  CreateEntities      (tasks, mapper);
+        //  UpsertEntities      (tasks, mapper);
             PatchEntities       (tasks);
             DeleteEntities      (tasks);
             DeleteAll           (tasks);
@@ -312,19 +302,17 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             tasks.Add(req);
         }
 
-        private void CreateEntities(List<SyncRequestTask> tasks, ObjectMapper mapper) {
-            var createCount = _creates?.Count   ?? 0;
-            var autoCount   = _autos?.Count     ?? 0;
-            var count       = createCount + autoCount;
-            if (count == 0)
-                return;
-            var entries = new List<JsonValue>   (count);
-            var keys    = new List<JsonKey>     (count);
-            var writer  = mapper.writer;
-            writer.Pretty           = set.intern.writePretty;
-            writer.WriteNullMembers = set.intern.writeNull;
-            if (_creates  != null) {
-                foreach (var createPair in _creates) {
+        internal override CreateEntities CreateEntities(CreateTask<T> create) {
+            // todo pass ObjectMapper as parameter by SyncTask.CreateRequestTask() 
+            using(var pooled = set.intern.store.ObjectMapper.Get()) {
+                var creates = create.peers;
+                var entries = new List<JsonValue>   (creates.Count);
+                var keys    = new List<JsonKey>     (creates.Count);
+                var writer  = pooled.instance.writer;
+                writer.Pretty           = set.intern.writePretty;
+                writer.WriteNullMembers = set.intern.writeNull;
+
+                foreach (var createPair in creates) {
                     T entity    = createPair.Value.Entity;
                     var json    = writer.WriteAsArray(entity);
                     var entry   = new JsonValue(json);
@@ -332,53 +320,43 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                     entries.Add(entry);
                     keys.Add(id);
                 }
+                return new CreateEntities {
+                    container       = set.name,
+                    keyName         = SyncKeyName(set.GetKeyName()),
+                    entities        = entries,
+                    entityKeys      = keys,
+                    reservedToken   = new Guid(), // todo
+                    syncTask        = create
+                };
             }
-            if (_autos  != null) {
-                long autoId = -1;   // todo use reserved keys
-                foreach (var entity in _autos) {
-                    var id      = new JsonKey(autoId);
-                    var key     = KeyConvert.IdToKey(id);
-                    EntityKeyTMap.SetKey(entity, key);
+        }
+
+        internal override UpsertEntities UpsertEntities(UpsertTask<T> upsert) {
+            // todo pass ObjectMapper as parameter by SyncTask.CreateRequestTask()
+            using(var pooled = set.intern.store.ObjectMapper.Get()) {
+                var peers               = upsert.peers;
+                var writer              = pooled.instance.writer;
+                writer.Pretty           = set.intern.writePretty;
+                writer.WriteNullMembers = set.intern.writeNull;
+                var entries = new List<JsonValue>  (peers.Count);
+                var keys    = new List<JsonKey>    (peers.Count);
+
+                foreach (var upsertPair in peers) {
+                    T entity    = upsertPair.Value.Entity;
                     var json    = writer.WriteAsArray(entity);
                     var entry   = new JsonValue(json);
+                    var id      = EntityKeyTMap.GetId(entity);
                     entries.Add(entry);
                     keys.Add(id);
                 }
+                return new UpsertEntities {
+                    container   = set.name,
+                    keyName     = SyncKeyName(set.GetKeyName()),
+                    entities    = entries,
+                    entityKeys  = keys,
+                    syncTask    = upsert  
+                };
             }
-            var req = new CreateEntities {
-                container       = set.name,
-                keyName         = SyncKeyName(set.GetKeyName()),
-                entities        = entries,
-                entityKeys      = keys,
-                reservedToken   = new Guid() // todo
-            };
-            tasks.Add(req);
-        }
-
-        private void UpsertEntities(List<SyncRequestTask> tasks, ObjectMapper mapper) {
-            if (_upserts == null || _upserts.Count == 0)
-                return;
-            var writer              = mapper.writer;
-            writer.Pretty           = set.intern.writePretty;
-            writer.WriteNullMembers = set.intern.writeNull;
-            var entries = new List<JsonValue>   (_upserts.Count);
-            var keys    = new List<JsonKey>    (_upserts.Count);
-
-            foreach (var upsertPair in _upserts) {
-                T entity    = upsertPair.Value.Entity;
-                var json    = writer.WriteAsArray(entity);
-                var entry   = new JsonValue(json);
-                var id      = EntityKeyTMap.GetId(entity);
-                entries.Add(entry);
-                keys.Add(id);
-            }
-            var req = new UpsertEntities {
-                container   = set.name,
-                keyName     = SyncKeyName(set.GetKeyName()),
-                entities    = entries,
-                entityKeys  = keys
-            };
-            tasks.Add(req);
         }
 
         internal SyncRequestTask ReadEntities(ReadTask<TKey,T> read) {
@@ -599,8 +577,6 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 //  case TaskType.reserveKeys:      info.reserveKeys++;         break;
                 }
             }
-            info.create         = SetInfo.Count(_createTasks) + SetInfo.Count(_autos);
-            info.upsert         = SetInfo.Count(_upsertTasks);
             info.patch          = SetInfo.Count(_patches);
             info.delete         = SetInfo.Count(_deleteTasks);
             
@@ -610,8 +586,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 info.query                          +
                 info.aggregate                      +
                 info.closeCursors                   +
-                SetInfo.Count(_createTasks)         +  SetInfo.Any  (_autos) +
-                SetInfo.Count(_upsertTasks)         +
+                info.create                         +  // SetInfo.Any  (_autos) +
+                info.upsert                         +
                 SetInfo.Any  (_patches)             +
                 SetInfo.Count(_deleteTasks)         +
                 (_deleteTaskAll   != null ? 1 : 0)  +

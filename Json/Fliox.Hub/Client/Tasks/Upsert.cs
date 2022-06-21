@@ -13,17 +13,19 @@ namespace Friflo.Json.Fliox.Hub.Client
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
-    public sealed class UpsertTask<T> : WriteTask where T : class
+    public sealed class UpsertTask<T> : WriteTask<T> where T : class
     {
-        private readonly    EntitySetBase<T>    set;
+        private  readonly   EntitySetBase<T>    set;
+        private  readonly   SyncSetBase<T>      syncSet;
         private  readonly   List<T>             entities;
 
         public   override   string              Details     => $"UpsertTask<{typeof(T).Name}> (#keys: {entities.Count})";
         internal override   TaskType            TaskType    => TaskType.upsert;
         
         
-        internal UpsertTask(List<T> entities, EntitySetBase<T> set) {
+        internal UpsertTask(List<T> entities, EntitySetBase<T> set, SyncSetBase<T> syncSet) {
             this.set        = set;
+            this.syncSet    = syncSet;
             this.entities   = entities;
         }
         
@@ -31,20 +33,18 @@ namespace Friflo.Json.Fliox.Hub.Client
             if (entity == null)
                 throw new ArgumentException($"UpsertTask<{set.name}>.Add() entity must not be null.");
             var peer = set.CreatePeer(entity);
-            var syncSet = set.GetSyncSetBase();
-            syncSet.AddUpsert(peer);
+            AddPeer(peer, PeerState.Updated);
             entities.Add(entity);
         }
         
         public void AddRange(ICollection<T> entities) {
             var n = 0;
-            var syncSet = set.GetSyncSetBase();
             foreach (var entity in entities) {
                 if (entity == null)
                     throw new ArgumentException($"UpsertTask<{set.name}>.AddRange() entities[{n}] must not be null.");
                 n++;
                 var peer = set.CreatePeer(entity);
-                syncSet.AddUpsert(peer);
+                AddPeer(peer, PeerState.Updated);
             }
             this.entities.AddRange(entities);
         }
@@ -55,5 +55,10 @@ namespace Friflo.Json.Fliox.Hub.Client
                 ids.Add(id);
             }
         }
+        
+        internal override SyncRequestTask CreateRequestTask() {
+            return syncSet.UpsertEntities(this);
+        }
+
     }
 }

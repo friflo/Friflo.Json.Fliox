@@ -88,10 +88,11 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         }
         
         /// In case of a <see cref="TaskErrorResult"/> add entity errors to <see cref="SyncSet.errorsCreate"/> for all
-        /// <see cref="Creates"/> to enable setting <see cref="DetectPatchesTask"/> to error state via <see cref="DetectPatchesTask{T}.SetResult"/>. 
+        /// <see cref="WriteTask{T}.peers"/> to enable setting <see cref="DetectPatchesTask"/> to error state via <see cref="DetectPatchesTask{T}.SetResult"/>. 
         internal override void CreateEntitiesResult(CreateEntities task, SyncTaskResult result, ObjectMapper mapper) {
-            CreateUpsertEntitiesResult(task.entityKeys, task.entities, result, CreateTasks(), errorsCreate, mapper);
-            var creates = Creates();
+            var createTask = (CreateTask<T>)task.syncTask;
+            CreateUpsertEntitiesResult(task.entityKeys, task.entities, result, createTask, errorsCreate, mapper);
+            var creates = createTask.peers;
             if (result is TaskErrorResult taskError) {
                 if (errorsCreate == NoErrors) {
                     errorsCreate = new Dictionary<JsonKey, EntityError>(creates.Count, JsonKey.Equality);
@@ -105,31 +106,23 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                     errorsCreate.TryAdd(id, error);
                 }
             }
-            // enable GC to collect references in containers which are not needed anymore
-            creates.Clear();
-            CreateTasks().Clear();
         }
 
         internal override void UpsertEntitiesResult(UpsertEntities task, SyncTaskResult result, ObjectMapper mapper) {
-            CreateUpsertEntitiesResult(task.entityKeys, task.entities, result, UpsertTasks(), errorsUpsert, mapper);
-            
-            // enable GC to collect references in containers which are not needed anymore
-            Upserts().Clear();
-            UpsertTasks().Clear();
+            var upsertTask = (UpsertTask<T>)task.syncTask;
+            CreateUpsertEntitiesResult(task.entityKeys, task.entities, result, upsertTask, errorsUpsert, mapper);
         }
 
         private void CreateUpsertEntitiesResult(
             List<JsonKey>                       keys,
             List<JsonValue>                     entities,
             SyncTaskResult                      result,
-            List<WriteTask>                     writeTasks,
+            WriteTask<T>                        writeTask,
             IDictionary<JsonKey, EntityError>   writeErrors,
             ObjectMapper                        mapper)
         {
             if (result is TaskErrorResult taskError) {
-                foreach (var writeTask in writeTasks) {
-                    writeTask.state.SetError(new TaskErrorInfo(taskError));
-                }
+                writeTask.state.SetError(new TaskErrorInfo(taskError));
                 return;
             }
             if (keys.Count != entities.Count)
@@ -147,22 +140,21 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 peer.state  = PeerState.None;
                 peer.SetPatchSource(reader.Read<T>(entity));
             }
-            foreach (var writeTask in writeTasks) {
-                var entityErrorInfo = new TaskErrorInfo();
-                var idsBuf = set.intern.store._intern.idsBuf;
-                idsBuf.Clear();
-                writeTask.GetIds(idsBuf);
-                foreach (var id in idsBuf) {
-                    if (writeErrors.TryGetValue(id, out EntityError error)) {
-                        entityErrorInfo.AddEntityError(error);
-                    }
+
+            var entityErrorInfo = new TaskErrorInfo();
+            var idsBuf = set.intern.store._intern.idsBuf;
+            idsBuf.Clear();
+            writeTask.GetIds(idsBuf);
+            foreach (var id in idsBuf) {
+                if (writeErrors.TryGetValue(id, out EntityError error)) {
+                    entityErrorInfo.AddEntityError(error);
                 }
-                if (entityErrorInfo.HasErrors) {
-                    writeTask.state.SetError(entityErrorInfo);
-                    continue;
-                }
-                writeTask.state.Executed = true;
             }
+            if (entityErrorInfo.HasErrors) {
+                writeTask.state.SetError(entityErrorInfo);
+                return;
+            }
+            writeTask.state.Executed = true;
         }
 
         internal override void ReadEntitiesResult(ReadEntities task, SyncTaskResult result, ContainerEntities readEntities) {
