@@ -14,14 +14,9 @@ namespace Friflo.Json.Fliox.Hub.Client
 {
     public abstract class DetectPatchesTask : SyncTask
     {
-        internal readonly   SyncSet                         syncSet;
-        public              string                          Container   => syncSet.EntitySet.name;
+        public   abstract   string                          Container   { get; }
         public   abstract   IReadOnlyList<EntityPatchInfo>  GetPatches();
         internal abstract   int                             GetPatchCount();
-        
-        internal DetectPatchesTask(SyncSet syncSet) {
-            this.syncSet    = syncSet;
-        }
     }
     
     public class DetectPatchesTask<T> : DetectPatchesTask  where T : class
@@ -29,6 +24,8 @@ namespace Friflo.Json.Fliox.Hub.Client
         public              IReadOnlyList<EntityPatchInfo<T>>   Patches     => patches;
         [DebuggerBrowsable(Never)]
         private  readonly   List<EntityPatchInfo<T>>            patches;
+        internal readonly   Dictionary<JsonKey, EntityPatch>    entityPatches;
+        internal readonly   SyncSetBase<T>                      syncSet;
 
         [DebuggerBrowsable(Never)]
         internal            TaskState                           state;
@@ -36,10 +33,13 @@ namespace Friflo.Json.Fliox.Hub.Client
         public   override   string                              Details => $"DetectPatchesTask (container: {Container}, patches: {patches.Count})";
         internal override   TaskType                            TaskType=> TaskType.patch;
         
+        public   override   string                              Container       => syncSet.EntitySet.name;
         internal override   int                                 GetPatchCount() => patches.Count;
 
-        internal DetectPatchesTask(SyncSet syncSet) : base(syncSet) {
+        internal DetectPatchesTask(SyncSetBase<T> syncSet) {
+            this.syncSet    = syncSet;
             patches         = new List<EntityPatchInfo<T>>();
+            entityPatches   = new Dictionary<JsonKey, EntityPatch>(JsonKey.Equality);
         }
         
         public override IReadOnlyList<EntityPatchInfo> GetPatches() {
@@ -69,6 +69,10 @@ namespace Friflo.Json.Fliox.Hub.Client
             } else {
                 state.Executed = true;
             }
+        }
+        
+        internal override SyncRequestTask CreateRequestTask() {
+            return syncSet.PatchEntities(this);
         }
     }
 }

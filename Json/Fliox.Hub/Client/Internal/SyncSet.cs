@@ -21,10 +21,12 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
     {
         internal abstract void AddEntityPatches(PatchTask<T> patchTask, ICollection<T> entities);
         
-        internal abstract QueryEntities     QueryEntities   (QueryTask<T> query);
-        internal abstract SubscribeChanges  SubscribeChanges(SubscribeChangesTask<T> sub);
-        internal abstract CreateEntities    CreateEntities  (CreateTask<T> create);
-        internal abstract UpsertEntities    UpsertEntities  (UpsertTask<T> upsert);
+        internal abstract QueryEntities     QueryEntities   (QueryTask<T>               query);
+        internal abstract SubscribeChanges  SubscribeChanges(SubscribeChangesTask<T>    sub);
+        internal abstract CreateEntities    CreateEntities  (CreateTask<T>              create);
+        internal abstract UpsertEntities    UpsertEntities  (UpsertTask<T>              upsert);
+        internal abstract PatchEntities     PatchEntities   (PatchTask<T>               patch);
+        internal abstract PatchEntities     PatchEntities   (DetectPatchesTask<T>       detectPatches);
     }
 
     /// Multiple instances of this class can be created when calling <see cref="FlioxClient.SyncTasks"/> without
@@ -42,20 +44,10 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         internal    readonly EntitySet<TKey, T>     set;
         internal    readonly List<SyncTask>         tasks  = new List<SyncTask>();
 
-        // --- backing fields for lazy-initialized getters
-
-        private     Dictionary<JsonKey, EntityPatch>_patches;
-        private     List<PatchTask<T>>              _patchTasks;
-        private     List<DetectPatchesTask<T>>      _detectPatchesTasks;
-
-        // --- lazy-initialized getters => they behave like readonly fields
-        private     Dictionary<JsonKey, EntityPatch>Patches()           => _patches            ?? (_patches           = new Dictionary<JsonKey, EntityPatch>(JsonKey.Equality));
-        private     List<PatchTask<T>>              PatchTasks()        => _patchTasks         ?? (_patchTasks         = new List<PatchTask<T>>());
-        private     List<DetectPatchesTask<T>>      DetectPatchesTasks()=> _detectPatchesTasks ?? (_detectPatchesTasks = new List<DetectPatchesTask<T>>());
-
         internal SyncSet(EntitySet<TKey, T> set) {
             this.set = set;
         }
+        
         internal  override  EntitySet               EntitySet => set;
 
         // --- Read
@@ -171,13 +163,13 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         // - assign patches
         internal PatchTask<T> Patch(MemberSelection<T> member) {
             var patchTask  = new PatchTask<T>(this, member);
-            PatchTasks().Add(patchTask);
+            tasks.Add(patchTask);
             return patchTask;
         }
 
         // - detect patches
         internal void AddDetectPatches(DetectPatchesTask<T> detectPatchesTask) {
-            DetectPatchesTasks().Add(detectPatchesTask);
+            tasks.Add(detectPatchesTask);
         }
 
         // Deprecated comment - preserve for now to remember history of Ref{TKey,T} and Tracer
@@ -198,7 +190,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             var diff    = patcher.differ.GetDiff(patchSource, entity, mapper.writer);
             if (diff == null)
                 return;
-            var patches     = Patches();
+            var patches     = detectPatchesTask.entityPatches;
             var patchList   = patcher.CreatePatches(diff, mapper);
             var id          = peer.id;
             SetNextPatchSource(peer, mapper); // todo next patch source need to be set on Synchronize()
@@ -212,25 +204,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             // tracer.Trace(entity);
         }
 
-        // ----------------------------------- add tasks methods -----------------------------------
-        internal override void AddTasks(List<SyncRequestTask> tasks, ObjectMapper mapper) {
-        //  CloseCursors        (tasks);
-        //  ReserveKeys         (tasks);
-            // --- mutate tasks
-        //  CreateEntities      (tasks, mapper);
-        //  UpsertEntities      (tasks, mapper);
-        
-            PatchEntities       (tasks);
-            
-        //  DeleteEntities      (tasks);
-        //  DeleteAll           (tasks);
-            // --- read tasks
-        //  ReadEntities        (tasks);
-        //  QueryEntities       (tasks);
-        //  AggregateEntities   (tasks);
-        //  SubscribeChanges    (tasks);
-        }
-
+        // ----------------------------------- create task methods -----------------------------------
         internal ReserveKeys ReserveKeys(ReserveKeysTask<TKey,T> reserveKeys) {
             return new ReserveKeys {
                 container   = set.name,
@@ -383,7 +357,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 var members         = patchTask.selection.Members;
                 var memberAccess    = patchTask.selection.GetMemberAccess();
                 var memberAccessor  = new MemberAccessor(mapper.writer);
-                var entityPatches   = Patches();
+                var entityPatches   = patchTask.entityPatches;
                 var taskPatches     = patchTask.patches;
                 // taskPatches.Capacity= taskPatches.Count + entities.Count;    -> degrade performance
 
@@ -409,32 +383,35 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 }
             }
         }
-
-        private void PatchEntities(List<SyncRequestTask> tasks)
-        {
-            var patches     = _patches;
-            if (patches != null && patches.Count > 0) {
-                var list = new List<EntityPatch>(patches.Count);
-                foreach (var pair in patches) { list.Add(pair.Value); }
-                var req = new PatchEntities {
-                    container   = set.name,
-                    keyName     = SyncKeyName(set.GetKeyName()),
-                    patches     = list
-                };
-                tasks.Add(req);
+        
+        internal override PatchEntities PatchEntities(PatchTask<T> patch) {
+            var patches = patch.entityPatches;
+            if (patch.entityPatches.Count == 0) {
+                patch.state.Executed = true;
             }
-            if (_patchTasks != null) {
-                foreach (var task in _patchTasks) {
-                    if (task.patches.Count == 0)
-                        task.state.Executed = true;
-                }
+            var list = new List<EntityPatch>(patches.Count);
+            foreach (var pair in patches) { list.Add(pair.Value); }
+            return new PatchEntities {
+                container   = set.name,
+                keyName     = SyncKeyName(set.GetKeyName()),
+                patches     = list,
+                syncTask    = patch 
+            };
+        }
+        
+        internal override PatchEntities PatchEntities(DetectPatchesTask<T> detectPatches) {
+            var patches = detectPatches.entityPatches;
+            if (detectPatches.entityPatches.Count == 0) {
+                detectPatches.state.Executed = true;
             }
-            if (_detectPatchesTasks != null) {
-                foreach (var task in _detectPatchesTasks) {
-                    if (task.Patches.Count == 0)
-                        task.state.Executed = true;
-                }
-            }
+            var list = new List<EntityPatch>(patches.Count);
+            foreach (var pair in patches) { list.Add(pair.Value); }
+            return new PatchEntities {
+                container   = set.name,
+                keyName     = SyncKeyName(set.GetKeyName()),
+                patches     = list,
+                syncTask    = detectPatches
+            };
         }
 
         internal DeleteEntities DeleteEntities(DeleteTask<TKey,T> deleteTask) {
@@ -508,8 +485,6 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                     case TaskType.reserveKeys:      info.reserveKeys++;         break;
                 }
             }
-            info.patch          = SetInfo.Count(_patches);
-            
             info.tasks =
                 info.read               +
                 info.query              +
@@ -517,7 +492,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 info.closeCursors       +
                 info.create             +  // SetInfo.Any  (_autos) +
                 info.upsert             +
-                SetInfo.Any(_patches)   +
+                info.patch              +
                 info.delete             +
                 info.subscribeChanges   +
                 info.reserveKeys;

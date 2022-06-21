@@ -59,7 +59,7 @@ namespace Friflo.Json.Fliox.Hub.Client
     public abstract class SyncTask : SyncFunction
     {
         internal  abstract  TaskType        TaskType { get; }
-        internal  virtual   SyncRequestTask CreateRequestTask() => null; // todo make abstract after SyncSet refactoring
+        internal  abstract  SyncRequestTask CreateRequestTask();
     }
     
     public static class SyncTaskExtension

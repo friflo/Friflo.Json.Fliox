@@ -131,13 +131,13 @@ namespace Friflo.Json.Fliox.Hub.Client
             var set     = GetSyncSet();
             var task    = new DetectPatchesTask<T>(set);
             var peers   = Peers();
-            set.AddDetectPatches(task);
             foreach (var peerPair in peers) {
                 Peer<T> peer = peerPair.Value;
                 set.DetectPeerPatches(peer, task, mapper);
             }
             if (task.Patches.Count > 0) {
                 allPatches.entitySetPatches.Add(task);
+                set.AddDetectPatches(task);
                 intern.store.AddTask(task);
             }
         }

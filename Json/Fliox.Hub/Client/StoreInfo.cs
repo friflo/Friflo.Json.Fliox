@@ -54,18 +54,6 @@ namespace Friflo.Json.Fliox.Hub.Client
                 sb.Append(' ');
         }
 
-        private static void  Append(StringBuilder sb, string label, int count, ref bool first) {
-            if (count == 0)
-                return;
-            if (!first) {
-                sb.Append(", ");
-            }
-            sb.Append(label);
-            sb.Append(" #");
-            sb.Append(count);
-            first = false;
-        }
-        
         internal static void  AppendTasks(StringBuilder sb, string label, int count, ref bool first) {
             if (count == 0)
                 return;
@@ -94,7 +82,7 @@ namespace Friflo.Json.Fliox.Hub.Client
                 AppendTasks(sb, "query",        query,          ref first);
                 AppendTasks(sb, "aggregate",    aggregate,      ref first);
                 AppendTasks(sb, "closeCursors", closeCursors,   ref first);
-                Append(sb,      "patch",        patch,          ref first);
+                AppendTasks(sb, "patch",        patch,          ref first);
                 AppendTasks(sb, "delete",       delete,         ref first);
                 AppendTasks(sb, "reserveKeys",  reserveKeys,    ref first);
                 sb.Append(']');

@@ -19,12 +19,10 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         internal    IDictionary<JsonKey, EntityError>    errorsPatch  = NoErrors;
         internal    IDictionary<JsonKey, EntityError>    errorsDelete = NoErrors;
 
-        internal  abstract  EntitySet               EntitySet   { get; }
+        internal  abstract  EntitySet           EntitySet   { get; }
 
-        internal  abstract  void    AddTasks                (List<SyncRequestTask> tasks, ObjectMapper mapper);
-        
-        internal  abstract AggregateEntities    AggregateEntities   (AggregateTask      aggregate);
-        internal  abstract CloseCursors         CloseCursors        (CloseCursorsTask   closeCursor);
+        internal  abstract  AggregateEntities   AggregateEntities   (AggregateTask      aggregate);
+        internal  abstract  CloseCursors        CloseCursors        (CloseCursorsTask   closeCursor);
         
         internal  abstract  void    ReserveKeysResult       (ReserveKeys        task, SyncTaskResult result);
         internal  abstract  void    CreateEntitiesResult    (CreateEntities     task, SyncTaskResult result, ObjectMapper mapper);
@@ -328,16 +326,13 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         /// In case of a <see cref="TaskErrorResult"/> add entity errors to <see cref="SyncSet.errorsPatch"/> for all
         /// <see cref="Patches"/> to enable setting <see cref="DetectPatchesTask"/> to error state via <see cref="DetectPatchesTask{T}.SetResult"/>. 
         internal override void PatchEntitiesResult(PatchEntities task, SyncTaskResult result) {
-            var patchTasks          = PatchTasks();
-            var detectPatchesTasks  = DetectPatchesTasks();
-            var patches             = Patches();
-            if (result is TaskErrorResult taskError) {
-                foreach (var patchTask in patchTasks) {
-                    patchTask.state.SetError(new TaskErrorInfo(taskError));
-                }
-                foreach (var detectPatches in detectPatchesTasks) {
-                    detectPatches.state.SetError(new TaskErrorInfo(taskError));
-                }
+            var patchTask       = task.syncTask as PatchTask<T>;
+            var detectPatches   = task.syncTask as DetectPatchesTask<T>;
+            var patches         = patchTask != null ? patchTask.entityPatches : detectPatches.entityPatches;
+            if (result is TaskErrorResult taskError)
+            {
+                patchTask?.     state.SetError(new TaskErrorInfo(taskError));
+                detectPatches?. state.SetError(new TaskErrorInfo(taskError));
                 if (errorsPatch == NoErrors) {
                     errorsPatch = new Dictionary<JsonKey, EntityError>(patches.Count, JsonKey.Equality);
                 }
@@ -362,17 +357,11 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                     peer.SetPatchSource(nextPatchSource);
                     peer.SetNextPatchSourceNull();
                 }
-                foreach (var patchTask in patchTasks) {
-                    patchTask.SetResult(errorsPatch);
-                }
-                foreach (var detectPatches in detectPatchesTasks) {
-                    detectPatches.SetResult();
-                }
+                patchTask?.SetResult(errorsPatch);
+                detectPatches?.SetResult();
             }
             // enable GC to collect references in containers which are not needed anymore
             patches.Clear();
-            patchTasks.Clear();
-            detectPatchesTasks.Clear();
         }
 
         internal override void DeleteEntitiesResult(DeleteEntities task, SyncTaskResult result) {

@@ -71,7 +71,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             return count;
         }
         
-        internal List<SyncTask> GetTasks() {
+        private List<SyncTask> GetTasks() {
             var functions = _intern.syncStore.functions;
             var result = new List<SyncTask>(functions.Count);
             foreach (var function in functions) {
@@ -136,26 +136,12 @@ namespace Friflo.Json.Fliox.Hub.Client
                 token       = _intern.token,
                 eventAck    = _intern.lastEventSeq
             };
-
-            // todo remove loop after SyncSet refactoring
-            foreach (var setPair in _intern.setByType) {
-                EntitySet set       = setPair.Value;
-                var syncSet         = set.SyncSet;
-                // ReSharper disable once UseNullPropagation
-                if (syncSet != null) {
-                    syncSet.AddTasks(tasks, mapper);
-                }
-            }
-
             foreach (var function in syncStore.functions) {
                 if (function is SyncTask task) {
                     var requestTask = task.CreateRequestTask();
-                    if (requestTask == null)    // todo remove condition after SyncSet refactoring
-                        continue;
                     tasks.Add(requestTask);
                 }
             }
-
             // --- create new SyncStore and SyncSet's to collect future SyncTask's and execute them via the next SyncTasks() call 
             foreach (var setPair in _intern.setByType) {
                 EntitySet set = setPair.Value;

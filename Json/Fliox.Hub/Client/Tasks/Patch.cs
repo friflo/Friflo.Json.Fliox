@@ -24,6 +24,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         internal readonly   MemberSelection<T>                  selection;
         [DebuggerBrowsable(Never)]
         internal readonly   List<EntityPatchInfo<T>>            patches;
+        internal readonly   Dictionary<JsonKey, EntityPatch>    entityPatches;
         private  readonly   SyncSetBase<T>                      syncSet;
 
         [DebuggerBrowsable(Never)]
@@ -34,6 +35,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         
         internal PatchTask(SyncSetBase<T> syncSet, MemberSelection<T> selection) {
             patches         = new List<EntityPatchInfo<T>>();
+            entityPatches   = new Dictionary<JsonKey, EntityPatch>(JsonKey.Equality);
             this.syncSet    = syncSet;
             this.selection  = selection;
         }
@@ -72,6 +74,10 @@ namespace Friflo.Json.Fliox.Hub.Client
             sb.Append(", selection: ");
             selection.FormatToString(sb);
             return sb.ToString();
+        }
+        
+        internal override SyncRequestTask CreateRequestTask() {
+            return syncSet.PatchEntities(this);
         }
     }
 }
