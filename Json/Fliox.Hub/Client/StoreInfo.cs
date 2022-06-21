@@ -27,6 +27,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         public  int     subscribeChanges;
         public  int     patch;
         public  int     delete;
+        public  int     reserveKeys;
 
         internal SetInfo(string name) {
             Name            = name;
@@ -42,6 +43,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             subscribeChanges= 0;
             patch           = 0;
             delete          = 0;
+            reserveKeys     = 0;
         }
         
         internal static void  AppendName(StringBuilder sb, string name) {
@@ -94,6 +96,7 @@ namespace Friflo.Json.Fliox.Hub.Client
                 AppendTasks(sb, "closeCursors", closeCursors,   ref first);
                 Append(sb,      "patch",        patch,          ref first);
                 AppendTasks(sb, "delete",       delete,         ref first);
+                AppendTasks(sb, "reserveKeys",  reserveKeys,    ref first);
                 sb.Append(']');
             }
             return sb.ToString();

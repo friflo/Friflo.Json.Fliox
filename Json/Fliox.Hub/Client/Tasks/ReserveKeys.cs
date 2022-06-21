@@ -12,22 +12,28 @@ namespace Friflo.Json.Fliox.Hub.Client
 {
     public sealed class ReserveKeysTask<TKey, T> : SyncTask where T : class
     {
-        internal            int         count;
-        internal            long[]      keys;
-        internal            Guid        token;
-        public              int         Count       => count;
+        internal            int             count;
+        internal            long[]          keys;
+        internal            Guid            token;
+        public              int             Count       => count;
+        private readonly    SyncSet<TKey,T> syncSet;
         
         [DebuggerBrowsable(Never)]
-        internal            TaskState   state;
-        internal override   TaskState   State       => state;
+        internal            TaskState       state;
+        internal override   TaskState       State       => state;
         
-        public   override   string      Details     => $"ReserveKeysTask<{typeof(TKey).Name},{typeof(T).Name}>(count: {count})";
-        internal override   TaskType    TaskType    => TaskType.reserveKeys;
+        public   override   string          Details     => $"ReserveKeysTask<{typeof(TKey).Name},{typeof(T).Name}>(count: {count})";
+        internal override   TaskType        TaskType    => TaskType.reserveKeys;
         
-        public              long[]      Keys    => IsOk("ReserveKeysTask.Keys", out Exception e) ? keys : throw e;
+        public              long[]          Keys        => IsOk("ReserveKeysTask.Keys", out Exception e) ? keys : throw e;
         
-        internal ReserveKeysTask(int count) {
-            this.count  = count;
+        internal ReserveKeysTask(int count, SyncSet<TKey,T> syncSet) {
+            this.count      = count;
+            this.syncSet    = syncSet;
+        }
+        
+        internal override SyncRequestTask CreateRequestTask() {
+            return syncSet.ReserveKeys(this);
         }
     }
 }

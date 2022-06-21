@@ -44,8 +44,6 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
 
         // --- backing fields for lazy-initialized getters
 
-        private     ReserveKeysTask<TKey,T>         _reserveKeys;
-
         private     Dictionary<JsonKey, EntityPatch>_patches;
         private     List<PatchTask<T>>              _patchTasks;
         private     List<DetectPatchesTask<T>>      _detectPatchesTasks;
@@ -98,12 +96,9 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
 
         // --- ReserveKeys
         internal ReserveKeysTask<TKey, T> ReserveKeys(int count) {
-            var reserve = _reserveKeys;
-            if (reserve == null) {
-                return _reserveKeys = new ReserveKeysTask<TKey,T>(count);
-            }
-            reserve.count += count;
-            return reserve;
+            var reserveKeys = new ReserveKeysTask<TKey,T>(count, this);
+            tasks.Add(reserveKeys);
+            return reserveKeys;
         }
 
         // --- Create
@@ -220,11 +215,13 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         // ----------------------------------- add tasks methods -----------------------------------
         internal override void AddTasks(List<SyncRequestTask> tasks, ObjectMapper mapper) {
         //  CloseCursors        (tasks);
-            ReserveKeys         (tasks);
+        //  ReserveKeys         (tasks);
             // --- mutate tasks
         //  CreateEntities      (tasks, mapper);
         //  UpsertEntities      (tasks, mapper);
+        
             PatchEntities       (tasks);
+            
         //  DeleteEntities      (tasks);
         //  DeleteAll           (tasks);
             // --- read tasks
@@ -234,15 +231,12 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         //  SubscribeChanges    (tasks);
         }
 
-
-        private void ReserveKeys(List<SyncRequestTask> tasks) {
-            if (_reserveKeys == null)
-                return;
-            var req = new ReserveKeys {
+        internal ReserveKeys ReserveKeys(ReserveKeysTask<TKey,T> reserveKeys) {
+            return new ReserveKeys {
                 container   = set.name,
-                count       = _reserveKeys.count,
+                count       = reserveKeys.count,
+                syncTask    = reserveKeys
             };
-            tasks.Add(req);
         }
 
         internal override CreateEntities CreateEntities(CreateTask<T> create) {
@@ -511,22 +505,22 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                     case TaskType.delete:           info.delete++;              break;
                     case TaskType.closeCursors:     info.closeCursors++;        break;
                     case TaskType.subscribeChanges: info.subscribeChanges++;    break;
-                //  case TaskType.reserveKeys:      info.reserveKeys++;         break;
+                    case TaskType.reserveKeys:      info.reserveKeys++;         break;
                 }
             }
             info.patch          = SetInfo.Count(_patches);
             
             info.tasks =
-                (_reserveKeys   != null ? 1 : 0)    +
-                info.read                           +
-                info.query                          +
-                info.aggregate                      +
-                info.closeCursors                   +
-                info.create                         +  // SetInfo.Any  (_autos) +
-                info.upsert                         +
-                SetInfo.Any  (_patches)             +
-                info.delete                         +
-                info.subscribeChanges;
+                info.read               +
+                info.query              +
+                info.aggregate          +
+                info.closeCursors       +
+                info.create             +  // SetInfo.Any  (_autos) +
+                info.upsert             +
+                SetInfo.Any(_patches)   +
+                info.delete             +
+                info.subscribeChanges   +
+                info.reserveKeys;
         }
     }
 }
