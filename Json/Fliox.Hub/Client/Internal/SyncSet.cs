@@ -69,8 +69,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         private     List<PatchTask<T>>              _patchTasks;
         private     List<DetectPatchesTask<T>>      _detectPatchesTasks;
 
-        private     HashSet<TKey>                   _deletes;
-        private     List<DeleteTask<TKey, T>>       _deleteTasks;
+    //  private     HashSet<TKey>                   _deletes;
+    //  private     List<DeleteTask<TKey, T>>       _deleteTasks;
 
         // --- lazy-initialized getters => they behave like readonly fields
     //  private     List<ReadTask<TKey, T>>         Reads()         => _readTasks   ?? (_readTasks  = new List<ReadTask<TKey, T>>());
@@ -95,26 +95,16 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         private     List<PatchTask<T>>              PatchTasks()        => _patchTasks         ?? (_patchTasks         = new List<PatchTask<T>>());
         private     List<DetectPatchesTask<T>>      DetectPatchesTasks()=> _detectPatchesTasks ?? (_detectPatchesTasks = new List<DetectPatchesTask<T>>());
 
-        private     HashSet<TKey>                   Deletes()       => _deletes     ?? (_deletes     = CreateHashSet<TKey>(0));
-        private     List<DeleteTask<TKey, T>>       DeleteTasks()   => _deleteTasks ?? (_deleteTasks = new List<DeleteTask<TKey, T>>());
+    //  private     HashSet<TKey>                   Deletes()       => _deletes     ?? (_deletes     = CreateHashSet<TKey>(0));
+    //  private     List<DeleteTask<TKey, T>>       DeleteTasks()   => _deleteTasks ?? (_deleteTasks = new List<DeleteTask<TKey, T>>());
 
-        private     DeleteAllTask<TKey, T>          _deleteTaskAll;
+    //  private     DeleteAllTask<TKey, T>          _deleteTaskAll;
         
 
         internal SyncSet(EntitySet<TKey, T> set) {
             this.set = set;
         }
         internal  override  EntitySet               EntitySet => set;
-
-        internal void AddDelete (TKey id) {
-            Deletes().Add(id);
-        }
-
-        internal void AddDeleteRange (ICollection<TKey> keys) {
-            var deletes = Deletes();
-            deletes.EnsureCapacity(deletes.Count + keys.Count);
-            deletes.UnionWith(keys);
-        }
 
         // --- Read
         internal ReadTask<TKey, T> Read() {
@@ -209,24 +199,23 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
 
         // --- Delete
         internal DeleteTask<TKey, T> Delete(TKey key) {
-            AddDelete(key);
-            var delete = new DeleteTask<TKey, T>(new List<TKey>{key}, this);
-            DeleteTasks().Add(delete);
+            var keyList = new List<TKey>{ key };
+            var delete  = new DeleteTask<TKey, T>(keyList, this);
+            tasks.Add(delete);
             return delete;
         }
 
         internal DeleteTask<TKey, T> DeleteRange(ICollection<TKey> keys) {
-            AddDeleteRange(keys);
-            var delete = new DeleteTask<TKey, T>(keys.ToList(), this);
-            DeleteTasks().Add(delete);
+            var keyList = keys.ToList();
+            var delete  = new DeleteTask<TKey, T>(keyList, this);
+            tasks.Add(delete);
             return delete;
         }
 
         internal DeleteAllTask<TKey, T> DeleteAll() {
-            if (_deleteTaskAll != null)
-                return _deleteTaskAll;
-            _deleteTaskAll = new DeleteAllTask<TKey, T>();
-            return _deleteTaskAll;
+            var deleteAll = new DeleteAllTask<TKey, T>(this);
+            tasks.Add(deleteAll);
+            return deleteAll;
         }
         
         // --- Patch
@@ -282,8 +271,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         //  CreateEntities      (tasks, mapper);
         //  UpsertEntities      (tasks, mapper);
             PatchEntities       (tasks);
-            DeleteEntities      (tasks);
-            DeleteAll           (tasks);
+        //  DeleteEntities      (tasks);
+        //  DeleteAll           (tasks);
             // --- read tasks
         //  ReadEntities        (tasks);
         //  QueryEntities       (tasks);
@@ -500,32 +489,26 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             }
         }
 
-        private void DeleteEntities(List<SyncRequestTask> tasks) {
-            var deletes = _deletes;
-            if (deletes == null || deletes.Count == 0)
-                return;
-            var ids = new List<JsonKey>(deletes.Count);
+        internal DeleteEntities DeleteEntities(DeleteTask<TKey,T> deleteTask) {
+            var deletes = deleteTask.keys;
+            var ids     = new List<JsonKey>(deletes.Count);
             foreach (var key in deletes) {
                 var id = KeyConvert.KeyToId(key);
                 ids.Add(id);
             }
-            var req = new DeleteEntities {
+            return new DeleteEntities {
                 container   = set.name,
-                ids         = ids
+                ids         = ids,
+                syncTask    = deleteTask 
             };
-            tasks.Add(req);
-            deletes.Clear();
         }
 
-        private void DeleteAll(List<SyncRequestTask> tasks) {
-            var deleteAll = _deleteTaskAll;
-            if (deleteAll == null)
-                return;
-            var req = new DeleteEntities {
+        internal DeleteEntities DeleteAll(DeleteAllTask<TKey,T> deleteTask) {
+           return new DeleteEntities {
                 container   = set.name,
-                all         = true
+                all         = true,
+                syncTask    = deleteTask 
             };
-            tasks.Add(req);
         }
 
         internal override SubscribeChanges SubscribeChanges(SubscribeChangesTask<T> sub) {
@@ -578,7 +561,6 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 }
             }
             info.patch          = SetInfo.Count(_patches);
-            info.delete         = SetInfo.Count(_deleteTasks);
             
             info.tasks =
                 (_reserveKeys   != null ? 1 : 0)    +
@@ -589,8 +571,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 info.create                         +  // SetInfo.Any  (_autos) +
                 info.upsert                         +
                 SetInfo.Any  (_patches)             +
-                SetInfo.Count(_deleteTasks)         +
-                (_deleteTaskAll   != null ? 1 : 0)  +
+                info.delete                         +
                 info.subscribeChanges;
         }
     }

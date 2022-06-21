@@ -17,7 +17,7 @@ namespace Friflo.Json.Fliox.Hub.Client
     public sealed class DeleteTask<TKey, T> : SyncTask where T : class
     {
         private  readonly   SyncSet<TKey, T>    syncSet;
-        private  readonly   List<TKey>          keys;
+        internal readonly   List<TKey>          keys;
         
         [DebuggerBrowsable(Never)]
         internal            TaskState           state;
@@ -32,22 +32,21 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
 
         public void Add(TKey key) {
-            syncSet.AddDelete(key);
             keys.Add(key);
         }
         
         public void AddRange(ICollection<TKey> keys) {
-            syncSet.AddDeleteRange(keys);
             this.keys.AddRange(keys);
         }
-
-        internal void GetKeys(List<TKey> keys) {
-            keys.AddRange(this.keys);
+        
+        internal override SyncRequestTask CreateRequestTask() {
+            return syncSet.DeleteEntities(this);
         }
     }
     
     public sealed class DeleteAllTask<TKey, T> : SyncTask where T : class
     {
+        private  readonly   SyncSet<TKey, T>    syncSet;
         [DebuggerBrowsable(Never)]
         internal            TaskState           state;
         internal override   TaskState           State       => state;
@@ -55,7 +54,16 @@ namespace Friflo.Json.Fliox.Hub.Client
         public   override   string              Details     => $"DeleteAllTask<{typeof(T).Name}>";
         internal override   TaskType            TaskType    => TaskType.delete;
 
-        internal DeleteAllTask() {
+        internal DeleteAllTask(SyncSet<TKey, T>  syncSet) {
+            this.syncSet = syncSet;
+        }
+        
+        internal override SyncRequestTask CreateRequestTask() {
+            return new DeleteEntities {
+                container   = syncSet.set.name,
+                all         = true,
+                syncTask    = this 
+            };
         }
     }
 

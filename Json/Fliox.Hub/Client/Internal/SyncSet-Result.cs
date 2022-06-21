@@ -376,10 +376,13 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         }
 
         internal override void DeleteEntitiesResult(DeleteEntities task, SyncTaskResult result) {
+            if (task.syncTask is DeleteAllTask<TKey,T> deleteAllTask) {
+                deleteAllTask.state.Executed = true;
+                return;
+            }
+            var deleteTask   = (DeleteTask<TKey,T>)task.syncTask;
             if (result is TaskErrorResult taskError) {
-                foreach (var deleteTask in DeleteTasks()) {
-                    deleteTask.state.SetError(new TaskErrorInfo(taskError));
-                }
+                deleteTask.state.SetError(new TaskErrorInfo(taskError));
                 return;
             }
             var ids = task.ids;
@@ -388,26 +391,18 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                     set.DeletePeer(id);
                 }
             }
-            var keysBuf = set.intern.GetKeysBuf();
-            foreach (var deleteTask in DeleteTasks()) {
-                var entityErrorInfo = new TaskErrorInfo();
-                keysBuf.Clear();
-                deleteTask.GetKeys(keysBuf);
-                foreach (var key in keysBuf) {
-                    var id = KeyConvert.KeyToId(key);
-                    if (errorsDelete.TryGetValue(id, out EntityError error)) {
-                        entityErrorInfo.AddEntityError(error);
-                    }
+            var entityErrorInfo = new TaskErrorInfo();
+            foreach (var key in deleteTask.keys) {
+                var id = KeyConvert.KeyToId(key);
+                if (errorsDelete.TryGetValue(id, out EntityError error)) {
+                    entityErrorInfo.AddEntityError(error);
                 }
-                if (entityErrorInfo.HasErrors) {
-                    deleteTask.state.SetError(entityErrorInfo);
-                    continue;
-                }
-                deleteTask.state.Executed = true;
             }
-            if (_deleteTaskAll != null) {
-                _deleteTaskAll.state.Executed = true;
+            if (entityErrorInfo.HasErrors) {
+                deleteTask.state.SetError(entityErrorInfo);
+                return;
             }
+            deleteTask.state.Executed = true;
         }
         
         internal override void SubscribeChangesResult (SubscribeChanges task, SyncTaskResult result) {
