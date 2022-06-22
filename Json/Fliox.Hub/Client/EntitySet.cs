@@ -50,11 +50,11 @@ namespace Friflo.Json.Fliox.Hub.Client
         [DebuggerBrowsable(Never)]
         private             Dictionary<TKey, Peer<T>>   peerMap;        //  Note: must be private by all means
         
-        /// <summary> enable access to in debugger. Not used internally.
-        /// Note: using Dictionary.ValueCollection is okay. It is instantiated only once for a Dictionary instance</summary>
+        /// <summary> enable access to entities in debugger. Not used internally. </summary>
+        // Note: using Dictionary.ValueCollection is okay. It is instantiated only once for a Dictionary instance
         private             Dictionary<TKey, Peer<T>>.ValueCollection   Peers => peerMap?.Values;
         
-        /// <summary> enable access to in debugger. Not used internally. </summary>
+        /// <summary> enable access to tasks in debugger. Not used internally. </summary>
         internal            IReadOnlyList<SyncTask>                     Tasks => syncSet?.tasks;
         
         // create _peers map on demand                                  //  Note: must be private by all means
