@@ -45,7 +45,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         //          This ensures focus on fields & properties relevant for an application which are:
         //          Tasks, UserInfo & EntitySet<,> fields
         // ReSharper disable once InconsistentNaming
-                                    internal    ClientIntern                _intern;
+                                    internal    ClientIntern                _intern;        // Use intern struct as first field
                                     public      string                      DatabaseName    => _intern.database ?? _intern.hub.DatabaseName;
                                     public      IReadOnlyList<SyncTask>     Tasks           => GetTasks();
 
