@@ -23,8 +23,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         
         internal abstract QueryEntities     QueryEntities   (QueryTask<T>               query);
         internal abstract SubscribeChanges  SubscribeChanges(SubscribeChangesTask<T>    sub);
-        internal abstract CreateEntities    CreateEntities  (CreateTask<T>              create);
-        internal abstract UpsertEntities    UpsertEntities  (UpsertTask<T>              upsert);
+        internal abstract CreateEntities    CreateEntities  (CreateTask<T>              create, in CreateTaskContext context);
+        internal abstract UpsertEntities    UpsertEntities  (UpsertTask<T>              upsert, in CreateTaskContext context);
         internal abstract PatchEntities     PatchEntities   (PatchTask<T>               patch);
         internal abstract PatchEntities     PatchEntities   (DetectPatchesTask<T>       detectPatches);
     }
@@ -210,61 +210,56 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             };
         }
 
-        internal override CreateEntities CreateEntities(CreateTask<T> create) {
-            // todo pass ObjectMapper as parameter by SyncTask.CreateRequestTask() 
-            using(var pooled = set.intern.store.ObjectMapper.Get()) {
-                var creates = create.peers;
-                var entries = new List<JsonValue>   (creates.Count);
-                var keys    = new List<JsonKey>     (creates.Count);
-                var writer  = pooled.instance.writer;
-                writer.Pretty           = set.intern.writePretty;
-                writer.WriteNullMembers = set.intern.writeNull;
+        internal override CreateEntities CreateEntities(CreateTask<T> create, in CreateTaskContext context) {
+            var creates = create.peers;
+            var entries = new List<JsonValue>   (creates.Count);
+            var keys    = new List<JsonKey>     (creates.Count);
+            var writer  = context.mapper;
+            writer.Pretty           = set.intern.writePretty;
+            writer.WriteNullMembers = set.intern.writeNull;
 
-                foreach (var createPair in creates) {
-                    T entity    = createPair.Value.Entity;
-                    var json    = writer.WriteAsArray(entity);
-                    var entry   = new JsonValue(json);
-                    var id      = EntityKeyTMap.GetId(entity);
-                    entries.Add(entry);
-                    keys.Add(id);
-                }
-                return new CreateEntities {
-                    container       = set.name,
-                    keyName         = SyncKeyName(set.GetKeyName()),
-                    entities        = entries,
-                    entityKeys      = keys,
-                    reservedToken   = new Guid(), // todo
-                    syncTask        = create
-                };
+            foreach (var createPair in creates) {
+                T entity    = createPair.Value.Entity;
+                var json    = writer.WriteAsArray(entity);
+                var entry   = new JsonValue(json);
+                var id      = EntityKeyTMap.GetId(entity);
+                entries.Add(entry);
+                keys.Add(id);
             }
+            return new CreateEntities {
+                container       = set.name,
+                keyName         = SyncKeyName(set.GetKeyName()),
+                entities        = entries,
+                entityKeys      = keys,
+                reservedToken   = new Guid(), // todo
+                syncTask        = create
+            };
+
         }
 
-        internal override UpsertEntities UpsertEntities(UpsertTask<T> upsert) {
-            // todo pass ObjectMapper as parameter by SyncTask.CreateRequestTask()
-            using(var pooled = set.intern.store.ObjectMapper.Get()) {
-                var peers               = upsert.peers;
-                var writer              = pooled.instance.writer;
-                writer.Pretty           = set.intern.writePretty;
-                writer.WriteNullMembers = set.intern.writeNull;
-                var entries = new List<JsonValue>  (peers.Count);
-                var keys    = new List<JsonKey>    (peers.Count);
+        internal override UpsertEntities UpsertEntities(UpsertTask<T> upsert, in CreateTaskContext context) {
+            var peers               = upsert.peers;
+            var writer              = context.mapper;
+            writer.Pretty           = set.intern.writePretty;
+            writer.WriteNullMembers = set.intern.writeNull;
+            var entries = new List<JsonValue>  (peers.Count);
+            var keys    = new List<JsonKey>    (peers.Count);
 
-                foreach (var upsertPair in peers) {
-                    T entity    = upsertPair.Value.Entity;
-                    var json    = writer.WriteAsArray(entity);
-                    var entry   = new JsonValue(json);
-                    var id      = EntityKeyTMap.GetId(entity);
-                    entries.Add(entry);
-                    keys.Add(id);
-                }
-                return new UpsertEntities {
-                    container   = set.name,
-                    keyName     = SyncKeyName(set.GetKeyName()),
-                    entities    = entries,
-                    entityKeys  = keys,
-                    syncTask    = upsert  
-                };
+            foreach (var upsertPair in peers) {
+                T entity    = upsertPair.Value.Entity;
+                var json    = writer.WriteAsArray(entity);
+                var entry   = new JsonValue(json);
+                var id      = EntityKeyTMap.GetId(entity);
+                entries.Add(entry);
+                keys.Add(id);
             }
+            return new UpsertEntities {
+                container   = set.name,
+                keyName     = SyncKeyName(set.GetKeyName()),
+                entities    = entries,
+                entityKeys  = keys,
+                syncTask    = upsert  
+            };
         }
 
         internal SyncRequestTask ReadEntities(ReadTask<TKey,T> read) {

@@ -32,7 +32,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             this.syncSet    = syncSet;
         }
         
-        internal override SyncRequestTask CreateRequestTask() {
+        internal override SyncRequestTask CreateRequestTask(in CreateTaskContext context) {
             return syncSet.ReserveKeys(this);
         }
     }

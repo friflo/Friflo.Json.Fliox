@@ -36,7 +36,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             this.filterLinq = filter.Linq;
         }
         
-        internal override SyncRequestTask CreateRequestTask() {
+        internal override SyncRequestTask CreateRequestTask(in CreateTaskContext context) {
             return syncSet.SubscribeChanges(this);
         }
     }
@@ -58,7 +58,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             this.remove = remove;
         }
         
-        internal override SyncRequestTask CreateRequestTask() {
+        internal override SyncRequestTask CreateRequestTask(in CreateTaskContext context) {
             return new SubscribeMessage{ name = name, remove = remove, syncTask = this };
         }
     }

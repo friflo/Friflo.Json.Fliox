@@ -38,7 +38,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             this.param      = param;
         }
         
-        internal override SyncRequestTask CreateRequestTask() {
+        internal override SyncRequestTask CreateRequestTask(in CreateTaskContext context) {
             if (this is CommandTask) {
                 return new SendCommand  { name  = name, param = param, syncTask = this };
             }

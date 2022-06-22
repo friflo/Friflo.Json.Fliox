@@ -136,9 +136,10 @@ namespace Friflo.Json.Fliox.Hub.Client
                 token       = _intern.token,
                 eventAck    = _intern.lastEventSeq
             };
+            var context = new CreateTaskContext (mapper);
             foreach (var function in syncStore.functions) {
                 if (function is SyncTask task) {
-                    var requestTask = task.CreateRequestTask();
+                    var requestTask = task.CreateRequestTask(context);
                     tasks.Add(requestTask);
                 }
             }

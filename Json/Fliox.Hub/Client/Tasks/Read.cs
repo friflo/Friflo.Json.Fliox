@@ -176,7 +176,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             return find;
         }
         
-        internal override SyncRequestTask CreateRequestTask() {
+        internal override SyncRequestTask CreateRequestTask(in CreateTaskContext context) {
             return syncSet.ReadEntities(this);
         }
         

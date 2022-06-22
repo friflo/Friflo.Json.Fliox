@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using Friflo.Json.Fliox.Hub.Client.Internal;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
+using Friflo.Json.Fliox.Mapper;
 using static System.Diagnostics.DebuggerBrowsableState;
 
 namespace Friflo.Json.Fliox.Hub.Client
@@ -59,7 +60,15 @@ namespace Friflo.Json.Fliox.Hub.Client
     public abstract class SyncTask : SyncFunction
     {
         internal  abstract  TaskType        TaskType { get; }
-        internal  abstract  SyncRequestTask CreateRequestTask();
+        internal  abstract  SyncRequestTask CreateRequestTask(in CreateTaskContext context);
+    }
+    
+    internal readonly struct CreateTaskContext
+    {
+        internal  readonly  ObjectMapper    mapper;
+        internal CreateTaskContext(ObjectMapper mapper) {
+            this.mapper = mapper;
+        }
     }
     
     public static class SyncTaskExtension

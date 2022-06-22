@@ -39,7 +39,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             this.keys.AddRange(keys);
         }
         
-        internal override SyncRequestTask CreateRequestTask() {
+        internal override SyncRequestTask CreateRequestTask(in CreateTaskContext context) {
             return syncSet.DeleteEntities(this);
         }
     }
@@ -58,7 +58,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             this.syncSet = syncSet;
         }
         
-        internal override SyncRequestTask CreateRequestTask() {
+        internal override SyncRequestTask CreateRequestTask(in CreateTaskContext context) {
             return new DeleteEntities {
                 container   = syncSet.set.name,
                 all         = true,

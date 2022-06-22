@@ -56,8 +56,8 @@ namespace Friflo.Json.Fliox.Hub.Client
             }
         }
         
-        internal override SyncRequestTask CreateRequestTask() {
-            return syncSet.UpsertEntities(this);
+        internal override SyncRequestTask CreateRequestTask(in CreateTaskContext context) {
+            return syncSet.UpsertEntities(this, context);
         }
 
     }
