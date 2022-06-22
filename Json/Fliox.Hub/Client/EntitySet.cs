@@ -64,8 +64,8 @@ namespace Friflo.Json.Fliox.Hub.Client
         [DebuggerBrowsable(Never)]  public   override   bool    WritePretty { get => intern.writePretty;   set => intern.writePretty = value; }
         [DebuggerBrowsable(Never)]  public   override   bool    WriteNull   { get => intern.writeNull;     set => intern.writeNull   = value; }
         
-        internal static readonly EntityKeyT<TKey, T>    EntityKeyTMap   = EntityKey.GetEntityKeyT<TKey, T>();
-        private  static readonly KeyConverter<TKey>     KeyConvert      = KeyConverter.GetConverter<TKey>();
+        [DebuggerBrowsable(Never)] internal static readonly EntityKeyT<TKey, T> EntityKeyTMap   = EntityKey.GetEntityKeyT<TKey, T>();
+        [DebuggerBrowsable(Never)] private  static readonly KeyConverter<TKey>  KeyConvert      = KeyConverter.GetConverter<TKey>();
         #endregion
     
     // ----------------------------------------- public methods -----------------------------------------

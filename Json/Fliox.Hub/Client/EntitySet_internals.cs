@@ -30,7 +30,9 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         public    abstract  bool        WritePretty { get; set; }
         public    abstract  bool        WriteNull   { get; set; }
 
-        internal static readonly QueryPath RefQueryPath = new RefQueryPath();
+        [DebuggerBrowsable(Never)] internal static readonly QueryPath   RefQueryPath = new RefQueryPath();
+        [DebuggerBrowsable(Never)] internal const           bool        DefaultWritePretty   = false;
+        [DebuggerBrowsable(Never)] internal const           bool        DefaultWriteNull     = false;
         
         internal  abstract  void                Init                    (FlioxClient store);
         internal  abstract  void                Reset                   ();
@@ -46,9 +48,6 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         protected EntitySet(string name) {
             this.name = name;
         }
-        
-        internal const bool DefaultWritePretty   = false;
-        internal const bool DefaultWriteNull     = false;
     }
     
     // --------------------------------------- EntitySetBase<T> ---------------------------------------
