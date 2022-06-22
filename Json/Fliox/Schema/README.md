@@ -26,7 +26,10 @@ From these input schemas the following output schemas can be generate:
 ## Features:
 - Code generators and JSON Validator support the C#/.NET language features:
     - general language types like `class`, `struct` and `enum`
-    - primitives types like `long`, `int`, `short`, `byte`, `bool`, `DateTime` and `BigInteger`
+    - primitives types like `long`, `int`, `short`, `byte`, `bool`, `float` & `double`  
+      *Note:* intentionally no support of non [CLS-compliant](https://docs.microsoft.com/en-us/dotnet/api/system.clscompliantattribute)
+      primitive types: `ulong`, `uint`, `ushort` & `sbyte`
+    - value types of BCL - .NET Base Class Library: `Guid`, `DateTime` and `BigInteger`
     - `Nullable<>` structs, primitives and enums
     - container types like: arrays, `List<>`, `Dictionary<,>`, `Queue<>`, `Stack<>`, ...
     - polymorphic classes with **discriminator** and **discriminants**.
