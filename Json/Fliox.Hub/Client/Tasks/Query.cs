@@ -74,7 +74,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
         
         internal override SyncRequestTask CreateRequestTask(in CreateTaskContext context) {
-            return syncSet.QueryEntities(this);
+            return syncSet.QueryEntities(this, context);
         }
         
         // --- IReadRelationsTask<T>

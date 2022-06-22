@@ -21,7 +21,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
 
         internal  abstract  EntitySet           EntitySet   { get; }
 
-        internal  abstract  AggregateEntities   AggregateEntities   (AggregateTask      aggregate);
+        internal  abstract  AggregateEntities   AggregateEntities   (AggregateTask      aggregate, in CreateTaskContext context);
         internal  abstract  CloseCursors        CloseCursors        (CloseCursorsTask   closeCursor);
         
         internal  abstract  void    ReserveKeysResult       (ReserveKeys        task, SyncTaskResult result);

@@ -21,8 +21,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
     {
         internal abstract void AddEntityPatches(PatchTask<T> patchTask, ICollection<T> entities);
         
-        internal abstract QueryEntities     QueryEntities   (QueryTask<T>               query);
-        internal abstract SubscribeChanges  SubscribeChanges(SubscribeChangesTask<T>    sub);
+        internal abstract QueryEntities     QueryEntities   (QueryTask<T>               query,  in CreateTaskContext context);
+        internal abstract SubscribeChanges  SubscribeChanges(SubscribeChangesTask<T>    sub,    in CreateTaskContext context);
         internal abstract CreateEntities    CreateEntities  (CreateTask<T>              create, in CreateTaskContext context);
         internal abstract UpsertEntities    UpsertEntities  (UpsertTask<T>              upsert, in CreateTaskContext context);
         internal abstract PatchEntities     PatchEntities   (PatchTask<T>               patch);
@@ -283,7 +283,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             };
         }
 
-        internal override QueryEntities QueryEntities(QueryTask<T> query) {
+        internal override QueryEntities QueryEntities(QueryTask<T> query, in CreateTaskContext context) {
             var subRelations = query.relations.subRelations;
             List<References> references = null;
             if (subRelations.Count > 0) {
@@ -294,7 +294,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             if (query.filter is Filter filter) {
                 queryFilter = filter.body;
             }
-            var filterTree  = FilterToJson(queryFilter);
+            var filterTree  = FilterToJson(queryFilter, context.mapper);
             return new QueryEntities {
                 container   = set.name,
                 keyName     = SyncKeyName(set.GetKeyName()),
@@ -309,12 +309,12 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             };
         }
 
-        internal override AggregateEntities AggregateEntities(AggregateTask aggregate) {
+        internal override AggregateEntities AggregateEntities(AggregateTask aggregate, in CreateTaskContext context) {
             var aggregateFilter = aggregate.filter;
             if (aggregate.filter is Filter filter) {
                 aggregateFilter = filter.body;
             }
-            var filterTree  = FilterToJson(aggregateFilter);
+            var filterTree  = FilterToJson(aggregateFilter, context.mapper);
             return new AggregateEntities {
                 container   = set.name,
                 type        = aggregate.Type,
@@ -326,12 +326,9 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             };
         }
         
-        private JsonValue FilterToJson(FilterOperation filter) {
-            using (var pooled = set.intern.store.ObjectMapper.Get()) {
-                var writer      = pooled.instance.writer;
-                var jsonFilter  = writer.Write(filter);
-                return new JsonValue(jsonFilter);
-            }
+        private static JsonValue FilterToJson(FilterOperation filter, ObjectMapper mapper) {
+            var jsonFilter  = mapper.writer.Write(filter);
+            return new JsonValue(jsonFilter);
         }
 
         internal override CloseCursors CloseCursors(CloseCursorsTask closeCursor) {
@@ -428,8 +425,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             };
         }
 
-        internal override SubscribeChanges SubscribeChanges(SubscribeChangesTask<T> sub) {
-            var filterJson = FilterToJson(sub.filter);
+        internal override SubscribeChanges SubscribeChanges(SubscribeChangesTask<T> sub, in CreateTaskContext context) {
+            var filterJson = FilterToJson(sub.filter, context.mapper);
             return new SubscribeChanges {
                 container   = set.name,
                 filter      = filterJson,

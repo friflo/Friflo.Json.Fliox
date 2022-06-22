@@ -37,7 +37,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
         
         internal override SyncRequestTask CreateRequestTask(in CreateTaskContext context) {
-            return syncSet.SubscribeChanges(this);
+            return syncSet.SubscribeChanges(this, context);
         }
     }
     
