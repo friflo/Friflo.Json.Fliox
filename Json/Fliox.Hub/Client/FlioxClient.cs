@@ -42,8 +42,8 @@ namespace Friflo.Json.Fliox.Hub.Client
     #region - members   
         // Keep all FlioxClient fields in ClientIntern (_intern) to enhance debugging overview.
         // Reason:  FlioxClient is extended by application and add multiple EntitySet fields or properties.
-        //          This ensures focus on fields / properties relevant for an application which are:
-        //          StoreInfo, Tasks, ClientId & UserId
+        //          This ensures focus on fields & properties relevant for an application which are:
+        //          Tasks, UserInfo & EntitySet<,> fields
         // ReSharper disable once InconsistentNaming
         internal            ClientIntern                _intern;
         public              string                      DatabaseName    => _intern.database ?? _intern.hub.DatabaseName;

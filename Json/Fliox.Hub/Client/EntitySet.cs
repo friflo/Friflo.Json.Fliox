@@ -40,8 +40,8 @@ namespace Friflo.Json.Fliox.Hub.Client
     #region - Members    
         // Keep all utility related fields of EntitySet in SetIntern (intern) to enhance debugging overview.
         // Reason:  EntitySet<,> is used as field or property by an application which is mainly interested
-        //          in following fields or properties while debugging:
-        //          name, _peers & SetInfo
+        //          in following properties while debugging:
+        //          Peers, Tasks
         internal            SetIntern<TKey, T>              intern;
         /// <summary> available in debugger via <see cref="SetIntern{TKey,T}.SyncSet"/> </summary>
         [DebuggerBrowsable(Never)]
