@@ -54,11 +54,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
     // --------------------------------------- EntitySetBase<T> ---------------------------------------
     public abstract class EntitySetBase<T> : EntitySet where T : class
     {
-        private             HashSet<T>      newEntities;
-        internal            HashSet<T>      NewEntities() => newEntities ?? (newEntities = new HashSet<T>(EntityEqualityComparer<T>.Instance));
-
         internal  abstract  SyncSetBase<T>  GetSyncSetBase  ();
-        
         internal  abstract  Peer<T>         GetPeerById     (in JsonKey id);
         internal  abstract  Peer<T>         CreatePeer      (T entity);
         internal  abstract  JsonKey         GetEntityId     (T entity);
