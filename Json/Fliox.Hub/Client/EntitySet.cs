@@ -42,26 +42,26 @@ namespace Friflo.Json.Fliox.Hub.Client
         // Reason:  EntitySet<,> is used as field or property by an application which is mainly interested
         //          in following fields or properties while debugging:
         //          name, _peers & SetInfo
-        internal            SetIntern<TKey, T>          intern;
+        internal            SetIntern<TKey, T>              intern;
         /// <summary> available in debugger via <see cref="SetIntern{TKey,T}.SyncSet"/> </summary>
         [DebuggerBrowsable(Never)]
-        internal            SyncSet<TKey, T>            syncSet;
+        internal            SyncSet<TKey, T>                syncSet;
         /// <summary> key: <see cref="Peer{T}.entity"/>.id </summary>
         [DebuggerBrowsable(Never)]
-        private             Dictionary<TKey, Peer<T>>   peerMap;        //  Note: must be private by all means
+        private             Dictionary<TKey, Peer<T>>       peerMap;        //  Note: must be private by all means
         
         /// <summary> enable access to entities in debugger. Not used internally. </summary>
-        // Note: using Dictionary.ValueCollection is okay. It is instantiated only once for a Dictionary instance
-        private             Dictionary<TKey, Peer<T>>.ValueCollection   Peers => peerMap?.Values;
+        // Note: using Dictionary.Values is okay. The ValueCollection is instantiated only once for a Dictionary instance
+        private             IReadOnlyCollection<Peer<T>>    Peers => peerMap?.Values;
         
         /// <summary> enable access to tasks in debugger. Not used internally. </summary>
-        internal            IReadOnlyList<SyncTask>                     Tasks => syncSet?.tasks;
+        internal            IReadOnlyList<SyncTask>         Tasks => syncSet?.tasks;
         
-        // create _peers map on demand                                  //  Note: must be private by all means
-        private             Dictionary<TKey, Peer<T>>   PeerMap()       => peerMap ?? (peerMap = SyncSet.CreateDictionary<TKey,Peer<T>>());
-        private             SyncSet<TKey, T>            GetSyncSet()    => syncSet ?? (syncSet = new SyncSet<TKey, T>(this));
-        internal override   SyncSetBase<T>              GetSyncSetBase()=> syncSet;
-        public   override   string                      ToString()      => SetInfo.ToString();
+        // create _peers map on demand                                      //  Note: must be private by all means
+        private             Dictionary<TKey, Peer<T>>       PeerMap()       => peerMap ?? (peerMap = SyncSet.CreateDictionary<TKey,Peer<T>>());
+        private             SyncSet<TKey, T>                GetSyncSet()    => syncSet ?? (syncSet = new SyncSet<TKey, T>(this));
+        internal override   SyncSetBase<T>                  GetSyncSetBase()=> syncSet;
+        public   override   string                          ToString()      => SetInfo.ToString();
 
         [DebuggerBrowsable(Never)]  internal override   SyncSet SyncSet     => syncSet;
         [DebuggerBrowsable(Never)]  internal override   SetInfo SetInfo     => GetSetInfo();
