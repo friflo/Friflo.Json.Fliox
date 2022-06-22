@@ -11,6 +11,7 @@ using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Mapper.Map;
 using Friflo.Json.Fliox.Transform;
 using Friflo.Json.Fliox.Transform.Query;
+using static System.Diagnostics.DebuggerBrowsableState;
 
 // EntitySet & EntitySetBase<T> are not intended as a public API.
 // These classes are declared here to simplify navigation to EntitySet<TKey, T>.
@@ -19,9 +20,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
     // --------------------------------------- EntitySet ---------------------------------------
     public abstract class EntitySet
     {
-        internal  readonly  string          name;
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        internal            ChangeCallback  changeCallback;
+        [DebuggerBrowsable(Never)] internal readonly  string          name;
+        [DebuggerBrowsable(Never)] internal           ChangeCallback  changeCallback;
 
         internal  abstract  SyncSet     SyncSet     { get; }
         internal  abstract  SetInfo     SetInfo     { get; }
@@ -100,7 +100,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
         
         internal override void Init(FlioxClient store) {
-            intern      = new SetIntern<TKey, T>(store);
+            intern      = new SetIntern<TKey, T>(store, this);
         }
         
         internal override void Reset() {

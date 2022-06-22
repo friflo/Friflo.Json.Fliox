@@ -43,8 +43,9 @@ namespace Friflo.Json.Fliox.Hub.Client
         //          in following fields or properties while debugging:
         //          name, _peers & SetInfo
         internal            SetIntern<TKey, T>          intern;
+        /// <summary> available in debugger via <see cref="SetIntern{TKey,T}.SyncSet"/> </summary>
         [DebuggerBrowsable(Never)]
-        private             SyncSet<TKey, T>            syncSet;        //  Note: must be private by all means
+        internal            SyncSet<TKey, T>            syncSet;
         /// <summary> key: <see cref="Peer{T}.entity"/>.id </summary>
         private             Dictionary<TKey, Peer<T>>   _peers;         //  Note: must be private by all means
         // create _peers map on demand                                  //  Note: must be private by all means
@@ -54,15 +55,15 @@ namespace Friflo.Json.Fliox.Hub.Client
         internal override   SyncSetBase<T>              GetSyncSetBase()=> syncSet;
         public   override   string                      ToString()      => SetInfo.ToString();
 
-        internal override   SyncSet                     SyncSet         => syncSet;
-        internal override   SetInfo                     SetInfo         => GetSetInfo();
         internal            IReadOnlyList<SyncTask>     Tasks           => syncSet?.tasks;
 
-        [DebuggerBrowsable(Never)] internal override    Type    KeyType      => typeof(TKey);
-        [DebuggerBrowsable(Never)] internal override    Type    EntityType   => typeof(T);
+        [DebuggerBrowsable(Never)]  internal override   SyncSet SyncSet     => syncSet;
+        [DebuggerBrowsable(Never)]  internal override   SetInfo SetInfo     => GetSetInfo();
+        [DebuggerBrowsable(Never)]  internal override   Type    KeyType     => typeof(TKey);
+        [DebuggerBrowsable(Never)]  internal override   Type    EntityType  => typeof(T);
         
-        [DebuggerBrowsable(Never)] public   override    bool    WritePretty { get => intern.writePretty;   set => intern.writePretty = value; }
-        [DebuggerBrowsable(Never)] public   override    bool    WriteNull   { get => intern.writeNull;     set => intern.writeNull   = value; }
+        [DebuggerBrowsable(Never)]  public   override   bool    WritePretty { get => intern.writePretty;   set => intern.writePretty = value; }
+        [DebuggerBrowsable(Never)]  public   override   bool    WriteNull   { get => intern.writeNull;     set => intern.writeNull   = value; }
         
         internal static readonly EntityKeyT<TKey, T>    EntityKeyTMap   = EntityKey.GetEntityKeyT<TKey, T>();
         private  static readonly KeyConverter<TKey>     KeyConvert      = KeyConverter.GetConverter<TKey>();
