@@ -90,7 +90,7 @@ namespace Friflo.Json.Fliox.Hub.Client
     public partial class EntitySet<TKey, T>
     {
         private SetInfo GetSetInfo() {
-            var info = new SetInfo (name) { peers = _peers?.Count ?? 0 };
+            var info = new SetInfo (name) { peers = peers?.Count ?? 0 };
             syncSet?.SetTaskInfo(ref info);
             return info;
         }
@@ -100,7 +100,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
         
         internal override void Reset() {
-            _peers?.Clear();
+            peers?.Clear();
             intern.writePretty  = DefaultWritePretty;
             intern.writeNull    = DefaultWriteNull;
             syncSet             = null;
