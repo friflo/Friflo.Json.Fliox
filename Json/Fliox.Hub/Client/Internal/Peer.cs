@@ -29,7 +29,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         [DebuggerBrowsable(Never)] internal T   NullableEntity   => entity;
         [DebuggerBrowsable(Never)] internal T   Entity           => entity ?? throw new InvalidOperationException($"Caller ensure & expect entity not null. id: '{id}'");
 
-        public   override       string          ToString() => entity != null ? entity.ToString() : "null";
+        public   override       string          ToString() => id.AsString();
+    //  public   override       string          ToString() => entity != null ? entity.ToString() : "null";
         
         internal Peer(T entity, in JsonKey id) {
             if (entity == null)
