@@ -2,14 +2,17 @@
 // See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
+using System.Diagnostics;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Mapper.Map;
+using static System.Diagnostics.DebuggerBrowsableState;
 
 namespace Friflo.Json.Fliox.Hub.Client.Internal
 {
     internal struct SetIntern<TKey, T> where T : class
     {
         internal readonly   FlioxClient         store;
+        [DebuggerBrowsable(Never)]
         private  readonly   EntitySet<TKey,T>   entitySet;
         internal readonly   bool                autoIncrement;
         private             TypeMapper<T>       typeMapper;     // set/create on demand
