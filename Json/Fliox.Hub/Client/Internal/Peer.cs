@@ -4,7 +4,9 @@
 using System;
 using System.Diagnostics;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
+using static System.Diagnostics.DebuggerBrowsableState;
 
+// ReSharper disable ConvertToAutoPropertyWithPrivateSetter
 // ReSharper disable JoinNullCheckWithUsage
 namespace Friflo.Json.Fliox.Hub.Client.Internal
 {
@@ -16,15 +18,18 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
     // neither Peer<T> is a class nor a struct.
     internal sealed class Peer<T> where T : class
     {
-        internal  readonly  JsonKey         id;     // never null
-        private             T               entity; // can be null 
-        internal            EntityError     error;
-        internal            PeerState       state;
+        internal  readonly      JsonKey         id;     // never null
+        private                 T               entity; // can be null 
+        internal                EntityError     error;
+        internal                PeerState       state;
 
-        internal            T               PatchSource     { get; private set; }
-        internal            T               NextPatchSource { get; private set; }
+        [DebuggerBrowsable(Never)] internal T   PatchSource     { get; private set; }
+        [DebuggerBrowsable(Never)] internal T   NextPatchSource { get; private set; }
+        /// Using the the unchecked <see cref="NullableEntity"/> must be an exception. Use <see cref="Entity"/> by default.
+        [DebuggerBrowsable(Never)] internal T   NullableEntity   => entity;
+        [DebuggerBrowsable(Never)] internal T   Entity           => entity ?? throw new InvalidOperationException($"Caller ensure & expect entity not null. id: '{id}'");
 
-        public   override   string          ToString() => entity != null ? entity.ToString() : "null";
+        public   override       string          ToString() => entity != null ? entity.ToString() : "null";
         
         internal Peer(T entity, in JsonKey id) {
             if (entity == null)
@@ -38,12 +43,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 throw new NullReferenceException($"id must not be null. Type: {typeof(T)}");
             this.id = id;
         }
-        
-        /// Using the the unchecked <see cref="NullableEntity"/> must be an exception. Use <see cref="Entity"/> by default.
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        internal T NullableEntity   => entity;
-        internal T Entity           => entity ?? throw new InvalidOperationException($"Caller ensure & expect entity not null. id: '{id}'");
-        
+
         internal void SetEntity(T entity) {
             if (entity == null)
                 throw new InvalidOperationException("Expect entity not null");

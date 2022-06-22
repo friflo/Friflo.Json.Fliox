@@ -47,9 +47,13 @@ namespace Friflo.Json.Fliox.Hub.Client
         [DebuggerBrowsable(Never)]
         internal            SyncSet<TKey, T>            syncSet;
         /// <summary> key: <see cref="Peer{T}.entity"/>.id </summary>
-        private             Dictionary<TKey, Peer<T>>   peers;          //  Note: must be private by all means
+        [DebuggerBrowsable(Never)]
+        private             Dictionary<TKey, Peer<T>>   peerMap;        //  Note: must be private by all means
+        /// <summary> enable access to in debugger.
+        /// Note: using Dictionary.ValueCollection is okay. It is instantiated only once </summary>
+        private             Dictionary<TKey, Peer<T>>.ValueCollection   Peers => peerMap.Values;
         // create _peers map on demand                                  //  Note: must be private by all means
-        private             Dictionary<TKey, Peer<T>>   Peers()         => peers   ?? (peers = SyncSet.CreateDictionary<TKey,Peer<T>>());
+        private             Dictionary<TKey, Peer<T>>   PeerMap()       => peerMap ?? (peerMap = SyncSet.CreateDictionary<TKey,Peer<T>>());
         private             SyncSet<TKey, T>            GetSyncSet()    => syncSet ?? (syncSet = new SyncSet<TKey, T>(this));
         internal override   SyncSetBase<T>              GetSyncSetBase()=> syncSet;
         public   override   string                      ToString()      => SetInfo.ToString();
@@ -82,7 +86,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// Return true if the <see cref="EntitySet{TKey,T}"/> contains an entity with the given key. Otherwise false.
         /// </summary>
         public bool TryGet (TKey key, out T entity) {
-            var peers = Peers();
+            var peers = PeerMap();
             if (peers.TryGetValue(key, out Peer<T> peer)) {
                 entity = peer.NullableEntity;
                 return true;
@@ -95,7 +99,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// Return true if the <see cref="EntitySet{TKey,T}"/> contains an entity with the passed <paramref name="key"/>
         /// </summary>
         public bool Contains (TKey key) {
-            var peers = Peers();
+            var peers = PeerMap();
             return peers.ContainsKey(key);
         }
 
@@ -103,7 +107,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// Return all tracked entities of the <see cref="EntitySet{TKey,T}"/>
         /// </summary>
         public List<T> ToList() {
-            var peers   = Peers();
+            var peers   = PeerMap();
             var result  = new List<T>(peers.Count);
             foreach (var pair in peers) {
                 var entity = pair.Value.NullableEntity;
@@ -449,7 +453,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         public DetectPatchesTask<T> DetectPatches() {
             var set     = GetSyncSet();
             var task    = new DetectPatchesTask<T>(set);
-            var peers   = Peers();
+            var peers   = PeerMap();
             set.AddDetectPatches(task);
             using (var pooled = intern.store.ObjectMapper.Get()) {
                 foreach (var peerPair in peers) {
