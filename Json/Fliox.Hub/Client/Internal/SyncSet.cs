@@ -482,7 +482,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 info.query              +
                 info.aggregate          +
                 info.closeCursors       +
-                info.create             +  // SetInfo.Any  (_autos) +
+                info.create             +
                 info.upsert             +
                 info.patch              +
                 info.delete             +
