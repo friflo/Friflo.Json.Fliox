@@ -37,7 +37,14 @@ namespace Friflo.Json.Fliox.Hub.Client
     [TypeMapper(typeof(EntitySetMatcher))]
     public sealed partial class EntitySet<TKey, T> : EntitySetBase<T>  where T : class
     {
-    #region - Members    
+    #region - Members
+        /// <summary> enable access to entities in debugger. Not used internally. </summary>
+        // Note: using Dictionary.Values is okay. The ValueCollection is instantiated only once for a Dictionary instance
+        private             IReadOnlyCollection<Peer<T>>    Peers => peerMap?.Values;
+            
+        /// <summary> enable access to tasks in debugger. Not used internally. </summary>
+        internal            IReadOnlyList<SyncTask>         Tasks => syncSet?.tasks;
+        
         // Keep all utility related fields of EntitySet in SetIntern (intern) to enhance debugging overview.
         // Reason:  EntitySet<,> is used as field or property by an application which is mainly interested
         //          in following properties while debugging:
@@ -49,14 +56,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// <summary> key: <see cref="Peer{T}.entity"/>.id </summary>
         [DebuggerBrowsable(Never)]
         private             Dictionary<TKey, Peer<T>>       peerMap;        //  Note: must be private by all means
-        
-        /// <summary> enable access to entities in debugger. Not used internally. </summary>
-        // Note: using Dictionary.Values is okay. The ValueCollection is instantiated only once for a Dictionary instance
-        private             IReadOnlyCollection<Peer<T>>    Peers => peerMap?.Values;
-        
-        /// <summary> enable access to tasks in debugger. Not used internally. </summary>
-        internal            IReadOnlyList<SyncTask>         Tasks => syncSet?.tasks;
-        
+
         // create _peers map on demand                                      //  Note: must be private by all means
         private             Dictionary<TKey, Peer<T>>       PeerMap()       => peerMap ?? (peerMap = SyncSet.CreateDictionary<TKey,Peer<T>>());
         private             SyncSet<TKey, T>                GetSyncSet()    => syncSet ?? (syncSet = new SyncSet<TKey, T>(this));
