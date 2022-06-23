@@ -222,9 +222,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 T entity    = createPair.Value.Entity;
                 var json    = writer.WriteAsArray(entity);
                 var entry   = new JsonValue(json);
-                var id      = EntityKeyTMap.GetId(entity);
                 entries.Add(entry);
-                keys.Add(id);
+                keys.Add(createPair.Key);
             }
             return new CreateEntities {
                 container       = set.name,
@@ -249,9 +248,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 T entity    = upsertPair.Value.Entity;
                 var json    = writer.WriteAsArray(entity);
                 var entry   = new JsonValue(json);
-                var id      = EntityKeyTMap.GetId(entity);
                 entries.Add(entry);
-                keys.Add(id);
+                keys.Add(upsertPair.Key);
             }
             return new UpsertEntities {
                 container   = set.name,
