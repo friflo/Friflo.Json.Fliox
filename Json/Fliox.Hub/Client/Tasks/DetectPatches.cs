@@ -19,7 +19,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         internal abstract   int                             GetPatchCount();
     }
     
-    public class DetectPatchesTask<T> : DetectPatchesTask  where T : class
+    public sealed class DetectPatchesTask<T> : DetectPatchesTask  where T : class
     {
         public              IReadOnlyList<EntityPatchInfo<T>>   Patches     => patches;
         [DebuggerBrowsable(Never)]
