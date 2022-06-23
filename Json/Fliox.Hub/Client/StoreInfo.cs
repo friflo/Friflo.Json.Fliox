@@ -4,7 +4,6 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using Friflo.Json.Fliox.Hub.Client.Internal;
 
 namespace Friflo.Json.Fliox.Hub.Client
 {
@@ -99,19 +98,22 @@ namespace Friflo.Json.Fliox.Hub.Client
 #endif
     public struct StoreInfo
     {
+        // ReSharper disable once UnusedAutoPropertyAccessor.Global
+        public  string  Database { get; }
         public  int     peers;
         public  int     tasks;
         public  int     commands;
         public  int     messages;
 
-        internal StoreInfo(SyncStore sync, Dictionary<Type, EntitySet> setByType) {
+        internal StoreInfo(FlioxClient client) {
+            Database    = client.DatabaseName;
             peers       = 0;
             tasks       = 0;
             commands    = 0;    
             messages    = 0;
-            foreach (var pair in setByType)
+            foreach (var pair in client._intern.setByType)
                 Add(pair.Value.SetInfo);
-            foreach (var function in sync.functions) {
+            foreach (var function in client._intern.syncStore.functions) {
                 switch (function) {
                     case CommandTask _: commands++; break;
                     case MessageTask _: messages++; break;
@@ -125,8 +127,9 @@ namespace Friflo.Json.Fliox.Hub.Client
             tasks += info.tasks;
         }
         
-        public override string ToString() {
-            var sb = new StringBuilder();
+        public override string ToString() => FormatToString(new StringBuilder());
+        
+        internal string FormatToString(StringBuilder sb) {
             SetInfo.AppendName(sb, "entities");
             sb.Append(peers);
             

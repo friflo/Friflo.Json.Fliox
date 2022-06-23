@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 using System;
 using System.Collections.Generic;
+using System.Text;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Client.Internal;
 using Friflo.Json.Fliox.Hub.Host;
@@ -23,6 +24,15 @@ namespace Friflo.Json.Fliox.Hub.Client
 #endif
     public partial class FlioxClient
     {
+        private string FormatToString() {
+            var sb = new StringBuilder();
+            sb.Append("database: '");
+            sb.Append(DatabaseName);
+            sb.Append("', ");
+            StoreInfo.FormatToString(sb);
+            return sb.ToString();
+        }
+        
         private void SetWritePretty (bool value) {
             foreach (var setPair in _intern.setByType) {
                 setPair.Value.WritePretty = value;

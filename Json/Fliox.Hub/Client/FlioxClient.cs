@@ -46,18 +46,18 @@ namespace Friflo.Json.Fliox.Hub.Client
         //          Tasks, UserInfo & EntitySet<,> fields
         // ReSharper disable once InconsistentNaming
                                     internal    ClientIntern                _intern;        // Use intern struct as first field
-                                    public      string                      DatabaseName    => _intern.database ?? _intern.hub.DatabaseName;
                                     public      IReadOnlyList<SyncTask>     Tasks           => GetTasks();
 
+        [DebuggerBrowsable(Never)]  public      string                      DatabaseName    => _intern.database ?? _intern.hub.DatabaseName;
         [DebuggerBrowsable(Never)]  public readonly   StdCommands           std;
         [DebuggerBrowsable(Never)]  public      IReadOnlyList<SyncFunction> Functions       => _intern.syncStore.functions;
-        [DebuggerBrowsable(Never)]  public      StoreInfo                   StoreInfo       => new StoreInfo(_intern.syncStore, _intern.setByType); 
+        [DebuggerBrowsable(Never)]  public      StoreInfo                   StoreInfo       => new StoreInfo(this); 
         [DebuggerBrowsable(Never)]  public      bool                        WritePretty { set => SetWritePretty(value); }
         [DebuggerBrowsable(Never)]  public      bool                        WriteNull   { set => SetWriteNull(value); }
         [DebuggerBrowsable(Never)]  internal    readonly   Type             type;
         [DebuggerBrowsable(Never)]  internal    ObjectPool<ObjectMapper>    ObjectMapper    => _intern.pool.ObjectMapper;
         [DebuggerBrowsable(Never)]  public      IHubLogger                  Logger          => _intern.hubLogger;
-        public   override                       string                      ToString()      => StoreInfo.ToString();
+        public   override                       string                      ToString()      => FormatToString();
 
         public static Type[] GetEntityTypes<TFlioxClient> () where TFlioxClient : FlioxClient => ClientEntityUtils.GetEntityTypes<TFlioxClient>();
         #endregion
