@@ -296,7 +296,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             IsNull(client.ClientId);
             IsNull(client.Token);
             AreEqual(0, client.Tasks.Count);
-            AreEqual(0, client.StoreInfo.peers);
+            AreEqual(0, client.ClientInfo.peers);
             AreEqual(0, client.GetSyncCount());
         }
 

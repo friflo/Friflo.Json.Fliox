@@ -29,7 +29,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             sb.Append("database: '");
             sb.Append(DatabaseName);
             sb.Append("', ");
-            StoreInfo.FormatToString(sb);
+            ClientInfo.FormatToString(sb);
             return sb.ToString();
         }
         

@@ -51,7 +51,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         [DebuggerBrowsable(Never)]  public      string                      DatabaseName    => _intern.database ?? _intern.hub.DatabaseName;
         [DebuggerBrowsable(Never)]  public readonly   StdCommands           std;
         [DebuggerBrowsable(Never)]  public      IReadOnlyList<SyncFunction> Functions       => _intern.syncStore.functions;
-        [DebuggerBrowsable(Never)]  public      StoreInfo                   StoreInfo       => new StoreInfo(this); 
+        [DebuggerBrowsable(Never)]  public      ClientInfo                  ClientInfo      => new ClientInfo(this); 
         [DebuggerBrowsable(Never)]  public      bool                        WritePretty { set => SetWritePretty(value); }
         [DebuggerBrowsable(Never)]  public      bool                        WriteNull   { set => SetWriteNull(value); }
         [DebuggerBrowsable(Never)]  internal    readonly   Type             type;

@@ -96,7 +96,7 @@ namespace Friflo.Json.Fliox.Hub.Client
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
-    public struct StoreInfo
+    public struct ClientInfo
     {
         // ReSharper disable once UnusedAutoPropertyAccessor.Global
         public  string  Database { get; }
@@ -105,7 +105,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         public  int     commands;
         public  int     messages;
 
-        internal StoreInfo(FlioxClient client) {
+        internal ClientInfo(FlioxClient client) {
             Database    = client.DatabaseName;
             peers       = 0;
             tasks       = 0;
