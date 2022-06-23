@@ -3,6 +3,7 @@
 
 using System;
 using System.Diagnostics;
+using System.Text;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
 using static System.Diagnostics.DebuggerBrowsableState;
 
@@ -18,25 +19,46 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
     // neither Peer<T> is a class nor a struct.
     internal sealed class Peer<T> where T : class
     {
-        internal  readonly      JsonKey         id;     // never null
-        private                 T               entity; // can be null 
-        internal                EntityError     error;
-        internal                PeerState       state;
+        [DebuggerBrowsable(Never)]  internal  readonly  JsonKey         id;     // never null
+                                    private             T               entity; // can be null 
+                                    internal            EntityError     error;
+        [DebuggerBrowsable(Never)]  internal            PeerState       state;
 
-        [DebuggerBrowsable(Never)] internal T   PatchSource     { get; private set; }
-        [DebuggerBrowsable(Never)] internal T   NextPatchSource { get; private set; }
+        [DebuggerBrowsable(Never)]  internal            T               PatchSource     { get; private set; }
+        [DebuggerBrowsable(Never)]  internal            T               NextPatchSource { get; private set; }
         /// Using the the unchecked <see cref="NullableEntity"/> must be an exception. Use <see cref="Entity"/> by default.
-        [DebuggerBrowsable(Never)] internal T   NullableEntity   => entity;
-        [DebuggerBrowsable(Never)] internal T   Entity           => entity ?? throw new InvalidOperationException($"Caller ensure & expect entity not null. id: '{id}'");
+        [DebuggerBrowsable(Never)]  internal            T               NullableEntity   => entity;
+        [DebuggerBrowsable(Never)]  internal            T               Entity           => entity ?? throw new InvalidOperationException($"Caller ensure & expect entity not null. id: '{id}'");
 
-        public   override       string          ToString() => id.AsString();
-    //  public   override       string          ToString() => entity != null ? entity.ToString() : "null";
+        public   override                               string          ToString()      => FormatToString();
         
         internal Peer(T entity, in JsonKey id) {
             if (entity == null)
                 throw new NullReferenceException($"entity must not be null. Type: {typeof(T)}");
             this.entity = entity;
             this.id     = id;
+        }
+        
+        private string FormatToString() {
+            var sb = new StringBuilder();
+            // alternatively: show entity .ToString() 
+            // if (entity != null) sb.Append(entity) else sb.Append("null");
+            sb.Append(id.AsString());
+            bool isFirst = true;
+            if (state != PeerState.None) {
+                sb.Append(" (");
+                sb.Append(state);
+                isFirst = false;
+            }
+            if (error != null) {
+                sb.Append(isFirst ? " (": ", ");
+                sb.Append(error.type);
+                isFirst = false;
+            }
+            if (!isFirst) {
+                sb.Append(')');
+            }
+            return sb.ToString();            
         }
         
         internal Peer(in JsonKey id) {
