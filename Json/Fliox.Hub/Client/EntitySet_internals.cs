@@ -144,8 +144,8 @@ namespace Friflo.Json.Fliox.Hub.Client
                 peer.SetEntity(entity);
                 return peer;
             }
-            var id = GetEntityId(entity);
-            peer = new Peer<T>(entity, id);
+            var id  = KeyConvert.KeyToId(key);
+            peer    = new Peer<T>(entity, id);
             peers.Add(key, peer);
             return peer;
         }
