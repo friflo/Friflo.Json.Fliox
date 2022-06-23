@@ -101,7 +101,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             }
             var create  = new CreateTask<T>(new List<T>{entity}, set, this);
             var peer    = set.CreatePeer(entity);
-            create.AddPeer(peer, PeerState.Created);
+            create.AddPeer(peer, PeerState.Create);
             tasks.Add(create);
             return create;
         }
@@ -110,7 +110,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             var create = new CreateTask<T>(entities.ToList(), set, this);
             foreach (var entity in entities) {
                 var peer = set.CreatePeer(entity);
-                create.AddPeer(peer, PeerState.Created);
+                create.AddPeer(peer, PeerState.Create);
             }
             tasks.Add(create);
             return create;
@@ -120,7 +120,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         internal UpsertTask<T> Upsert(T entity) {
             var upsert  = new UpsertTask<T>(new List<T>{entity}, set, this);
             var peer    = set.CreatePeer(entity);
-            upsert.AddPeer(peer, PeerState.Updated);
+            upsert.AddPeer(peer, PeerState.Upsert);
             tasks.Add(upsert);
             return upsert;
         }
@@ -129,7 +129,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             var upsert = new UpsertTask<T>(entities.ToList(), set, this);
             foreach (var entity in entities) {
                 var peer = set.CreatePeer(entity);
-                upsert.AddPeer(peer, PeerState.Updated);
+                upsert.AddPeer(peer, PeerState.Upsert);
             }
             tasks.Add(upsert);
             return upsert;
@@ -175,7 +175,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         //   In these cases <see cref="Map.RefMapper{TKey,T}.Trace"/> add untracked entities (== have no <see cref="Peer{T}"/>)
         //   which is not already assigned)
         internal void DetectPeerPatches(Peer<T> peer, DetectPatchesTask<T> detectPatchesTask, ObjectMapper mapper) {
-            if ((peer.state & (PeerState.Created | PeerState.Updated)) != 0) {
+            if ((peer.state & (PeerState.Create | PeerState.Upsert)) != 0) {
                 // tracer.Trace(peer.Entity);
                 return;
             }

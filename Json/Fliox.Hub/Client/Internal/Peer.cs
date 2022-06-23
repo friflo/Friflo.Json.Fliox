@@ -46,12 +46,12 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             sb.Append(id.AsString());
             bool isFirst = true;
             if (state != PeerState.None) {
-                sb.Append(" (");
+                sb.Append("  (");
                 sb.Append(state);
                 isFirst = false;
             }
             if (error != null) {
-                sb.Append(isFirst ? " (": ", ");
+                sb.Append(isFirst ? "  (": ", ");
                 sb.Append(error.type);
                 isFirst = false;
             }
@@ -102,7 +102,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
     [Flags]
     internal enum PeerState {
         None    = 0,
-        Created = 1,
-        Updated = 2
+        Create  = 1,
+        Upsert  = 2
     }
 }

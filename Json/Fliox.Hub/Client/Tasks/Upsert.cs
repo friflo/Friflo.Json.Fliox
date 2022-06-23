@@ -33,7 +33,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             if (entity == null)
                 throw new ArgumentException($"UpsertTask<{set.name}>.Add() entity must not be null.");
             var peer = set.CreatePeer(entity);
-            AddPeer(peer, PeerState.Updated);
+            AddPeer(peer, PeerState.Upsert);
             entities.Add(entity);
         }
         
@@ -44,7 +44,7 @@ namespace Friflo.Json.Fliox.Hub.Client
                     throw new ArgumentException($"UpsertTask<{set.name}>.AddRange() entities[{n}] must not be null.");
                 n++;
                 var peer = set.CreatePeer(entity);
-                AddPeer(peer, PeerState.Updated);
+                AddPeer(peer, PeerState.Upsert);
             }
             this.entities.AddRange(entities);
         }
