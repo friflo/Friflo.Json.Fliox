@@ -10,7 +10,6 @@ using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Mapper.Map;
 using Friflo.Json.Fliox.Transform;
-using Friflo.Json.Fliox.Transform.Query;
 using static System.Diagnostics.DebuggerBrowsableState;
 
 // EntitySet & EntitySetBase<T> are not intended as a public API.
@@ -29,10 +28,6 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         internal  abstract  Type        EntityType  { get; }
         public    abstract  bool        WritePretty { get; set; }
         public    abstract  bool        WriteNull   { get; set; }
-
-        [DebuggerBrowsable(Never)] internal static readonly QueryPath   RefQueryPath = new RefQueryPath();
-        [DebuggerBrowsable(Never)] internal const           bool        DefaultWritePretty   = false;
-        [DebuggerBrowsable(Never)] internal const           bool        DefaultWriteNull     = false;
         
         internal  abstract  void                Init                    (FlioxClient store);
         internal  abstract  void                Reset                   ();
@@ -100,26 +95,26 @@ namespace Friflo.Json.Fliox.Hub.Client
         
         internal override void Reset() {
             peerMap?.Clear();
-            intern.writePretty  = DefaultWritePretty;
-            intern.writeNull    = DefaultWriteNull;
+            intern.writePretty  = ClientStatic.DefaultWritePretty;
+            intern.writeNull    = ClientStatic.DefaultWriteNull;
             syncSet             = null;
         }
         
         private static void SetEntityId (T entity, in JsonKey id) {
-            EntityKeyTMap.SetId(entity, id);
+            Static.EntityKeyTMap.SetId(entity, id);
         }
         
         internal override JsonKey GetEntityId (T entity) {
-            return EntityKeyTMap.GetId(entity);
+            return Static.EntityKeyTMap.GetId(entity);
         }
         
         // ReSharper disable once UnusedMember.Local
         private static void SetEntityKey (T entity, TKey key) {
-            EntityKeyTMap.SetKey(entity, key);
+            Static.EntityKeyTMap.SetKey(entity, key);
         }
         
         private static TKey GetEntityKey (T entity) {
-            return EntityKeyTMap.GetKey(entity);
+            return Static.EntityKeyTMap.GetKey(entity);
         }
 
         internal override void DetectSetPatchesInternal(DetectAllPatches allPatches, ObjectMapper mapper) {
@@ -144,21 +139,21 @@ namespace Friflo.Json.Fliox.Hub.Client
                 peer.SetEntity(entity);
                 return peer;
             }
-            var id  = KeyConvert.KeyToId(key);
+            var id  = Static.KeyConvert.KeyToId(key);
             peer    = new Peer<T>(entity, id);
             peers.Add(key, peer);
             return peer;
         }
         
         internal void DeletePeer (in JsonKey id) {
-            var key = KeyConvert.IdToKey(id);
+            var key = Static.KeyConvert.IdToKey(id);
             var peers = PeerMap();
             peers.Remove(key);
         }
         
         [Conditional("DEBUG")]
         private static void AssertId(TKey key, in JsonKey id) {
-            var expect = KeyConvert.KeyToId(key);
+            var expect = Static.KeyConvert.KeyToId(key);
             if (!id.IsEqual(expect))
                 throw new InvalidOperationException($"assigned invalid id: {id}, expect: {expect}");
         }
@@ -174,7 +169,7 @@ namespace Friflo.Json.Fliox.Hub.Client
                 return peer;
             }
             if (id.IsNull()) {
-                id = KeyConvert.KeyToId(key);
+                id = Static.KeyConvert.KeyToId(key);
             } else {
                 AssertId(key, id);
             }
@@ -185,7 +180,7 @@ namespace Friflo.Json.Fliox.Hub.Client
 
         /// use <see cref="GetOrCreatePeerByKey"/> is possible
         internal override Peer<T> GetPeerById(in JsonKey id) {
-            var key = KeyConvert.IdToKey(id);
+            var key = Static.KeyConvert.IdToKey(id);
             var peers = PeerMap();
             if (peers.TryGetValue(key, out Peer<T> peer)) {
                 return peer;
@@ -197,7 +192,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         
         // ReSharper disable once UnusedMember.Local
         private bool TryGetPeerByEntity(T entity, out Peer<T> value) {
-            var key     = EntityKeyTMap.GetKey(entity); 
+            var key     = Static.EntityKeyTMap.GetKey(entity); 
             var peers   = PeerMap();
             return peers.TryGetValue(key, out value);
         }
@@ -276,11 +271,11 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
         
         internal override string GetKeyName() {
-            return EntityKeyTMap.GetKeyName();
+            return Static.EntityKeyTMap.GetKeyName();
         }
         
         internal override bool IsIntKey() {
-            return EntityKeyTMap.IsIntKey();
+            return Static.EntityKeyTMap.IsIntKey();
         }
     }
 }

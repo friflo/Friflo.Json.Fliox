@@ -72,11 +72,14 @@ namespace Friflo.Json.Fliox.Hub.Client
         [DebuggerBrowsable(Never)]  public   override   bool    WritePretty { get => intern.writePretty;   set => intern.writePretty = value; }
         [DebuggerBrowsable(Never)]  public   override   bool    WriteNull   { get => intern.writeNull;     set => intern.writeNull   = value; }
         
-        [DebuggerBrowsable(Never)] internal static readonly EntityKeyT<TKey, T> EntityKeyTMap   = EntityKey.GetEntityKeyT<TKey, T>();
-        [DebuggerBrowsable(Never)] private  static readonly KeyConverter<TKey>  KeyConvert      = KeyConverter.GetConverter<TKey>();
+        /// <summary> using a static class prevents noise in form of 'Static members' for class instances in Debugger </summary>
+        private static class Static  {
+            internal static  readonly   EntityKeyT<TKey, T> EntityKeyTMap       = EntityKey.GetEntityKeyT<TKey, T>();
+            internal static  readonly   KeyConverter<TKey>  KeyConvert          = KeyConverter.GetConverter<TKey>();
+        }
         #endregion
-    
-    // ----------------------------------------- public methods -----------------------------------------
+
+        // ----------------------------------------- public methods -----------------------------------------
     #region - initialize     
         /// constructor is called via <see cref="EntitySetMapper{T,TKey,TEntity}.CreateEntitySet"/> 
         internal EntitySet(string name) : base (name) {
@@ -143,7 +146,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         public QueryTask<T> Query(Expression<Func<T, bool>> filter) {
             if (filter == null)
                 throw new ArgumentException($"EntitySet.Query() filter must not be null. EntitySet: {name}");
-            var op = Operation.FromFilter(filter, RefQueryPath);
+            var op = Operation.FromFilter(filter, ClientStatic.RefQueryPath);
             var task = GetSyncSet().QueryFilter(op);
             intern.store.AddTask(task);
             return task;
@@ -191,7 +194,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         public CountTask<T> Count(Expression<Func<T, bool>> filter) {
             if (filter == null)
                 throw new ArgumentException($"EntitySet.Aggregate() filter must not be null. EntitySet: {name}");
-            var op = Operation.FromFilter(filter, RefQueryPath);
+            var op = Operation.FromFilter(filter, ClientStatic.RefQueryPath);
             var task = GetSyncSet().CountFilter(op);
             intern.store.AddTask(task);
             return task;
@@ -308,7 +311,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             if (entities == null)
                 throw new ArgumentException($"EntitySet.CreateRange() entity must not be null. EntitySet: {name}");
             foreach (var entity in entities) {
-                if (EntityKeyTMap.IsEntityKeyNull(entity))
+                if (Static.EntityKeyTMap.IsEntityKeyNull(entity))
                     throw new ArgumentException($"EntitySet.CreateRange() entity.id must not be null. EntitySet: {name}");
             }
             var task = GetSyncSet().CreateRange(entities);
@@ -325,7 +328,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         public UpsertTask<T> Upsert(T entity) {
             if (entity == null)
                 throw new ArgumentException($"EntitySet.Upsert() entity must not be null. EntitySet: {name}");
-            if (EntityKeyTMap.IsEntityKeyNull(entity))
+            if (Static.EntityKeyTMap.IsEntityKeyNull(entity))
                 throw new ArgumentException($"EntitySet.Upsert() entity.id must not be null. EntitySet: {name}");
             var task = GetSyncSet().Upsert(entity);
             intern.store.AddTask(task);
@@ -340,7 +343,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             if (entities == null)
                 throw new ArgumentException($"EntitySet.UpsertRange() entity must not be null. EntitySet: {name}");
             foreach (var entity in entities) {
-                if (EntityKeyTMap.IsEntityKeyNull(entity))
+                if (Static.EntityKeyTMap.IsEntityKeyNull(entity))
                     throw new ArgumentException($"EntitySet.UpsertRange() entity.id must not be null. EntitySet: {name}");
             }
             var task = GetSyncSet().UpsertRange(entities);
@@ -475,8 +478,8 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// </summary>
         public DetectPatchesTask<T> DetectPatches(T entity) {
             if (entity == null)                             throw new ArgumentNullException(nameof(entity));
-            var key     = EntityKeyTMap.GetKey(entity);
-            if (KeyConvert.IsKeyNull(key))                  throw new ArgumentException($"entity key must not be null.");
+            var key     = Static.EntityKeyTMap.GetKey(entity);
+            if (Static.KeyConvert.IsKeyNull(key))                  throw new ArgumentException($"entity key must not be null.");
             if (!TryGetPeerByKey(key, out var peer))        throw new ArgumentException($"entity is not tracked. key: {key}");
             var set     = GetSyncSet();
             var task    = new DetectPatchesTask<T>(set);
@@ -501,8 +504,8 @@ namespace Friflo.Json.Fliox.Hub.Client
             using (var pooled = intern.store.ObjectMapper.Get()) {
                 foreach (var entity in entities) {
                     if (entity == null)                         throw new ArgumentException($"entities[{n}] is null");
-                    var key     = EntityKeyTMap.GetKey(entity);
-                    if (KeyConvert.IsKeyNull(key))              throw new ArgumentException($"entity key must not be null. entities[{n}]");
+                    var key     = Static.EntityKeyTMap.GetKey(entity);
+                    if (Static.KeyConvert.IsKeyNull(key))              throw new ArgumentException($"entity key must not be null. entities[{n}]");
                     if (!TryGetPeerByKey(key, out var peer))    throw new ArgumentException($"entity is not tracked. entities[{n}] key: {key}");
                     set.DetectPeerPatches(peer, task, pooled.instance);
                     n++;

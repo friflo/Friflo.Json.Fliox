@@ -110,7 +110,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         internal readonly FilterOperation op;
 
         public EntityFilter(Expression<Func<T, bool>> filter) {
-            op = Operation.FromFilter(filter, EntitySet.RefQueryPath);
+            op = Operation.FromFilter(filter, ClientStatic.RefQueryPath);
         }
     }    
     

@@ -3,6 +3,7 @@
 
 using System.Collections.Generic;
 using System.Diagnostics;
+using Friflo.Json.Fliox.Hub.Client.Internal.KeyEntity;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Mapper.Map;
 using static System.Diagnostics.DebuggerBrowsableState;
@@ -24,6 +25,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         internal            bool                writePretty;
         internal            bool                writeNull;
         
+        private static readonly EntityKeyT<TKey, T> EntityKeyTMap       = EntityKey.GetEntityKeyT<TKey, T>();
+        
         public    override  string              ToString()  => "";
         
         internal            SyncSet             SyncSet => entitySet.syncSet;
@@ -37,9 +40,9 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             this.entitySet  = entitySet;
             subscription    = null;
             keysBuf         = null;
-            autoIncrement   = EntitySet<TKey,T>.EntityKeyTMap.autoIncrement;
-            writePretty     = EntitySet.DefaultWritePretty;
-            writeNull       = EntitySet.DefaultWriteNull;
+            autoIncrement   = EntityKeyTMap.autoIncrement;
+            writePretty     = ClientStatic.DefaultWritePretty;
+            writeNull       = ClientStatic.DefaultWriteNull;
         }
     }
 }

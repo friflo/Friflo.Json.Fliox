@@ -25,7 +25,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         public MemberSelection<T> Add(Expression<Func<T, object>> member) {
             if (member == null)     throw new ArgumentNullException(nameof(member));
             if (isFrozen)           throw new InvalidOperationException("MemberSelection is already frozen");
-            var memberPath = Operation.PathFromLambda(member, EntitySet.RefQueryPath);
+            var memberPath = Operation.PathFromLambda(member, ClientStatic.RefQueryPath);
             memberAccess = null;
             members.Add(memberPath);
             return this;
@@ -71,7 +71,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         public MemberPath(Expression<Func<T, object>> member) {
             if (member == null)
                 throw new ArgumentException($"MemberPath<{typeof(T).Name}>() member must not be null.");
-            path = Operation.PathFromLambda(member, EntitySet.RefQueryPath);
+            path = Operation.PathFromLambda(member, ClientStatic.RefQueryPath);
         }
     }
 }
