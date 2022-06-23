@@ -55,7 +55,8 @@ namespace Friflo.Json.Fliox.Hub.Client
         // ReSharper disable once UnusedMember.Local
         private             IReadOnlyCollection<Peer<T>>    Peers => peerMap?.Values;
         
-        /// <summary> enable access to tasks in debugger. Not used internally. </summary>
+        /// <summary> List of tasks created by its <see cref="EntitySet{TKey,T}"/> methods. These tasks are executed when calling <see cref="FlioxClient.SyncTasks"/> </summary>
+        //  Not used internally 
         public              IReadOnlyList<SyncTask>         Tasks => syncSet?.tasks;
         
         // create _peers map on demand                                      //  Note: must be private by all means
@@ -69,7 +70,9 @@ namespace Friflo.Json.Fliox.Hub.Client
         [DebuggerBrowsable(Never)]  internal override   Type    KeyType     => typeof(TKey);
         [DebuggerBrowsable(Never)]  internal override   Type    EntityType  => typeof(T);
         
+        /// <summary> If true the serialization of entities to JSON is prettified </summary>
         [DebuggerBrowsable(Never)]  public   override   bool    WritePretty { get => intern.writePretty;   set => intern.writePretty = value; }
+        /// <summary> If true the serialization of entities to JSON write null fields. Otherwise null fields are omitted </summary>
         [DebuggerBrowsable(Never)]  public   override   bool    WriteNull   { get => intern.writeNull;     set => intern.writeNull   = value; }
         
         /// <summary> using a static class prevents noise in form of 'Static members' for class instances in Debugger </summary>

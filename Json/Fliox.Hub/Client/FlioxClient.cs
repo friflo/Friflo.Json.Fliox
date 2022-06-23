@@ -46,13 +46,19 @@ namespace Friflo.Json.Fliox.Hub.Client
         //          Tasks, UserInfo & EntitySet<,> fields
         // ReSharper disable once InconsistentNaming
                                     internal    ClientIntern                _intern;        // Use intern struct as first field
+        /// <summary> List of tasks created by its <see cref="FlioxClient"/> methods. These tasks are executed when calling <see cref="SyncTasks"/> </summary>
                                     public      IReadOnlyList<SyncTask>     Tasks           => GetTasks();
 
+        /// <summary> name of the database the client is attached to </summary>
         [DebuggerBrowsable(Never)]  public      string                      DatabaseName    => _intern.database ?? _intern.hub.DatabaseName;
+        /// <summary> reference to standard database commands </summary>
         [DebuggerBrowsable(Never)]  public readonly   StdCommands           std;
         [DebuggerBrowsable(Never)]  public      IReadOnlyList<SyncFunction> Functions       => _intern.syncStore.functions;
+        /// <summary> general client information: attached database, the number of cached entities and scheduled <see cref="Tasks"/> </summary>
         [DebuggerBrowsable(Never)]  public      ClientInfo                  ClientInfo      => new ClientInfo(this); 
+        /// <summary> If true the serialization of entities to JSON is prettified </summary>
         [DebuggerBrowsable(Never)]  public      bool                        WritePretty { set => SetWritePretty(value); }
+        /// <summary> If true the serialization of entities to JSON write null fields. Otherwise null fields are omitted </summary>
         [DebuggerBrowsable(Never)]  public      bool                        WriteNull   { set => SetWriteNull(value); }
         [DebuggerBrowsable(Never)]  internal    readonly   Type             type;
         [DebuggerBrowsable(Never)]  internal    ObjectPool<ObjectMapper>    ObjectMapper    => _intern.pool.ObjectMapper;
