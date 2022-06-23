@@ -430,13 +430,4 @@ namespace Friflo.Json.Fliox.Hub.Client
             }
         }
     }
-    
-    /// Add const / static members here instead of <see cref="FlioxClient"/> to avoid showing members in debugger.
-    internal static class ClientUtils {
-        /// <summary>
-        /// Process continuation of <see cref="FlioxClient.ExecuteSync"/> on caller context.
-        /// This ensures modifications to entities are applied on the same context used by the caller. 
-        /// </summary>
-        internal const bool OriginalContext = true;       
-    }
 }

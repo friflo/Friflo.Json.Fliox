@@ -58,6 +58,15 @@ namespace Friflo.Json.Fliox.Hub.Client
         [DebuggerBrowsable(Never)]  internal    ObjectPool<ObjectMapper>    ObjectMapper    => _intern.pool.ObjectMapper;
         [DebuggerBrowsable(Never)]  public      IHubLogger                  Logger          => _intern.hubLogger;
         public   override                       string                      ToString()      => FormatToString();
+        
+        /// <summary> using a static class prevents noise in form of 'Static members' for class instances in Debugger </summary>
+        private static class Static {
+            /// <summary>
+            /// Process continuation of <see cref="FlioxClient.ExecuteSync"/> on caller context.
+            /// This ensures modifications to entities are applied on the same context used by the caller. 
+            /// </summary>
+            internal const bool OriginalContext = true;
+        }
 
         public static Type[] GetEntityTypes<TFlioxClient> () where TFlioxClient : FlioxClient => ClientEntityUtils.GetEntityTypes<TFlioxClient>();
         #endregion
@@ -104,7 +113,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         public async Task<SyncResult> SyncTasks() {
             var syncRequest = CreateSyncRequest(out SyncStore syncStore);
             var syncContext = new SyncContext(_intern.pool, _intern.eventTarget, _intern.sharedCache, _intern.clientId);
-            var response    = await ExecuteSync(syncRequest, syncContext).ConfigureAwait(ClientUtils.OriginalContext);
+            var response    = await ExecuteSync(syncRequest, syncContext).ConfigureAwait(Static.OriginalContext);
             
             var result = HandleSyncResponse(syncRequest, response, syncStore);
             if (!result.Success)
@@ -121,7 +130,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         public async Task<SyncResult> TrySyncTasks() {
             var syncRequest = CreateSyncRequest(out SyncStore syncStore);
             var syncContext = new SyncContext(_intern.pool, _intern.eventTarget, _intern.sharedCache, _intern.clientId);
-            var response    = await ExecuteSync(syncRequest, syncContext).ConfigureAwait(ClientUtils.OriginalContext);
+            var response    = await ExecuteSync(syncRequest, syncContext).ConfigureAwait(Static.OriginalContext);
 
             var result = HandleSyncResponse(syncRequest, response, syncStore);
             syncContext.Release();
