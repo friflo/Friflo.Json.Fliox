@@ -55,7 +55,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         private             IReadOnlyCollection<Peer<T>>    Peers => peerMap?.Values;
         
         /// <summary> enable access to tasks in debugger. Not used internally. </summary>
-        internal            IReadOnlyList<SyncTask>         Tasks => syncSet?.tasks;
+        public              IReadOnlyList<SyncTask>         Tasks => syncSet?.tasks;
         
         // create _peers map on demand                                      //  Note: must be private by all means
         private             Dictionary<TKey, Peer<T>>       PeerMap()       => peerMap ?? (peerMap = SyncSet.CreateDictionary<TKey,Peer<T>>());

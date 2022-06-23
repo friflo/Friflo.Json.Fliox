@@ -65,6 +65,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             AreSimilar("articles:  2, tasks: 2 [upsert: 2]",            articles);
             AreSimilar("employees: 1, tasks: 1 [create: 1]",            employees);
             AreSimilar("producers: 2, tasks: 2 [create: 2]",            producers);
+            
+            // Ensure Tasks API is available
+            AreEqual(2,     articles.Tasks.Count);
+            AreEqual(1,     employees.Tasks.Count);
+            AreEqual(2,     producers.Tasks.Count);
 
             await store.SyncTasks(); // ----------------
             AreSimilar("entities: 5",                                   store);   // tasks executed and cleared
