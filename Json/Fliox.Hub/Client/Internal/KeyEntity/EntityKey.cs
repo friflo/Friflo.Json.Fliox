@@ -142,8 +142,6 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal.KeyEntity
         internal virtual    bool    IsIntKey()                 => true;
         internal virtual    bool    IsEntityKeyNull (T entity) => false;
         internal virtual    bool    IsDefaultKey    (T entity) => false;
-
-        internal abstract   TAsType GetKeyAsType<TAsType> (T entity);    // TAG_NULL_REF
     }
     
     // ----------------------------------------- EntityKeyT<TKey, T> -----------------------------------------
@@ -157,11 +155,6 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal.KeyEntity
         
         internal EntityKeyT (MemberInfo member) {
             autoIncrement   = FieldQuery.IsAutoIncrement(member.CustomAttributes);
-        }
-
-        internal override   TAsType GetKeyAsType<TAsType> (T entity) {
-            // Will box in DEBUG - not in RELEASE (.NET Core 3.1)
-            return (TAsType)(object)GetKey(entity); // TAG_NULL_REF
         }
 
         /// <summary> prefer using <see cref="GetKey"/>. Use only if <typeparamref name="TKey"/> is not utilized </summary>
