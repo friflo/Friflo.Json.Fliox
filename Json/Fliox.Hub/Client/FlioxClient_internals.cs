@@ -26,9 +26,9 @@ namespace Friflo.Json.Fliox.Hub.Client
     {
         private string FormatToString() {
             var sb = new StringBuilder();
-            sb.Append("db: '");
+            sb.Append('\'');
             sb.Append(DatabaseName);
-            sb.Append("', ");
+            sb.Append("'  ");
             ClientInfo.FormatToString(sb);
             return sb.ToString();
         }

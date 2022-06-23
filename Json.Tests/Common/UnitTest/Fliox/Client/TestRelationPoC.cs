@@ -13,7 +13,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
     public static class TestRelationPoC
     {
         public static async Task CreateStore(PocStore store) {
-            AreSimilar("db: 'main_db', entities:  0", store);             // test .ToString()
+            AreSimilar("'main_db'  entities:  0", store);             // test .ToString()
             AreSimilar("entities: 0",                 store.ClientInfo);   // initial state, empty store
             var orders      = store.orders;
             var articles    = store.articles;
