@@ -143,9 +143,6 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal.KeyEntity
         internal virtual    bool    IsEntityKeyNull (T entity) => false;
         internal virtual    bool    IsDefaultKey    (T entity) => false;
 
-        internal abstract   JsonKey GetId           (T entity);
-        internal abstract   void    SetId           (T entity, in JsonKey id);
-        
         internal abstract   TAsType GetKeyAsType<TAsType> (T entity);    // TAG_NULL_REF
     }
     
@@ -167,12 +164,14 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal.KeyEntity
             return (TAsType)(object)GetKey(entity); // TAG_NULL_REF
         }
 
-        internal override   JsonKey GetId   (T entity) {
+        /// <summary> prefer using <see cref="GetKey"/>. Use only if <typeparamref name="TKey"/> is not utilized </summary>
+        internal JsonKey GetId   (T entity) {
             TKey key = GetKey(entity);
             return KeyConvert.KeyToId(key);
         }
         
-        internal override   void    SetId   (T entity, in JsonKey id) {
+        /// <summary> prefer using <see cref="SetKey"/>. Use only if <typeparamref name="TKey"/> is not utilized </summary>
+        internal void    SetId   (T entity, in JsonKey id) {
             TKey key = KeyConvert.IdToKey(id);
             SetKey(entity, key);
         }
