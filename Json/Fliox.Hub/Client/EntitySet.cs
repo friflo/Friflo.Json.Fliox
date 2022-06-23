@@ -52,6 +52,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         
         /// <summary> enable access to entities in debugger. Not used internally. </summary>
         // Note: using Dictionary.Values is okay. The ValueCollection is instantiated only once for a Dictionary instance
+        // ReSharper disable once UnusedMember.Local
         private             IReadOnlyCollection<Peer<T>>    Peers => peerMap?.Values;
         
         /// <summary> enable access to tasks in debugger. Not used internally. </summary>
