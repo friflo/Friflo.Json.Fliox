@@ -26,7 +26,6 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
         private  readonly   FlioxHub            clusterHub;
         private  readonly   FlioxHub            hub;
 
-        public   override   string              ToString()  => name;
         public   override   string              StorageName => stateDB.StorageName;
 
         public ClusterDB (string name, FlioxHub hub, DbOpt opt = null)

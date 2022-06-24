@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.DB.Cluster;
 using Friflo.Json.Fliox.Hub.Host.Utils;
@@ -11,6 +12,7 @@ using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Schema.Definition;
 using Friflo.Json.Fliox.Transform;
 using Friflo.Json.Fliox.Transform.Query.Ops;
+using static System.Diagnostics.DebuggerBrowsableState;
 
 namespace Friflo.Json.Fliox.Hub.Host
 {
@@ -44,10 +46,13 @@ namespace Friflo.Json.Fliox.Hub.Host
     /// </summary>
     public abstract class EntityDatabase : IDisposable
     {
-        public   readonly   string              name;   // non null
+        public   readonly   string              name;       // non null
+        public   override   string              ToString()  => name;
         
         /// <summary> map of of containers identified by their container name </summary>
-        private  readonly   Dictionary<string, EntityContainer> containers;
+        [DebuggerBrowsable(Never)]
+        private  readonly   Dictionary<string, EntityContainer>     containers;
+        private             IReadOnlyCollection<EntityContainer>    Containers => containers.Values;
         
         /// <summary>
         /// An optional <see cref="DatabaseSchema"/> used to validate the JSON payloads in all write operations

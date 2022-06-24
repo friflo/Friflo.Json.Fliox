@@ -27,7 +27,6 @@ namespace Friflo.Json.Fliox.Hub.DB.Monitor
         private  readonly   FlioxHub            monitorHub;
         private  readonly   FlioxHub            hub;
 
-        public   override   string              ToString()  => name;
         public   override   string              StorageName => stateDB.StorageName;
 
         public MonitorDB (string name, FlioxHub hub, DbOpt opt = null)

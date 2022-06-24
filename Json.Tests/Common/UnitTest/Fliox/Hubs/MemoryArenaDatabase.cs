@@ -53,7 +53,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs
         
         public   override   bool                                        Pretty      { get; }
         
-        public    override  string  ToString()  => $"{base.ToString()}, Count: {keyValues.Count}";
+        public    override  string  ToString()  => $"{name}  Count: {keyValues.Count}";
 
         public MemoryArenaContainer(string name, EntityDatabase database, bool pretty)
             : base(name, database)

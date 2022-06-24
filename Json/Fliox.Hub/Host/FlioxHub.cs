@@ -231,7 +231,9 @@ namespace Friflo.Json.Fliox.Hub.Host
         }
 
         // --- extension databases
-        private readonly   Dictionary<string, EntityDatabase> extensionDbs = new Dictionary<string, EntityDatabase>();
+        [DebuggerBrowsable(Never)]
+        private readonly  Dictionary<string, EntityDatabase>    extensionDbs = new Dictionary<string, EntityDatabase>();
+        private           IReadOnlyCollection<EntityDatabase>   ExtensionDbs => extensionDbs.Values;
         
         /// <summary>
         /// Add an <paramref name="extensionDB"/> to the Hub. The extension database is identified by its
