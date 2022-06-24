@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using Friflo.Json.Fliox.Hub.Client;
 using Friflo.Json.Fliox.Hub.Host.Internal;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
@@ -11,6 +12,7 @@ using Friflo.Json.Fliox.Schema.Definition;
 using Friflo.Json.Fliox.Schema.Language;
 using Friflo.Json.Fliox.Schema.Native;
 using Friflo.Json.Fliox.Schema.Validation;
+using static System.Diagnostics.DebuggerBrowsableState;
 
 namespace Friflo.Json.Fliox.Hub.Host
 {
@@ -47,7 +49,11 @@ namespace Friflo.Json.Fliox.Hub.Host
     public sealed class DatabaseSchema
     {
         public   readonly   TypeSchema                          typeSchema;
+        [DebuggerBrowsable(Never)]
         private  readonly   Dictionary<string, ValidationType>  containerTypes  = new Dictionary<string, ValidationType>();
+        /// used only for access in Debugger to simplify showing <see cref="containerTypes"/> 
+        private             IReadOnlyCollection<ValidationType> ContainerTypes  => containerTypes.Values;
+        
         private             Dictionary<string, JsonValue>       jsonSchemas; // cache schemas after creation
         
         internal            string                              Name        => typeSchema.RootType.Name;
