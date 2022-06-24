@@ -109,6 +109,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         public   readonly   SharedEnv               sharedEnv;
         
         internal readonly   HostStats               hostStats   = new HostStats{ requestCount = new RequestCount{ db = "*"} };
+        [DebuggerBrowsable(Never)]
         internal readonly   List<string>            routes      = new List<string>();
 
         [DebuggerBrowsable(Never)]  private HubInfo             info                = new HubInfo();
