@@ -63,7 +63,10 @@ namespace Friflo.Json.Fliox.Hub.Host
 #endif
     public class FlioxHub : IDisposable, ILogSource
     {
+        [DebuggerBrowsable(Never)]
         public   readonly   EntityDatabase      database;       // not null
+        /// expose <see cref="database"/> as property to list it within the first members in Debugger
+        private             EntityDatabase      Database        => database;
         
         public              string              DatabaseName    => database.name; // not null
         public   override   string              ToString()      => database.name;
