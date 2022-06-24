@@ -14,12 +14,17 @@ namespace Friflo.Json.Fliox.Hub.Client
     /// <summary>
     /// A <see cref="MessageTask"/> contains the message (or command) <see cref="name"/> and <see cref="param"/> sent to
     /// an <see cref="EntityDatabase"/> by <see cref="FlioxClient.SendMessage"/>.<br/>
-    /// It is used to send to the message (or command) as en event to all clients which successful subscribed the
-    /// message by its <see cref="name"/>.
-    /// If the message was sent successful <see cref="SyncFunction.Success"/> is true.
-    /// <br/>
-    /// <b>Note</b>: A message returns no result. To get a result send a command by <see cref="FlioxClient.SendCommand{TParam,TResult}"/> 
     /// </summary>
+    /// <remarks>
+    /// They <see cref="EntityDatabase"/> send the message (or command) as en event to all clients subscribed to the message. <br/>
+    /// If sending the message to the <see cref="EntityDatabase"/> is successful <see cref="SyncFunction.Success"/> is true. <br/>
+    /// <i>Notes:</i>
+    /// <list type="bullet">
+    ///   <item> Messages in contrast to commands return no result. </item>
+    ///   <item> The result of a command is available via <see cref="CommandTask{TResult}.Result"/> </item>
+    ///   <item> The response of messages and commands provide no information that they are received as events by subscribed clients. </item>
+    /// </list>
+    /// </remarks>
     public class MessageTask : SyncTask
     {
         /// <summary>
