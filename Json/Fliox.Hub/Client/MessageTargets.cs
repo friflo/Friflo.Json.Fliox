@@ -7,27 +7,27 @@ using System.Collections.Generic;
 namespace Friflo.Json.Fliox.Hub.Client
 {
     /// <summary> prototype WIP </summary>
-    public struct MessageTarget
+    public struct MessageTargets
     {
         internal IList<UserClient>   userClients;
         
-        public MessageTarget (string user) {
+        public MessageTargets (string user) {
             userClients = new List<UserClient> { new UserClient(user) };
         }
         
-        public MessageTarget (JsonKey user) {
+        public MessageTargets (JsonKey user) {
             userClients = new List<UserClient> { new UserClient(user) };
         }
         
-        public MessageTarget (string user, string  client) {
+        public MessageTargets (string user, string  client) {
             userClients = new List<UserClient> { new UserClient(user, client) };
         }
         
-        public MessageTarget (JsonKey user, JsonKey  client) {
+        public MessageTargets (JsonKey user, JsonKey  client) {
             userClients = new List<UserClient> { new UserClient(user, client) };
         }
         
-        public MessageTarget (UserClient userClient) {
+        public MessageTargets (UserClient userClient) {
             userClients = new List<UserClient> { userClient };
         }
         
@@ -72,47 +72,47 @@ namespace Friflo.Json.Fliox.Hub.Client
     {
         // --- user
         public static  MessageTask  ToUser (this MessageTask messageTask, string  user) {
-            messageTask.Target.AddClient(new UserClient(user));
+            messageTask.Targets.AddClient(new UserClient(user));
             return messageTask;
         }
         public static  MessageTask  ToUser (this MessageTask messageTask, JsonKey user) {
-            messageTask.Target.AddClient(new UserClient(user));
+            messageTask.Targets.AddClient(new UserClient(user));
             return messageTask;
         }
         
         // --- user client
         public static  MessageTask  ToClient (this MessageTask messageTask, string  user, string client) {
-            messageTask.Target.AddClient(new UserClient(user, client));
+            messageTask.Targets.AddClient(new UserClient(user, client));
             return messageTask;
         }
         
         public static  MessageTask  ToClient (this MessageTask messageTask, JsonKey user, JsonKey client) {
-            messageTask.Target.AddClient(new UserClient(user, client));
+            messageTask.Targets.AddClient(new UserClient(user, client));
             return messageTask;
         }
         
         public static  MessageTask  ToClient (this MessageTask messageTask, UserClient client) {
-            messageTask.Target.AddClient(client);
+            messageTask.Targets.AddClient(client);
             return messageTask;
         }
         
         // --- users
         public static  MessageTask  ToUsers (this MessageTask messageTask, ICollection<string>  users) {
-            messageTask.Target.AddClients(users);
+            messageTask.Targets.AddClients(users);
             return messageTask;
         }
         public static  MessageTask  ToUsers (this MessageTask messageTask, ICollection<JsonKey>  users) {
-            messageTask.Target.AddClients (users);
+            messageTask.Targets.AddClients (users);
             return messageTask;
         }
         
         // --- user clients
         public static  MessageTask  ToClients (this MessageTask messageTask, ICollection<(string, string)>  clients) {
-            messageTask.Target.AddClients(clients);
+            messageTask.Targets.AddClients(clients);
             return messageTask;
         }
         public static  MessageTask  ToClients (this MessageTask messageTask, ICollection<UserClient>  clients) {
-            messageTask.Target.AddClients (clients);
+            messageTask.Targets.AddClients (clients);
             return messageTask;
         }
     }

@@ -20,10 +20,8 @@ namespace Friflo.Json.Fliox.Hub.Client
     /// <br/>
     /// <b>Note</b>: A message returns no result. To get a result send a command by <see cref="FlioxClient.SendCommand{TParam,TResult}"/> 
     /// </summary>
-    public class MessageTask : SyncTask
+    public class SendTask : SyncTask
     {
-        public              MessageTarget   Target;
-
         internal readonly   string          name;
         private  readonly   JsonValue       param;
         
@@ -35,7 +33,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         internal override   TaskType        TaskType    => TaskType.message;
 
         
-        internal MessageTask(string name, JsonValue param) {
+        internal SendTask(string name, JsonValue param) {
             this.name       = name;
             this.param      = param;
         }
@@ -47,6 +45,19 @@ namespace Friflo.Json.Fliox.Hub.Client
             return new SendMessage      { name  = name, param = param, syncTask = this };
         }
     }
+    
+    public class MessageTask : SendTask
+    {
+        /// <summary>
+        /// The <see cref="Targets"/> the message is sent to. <br/>
+        /// By default (<see cref="Targets"/> are not refined) messages are sent to all clients subscribed to the message. <br/>
+        /// </summary>
+        public  MessageTargets   Targets { get; set; }
+        
+        internal MessageTask(string name, JsonValue param)
+            : base (name, param)
+        { }
+    }
 
     /// <summary>
     /// A <see cref="CommandTask"/> is created when a command is send to an <see cref="EntityDatabase"/> by
@@ -57,7 +68,7 @@ namespace Friflo.Json.Fliox.Hub.Client
     /// <b>Note</b>: For type safe access to the result use <see cref="CommandTask{TResult}"/> returned by
     /// <see cref="FlioxClient.SendCommand{TParam,TResult}"/>
     /// </summary>
-    public class CommandTask : MessageTask
+    public class CommandTask : SendTask
     {
         private  readonly   Pool            pool;
         internal            JsonValue       result;
