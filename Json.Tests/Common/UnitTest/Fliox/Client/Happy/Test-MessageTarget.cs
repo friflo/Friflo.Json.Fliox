@@ -27,19 +27,19 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             var userClient      = new UserClient(userId, clientId);
             
             // --- single target
-            IsTask(store.SendMessage("msg-1").ToUser("user-1"));
-            IsTask(store.SendMessage("msg-1").ToUser(store.UserId));
+            IsTask(store.SendMessage("msg-1").TargetUser("user-1"));
+            IsTask(store.SendMessage("msg-1").TargetUser(store.UserId));
             
-            IsTask(store.SendMessage("msg-1").ToClient("user-1", "client-1"));
-            IsTask(store.SendMessage("msg-1").ToClient(userId, clientId));
-            IsTask(store.SendMessage("msg-1").ToClient(userClient));
+            IsTask(store.SendMessage("msg-1").TargetClient("user-1", "client-1"));
+            IsTask(store.SendMessage("msg-1").TargetClient(userId, clientId));
+            IsTask(store.SendMessage("msg-1").TargetClient(userClient));
 
             // --- multi target
-            IsTask(store.SendMessage("msg-4").ToUsers (new[] { "user-1" }));
-            IsTask(store.SendMessage("msg-4").ToUsers (new[] { userId }));
+            IsTask(store.SendMessage("msg-4").TargetUsers (new[] { "user-1" }));
+            IsTask(store.SendMessage("msg-4").TargetUsers (new[] { userId }));
 
-            IsTask(store.SendMessage("msg-4").ToClients (new[] { ("user-1", "client-1")}));
-            IsTask(store.SendMessage("msg-4").ToClients (new[] { userClient }));
+            IsTask(store.SendMessage("msg-4").TargetClients (new[] { ("user-1", "client-1")}));
+            IsTask(store.SendMessage("msg-4").TargetClients (new[] { userClient }));
             
             var target1 = new MessageTargets("user-1");
             var target2 = new MessageTargets(userId);
