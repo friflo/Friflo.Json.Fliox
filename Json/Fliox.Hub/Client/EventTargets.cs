@@ -31,7 +31,15 @@ namespace Friflo.Json.Fliox.Hub.Client
             userClients = new List<UserClient> { userClient };
         }
         
-        internal void AddClient(UserClient client) {
+        public void AddUser(string user, string client = null) {
+            AddClient (new UserClient(user, client));
+        }
+        
+        public void AddUser(JsonKey user, JsonKey client) {
+            AddClient (new UserClient(user, client));
+        }
+
+        public void AddClient(UserClient client) {
             if (userClients == null) {
                 userClients = new List<UserClient> { client };
                 return;
@@ -39,21 +47,21 @@ namespace Friflo.Json.Fliox.Hub.Client
             userClients.Add(client);
         }
         
-        internal void AddClients (ICollection<string> users) {
+        public void AddClients (ICollection<string> users) {
             if (userClients == null) userClients = new List<UserClient>(users.Count);
             foreach (var user in users) {
                 userClients.Add(new UserClient(user));
             }
         }
         
-        internal void AddClients (ICollection<JsonKey> users) {
+        public void AddClients (ICollection<JsonKey> users) {
             if (userClients == null) userClients = new List<UserClient>(users.Count);
             foreach (var user in users) {
                 userClients.Add(new UserClient(user));
             }
         }
         
-        internal void AddClients (ICollection<(string, string)> userClients) {
+        public void AddClients (ICollection<(string, string)> userClients) {
             if (this.userClients == null) this.userClients = new List<UserClient>(userClients.Count);
             foreach (var (user, client) in userClients) {
                 this.userClients.Add(new UserClient(user, client));
