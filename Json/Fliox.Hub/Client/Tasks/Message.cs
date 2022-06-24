@@ -22,6 +22,8 @@ namespace Friflo.Json.Fliox.Hub.Client
     /// </summary>
     public class MessageTask : SyncTask
     {
+        public              MessageTarget   Target;
+
         internal readonly   string          name;
         private  readonly   JsonValue       param;
         
