@@ -14,17 +14,14 @@ using Friflo.Json.Fliox.Hub.Host.Utils;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Mapper.Map;
-using static System.Diagnostics.DebuggerBrowsableState;
 
 // ReSharper disable UnusedMember.Local
 namespace Friflo.Json.Fliox.Hub.Client.Internal
 {
     internal struct ClientIntern
     {
-        // show Hub as property on top in Debugger 
-                                    private             FlioxHub    Hub => hub;
         // --- readonly
-        [DebuggerBrowsable(Never)]  internal readonly   FlioxHub    hub;
+                                    internal readonly   FlioxHub    hub;
                                     internal readonly   TypeStore   typeStore;
                                     internal readonly   Pool        pool;
                                     internal readonly   SharedCache sharedCache;

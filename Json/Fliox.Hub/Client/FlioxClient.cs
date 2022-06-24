@@ -48,6 +48,8 @@ namespace Friflo.Json.Fliox.Hub.Client
                                     internal    ClientIntern                _intern;        // Use intern struct as first field
         /// <summary> List of tasks created by its <see cref="FlioxClient"/> methods. These tasks are executed when calling <see cref="SyncTasks"/> </summary>
                                     public      IReadOnlyList<SyncTask>     Tasks           => GetTasks();
+        // exposed only for access in debugger - not used by internally
+                                    private     FlioxHub                    Hub             => _intern.hub;
 
         /// <summary> name of the database the client is attached to </summary>
         [DebuggerBrowsable(Never)]  public      string                      DatabaseName    => _intern.database ?? _intern.hub.DatabaseName;
