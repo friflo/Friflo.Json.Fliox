@@ -35,15 +35,15 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// </remarks>
         public              MessageTargets  Targets { get; set; }
         
-        internal readonly   string          name;
-        private  readonly   JsonValue       param;
+        internal  readonly  string          name;
+        protected readonly  JsonValue       param;
         
         [DebuggerBrowsable(Never)]
         internal            TaskState       state;
-        internal override   TaskState       State       => state;
+        internal  override  TaskState       State       => state;
         
-        public   override   string          Details     => $"MessageTask (name: {name})";
-        internal override   TaskType        TaskType    => TaskType.message;
+        public    override  string          Details     => $"MessageTask (name: {name})";
+        internal  override  TaskType        TaskType    => TaskType.message;
 
         
         internal MessageTask(string name, JsonValue param) {
@@ -52,10 +52,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
         
         internal override SyncRequestTask CreateRequestTask(in CreateTaskContext context) {
-            if (this is CommandTask) {
-                return new SendCommand  { name  = name, param = param, syncTask = this };
-            }
-            return new SendMessage      { name  = name, param = param, syncTask = this };
+            return new SendMessage { name  = name, param = param, syncTask = this };
         }
     }
     
@@ -127,6 +124,10 @@ namespace Friflo.Json.Fliox.Hub.Client
                 }
             }
             throw e;
+        }
+        
+        internal override SyncRequestTask CreateRequestTask(in CreateTaskContext context) {
+            return new SendCommand { name  = name, param = param, syncTask = this };
         }
     }
 
