@@ -33,7 +33,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs
     public sealed class MemoryArenaDatabase : EntityDatabase
     {
         private  readonly   bool                pretty;
-        public   override   string              StorageName => "memory-arena";
+        public   override   string              StorageType => "memory-arena";
 
         public MemoryArenaDatabase(string name, TaskHandler handler = null, DbOpt opt = null, bool pretty = false)
             : base(name, handler, opt)

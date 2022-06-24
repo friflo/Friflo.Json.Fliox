@@ -74,7 +74,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// </summary>
         internal readonly   TaskHandler         handler;    // never null
         
-        public   virtual    string              StorageName => GetType().Name;     
+        public   virtual    string              StorageType => GetType().Name;     
         
         /// <summary>
         /// constructor parameters are mandatory to force implementations having them in their constructors also or
@@ -130,16 +130,18 @@ namespace Friflo.Json.Fliox.Hub.Host
             } else {
                 containerList = await GetContainers().ConfigureAwait(false);
             }
-            return new DbContainers { containers = containerList, storage = StorageName };
+            return new DbContainers { containers = containerList, storage = StorageType };
         }
 
-        private const bool ExposeSchemaCommands = true; // false for debugging
+        private static class Static {
+            internal const bool ExposeSchemaCommands = true; // false for debugging
+        }
 
         public DbMessages GetDbMessages() {
             string[] commands;
             string[] messages;
             var schema = Schema;
-            if (ExposeSchemaCommands && schema != null) {
+            if (Static.ExposeSchemaCommands && schema != null) {
                 commands = schema.GetCommands();
                 messages = schema.GetMessages();
             } else {
