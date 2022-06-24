@@ -87,7 +87,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         public FlioxClient(FlioxHub hub, string database = null) {
             if (hub  == null)  throw new ArgumentNullException(nameof(hub));
             type    = GetType();
-            var eventTarget = new EventTarget(this);
+            var eventTarget = new Internal.EventTarget(this);
             _intern = new ClientIntern(this, hub, database, eventTarget);
             std     = new StdCommands  (this);
             hub.sharedEnv.sharedCache.AddRootType(type);

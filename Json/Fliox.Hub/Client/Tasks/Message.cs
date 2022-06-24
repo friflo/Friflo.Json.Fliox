@@ -31,9 +31,9 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// Refine the clients receiving the message as an event in case they setup a subscription with <see cref="FlioxClient.SubscribeMessage"/>.
         /// </summary>
         /// <remarks>
-        /// By default - <see cref="Targets"/> is not refined - the message is sent as an event to all clients subscribed to the message. <br/>
+        /// By default - <see cref="EventTargets"/> is not refined - the message is sent as an event to all clients subscribed to the message. <br/>
         /// </remarks>
-        public              MessageTargets  Targets { get; set; }
+        public              EventTargets    EventTargets { get; set; }
         
         internal  readonly  string          name;
         protected readonly  JsonValue       param;

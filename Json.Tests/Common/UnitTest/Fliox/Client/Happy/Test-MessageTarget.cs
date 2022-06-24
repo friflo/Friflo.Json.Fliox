@@ -27,29 +27,29 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             var userClient      = new UserClient(userId, clientId);
             
             // --- single target
-            IsTask(store.SendMessage("msg-1").TargetUser("user-1"));
-            IsTask(store.SendMessage("msg-1").TargetUser(store.UserId));
+            IsTask(store.SendMessage("msg-1").EventTargetUser("user-1"));
+            IsTask(store.SendMessage("msg-1").EventTargetUser(store.UserId));
             
-            IsTask(store.SendMessage("msg-1").TargetClient("user-1", "client-1"));
-            IsTask(store.SendMessage("msg-1").TargetClient(userId, clientId));
-            IsTask(store.SendMessage("msg-1").TargetClient(userClient));
+            IsTask(store.SendMessage("msg-1").EventTargetClient("user-1", "client-1"));
+            IsTask(store.SendMessage("msg-1").EventTargetClient(userId, clientId));
+            IsTask(store.SendMessage("msg-1").EventTargetClient(userClient));
 
             // --- multi target
-            IsTask(store.SendMessage("msg-4").TargetUsers (new[] { "user-1" }));
-            IsTask(store.SendMessage("msg-4").TargetUsers (new[] { userId }));
+            IsTask(store.SendMessage("msg-4").EventTargetUsers (new[] { "user-1" }));
+            IsTask(store.SendMessage("msg-4").EventTargetUsers (new[] { userId }));
 
-            IsTask(store.SendMessage("msg-4").TargetClients (new[] { ("user-1", "client-1")}));
-            IsTask(store.SendMessage("msg-4").TargetClients (new[] { userClient }));
+            IsTask(store.SendMessage("msg-4").EventTargetClients (new[] { ("user-1", "client-1")}));
+            IsTask(store.SendMessage("msg-4").EventTargetClients (new[] { userClient }));
             
-            var target1 = new MessageTargets("user-1");
-            var target2 = new MessageTargets(userId);
-            var target3 = new MessageTargets(userClient);
+            var eventTargets1 = new EventTargets("user-1");
+            var eventTargets2 = new EventTargets(userId);
+            var eventTargets3 = new EventTargets(userClient);
             
-            store.SendMessage("msg-5" ).Targets = target1;
-            store.SendMessage("msg-5" ).Targets = target2;
-            store.SendMessage("msg-5" ).Targets = target3;
+            store.SendMessage("msg-5" ).EventTargets = eventTargets1;
+            store.SendMessage("msg-5" ).EventTargets = eventTargets2;
+            store.SendMessage("msg-5" ).EventTargets = eventTargets3;
             
-            var cmd = store.SendCommand<int, int>("cmd", 123).TargetUser("ddd");
+            var cmd = store.SendCommand<int, int>("cmd", 123).EventTargetUser("ddd");
             // cmd.Target = target1; // must error with:   [CS1061] 'CommandTask<int>' does not contain a definition for 'Target' ...
         }
         
