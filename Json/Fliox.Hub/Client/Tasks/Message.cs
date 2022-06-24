@@ -20,8 +20,16 @@ namespace Friflo.Json.Fliox.Hub.Client
     /// <br/>
     /// <b>Note</b>: A message returns no result. To get a result send a command by <see cref="FlioxClient.SendCommand{TParam,TResult}"/> 
     /// </summary>
-    public class SendTask : SyncTask
+    public class MessageTask : SyncTask
     {
+        /// <summary>
+        /// Refine the clients receiving the message as an event in case they setup a subscription with <see cref="FlioxClient.SubscribeMessage"/>.
+        /// </summary>
+        /// <remarks>
+        /// By default - <see cref="Targets"/> is not refined - the message is sent as an event to all clients subscribed to the message. <br/>
+        /// </remarks>
+        public              MessageTargets  Targets { get; set; }
+        
         internal readonly   string          name;
         private  readonly   JsonValue       param;
         
@@ -33,7 +41,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         internal override   TaskType        TaskType    => TaskType.message;
 
         
-        internal SendTask(string name, JsonValue param) {
+        internal MessageTask(string name, JsonValue param) {
             this.name       = name;
             this.param      = param;
         }
@@ -46,19 +54,6 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
     }
     
-    public class MessageTask : SendTask
-    {
-        /// <summary>
-        /// The <see cref="Targets"/> the message is sent to. <br/>
-        /// By default (<see cref="Targets"/> are not refined) messages are sent to all clients subscribed to the message. <br/>
-        /// </summary>
-        public  MessageTargets   Targets { get; set; }
-        
-        internal MessageTask(string name, JsonValue param)
-            : base (name, param)
-        { }
-    }
-
     /// <summary>
     /// A <see cref="CommandTask"/> is created when a command is send to an <see cref="EntityDatabase"/> by
     /// <see cref="FlioxClient.SendCommand{TResult}"/>.<br/>
@@ -68,7 +63,7 @@ namespace Friflo.Json.Fliox.Hub.Client
     /// <b>Note</b>: For type safe access to the result use <see cref="CommandTask{TResult}"/> returned by
     /// <see cref="FlioxClient.SendCommand{TParam,TResult}"/>
     /// </summary>
-    public class CommandTask : SendTask
+    public class CommandTask : MessageTask
     {
         private  readonly   Pool            pool;
         internal            JsonValue       result;
