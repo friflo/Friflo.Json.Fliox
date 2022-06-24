@@ -71,47 +71,48 @@ namespace Friflo.Json.Fliox.Hub.Client
     public static class MessageTargetExtension
     {
         // --- user
-        public static  MessageTask  TargetUser (this MessageTask messageTask, string  user) {
+        public static  TTask  TargetUser<TTask> (this TTask messageTask, string  user) where TTask : MessageTask {
             messageTask.Targets.AddClient(new UserClient(user));
             return messageTask;
         }
-        public static  MessageTask  TargetUser (this MessageTask messageTask, JsonKey user) {
+        
+        public static  TTask  TargetUser<TTask> (this TTask messageTask, JsonKey user) where TTask : MessageTask{
             messageTask.Targets.AddClient(new UserClient(user));
             return messageTask;
         }
         
         // --- user client
-        public static  MessageTask  TargetClient (this MessageTask messageTask, string  user, string client) {
+        public static  TTask  TargetClient<TTask> (this TTask messageTask, string  user, string client) where TTask : MessageTask{
             messageTask.Targets.AddClient(new UserClient(user, client));
             return messageTask;
         }
         
-        public static  MessageTask  TargetClient (this MessageTask messageTask, JsonKey user, JsonKey client) {
+        public static  TTask  TargetClient<TTask> (this TTask messageTask, JsonKey user, JsonKey client) where TTask : MessageTask{
             messageTask.Targets.AddClient(new UserClient(user, client));
             return messageTask;
         }
         
-        public static  MessageTask  TargetClient (this MessageTask messageTask, UserClient client) {
+        public static  TTask  TargetClient<TTask> (this TTask messageTask, UserClient client) where TTask : MessageTask {
             messageTask.Targets.AddClient(client);
             return messageTask;
         }
         
         // --- users
-        public static  MessageTask  TargetUsers (this MessageTask messageTask, ICollection<string>  users) {
+        public static  TTask  TargetUsers<TTask> (this TTask messageTask, ICollection<string>  users) where TTask : MessageTask {
             messageTask.Targets.AddClients(users);
             return messageTask;
         }
-        public static  MessageTask  TargetUsers (this MessageTask messageTask, ICollection<JsonKey>  users) {
+        public static  TTask  TargetUsers<TTask> (this TTask messageTask, ICollection<JsonKey>  users) where TTask : MessageTask {
             messageTask.Targets.AddClients (users);
             return messageTask;
         }
         
         // --- user clients
-        public static  MessageTask  TargetClients (this MessageTask messageTask, ICollection<(string, string)>  clients) {
+        public static  TTask  TargetClients<TTask> (this TTask messageTask, ICollection<(string, string)>  clients) where TTask : MessageTask {
             messageTask.Targets.AddClients(clients);
             return messageTask;
         }
-        public static  MessageTask  TargetClients (this MessageTask messageTask, ICollection<UserClient>  clients) {
+        public static  TTask  TargetClients<TTask> (this TTask messageTask, ICollection<UserClient>  clients) where TTask : MessageTask {
             messageTask.Targets.AddClients (clients);
             return messageTask;
         }

@@ -49,7 +49,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             store.SendMessage("msg-5" ).Targets = target2;
             store.SendMessage("msg-5" ).Targets = target3;
             
-            var cmd = store.SendCommand<int, int>("cmd", 123);
+            var cmd = store.SendCommand<int, int>("cmd", 123).TargetUser("ddd");
             // cmd.Target = target1; // must error with:   [CS1061] 'CommandTask<int>' does not contain a definition for 'Target' ...
         }
         
