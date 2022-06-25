@@ -137,18 +137,18 @@ namespace Friflo.Json.Fliox.Hub.Host
         protected void AddMessageHandlers<TClass>(TClass instance, string messagePrefix) where TClass : class
         {
             var type                = instance.GetType();
-            var handlers            = TaskHandlerUtils.GetHandlers(type);
-            if (handlers == null)
+            var handlerInfos        = TaskHandlerUtils.GetHandlers(type);
+            if (handlerInfos == null)
                 return;
 
-            foreach (var handler in handlers) {
+            foreach (var handler in handlerInfos) {
                 MessageDelegate messageDelegate;
                 if (handler.resultType == typeof(void)) {
                     messageDelegate = CreateMessageCallback(instance, handler, messagePrefix);
                 } else {
                     messageDelegate = CreateCommandCallback(instance, handler, messagePrefix);
                 }
-                this.handlers.Add(messageDelegate.name, messageDelegate);
+                handlers.Add(messageDelegate.name, messageDelegate);
             }
         }
         
