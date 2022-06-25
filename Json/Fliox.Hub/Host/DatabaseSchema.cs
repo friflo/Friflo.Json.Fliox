@@ -51,7 +51,8 @@ namespace Friflo.Json.Fliox.Hub.Host
         public   readonly   TypeSchema                          typeSchema;
         [DebuggerBrowsable(Never)]
         private  readonly   Dictionary<string, ValidationType>  containerTypes  = new Dictionary<string, ValidationType>();
-        /// used only for access in Debugger to simplify showing <see cref="containerTypes"/> 
+        /// expose <see cref="containerTypes"/> as property to show them as list in Debugger
+        // ReSharper disable once UnusedMember.Local
         private             IReadOnlyCollection<ValidationType> ContainerTypes  => containerTypes.Values;
         
         private             Dictionary<string, JsonValue>       jsonSchemas; // cache schemas after creation
