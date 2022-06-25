@@ -70,7 +70,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         public              Dictionary<TKey, T>                 Result    => IsOk("FindRange.Result",   out Exception e) ? results : throw e;
         public              Dictionary<TKey, EntityValue>       RawResult => IsOk("FindRange.RawResult",out Exception e) ? GetRawResult() : throw e;
         internal override   TaskState                           State   => findState;
-        public   override   string                              Details => $"FindRange<{typeof(T).Name}> (#ids: {results.Count})";
+        public   override   string                              Details => $"FindRange<{typeof(T).Name}> (ids: {results.Count})";
         
         private static readonly KeyConverter<TKey>  KeyConvert = KeyConverter.GetConverter<TKey>();
         
@@ -137,7 +137,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         public              Dictionary<TKey, T>     Result      => IsOk("ReadTask.Result", out Exception e) ? result      : throw e;
 
         internal override   TaskState               State       => state;
-        public   override   string                  Details     => $"ReadTask<{typeof(T).Name}> (#ids: {result.Count})";
+        public   override   string                  Details     => $"ReadTask<{typeof(T).Name}> (ids: {result.Count})";
         internal override   TaskType                TaskType    => TaskType.read;
         
 

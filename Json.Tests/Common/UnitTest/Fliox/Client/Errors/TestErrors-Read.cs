@@ -56,10 +56,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             Exception e;
             var orderCustomer = orders.RelationPath(customers, o => o.customer);
             e = Throws<TaskAlreadySyncedException>(() => { readOrders.ReadRelation(customers, orderCustomer); });
-            AreEqual("Task already executed. ReadTask<Order> (#ids: 1)", e.Message);
+            AreEqual("Task already executed. ReadTask<Order> (ids: 1)", e.Message);
             var itemsArticle = orders.RelationsPath(articles, o => o.items.Select(a => a.article));
             e = Throws<TaskAlreadySyncedException>(() => { readOrders.ReadRelations(articles, itemsArticle); });
-            AreEqual("Task already executed. ReadTask<Order> (#ids: 1)", e.Message);
+            AreEqual("Task already executed. ReadTask<Order> (ids: 1)", e.Message);
             
             // todo add Read() without ids 
 

@@ -60,7 +60,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             var orders2WithTaskError    = orders.Query(o => o.customer == readTaskError)            .TaskName("orders2WithTaskError");
             var order2CustomerError     = orders2WithTaskError.ReadRelations(customers, o => o.customer) .TaskName("order2CustomerError");
             
-            AreEqual("ReadTask<Order> (#ids: 1)",                                       readOrders              .Details);
+            AreEqual("ReadTask<Order> (ids: 1)",                                        readOrders              .Details);
             AreEqual("Find<Order> (id: 'order-1')",                                     order1                  .Details);
             AreEqual("QueryTask<Article> (filter: true)",                               allArticles             .Details);
             AreEqual("allArticles -> .producer",                                        articleProducer         .Details);
@@ -85,7 +85,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             var order2Customer  = readOrders2.ReadRelation(customers, orderCustomer)                .TaskName("order2Customer");
             
             AreEqual("readOrders -> .customer",         customer        .Details);
-            AreEqual("ReadTask<Order> (#ids: 1)",       readOrders2     .Details);
+            AreEqual("ReadTask<Order> (ids: 1)",        readOrders2     .Details);
             AreEqual("Find<Order> (id: 'order-2')",     order2          .Details);
             AreEqual("readOrders2 -> .customer",        order2Customer  .Details);
 

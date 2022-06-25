@@ -35,7 +35,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         private readonly    SyncSetBase<T>      syncSet;
         private readonly    List<T>             entities;
 
-        public   override   string              Details => $"CreateTask<{typeof(T).Name}> (#keys: {entities.Count})";
+        public   override   string              Details => $"CreateTask<{typeof(T).Name}> (entities: {entities.Count})";
         internal override   TaskType            TaskType=> TaskType.create;
         
         

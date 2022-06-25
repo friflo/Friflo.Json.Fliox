@@ -47,9 +47,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             var upsertError     = customers.Upsert(new Customer{id = upsertTaskException})  .TaskName("upsertError");
             var deleteError     = customers.Delete(new Customer{id = deleteTaskException})  .TaskName("deleteError");
             
-            AreEqual("CreateTask<Customer> (#keys: 1)", createError.Details);
-            AreEqual("UpsertTask<Customer> (#keys: 1)", upsertError.Details);
-            AreEqual("DeleteTask<Customer> (#keys: 1)", deleteError.Details);
+            AreEqual("CreateTask<Customer> (entities: 1)", createError.Details);
+            AreEqual("UpsertTask<Customer> (entities: 1)", upsertError.Details);
+            AreEqual("DeleteTask<Customer> (entities: 1)", deleteError.Details);
             
             Exception e;
             e = Throws<TaskNotSyncedException>(() => { var _ = createError.Success; });

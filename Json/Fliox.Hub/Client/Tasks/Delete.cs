@@ -22,7 +22,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         [DebuggerBrowsable(Never)]
         internal            TaskState           state;
         internal override   TaskState           State       => state;
-        public   override   string              Details     => $"DeleteTask<{typeof(T).Name}> (#keys: {keys.Count})";
+        public   override   string              Details     => $"DeleteTask<{typeof(T).Name}> (entities: {keys.Count})";
         internal override   TaskType            TaskType    => TaskType.delete;
 
 

@@ -18,19 +18,25 @@ namespace Friflo.Json.Fliox.Hub.Client
         
         [DebuggerBrowsable(Never)]
         internal            TaskState       state;
-        internal override   TaskState       State   => state;
+        internal override   TaskState       State       => state;
         internal            int             count;
         [DebuggerBrowsable(Never)]
         private readonly    SyncSet         syncSet;
         
-        public   override   string          Details => $"CloseCursorsTask ()";
-        internal override   TaskType        TaskType=> TaskType.closeCursors;
-        public              int             Count   => IsOk("CloseCursorsTask.Count", out Exception e) ? count : throw e;
+        public   override   string          Details     => GetDetails();
+        internal override   TaskType        TaskType    => TaskType.closeCursors;
+        public              int             Count       => IsOk("CloseCursorsTask.Count", out Exception e) ? count : throw e;
 
 
         internal CloseCursorsTask(IEnumerable<string> cursors, SyncSet syncSet) {
             this.cursors    = cursors != null ? new List<string>(cursors) : null;
             this.syncSet    = syncSet;
+        }
+        
+        private string GetDetails() {
+            if (cursors == null)
+                return $"CloseCursorsTask (container: {syncSet.EntitySet.name}, cursors: all)";
+            return $"CloseCursorsTask (container: {syncSet.EntitySet.name}, cursors: {count})";
         }
         
         internal override SyncRequestTask CreateRequestTask(in CreateTaskContext context) {

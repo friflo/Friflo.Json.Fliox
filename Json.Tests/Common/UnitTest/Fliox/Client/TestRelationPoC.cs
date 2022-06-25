@@ -89,7 +89,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             var type1           = new TestType { id = "type-1", dateTime = new DateTime(2021, 7, 22, 6, 0, 0, DateTimeKind.Utc), derivedClass = derivedClass };
             var createCam1      = articles.Create(cameraCreate);
                                   articles.Upsert(notebook);
-            AreEqual("CreateTask<Article> (#keys: 1)", createCam1.ToString());
+            AreEqual("CreateTask<Article> (entities: 1)", createCam1.ToString());
 
             var newBulkArticles = new List<Article>();
             for (int n = 0; n < 2; n++) {
