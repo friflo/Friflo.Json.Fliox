@@ -3,9 +3,11 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Utils;
+using static System.Diagnostics.DebuggerBrowsableState;
 
 // Note! - Must not have any dependency to System.Net or System.Net.Http (or other HTTP stuff)
 namespace Friflo.Json.Fliox.Hub.Remote
@@ -18,11 +20,17 @@ namespace Friflo.Json.Fliox.Hub.Remote
     /// </summary>
     public sealed class StaticFileHandler : IRequestHandler
     {
-        private readonly    IFileHandler                    fileHandler;
-        private readonly    Dictionary<string, CacheEntry>  cache;
+        private  readonly   IFileHandler                    fileHandler;
+        [DebuggerBrowsable(Never)]
+        private  readonly   Dictionary<string, CacheEntry>  cache;
+        /// expose <see cref="cache"/> as property to show them as list in Debugger
+        // ReSharper disable once UnusedMember.Local
+        private             IReadOnlyCollection<CacheEntry> Cache       => cache.Values;
         private             string                          cacheControl;
-        private readonly    List<FileExt>                   fileExtensions;
-        
+        private  readonly   List<FileExt>                   fileExtensions;
+
+        public   override   string                          ToString()  => $"cached files: {cache.Count}";
+
         private StaticFileHandler() {
             cache           = new Dictionary<string, CacheEntry>();
             cacheControl    = HttpHost.DefaultCacheControl;
@@ -88,8 +96,9 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 }
                 if (context.StatusCode != 200)
                     return;
-                entry = new CacheEntry(context);
-                cache.Add(context.route, entry);
+                var path = context.route;
+                entry = new CacheEntry(path, context);
+                cache.Add(path, entry);
             }
             catch (Exception e) {
                 var response = $"method: {context.method}, url: {context.route}\n{e.Message}";
@@ -147,12 +156,16 @@ namespace Friflo.Json.Fliox.Hub.Remote
     }
     
     internal readonly struct CacheEntry {
+        private   readonly  string                      path;
         internal  readonly  int                         status;
         internal  readonly  string                      mediaType;
         internal  readonly  byte[]                      body;
         internal  readonly  Dictionary<string, string>  headers;
-        
-        internal CacheEntry (RequestContext context) {
+
+        public    override  string                      ToString() => path;
+
+        internal CacheEntry (string path, RequestContext context) {
+            this.path   = path;
             status      = context.StatusCode;
             mediaType   = context.ResponseContentType;
             body        = context.Response.AsByteArray();

@@ -3,11 +3,13 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Utils;
 using Friflo.Json.Fliox.Schema.Definition;
 using Friflo.Json.Fliox.Schema.Language;
+using static System.Diagnostics.DebuggerBrowsableState;
 
 // Note! - Must not have any dependency to System.Net or System.Net.Http (or other HTTP stuff)
 namespace Friflo.Json.Fliox.Hub.Remote
@@ -19,10 +21,16 @@ namespace Friflo.Json.Fliox.Hub.Remote
         private   const     string                              SchemaBase  = "/schema";
         internal            string                              image       = "explorer/img/Json-Fliox-53x43.svg";
         internal  readonly  CreateZip                           zip;
+        [DebuggerBrowsable(Never)]
         private   readonly  Dictionary<string, SchemaResource>  schemas         = new Dictionary<string, SchemaResource>();
+        /// expose <see cref="schemas"/> as property to show them as list in Debugger
+        // ReSharper disable once UnusedMember.Local
+        private             IReadOnlyCollection<SchemaResource> Schemas    => schemas.Values;
         private   readonly  List<CustomGenerator>               generators      = new List<CustomGenerator>();
         private             string                              cacheControl    = HttpHost.DefaultCacheControl;
         internal            ICollection<CustomGenerator>        Generators      => generators;
+
+        public    override  string                              ToString()      => $"schemas: {schemas.Count}";
 
         internal SchemaHandler() {
             this.zip = ZipUtils.Zip;
