@@ -66,6 +66,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         [DebuggerBrowsable(Never)]
         public   readonly   EntityDatabase      database;       // not null
         /// expose <see cref="database"/> as property to list it within the first members in Debugger
+        // ReSharper disable once UnusedMember.Local
         private             EntityDatabase      Database        => database;
         
         public              string              DatabaseName    => database.name; // not null
@@ -237,6 +238,8 @@ namespace Friflo.Json.Fliox.Hub.Host
         // --- extension databases
         [DebuggerBrowsable(Never)]
         private readonly  Dictionary<string, EntityDatabase>    extensionDbs = new Dictionary<string, EntityDatabase>();
+        /// expose <see cref="extensionDbs"/> as property to show them as list in Debugger
+        // ReSharper disable once UnusedMember.Local
         private           IReadOnlyCollection<EntityDatabase>   ExtensionDbs => extensionDbs.Values;
         
         /// <summary>
