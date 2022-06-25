@@ -4,7 +4,9 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading;
+using static System.Diagnostics.DebuggerBrowsableState;
 
 namespace Friflo.Json.Fliox.Hub.Host.Auth
 {
@@ -23,9 +25,12 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
     /// </summary>
     public abstract class ClientController {
         /// key: clientId
+        [DebuggerBrowsable(Never)]
         internal readonly   ConcurrentDictionary<JsonKey, UserClient>   clients = new ConcurrentDictionary<JsonKey, UserClient>(JsonKey.Equality);
-        internal            IReadOnlyDictionary <JsonKey, UserClient>   Clients => clients;
-        
+        /// expose <see cref="clients"/> as property to show them as list in Debugger
+        // ReSharper disable once UnusedMember.Local
+        private             ICollection<UserClient>                     Clients => clients.Values;
+
         public   override   string                                      ToString() => $"clients: {clients.Count}";
         
         protected abstract  JsonKey     NewId();

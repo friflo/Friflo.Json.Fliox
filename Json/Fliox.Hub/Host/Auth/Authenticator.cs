@@ -4,9 +4,11 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host.Auth.Rights;
 using Friflo.Json.Fliox.Hub.Protocol;
+using static System.Diagnostics.DebuggerBrowsableState;
 
 namespace Friflo.Json.Fliox.Hub.Host.Auth
 {
@@ -17,7 +19,11 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
     public abstract class Authenticator
     {
         protected readonly  Dictionary<string, AuthorizePredicate>  registeredPredicates;
+        [DebuggerBrowsable(Never)]
         internal  readonly  ConcurrentDictionary<JsonKey, User>     users;  // todo make private
+        /// expose <see cref="users"/> as property to show them as list in Debugger
+        // ReSharper disable once UnusedMember.Local
+        private             ICollection<User>                       Users => users.Values;
         internal  readonly  User                                    anonymousUser;
         
         public    override  string                                  ToString() => $"users: {users.Count}";

@@ -72,7 +72,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Monitor
     public partial class MonitorStore
     {
         internal void UpdateClients(FlioxHub hub, string monitorName) {
-            foreach (var pair in hub.ClientController.Clients) {
+            foreach (var pair in hub.ClientController.clients) {
                 UserClient client   = pair.Value;
                 var clientId        = pair.Key;
                 clients.TryGet(clientId, out var clientHits);
