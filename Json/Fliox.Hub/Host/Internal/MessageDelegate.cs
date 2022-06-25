@@ -32,7 +32,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Internal
     internal abstract class MessageDelegate
     {
         // Note! Must not contain any mutable state
-        private   readonly  string              name;
+        internal  readonly  string              name;
         internal  abstract  MsgType             MsgType { get; }  
         public    override  string              ToString()  => name;
         
