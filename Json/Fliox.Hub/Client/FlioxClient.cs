@@ -49,6 +49,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// <summary> List of tasks created by its <see cref="FlioxClient"/> methods. These tasks are executed when calling <see cref="SyncTasks"/> </summary>
                                     public      IReadOnlyList<SyncTask>     Tasks           => GetTasks();
         // exposed only for access in debugger - not used by internally
+        // ReSharper disable once UnusedMember.Local
                                     private     FlioxHub                    Hub             => _intern.hub;
 
         /// <summary> name of the database the client is attached to </summary>
@@ -87,7 +88,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         public FlioxClient(FlioxHub hub, string database = null) {
             if (hub  == null)  throw new ArgumentNullException(nameof(hub));
             type    = GetType();
-            var eventTarget = new Internal.EventTarget(this);
+            var eventTarget = new EventTarget(this);
             _intern = new ClientIntern(this, hub, database, eventTarget);
             std     = new StdCommands  (this);
             hub.sharedEnv.sharedCache.AddRootType(type);
