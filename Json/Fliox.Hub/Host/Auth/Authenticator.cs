@@ -20,7 +20,8 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
         internal  readonly  ConcurrentDictionary<JsonKey, User>     users;  // todo make private
         internal  readonly  User                                    anonymousUser;
         
-            
+        public    override  string                                  ToString() => $"users: {users.Count}";
+
         public abstract Task    Authenticate    (SyncRequest syncRequest, SyncContext syncContext);
         
         protected Authenticator (Authorizer anonymousAuthorizer) {

@@ -8,8 +8,10 @@ namespace Friflo.Json.Fliox.Hub.Host.Stats
 {
     internal sealed class HostStats
     {
-        internal readonly   RequestHistories    requestHistories = new RequestHistories();
+        internal  readonly  RequestHistories    requestHistories = new RequestHistories();
         internal            RequestCount        requestCount;
+        
+        public    override  string              ToString() => requestCount.ToString();
 
         internal void Update(SyncRequest syncRequest) {
             requestHistories.Update();

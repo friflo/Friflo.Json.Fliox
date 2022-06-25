@@ -4,11 +4,13 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Transform;
+using static System.Diagnostics.DebuggerBrowsableState;
 
 namespace Friflo.Json.Fliox.Hub.Host.Event
 {
@@ -28,8 +30,14 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         private  readonly   SharedEnv                                       sharedEnv;
         private  readonly   JsonEvaluator                                   jsonEvaluator;
         /// key: <see cref="EventSubscriber.clientId"/>
+        [DebuggerBrowsable(Never)] 
         private  readonly   ConcurrentDictionary<JsonKey, EventSubscriber>  subscribers;
+        /// expose <see cref="subscribers"/> as property to show them as list in Debugger
+        // ReSharper disable once UnusedMember.Local
+        private             ICollection<EventSubscriber>                    Subscribers => subscribers.Values;
         internal readonly   bool                                            background;
+
+        public   override   string                                          ToString() => $"subscribers: {subscribers.Count}";
 
         private const string MissingEventTarget = "subscribing events requires an eventTarget. E.g a WebSocket as a target for push events.";
 
