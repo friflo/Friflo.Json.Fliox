@@ -75,57 +75,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             }
         }
     }
-    
-    public static class MessageTargetExtension
-    {
-        // --- user
-        public static  TTask  EventTargetUser<TTask> (this TTask messageTask, string  user) where TTask : MessageTask {
-            messageTask.EventTargets.AddClient(new UserClient(user));
-            return messageTask;
-        }
-        
-        public static  TTask  EventTargetUser<TTask> (this TTask messageTask, JsonKey user) where TTask : MessageTask{
-            messageTask.EventTargets.AddClient(new UserClient(user));
-            return messageTask;
-        }
-        
-        // --- user client
-        public static  TTask  EventTargetClient<TTask> (this TTask messageTask, string  user, string client) where TTask : MessageTask{
-            messageTask.EventTargets.AddClient(new UserClient(user, client));
-            return messageTask;
-        }
-        
-        public static  TTask  EventTargetClient<TTask> (this TTask messageTask, JsonKey user, JsonKey client) where TTask : MessageTask{
-            messageTask.EventTargets.AddClient(new UserClient(user, client));
-            return messageTask;
-        }
-        
-        public static  TTask  EventTargetClient<TTask> (this TTask messageTask, UserClient client) where TTask : MessageTask {
-            messageTask.EventTargets.AddClient(client);
-            return messageTask;
-        }
-        
-        // --- users
-        public static  TTask  EventTargetUsers<TTask> (this TTask messageTask, ICollection<string>  users) where TTask : MessageTask {
-            messageTask.EventTargets.AddClients(users);
-            return messageTask;
-        }
-        public static  TTask  EventTargetUsers<TTask> (this TTask messageTask, ICollection<JsonKey>  users) where TTask : MessageTask {
-            messageTask.EventTargets.AddClients (users);
-            return messageTask;
-        }
-        
-        // --- user clients
-        public static  TTask  EventTargetClients<TTask> (this TTask messageTask, ICollection<(string, string)>  clients) where TTask : MessageTask {
-            messageTask.EventTargets.AddClients(clients);
-            return messageTask;
-        }
-        public static  TTask  EventTargetClients<TTask> (this TTask messageTask, ICollection<UserClient>  clients) where TTask : MessageTask {
-            messageTask.EventTargets.AddClients (clients);
-            return messageTask;
-        }
-    }
-    
+
     public readonly struct UserClient {
         public  readonly    JsonKey     user;
         public  readonly    JsonKey     client;
