@@ -192,8 +192,8 @@
                 "task":    { "enum": ["message"] },
                 "name":    { "type": "string", "description": "command / message name" },
                 "param":   { "description": "command / message parameter. Can be null or absent" },
-                "users":   { "type": ["array", "null"], "items": { "type": "string" }, "description": "if set the message is sent as an event only to given <b>users</b>" },
-                "clients": { "type": ["array", "null"], "items": { "type": "string" }, "description": "if set the message is sent as an event only to given <b>clients</b>" },
+                "users":   { "type": ["array", "null"], "items": { "type": "string" }, "description": "if set the Hub forward the message as an event only to given <b>users</b>" },
+                "clients": { "type": ["array", "null"], "items": { "type": "string" }, "description": "if set the Hub forward the message as an event only to given <b>clients</b>" },
                 "info":    {  }
             },
             "required": [
@@ -206,12 +206,12 @@
             "type": "object",
             "extends": { "$ref": "#/definitions/SyncRequestTask" },
             "isAbstract": true,
-            "description": "Used as base type for <b>SendMessage</b> or <b>SendCommand</b> to specify the command / message\n<b>name</b> and <b>param</b>",
+            "description": "Used as base type for <b>SendMessage</b> or <b>SendCommand</b> to specify the command / message\n<b>name</b> and <b>param</b>. <br/>\nIn case <b>users</b> or <b>clients</b> is set the Hub forward the message as an event only to the\ngiven <b>users</b> or <b>clients</b>.",
             "properties": {
                 "name":    { "type": "string", "description": "command / message name" },
                 "param":   { "description": "command / message parameter. Can be null or absent" },
-                "users":   { "type": ["array", "null"], "items": { "type": "string" }, "description": "if set the message is sent as an event only to given <b>users</b>" },
-                "clients": { "type": ["array", "null"], "items": { "type": "string" }, "description": "if set the message is sent as an event only to given <b>clients</b>" },
+                "users":   { "type": ["array", "null"], "items": { "type": "string" }, "description": "if set the Hub forward the message as an event only to given <b>users</b>" },
+                "clients": { "type": ["array", "null"], "items": { "type": "string" }, "description": "if set the Hub forward the message as an event only to given <b>clients</b>" },
                 "info":    {  }
             },
             "required": [
@@ -227,8 +227,8 @@
                 "task":    { "enum": ["command"] },
                 "name":    { "type": "string", "description": "command / message name" },
                 "param":   { "description": "command / message parameter. Can be null or absent" },
-                "users":   { "type": ["array", "null"], "items": { "type": "string" }, "description": "if set the message is sent as an event only to given <b>users</b>" },
-                "clients": { "type": ["array", "null"], "items": { "type": "string" }, "description": "if set the message is sent as an event only to given <b>clients</b>" },
+                "users":   { "type": ["array", "null"], "items": { "type": "string" }, "description": "if set the Hub forward the message as an event only to given <b>users</b>" },
+                "clients": { "type": ["array", "null"], "items": { "type": "string" }, "description": "if set the Hub forward the message as an event only to given <b>clients</b>" },
                 "info":    {  }
             },
             "required": [

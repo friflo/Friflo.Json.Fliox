@@ -190,16 +190,18 @@ export class DeleteEntities extends SyncRequestTask {
 
 /**
  * Used as base type for **SendMessage** or **SendCommand** to specify the command / message
- * **name** and **param**
+ * **name** and **param**.   
+ * In case **users** or **clients** is set the Hub forward the message as an event only to the
+ * given **users** or **clients**.
  */
 export abstract class SyncMessageTask extends SyncRequestTask {
     /** command / message name */
     name     : string;
     /** command / message parameter. Can be null or absent */
     param?   : any | null;
-    /** if set the message is sent as an event only to given **users** */
+    /** if set the Hub forward the message as an event only to given **users** */
     users?   : string[] | null;
-    /** if set the message is sent as an event only to given **clients** */
+    /** if set the Hub forward the message as an event only to given **clients** */
     clients? : string[] | null;
 }
 

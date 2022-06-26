@@ -12,7 +12,9 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     // ----------------------------------- task -----------------------------------
     /// <summary>
     /// Used as base type for <see cref="SendMessage"/> or <see cref="SendCommand"/> to specify the command / message
-    /// <see cref="name"/> and <see cref="param"/>
+    /// <see cref="name"/> and <see cref="param"/>. <br/>
+    /// In case <see cref="users"/> or <see cref="clients"/> is set the Hub forward the message as an event only to the
+    /// given <see cref="users"/> or <see cref="clients"/>. 
     /// </summary>
     public abstract class SyncMessageTask : SyncRequestTask
     {
@@ -20,9 +22,9 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         [Required]  public  string          name;
         /// <summary>command / message parameter. Can be null or absent</summary>
                     public  JsonValue       param;
-        /// <summary>if set the message is sent as an event only to given <see cref="users"/></summary>
+        /// <summary>if set the Hub forward the message as an event only to given <see cref="users"/></summary>
                     public  List<JsonKey>   users;
-        /// <summary>if set the message is sent as an event only to given <see cref="clients"/></summary>
+        /// <summary>if set the Hub forward the message as an event only to given <see cref="clients"/></summary>
                     public  List<JsonKey>   clients;
         
        // todo add  public  List<JsonKey>   groups;
