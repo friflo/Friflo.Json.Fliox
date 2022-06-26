@@ -78,7 +78,13 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         }
         
         // -------------------------------- add / remove subscriptions --------------------------------
-        internal bool SubscribeMessage(string database, SubscribeMessage subscribe, in JsonKey clientId, IEventReceiver eventReceiver, out string error) {
+        internal bool SubscribeMessage(
+            string              database,
+            SubscribeMessage    subscribe,
+            in JsonKey          clientId,
+            IEventReceiver      eventReceiver,
+            out string          error)
+        {
             if (eventReceiver == null) {
                 error = MissingEventReceiver; 
                 return false;
@@ -106,7 +112,13 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             }
         }
 
-        internal bool SubscribeChanges (string database, SubscribeChanges subscribe, in JsonKey clientId, IEventReceiver eventReceiver, out string error) {
+        internal bool SubscribeChanges (
+            string              database,
+            SubscribeChanges    subscribe,
+            in JsonKey          clientId,
+            IEventReceiver      eventReceiver,
+            out string          error)
+        {
             if (eventReceiver == null) {
                 error = MissingEventReceiver; 
                 return false;
