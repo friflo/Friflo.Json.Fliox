@@ -94,6 +94,11 @@ class References {
 }
 References *-- "0..*" References : references
 
+class EventTargetClient {
+    user    : string
+    client  : string
+}
+
 class EntityError {
     id       : string
     type     : EntityErrorType
@@ -211,18 +216,21 @@ class DeleteEntities {
 SyncRequestTask <|-- SyncMessageTask
 class SyncMessageTask {
     <<abstract>>
-    name   : string
-    param? : any
+    name           : string
+    param?         : any
+    targetUsers?   : string[]
+    targetClients? : EventTargetClient[]
 }
+SyncMessageTask *-- "0..*" EventTargetClient : targetClients
 
 SyncMessageTask <|-- SendMessage
 class SendMessage {
-    task   : "message"
+    task           : "message"
 }
 
 SyncMessageTask <|-- SendCommand
 class SendCommand {
-    task   : "command"
+    task           : "command"
 }
 
 SyncRequestTask <|-- CloseCursors

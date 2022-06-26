@@ -25,7 +25,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         private static void AssertMessageTarget(PocStore store) {
             JsonKey userId      = store.UserInfo.userId;
             JsonKey clientId    = store.UserInfo.clientId;
-            var userClient      = new EventTargetUser(userId, clientId);
+            var userClient      = new EventTargetClient(userId, clientId);
             
             // --- single target
             IsTask(store.SendMessage("msg-1").EventTargetUser("user-1"));

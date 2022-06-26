@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
@@ -16,11 +17,14 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     public abstract class SyncMessageTask : SyncRequestTask
     {
         /// <summary>command / message name</summary>
-        [Required]  public  string          name;
+        [Required]  public  string                  name;
         /// <summary>command / message parameter. Can be null or absent</summary>
-                    public  JsonValue       param;
+                    public  JsonValue               param;
+                    public  List<JsonKey>           targetUsers;
+                    public  List<EventTargetClient> targetClients;
+       // todo add  public  List<JsonKey>           targetGroups;
                         
-        public   override   string          TaskName => $"name: '{name}'";
+        public   override   string                  TaskName => $"name: '{name}'";
     }
     
     /// <summary>

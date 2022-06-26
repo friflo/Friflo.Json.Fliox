@@ -18,6 +18,19 @@
             ],
             "additionalProperties": false
         },
+        "EventTargetClient": {
+            "type": "object",
+            "isStruct": true,
+            "properties": {
+                "user":   { "type": "string" },
+                "client": { "type": "string" }
+            },
+            "required": [
+                "user",
+                "client"
+            ],
+            "additionalProperties": false
+        },
         "EntityError": {
             "type": "object",
             "description": "Used by <b>SyncResponse</b> to return errors when mutating an entity by: create, upsert, patch and delete",

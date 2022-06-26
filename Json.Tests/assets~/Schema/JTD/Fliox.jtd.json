@@ -193,23 +193,35 @@
         },
         "SendMessage": {
             "properties": {
-                "name":  { "type": "string" },
-                "param": { "nullable": true },
-                "info":  { "nullable": true }
+                "name":          { "type": "string" },
+                "param":         { "nullable": true },
+                "targetUsers":   { "elements": { "type": "string" }, "nullable": true },
+                "targetClients": { "elements": { "ref":  "EventTargetClient" }, "nullable": true },
+                "info":          { "nullable": true }
             }
         },
         "SyncMessageTask": {
             "properties": {
-                "name":  { "type": "string" },
-                "param": { "nullable": true },
-                "info":  { "nullable": true }
+                "name":          { "type": "string" },
+                "param":         { "nullable": true },
+                "targetUsers":   { "elements": { "type": "string" }, "nullable": true },
+                "targetClients": { "elements": { "ref":  "EventTargetClient" }, "nullable": true },
+                "info":          { "nullable": true }
+            }
+        },
+        "EventTargetClient": {
+            "properties": {
+                "user":   { "type": "string" },
+                "client": { "type": "string" }
             }
         },
         "SendCommand": {
             "properties": {
-                "name":  { "type": "string" },
-                "param": { "nullable": true },
-                "info":  { "nullable": true }
+                "name":          { "type": "string" },
+                "param":         { "nullable": true },
+                "targetUsers":   { "elements": { "type": "string" }, "nullable": true },
+                "targetClients": { "elements": { "ref":  "EventTargetClient" }, "nullable": true },
+                "info":          { "nullable": true }
             }
         },
         "CloseCursors": {

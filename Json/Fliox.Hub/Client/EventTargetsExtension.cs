@@ -10,27 +10,27 @@ namespace Friflo.Json.Fliox.Hub.Client
     {
         // --- user
         public static  TTask  EventTargetUser<TTask> (this TTask messageTask, string  user) where TTask : MessageTask {
-            messageTask.EventTargets.AddClient(new EventTargetUser(user));
+            messageTask.EventTargets.AddClient(new EventTargetClient(user));
             return messageTask;
         }
         
         public static  TTask  EventTargetUser<TTask> (this TTask messageTask, JsonKey user) where TTask : MessageTask{
-            messageTask.EventTargets.AddClient(new EventTargetUser(user));
+            messageTask.EventTargets.AddClient(new EventTargetClient(user));
             return messageTask;
         }
         
         // --- user client
         public static  TTask  EventTargetClient<TTask> (this TTask messageTask, string  user, string client) where TTask : MessageTask{
-            messageTask.EventTargets.AddClient(new EventTargetUser(user, client));
+            messageTask.EventTargets.AddClient(new EventTargetClient(user, client));
             return messageTask;
         }
         
         public static  TTask  EventTargetClient<TTask> (this TTask messageTask, JsonKey user, JsonKey client) where TTask : MessageTask{
-            messageTask.EventTargets.AddClient(new EventTargetUser(user, client));
+            messageTask.EventTargets.AddClient(new EventTargetClient(user, client));
             return messageTask;
         }
         
-        public static  TTask  EventTargetClient<TTask> (this TTask messageTask, EventTargetUser client) where TTask : MessageTask {
+        public static  TTask  EventTargetClient<TTask> (this TTask messageTask, EventTargetClient client) where TTask : MessageTask {
             messageTask.EventTargets.AddClient(client);
             return messageTask;
         }
@@ -50,7 +50,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             messageTask.EventTargets.AddClients(clients);
             return messageTask;
         }
-        public static  TTask  EventTargetClients<TTask> (this TTask messageTask, ICollection<EventTargetUser>  clients) where TTask : MessageTask {
+        public static  TTask  EventTargetClients<TTask> (this TTask messageTask, ICollection<EventTargetClient>  clients) where TTask : MessageTask {
             messageTask.EventTargets.AddClients (clients);
             return messageTask;
         }
