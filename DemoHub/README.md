@@ -34,17 +34,20 @@ This class provide two fundamental functionalities:
 ## Features
 The main features of a [**HTTP Fliox Hub**](https://github.com/friflo/Friflo.Json.Fliox/blob/main/Json/Fliox.Hub/Host/README.md#httphost) are:
 - provide JSON based Web APIs - **RESTful**, **HTTP** & **WebSocket Batch** - to access **key-value** or **document** databases.
-- assign a **database schema** to each databases as they typically don't have a build-in solution for schemas
+- assign a **database schema** to each database
 - aim for near optimal request performance regarding **low latency** and **high throughput**
-- enable simple and efficient TDD as database access can be tested with **in-memory** or **file-system** based databases.
-- host a single-page Web App to browse database containers / tables and execute domain specific commands.
+- enable simple and efficient TDD as database access can be tested with **in-memory** or **file-system** databases
+- host a single-page Web App to browse database containers / tables and execute domain specific commands
   See [**Hub Explorer**](https://github.com/friflo/Friflo.Json.Fliox/blob/main/Json/Fliox.Hub.Explorer/README.md)
 - enables access to administrative databases via Web APIs and the Hub Explorer:
   - `cluster` listing the databases and their containers exposed by the server
   - `monitor` to get monitoring information like requests & tasks executed by users & clients
   - `user_db` to explore or change user access rights
-- expose an [**OpenAPI interface**](https://spec.openapis.org/oas/v3.0.0) describing the **REST API** and
-  host [**Swagger UI**](https://swagger.io/tools/swagger-ui/) to explore the API
+- provide a [**REST API**](https://en.wikipedia.org/wiki/Representational_state_transfer) described by an
+  [**OpenAPI specification**](https://spec.openapis.org/oas/v3.0.0) and host [**Swagger UI**](https://swagger.io/tools/swagger-ui/)
+  to explore the API
+- provide a [**GraphQL API**](https://graphql.org/) and
+  host [**GraphiQL**](https://github.com/graphql/graphiql) to explore the API
 - [**JSON Fliox Hub**](https://github.com/friflo/Friflo.Json.Fliox) is designed as a library - not a framework.  
   This enable seamless integration in any **ASP.NET Core** application by a single route. e.g. `"/fliox/{*path}"`
   
