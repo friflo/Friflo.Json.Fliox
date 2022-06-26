@@ -4,7 +4,6 @@
 using Friflo.Json.Fliox;
 using Friflo.Json.Fliox.Hub.Client;
 using Friflo.Json.Fliox.Hub.Host;
-using Friflo.Json.Fliox.Hub.Protocol.Models;
 using NUnit.Framework;
 
 // ReSharper disable JoinDeclarationAndInitializer
@@ -25,29 +24,25 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         private static void AssertMessageTarget(PocStore store) {
             JsonKey userId      = store.UserInfo.userId;
             JsonKey clientId    = store.UserInfo.clientId;
-            var userClient      = new EventTargetClient(userId, clientId);
             
             // --- single target
             IsTask(store.SendMessage("msg-1").EventTargetUser("user-1"));
             IsTask(store.SendMessage("msg-1").EventTargetUser(store.UserId));
             
-            IsTask(store.SendMessage("msg-1").EventTargetClient("user-1", "client-1"));
-            IsTask(store.SendMessage("msg-1").EventTargetClient(userId, clientId));
-            IsTask(store.SendMessage("msg-1").EventTargetClient(userClient));
+            IsTask(store.SendMessage("msg-1").EventTargetClient("client-1"));
+            IsTask(store.SendMessage("msg-1").EventTargetClient(clientId));
 
             // --- multi target
             IsTask(store.SendMessage("msg-4").EventTargetUsers (new[] { "user-1" }));
             IsTask(store.SendMessage("msg-4").EventTargetUsers (new[] { userId }));
 
-            IsTask(store.SendMessage("msg-4").EventTargetClients (new[] { ("user-1", "client-1")}));
-            IsTask(store.SendMessage("msg-4").EventTargetClients (new[] { userClient }));
+            IsTask(store.SendMessage("msg-4").EventTargetClients (new[] { "client-1 "}));
+            IsTask(store.SendMessage("msg-4").EventTargetClients (new[] { clientId }));
             
             var eventTargets = new EventTargets();
             store.SendMessage("msg-5" ).EventTargets = eventTargets;
-
             
-            var cmd = store.SendCommand<int, int>("cmd", 123).EventTargetUser("ddd");
-            // cmd.Target = target1; // must error with:   [CS1061] 'CommandTask<int>' does not contain a definition for 'Target' ...
+            store.SendCommand<int, int>("cmd", 123).EventTargetUser("ddd");
         }
         
         private static void IsTask(MessageTask _) {

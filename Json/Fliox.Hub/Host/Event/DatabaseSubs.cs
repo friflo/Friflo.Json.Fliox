@@ -130,16 +130,16 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         
         private static bool IsEventTarget (EventSubscriber eventSubscriber, SyncMessageTask messageTask) {
             var clientId        = eventSubscriber.clientId;
-            var userId          = eventSubscriber.user.userId;
             var targetClients   = messageTask.targetClients;
             var isEventTarget   = true;
             if (targetClients != null) {
                 foreach (var targetClient in targetClients) {
-                    if (clientId.IsEqual(targetClient.client) && userId.IsEqual(targetClient.user))
+                    if (clientId.IsEqual(targetClient))
                         return true;
                 }
                 isEventTarget = false;
             }
+            var userId          = eventSubscriber.user.userId;
             var targetUsers     = messageTask.targetUsers;
             if (targetUsers != null) {
                 foreach (var targetUser in targetUsers) {

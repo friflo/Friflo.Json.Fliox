@@ -12,11 +12,6 @@ export class References {
     references? : References[] | null;
 }
 
-export class EventTargetClient {
-    user    : string;
-    client  : string;
-}
-
 /** Used by **SyncResponse** to return errors when mutating an entity by: create, upsert, patch and delete */
 export class EntityError {
     /** entity id */

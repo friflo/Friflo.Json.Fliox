@@ -14,12 +14,6 @@ data class References (
 )
 
 @Serializable
-data class EventTargetClient (
-              val user   : String,
-              val client : String,
-)
-
-@Serializable
 data class EntityError (
               val id      : String,
               val type    : EntityErrorType,

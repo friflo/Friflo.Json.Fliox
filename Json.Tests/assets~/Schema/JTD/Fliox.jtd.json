@@ -196,7 +196,7 @@
                 "name":          { "type": "string" },
                 "param":         { "nullable": true },
                 "targetUsers":   { "elements": { "type": "string" }, "nullable": true },
-                "targetClients": { "elements": { "ref":  "EventTargetClient" }, "nullable": true },
+                "targetClients": { "elements": { "type": "string" }, "nullable": true },
                 "info":          { "nullable": true }
             }
         },
@@ -205,14 +205,8 @@
                 "name":          { "type": "string" },
                 "param":         { "nullable": true },
                 "targetUsers":   { "elements": { "type": "string" }, "nullable": true },
-                "targetClients": { "elements": { "ref":  "EventTargetClient" }, "nullable": true },
+                "targetClients": { "elements": { "type": "string" }, "nullable": true },
                 "info":          { "nullable": true }
-            }
-        },
-        "EventTargetClient": {
-            "properties": {
-                "user":   { "type": "string" },
-                "client": { "type": "string" }
             }
         },
         "SendCommand": {
@@ -220,7 +214,7 @@
                 "name":          { "type": "string" },
                 "param":         { "nullable": true },
                 "targetUsers":   { "elements": { "type": "string" }, "nullable": true },
-                "targetClients": { "elements": { "ref":  "EventTargetClient" }, "nullable": true },
+                "targetClients": { "elements": { "type": "string" }, "nullable": true },
                 "info":          { "nullable": true }
             }
         },

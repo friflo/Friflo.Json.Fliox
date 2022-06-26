@@ -193,7 +193,7 @@
                 "name":          { "type": "string", "description": "command / message name" },
                 "param":         { "description": "command / message parameter. Can be null or absent" },
                 "targetUsers":   { "type": ["array", "null"], "items": { "type": "string" } },
-                "targetClients": { "type": ["array", "null"], "items": { "$ref": "./Friflo.Json.Fliox.Hub.Protocol.Models.json#/definitions/EventTargetClient" } },
+                "targetClients": { "type": ["array", "null"], "items": { "type": "string" } },
                 "info":          {  }
             },
             "required": [
@@ -211,7 +211,7 @@
                 "name":          { "type": "string", "description": "command / message name" },
                 "param":         { "description": "command / message parameter. Can be null or absent" },
                 "targetUsers":   { "type": ["array", "null"], "items": { "type": "string" } },
-                "targetClients": { "type": ["array", "null"], "items": { "$ref": "./Friflo.Json.Fliox.Hub.Protocol.Models.json#/definitions/EventTargetClient" } },
+                "targetClients": { "type": ["array", "null"], "items": { "type": "string" } },
                 "info":          {  }
             },
             "required": [
@@ -228,7 +228,7 @@
                 "name":          { "type": "string", "description": "command / message name" },
                 "param":         { "description": "command / message parameter. Can be null or absent" },
                 "targetUsers":   { "type": ["array", "null"], "items": { "type": "string" } },
-                "targetClients": { "type": ["array", "null"], "items": { "$ref": "./Friflo.Json.Fliox.Hub.Protocol.Models.json#/definitions/EventTargetClient" } },
+                "targetClients": { "type": ["array", "null"], "items": { "type": "string" } },
                 "info":          {  }
             },
             "required": [

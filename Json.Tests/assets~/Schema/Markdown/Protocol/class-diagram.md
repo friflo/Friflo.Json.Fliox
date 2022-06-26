@@ -94,11 +94,6 @@ class References {
 }
 References *-- "0..*" References : references
 
-class EventTargetClient {
-    user    : string
-    client  : string
-}
-
 class EntityError {
     id       : string
     type     : EntityErrorType
@@ -219,9 +214,8 @@ class SyncMessageTask {
     name           : string
     param?         : any
     targetUsers?   : string[]
-    targetClients? : EventTargetClient[]
+    targetClients? : string[]
 }
-SyncMessageTask *-- "0..*" EventTargetClient : targetClients
 
 SyncMessageTask <|-- SendMessage
 class SendMessage {

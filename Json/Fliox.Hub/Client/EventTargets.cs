@@ -2,7 +2,6 @@
 // See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
-using Friflo.Json.Fliox.Hub.Protocol.Models;
 
 // ReSharper disable ClassNeverInstantiated.Global
 namespace Friflo.Json.Fliox.Hub.Client
@@ -10,8 +9,8 @@ namespace Friflo.Json.Fliox.Hub.Client
     /// <summary> prototype WIP </summary>
     public struct EventTargets
     {
-        internal    List<JsonKey>           users;
-        internal    List<EventTargetClient> clients;
+        internal    List<JsonKey>   users;
+        internal    List<JsonKey>   clients;
         
         public void AddUser(string user) {
             AddUser (new JsonKey(user));
@@ -25,13 +24,13 @@ namespace Friflo.Json.Fliox.Hub.Client
             users.Add(user);
         }
         
-        public void AddClient(JsonKey user, JsonKey client) {
-            AddClient (new EventTargetClient(user, client));
+        public void AddClient(string client) {
+            AddClient (new JsonKey(client));
         }
 
-        public void AddClient(EventTargetClient client) {
+        public void AddClient(JsonKey client) {
             if (clients == null) {
-                clients = new List<EventTargetClient> { client };
+                clients = new List<JsonKey> { client };
                 return;
             }
             clients.Add(client);
@@ -47,17 +46,17 @@ namespace Friflo.Json.Fliox.Hub.Client
             this.users.AddRange(this.users);
         }
         
-        public void AddClients (ICollection<(string, string)> userClients) {
-            if (this.clients == null) this.clients = new List<EventTargetClient>(userClients.Count);
-            foreach (var (user, client) in userClients) {
-                this.clients.Add(new EventTargetClient(user, client));
+        public void AddClients (ICollection<string> clients) {
+            if (this.clients == null) this.clients = new List<JsonKey>(clients.Count);
+            foreach (var client in clients) {
+                this.clients.Add(new JsonKey(client));
             }
         }
         
-        internal void AddClients (ICollection<EventTargetClient> userClients) {
-            if (this.clients == null) this.clients = new List<EventTargetClient>(userClients.Count);
-            foreach (var element in userClients) {
-                this.clients.Add(element);
+        internal void AddClients (ICollection<JsonKey> clients) {
+            if (this.clients == null) this.clients = new List<JsonKey>(clients.Count);
+            foreach (var client in clients) {
+                this.clients.Add(client);
             }
         }
     }
