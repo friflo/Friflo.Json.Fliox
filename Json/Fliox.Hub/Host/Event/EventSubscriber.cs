@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using Friflo.Json.Fliox.Hub.Host.Auth;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Remote;
 using Friflo.Json.Fliox.Hub.Threading;
@@ -20,7 +21,8 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
     }
     
     internal sealed class EventSubscriber : ILogSource {
-        internal readonly   JsonKey                             clientId;
+        internal readonly   JsonKey                             clientId;   // key field
+        internal readonly   User                                user;
         private             IEventReceiver                      eventReceiver;
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
@@ -48,9 +50,10 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         internal            int                                 SentEventsCount => sentEvents.Count;
         internal            bool                                IsRemoteTarget  => eventReceiver is WebSocketHost;
         
-        internal EventSubscriber (SharedEnv env, in JsonKey clientId, IEventReceiver eventReceiver, bool background) {
+        internal EventSubscriber (SharedEnv env, User user, in JsonKey clientId, IEventReceiver eventReceiver, bool background) {
             Logger              = env.hubLogger;
             this.clientId       = clientId;
+            this.user           = user;
             this.eventReceiver  = eventReceiver;
             this.background     = background;
             if (!this.background)

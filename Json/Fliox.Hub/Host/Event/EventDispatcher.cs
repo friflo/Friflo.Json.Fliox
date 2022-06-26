@@ -6,6 +6,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using Friflo.Json.Fliox.Hub.Host.Auth;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Mapper;
@@ -81,6 +82,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         internal bool SubscribeMessage(
             string              database,
             SubscribeMessage    subscribe,
+            User                user,
             in JsonKey          clientId,
             IEventReceiver      eventReceiver,
             out string          error)
@@ -102,7 +104,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                 RemoveEmptySubscriber(subscriber, clientId);
                 return true;
             } else {
-                subscriber = GetOrCreateSubscriber(clientId, eventReceiver);
+                subscriber = GetOrCreateSubscriber(user, clientId, eventReceiver);
                 if (!subscriber.databaseSubs.TryGetValue(database, out var databaseSubs)) {
                     databaseSubs = new DatabaseSubs(database);
                     subscriber.databaseSubs.Add(database, databaseSubs);
@@ -115,6 +117,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         internal bool SubscribeChanges (
             string              database,
             SubscribeChanges    subscribe,
+            User                user,
             in JsonKey          clientId,
             IEventReceiver      eventReceiver,
             out string          error)
@@ -134,7 +137,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                 RemoveEmptySubscriber(subscriber, clientId);
                 return true;
             } else {
-                subscriber = GetOrCreateSubscriber(clientId, eventReceiver);
+                subscriber = GetOrCreateSubscriber(user, clientId, eventReceiver);
                 if (!subscriber.databaseSubs.TryGetValue(database, out var databaseSubs)) {
                     databaseSubs = new DatabaseSubs(database);
                     subscriber.databaseSubs.Add(database, databaseSubs);
@@ -144,11 +147,11 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             }
         }
         
-        private EventSubscriber GetOrCreateSubscriber(in JsonKey clientId, IEventReceiver eventReceiver) {
+        private EventSubscriber GetOrCreateSubscriber(User user, in JsonKey clientId, IEventReceiver eventReceiver) {
             subscribers.TryGetValue(clientId, out EventSubscriber subscriber);
             if (subscriber != null)
                 return subscriber;
-            subscriber = new EventSubscriber(sharedEnv, clientId, eventReceiver, background);
+            subscriber = new EventSubscriber(sharedEnv, user, clientId, eventReceiver, background);
             subscribers.TryAdd(clientId, subscriber);
             return subscriber;
         }
