@@ -54,11 +54,11 @@ namespace Friflo.Json.Fliox.Hub.Client
         internal override SyncRequestTask CreateRequestTask(in CreateTaskContext context) {
             var target = EventTargets;
             return new SendMessage {
-                name            = name,
-                param           = param,
-                syncTask        = this,
-                users     = target.users,
-                clients   = target.clients
+                name        = name,
+                param       = param,
+                syncTask    = this,
+                users       = target.users,
+                clients     = target.clients
             };
         }
     }
@@ -136,11 +136,11 @@ namespace Friflo.Json.Fliox.Hub.Client
         internal override SyncRequestTask CreateRequestTask(in CreateTaskContext context) {
             var target = EventTargets;
             return new SendCommand {
-                name            = name,
-                param           = param,
-                syncTask        = this,
-                users     = target.users,
-                clients   = target.clients
+                name        = name,
+                param       = param,
+                syncTask    = this,
+                users       = target.users,
+                clients     = target.clients
             };
         }
     }
