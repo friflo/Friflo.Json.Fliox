@@ -38,7 +38,9 @@ namespace Friflo.Json.Fliox.Hub.Client
         
         public void AddUsers (ICollection<string> users) {
             if (this.users == null) this.users = new List<JsonKey>(users.Count);
-            this.users.AddRange(this.users);
+            foreach (var user in users) {
+                this.users.Add(new JsonKey(user));
+            }
         }
         
         public void AddUsers (ICollection<JsonKey> users) {
@@ -55,9 +57,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         
         internal void AddClients (ICollection<JsonKey> clients) {
             if (this.clients == null) this.clients = new List<JsonKey>(clients.Count);
-            foreach (var client in clients) {
-                this.clients.Add(client);
-            }
+            this.clients.AddRange(clients);
         }
     }
 }
