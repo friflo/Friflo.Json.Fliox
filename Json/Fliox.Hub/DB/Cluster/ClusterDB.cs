@@ -47,7 +47,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
             using (var pooled  = pool.Type(() => new ClusterStore(clusterHub)).Get()) {
                 var cluster = pooled.instance;
                 var tasks = syncRequest.tasks;
-                await cluster.UpdateCatalogs  (hub, tasks).ConfigureAwait(false);
+                await cluster.UpdateClusterDB  (hub, tasks).ConfigureAwait(false);
                 
                 await cluster.SyncTasks().ConfigureAwait(false);
             }
@@ -67,7 +67,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
     
     public partial class ClusterStore
     {
-        internal async Task UpdateCatalogs(FlioxHub hub, List<SyncRequestTask> tasks) {
+        internal async Task UpdateClusterDB(FlioxHub hub, List<SyncRequestTask> tasks) {
             var hubDbs = hub.GetDatabases();
             foreach (var pair in hubDbs) {
                 var database        = pair.Value;
@@ -84,14 +84,14 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
                     messages.Upsert(dbMessages);
                 }
                 if (ClusterDB.FindTask(nameof(schemas),dbKey, tasks)) {
-                    var schema = CreateCatalogSchema(database, databaseName);
+                    var schema = CreateDbSchema(database, databaseName);
                     if (schema != null)
                         schemas.Upsert(schema);
                 }
             }
         }
         
-        internal static DbSchema CreateCatalogSchema (EntityDatabase database, string databaseName) {
+        internal static DbSchema CreateDbSchema (EntityDatabase database, string databaseName) {
             var databaseSchema = database.Schema;
             if (databaseSchema == null)
                 return null;
@@ -110,9 +110,9 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
             var authorizedDatabases = Helper.CreateHashSet(4, AuthorizeDatabaseComparer.Instance);
             var authorizer          = context.SyncContext.authState.authorizer;
             authorizer.AddAuthorizedDatabases(authorizedDatabases);
-            var hub         = context.Hub;
-            var databases   = hub.GetDatabases();
-            var catalogs    = new List<DbContainers>(databases.Count);
+            var hub             = context.Hub;
+            var databases       = hub.GetDatabases();
+            var databaseList    = new List<DbContainers>(databases.Count);
             foreach (var pair in databases) {
                 var databaseName    = pair.Key;
                 if (!AuthorizeDatabase.IsAuthorizedDatabase(authorizedDatabases, databaseName))
@@ -120,9 +120,9 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
                 var database        = pair.Value;
                 var dbContainers    = await database.GetDbContainers().ConfigureAwait(false);
                 dbContainers.id     = databaseName;
-                catalogs.Add(dbContainers);
+                databaseList.Add(dbContainers);
             }
-            return new HostCluster{ databases = catalogs };
+            return new HostCluster{ databases = databaseList };
         }
     }
 }

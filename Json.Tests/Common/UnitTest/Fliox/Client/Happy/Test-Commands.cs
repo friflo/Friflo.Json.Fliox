@@ -46,7 +46,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         private static async Task AssertCommandsSchema(PocStore store) {
             var containers      = store.std.Containers();
             var commands        = store.std.Messages();
-            var catalogSchema   = store.std.Schema();
+            var schema          = store.std.Schema();
             var dbList          = store.std.Cluster();
             await store.SyncTasks();
             
@@ -54,16 +54,16 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             AreEqual(6,                 containersResult.containers.Length);
             AreEqual("in-memory",       containersResult.storage);
             
-            var schemaResult = catalogSchema.Result;
+            var schemaResult = schema.Result;
             AreEqual(9,                 schemaResult.jsonSchemas.Count);
             AreEqual("PocStore",        schemaResult.schemaName);
             AreEqual("Friflo.Json.Tests.Common.UnitTest.Fliox.Client.json", schemaResult.schemaPath);
             
             var dbListResult = dbList.Result;
             AreEqual(1,                 dbListResult.databases.Count);
-            var catalog0 = dbListResult.databases[0];
-            AreEqual(6,                 catalog0.containers.Length);
-            AreEqual("in-memory",       catalog0.storage);
+            var database0 = dbListResult.databases[0];
+            AreEqual(6,                 database0.containers.Length);
+            AreEqual("in-memory",       database0.storage);
             
             var commandsResult = commands.Result;
             AreEqual(16,                commandsResult.commands.Length);
@@ -82,7 +82,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             var commandHello    = store.test.CommandHello("hello");
             var containers      = store.std.Containers();
             var commands        = store.std.Messages();
-            var catalogSchema   = store.std.Schema();
+            var schema          = store.std.Schema();
             var dbList          = store.std.Cluster();
             
             await store.SyncTasks();
@@ -101,14 +101,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             AreEqual(1,                 containersResult.containers.Length);
             AreEqual("in-memory",       containersResult.storage);
             
-            var schemaResult = catalogSchema.Result;
+            var schemaResult = schema.Result;
             IsNull(                     schemaResult);
             
             var dbListResult = dbList.Result;
             AreEqual(1,                 dbListResult.databases.Count);
-            var catalog0 = dbListResult.databases[0];
-            AreEqual(1,                 catalog0.containers.Length);
-            AreEqual("in-memory",       catalog0.storage);
+            var database0 = dbListResult.databases[0];
+            AreEqual(1,                 database0.containers.Length);
+            AreEqual("in-memory",       database0.storage);
             
             var commandsResult = commands.Result;
             AreEqual(16,                commandsResult.commands.Length);

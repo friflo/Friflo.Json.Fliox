@@ -243,7 +243,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             context.WritePretty = false;
             var database        = context.Database;  
             var databaseName    = context.DatabaseName;
-            return ClusterStore.CreateCatalogSchema(database, databaseName);
+            return ClusterStore.CreateDbSchema(database, databaseName);
         }
         
         private static async Task<DbStats> Stats (Param<string> param, MessageContext context) {
