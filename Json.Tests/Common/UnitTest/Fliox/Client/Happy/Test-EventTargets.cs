@@ -12,22 +12,22 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
     public partial class TestHappy
     {
         [Test]
-        public static void TestMessageTarget() {
+        public static void TestEventTargets() {
             using (var _           = SharedEnv.Default) // for LeakTestsFixture
             using (var database    = new MemoryDatabase("test"))
             using (var hub         = new FlioxHub(database))
             using (var store       = new PocStore(hub)) {
-                AssertMessageTarget(store);
+                AssertEventTargets(store);
             }
         }
         
-        private static void AssertMessageTarget(PocStore store) {
+        private static void AssertEventTargets(PocStore store) {
             JsonKey userId      = store.UserInfo.userId;
             JsonKey clientId    = store.UserInfo.clientId;
             
             // --- single target
             IsTask(store.SendMessage("msg-1").EventTargetUser("user-1"));
-            IsTask(store.SendMessage("msg-1").EventTargetUser(store.UserId));
+            IsTask(store.SendMessage("msg-1").EventTargetUser(userId));
             
             IsTask(store.SendMessage("msg-1").EventTargetClient("client-1"));
             IsTask(store.SendMessage("msg-1").EventTargetClient(clientId));
