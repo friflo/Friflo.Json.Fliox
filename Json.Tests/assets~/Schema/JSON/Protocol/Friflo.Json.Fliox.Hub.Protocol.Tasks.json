@@ -189,12 +189,12 @@
             "extends": { "$ref": "#/definitions/SyncMessageTask" },
             "description": "Send a database message with the given <b>param</b><br/>",
             "properties": {
-                "task":          { "enum": ["message"] },
-                "name":          { "type": "string", "description": "command / message name" },
-                "param":         { "description": "command / message parameter. Can be null or absent" },
-                "targetUsers":   { "type": ["array", "null"], "items": { "type": "string" } },
-                "targetClients": { "type": ["array", "null"], "items": { "type": "string" } },
-                "info":          {  }
+                "task":    { "enum": ["message"] },
+                "name":    { "type": "string", "description": "command / message name" },
+                "param":   { "description": "command / message parameter. Can be null or absent" },
+                "users":   { "type": ["array", "null"], "items": { "type": "string" }, "description": "if set the message is sent as an event only to given <b>users</b>" },
+                "clients": { "type": ["array", "null"], "items": { "type": "string" }, "description": "if set the message is sent as an event only to given <b>clients</b>" },
+                "info":    {  }
             },
             "required": [
                 "task",
@@ -208,11 +208,11 @@
             "isAbstract": true,
             "description": "Used as base type for <b>SendMessage</b> or <b>SendCommand</b> to specify the command / message\n<b>name</b> and <b>param</b>",
             "properties": {
-                "name":          { "type": "string", "description": "command / message name" },
-                "param":         { "description": "command / message parameter. Can be null or absent" },
-                "targetUsers":   { "type": ["array", "null"], "items": { "type": "string" } },
-                "targetClients": { "type": ["array", "null"], "items": { "type": "string" } },
-                "info":          {  }
+                "name":    { "type": "string", "description": "command / message name" },
+                "param":   { "description": "command / message parameter. Can be null or absent" },
+                "users":   { "type": ["array", "null"], "items": { "type": "string" }, "description": "if set the message is sent as an event only to given <b>users</b>" },
+                "clients": { "type": ["array", "null"], "items": { "type": "string" }, "description": "if set the message is sent as an event only to given <b>clients</b>" },
+                "info":    {  }
             },
             "required": [
                 "name"
@@ -224,12 +224,12 @@
             "extends": { "$ref": "#/definitions/SyncMessageTask" },
             "description": "Send a database command with the given <b>param</b><br/>",
             "properties": {
-                "task":          { "enum": ["command"] },
-                "name":          { "type": "string", "description": "command / message name" },
-                "param":         { "description": "command / message parameter. Can be null or absent" },
-                "targetUsers":   { "type": ["array", "null"], "items": { "type": "string" } },
-                "targetClients": { "type": ["array", "null"], "items": { "type": "string" } },
-                "info":          {  }
+                "task":    { "enum": ["command"] },
+                "name":    { "type": "string", "description": "command / message name" },
+                "param":   { "description": "command / message parameter. Can be null or absent" },
+                "users":   { "type": ["array", "null"], "items": { "type": "string" }, "description": "if set the message is sent as an event only to given <b>users</b>" },
+                "clients": { "type": ["array", "null"], "items": { "type": "string" }, "description": "if set the message is sent as an event only to given <b>clients</b>" },
+                "info":    {  }
             },
             "required": [
                 "task",

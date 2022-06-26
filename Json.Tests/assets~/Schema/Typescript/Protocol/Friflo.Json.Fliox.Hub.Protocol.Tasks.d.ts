@@ -194,23 +194,25 @@ export class DeleteEntities extends SyncRequestTask {
  */
 export abstract class SyncMessageTask extends SyncRequestTask {
     /** command / message name */
-    name           : string;
+    name     : string;
     /** command / message parameter. Can be null or absent */
-    param?         : any | null;
-    targetUsers?   : string[] | null;
-    targetClients? : string[] | null;
+    param?   : any | null;
+    /** if set the message is sent as an event only to given **users** */
+    users?   : string[] | null;
+    /** if set the message is sent as an event only to given **clients** */
+    clients? : string[] | null;
 }
 
 /** Send a database message with the given **param**   */
 export class SendMessage extends SyncMessageTask {
     /** task type */
-    task           : "message";
+    task     : "message";
 }
 
 /** Send a database command with the given **param**   */
 export class SendCommand extends SyncMessageTask {
     /** task type */
-    task           : "command";
+    task     : "command";
 }
 
 /** Close the **cursors** of the given **container** */

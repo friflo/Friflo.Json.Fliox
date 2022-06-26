@@ -20,9 +20,12 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         [Required]  public  string          name;
         /// <summary>command / message parameter. Can be null or absent</summary>
                     public  JsonValue       param;
-                    public  List<JsonKey>   targetUsers;
-                    public  List<JsonKey>   targetClients;
-       // todo add  public  List<JsonKey>   targetGroups;
+        /// <summary>if set the message is sent as an event only to given <see cref="users"/></summary>
+                    public  List<JsonKey>   users;
+        /// <summary>if set the message is sent as an event only to given <see cref="clients"/></summary>
+                    public  List<JsonKey>   clients;
+        
+       // todo add  public  List<JsonKey>   groups;
                         
         public   override   string          TaskName => $"name: '{name}'";
     }

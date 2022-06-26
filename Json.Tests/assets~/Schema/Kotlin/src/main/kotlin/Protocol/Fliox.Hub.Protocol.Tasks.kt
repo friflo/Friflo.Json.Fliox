@@ -101,30 +101,30 @@ data class DeleteEntities (
 @Serializable
 @SerialName("message")
 data class SendMessage (
-    override  val name          : String,
-    override  val param         : JsonElement? = null,
-    override  val targetUsers   : List<String>? = null,
-    override  val targetClients : List<String>? = null,
-    override  val info          : JsonElement? = null,
+    override  val name    : String,
+    override  val param   : JsonElement? = null,
+    override  val users   : List<String>? = null,
+    override  val clients : List<String>? = null,
+    override  val info    : JsonElement? = null,
 ) : SyncMessageTask()
 
 @Serializable
 abstract class SyncMessageTask {
-    abstract  val name          : String
-    abstract  val param         : JsonElement?
-    abstract  val targetUsers   : List<String>?
-    abstract  val targetClients : List<String>?
-    abstract  val info          : JsonElement?
+    abstract  val name    : String
+    abstract  val param   : JsonElement?
+    abstract  val users   : List<String>?
+    abstract  val clients : List<String>?
+    abstract  val info    : JsonElement?
 }
 
 @Serializable
 @SerialName("command")
 data class SendCommand (
-    override  val name          : String,
-    override  val param         : JsonElement? = null,
-    override  val targetUsers   : List<String>? = null,
-    override  val targetClients : List<String>? = null,
-    override  val info          : JsonElement? = null,
+    override  val name    : String,
+    override  val param   : JsonElement? = null,
+    override  val users   : List<String>? = null,
+    override  val clients : List<String>? = null,
+    override  val info    : JsonElement? = null,
 ) : SyncMessageTask()
 
 @Serializable

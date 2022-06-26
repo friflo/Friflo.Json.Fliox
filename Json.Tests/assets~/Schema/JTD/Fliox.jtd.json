@@ -193,29 +193,29 @@
         },
         "SendMessage": {
             "properties": {
-                "name":          { "type": "string" },
-                "param":         { "nullable": true },
-                "targetUsers":   { "elements": { "type": "string" }, "nullable": true },
-                "targetClients": { "elements": { "type": "string" }, "nullable": true },
-                "info":          { "nullable": true }
+                "name":    { "type": "string" },
+                "param":   { "nullable": true },
+                "users":   { "elements": { "type": "string" }, "nullable": true },
+                "clients": { "elements": { "type": "string" }, "nullable": true },
+                "info":    { "nullable": true }
             }
         },
         "SyncMessageTask": {
             "properties": {
-                "name":          { "type": "string" },
-                "param":         { "nullable": true },
-                "targetUsers":   { "elements": { "type": "string" }, "nullable": true },
-                "targetClients": { "elements": { "type": "string" }, "nullable": true },
-                "info":          { "nullable": true }
+                "name":    { "type": "string" },
+                "param":   { "nullable": true },
+                "users":   { "elements": { "type": "string" }, "nullable": true },
+                "clients": { "elements": { "type": "string" }, "nullable": true },
+                "info":    { "nullable": true }
             }
         },
         "SendCommand": {
             "properties": {
-                "name":          { "type": "string" },
-                "param":         { "nullable": true },
-                "targetUsers":   { "elements": { "type": "string" }, "nullable": true },
-                "targetClients": { "elements": { "type": "string" }, "nullable": true },
-                "info":          { "nullable": true }
+                "name":    { "type": "string" },
+                "param":   { "nullable": true },
+                "users":   { "elements": { "type": "string" }, "nullable": true },
+                "clients": { "elements": { "type": "string" }, "nullable": true },
+                "info":    { "nullable": true }
             }
         },
         "CloseCursors": {

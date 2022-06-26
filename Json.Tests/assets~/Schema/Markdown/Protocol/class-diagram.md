@@ -211,20 +211,20 @@ class DeleteEntities {
 SyncRequestTask <|-- SyncMessageTask
 class SyncMessageTask {
     <<abstract>>
-    name           : string
-    param?         : any
-    targetUsers?   : string[]
-    targetClients? : string[]
+    name     : string
+    param?   : any
+    users?   : string[]
+    clients? : string[]
 }
 
 SyncMessageTask <|-- SendMessage
 class SendMessage {
-    task           : "message"
+    task     : "message"
 }
 
 SyncMessageTask <|-- SendCommand
 class SendCommand {
-    task           : "command"
+    task     : "command"
 }
 
 SyncRequestTask <|-- CloseCursors
