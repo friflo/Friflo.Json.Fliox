@@ -4,6 +4,7 @@
 using Friflo.Json.Fliox;
 using Friflo.Json.Fliox.Hub.Client;
 using Friflo.Json.Fliox.Hub.Host;
+using Friflo.Json.Fliox.Hub.Protocol.Models;
 using NUnit.Framework;
 
 // ReSharper disable JoinDeclarationAndInitializer
@@ -24,7 +25,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         private static void AssertMessageTarget(PocStore store) {
             JsonKey userId      = store.UserInfo.userId;
             JsonKey clientId    = store.UserInfo.clientId;
-            var userClient      = new UserClient(userId, clientId);
+            var userClient      = new EventTargetUser(userId, clientId);
             
             // --- single target
             IsTask(store.SendMessage("msg-1").EventTargetUser("user-1"));
