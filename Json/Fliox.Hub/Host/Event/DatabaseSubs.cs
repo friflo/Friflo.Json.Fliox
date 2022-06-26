@@ -116,7 +116,10 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                         continue;
                     if (!FilterMessage(messageTask.name))
                         continue;
-                    AddTask(ref eventTasks, task);
+                    // don't leak userId's & clientId's to subscribed clients
+                    messageTask.targetUsers     = null;
+                    messageTask.targetClients   = null;
+                    AddTask(ref eventTasks, messageTask);
                 }
             }
         }
