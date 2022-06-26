@@ -96,6 +96,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
 
         internal void AddEventTasks(
             SyncRequest                 syncRequest,
+            EventSubscriber             eventSubscriber,
             bool                        subscriberIsSender,
             ref List<SyncRequestTask>   eventTasks,
             JsonEvaluator               jsonEvaluator)
@@ -111,6 +112,8 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                     AddTask(ref eventTasks, taskResult);
                 }
                 if (task is SyncMessageTask messageTask) {
+                    if (!IsEventTarget(eventSubscriber, messageTask))
+                        continue;
                     if (!FilterMessage(messageTask.name))
                         continue;
                     AddTask(ref eventTasks, task);
@@ -123,6 +126,29 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                 tasks = new List<SyncRequestTask>();
             }
             tasks.Add(task);
+        }
+        
+        private static bool IsEventTarget (EventSubscriber eventSubscriber, SyncMessageTask messageTask) {
+            var clientId        = eventSubscriber.clientId;
+            var userId          = eventSubscriber.user.userId;
+            var targetClients   = messageTask.targetClients;
+            var isEventTarget   = true;
+            if (targetClients != null) {
+                foreach (var targetClient in targetClients) {
+                    if (clientId.IsEqual(targetClient.client) && userId.IsEqual(targetClient.user))
+                        return true;
+                }
+                isEventTarget = false;
+            }
+            var targetUsers     = messageTask.targetUsers;
+            if (targetUsers != null) {
+                foreach (var targetUser in targetUsers) {
+                    if (userId.IsEqual(targetUser))
+                        return true;
+                }
+                isEventTarget = false;
+            }
+            return isEventTarget;
         }
     }
 }

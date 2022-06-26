@@ -213,7 +213,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                     
                     // Enqueue only change events for (change) tasks which are not send by the client itself
                     bool subscriberIsSender = syncContext.clientId.IsEqual(subscriber.clientId);
-                    databaseSubs.AddEventTasks(syncRequest, subscriberIsSender, ref eventTasks, jsonEvaluator);
+                    databaseSubs.AddEventTasks(syncRequest, subscriber, subscriberIsSender, ref eventTasks, jsonEvaluator);
 
                     if (eventTasks == null)
                         continue;
