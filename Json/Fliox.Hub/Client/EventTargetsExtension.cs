@@ -10,12 +10,12 @@ namespace Friflo.Json.Fliox.Hub.Client
     {
         // --- user
         public static  TTask  EventTargetUser<TTask> (this TTask messageTask, string  user) where TTask : MessageTask {
-            messageTask.EventTargets.AddClient(new EventTargetClient(user));
+            messageTask.EventTargets.AddUser(user);
             return messageTask;
         }
         
         public static  TTask  EventTargetUser<TTask> (this TTask messageTask, JsonKey user) where TTask : MessageTask{
-            messageTask.EventTargets.AddClient(new EventTargetClient(user));
+            messageTask.EventTargets.AddUser(user);
             return messageTask;
         }
         
@@ -37,11 +37,12 @@ namespace Friflo.Json.Fliox.Hub.Client
         
         // --- users
         public static  TTask  EventTargetUsers<TTask> (this TTask messageTask, ICollection<string>  users) where TTask : MessageTask {
-            messageTask.EventTargets.AddClients(users);
+            messageTask.EventTargets.AddUsers(users);
             return messageTask;
         }
+        
         public static  TTask  EventTargetUsers<TTask> (this TTask messageTask, ICollection<JsonKey>  users) where TTask : MessageTask {
-            messageTask.EventTargets.AddClients (users);
+            messageTask.EventTargets.AddUsers (users);
             return messageTask;
         }
         
@@ -50,6 +51,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             messageTask.EventTargets.AddClients(clients);
             return messageTask;
         }
+        
         public static  TTask  EventTargetClients<TTask> (this TTask messageTask, ICollection<EventTargetClient>  clients) where TTask : MessageTask {
             messageTask.EventTargets.AddClients (clients);
             return messageTask;

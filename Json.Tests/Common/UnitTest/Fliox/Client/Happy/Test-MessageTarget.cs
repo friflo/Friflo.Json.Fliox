@@ -42,13 +42,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             IsTask(store.SendMessage("msg-4").EventTargetClients (new[] { ("user-1", "client-1")}));
             IsTask(store.SendMessage("msg-4").EventTargetClients (new[] { userClient }));
             
-            var eventTargets1 = new EventTargets("user-1");
-            var eventTargets2 = new EventTargets(userId);
-            var eventTargets3 = new EventTargets(userClient);
-            
-            store.SendMessage("msg-5" ).EventTargets = eventTargets1;
-            store.SendMessage("msg-5" ).EventTargets = eventTargets2;
-            store.SendMessage("msg-5" ).EventTargets = eventTargets3;
+            var eventTargets = new EventTargets();
+            store.SendMessage("msg-5" ).EventTargets = eventTargets;
+
             
             var cmd = store.SendCommand<int, int>("cmd", 123).EventTargetUser("ddd");
             // cmd.Target = target1; // must error with:   [CS1061] 'CommandTask<int>' does not contain a definition for 'Target' ...

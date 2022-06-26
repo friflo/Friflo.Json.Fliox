@@ -10,69 +10,54 @@ namespace Friflo.Json.Fliox.Hub.Client
     /// <summary> prototype WIP </summary>
     public struct EventTargets
     {
-        internal IList<EventTargetClient>   users;
+        internal    List<JsonKey>           users;
+        internal    List<EventTargetClient> clients;
         
-        public EventTargets (string user) {
-            users = new List<EventTargetClient> { new EventTargetClient(user) };
+        public void AddUser(string user) {
+            AddUser (new JsonKey(user));
         }
         
-        public EventTargets (JsonKey user) {
-            users = new List<EventTargetClient> { new EventTargetClient(user) };
+        public void AddUser(JsonKey user) {
+            if (users == null) {
+                users = new List<JsonKey> { user };
+                return;
+            }
+            users.Add(user);
         }
         
-        public EventTargets (string user, string  client) {
-            users = new List<EventTargetClient> { new EventTargetClient(user, client) };
-        }
-        
-        public EventTargets (JsonKey user, JsonKey  client) {
-            users = new List<EventTargetClient> { new EventTargetClient(user, client) };
-        }
-        
-        public EventTargets (EventTargetClient userClient) {
-            users = new List<EventTargetClient> { userClient };
-        }
-        
-        public void AddUser(string user, string client = null) {
-            AddClient (new EventTargetClient(user, client));
-        }
-        
-        public void AddUser(JsonKey user, JsonKey client) {
+        public void AddClient(JsonKey user, JsonKey client) {
             AddClient (new EventTargetClient(user, client));
         }
 
         public void AddClient(EventTargetClient client) {
-            if (users == null) {
-                users = new List<EventTargetClient> { client };
+            if (clients == null) {
+                clients = new List<EventTargetClient> { client };
                 return;
             }
-            users.Add(client);
+            clients.Add(client);
         }
         
-        public void AddClients (ICollection<string> users) {
-            if (this.users == null) this.users = new List<EventTargetClient>(users.Count);
-            foreach (var user in users) {
-                this.users.Add(new EventTargetClient(user));
-            }
+        public void AddUsers (ICollection<string> users) {
+            if (this.users == null) this.users = new List<JsonKey>(users.Count);
+            this.users.AddRange(this.users);
         }
         
-        public void AddClients (ICollection<JsonKey> users) {
-            if (this.users == null) this.users = new List<EventTargetClient>(users.Count);
-            foreach (var user in users) {
-                this.users.Add(new EventTargetClient(user));
-            }
+        public void AddUsers (ICollection<JsonKey> users) {
+            if (this.users == null) this.users = new List<JsonKey>(users.Count);
+            this.users.AddRange(this.users);
         }
         
         public void AddClients (ICollection<(string, string)> userClients) {
-            if (this.users == null) this.users = new List<EventTargetClient>(userClients.Count);
+            if (this.clients == null) this.clients = new List<EventTargetClient>(userClients.Count);
             foreach (var (user, client) in userClients) {
-                this.users.Add(new EventTargetClient(user, client));
+                this.clients.Add(new EventTargetClient(user, client));
             }
         }
         
         internal void AddClients (ICollection<EventTargetClient> userClients) {
-            if (this.users == null) this.users = new List<EventTargetClient>(userClients.Count);
+            if (this.clients == null) this.clients = new List<EventTargetClient>(userClients.Count);
             foreach (var element in userClients) {
-                this.users.Add(element);
+                this.clients.Add(element);
             }
         }
     }
