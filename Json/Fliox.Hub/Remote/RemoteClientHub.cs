@@ -13,7 +13,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
 {
     public abstract class RemoteClientHub : FlioxHub
     {
-        private  readonly   Dictionary<JsonKey, IEventTarget>   clientTargets = new Dictionary<JsonKey, IEventTarget>(JsonKey.Equality);
+        private  readonly   Dictionary<JsonKey, IEventReceiver>   eventReceivers = new Dictionary<JsonKey, IEventReceiver>(JsonKey.Equality);
 
         // ReSharper disable once EmptyConstructor - added for source navigation
         protected RemoteClientHub(EntityDatabase database, SharedEnv env)
@@ -23,19 +23,19 @@ namespace Friflo.Json.Fliox.Hub.Remote
         /// <summary>A class extending  <see cref="RemoteClientHub"/> must implement this method.</summary>
         public abstract override Task<ExecuteSyncResult> ExecuteSync(SyncRequest syncRequest, SyncContext syncContext);
         
-        public override void AddEventTarget(in JsonKey clientId, IEventTarget eventTarget) {
-            clientTargets.Add(clientId, eventTarget);
+        public override void AddEventReceiver(in JsonKey clientId, IEventReceiver eventReceiver) {
+            eventReceivers.Add(clientId, eventReceiver);
         }
         
-        public override void RemoveEventTarget(in JsonKey clientId) {
+        public override void RemoveEventReceiver(in JsonKey clientId) {
             if (clientId.IsNull())
                 return;
-            clientTargets.Remove(clientId);
+            eventReceivers.Remove(clientId);
         }
         
         protected void ProcessEvent(ProtocolEvent ev) {
-            var eventTarget     = clientTargets[ev.dstClientId];
-            eventTarget.ProcessEvent(ev);
+            var eventReceiver     = eventReceivers[ev.dstClientId];
+            eventReceiver.ProcessEvent(ev);
         }
     }
     

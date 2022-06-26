@@ -21,7 +21,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
     
     internal sealed class EventSubscriber : ILogSource {
         internal readonly   JsonKey                             clientId;
-        private             IEventTarget                        eventTarget;
+        private             IEventReceiver                      eventReceiver;
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         public              IHubLogger                          Logger { get; }
@@ -46,12 +46,12 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         public   override   string                              ToString()      => clientId.ToString();
         
         internal            int                                 SentEventsCount => sentEvents.Count;
-        internal            bool                                IsRemoteTarget  => eventTarget is WebSocketHost;
+        internal            bool                                IsRemoteTarget  => eventReceiver is WebSocketHost;
         
-        internal EventSubscriber (SharedEnv env, in JsonKey clientId, IEventTarget eventTarget, bool background) {
+        internal EventSubscriber (SharedEnv env, in JsonKey clientId, IEventReceiver eventReceiver, bool background) {
             Logger              = env.hubLogger;
             this.clientId       = clientId;
-            this.eventTarget    = eventTarget;
+            this.eventReceiver  = eventReceiver;
             this.background     = background;
             if (!this.background)
                 return;
@@ -62,12 +62,12 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             triggerLoop         = TriggerLoop(triggerReader);
         }
         
-        internal void UpdateTarget(IEventTarget eventTarget) {
-            if (this.eventTarget == null) throw new ArgumentNullException(nameof(eventTarget));
-            if (this.eventTarget == eventTarget)
+        internal void UpdateTarget(IEventReceiver eventReceiver) {
+            if (this.eventReceiver == null) throw new ArgumentNullException(nameof(eventReceiver));
+            if (this.eventReceiver == eventReceiver)
                 return;
-            Logger.Log(HubLog.Info, $"EventSubscriber: eventTarget changed. dstId: {clientId}");
-            this.eventTarget = eventTarget;
+            Logger.Log(HubLog.Info, $"EventSubscriber: eventReceiver changed. dstId: {clientId}");
+            this.eventReceiver = eventReceiver;
         }
         
         internal void EnqueueEvent(ProtocolEvent ev) {
@@ -112,14 +112,14 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         
         internal async Task SendEvents () {
             // early out in case the target is a remote connection which already closed.
-            if (!eventTarget.IsOpen())
+            if (!eventReceiver.IsOpen())
                 return;
             
             while (DequeueEvent(out var ev)) {
                 try {
                     // In case the event target is remote connection it is not guaranteed that the event arrives.
                     // The remote target may already be disconnected and this is still not know when sending the event.
-                    await eventTarget.ProcessEvent(ev).ConfigureAwait(false);
+                    await eventReceiver.ProcessEvent(ev).ConfigureAwait(false);
                 }
                 catch (Exception e) {
                     var message = "SendEvents failed";

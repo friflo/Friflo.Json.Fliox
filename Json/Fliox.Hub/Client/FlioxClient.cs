@@ -88,8 +88,8 @@ namespace Friflo.Json.Fliox.Hub.Client
         public FlioxClient(FlioxHub hub, string database = null) {
             if (hub  == null)  throw new ArgumentNullException(nameof(hub));
             type    = GetType();
-            var eventTarget = new EventTarget(this);
-            _intern = new ClientIntern(this, hub, database, eventTarget);
+            var eventReceiver = new EventReceiver(this);
+            _intern = new ClientIntern(this, hub, database, eventReceiver);
             std     = new StdCommands  (this);
             hub.sharedEnv.sharedCache.AddRootType(type);
         }
@@ -121,7 +121,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// The method can be called without awaiting the result of a previous call. </remarks>
         public async Task<SyncResult> SyncTasks() {
             var syncRequest = CreateSyncRequest(out SyncStore syncStore);
-            var syncContext = new SyncContext(_intern.pool, _intern.eventTarget, _intern.sharedCache, _intern.clientId);
+            var syncContext = new SyncContext(_intern.pool, _intern.eventReceiver, _intern.sharedCache, _intern.clientId);
             var response    = await ExecuteSync(syncRequest, syncContext).ConfigureAwait(Static.OriginalContext);
             
             var result = HandleSyncResponse(syncRequest, response, syncStore);
@@ -138,7 +138,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// The method can be called without awaiting the result of a previous call. </remarks>
         public async Task<SyncResult> TrySyncTasks() {
             var syncRequest = CreateSyncRequest(out SyncStore syncStore);
-            var syncContext = new SyncContext(_intern.pool, _intern.eventTarget, _intern.sharedCache, _intern.clientId);
+            var syncContext = new SyncContext(_intern.pool, _intern.eventReceiver, _intern.sharedCache, _intern.clientId);
             var response    = await ExecuteSync(syncRequest, syncContext).ConfigureAwait(Static.OriginalContext);
 
             var result = HandleSyncResponse(syncRequest, response, syncStore);
@@ -179,11 +179,11 @@ namespace Friflo.Json.Fliox.Hub.Client
             if (newClientId.IsEqual(_intern.clientId))
                 return;
             if (!_intern.clientId.IsNull()) {
-                _intern.hub.RemoveEventTarget(_intern.clientId);
+                _intern.hub.RemoveEventReceiver(_intern.clientId);
             }
             _intern.clientId    = newClientId;
             if (!_intern.clientId.IsNull()) {
-                _intern.hub.AddEventTarget(newClientId, _intern.eventTarget);
+                _intern.hub.AddEventReceiver(newClientId, _intern.eventReceiver);
             }
         }
 

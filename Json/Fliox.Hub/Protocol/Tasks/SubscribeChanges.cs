@@ -50,8 +50,8 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
                 }
             }
             
-            var eventTarget = syncContext.eventTarget;
-            if (!eventDispatcher.SubscribeChanges(database.name, this, syncContext.clientId, eventTarget, out error))
+            var eventReceiver = syncContext.eventReceiver;
+            if (!eventDispatcher.SubscribeChanges(database.name, this, syncContext.clientId, eventReceiver, out error))
                 return Task.FromResult<SyncTaskResult>(InvalidTask(error));
             
             return Task.FromResult<SyncTaskResult>(new SubscribeChangesResult());

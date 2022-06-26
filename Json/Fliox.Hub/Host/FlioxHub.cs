@@ -131,8 +131,8 @@ namespace Friflo.Json.Fliox.Hub.Host
             this.hostName   = hostName ?? "host";
         }
         
-        public   virtual    void    AddEventTarget      (in JsonKey clientId, IEventTarget eventTarget) {}
-        public   virtual    void    RemoveEventTarget   (in JsonKey clientId) {}
+        public   virtual    void    AddEventReceiver      (in JsonKey clientId, IEventReceiver eventReceiver) {}
+        public   virtual    void    RemoveEventReceiver   (in JsonKey clientId) {}
 
         /// <summary>
         /// Execute all <see cref="SyncRequest.tasks"/> of a <see cref="SyncRequest"/>.

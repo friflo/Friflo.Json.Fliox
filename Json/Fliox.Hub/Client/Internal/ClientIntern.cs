@@ -21,13 +21,13 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
     internal struct ClientIntern
     {
         // --- readonly
-                                    internal readonly   FlioxHub    hub;
-                                    internal readonly   TypeStore   typeStore;
-                                    internal readonly   Pool        pool;
-                                    internal readonly   SharedCache sharedCache;
-                                    internal readonly   IHubLogger  hubLogger;
-                                    internal readonly   string      database;
-                                    internal readonly   EventTarget eventTarget;
+                                    internal readonly   FlioxHub        hub;
+                                    internal readonly   TypeStore       typeStore;
+                                    internal readonly   Pool            pool;
+                                    internal readonly   SharedCache     sharedCache;
+                                    internal readonly   IHubLogger      hubLogger;
+                                    internal readonly   string          database;
+                                    internal readonly   EventReceiver   eventReceiver;
         
         // --- readonly / private - owned
         private             ObjectPatcher                           objectPatcher;  // create on demand
@@ -87,7 +87,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             FlioxClient     client,
             FlioxHub        hub,
             string          database,
-            EventTarget     eventTarget)
+            EventReceiver   eventReceiver)
         {
             var entityInfos         = ClientEntityUtils.GetEntityInfos (client.type);
             var sharedEnv           = hub.sharedEnv;
@@ -99,7 +99,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             this.hubLogger          = sharedEnv.hubLogger;
             this.hub                = hub;
             this.database           = database;
-            this.eventTarget        = eventTarget;
+            this.eventReceiver      = eventReceiver;
             
             // --- readonly / private - owned
             objectPatcher           = null;
@@ -136,7 +136,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             subscriptionProcessor?.Dispose();
             subscriptionsPrefix.Clear();
             subscriptions.Clear();
-            hub.RemoveEventTarget(clientId);
+            hub.RemoveEventReceiver(clientId);
             setByName.Clear();
             setByType.Clear();
             processor?.Dispose();
@@ -144,7 +144,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         }
         
         internal void Reset () {
-            hub.RemoveEventTarget(clientId);
+            hub.RemoveEventReceiver(clientId);
             userId          = new JsonKey();
             clientId        = new JsonKey();
             token           = null;

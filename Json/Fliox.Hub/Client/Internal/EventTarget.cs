@@ -8,11 +8,11 @@ using Friflo.Json.Fliox.Hub.Protocol;
 
 namespace Friflo.Json.Fliox.Hub.Client.Internal
 {
-    internal sealed class EventTarget : IEventTarget
+    internal sealed class EventReceiver : IEventReceiver
     {
         private readonly FlioxClient    client;
         
-        internal EventTarget (FlioxClient client) {
+        internal EventReceiver (FlioxClient client) {
             this.client = client; 
         } 
             

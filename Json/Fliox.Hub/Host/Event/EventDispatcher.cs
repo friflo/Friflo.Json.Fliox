@@ -14,7 +14,7 @@ using static System.Diagnostics.DebuggerBrowsableState;
 
 namespace Friflo.Json.Fliox.Hub.Host.Event
 {
-    public interface IEventTarget {
+    public interface IEventReceiver {
         bool        IsOpen ();
         Task<bool>  ProcessEvent(ProtocolEvent ev);
     }
@@ -39,7 +39,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
 
         public   override   string                                          ToString() => $"subscribers: {subscribers.Count}";
 
-        private const string MissingEventTarget = "subscribing events requires an eventTarget. E.g a WebSocket as a target for push events.";
+        private const string MissingEventReceiver = "subscribing events requires an eventReceiver. E.g a WebSocket as a target for push events.";
 
         public EventDispatcher (bool background, SharedEnv env = null) {
             sharedEnv       = env ?? SharedEnv.Default;
@@ -78,9 +78,9 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         }
         
         // -------------------------------- add / remove subscriptions --------------------------------
-        internal bool SubscribeMessage(string database, SubscribeMessage subscribe, in JsonKey clientId, IEventTarget eventTarget, out string error) {
-            if (eventTarget == null) {
-                error = MissingEventTarget; 
+        internal bool SubscribeMessage(string database, SubscribeMessage subscribe, in JsonKey clientId, IEventReceiver eventReceiver, out string error) {
+            if (eventReceiver == null) {
+                error = MissingEventReceiver; 
                 return false;
             }
             error = null;
@@ -96,7 +96,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                 RemoveEmptySubscriber(subscriber, clientId);
                 return true;
             } else {
-                subscriber = GetOrCreateSubscriber(clientId, eventTarget);
+                subscriber = GetOrCreateSubscriber(clientId, eventReceiver);
                 if (!subscriber.databaseSubs.TryGetValue(database, out var databaseSubs)) {
                     databaseSubs = new DatabaseSubs(database);
                     subscriber.databaseSubs.Add(database, databaseSubs);
@@ -106,9 +106,9 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             }
         }
 
-        internal bool SubscribeChanges (string database, SubscribeChanges subscribe, in JsonKey clientId, IEventTarget eventTarget, out string error) {
-            if (eventTarget == null) {
-                error = MissingEventTarget; 
+        internal bool SubscribeChanges (string database, SubscribeChanges subscribe, in JsonKey clientId, IEventReceiver eventReceiver, out string error) {
+            if (eventReceiver == null) {
+                error = MissingEventReceiver; 
                 return false;
             }
             error = null;
@@ -122,7 +122,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                 RemoveEmptySubscriber(subscriber, clientId);
                 return true;
             } else {
-                subscriber = GetOrCreateSubscriber(clientId, eventTarget);
+                subscriber = GetOrCreateSubscriber(clientId, eventReceiver);
                 if (!subscriber.databaseSubs.TryGetValue(database, out var databaseSubs)) {
                     databaseSubs = new DatabaseSubs(database);
                     subscriber.databaseSubs.Add(database, databaseSubs);
@@ -132,11 +132,11 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             }
         }
         
-        private EventSubscriber GetOrCreateSubscriber(in JsonKey clientId, IEventTarget eventTarget) {
+        private EventSubscriber GetOrCreateSubscriber(in JsonKey clientId, IEventReceiver eventReceiver) {
             subscribers.TryGetValue(clientId, out EventSubscriber subscriber);
             if (subscriber != null)
                 return subscriber;
-            subscriber = new EventSubscriber(sharedEnv, clientId, eventTarget, background);
+            subscriber = new EventSubscriber(sharedEnv, clientId, eventReceiver, background);
             subscribers.TryAdd(clientId, subscriber);
             return subscriber;
         }
@@ -167,9 +167,9 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             
             if (!subscribers.TryGetValue(clientId, out var subscriber))
                 return;
-            var eventTarget = syncContext.eventTarget;
-            if (eventTarget != null) {
-                subscriber.UpdateTarget (eventTarget);
+            var eventReceiver = syncContext.eventReceiver;
+            if (eventReceiver != null) {
+                subscriber.UpdateTarget (eventReceiver);
             }
             
             var eventAck = syncRequest.eventAck;
