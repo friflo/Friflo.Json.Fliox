@@ -23,7 +23,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             using (var client2          = new PocStore(hub))
             using (hub.EventDispatcher  = new EventDispatcher(false)) // dispatch events synchronous to simplify test
             {
-                AssertEventTargets(client1, client2);
+                for (int n = 0; n < 1; n++) {
+                    AssertEventTargets(client1, client2);
+                }
             }
         }
         
@@ -39,7 +41,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             var user1Key    = new JsonKey(user1Id);     // test interface using a JsonKey
             client1.ClientId  = clientId1;
             client1.UserId    = user1Id;
-            client1.SubscribeMessage("*", (message, context) => { });
+            int count = 0;
+            client1.SubscribeMessage("*", (message, context) => { count++; });
             client1.SubscriptionEventHandler = context => {
                 AreEqual("user-1", context.SrcUserId.ToString());
                 var expect = new [] { "msg-1", "msg-2", "msg-3", "msg-4", "msg-5", "msg-6", "msg-7", "msg-8", "Command1" };
@@ -74,6 +77,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         //  todo store.CommandInt(111).EventTargetUser(user1Key);
             
             client1.SyncTasks().Wait();
+            client2.SyncTasks().Wait();
+            
+            AreEqual(9, count);
+            
+            client1.UnsubscribeMessage("*", null);
+            client1.SyncTasks().Wait();
+            
+            client2.UnsubscribeMessage("*", null);
+            client2.SyncTasks().Wait();
         }
         
         private static void IsTask(MessageTask _) {
