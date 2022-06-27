@@ -31,14 +31,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         /// all events targeting only <paramref name="client1"/> either by userId or clientId. <br/>
         /// <paramref name="client2"/> is used to verify no events are received
         /// </summary>
-        private static void AssertEventTargets(PocStore client1, PocStore client2) {
+        private static void AssertEventTargets(PocStore client1, FlioxClient client2) {
             // --- client1 receive all events
             var clientId1   = "client-1";
-            var userId1     = "user-1";
+            var user1Id     = "user-1";
             var client1Key  = new JsonKey(clientId1);   // test interface using a JsonKey
-            var user1Key    = new JsonKey(userId1);     // test interface using a JsonKey
+            var user1Key    = new JsonKey(user1Id);     // test interface using a JsonKey
             client1.ClientId  = clientId1;
-            client1.UserId    = userId1;
+            client1.UserId    = user1Id;
             client1.SubscribeMessage("*", (message, context) => { });
             client1.SubscriptionEventHandler += context => {
                 AreEqual("user-1", context.SrcUserId.ToString());
@@ -54,14 +54,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             });
 
             // --- single target
-            IsTask(client1.SendMessage("msg-1").EventTargetUser(userId1));
+            IsTask(client1.SendMessage("msg-1").EventTargetUser(user1Id));
             IsTask(client1.SendMessage("msg-2").EventTargetUser(user1Key));
             
             IsTask(client1.SendMessage("msg-3").EventTargetClient(clientId1));
             IsTask(client1.SendMessage("msg-4").EventTargetClient(client1Key));
 
             // --- multi target
-            IsTask(client1.SendMessage("msg-5").EventTargetUsers (new[] { userId1 }));
+            IsTask(client1.SendMessage("msg-5").EventTargetUsers (new[] { user1Id }));
             IsTask(client1.SendMessage("msg-6").EventTargetUsers (new[] { user1Key }));
 
             IsTask(client1.SendMessage("msg-7").EventTargetClients (new[] { clientId1 }));
@@ -70,7 +70,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             // var eventTargets = new EventTargets();
             // store.SendMessage("msg-5" ).EventTargets = eventTargets;
             
-            client1.Command1().EventTargetUser(userId1);
+            client1.Command1().EventTargetUser(user1Id);
         //  todo store.CommandInt(111).EventTargetUser(user1Key);
             
             client1.SyncTasks().Wait();
