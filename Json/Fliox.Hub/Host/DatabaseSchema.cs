@@ -23,29 +23,30 @@ namespace Friflo.Json.Fliox.Hub.Host
     /// It is intended to be used for <see cref="RemoteHost"/> instances to ensure that the entities
     /// (records) in an <see cref="EntityContainer"/> always meet the expected type. So only successful validated JSON
     /// payloads are written to an <see cref="EntityContainer"/>.
-    /// 
-    /// This JSON type validation includes the following checks:
+    /// </summary>
+    /// <remarks>
+    /// JSON validation includes the following checks:
     /// <list type="bullet">
     ///   <item>
     ///     Check if the type of a property matches the container entity type.<br/>
-    ///     E.g. A container using a type 'Article' expect the property "name" of type string. Writing the payload
+    ///     E.g. A container using a type 'Article' expect the property "name" of type string.
     ///     <code>{ "id": "test", "name": 123 }</code> will result in the error:
     ///     <code>WriteError: Article 'test', Incorrect type. was: 123, expect: string at Article > name</code>
     ///   </item>
     ///   <item>
     ///     Check if required properties defined in the container type are present in the JSON payload.<br/>
-    ///     E.g. A container using a type 'Article' requires the property "name" being present. Writing the payload
+    ///     E.g. A container using a type 'Article' requires the property "name" being present.
     ///     <code>{ "id": "test" }</code> will result in the error:
     ///     <code>WriteError: Article 'test', Missing required fields: [name] at Article > (root)</code>
     ///   </item>
     ///   <item>
     ///     Check that no unknown properties are present in a JSON payload<br/>
-    ///     E.g. A container using a type 'Article' expect only the properties 'id' and 'name'. Writing the payload
+    ///     E.g. A container using a type 'Article' expect only the properties 'id' and 'name'.
     ///     <code>{ "id": "test", "name": "Phone", "foo": "Bar" }</code> will result in the error:
     ///     <code>WriteError: Article 'test', Unknown property: 'foo' at Article > foo</code>
     ///   </item>
     /// </list>   
-    /// </summary>
+    /// </remarks>
     public sealed class DatabaseSchema
     {
         public   readonly   TypeSchema                          typeSchema;
