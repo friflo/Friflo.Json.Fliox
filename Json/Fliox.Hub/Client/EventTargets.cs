@@ -8,8 +8,8 @@ namespace Friflo.Json.Fliox.Hub.Client
     // ---------------------------------------------- EventTargets ----------------------------------------------
     /// <summary>
     /// <see cref="EventTargets"/> instructs the Hub to forward messages a events only to the specified targets. <br/>
-    /// Target's can be specified by either user or client id's. <br/>
-    /// In case no targets are specified - the default - a message is sent to all clients subscribed to the message.
+    /// Target's can be specified by either user id's or client id's. <br/>
+    /// In case no targets are specified - the default - a message is sent to all clients subscribing the message.
     /// </summary>
     public class EventTargets
     {
@@ -71,6 +71,7 @@ namespace Friflo.Json.Fliox.Hub.Client
     {
         // --- user
         /// <summary> Send the <paramref name="message"/> as an event only to the given <paramref name="user"/> </summary>
+        /// <seealso cref="EventTargets"/>
         public static  TTask  EventTargetUser<TTask> (this TTask message, string  user) where TTask : MessageTask {
             var targets = message.GetOrCreateTargets();
             targets.AddUser(user);
@@ -78,6 +79,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
         
         /// <summary> Send the <paramref name="message"/> as an event only to the given <paramref name="user"/> </summary>
+        /// <seealso cref="EventTargets"/>
         public static  TTask  EventTargetUser<TTask> (this TTask message, in JsonKey user) where TTask : MessageTask {
             var targets = message.GetOrCreateTargets();
             targets.AddUser(user);
@@ -86,6 +88,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         
         // --- client
         /// <summary> Send the <paramref name="message"/> as an event only to the given <paramref name="client"/> </summary>
+        /// <seealso cref="EventTargets"/>
         public static  TTask  EventTargetClient<TTask> (this TTask message, string client) where TTask : MessageTask {
             var targets = message.GetOrCreateTargets();
             targets.AddClient(client);
@@ -93,6 +96,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
         
         /// <summary> Send the <paramref name="message"/> as an event only to the given <paramref name="client"/> </summary>
+        /// <seealso cref="EventTargets"/>
         public static  TTask  EventTargetClient<TTask> (this TTask message, in JsonKey client) where TTask : MessageTask {
             var targets = message.GetOrCreateTargets();
             targets.AddClient(client);
@@ -101,6 +105,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         
         // --- users
         /// <summary> Send the <paramref name="message"/> as an event only to the given <paramref name="users"/> </summary>
+        /// <seealso cref="EventTargets"/>
         public static  TTask  EventTargetUsers<TTask> (this TTask message, ICollection<string> users) where TTask : MessageTask {
             var targets = message.GetOrCreateTargets();
             targets.AddUsers(users);
@@ -108,6 +113,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
         
         /// <summary> Send the <paramref name="message"/> as an event only to the given <paramref name="users"/> </summary>
+        /// <seealso cref="EventTargets"/>
         public static  TTask  EventTargetUsers<TTask> (this TTask message, ICollection<JsonKey> users) where TTask : MessageTask {
             var targets = message.GetOrCreateTargets();
             targets.AddUsers (users);
@@ -116,6 +122,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         
         // --- clients
         /// <summary> Send the <paramref name="message"/> as an event only to the given <paramref name="clients"/> </summary>
+        /// <seealso cref="EventTargets"/>
         public static  TTask  EventTargetClients<TTask> (this TTask message, ICollection<string>  clients) where TTask : MessageTask {
             var targets = message.GetOrCreateTargets();
             targets.AddClients(clients);
@@ -123,6 +130,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
         
         /// <summary> Send the <paramref name="message"/> as an event only to the given <paramref name="clients"/> </summary>
+        /// <seealso cref="EventTargets"/>
         public static  TTask  EventTargetClients<TTask> (this TTask message, ICollection<JsonKey>  clients) where TTask : MessageTask {
             var targets = message.GetOrCreateTargets();
             targets.AddClients (clients);
