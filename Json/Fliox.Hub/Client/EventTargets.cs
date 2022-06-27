@@ -3,7 +3,6 @@
 
 using System.Collections.Generic;
 
-// ReSharper disable ClassNeverInstantiated.Global
 namespace Friflo.Json.Fliox.Hub.Client
 {
     // ---------------------------------------------- EventTargets ----------------------------------------------
