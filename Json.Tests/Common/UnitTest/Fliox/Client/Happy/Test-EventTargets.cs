@@ -49,10 +49,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             
             // --- client2 receive no events
             client2.ClientId  = "client-2";
-            client2.SubscribeMessage("*", (message, context) => { });
-            client2.SubscriptionEventHandler += context => {
+            client2.SubscribeMessage("*", (message, context) => {
                 Fail("unexpected events");
-            };
+            });
 
             // --- single target
             IsTask(client1.SendMessage("msg-1").EventTargetUser(userId1));
