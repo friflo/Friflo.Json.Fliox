@@ -57,18 +57,18 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             });
 
             // --- single target
-            IsTask(client1.SendMessage("msg-1").EventTargetUser(user1Id));
-            IsTask(client1.SendMessage("msg-2").EventTargetUser(user1Key));
+            client1.SendMessage("msg-1").EventTargetUser(user1Id);
+            client1.SendMessage("msg-2").EventTargetUser(user1Key);
             
-            IsTask(client1.SendMessage("msg-3").EventTargetClient(clientId1));
-            IsTask(client1.SendMessage("msg-4").EventTargetClient(client1Key));
+            client1.SendMessage("msg-3").EventTargetClient(clientId1);
+            client1.SendMessage("msg-4").EventTargetClient(client1Key);
 
             // --- multi target
-            IsTask(client1.SendMessage("msg-5").EventTargetUsers (new[] { user1Id }));
-            IsTask(client1.SendMessage("msg-6").EventTargetUsers (new[] { user1Key }));
+            client1.SendMessage("msg-5").EventTargetUsers (new[] { user1Id });
+            client1.SendMessage("msg-6").EventTargetUsers (new[] { user1Key });
 
-            IsTask(client1.SendMessage("msg-7").EventTargetClients (new[] { clientId1 }));
-            IsTask(client1.SendMessage("msg-8").EventTargetClients (new[] { client1Key }));
+            client1.SendMessage("msg-7").EventTargetClients (new[] { clientId1 });
+            client1.SendMessage("msg-8").EventTargetClients (new[] { client1Key });
             
             // var eventTargets = new EventTargets();
             // store.SendMessage("msg-5" ).EventTargets = eventTargets;
@@ -86,10 +86,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             
             client2.UnsubscribeMessage("*", null);
             client2.SyncTasks().Wait();
-        }
-        
-        private static void IsTask(MessageTask _) {
-            
         }
     }
 }
