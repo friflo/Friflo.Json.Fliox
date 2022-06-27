@@ -16,7 +16,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
         
         /// <summary> Send the <see cref="message"/> as an event only to the given <see cref="user"/> </summary>
-        public static  TTask  EventTargetUser<TTask> (this TTask message, JsonKey user) where TTask : MessageTask {
+        public static  TTask  EventTargetUser<TTask> (this TTask message, in JsonKey user) where TTask : MessageTask {
             var targets = message.GetOrCreateTargets();
             targets.AddUser(user);
             return message;
@@ -31,7 +31,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
         
         /// <summary> Send the <see cref="message"/> as an event only to the given <see cref="client"/> </summary>
-        public static  TTask  EventTargetClient<TTask> (this TTask message, JsonKey client) where TTask : MessageTask {
+        public static  TTask  EventTargetClient<TTask> (this TTask message, in JsonKey client) where TTask : MessageTask {
             var targets = message.GetOrCreateTargets();
             targets.AddClient(client);
             return message;

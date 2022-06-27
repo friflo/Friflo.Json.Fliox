@@ -16,7 +16,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             AddUser (new JsonKey(user));
         }
         
-        public void AddUser(JsonKey user) {
+        public void AddUser(in JsonKey user) {
             if (users == null) {
                 users = new List<JsonKey> { user };
                 return;
@@ -28,7 +28,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             AddClient (new JsonKey(client));
         }
 
-        public void AddClient(JsonKey client) {
+        public void AddClient(in JsonKey client) {
             if (clients == null) {
                 clients = new List<JsonKey> { client };
                 return;
