@@ -10,7 +10,6 @@ using NUnit.Framework;
 using static NUnit.Framework.Assert;
 
 // ReSharper disable ConvertToConstant.Local
-// ReSharper disable JoinDeclarationAndInitializer
 namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
 {
     public partial class TestHappy
@@ -22,7 +21,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             using (var hub              = new FlioxHub(database))
             using (var client1          = new PocStore(hub))
             using (var client2          = new PocStore(hub))
-            using (hub.EventDispatcher  = new EventDispatcher(false)) {
+            using (hub.EventDispatcher  = new EventDispatcher(false)) // dispatch events synchronous to simplify test
+            {
                 AssertEventTargets(client1, client2);
             }
         }
