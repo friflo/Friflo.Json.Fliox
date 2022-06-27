@@ -6,7 +6,11 @@ using System.Collections.Generic;
 namespace Friflo.Json.Fliox.Hub.Client
 {
     // ---------------------------------------------- EventTargets ----------------------------------------------
-    /// <summary> prototype WIP </summary>
+    /// <summary>
+    /// <see cref="EventTargets"/> instructs the Hub to forward messages a events only to the specified targets. <br/>
+    /// Target's can be specified by either user or client id's. <br/>
+    /// In case no targets are specified - the default - a message is sent to all clients subscribed to the message.
+    /// </summary>
     public class EventTargets
     {
         internal    List<JsonKey>   users;
