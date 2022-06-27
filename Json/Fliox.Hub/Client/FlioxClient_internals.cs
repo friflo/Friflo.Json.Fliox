@@ -137,7 +137,8 @@ namespace Friflo.Json.Fliox.Hub.Client
             syncStore = _intern.syncStore;
             syncStore.SetSyncSets(this);
             
-            var tasks       = new List<SyncRequestTask>();
+            var functions   = syncStore.functions;
+            var tasks       = new List<SyncRequestTask>(functions.Count);
             var syncRequest = new SyncRequest {
                 database    = _intern.database,
                 tasks       = tasks,
@@ -147,7 +148,7 @@ namespace Friflo.Json.Fliox.Hub.Client
                 eventAck    = _intern.lastEventSeq
             };
             var context = new CreateTaskContext (mapper);
-            foreach (var function in syncStore.functions) {
+            foreach (var function in functions) {
                 if (function is SyncTask task) {
                     var requestTask = task.CreateRequestTask(context);
                     tasks.Add(requestTask);
