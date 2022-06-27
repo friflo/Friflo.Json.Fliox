@@ -40,7 +40,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// <see cref="FlioxClient.SubscribeMessage"/>.
         /// </summary>
         public void ProcessEvent(FlioxClient client, EventMessage ev) {
-            eventContext.Init(ev, client.Logger);
+            eventContext.Init(client, ev);
             if (client._intern.disposed)  // store may already be disposed
                 return;
             if (objectMapper == null) {

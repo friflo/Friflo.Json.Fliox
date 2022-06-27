@@ -51,10 +51,12 @@ namespace Friflo.Json.Fliox.Hub.Client
         public              IReadOnlyList<Changes>  Changes         => processor.contextChanges;
         /// <summary> return the number of <see cref="Messages"/> and <see cref="Changes"/> of the subscription event </summary>
         public              EventInfo               EventInfo       => ev.GetEventInfo();
+        /// <summary> is private to be exposed only in Debugger </summary>
+        private             FlioxClient             Client          { get; set; }
         
         public  override    string                  ToString()      => $"source user: {ev.srcUserId}";
         
-        [DebuggerBrowsable(Never)] public           IHubLogger              Logger { get; private set; }
+        [DebuggerBrowsable(Never)] public           IHubLogger              Logger => Client.Logger;
         [DebuggerBrowsable(Never)] private readonly SubscriptionProcessor   processor;
         [DebuggerBrowsable(Never)] private          EventMessage            ev;
 
@@ -62,9 +64,9 @@ namespace Friflo.Json.Fliox.Hub.Client
             this.processor  = processor;
         }
         
-        internal void Init(EventMessage ev, IHubLogger logger) {
+        internal void Init(FlioxClient client, EventMessage ev) {
+            Client  = client;
             this.ev = ev;
-            Logger  = logger;
         }
         
         /// <summary>
