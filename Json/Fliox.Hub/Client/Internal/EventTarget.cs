@@ -16,7 +16,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             this.client = client; 
         } 
             
-        // --- IEventTarget
+        // --- IEventReceiver
         public bool     IsOpen ()   => true;
 
         public Task<bool> ProcessEvent(ProtocolEvent ev) {

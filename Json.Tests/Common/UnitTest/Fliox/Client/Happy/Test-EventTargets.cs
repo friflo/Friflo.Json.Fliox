@@ -40,7 +40,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             client1.ClientId  = clientId1;
             client1.UserId    = user1Id;
             client1.SubscribeMessage("*", (message, context) => { });
-            client1.SubscriptionEventHandler += context => {
+            client1.SubscriptionEventHandler = context => {
                 AreEqual("user-1", context.SrcUserId.ToString());
                 var expect = new [] { "msg-1", "msg-2", "msg-3", "msg-4", "msg-5", "msg-6", "msg-7", "msg-8", "Command1" };
                 var actual = context.Messages.Select(msg => msg.Name);
