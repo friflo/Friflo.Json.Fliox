@@ -8,14 +8,14 @@ namespace Friflo.Json.Fliox.Hub.Client
     public static class EventTargetsExtension
     {
         // --- user
-        /// <summary> Send the <see cref="message"/> as an event only to the given <see cref="user"/> </summary>
+        /// <summary> Send the <paramref name="message"/> as an event only to the given <paramref name="user"/> </summary>
         public static  TTask  EventTargetUser<TTask> (this TTask message, string  user) where TTask : MessageTask {
             var targets = message.GetOrCreateTargets();
             targets.AddUser(user);
             return message;
         }
         
-        /// <summary> Send the <see cref="message"/> as an event only to the given <see cref="user"/> </summary>
+        /// <summary> Send the <paramref name="message"/> as an event only to the given <paramref name="user"/> </summary>
         public static  TTask  EventTargetUser<TTask> (this TTask message, in JsonKey user) where TTask : MessageTask {
             var targets = message.GetOrCreateTargets();
             targets.AddUser(user);
@@ -23,14 +23,14 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
         
         // --- client
-        /// <summary> Send the <see cref="message"/> as an event only to the given <see cref="client"/> </summary>
+        /// <summary> Send the <paramref name="message"/> as an event only to the given <paramref name="client"/> </summary>
         public static  TTask  EventTargetClient<TTask> (this TTask message, string client) where TTask : MessageTask {
             var targets = message.GetOrCreateTargets();
             targets.AddClient(client);
             return message;
         }
         
-        /// <summary> Send the <see cref="message"/> as an event only to the given <see cref="client"/> </summary>
+        /// <summary> Send the <paramref name="message"/> as an event only to the given <paramref name="client"/> </summary>
         public static  TTask  EventTargetClient<TTask> (this TTask message, in JsonKey client) where TTask : MessageTask {
             var targets = message.GetOrCreateTargets();
             targets.AddClient(client);
@@ -38,14 +38,14 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
         
         // --- users
-        /// <summary> Send the <see cref="message"/> as an event only to the given <see cref="users"/> </summary>
+        /// <summary> Send the <paramref name="message"/> as an event only to the given <paramref name="users"/> </summary>
         public static  TTask  EventTargetUsers<TTask> (this TTask message, ICollection<string> users) where TTask : MessageTask {
             var targets = message.GetOrCreateTargets();
             targets.AddUsers(users);
             return message;
         }
         
-        /// <summary> Send the <see cref="message"/> as an event only to the given <see cref="users"/> </summary>
+        /// <summary> Send the <paramref name="message"/> as an event only to the given <paramref name="users"/> </summary>
         public static  TTask  EventTargetUsers<TTask> (this TTask message, ICollection<JsonKey> users) where TTask : MessageTask {
             var targets = message.GetOrCreateTargets();
             targets.AddUsers (users);
@@ -53,14 +53,14 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
         
         // --- clients
-        /// <summary> Send the <see cref="message"/> as an event only to the given <see cref="clients"/> </summary>
+        /// <summary> Send the <paramref name="message"/> as an event only to the given <paramref name="clients"/> </summary>
         public static  TTask  EventTargetClients<TTask> (this TTask message, ICollection<string>  clients) where TTask : MessageTask {
             var targets = message.GetOrCreateTargets();
             targets.AddClients(clients);
             return message;
         }
         
-        /// <summary> Send the <see cref="message"/> as an event only to the given <see cref="clients"/> </summary>
+        /// <summary> Send the <paramref name="message"/> as an event only to the given <paramref name="clients"/> </summary>
         public static  TTask  EventTargetClients<TTask> (this TTask message, ICollection<JsonKey>  clients) where TTask : MessageTask {
             var targets = message.GetOrCreateTargets();
             targets.AddClients (clients);

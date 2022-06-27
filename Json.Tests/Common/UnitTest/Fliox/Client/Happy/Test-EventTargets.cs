@@ -28,8 +28,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         }
         
         /// <summary>
-        /// all events targeting only <see cref="client1"/> either by userId or clientId.
-        /// <see cref="client2"/> is used to verify no events are received
+        /// all events targeting only <paramref name="client1"/> either by userId or clientId. <br/>
+        /// <paramref name="client2"/> is used to verify no events are received
         /// </summary>
         private static void AssertEventTargets(PocStore client1, PocStore client2) {
             // --- client1 receive all events
