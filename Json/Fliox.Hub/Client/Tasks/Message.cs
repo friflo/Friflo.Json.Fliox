@@ -34,6 +34,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// By default - <see cref="EventTargets"/> is not refined - the message is sent as an event to all clients subscribed to the message. <br/>
         /// </remarks>
         public              EventTargets    EventTargets { get; set; }
+        internal            EventTargets    GetOrCreateTargets() => EventTargets ?? (EventTargets = new EventTargets());
         
         internal  readonly  string          name;
         protected readonly  JsonValue       param;
@@ -52,13 +53,13 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
         
         internal override SyncRequestTask CreateRequestTask(in CreateTaskContext context) {
-            var target = EventTargets;
+            var targets = EventTargets;
             return new SendMessage {
                 name        = name,
                 param       = param,
                 syncTask    = this,
-                users       = target.users,
-                clients     = target.clients
+                users       = targets?.users,
+                clients     = targets?.clients
             };
         }
     }
@@ -134,13 +135,13 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
         
         internal override SyncRequestTask CreateRequestTask(in CreateTaskContext context) {
-            var target = EventTargets;
+            var targets = EventTargets;
             return new SendCommand {
                 name        = name,
                 param       = param,
                 syncTask    = this,
-                users       = target.users,
-                clients     = target.clients
+                users       = targets?.users,
+                clients     = targets?.clients
             };
         }
     }

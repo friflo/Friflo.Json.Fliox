@@ -71,13 +71,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             var articlesSub         = store.articles.SubscribeChanges(ChangeFlags.All, (changes, context) => { });
             
             var subscribeMessage    = store.SubscribeMessage(TestRelationPoC.EndCreate, (msg, context) => {
-                AreEqual("EndCreate(param: null)", msg.ToString());
+                AreEqual("EndCreate (param: null)", msg.ToString());
                 subscriber.receivedAll = true;
                 IsTrue(                     msg.RawParam.IsNull());
                 AreEqual("null",            msg.RawParam.AsString());
             });
             var subscribeMessage1   = store.SubscribeMessage<TestCommand>(nameof(TestCommand), (msg, context) => {
-                AreEqual(@"TestCommand(param: {""text"":""test message""})", msg.ToString());
+                AreEqual(@"TestCommand (param: {""text"":""test message""})", msg.ToString());
                 subscriber.testMessageCalls++;
                 msg.GetParam(out TestCommand param, out _);
                 AreEqual("test message",        param.text);

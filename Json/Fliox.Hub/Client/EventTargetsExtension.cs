@@ -9,45 +9,53 @@ namespace Friflo.Json.Fliox.Hub.Client
     {
         // --- user
         public static  TTask  EventTargetUser<TTask> (this TTask messageTask, string  user) where TTask : MessageTask {
-            messageTask.EventTargets.AddUser(user);
+            var targets = messageTask.GetOrCreateTargets();
+            targets.AddUser(user);
             return messageTask;
         }
         
-        public static  TTask  EventTargetUser<TTask> (this TTask messageTask, JsonKey user) where TTask : MessageTask{
-            messageTask.EventTargets.AddUser(user);
+        public static  TTask  EventTargetUser<TTask> (this TTask messageTask, JsonKey user) where TTask : MessageTask {
+            var targets = messageTask.GetOrCreateTargets();
+            targets.AddUser(user);
             return messageTask;
         }
         
         // --- user client
-        public static  TTask  EventTargetClient<TTask> (this TTask messageTask, string client) where TTask : MessageTask{
-            messageTask.EventTargets.AddClient(client);
+        public static  TTask  EventTargetClient<TTask> (this TTask messageTask, string client) where TTask : MessageTask {
+            var targets = messageTask.GetOrCreateTargets();
+            targets.AddClient(client);
             return messageTask;
         }
         
-        public static  TTask  EventTargetClient<TTask> (this TTask messageTask, JsonKey client) where TTask : MessageTask{
-            messageTask.EventTargets.AddClient(client);
+        public static  TTask  EventTargetClient<TTask> (this TTask messageTask, JsonKey client) where TTask : MessageTask {
+            var targets = messageTask.GetOrCreateTargets();
+            targets.AddClient(client);
             return messageTask;
         }
         
         // --- users
         public static  TTask  EventTargetUsers<TTask> (this TTask messageTask, ICollection<string>  users) where TTask : MessageTask {
-            messageTask.EventTargets.AddUsers(users);
+            var targets = messageTask.GetOrCreateTargets();
+            targets.AddUsers(users);
             return messageTask;
         }
         
         public static  TTask  EventTargetUsers<TTask> (this TTask messageTask, ICollection<JsonKey>  users) where TTask : MessageTask {
-            messageTask.EventTargets.AddUsers (users);
+            var targets = messageTask.GetOrCreateTargets();
+            targets.AddUsers (users);
             return messageTask;
         }
         
         // --- user clients
         public static  TTask  EventTargetClients<TTask> (this TTask messageTask, ICollection<string>  clients) where TTask : MessageTask {
-            messageTask.EventTargets.AddClients(clients);
+            var targets = messageTask.GetOrCreateTargets();
+            targets.AddClients(clients);
             return messageTask;
         }
         
         public static  TTask  EventTargetClients<TTask> (this TTask messageTask, ICollection<JsonKey>  clients) where TTask : MessageTask {
-            messageTask.EventTargets.AddClients (clients);
+            var targets = messageTask.GetOrCreateTargets();
+            targets.AddClients (clients);
             return messageTask;
         }
     }

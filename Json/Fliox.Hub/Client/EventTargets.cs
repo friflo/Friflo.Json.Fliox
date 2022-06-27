@@ -7,7 +7,7 @@ using System.Collections.Generic;
 namespace Friflo.Json.Fliox.Hub.Client
 {
     /// <summary> prototype WIP </summary>
-    public struct EventTargets
+    public class EventTargets
     {
         internal    List<JsonKey>   users;
         internal    List<JsonKey>   clients;
@@ -45,7 +45,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         
         public void AddUsers (ICollection<JsonKey> users) {
             if (this.users == null) this.users = new List<JsonKey>(users.Count);
-            this.users.AddRange(this.users);
+            this.users.AddRange(users);
         }
         
         public void AddClients (ICollection<string> clients) {

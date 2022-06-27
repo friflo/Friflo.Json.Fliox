@@ -4,8 +4,11 @@
 using Friflo.Json.Fliox;
 using Friflo.Json.Fliox.Hub.Client;
 using Friflo.Json.Fliox.Hub.Host;
+using Friflo.Json.Fliox.Hub.Host.Event;
 using NUnit.Framework;
+using static NUnit.Framework.Assert;
 
+// ReSharper disable ConvertToConstant.Local
 // ReSharper disable JoinDeclarationAndInitializer
 namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
 {
@@ -13,36 +16,52 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
     {
         [Test]
         public static void TestEventTargets() {
-            using (var _           = SharedEnv.Default) // for LeakTestsFixture
-            using (var database    = new MemoryDatabase("test"))
-            using (var hub         = new FlioxHub(database))
-            using (var store       = new PocStore(hub)) {
+            using (var _                = SharedEnv.Default) // for LeakTestsFixture
+            using (var database         = new MemoryDatabase("test", new PocHandler()))
+            using (var hub              = new FlioxHub(database))
+            using (var store            = new PocStore(hub))
+            using (hub.EventDispatcher  = new EventDispatcher(false)) {
                 AssertEventTargets(store);
             }
         }
         
         private static void AssertEventTargets(PocStore store) {
-            JsonKey userId      = store.UserInfo.userId;
-            JsonKey clientId    = store.UserInfo.clientId;
-            
+            var client1     = "client-1";
+            var user1       = "user-1";
+            var client1Key  = new JsonKey(client1);
+            var user1Key    = new JsonKey(user1);
+            store.ClientId  = client1;
+            store.UserId    = user1;
+            store.SubscribeMessage("*", (message, context) => { });
+            store.SubscriptionEventHandler += context => {
+                AreEqual("user-1", context.SrcUserId.ToString());
+                var expect = new [] { "msg-1", "msg-2", "msg-3", "msg-4", "msg-5", "msg-6", "msg-7", "msg-8", "Command1" };
+                for (int n = 0; n < expect.Length; n++) {
+                    AreEqual(expect[n], context.Messages[n].Name);
+                }
+            };
+
             // --- single target
-            IsTask(store.SendMessage("msg-1").EventTargetUser("user-1"));
-            IsTask(store.SendMessage("msg-1").EventTargetUser(userId));
+            IsTask(store.SendMessage("msg-1").EventTargetUser(user1));
+            IsTask(store.SendMessage("msg-2").EventTargetUser(user1Key));
             
-            IsTask(store.SendMessage("msg-1").EventTargetClient("client-1"));
-            IsTask(store.SendMessage("msg-1").EventTargetClient(clientId));
+            IsTask(store.SendMessage("msg-3").EventTargetClient(client1));
+            IsTask(store.SendMessage("msg-4").EventTargetClient(client1Key));
 
             // --- multi target
-            IsTask(store.SendMessage("msg-4").EventTargetUsers (new[] { "user-1" }));
-            IsTask(store.SendMessage("msg-4").EventTargetUsers (new[] { userId }));
+            IsTask(store.SendMessage("msg-5").EventTargetUsers (new[] { user1 }));
+            IsTask(store.SendMessage("msg-6").EventTargetUsers (new[] { user1Key }));
 
-            IsTask(store.SendMessage("msg-4").EventTargetClients (new[] { "client-1 "}));
-            IsTask(store.SendMessage("msg-4").EventTargetClients (new[] { clientId }));
+            IsTask(store.SendMessage("msg-7").EventTargetClients (new[] { client1 }));
+            IsTask(store.SendMessage("msg-8").EventTargetClients (new[] { client1Key }));
             
-            var eventTargets = new EventTargets();
-            store.SendMessage("msg-5" ).EventTargets = eventTargets;
+            // var eventTargets = new EventTargets();
+            // store.SendMessage("msg-5" ).EventTargets = eventTargets;
             
-            store.SendCommand<int, int>("cmd", 123).EventTargetUser("ddd");
+            store.Command1().EventTargetUser(user1);
+        //  todo store.CommandInt(111).EventTargetUser(user1Key);
+            
+            store.SyncTasks().Wait();
         }
         
         private static void IsTask(MessageTask _) {
