@@ -219,7 +219,9 @@ namespace Friflo.Json.Fliox.Hub.Client
         #endregion
 
     #region - subscription event handling
-        /// <summary> <see cref="SubscriptionEventHandler"/> is called for all subscription events received by the <see cref="FlioxClient"/></summary>
+        /// <summary>
+        /// <see cref="SubscriptionEventHandler"/> is called for all subscription events received by the <see cref="FlioxClient"/>
+        /// </summary>
         [DebuggerBrowsable(Never)] public SubscriptionEventHandler SubscriptionEventHandler {
             get => _intern.subscriptionEventHandler;
             set => _intern.subscriptionEventHandler = value;
@@ -314,7 +316,10 @@ namespace Friflo.Json.Fliox.Hub.Client
         #endregion
 
     #region - send message
-        /// <summary>Send a message with the given <paramref name="name"/> (without a value) to the database used by the client.</summary>
+        /// <summary>
+        /// Send a message with the given <paramref name="name"/> (without a value) to the database used by the client. <br/>
+        /// Other clients can subscribe the message to receive an event with <see cref="SubscribeMessage"/>.
+        /// </summary>
         /// <remarks>
         /// The method can be used directly for rapid prototyping. <br/>For production grade code encapsulate call by adding a message method to
         /// the <see cref="FlioxClient"/> subclass. This adds the message and its API to the <see cref="DatabaseSchema"/>. 
@@ -325,7 +330,10 @@ namespace Friflo.Json.Fliox.Hub.Client
             return task;
         }
         
-        /// <summary> Send a message with the given <paramref name="name"/> and <paramref name="param"/> value to the database used by the client. </summary>
+        /// <summary>
+        /// Send a message with the given <paramref name="name"/> and <paramref name="param"/> value to the database used by the client. <br/>
+        /// Other clients can subscribe the message to receive an event with <see cref="SubscribeMessage"/>.
+        /// </summary>
         /// <remarks>
         /// The method can be used directly for rapid prototyping. <br/> For production grade code encapsulate call by adding a message method to
         /// the <see cref="FlioxClient"/> subclass. Doing this adds the message and its signature to the <see cref="DatabaseSchema"/>. 
@@ -342,7 +350,10 @@ namespace Friflo.Json.Fliox.Hub.Client
         #endregion
 
     #region - send command
-        /// <summary> Send a command with the given <paramref name="name"/> (without a command value) to the database used by the client.</summary>
+        /// <summary>
+        /// Send a command with the given <paramref name="name"/> (without a command value) to the database used by the client. <br/>
+        /// Other clients can subscribe the command to receive an event with <see cref="SubscribeMessage"/>.
+        /// </summary>
         /// <remarks>
         /// The method can be used directly for rapid prototyping. <br/> For production grade code encapsulate call by adding a message method to
         /// the <see cref="FlioxClient"/> subclass. This adds the command and its API to the <see cref="DatabaseSchema"/>. 
@@ -353,7 +364,10 @@ namespace Friflo.Json.Fliox.Hub.Client
             return task;
         }
         
-        /// <summary> Send a command with the given <paramref name="name"/> and <paramref name="param"/> value to the database used by the client. </summary>
+        /// <summary>
+        /// Send a command with the given <paramref name="name"/> and <paramref name="param"/> value to the database used by the client. <br/>
+        /// Other clients can subscribe the command to receive an event with <see cref="SubscribeMessage"/>.
+        /// </summary>
         /// <remarks>
         /// The method can be used directly for rapid prototyping. <br/> For production grade code encapsulate call by adding a message method to
         /// the <see cref="FlioxClient"/> subclass. Doing this adds the command and its signature to the <see cref="DatabaseSchema"/>. 
