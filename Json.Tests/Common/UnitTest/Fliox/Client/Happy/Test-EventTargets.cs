@@ -1,6 +1,7 @@
 // Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System.Linq;
 using Friflo.Json.Fliox;
 using Friflo.Json.Fliox.Hub.Client;
 using Friflo.Json.Fliox.Hub.Host;
@@ -35,10 +36,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             store.SubscribeMessage("*", (message, context) => { });
             store.SubscriptionEventHandler += context => {
                 AreEqual("user-1", context.SrcUserId.ToString());
-                var expect = new [] { "msg-1", "msg-2", "msg-3", "msg-4", "msg-5", "msg-6", "msg-7", "msg-8", "Command1" };
-                for (int n = 0; n < expect.Length; n++) {
-                    AreEqual(expect[n], context.Messages[n].Name);
-                }
+                var expect = new [] { "msg-1", "msg-3", "msg-3", "msg-4", "msg-5", "msg-6", "msg-7", "msg-8", "Command1" };
+                var actual = context.Messages.Select(msg => msg.Name);
+                AreEqual(expect, actual);
             };
 
             // --- single target
