@@ -187,7 +187,7 @@
         "SendMessage": {
             "type": "object",
             "extends": { "$ref": "#/definitions/SyncMessageTask" },
-            "description": "Send a database message with the given <b>param</b><br/>",
+            "description": "Send a database message with the given <b>param</b>. <br/>\nIn case <b>users</b> or <b>clients</b> is set the Hub forward\nthe message as an event only to the given <b>users</b> or <b>clients</b>.",
             "properties": {
                 "task":    { "enum": ["message"] },
                 "name":    { "type": "string", "description": "command / message name" },
@@ -222,7 +222,7 @@
         "SendCommand": {
             "type": "object",
             "extends": { "$ref": "#/definitions/SyncMessageTask" },
-            "description": "Send a database command with the given <b>param</b><br/>",
+            "description": "Send a database command with the given <b>param</b>. <br/>\nIn case <b>users</b> or <b>clients</b> is set the Hub forward\nthe message as an event only to the given <b>users</b> or <b>clients</b>.",
             "properties": {
                 "task":    { "enum": ["command"] },
                 "name":    { "type": "string", "description": "command / message name" },

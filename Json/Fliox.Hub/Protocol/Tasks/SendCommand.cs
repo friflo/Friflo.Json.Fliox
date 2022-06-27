@@ -8,7 +8,9 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
 {
     // ----------------------------------- task -----------------------------------
     /// <summary>
-    /// Send a database command with the given <see cref="SyncMessageTask.param"/><br/> 
+    /// Send a database command with the given <see cref="SyncMessageTask.param"/>. <br/>
+    /// In case <see cref="SyncMessageTask.users"/> or <see cref="SyncMessageTask.clients"/> is set the Hub forward
+    /// the message as an event only to the given <see cref="SyncMessageTask.users"/> or <see cref="SyncMessageTask.clients"/>.
     /// </summary>
     public sealed class SendCommand : SyncMessageTask
     {

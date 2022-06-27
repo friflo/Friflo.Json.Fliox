@@ -205,13 +205,21 @@ export abstract class SyncMessageTask extends SyncRequestTask {
     clients? : string[] | null;
 }
 
-/** Send a database message with the given **param**   */
+/**
+ * Send a database message with the given **param**.   
+ * In case **users** or **clients** is set the Hub forward
+ * the message as an event only to the given **users** or **clients**.
+ */
 export class SendMessage extends SyncMessageTask {
     /** task type */
     task     : "message";
 }
 
-/** Send a database command with the given **param**   */
+/**
+ * Send a database command with the given **param**.   
+ * In case **users** or **clients** is set the Hub forward
+ * the message as an event only to the given **users** or **clients**.
+ */
 export class SendCommand extends SyncMessageTask {
     /** task type */
     task     : "command";
