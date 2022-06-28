@@ -46,7 +46,7 @@ public class ContainerStats {
     long    count;
 }
 
-public class HostDetails {
+public class HostInfo {
     [Required]
     string        version;
     string        hostName;

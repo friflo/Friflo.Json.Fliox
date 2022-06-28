@@ -25,7 +25,7 @@ type Query {
     std_Messages    : DbMessages!
     std_Schema      : DbSchema!
     std_Stats      (param: String) : DbStats!
-    std_Details     : HostDetails!
+    std_Host        : HostInfo!
     std_Cluster     : HostCluster!
     std_User       (param: UserOptionsInput) : UserResult!
 }
@@ -128,7 +128,7 @@ input ContainerStatsInput {
     count : Int!
 }
 
-type HostDetails {
+type HostInfo {
     version        : String!
     hostName       : String
     projectName    : String
@@ -138,7 +138,7 @@ type HostDetails {
     routes         : [String!]!
 }
 
-input HostDetailsInput {
+input HostInfoInput {
     version        : String!
     hostName       : String
     projectName    : String

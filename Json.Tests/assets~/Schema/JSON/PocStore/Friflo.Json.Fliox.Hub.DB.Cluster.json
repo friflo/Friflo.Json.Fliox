@@ -70,7 +70,7 @@
             ],
             "additionalProperties": false
         },
-        "HostDetails": {
+        "HostInfo": {
             "type": "object",
             "description": "general information about a Hub",
             "properties": {

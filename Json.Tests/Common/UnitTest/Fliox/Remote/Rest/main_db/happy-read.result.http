@@ -215,7 +215,7 @@ GET {{base}}/rest/main_db?command=std.Messages
         "std.Messages",
         "std.Schema",
         "std.Stats",
-        "std.Details",
+        "std.Host",
         "std.Cluster",
         "std.User"
     ],

@@ -393,7 +393,7 @@
         }
       }
     },
-    "/?command=std.Details": {
+    "/?command=std.Host": {
       "post": {
         "summary":    "returns general information about the Hub like version, host, project and environment name",
         "tags":       ["commands"],
@@ -403,7 +403,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/HostDetails"
+                  "$ref": "Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/HostInfo"
                 }
               }
             }

@@ -876,7 +876,7 @@
                     }
                 },
                 {
-                    "name": "std_Details",
+                    "name": "std_Host",
                     "description": "/** returns general information about the Hub like version, host, project and environment name */\n",
                     "args": [
                     ],
@@ -884,7 +884,7 @@
                         "kind":"NON_NULL",
                         "ofType": {
                             "kind":"SCALAR",
-                            "name": "HostDetails"
+                            "name": "HostInfo"
                         }
                     }
                 },
@@ -3843,7 +3843,7 @@
         },
         {
             "kind":"OBJECT",
-            "name": "HostDetails",
+            "name": "HostInfo",
             "description": "/** general information about a Hub */\n",
             "fields": [
                 {
@@ -3934,7 +3934,7 @@
         },
         {
             "kind":"INPUT_OBJECT",
-            "name": "HostDetailsInput",
+            "name": "HostInfoInput",
             "description": "/** general information about a Hub */\n",
             "inputFields": [
                 {

@@ -81,7 +81,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         
         // --- commands: host
         /// <summary>returns general information about the Hub like version, host, project and environment name</summary>
-        public CommandTask<HostDetails> Details()           => SendCommand<HostDetails>             (Std.HostDetails);
+        public CommandTask<HostInfo>    Host()              => SendCommand<HostInfo>                (Std.HostInfo);
         /// <summary>list all databases and their containers hosted by the Hub</summary>
         public CommandTask<HostCluster> Cluster()           => SendCommand<HostCluster>             (Std.HostCluster);
         
@@ -102,7 +102,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         public const string Stats       = "std.Stats";
 
         // --- host
-        public const string HostDetails = "std.Details";
+        public const string HostInfo    = "std.Host";
         public const string HostCluster = "std.Cluster";
         
         // --- user

@@ -121,7 +121,7 @@
         "std.Messages",
         "std.Schema",
         "std.Stats",
-        "std.Details",
+        "std.Host",
         "std.Cluster",
         "std.User"
     ],
@@ -131,22 +131,6 @@
         "test.Message2"
     ]
 },
-        "std_Details": {
-    "version": "0.0.1",
-    "hostName": "host",
-    "projectName": "Test Hub",
-    "projectWebsite": "https://github.com/friflo/Friflo.Json.Fliox/tree/main/Json.Tests/Main",
-    "envName": "dev",
-    "envColor": "rgb(34 140 0)",
-    "routes": [
-        "/rest",
-        "/schema",
-        "/graphql",
-        "/explorer",
-        "/graphiql",
-        "/swagger"
-    ]
-},
         "echo_backSlash": 
 "\"",
         "echo_doubleQuote": 
@@ -154,5 +138,16 @@
         "echo_unicode": 
 "a©€😎🌍",
         "Message1": {}
-    }
+    },
+    "errors": [
+        {
+            "message": "unknown query / mutation: std_Details",
+            "path": [
+                "std_Details"
+            ],
+            "extensions": {
+                "type": "InvalidTask"
+            }
+        }
+    ]
 }

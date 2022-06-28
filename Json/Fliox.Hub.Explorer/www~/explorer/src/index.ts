@@ -7,7 +7,7 @@ import { EntityEditor }                                         from "./entity-e
 import { Playground }                                           from "./playground.js";
 
 import { FieldType, JSONSchema, JsonType }                      from "../../../../../Json.Tests/assets~/Schema/Typescript/JSONSchema/Friflo.Json.Fliox.Schema.JSON";
-import { DbSchema, DbContainers, DbMessages, HostDetails }      from "../../../../../Json.Tests/assets~/Schema/Typescript/ClusterStore/Friflo.Json.Fliox.Hub.DB.Cluster";
+import { DbSchema, DbContainers, DbMessages, HostInfo }         from "../../../../../Json.Tests/assets~/Schema/Typescript/ClusterStore/Friflo.Json.Fliox.Hub.DB.Cluster";
 import { SyncRequest, SyncResponse, ProtocolResponse_Union,
          ContainerEntities }                                    from "../../../../../Json.Tests/assets~/Schema/Typescript/Protocol/Friflo.Json.Fliox.Hub.Protocol";
 import { SyncRequestTask_Union, SendCommandResult }             from "../../../../../Json.Tests/assets~/Schema/Typescript/Protocol/Friflo.Json.Fliox.Hub.Protocol.Tasks";
@@ -334,8 +334,8 @@ export class App {
         classList.remove(className);        
     }
 
-    private selectedTreeEl:     HTMLElement;
-    private hostDetails:        HostDetails;
+    private selectedTreeEl: HTMLElement;
+    private hostInfo:       HostInfo;
 
     private selectTreeElement(element: HTMLElement) {
         if (this.selectedTreeEl)
@@ -346,7 +346,7 @@ export class App {
 
     private async loadCluster () {
         const tasks: SyncRequestTask_Union[] = [
-            { "task": "command","name": "std.Details" },
+            { "task": "command","name": "std.Host" },
             { "task": "query",  "container": "containers"},
             { "task": "query",  "container": "messages"},
             { "task": "query",  "container": "schemas"},
@@ -360,7 +360,7 @@ export class App {
             return;
         }
         const hubInfoResult = content.tasks[0]                  as SendCommandResult;
-        this.hostDetails    = hubInfoResult.result              as HostDetails;
+        this.hostInfo       = hubInfoResult.result              as HostInfo;
         const containerMap: { [key: string]: ContainerEntities} = {};
         for (const container of content.containers) {
             containerMap[container.container] = container;
@@ -369,10 +369,10 @@ export class App {
         const dbMessages    = containerMap["messages"].entities     as DbMessages[];
         const dbSchemas     = containerMap["schemas"].entities      as DbSchema[];
         //
-        const name      = this.hostDetails.projectName;
-        const website   = this.hostDetails.projectWebsite;
-        const envName   = this.hostDetails.envName;
-        const envColor  = this.hostDetails.envColor;
+        const name      = this.hostInfo.projectName;
+        const website   = this.hostInfo.projectWebsite;
+        const envName   = this.hostInfo.envName;
+        const envColor  = this.hostInfo.envColor;
         if (name) {
             projectName.innerText   = name;
             document.title          = envName ? `${name} · ${envName}` : name;
@@ -541,7 +541,7 @@ export class App {
         let apiLinks = `<a class="oas" title="${description} as OpenAPI specification (OAS) in new tab "` +
         `href="${flioxRoot}schema/${database}/open-api.html${hash}" target="_blank" rel="noopener noreferrer">OAS</a>`;
 
-        if (app.hostDetails.routes.includes("/graphql")) {
+        if (app.hostInfo.routes.includes("/graphql")) {
             apiLinks += `&nbsp;<a class="graphql" title="${description} as GraphQL API (GQL) in new tab "` +
             `href="${flioxRoot}graphql/${database}" target="_blank" rel="noopener noreferrer">GQL</a>`;
         }

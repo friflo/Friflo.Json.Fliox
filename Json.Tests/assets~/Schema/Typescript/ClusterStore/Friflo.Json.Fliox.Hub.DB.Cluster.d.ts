@@ -26,7 +26,7 @@ export interface ClusterStore {
     /** return the number of entities of all containers (or the given container) of the database */
     ["std.Stats"]          (param: string | null) : DbStats;
     /** returns general information about the Hub like version, host, project and environment name */
-    ["std.Details"]        () : HostDetails;
+    ["std.Host"]           () : HostInfo;
     /** list all databases and their containers hosted by the Hub */
     ["std.Cluster"]        () : HostCluster;
     /** change and return user groups */
@@ -88,7 +88,7 @@ export class ContainerStats {
 }
 
 /** general information about a Hub */
-export class HostDetails {
+export class HostInfo {
     /** host version */
     version         : string;
     /**

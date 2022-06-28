@@ -67,8 +67,8 @@ namespace Friflo.Json.Fliox.Hub.Host
             AddCommandHandler      <Empty,       DbSchema>      (Std.Schema,        Schema);
             AddCommandHandlerAsync <string,      DbStats>       (Std.Stats,         Stats);
             // --- host
-            AddCommandHandler      <Empty,       HostDetails>   (Std.HostDetails,   Details);
-            AddCommandHandlerAsync <Empty,       HostCluster>   (Std.HostCluster,   Cluster);
+            AddCommandHandler      <Empty,       HostInfo>      (Std.HostInfo,      HostInfo);
+            AddCommandHandlerAsync <Empty,       HostCluster>   (Std.HostCluster,   HostCluster);
             // --- user
             AddCommandHandlerAsync <UserOptions, UserResult>    (Std.User,          User);
         }
@@ -211,11 +211,11 @@ namespace Friflo.Json.Fliox.Hub.Host
             return param.RawParam;
         }
         
-        private static HostDetails Details (Param<Empty> param, MessageContext context) {
+        private static HostInfo HostInfo (Param<Empty> param, MessageContext context) {
             var hub     = context.Hub;
             var info    = hub.Info;
             var routes  = new List<string>(hub.Routes);       
-            var details = new HostDetails {
+            var result  = new HostInfo {
                 version         = hub.Version,
                 hostName        = hub.hostName,
                 projectName     = info?.projectName,
@@ -224,7 +224,7 @@ namespace Friflo.Json.Fliox.Hub.Host
                 envColor        = info?.envColor,
                 routes          = routes
             };
-            return details;
+            return result;
         }
 
         private static async Task<DbContainers> Containers (Param<Empty> param, MessageContext context) {
@@ -274,7 +274,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             return result;
         }
         
-        private static async Task<HostCluster> Cluster (Param<Empty> param, MessageContext context) {
+        private static async Task<HostCluster> HostCluster (Param<Empty> param, MessageContext context) {
             return await ClusterStore.GetDbList(context).ConfigureAwait(false);
         }
         

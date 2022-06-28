@@ -71,7 +71,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
     }
     
     /// <summary>general information about a Hub</summary>
-    public sealed class HostDetails {
+    public sealed class HostInfo {
         /// <summary>host version</summary>
         [Required]  public  string              version;
         /// <summary>host name. Used as <see cref="DB.Monitor.HostHits.id"/> in

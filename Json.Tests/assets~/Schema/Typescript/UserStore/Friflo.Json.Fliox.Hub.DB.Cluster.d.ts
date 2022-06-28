@@ -56,7 +56,7 @@ export class ContainerStats {
 }
 
 /** general information about a Hub */
-export class HostDetails {
+export class HostInfo {
     /** host version */
     version         : string;
     /**

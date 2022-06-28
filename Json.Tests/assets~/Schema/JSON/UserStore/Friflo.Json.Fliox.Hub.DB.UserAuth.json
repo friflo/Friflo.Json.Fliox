@@ -32,7 +32,7 @@
                     "description": "return the Schema assigned to the database" },
                 "std.Stats":        { "param": { "type": ["string", "null"] }, "result": { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/DbStats" },
                     "description": "return the number of entities of all containers (or the given container) of the database" },
-                "std.Details":      { "result": { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/HostDetails" },
+                "std.Host":         { "result": { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/HostInfo" },
                     "description": "returns general information about the Hub like version, host, project and environment name" },
                 "std.Cluster":      { "result": { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/HostCluster" },
                     "description": "list all databases and their containers hosted by the Hub" },

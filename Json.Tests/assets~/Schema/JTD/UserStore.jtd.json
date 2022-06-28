@@ -177,7 +177,7 @@
                 "count": { "type": "int64" }
             }
         },
-        "HostDetails": {
+        "HostInfo": {
             "properties": {
                 "version":        { "type": "string" },
                 "hostName":       { "type": "string", "nullable": true },

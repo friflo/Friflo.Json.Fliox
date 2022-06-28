@@ -303,7 +303,7 @@ export class App {
     }
     async loadCluster() {
         const tasks = [
-            { "task": "command", "name": "std.Details" },
+            { "task": "command", "name": "std.Host" },
             { "task": "query", "container": "containers" },
             { "task": "query", "container": "messages" },
             { "task": "query", "container": "schemas" },
@@ -317,7 +317,7 @@ export class App {
             return;
         }
         const hubInfoResult = content.tasks[0];
-        this.hostDetails = hubInfoResult.result;
+        this.hostInfo = hubInfoResult.result;
         const containerMap = {};
         for (const container of content.containers) {
             containerMap[container.container] = container;
@@ -326,10 +326,10 @@ export class App {
         const dbMessages = containerMap["messages"].entities;
         const dbSchemas = containerMap["schemas"].entities;
         //
-        const name = this.hostDetails.projectName;
-        const website = this.hostDetails.projectWebsite;
-        const envName = this.hostDetails.envName;
-        const envColor = this.hostDetails.envColor;
+        const name = this.hostInfo.projectName;
+        const website = this.hostInfo.projectWebsite;
+        const envName = this.hostInfo.envName;
+        const envColor = this.hostInfo.envColor;
         if (name) {
             projectName.innerText = name;
             document.title = envName ? `${name} · ${envName}` : name;
@@ -480,7 +480,7 @@ export class App {
         hash = hash.replace(".", "_");
         let apiLinks = `<a class="oas" title="${description} as OpenAPI specification (OAS) in new tab "` +
             `href="${flioxRoot}schema/${database}/open-api.html${hash}" target="_blank" rel="noopener noreferrer">OAS</a>`;
-        if (app.hostDetails.routes.includes("/graphql")) {
+        if (app.hostInfo.routes.includes("/graphql")) {
             apiLinks += `&nbsp;<a class="graphql" title="${description} as GraphQL API (GQL) in new tab "` +
                 `href="${flioxRoot}graphql/${database}" target="_blank" rel="noopener noreferrer">GQL</a>`;
         }
