@@ -84,6 +84,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             SubscribeMessage    subscribe,
             User                user,
             in JsonKey          clientId,
+            int                 eventAck,
             IEventReceiver      eventReceiver,
             out string          error)
         {
@@ -104,7 +105,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                 RemoveEmptySubscriber(subscriber, clientId);
                 return true;
             } else {
-                subscriber = GetOrCreateSubscriber(user, clientId, eventReceiver);
+                subscriber = GetOrCreateSubscriber(user, clientId, eventAck, eventReceiver);
                 if (!subscriber.databaseSubs.TryGetValue(database, out var databaseSubs)) {
                     databaseSubs = new DatabaseSubs(database);
                     subscriber.databaseSubs.Add(database, databaseSubs);
@@ -119,6 +120,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             SubscribeChanges    subscribe,
             User                user,
             in JsonKey          clientId,
+            int                 eventAck,
             IEventReceiver      eventReceiver,
             out string          error)
         {
@@ -137,7 +139,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                 RemoveEmptySubscriber(subscriber, clientId);
                 return true;
             } else {
-                subscriber = GetOrCreateSubscriber(user, clientId, eventReceiver);
+                subscriber = GetOrCreateSubscriber(user, clientId, eventAck, eventReceiver);
                 if (!subscriber.databaseSubs.TryGetValue(database, out var databaseSubs)) {
                     databaseSubs = new DatabaseSubs(database);
                     subscriber.databaseSubs.Add(database, databaseSubs);
@@ -147,11 +149,11 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             }
         }
         
-        private EventSubscriber GetOrCreateSubscriber(User user, in JsonKey clientId, IEventReceiver eventReceiver) {
+        private EventSubscriber GetOrCreateSubscriber(User user, in JsonKey clientId, int eventAck, IEventReceiver eventReceiver) {
             subscribers.TryGetValue(clientId, out EventSubscriber subscriber);
             if (subscriber != null)
                 return subscriber;
-            subscriber = new EventSubscriber(sharedEnv, user, clientId, eventReceiver, background);
+            subscriber = new EventSubscriber(sharedEnv, user, clientId, eventAck, eventReceiver, background);
             subscribers.TryAdd(clientId, subscriber);
             return subscriber;
         }

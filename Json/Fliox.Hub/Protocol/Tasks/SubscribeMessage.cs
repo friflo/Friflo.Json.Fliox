@@ -33,8 +33,9 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
             if (!hub.Authenticator.EnsureValidClientId(hub.ClientController, syncContext, out string error))
                 return Task.FromResult<SyncTaskResult>(InvalidTask(error));
             
-            var eventReceiver = syncContext.eventReceiver;
-            if (!eventDispatcher.SubscribeMessage(database.name, this, syncContext.User, syncContext.clientId, eventReceiver, out error))
+            var eventReceiver   = syncContext.eventReceiver;
+            var eventAck        = syncContext.eventAck ?? 0;
+            if (!eventDispatcher.SubscribeMessage(database.name, this, syncContext.User, syncContext.clientId, eventAck, eventReceiver, out error))
                 return Task.FromResult<SyncTaskResult>(InvalidTask(error));
             
             return Task.FromResult<SyncTaskResult>(new SubscribeMessageResult());

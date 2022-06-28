@@ -28,15 +28,15 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         public              IHubLogger                          Logger { get; }
         
-        internal readonly   Dictionary<string, DatabaseSubs>    databaseSubs        = new Dictionary<string, DatabaseSubs>();
+        internal readonly   Dictionary<string, DatabaseSubs>    databaseSubs = new Dictionary<string, DatabaseSubs>();
         
-        internal            int                                 SubCount   => databaseSubs.Sum(sub => sub.Value.SubCount); 
+        internal            int                                 SubCount    => databaseSubs.Sum(sub => sub.Value.SubCount); 
         
         /// lock (<see cref="eventQueue"/>) {
         private             int                                 eventCounter;
-        private  readonly   LinkedList<ProtocolEvent>           eventQueue = new LinkedList<ProtocolEvent>();
+        private  readonly   LinkedList<ProtocolEvent>           eventQueue  = new LinkedList<ProtocolEvent>();
         /// contains all events which are sent but not acknowledged
-        private  readonly   List<ProtocolEvent>                 sentEvents = new List<ProtocolEvent>();
+        private  readonly   List<ProtocolEvent>                 sentEvents  = new List<ProtocolEvent>();
         // }
         
         private  readonly   bool                                background;
@@ -50,10 +50,18 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         internal            int                                 SentEventsCount => sentEvents.Count;
         internal            bool                                IsRemoteTarget  => eventReceiver is WebSocketHost;
         
-        internal EventSubscriber (SharedEnv env, User user, in JsonKey clientId, IEventReceiver eventReceiver, bool background) {
+        internal EventSubscriber (
+            SharedEnv       env,
+            User            user,
+            in JsonKey      clientId,
+            int             eventAck,
+            IEventReceiver  eventReceiver,
+            bool            background)
+        {
             Logger              = env.hubLogger;
             this.clientId       = clientId;
             this.user           = user;
+            this.eventCounter   = eventAck;
             this.eventReceiver  = eventReceiver;
             this.background     = background;
             if (!this.background)

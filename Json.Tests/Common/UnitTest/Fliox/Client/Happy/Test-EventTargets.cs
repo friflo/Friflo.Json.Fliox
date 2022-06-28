@@ -25,7 +25,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             {
                 client1.ClientId    = "client-1";
                 client1.UserId      = "user-1";
-                for (int n = 0; n < 1; n++) {
+                for (int n = 0; n < 5; n++) {
                     int eventCount      = 0;
                     client1.SubscribeMessage("*", (message, context) => { eventCount++; });
                     client1.SubscriptionEventHandler = context => {
@@ -40,7 +40,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 //
                 client2.ClientId    = "client-2";
                 client2.UserId      = "user-2";
-                for (int n = 0; n < 1; n++) {
+                for (int n = 0; n < 5; n++) {
                     int eventCount      = 0;
                     client2.SubscribeMessage("*", (message, context) => { eventCount++; });
                     client2.SubscriptionEventHandler = context => {
