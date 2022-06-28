@@ -903,7 +903,7 @@
                 },
                 {
                     "name": "std_User",
-                    "description": "/** change and return user groups */\n",
+                    "description": "/** return the groups of the current user.    optionally change the groups of the current user */\n",
                     "args": [
                         {
                             "name": "param",

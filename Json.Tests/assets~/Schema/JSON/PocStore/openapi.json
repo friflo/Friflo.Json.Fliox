@@ -431,7 +431,7 @@
     },
     "/?command=std.User": {
       "post": {
-        "summary":    "change and return user groups",
+        "summary":    "return the groups of the current user. Optionally change the groups of the current user",
         "tags":       ["commands"],
         "requestBody": {          
           "content": {

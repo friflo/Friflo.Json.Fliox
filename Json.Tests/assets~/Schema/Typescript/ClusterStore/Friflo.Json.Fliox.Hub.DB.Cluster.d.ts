@@ -29,7 +29,7 @@ export interface ClusterStore {
     ["std.Host"]           () : HostInfo;
     /** list all databases and their containers hosted by the Hub */
     ["std.Cluster"]        () : HostCluster;
-    /** change and return user groups */
+    /** return the groups of the current user. Optionally change the groups of the current user */
     ["std.User"]           (param: UserOptions | null) : UserResult;
 }
 

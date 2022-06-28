@@ -86,7 +86,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         public CommandTask<HostCluster> Cluster()           => SendCommand<HostCluster>             (Std.HostCluster);
         
         // --- commands: user
-        /// <summary> change and return user groups </summary>
+        /// <summary>return the groups of the current user. Optionally change the groups of the current user</summary>
         public CommandTask<UserResult>  User(UserOptions options) => SendCommand<UserOptions,UserResult> (Std.User, options);
     }
     
