@@ -61,14 +61,16 @@ namespace Friflo.Json.Fliox.Hub.Host
             // AddUsingCommandHandler();
             // add each command handler individually
             // --- database
-            AddCommandHandler      <JsonValue,   JsonValue>    (Std.Echo,         Echo);
-            AddCommandHandlerAsync <Empty,       DbContainers> (Std.Containers,   Containers);
-            AddCommandHandler      <Empty,       DbMessages>   (Std.Messages,     Messages);
-            AddCommandHandler      <Empty,       DbSchema>     (Std.Schema,       Schema);
-            AddCommandHandlerAsync <string,      DbStats>      (Std.Stats,        Stats);
+            AddCommandHandler      <JsonValue,   JsonValue>     (Std.Echo,          Echo);
+            AddCommandHandlerAsync <Empty,       DbContainers>  (Std.Containers,    Containers);
+            AddCommandHandler      <Empty,       DbMessages>    (Std.Messages,      Messages);
+            AddCommandHandler      <Empty,       DbSchema>      (Std.Schema,        Schema);
+            AddCommandHandlerAsync <string,      DbStats>       (Std.Stats,         Stats);
             // --- host
-            AddCommandHandler      <Empty,       HostDetails>  (Std.HostDetails,  Details);
-            AddCommandHandlerAsync <Empty,       HostCluster>  (Std.HostCluster,  Cluster);
+            AddCommandHandler      <Empty,       HostDetails>   (Std.HostDetails,   Details);
+            AddCommandHandlerAsync <Empty,       HostCluster>   (Std.HostCluster,   Cluster);
+            // --- user
+            AddCommandHandlerAsync <UserOptions, UserResult>    (Std.User,          User);
         }
         
         /// <summary>
@@ -274,6 +276,21 @@ namespace Friflo.Json.Fliox.Hub.Host
         
         private static async Task<HostCluster> Cluster (Param<Empty> param, MessageContext context) {
             return await ClusterStore.GetDbList(context).ConfigureAwait(false);
+        }
+        
+        private static async Task<UserResult> User (Param<UserOptions> param, MessageContext context) {
+            var user = context.User;
+            if (param.RawParam.IsNull()) {
+                return new UserResult { groups = user.Groups };
+            }
+            if (!param.GetValidate(out UserOptions userGroup, out var error)) {
+                context.Error(error);
+                return null;
+            }
+            var authenticator = context.Hub.Authenticator;
+            await authenticator.SetUserOptions(userGroup, context);
+            
+            return new UserResult { groups = user.Groups };
         }
         
         // --- internal API ---

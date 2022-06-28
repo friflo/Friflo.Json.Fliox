@@ -42,7 +42,9 @@
                 "std.Details":    { "result": { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/HostDetails" },
                     "description": "returns general information about the Hub like version, host, project and environment name" },
                 "std.Cluster":    { "result": { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/HostCluster" },
-                    "description": "list all databases and their containers hosted by the Hub" }
+                    "description": "list all databases and their containers hosted by the Hub" },
+                "std.User":       { "param": { "oneOf": [{ "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/UserOptions" }, {"type": "null"}] }, "result": { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/UserResult" },
+                    "description": "change and return user groups" }
             }
         }
     }

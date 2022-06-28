@@ -85,3 +85,12 @@ export class HostCluster {
     databases  : DbContainers[];
 }
 
+export class UserOptions {
+    addGroups?    : string[] | null;
+    removeGroups? : string[] | null;
+}
+
+export class UserResult {
+    groups  : string[];
+}
+

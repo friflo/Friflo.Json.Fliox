@@ -29,6 +29,8 @@ export interface ClusterStore {
     ["std.Details"]        () : HostDetails;
     /** list all databases and their containers hosted by the Hub */
     ["std.Cluster"]        () : HostCluster;
+    /** change and return user groups */
+    ["std.User"]           (param: UserOptions | null) : UserResult;
 }
 
 /** **containers** and **storage** type of a database */
@@ -113,5 +115,14 @@ export class HostDetails {
 export class HostCluster {
     /** list of **databases** hosted by Hub */
     databases  : DbContainers[];
+}
+
+export class UserOptions {
+    addGroups?    : string[] | null;
+    removeGroups? : string[] | null;
+}
+
+export class UserResult {
+    groups  : string[];
 }
 

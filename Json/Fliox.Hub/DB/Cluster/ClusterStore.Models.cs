@@ -4,6 +4,8 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
+// ReSharper disable ClassNeverInstantiated.Global
+// ReSharper disable UnassignedField.Global
 namespace Friflo.Json.Fliox.Hub.DB.Cluster
 {
     // ---------------------------------- entity models ----------------------------------
@@ -94,5 +96,14 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
     public sealed class HostCluster {
         /// <summary>list of <see cref="databases"/> hosted by Hub</summary>
         [Required]  public  List<DbContainers>  databases;
+    }
+    
+    public sealed class UserOptions {
+                    public  List<string>    addGroups;
+                    public  List<string>    removeGroups;
+    }
+
+    public sealed class UserResult {
+        [Required]  public  string[]        groups;
     }
 }

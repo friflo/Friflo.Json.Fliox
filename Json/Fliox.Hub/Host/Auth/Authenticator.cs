@@ -6,6 +6,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using Friflo.Json.Fliox.Hub.DB.Cluster;
 using Friflo.Json.Fliox.Hub.Host.Auth.Rights;
 using Friflo.Json.Fliox.Hub.Protocol;
 using static System.Diagnostics.DebuggerBrowsableState;
@@ -67,6 +68,12 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
                     return false;
             }
             throw new InvalidOperationException ("unexpected clientIdValidation state");
+        }
+        
+        public virtual Task SetUserOptions (UserOptions options, MessageContext context) {
+            var user = context.User;
+            user.SetUserOptions(options);
+            return Task.CompletedTask;
         }
 
         /// <summary>

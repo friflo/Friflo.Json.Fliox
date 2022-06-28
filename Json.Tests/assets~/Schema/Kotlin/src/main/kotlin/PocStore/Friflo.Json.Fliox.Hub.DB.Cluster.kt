@@ -54,3 +54,14 @@ data class HostCluster (
               val databases : List<DbContainers>,
 )
 
+@Serializable
+data class UserOptions (
+              val addGroups    : List<String>? = null,
+              val removeGroups : List<String>? = null,
+)
+
+@Serializable
+data class UserResult (
+              val groups : List<String>,
+)
+

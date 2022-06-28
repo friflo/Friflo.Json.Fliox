@@ -1,9 +1,11 @@
 // Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System.Collections.Generic;
 using System.Linq;
 using Friflo.Json.Fliox;
 using Friflo.Json.Fliox.Hub.Client;
+using Friflo.Json.Fliox.Hub.DB.Cluster;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.Event;
 using NUnit.Framework;
@@ -25,17 +27,20 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             {
                 client1.ClientId    = "client-1";
                 client1.UserId      = "user-1";
+                client1.std.User(new UserOptions { addGroups = new List<string> {"group-1" } });
+                client1.SyncTasks().Wait();
+                
                 for (int n = 0; n < 5; n++) {
                     int eventCount      = 0;
                     client1.SubscribeMessage("*", (message, context) => { eventCount++; });
                     client1.SubscriptionEventHandler = context => {
                         AreEqual("user-1", context.SrcUserId.ToString());
-                        var expect = new [] { "msg-1", "msg-2", "msg-3", "msg-4", "msg-5", "msg-6", "msg-7", "msg-8", "msg-9", "Command1" };
+                        var expect = new [] { "msg-1", "msg-2", "msg-3", "msg-4", "msg-5", "msg-6", "msg-7", "msg-8", "msg-9", "msg-10", "Command1" };
                         var actual = context.Messages.Select(msg => msg.Name);
                         AreEqual(expect, actual);
                     };
                     SendMessages(client1);
-                    AreEqual(10, eventCount);
+                    AreEqual(11, eventCount);
                 }
                 //
                 client2.ClientId    = "client-2";
@@ -76,6 +81,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             var eventTargets = new EventTargets();
             eventTargets.AddUser(userId);
             client.SendMessage("msg-9").EventTargets = eventTargets;
+            
+            client.SendMessage("msg-10").EventTargetGroup("group-1");
             
             client.Command1().EventTargetUser(userId);
         //  todo client.CommandInt(111).EventTargetUser(user1Key);

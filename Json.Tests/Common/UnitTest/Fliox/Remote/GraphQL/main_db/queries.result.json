@@ -122,7 +122,8 @@
         "std.Schema",
         "std.Stats",
         "std.Details",
-        "std.Cluster"
+        "std.Cluster",
+        "std.User"
     ],
     "messages": [
         "Message1",

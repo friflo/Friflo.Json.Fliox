@@ -84,6 +84,10 @@ namespace Friflo.Json.Fliox.Hub.Client
         public CommandTask<HostDetails> Details()           => SendCommand<HostDetails>             (Std.HostDetails);
         /// <summary>list all databases and their containers hosted by the Hub</summary>
         public CommandTask<HostCluster> Cluster()           => SendCommand<HostCluster>             (Std.HostCluster);
+        
+        // --- commands: user
+        /// <summary> change and return user groups </summary>
+        public CommandTask<UserResult>  User(UserOptions options) => SendCommand<UserOptions,UserResult> (Std.User, options);
     }
     
     
@@ -100,5 +104,8 @@ namespace Friflo.Json.Fliox.Hub.Client
         // --- host
         public const string HostDetails = "std.Details";
         public const string HostCluster = "std.Cluster";
+        
+        // --- user
+        public const string User        = "std.User";
     }
 }

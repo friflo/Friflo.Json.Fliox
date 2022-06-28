@@ -5,6 +5,8 @@ import { DbSchema }     from "./Friflo.Json.Fliox.Hub.DB.Cluster";
 import { DbStats }      from "./Friflo.Json.Fliox.Hub.DB.Cluster";
 import { HostDetails }  from "./Friflo.Json.Fliox.Hub.DB.Cluster";
 import { HostCluster }  from "./Friflo.Json.Fliox.Hub.DB.Cluster";
+import { UserOptions }  from "./Friflo.Json.Fliox.Hub.DB.Cluster";
+import { UserResult }   from "./Friflo.Json.Fliox.Hub.DB.Cluster";
 import { Right }        from "./Friflo.Json.Fliox.Hub.Host.Auth.Rights";
 import { Right_Union }  from "./Friflo.Json.Fliox.Hub.Host.Auth.Rights";
 
@@ -39,6 +41,8 @@ export interface UserStore {
     ["std.Details"]          () : HostDetails;
     /** list all databases and their containers hosted by the Hub */
     ["std.Cluster"]          () : HostCluster;
+    /** change and return user groups */
+    ["std.User"]             (param: UserOptions | null) : UserResult;
 }
 
 /** user **Credentials** used for authentication */

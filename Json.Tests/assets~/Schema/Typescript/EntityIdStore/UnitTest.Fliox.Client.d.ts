@@ -5,6 +5,8 @@ import { DbSchema }     from "./Friflo.Json.Fliox.Hub.DB.Cluster";
 import { DbStats }      from "./Friflo.Json.Fliox.Hub.DB.Cluster";
 import { HostDetails }  from "./Friflo.Json.Fliox.Hub.DB.Cluster";
 import { HostCluster }  from "./Friflo.Json.Fliox.Hub.DB.Cluster";
+import { UserOptions }  from "./Friflo.Json.Fliox.Hub.DB.Cluster";
+import { UserResult }   from "./Friflo.Json.Fliox.Hub.DB.Cluster";
 import { Guid }         from "./Standard";
 import { int32 }        from "./Standard";
 import { int64 }        from "./Standard";
@@ -39,6 +41,8 @@ export interface EntityIdStore {
     ["std.Details"]        () : HostDetails;
     /** list all databases and their containers hosted by the Hub */
     ["std.Cluster"]        () : HostCluster;
+    /** change and return user groups */
+    ["std.User"]           (param: UserOptions | null) : UserResult;
 }
 
 export class GuidEntity {

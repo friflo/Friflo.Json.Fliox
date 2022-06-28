@@ -156,6 +156,17 @@
             "properties": {
                 "databases": { "elements": { "ref":  "DbContainers" } }
             }
+        },
+        "UserOptions": {
+            "properties": {
+                "addGroups":    { "elements": { "type": "string" }, "nullable": true },
+                "removeGroups": { "elements": { "type": "string" }, "nullable": true }
+            }
+        },
+        "UserResult": {
+            "properties": {
+                "groups": { "elements": { "type": "string" } }
+            }
         }
     }
 }

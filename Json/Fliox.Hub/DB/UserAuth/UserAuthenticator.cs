@@ -6,6 +6,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Friflo.Json.Fliox.Hub.DB.Cluster;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.Auth;
 using Friflo.Json.Fliox.Hub.Host.Auth.Rights;
@@ -215,6 +216,10 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
                     return true;
             }
             throw new InvalidOperationException ("unexpected clientIdValidation state");
+        }
+        
+        public override Task SetUserOptions (UserOptions options, MessageContext context) {
+            return base.SetUserOptions(options, context); // todo add container: groups, update UserGroup entry 
         }
 
         private async Task<Result<Authorizer>> GetAuthorizer(UserStore userStore, JsonKey userId) {

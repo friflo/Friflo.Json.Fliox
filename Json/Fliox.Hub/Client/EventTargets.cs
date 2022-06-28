@@ -15,7 +15,9 @@ namespace Friflo.Json.Fliox.Hub.Client
     {
         internal    List<JsonKey>   users;
         internal    List<JsonKey>   clients;
+        internal    List<string>    groups;
         
+        // --- user
         public void AddUser(string user) {
             AddUser (new JsonKey(user));
         }
@@ -28,18 +30,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             users.Add(user);
         }
         
-        public void AddClient(string client) {
-            AddClient (new JsonKey(client));
-        }
-
-        public void AddClient(in JsonKey client) {
-            if (clients == null) {
-                clients = new List<JsonKey> { client };
-                return;
-            }
-            clients.Add(client);
-        }
-        
+        // --- users
         public void AddUsers (ICollection<string> users) {
             if (this.users == null) this.users = new List<JsonKey>(users.Count);
             foreach (var user in users) {
@@ -52,6 +43,20 @@ namespace Friflo.Json.Fliox.Hub.Client
             this.users.AddRange(users);
         }
         
+        // --- client
+        public void AddClient(string client) {
+            AddClient (new JsonKey(client));
+        }
+
+        public void AddClient(in JsonKey client) {
+            if (clients == null) {
+                clients = new List<JsonKey> { client };
+                return;
+            }
+            clients.Add(client);
+        }
+        
+        // --- clients
         public void AddClients (ICollection<string> clients) {
             if (this.clients == null) this.clients = new List<JsonKey>(clients.Count);
             foreach (var client in clients) {
@@ -62,6 +67,20 @@ namespace Friflo.Json.Fliox.Hub.Client
         internal void AddClients (ICollection<JsonKey> clients) {
             if (this.clients == null) this.clients = new List<JsonKey>(clients.Count);
             this.clients.AddRange(clients);
+        }
+        
+        // --- group
+        public void AddGroup(string group) {
+            if (groups == null) {
+                groups = new List<string> { group };
+                return;
+            }
+            groups.Add(group);
+        }
+        
+        public void AddGroups(ICollection<string> groups) {
+            if (this.groups == null) this.groups = new List<string>(groups.Count);
+            this.groups.AddRange(groups);
         }
     }
 
@@ -86,23 +105,6 @@ namespace Friflo.Json.Fliox.Hub.Client
             return message;
         }
         
-        // --- client
-        /// <summary> Send the <paramref name="message"/> as an event only to the given <paramref name="client"/> </summary>
-        /// <seealso cref="EventTargets"/>
-        public static  TTask  EventTargetClient<TTask> (this TTask message, string client) where TTask : MessageTask {
-            var targets = message.GetOrCreateTargets();
-            targets.AddClient(client);
-            return message;
-        }
-        
-        /// <summary> Send the <paramref name="message"/> as an event only to the given <paramref name="client"/> </summary>
-        /// <seealso cref="EventTargets"/>
-        public static  TTask  EventTargetClient<TTask> (this TTask message, in JsonKey client) where TTask : MessageTask {
-            var targets = message.GetOrCreateTargets();
-            targets.AddClient(client);
-            return message;
-        }
-        
         // --- users
         /// <summary> Send the <paramref name="message"/> as an event only to the given <paramref name="users"/> </summary>
         /// <seealso cref="EventTargets"/>
@@ -120,6 +122,23 @@ namespace Friflo.Json.Fliox.Hub.Client
             return message;
         }
         
+        // --- client
+        /// <summary> Send the <paramref name="message"/> as an event only to the given <paramref name="client"/> </summary>
+        /// <seealso cref="EventTargets"/>
+        public static  TTask  EventTargetClient<TTask> (this TTask message, string client) where TTask : MessageTask {
+            var targets = message.GetOrCreateTargets();
+            targets.AddClient(client);
+            return message;
+        }
+        
+        /// <summary> Send the <paramref name="message"/> as an event only to the given <paramref name="client"/> </summary>
+        /// <seealso cref="EventTargets"/>
+        public static  TTask  EventTargetClient<TTask> (this TTask message, in JsonKey client) where TTask : MessageTask {
+            var targets = message.GetOrCreateTargets();
+            targets.AddClient(client);
+            return message;
+        }
+
         // --- clients
         /// <summary> Send the <paramref name="message"/> as an event only to the given <paramref name="clients"/> </summary>
         /// <seealso cref="EventTargets"/>
@@ -134,6 +153,20 @@ namespace Friflo.Json.Fliox.Hub.Client
         public static  TTask  EventTargetClients<TTask> (this TTask message, ICollection<JsonKey>  clients) where TTask : MessageTask {
             var targets = message.GetOrCreateTargets();
             targets.AddClients (clients);
+            return message;
+        }
+        
+        // --- group
+        public static  TTask  EventTargetGroup<TTask> (this TTask message, string group) where TTask : MessageTask {
+            var targets = message.GetOrCreateTargets();
+            targets.AddGroup(group);
+            return message;
+        }
+        
+        // --- groups
+        public static  TTask  EventTargetGroups<TTask> (this TTask message, ICollection<string> groups) where TTask : MessageTask {
+            var targets = message.GetOrCreateTargets();
+            targets.AddGroups(groups);
             return message;
         }
     }

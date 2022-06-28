@@ -31,6 +31,7 @@ type Query {
     std_Stats     (param: String) : DbStats!
     std_Details    : HostDetails!
     std_Cluster    : HostCluster!
+    std_User      (param: UserOptionsInput) : UserResult!
 }
 
 type QueryHostsResult {
@@ -272,5 +273,23 @@ type HostCluster {
 
 input HostClusterInput {
     databases : [DbContainersInput!]!
+}
+
+type UserOptions {
+    addGroups    : [String!]
+    removeGroups : [String!]
+}
+
+input UserOptionsInput {
+    addGroups    : [String!]
+    removeGroups : [String!]
+}
+
+type UserResult {
+    groups : [String!]!
+}
+
+input UserResultInput {
+    groups : [String!]!
 }
 

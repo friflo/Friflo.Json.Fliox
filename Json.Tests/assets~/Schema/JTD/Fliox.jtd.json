@@ -197,6 +197,7 @@
                 "param":   { "nullable": true },
                 "users":   { "elements": { "type": "string" }, "nullable": true },
                 "clients": { "elements": { "type": "string" }, "nullable": true },
+                "groups":  { "elements": { "type": "string" }, "nullable": true },
                 "info":    { "nullable": true }
             }
         },
@@ -206,6 +207,7 @@
                 "param":   { "nullable": true },
                 "users":   { "elements": { "type": "string" }, "nullable": true },
                 "clients": { "elements": { "type": "string" }, "nullable": true },
+                "groups":  { "elements": { "type": "string" }, "nullable": true },
                 "info":    { "nullable": true }
             }
         },
@@ -215,6 +217,7 @@
                 "param":   { "nullable": true },
                 "users":   { "elements": { "type": "string" }, "nullable": true },
                 "clients": { "elements": { "type": "string" }, "nullable": true },
+                "groups":  { "elements": { "type": "string" }, "nullable": true },
                 "info":    { "nullable": true }
             }
         },

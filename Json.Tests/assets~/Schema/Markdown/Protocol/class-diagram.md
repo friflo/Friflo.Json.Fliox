@@ -215,6 +215,7 @@ class SyncMessageTask {
     param?   : any
     users?   : string[]
     clients? : string[]
+    groups?  : string[]
 }
 
 SyncMessageTask <|-- SendMessage

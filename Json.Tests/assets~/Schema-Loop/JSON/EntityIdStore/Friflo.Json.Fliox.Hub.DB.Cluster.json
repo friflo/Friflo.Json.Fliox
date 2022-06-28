@@ -98,6 +98,24 @@
                 "databases"
             ],
             "additionalProperties": false
+        },
+        "UserOptions": {
+            "type": "object",
+            "properties": {
+                "addGroups":    { "type": ["array", "null"], "items": { "type": "string" } },
+                "removeGroups": { "type": ["array", "null"], "items": { "type": "string" } }
+            },
+            "additionalProperties": false
+        },
+        "UserResult": {
+            "type": "object",
+            "properties": {
+                "groups": { "type": "array", "items": { "type": "string" } }
+            },
+            "required": [
+                "groups"
+            ],
+            "additionalProperties": false
         }
     }
 }

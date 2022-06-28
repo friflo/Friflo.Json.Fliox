@@ -902,6 +902,26 @@
                     }
                 },
                 {
+                    "name": "std_User",
+                    "description": "/** change and return user groups */\n",
+                    "args": [
+                        {
+                            "name": "param",
+                            "type": {
+                                "kind":"SCALAR",
+                                "name": "UserOptionsInput"
+                            }
+                        }
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "UserResult"
+                        }
+                    }
+                },
+                {
                     "name": "Message1",
                     "description": "",
                     "args": [
@@ -4048,6 +4068,140 @@
                                 "ofType": {
                                     "kind":"SCALAR",
                                     "name": "DbContainersInput"
+                                }
+                            }
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "kind":"OBJECT",
+            "name": "UserOptions",
+            "description": "",
+            "fields": [
+                {
+                    "name": "addGroups",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"LIST",
+                        "ofType": {
+                            "kind":"NON_NULL",
+                            "ofType": {
+                                "kind":"SCALAR",
+                                "name": "String"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "removeGroups",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"LIST",
+                        "ofType": {
+                            "kind":"NON_NULL",
+                            "ofType": {
+                                "kind":"SCALAR",
+                                "name": "String"
+                            }
+                        }
+                    }
+                }
+            ],
+            "interfaces": [
+            ]
+        },
+        {
+            "kind":"INPUT_OBJECT",
+            "name": "UserOptionsInput",
+            "description": "",
+            "inputFields": [
+                {
+                    "name": "addGroups",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"LIST",
+                        "ofType": {
+                            "kind":"NON_NULL",
+                            "ofType": {
+                                "kind":"SCALAR",
+                                "name": "String"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "removeGroups",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"LIST",
+                        "ofType": {
+                            "kind":"NON_NULL",
+                            "ofType": {
+                                "kind":"SCALAR",
+                                "name": "String"
+                            }
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "kind":"OBJECT",
+            "name": "UserResult",
+            "description": "",
+            "fields": [
+                {
+                    "name": "groups",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"LIST",
+                            "ofType": {
+                                "kind":"NON_NULL",
+                                "ofType": {
+                                    "kind":"SCALAR",
+                                    "name": "String"
+                                }
+                            }
+                        }
+                    }
+                }
+            ],
+            "interfaces": [
+            ]
+        },
+        {
+            "kind":"INPUT_OBJECT",
+            "name": "UserResultInput",
+            "description": "",
+            "inputFields": [
+                {
+                    "name": "groups",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"LIST",
+                            "ofType": {
+                                "kind":"NON_NULL",
+                                "ofType": {
+                                    "kind":"SCALAR",
+                                    "name": "String"
                                 }
                             }
                         }

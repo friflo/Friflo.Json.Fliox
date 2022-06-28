@@ -60,7 +60,8 @@ namespace Friflo.Json.Fliox.Hub.Client
                 param       = param,
                 syncTask    = this,
                 users       = targets?.users,
-                clients     = targets?.clients
+                clients     = targets?.clients,
+                groups      = targets?.groups
             };
         }
     }
@@ -142,7 +143,8 @@ namespace Friflo.Json.Fliox.Hub.Client
                 param       = param,
                 syncTask    = this,
                 users       = targets?.users,
-                clients     = targets?.clients
+                clients     = targets?.clients,
+                groups      = targets?.groups,
             };
         }
     }

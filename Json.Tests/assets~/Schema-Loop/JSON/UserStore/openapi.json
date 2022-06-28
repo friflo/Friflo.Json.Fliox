@@ -257,6 +257,33 @@
         }
       }
     },
+    "/?command=std.User": {
+      "post": {
+        "summary":    "change and return user groups",
+        "tags":       ["commands"],
+        "requestBody": {          
+          "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/UserOptions"
+                }
+              }
+            }
+        },
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/UserResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/credentials": {
       "get": {
         "summary":    "return / filter multiple records from container credentials",

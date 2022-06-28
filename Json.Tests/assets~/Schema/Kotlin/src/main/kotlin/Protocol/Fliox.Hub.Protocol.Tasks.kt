@@ -105,6 +105,7 @@ data class SendMessage (
     override  val param   : JsonElement? = null,
     override  val users   : List<String>? = null,
     override  val clients : List<String>? = null,
+    override  val groups  : List<String>? = null,
     override  val info    : JsonElement? = null,
 ) : SyncMessageTask()
 
@@ -114,6 +115,7 @@ abstract class SyncMessageTask {
     abstract  val param   : JsonElement?
     abstract  val users   : List<String>?
     abstract  val clients : List<String>?
+    abstract  val groups  : List<String>?
     abstract  val info    : JsonElement?
 }
 
@@ -124,6 +126,7 @@ data class SendCommand (
     override  val param   : JsonElement? = null,
     override  val users   : List<String>? = null,
     override  val clients : List<String>? = null,
+    override  val groups  : List<String>? = null,
     override  val info    : JsonElement? = null,
 ) : SyncMessageTask()
 

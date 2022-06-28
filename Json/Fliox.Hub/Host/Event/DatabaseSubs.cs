@@ -125,6 +125,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                     // don't leak userId's & clientId's to subscribed clients
                     messageTask.users   = null;
                     messageTask.clients = null;
+                    messageTask.groups  = null;
                     AddTask(ref eventTasks, messageTask);
                 }
             }
@@ -149,13 +150,26 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                 }
                 isEventTarget = false;
             }
+            var user = eventSubscriber.user;
             // --- is eventSubscriber a target user
             var targetUsers     = messageTask.users;
             if (targetUsers != null) {
-                var userId = eventSubscriber.user.userId;
+                var userId = user.userId;
                 foreach (var targetUser in targetUsers) {
                     if (userId.IsEqual(targetUser))
                         return true;
+                }
+                isEventTarget = false;
+            }
+            // --- is eventSubscriber a target group
+            var targetGroups    = messageTask.groups;
+            if (targetGroups != null) {
+                var userGroups = user.groups;
+                if (userGroups != null) {
+                    foreach (var targetGroup in targetGroups) {
+                        if (userGroups.Contains(targetGroup))
+                            return true;
+                    }
                 }
                 isEventTarget = false;
             }

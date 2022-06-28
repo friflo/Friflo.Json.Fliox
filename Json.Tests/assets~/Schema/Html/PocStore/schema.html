@@ -311,6 +311,8 @@
             <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.ContainerStats'><div><span>ContainerStats</span></div></a></li>
             <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.HostDetails'><div><span>HostDetails</span></div></a></li>
             <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.HostCluster'><div><span>HostCluster</span></div></a></li>
+            <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.UserOptions'><div><span>UserOptions</span></div></a></li>
+            <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.UserResult'><div><span>UserResult</span></div></a></li>
         </ul>
     </li>
     <li><a href='#Standard'>Standard</a>
@@ -469,6 +471,12 @@
             <td><sig>() : <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.HostCluster'>HostCluster</a></sig></td>
             <td><oas><a href='../open-api.html#/commands/post__command_std_Cluster' target='_blank' title='open std.Cluster API as OpenAPI specification (OAS) in new tab'>OAS</a></oas></td>
             <td><docs>list all databases and their containers hosted by the Hub</docs></td>
+        </tr>
+        <tr>
+            <td><cmd>std.User</cmd></td>
+            <td><sig>(<keyword>param</keyword>: <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.UserOptions'>UserOptions</a> | null) : <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.UserResult'>UserResult</a></sig></td>
+            <td><oas><a href='../open-api.html#/commands/post__command_std_User' target='_blank' title='open std.User API as OpenAPI specification (OAS) in new tab'>OAS</a></oas></td>
+            <td><docs>change and return user groups</docs></td>
         </tr>
     </table>
     <chapter id='messages'><a href='#messages'>messages</a><oas><a href='../open-api.html#/commands' target='_blank' title='open commands API as OpenAPI specification (OAS) in new tab'>OAS</a></oas></chapter>
@@ -966,6 +974,34 @@ E.g. using red for a production environment: "#ff0000" or "rgb(255 0 0)"</docs><
             <td><field>databases</field></td>
             <td><type><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.DbContainers'>DbContainers</a>[]</type></td>
             <td><docs>list of <b>databases</b> hosted by Hub</docs></td>
+        </tr>
+    </table>
+    </div>
+    <div class='type'>
+    <h3 id='Friflo.Json.Fliox.Hub.DB.Cluster.UserOptions'>
+        <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.UserOptions'>UserOptions</a>
+        <keyword>class</keyword>
+    </h3>
+    <table class='fields'>
+        <tr>
+            <td><field>addGroups</field></td>
+            <td><type><predef>string</predef>[] | null</type></td>
+        </tr>
+        <tr>
+            <td><field>removeGroups</field></td>
+            <td><type><predef>string</predef>[] | null</type></td>
+        </tr>
+    </table>
+    </div>
+    <div class='type'>
+    <h3 id='Friflo.Json.Fliox.Hub.DB.Cluster.UserResult'>
+        <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.UserResult'>UserResult</a>
+        <keyword>class</keyword>
+    </h3>
+    <table class='fields'>
+        <tr>
+            <td><field>groups</field></td>
+            <td><type><predef>string</predef>[]</type></td>
         </tr>
     </table>
     </div>

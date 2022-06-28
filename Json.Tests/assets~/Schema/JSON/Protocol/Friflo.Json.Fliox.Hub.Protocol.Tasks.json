@@ -194,6 +194,7 @@
                 "param":   { "description": "command / message parameter. Can be null or absent" },
                 "users":   { "type": ["array", "null"], "items": { "type": "string" }, "description": "if set the Hub forward the message as an event only to given <b>users</b>" },
                 "clients": { "type": ["array", "null"], "items": { "type": "string" }, "description": "if set the Hub forward the message as an event only to given <b>clients</b>" },
+                "groups":  { "type": ["array", "null"], "items": { "type": "string" }, "description": "if set the Hub forward the message as an event only to given <b>groups</b>" },
                 "info":    {  }
             },
             "required": [
@@ -212,6 +213,7 @@
                 "param":   { "description": "command / message parameter. Can be null or absent" },
                 "users":   { "type": ["array", "null"], "items": { "type": "string" }, "description": "if set the Hub forward the message as an event only to given <b>users</b>" },
                 "clients": { "type": ["array", "null"], "items": { "type": "string" }, "description": "if set the Hub forward the message as an event only to given <b>clients</b>" },
+                "groups":  { "type": ["array", "null"], "items": { "type": "string" }, "description": "if set the Hub forward the message as an event only to given <b>groups</b>" },
                 "info":    {  }
             },
             "required": [
@@ -229,6 +231,7 @@
                 "param":   { "description": "command / message parameter. Can be null or absent" },
                 "users":   { "type": ["array", "null"], "items": { "type": "string" }, "description": "if set the Hub forward the message as an event only to given <b>users</b>" },
                 "clients": { "type": ["array", "null"], "items": { "type": "string" }, "description": "if set the Hub forward the message as an event only to given <b>clients</b>" },
+                "groups":  { "type": ["array", "null"], "items": { "type": "string" }, "description": "if set the Hub forward the message as an event only to given <b>groups</b>" },
                 "info":    {  }
             },
             "required": [

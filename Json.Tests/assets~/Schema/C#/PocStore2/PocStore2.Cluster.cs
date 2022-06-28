@@ -63,5 +63,15 @@ public class HostCluster {
     List<DbContainers>  databases;
 }
 
+public class UserOptions {
+    List<string>  addGroups;
+    List<string>  removeGroups;
+}
+
+public class UserResult {
+    [Required]
+    List<string>  groups;
+}
+
 }
 

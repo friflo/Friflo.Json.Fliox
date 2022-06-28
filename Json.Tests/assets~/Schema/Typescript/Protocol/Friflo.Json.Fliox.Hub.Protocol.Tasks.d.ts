@@ -203,6 +203,8 @@ export abstract class SyncMessageTask extends SyncRequestTask {
     users?   : string[] | null;
     /** if set the Hub forward the message as an event only to given **clients** */
     clients? : string[] | null;
+    /** if set the Hub forward the message as an event only to given **groups** */
+    groups?  : string[] | null;
 }
 
 /**
