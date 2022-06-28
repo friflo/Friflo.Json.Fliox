@@ -28,10 +28,11 @@ namespace Friflo.Json.Fliox.Hub.Client
     public class MessageTask : SyncTask
     {
         /// <summary>
-        /// Refine the clients receiving the message as an event in case they setup a subscription with <see cref="FlioxClient.SubscribeMessage"/>.
+        /// Restrict the clients receiving the message as an event in case they setup a subscription with <see cref="FlioxClient.SubscribeMessage"/>.
         /// </summary>
         /// <remarks>
-        /// By default - <see cref="EventTargets"/> is not refined - the message is sent as an event to all clients subscribed to the message. <br/>
+        /// A default <see cref="EventTargets"/> instance is not restricted to specific client. <br/>
+        /// So a message is sent as an event to all clients subscribed to the message. <br/>
         /// </remarks>
         public              EventTargets    EventTargets { get; set; }
         internal            EventTargets    GetOrCreateTargets() => EventTargets ?? (EventTargets = new EventTargets());

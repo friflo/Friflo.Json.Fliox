@@ -23,8 +23,10 @@ namespace Friflo.Json.Fliox
         public static readonly  JsonKeyComparer         Comparer = new JsonKeyComparer();
         public static readonly  JsonKeyEqualityComparer Equality = new JsonKeyEqualityComparer();
 
-        /// Calling this constructor should be the last option as it may force a string creation.
-        /// Use alternative constructors is input type is already refined.
+        /// <summary>
+        /// Calling this constructor should be the last option as it may force a string creation. <br/>
+        /// Use alternative constructors if using a specific key type like <see cref="long"/> or <see cref="Guid"/>.
+        /// </summary>
         public JsonKey (string str)
         {
             if (str == null) {
