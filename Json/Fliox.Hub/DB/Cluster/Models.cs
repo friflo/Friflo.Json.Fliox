@@ -16,7 +16,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
         /// <summary>list of database <see cref="containers"/></summary>
         [Required]  public  string[]                        containers;
                         
-        public override string  ToString() => JsonSerializer.Serialize(this).Replace("\"", "'");
+        public override     string                          ToString() => JsonSerializer.Serialize(this).Replace("\"", "'");
     }
     
     /// <summary><see cref="commands"/> and <see cref="messages"/> of a database</summary>
@@ -28,7 +28,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
         /// <summary>list of database <see cref="messages"/></summary>
         [Required]  public  string[]                        messages;
                         
-        public override string  ToString() => JsonSerializer.Serialize(this).Replace("\"", "'");
+        public override     string                          ToString() => JsonSerializer.Serialize(this).Replace("\"", "'");
     }
     
     /// <summary>
@@ -48,7 +48,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
         /// Each JSON Schema is identified by its unique path</summary>
         [Required]  public  Dictionary<string, JsonValue>   jsonSchemas;
                         
-        public override string  ToString() => JsonSerializer.Serialize(this).Replace("\"", "'");
+        public override     string                          ToString() => JsonSerializer.Serialize(this).Replace("\"", "'");
     }
     
     // ---------------------------- command models - aka DTO's ---------------------------
