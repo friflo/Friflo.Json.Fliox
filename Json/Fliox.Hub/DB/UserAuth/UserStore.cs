@@ -49,7 +49,4 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
             return commandTask.Result;
         }
     }
-
-
-    
 }
