@@ -30,12 +30,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                     client1.SubscribeMessage("*", (message, context) => { eventCount++; });
                     client1.SubscriptionEventHandler = context => {
                         AreEqual("user-1", context.SrcUserId.ToString());
-                        var expect = new [] { "msg-1", "msg-2", "msg-3", "msg-4", "msg-5", "msg-6", "msg-7", "msg-8", "Command1" };
+                        var expect = new [] { "msg-1", "msg-2", "msg-3", "msg-4", "msg-5", "msg-6", "msg-7", "msg-8", "msg-9", "Command1" };
                         var actual = context.Messages.Select(msg => msg.Name);
                         AreEqual(expect, actual);
                     };
                     SendMessages(client1);
-                    AreEqual(9, eventCount);
+                    AreEqual(10, eventCount);
                 }
                 //
                 client2.ClientId    = "client-2";
@@ -73,8 +73,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             client.SendMessage("msg-7").EventTargetClients (new[] { clientId });
             client.SendMessage("msg-8").EventTargetClients (new[] { clientKey });
             
-            // var eventTargets = new EventTargets();
-            // store.SendMessage("msg-5" ).EventTargets = eventTargets;
+            var eventTargets = new EventTargets();
+            eventTargets.AddUser(userId);
+            client.SendMessage("msg-9").EventTargets = eventTargets;
             
             client.Command1().EventTargetUser(userId);
         //  todo client.CommandInt(111).EventTargetUser(user1Key);
