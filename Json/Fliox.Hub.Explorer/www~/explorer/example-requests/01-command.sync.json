@@ -9,8 +9,8 @@
   ],
   "info": [
       "Send a command to host.",
-      "When handled by host it returns a result.",
-      "'std.Echo' is a standard host command.",
-      "It simply echos the given param."
+      "Requires a message handler to return a result.",
+      "'std.Echo' is a standard host command echoing the param.",
+      "The host forward command as an event to subscribed clients."
   ]
 }
