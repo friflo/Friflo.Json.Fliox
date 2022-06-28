@@ -292,6 +292,7 @@
             <li><a href='#Friflo.Json.Fliox.Hub.DB.UserAuth.UserCredential'><div><span>UserCredential</span><key>id</key></div></a></li>
             <li><a href='#Friflo.Json.Fliox.Hub.DB.UserAuth.UserPermission'><div><span>UserPermission</span><key>id</key></div></a></li>
             <li><a href='#Friflo.Json.Fliox.Hub.DB.UserAuth.Role'><div><span>Role</span><key>id</key></div></a></li>
+            <li><a href='#Friflo.Json.Fliox.Hub.DB.UserAuth.UserTarget'><div><span>UserTarget</span><key>id</key></div></a></li>
             <li><a href='#Friflo.Json.Fliox.Hub.DB.UserAuth.Credentials'><div><span>Credentials</span></div></a></li>
             <li><a href='#Friflo.Json.Fliox.Hub.DB.UserAuth.AuthResult'><div><span>AuthResult</span></div></a></li>
             <li><a href='#Friflo.Json.Fliox.Hub.DB.UserAuth.ValidateUserDbResult'><div><span>ValidateUserDbResult</span></div></a></li>
@@ -374,6 +375,11 @@ Each <b>role</b> in container <b>roles</b> has a set of <b>rights</b> which gran
             <td><type><key>id</key> ➞ <a href='#Friflo.Json.Fliox.Hub.DB.UserAuth.Role'>Role</a></type></td>
             <td><oas><a href='../open-api.html#/roles' target='_blank' title='open roles API as OpenAPI specification (OAS) in new tab'>OAS</a></oas></td>
         </tr>
+        <tr>
+            <td><field>targets</field></td>
+            <td><type><key>id</key> ➞ <a href='#Friflo.Json.Fliox.Hub.DB.UserAuth.UserTarget'>UserTarget</a></type></td>
+            <td><oas><a href='../open-api.html#/targets' target='_blank' title='open targets API as OpenAPI specification (OAS) in new tab'>OAS</a></oas></td>
+        </tr>
     </table>
     <chapter id='commands'><a href='#commands'>commands</a><oas><a href='../open-api.html#/commands' target='_blank' title='open commands API as OpenAPI specification (OAS) in new tab'>OAS</a></oas></chapter>
     <table class='commands'>
@@ -454,7 +460,7 @@ Each <b>role</b> in container <b>roles</b> has a set of <b>rights</b> which gran
         <tr>
             <td><key>id</key></td>
             <td><type><predef>string</predef></type></td>
-            <td><docs>user name</docs></td>
+            <td><docs>user id</docs></td>
         </tr>
         <tr>
             <td><field>token</field></td>
@@ -474,7 +480,7 @@ Each <b>role</b> in container <b>roles</b> has a set of <b>rights</b> which gran
         <tr>
             <td><key>id</key></td>
             <td><type><predef>string</predef></type></td>
-            <td><docs>user name</docs></td>
+            <td><docs>user id</docs></td>
         </tr>
         <tr>
             <td><ref>roles</ref></td>
@@ -505,6 +511,27 @@ Each <b>role</b> in container <b>roles</b> has a set of <b>rights</b> which gran
             <td><field>description</field></td>
             <td><type><predef>string</predef> | null</type></td>
             <td><docs>optional <b>description</b> explaining a <b>Role</b></docs></td>
+        </tr>
+    </table>
+    </div>
+    <div class='type'>
+    <h3 id='Friflo.Json.Fliox.Hub.DB.UserAuth.UserTarget'>
+        <a href='#Friflo.Json.Fliox.Hub.DB.UserAuth.UserTarget'>UserTarget</a>
+        <keyword>class</keyword>
+    </h3>
+    <desc>contain the <b>groups</b> assigned to a user.<br/>
+These groups are used to enable forwarding of message events only to users of specific groups.
+    </desc>
+    <table class='fields'>
+        <tr>
+            <td><key>id</key></td>
+            <td><type><predef>string</predef></type></td>
+            <td><docs>user id</docs></td>
+        </tr>
+        <tr>
+            <td><field>groups</field></td>
+            <td><type><predef>string</predef>[]</type></td>
+            <td><docs>list of <b>groups</b> assigned to a user</docs></td>
         </tr>
     </table>
     </div>

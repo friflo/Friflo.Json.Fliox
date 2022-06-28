@@ -14,12 +14,15 @@ type Query {
     queryCredentials(filter: String, limit: Int, maxCount: Int, cursor: String, selectAll: Boolean) : QueryCredentialsResult!
     queryPermissions(filter: String, limit: Int, maxCount: Int, cursor: String, selectAll: Boolean) : QueryPermissionsResult!
     queryRoles      (filter: String, limit: Int, maxCount: Int, cursor: String, selectAll: Boolean) : QueryRolesResult!
+    queryTargets    (filter: String, limit: Int, maxCount: Int, cursor: String, selectAll: Boolean) : QueryTargetsResult!
     readCredentials (ids: [String!]!, selectAll: Boolean) : [UserCredential]!
     readPermissions (ids: [String!]!, selectAll: Boolean) : [UserPermission]!
     readRoles       (ids: [String!]!, selectAll: Boolean) : [Role]!
+    readTargets     (ids: [String!]!, selectAll: Boolean) : [UserTarget]!
     countCredentials(filter: String) : Int
     countPermissions(filter: String) : Int
     countRoles      (filter: String) : Int
+    countTargets    (filter: String) : Int
     AuthenticateUser(param: CredentialsInput) : AuthResult!
     ValidateUserDb   : ValidateUserDbResult!
     ClearAuthCache   : Boolean!
@@ -51,6 +54,12 @@ type QueryRolesResult {
     items  : [Role!]!
 }
 
+type QueryTargetsResult {
+    count  : Int!
+    cursor : String
+    items  : [UserTarget!]!
+}
+
 type EntityError {
     id      : String!
     type    : String!
@@ -61,18 +70,22 @@ type Mutation {
     createCredentials(entities: [UserCredentialInput!]!) : [EntityError!]
     createPermissions(entities: [UserPermissionInput!]!) : [EntityError!]
     createRoles      (entities: [RoleInput!]!) : [EntityError!]
+    createTargets    (entities: [UserTargetInput!]!) : [EntityError!]
     upsertCredentials(entities: [UserCredentialInput!]!) : [EntityError!]
     upsertPermissions(entities: [UserPermissionInput!]!) : [EntityError!]
     upsertRoles      (entities: [RoleInput!]!) : [EntityError!]
+    upsertTargets    (entities: [UserTargetInput!]!) : [EntityError!]
     deleteCredentials(ids: [String!]!) : [EntityError!]
     deletePermissions(ids: [String!]!) : [EntityError!]
     deleteRoles      (ids: [String!]!) : [EntityError!]
+    deleteTargets    (ids: [String!]!) : [EntityError!]
 }
 
 type UserStore {
     credentials : Any
     permissions : Any
     roles       : Any
+    targets     : Any
 }
 
 type UserCredential {
@@ -105,6 +118,16 @@ input RoleInput {
     id          : String!
     rights      : [RightInput!]!
     description : String
+}
+
+type UserTarget {
+    id     : String!
+    groups : [String!]!
+}
+
+input UserTargetInput {
+    id     : String!
+    groups : [String!]!
 }
 
 union Right =

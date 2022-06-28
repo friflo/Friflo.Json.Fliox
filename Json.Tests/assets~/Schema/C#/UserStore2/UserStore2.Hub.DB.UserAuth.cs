@@ -15,6 +15,8 @@ public abstract class UserStore {
     Dictionary<string, UserPermission>  permissions;
     [Required]
     Dictionary<string, Role>            roles;
+    [Required]
+    Dictionary<string, UserTarget>      targets;
 }
 
 public class UserCredential {
@@ -35,6 +37,13 @@ public class Role {
     [Required]
     List<Right>  rights;
     string       description;
+}
+
+public class UserTarget {
+    [Required]
+    string        id;
+    [Required]
+    List<string>  groups;
 }
 
 public class Credentials {

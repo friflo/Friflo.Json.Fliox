@@ -21,6 +21,7 @@ export interface UserStore {
     credentials  : { [key: string]: UserCredential };
     permissions  : { [key: string]: UserPermission };
     roles        : { [key: string]: Role };
+    targets      : { [key: string]: UserTarget };
 
     // --- commands
     /** authenticate user **Credentials**: **userId** and **token** */
@@ -47,7 +48,7 @@ export interface UserStore {
 
 /** contains a **token** assigned to a user used for authentication */
 export class UserCredential {
-    /** user name */
+    /** user id */
     id     : string;
     /** user token */
     token? : string | null;
@@ -55,7 +56,7 @@ export class UserCredential {
 
 /** Set of **roles** assigned to a user used for authorization */
 export class UserPermission {
-    /** user name */
+    /** user id */
     id     : string;
     /** set of **roles** assigned to a user */
     roles? : string[] | null;
@@ -69,6 +70,17 @@ export class Role {
     rights       : Right_Union[];
     /** optional **description** explaining a **Role** */
     description? : string | null;
+}
+
+/**
+ * contain the **groups** assigned to a user.  
+ * These groups are used to enable forwarding of message events only to users of specific groups.
+ */
+export class UserTarget {
+    /** user id */
+    id      : string;
+    /** list of **groups** assigned to a user */
+    groups  : string[];
 }
 
 /** user **Credentials** used for authentication */

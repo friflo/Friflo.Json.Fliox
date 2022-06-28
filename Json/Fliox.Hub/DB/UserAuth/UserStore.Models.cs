@@ -13,7 +13,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
     // ---------------------------------- entity models ----------------------------------
     /// <summary>contains a <see cref="token"/> assigned to a user used for authentication</summary>
     public sealed class UserCredential {
-        /// <summary>user name</summary>
+        /// <summary>user id</summary>
         [Required]  public  JsonKey         id;
         /// <summary>user token</summary>
                     public  string          token;
@@ -23,7 +23,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
     
     /// <summary>Set of <see cref="roles"/> assigned to a user used for authorization</summary>
     public sealed class UserPermission {
-        /// <summary>user name</summary>
+        /// <summary>user id</summary>
         [Required]  public  JsonKey         id;
         /// <summary>set of <see cref="roles"/> assigned to a user</summary>
         [Relation(nameof(UserStore.roles))]
@@ -40,6 +40,19 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
         [Required]  public  List<Right>     rights;
         /// <summary>optional <see cref="description"/> explaining a <see cref="Role"/></summary>
                     public  string          description;
+                        
+        public override     string          ToString() => JsonSerializer.Serialize(this);
+    }
+    
+    /// <summary>
+    /// contain the <see cref="groups"/> assigned to a user.<br/>
+    /// These groups are used to enable forwarding of message events only to users of specific groups.
+    /// </summary>
+    public sealed class UserTarget {
+        /// <summary>user id</summary>
+        [Required]  public  JsonKey         id;
+        /// <summary>list of <see cref="groups"/> assigned to a user</summary>
+        [Required]  public  List<string>    groups;
                         
         public override     string          ToString() => JsonSerializer.Serialize(this);
     }

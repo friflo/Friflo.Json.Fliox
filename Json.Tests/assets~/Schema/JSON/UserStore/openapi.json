@@ -30,6 +30,10 @@
     {
       "name": "roles",
       "description": "entity type: <a target='UserStore' href='html/schema.html#Friflo.Json.Fliox.Hub.DB.UserAuth.Role'>Role</a>"
+    },
+    {
+      "name": "targets",
+      "description": "entity type: <a target='UserStore' href='html/schema.html#Friflo.Json.Fliox.Hub.DB.UserAuth.UserTarget'>UserTarget</a>"
     }],
   "paths": {
     "/": {
@@ -1002,6 +1006,252 @@
       "post": {
         "summary":    "delete multiple records by id in container roles",
         "tags":       ["roles"],
+        "requestBody": {          
+          "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "type": "string" }
+                }
+              }
+            }
+        },
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "text/plain": { }
+            }
+          }
+        }
+      }
+    },
+    "/targets": {
+      "get": {
+        "summary":    "return / filter multiple records from container targets",
+        "description":    "To process big result sets fetch them iteratively by setting **maxCount** of records per request and use the returned **cursor** on the subsequent request.",
+        "tags":       ["targets"],
+        "parameters": [
+          {
+            "in":       "query",
+            "name":     "filter",
+            "schema":   { "type": "string" },
+            "description": "filter returned records by applying a expression predicate. E.g. `o.name == 'Peter'`"
+          },
+          {
+            "in":       "query",
+            "name":     "limit",
+            "schema":   { "type": "integer" },
+            "description": "limit the number of returned records"
+          },
+          {
+            "in":       "query",
+            "name":     "maxCount",
+            "schema":   { "type": "integer" },
+            "description": "maximum number of records. Result will return a **cursor** if more records available."
+          },
+          {
+            "in":       "query",
+            "name":     "cursor",
+            "schema":   { "type": "string" },
+            "description": "pass the **cursor** returned by the previous request"
+          }
+        ],
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "Friflo.Json.Fliox.Hub.DB.UserAuth.UserTarget.json#/definitions/UserTarget"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary":    "create or update multiple records in container targets",
+        "tags":       ["targets"],
+        "requestBody": {          
+          "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "Friflo.Json.Fliox.Hub.DB.UserAuth.UserTarget.json#/definitions/UserTarget" }
+                }
+              }
+            }
+        },
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "text/plain": { }
+            }
+          }
+        }
+      }
+    },
+    "/targets/{id}": {
+      "get": {
+        "summary":    "get a single record from container targets",
+        "tags":       ["targets"],
+        "parameters": [
+          {
+            "in":       "path",
+            "name":     "id",
+            "schema":   { "type": "string" },
+            "required": true,
+            "description": ""
+          }
+        ],
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "Friflo.Json.Fliox.Hub.DB.UserAuth.UserTarget.json#/definitions/UserTarget"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary":    "write a single record to container targets",
+        "tags":       ["targets"],
+        "parameters": [
+          {
+            "in":       "path",
+            "name":     "id",
+            "schema":   { "type": "string" },
+            "required": true,
+            "description": ""
+          }
+        ],
+        "requestBody": {          
+          "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "Friflo.Json.Fliox.Hub.DB.UserAuth.UserTarget.json#/definitions/UserTarget"
+                }
+              }
+            }
+        },
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "text/plain": { }
+            }
+          }
+        }
+      },
+      "patch": {
+        "summary":    "patch a single record in container targets",
+        "tags":       ["targets"],
+        "parameters": [
+          {
+            "in":       "path",
+            "name":     "id",
+            "schema":   { "type": "string" },
+            "required": true,
+            "description": ""
+          }
+        ],
+        "requestBody": {          
+          "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { 
+                    "type": "object",
+                    "properties": {
+                      "op": {
+                        "enum": ["replace"]
+                      },
+                      "path": {
+                        "type": "string"
+                      },
+                      "value": { }
+                    } }
+                },
+                "example": [
+                  {
+                    "op":    "replace",
+                    "path":  ".name",
+                    "value": "Hello Patch!"
+                  }
+                ]
+              }
+            }
+        },
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "text/plain": { }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary":    "delete a single record in container targets by id",
+        "tags":       ["targets"],
+        "parameters": [
+          {
+            "in":       "path",
+            "name":     "id",
+            "schema":   { "type": "string" },
+            "required": true,
+            "description": ""
+          }
+        ],
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "text/plain": { }
+            }
+          }
+        }
+      }
+    },
+    "/targets/bulk-get": {
+      "post": {
+        "summary":    "get multiple records by id from container targets",
+        "tags":       ["targets"],
+        "requestBody": {          
+          "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "type": "string" }
+                }
+              }
+            }
+        },
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "Friflo.Json.Fliox.Hub.DB.UserAuth.UserTarget.json#/definitions/UserTarget" }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/targets/bulk-delete": {
+      "post": {
+        "summary":    "delete multiple records by id in container targets",
+        "tags":       ["targets"],
         "requestBody": {          
           "content": {
               "application/json": {

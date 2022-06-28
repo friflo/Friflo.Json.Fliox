@@ -10,10 +10,12 @@ class UserStore:::cssSchema {
     credentials  : [id] ➞ UserCredential
     permissions  : [id] ➞ UserPermission
     roles        : [id] ➞ Role
+    targets      : [id] ➞ UserTarget
 }
 UserStore *-- "0..*" UserCredential : credentials
 UserStore *-- "0..*" UserPermission : permissions
 UserStore *-- "0..*" Role : roles
+UserStore *-- "0..*" UserTarget : targets
 
 class UserCredential:::cssEntity {
     <<Entity · id>>
@@ -35,6 +37,12 @@ class Role:::cssEntity {
     description? : string
 }
 Role *-- "0..*" Right : rights
+
+class UserTarget:::cssEntity {
+    <<Entity · id>>
+    id      : string
+    groups  : string[]
+}
 
 class Right {
     <<abstract>>

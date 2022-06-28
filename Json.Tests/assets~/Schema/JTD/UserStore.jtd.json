@@ -5,7 +5,8 @@
             "properties": {
                 "credentials": { "values": { "ref":  "UserCredential" } },
                 "permissions": { "values": { "ref":  "UserPermission" } },
-                "roles":       { "values": { "ref":  "Role" } }
+                "roles":       { "values": { "ref":  "Role" } },
+                "targets":     { "values": { "ref":  "UserTarget" } }
             }
         },
         "UserCredential": {
@@ -25,6 +26,12 @@
                 "id":          { "type": "string" },
                 "rights":      { "elements": { "ref":  "Right" } },
                 "description": { "type": "string", "nullable": true }
+            }
+        },
+        "UserTarget": {
+            "properties": {
+                "id":     { "type": "string" },
+                "groups": { "elements": { "type": "string" } }
             }
         },
         "Right": {

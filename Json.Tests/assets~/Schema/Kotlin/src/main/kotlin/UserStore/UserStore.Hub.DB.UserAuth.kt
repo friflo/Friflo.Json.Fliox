@@ -10,6 +10,7 @@ abstract class UserStore {
     abstract  val credentials : HashMap<String, UserCredential>
     abstract  val permissions : HashMap<String, UserPermission>
     abstract  val roles       : HashMap<String, Role>
+    abstract  val targets     : HashMap<String, UserTarget>
 }
 
 @Serializable
@@ -29,6 +30,12 @@ data class Role (
               val id          : String,
               val rights      : List<Right>,
               val description : String? = null,
+)
+
+@Serializable
+data class UserTarget (
+              val id     : String,
+              val groups : List<String>,
 )
 
 @Serializable

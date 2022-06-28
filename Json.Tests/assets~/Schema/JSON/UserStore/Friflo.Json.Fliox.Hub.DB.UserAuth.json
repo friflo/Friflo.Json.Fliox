@@ -9,12 +9,14 @@
             "properties": {
                 "credentials": { "additionalProperties": { "$ref": "./Friflo.Json.Fliox.Hub.DB.UserAuth.UserCredential.json#/definitions/UserCredential" }, "type": "object" },
                 "permissions": { "additionalProperties": { "$ref": "./Friflo.Json.Fliox.Hub.DB.UserAuth.UserPermission.json#/definitions/UserPermission" }, "type": "object" },
-                "roles":       { "additionalProperties": { "$ref": "./Friflo.Json.Fliox.Hub.DB.UserAuth.Role.json#/definitions/Role" }, "type": "object" }
+                "roles":       { "additionalProperties": { "$ref": "./Friflo.Json.Fliox.Hub.DB.UserAuth.Role.json#/definitions/Role" }, "type": "object" },
+                "targets":     { "additionalProperties": { "$ref": "./Friflo.Json.Fliox.Hub.DB.UserAuth.UserTarget.json#/definitions/UserTarget" }, "type": "object" }
             },
             "required": [
                 "credentials",
                 "permissions",
-                "roles"
+                "roles",
+                "targets"
             ],
             "additionalProperties": false,
             "commands": {
