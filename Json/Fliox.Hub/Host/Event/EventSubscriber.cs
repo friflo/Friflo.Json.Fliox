@@ -51,7 +51,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
 
         internal            int                                 Seq             => eventCounter;
         internal            int                                 EventQueueCount => eventQueue.Count;
-        public   override   string                              ToString()      => clientId.ToString();
+        public   override   string                              ToString()      => $"client: {clientId.ToString()}";
         
         internal            int                                 SentEventsCount => sentEvents.Count;
         internal            bool                                IsRemoteTarget  => eventReceiver is WebSocketHost;

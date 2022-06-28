@@ -15,7 +15,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
     {
         private  readonly   string                                  database;
 
-        public   override   string                                  ToString() => database;
+        public   override   string                                  ToString()          => $"database: {database}";
 
         private  readonly   HashSet<string>                         messageSubs         = new HashSet<string>();
         private  readonly   HashSet<string>                         messagePrefixSubs   = new HashSet<string>();
