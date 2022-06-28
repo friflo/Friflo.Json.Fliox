@@ -16,7 +16,7 @@ namespace Friflo.Json.Fliox.Hub.Client
     /// an <see cref="EntityDatabase"/> by <see cref="FlioxClient.SendMessage"/>.<br/>
     /// </summary>
     /// <remarks>
-    /// They <see cref="EntityDatabase"/> send the message (or command) as en event to all clients subscribed to the message. <br/>
+    /// The <see cref="EntityDatabase"/> forward the message (or command) as en event to all clients subscribed to the message. <br/>
     /// If sending the message to the <see cref="EntityDatabase"/> is successful <see cref="SyncFunction.Success"/> is true. <br/>
     /// <i>Notes:</i>
     /// <list type="bullet">
@@ -32,7 +32,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// </summary>
         /// <remarks>
         /// A default <see cref="EventTargets"/> instance is not restricted to specific client. <br/>
-        /// So a message is sent as an event to all clients subscribed to the message. <br/>
+        /// So a message is forwarded by the Hub as an event to all clients subscribed to the message. <br/>
         /// </remarks>
         public              EventTargets    EventTargets { get; set; }
         internal            EventTargets    GetOrCreateTargets() => EventTargets ?? (EventTargets = new EventTargets());
