@@ -6,8 +6,9 @@ using Friflo.Json.Fliox.Hub.Host;
 namespace Fliox.DemoHub
 {
     /// <summary>
-    /// <see cref="MessageHandler"/> extends <see cref="TaskHandler"/> to implement custom database commands
-    /// executed at the host and declared by the <see cref="DemoStore"/>. <br/>
+    /// <see cref="MessageHandler"/> extends <see cref="TaskHandler"/> to implement the <see cref="DemoStore"/> API (database commands).
+    /// <br/>
+    /// Database commands are executed at the host and declared by the <see cref="DemoStore"/>. <br/>
     /// Therefore it create <see cref="DemoStore"/> clients in its handler methods to perform database operations
     /// like query, count and upsert.<br/>
     /// <br/>
