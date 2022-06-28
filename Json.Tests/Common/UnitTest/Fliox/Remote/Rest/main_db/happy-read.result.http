@@ -70,7 +70,8 @@ GET {{base}}/rest
             "containers": [
                 "credentials",
                 "permissions",
-                "roles"
+                "roles",
+                "targets"
             ]
         }
     ]
