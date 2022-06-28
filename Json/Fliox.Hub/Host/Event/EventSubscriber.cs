@@ -10,6 +10,7 @@ using Friflo.Json.Fliox.Hub.Host.Auth;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Remote;
 using Friflo.Json.Fliox.Hub.Threading;
+using static System.Diagnostics.DebuggerBrowsableState;
 
 // ReSharper disable ConvertToAutoPropertyWhenPossible
 namespace Friflo.Json.Fliox.Hub.Host.Event
@@ -25,10 +26,15 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         internal readonly   User                                user;
         private             IEventReceiver                      eventReceiver;
 
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        [DebuggerBrowsable(Never)]
         public              IHubLogger                          Logger { get; }
         
+        /// key: database
+        [DebuggerBrowsable(Never)]
         internal readonly   Dictionary<string, DatabaseSubs>    databaseSubs = new Dictionary<string, DatabaseSubs>();
+        /// expose <see cref="databaseSubs"/> as list in debugger 
+        // ReSharper disable once UnusedMember.Global
+        private             IReadOnlyCollection<DatabaseSubs>   DatabaseSubs => databaseSubs.Values;
         
         internal            int                                 SubCount    => databaseSubs.Sum(sub => sub.Value.SubCount); 
         

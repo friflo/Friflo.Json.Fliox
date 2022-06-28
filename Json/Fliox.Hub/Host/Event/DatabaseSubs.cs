@@ -2,10 +2,12 @@
 // See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
+using System.Diagnostics;
 using Friflo.Json.Fliox.Hub.DB.Monitor;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Transform;
+using static System.Diagnostics.DebuggerBrowsableState;
 
 namespace Friflo.Json.Fliox.Hub.Host.Event
 {
@@ -15,11 +17,15 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
 
         public   override   string                                  ToString() => database;
 
+        private  readonly   HashSet<string>                         messageSubs         = new HashSet<string>();
+        private  readonly   HashSet<string>                         messagePrefixSubs   = new HashSet<string>();
         /// key: <see cref="SubscribeChanges.container"/>
-        private  readonly   Dictionary<string, SubscribeChanges>    changeSubs         = new Dictionary<string, SubscribeChanges>();
-        private  readonly   HashSet<string>                         messageSubs        = new HashSet<string>();
-        private  readonly   HashSet<string>                         messagePrefixSubs  = new HashSet<string>();
-        
+        [DebuggerBrowsable(Never)] 
+        private  readonly   Dictionary<string, SubscribeChanges>    changeSubs          = new Dictionary<string, SubscribeChanges>();
+        /// expose <see cref="changeSubs"/> as list in debugger 
+        // ReSharper disable once UnusedMember.Local
+        private             IReadOnlyCollection<SubscribeChanges>   ChangeSubs          => changeSubs.Values;
+
         internal            int                                     SubCount => changeSubs.Count + messageSubs.Count + messagePrefixSubs.Count; 
 
         
