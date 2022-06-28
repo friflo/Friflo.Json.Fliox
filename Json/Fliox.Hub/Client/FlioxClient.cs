@@ -298,6 +298,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         
         // --- UnsubscribeMessage
         /// <summary> Remove subscription of message / command with the given <paramref name="name"/> send to the database used by the client </summary>
+        /// <remarks> If <paramref name="handler"/> is null all subscription handlers are removed. </remarks>
         public SubscribeMessageTask UnsubscribeMessage<TMessage>(string name, MessageSubscriptionHandler<TMessage> handler) {
             var task = _intern.RemoveCallbackHandler(name, handler);
             AddTask(task);
@@ -306,7 +307,8 @@ namespace Friflo.Json.Fliox.Hub.Client
         
         /// <summary> Remove subscription of message / command with the given <paramref name="name"/> send to the database used by the client </summary>
         /// <remarks>
-        /// Remove a prefix subscription. E.g: <paramref name="name"/> = <c>"std.*"</c> or <c>"*"</c> <br/>
+        /// If <paramref name="handler"/> is null all subscription handlers are removed. <br/>
+        /// Remove a prefix subscription with a trailing <c>*</c> E.g: <paramref name="name"/> = <c>"std.*"</c> or <c>"*"</c> <br/>
         /// </remarks>
         public SubscribeMessageTask UnsubscribeMessage          (string name, MessageSubscriptionHandler handler) {
             var task = _intern.RemoveCallbackHandler(name, handler);
