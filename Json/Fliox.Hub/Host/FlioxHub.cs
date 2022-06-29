@@ -239,8 +239,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         // --- extension databases
         [DebuggerBrowsable(Never)]
         private readonly  Dictionary<string, EntityDatabase>    extensionDbs = new Dictionary<string, EntityDatabase>();
-        /// expose <see cref="extensionDbs"/> as property to show them as list in Debugger
-        // ReSharper disable once UnusedMember.Local
+        // ReSharper disable once UnusedMember.Local - expose Dictionary as list in Debugger
         private           IReadOnlyCollection<EntityDatabase>   ExtensionDbs => extensionDbs.Values;
         
         /// <summary>

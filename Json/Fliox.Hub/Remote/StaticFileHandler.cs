@@ -23,8 +23,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         private  readonly   IFileHandler                    fileHandler;
         [DebuggerBrowsable(Never)]
         private  readonly   Dictionary<string, CacheEntry>  cache;
-        /// expose <see cref="cache"/> as property to show them as list in Debugger
-        // ReSharper disable once UnusedMember.Local
+        // ReSharper disable once UnusedMember.Local - expose Dictionary as list in Debugger
         private             IReadOnlyCollection<CacheEntry> Cache       => cache.Values;
         private             string                          cacheControl;
         private  readonly   List<FileExt>                   fileExtensions;

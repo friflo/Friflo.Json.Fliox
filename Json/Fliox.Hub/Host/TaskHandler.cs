@@ -54,8 +54,7 @@ namespace Friflo.Json.Fliox.Hub.Host
     {
         [DebuggerBrowsable(Never)]
         private readonly  Dictionary<string, MessageDelegate>   handlers = new Dictionary<string, MessageDelegate>();
-        ///  expose <see cref="handlers"/> as property to show them as list in Debugger
-        // ReSharper disable once UnusedMember.Local
+        // ReSharper disable once UnusedMember.Local - expose Dictionary as list in Debugger
         private           IReadOnlyCollection<MessageDelegate>  Handlers => handlers.Values;
         
         public TaskHandler () {

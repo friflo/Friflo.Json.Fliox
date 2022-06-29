@@ -52,8 +52,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// <summary> map of of containers identified by their container name </summary>
         [DebuggerBrowsable(Never)]
         private  readonly   Dictionary<string, EntityContainer>     containers;
-        /// expose <see cref="containers"/> as property to show them as list in Debugger
-        // ReSharper disable once UnusedMember.Local
+        // ReSharper disable once UnusedMember.Local - expose Dictionary as list in Debugger
         private             IReadOnlyCollection<EntityContainer>    Containers => containers.Values;
         
         /// <summary>

@@ -22,8 +22,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         /// key: <see cref="SubscribeChanges.container"/>
         [DebuggerBrowsable(Never)] 
         private  readonly   Dictionary<string, SubscribeChanges>    changeSubs          = new Dictionary<string, SubscribeChanges>();
-        /// expose <see cref="changeSubs"/> as list in debugger 
-        // ReSharper disable once UnusedMember.Local
+        // ReSharper disable once UnusedMember.Local - expose Dictionary as list in Debugger
         private             IReadOnlyCollection<SubscribeChanges>   ChangeSubs          => changeSubs.Values;
 
         internal            int                                     SubCount => changeSubs.Count + messageSubs.Count + messagePrefixSubs.Count; 

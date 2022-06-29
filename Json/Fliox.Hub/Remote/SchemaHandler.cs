@@ -23,9 +23,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
         internal  readonly  CreateZip                           zip;
         [DebuggerBrowsable(Never)]
         private   readonly  Dictionary<string, SchemaResource>  schemas         = new Dictionary<string, SchemaResource>();
-        /// expose <see cref="schemas"/> as property to show them as list in Debugger
-        // ReSharper disable once UnusedMember.Local
-        private             IReadOnlyCollection<SchemaResource> Schemas    => schemas.Values;
+        // ReSharper disable once UnusedMember.Local - expose Dictionary as list in Debugger
+        private             IReadOnlyCollection<SchemaResource> Schemas         => schemas.Values;
         private   readonly  List<CustomGenerator>               generators      = new List<CustomGenerator>();
         private             string                              cacheControl    = HttpHost.DefaultCacheControl;
         internal            ICollection<CustomGenerator>        Generators      => generators;

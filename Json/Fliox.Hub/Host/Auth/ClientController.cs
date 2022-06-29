@@ -27,8 +27,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
         /// key: clientId
         [DebuggerBrowsable(Never)]
         internal readonly   ConcurrentDictionary<JsonKey, UserClient>   clients = new ConcurrentDictionary<JsonKey, UserClient>(JsonKey.Equality);
-        /// expose <see cref="clients"/> as property to show them as list in Debugger
-        // ReSharper disable once UnusedMember.Local
+        // ReSharper disable once UnusedMember.Local - expose Dictionary as list in Debugger
         private             ICollection<UserClient>                     Clients => clients.Values;
 
         public   override   string                                      ToString() => $"clients: {clients.Count}";

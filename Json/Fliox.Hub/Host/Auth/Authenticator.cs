@@ -22,8 +22,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
         protected readonly  Dictionary<string, AuthorizePredicate>  registeredPredicates;
         [DebuggerBrowsable(Never)]
         internal  readonly  ConcurrentDictionary<JsonKey, User>     users;  // todo make private
-        /// expose <see cref="users"/> as property to show them as list in Debugger
-        // ReSharper disable once UnusedMember.Local
+        // ReSharper disable once UnusedMember.Local - expose Dictionary as list in Debugger
         private             ICollection<User>                       Users => users.Values;
         internal  readonly  User                                    anonymousUser;
         

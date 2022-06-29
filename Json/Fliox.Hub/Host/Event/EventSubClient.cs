@@ -31,8 +31,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         /// key: database
         [DebuggerBrowsable(Never)]
         internal readonly   Dictionary<string, DatabaseSubs>    databaseSubs = new Dictionary<string, DatabaseSubs>();
-        /// expose <see cref="databaseSubs"/> as list in debugger 
-        // ReSharper disable once UnusedMember.Local
+        // ReSharper disable once UnusedMember.Local - expose Dictionary as list in Debugger
         private             IReadOnlyCollection<DatabaseSubs>   DatabaseSubs => databaseSubs.Values;
         
         internal            int                                 SubCount    => databaseSubs.Sum(sub => sub.Value.SubCount); 
