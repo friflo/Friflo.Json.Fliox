@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Client.Internal;
 using Friflo.Json.Fliox.Hub.Host;
+using Friflo.Json.Fliox.Hub.Host.Event;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
@@ -131,7 +132,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// in a worker thread while calling <see cref="SyncStore"/> methods from 'main' thread.
         /// 
         /// <see cref="SyncRequest.eventAck"/> is set to acknowledge already received events to clear
-        /// <see cref="Host.Event.EventSubscriber.sentEvents"/>. This avoids resending already received events on reconnect. 
+        /// <see cref="EventSubClient.sentEvents"/>. This avoids resending already received events on reconnect. 
         /// </summary>
         private SyncRequest CreateSyncRequest(out SyncStore syncStore, ObjectMapper mapper) {
             syncStore = _intern.syncStore;

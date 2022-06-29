@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
+using Friflo.Json.Fliox.Hub.Host.Event;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
 
@@ -17,7 +18,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         private  readonly   FlioxHub    localHub;
         public   readonly   SharedEnv   sharedEnv;
         
-        /// Only set to true for testing. It avoids an early out at <see cref="Host.Event.EventSubscriber.SendEvents"/> 
+        /// Only set to true for testing. It avoids an early out at <see cref="EventSubClient.SendEvents"/> 
         public              bool        fakeOpenClosedSockets;
         
         internal            FlioxHub    LocalHub    => localHub;

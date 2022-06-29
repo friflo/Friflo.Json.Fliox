@@ -44,7 +44,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         internal            AuthState           authState;
         internal            Action              canceler = () => {};
         internal            FlioxHub            hub;
-        /// <summary> used as initial <see cref="EventSubscriber.eventCounter"/> for new <see cref="EventSubscriber"/> instances </summary>
+        /// <summary> used as initial <see cref="EventSubClient.eventCounter"/> for new <see cref="EventSubClient"/> instances </summary>
         internal            int?                eventAck;
         internal  readonly  SharedCache         sharedCache;
         

@@ -36,6 +36,10 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
         }
         
         public void SetUserOptions(UserOptions options) {
+            UpdateGroups(ref groups, options);
+        }
+        
+        public static void UpdateGroups(ref HashSet<string> groups, UserOptions options) {
             var addGroups = options.addGroups;
             if (addGroups != null) {
                 if (groups == null) {

@@ -283,12 +283,12 @@ namespace Friflo.Json.Fliox.Hub.Host
             if (param.RawParam.IsNull()) {
                 return new UserResult { groups = user.Groups };
             }
-            if (!param.GetValidate(out UserOptions userGroup, out var error)) {
+            if (!param.GetValidate(out UserOptions options, out var error)) {
                 context.Error(error);
                 return null;
             }
             var authenticator = context.Hub.Authenticator;
-            await authenticator.SetUserOptions(userGroup, context);
+            await authenticator.SetUserOptions(context.User, options);
             
             return new UserResult { groups = user.Groups };
         }

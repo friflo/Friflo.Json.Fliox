@@ -30,9 +30,12 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
         //  store.credentials.SubscribeChanges  (ChangeFlags.All, CredentialChange);
             store.permissions.SubscribeChanges  (ChangeFlags.All, PermissionChange);
             store.roles.SubscribeChanges        (ChangeFlags.All, RoleChange);
+            store.targets.SubscribeChanges      (ChangeFlags.All, TargetChange);
             await store.SyncTasks().ConfigureAwait(false);
         }
         
+        // ReSharper disable once UnusedMember.Local
+        // ReSharper disable once UnusedParameter.Local
         private void CredentialChange(Changes<JsonKey, UserCredential> changes, EventContext context) {
             var changedUsers = new HashSet<JsonKey>(JsonKey.Equality);
             foreach (var entity in changes.Upserts) { changedUsers.Add(entity.id); }
@@ -70,6 +73,17 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
             }
             foreach (var user in affectedUsers) {
                 userAuthenticator.users.TryRemove(user, out _);
+            }
+        }
+        
+        private void TargetChange(Changes<JsonKey, UserTarget> changes, EventContext context) {
+            var changedUsers = new HashSet<JsonKey>(JsonKey.Equality);
+            foreach (var entity in changes.Upserts) { changedUsers.Add(entity.id); }
+            foreach (var id     in changes.Deletes) { changedUsers.Add(id); }
+            foreach (var patch  in changes.Patches) { changedUsers.Add(patch.key); }
+                
+            foreach (var changedUser in changedUsers) {
+                userAuthenticator.users.TryRemove(changedUser, out _);
             }
         }
         

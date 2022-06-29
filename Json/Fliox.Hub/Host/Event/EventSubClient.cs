@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
-using Friflo.Json.Fliox.Hub.Host.Auth;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Remote;
 using Friflo.Json.Fliox.Hub.Threading;
@@ -20,10 +19,10 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         Finish,
         Event
     }
-    
-    internal sealed class EventSubscriber : ILogSource {
+
+    internal sealed class EventSubClient : ILogSource {
         internal readonly   JsonKey                             clientId;   // key field
-        internal readonly   User                                user;
+        internal readonly   EventSubUser                        user;
         private             IEventReceiver                      eventReceiver;
 
         [DebuggerBrowsable(Never)]
@@ -33,7 +32,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         [DebuggerBrowsable(Never)]
         internal readonly   Dictionary<string, DatabaseSubs>    databaseSubs = new Dictionary<string, DatabaseSubs>();
         /// expose <see cref="databaseSubs"/> as list in debugger 
-        // ReSharper disable once UnusedMember.Global
+        // ReSharper disable once UnusedMember.Local
         private             IReadOnlyCollection<DatabaseSubs>   DatabaseSubs => databaseSubs.Values;
         
         internal            int                                 SubCount    => databaseSubs.Sum(sub => sub.Value.SubCount); 
@@ -51,14 +50,14 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
 
         internal            int                                 Seq             => eventCounter;
         internal            int                                 EventQueueCount => eventQueue.Count;
-        public   override   string                              ToString()      => $"client: {clientId.ToString()}";
+        public   override   string                              ToString()      => $"client: {clientId.AsString()}";
         
         internal            int                                 SentEventsCount => sentEvents.Count;
         internal            bool                                IsRemoteTarget  => eventReceiver is WebSocketHost;
         
-        internal EventSubscriber (
+        internal EventSubClient (
             SharedEnv       env,
-            User            user,
+            EventSubUser    user,
             in JsonKey      clientId,
             int             eventAck,
             IEventReceiver  eventReceiver,

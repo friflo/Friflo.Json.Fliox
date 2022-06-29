@@ -15,6 +15,7 @@ using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Utils;
 using Friflo.Json.Fliox.Schema.Native;
 
+// ReSharper disable UseObjectOrCollectionInitializer
 namespace Friflo.Json.Fliox.Hub.DB.UserAuth
 {
     internal class AuthCred {
@@ -157,13 +158,14 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
                 var result  = await auth.Authenticate(command).ConfigureAwait(false);
                 
                 if (result.isValid) {
-                    var authCred    = new AuthCred(token);
-                    var authorizer  = await GetAuthorizer(userStore, userId).ConfigureAwait(false);
-                    if (!authorizer.Success) {
-                        syncContext.AuthenticationFailed(anonymousUser, authorizer.error, anonymousAuthorizer);
+                    var authCred        = new AuthCred(token);
+                    var userAuthInfo    = await GetUserAuthInfo(userStore, userId).ConfigureAwait(false);
+                    if (!userAuthInfo.Success) {
+                        syncContext.AuthenticationFailed(anonymousUser, userAuthInfo.error, anonymousAuthorizer);
                         return;
                     }
-                    user        = new User (userId, authCred.token, authorizer.value);
+                    user        = new User (userId, authCred.token, userAuthInfo.value.authorizer);
+                    user.groups = userAuthInfo.value.groups?.ToHashSet();
                     users.TryAdd(userId, user);
                 }
                 
@@ -218,18 +220,32 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
             throw new InvalidOperationException ("unexpected clientIdValidation state");
         }
         
-        public override Task SetUserOptions (UserOptions options, MessageContext context) {
-            return base.SetUserOptions(options, context); // todo add container: groups, update UserGroup entry 
+        public override async Task SetUserOptions (User user, UserOptions options) {
+            var store       = new UserStore(userHub);
+            store.UserId    = UserStore.AuthenticationUser;
+            var read        = store.targets.Read().Find(user.userId);
+            await store.SyncTasks();
+            
+            var userTarget      = read.Result ?? new UserTarget { id = user.userId, groups = new List<string>() };
+            var groups          = userTarget.groups.ToHashSet();
+            User.UpdateGroups(ref groups, options);
+            userTarget.groups   = groups.ToList();
+            store.targets.Upsert(userTarget);
+            await store.SyncTasks();
+
+            await base.SetUserOptions(user, options); 
         }
 
-        private async Task<Result<Authorizer>> GetAuthorizer(UserStore userStore, JsonKey userId) {
-            var readPermission = userStore.permissions.Read().Find(userId);
+        private async Task<Result<UserAuthInfo>> GetUserAuthInfo(UserStore userStore, JsonKey userId) {
+            var readPermission  = userStore.permissions.Read().Find(userId);
+            var readTarget      = userStore.targets.Read().Find(userId);
             await userStore.SyncTasks().ConfigureAwait(false);
             
+            var targetGroups    = readTarget.Result?.groups;
             UserPermission permission = readPermission.Result;
             var roles = permission.roles;
             if (roles == null || roles.Count == 0) {
-                return anonymousAuthorizer;
+                return new UserAuthInfo(anonymousAuthorizer, targetGroups);
             }
             var error = await AddNewRoles(userStore, roles).ConfigureAwait(false);
             if (error != null)
@@ -242,9 +258,9 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
                 authorizers.Add(authorizer);
             }
             if (authorizers.Count == 1)
-                return authorizers[0];
+                return new UserAuthInfo(authorizers[0], targetGroups);
             var any = new AuthorizeAny(authorizers);
-            return any;
+            return new UserAuthInfo(any, targetGroups);
         }
         
         private async Task<string> AddNewRoles(UserStore userStore, List<string> roles) {
@@ -299,6 +315,17 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
                 return authorizers[0];
             }
             return new AuthorizeAny(authorizers);
+        }
+    }
+    
+    internal class UserAuthInfo
+    {
+        internal readonly Authorizer    authorizer;
+        internal readonly List<string>  groups;
+        
+        internal UserAuthInfo(Authorizer authorizer, List<string> groups) {
+            this.authorizer = authorizer;
+            this.groups     = groups;
         }
     }
 }

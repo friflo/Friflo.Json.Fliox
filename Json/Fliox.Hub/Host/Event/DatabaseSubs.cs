@@ -102,7 +102,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
 
         internal void AddEventTasks(
             SyncRequest                 syncRequest,
-            EventSubscriber             eventSubscriber,
+            EventSubClient              subClient,
             bool                        subscriberIsSender,
             ref List<SyncRequestTask>   eventTasks,
             JsonEvaluator               jsonEvaluator)
@@ -118,7 +118,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                     AddTask(ref eventTasks, taskResult);
                 }
                 if (task is SyncMessageTask messageTask) {
-                    if (!IsEventTarget(eventSubscriber, messageTask))
+                    if (!IsEventTarget(subClient, messageTask))
                         continue;
                     if (!FilterMessage(messageTask.name))
                         continue;
@@ -138,25 +138,24 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             tasks.Add(task);
         }
         
-        private static bool IsEventTarget (EventSubscriber eventSubscriber, SyncMessageTask messageTask) {
+        private static bool IsEventTarget (EventSubClient subClient, SyncMessageTask messageTask)
+        {
             var isEventTarget   = true;
             // --- is eventSubscriber a target client
             var targetClients   = messageTask.clients;
             if (targetClients != null) {
-                var clientId = eventSubscriber.clientId;
                 foreach (var targetClient in targetClients) {
-                    if (clientId.IsEqual(targetClient))
+                    if (subClient.clientId.IsEqual(targetClient))
                         return true;
                 }
                 isEventTarget = false;
             }
-            var user = eventSubscriber.user;
+            var user = subClient.user;
             // --- is eventSubscriber a target user
             var targetUsers     = messageTask.users;
             if (targetUsers != null) {
-                var userId = user.userId;
                 foreach (var targetUser in targetUsers) {
-                    if (userId.IsEqual(targetUser))
+                    if (user.userId.IsEqual(targetUser))
                         return true;
                 }
                 isEventTarget = false;

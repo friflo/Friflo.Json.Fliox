@@ -19,7 +19,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
     public sealed class WebSocketHost : IEventReceiver, ILogSource
     {
         private  readonly   WebSocket                               webSocket;
-        /// Only set to true for testing. It avoids an early out at <see cref="EventSubscriber.SendEvents"/> 
+        /// Only set to true for testing. It avoids an early out at <see cref="EventSubClient.SendEvents"/> 
         private  readonly   bool                                    fakeOpenClosedSocket;
 
         private  readonly   DataChannelWriter<ArraySegment<byte>>   sendWriter;
