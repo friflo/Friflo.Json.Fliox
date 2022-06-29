@@ -31,7 +31,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// Restrict the clients receiving the message as an event in case they setup a subscription with <see cref="FlioxClient.SubscribeMessage"/>.
         /// </summary>
         /// <remarks>
-        /// A default <see cref="EventTargets"/> instance is not restricted to specific client. <br/>
+        /// A default <see cref="EventTargets"/> instance is not restricted to specific target users, clients or groups. <br/>
         /// So a message is forwarded by the Hub as an event to all clients subscribed to the message. <br/>
         /// </remarks>
         public              EventTargets    EventTargets { get; set; }
