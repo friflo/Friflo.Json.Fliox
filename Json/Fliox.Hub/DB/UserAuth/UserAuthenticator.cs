@@ -165,7 +165,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
                         return;
                     }
                     user        = new User (userId, authCred.token, userAuthInfo.value.authorizer);
-                    user.groups = userAuthInfo.value.groups?.ToHashSet();
+                    user.SetGroups(userAuthInfo.value.groups);
                     users.TryAdd(userId, user);
                 }
                 
@@ -227,8 +227,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
             await store.SyncTasks();
             
             var userTarget      = read.Result ?? new UserTarget { id = user.userId, groups = new List<string>() };
-            var groups          = userTarget.groups.ToHashSet();
-            User.UpdateGroups(ref groups, options);
+            var groups          = User.UpdateGroups(userTarget.groups, options);
             userTarget.groups   = groups.ToList();
             store.targets.Upsert(userTarget);
             await store.SyncTasks();

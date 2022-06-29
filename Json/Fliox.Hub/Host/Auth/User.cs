@@ -12,17 +12,16 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
 {
     public sealed class User {
         // --- public
-        public   readonly   JsonKey     userId;
-        public   readonly   string      token;
-        public   readonly   Authorizer  authorizer;
-        public              string[]    Groups => groups != null ? groups.ToArray() : Array.Empty<string>();
+        public   readonly   JsonKey                     userId;
+        public   readonly   string                      token;
+        public   readonly   Authorizer                  authorizer;
 
-        public   override   string      ToString() => userId.AsString();
+        public   override   string                      ToString() => userId.AsString();
         
         // --- internal
         internal readonly   ConcurrentDictionary<JsonKey, Empty>        clients;        // key: clientId
         internal readonly   ConcurrentDictionary<string, RequestCount>  requestCounts;  // key: database
-        internal            HashSet<string>                             groups;
+        private             HashSet<string>                             groups;         // can be null
         
         public static readonly  JsonKey   AnonymousId = new JsonKey("anonymous");
 
@@ -35,25 +34,33 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
             this.authorizer = authorizer;
         }
         
-        public void SetUserOptions(UserOptions options) {
-            UpdateGroups(ref groups, options);
+        public  IReadOnlyCollection<string> GetGroups() {
+            if (groups != null)
+                return groups;
+            return Array.Empty<string>();
         }
         
-        public static void UpdateGroups(ref HashSet<string> groups, UserOptions options) {
+        internal void SetGroups(IReadOnlyCollection<string> groups) {
+            this.groups = groups?.ToHashSet();
+        }
+        
+        public void SetUserOptions(UserOptions options) {
+            groups = UpdateGroups(groups, options);
+        }
+        
+        public static HashSet<string> UpdateGroups(ICollection<string> groups, UserOptions options) {
+            var result = groups != null ? new HashSet<string>(groups) : new HashSet<string>();
             var addGroups = options.addGroups;
             if (addGroups != null) {
-                if (groups == null) {
-                    groups = new HashSet<string>(addGroups);
-                } else {
-                    groups.UnionWith(addGroups);
-                }
+                result.UnionWith(addGroups);
             }
             var removeGroups = options.removeGroups;
-            if (removeGroups != null && groups != null) {
+            if (removeGroups != null) {
                 foreach (var item in removeGroups) {
-                    groups.Remove(item);                    
+                    result.Remove(item);                    
                 }
             }
+            return result;
         }
     }
     

@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Client;
@@ -281,7 +282,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         private static async Task<UserResult> User (Param<UserOptions> param, MessageContext context) {
             var user = context.User;
             if (param.RawParam.IsNull()) {
-                return new UserResult { groups = user.Groups };
+                return new UserResult { groups = user.GetGroups().ToArray() };
             }
             if (!param.GetValidate(out UserOptions options, out var error)) {
                 context.Error(error);
@@ -290,7 +291,11 @@ namespace Friflo.Json.Fliox.Hub.Host
             var authenticator = context.Hub.Authenticator;
             await authenticator.SetUserOptions(context.User, options);
             
-            return new UserResult { groups = user.Groups };
+            var dispatcher  = context.Hub.EventDispatcher;
+            var groups      = user.GetGroups();
+            dispatcher.UpdateSubUserGroups(user.userId, groups);
+            
+            return new UserResult { groups = groups.ToArray() };
         }
         
         // --- internal API ---

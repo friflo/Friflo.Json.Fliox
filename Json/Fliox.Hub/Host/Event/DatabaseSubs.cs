@@ -150,12 +150,12 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                 }
                 isEventTarget = false;
             }
-            var user = subClient.user;
+            var subUser = subClient.user;
             // --- is eventSubscriber a target user
             var targetUsers     = messageTask.users;
             if (targetUsers != null) {
                 foreach (var targetUser in targetUsers) {
-                    if (user.userId.IsEqual(targetUser))
+                    if (subUser.userId.IsEqual(targetUser))
                         return true;
                 }
                 isEventTarget = false;
@@ -163,12 +163,10 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             // --- is eventSubscriber a target group
             var targetGroups    = messageTask.groups;
             if (targetGroups != null) {
-                var userGroups = user.groups;
-                if (userGroups != null) {
-                    foreach (var targetGroup in targetGroups) {
-                        if (userGroups.Contains(targetGroup))
-                            return true;
-                    }
+                var userGroups = subUser.groups;
+                foreach (var targetGroup in targetGroups) {
+                    if (userGroups.Contains(targetGroup))
+                        return true;
                 }
                 isEventTarget = false;
             }

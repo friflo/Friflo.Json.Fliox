@@ -158,7 +158,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             if (subClient != null)
                 return subClient;
             if (!subUsers.TryGetValue(user.userId, out var subUser)) {
-                subUser = new EventSubUser (user.userId, user.groups);
+                subUser = new EventSubUser (user.userId, user.GetGroups());
                 subUsers.TryAdd(user.userId, subUser);
             }
             subClient = new EventSubClient(sharedEnv, subUser, clientId, eventAck, eventReceiver, background);
@@ -178,7 +178,15 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             }
         }
         
-        
+        internal void UpdateSubUserGroups(in JsonKey userId, IReadOnlyCollection<String> groups) {
+            if (!subUsers.TryGetValue(userId, out var subUser))
+                return;
+            subUser.groups.Clear();
+            if (groups != null) {
+                subUser.groups.UnionWith(groups);
+            }
+        }
+
         // -------------------------- event distribution --------------------------------
         // use only for testing
         internal async Task SendQueuedEvents() {

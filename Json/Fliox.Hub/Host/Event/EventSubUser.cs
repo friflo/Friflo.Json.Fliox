@@ -9,13 +9,13 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
     {
         internal  readonly  JsonKey                 userId;  
         internal  readonly  HashSet<EventSubClient> clients = new HashSet<EventSubClient>();
-        internal  readonly  HashSet<string>         groups  = new HashSet<string>();
+        internal  readonly  HashSet<string>         groups  = new HashSet<string>();        // never null
 
         public    override  string                  ToString() => $"user: {userId.AsString()}";
 
-        internal EventSubUser (in JsonKey userId, ICollection<string> groups) {
+        internal EventSubUser (in JsonKey userId, IReadOnlyCollection<string> groups) {
             this.userId = userId;
-            if (groups != null) this.groups.UnionWith(groups);
+            this.groups.UnionWith(groups);
         }
     }
 }

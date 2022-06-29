@@ -77,13 +77,19 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
         }
         
         private void TargetChange(Changes<JsonKey, UserTarget> changes, EventContext context) {
-            var changedUsers = new HashSet<JsonKey>(JsonKey.Equality);
-            foreach (var entity in changes.Upserts) { changedUsers.Add(entity.id); }
-            foreach (var id     in changes.Deletes) { changedUsers.Add(id); }
-            foreach (var patch  in changes.Patches) { changedUsers.Add(patch.key); }
-                
-            foreach (var changedUser in changedUsers) {
-                userAuthenticator.users.TryRemove(changedUser, out _);
+            var dispatcher  = userAuthenticator.userHub.EventDispatcher;
+            var users       = userAuthenticator.users;
+            foreach (var userTarget in changes.Upserts) {
+                dispatcher.UpdateSubUserGroups(userTarget.id, userTarget.groups);
+                if (!users.TryGetValue(userTarget.id, out User user))
+                    continue;
+                user.SetGroups(userTarget.groups);
+            }
+            foreach (var id in changes.Deletes) {
+                dispatcher.UpdateSubUserGroups(id, null);
+                if (!users.TryGetValue(id, out User user))
+                    continue;
+                user.SetGroups(null);
             }
         }
         
