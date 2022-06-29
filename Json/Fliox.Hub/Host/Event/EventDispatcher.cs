@@ -30,15 +30,18 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
     {
         private  readonly   SharedEnv                                       sharedEnv;
         private  readonly   JsonEvaluator                                   jsonEvaluator;
+        //
         /// key: <see cref="EventSubClient.clientId"/>
-        [DebuggerBrowsable(Never)] 
+        [DebuggerBrowsable(Never)]
         private  readonly   ConcurrentDictionary<JsonKey, EventSubClient>   subClients;
-        /// expose <see cref="subClients"/> as property to show them as list in Debugger
-        // ReSharper disable once UnusedMember.Local
-        private             ICollection<EventSubClient>                     SubClients => subClients.Values;
-        
+        // ReSharper disable once UnusedMember.Local - expose Dictionary as list in Debugger
+        private             ICollection<EventSubClient>                     SubClients  => subClients.Values;
+        //
+        [DebuggerBrowsable(Never)]
         private  readonly   ConcurrentDictionary<JsonKey, EventSubUser>     subUsers;
-
+        // ReSharper disable once UnusedMember.Local - expose Dictionary as list in Debugger
+        private             ICollection<EventSubUser>                       SubUsers    => subUsers.Values;
+        //
         internal readonly   bool                                            background;
 
         public   override   string                                          ToString() => $"subscribers: {subClients.Count}";
