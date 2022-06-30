@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Client.Event;
@@ -13,8 +14,8 @@ using Friflo.Json.Fliox.Hub.Host.Utils;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Mapper.Map;
+using static System.Diagnostics.DebuggerBrowsableState;
 
-// ReSharper disable UnusedMember.Local
 namespace Friflo.Json.Fliox.Hub.Client.Internal
 {
     internal struct ClientIntern
@@ -33,8 +34,16 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         private             EntityProcessor                         processor;      // create on demand
         internal readonly   Dictionary<Type,   EntitySet>           setByType;
         private  readonly   Dictionary<string, EntitySet>           setByName;
+        
+        [DebuggerBrowsable(Never)]
         internal readonly   Dictionary<string, MessageSubscriber>   subscriptions;
+        // ReSharper disable once UnusedMember.Local - expose Dictionary as list in Debugger
+        private             IReadOnlyCollection<MessageSubscriber>  Subscriptions => subscriptions.Values;
+
+        [DebuggerBrowsable(Never)]  // show as property to list it within the first members in Debugger
         internal readonly   List<MessageSubscriber>                 subscriptionsPrefix;
+        private             List<MessageSubscriber>                 SubscriptionsPrefix => subscriptionsPrefix;
+
         internal readonly   ConcurrentDictionary<Task, SyncContext> pendingSyncs;
         internal readonly   List<JsonKey>                           idsBuf;
 

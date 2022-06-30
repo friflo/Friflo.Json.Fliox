@@ -16,7 +16,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Event
         internal readonly   string                  name;
         internal readonly   List<MessageCallback>   callbackHandlers = new List<MessageCallback>();
 
-        public   override   string                  ToString() => name;
+        public   override   string                  ToString() => FormatToString();
 
         internal MessageSubscriber (string name) {
             var prefix = SubscribeMessage.GetPrefix(name);
@@ -26,6 +26,12 @@ namespace Friflo.Json.Fliox.Hub.Client.Event
             } else {
                 this.name = name;
             }
+        }
+        
+        private string FormatToString() {
+            if (isPrefix)
+                return $"{name}*";
+            return name;
         }
         
         internal void InvokeCallbacks(in InvokeContext invokeContext, EventContext context) {
