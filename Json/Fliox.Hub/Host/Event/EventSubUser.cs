@@ -5,6 +5,10 @@ using System.Collections.Generic;
 
 namespace Friflo.Json.Fliox.Hub.Host.Event
 {
+    /// <summary>
+    /// An <see cref="EventSubUser"/> - Event Subscriber User - store the <see cref="groups"/> assigned to a <see cref="userId"/>. <br/>
+    /// The <see cref="groups"/> are used to restrict forwarding message events only to the users part of a specific group.   
+    /// </summary>
     internal sealed class EventSubUser
     {
         internal  readonly  JsonKey                 userId;  

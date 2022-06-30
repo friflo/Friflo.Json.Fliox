@@ -20,6 +20,11 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         Event
     }
 
+    /// <summary>
+    /// Each <see cref="EventSubClient"/> instance (Event Subscriber Client) - handle the subscriptions for a specific client. <br/>
+    /// It send database changes and messages as events to the client for all subscriptions the client made. <br/>
+    /// A client is identified by its <see cref="clientId"/>.
+    /// </summary>
     internal sealed class EventSubClient : ILogSource {
         internal readonly   JsonKey                             clientId;   // key field
         internal readonly   EventSubUser                        user;

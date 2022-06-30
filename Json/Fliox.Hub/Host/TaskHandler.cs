@@ -284,15 +284,17 @@ namespace Friflo.Json.Fliox.Hub.Host
                 return new UserResult { groups = user.GetGroups().ToArray() };
             }
             if (!param.GetValidate(out UserOptions options, out var error)) {
-                context.Error(error);
-                return null;
+                return context.Error<UserResult>(error);
+            }
+            var eventDispatcher  = context.Hub.EventDispatcher;
+            if (eventDispatcher == null) {
+                return context.Error<UserResult>("command requires a Hub with an EventDispatcher");
             }
             var authenticator = context.Hub.Authenticator;
             await authenticator.SetUserOptions(context.User, options);
             
-            var dispatcher  = context.Hub.EventDispatcher;
-            var groups      = user.GetGroups();
-            dispatcher.UpdateSubUserGroups(user.userId, groups);
+            var groups = user.GetGroups();
+            eventDispatcher.UpdateSubUserGroups(user.userId, groups);
             
             return new UserResult { groups = groups.ToArray() };
         }
