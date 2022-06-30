@@ -224,15 +224,15 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
             var store       = new UserStore(userHub);
             store.UserId    = UserStore.AuthenticationUser;
             var read        = store.targets.Read().Find(user.userId);
-            await store.SyncTasks();
+            await store.SyncTasks().ConfigureAwait(false);
             
             var userTarget      = read.Result ?? new UserTarget { id = user.userId, groups = new List<string>() };
             var groups          = User.UpdateGroups(userTarget.groups, options);
             userTarget.groups   = groups.ToList();
             store.targets.Upsert(userTarget);
-            await store.SyncTasks();
+            await store.SyncTasks().ConfigureAwait(false);
 
-            await base.SetUserOptions(user, options); 
+            await base.SetUserOptions(user, options).ConfigureAwait(false); 
         }
 
         private async Task<Result<UserAuthInfo>> GetUserAuthInfo(UserStore userStore, JsonKey userId) {
