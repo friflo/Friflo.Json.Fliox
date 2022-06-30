@@ -21,13 +21,13 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
     internal struct ClientIntern
     {
         // --- readonly
-                                    internal readonly   FlioxHub        hub;
-                                    internal readonly   TypeStore       typeStore;
-                                    internal readonly   Pool            pool;
-                                    internal readonly   SharedCache     sharedCache;
-                                    internal readonly   IHubLogger      hubLogger;
-                                    internal readonly   string          database;
-                                    internal readonly   EventReceiver   eventReceiver;
+        internal readonly   FlioxHub                    hub;
+        internal readonly   TypeStore                   typeStore;
+        internal readonly   Pool                        pool;
+        internal readonly   SharedCache                 sharedCache;
+        internal readonly   IHubLogger                  hubLogger;
+        internal readonly   string                      database;
+        internal readonly   EventReceiver               eventReceiver;
         
         // --- readonly / private - owned
         private             ObjectPatcher                           objectPatcher;  // create on demand
