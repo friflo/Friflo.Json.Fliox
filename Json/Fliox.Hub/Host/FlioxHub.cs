@@ -127,8 +127,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         
     #region - initialize
         /// <summary>
-        /// Construct a <see cref="FlioxHub"/> with the given default database.
-        /// database can be null in case of using a <see cref="FlioxHub"/> instance without a default database. 
+        /// Construct a <see cref="FlioxHub"/> with the given default <paramref name="database"/>.
         /// </summary>
         public FlioxHub (EntityDatabase database, SharedEnv env = null, string hostName = null) {
             sharedEnv       = env  ?? SharedEnv.Default;
