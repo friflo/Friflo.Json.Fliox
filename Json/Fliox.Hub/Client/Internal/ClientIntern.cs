@@ -40,10 +40,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         // ReSharper disable once UnusedMember.Local - expose Dictionary as list in Debugger
         private             IReadOnlyCollection<MessageSubscriber>  Subscriptions => subscriptions.Values;
 
-        [DebuggerBrowsable(Never)]  // show as property to list it within the first members in Debugger
         internal readonly   List<MessageSubscriber>                 subscriptionsPrefix;
-        private             List<MessageSubscriber>                 SubscriptionsPrefix => subscriptionsPrefix;
-
         internal readonly   ConcurrentDictionary<Task, SyncContext> pendingSyncs;
         internal readonly   List<JsonKey>                           idsBuf;
 
