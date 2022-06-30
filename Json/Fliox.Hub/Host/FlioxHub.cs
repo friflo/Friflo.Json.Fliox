@@ -63,6 +63,7 @@ namespace Friflo.Json.Fliox.Hub.Host
 #endif
     public class FlioxHub : IDisposable, ILogSource
     {
+    #region - members
         [DebuggerBrowsable(Never)]
         public   readonly   EntityDatabase      database;       // not null
         /// expose <see cref="database"/> as property to list it within the first members in Debugger
@@ -119,8 +120,9 @@ namespace Friflo.Json.Fliox.Hub.Host
         [DebuggerBrowsable(Never)]  private HubInfo             info                = new HubInfo();
         [DebuggerBrowsable(Never)]  private Authenticator       authenticator       = new AuthenticateNone(new AuthorizeAllow("*"));
         [DebuggerBrowsable(Never)]  private ClientController    clientController    = new IncrementClientController();
+        #endregion
         
-
+    #region - initialize
         /// <summary>
         /// Construct a <see cref="FlioxHub"/> with the given default database.
         /// database can be null in case of using a <see cref="FlioxHub"/> instance without a default database. 
@@ -131,9 +133,16 @@ namespace Friflo.Json.Fliox.Hub.Host
             this.hostName   = hostName ?? "host";
         }
         
+        public virtual void Dispose() { }  // todo - remove
+        
+        #endregion
+        
+    #region - event receiver
         public   virtual    void    AddEventReceiver      (in JsonKey clientId, IEventReceiver eventReceiver) {}
         public   virtual    void    RemoveEventReceiver   (in JsonKey clientId) {}
+        #endregion
 
+    #region - sync request execution
         /// <summary>
         /// Execute all <see cref="SyncRequest.tasks"/> of a <see cref="SyncRequest"/>.
         /// All requests to a <see cref="FlioxHub"/> are handled by this method.
@@ -235,8 +244,9 @@ namespace Friflo.Json.Fliox.Hub.Host
                 RequestCount.UpdateCounts(client.requestCounts, database, syncRequest);
             }
         }
+        #endregion
 
-        // --- extension databases
+    #region - extension databases
         [DebuggerBrowsable(Never)]
         private readonly  Dictionary<string, EntityDatabase>    extensionDbs = new Dictionary<string, EntityDatabase>();
         // ReSharper disable once UnusedMember.Local - expose Dictionary as list in Debugger
@@ -274,7 +284,6 @@ namespace Friflo.Json.Fliox.Hub.Host
             }
             return result;
         }
-
-        public virtual void Dispose() { }  // todo - remove
+        #endregion
     }
 }
