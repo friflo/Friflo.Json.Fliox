@@ -11,7 +11,7 @@ namespace Friflo.Json.Fliox.Hub.Client
     /// Event target's can be specified by <see cref="users"/>, <see cref="clients"/> or <see cref="groups"/>. <br/>
     /// In case no targets are specified - the default - a message is sent to all clients subscribing the message.
     /// </summary>
-    public class EventTargets
+    public sealed class EventTargets
     {
         internal    List<JsonKey>   users;
         internal    List<JsonKey>   clients;

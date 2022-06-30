@@ -15,7 +15,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
     /// Contain all subscriptions to entity changes and messages for a specific <see cref="database"/>. <br/>
     /// A <see cref="EventSubClient"/> has a single <see cref="DatabaseSubs"/> instance for each database.
     /// </summary>
-    internal class DatabaseSubs
+    internal sealed class DatabaseSubs
     {
         private  readonly   string                                  database;
 
