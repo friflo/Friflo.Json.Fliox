@@ -52,6 +52,7 @@ namespace Friflo.Json.Fliox.Hub.Host
 #endif
     public abstract class EntityContainer : IDisposable
     {
+    #region - members
         /// <summary> container name </summary>
         public    readonly  string                              name;
         /// <summary>
@@ -66,15 +67,18 @@ namespace Friflo.Json.Fliox.Hub.Host
 
         public    virtual   bool                                Pretty      => false;
         public    override  string                              ToString()  => $"{GetType().Name} - {instanceName}";
+        #endregion
 
+    #region - abstract container methods
         public abstract Task<CreateEntitiesResult>    CreateEntities   (CreateEntities    command, SyncContext syncContext);
         public abstract Task<UpsertEntitiesResult>    UpsertEntities   (UpsertEntities    command, SyncContext syncContext);
         public abstract Task<ReadEntitiesResult>      ReadEntities     (ReadEntities      command, SyncContext syncContext);
         public abstract Task<DeleteEntitiesResult>    DeleteEntities   (DeleteEntities    command, SyncContext syncContext);
         public abstract Task<QueryEntitiesResult>     QueryEntities    (QueryEntities     command, SyncContext syncContext);
         public abstract Task<AggregateEntitiesResult> AggregateEntities(AggregateEntities command, SyncContext syncContext);
+        #endregion
 
-
+    #region - initialize
         protected EntityContainer(string name, EntityDatabase database) {
             this.name           = name;
             this.instanceName   = database.customContainerName(name);
@@ -83,7 +87,10 @@ namespace Friflo.Json.Fliox.Hub.Host
         }
         
         public virtual  void                        Dispose() { }
+        
+        #endregion
 
+    #region - public utils
         /// <summary>
         /// Default implementation to apply patches to entities.
         /// The implementation perform three steps:
@@ -211,7 +218,9 @@ namespace Friflo.Json.Fliox.Hub.Host
             }
             return new QueryEntitiesResult{ entities = result };
         }
-        
+        #endregion
+    
+    #region - internal methods
         private string StoreCursor(QueryEnumerator enumerator, in JsonKey userId) {
             var cursor      = enumerator.Cursor;
             if (cursor != null) {
@@ -343,7 +352,9 @@ namespace Friflo.Json.Fliox.Hub.Host
             }
             return new ReadReferencesResult {references = referenceResults};
         }
+        #endregion
 
+    #region - public static utils
         protected static void AddEntityError(ref List<EntityError> errors, JsonKey key, EntityError error) {
             if (errors == null) {
                 errors = new List<EntityError>();
@@ -358,6 +369,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             if (keys.Count != entities.Count)
                 throw new InvalidOperationException("expect equal counts");
         }
+        #endregion
     }
 
     /// <see cref="ReadReferencesResult"/> is never serialized within a <see cref="SyncResponse"/> only its

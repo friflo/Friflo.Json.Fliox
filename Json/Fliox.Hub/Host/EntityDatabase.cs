@@ -46,6 +46,7 @@ namespace Friflo.Json.Fliox.Hub.Host
     /// </summary>
     public abstract class EntityDatabase : IDisposable
     {
+    #region - members
         public   readonly   string              name;       // non null
         public   override   string              ToString()  => name;
         
@@ -75,8 +76,10 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// </summary>
         internal readonly   TaskHandler         handler;    // never null
         
-        public   virtual    string              StorageType => GetType().Name;     
+        public   virtual    string              StorageType => GetType().Name;
+        #endregion
         
+    #region - initialize
         /// <summary>
         /// constructor parameters are mandatory to force implementations having them in their constructors also or
         /// pass null by implementations.
@@ -93,6 +96,10 @@ namespace Friflo.Json.Fliox.Hub.Host
                 container.Value.Dispose();
             }
         }
+        #endregion
+        
+    #region - general public methods
+        public abstract EntityContainer CreateContainer     (string name, EntityDatabase database);
         
         public virtual Task ExecuteSyncPrepare (SyncRequest syncRequest, SyncContext syncContext) {
             return Task.CompletedTask;
@@ -151,9 +158,9 @@ namespace Friflo.Json.Fliox.Hub.Host
             }
             return new DbMessages { commands = commands, messages = messages };
         }
+        #endregion
 
-        public abstract EntityContainer CreateContainer     (string name, EntityDatabase database);
-        
+    #region - seed database
         /// If given database has no schema the key name of all entities in all containers need to be "id"
         public async Task SeedDatabase(EntityDatabase src) {
             var sharedEnv       = new SharedEnv();
@@ -187,5 +194,6 @@ namespace Friflo.Json.Fliox.Hub.Host
             var upsert          = new UpsertEntities { container = container, entities = entities, entityKeys = entityKeys };
             await dstContainer.UpsertEntities(upsert, syncContext).ConfigureAwait(false);
         }
+        #endregion
     }
 }
