@@ -83,7 +83,8 @@ namespace Friflo.Json.Fliox.Hub.Client
     // ----------------------------------------- public methods -----------------------------------------
     #region - initialize    
         /// <summary>
-        /// Instantiate a <see cref="FlioxClient"/> with a given <paramref name="hub"/>.
+        /// Instantiate a <see cref="FlioxClient"/> for the <see cref="database"/> exposed by the given <paramref name="hub"/>. <br/>
+        /// If <see cref="database"/> is null the client uses the default database assigned to the <paramref name="hub"/>.
         /// </summary>
         public FlioxClient(FlioxHub hub, string database = null) {
             if (hub  == null)  throw new ArgumentNullException(nameof(hub));
