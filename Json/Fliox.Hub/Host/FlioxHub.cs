@@ -64,12 +64,12 @@ namespace Friflo.Json.Fliox.Hub.Host
     public class FlioxHub : IDisposable, ILogSource
     {
     #region - members
+        /// <summary> The default <see cref="database"/> assigned to the <see cref="FlioxHub"/> </summary>
         [DebuggerBrowsable(Never)]
         public   readonly   EntityDatabase      database;       // not null
-        /// expose <see cref="database"/> as property to list it within the first members in Debugger
-        // ReSharper disable once UnusedMember.Local
+        // ReSharper disable once UnusedMember.Local - show as property to list it within the first members in Debugger
         private             EntityDatabase      Database        => database;
-        
+        /// <summary> name of the default <see cref="database"/> assigned to the <see cref="FlioxHub"/> </summary>
         public              string              DatabaseName    => database.name; // not null
         public   override   string              ToString()      => database.name;
         
@@ -78,9 +78,11 @@ namespace Friflo.Json.Fliox.Hub.Host
         
         /// <summary>
         /// An optional <see cref="Event.EventDispatcher"/> used to enable Pub-Sub. <br/>
-        /// If assigned the database send push events to clients for database changes and messages these clients have subscribed. <br/>
-        /// In case of remote database connections <b>WebSockets</b> are used to send Pub-Sub events to clients.   
+        /// If assigned the database send push events to clients for database changes and messages these clients have subscribed.
         /// </summary>
+        /// <remarks>
+        /// In case of remote database connections <b>WebSockets</b> are used to send Pub-Sub events to clients.   
+        /// </remarks>
         public              EventDispatcher     EventDispatcher     { get; set; }
         
         /// <summary>
@@ -101,14 +103,15 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// A host name that is assigned to a default database.
         /// Its only purpose is to use it as id in <see cref="HostHits.id"/>.
         /// </summary>
-        /// 
         public   readonly   string                  hostName;
         
+        /// <summary>host <see cref="Version"/> - available via command <b>std.Host</b></summary>
         public   readonly   string                  Version = "0.0.1";
         
-        /// <summary>General Hub information. Clients can request this information with the command <b>std.Details</b></summary>
+        /// <summary>General Hub information - available via command <b>std.Host</b></summary>
         public              HubInfo                 Info { get => info; set => info = value ?? throw new ArgumentNullException(nameof(Info)); }
         
+        /// <summary><see cref="Routes"/> exposed by the Host - available via command <b>std.Host</b> </summary>
         public              IReadOnlyList<string>   Routes => routes;
         
         public   readonly   SharedEnv               sharedEnv;
