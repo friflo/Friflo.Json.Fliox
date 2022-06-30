@@ -144,7 +144,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         private static bool IsEventTarget (EventSubClient subClient, SyncMessageTask messageTask)
         {
             var isEventTarget   = true;
-            // --- is eventSubscriber a target client
+            // --- is event subscriber a target client
             var targetClients   = messageTask.clients;
             if (targetClients != null) {
                 foreach (var targetClient in targetClients) {
@@ -154,7 +154,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                 isEventTarget = false;
             }
             var subUser = subClient.user;
-            // --- is eventSubscriber a target user
+            // --- is event subscriber a target user
             var targetUsers     = messageTask.users;
             if (targetUsers != null) {
                 foreach (var targetUser in targetUsers) {
@@ -163,7 +163,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                 }
                 isEventTarget = false;
             }
-            // --- is eventSubscriber a target group
+            // --- is event subscriber a target group
             var targetGroups    = messageTask.groups;
             if (targetGroups != null) {
                 var userGroups = subUser.groups;
