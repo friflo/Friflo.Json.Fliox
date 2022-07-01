@@ -26,7 +26,7 @@ As **Fliox Protocol** messages like `SyncRequest` & `SyncResponse` are serialize
 You can try out sending `SyncRequest`'s in the **Playground** tab of the [**Hub Explorer**](../../Fliox.Hub.Explorer/README.md)
 
 *Note:*  
-Alternatively access a server its **OpenAPI** or **GraphQL** API.  
+Alternatively access a server by its **OpenAPI** or **GraphQL** API.  
 These API's are available via the **`OAS`** and **`GQL`** links in the [**Hub Explorer**](../../Fliox.Hub.Explorer/README.md)
 
 
