@@ -72,7 +72,10 @@ namespace Friflo.Json.Fliox.Hub.Protocol
         [Required]  public  string              container;
         /// <summary>number of <see cref="entities"/> - not utilized by Protocol</summary>
         [DebugInfo] public  int?                count;
-        /// <summary>all <see cref="entities"/> as results from <see cref="SyncRequest.tasks"/> of a <see cref="SyncRequest"/></summary>
+        /// <summary>
+        /// all <see cref="entities"/> from the <see cref="container"/> resulting from
+        /// <see cref="ReadEntities"/> and <see cref="QueryEntities"/> tasks of a <see cref="SyncRequest"/>
+        /// </summary>
         /// Required only by <see cref="RemoteHost"/> for serialization
         [Required]  public  List<JsonValue>     entities;
         /// <summary>list of entities not found by <see cref="ReadEntities"/> tasks</summary>

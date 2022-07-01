@@ -156,7 +156,10 @@ export class ContainerEntities {
     container  : string;
     /** number of **entities** - not utilized by Protocol */
     count?     : int32 | null;
-    /** all **entities** as results from **tasks** of a **SyncRequest** */
+    /**
+     * all **entities** from the **container** resulting from
+     * **ReadEntities** and **QueryEntities** tasks of a **SyncRequest**
+     */
     entities   : any[];
     /** list of entities not found by **ReadEntities** tasks */
     notFound?  : string[] | null;
