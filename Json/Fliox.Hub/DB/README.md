@@ -9,7 +9,8 @@
 namespace **`Friflo.Json.Fliox.Hub.DB`**
 
 This namespace provide a set of administrative databases when using a `FlioxHub` as a server - a `HttpHost`.  
-Using these database in a `HttpHost` is optional.
+Using these database in a `FlioxHub` is optional.  
+
 
 - **`cluster`** - [ClusterStore](../DB/Cluster/ClusterStore.cs) -
     Expose information about hosted databases their containers, commands and schema.  
@@ -21,7 +22,32 @@ Using these database in a `HttpHost` is optional.
     Access and change user **permissions** and **roles** required for authorization.  
 
 
+## Examples
+To utilize these databases add them as an extension database to a `FlioxHub`.  
+*Prerequisite*
+``` csharp
+var hub = new FlioxHub(database); // Create a FlioxHub with given default database
+```
 
+### **`cluster`**
+``` csharp
+// expose info of hosted databases. cluster is required by Hub Explorer
+hub.AddExtensionDB (new ClusterDB("cluster", hub));
+```
+
+### **`monitor`**
+``` csharp
+// expose monitor stats as extension database
+hub.AddExtensionDB (new MonitorDB("monitor", hub));
+```
+
+### **`user_db`**
+``` csharp
+var userDB          = new FileDatabase("user_db", c.userDbPath, new UserDBHandler(), null, false);
+hub.Authenticator   = new UserAuthenticator(userDB) // optional - otherwise all tasks are authorized
+    .SubscribeUserDbChanges(hub.EventDispatcher);   // optional - apply user_db changes instantaneously
+hub.AddExtensionDB(userDB);                         // expose user_db as extension database
+```
 
 
 

@@ -45,14 +45,14 @@ namespace Fliox.DemoHub
             hub.Info.projectName    = "DemoHub";                                                        // optional
             hub.Info.projectWebsite = "https://github.com/friflo/Friflo.Json.Fliox/tree/main/DemoHub";  // optional
             hub.Info.envName        = "dev";                                                            // optional
-            hub.AddExtensionDB (new ClusterDB("cluster", hub));     // optional - expose info of hosted databases. Required by Hub Explorer
+            hub.AddExtensionDB (new ClusterDB("cluster", hub));     // optional - expose info of hosted databases. cluster is required by Hub Explorer
             hub.AddExtensionDB (new MonitorDB("monitor", hub));     // optional - expose monitor stats as extension database
             hub.EventDispatcher     = new EventDispatcher(true);    // optional - enables sending events for subscriptions
             
             var userDB              = new FileDatabase("user_db", c.userDbPath, new UserDBHandler(), null, false);
-            hub.Authenticator       = new UserAuthenticator(userDB) // optional - otherwise all request tasks are authorized
+            hub.Authenticator       = new UserAuthenticator(userDB) // optional - otherwise all tasks are authorized
                 .SubscribeUserDbChanges(hub.EventDispatcher);       // optional - apply user_db changes instantaneously
-            hub.AddExtensionDB(userDB);                             // optional - expose userStore as extension database
+            hub.AddExtensionDB(userDB);                             // optional - expose user_db as extension database
             
             var httpHost            = new HttpHost(hub, "/fliox/") { CacheControl = c.cache };
             httpHost.AddHandler      (new GraphQLHandler());
