@@ -9,7 +9,7 @@
 namespace **`Friflo.Json.Fliox.Hub.DB`**
 
 This namespace provide a set of administrative databases when using a `FlioxHub` as a server - a `HttpHost`.  
-Using these database in a `FlioxHub` is optional.  
+Using these databases in a `FlioxHub` is optional.  
 If adding these databases to a `FlioxHub` they are available in the [**Hub Explorer**](../../Fliox.Hub.Explorer/README.md)
 
 - **`cluster`** - [ClusterStore](../DB/Cluster/ClusterStore.cs) -
@@ -23,7 +23,7 @@ If adding these databases to a `FlioxHub` they are available in the [**Hub Explo
 
 
 ## Examples
-To utilize these databases add them as an extension database to a `FlioxHub`.  
+To utilize these databases add them as extension databases to a `FlioxHub`.  
 *Prerequisite*
 ``` csharp
 var hub = new FlioxHub(database); // Create a FlioxHub with given default database
