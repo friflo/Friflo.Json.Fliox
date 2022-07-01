@@ -18,6 +18,10 @@ The Protocol is designed to be used for **direct** and **remote** calls.
   transport protocols like **HTTP** or **WebSocket**.  
   This enables a **client-server** setup hosting multiple databases at the server and expose them to various clients.
 
+## Note
+The Protocol is commonly not used by an application directly. Instead the `FlioxClient` interface is typically used.  
+It is documented for the purpose of getting a better understanding of the architecture and its goals.
+
 ## Unit of Work
 
 The fundamental feature of protocol messages is the adaption of the **Unit of Work** pattern.  
