@@ -44,7 +44,7 @@ hub.AddExtensionDB (new MonitorDB("monitor", hub));
 ### **`user_db`**
 ``` csharp
 var userDB          = new FileDatabase("user_db", c.userDbPath, new UserDBHandler(), null, false);
-hub.Authenticator   = new UserAuthenticator(userDB) // optional - otherwise all tasks are authorized
+hub.Authenticator   = new UserAuthenticator(userDB)
     .SubscribeUserDbChanges(hub.EventDispatcher);   // optional - apply user_db changes instantaneously
 hub.AddExtensionDB(userDB);                         // expose user_db as extension database
 ```
