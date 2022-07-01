@@ -4,10 +4,6 @@
 
 [![.NET Tests](https://github.com/friflo/Friflo.Json.Fliox/workflows/.NET/badge.svg)](https://github.com/friflo/Friflo.Json.Fliox/actions)
 
-<style>
-oas { background: #55cf42; color: #ffffff; border-radius: 3px; padding: 0px 2px; font-weight: bold; }
-gql { background: #ff6dcf; color: #ffffff; border-radius: 3px; padding: 0px 2px; font-weight: bold; }
-</style>
 
 ## Hub Protocol
 namespace **`Friflo.Json.Fliox.Hub.Protocol`**
@@ -31,7 +27,7 @@ You can try out sending `SyncRequest` in the **Playground** tab of the [**Hub Ex
 
 *Note:*  
 Alternatively access a server via **OpenAPI** or **GraphQL** API.  
-These API's are available via the <oas>OAS</oas> and <gql>GQL</gql> links in the [**Hub Explorer**](../../Fliox.Hub.Explorer/README.md)
+These API's are available via the **`OAS`** and **`GQL`** links in the [**Hub Explorer**](../../Fliox.Hub.Explorer/README.md)
 
 
 ## Unit of Work
