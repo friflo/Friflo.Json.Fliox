@@ -23,10 +23,10 @@ The Protocol is designed to be used for **direct** and **remote** calls.
 In a common **C# .NET** application the protocol is not used directly as the interfaces of `FlioxClient` and `EntitySet<,>` are typically used instead.
 
 As **Fliox Protocol** messages like `SyncRequest` & `SyncResponse` are serialized to **JSON** you can access a server via **HTTP** without an additional SDK.  
-You can try out sending `SyncRequest` in the **Playground** tab of the [**Hub Explorer**](../../Fliox.Hub.Explorer/README.md)
+You can try out sending `SyncRequest`'s in the **Playground** tab of the [**Hub Explorer**](../../Fliox.Hub.Explorer/README.md)
 
 *Note:*  
-Alternatively access a server via **OpenAPI** or **GraphQL** API.  
+Alternatively access a server its **OpenAPI** or **GraphQL** API.  
 These API's are available via the **`OAS`** and **`GQL`** links in the [**Hub Explorer**](../../Fliox.Hub.Explorer/README.md)
 
 
