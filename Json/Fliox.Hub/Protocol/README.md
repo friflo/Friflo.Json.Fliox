@@ -4,6 +4,10 @@
 
 [![.NET Tests](https://github.com/friflo/Friflo.Json.Fliox/workflows/.NET/badge.svg)](https://github.com/friflo/Friflo.Json.Fliox/actions)
 
+<style>
+oas { background: #55cf42; color: #ffffff; border-radius: 3px; padding: 0px 2px; font-weight: bold; }
+gql { background: #ff6dcf; color: #ffffff; border-radius: 3px; padding: 0px 2px; font-weight: bold; }
+</style>
 
 ## Hub Protocol
 namespace **`Friflo.Json.Fliox.Hub.Protocol`**
@@ -18,9 +22,17 @@ The Protocol is designed to be used for **direct** and **remote** calls.
   transport protocols like **HTTP** or **WebSocket**.  
   This enables a **client-server** setup hosting multiple databases at the server and expose them to various clients.
 
-## Note
-The Protocol is commonly not used by an application directly. Instead the `FlioxClient` interface is typically used.  
-It is documented for the purpose of getting a better understanding of the architecture and its goals.
+## Usage
+
+In a common **C# .NET** application the protocol is not used directly as the interfaces of `FlioxClient` and `EntitySet<,>` are typically used instead.
+
+As **Fliox Protocol** messages like `SyncRequest` & `SyncResponse` are serialized to **JSON** you can access a server via **HTTP** without an additional SDK.  
+You can try out sending `SyncRequest` in the **Playground** tab of the [**Hub Explorer**](../../Fliox.Hub.Explorer/README.md)
+
+*Note:*  
+Alternatively access a server via **OpenAPI** or **GraphQL** API.  
+These API's are available via the <oas>OAS</oas> and <gql>GQL</gql> links in the [**Hub Explorer**](../../Fliox.Hub.Explorer/README.md)
+
 
 ## Unit of Work
 
