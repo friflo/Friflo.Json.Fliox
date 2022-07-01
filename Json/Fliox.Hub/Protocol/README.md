@@ -16,20 +16,20 @@ The Protocol is designed to be used for **direct** and **remote** calls.
 
 - **remote** - protocol messages are serialized to JSON so that they can be sent via various
   transport protocols like **HTTP** or **WebSocket**.  
-  This enables a **client-server** setup to host multiples database at the server and expose them to various clients.
+  This enables a **client-server** setup hosting multiple databases at the server and expose them to various clients.
 
 ## Unit of Work
 
 The fundamental feature of protocol messages is the adaption of the **Unit of Work** pattern.  
-Each `SyncRequest` contains a set of tasks like: *Read*, *Create*, *Update*, *Delete*, *SendMessage*, *SendCommand*, ...  
+Each `SyncRequest` contains a set of tasks like: *Create*, *Read*, *Update*, *Delete*, *SendMessage*, *SendCommand*, ...  
 Applying this pattern enables:
 
-- Increase **efficiency** by minimizing the remote communication overhead (chattiness) by reducing the number of requests or messages
-  send between a client and a server.  
+- Increase **efficiency** by minimizing the the significant remote communication overhead (chattiness)
+  by reducing the number of requests or messages send between a client and a server.  
   This is simply achieved by combining a set of tasks into a single request.
 
 - Increase **reliability** in remote communication as a set of tasks in a single request arrives at its target as a whole.  
-  In opposite in *RESTful* API each database operation is executed in a separate request.  
+  In opposite: in a *RESTful* API each database operation is executed in a separate request.  
   So in a scenario where multiple database changes need to be executed - e.g. updates or deletes in multiple tables -
   the remote connection may disconnect.  
   This results in a state where database changes are applied only partly.
