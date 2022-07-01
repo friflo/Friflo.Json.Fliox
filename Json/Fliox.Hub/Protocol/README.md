@@ -28,7 +28,7 @@ The fundamental feature of protocol messages is the adaption of the **Unit of Wo
 Each `SyncRequest` contains a set of tasks like: *Create*, *Read*, *Update*, *Delete*, *SendMessage*, *SendCommand*, ...  
 Applying this pattern enables:
 
-- Increase **efficiency** by minimizing the the significant remote communication overhead (chattiness)
+- Increase **efficiency** by minimizing the significant remote communication overhead (chattiness)
   by reducing the number of requests or messages send between a client and a server.  
   This is simply achieved by combining a set of tasks into a single request.
 
