@@ -5,7 +5,7 @@
 [![.NET Tests](https://github.com/friflo/Friflo.Json.Fliox/workflows/.NET/badge.svg)](https://github.com/friflo/Friflo.Json.Fliox/actions)
 
 
-## Hub support databases
+## DB - Hub support databases
 namespace **`Friflo.Json.Fliox.Hub.DB`**
 
 This namespace provide a set of administrative databases when using a `FlioxHub` as a server - a `HttpHost`.  
