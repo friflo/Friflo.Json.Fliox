@@ -69,7 +69,7 @@ namespace **`Friflo.Json.Burst`**
   [subset of C#/.NET language](https://docs.unity3d.com/Packages/com.unity.burst@1.5/manual/docs/CSharpLanguageSupport_Types.html)
   in the parser implementation.  
 
-  In short this is the absense of using managed objects in any way.
+  In short this is the absence of using managed objects in any way.
   This exclude the usage of managed types like classes, strings, arrays or exceptions.  
   To support this subset the library need to be compiled with `JSON_BURST`.  
   The default / CLR implementation is a little less restrict: arrays (`byte` & `int`) are used.
