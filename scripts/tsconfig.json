@@ -1,5 +1,6 @@
 {
     "compilerOptions": {
+        "target": "ES2021",
         "module": "ESNext",
         "moduleResolution": "Node",
         "lib": ["ES2021"]
