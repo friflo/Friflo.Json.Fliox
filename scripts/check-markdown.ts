@@ -43,7 +43,7 @@ type Markdown = {
     path:       string,
     folder:     string,
     links:      MdLink[],
-    anchors:    string[]
+    anchors:    { [anchor: string] : true }
 }
 
 type MarkdownMap = { [path: string] : Markdown };
@@ -58,8 +58,9 @@ function textFromNode(node: Parent, texts: string[])  {
     for (const name in children) {
         const child = children[name];
         const node  = child as Parent;
-        if (child.type == "text") {
-            texts.push(child.value);
+        switch(child.type) {
+            case "text":        texts.push(child.value);    break;
+            case "inlineCode":  texts.push(child.value);    break;
         }
         if (node.children) {
             textFromNode(node, texts);
@@ -69,8 +70,7 @@ function textFromNode(node: Parent, texts: string[])  {
 
 function markdownFromTree(tree: Parent, markdown: Markdown) {
     const children = tree.children
-    for (const name in children) {
-        const child = children[name];
+    for (const child of children) {
         const node  = child as Parent;
         if (node.children) {
             markdownFromTree(node, markdown);
@@ -87,10 +87,29 @@ function markdownFromTree(tree: Parent, markdown: Markdown) {
         if (node.type == "heading") {    
             const texts: string[] = [];
             textFromNode (node, texts);
-            const label = texts.join("").trim();
-            markdown.anchors.push(label);
+            const label = normalizeAnchorLink(texts.join(""));
+            markdown.anchors[label] = true;
         }    
     }
+}
+
+function normalizeAnchorLink (anchor: string) : string {
+    anchor = anchor.trim().toLocaleLowerCase();
+    let result = "";
+    for (let i = 0; i < anchor.length; i++) {
+        const c = anchor.charCodeAt(i);
+        if ((48 <= c && c <= 57)   ||    // 0..9
+            (97 <= c && c <= 122))       // a..z
+        {
+            result += anchor[i];
+            continue;
+        }
+        if (c == 32) {                  // ' '
+            result += '-';
+            continue;
+        }        
+    }
+    return result;
 }
 
 function parseMarkdown(filePath: string) : Markdown {
@@ -102,7 +121,7 @@ function parseMarkdown(filePath: string) : Markdown {
         path:       filePath,
         folder:     folder,
         links:      [],
-        anchors:    []
+        anchors:    {}
     };
     // if (path != "README.md") { return markdown; }
     markdownFromTree (tree, markdown);
@@ -111,11 +130,8 @@ function parseMarkdown(filePath: string) : Markdown {
 
 function checkLinks (cwd: string, markdown: Markdown, context: MarkdownContext) {
     for (const link of markdown.links) {
-        const source = `${cwd + markdown.path}:${link.line}:${link.column}`;
-        const url = link.url;
-        if (url.startsWith("#")) {
-            continue;
-        }
+        const source    = `${cwd + markdown.path}:${link.line}:${link.column}`;
+        const url       = link.url;
         if (url.startsWith("http://")   ||
             url.startsWith("https://")
         ) {
@@ -127,16 +143,21 @@ function checkLinks (cwd: string, markdown: Markdown, context: MarkdownContext) 
         const target    = path.normalize(markdown.folder + "/" + urlPath).replaceAll("\\", "/");
 
         if (hashPos != -1) {
-            const targetMarkdown= context.markdownMap[target];
+            const targetMarkdown= hashPos == 0 ? markdown : context.markdownMap[target];
             if (!targetMarkdown) {
-                console.log(`${source} error: broken link`);
+                console.log(`${source}   error - broken link`);
+            } else {
+                const hash = url.substring(hashPos + 1);
+                if (!targetMarkdown.anchors[hash]) {
+                    console.log(`${source}   error - hash not found: ${hash}`);
+                }
             }
             continue;
         }
         fs.access(cwd + target, fs.constants.R_OK, (err) => {
             if (err == null)
                 return;
-            console.log(`${source} error: broken link - ${target}`);
+            console.log(`${source}   error - broken link: ${target}`);
         });
     }
 }
@@ -164,6 +185,7 @@ async function main() {
         markdownMap:    markdownMap,
         externalLinks:  []
     }
+    // parseMarkdown("Json/Fliox.Hub/Host/README.md");
     for (const file of files) {
         const markdown = parseMarkdown(file);
         markdownMap[file] = markdown;
