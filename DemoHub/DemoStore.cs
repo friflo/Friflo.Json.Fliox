@@ -12,10 +12,7 @@ namespace Fliox.DemoHub
     /// <br/>
     /// <i>Info</i>: Use command <b>demo.FakeRecords</b> to create fake records in various containers. <br/>
     /// </summary>
-    /// <remarks>
-    /// The <see cref="MessageHandler"/> demonstrates how to use a <see cref="DemoStore"/> instances as client to
-    /// execute common database operations like: Upsert, Count and Query. <br/>
-    /// </remarks>
+    /// <remarks>Command handlers are implemented at <see cref="MessageHandler"/> using <see cref="DemoStore"/> clients</remarks>
     [OpenAPI(Version = "1.0.0",
         ContactName = "Ullrich Praetz", ContactUrl = "https://github.com/friflo/Friflo.Json.Fliox/issues",
         LicenseName = "MIT",            LicenseUrl = "https://spdx.org/licenses/MIT.html")]
