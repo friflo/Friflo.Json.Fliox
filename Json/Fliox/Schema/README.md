@@ -58,7 +58,7 @@ From these input schemas the following output schemas can be generate:
 
 ## Examples
 
-- A code example showing code generation based on a C# `Type` is shown at [FlioxClient](../../../Json/Fliox.Hub/Client/README.md#schema-generation)
+- A code example showing code generation based on a C# `Type` is shown at [FlioxClient](../../Fliox.Hub/Client/README.md#schema-generation)
 
 - Examples for code generation and JSON type validation at:  
   [Schema generators & JSON Validation tests](../../../Json.Tests/Common/UnitTest/Fliox/Schema)

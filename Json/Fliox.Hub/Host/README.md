@@ -6,7 +6,7 @@
 
 
 ## General
-There are two general ways to access a database using a [`FlioxClient`](../../../Json/Fliox.Hub/Client/README.md)
+There are two general ways to access a database using a [`FlioxClient`](../../Fliox.Hub/Client/README.md)
 
 - **direct** access a database by using a specific `EntityDatabase` implementation like
   `FileDatabase`, `MemoryDatabase` or other implementations using a `FlioxHub`.  
@@ -28,7 +28,7 @@ There are two general ways to access a database using a [`FlioxClient`](../../..
 namespace **`Friflo.Json.Fliox.Hub.Host`**
 
 A `FlioxHub` instance is the single entry point used to handle **all** requests send by a client.  
-E.g. direct/remote via a [`FlioxClient`](../../../Json/Fliox.Hub/Client/README.md) or remote-only via an HTTP client - typically a web browser.  
+E.g. direct/remote via a [`FlioxClient`](../../Fliox.Hub/Client/README.md) or remote-only via an HTTP client - typically a web browser.  
 When instantiating a `FlioxHub` an `EntityDatabase` need to be assigned used to execute all
 **database operations**, **commands** and **messages** send by a client targeting this database.
 
@@ -65,7 +65,7 @@ A `HttpHost` can be integrated by two different HTTP servers:
 
 The HTTP Web API is designed to be used by arbitrary HTTP clients.
 
-A generic Web client utilizing all HTTP features is the [**Hub Explorer**](../../../Json/Fliox.Hub.Explorer/README.md).  
+A generic Web client utilizing all HTTP features is the [**Hub Explorer**](../../Fliox.Hub.Explorer/README.md).  
 The Explorer is a set of static web files - an SPA - which can be hosted by an `HttpHost`.
 
 
@@ -109,7 +109,7 @@ HTTP features in detail:
     - enable JSON **auto completion**, **validation** and reference **links** in Hub Explorer editor
 
 
-- Add the [**Hub Explorer**](../../../Json/Fliox.Hub.Explorer/README.md) to:
+- Add the [**Hub Explorer**](../../Fliox.Hub.Explorer/README.md) to:
     - **browse** databases, containers and entities
 
     - execute container queries using a **LINQ** filter expression
