@@ -11,7 +11,7 @@
     "www:tsc":       "tsc --project Json/Fliox.Hub.Explorer/www~/explorer/src",
     "www:tsc-watch": "tsc --project Json/Fliox.Hub.Explorer/www~/explorer/src -w",
 
-    "check:markdown": "node scripts/check-markdown.js",
+    "check:markdown": "ts-node ./scripts/check-markdown.ts",
 
     "postinstall": "node scripts/postinstall.js"
   },
@@ -24,7 +24,8 @@
     "eslint": "^7.32.0",
     "fswin": "^3.21.1015",
     "graphql": "16.3.0",
-    "mdast-util-from-markdown": "1.2.0"
+    "mdast-util-from-markdown": "1.2.0",
+    "ts-node": "10.8.1"
   },
   "dependencies": {},
   "workspaces": [

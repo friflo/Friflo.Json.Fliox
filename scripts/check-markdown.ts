@@ -3,21 +3,23 @@ import * as fs              from 'fs';
 
 import { promisify }        from 'util';
 import { fromMarkdown }     from 'mdast-util-from-markdown'
+import { Root } from 'mdast-util-from-markdown/lib';
+
 
 const readdirAsync      = promisify(fs.readdir);
 const statAsync         = promisify(fs.stat);
 
 
-async function scan(directoryName = './data', results = []) {
+async function scanMarkdownFiles(directoryName: string, results : string[] = []) {
     let files = await readdirAsync(directoryName);
     for (let f of files) {
-        let fullPath = path.join(directoryName, f);
+        let fullPath: string = path.join(directoryName, f);
         let stat = await statAsync(fullPath);
         if (stat.isDirectory()) {
             if (directoryName == "node_modules") {
                 continue;
             }
-            await scan(fullPath, results);
+            await scanMarkdownFiles(fullPath, results);
         } else {
             if (f == "class-diagram.md") {
                 continue;
@@ -30,23 +32,37 @@ async function scan(directoryName = './data', results = []) {
     return results;
 }
 
+type Markdown = {
+    links:      string[],
+    anchors:    string[]
+}
 
-function checkMarkdown(path) {
+function markdownFromTree(tree: Root, markdown: Markdown) {
+    for (const child in tree.children) {
+        
+    }
+}
 
-    const content   = fs.readFileSync(path, {encoding: 'utf8'});
-    const tree      = fromMarkdown(content)
+function parseMarkdown(path: string) {
+    const content       = fs.readFileSync(path, {encoding: 'utf8'});
+    const tree: Root    = fromMarkdown(content);
+    const markdown = {
+        links:   [],
+        anchors: []
+    };
+    markdownFromTree (tree, markdown);
     // get links in markdown
-    return {};
+    return markdown;
 }
 
 async function main() {
     console.log("cwd:", process.cwd());
     console.log();
 
-    const files = await scan("./");
-    const markdownMap = {};
+    const files = await scanMarkdownFiles("./");
+    const markdownMap : { [path: string] : Markdown } = {};
     for (const file of files) {
-        const markdown = checkMarkdown(file);
+        const markdown = parseMarkdown(file);
         markdownMap[file] = markdown;
     }
     console.log(files);
