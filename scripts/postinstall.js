@@ -1,4 +1,4 @@
-var fsWin = require('fswin');
+import fsWin from 'fswin';
 
 const isWindows = process.platform.startsWith("win");
 
