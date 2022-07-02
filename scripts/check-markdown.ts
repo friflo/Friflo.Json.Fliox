@@ -181,7 +181,7 @@ function logExternalLinks(externalLinks: string[]) {
     }
 }
 
-async function main() {
+async function main() : Promise<number> {
     const cwd = process.cwd();
     console.log(`cwd: ${cwd}\n`);
 
@@ -203,14 +203,23 @@ async function main() {
     }    
     // console.log(markdownMap["README.md"]);
     // checkLinks(cwd + "/", markdownMap["README.md"], context);
+    let errorCount = 0;
     for (const path in markdownMap) {
         const markdown = markdownMap[path];
         checkLinks(cwd + "/", markdown, context);
+        errorCount += markdown.errors.length;
+    }    
+    console.log (`\n ${errorCount} errors`);
+    for (const path in markdownMap) {
+        const markdown = markdownMap[path];
         for (const error of markdown.errors) {
             console.log(`${cwd + "/" + markdown.path}:${error.line}:${error.column}   - error ${error.message}`);
         }
     }
+    console.log (``);
     // logExternalLinks (context.externalLinks);
+    return errorCount;
 }
 
-await main();
+const errorCount = await main();
+if (errorCount != 0) process.exit(1);
