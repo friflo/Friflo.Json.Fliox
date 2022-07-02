@@ -197,12 +197,11 @@ async function main() : Promise<number> {
         const markdown = parseMarkdown(file);
         markdownMap[file] = markdown;
         // console.log(markdown);
-    }
-    for (const file of files) {
         console.log("./" + file);
-    }    
+    }
     // console.log(markdownMap["README.md"]);
     // checkLinks(cwd + "/", markdownMap["README.md"], context);
+
     let errorCount = 0;
     for (const path in markdownMap) {
         const markdown = markdownMap[path];
