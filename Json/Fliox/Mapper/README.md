@@ -119,7 +119,7 @@ namespace **`Friflo.Json.Fliox.Mapper`**
     - **Reusing** of `ObjectReader` & `ObjectWriter` instance to avoid unnecessary allocations on the heap
 
     - **No heap allocations** are performed when using `ReadTo()` and using a subset of supported types:
-        arrays, `Lists` and classes ensured by [unit test](Json.Tests/Common/UnitTest/Mapper/TestNoAllocation.cs)
+        arrays, `Lists` and classes ensured by [unit test](../../../Json.Tests/Common/UnitTest/Fliox/Mapper/TestNoAllocation.cs)
 
 - Supported C#/.NET types:
 

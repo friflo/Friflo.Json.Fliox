@@ -106,13 +106,18 @@ function parseMarkdown(filePath: string) : Markdown {
 
 function checkLinks (cwd: string, markdown: Markdown, markdownMap: MarkdownMap) {
     for (const link of markdown.links) {
-        const url = link.url;
+        let url = link.url;
         if (url.startsWith("#")         ||
             url.startsWith("http://")   ||
             url.startsWith("https://")
         ) {
             continue;
         }
+        const hashPos = url.indexOf("#");
+        if (hashPos != -1) {
+            url = url.substring(0, hashPos);
+        }
+
         const target = path.normalize(cwd + markdown.folder + "/" + url);
 
         fs.access(target, fs.constants.R_OK, (err) => {
