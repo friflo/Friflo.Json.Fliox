@@ -106,24 +106,29 @@ function parseMarkdown(filePath: string) : Markdown {
 
 function checkLinks (cwd: string, markdown: Markdown, markdownMap: MarkdownMap) {
     for (const link of markdown.links) {
-        let url = link.url;
+        const source = `${cwd + markdown.path}:${link.line}:${link.column}`;
+        const url = link.url;
         if (url.startsWith("#")         ||
             url.startsWith("http://")   ||
             url.startsWith("https://")
         ) {
             continue;
         }
-        const hashPos = url.indexOf("#");
+        const hashPos   = url.indexOf("#");
+        const urlPath   = hashPos == -1 ? url :  url.substring(0, hashPos);
+        const target    = path.normalize(markdown.folder + "/" + urlPath).replaceAll("\\", "/");
+
         if (hashPos != -1) {
-            url = url.substring(0, hashPos);
+            const targetMarkdown= markdownMap[target];
+            if (!targetMarkdown) {
+                console.log(`${source} error: broken link`);
+            }
+            continue;
         }
-
-        const target = path.normalize(cwd + markdown.folder + "/" + url);
-
-        fs.access(target, fs.constants.R_OK, (err) => {
+        fs.access(cwd + target, fs.constants.R_OK, (err) => {
             if (err == null)
                 return;
-            console.log(`${cwd + markdown.path}:${link.line}:${link.column} error: broken link - ${target}`);
+            console.log(`${source} error: broken link - ${target}`);
         });
     }
 }
