@@ -34,16 +34,11 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
         
         // --- commands
         /// <summary>authenticate user <see cref="Credentials"/>: <see cref="Credentials.userId"/> and <see cref="Credentials.token"/></summary>
-        public CommandTask<AuthResult> AuthenticateUser(Credentials command) {
-            return SendCommand<Credentials, AuthResult>(nameof(AuthenticateUser), command);
-        }
-        public CommandTask<ValidateUserDbResult> ValidateUserDb() {
-            return SendCommand<ValidateUserDbResult>(nameof(ValidateUserDb));
-        }
-        public CommandTask<bool> ClearAuthCache() {
-            return SendCommand<bool>(nameof(ClearAuthCache));
-        }
-        
+        public CommandTask<AuthResult>           AuthenticateUser(Credentials command)  => SendCommand<Credentials, AuthResult>(nameof(AuthenticateUser), command);
+        public CommandTask<ValidateUserDbResult> ValidateUserDb()                       => SendCommand<ValidateUserDbResult>(nameof(ValidateUserDb));
+        public CommandTask<bool>                 ClearAuthCache()                       => SendCommand<bool>(nameof(ClearAuthCache));
+
+        // --- IUserAuth
         public async Task<AuthResult> Authenticate(Credentials command) {
             var commandTask = AuthenticateUser(command);
             await SyncTasks().ConfigureAwait(false);
