@@ -38,8 +38,15 @@ type Markdown = {
 }
 
 function markdownFromTree(tree: Root, markdown: Markdown) {
-    for (const child in tree.children) {
-        
+    for (const name in tree.children) {
+        const child = tree.children[name];
+        var node: any = child;
+        if (node.children) {
+            markdownFromTree(node, markdown);
+        }
+        if (node.type == "link") {
+            markdown.links.push(node.url);
+        }        
     }
 }
 
@@ -60,8 +67,10 @@ async function main() {
     console.log();
 
     const files = await scanMarkdownFiles("./");
+
     const markdownMap : { [path: string] : Markdown } = {};
     for (const file of files) {
+        if (file != "README.md") continue;
         const markdown = parseMarkdown(file);
         markdownMap[file] = markdown;
     }
