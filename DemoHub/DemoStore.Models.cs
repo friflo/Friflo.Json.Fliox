@@ -12,7 +12,7 @@ namespace Fliox.DemoHub
 
     // ---------------------------------- entity models ----------------------------------
     public class Article {
-        [Required]  public  long            id { get; set; }
+        [Key]       public  long            id { get; set; }
         [Required]  public  string          name;
         [Relation(nameof(DemoStore.producers))]
                     public  long            producer;
@@ -20,20 +20,20 @@ namespace Fliox.DemoHub
     }
 
     public class Customer {
-        [Required]  public  long            id { get; set; }
+        [Key]       public  long            id { get; set; }
         [Required]  public  string          name;
                     public  DateTime?       created;
     }
     
     public class Employee {
-        [Required]  public  long            id { get; set; }
+        [Key]       public  long            id { get; set; }
         [Required]  public  string          firstName;
                     public  string          lastName;
                     public  DateTime?       created;
     }
 
     public class Order {
-        [Required]  public  long            id { get; set; }
+        [Key]       public  long            id { get; set; }
         [Relation(nameof(DemoStore.customers))]
                     public  long            customer;
                     public  DateTime        created;
@@ -48,7 +48,7 @@ namespace Fliox.DemoHub
     }
 
     public class Producer {
-        [Required]  public  long            id { get; set; }
+        [Key]       public  long            id { get; set; }
         [Required]  public  string          name;
         [Relation(nameof(DemoStore.employees))]
                     public  List<long>      employees;

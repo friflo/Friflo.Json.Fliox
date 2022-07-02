@@ -25,6 +25,7 @@ public abstract class PocStore {
 }
 
 public class Order {
+    [Key]
     [Required]
     string           id;
     string           customer;
@@ -33,6 +34,7 @@ public class Order {
 }
 
 public class Customer {
+    [Key]
     [Required]
     string  id;
     [Required]
@@ -40,6 +42,7 @@ public class Customer {
 }
 
 public class Article {
+    [Key]
     [Required]
     string  id;
     [Required]
@@ -48,6 +51,7 @@ public class Article {
 }
 
 public class Producer {
+    [Key]
     [Required]
     string        id;
     [Required]
@@ -56,6 +60,7 @@ public class Producer {
 }
 
 public class Employee {
+    [Key]
     [Required]
     string  id;
     [Required]
@@ -102,6 +107,7 @@ public class OrderItem {
 }
 
 public abstract class PocEntity {
+    [Key]
     [Required]
     string  id;
 }
