@@ -24,15 +24,14 @@ namespace Friflo.Json.Fliox.Hub.Client
     ///     Define a <b>database schema</b> by declaring its containers, commands and messages
     ///   </item>
     ///   <item>
-    ///     Instances of a class extending <see cref="FlioxClient"/> are <b>database clients</b> providing
-    ///     type-safe access to the database containers, commands and messages
+    ///     Its instances are <b>database clients</b> providing type-safe access to database containers, commands and messages
     ///   </item>
     /// </list>
     /// Its containers are fields or properties of type <see cref="EntitySet{TKey,T}"/>. <br/>
     /// Its commands are methods returning a <see cref="CommandTask{TResult}"/>.<br/>
     /// Its messages are methods returning a <see cref="MessageTask"/>.<br/>
     /// <br/>
-    /// Instances of a class extending <see cref="FlioxClient"/> can be used on server and client side.<br/>
+    /// <see cref="FlioxClient"/> instances can be used in server and client code.<br/>
     /// The <see cref="FlioxClient"/> features and utilization available at
     /// <a href="https://github.com/friflo/Friflo.Json.Fliox/blob/main/Json/Fliox.Hub/Client/README.md">Client README.md</a>
     /// </summary>
