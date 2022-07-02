@@ -49,7 +49,8 @@ type Markdown = {
 type MarkdownMap = { [path: string] : Markdown };
 
 type MarkdownContext = {
-    markdownMap: MarkdownMap,
+    markdownMap:    MarkdownMap,
+    externalLinks:  string[],
 }
 
 function textFromNode(node: Parent, texts: string[])  {
@@ -118,7 +119,7 @@ function checkLinks (cwd: string, markdown: Markdown, context: MarkdownContext) 
         if (url.startsWith("http://")   ||
             url.startsWith("https://")
         ) {
-            // console.log(url);
+            context.externalLinks.push(url);
             continue;
         }
         const hashPos   = url.indexOf("#");
@@ -140,6 +141,18 @@ function checkLinks (cwd: string, markdown: Markdown, context: MarkdownContext) 
     }
 }
 
+function logExternalLinks(externalLinks: string[]) {
+    console.log("\n---------- external links ----------");
+    externalLinks.sort();
+    let last: string = null;
+    for (const link of externalLinks) {
+        if (link == last)
+            continue;
+        last = link;
+        console.log(link);
+    }
+}
+
 async function main() {
     const cwd = process.cwd();
     console.log(`cwd: ${cwd}\n`);
@@ -147,8 +160,9 @@ async function main() {
     const files = await scanMarkdownFiles("./");
 
     const markdownMap : MarkdownMap = {};
-    const context: MarkdownContext = {
-        markdownMap : markdownMap
+    const context:      MarkdownContext = {
+        markdownMap:    markdownMap,
+        externalLinks:  []
     }
     for (const file of files) {
         const markdown = parseMarkdown(file);
@@ -164,6 +178,7 @@ async function main() {
         const markdown = markdownMap[path];
         checkLinks(cwd + "/", markdown, context);
     }
+    // logExternalLinks (context.externalLinks);
 }
 
 await main();
