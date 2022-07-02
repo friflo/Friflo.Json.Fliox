@@ -33,11 +33,20 @@ async function scanMarkdownFiles(directoryName: string, results : string[] = [])
     return results;
 }
 
+type MdLink = {
+    url:    string;
+    line:   number;
+    column:    number;
+}
+
 type Markdown = {
     path:       string,
-    links:      string[],
+    folder:     string,
+    links:      MdLink[],
     anchors:    string[]
 }
+
+type MarkdownMap = { [path: string] : Markdown };
 
 function textFromNode(node: Parent, texts: string[])  {
     const children = node.children
@@ -62,7 +71,13 @@ function markdownFromTree(tree: Parent, markdown: Markdown) {
             markdownFromTree(node, markdown);
         }
         if (node.type == "link") {
-            markdown.links.push(node.url);
+            const start = node.position.start;
+            const link: MdLink = {
+                url:    node.url,
+                line:   start.line,
+                column: start.column
+            }
+            markdown.links.push(link);
         }
         if (node.type == "heading") {    
             const texts: string[] = [];
@@ -73,11 +88,14 @@ function markdownFromTree(tree: Parent, markdown: Markdown) {
     }
 }
 
-function parseMarkdown(path: string) : Markdown {
-    const content       = fs.readFileSync(path, {encoding: 'utf8'});
+function parseMarkdown(filePath: string) : Markdown {
+    const content       = fs.readFileSync(filePath, {encoding: 'utf8'});
     const tree: Root    = fromMarkdown(content);
-    const markdown = {
-        path:       path,
+    const folder        = path.dirname(filePath);
+
+    const markdown: Markdown = {
+        path:       filePath,
+        folder:     folder,
         links:      [],
         anchors:    []
     };
@@ -86,20 +104,45 @@ function parseMarkdown(path: string) : Markdown {
     return markdown;
 }
 
+function checkLinks (cwd: string, markdown: Markdown, markdownMap: MarkdownMap) {
+    for (const link of markdown.links) {
+        const url = link.url;
+        if (url.startsWith("#")         ||
+            url.startsWith("http://")   ||
+            url.startsWith("https://")
+        ) {
+            continue;
+        }
+        const target = path.normalize(cwd + markdown.folder + "/" + url);
+
+        fs.access(target, fs.constants.R_OK, (err) => {
+            if (err == null)
+                return;
+            console.log(`${cwd + markdown.path}:${link.line}:${link.column} error: broken link - ${target}`);
+        });
+    }
+}
+
 async function main() {
-    console.log("cwd:", process.cwd());
+    const cwd = process.cwd();
+    console.log("cwd:", cwd);
     console.log();
 
     const files = await scanMarkdownFiles("./");
 
-    const markdownMap : { [path: string] : Markdown } = {};
+    const markdownMap : MarkdownMap = {};
     for (const file of files) {
         const markdown = parseMarkdown(file);
         markdownMap[file] = markdown;
-        console.log(markdown);
+        // console.log(markdown);
     }
     // console.log(markdownMap["README.md"]);
-    console.log(files);
+    // console.log(files);
+    checkLinks(cwd + "/", markdownMap["README.md"], markdownMap);
+    for (const path in markdownMap) {
+        const markdown = markdownMap[path];
+        checkLinks(cwd + "/", markdown, markdownMap);
+    }
 }
 
 main();
