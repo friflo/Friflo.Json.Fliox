@@ -21,7 +21,7 @@ This avoid frequent updates of the database services and minimize dependencies b
 
 ## VSCode
 To simplify manual editing of entities (files) in VSCode [PocStore - JSON Schema](../../Schema/JSON/PocStore) is used.
-The JSON Schema files in this folder are generated from the models by the [Schema Generator](../../../Common/UnitTest/Fliox/Schema).
+The JSON Schema files in this folder are generated from the models by the [Schema Generator](../../../Common/UnitTest/Fliox/Schema/PocStore.cs).
 
 The mapping of **JSON Schema** files via VSCode is explained here:
 [Mapping to a schema in the workspace](https://code.visualstudio.com/docs/languages/json#_mapping-to-a-schema-in-the-workspace)
