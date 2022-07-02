@@ -3,7 +3,7 @@ import * as fs              from 'fs';
 
 import { promisify }        from 'util';
 import { fromMarkdown }     from 'mdast-util-from-markdown'
-import { Content, Parent, Root } from 'mdast-util-from-markdown/lib';
+import { Parent, Root }     from 'mdast-util-from-markdown/lib';
 
 
 const readdirAsync      = promisify(fs.readdir);
@@ -43,10 +43,10 @@ function textFromNode(node: Parent, texts: string[])  {
     const children = node.children
     for (const name in children) {
         const child = children[name];
+        const node  = child as Parent;
         if (child.type == "text") {
             texts.push(child.value);
         }
-        const node: any = child;
         if (node.children) {
             textFromNode(node, texts);
         }  
@@ -57,7 +57,7 @@ function markdownFromTree(tree: Parent, markdown: Markdown) {
     const children = tree.children
     for (const name in children) {
         const child = children[name];
-        var node = child as Parent;
+        const node  = child as Parent;
         if (node.children) {
             markdownFromTree(node, markdown);
         }
@@ -83,7 +83,6 @@ function parseMarkdown(path: string) : Markdown {
     };
     // if (path != "README.md") { return markdown; }
     markdownFromTree (tree, markdown);
-    // get links in markdown
     return markdown;
 }
 
