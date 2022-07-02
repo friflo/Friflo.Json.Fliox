@@ -39,11 +39,18 @@ type MdLink = {
     column:    number;
 }
 
+type Error = {
+    message:    string;
+    line:       number;
+    column:     number;
+}
+
 type Markdown = {
     path:       string,
     folder:     string,
     links:      MdLink[],
     anchors:    { [anchor: string] : true }
+    errors:     Error[]
 }
 
 type MarkdownMap = { [path: string] : Markdown };
@@ -121,7 +128,8 @@ function parseMarkdown(filePath: string) : Markdown {
         path:       filePath,
         folder:     folder,
         links:      [],
-        anchors:    {}
+        anchors:    {},
+        errors:     []
     };
     // if (path != "README.md") { return markdown; }
     markdownFromTree (tree, markdown);
@@ -130,7 +138,8 @@ function parseMarkdown(filePath: string) : Markdown {
 
 function checkLinks (cwd: string, markdown: Markdown, context: MarkdownContext) {
     for (const link of markdown.links) {
-        const source    = `${cwd + markdown.path}:${link.line}:${link.column}`;
+        const line      = link.line;
+        const column    = link.column;
         const url       = link.url;
         if (url.startsWith("http://")   ||
             url.startsWith("https://")
@@ -145,20 +154,18 @@ function checkLinks (cwd: string, markdown: Markdown, context: MarkdownContext) 
         if (hashPos != -1) {
             const targetMarkdown= hashPos == 0 ? markdown : context.markdownMap[target];
             if (!targetMarkdown) {
-                console.log(`${source}   error - broken link`);
+                markdown.errors.push ({message: "broken link", line, column});
             } else {
                 const hash = url.substring(hashPos + 1);
                 if (!targetMarkdown.anchors[hash]) {
-                    console.log(`${source}   error - hash not found: ${hash}`);
+                    markdown.errors.push ({message: `hash not found: ${hash}`, line, column});
                 }
             }
             continue;
         }
-        fs.access(cwd + target, fs.constants.R_OK, (err) => {
-            if (err == null)
-                return;
-            console.log(`${source}   error - broken link: ${target}`);
-        });
+        if (!fs.existsSync(cwd + target)) {
+            markdown.errors.push ({message: `broken link: ${target}`, line, column});
+        }
     }
 }
 
@@ -199,6 +206,9 @@ async function main() {
     for (const path in markdownMap) {
         const markdown = markdownMap[path];
         checkLinks(cwd + "/", markdown, context);
+        for (const error of markdown.errors) {
+            console.log(`${cwd + "/" + markdown.path}:${error.line}:${error.column}   - error ${error.message}`);
+        }
     }
     // logExternalLinks (context.externalLinks);
 }
