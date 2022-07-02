@@ -48,6 +48,10 @@ type Markdown = {
 
 type MarkdownMap = { [path: string] : Markdown };
 
+type MarkdownContext = {
+    markdownMap: MarkdownMap,
+}
+
 function textFromNode(node: Parent, texts: string[])  {
     const children = node.children
     for (const name in children) {
@@ -104,14 +108,17 @@ function parseMarkdown(filePath: string) : Markdown {
     return markdown;
 }
 
-function checkLinks (cwd: string, markdown: Markdown, markdownMap: MarkdownMap) {
+function checkLinks (cwd: string, markdown: Markdown, context: MarkdownContext) {
     for (const link of markdown.links) {
         const source = `${cwd + markdown.path}:${link.line}:${link.column}`;
         const url = link.url;
-        if (url.startsWith("#")         ||
-            url.startsWith("http://")   ||
+        if (url.startsWith("#")) {
+            continue;
+        }
+        if (url.startsWith("http://")   ||
             url.startsWith("https://")
         ) {
+            // console.log(url);
             continue;
         }
         const hashPos   = url.indexOf("#");
@@ -119,7 +126,7 @@ function checkLinks (cwd: string, markdown: Markdown, markdownMap: MarkdownMap) 
         const target    = path.normalize(markdown.folder + "/" + urlPath).replaceAll("\\", "/");
 
         if (hashPos != -1) {
-            const targetMarkdown= markdownMap[target];
+            const targetMarkdown= context.markdownMap[target];
             if (!targetMarkdown) {
                 console.log(`${source} error: broken link`);
             }
@@ -135,24 +142,28 @@ function checkLinks (cwd: string, markdown: Markdown, markdownMap: MarkdownMap) 
 
 async function main() {
     const cwd = process.cwd();
-    console.log("cwd:", cwd);
-    console.log();
+    console.log(`cwd: ${cwd}\n`);
 
     const files = await scanMarkdownFiles("./");
 
     const markdownMap : MarkdownMap = {};
+    const context: MarkdownContext = {
+        markdownMap : markdownMap
+    }
     for (const file of files) {
         const markdown = parseMarkdown(file);
         markdownMap[file] = markdown;
         // console.log(markdown);
     }
+    for (const file of files) {
+        console.log("./" + file);
+    }    
     // console.log(markdownMap["README.md"]);
-    // console.log(files);
-    checkLinks(cwd + "/", markdownMap["README.md"], markdownMap);
+    // checkLinks(cwd + "/", markdownMap["README.md"], context);
     for (const path in markdownMap) {
         const markdown = markdownMap[path];
-        checkLinks(cwd + "/", markdown, markdownMap);
+        checkLinks(cwd + "/", markdown, context);
     }
 }
 
-main();
+await main();
