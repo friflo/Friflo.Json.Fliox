@@ -131,7 +131,6 @@ function parseMarkdown(filePath: string) : Markdown {
         anchors:    {},
         errors:     []
     };
-    // if (path != "README.md") { return markdown; }
     markdownFromTree (tree, markdown);
     return markdown;
 }
@@ -170,7 +169,7 @@ function checkLinks (cwd: string, markdown: Markdown, context: MarkdownContext) 
 }
 
 function logExternalLinks(externalLinks: string[]) {
-    console.log("\n---------- external links ----------");
+    console.log("---------- external links ----------");
     externalLinks.sort();
     let last: string = null;
     for (const link of externalLinks) {
@@ -185,6 +184,7 @@ async function main() : Promise<number> {
     const cwd = process.cwd();
     console.log(`cwd: ${cwd}\n`);
 
+    // --- scan all markdown files in folder
     const files = await scanMarkdownFiles("./");
 
     const markdownMap : MarkdownMap = {};
@@ -192,22 +192,32 @@ async function main() : Promise<number> {
         markdownMap:    markdownMap,
         externalLinks:  []
     }
-    // parseMarkdown("Json/Fliox.Hub/Host/README.md");
+    const debugFile = null; // "README.md";
+    if (debugFile) {
+        parseMarkdown(debugFile);
+    }
+
+    // --- parse all markdown files
     for (const file of files) {
         const markdown = parseMarkdown(file);
         markdownMap[file] = markdown;
         // console.log(markdown);
         console.log("./" + file);
     }
-    // console.log(markdownMap["README.md"]);
-    // checkLinks(cwd + "/", markdownMap["README.md"], context);
+    if (debugFile) {
+        console.log(markdownMap[debugFile]);
+        checkLinks(cwd + "/", markdownMap[debugFile], context);
+    }
 
+    // --- check links in all markdown files
     let errorCount = 0;
     for (const path in markdownMap) {
         const markdown = markdownMap[path];
         checkLinks(cwd + "/", markdown, context);
         errorCount += markdown.errors.length;
-    }    
+    }
+
+    // --- render results & errors
     console.log (`\n ${errorCount} errors`);
     for (const path in markdownMap) {
         const markdown = markdownMap[path];
@@ -216,7 +226,9 @@ async function main() : Promise<number> {
         }
     }
     console.log (``);
-    // logExternalLinks (context.externalLinks);
+    if (process.argv.indexOf("--links") != -1) {
+        logExternalLinks (context.externalLinks);
+    }
     return errorCount;
 }
 

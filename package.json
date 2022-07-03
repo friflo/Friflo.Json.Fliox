@@ -11,7 +11,8 @@
     "www:tsc":       "tsc --project Json/Fliox.Hub.Explorer/www~/explorer/src",
     "www:tsc-watch": "tsc --project Json/Fliox.Hub.Explorer/www~/explorer/src -w",
 
-    "check:markdown": "ts-node ./scripts/check-markdown.ts",
+    "markdown:check": "ts-node ./scripts/check-markdown.ts",
+    "markdown:links": "ts-node ./scripts/check-markdown.ts --links",
 
     "postinstall": "node scripts/postinstall.js"
   },
