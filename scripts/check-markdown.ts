@@ -5,26 +5,40 @@ import { promisify }        from 'util';
 import { fromMarkdown }     from 'mdast-util-from-markdown'
 import { Parent, Root }     from 'mdast-util-from-markdown/lib';
 
-
 const readdirAsync      = promisify(fs.readdir);
 const statAsync         = promisify(fs.stat);
 
+const ignoreFolders = [
+    "node_modules",
+    ".bin",
+    ".obj",
+    ".git",
+    ".idea",
+    ".vs",
+    ".run"
+];
 
-async function scanMarkdownFiles(directoryName: string, results : string[] = []) {
-    let files = await readdirAsync(directoryName);
-    for (let f of files) {
-        let fullPath: string = path.join(directoryName, f);
+const ignoreFiles = [
+    "class-diagram.md"
+];
+
+async function scanMarkdownFiles(directoryPath: string, results : string[] = []) {
+    let files = await readdirAsync(directoryPath);
+    // console.log(`${directoryPath}    ${files.length}`)
+
+    for (let filename of files) {
+        let fullPath: string = path.join(directoryPath, filename);
         fullPath = fullPath.replaceAll("\\", "/");
         let stat = await statAsync(fullPath);
         if (stat.isDirectory()) {
-            if (directoryName == "node_modules") {
+            if (ignoreFolders.indexOf(filename) != - 1) {
                 continue;
             }
             await scanMarkdownFiles(fullPath, results);
         } else {
-            if (f == "class-diagram.md") {
+            if (ignoreFiles.indexOf(filename) != - 1) {
                 continue;
-            }            
+            }       
             if (fullPath.endsWith(".md")) {
                 results.push(fullPath);
             }
