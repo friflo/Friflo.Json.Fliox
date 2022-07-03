@@ -35,7 +35,7 @@ This class provide two fundamental functionalities:
 The main features of a [**HTTP Fliox Hub**](https://github.com/friflo/Friflo.Json.Fliox/blob/main/Json/Fliox.Hub/Host/README.md#httphost) are:
 - provide JSON based Web APIs - **RESTful**, **HTTP** & **WebSocket Batch** - to access **key-value** or **document** databases.
 - assign a **database schema** to each database
-- aim for near optimal request performance regarding **low latency** and **high throughput**
+- aim for optimal request performance regarding **low latency** and **high throughput**
 - enable simple and efficient TDD as database access can be tested with **in-memory** or **file-system** databases
 - host a single-page Web App to browse database containers / tables and execute domain specific commands
   See [**Hub Explorer**](https://github.com/friflo/Friflo.Json.Fliox/blob/main/Json/Fliox.Hub.Explorer/README.md)
