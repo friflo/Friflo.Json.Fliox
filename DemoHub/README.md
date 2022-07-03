@@ -48,7 +48,7 @@ The main features of a [**HTTP Fliox Hub**](https://github.com/friflo/Friflo.Jso
   to explore the API
 - provide a [**GraphQL API**](https://graphql.org/) and
   host [**GraphiQL**](https://github.com/graphql/graphiql) to explore the API
-- [**JSON Fliox Hub**](https://github.com/friflo/Friflo.Json.Fliox) is designed as a library - not a framework.  
+- [**JSON Fliox Hub**](https://github.com/friflo/Friflo.Json.Fliox#fliox-hub) is designed as a library - not a framework.  
   This enable seamless integration in any **ASP.NET Core** application by a single route. e.g. `"/fliox/{*path}"`
   
 
