@@ -144,7 +144,7 @@ namespace **`Friflo.Json.Fliox.Mapper`**
 
 - **CLS compliant API**. Meaning the API of the **Friflo.Json.Fliox** library is compatible to all languages targeting .NET. These are:
   C#, C++/CLI, Eiffel, F#, IronPython, IronRuby, PowerBuilder, Visual Basic, Visual COBOL, and Windows PowerShell. See more at:
-  [Common Language Specification](https://docs.microsoft.com/en-us/dotnet/standard/language-independence-and-language-independent-components)
+  [Common Language Specification](https://docs.microsoft.com/en-us/dotnet/standard/common-type-system#common-language-specification)
 
 - **No global mutable** state like `static` variables to avoid side effects. A typical candidate would by the `TypeStore` class.
   Avoiding this ensures an application to control its live time and guarantees that unit tests are free from side effect.
