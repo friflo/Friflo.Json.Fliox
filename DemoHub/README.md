@@ -54,7 +54,7 @@ The main features of a [**HTTP Fliox Hub**](https://github.com/friflo/Friflo.Jso
 
 ## Files
 
-| file                                       | description                                                                  |                             
+| file                                       | description                                                                  |
 |--------------------------------------------|------------------------------------------------------------------------------|
 | [DemoStore.cs](DemoStore.cs)               | is the database client <br/> declares database containers & commands         |
 | [DemoStore.Models.cs](DemoStore.Models.cs) | contain entity types & command models (DTO's)                                |
