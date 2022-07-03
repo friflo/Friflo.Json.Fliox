@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Text;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.DB.Monitor;
 using Friflo.Json.Fliox.Hub.Host.Auth;
@@ -207,6 +208,8 @@ namespace Friflo.Json.Fliox.Hub.Host
                     tasks.Add(result);
                 } catch (Exception e) {
                     tasks.Add(TaskExceptionError(e)); // Note!  Should not happen - see documentation of this method.
+                    var message = GetLogMessage(dbName, syncRequest.userId, index, task);
+                    Logger.Log(HubLog.Error, message, e);
                 }
             }
             hostStats.Update(syncRequest);
@@ -234,6 +237,15 @@ namespace Friflo.Json.Fliox.Hub.Host
             var msg             = $"{exceptionName}: {e.Message}";
             var stack           = StackTraceUtils.GetStackTrace(e, false);
             return new TaskErrorResult (TaskErrorResultType.UnhandledException,msg, stack);
+        }
+        
+        private static string GetLogMessage (string database, in JsonKey user, int taskIndex, SyncRequestTask task) {
+            var sb = new StringBuilder();
+            sb.Append("database: "); sb.Append(database);
+            sb.Append(", user: "); sb.Append(user.AsString());
+            sb.Append(", task["); sb.Append(taskIndex); sb.Append("]: "); sb.Append(task.TaskType);
+            sb.Append(" ("); sb.Append(task.TaskName); sb.Append(')');
+            return sb.ToString();
         }
         
         private void UpdateRequestStats(string database, SyncRequest syncRequest, SyncContext syncContext) {
