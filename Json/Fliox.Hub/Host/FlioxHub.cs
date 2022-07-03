@@ -242,7 +242,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         private static string GetLogMessage (string database, in JsonKey user, int taskIndex, SyncRequestTask task) {
             var sb = new StringBuilder();
             sb.Append("database: "); sb.Append(database);
-            sb.Append(", user: "); sb.Append(user.AsString());
+            sb.Append(", user: "); user.AppendTo(sb);
             sb.Append(", task["); sb.Append(taskIndex); sb.Append("]: "); sb.Append(task.TaskType);
             sb.Append(" ("); sb.Append(task.TaskName); sb.Append(')');
             return sb.ToString();
