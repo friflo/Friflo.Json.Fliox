@@ -102,7 +102,7 @@ HTTP features in detail:
 - Assign a [DatabaseSchema](DatabaseSchema.cs) to a database to:
     - **validate** records written to the database by its schema definition
     
-    - create type definitions for various languages: **Typescript**, **C#**, **Kotlin**, **JSON Schema** / **OpenAPI** and **Html**
+    - create type definitions for various languages: **Typescript**, **C#**, **Kotlin**, **JSON Schema** / **OpenAPI**, **GraphQL and **Html**
 
     - display entities as **table** in Hub Explorer
 

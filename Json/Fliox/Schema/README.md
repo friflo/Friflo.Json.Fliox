@@ -20,6 +20,7 @@ From these input schemas the following output schemas can be generate:
 - C#
 - [JSON Schema](https://json-schema.org/) / [OpenAPI](https://www.openapis.org/)
 - Typescript
+- GraphQL
 - Kotlin
 - HTML
 

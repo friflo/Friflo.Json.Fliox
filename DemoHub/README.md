@@ -28,7 +28,7 @@ This class provide two fundamental functionalities:
 1. It is a **database client** providing type-safe access to its containers, commands and messages
 2. It defines a **database schema** by declaring its containers, commands and messages.  
   The schema is used by host for **record validation** and exposing the schema in various formats:  
-  **JSON Schema**, **OpenAPI**, **HTML**, **Typescript**, **C#** & **Kotlin**.
+  **JSON Schema**, **OpenAPI**, **GraphQL**, **HTML**, **Typescript**, **C#** & **Kotlin**.
 
 
 ## Features

@@ -16,7 +16,7 @@ Additional to using class instances as clients it also defines a **database sche
 It can be assigned as a `DatabaseSchema` to an `EntityDatabase` instance for
 - **JSON Validation** of entities / records written to a container
 - **Code generation** of various programming languages.  
-  Built-In supported languages are: **Typescript**, **C#**, **Kotlin**, **JSON Schema** / **OpenAPI** and **HTML**.
+  Built-In supported languages are: **Typescript**, **C#**, **Kotlin**, **JSON Schema** / **OpenAPI**, **GraphQL** and **HTML**.
 - Support of generic database clients like the [**Hub Explorer**](../../Fliox.Hub.Explorer/README.md)
 
 
@@ -129,7 +129,7 @@ So all generated files and their zip archives are available via urls.
 
 Alternatively code can be generated with C# using `SchemaModel.GenerateSchemaModels()`
 
-The following example generate the types for Typescript, C#, Kotlin, JSON Schema and HTML based on the
+The following example generate the types for Typescript, C#, Kotlin, JSON Schema / OpenAPI, GraphQL and HTML based on the
 passed schema type `ShopStore`. The generated code is written to folder `./schema/`
 
 ``` csharp
