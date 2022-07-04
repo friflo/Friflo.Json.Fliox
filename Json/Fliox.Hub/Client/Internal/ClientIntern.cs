@@ -148,7 +148,11 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         }
         
         private void InitEntitySets(FlioxClient client, EntityInfo[] entityInfos) {
-            var clientTypeInfo = GetClientTypeInfo (client.type, entityInfos);
+            var clientTypeInfo  = GetClientTypeInfo (client.type, entityInfos);
+            var error           = clientTypeInfo.error;
+            if (error != null) {
+                throw new InvalidTypeException(error);
+            }
             var mappers = clientTypeInfo.entitySetMappers;
             for (int n = 0; n < entityInfos.Length; n++) {
                 var entityInfo  = entityInfos[n];
@@ -160,32 +164,6 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 setByName[name] = entitySet;
                 entityInfo.SetEntitySetMember(client, entitySet);
             }
-            ValidateMappers(mappers);
-        }
-        
-        // Validate [Relation(<container>)] fields / properties
-        // todo this validation can be done once per FlioxClient type
-        private void ValidateMappers(IEntitySetMapper[] mappers) {
-            foreach (var mapper in mappers) {
-                var typeMapper      = (TypeMapper)mapper;
-                var entityMapper    = typeMapper.GetElementMapper();
-                var fields          = entityMapper.propFields.fields;
-                foreach (var field in fields) {
-                    var relation = field.relation;
-                    if (relation == null)
-                        continue;
-                    if (!TryGetSetByName(relation, out var entitySet)) {
-                        throw new InvalidTypeException($"[Relation('{relation}')] at {entityMapper.type.Name}.{field.name} not found");
-                    }
-                    var fieldMapper     = field.fieldType;
-                    var relationMapper  = fieldMapper.GetElementMapper() ?? fieldMapper;
-                    var relationType    = relationMapper.nullableUnderlyingType ?? relationMapper.type;
-                    var setKeyType      = entitySet.KeyType;
-                    if (setKeyType != relationType) {
-                        throw new InvalidTypeException($"[Relation('{relation}')] at {entityMapper.type.Name}.{field.name} invalid type. Expect: {setKeyType.Name}");
-                    }
-                }
-            }
         }
         
         private ClientTypeInfo GetClientTypeInfo (Type clientType, EntityInfo[] entityInfos) {
@@ -196,11 +174,38 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 var entitySetType = entityInfos[n].entitySetType;
                 mappers[n] = (IEntitySetMapper)typeStore.GetTypeMapper(entitySetType);
             }
-            var clientInfo = new ClientTypeInfo (mappers);
+            var error       = ValidateMappers(mappers, entityInfos);
+            var clientInfo  = new ClientTypeInfo (mappers, error);
             ClientTypeCache.Add(clientType, clientInfo);
             return clientInfo;
         }
         
+        // Validate [Relation(<container>)] fields / properties
+        private static string ValidateMappers(IEntitySetMapper[] mappers, EntityInfo[] entityInfos) {
+            var entityInfoMap = entityInfos.ToDictionary(entityInfo => entityInfo.container);
+            foreach (var mapper in mappers) {
+                var typeMapper      = (TypeMapper)mapper;
+                var entityMapper    = typeMapper.GetElementMapper();
+                var fields          = entityMapper.propFields.fields;
+                foreach (var field in fields) {
+                    var relation = field.relation;
+                    if (relation == null)
+                        continue;
+                    if (!entityInfoMap.TryGetValue(relation, out var entityInfo)) {
+                        return $"[Relation('{relation}')] at {entityMapper.type.Name}.{field.name} not found";
+                    }
+                    var fieldMapper     = field.fieldType;
+                    var relationMapper  = fieldMapper.GetElementMapper() ?? fieldMapper;
+                    var relationType    = relationMapper.nullableUnderlyingType ?? relationMapper.type;
+                    var setKeyType      = entityInfo.keyType;
+                    if (setKeyType != relationType) {
+                        return $"[Relation('{relation}')] at {entityMapper.type.Name}.{field.name} invalid type. Expect: {setKeyType.Name}";
+                    }
+                }
+            }
+            return null;
+        }
+
         private static readonly IDictionary<string, SyncSet> EmptySynSet = new EmptyDictionary<string, SyncSet>();
 
         internal IDictionary<string, SyncSet> CreateSyncSets() {
@@ -278,10 +283,12 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         
         private readonly struct ClientTypeInfo
         {
-            internal readonly IEntitySetMapper[] entitySetMappers;
+            internal  readonly  string              error;
+            internal  readonly  IEntitySetMapper[]  entitySetMappers;
         
-            internal ClientTypeInfo (IEntitySetMapper[] entitySetMappers) {
+            internal ClientTypeInfo (IEntitySetMapper[] entitySetMappers, string error) {
                 this.entitySetMappers   = entitySetMappers;
+                this.error              = error;
             }
         }
     }
