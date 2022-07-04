@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Client.Event;
 using Friflo.Json.Fliox.Hub.Client.Internal;
@@ -13,6 +12,7 @@ using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Utils;
 using static System.Diagnostics.DebuggerBrowsableState;
+using Browse = System.Diagnostics.DebuggerBrowsableAttribute;
 
 // ReSharper disable UseObjectOrCollectionInitializer
 namespace Friflo.Json.Fliox.Hub.Client
@@ -44,28 +44,29 @@ namespace Friflo.Json.Fliox.Hub.Client
         //          This ensures focus on fields & properties relevant for an application which are:
         //          Tasks, UserInfo & EntitySet<,> fields
         // ReSharper disable once InconsistentNaming
-                                    internal    ClientIntern                _intern;        // Use intern struct as first field
+                        internal    ClientIntern                _intern;        // Use intern struct as first field
         /// <summary> List of tasks created by its <see cref="FlioxClient"/> methods. These tasks are executed when calling <see cref="SyncTasks"/> </summary>
-                                    public      IReadOnlyList<SyncTask>     Tasks           => GetTasks();
+                        public      IReadOnlyList<SyncTask>     Tasks           => GetTasks();
         // exposed only for access in debugger - not used by internally
         // ReSharper disable once UnusedMember.Local
-                                    private     FlioxHub                    Hub             => _intern.hub;
+                        private     FlioxHub                    Hub             => _intern.hub;
 
         /// <summary> name of the database the client is attached to </summary>
-        [DebuggerBrowsable(Never)]  public      string                      DatabaseName    => _intern.database ?? _intern.hub.DatabaseName;
+        [Browse(Never)] public      string                      DatabaseName    => _intern.database ?? _intern.hub.DatabaseName;
         /// <summary> reference to standard database commands </summary>
-        [DebuggerBrowsable(Never)]  public readonly   StdCommands           std;
-        [DebuggerBrowsable(Never)]  public      IReadOnlyList<SyncFunction> Functions       => _intern.syncStore.functions;
+        [Browse(Never)] public readonly   StdCommands           std;
+        [Browse(Never)] public      IReadOnlyList<SyncFunction> Functions       => _intern.syncStore.functions;
         /// <summary> general client information: attached database, the number of cached entities and scheduled <see cref="Tasks"/> </summary>
-        [DebuggerBrowsable(Never)]  public      ClientInfo                  ClientInfo      => new ClientInfo(this); 
+        [Browse(Never)] public      ClientInfo                  ClientInfo      => new ClientInfo(this); 
         /// <summary> If true the serialization of entities to JSON is prettified </summary>
-        [DebuggerBrowsable(Never)]  public      bool                        WritePretty { set => SetWritePretty(value); }
+        [Browse(Never)] public      bool                        WritePretty { set => SetWritePretty(value); }
         /// <summary> If true the serialization of entities to JSON write null fields. Otherwise null fields are omitted </summary>
-        [DebuggerBrowsable(Never)]  public      bool                        WriteNull   { set => SetWriteNull(value); }
-        [DebuggerBrowsable(Never)]  internal    readonly   Type             type;
-        [DebuggerBrowsable(Never)]  internal    ObjectPool<ObjectMapper>    ObjectMapper    => _intern.pool.ObjectMapper;
-        [DebuggerBrowsable(Never)]  public      IHubLogger                  Logger          => _intern.hubLogger;
-        public   override                       string                      ToString()      => FormatToString();
+        [Browse(Never)] public      bool                        WriteNull   { set => SetWriteNull(value); }
+        [Browse(Never)] internal    readonly   Type             type;
+        [Browse(Never)] internal    ObjectPool<ObjectMapper>    ObjectMapper    => _intern.pool.ObjectMapper;
+        [Browse(Never)] public      IHubLogger                  Logger          => _intern.hubLogger;
+        
+        public override             string                      ToString()      => FormatToString();
         
         /// <summary> using a static class prevents noise in form of 'Static members' for class instances in Debugger </summary>
         private static class Static {
@@ -156,19 +157,19 @@ namespace Friflo.Json.Fliox.Hub.Client
         #endregion
 
     #region - user id, client id, token
-        [DebuggerBrowsable(Never)]
+        [Browse(Never)]
         public string UserId {
             get => _intern.userId.AsString();
             set => _intern.userId = new JsonKey(value);
         }
         
-        [DebuggerBrowsable(Never)]
+        [Browse(Never)]
         public string Token {
             get => _intern.token;
             set => _intern.token   = value;
         }
 
-        [DebuggerBrowsable(Never)]
+        [Browse(Never)]
         public string ClientId {
             get => _intern.clientId.AsString();
             set => SetClientId(new JsonKey(value));
@@ -220,7 +221,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// <summary>
         /// <see cref="SubscriptionEventHandler"/> is called for all subscription events received by the <see cref="FlioxClient"/>
         /// </summary>
-        [DebuggerBrowsable(Never)] public SubscriptionEventHandler SubscriptionEventHandler {
+        [Browse(Never)] public SubscriptionEventHandler SubscriptionEventHandler {
             get => _intern.subscriptionEventHandler;
             set => _intern.subscriptionEventHandler = value;
         }

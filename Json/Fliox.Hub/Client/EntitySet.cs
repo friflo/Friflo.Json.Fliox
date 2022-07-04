@@ -2,7 +2,6 @@
 // See LICENSE file in the project root for full license information.
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq.Expressions;
 using Friflo.Json.Fliox.Hub.Client.Internal;
 using Friflo.Json.Fliox.Hub.Client.Internal.Key;
@@ -12,7 +11,7 @@ using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Transform;
 using static System.Diagnostics.DebuggerBrowsableState;
-
+using Browse = System.Diagnostics.DebuggerBrowsableAttribute;
 
 // ReSharper disable InconsistentNaming
 namespace Friflo.Json.Fliox.Hub.Client
@@ -42,43 +41,41 @@ namespace Friflo.Json.Fliox.Hub.Client
         // Reason:  EntitySet<,> is used as field or property by an application which is mainly interested
         //          in following properties while debugging:
         //          Peers, Tasks
-        internal            SetIntern<TKey, T>              intern;         // Use intern struct as first field 
+                        internal            SetIntern<TKey, T>          intern;         // Use intern struct as first field 
         /// <summary> available in debugger via <see cref="SetIntern{TKey,T}.SyncSet"/> </summary>
-        [DebuggerBrowsable(Never)]
-        internal            SyncSet<TKey, T>                syncSet;
+        [Browse(Never)] internal            SyncSet<TKey, T>            syncSet;
         /// <summary> key: <see cref="Peer{T}.entity"/>.id </summary>
-        [DebuggerBrowsable(Never)]
-        private             Dictionary<TKey, Peer<T>>       peerMap;        //  Note: must be private by all means
+        [Browse(Never)] private             Dictionary<TKey, Peer<T>>   peerMap;        //  Note: must be private by all means
         
         /// <summary> enable access to entities in debugger. Not used internally. </summary>
         // Note: using Dictionary.Values is okay. The ValueCollection is instantiated only once for a Dictionary instance
         // ReSharper disable once UnusedMember.Local
-        private             IReadOnlyCollection<Peer<T>>    Peers => peerMap?.Values;
+                        private             IReadOnlyCollection<Peer<T>> Peers => peerMap?.Values;
         
         /// <summary> List of tasks created by its <see cref="EntitySet{TKey,T}"/> methods. These tasks are executed when calling <see cref="FlioxClient.SyncTasks"/> </summary>
         //  Not used internally 
-        public              IReadOnlyList<SyncTask>         Tasks => syncSet?.tasks;
+                        public              IReadOnlyList<SyncTask>     Tasks => syncSet?.tasks;
         
         // create _peers map on demand                                      //  Note: must be private by all means
-        private             Dictionary<TKey, Peer<T>>       PeerMap()       => peerMap ?? (peerMap = SyncSet.CreateDictionary<TKey,Peer<T>>());
-        private             SyncSet<TKey, T>                GetSyncSet()    => syncSet ?? (syncSet = new SyncSet<TKey, T>(this));
-        internal override   SyncSetBase<T>                  GetSyncSetBase()=> syncSet;
-        public   override   string                          ToString()      => SetInfo.ToString();
+                        private             Dictionary<TKey, Peer<T>>   PeerMap()       => peerMap ?? (peerMap = SyncSet.CreateDictionary<TKey,Peer<T>>());
+                        private             SyncSet<TKey, T>            GetSyncSet()    => syncSet ?? (syncSet = new SyncSet<TKey, T>(this));
+                        internal override   SyncSetBase<T>              GetSyncSetBase()=> syncSet;
+                        public   override   string                      ToString()      => SetInfo.ToString();
 
-        [DebuggerBrowsable(Never)]  internal override   SyncSet SyncSet     => syncSet;
-        [DebuggerBrowsable(Never)]  internal override   SetInfo SetInfo     => GetSetInfo();
-        [DebuggerBrowsable(Never)]  internal override   Type    KeyType     => typeof(TKey);
-        [DebuggerBrowsable(Never)]  internal override   Type    EntityType  => typeof(T);
+        [Browse(Never)] internal override   SyncSet                     SyncSet         => syncSet;
+        [Browse(Never)] internal override   SetInfo                     SetInfo         => GetSetInfo();
+        [Browse(Never)] internal override   Type                        KeyType         => typeof(TKey);
+        [Browse(Never)] internal override   Type                        EntityType      => typeof(T);
         
         /// <summary> If true the serialization of entities to JSON is prettified </summary>
-        [DebuggerBrowsable(Never)]  public   override   bool    WritePretty { get => intern.writePretty;   set => intern.writePretty = value; }
+        [Browse(Never)] public   override   bool                        WritePretty { get => intern.writePretty;   set => intern.writePretty = value; }
         /// <summary> If true the serialization of entities to JSON write null fields. Otherwise null fields are omitted </summary>
-        [DebuggerBrowsable(Never)]  public   override   bool    WriteNull   { get => intern.writeNull;     set => intern.writeNull   = value; }
+        [Browse(Never)] public   override   bool                        WriteNull   { get => intern.writeNull;     set => intern.writeNull   = value; }
         
         /// <summary> using a static class prevents noise in form of 'Static members' for class instances in Debugger </summary>
         private static class Static  {
-            internal static  readonly   EntityKeyT<TKey, T> EntityKeyTMap       = EntityKey.GetEntityKeyT<TKey, T>();
-            internal static  readonly   KeyConverter<TKey>  KeyConvert          = KeyConverter.GetConverter<TKey>();
+            internal static  readonly       EntityKeyT<TKey, T>         EntityKeyTMap   = EntityKey.GetEntityKeyT<TKey, T>();
+            internal static  readonly       KeyConverter<TKey>          KeyConvert      = KeyConverter.GetConverter<TKey>();
         }
         #endregion
 
