@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Text;
 using Friflo.Json.Fliox.Hub.Client.Internal;
 using Friflo.Json.Fliox.Hub.Client.Internal.Key;
 using Friflo.Json.Fliox.Hub.Protocol;
@@ -74,7 +75,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         public              List<TKey>          Deletes { get; } = new List<TKey>();
         /// <summary> return patches applied to container entities </summary>
         public              List<Patch<TKey>>   Patches { get; } = new List<Patch<TKey>>();
-        public    override  string              ToString()      => changeInfo.ToString();       
+        public    override  string              ToString()      => FormatToString();       
         public    override  string              Container       { get; }
         internal  override  Type                GetEntityType() => typeof(T);
         
@@ -88,6 +89,12 @@ namespace Friflo.Json.Fliox.Hub.Client
         internal Changes(EntitySet<TKey, T> entitySet, ObjectMapper mapper) {
             Container       = entitySet.name;
             objectMapper    = mapper;
+        }
+        
+        private string FormatToString() {
+            var sb = new StringBuilder();
+            changeInfo.AppendTo(sb);
+            return sb.ToString();
         }
         
         internal override void Clear() {

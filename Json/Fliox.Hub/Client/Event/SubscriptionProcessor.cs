@@ -16,7 +16,7 @@ namespace Friflo.Json.Fliox.Hub.Client
     public sealed class SubscriptionProcessor : IDisposable
     {
         private  readonly   EventContext                eventContext;
-        private  readonly   Dictionary<Type, Changes>   changes         = new Dictionary<Type, Changes>();
+        private  readonly   Dictionary<string, Changes> changes         = new Dictionary<string, Changes>();
         /// <summary> contain only <see cref="Changes"/> where <see cref="Changes.Count"/> > 0 </summary>
         internal readonly   List<Changes>               contextChanges  = new List<Changes>();
         internal readonly   List<Message>               messages        = new List<Message>();
@@ -177,14 +177,14 @@ namespace Friflo.Json.Fliox.Hub.Client
         
         internal Changes GetChanges (EntitySet entitySet) {
             var entityType = entitySet.EntityType;
-            if (changes.TryGetValue(entityType, out var change))
+            if (changes.TryGetValue(entitySet.name, out var change))
                 return change;
             object[] constructorParams = { entitySet, objectMapper };
             var keyType     = entitySet.KeyType;
             var genericArgs = new[] { keyType, entityType };
             var instance    = TypeMapperUtils.CreateGenericInstance(typeof(Changes<,>), genericArgs, constructorParams);
             change          = (Changes)instance;
-            changes.Add(entityType, change);
+            changes.Add(entitySet.name, change);
             return change;
         }
     }

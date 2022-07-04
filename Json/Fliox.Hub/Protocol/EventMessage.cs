@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System.Text;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 
 namespace Friflo.Json.Fliox.Hub.Protocol
@@ -88,7 +89,20 @@ namespace Friflo.Json.Fliox.Hub.Protocol
         
         public int Count => creates + upserts + deletes + patches;
         
-        public override string ToString() => $"creates: {creates}, upserts: {upserts}, deletes: {deletes}, patches: {patches}";
+        public override string ToString() => FormatToString();
+        
+        private string FormatToString() {
+            var sb = new StringBuilder();
+            AppendTo(sb);
+            return sb.ToString();
+        }
+        
+        internal void AppendTo(StringBuilder sb) {
+            sb.Append("creates: "); sb.Append(creates);
+            sb.Append(", upserts: "); sb.Append(upserts);
+            sb.Append(", deletes: "); sb.Append(deletes);
+            sb.Append(", patches: "); sb.Append(patches);
+        }
         
         public void Clear() {
             creates = 0;

@@ -72,7 +72,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             sb.Append("> patches: ");
             sb.Append(patches.Count);
             sb.Append(", selection: ");
-            selection.FormatToString(sb);
+            selection.AppendTo(sb);
             return sb.ToString();
         }
         

@@ -20,7 +20,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         private             MemberAccess            memberAccess;   // cached MemberAccess
         private             bool                    isFrozen;
         
-        public   override   string                  ToString()  => FormatToString(new StringBuilder());
+        public   override   string                  ToString() => FormatToString();
 
         public MemberSelection<T> Add(Expression<Func<T, object>> member) {
             if (member == null)     throw new ArgumentNullException(nameof(member));
@@ -49,8 +49,14 @@ namespace Friflo.Json.Fliox.Hub.Client
                 return memberAccess;
             return memberAccess = new MemberAccess(members);
         }
+        
+        private string FormatToString() {
+            var sb = new StringBuilder();
+            AppendTo(sb);
+            return sb.ToString();
+        }
 
-        internal string FormatToString(StringBuilder sb) {
+        internal void AppendTo(StringBuilder sb) {
             sb.Append('[');
             for (int n = 0; n < members.Count; n++) {
                 if (n > 0)
@@ -58,7 +64,6 @@ namespace Friflo.Json.Fliox.Hub.Client
                 sb.Append(members[n]);
             }
             sb.Append(']');
-            return sb.ToString();
         }
     }
     
