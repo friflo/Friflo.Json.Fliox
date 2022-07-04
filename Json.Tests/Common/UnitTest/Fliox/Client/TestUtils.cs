@@ -137,7 +137,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
         
         /// <summary>
         /// FlioxClient / sub class resource consumption:
-        /// Memory:    ~ 1540 + 200 * (EntitySet count) [bytes]
+        /// Memory:    ~ 1232 + 160 * (EntitySet count) [bytes]
         /// Execution: ~  600 + 100 * (EntitySet count) [ns]
         /// </summary>
         [Test]
