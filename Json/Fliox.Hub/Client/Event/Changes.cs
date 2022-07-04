@@ -93,6 +93,8 @@ namespace Friflo.Json.Fliox.Hub.Client
         
         private string FormatToString() {
             var sb = new StringBuilder();
+            sb.Append(Container);
+            sb.Append(" - ");
             changeInfo.AppendTo(sb);
             return sb.ToString();
         }

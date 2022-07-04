@@ -249,8 +249,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                     var articleChanges  = context.GetChanges(client.articles);
                     var producerChanges = context.GetChanges(client.producers);
                     AreEqual(1, articleChanges.Creates.Count);
-                    AreEqual("creates: 1, upserts: 4, deletes: 0, patches: 0", articleChanges.ToString());
-                    AreEqual("creates: 1, upserts: 0, deletes: 0, patches: 0", producerChanges.ToString());
+                    AreEqual("articles - creates: 1, upserts: 4, deletes: 0, patches: 0", articleChanges.ToString());
+                    AreEqual("producers - creates: 1, upserts: 0, deletes: 0, patches: 0", producerChanges.ToString());
                     break;
                 case 9:
                     AreEqual(6, eventInfo.Count);
