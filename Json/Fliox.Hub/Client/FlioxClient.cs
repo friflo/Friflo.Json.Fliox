@@ -100,8 +100,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         
         /// <summary> Remove all tasks and all tracked entities of the <see cref="FlioxClient"/> </summary>
         public void Reset() {
-            foreach (var setPair in _intern.setByType) {
-                EntitySet set = setPair.Value;
+            foreach (var set in _intern.entitySets) {
                 set.Reset();
             }
             _intern.Reset();
@@ -209,8 +208,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         public DetectAllPatches DetectAllPatches() {
             var task = _intern.syncStore.CreateDetectAllPatchesTask();
             using (var pooled = ObjectMapper.Get()) {
-                foreach (var setPair in _intern.setByType) {
-                    EntitySet set = setPair.Value;
+                foreach (var set in _intern.entitySets) {
                     set.DetectSetPatchesInternal(task, pooled.instance);
                 }
             }
@@ -260,8 +258,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         public List<SyncTask> SubscribeAllChanges(Change change, ChangeSubscriptionHandler handler) {
             AssertSubscription();
             var tasks = new List<SyncTask>();
-            foreach (var setPair in _intern.setByType) {
-                var set = setPair.Value;
+            foreach (var set in _intern.entitySets) {
                 // ReSharper disable once PossibleMultipleEnumeration
                 var task = set.SubscribeChangesInternal(change);
                 tasks.Add(task);

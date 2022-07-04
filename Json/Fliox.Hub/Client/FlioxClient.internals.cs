@@ -35,14 +35,14 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
         
         private void SetWritePretty (bool value) {
-            foreach (var setPair in _intern.setByType) {
-                setPair.Value.WritePretty = value;
+            foreach (var set in _intern.entitySets) {
+                set.WritePretty = value;
             }
         }
 
         private void SetWriteNull (bool value){
-            foreach (var setPair in _intern.setByType) {
-                setPair.Value.WriteNull = value;
+            foreach (var set in _intern.entitySets) {
+                set.WriteNull = value;
             }
         }
         
@@ -74,8 +74,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         // ReSharper disable once UnusedMember.Local
         private int GetSubscriptionCount() {
             int count = _intern.subscriptions.Count;
-            foreach (var setPair in _intern.setByType) {
-                var set = setPair.Value;
+            foreach (var set in _intern.entitySets) {
                 if (set.GetSubscription() != null)
                     count++;
             }
@@ -104,21 +103,6 @@ namespace Friflo.Json.Fliox.Hub.Client
             if (_intern.TryGetSetByName(name, out var entitySet))
                 return entitySet;
             throw new InvalidOperationException($"unknown EntitySet. name: {name}");
-        }
-        
-        // TAG_NULL_REF
-        internal EntitySetBase<T> GetEntitySetBase<T>() where T : class {
-            Type entityType = typeof(T);
-            if (_intern.TryGetSetByType(entityType, out EntitySet set))
-                return (EntitySetBase<T>)set;
-            throw new InvalidOperationException($"unknown EntitySet<{entityType.Name}>");
-        }
-
-        internal EntitySet<TKey, T> GetEntitySet<TKey, T>() where T : class {
-            Type entityType = typeof(T);
-            if (_intern.TryGetSetByType(entityType, out EntitySet set))
-                return (EntitySet<TKey, T>)set;
-            throw new InvalidOperationException($"unknown EntitySet<{entityType.Name}>");
         }
         
         private SyncRequest CreateSyncRequest(out SyncStore syncStore) {
@@ -156,8 +140,7 @@ namespace Friflo.Json.Fliox.Hub.Client
                 }
             }
             // --- create new SyncStore and SyncSet's to collect future SyncTask's and execute them via the next SyncTasks() call 
-            foreach (var setPair in _intern.setByType) {
-                EntitySet set = setPair.Value;
+            foreach (var set in _intern.entitySets) {
                 set.ResetSync();
             }
             _intern.syncStore = new SyncStore();

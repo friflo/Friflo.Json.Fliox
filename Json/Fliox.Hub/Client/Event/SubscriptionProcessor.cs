@@ -74,8 +74,8 @@ namespace Friflo.Json.Fliox.Hub.Client
             
             // --- invoke changes handlers
             foreach (var change in contextChanges) {
-                var entityType = change.GetEntityType();
-                client._intern.TryGetSetByType(entityType, out EntitySet set);
+                var container = change.Container;
+                client._intern.TryGetSetByName(container, out EntitySet set);
                 set.changeCallback?.InvokeCallback(change, eventContext);
             }
             if (contextChanges.Count > 0) {

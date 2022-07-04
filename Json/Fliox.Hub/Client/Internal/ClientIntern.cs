@@ -32,7 +32,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         // --- readonly / private - owned
         private             ObjectPatcher                           objectPatcher;  // create on demand
         private             EntityProcessor                         processor;      // create on demand
-        internal readonly   Dictionary<Type,   EntitySet>           setByType;
+        internal readonly   EntitySet[]                             entitySets;
         private  readonly   Dictionary<string, EntitySet>           setByName;
         
         [DebuggerBrowsable(Never)]
@@ -67,22 +67,10 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         private static readonly Dictionary<Type, IEntitySetMapper[]> MapperCache = new Dictionary<Type, IEntitySetMapper[]>();
         private static readonly DirectEventProcessor                 DefaultEventProcessor = new DirectEventProcessor();
 
-        internal EntitySet GetSetByType(Type type) {
-            return setByType[type];
-        }
-        
-        internal bool TryGetSetByType(Type type, out EntitySet set) {
-            return setByType.TryGetValue(type, out set);
-        }
-        
-        internal EntitySet GetSetByName (string name) {
-            return setByName[name];
-        }
-        
-        internal bool TryGetSetByName (string name, out EntitySet set) {
-            return setByName.TryGetValue(name, out set);
-        }
-        
+       
+        internal EntitySet  GetSetByName    (string name)                    => setByName[name];
+        internal bool       TryGetSetByName (string name, out EntitySet set) => setByName.TryGetValue(name, out set);
+
         internal void SetSubscriptionProcessor(SubscriptionProcessor processor) {
             subscriptionProcessor?.Dispose();
             subscriptionProcessor = processor;
@@ -109,7 +97,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             // --- readonly / private - owned
             objectPatcher           = null;
             processor               = null;
-            setByType               = new Dictionary<Type,   EntitySet>(entityInfos.Length);
+            entitySets              = new EntitySet[entityInfos.Length];
             setByName               = new Dictionary<string, EntitySet>(entityInfos.Length);
             subscriptions           = new Dictionary<string, MessageSubscriber>();  // could create lazy - needed only if dealing with subscriptions
             subscriptionsPrefix     = new List<MessageSubscriber>();                // could create lazy - needed only if dealing with subscriptions 
@@ -143,7 +131,6 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             subscriptions.Clear();
             hub.RemoveEventReceiver(clientId);
             setByName.Clear();
-            setByType.Clear();
             processor?.Dispose();
             objectPatcher?.Dispose();
         }
@@ -168,8 +155,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 var setMapper   = mappers[n];
                 var entitySet   = setMapper.CreateEntitySet(name);
                 entitySet.Init(client);
-                setByType[entityInfo.entityType]    = entitySet;
-                setByName[name]                     = entitySet;
+                entitySets[n]   = entitySet;
+                setByName[name] = entitySet;
                 entityInfo.SetEntitySetMember(client, entitySet);
             }
             ValidateMappers(mappers);
@@ -216,8 +203,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
 
         internal IDictionary<string, SyncSet> CreateSyncSets() {
             var count = 0;
-            foreach (var pair in setByName) {
-                SyncSet syncSet = pair.Value.SyncSet;
+            foreach (var set in entitySets) {
+                SyncSet syncSet = set.SyncSet;
                 if (syncSet == null)
                     continue;
                 count++;
@@ -227,12 +214,11 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             }
             // create Dictionary<,> only if required
             var syncSets = new Dictionary<string, SyncSet>(count);
-            foreach (var pair in setByName) {
-                SyncSet syncSet = pair.Value.SyncSet;
+            foreach (var set in entitySets) {
+                SyncSet syncSet = set.SyncSet;
                 if (syncSet == null)
                     continue;
-                string container = pair.Key;
-                syncSets.Add(container, syncSet);
+                syncSets.Add(set.name, syncSet);
             }
             return syncSets;
         }
