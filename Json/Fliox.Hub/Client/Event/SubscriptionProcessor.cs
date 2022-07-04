@@ -176,11 +176,11 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
         
         internal Changes GetChanges (EntitySet entitySet) {
-            var entityType = entitySet.EntityType;
             if (changes.TryGetValue(entitySet.name, out var change))
                 return change;
             object[] constructorParams = { entitySet, objectMapper };
             var keyType     = entitySet.KeyType;
+            var entityType  = entitySet.EntityType;
             var genericArgs = new[] { keyType, entityType };
             var instance    = TypeMapperUtils.CreateGenericInstance(typeof(Changes<,>), genericArgs, constructorParams);
             change          = (Changes)instance;
