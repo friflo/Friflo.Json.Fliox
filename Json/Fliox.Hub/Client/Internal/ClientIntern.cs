@@ -42,7 +42,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
 
         internal            List<MessageSubscriber>                 subscriptionsPrefix;    // create on demand - only used for subscriptions
         internal readonly   ConcurrentDictionary<Task, SyncContext> pendingSyncs;
-        internal readonly   List<JsonKey>                           idsBuf;
+        private             List<JsonKey>                           idsBuf;     //  create buffer on demand - only used for Upsert
 
         // --- mutable state
         internal            SyncStore                   syncStore;
@@ -61,6 +61,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         internal EntityProcessor        EntityProcessor()       => processor             ?? (processor             = new EntityProcessor());
         internal ObjectPatcher          ObjectPatcher()         => objectPatcher         ?? (objectPatcher         = new ObjectPatcher());
         internal SubscriptionProcessor  SubscriptionProcessor() => subscriptionProcessor ?? (subscriptionProcessor = new SubscriptionProcessor());
+        internal List<JsonKey>          IdsBuf()                => idsBuf                ?? (idsBuf                = new List<JsonKey>());
 
         public   override string        ToString()              => "";
 
@@ -102,7 +103,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             subscriptions           = null; 
             subscriptionsPrefix     = null; 
             pendingSyncs            = new ConcurrentDictionary<Task, SyncContext>();
-            idsBuf                  = new List<JsonKey>();
+            idsBuf                  = null;
 
             // --- mutable state
             syncStore                   = new SyncStore();
@@ -122,7 +123,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         
         internal void Dispose() {
             // readonly - owned
-            idsBuf.Clear();
+            idsBuf?.Clear();
             pendingSyncs.Clear();
             disposed = true;
             // messageReader.Dispose();

@@ -137,8 +137,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
         
         /// <summary>
         /// FlioxClient / sub class resource consumption:
-        /// Memory:    ~ 1232 + 160 * (EntitySet count) [bytes]
-        /// Execution: ~  600 + 100 * (EntitySet count) [ns]
+        /// Memory:    ~ 1200 + 160 * (EntitySet count) [bytes]
+        /// Execution: ~  520 + 100 * (EntitySet count) [ns]
         /// </summary>
         [Test]
         public void BenchmarkCreateClient() {
@@ -151,7 +151,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             stopwatch.Start();
             int count = 1; // 1_000_000;
             for (int n = 0; n < count; n++) {
-                new PocStore(hub);                      // ~ 1.04 µs (Release)
+                new PocStore(hub);                      // ~ 0.99 µs (Release)
             }
             stopwatch.Stop();
             Console.WriteLine($"client instantiation count: {count}, ms: {stopwatch.ElapsedMilliseconds}");
@@ -162,7 +162,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             var diff = GC.GetAllocatedBytesForCurrentThread() - start;
             var platform    = Environment.OSVersion.Platform;
             var isWindows   = platform == PlatformID.Win32NT; 
-            var expected    = isWindows ? 2184 : 1968;  // Test Windows & Linux
+            var expected    = isWindows ? 2152 : 1936;  // Test Windows & Linux
             Console.WriteLine($"PocStore allocation. platform: {platform}, memory: {diff}");
             AreEqual(expected, diff);
         }

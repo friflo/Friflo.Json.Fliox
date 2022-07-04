@@ -140,7 +140,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             }
 
             var entityErrorInfo = new TaskErrorInfo();
-            var idsBuf = set.intern.store._intern.idsBuf;
+            var idsBuf = set.intern.store._intern.IdsBuf();
             idsBuf.Clear();
             writeTask.GetIds(idsBuf);
             foreach (var id in idsBuf) {
