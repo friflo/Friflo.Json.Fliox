@@ -73,7 +73,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         
         // ReSharper disable once UnusedMember.Local
         private int GetSubscriptionCount() {
-            int count = _intern.subscriptions.Count;
+            int count = _intern.subscriptions?.Count ?? 0;
             foreach (var set in _intern.entitySets) {
                 if (set.GetSubscription() != null)
                     count++;

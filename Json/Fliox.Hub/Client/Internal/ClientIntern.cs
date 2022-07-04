@@ -36,11 +36,11 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         private  readonly   Dictionary<string, EntitySet>           setByName;
         
         [DebuggerBrowsable(Never)]
-        internal readonly   Dictionary<string, MessageSubscriber>   subscriptions;
+        internal            Dictionary<string, MessageSubscriber>   subscriptions;          // create on demand - only used for subscriptions
         // ReSharper disable once UnusedMember.Local - expose Dictionary as list in Debugger
-        private             IReadOnlyCollection<MessageSubscriber>  Subscriptions => subscriptions.Values;
+        private             IReadOnlyCollection<MessageSubscriber>  Subscriptions => subscriptions?.Values;
 
-        internal readonly   List<MessageSubscriber>                 subscriptionsPrefix;
+        internal            List<MessageSubscriber>                 subscriptionsPrefix;    // create on demand - only used for subscriptions
         internal readonly   ConcurrentDictionary<Task, SyncContext> pendingSyncs;
         internal readonly   List<JsonKey>                           idsBuf;
 
@@ -99,8 +99,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             processor               = null;
             entitySets              = new EntitySet[entityInfos.Length];
             setByName               = new Dictionary<string, EntitySet>(entityInfos.Length);
-            subscriptions           = new Dictionary<string, MessageSubscriber>();  // could create lazy - needed only if dealing with subscriptions
-            subscriptionsPrefix     = new List<MessageSubscriber>();                // could create lazy - needed only if dealing with subscriptions 
+            subscriptions           = null; 
+            subscriptionsPrefix     = null; 
             pendingSyncs            = new ConcurrentDictionary<Task, SyncContext>();
             idsBuf                  = new List<JsonKey>();
 
@@ -127,8 +127,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             disposed = true;
             // messageReader.Dispose();
             subscriptionProcessor?.Dispose();
-            subscriptionsPrefix.Clear();
-            subscriptions.Clear();
+            subscriptionsPrefix?.Clear();
+            subscriptions?.Clear();
             hub.RemoveEventReceiver(clientId);
             setByName.Clear();
             processor?.Dispose();
@@ -142,8 +142,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             token           = null;
             lastEventSeq    = 0;
             syncCount       = 0;
-            subscriptionsPrefix.Clear();    // todo should assert if having open subscriptions 
-            subscriptions.Clear();          // todo should assert if having open subscriptions
+            subscriptionsPrefix?.Clear();   // todo should assert if having open subscriptions 
+            subscriptions?.Clear();         // todo should assert if having open subscriptions
             syncStore       = new SyncStore();
         }
         
@@ -225,7 +225,10 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         
         internal SubscribeMessageTask AddCallbackHandler(string name, MessageCallback handler) {
             var task = new SubscribeMessageTask(name, null);
-            var subs = subscriptions; 
+            var subs = subscriptions;
+            if (subs == null) {
+                subs = subscriptions = new Dictionary<string, MessageSubscriber>();
+            } 
             if (!subs.TryGetValue(name, out var subscriber)) {
                 subscriber = new MessageSubscriber(name);
                 subs.Add(name, subscriber);
@@ -233,6 +236,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 task.state.Executed = true;
             }
             if (subscriber.isPrefix) {
+                if (subscriptionsPrefix == null) subscriptionsPrefix = new List<MessageSubscriber>();
                 subscriptionsPrefix.Add(subscriber);
             }
             subscriber.callbackHandlers.Add(handler);
@@ -240,9 +244,9 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         }
         
         internal SubscribeMessageTask RemoveCallbackHandler (string name, object handler) {
-            var prefix = SubscribeMessage.GetPrefix(name);
-            if (prefix != null) {
-                var subsPrefix = subscriptionsPrefix;
+            var prefix      = SubscribeMessage.GetPrefix(name);
+            var subsPrefix  = subscriptionsPrefix;
+            if (prefix != null && subsPrefix != null) {
                 if (handler == null) {
                     subsPrefix.RemoveAll((sub) => sub.name == prefix);
                 } else {
@@ -253,7 +257,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             }
             var task = new SubscribeMessageTask(name, true);
             var subs = subscriptions;
-            if (!subs.TryGetValue(name, out var subscriber)) {
+            if (subs == null || !subs.TryGetValue(name, out var subscriber)) {
                 task.state.Executed = true;
                 return task;
             }
