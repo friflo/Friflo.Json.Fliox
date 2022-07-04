@@ -64,8 +64,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
 
         public   override string        ToString()              => "";
 
-        private static readonly Dictionary<Type, IEntitySetMapper[]> MapperCache = new Dictionary<Type, IEntitySetMapper[]>();
-        private static readonly DirectEventProcessor                 DefaultEventProcessor = new DirectEventProcessor();
+        private static readonly Dictionary<Type, ClientTypeInfo>    ClientTypeCache = new Dictionary<Type, ClientTypeInfo>();
+        private static readonly DirectEventProcessor                DefaultEventProcessor = new DirectEventProcessor();
 
        
         internal EntitySet  GetSetByName    (string name)                    => setByName[name];
@@ -148,7 +148,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         }
         
         private void InitEntitySets(FlioxClient client, EntityInfo[] entityInfos) {
-            var mappers = GetEntitySetMappers (client.type, entityInfos);
+            var clientTypeInfo = GetClientTypeInfo (client.type, entityInfos);
+            var mappers = clientTypeInfo.entitySetMappers;
             for (int n = 0; n < entityInfos.Length; n++) {
                 var entityInfo  = entityInfos[n];
                 var name        = entityInfo.container;
@@ -187,16 +188,17 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             }
         }
         
-        private IEntitySetMapper[] GetEntitySetMappers (Type clientType, EntityInfo[] entityInfos) {
-            if (MapperCache.TryGetValue(clientType, out var result))
+        private ClientTypeInfo GetClientTypeInfo (Type clientType, EntityInfo[] entityInfos) {
+            if (ClientTypeCache.TryGetValue(clientType, out var result))
                 return result;
             var mappers = new IEntitySetMapper[entityInfos.Length];
             for (int n = 0; n < entityInfos.Length; n++) {
                 var entitySetType = entityInfos[n].entitySetType;
                 mappers[n] = (IEntitySetMapper)typeStore.GetTypeMapper(entitySetType);
             }
-            MapperCache.Add(clientType, mappers);
-            return mappers;
+            var clientInfo = new ClientTypeInfo (mappers);
+            ClientTypeCache.Add(clientType, clientInfo);
+            return clientInfo;
         }
         
         private static readonly IDictionary<string, SyncSet> EmptySynSet = new EmptyDictionary<string, SyncSet>();
@@ -272,6 +274,15 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 task.state.Executed = true;
             }
             return task;
+        }
+        
+        private readonly struct ClientTypeInfo
+        {
+            internal readonly IEntitySetMapper[] entitySetMappers;
+        
+            internal ClientTypeInfo (IEntitySetMapper[] entitySetMappers) {
+                this.entitySetMappers   = entitySetMappers;
+            }
         }
     }
 }
