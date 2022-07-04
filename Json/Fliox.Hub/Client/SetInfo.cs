@@ -99,11 +99,13 @@ namespace Friflo.Json.Fliox.Hub.Client
     public struct ClientInfo
     {
         // ReSharper disable once UnusedAutoPropertyAccessor.Global
-        public  string  Database { get; }
-        public  int     peers;
-        public  int     tasks;
-        public  int     commands;
-        public  int     messages;
+        public          string  Database { get; }
+        public          int     peers;
+        public          int     tasks;
+        public          int     commands;
+        public          int     messages;
+        
+        public override string  ToString() => FormatToString();
 
         internal ClientInfo(FlioxClient client) {
             Database    = client.DatabaseName;
@@ -128,9 +130,14 @@ namespace Friflo.Json.Fliox.Hub.Client
             tasks += info.tasks;
         }
         
-        public override string ToString() => FormatToString(new StringBuilder());
+
+        private string FormatToString() {
+            var sb = new StringBuilder();
+            AppendTo(sb);
+            return sb.ToString();
+        }
         
-        internal string FormatToString(StringBuilder sb) {
+        internal void AppendTo(StringBuilder sb) {
             SetInfo.AppendName(sb, "entities");
             sb.Append(peers);
             
@@ -145,7 +152,6 @@ namespace Friflo.Json.Fliox.Hub.Client
                 SetInfo.AppendTasks(sb, "container",  containerTasks, ref first);
                 sb.Append(']');
             }
-            return sb.ToString();
         }
     } 
 }

@@ -30,7 +30,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             sb.Append('\'');
             sb.Append(DatabaseName);
             sb.Append("'  ");
-            ClientInfo.FormatToString(sb);
+            ClientInfo.AppendTo(sb);
             return sb.ToString();
         }
         
