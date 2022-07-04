@@ -33,7 +33,9 @@ namespace Friflo.Json.Fliox.Hub.Client
     /// <list type="bullet">
     ///   <item> The <see cref="SrcUserId"/> - the origin of the event</item>
     ///   <item> The <see cref="Messages"/> send by a user </item>
-    ///   <item> The database <see cref="Changes"/> made by a user </item>
+    ///   <item> The container <see cref="Changes"/> made by a user. <br/>
+    ///   Use <see cref="GetChanges{TKey,T}"/> to get typed container changes.
+    ///   </item>
     ///   <item> The <see cref="EventInfo"/> containing the number of messages and database changes </item>
     /// </list>
     /// Database change events are not automatically applied to a <see cref="FlioxClient"/>.<br/>
