@@ -111,8 +111,9 @@ namespace Friflo.Json.Fliox.Hub.Client
             tasks       = 0;
             commands    = 0;    
             messages    = 0;
-            foreach (var set in client._intern.entitySets)
+            foreach (var set in client._intern.entitySets) {
                 Add(set.SetInfo);
+            }
             foreach (var function in client._intern.syncStore.functions) {
                 switch (function) {
                     case CommandTask _: commands++; break;
