@@ -253,7 +253,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             var db      = new MemoryDatabase("dummy");
             var hub     = new FlioxHub(db);
             var client  = new FlioxClient(hub);
-            sub.ProcessEvent(client, ev);
+            sub.ProcessEvent(client, ev);   // force initial allocations
             var start = GC.GetAllocatedBytesForCurrentThread();
             for (int n = 0; n < 10; n++) {
                 sub.ProcessEvent(client, ev);
