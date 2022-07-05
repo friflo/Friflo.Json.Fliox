@@ -10,18 +10,16 @@ namespace Friflo.Json.Fliox.Hub.Client
     {
         public  readonly    List<SyncFunction>  functions;
         public  readonly    List<SyncFunction>  failed;
-        
         private readonly    ErrorResponse       errorResponse;
 
+        public              bool                Success     => failed.Count == 0 && errorResponse == null;
+        public              string              Message     => GetMessage(errorResponse, failed);
 
-        public              bool                Success => failed.Count == 0 && errorResponse == null;
-        public              string              Message => GetMessage(errorResponse, failed);
-
-        public override string          ToString() => $"tasks: {functions.Count}, failed: {failed.Count}";
+        public override     string              ToString()  => $"tasks: {functions.Count}, failed: {failed.Count}";
         
         internal SyncResult(List<SyncFunction> tasks, List<SyncFunction> failed, ErrorResponse errorResponse) {
             this.errorResponse  = errorResponse;
-            this.functions          = tasks;
+            this.functions      = tasks;
             this.failed         = failed;
         }
         
