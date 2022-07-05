@@ -16,6 +16,7 @@ import { int64 }   from "./Standard";
  * - **commands** - list of all database commands
  * - **key** - name of the property used as primary key
  * - **descriptions** - a map storing the descriptions for enum values
+ * - **openAPI** - add meta information to the schema conform to the OpenAPI specification
  * - **relation** - mark the property as a relation (aka reference or aka secondary key) to entities in the container named relation
  * 
  * The restriction of **JSONSchema** are:

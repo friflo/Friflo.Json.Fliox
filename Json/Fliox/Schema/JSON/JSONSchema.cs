@@ -27,6 +27,7 @@ namespace Friflo.Json.Fliox.Schema.JSON
     ///   <item><see cref="JsonType.commands"/> - list of all database commands</item>
     ///   <item><see cref="JsonType.key"/> - name of the property used as primary key</item>
     ///   <item><see cref="JsonType.descriptions"/> - a map storing the descriptions for enum values</item>
+    ///   <item><see cref="JSONSchema.openAPI"/> - add meta information to the schema conform to the OpenAPI specification</item>
     ///   <item><see cref="FieldType.relation"/> - mark the property as a relation (aka reference or aka secondary key) to entities in the container named relation</item>
     /// </list>
     /// The restriction of <see cref="JSONSchema"/> are:
