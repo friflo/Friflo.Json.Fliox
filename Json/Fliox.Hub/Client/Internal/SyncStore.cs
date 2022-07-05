@@ -35,7 +35,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         
         // ----------------------------------- add tasks methods -----------------------------------
         // --- Message
-        internal void MessageResult (SyncMessageTask task, SyncTaskResult result) {
+        internal static void MessageResult (SyncMessageTask task, SyncTaskResult result) {
             var messageTask = (MessageTask)task.syncTask;
             if (result is TaskErrorResult taskError) {
                 messageTask.state.SetError(new TaskErrorInfo(taskError));
@@ -49,7 +49,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         }
         
         // --- SubscribeMessage
-        internal void SubscribeMessageResult (SubscribeMessage task, SyncTaskResult result) {
+        internal static void SubscribeMessageResult (SubscribeMessage task, SyncTaskResult result) {
             var subscribeTask = (SubscribeMessageTask)task.syncTask;
             if (result is TaskErrorResult taskError) {
                 subscribeTask.state.SetError(new TaskErrorInfo(taskError));

@@ -415,11 +415,11 @@ namespace Friflo.Json.Fliox.Hub.Client
                     break;
                 case TaskType.message:
                     var message =           (SendMessage)       task;
-                    syncStore.MessageResult(message, result);
+                    SyncStore.MessageResult(message, result);
                     break;
                 case TaskType.command:
                     var command =           (SendCommand)       task;
-                    syncStore.MessageResult(command, result);
+                    SyncStore.MessageResult(command, result);
                     break;
                 case TaskType.subscribeChanges:
                     var subscribeChanges =  (SubscribeChanges)  task;
@@ -428,7 +428,7 @@ namespace Friflo.Json.Fliox.Hub.Client
                     break;
                 case TaskType.subscribeMessage:
                     var subscribeMessage =  (SubscribeMessage)  task;
-                    syncStore.SubscribeMessageResult(subscribeMessage, result);
+                    SyncStore.SubscribeMessageResult(subscribeMessage, result);
                     break;
             }
         }
