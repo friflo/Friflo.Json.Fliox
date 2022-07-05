@@ -2,7 +2,6 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using Friflo.Json.Fliox.Hub.Client.Internal;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
@@ -49,12 +48,6 @@ namespace Friflo.Json.Fliox.Hub.Client
         internal Exception AlreadySyncedError() {
             return new TaskAlreadySyncedException($"Task already executed. {GetLabel()}");
         }
-        
-        internal void AddFailedTask(List<SyncFunction> failed) {
-            if (!State.Error.HasErrors)
-                return;
-            failed.Add(this);
-        }  
     }
     
     public abstract class SyncTask : SyncFunction

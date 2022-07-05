@@ -275,15 +275,33 @@ namespace Friflo.Json.Fliox.Hub.Client
                     syncStore.DetectPatchesResults();
                 }
                 finally {
-                    var failed = new List<SyncFunction>();
-                    var functions = syncStore.functions;
-                    foreach (var task in functions) {
-                        task.AddFailedTask(failed);
-                    }
-                    syncResult = new SyncResult(functions, failed, response.error);
+                    var functions   = syncStore.functions;
+                    var failed      = GetFailedFunctions(functions);
+                    syncResult      = new SyncResult(functions, failed, response.error);
                 }
                 return syncResult;
             }
+        }
+        
+        private static IReadOnlyList<SyncFunction> GetFailedFunctions(List<SyncFunction> functions) {
+            // create failed array only if required
+            var errorCount  = 0;
+            foreach (var task in functions) {
+                if (!task.State.Error.HasErrors)
+                    continue;
+                errorCount++;
+            }
+            if (errorCount == 0) {
+                return Array.Empty<SyncFunction>();
+            }
+            var failed = new SyncFunction[errorCount];
+            int n = 0;
+            foreach (var task in functions) {
+                if (!task.State.Error.HasErrors)
+                    continue;
+                failed[n++] = task;
+            }
+            return failed;
         }
 
         private void ProcessSyncTasks(SyncRequest syncRequest, ExecuteSyncResult response, SyncStore syncStore, ObjectMapper mapper)
