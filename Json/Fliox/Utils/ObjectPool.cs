@@ -41,7 +41,6 @@ namespace Friflo.Json.Fliox.Utils
     {
         private readonly    Action<T>           init;
         private readonly    ConcurrentStack<T>  stack;
-        private readonly    ConcurrentStack<T>  instances;
         private readonly    Func<T>             factory;
         
         public              int                 Count       => stack.Count;
@@ -49,7 +48,6 @@ namespace Friflo.Json.Fliox.Utils
         
         public ObjectPool(Func<T> factory, Action<T> init = null) {
             stack           = new ConcurrentStack<T>();
-            instances       = new ConcurrentStack<T>();
             this.factory    = factory;
             this.init       = init;
         }
@@ -64,11 +62,10 @@ namespace Friflo.Json.Fliox.Utils
         }
 
         public void Dispose() {
-            foreach (var instance in instances) {
+            foreach (var instance in stack) {
                 instance.Dispose();
             }
             stack.Clear();
-            instances.Clear();
         }
         
         private T GetInstance() {
@@ -76,7 +73,6 @@ namespace Friflo.Json.Fliox.Utils
                 return instance;
             }
             instance = factory();
-            instances.Push(instance);
             return instance;
         }
         
