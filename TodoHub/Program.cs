@@ -49,7 +49,7 @@ namespace Fliox.TodoHub
             await todoStore.SyncTasks();
             
             foreach (var todo in todos.Result) {
-                Console.WriteLine($"title: {todo.title}, completed: {todo.completed}");
+                Console.WriteLine($"id: {todo.id}, title: {todo.title}, completed: {todo.completed}");
             }
         }
     }
