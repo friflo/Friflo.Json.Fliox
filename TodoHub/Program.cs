@@ -42,11 +42,12 @@ namespace Fliox.TodoHub
         }
         
         private static async Task RunClient() {
-            var clientHub   = new WebSocketClientHub("main_db", "ws://localhost:8010/fliox/");
-            await clientHub.Connect();
-            var todoStore   = new TodoStore(clientHub);
+            var remoteHub   = new WebSocketClientHub("main_db", "ws://localhost:8010/fliox/");
+            await remoteHub.Connect();
+            var todoStore   = new TodoStore(remoteHub);
             var todos       = todoStore.todos.QueryAll();
             await todoStore.SyncTasks();
+            
             foreach (var todo in todos.Result) {
                 Console.WriteLine($"title: {todo.title}, completed: {todo.completed}");
             }
