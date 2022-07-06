@@ -121,15 +121,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         [Test]      public async Task  HttpCreateAsync() { await HttpCreate(); }
         
         private static async Task HttpCreate() {
-            using (var _                = SharedEnv.Default) // for LeakTestsFixture
-            using (var database         = new FileDatabase(TestGlobals.DB, TestGlobals.PocStoreFolder, new PocHandler()))
-            using (var hub          	= new FlioxHub(database, TestGlobals.Shared))
-            using (var httpHost         = new HttpHost(hub, "/"))
-            using (var server           = new HttpListenerHost("http://+:8080/", httpHost))
-            using (var remoteDatabase   = new HttpClientHub(TestGlobals.DB, "http://localhost:8080/", TestGlobals.Shared)) {
+            using (var _            = SharedEnv.Default) // for LeakTestsFixture
+            using (var database     = new FileDatabase(TestGlobals.DB, TestGlobals.PocStoreFolder, new PocHandler()))
+            using (var hub          = new FlioxHub(database, TestGlobals.Shared))
+            using (var httpHost     = new HttpHost(hub, "/"))
+            using (var server       = new HttpListenerHost("http://+:8080/", httpHost))
+            using (var remoteHub    = new HttpClientHub(TestGlobals.DB, "http://localhost:8080/", TestGlobals.Shared)) {
                 await RunServer(server, async () => {
-                    using (var createStore      = new PocStore(remoteDatabase) { UserId = "createStore", ClientId = "create-client"})
-                    using (var useStore         = new PocStore(remoteDatabase) { UserId = "useStore",    ClientId = "use-client"}) {
+                    using (var createStore      = new PocStore(remoteHub) { UserId = "createStore", ClientId = "create-client"})
+                    using (var useStore         = new PocStore(remoteHub) { UserId = "useStore",    ClientId = "use-client"}) {
                         await TestRelationPoC.CreateStore(createStore);
                         await TestStores(createStore, useStore);
                         
