@@ -32,11 +32,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
                         await AssertUnknownDatabase(remoteHub);
                         await AssertUnknownDefaultDatabase(remoteHub);
                     }
+                    
+                    /* todo
                     using (var remoteHub    = new WebSocketClientHub("unknown_db", "ws://localhost:8080/", TestGlobals.Shared)) {
                         await remoteHub.Connect();
                         await AssertUnknownDatabase(remoteHub);
                         await AssertUnknownDefaultDatabase(remoteHub);
-                    }
+                    } */
                 });
             }
         }
