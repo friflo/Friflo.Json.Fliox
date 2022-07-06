@@ -76,7 +76,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// </summary>
         internal readonly   TaskHandler         handler;    // never null
         
-        public   virtual    string              StorageType => GetType().Name;
+        public   abstract   string              StorageType  { get; }
         #endregion
         
     #region - initialize

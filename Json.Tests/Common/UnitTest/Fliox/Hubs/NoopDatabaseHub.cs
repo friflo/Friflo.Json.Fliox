@@ -28,6 +28,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs
     
     internal class NoopDatabase : EntityDatabase
     {
+        public   override   string      StorageType => "Noop";
+        
         internal NoopDatabase(string dbName) : base(dbName, null, null) { }
 
         public override EntityContainer CreateContainer(string name, EntityDatabase database) {

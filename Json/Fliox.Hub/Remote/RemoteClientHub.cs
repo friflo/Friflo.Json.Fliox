@@ -41,6 +41,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
     
     internal class RemoteDatabase : EntityDatabase
     {
+        public   override   string      StorageType => "remote";
+        
         internal RemoteDatabase(string dbName) : base(dbName, null, null) { }
 
         public override EntityContainer CreateContainer(string name, EntityDatabase database) {

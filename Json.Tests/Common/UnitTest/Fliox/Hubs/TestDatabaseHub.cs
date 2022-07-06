@@ -17,6 +17,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs
     {
         private  readonly   EntityDatabase                      local;
         internal readonly   Dictionary<string, TestContainer>   testContainers  = new Dictionary<string, TestContainer>();
+        
+        public   override   string                              StorageType => "TestDatabase";
 
         public TestDatabase(EntityDatabase local)
             : base (local.name, null, null)
