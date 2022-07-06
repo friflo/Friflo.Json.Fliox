@@ -16,12 +16,12 @@ namespace Fliox.TodoHub
         public static void Main(string[] args) {
             var mode = args.FirstOrDefault();
             if (mode == "--http-client") {
-                var remoteHub =  new HttpClientHub("http://localhost:8010/fliox/", "main_db");
+                var remoteHub =  new HttpClientHub("main_db", "http://localhost:8010/fliox/");
                 RunRemoteHub(remoteHub).Wait();
                 return;
             }
             if (mode == "--websocket-client") {
-                var remoteHub =  new WebSocketClientHub("ws://localhost:8010/fliox/", "main_db");
+                var remoteHub =  new WebSocketClientHub("main_db", "ws://localhost:8010/fliox/");
                 remoteHub.Connect().Wait();
                 RunRemoteHub(remoteHub).Wait();
                 return;

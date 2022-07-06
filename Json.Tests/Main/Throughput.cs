@@ -27,7 +27,7 @@ namespace Friflo.Json.Tests.Main
             using (var hub          = new FlioxHub(database))
             using (var httpHost     = new HttpHost(hub, "/"))
             using (var server       = new HttpListenerHost("http://+:8080/", httpHost))
-            using (var remoteHub    = new WebSocketClientHub("ws://localhost:8080/", TestDB)) {
+            using (var remoteHub    = new WebSocketClientHub(TestDB, "ws://localhost:8080/")) {
                 await TestHappy.RunServer(server, async () => {
                     await remoteHub.Connect();
                     await TestHappy.ConcurrentAccess(remoteHub, 4, 0, 1_000_000, false);
@@ -40,7 +40,7 @@ namespace Friflo.Json.Tests.Main
             using (var hub          = new FlioxHub(database))
             using (var httpHost     = new HttpHost(hub, "/"))
             using (var server       = new HttpListenerHost("http://+:8080/", httpHost))
-            using (var remoteHub    = new HttpClientHub("ws://localhost:8080/", TestDB)) {
+            using (var remoteHub    = new HttpClientHub(TestDB, "ws://localhost:8080/")) {
                 await TestHappy.RunServer(server, async () => {
                     await TestHappy.ConcurrentAccess(remoteHub, 4, 0, 1_000_000, false);
                 });
