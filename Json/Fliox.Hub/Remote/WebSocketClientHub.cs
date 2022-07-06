@@ -26,8 +26,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
         private  readonly   ConcurrentDictionary<int, WebsocketRequest> requests = new ConcurrentDictionary<int, WebsocketRequest>();
         private  readonly   CancellationTokenSource                     cancellationToken = new CancellationTokenSource();
         
-        public WebSocketClientHub(string databaseName, string endpoint, SharedEnv env = null)
-            : base(new RemoteDatabase(databaseName), env)
+        public WebSocketClientHub(string endpoint, string dbName, SharedEnv env = null)
+            : base(new RemoteDatabase(dbName), env)
         {
             this.endpoint   = endpoint;
         }

@@ -126,7 +126,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             using (var hub          = new FlioxHub(database, TestGlobals.Shared))
             using (var httpHost     = new HttpHost(hub, "/"))
             using (var server       = new HttpListenerHost("http://+:8080/", httpHost))
-            using (var remoteHub    = new HttpClientHub(TestGlobals.DB, "http://localhost:8080/", TestGlobals.Shared)) {
+            using (var remoteHub    = new HttpClientHub("http://localhost:8080/", TestGlobals.DB, TestGlobals.Shared)) {
                 await RunServer(server, async () => {
                     using (var createStore      = new PocStore(remoteHub) { UserId = "createStore", ClientId = "create-client"})
                     using (var useStore         = new PocStore(remoteHub) { UserId = "useStore",    ClientId = "use-client"}) {
@@ -159,7 +159,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             using (var hub          	= new FlioxHub(database, TestGlobals.Shared))
             using (var httpHost         = new HttpHost(hub, "/", TestGlobals.Shared))
             using (var server           = new HttpListenerHost("http://+:8080/", httpHost))
-            using (var remoteHub        = new WebSocketClientHub(TestGlobals.DB, "ws://localhost:8080/", TestGlobals.Shared))
+            using (var remoteHub        = new WebSocketClientHub("ws://localhost:8080/", TestGlobals.DB, TestGlobals.Shared))
             using (var listenDb         = new PocStore(remoteHub) { UserId = "listenDb", ClientId = "listen-client"}) {
                 hub.EventDispatcher = eventDispatcher;
                 await RunServer(server, async () => {
@@ -194,7 +194,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             using (var hub          	= new FlioxHub(database, TestGlobals.Shared))
             using (var hostHub          = new HttpHost(hub, "/"))
             using (var server           = new HttpListenerHost("http://+:8080/", hostHub))
-            using (var remoteHub        = new WebSocketClientHub(TestGlobals.DB, "ws://localhost:8080/", TestGlobals.Shared))
+            using (var remoteHub        = new WebSocketClientHub("ws://localhost:8080/", TestGlobals.DB, TestGlobals.Shared))
             using (var listenDb         = new PocStore(remoteHub) { UserId = "listenDb", ClientId = "listen-client"}) {
                 hostHub.fakeOpenClosedSockets = true;
                 hub.EventDispatcher = eventDispatcher;
