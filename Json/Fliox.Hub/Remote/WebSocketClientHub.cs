@@ -13,6 +13,10 @@ using Friflo.Json.Fliox.Hub.Protocol;
 
 namespace Friflo.Json.Fliox.Hub.Remote
 {
+    /// <summary>
+    /// A <see cref="FlioxHub"/> accessed remotely  using a <see cref="WebSocket"/> connection <br/>
+    /// Requires <see cref="Connect"/> to establish a connection.
+    /// </summary>
     public sealed class WebSocketClientHub : RemoteClientHub
     {
         private             int                                         reqId;
