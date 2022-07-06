@@ -126,8 +126,20 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 }
                 target.sendWriter.TryWrite(default);
                 target.sendWriter.Complete();
-            } catch (Exception e) {
-                Debug.Fail("AcceptWebSocket() failed", e.Message);
+            }
+            catch (WebSocketException e) {
+                if (e.InnerException is HttpListenerException listenerException) {
+                    // observed ErrorCode:
+                    // 995 The I/O operation has been aborted because of either a thread exit or an application request.
+                    var msg = $"HttpListenerException - ErrorCode: {listenerException.ErrorCode}, remote: {remoteEndPoint} ";
+                    remoteHost.Logger.Log(HubLog.Info, msg);
+                    return;
+                }
+                Debug.Fail("AcceptWebSocket() - WebSocketException", e.Message);
+                
+            }
+            catch (Exception e) {
+                Debug.Fail("AcceptWebSocket() - Exception", e.Message);
             }
             await target.sendLoop.ConfigureAwait(false);
         }
