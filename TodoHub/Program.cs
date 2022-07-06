@@ -1,4 +1,7 @@
-﻿using Friflo.Json.Fliox.Hub.DB.Cluster;
+﻿using System;
+using System.Linq;
+using System.Threading.Tasks;
+using Friflo.Json.Fliox.Hub.DB.Cluster;
 using Friflo.Json.Fliox.Hub.Explorer;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.Event;
@@ -10,11 +13,15 @@ namespace Fliox.TodoHub
     /// <summary>Bootstrapping of databases hosted by <see cref="HttpHost"/></summary> 
     internal  static class  Program
     {
-        public static void Main() {
+        public static void Main(string[] args) {
+            if (args.Contains("client")) {
+                RunClient().Wait();
+                return;
+            }
             var httpHost = CreateHttpHost();
             HttpListenerHost.RunHost("http://+:8010/", httpHost);
         }
-
+        
         /// <summary>
         /// This method is a blueprint showing how to setup a <see cref="HttpHost"/> utilizing a minimal features set
         /// available via HTTP and WebSockets
@@ -32,6 +39,16 @@ namespace Fliox.TodoHub
             var httpHost            = new HttpHost(hub, "/fliox/");
             httpHost.AddHandler      (new StaticFileHandler(HubExplorer.Path)); // optional - serve static web files of Hub Explorer
             return httpHost;
+        }
+        
+        private static async Task RunClient() {
+            var clientHub   = new HttpClientHub("main_db", "http://localhost:8010/fliox/");
+            var todoStore   = new TodoStore(clientHub);
+            var todos       = todoStore.todos.QueryAll();
+            await todoStore.SyncTasks();
+            foreach (var todo in todos.Result) {
+                Console.WriteLine($"title: {todo.title}, completed: {todo.completed}");
+            }
         }
     }
 }
