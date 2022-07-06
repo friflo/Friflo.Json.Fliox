@@ -14,7 +14,7 @@ namespace Fliox.TodoHub
     internal  static class  Program
     {
         public static void Main(string[] args) {
-            if (args.Contains("client")) {
+            if (args.Contains("--http-client")) {
                 RunClient().Wait();
                 return;
             }
@@ -42,7 +42,8 @@ namespace Fliox.TodoHub
         }
         
         private static async Task RunClient() {
-            var clientHub   = new HttpClientHub("main_db", "http://localhost:8010/fliox/");
+            var clientHub   = new WebSocketClientHub("main_db", "ws://localhost:8010/fliox/");
+            await clientHub.Connect();
             var todoStore   = new TodoStore(clientHub);
             var todos       = todoStore.todos.QueryAll();
             await todoStore.SyncTasks();
