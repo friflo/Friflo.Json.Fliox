@@ -16,7 +16,7 @@ namespace Fliox.TodoHub
         public static int Main(string[] args) {
             var command = args.FirstOrDefault();
             switch (command) {
-                case null:                  // dotnet run                  
+                case null:                  // dotnet run
                     var httpHost = CreateHttpHost();
                     return HttpListenerHost.RunHost("http://+:8010/", httpHost); // run host
                 
