@@ -15,7 +15,7 @@ namespace Fliox.TodoHub
         // --- containers
         public readonly EntitySet <long, Todo>        todos;
 
-        public TodoStore(FlioxHub hub, string dbName) : base (hub, dbName) { }
+        public TodoStore(FlioxHub hub, string dbName = null) : base (hub, dbName) { }
     }
     
     // ---------------------------------- entity models ----------------------------------

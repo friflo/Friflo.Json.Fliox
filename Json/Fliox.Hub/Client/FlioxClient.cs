@@ -83,14 +83,14 @@ namespace Friflo.Json.Fliox.Hub.Client
     // ----------------------------------------- public methods -----------------------------------------
     #region - initialize    
         /// <summary>
-        /// Instantiate a <see cref="FlioxClient"/> for the <paramref name="database"/> exposed by the given <paramref name="hub"/>. <br/>
-        /// If <paramref name="database"/> is null the client uses the default database assigned to the <paramref name="hub"/>.
+        /// Instantiate a <see cref="FlioxClient"/> for the <paramref name="dbName"/> exposed by the given <paramref name="hub"/>. <br/>
+        /// If <paramref name="dbName"/> is null the client uses the default database assigned to the <paramref name="hub"/>.
         /// </summary>
-        public FlioxClient(FlioxHub hub, string database = null) {
+        public FlioxClient(FlioxHub hub, string dbName = null) {
             if (hub  == null)  throw new ArgumentNullException(nameof(hub));
             type    = GetType();
             var eventReceiver = new EventReceiver(this);
-            _intern = new ClientIntern(this, hub, database, eventReceiver);
+            _intern = new ClientIntern(this, hub, dbName, eventReceiver);
             std     = new StdCommands  (this);
             hub.sharedEnv.sharedCache.AddRootType(type);
         }

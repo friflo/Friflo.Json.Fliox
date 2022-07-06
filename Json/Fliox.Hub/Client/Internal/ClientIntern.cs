@@ -12,6 +12,7 @@ using Friflo.Json.Fliox.Hub.Client.Internal.Map;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.Utils;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
+using Friflo.Json.Fliox.Hub.Remote;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Mapper.Map;
 using static System.Diagnostics.DebuggerBrowsableState;
@@ -92,7 +93,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             this.sharedCache        = sharedEnv.sharedCache;
             this.hubLogger          = sharedEnv.hubLogger;
             this.hub                = hub;
-            this.database           = database;
+            this.database           = database ?? (hub is RemoteClientHub remoteHub ? remoteHub.DatabaseName : null);
             this.eventReceiver      = eventReceiver;
             
             // --- readonly / private - owned

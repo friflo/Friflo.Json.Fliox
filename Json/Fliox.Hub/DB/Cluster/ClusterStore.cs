@@ -20,6 +20,6 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
         public  readonly    EntitySet <string, DbMessages>      messages;
         public  readonly    EntitySet <string, DbSchema>        schemas;
         
-        public ClusterStore (FlioxHub hub, string database = null) : base(hub, database) { }
+        public ClusterStore (FlioxHub hub, string dbName = null) : base(hub, dbName) { }
     }
 }

@@ -24,7 +24,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Monitor
         public  readonly    EntitySet <JsonKey, ClientHits>     clients;
         public  readonly    EntitySet <int,     HistoryHits>    histories;
 
-        public MonitorStore(FlioxHub hub, string database = null) : base(hub, database) { }
+        public MonitorStore(FlioxHub hub, string dbName = null) : base(hub, dbName) { }
         
         /// <summary>Reset all request, task and event counters</summary>
         public CommandTask<ClearStatsResult> ClearStats(ClearStats value = null) => SendCommand<ClearStats, ClearStatsResult>(nameof(ClearStats), value);

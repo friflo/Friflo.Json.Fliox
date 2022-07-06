@@ -44,7 +44,7 @@ namespace Fliox.TodoHub
         private static async Task RunClient() {
             var remoteHub   = new WebSocketClientHub("main_db", "ws://localhost:8010/fliox/");
             await remoteHub.Connect();
-            var todoStore   = new TodoStore(remoteHub, "xxx");
+            var todoStore   = new TodoStore(remoteHub);
             var todos       = todoStore.todos.QueryAll();
             await todoStore.SyncTasks();
             

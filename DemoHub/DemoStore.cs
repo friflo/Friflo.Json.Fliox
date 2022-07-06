@@ -36,6 +36,6 @@ namespace Fliox.DemoHub
         /// <summary> simple command adding two numbers - no database access. </summary>
         public CommandTask<double>      Add  (Operands  param)      => SendCommand<Operands, double>("demo.Add", param);
 
-        public DemoStore(FlioxHub hub) : base (hub) { }
+        public DemoStore(FlioxHub hub, string dbName = null) : base (hub, dbName) { }
     }
 }
