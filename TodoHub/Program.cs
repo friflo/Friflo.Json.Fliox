@@ -14,12 +14,20 @@ namespace Fliox.TodoHub
     internal  static class  Program
     {
         public static void Main(string[] args) {
-            if (args.Contains("--http-client")) {
-                RunClient().Wait();
+            var mode = args.FirstOrDefault();
+            if (mode == "--http-client") {
+                var remoteHub =  new HttpClientHub("http://localhost:8010/fliox/", "main_db");
+                RunRemoteHub(remoteHub).Wait();
+                return;
+            }
+            if (mode == "--websocket-client") {
+                var remoteHub =  new WebSocketClientHub("ws://localhost:8010/fliox/", "main_db");
+                remoteHub.Connect().Wait();
+                RunRemoteHub(remoteHub).Wait();
                 return;
             }
             var httpHost = CreateHttpHost();
-            HttpListenerHost.RunHost("http://+:8010/", httpHost);
+            HttpListenerHost.RunHost("http://+:8010/", httpHost); // run host
         }
         
         /// <summary>
@@ -41,10 +49,8 @@ namespace Fliox.TodoHub
             return httpHost;
         }
         
-        private static async Task RunClient() {
-            var remoteHub   = new WebSocketClientHub("ws://localhost:8010/fliox/", "main_db");
-            await remoteHub.Connect();
-            var todoStore   = new TodoStore(remoteHub);
+        private static async Task RunRemoteHub(FlioxHub hub) {
+            var todoStore   = new TodoStore(hub);
             var todos       = todoStore.todos.QueryAll();
             await todoStore.SyncTasks();
             
