@@ -36,7 +36,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
         public readonly EntitySet <string, TestType>    types;
         
         
-        public PocStore(FlioxHub hub): base (hub) {
+        public PocStore(FlioxHub hub, string dbName = null): base (hub, dbName) {
             test = new TestCommands(this);
         }
         
