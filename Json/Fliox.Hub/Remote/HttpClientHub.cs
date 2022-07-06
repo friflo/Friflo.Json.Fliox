@@ -15,8 +15,10 @@ namespace Friflo.Json.Fliox.Hub.Remote
     /// </summary>
     public sealed class HttpClientHub : RemoteClientHub
     {
-        private  readonly   string          endpoint;
-        private  readonly   HttpClient      httpClient;
+        private  readonly   string      endpoint;
+        private  readonly   HttpClient  httpClient;
+        
+        public   override   string      ToString()  => $"{database.name} - endpoint: {endpoint}";
 
         public HttpClientHub(string endpoint, string dbName, SharedEnv env = null)
             : base(new RemoteDatabase(dbName), env)
