@@ -84,9 +84,9 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// constructor parameters are mandatory to force implementations having them in their constructors also or
         /// pass null by implementations.
         /// </summary>
-        protected EntityDatabase(string name, TaskHandler handler, DbOpt opt){
+        protected EntityDatabase(string dbName, TaskHandler handler, DbOpt opt){
             containers          = new Dictionary<string, EntityContainer>();
-            this.name           = name ?? throw new ArgumentNullException(nameof(name));
+            this.name           = dbName ?? throw new ArgumentNullException(nameof(dbName));
             customContainerName = (opt ?? DbOpt.Default).customContainerName;
             this.handler        = handler ?? new TaskHandler();
         }

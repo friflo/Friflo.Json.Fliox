@@ -35,8 +35,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs
         private  readonly   bool                pretty;
         public   override   string              StorageType => "memory-arena";
 
-        public MemoryArenaDatabase(string name, TaskHandler handler = null, DbOpt opt = null, bool pretty = false)
-            : base(name, handler, opt)
+        public MemoryArenaDatabase(string dbName, TaskHandler handler = null, DbOpt opt = null, bool pretty = false)
+            : base(dbName, handler, opt)
         {
             this.pretty     = pretty;
         }

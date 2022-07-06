@@ -28,7 +28,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs
     
     internal class NoopDatabase : EntityDatabase
     {
-        internal NoopDatabase(string databaseName) : base(databaseName, null, null) { }
+        internal NoopDatabase(string dbName) : base(dbName, null, null) { }
 
         public override EntityContainer CreateContainer(string name, EntityDatabase database) {
             throw new InvalidOperationException("NoopDatabase cannot create a container");
