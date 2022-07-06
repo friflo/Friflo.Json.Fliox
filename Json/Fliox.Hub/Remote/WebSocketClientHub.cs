@@ -143,8 +143,12 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 
                 // --- Wait for response
                 var response = await wsRequest.response.Task.ConfigureAwait(false);
+                
                 if (response is SyncResponse syncResponse) {
                     return new ExecuteSyncResult(syncResponse);
+                }
+                if (response is ErrorResponse errorResponse) {
+                    return new ExecuteSyncResult(errorResponse.message, errorResponse.type);
                 }
                 return new ExecuteSyncResult($"invalid response: Was: {response.MessageType}", ErrorResponseType.BadResponse);
             }

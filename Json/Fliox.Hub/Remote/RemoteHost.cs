@@ -39,22 +39,26 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 var request = RemoteUtils.ReadProtocolMessage(jsonRequest, objectMapper, out string error);
                 switch (request) {
                     case null:
-                        return JsonResponse.CreateError(objectMapper, error, ErrorResponseType.BadResponse);
+                        return JsonResponse.CreateError(objectMapper, error, ErrorResponseType.BadResponse, null);
                     case SyncRequest syncRequest:
                         var response = await localHub.ExecuteSync(syncRequest, syncContext).ConfigureAwait(false);
                         
+                        var responseError = response.error;
+                        if (responseError != null) {
+                            return JsonResponse.CreateError(objectMapper, responseError.message, responseError.type, syncRequest.reqId);
+                        }
                         SetContainerResults(response.success);
                         response.Result.reqId   = syncRequest.reqId;
                         JsonValue jsonResponse  = RemoteUtils.CreateProtocolMessage(response.Result, objectMapper);
                         return new JsonResponse(jsonResponse, JsonResponseStatus.Ok);
                     default:
                         var msg = $"Unknown request. Name: {request.GetType().Name}";
-                        return JsonResponse.CreateError(objectMapper, msg, ErrorResponseType.BadResponse);
+                        return JsonResponse.CreateError(objectMapper, msg, ErrorResponseType.BadResponse, null);
                 }
             }
             catch (Exception e) {
                 var errorMsg = ErrorResponse.ErrorFromException(e).ToString();
-                return JsonResponse.CreateError(objectMapper, errorMsg, ErrorResponseType.Exception);
+                return JsonResponse.CreateError(objectMapper, errorMsg, ErrorResponseType.Exception, null);
             }
         }
         
