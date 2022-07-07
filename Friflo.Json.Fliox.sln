@@ -24,9 +24,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TodoHub", "TodoHub\TodoHub.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Friflo.Json.Fliox.Annotation", "Json\Fliox.Annotation\Friflo.Json.Fliox.Annotation.csproj", "{55C3FDFA-FACE-4D39-A6D9-2A81E020EB0E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TodoClient", "TodoClient\TodoClient.csproj", "{81E20638-DC76-4CB2-A5E7-E39538CA9198}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Todo", "Todo\Todo.csproj", "{81E20638-DC76-4CB2-A5E7-E39538CA9198}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DemoClient", "DemoClient\DemoClient.csproj", "{B960D817-2BD1-48F4-93A8-E87FA3F64410}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Demo", "Demo\Demo.csproj", "{B960D817-2BD1-48F4-93A8-E87FA3F64410}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

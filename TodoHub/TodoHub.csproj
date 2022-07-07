@@ -29,7 +29,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Json\Fliox.Hub.Explorer\Friflo.Json.Fliox.Hub.Explorer.csproj" />
-      <ProjectReference Include="..\TodoClient\TodoClient.csproj" />
+      <ProjectReference Include="..\Todo\Todo.csproj" />
     </ItemGroup>
 	
     <ItemGroup>

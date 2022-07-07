@@ -3,15 +3,15 @@ using System.Linq;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Remote;
 
-namespace TodoClient
+namespace Todo
 {
     internal  static class  Program
     {
         public static void Main(string[] args) {
             var hub         = CreateClient(args);
-            var todoStore   = new TodoStore(hub);
-            var todos       = todoStore.todos.QueryAll();
-            todoStore.SyncTasks().Wait();
+            var client      = new TodoClient(hub);
+            var todos       = client.todos.QueryAll();
+            client.SyncTasks().Wait();
             
             foreach (var todo in todos.Result) {
                 Console.WriteLine($"id: {todo.id}, title: {todo.title}, completed: {todo.completed}");

@@ -6,10 +6,10 @@ using System.Linq;
 using Bogus;
 
 
-namespace DemoClient
+namespace Demo
 {
     /// <summary>
-    /// <see cref="Utils"/> is used to create random records in the <see cref="DemoStore"/> containers. <br/>
+    /// <see cref="Utils"/> is used to create random records in the <see cref="DemoClient"/> containers. <br/>
     /// The records are generated with random data by using: <br/>
     /// [bchavez/Bogus: A simple fake data generator for C#] https://github.com/bchavez/Bogus
     /// </summary>

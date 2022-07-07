@@ -1,5 +1,5 @@
 ﻿using System.Linq;
-using DemoClient;
+using Demo;
 using Friflo.Json.Fliox.Hub.DB.Cluster;
 using Friflo.Json.Fliox.Hub.DB.Monitor;
 using Friflo.Json.Fliox.Hub.DB.UserAuth;
@@ -38,7 +38,7 @@ namespace DemoHub
         /// </summary>
         internal static HttpHost CreateHttpHost() {
             var c                   = new Config();
-            var typeSchema          = NativeTypeSchema.Create(typeof(DemoStore)); // optional - create TypeSchema from Type
+            var typeSchema          = NativeTypeSchema.Create(typeof(DemoClient)); // optional - create TypeSchema from Type
             var databaseSchema      = new DatabaseSchema(typeSchema);
             var database            = CreateDatabase(c, databaseSchema, new MessageHandler());
 

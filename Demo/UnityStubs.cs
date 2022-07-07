@@ -1,6 +1,6 @@
 #if UNITY_2020_1_OR_NEWER
 
-namespace DemoClient
+namespace Demo
 {
     internal class Utils
     {

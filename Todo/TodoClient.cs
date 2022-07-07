@@ -4,18 +4,18 @@ using Friflo.Json.Fliox.Hub.Client;
 using Friflo.Json.Fliox.Hub.Host;
 
 // ReSharper disable All
-namespace TodoClient
+namespace Todo
 {
     /// <summary>
-    /// The <see cref="TodoStore"/> offer two functionalities: <br/>
+    /// The <see cref="TodoClient"/> offer two functionalities: <br/>
     /// 1. Defines a database <b>schema</b> by declaring its containers, commands and messages<br/>
     /// 2. Is a database <b>client</b> providing type-safe access to its containers, commands and messages <br/>
     /// </summary>
-    public class TodoStore : FlioxClient {
+    public class TodoClient : FlioxClient {
         // --- containers
         public readonly EntitySet <long, Todo>        todos;
 
-        public TodoStore(FlioxHub hub, string dbName = null) : base (hub, dbName) { }
+        public TodoClient(FlioxHub hub, string dbName = null) : base (hub, dbName) { }
     }
     
     // ---------------------------------- entity models ----------------------------------

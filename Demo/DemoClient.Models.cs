@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using Friflo.Json.Fliox;
 
 // ReSharper disable All
-namespace DemoClient
+namespace Demo
 {
     // Note: Main property of all model classes
     // They are all POCO's aka Plain Old Class Objects. See https://en.wikipedia.org/wiki/Plain_old_CLR_object
@@ -14,7 +14,7 @@ namespace DemoClient
     public class Article {
         [Key]       public  long            id { get; set; }
         [Required]  public  string          name;
-        [Relation(nameof(DemoStore.producers))]
+        [Relation(nameof(DemoClient.producers))]
                     public  long            producer;
                     public  DateTime?       created;
     }
@@ -34,14 +34,14 @@ namespace DemoClient
 
     public class Order {
         [Key]       public  long            id { get; set; }
-        [Relation(nameof(DemoStore.customers))]
+        [Relation(nameof(DemoClient.customers))]
                     public  long            customer;
                     public  DateTime        created;
                     public  List<OrderItem> items = new List<OrderItem>();
     }
 
     public class OrderItem {
-        [Relation(nameof(DemoStore.articles))]
+        [Relation(nameof(DemoClient.articles))]
         [Required]  public  long            article;
                     public  int             amount;
                     public  string          name;
@@ -50,7 +50,7 @@ namespace DemoClient
     public class Producer {
         [Key]       public  long            id { get; set; }
         [Required]  public  string          name;
-        [Relation(nameof(DemoStore.employees))]
+        [Relation(nameof(DemoClient.employees))]
                     public  List<long>      employees;
                     public  DateTime?       created;
     }

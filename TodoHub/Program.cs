@@ -4,7 +4,7 @@ using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.Event;
 using Friflo.Json.Fliox.Hub.Remote;
 using Friflo.Json.Fliox.Schema.Native;
-using TodoClient;
+using Todo;
 
 namespace TodoHub
 {
@@ -21,7 +21,7 @@ namespace TodoHub
         /// available via HTTP and WebSockets
         /// </summary>
         private static HttpHost CreateHttpHost() {
-            var typeSchema          = NativeTypeSchema.Create(typeof(TodoStore)); // optional - create TypeSchema from Type
+            var typeSchema          = NativeTypeSchema.Create(typeof(TodoClient)); // optional - create TypeSchema from Type
             var database            = new FileDatabase("main_db", "./DB~/main_db");
             database.Schema         = new DatabaseSchema(typeSchema);
 
