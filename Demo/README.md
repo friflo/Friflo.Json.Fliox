@@ -21,9 +21,9 @@ This enables running the server **without** any configuration or installation of
 [**Fliox DemoHub**](http://ec2-174-129-178-18.compute-1.amazonaws.com/) running on **AWS** using **t2-micro** instance
 
 
-## DemoStore
+## DemoClient
 
-The key class when running a HTTP server using **JSON Fliox Hub** is [**DemoStore.cs**](DemoStore.cs).  
+The key class when running a HTTP server using **JSON Fliox Hub** is [**DemoClient.cs**](DemoClient.cs).  
 This class provide two fundamental functionalities:
 1. It is a **database client** providing type-safe access to its containers, commands and messages
 2. It defines a **database schema** by declaring its containers, commands and messages.  
@@ -54,12 +54,12 @@ The main features of a [**HTTP Fliox Hub**](https://github.com/friflo/Friflo.Jso
 
 ## Files
 
-| DemoClient                                 | description                                                                  |
-|--------------------------------------------|------------------------------------------------------------------------------|
-| [DemoStore.cs](DemoStore.cs)               | is the database client <br/> declares database containers & commands         |
-| [DemoStore.Models.cs](DemoStore.Models.cs) | contain entity types & command models (DTO's)                                |
-| [MessageHandler.cs](MessageHandler.cs)     | implement DemoHub API (database commands) by utilizing **DemoStore** clients |
-| [Utils.cs](Utils.cs)                       | utilize [Bogus](https://github.com/bchavez/Bogus) to generate fake records   |
+| DemoClient                                   | description                                                                   |
+|----------------------------------------------|-------------------------------------------------------------------------------|
+| [DemoClient.cs](DemoClient.cs)               | is the database client <br/> declares database containers & commands          |
+| [DemoClient.Models.cs](DemoClient.Models.cs) | contain entity types & command models (DTO's)                                 |
+| [MessageHandler.cs](MessageHandler.cs)       | implement DemoHub API (database commands) by utilizing **DemoClient** clients |
+| [Utils.cs](Utils.cs)                         | utilize [Bogus](https://github.com/bchavez/Bogus) to generate fake records    |
 
 
 | DemoHub                                    | description                                                                  |
