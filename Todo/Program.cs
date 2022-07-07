@@ -8,7 +8,7 @@ namespace Todo
     internal  static class  Program
     {
         public static void Main(string[] args) {
-            var hub         = CreateClient(args);
+            var hub         = CreateHub(args);
             var client      = new TodoClient(hub);
             var todos       = client.tasks.QueryAll();
             client.SyncTasks().Wait();
@@ -18,7 +18,7 @@ namespace Todo
             }
         }
         
-        private static FlioxHub CreateClient(string[] args) {
+        private static FlioxHub CreateHub(string[] args) {
             var command = args.FirstOrDefault();
             if (command == null) {
                 return new HttpClientHub("main_db", "http://localhost:8010/fliox/");
