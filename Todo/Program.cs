@@ -25,13 +25,12 @@ namespace Todo
                 case "http":
                     return new HttpClientHub("main_db", "http://localhost:8010/fliox/");
                 case "ws":
-                    var wsHub       = new WebSocketClientHub("main_db", "ws://localhost:8010/fliox/");
+                    var wsHub = new WebSocketClientHub("main_db", "ws://localhost:8010/fliox/");
                     wsHub.Connect().Wait();
                     return wsHub;
                 case "file":
-                    var database    = new FileDatabase("main_db", "../TodoHub/DB~/main_db");
-                    var fileHub     = new FlioxHub(database);
-                    return fileHub;
+                    var db = new FileDatabase("main_db", "../TodoHub/DB~/main_db");
+                    return new FlioxHub(db);
             }
             throw new InvalidOperationException($"unknown option: '{option}' use: [http, ws, file]");
         }
