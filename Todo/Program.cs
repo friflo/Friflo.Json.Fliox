@@ -19,13 +19,21 @@ namespace Todo
         }
         
         private static FlioxHub CreateHub(string[] args) {
-            var command = args.FirstOrDefault();
-            if (command == null) {
-                return new HttpClientHub("main_db", "http://localhost:8010/fliox/");
+            var option = args.FirstOrDefault();
+            switch (option) {
+                case null:
+                case "http":
+                    return new HttpClientHub("main_db", "http://localhost:8010/fliox/");
+                case "ws":
+                    var wsHub       = new WebSocketClientHub("main_db", "ws://localhost:8010/fliox/");
+                    wsHub.Connect().Wait();
+                    return wsHub;
+                case "file":
+                    var database    = new FileDatabase("main_db", "../TodoHub/DB~/main_db");
+                    var fileHub     = new FlioxHub(database);
+                    return fileHub;
             }
-            var hub = new WebSocketClientHub("main_db", "ws://localhost:8010/fliox/");
-            hub.Connect().Wait();
-            return hub;
+            throw new InvalidOperationException($"unknown option: '{option}' use: [http, ws, file]");
         }
     }
 }
