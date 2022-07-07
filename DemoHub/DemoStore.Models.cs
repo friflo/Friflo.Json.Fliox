@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using Friflo.Json.Fliox;
 
 // ReSharper disable All
-namespace Fliox.DemoHub
+namespace DemoHub
 {
     // Note: Main property of all model classes
     // They are all POCO's aka Plain Old Class Objects. See https://en.wikipedia.org/wiki/Plain_old_CLR_object

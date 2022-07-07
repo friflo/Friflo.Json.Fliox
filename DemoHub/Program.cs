@@ -9,7 +9,7 @@ using Friflo.Json.Fliox.Hub.Host.Event;
 using Friflo.Json.Fliox.Hub.Remote;
 using Friflo.Json.Fliox.Schema.Native;
 
-namespace Fliox.DemoHub
+namespace DemoHub
 {
     /// <summary>Bootstrapping of databases hosted by <see cref="HttpHost"/></summary> 
     internal  static class  Program

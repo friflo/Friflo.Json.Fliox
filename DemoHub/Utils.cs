@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Bogus;
 
-namespace Fliox.DemoHub
+namespace DemoHub
 {
     /// <summary>
     /// <see cref="Utils"/> is used to create random records in the <see cref="DemoStore"/> containers. <br/>

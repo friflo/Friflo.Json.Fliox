@@ -8,7 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-namespace Fliox.DemoHub
+namespace DemoHub
 {
     /// <summary>
     /// Bootstrapping of ASP.NET Core and adding the Hub returned by <see cref="Program.CreateHttpHost"/>.

@@ -3,7 +3,7 @@ using Friflo.Json.Fliox.Hub.Client;
 using Friflo.Json.Fliox.Hub.Host;
 
 // ReSharper disable All
-namespace Fliox.DemoHub
+namespace DemoHub
 {
     /// <summary>
     /// The <see cref="DemoStore"/> has two functionalities: <br/>

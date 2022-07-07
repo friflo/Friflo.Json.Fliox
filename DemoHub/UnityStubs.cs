@@ -1,6 +1,6 @@
 #if UNITY_2020_1_OR_NEWER
 
-namespace Fliox.DemoHub
+namespace DemoHub
 {
     public class Startup
     {
