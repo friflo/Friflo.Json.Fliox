@@ -8,13 +8,6 @@ namespace DemoHub
             System.Console.WriteLine("ASP.NET Core / Unity setup not configured");
         }
     }
-
-    internal class Utils
-    {
-        internal Records CreateFakes(Fake fake) {
-            return null;
-        }
-    }
 }
 
 #endif
