@@ -56,7 +56,7 @@ The main features of a [**HTTP Fliox Hub**](https://github.com/friflo/Friflo.Jso
 
 | Demo                                         | description                                                                   |
 |----------------------------------------------|-------------------------------------------------------------------------------|
-| [DemoClient.cs](DemoClient.cs)               | is the database client <br/> declares database containers & commands          |
+| [DemoClient.cs](DemoClient.cs)               | 1. is a database client <br/> 2. is a database schema for a Hub               |
 | [DemoClient.Models.cs](DemoClient.Models.cs) | contain entity types & command models (DTO's)                                 |
 | [MessageHandler.cs](MessageHandler.cs)       | implement DemoHub API (database commands) by utilizing **DemoClient** clients |
 | [Utils.cs](Utils.cs)                         | utilize [Bogus](https://github.com/bchavez/Bogus) to generate fake records    |
