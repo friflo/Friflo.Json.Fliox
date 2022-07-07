@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Remote;
 
@@ -7,11 +8,11 @@ namespace Todo
 {
     internal  static class  Program
     {
-        public static void Main(string[] args) {
-            var hub         = CreateHub(args);
-            var client      = new TodoClient(hub);
-            var todos       = client.tasks.QueryAll();
-            client.SyncTasks().Wait();
+        public static async Task Main(string[] args) {
+            var hub     = CreateHub(args);
+            var client  = new TodoClient(hub);
+            var todos   = client.jobs.QueryAll();
+            await client.SyncTasks();
             
             foreach (var todo in todos.Result) {
                 Console.WriteLine($"id: {todo.id}, title: {todo.title}, completed: {todo.completed}");
