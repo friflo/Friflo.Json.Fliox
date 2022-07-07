@@ -1,36 +1,19 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
-using Friflo.Json.Fliox.Hub.DB.Cluster;
+﻿using Friflo.Json.Fliox.Hub.DB.Cluster;
 using Friflo.Json.Fliox.Hub.Explorer;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.Event;
 using Friflo.Json.Fliox.Hub.Remote;
 using Friflo.Json.Fliox.Schema.Native;
+using TodoClient;
 
-namespace Fliox.TodoHub
+namespace TodoHub
 {
     /// <summary>Bootstrapping of databases hosted by <see cref="HttpHost"/></summary> 
     internal  static class  Program
     {
-        public static int Main(string[] args) {
-            var command = args.FirstOrDefault();
-            switch (command) {
-                case null:                  // dotnet run
-                    var httpHost = CreateHttpHost();
-                    return HttpListenerHost.RunHost("http://+:8010/", httpHost); // run host
-                
-                case "http-client":         // dotnet run http-client
-                    var httpClientHub =  new HttpClientHub("main_db", "http://localhost:8010/fliox/");
-                    return RunRemoteHub(httpClientHub).Result;
-                
-                case "websocket-client":    // dotnet run websocket-client
-                    var wsClientHub = new WebSocketClientHub("main_db", "ws://localhost:8010/fliox/");
-                    wsClientHub.Connect().Wait();
-                    return RunRemoteHub(wsClientHub).Result;
-            }
-            Console.WriteLine($"unknown command: {command}");
-            return 1;
+        public static void Main() {
+            var httpHost = CreateHttpHost();
+            HttpListenerHost.RunHost("http://+:8010/", httpHost); // run host
         }
         
         /// <summary>
@@ -50,17 +33,6 @@ namespace Fliox.TodoHub
             var httpHost            = new HttpHost(hub, "/fliox/");
             httpHost.AddHandler      (new StaticFileHandler(HubExplorer.Path)); // optional - serve static web files of Hub Explorer
             return httpHost;
-        }
-        
-        private static async Task<int> RunRemoteHub(FlioxHub hub) {
-            var todoStore   = new TodoStore(hub);
-            var todos       = todoStore.todos.QueryAll();
-            await todoStore.SyncTasks();
-            
-            foreach (var todo in todos.Result) {
-                Console.WriteLine($"id: {todo.id}, title: {todo.title}, completed: {todo.completed}");
-            }
-            return 0;
         }
     }
 }

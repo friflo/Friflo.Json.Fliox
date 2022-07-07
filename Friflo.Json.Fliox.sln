@@ -20,9 +20,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fliox.DemoHub", "DemoHub\Fl
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Friflo.Json.Fliox.Hub.GraphQL", "Json\Fliox.Hub.GraphQL\Friflo.Json.Fliox.Hub.GraphQL.csproj", "{EBA4D394-3D6B-4A31-AE0C-D47142812515}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fliox.TodoHub", "TodoHub\Fliox.TodoHub.csproj", "{B742CBB8-3F85-4730-AB22-E9681ED842DC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TodoHub", "TodoHub\TodoHub.csproj", "{B742CBB8-3F85-4730-AB22-E9681ED842DC}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Friflo.Json.Fliox.Annotation", "Json\Fliox.Annotation\Friflo.Json.Fliox.Annotation.csproj", "{55C3FDFA-FACE-4D39-A6D9-2A81E020EB0E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TodoClient", "TodoClient\TodoClient.csproj", "{81E20638-DC76-4CB2-A5E7-E39538CA9198}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -78,5 +80,9 @@ Global
 		{55C3FDFA-FACE-4D39-A6D9-2A81E020EB0E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{55C3FDFA-FACE-4D39-A6D9-2A81E020EB0E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{55C3FDFA-FACE-4D39-A6D9-2A81E020EB0E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{81E20638-DC76-4CB2-A5E7-E39538CA9198}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{81E20638-DC76-4CB2-A5E7-E39538CA9198}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{81E20638-DC76-4CB2-A5E7-E39538CA9198}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{81E20638-DC76-4CB2-A5E7-E39538CA9198}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
