@@ -38,53 +38,5 @@
       <PackageReference Include="Bogus" Version="34.0.1" />
     </ItemGroup>
 	
-    <ItemGroup>
-      <_ContentIncludedByDefault Remove="DB~\main_db\articles\11.json" />
-      <_ContentIncludedByDefault Remove="DB~\main_db\articles\21.json" />
-      <_ContentIncludedByDefault Remove="DB~\main_db\articles\31.json" />
-      <_ContentIncludedByDefault Remove="DB~\main_db\articles\41.json" />
-      <_ContentIncludedByDefault Remove="DB~\main_db\customers\12.json" />
-      <_ContentIncludedByDefault Remove="DB~\main_db\employees\13.json" />
-      <_ContentIncludedByDefault Remove="DB~\main_db\orders\14.json" />
-      <_ContentIncludedByDefault Remove="DB~\main_db\orders\24.json" />
-      <_ContentIncludedByDefault Remove="DB~\main_db\producers\15.json" />
-      <_ContentIncludedByDefault Remove="DB~\main_db\producers\25.json" />
-      <_ContentIncludedByDefault Remove="DB~\main_db\producers\35.json" />
-      <_ContentIncludedByDefault Remove="DB~\user_db\credentials\admin.json" />
-      <_ContentIncludedByDefault Remove="DB~\user_db\credentials\cluster-admin.json" />
-      <_ContentIncludedByDefault Remove="DB~\user_db\credentials\monitor-admin.json" />
-      <_ContentIncludedByDefault Remove="DB~\user_db\credentials\poc-admin.json" />
-      <_ContentIncludedByDefault Remove="DB~\user_db\credentials\poc-readonly.json" />
-      <_ContentIncludedByDefault Remove="DB~\user_db\credentials\test-deny.json" />
-      <_ContentIncludedByDefault Remove="DB~\user_db\credentials\test-message.json" />
-      <_ContentIncludedByDefault Remove="DB~\user_db\credentials\test-operation.json" />
-      <_ContentIncludedByDefault Remove="DB~\user_db\credentials\test-predicate.json" />
-      <_ContentIncludedByDefault Remove="DB~\user_db\credentials\test-task.json" />
-      <_ContentIncludedByDefault Remove="DB~\user_db\credentials\user-admin.json" />
-      <_ContentIncludedByDefault Remove="DB~\user_db\credentials\user-readonly.json" />
-      <_ContentIncludedByDefault Remove="DB~\user_db\permissions\admin.json" />
-      <_ContentIncludedByDefault Remove="DB~\user_db\permissions\cluster-admin.json" />
-      <_ContentIncludedByDefault Remove="DB~\user_db\permissions\monitor-admin.json" />
-      <_ContentIncludedByDefault Remove="DB~\user_db\permissions\poc-admin.json" />
-      <_ContentIncludedByDefault Remove="DB~\user_db\permissions\poc-readonly.json" />
-      <_ContentIncludedByDefault Remove="DB~\user_db\permissions\test-deny.json" />
-      <_ContentIncludedByDefault Remove="DB~\user_db\permissions\test-message.json" />
-      <_ContentIncludedByDefault Remove="DB~\user_db\permissions\test-operation.json" />
-      <_ContentIncludedByDefault Remove="DB~\user_db\permissions\test-predicate.json" />
-      <_ContentIncludedByDefault Remove="DB~\user_db\permissions\test-task.json" />
-      <_ContentIncludedByDefault Remove="DB~\user_db\permissions\user-admin.json" />
-      <_ContentIncludedByDefault Remove="DB~\user_db\permissions\user-readonly.json" />
-      <_ContentIncludedByDefault Remove="DB~\user_db\roles\all-allow.json" />
-      <_ContentIncludedByDefault Remove="DB~\user_db\roles\cluster-allow.json" />
-      <_ContentIncludedByDefault Remove="DB~\user_db\roles\main_db-allow.json" />
-      <_ContentIncludedByDefault Remove="DB~\user_db\roles\main_db-deny.json" />
-      <_ContentIncludedByDefault Remove="DB~\user_db\roles\main_db-message.json" />
-      <_ContentIncludedByDefault Remove="DB~\user_db\roles\main_db-operation.json" />
-      <_ContentIncludedByDefault Remove="DB~\user_db\roles\main_db-predicate.json" />
-      <_ContentIncludedByDefault Remove="DB~\user_db\roles\main_db-readonly.json" />
-      <_ContentIncludedByDefault Remove="DB~\user_db\roles\main_db-task.json" />
-      <_ContentIncludedByDefault Remove="DB~\user_db\roles\monitor-allow.json" />
-      <_ContentIncludedByDefault Remove="DB~\user_db\roles\user_db-allow.json" />
-      <_ContentIncludedByDefault Remove="DB~\user_db\roles\user_db-readonly.json" />
-    </ItemGroup>
+
 </Project>

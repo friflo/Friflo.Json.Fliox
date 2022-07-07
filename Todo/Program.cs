@@ -14,7 +14,7 @@ namespace Todo
             var jobs    = client.jobs.QueryAll();
             await client.SyncTasks();
             
-            foreach (var job in jobs .Result) {
+            foreach (var job in jobs.Result) {
                 Console.WriteLine($"id: {job.id}, title: {job.title}, completed: {job.completed}");
             }
         }
