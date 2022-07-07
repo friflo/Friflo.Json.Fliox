@@ -11,11 +11,11 @@ namespace Todo
         public static async Task Main(string[] args) {
             var hub     = CreateHub(args);
             var client  = new TodoClient(hub);
-            var todos   = client.jobs.QueryAll();
+            var jobs    = client.jobs.QueryAll();
             await client.SyncTasks();
             
-            foreach (var todo in todos.Result) {
-                Console.WriteLine($"id: {todo.id}, title: {todo.title}, completed: {todo.completed}");
+            foreach (var job in jobs .Result) {
+                Console.WriteLine($"id: {job.id}, title: {job.title}, completed: {job.completed}");
             }
         }
         
