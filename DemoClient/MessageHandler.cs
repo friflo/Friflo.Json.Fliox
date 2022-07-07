@@ -1,10 +1,9 @@
 using System;
 using System.Threading.Tasks;
-using DemoClient;
 using Friflo.Json.Fliox.Hub.Host;
 
 // ReSharper disable UnusedMember.Local
-namespace DemoHub
+namespace DemoClient
 {
     /// <summary>
     /// <see cref="MessageHandler"/> extends <see cref="TaskHandler"/> to implement the <see cref="DemoStore"/> API (database commands).
@@ -24,7 +23,7 @@ namespace DemoHub
     {
         private static readonly Utils FakeUtils = new Utils();
         
-        internal MessageHandler() {
+        public MessageHandler() {
             AddMessageHandlers(this, "demo.");
         }
         

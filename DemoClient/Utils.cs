@@ -4,9 +4,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Bogus;
-using DemoClient;
 
-namespace DemoHub
+
+namespace DemoClient
 {
     /// <summary>
     /// <see cref="Utils"/> is used to create random records in the <see cref="DemoStore"/> containers. <br/>
