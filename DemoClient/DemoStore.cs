@@ -3,7 +3,7 @@ using Friflo.Json.Fliox.Hub.Client;
 using Friflo.Json.Fliox.Hub.Host;
 
 // ReSharper disable All
-namespace DemoHub
+namespace DemoClient
 {
     /// <summary>
     /// The <see cref="DemoStore"/> has two functionalities: <br/>
@@ -24,7 +24,7 @@ namespace DemoHub
         public readonly EntitySet <long, Producer>    producers;
         
         // --- commands
-        /// <summary> generate random entities (records) in the containers listed in the <see cref="DemoHub.Fake"/> param </summary>
+        /// <summary> generate random entities (records) in the containers listed in the <see cref="DemoClient.Fake"/> param </summary>
         public CommandTask<Records>     FakeRecords (Fake param)    => SendCommand<Fake, Records>   ("demo.FakeRecords", param);
 
         /// <summary> count records added to containers within the last param seconds. default 60</summary>

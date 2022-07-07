@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using DemoClient;
 using Friflo.Json.Fliox.Hub.Host;
 
 // ReSharper disable UnusedMember.Local
