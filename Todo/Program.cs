@@ -10,7 +10,7 @@ namespace Todo
         public static void Main(string[] args) {
             var hub         = CreateClient(args);
             var client      = new TodoClient(hub);
-            var todos       = client.todos.QueryAll();
+            var todos       = client.tasks.QueryAll();
             client.SyncTasks().Wait();
             
             foreach (var todo in todos.Result) {

@@ -13,13 +13,13 @@ namespace Todo
     /// </summary>
     public class TodoClient : FlioxClient {
         // --- containers
-        public readonly EntitySet <long, Todo>        todos;
+        public readonly EntitySet <long, Task>        tasks;
 
         public TodoClient(FlioxHub hub, string dbName = null) : base (hub, dbName) { }
     }
     
     // ---------------------------------- entity models ----------------------------------
-    public class Todo {
+    public class Task {
         [Key]       public  long        id { get; set; }
         [Required]  public  string      title;
                     public  bool?       completed;
