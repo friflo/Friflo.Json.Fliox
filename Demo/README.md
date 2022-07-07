@@ -52,9 +52,9 @@ The main features of a [**HTTP Fliox Hub**](https://github.com/friflo/Friflo.Jso
   This enable seamless integration in any **ASP.NET Core** application by a single route. e.g. `"/fliox/{*path}"`
   
 
-## Files
+## Demo files
 
-| Demo                                         | description                                                                   |
+| file                                         | description                                                                   |
 |----------------------------------------------|-------------------------------------------------------------------------------|
 | [DemoClient.cs](DemoClient.cs)               | 1. is a database client <br/> 2. is a database schema for a Hub               |
 | [DemoClient.Models.cs](DemoClient.Models.cs) | contain entity types & command models (DTO's)                                 |
@@ -62,7 +62,9 @@ The main features of a [**HTTP Fliox Hub**](https://github.com/friflo/Friflo.Jso
 | [Utils.cs](Utils.cs)                         | utilize [Bogus](https://github.com/bchavez/Bogus) to generate fake records    |
 
 
-| DemoHub                                    | description                                                                  |
+## DemoHub files
+
+| file                                       | description                                                                  |
 |--------------------------------------------|------------------------------------------------------------------------------|
 | [Program.cs](../DemoHub/Program.cs)        | bootstrapping & configuration of host                                        |
 | [Startup.cs](../DemoHub/Startup.cs)        | **ASP.NET Core** configuration and host integration                          |
