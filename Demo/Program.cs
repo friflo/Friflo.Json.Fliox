@@ -9,7 +9,8 @@ namespace Demo
     internal  static class  Program
     {
         public static async Task Main(string[] args) {
-            var hub         = CreateHub(args);
+            var option      = args.FirstOrDefault() ?? "http";
+            var hub         = CreateHub(option);
             var client      = new DemoClient(hub) { UserId = "admin", Token = "admin" };
             var orders      = client.orders.QueryAll();
             var articles    = orders.ReadRelations(client.articles, o => o.items.Select(a => a.article));
@@ -25,10 +26,8 @@ namespace Demo
             }
         }
         
-        private static FlioxHub CreateHub(string[] args) {
-            var option = args.FirstOrDefault();
+        private static FlioxHub CreateHub(string option) {
             switch (option) {
-                case null:
                 case "http":
                     return new HttpClientHub("main_db", "http://localhost:8010/fliox/");
                 case "ws":
