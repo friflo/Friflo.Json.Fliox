@@ -2,7 +2,9 @@
 appsettings.private.json
 /Playground/.idea
 
+bin/
 .bin/
+obj/
 .obj/
 /packages/
 riderModule.iml

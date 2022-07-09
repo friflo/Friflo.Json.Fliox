@@ -12,16 +12,6 @@
         <EnableDefaultContentItems>true</EnableDefaultContentItems>
     </PropertyGroup>
 
-    <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
-      <OutputPath>.bin\Debug\</OutputPath>
-      <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
-    </PropertyGroup>
-
-    <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
-      <OutputPath>.bin\Release\</OutputPath>
-      <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
-    </PropertyGroup>
-
     <PropertyGroup>
       <GenerateDocumentationFile>true</GenerateDocumentationFile>
       <NoWarn>1591</NoWarn>
