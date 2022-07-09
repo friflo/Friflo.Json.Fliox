@@ -29,7 +29,7 @@ namespace Todo
                     wsHub.Connect().Wait();
                     return wsHub;
                 case "file":
-                    var db = new FileDatabase("main_db", "../TodoHub/DB~/main_db");
+                    var db = new FileDatabase("main_db", "../TodoHub/DB/main_db");
                     return new FlioxHub(db);
             }
             throw new InvalidOperationException($"unknown option: '{option}' use: [http, ws, file]");

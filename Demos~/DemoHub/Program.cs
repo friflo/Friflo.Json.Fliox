@@ -62,9 +62,9 @@ namespace DemoHub
         }
         
         private class Config {
-            internal readonly string  mainDbPath          = "./DB~/main_db";
-            internal readonly string  userDbPath          = "./DB~/user_db";
-            internal readonly string  www                 = "../Json/Fliox.Hub.Explorer/www~"; // HubExplorer.Path;
+            internal readonly string  mainDbPath          = "./DB/main_db";
+            internal readonly string  userDbPath          = "./DB/user_db";
+            internal readonly string  www                 = "../../Json/Fliox.Hub.Explorer/www~"; // HubExplorer.Path;
             internal readonly string  cache               = null; // "max-age=600"; // HTTP Cache-Control
             internal readonly bool    useMemoryDbClone    = true;
         }
