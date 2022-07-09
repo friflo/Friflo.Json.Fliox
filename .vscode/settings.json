@@ -1,8 +1,19 @@
 {
 	"files.exclude": {
+        "**/obj": true,
+		"**/bin": true,
+        "**/.vs": true,
+        "**/.run": true,
+        "**/.idea": true,
+        "**/*.user": true,
+        "**/*.DotSettings": true,
+        //
+        "**/.obj": true,
+		"**/.bin": true,
 		"**/*.meta": true,
 		"**/*.sync.resp.json": true,
 		"**/*.sync.resp.md": true,
+        "package-lock.json": true,
     },
     "cSpell.words": [
         "AGPL",
