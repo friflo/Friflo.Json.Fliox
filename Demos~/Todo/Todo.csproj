@@ -28,8 +28,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Json\Fliox.Hub.Explorer\Friflo.Json.Fliox.Hub.Explorer.csproj" />
-      <ProjectReference Include="..\Todo\Todo.csproj" />
+      <ProjectReference Include="..\..\Json\Fliox.Hub\Friflo.Json.Fliox.Hub.csproj" />
     </ItemGroup>
 	
     <ItemGroup>
