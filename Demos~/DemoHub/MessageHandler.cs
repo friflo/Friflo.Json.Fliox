@@ -22,7 +22,7 @@ namespace DemoHub
     /// </summary>
     public class MessageHandler : TaskHandler
     {
-        private static readonly Utils FakeUtils = new Utils();
+        private static readonly FakeUtils FakeUtils = new FakeUtils();
         
         public MessageHandler() {
             AddMessageHandlers(this, "demo.");
