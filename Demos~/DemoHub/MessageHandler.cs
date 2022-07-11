@@ -1,9 +1,10 @@
 using System;
 using System.Threading.Tasks;
+using Demo;
 using Friflo.Json.Fliox.Hub.Host;
 
 // ReSharper disable UnusedMember.Local
-namespace Demo
+namespace DemoHub
 {
     /// <summary>
     /// <see cref="MessageHandler"/> extends <see cref="TaskHandler"/> to implement the <see cref="DemoClient"/> API (database commands).

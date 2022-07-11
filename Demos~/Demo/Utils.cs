@@ -11,7 +11,7 @@ namespace Demo
     /// The records are generated with random data by using: <br/>
     /// [bchavez/Bogus: A simple fake data generator for C#] https://github.com/bchavez/Bogus
     /// </summary>
-    internal class Utils
+    public class Utils
     {
         private long articleCounter  = 10;
         private long customerCounter = 10;
@@ -19,11 +19,11 @@ namespace Demo
         private long orderCounter    = 10;
         private long producerCounter = 10;
 
-        internal Utils() {
+        public Utils() {
             Randomizer.Seed = new Random(1337);
         }
         
-        internal Records CreateFakes(Fake fake)
+        public Records CreateFakes(Fake fake)
         {
             var result      = new Records();
             var articles    = fake?.articles    ?? 0;
