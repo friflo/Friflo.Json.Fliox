@@ -2,13 +2,11 @@
 
     <PropertyGroup>
         <OutputType>Exe</OutputType>
-        <TargetFramework>netcoreapp3.1</TargetFramework>
+        <TargetFramework>net6.0</TargetFramework>
 
-        <IsPackable>false</IsPackable>
-
-        <LangVersion>7.3</LangVersion>
+        <LangVersion>10</LangVersion>
 		<GenerateProgramFile>false</GenerateProgramFile>
-        <!-- EnableDefaultContentItems: false prevents files in DB/ copied to output directory -->
+        <!-- EnableDefaultContentItems: false prevents files in DB~/ copied to output directory -->
         <EnableDefaultContentItems>true</EnableDefaultContentItems>
     </PropertyGroup>
 
@@ -18,11 +16,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\Json\Fliox.Hub\Friflo.Json.Fliox.Hub.csproj" />
+      <ProjectReference Include="..\..\..\Json\Fliox.Hub.Explorer\Friflo.Json.Fliox.Hub.Explorer.csproj" />
+      <ProjectReference Include="..\Client\Todo.csproj" />
     </ItemGroup>
-	
-    <ItemGroup>
-      <None Remove="**/*.meta" />
-    </ItemGroup>
-	
 </Project>
