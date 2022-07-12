@@ -1,0 +1,52 @@
+## This is a directory/file filter for WinMerge
+## This filter suppresses various binaries found in Visual C# source trees
+## filter copied from Visual C# loose
+name: fliox 
+desc: Suppresses various binaries found in Visual C# source trees
+
+## This is an inclusive (loose) filter
+## (it lets through everything not specified)
+def: include
+
+## Filters for filenames begin with f:
+## Filters for directories begin with d:
+## (Inline comments begin with " ##" and extend to the end of the line)
+
+f: \.aps$ ## VC Binary version of resource file, for quick loading
+f: \.bsc$ ## VC Browser database
+f: \.dll$ ## Windows DLL
+f: \.exe$ ## Windows executable
+f: \.obj$ ## VC object module file
+f: \.pdb$ ## VC program database file (debugging symbolic information)
+f: \.res$ ## VC compiled resources file (output of RC [resource compiler])
+f: \.suo$ ## VC options file (binary)
+f: \.cache$ ## ??
+f: \.resource$ ## Compiled resource file.
+f: \.xfrm ## ??
+f: \.bak$ ## backup
+
+d: \\\.svn$ ## Subversion working copy
+d: \\_svn$  ## Subversion working copy ASP.NET Hack
+d: \\cvs$   ## CVS control directory
+d: \\\.git$ ## Git directory
+d: \\\.bzr$ ## Bazaar branch
+d: \\\.hg$ ## Mercurial repository
+d: \\\.vs$ ## A hidden folder that stores .suo and *.db files
+
+## fliox
+f: \.meta$ ## Unity .meta files
+f: \.gitignore
+f: \.sln
+f: \.DotSettings
+f: \.DotSettings.user
+f: \.flt ## WinMerge filter
+f: LICENSE
+
+d: \\bin$
+d: \\obj$
+d: \\docs$
+d: \\.obj$
+d: \\.github$
+d: \\.idea$
+d: \\.run$
+d: \\.vscode$
