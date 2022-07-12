@@ -41,6 +41,7 @@ f: \.DotSettings
 f: \.DotSettings.user
 f: \.flt ## WinMerge filter
 f: LICENSE
+f: \.gitpod.yml
 
 d: \\bin$
 d: \\obj$
