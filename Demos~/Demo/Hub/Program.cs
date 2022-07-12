@@ -48,7 +48,7 @@ namespace DemoHub
             hub.Info.envName        = "dev";                                                // optional
             hub.AddExtensionDB (new ClusterDB("cluster", hub));     // optional - expose info of hosted databases. cluster is required by Hub Explorer
             hub.AddExtensionDB (new MonitorDB("monitor", hub));     // optional - expose monitor stats as extension database
-            hub.EventDispatcher     = new EventDispatcher(true);    // optional - enables sending events for subscriptions
+            hub.EventDispatcher     = new EventDispatcher(true);    // optional - enables Pub-Sub (sending events for subscriptions)
             
             var userDB              = new FileDatabase("user_db", c.userDbPath, new UserDBHandler(), null, false);
             hub.Authenticator       = new UserAuthenticator(userDB) // optional - otherwise all tasks are authorized

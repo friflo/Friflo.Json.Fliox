@@ -50,9 +50,9 @@ namespace Friflo.Json.Tests.Main
             hub.Info.projectName    = "Test Hub";                                                               // optional
             hub.Info.projectWebsite = "https://github.com/friflo/Friflo.Json.Fliox/tree/main/Json.Tests/Main";  // optional
             hub.Info.envName        = "dev"; hub.Info.envColor = "rgb(34 140 0)";                               // optional
-            hub.AddExtensionDB (new ClusterDB("cluster", hub));     // optional - expose info of hosted databases. Required by Hub Explorer
-            hub.AddExtensionDB (new MonitorDB("monitor", hub));     // optional - expose monitor stats as extension database
-            hub.EventDispatcher     = new EventDispatcher(true, c.env); // optional - enables sending events for subscriptions
+            hub.AddExtensionDB (new ClusterDB("cluster", hub));         // optional - expose info of hosted databases. Required by Hub Explorer
+            hub.AddExtensionDB (new MonitorDB("monitor", hub));         // optional - expose monitor stats as extension database
+            hub.EventDispatcher     = new EventDispatcher(true, c.env); // optional - enables Pub-Sub (sending events for subscriptions)
             
             var userDB              = new FileDatabase("user_db", c.UserDbPath, new UserDBHandler(), null, false);
             hub.Authenticator       = new UserAuthenticator(userDB, c.env)  // optional - otherwise all request tasks are authorized
