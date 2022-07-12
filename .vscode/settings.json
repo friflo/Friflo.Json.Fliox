@@ -13,7 +13,14 @@
 		"**/*.meta": true,
 		"**/*.sync.resp.json": true,
 		"**/*.sync.resp.md": true,
+        
+        // root files / folders
         "package-lock.json": true,
+        "node_modules": true,
+        "Directory.Build.props": true,
+        "BannedSymbols.txt": true,
+        "Friflo.Json.asmdef": true,
+        "csc.rsp": true
     },
     "cSpell.words": [
         "AGPL",
