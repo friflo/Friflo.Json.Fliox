@@ -37,10 +37,9 @@ namespace DemoHub
         /// additional <see cref="HttpHost"/> instance only accessible from Intranet as they contains sensitive data.
         /// </summary>
         internal static HttpHost CreateHttpHost() {
-            var c                   = new Config();
             var typeSchema          = NativeTypeSchema.Create(typeof(DemoClient)); // optional - create TypeSchema from Type
             var databaseSchema      = new DatabaseSchema(typeSchema);
-            var database            = CreateDatabase(c, databaseSchema, new MessageHandler());
+            var database            = CreateDatabase(databaseSchema, new MessageHandler());
 
             var hub                 = new FlioxHub(database);
             hub.Info.projectName    = "DemoHub";                                            // optional
@@ -50,7 +49,7 @@ namespace DemoHub
             hub.AddExtensionDB (new MonitorDB("monitor", hub));     // optional - expose monitor stats as extension database
             hub.EventDispatcher     = new EventDispatcher(true);    // optional - enables Pub-Sub (sending events for subscriptions)
             
-            var userDB              = new FileDatabase("user_db", c.userDbPath, new UserDBHandler(), null, false);
+            var userDB              = new FileDatabase("user_db", "./DB/user_db", new UserDBHandler(), null, false);
             hub.Authenticator       = new UserAuthenticator(userDB) // optional - otherwise all tasks are authorized
                 .SubscribeUserDbChanges(hub.EventDispatcher);       // optional - apply user_db changes instantaneously
             hub.AddExtensionDB(userDB);                             // optional - expose user_db as extension database
@@ -61,16 +60,12 @@ namespace DemoHub
             return httpHost;
         }
         
-        private class Config {
-            internal readonly string  mainDbPath          = "./DB/main_db";
-            internal readonly string  userDbPath          = "./DB/user_db";
-            internal readonly bool    useMemoryDbClone    = true;
-        }
+        private static bool UseMemoryDbClone = true;
         
-        private static EntityDatabase CreateDatabase(Config c, DatabaseSchema schema, TaskHandler handler) {
-            var fileDb = new FileDatabase("main_db", c.mainDbPath, handler);
+        private static EntityDatabase CreateDatabase(DatabaseSchema schema, TaskHandler handler) {
+            var fileDb = new FileDatabase("main_db", "./DB/main_db", handler);
             fileDb.Schema = schema;
-            if (!c.useMemoryDbClone)
+            if (!UseMemoryDbClone)
                 return fileDb;
             // As the DemoHub is also deployed as a demo service in the internet it uses a memory database
             // to minimize operation cost and prevent abuse as a free persistent database.   
