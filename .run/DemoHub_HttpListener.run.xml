@@ -1,13 +1,13 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="DemoHub - HttpListener" type="DotNetProject" factoryName=".NET Project">
-    <option name="EXE_PATH" value="$PROJECT_DIR$/Demos~/DemoHub/bin/Release/netcoreapp3.1/DemoHub.exe" />
+    <option name="EXE_PATH" value="$PROJECT_DIR$/Demos~/Demo/Hub/bin/Release/netcoreapp3.1/DemoHub.exe" />
     <option name="PROGRAM_PARAMETERS" value="HttpListener" />
-    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Demos~/DemoHub" />
+    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Demos~/Demo/Hub" />
     <option name="PASS_PARENT_ENVS" value="1" />
     <option name="USE_EXTERNAL_CONSOLE" value="0" />
     <option name="USE_MONO" value="0" />
     <option name="RUNTIME_ARGUMENTS" value="" />
-    <option name="PROJECT_PATH" value="$PROJECT_DIR$/Demos~/DemoHub/DemoHub.csproj" />
+    <option name="PROJECT_PATH" value="$PROJECT_DIR$/Demos~/Demo/Hub/DemoHub.csproj" />
     <option name="PROJECT_EXE_PATH_TRACKING" value="1" />
     <option name="PROJECT_ARGUMENTS_TRACKING" value="1" />
     <option name="PROJECT_WORKING_DIRECTORY_TRACKING" value="1" />
