@@ -47,9 +47,11 @@ Validation errors are marked as warnings by yellow wavy underlines directly in t
 ## Performance
 
 The goal - when opening or refreshing the Hub Explorer - is being instantaneously available to the user.  
-Below a screenshot of a **Lighthouse Performance** report measured by Chrome DevTools.
+Almost all Hub responses can be cached so that a subsequent page load performs only two requests to the Hub.  
+Below a screenshot of a **Lighthouse Performance** report measured by Chrome DevTools on localhost.
 
 When browsing databases, containers, their entities or executing database commands the `/fliox/rest` API is used.  
-In case of using an `in-memory` database on localhost the expected execution time of a request is **1 ms** at DevTools > Network > Time.  
+In case of using an `in-memory` database on localhost the expected execution time of a typical request is **1 ms**
+at DevTools > Network > Time.  
 
 ![Hub Explorer - Lighthouse Performance](../../docs/images/Hub-Explorer-Lighthouse.png)
