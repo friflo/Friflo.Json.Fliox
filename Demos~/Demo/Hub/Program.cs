@@ -55,17 +55,15 @@ namespace DemoHub
                 .SubscribeUserDbChanges(hub.EventDispatcher);       // optional - apply user_db changes instantaneously
             hub.AddExtensionDB(userDB);                             // optional - expose user_db as extension database
             
-            var httpHost            = new HttpHost(hub, "/fliox/") { CacheControl = c.cache };
+            var httpHost            = new HttpHost(hub, "/fliox/");
             httpHost.AddHandler      (new GraphQLHandler());
-            httpHost.AddHandler      (new StaticFileHandler(c.www) { CacheControl = c.cache }); // optional - serve static web files of Hub Explorer
+            httpHost.AddHandler      (new StaticFileHandler(HubExplorer.Path)); // optional - serve static web files of Hub Explorer
             return httpHost;
         }
         
         private class Config {
             internal readonly string  mainDbPath          = "./DB/main_db";
             internal readonly string  userDbPath          = "./DB/user_db";
-            internal readonly string  www                 = HubExplorer.Path;
-            internal readonly string  cache               = null; // "max-age=600"; // HTTP Cache-Control
             internal readonly bool    useMemoryDbClone    = true;
         }
         
