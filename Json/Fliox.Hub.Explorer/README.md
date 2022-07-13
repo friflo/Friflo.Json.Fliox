@@ -43,3 +43,10 @@ It utilizes the [Monaco Editor](https://microsoft.github.io/monaco-editor/) on v
 All integrated editors are using the **JSON Schemas** exposed by Hub.
 This enables auto completion and instant validation of JSON values.
 Validation errors are marked as warnings by yellow wavy underlines directly in the editors.
+
+## Performance
+
+The goal - when opening or refreshing the Hub Explorer - is being instantaneously available to the user.  
+Below a screenshot of a **Lighthouse Performance** report measured by Chrome DevTools.
+
+![Hub Explorer - Lighthouse Performance](../../docs/images/Hub-Explorer-Lighthouse.png)
