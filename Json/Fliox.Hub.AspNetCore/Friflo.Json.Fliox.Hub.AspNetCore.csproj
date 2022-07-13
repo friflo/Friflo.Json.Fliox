@@ -10,6 +10,7 @@
         <RepositoryType>git</RepositoryType>
         <Title>Fliox Hub ASP.NET Core Adapter</Title>
         <Authors>Ullrich Praetz</Authors>
+        <Description>Enable JSON Fliox Hub integration into ASP.NET Core</Description>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">

@@ -15,6 +15,7 @@
         <RepositoryType>git</RepositoryType>
         <AssemblyName>Friflo.Json.Fliox.Annotation</AssemblyName>
         <RootNamespace>Friflo.Json.Fliox</RootNamespace>
+        <Description>Attributes used to control JSON serialization, Schema generation and Hub behavior of JSON Fliox</Description>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">

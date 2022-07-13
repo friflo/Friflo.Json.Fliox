@@ -7,14 +7,9 @@
         <LangVersion>7.3</LangVersion>
         <Title>JSON Fliox Hub</Title>
         <Authors>Ullrich Praetz</Authors>
-        <Description>Fliox.Hub is an ORM (Object-relational Mapper) for NoSQL databases used to map objects represented as .NET types to entities in a NoSQL database.
-Fliox.Hub strives to overcome the "Object-relational impedance mismatch" inherent to Object–relational mapping by relaxing constraints.
-This enables simple and performant database adapters for various databases.
-Fliox.Hub provides a clear &amp; compact API. It is trimmed towards performance by minimizing CPU utilization and memory footprint.
-The API enables collecting multiple database task into a single Sync request to minimize latency caused by a chatty protocol via Internet.
-The Fliox.Hub client &amp; host implementations are 100% asynchronous to be responsive even under high load.
-A Fliox.Hub host requires no database schema to enable running as a microservice in distributed environments and avoiding database migrations.
-Compatible to .NET &amp; Unity.</Description>
+        <Description>Provide an ORM (Object-relational Mapper) and a database Hub targeting NoSQL and key-value databases.
+Hub API's: REST/OpenAPI, GraphlQL, Batch (HTTP &amp; WebSocket).
+The Hub support container relations, CRUD, query, messaging, Pub-Sub (changes &amp; messages)  and a Web UI (Hub Explorer)</Description>
         <Copyright>Ullrich Praetz</Copyright>
         <PackageProjectUrl>https://github.com/friflo/Friflo.Json.Fliox</PackageProjectUrl>
         <RepositoryUrl>https://github.com/friflo/Friflo.Json.Fliox</RepositoryUrl>
