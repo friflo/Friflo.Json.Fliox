@@ -17,11 +17,10 @@ namespace Friflo.Json.Fliox.Hub.Client
     /// </summary>
     public readonly struct LocalEntities<TKey, T>  where T : class
     {
-        // ReSharper disable once UnusedMember.Local - expose entities as list in Debugger
-        private             List<T>             Entities    => ToList();
-        private  readonly   EntitySet<TKey, T>  entitySet;
         /// <summary> return number of tracked entities </summary>
         public              int                 Count       => GetCount();
+        // private          List<T>             Entities    => ToList(); - not essential - debugger shows type error
+        private  readonly   EntitySet<TKey, T>  entitySet;
         
         public LocalEntities (EntitySet<TKey, T> entitySet) {
             this.entitySet  = entitySet;
