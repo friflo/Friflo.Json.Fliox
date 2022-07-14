@@ -42,6 +42,11 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         // ReSharper disable once UnusedMember.Local - expose Dictionary as list in Debugger
         private             ICollection<EventSubUser>                       SubUsers    => subUsers.Values;
         //
+        /// <summary> exposed only for test assertions. <see cref="EventDispatcher"/> lives on Hub. <br/>
+        /// If required its state (subscribed client) can be exposed by <see cref="DB.Monitor.ClientHits"/></summary>
+        [DebuggerBrowsable(Never)]
+        public              int                                             SubscribedClientsCount => subClients.Count;
+        //
         internal readonly   bool                                            background;
 
         public   override   string                                          ToString() => $"subscribers: {subClients.Count}";

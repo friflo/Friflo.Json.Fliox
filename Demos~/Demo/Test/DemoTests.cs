@@ -154,6 +154,11 @@ namespace DemoTest {
             
             AreEqual(1,                 createdArticles.Count);
             AreEqual(new long[] { 10 }, createdArticles[0]);
+            
+            // unsubscribe to free subscription resources on Hub
+            subClient.articles.SubscribeChanges(ChangeFlags.None, (changes, context) => { });
+            await subClient.SyncTasks();
+            AreEqual(0, hub.EventDispatcher.SubscribedClientsCount);
         }
         
         [Test]
@@ -179,6 +184,11 @@ namespace DemoTest {
             AreEqual(1,     addOperands.Count);
             AreEqual(11,    addOperands[0].left);
             AreEqual(22,    addOperands[0].right);
+            
+            // unsubscribe to free subscription resources on Hub
+            subClient.UnsubscribeMessage("demo.Add", null);
+            await subClient.SyncTasks();
+            AreEqual(0, hub.EventDispatcher.SubscribedClientsCount);
         }
     }
 }
