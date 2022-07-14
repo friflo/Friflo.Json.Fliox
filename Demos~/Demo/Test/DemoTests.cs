@@ -1,9 +1,12 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Demo;
 using DemoHub;
 using Friflo.Json.Fliox.Hub.Host;
+using Friflo.Json.Fliox.Hub.Host.Event;
+using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using NUnit.Framework;
 using static NUnit.Framework.CollectionAssert;
 using static NUnit.Framework.Assert;
@@ -127,6 +130,55 @@ namespace DemoTest {
             AreEqual(3, employeeCount.Result);
             AreEqual(4, orderCount.Result);
             AreEqual(5, producerCount.Result);
+        }
+        
+        [Test]
+        public static async Task SubscribeChanges() {
+            var database        = new MemoryDatabase("test", new MessageHandler());
+            var hub             = new FlioxHub(database);
+            hub.EventDispatcher = new EventDispatcher(false); // dispatch events synchronous to simplify test
+            
+            // setup subscriber client
+            var subClient       = new DemoClient(hub) { UserId = "admin", Token = "admin", ClientId = "sub-1" };
+            var createdArticles = new List<long[]>();
+            subClient.articles.SubscribeChanges(ChangeFlags.All, (changes, context) => {
+                var created = changes.Creates.Select(o => o.id).ToArray();
+                createdArticles.Add(created);
+            });
+            await subClient.SyncTasks();
+            
+            // perform change with different client
+            var client    = new DemoClient(hub) { UserId = "admin", Token = "admin" };
+            client.articles.Create(new Article{id = 10, name = "Article-10"});
+            await client.SyncTasks();
+            
+            AreEqual(1,                 createdArticles.Count);
+            AreEqual(new long[] { 10 }, createdArticles[0]);
+        }
+        
+        [Test]
+        public static async Task SubscribeMessage() {
+            var database        = new MemoryDatabase("test", new MessageHandler());
+            var hub             = new FlioxHub(database);
+            hub.EventDispatcher = new EventDispatcher(false); // dispatch events synchronous to simplify test
+            
+            // setup subscriber client
+            var subClient       = new DemoClient(hub) { UserId = "admin", Token = "admin", ClientId = "sub-2" };
+            var addOperands     = new List<Operands>();
+            subClient.SubscribeMessage<Operands>("demo.Add", (message, context) => {
+                message.GetParam(out var operands, out _);
+                addOperands.Add(operands);
+            });
+            await subClient.SyncTasks();
+            
+            // send command
+            var client    = new DemoClient(hub) { UserId = "admin", Token = "admin" };
+            client.Add(new Operands { left = 11, right = 22 });
+            await client.SyncTasks();
+            
+            AreEqual(1,     addOperands.Count);
+            AreEqual(11,    addOperands[0].left);
+            AreEqual(22,    addOperands[0].right);
         }
     }
 }
