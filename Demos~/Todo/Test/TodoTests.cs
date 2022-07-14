@@ -37,7 +37,7 @@ namespace TodoTest {
             await client.SyncTasks();
             
             AreEqual(2, jobs.Result.Count);
-            AreEqual(2, client.jobs.ToList().Count);
+            AreEqual(2, client.jobs.Local.ToList().Count);
         }
         
         [Test]
@@ -48,7 +48,7 @@ namespace TodoTest {
             await client.SyncTasks();
             
             AreEqual(1, jobs.Result.Count);
-            AreEqual(1, client.jobs.ToList().Count);
+            AreEqual(1, client.jobs.Local.ToList().Count);
         }
         
         [Test]
@@ -99,7 +99,7 @@ namespace TodoTest {
             await client.SyncTasks();
             
             AreEqual("buy milk", readJob.Result.title);
-            AreEqual(1, client.jobs.ToList().Count);
+            AreEqual(1, client.jobs.Local.ToList().Count);
         }
         
         [Test]
@@ -113,7 +113,7 @@ namespace TodoTest {
             NotNull(readJob.Result[1]);
             NotNull(readJob.Result[2]);
             IsNull (readJob.Result[3]);
-            AreEqual(2, client.jobs.ToList().Count);
+            AreEqual(2, client.jobs.Local.ToList().Count);
         }
     }
 }

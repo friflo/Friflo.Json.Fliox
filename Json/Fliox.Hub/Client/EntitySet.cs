@@ -54,10 +54,10 @@ namespace Friflo.Json.Fliox.Hub.Client
         
         /// <summary> List of tasks created by its <see cref="EntitySet{TKey,T}"/> methods. These tasks are executed when calling <see cref="FlioxClient.SyncTasks"/> </summary>
         //  Not used internally 
-                        public              IReadOnlyList<SyncTask>     Tasks => syncSet?.tasks;
-        
-        // create _peers map on demand                                      //  Note: must be private by all means
-                        private             Dictionary<TKey, Peer<T>>   PeerMap()       => peerMap ?? (peerMap = SyncSet.CreateDictionary<TKey,Peer<T>>());
+                        public              IReadOnlyList<SyncTask>     Tasks           => syncSet?.tasks;
+                        public              LocalEntities<TKey,T>       Local           => new LocalEntities<TKey,T>(this);
+        /// <summary> Note! Must be called only from this class or <see cref="LocalEntities{TKey,T}"/> to preserve maintainability </summary>
+                        internal            Dictionary<TKey, Peer<T>>   PeerMap()       => peerMap ?? (peerMap = SyncSet.CreateDictionary<TKey,Peer<T>>());
                         private             SyncSet<TKey, T>            GetSyncSet()    => syncSet ?? (syncSet = new SyncSet<TKey, T>(this));
                         internal override   SyncSetBase<T>              GetSyncSetBase()=> syncSet;
                         public   override   string                      ToString()      => SetInfo.ToString();
@@ -84,45 +84,6 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// constructor is called via <see cref="EntitySetMapper{T,TKey,TEntity}.CreateEntitySet"/> 
         internal EntitySet(string name) : base (name) {
             // ValidateKeyType(typeof(TKey)); // only required if constructor is public
-        }
-        #endregion
-        
-    #region - Cache    
-        /// <summary>
-        /// Get the <paramref name="entity"/> with the passed <paramref name="key"/> from the <see cref="EntitySet"/>. <br/>
-        /// Return true if the <see cref="EntitySet{TKey,T}"/> contains an entity with the given key. Otherwise false.
-        /// </summary>
-        public bool TryGet (TKey key, out T entity) {
-            var peers = PeerMap();
-            if (peers.TryGetValue(key, out Peer<T> peer)) {
-                entity = peer.NullableEntity;
-                return true;
-            }
-            entity = null;
-            return false;
-        }
-        
-        /// <summary>
-        /// Return true if the <see cref="EntitySet{TKey,T}"/> contains an entity with the passed <paramref name="key"/>
-        /// </summary>
-        public bool Contains (TKey key) {
-            var peers = PeerMap();
-            return peers.ContainsKey(key);
-        }
-
-        /// <summary>
-        /// Return all tracked entities of the <see cref="EntitySet{TKey,T}"/>
-        /// </summary>
-        public List<T> ToList() {
-            var peers   = PeerMap();
-            var result  = new List<T>(peers.Count);
-            foreach (var pair in peers) {
-                var entity = pair.Value.NullableEntity;
-                if (entity == null)
-                    continue;
-                result.Add(entity);
-            }
-            return result;
         }
         #endregion
         
