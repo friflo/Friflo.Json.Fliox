@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Demo;
 using DemoHub;
+using Friflo.Json.Fliox.Hub.Client;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.Event;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
@@ -179,6 +180,8 @@ namespace DemoTest {
             // send command
             var client    = new DemoClient(hub) { UserId = "admin", Token = "admin" };
             client.Add(new Operands { left = 11, right = 22 });
+            // when setting an event target (client, user or group) only those targets receive an event 
+            client.Add(new Operands { left = 33, right = 44 }).EventTargetGroup("some-group");
             await client.SyncTasks();
             
             AreEqual(1,     addOperands.Count);
