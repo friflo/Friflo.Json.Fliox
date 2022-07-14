@@ -21,7 +21,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         private             List<T>             Entities    => ToList();
         private  readonly   EntitySet<TKey, T>  entitySet;
         /// <summary> return number of tracked entities </summary>
-        public              int                 Count       => entitySet.PeerMap().Count;
+        public              int                 Count       => GetCount();
         
         public LocalEntities (EntitySet<TKey, T> entitySet) {
             this.entitySet  = entitySet;
@@ -62,6 +62,16 @@ namespace Friflo.Json.Fliox.Hub.Client
                 result.Add(entity);
             }
             return result;
+        }
+        
+        private int GetCount() {
+            var peers   = entitySet.PeerMap();
+            var count   = 0;
+            foreach (var pair in peers) {
+                var entity = pair.Value.NullableEntity;
+                count += entity == null ? 0 : 1;
+            }
+            return count;
         }
     }
 }
