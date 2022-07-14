@@ -2,7 +2,10 @@
 // See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 using Friflo.Json.Fliox.Hub.Client.Internal;
+using static System.Diagnostics.DebuggerBrowsableState;
 
 namespace Friflo.Json.Fliox.Hub.Client
 {
@@ -17,8 +20,11 @@ namespace Friflo.Json.Fliox.Hub.Client
     /// </summary>
     public readonly struct LocalEntities<TKey, T> where T : class
     {
-        private readonly EntitySet<TKey, T> entitySet;
-        
+        [DebuggerBrowsable(Never)]
+        private  readonly   EntitySet<TKey, T>  entitySet;
+        // ReSharper disable once UnusedMember.Local - expose entities as list in Debugger
+        private             IEnumerable<T>      Entities => entitySet.PeerMap().Values.Select(peer => peer.Entity);
+
         public LocalEntities (EntitySet<TKey, T> entitySet) {
             this.entitySet  = entitySet;
         }
