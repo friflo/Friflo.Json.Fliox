@@ -15,6 +15,7 @@ using static NUnit.Framework.Assert;
     using NUnit.Framework;
 #endif
 
+// ReSharper disable UnusedVariable
 // ReSharper disable PossibleNullReferenceException
 // ReSharper disable JoinDeclarationAndInitializer
 namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
@@ -124,7 +125,8 @@ article-missing", string.Join("\n", store.Functions));
             AreEqual(7, count);
         }
         
-        [Test] public async Task TestLocalEntities () {
+        [Test]
+        public async Task TestLocalEntities () {
             var database    = new MemoryDatabase("test");
             var hub         = new FlioxHub(database);
             using (var _        = SharedEnv.Default) // for LeakTestsFixture
@@ -137,9 +139,10 @@ article-missing", string.Join("\n", store.Functions));
                 AreEqual(0, count);
                 
                 using (var e = localArticles.GetEnumerator()) {
-                    var x = e.Current;
-                    AreEqual(null, x.Key);
-                    AreEqual(null, x.Value);
+                    var current = e.Current;
+                    AreEqual(null, current.Key);
+                    AreEqual(null, current.Value);
+                    Throws<NotImplementedException>(() => { e.Reset(); });
                 }
                 store.articles.Read().FindRange(new [] { "key-1", "key-2" });
                 await store.SyncTasks();

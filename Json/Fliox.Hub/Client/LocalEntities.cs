@@ -125,8 +125,8 @@ namespace Friflo.Json.Fliox.Hub.Client
     #region ---- Enumerator ----
         private struct Enumerator : IEnumerator<KeyValuePair<TKey, T>>
         {
-            private Dictionary<TKey,Peer<T>>.Enumerator enumerator;
-            private bool                                isEmpty;
+            private             Dictionary<TKey,Peer<T>>.Enumerator enumerator;
+            private  readonly   bool                                isEmpty;
 
             internal Enumerator(EntitySet<TKey, T> entitySet) {
                 var peers   = entitySet.GetPeers();
@@ -145,7 +145,7 @@ namespace Friflo.Json.Fliox.Hub.Client
                 return enumerator.MoveNext();
             }
 
-            public void Reset() { enumerator = new Dictionary<TKey, Peer<T>>.Enumerator(); }
+            public void Reset() { throw new NotImplementedException(); }
 
             public KeyValuePair<TKey, T> Current { get {
                 var current = enumerator.Current;
