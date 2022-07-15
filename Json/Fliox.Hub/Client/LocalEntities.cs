@@ -1,6 +1,7 @@
 // Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using Friflo.Json.Fliox.Hub.Client.Internal;
@@ -27,9 +28,9 @@ namespace Friflo.Json.Fliox.Hub.Client
         [DebuggerBrowsable(Never)]
         public              int                 Count       => GetCount();
         /// <summary> Return the keys of all tracked entities in the <see cref="EntitySet{TKey,T}"/> </summary>
-        public              List<TKey>          Keys        => KeysToList();
+        public              TKey[]              Keys        => KeysToArray();
         /// <summary> Return all tracked entities in the <see cref="EntitySet{TKey,T}"/> </summary>
-        public              List<T>             Entities    => EntitiesToList();
+        public              T[]                 Entities    => EntitiesToArray();
 
         private  readonly   EntitySet<TKey, T>  entitySet;
 
@@ -80,30 +81,29 @@ namespace Friflo.Json.Fliox.Hub.Client
             return peers.Count;
         }
         
-        private List<TKey> KeysToList() {
+        private TKey[] KeysToArray() {
             var peers   = entitySet.GetPeers();
             if (peers == null) {
-                return new List<TKey>();
+                return Array.Empty<TKey>();
             }
-            var result  = new List<TKey>(peers.Count);
+            var result  = new TKey[peers.Count];
+            int n       = 0;
             foreach (var pair in peers) {
-                result.Add(pair.Key);
+                result[n++] = pair.Key;
             }
             return result;
         }
         
-        /// <summary>
-        /// Return all tracked entities of the <see cref="EntitySet{TKey,T}"/>
-        /// </summary>
-        private List<T> EntitiesToList() {
+        private T[] EntitiesToArray() {
             var peers   = entitySet.GetPeers();
             if (peers == null) {
-                return new List<T>();
+                return Array.Empty<T>();
             }
-            var result  = new List<T>(peers.Count);
+            var result  = new T[peers.Count];
+            int n       = 0;
             foreach (var pair in peers) {
                 T entity = pair.Value.NullableEntity;
-                result.Add(entity);
+                result[n++] = entity;
             }
             return result;
         }

@@ -106,9 +106,10 @@ article-missing", string.Join("\n", store.Functions));
             AreEqual(5,                 readTask.Result.Count);
             AreEqual("Galaxy S10",      readTask.Result["article-galaxy"].name);
             
-            var localArticles = articles.Local.Entities;
-            AreEqual(7,                 localArticles.Count);
-            AreEqual(7,                 articles.Local.Count);
+            var localArticles   = articles.Local.Entities;
+            var localArticleKey = articles.Local.Keys;
+            AreEqual(7,                 localArticles.Length);
+            AreEqual(7,                 localArticleKey.Length);
         }
     }
 }
