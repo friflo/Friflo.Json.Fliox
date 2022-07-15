@@ -117,6 +117,10 @@ article-missing", string.Join("\n", store.Functions));
             IsNull (localArticles["article-missing"]);
             e = Throws<KeyNotFoundException>(() => { var _ = localArticles["foo"]; });
             AreEqual("key 'foo' not found in articles.Local", e.Message);
+
+            int count = 0;
+            foreach (var article in localArticles) { count++; }
+            AreEqual(7, count);
         }
     }
 }

@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using Friflo.Json.Fliox.Hub.Client.Internal;
@@ -19,7 +20,7 @@ namespace Friflo.Json.Fliox.Hub.Client
     /// </list>
     /// <see cref="LocalEntities{TKey,T}"/> adapts the behavior of <see cref="IReadOnlyDictionary{TKey,TValue}"/>
     /// </summary>
-    public class LocalEntities<TKey, T> where T : class
+    public class LocalEntities<TKey, T> : IEnumerable<KeyValuePair<TKey, T>> where T : class
     // Note:
     // could implement IReadOnlyDictionary<TKey, T> - but disadvantages predominate. reasons:
     // - have to use blurry names: e.g. .Values instead of .Entities, .TryGetValue() instead of .TryGetEntity()
@@ -34,13 +35,14 @@ namespace Friflo.Json.Fliox.Hub.Client
         public              T[]                 Entities    => EntitiesToArray();
 
         private  readonly   EntitySet<TKey, T>  entitySet;
-
+        
         public   override   string              ToString() => $"{entitySet.name}: {GetCount()}";
 
         internal LocalEntities (EntitySet<TKey, T> entitySet) {
             this.entitySet  = entitySet;
         }
     
+    #region - methods
         /// <summary>
         /// Return true if the <see cref="EntitySet{TKey,T}"/> contains an entity with the passed <paramref name="key"/>
         /// </summary>
@@ -108,5 +110,43 @@ namespace Friflo.Json.Fliox.Hub.Client
             }
             return result;
         }
+        #endregion
+        
+    #region - IEnumerable<>
+        public IEnumerator<KeyValuePair<TKey, T>> GetEnumerator() {
+            return new Enumerator(entitySet);
+        }
+
+        IEnumerator IEnumerable.GetEnumerator() {
+            return GetEnumerator();
+        }
+        #endregion
+        
+    #region ---- Enumerator ----
+        private struct Enumerator : IEnumerator<KeyValuePair<TKey, T>>
+        {
+            private Dictionary<TKey,Peer<T>>.Enumerator enumerator;
+
+            internal Enumerator(EntitySet<TKey, T> entitySet) {
+                var peers = entitySet.GetPeers();
+                enumerator = peers?.GetEnumerator() ?? default;
+            }
+
+            public bool MoveNext() {
+                return enumerator.MoveNext();
+            }
+
+            public void Reset() { enumerator = new Dictionary<TKey, Peer<T>>.Enumerator(); }
+
+            public KeyValuePair<TKey, T> Current { get {
+                var current = enumerator.Current;
+                return new KeyValuePair<TKey, T>(current.Key, current.Value.NullableEntity);
+            } }
+
+            object IEnumerator.Current => Current;
+
+            public void Dispose() { }
+        }
+        #endregion
     }
 }
