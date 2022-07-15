@@ -22,6 +22,8 @@ jobs:
 #     with:
 #       dotnet-version: 5.0.406
     - name: Restore dependencies
+      env:
+        GITHUB_PACKAGE_TOKEN: ${{ secrets.PACKAGE_TOKEN }}
       run: dotnet restore
     - name: Build
       run: dotnet build --no-restore --framework netcoreapp3.1
