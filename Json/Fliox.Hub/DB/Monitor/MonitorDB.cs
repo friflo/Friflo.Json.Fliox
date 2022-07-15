@@ -75,7 +75,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Monitor
             foreach (var pair in hub.ClientController.clients) {
                 UserClient client   = pair.Value;
                 var clientId        = pair.Key;
-                clients.Local.TryGetValue(clientId, out var clientHits);
+                clients.Local.TryGetEntity(clientId, out var clientHits);
                 if (clientHits == null) {
                     clientHits = new ClientHits { id = clientId };
                 }
@@ -110,7 +110,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Monitor
         
         internal void UpdateUsers(Authenticator authenticator, string monitorName) {
             foreach (var pair in authenticator.users) {
-                if (!users.Local.TryGetValue(pair.Key, out var userHits)) {
+                if (!users.Local.TryGetEntity(pair.Key, out var userHits)) {
                     userHits = new UserHits { id = pair.Key };
                 }
                 User user   = pair.Value;
@@ -131,7 +131,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Monitor
         
         internal void UpdateHistories(RequestHistories requestHistories) {
             foreach (var history in requestHistories.histories) {
-                if (!histories.Local.TryGetValue(history.resolution, out var historyHits)) {
+                if (!histories.Local.TryGetEntity(history.resolution, out var historyHits)) {
                     historyHits = new HistoryHits {
                         id          = history.resolution,
                         counters    = new int[history.Length]
@@ -145,7 +145,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Monitor
         
         internal void UpdateHost(HostStats hostStats) {
             var hostNameKey = new JsonKey(hostName);
-            if (!hosts.Local.TryGetValue(hostNameKey, out var hostHits)) {
+            if (!hosts.Local.TryGetEntity(hostNameKey, out var hostHits)) {
                 hostHits = new HostHits { id = hostNameKey };
             }
             hostHits.counts = hostStats.requestCount;

@@ -102,7 +102,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
         }
         
         private static void ValidatePermissions(UserStore userStore, List<string> errors) {
-            var permissions = userStore.permissions.Local.ToList();
+            var permissions = userStore.permissions.Local.Entities;
             foreach (var permission in permissions) {
                 foreach (var role in permission.roles) {
                     if (userStore.roles.Local.ContainsKey(role))
@@ -114,7 +114,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
         }
         
         private void ValidateRoles(UserStore userStore, RoleValidation roleValidation) {
-            var roles = userStore.roles.Local.ToList();
+            var roles = userStore.roles.Local.Entities;
             foreach (var role in roles) {
                 var validation = new RoleValidation(roleValidation, role);
                 foreach (var right in role.rights) {
