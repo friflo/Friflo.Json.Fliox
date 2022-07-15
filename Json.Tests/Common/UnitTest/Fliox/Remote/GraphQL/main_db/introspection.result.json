@@ -3847,8 +3847,21 @@
             "description": "/** general information about a Hub */\n",
             "fields": [
                 {
-                    "name": "version",
+                    "name": "hostVersion",
                     "description": "    /** host version */\n",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "String"
+                        }
+                    }
+                },
+                {
+                    "name": "flioxVersion",
+                    "description": "    /** Fliox library version */\n",
                     "args": [
                     ],
                     "type": {
@@ -3938,8 +3951,21 @@
             "description": "/** general information about a Hub */\n",
             "inputFields": [
                 {
-                    "name": "version",
+                    "name": "hostVersion",
                     "description": "    /** host version */\n",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "String"
+                        }
+                    }
+                },
+                {
+                    "name": "flioxVersion",
+                    "description": "    /** Fliox library version */\n",
                     "args": [
                     ],
                     "type": {

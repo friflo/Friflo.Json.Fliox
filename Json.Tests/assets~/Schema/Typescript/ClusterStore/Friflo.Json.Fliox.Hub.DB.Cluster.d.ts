@@ -90,7 +90,9 @@ export class ContainerStats {
 /** general information about a Hub */
 export class HostInfo {
     /** host version */
-    version         : string;
+    hostVersion     : string;
+    /** Fliox library version */
+    flioxVersion    : string;
     /**
      * host name. Used as **id** in
      * **hosts** of database **monitor**

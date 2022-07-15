@@ -355,7 +355,8 @@ input ContainerStatsInput {
 }
 
 type HostInfo {
-    version        : String!
+    hostVersion    : String!
+    flioxVersion   : String!
     hostName       : String
     projectName    : String
     projectWebsite : String
@@ -365,7 +366,8 @@ type HostInfo {
 }
 
 input HostInfoInput {
-    version        : String!
+    hostVersion    : String!
+    flioxVersion   : String!
     hostName       : String
     projectName    : String
     projectWebsite : String

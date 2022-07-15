@@ -74,7 +74,8 @@
             "type": "object",
             "description": "general information about a Hub",
             "properties": {
-                "version":        { "type": "string", "description": "host version" },
+                "hostVersion":    { "type": "string", "description": "host version" },
+                "flioxVersion":   { "type": "string", "description": "Fliox library version" },
                 "hostName":       { "type": ["string", "null"], "description": "host name. Used as <b>id</b> in\n<b>hosts</b> of database <b>monitor</b>" },
                 "projectName":    { "type": ["string", "null"], "description": "project name" },
                 "projectWebsite": { "type": ["string", "null"], "description": "link to a website describing project and Hub" },
@@ -83,7 +84,8 @@
                 "routes":         { "type": "array", "items": { "type": "string" }, "description": "routes configures by <b>HttpHost</b> - commonly below <c>/fliox</c>" }
             },
             "required": [
-                "version",
+                "hostVersion",
+                "flioxVersion",
                 "routes"
             ],
             "additionalProperties": false

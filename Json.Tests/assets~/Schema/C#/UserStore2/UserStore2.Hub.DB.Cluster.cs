@@ -48,7 +48,9 @@ public class ContainerStats {
 
 public class HostInfo {
     [Required]
-    string        version;
+    string        hostVersion;
+    [Required]
+    string        flioxVersion;
     string        hostName;
     string        projectName;
     string        projectWebsite;

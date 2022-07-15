@@ -40,7 +40,8 @@ data class ContainerStats (
 
 @Serializable
 data class HostInfo (
-              val version        : String,
+              val hostVersion    : String,
+              val flioxVersion   : String,
               val hostName       : String? = null,
               val projectName    : String? = null,
               val projectWebsite : String? = null,

@@ -216,7 +216,8 @@ namespace Friflo.Json.Fliox.Hub.Host
             var info    = hub.Info;
             var routes  = new List<string>(hub.Routes);       
             var result  = new HostInfo {
-                version         = hub.Version,
+                hostVersion     = hub.HostVersion,
+                flioxVersion    = FlioxHub.FlioxVersion,
                 hostName        = hub.hostName,
                 projectName     = info?.projectName,
                 projectWebsite  = info?.projectWebsite,

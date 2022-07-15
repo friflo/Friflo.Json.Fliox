@@ -106,8 +106,10 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// </summary>
         public   readonly   string                  hostName;
         
-        /// <summary>host <see cref="Version"/> - available via command <b>std.Host</b></summary>
-        public   readonly   string                  Version = "0.0.1";
+        /// <summary>host <see cref="HostVersion"/> - available via command <b>std.Host</b></summary>
+        public   readonly   string                  HostVersion      = "0.0.1";
+        
+        public   static     string                  FlioxVersion    => GetFlioxVersion();
         
         /// <summary>General Hub information - available via command <b>std.Host</b></summary>
         public              HubInfo                 Info { get => info; set => info = value ?? throw new ArgumentNullException(nameof(Info)); }
@@ -137,6 +139,11 @@ namespace Friflo.Json.Fliox.Hub.Host
         }
         
         public virtual void Dispose() { }  // todo - remove
+        
+        private static string GetFlioxVersion() {
+            var version     = typeof(FlioxHub).Assembly.GetName().Version;
+            return version == null ? "-.-.-" : $"{version.Major}.{version.Minor}.{version.Build}";
+        }
         
         #endregion
         

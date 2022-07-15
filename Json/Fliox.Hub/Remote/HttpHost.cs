@@ -51,25 +51,23 @@ namespace Friflo.Json.Fliox.Hub.Remote
         public   const      string                  DefaultCacheControl = "max-age=600";
         
 
-        private static  bool    _bannerDisplayed;
+        private static  bool    _titleDisplayed;
         private const   string  JsonFlioxBanner = @"
-        _   ____   _____   __  _       ____   _   _
-       | | | ___| |  _  | |  \| |     |  __| | | |_|  ____  __  __
-     __| | |___ | | |_| | | | | |     |  _|  | | | | | __ | \ \/ /
-    |____| |____| |_____| |_|\__|     |_|    |_| |_| |____| /_/\_\
-";
+      ____   _   _
+     |  __| | | |_|  ____  __  __
+     |  _|  | | | | | __ | \ \/ /
+     |_|    |_| |_| |____| /_/\_\ ";
 
         public HttpHost(FlioxHub hub, string endpoint, SharedEnv env = null)
             : base(hub, env)
         {
-            var banner = "";
-            if (!_bannerDisplayed) {
-                _bannerDisplayed = true;
-                banner = JsonFlioxBanner;
-            }
-            var msg = $"create HttpHost db: {hub.DatabaseName} ({hub.database.StorageType}){banner}";
+            var msg = $"create HttpHost db: {hub.DatabaseName} ({hub.database.StorageType})";
             Logger.Log(HubLog.Info, msg);
-
+            if (!_titleDisplayed) {
+                _titleDisplayed = true;
+                var title       = $"{JsonFlioxBanner} v{FlioxHub.FlioxVersion}\n";
+                Logger.Log(HubLog.Info, title);
+            }
             hubRoutes = hub.routes;
             hubRoutes.AddRange(restHandler.Routes);
             hubRoutes.AddRange(schemaHandler.Routes);
