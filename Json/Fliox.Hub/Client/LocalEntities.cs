@@ -80,13 +80,14 @@ namespace Friflo.Json.Fliox.Hub.Client
             return result;
         }
         
+        /// <summary>
+        /// Return all tracked entities of the <see cref="EntitySet{TKey,T}"/>
+        /// </summary>
         public List<T> ToList() {
             var peers   = entitySet.PeerMap();
             var result  = new List<T>(peers.Count);
             foreach (var pair in peers) {
                 var entity = pair.Value.NullableEntity;
-                if (entity == null)
-                    continue;
                 result.Add(entity);
             }
             return result;

@@ -66,12 +66,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             var articleProducerTask = articleRefsTask.ReadRelations(producers, a => a.producer);
             AreEqual("readOrders -> .items[*].article -> .producer", articleProducerTask.Details);
 
-            var readTask        = store.articles.Read()                                     .TaskName("readTask");
+            var readTask        = articles.Read()                                     .TaskName("readTask");
             var duplicateId     = "article-galaxy"; // support duplicate ids
             var galaxy          = readTask.Find(duplicateId)                                .TaskName("galaxy");
             var article1And2    = readTask.FindRange(new [] {"article-1", "article-2"})     .TaskName("article1And2");
             var articleSetIds   = new [] {duplicateId, duplicateId, "article-ipad"};
             var articleSet      = readTask.FindRange(articleSetIds)                         .TaskName("articleSet");
+            var articleMissing  = readTask.Find("article-missing")                          .TaskName("article-missing");
 
             AreEqual(@"readOrders
 order1
@@ -80,7 +81,8 @@ readOrders -> .items[*].article -> .producer
 readTask
 galaxy
 article1And2
-articleSet", string.Join("\n", store.Functions));
+articleSet
+article-missing", string.Join("\n", store.Functions));
 
             await store.SyncTasks(); // ----------------
         
@@ -94,14 +96,19 @@ articleSet", string.Join("\n", store.Functions));
             AreEqual(2,                 articleSet.Result.Count);
             AreEqual("Galaxy S10",      articleSet.Result["article-galaxy"].name);
             AreEqual("iPad Pro",        articleSet.Result["article-ipad"].name);
+            IsNull(articleMissing.Result);
             
             AreEqual("Galaxy S10",      galaxy.Result.name);
             
             AreEqual(2,                 article1And2.Result.Count);
             AreEqual("Smartphone",      article1And2.Result["article-2"].name);
             
-            AreEqual(4,                 readTask.Result.Count);
+            AreEqual(5,                 readTask.Result.Count);
             AreEqual("Galaxy S10",      readTask.Result["article-galaxy"].name);
+            
+            var localArticles = articles.Local.ToList();
+            AreEqual(7,                 localArticles.Count);
+            AreEqual(7,                 articles.Local.Count);
         }
     }
 }
