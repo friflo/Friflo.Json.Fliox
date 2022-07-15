@@ -109,10 +109,10 @@ article-missing", string.Join("\n", store.Functions));
             
             var localArticles           = articles.Local;
             var localArticleEntities    = localArticles.Entities;
-            var localArticleKey         = localArticles.Keys;
+            var localArticleKeys        = localArticles.Keys;
             
             AreEqual(7,                 localArticleEntities.Length);
-            AreEqual(7,                 localArticleKey.Length);
+            AreEqual(7,                 localArticleKeys.Length);
             NotNull(localArticles["article-galaxy"]);
             IsNull (localArticles["article-missing"]);
             e = Throws<KeyNotFoundException>(() => { var _ = localArticles["foo"]; });
