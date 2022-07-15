@@ -51,10 +51,23 @@ namespace Friflo.Json.Fliox.Hub.Remote
         public   const      string                  DefaultCacheControl = "max-age=600";
         
 
+        private static  bool    _bannerDisplayed;
+        private const   string  JsonFlioxBanner = @"
+        _   ____   _____   __  _       ____   _   _
+       | | | ___| |  _  | |  \| |     |  __| | | |_|  ____  __  __
+     __| | |___ | | |_| | | | | |     |  _|  | | | | | __ | \ \/ /
+    |____| |____| |_____| |_|\__|     |_|    |_| |_| |____| /_/\_\
+";
+
         public HttpHost(FlioxHub hub, string endpoint, SharedEnv env = null)
             : base(hub, env)
         {
-            var msg = $"create HttpHost db: {hub.DatabaseName} ({hub.database.StorageType})";
+            var banner = "";
+            if (!_bannerDisplayed) {
+                _bannerDisplayed = true;
+                banner = JsonFlioxBanner;
+            }
+            var msg = $"create HttpHost db: {hub.DatabaseName} ({hub.database.StorageType}){banner}";
             Logger.Log(HubLog.Info, msg);
 
             hubRoutes = hub.routes;
