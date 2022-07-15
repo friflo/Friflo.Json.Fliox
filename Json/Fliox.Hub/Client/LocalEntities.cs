@@ -15,10 +15,10 @@ namespace Friflo.Json.Fliox.Hub.Client
     ///   <item>.Query(), .QueryAll(), .QueryByFilter()</item>
     /// </list> 
     /// </summary>
-    public readonly struct LocalEntities<TKey, T>  where T : class
+    public readonly struct LocalEntities<TKey, T> where T : class
     {
         /// <summary> return number of tracked entities </summary>
-        public              int                 Count       => GetCount();
+        public              int                 Count       => entitySet.PeerMap().Count;
         // private          List<T>             Entities    => ToList(); - not essential - debugger shows type error
         private  readonly   EntitySet<TKey, T>  entitySet;
         
@@ -61,16 +61,6 @@ namespace Friflo.Json.Fliox.Hub.Client
                 result.Add(entity);
             }
             return result;
-        }
-        
-        private int GetCount() {
-            var peers   = entitySet.PeerMap();
-            var count   = 0;
-            foreach (var pair in peers) {
-                var entity = pair.Value.NullableEntity;
-                count += entity == null ? 0 : 1;
-            }
-            return count;
         }
     }
 }

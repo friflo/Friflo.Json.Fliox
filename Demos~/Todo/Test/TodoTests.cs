@@ -113,7 +113,7 @@ namespace TodoTest {
             NotNull(readJob.Result[1]);
             NotNull(readJob.Result[2]);
             IsNull (readJob.Result[3]);
-            AreEqual(2, client.jobs.Local.Count);
+            AreEqual(3, client.jobs.Local.Count);
         }
     }
 }
