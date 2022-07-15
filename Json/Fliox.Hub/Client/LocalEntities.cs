@@ -15,25 +15,23 @@ namespace Friflo.Json.Fliox.Hub.Client
     ///   <item>.Query(), .QueryAll(), .QueryByFilter()</item>
     /// </list> 
     /// </summary>
-    public readonly struct LocalEntities<TKey, T> // : IReadOnlyDictionary<TKey, T>
+    public class LocalEntities<TKey, T>
+        // : IReadOnlyDictionary<TKey, T> - don't see an advantage to implement it. Also "Find References" on .Keys, .Values, ... gets imprecise
         where T : class
     {
         /// <summary> return number of tracked entities </summary>
-        public              int                 Count       => entitySet.PeerMap().Count;
-        // private          List<T>             Entities    => ToList(); - not essential - debugger shows type error
+        public              int                 Count   => entitySet.PeerMap().Count;
+        /// <summary> Return the keys of all tracked entities in the <see cref="EntitySet{TKey,T}"/> </summary>
+        public              List<TKey>          Keys    => KeysToList();
+        /// <summary> Return all tracked entities in the <see cref="EntitySet{TKey,T}"/> </summary>
+        public              List<T>             Values  => ToList();
+
         private  readonly   EntitySet<TKey, T>  entitySet;
         
-        public LocalEntities (EntitySet<TKey, T> entitySet) {
+        internal LocalEntities (EntitySet<TKey, T> entitySet) {
             this.entitySet  = entitySet;
         }
     
-    #region IReadOnlyDictionary<,>
-        public IEnumerator<KeyValuePair<TKey, T>> GetEnumerator() {
-            throw new System.NotImplementedException();
-        }
-
-        // IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
-
         /// <summary>
         /// Return true if the <see cref="EntitySet{TKey,T}"/> contains an entity with the passed <paramref name="key"/>
         /// </summary>
@@ -65,11 +63,6 @@ namespace Friflo.Json.Fliox.Hub.Client
             throw new KeyNotFoundException(msg);
         } }
 
-        public  IEnumerable<TKey>   Keys    => KeysToList();
-        /// <summary> Return all tracked entities of the <see cref="EntitySet{TKey,T}"/> </summary>
-    //  public  IEnumerable<T>      Values  => ToList();
-
-        #endregion
         
         private List<TKey> KeysToList() {
             var peers   = entitySet.PeerMap();
@@ -87,7 +80,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             var peers   = entitySet.PeerMap();
             var result  = new List<T>(peers.Count);
             foreach (var pair in peers) {
-                var entity = pair.Value.NullableEntity;
+                T entity = pair.Value.NullableEntity;
                 result.Add(entity);
             }
             return result;

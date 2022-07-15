@@ -56,7 +56,9 @@ namespace Friflo.Json.Fliox.Hub.Client
         //  Not used internally 
                         public              IReadOnlyList<SyncTask>     Tasks           => syncSet?.tasks;
         /// <summary> Provide access to entities tracked by the <see cref="EntitySet{TKey,T}"/> </summary>
-        [Browse(Never)] public              LocalEntities<TKey,T>       Local           => new LocalEntities<TKey,T>(this);
+        [Browse(Never)] public              LocalEntities<TKey,T>       Local           => local ?? (local = new LocalEntities<TKey, T>(this));
+        [Browse(Never)] private             LocalEntities<TKey,T>       local;
+        
         /// <summary> Note! Must be called only from this class or <see cref="LocalEntities{TKey,T}"/> to preserve maintainability </summary>
                         internal            Dictionary<TKey, Peer<T>>   PeerMap()       => peerMap ?? (peerMap = SyncSet.CreateDictionary<TKey,Peer<T>>());
                         private             SyncSet<TKey, T>            GetSyncSet()    => syncSet ?? (syncSet = new SyncSet<TKey, T>(this));
