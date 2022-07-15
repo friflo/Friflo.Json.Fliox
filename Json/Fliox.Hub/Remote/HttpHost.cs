@@ -53,10 +53,10 @@ namespace Friflo.Json.Fliox.Hub.Remote
 
         private static  bool    _titleDisplayed;
         private const   string  JsonFlioxBanner = @"
-      ____   _   _
-     |  __| | | |_|  ____  __  __
-     |  _|  | | | | | __ | \ \/ /
-     |_|    |_| |_| |____| /_/\_\ ";
+    ____   _   _
+   |  __| | | |_|  ____  __  __
+   |  _|  | | | | | __ | \ \/ /
+   |_|    |_| |_| |____| /_/\_\ ";
 
         public HttpHost(FlioxHub hub, string endpoint, SharedEnv env = null)
             : base(hub, env)
@@ -65,7 +65,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             Logger.Log(HubLog.Info, msg);
             if (!_titleDisplayed) {
                 _titleDisplayed = true;
-                var title       = $"{JsonFlioxBanner} v{FlioxHub.FlioxVersion}\n";
+                var title       = $"HttpHost{JsonFlioxBanner} v{FlioxHub.FlioxVersion}\n";
                 Logger.Log(HubLog.Info, title);
             }
             hubRoutes = hub.routes;
