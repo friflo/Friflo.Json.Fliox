@@ -58,9 +58,10 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// <summary> Provide access to entities tracked by the <see cref="EntitySet{TKey,T}"/> </summary>
         [Browse(Never)] public              LocalEntities<TKey,T>       Local           => local ?? (local = new LocalEntities<TKey, T>(this));
         [Browse(Never)] private             LocalEntities<TKey,T>       local;
-        
-        /// <summary> Note! Must be called only from this class or <see cref="LocalEntities{TKey,T}"/> to preserve maintainability </summary>
-                        internal            Dictionary<TKey, Peer<T>>   PeerMap()       => peerMap ?? (peerMap = SyncSet.CreateDictionary<TKey,Peer<T>>());
+        /// Note: must be private by all means
+                        private             Dictionary<TKey, Peer<T>>   PeerMap()       => peerMap ?? (peerMap = SyncSet.CreateDictionary<TKey,Peer<T>>());
+        /// <summary> Note! Must be called only from <see cref="LocalEntities{TKey,T}"/> to preserve maintainability </summary>
+                        internal            Dictionary<TKey, Peer<T>>   GetPeers()      => peerMap;
                         private             SyncSet<TKey, T>            GetSyncSet()    => syncSet ?? (syncSet = new SyncSet<TKey, T>(this));
                         internal override   SyncSetBase<T>              GetSyncSetBase()=> syncSet;
                         public   override   string                      ToString()      => SetInfo.ToString();
