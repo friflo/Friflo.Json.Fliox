@@ -126,13 +126,22 @@ namespace Friflo.Json.Fliox.Hub.Client
         private struct Enumerator : IEnumerator<KeyValuePair<TKey, T>>
         {
             private Dictionary<TKey,Peer<T>>.Enumerator enumerator;
+            private bool                                isEmpty;
 
             internal Enumerator(EntitySet<TKey, T> entitySet) {
-                var peers = entitySet.GetPeers();
-                enumerator = peers?.GetEnumerator() ?? default;
+                var peers   = entitySet.GetPeers();
+                if (peers == null) {
+                    isEmpty     = true;
+                    enumerator  = default;
+                    return;
+                }
+                isEmpty     = false;
+                enumerator  = peers.GetEnumerator();
             }
 
             public bool MoveNext() {
+                if (isEmpty)
+                    return false;
                 return enumerator.MoveNext();
             }
 
@@ -140,7 +149,11 @@ namespace Friflo.Json.Fliox.Hub.Client
 
             public KeyValuePair<TKey, T> Current { get {
                 var current = enumerator.Current;
-                return new KeyValuePair<TKey, T>(current.Key, current.Value.NullableEntity);
+                var value   = current.Value;
+                if (value == null) {
+                    return new KeyValuePair<TKey, T>(current.Key, default);
+                }
+                return new KeyValuePair<TKey, T>(current.Key, value.NullableEntity);
             } }
 
             object IEnumerator.Current => Current;

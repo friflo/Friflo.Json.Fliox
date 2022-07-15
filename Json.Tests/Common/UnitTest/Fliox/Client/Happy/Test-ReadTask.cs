@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Client;
+using Friflo.Json.Fliox.Hub.Host;
 using static NUnit.Framework.Assert;
 
 #if UNITY_5_3_OR_NEWER
@@ -121,6 +122,32 @@ article-missing", string.Join("\n", store.Functions));
             int count = 0;
             foreach (var article in localArticles) { count++; }
             AreEqual(7, count);
+        }
+        
+        [Test] public async Task TestLocalEntities () {
+            var database    = new MemoryDatabase("test");
+            var hub         = new FlioxHub(database);
+            using (var _        = SharedEnv.Default) // for LeakTestsFixture
+            using (var store    = new PocStore(hub))
+            {
+                // --- test assertions for empty EntitySet<,>
+                var localArticles = store.articles.Local;
+                int count = 0;
+                foreach (var article in localArticles) { count++; }
+                AreEqual(0, count);
+                
+                using (var e = localArticles.GetEnumerator()) {
+                    var x = e.Current;
+                    AreEqual(null, x.Key);
+                    AreEqual(null, x.Value);
+                }
+                store.articles.Read().FindRange(new [] { "key-1", "key-2" });
+                await store.SyncTasks();
+                
+                count = 0;
+                foreach (var article in localArticles) { count++; }
+                AreEqual(2, count);
+            }
         }
     }
 }
