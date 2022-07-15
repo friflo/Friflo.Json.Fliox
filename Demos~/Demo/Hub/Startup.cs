@@ -24,7 +24,13 @@ namespace DemoHub
                             // .UseKestrel(options => {options.Listen(IPAddress.Loopback, 8010); }) // use http instead of https
                             .UseKestrel()
                             .UseUrls("http://*:8010") // required for Docker
-                );
+                ).ConfigureLogging(logging => {
+                    // single line logs
+                    logging.ClearProviders();
+                    logging.AddConsole(configure => {
+                        configure.Format = Microsoft.Extensions.Logging.Console.ConsoleLoggerFormat.Systemd;
+                    });
+                });
         }
         
         // This method gets called by the runtime. Use this method to add services to the container.
