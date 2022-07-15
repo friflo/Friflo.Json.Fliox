@@ -65,7 +65,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             Logger.Log(HubLog.Info, msg);
             if (!_titleDisplayed) {
                 _titleDisplayed = true;
-                var title       = $"HttpHost{JsonFlioxBanner} v{FlioxHub.FlioxVersion}\n";
+                var title       = $"HttpHost{JsonFlioxBanner} v{FlioxHub.FlioxVersion} - 2022\n";
                 Logger.Log(HubLog.Info, title);
             }
             hubRoutes = hub.routes;
