@@ -16,7 +16,8 @@ namespace Friflo.Json.Fliox.Hub.Client
     ///   <item>.Create(), .CreateRange(), .Upsert(), .UpsertRange()</item>
     ///   <item>.Read().Find() or .FindRange()</item>
     ///   <item>.Query(), .QueryAll(), .QueryByFilter()</item>
-    /// </list> 
+    /// </list>
+    /// <see cref="LocalEntities{TKey,T}"/> adapts the behavior of <see cref="IReadOnlyDictionary{TKey,TValue}"/>
     /// </summary>
     public class LocalEntities<TKey, T> where T : class
     // Note:
@@ -69,7 +70,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             if (peers != null && peers.TryGetValue(key, out Peer<T> peer)) {
                 return peer.NullableEntity;
             }
-            var msg = $"key {key} not found in {entitySet.name}.Local";
+            var msg = $"key '{key}' not found in {entitySet.name}.Local";
             throw new KeyNotFoundException(msg);
         } }
 

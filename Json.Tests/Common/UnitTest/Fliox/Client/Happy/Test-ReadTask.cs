@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Client;
@@ -66,7 +67,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             var articleProducerTask = articleRefsTask.ReadRelations(producers, a => a.producer);
             AreEqual("readOrders -> .items[*].article -> .producer", articleProducerTask.Details);
 
-            var readTask        = articles.Read()                                     .TaskName("readTask");
+            var readTask        = articles.Read()                                           .TaskName("readTask");
             var duplicateId     = "article-galaxy"; // support duplicate ids
             var galaxy          = readTask.Find(duplicateId)                                .TaskName("galaxy");
             var article1And2    = readTask.FindRange(new [] {"article-1", "article-2"})     .TaskName("article1And2");
@@ -106,10 +107,16 @@ article-missing", string.Join("\n", store.Functions));
             AreEqual(5,                 readTask.Result.Count);
             AreEqual("Galaxy S10",      readTask.Result["article-galaxy"].name);
             
-            var localArticles   = articles.Local.Entities;
-            var localArticleKey = articles.Local.Keys;
-            AreEqual(7,                 localArticles.Length);
+            var localArticles           = articles.Local;
+            var localArticleEntities    = localArticles.Entities;
+            var localArticleKey         = localArticles.Keys;
+            
+            AreEqual(7,                 localArticleEntities.Length);
             AreEqual(7,                 localArticleKey.Length);
+            NotNull(localArticles["article-galaxy"]);
+            IsNull (localArticles["article-missing"]);
+            e = Throws<KeyNotFoundException>(() => { var _ = localArticles["foo"]; });
+            AreEqual("key 'foo' not found in articles.Local", e.Message);
         }
     }
 }
