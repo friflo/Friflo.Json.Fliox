@@ -3,6 +3,8 @@
     <PropertyGroup>
         <TargetFrameworks>netcoreapp3.1</TargetFrameworks>
         <PackageVersion>0.0.0</PackageVersion>
+        <AssemblyVersion>0.0.0.0</AssemblyVersion>
+        <FileVersion>0.0.0.0</FileVersion>
         <PackageProjectUrl>https://github.com/friflo/Friflo.Json.Fliox</PackageProjectUrl>
         <PackageLicenseUrl></PackageLicenseUrl>
         <Copyright>Ullrich Praetz</Copyright>
