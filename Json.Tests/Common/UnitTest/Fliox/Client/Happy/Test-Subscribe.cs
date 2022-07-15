@@ -279,7 +279,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                     AreEqual("\"Changed name\"",        articlePatch0.value.AsString());
                     
                     // cached article is updated by ApplyChangesTo()
-                    client.articles.Local.TryGet("article-1", out var article);
+                    client.articles.Local.TryGetValue("article-1", out var article);
                     AreEqual("Changed name",            article.name);
                     break;
             }

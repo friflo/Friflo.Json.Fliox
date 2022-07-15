@@ -105,7 +105,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
             var permissions = userStore.permissions.Local.ToList();
             foreach (var permission in permissions) {
                 foreach (var role in permission.roles) {
-                    if (userStore.roles.Local.Contains(role))
+                    if (userStore.roles.Local.ContainsKey(role))
                         continue;
                     var error = $"role not found. role: '{role}' in permission: {permission.id}";
                     errors.Add(error);
