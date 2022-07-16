@@ -8,14 +8,16 @@ namespace Friflo.Json.Fliox.Hub.Host
     /// Clients can request this information with the command <b>std.Details</b>
     /// </summary>
     public sealed class HubInfo {
-        /// project name
+        /// <summary>project name</summary>
         public  string  projectName;
-        /// project website url
+        /// <summary>project website url</summary>
         public  string  projectWebsite;
-        /// environment name. E.g. dev, tst, stg, prd
+        /// <summary>environment name. E.g. dev, tst, stg, prd</summary>
         public  string  envName;
+        /// <summary>
         /// the color used to display the environment name in GUI's using CSS color format.<br/>
         /// E.g. using red for a production environment: "#ff0000" or "rgb(255 0 0)"
+        /// </summary>
         public  string  envColor;
 
         public override string ToString() {
