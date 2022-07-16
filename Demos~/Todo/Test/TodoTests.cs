@@ -9,7 +9,7 @@ namespace TodoTest {
 
     public static class TodoTests
     {
-        private static readonly string DbPath = GetBasePath() + "Todo/Hub/DB/main_db";
+        private static readonly string DbPath = GetBasePath() + "Todo/DB/main_db";
 
         /// <summary>create a <see cref="MemoryDatabase"/> clone for every client to avoid side effects by DB mutations</summary>
         private static FlioxHub CreateTodoHub() {

@@ -16,7 +16,7 @@ namespace DemoTest {
 
     public static class DemoTests
     {
-        private static readonly string DbPath = GetBasePath() + "Demo/Hub/DB/main_db";
+        private static readonly string DbPath = GetBasePath() + "Demo/DB/main_db";
 
         /// <summary>create a <see cref="MemoryDatabase"/> clone for every client to avoid side effects by DB mutations</summary>
         private static FlioxHub CreateDemoHub() {
