@@ -107,7 +107,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         public   readonly   string                  hostName;
         
         /// <summary>host <see cref="HostVersion"/> - available via command <b>std.Host</b></summary>
-        public   readonly   string                  HostVersion      = "0.0.1";
+        public   readonly   string                  HostVersion     = "1.0.0";
         
         public   static     string                  FlioxVersion    => GetFlioxVersion();
         
