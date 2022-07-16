@@ -18,6 +18,7 @@
         <AssemblyName>Friflo.Json.Fliox.Annotation</AssemblyName>
         <RootNamespace>Friflo.Json.Fliox</RootNamespace>
         <Description>Attributes used to control JSON serialization, Schema generation and Hub behavior of JSON Fliox</Description>
+        <PackageIcon>package-icon.png</PackageIcon>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
@@ -39,5 +40,8 @@
     <ItemGroup>
       <None Remove="**/*.meta" />
     </ItemGroup>
-	
+
+    <ItemGroup>
+      <None Include="..\package-icon.png" Pack="true" PackagePath=""/>
+    </ItemGroup>
 </Project>

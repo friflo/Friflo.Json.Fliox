@@ -13,6 +13,7 @@
         <Title>Fliox Hub ASP.NET Core Adapter</Title>
         <Authors>Ullrich Praetz</Authors>
         <Description>Enable JSON Fliox Hub integration into ASP.NET Core</Description>
+        <PackageIcon>package-icon.png</PackageIcon>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
@@ -30,16 +31,14 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Fliox.Hub\Friflo.Json.Fliox.Hub.csproj" />
-    </ItemGroup>
-	
-    <ItemGroup>
       <None Remove="**/*.meta" />
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\Fliox.Hub\Friflo.Json.Fliox.Hub.csproj" />
       <PackageReference Include="Microsoft.AspNetCore.Http" Version="*" />
       <PackageReference Include="Microsoft.Extensions.Logging" Version="*" />
+      <None Include="..\package-icon.png" Pack="true" PackagePath=""/>
     </ItemGroup>
 
 </Project>

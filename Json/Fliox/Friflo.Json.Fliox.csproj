@@ -19,6 +19,7 @@ Compatible to .NET Core &amp; Unity</Description>
         <PackageLicenseUrl></PackageLicenseUrl>
         <PackageIconUrl></PackageIconUrl>
         <RepositoryType>git</RepositoryType>
+        <PackageIcon>package-icon.png</PackageIcon>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
@@ -44,6 +45,7 @@ Compatible to .NET Core &amp; Unity</Description>
     <ItemGroup>
       <ProjectReference Include="..\Burst\Friflo.Json.Burst.csproj" />
       <ProjectReference Include="..\Fliox.Annotation\Friflo.Json.Fliox.Annotation.csproj" />
+      <None Include="..\package-icon.png" Pack="true" PackagePath=""/>
     </ItemGroup>
 	
 </Project>

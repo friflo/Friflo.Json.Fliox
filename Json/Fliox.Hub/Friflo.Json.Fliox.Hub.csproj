@@ -18,6 +18,7 @@ The Hub support container relations, CRUD, query, messaging, Pub-Sub (changes &a
         <PackageLicenseUrl></PackageLicenseUrl>
         <PackageIconUrl></PackageIconUrl>
         <RepositoryType>git</RepositoryType>
+        <PackageIcon>package-icon.png</PackageIcon>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
@@ -43,6 +44,7 @@ The Hub support container relations, CRUD, query, messaging, Pub-Sub (changes &a
     <ItemGroup>
       <ProjectReference Include="..\Burst\Friflo.Json.Burst.csproj" />
       <ProjectReference Include="..\Fliox\Friflo.Json.Fliox.csproj" />
+      <None Include="..\package-icon.png" Pack="true" PackagePath=""/>
     </ItemGroup>
 
 </Project>

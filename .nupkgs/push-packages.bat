@@ -1,13 +1,13 @@
 
-rem dotnet pack -p:PackageVersion=0.0.4 /p:Version=0.0.4 /p:FileVersion=0.0.4 /p:AssemblyVersion=0.0.4 --output .nupkgs -c Release
+rem dotnet pack -p:PackageVersion=0.0.5 /p:Version=0.0.5 /p:FileVersion=0.0.5 /p:AssemblyVersion=0.0.5 --output .nupkgs -c Release
 rem cd .nupkgs
 rem push-packages.bat
 
-dotnet nuget push Friflo.Json.Burst.0.0.4.nupkg                 --source "github"
-dotnet nuget push Friflo.Json.Fliox.0.0.4.nupkg                 --source "github"
-dotnet nuget push Friflo.Json.Fliox.Annotation.0.0.4.nupkg      --source "github"
-dotnet nuget push Friflo.Json.Fliox.Hub.0.0.4.nupkg             --source "github"
-dotnet nuget push Friflo.Json.Fliox.Hub.AspNetCore.0.0.4.nupkg  --source "github"
-dotnet nuget push Friflo.Json.Fliox.Hub.Cosmos.0.0.4.nupkg      --source "github"
-dotnet nuget push Friflo.Json.Fliox.Hub.Explorer.0.0.4.nupkg    --source "github"
-dotnet nuget push Friflo.Json.Fliox.Hub.GraphQL.0.0.4.nupkg     --source "github"
+dotnet nuget push Friflo.Json.Burst.0.0.5.nupkg                 --source "github"
+dotnet nuget push Friflo.Json.Fliox.0.0.5.nupkg                 --source "github"
+dotnet nuget push Friflo.Json.Fliox.Annotation.0.0.5.nupkg      --source "github"
+dotnet nuget push Friflo.Json.Fliox.Hub.0.0.5.nupkg             --source "github"
+dotnet nuget push Friflo.Json.Fliox.Hub.AspNetCore.0.0.5.nupkg  --source "github"
+dotnet nuget push Friflo.Json.Fliox.Hub.Cosmos.0.0.5.nupkg      --source "github"
+dotnet nuget push Friflo.Json.Fliox.Hub.Explorer.0.0.5.nupkg    --source "github"
+dotnet nuget push Friflo.Json.Fliox.Hub.GraphQL.0.0.5.nupkg     --source "github"
