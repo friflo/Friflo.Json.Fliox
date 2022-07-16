@@ -97,8 +97,8 @@ namespace DemoTest {
             
             // create a second client to verify mutations
             var client2     = new DemoClient(hub);
-            var articles2    = client2.articles.QueryAll();
-            var customers2   = client2.customers.QueryAll();
+            var articles2   = client2.articles.QueryAll();
+            var customers2  = client2.customers.QueryAll();
             await client2.SyncTasks();
             
             AreEqual(0, articles2.Result.Count);
