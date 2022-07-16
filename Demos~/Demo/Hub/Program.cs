@@ -49,7 +49,7 @@ namespace DemoHub
             hub.AddExtensionDB (new MonitorDB("monitor", hub));     // optional - expose monitor stats as extension database
             hub.EventDispatcher     = new EventDispatcher(true);    // optional - enables Pub-Sub (sending events for subscriptions)
             
-            var userDB              = new FileDatabase("user_db", "../DB/user_db", new UserDBHandler(), null, false);
+            var userDB              = new FileDatabase("user_db", "../Test/DB/user_db", new UserDBHandler(), null, false);
             hub.Authenticator       = new UserAuthenticator(userDB) // optional - otherwise all tasks are authorized
                 .SubscribeUserDbChanges(hub.EventDispatcher);       // optional - apply user_db changes instantaneously
             hub.AddExtensionDB(userDB);                             // optional - expose user_db as extension database
@@ -63,7 +63,7 @@ namespace DemoHub
         private static bool UseMemoryDbClone = true;
         
         private static EntityDatabase CreateDatabase(DatabaseSchema schema, TaskHandler handler) {
-            var fileDb = new FileDatabase("main_db", "../DB/main_db", handler);
+            var fileDb = new FileDatabase("main_db", "../Test/DB/main_db", handler);
             fileDb.Schema = schema;
             if (!UseMemoryDbClone)
                 return fileDb;

@@ -21,7 +21,7 @@ namespace TodoHub
         /// </summary>
         private static HttpHost CreateHttpHost() {
             var typeSchema          = NativeTypeSchema.Create(typeof(TodoClient)); // optional - create TypeSchema from Type
-            var database            = new FileDatabase("main_db", "../DB/main_db");
+            var database            = new FileDatabase("main_db", "../Test/DB/main_db");
             database.Schema         = new DatabaseSchema(typeSchema);
 
             var hub                 = new FlioxHub(database);
