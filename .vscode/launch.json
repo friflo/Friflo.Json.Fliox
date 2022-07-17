@@ -25,8 +25,21 @@
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
-            // If you have changed target frameworks, make sure to update the program path.
             "program": "${workspaceFolder}/Demos~/Todo/Hub/bin/Debug/netcoreapp3.1/TodoHub.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}",
+            "console": "internalConsole",
+            "stopAtEntry": false,
+            "logging": {
+                "moduleLoad": false
+            }
+        },
+        {
+            "name": "DemoHub",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            "program": "${workspaceFolder}/Demos~/Demo/Hub/bin/Debug/netcoreapp3.1/DemoHub.dll",
             "args": [],
             "cwd": "${workspaceFolder}",
             "console": "internalConsole",
