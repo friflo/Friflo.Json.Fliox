@@ -19,17 +19,20 @@ namespace DemoTest {
         private static readonly string DbPath = GetBasePath() + "Demo/Test/DB/main_db";
 
         /// <summary>create a <see cref="MemoryDatabase"/> clone for every client to avoid side effects by DB mutations</summary>
-        private static FlioxHub CreateDemoHub() {
+        private static FlioxHub CreateDemoHub()
+        {
             var cloneDB = CreateMemoryDatabaseClone("main_db", DbPath, new MessageHandler());
             return new FlioxHub(cloneDB);
         }
         
-        private static string GetBasePath() {
+        private static string GetBasePath()
+        {
             string baseDir = Directory.GetCurrentDirectory() + "/../../../../../";
             return Path.GetFullPath(baseDir);
         }
     
-        private static MemoryDatabase CreateMemoryDatabaseClone(string dbName, string srcDatabasePath, TaskHandler taskHandler = null) {
+        private static MemoryDatabase CreateMemoryDatabaseClone(string dbName, string srcDatabasePath, TaskHandler taskHandler = null)
+        {
             var referenceDB = new FileDatabase("source_db", srcDatabasePath);
             var cloneDB     = new MemoryDatabase(dbName, taskHandler);
             cloneDB.SeedDatabase(referenceDB).Wait();
@@ -37,7 +40,8 @@ namespace DemoTest {
         }
         
         [Test]
-        public static async Task QueryOrderRelations() {
+        public static async Task QueryOrderRelations()
+        {
             var hub         = CreateDemoHub();
             var client      = new DemoClient(hub);
             var orders      = client.orders.QueryAll();
@@ -56,7 +60,8 @@ namespace DemoTest {
         }
         
         [Test]
-        public static async Task CreateEntities() {
+        public static async Task CreateEntities()
+        {
             var database    = new MemoryDatabase("test", new MessageHandler());
             var hub         = new FlioxHub(database);
             var client      = new DemoClient(hub);
@@ -78,7 +83,8 @@ namespace DemoTest {
         }
         
         [Test]
-        public static async Task DeleteEntities() {
+        public static async Task DeleteEntities()
+        {
             var hub         = CreateDemoHub();
             var client      = new DemoClient(hub);
             
@@ -107,7 +113,8 @@ namespace DemoTest {
         
         /// <summary> demonstrate testing a custom database command: <see cref="DemoClient.FakeRecords"/> </summary>
         [Test]
-        public static async Task CreateFakeRecords() {
+        public static async Task CreateFakeRecords()
+        {
             var database    = new MemoryDatabase("test", new MessageHandler());
             var hub         = new FlioxHub(database);
             var client      = new DemoClient(hub);
@@ -134,7 +141,8 @@ namespace DemoTest {
         }
         
         [Test]
-        public static async Task SubscribeChanges() {
+        public static async Task SubscribeChanges()
+        {
             var database        = new MemoryDatabase("test", new MessageHandler());
             var hub             = new FlioxHub(database);
             hub.EventDispatcher = new EventDispatcher(false); // dispatch events synchronous to simplify test
@@ -163,7 +171,8 @@ namespace DemoTest {
         }
         
         [Test]
-        public static async Task SubscribeMessage() {
+        public static async Task SubscribeMessage()
+        {
             var database        = new MemoryDatabase("test", new MessageHandler());
             var hub             = new FlioxHub(database);
             hub.EventDispatcher = new EventDispatcher(false); // dispatch events synchronous to simplify test

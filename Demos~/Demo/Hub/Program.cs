@@ -15,7 +15,8 @@ namespace DemoHub
     /// <summary>Bootstrapping of databases hosted by <see cref="HttpHost"/></summary> 
     internal  static class  Program
     {
-        public static void Main(string[] args) {
+        public static void Main(string[] args)
+        {
             if (args.Contains("HttpListener")) {
                 var httpHost = CreateHttpHost();
                 HttpListenerHost.RunHost("http://+:8010/", httpHost);
@@ -36,7 +37,8 @@ namespace DemoHub
         /// <i>Note</i>: All extension databases added by <see cref="FlioxHub.AddExtensionDB"/> could be exposed by an
         /// additional <see cref="HttpHost"/> instance only accessible from Intranet as they contains sensitive data.
         /// </summary>
-        internal static HttpHost CreateHttpHost() {
+        internal static HttpHost CreateHttpHost()
+        {
             var typeSchema          = NativeTypeSchema.Create(typeof(DemoClient)); // optional - create TypeSchema from Type
             var databaseSchema      = new DatabaseSchema(typeSchema);
             var database            = CreateDatabase(databaseSchema, new MessageHandler());
@@ -62,7 +64,8 @@ namespace DemoHub
         
         private static bool UseMemoryDbClone = true;
         
-        private static EntityDatabase CreateDatabase(DatabaseSchema schema, TaskHandler handler) {
+        private static EntityDatabase CreateDatabase(DatabaseSchema schema, TaskHandler handler)
+        {
             var fileDb = new FileDatabase("main_db", "../Test/DB/main_db", handler);
             fileDb.Schema = schema;
             if (!UseMemoryDbClone)

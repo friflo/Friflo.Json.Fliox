@@ -12,17 +12,20 @@ namespace TodoTest {
         private static readonly string DbPath = GetBasePath() + "Todo/Test/DB/main_db";
 
         /// <summary>create a <see cref="MemoryDatabase"/> clone for every client to avoid side effects by DB mutations</summary>
-        private static FlioxHub CreateTodoHub() {
+        private static FlioxHub CreateTodoHub()
+        {
             var cloneDB = CreateMemoryDatabaseClone("main_db", DbPath);
             return new FlioxHub(cloneDB);
         }
 
-        private static string GetBasePath() {
+        private static string GetBasePath()
+        {
             string baseDir = Directory.GetCurrentDirectory() + "/../../../../../";
             return Path.GetFullPath(baseDir);
         }
     
-        private static MemoryDatabase CreateMemoryDatabaseClone(string dbName, string srcDatabasePath, TaskHandler taskHandler = null) {
+        private static MemoryDatabase CreateMemoryDatabaseClone(string dbName, string srcDatabasePath, TaskHandler taskHandler = null)
+        {
             var referenceDB = new FileDatabase("source_db", srcDatabasePath);
             var cloneDB     = new MemoryDatabase(dbName, taskHandler);
             cloneDB.SeedDatabase(referenceDB).Wait();
@@ -30,7 +33,8 @@ namespace TodoTest {
         }
         
         [Test]
-        public static async Task QueryAllJobs() {
+        public static async Task QueryAllJobs()
+        {
             var hub         = CreateTodoHub();
             var client      = new TodoClient(hub);
             var jobs        = client.jobs.QueryAll();
@@ -41,7 +45,8 @@ namespace TodoTest {
         }
         
         [Test]
-        public static async Task QueryFilterJobs() {
+        public static async Task QueryFilterJobs()
+        {
             var hub         = CreateTodoHub();
             var client      = new TodoClient(hub);
             var jobs        = client.jobs.Query(o => o.completed == true);
@@ -52,7 +57,8 @@ namespace TodoTest {
         }
         
         [Test]
-        public static async Task QueryCursorJobs() {
+        public static async Task QueryCursorJobs()
+        {
             var hub         = CreateTodoHub();
             var client      = new TodoClient(hub);
             string cursor   = null;
@@ -72,7 +78,8 @@ namespace TodoTest {
         }
         
         [Test]
-        public static async Task CountAllJobs() {
+        public static async Task CountAllJobs()
+        {
             var hub         = CreateTodoHub();
             var client      = new TodoClient(hub);
             var jobs        = client.jobs.CountAll();
@@ -82,7 +89,8 @@ namespace TodoTest {
         }
         
         [Test]
-        public static async Task CountFilterJobs() {
+        public static async Task CountFilterJobs()
+        {
             var hub         = CreateTodoHub();
             var client      = new TodoClient(hub);
             var jobs        = client.jobs.Count(o => o.completed == true);
@@ -92,7 +100,8 @@ namespace TodoTest {
         }
         
         [Test]
-        public static async Task FindJob() {
+        public static async Task FindJob()
+        {
             var hub         = CreateTodoHub();
             var client      = new TodoClient(hub);
             var readJob     = client.jobs.Read().Find(1);
@@ -103,7 +112,8 @@ namespace TodoTest {
         }
         
         [Test]
-        public static async Task FindRangeJob() {
+        public static async Task FindRangeJob()
+        {
             var hub         = CreateTodoHub();
             var client      = new TodoClient(hub);
             var readJob     = client.jobs.Read().FindRange(new long [] { 1, 2, 3 });

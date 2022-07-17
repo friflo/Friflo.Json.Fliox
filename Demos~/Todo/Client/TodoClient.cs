@@ -11,7 +11,8 @@ namespace Todo
     /// 1. Defines a database <b>schema</b> by declaring its containers, commands and messages<br/>
     /// 2. Is a database <b>client</b> providing type-safe access to its containers, commands and messages <br/>
     /// </summary>
-    public class TodoClient : FlioxClient {
+    public class TodoClient : FlioxClient
+    {
         // --- containers
         public  readonly    EntitySet <long, Job>   jobs;
 
@@ -19,7 +20,8 @@ namespace Todo
     }
     
     // ---------------------------------- entity models ----------------------------------
-    public class Job {
+    public class Job
+    {
         [Key]       public  long        id { get; set; }
         [Required]  public  string      title;
                     public  bool?       completed;

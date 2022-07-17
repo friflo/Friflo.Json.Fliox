@@ -15,7 +15,8 @@ namespace Demo
     /// <remarks>Command handlers are implemented at <c>DemoHub/MessageHandler.cs</c> using <see cref="DemoClient"/> clients</remarks>
     [OpenAPIServer(Description = "public DemoHub API", Url = "http://ec2-174-129-178-18.compute-1.amazonaws.com/fliox/rest/main_db")]
     [MessagePrefix("demo.")]
-    public class DemoClient : FlioxClient {
+    public class DemoClient : FlioxClient
+    {
         // --- containers
         public readonly EntitySet <long, Article>     articles;
         public readonly EntitySet <long, Customer>    customers;

@@ -24,7 +24,8 @@ namespace DemoHub
     {
         private static readonly FakeUtils FakeUtils = new FakeUtils();
         
-        public MessageHandler() {
+        public MessageHandler()
+        {
             AddMessageHandlers(this, "demo.");
         }
         
@@ -34,7 +35,8 @@ namespace DemoHub
         /// <b> Note </b>: Using a synchronous method would require to <see cref="Task.Wait()"/> on the SyncTasks() call
         /// resulting in worse performance as a worker thread is exclusively blocked by the while method execution.
         /// </summary> 
-        private static async Task<Records> FakeRecords(Param<Fake> param, MessageContext command) {
+        private static async Task<Records> FakeRecords(Param<Fake> param, MessageContext command)
+        {
             var client          = new DemoClient(command.Hub);
             client.UserInfo     = command.UserInfo;
             client.WritePretty  = true;
@@ -63,7 +65,8 @@ namespace DemoHub
             return result;
         }
 
-        private static async Task<Counts> CountLatest(Param<int?> param, MessageContext command) {
+        private static async Task<Counts> CountLatest(Param<int?> param, MessageContext command)
+        {
             var client      = new DemoClient(command.Hub);
             client.UserInfo = command.UserInfo;
             
@@ -91,7 +94,8 @@ namespace DemoHub
             return result;
         }
         
-        private static async Task<Records> LatestRecords(Param<int?> param, MessageContext command) {
+        private static async Task<Records> LatestRecords(Param<int?> param, MessageContext command)
+        {
             var client      = new DemoClient(command.Hub);
             client.UserInfo = command.UserInfo;
             
@@ -128,7 +132,8 @@ namespace DemoHub
         }
         
         /// use synchronous handler only when no async methods need to be awaited  
-        private static double Add(Param<Operands> param, MessageContext command) {
+        private static double Add(Param<Operands> param, MessageContext command)
+        {
             if (!param.GetValidate(out var operands, out var error))
                 return command.Error<double>(error);
             if (operands == null)
