@@ -90,7 +90,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                         try {
                             HttpListenerRequest  req  = context.Request;
                             if (requestCount++ == 0 || requestCount % 10000 == 0) {
-                                string reqMsg = $@"request {requestCount} {req.Url} {req.HttpMethod} {req.UserAgent}"; // {req.UserHostName} 
+                                string reqMsg = $@"request {requestCount} {req.Url} {req.HttpMethod}"; // {req.UserAgent} {req.UserHostName} 
                                 LogInfo(reqMsg);
                             }
                             var path = context.Request.Url.LocalPath;
@@ -158,7 +158,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             listener.Start();
             var sb = new StringBuilder();
             var startPage = GetStartPage();
-            sb.Append("explorer: ");
+            sb.Append("Hub Explorer - ");
             sb.Append(startPage);
             sb.AppendLine();
             sb.AppendLine();
