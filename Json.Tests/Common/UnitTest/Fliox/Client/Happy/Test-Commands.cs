@@ -51,7 +51,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             await store.SyncTasks();
             
             var containersResult = containers.Result;
-            AreEqual(6,                 containersResult.containers.Length);
+            AreEqual(7,                 containersResult.containers.Length);
             AreEqual("in-memory",       containersResult.storage);
             
             var schemaResult = schema.Result;
@@ -62,7 +62,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             var dbListResult = dbList.Result;
             AreEqual(1,                 dbListResult.databases.Count);
             var database0 = dbListResult.databases[0];
-            AreEqual(6,                 database0.containers.Length);
+            AreEqual(7,                 database0.containers.Length);
             AreEqual("in-memory",       database0.storage);
             
             var commandsResult = commands.Result;

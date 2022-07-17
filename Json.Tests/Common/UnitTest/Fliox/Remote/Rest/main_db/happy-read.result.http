@@ -40,6 +40,7 @@ GET {{base}}/rest
                 "orders",
                 "customers",
                 "articles",
+                "articles2",
                 "producers",
                 "employees",
                 "types"
@@ -89,6 +90,7 @@ GET {{base}}/rest/main_db
         "orders",
         "customers",
         "articles",
+        "articles2",
         "producers",
         "employees",
         "types"

@@ -44,6 +44,8 @@ export interface PocStore {
     orders     : { [key: string]: Order };
     customers  : { [key: string]: Customer };
     articles   : { [key: string]: Article };
+    /** ensure multiple containers can use same entity Type */
+    articles2  : { [key: string]: Article };
     producers  : { [key: string]: Producer };
     employees  : { [key: string]: Employee };
     types      : { [key: string]: TestType };

@@ -31,6 +31,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
         public readonly EntitySet <string, Order>       orders;
         public readonly EntitySet <string, Customer>    customers;
         public readonly EntitySet <string, Article>     articles;
+        /// <summary>ensure multiple containers can use same entity Type</summary> 
+        public readonly EntitySet <string, Article>     articles2;
         public readonly EntitySet <string, Producer>    producers;
         public readonly EntitySet <string, Employee>    employees;
         public readonly EntitySet <string, TestType>    types;

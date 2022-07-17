@@ -6,6 +6,7 @@
                 "orders":    { "values": { "ref":  "Order" } },
                 "customers": { "values": { "ref":  "Customer" } },
                 "articles":  { "values": { "ref":  "Article" } },
+                "articles2": { "values": { "ref":  "Article" } },
                 "producers": { "values": { "ref":  "Producer" } },
                 "employees": { "values": { "ref":  "Employee" } },
                 "types":     { "values": { "ref":  "TestType" } }

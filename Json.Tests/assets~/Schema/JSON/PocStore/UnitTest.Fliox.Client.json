@@ -10,6 +10,7 @@
                 "orders":    { "additionalProperties": { "$ref": "./UnitTest.Fliox.Client.Order.json#/definitions/Order" }, "type": "object" },
                 "customers": { "additionalProperties": { "$ref": "./UnitTest.Fliox.Client.Customer.json#/definitions/Customer" }, "type": "object" },
                 "articles":  { "additionalProperties": { "$ref": "./UnitTest.Fliox.Client.Article.json#/definitions/Article" }, "type": "object" },
+                "articles2": { "additionalProperties": { "$ref": "./UnitTest.Fliox.Client.Article.json#/definitions/Article" }, "type": "object", "description": "ensure multiple containers can use same entity Type" },
                 "producers": { "additionalProperties": { "$ref": "./UnitTest.Fliox.Client.Producer.json#/definitions/Producer" }, "type": "object" },
                 "employees": { "additionalProperties": { "$ref": "./UnitTest.Fliox.Client.Employee.json#/definitions/Employee" }, "type": "object" },
                 "types":     { "additionalProperties": { "$ref": "./UnitTest.Fliox.Client.TestType.json#/definitions/TestType" }, "type": "object" }
@@ -18,6 +19,7 @@
                 "orders",
                 "customers",
                 "articles",
+                "articles2",
                 "producers",
                 "employees",
                 "types"

@@ -19,18 +19,21 @@ type Query {
     queryOrders                   (filter: String, limit: Int, maxCount: Int, cursor: String, selectAll: Boolean) : QueryOrdersResult!
     queryCustomers                (filter: String, limit: Int, maxCount: Int, cursor: String, selectAll: Boolean) : QueryCustomersResult!
     queryArticles                 (filter: String, limit: Int, maxCount: Int, cursor: String, selectAll: Boolean) : QueryArticlesResult!
+    queryArticles2                (filter: String, limit: Int, maxCount: Int, cursor: String, selectAll: Boolean) : QueryArticles2Result!
     queryProducers                (filter: String, limit: Int, maxCount: Int, cursor: String, selectAll: Boolean) : QueryProducersResult!
     queryEmployees                (filter: String, limit: Int, maxCount: Int, cursor: String, selectAll: Boolean) : QueryEmployeesResult!
     queryTypes                    (filter: String, limit: Int, maxCount: Int, cursor: String, selectAll: Boolean) : QueryTypesResult!
     readOrders                    (ids: [String!]!, selectAll: Boolean) : [Order]!
     readCustomers                 (ids: [String!]!, selectAll: Boolean) : [Customer]!
     readArticles                  (ids: [String!]!, selectAll: Boolean) : [Article]!
+    readArticles2                 (ids: [String!]!, selectAll: Boolean) : [Article]!
     readProducers                 (ids: [String!]!, selectAll: Boolean) : [Producer]!
     readEmployees                 (ids: [String!]!, selectAll: Boolean) : [Employee]!
     readTypes                     (ids: [String!]!, selectAll: Boolean) : [TestType]!
     countOrders                   (filter: String) : Int
     countCustomers                (filter: String) : Int
     countArticles                 (filter: String) : Int
+    countArticles2                (filter: String) : Int
     countProducers                (filter: String) : Int
     countEmployees                (filter: String) : Int
     countTypes                    (filter: String) : Int
@@ -74,6 +77,12 @@ type QueryArticlesResult {
     items  : [Article!]!
 }
 
+type QueryArticles2Result {
+    count  : Int!
+    cursor : String
+    items  : [Article!]!
+}
+
 type QueryProducersResult {
     count  : Int!
     cursor : String
@@ -102,18 +111,21 @@ type Mutation {
     createOrders   (entities: [OrderInput!]!) : [EntityError!]
     createCustomers(entities: [CustomerInput!]!) : [EntityError!]
     createArticles (entities: [ArticleInput!]!) : [EntityError!]
+    createArticles2(entities: [ArticleInput!]!) : [EntityError!]
     createProducers(entities: [ProducerInput!]!) : [EntityError!]
     createEmployees(entities: [EmployeeInput!]!) : [EntityError!]
     createTypes    (entities: [TestTypeInput!]!) : [EntityError!]
     upsertOrders   (entities: [OrderInput!]!) : [EntityError!]
     upsertCustomers(entities: [CustomerInput!]!) : [EntityError!]
     upsertArticles (entities: [ArticleInput!]!) : [EntityError!]
+    upsertArticles2(entities: [ArticleInput!]!) : [EntityError!]
     upsertProducers(entities: [ProducerInput!]!) : [EntityError!]
     upsertEmployees(entities: [EmployeeInput!]!) : [EntityError!]
     upsertTypes    (entities: [TestTypeInput!]!) : [EntityError!]
     deleteOrders   (ids: [String!]!) : [EntityError!]
     deleteCustomers(ids: [String!]!) : [EntityError!]
     deleteArticles (ids: [String!]!) : [EntityError!]
+    deleteArticles2(ids: [String!]!) : [EntityError!]
     deleteProducers(ids: [String!]!) : [EntityError!]
     deleteEmployees(ids: [String!]!) : [EntityError!]
     deleteTypes    (ids: [String!]!) : [EntityError!]
@@ -123,6 +135,7 @@ type PocStore {
     orders    : Any
     customers : Any
     articles  : Any
+    articles2 : Any
     producers : Any
     employees : Any
     types     : Any

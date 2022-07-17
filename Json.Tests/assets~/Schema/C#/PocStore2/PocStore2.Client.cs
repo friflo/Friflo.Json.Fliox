@@ -17,6 +17,8 @@ public abstract class PocStore {
     [Required]
     Dictionary<string, Article>   articles;
     [Required]
+    Dictionary<string, Article>   articles2;
+    [Required]
     Dictionary<string, Producer>  producers;
     [Required]
     Dictionary<string, Employee>  employees;

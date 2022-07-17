@@ -12,6 +12,7 @@ abstract class PocStore {
     abstract  val orders    : HashMap<String, Order>
     abstract  val customers : HashMap<String, Customer>
     abstract  val articles  : HashMap<String, Article>
+    abstract  val articles2 : HashMap<String, Article>
     abstract  val producers : HashMap<String, Producer>
     abstract  val employees : HashMap<String, Employee>
     abstract  val types     : HashMap<String, TestType>

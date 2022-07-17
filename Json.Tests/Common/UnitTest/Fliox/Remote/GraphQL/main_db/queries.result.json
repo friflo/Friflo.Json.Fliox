@@ -72,6 +72,7 @@
         "orders",
         "customers",
         "articles",
+        "articles2",
         "producers",
         "employees",
         "types"
@@ -90,6 +91,10 @@
         {
             "name": "articles",
             "count": 6
+        },
+        {
+            "name": "articles2",
+            "count": 0
         },
         {
             "name": "producers",

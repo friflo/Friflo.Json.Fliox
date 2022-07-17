@@ -10,6 +10,7 @@ class PocStore:::cssSchema {
     orders     : [id] ➞ Order
     customers  : [id] ➞ Customer
     articles   : [id] ➞ Article
+    articles2  : [id] ➞ Article
     producers  : [id] ➞ Producer
     employees  : [id] ➞ Employee
     types      : [id] ➞ TestType
@@ -17,6 +18,7 @@ class PocStore:::cssSchema {
 PocStore *-- "0..*" Order : orders
 PocStore *-- "0..*" Customer : customers
 PocStore *-- "0..*" Article : articles
+PocStore *-- "0..*" Article : articles2
 PocStore *-- "0..*" Producer : producers
 PocStore *-- "0..*" Employee : employees
 PocStore *-- "0..*" TestType : types
