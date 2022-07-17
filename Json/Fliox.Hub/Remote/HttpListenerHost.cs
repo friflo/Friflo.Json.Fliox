@@ -159,8 +159,13 @@ namespace Friflo.Json.Fliox.Hub.Remote
             var sb = new StringBuilder();
             sb.Append("Listening for connections on:");
             foreach (var prefix in listener.Prefixes) {
-                sb.Append(" ");
+                sb.Append(' ');
                 sb.Append(prefix);
+                if (prefix.Contains('+')) {
+                    var url = prefix.Replace("+", "localhost");
+                    sb.Append(" -> try: ");
+                    sb.Append(url);
+                }
             }
             LogInfo(sb.ToString());
         }
