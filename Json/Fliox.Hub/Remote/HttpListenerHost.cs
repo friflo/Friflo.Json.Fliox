@@ -157,7 +157,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             // Create a Http server and start listening for incoming connections
             listener.Start();
             var sb = new StringBuilder();
-            sb.Append("Listening for connections on:");
+            sb.Append("Listening at:");
             foreach (var prefix in listener.Prefixes) {
                 sb.Append(' ');
                 sb.Append(prefix);
