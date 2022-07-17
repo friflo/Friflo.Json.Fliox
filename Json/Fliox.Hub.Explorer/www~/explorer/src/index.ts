@@ -369,14 +369,17 @@ export class App {
         const dbMessages    = containerMap["messages"].entities     as DbMessages[];
         const dbSchemas     = containerMap["schemas"].entities      as DbSchema[];
         //
-        const name      = this.hostInfo.projectName;
-        const website   = this.hostInfo.projectWebsite;
-        const envName   = this.hostInfo.envName;
-        const envColor  = this.hostInfo.envColor;
+        const name          = this.hostInfo.projectName;
+        const hostVersion   = this.hostInfo.hostVersion;
+        const website       = this.hostInfo.projectWebsite;
+        const envName       = this.hostInfo.envName;
+        const envColor      = this.hostInfo.envColor;
         if (name) {
             projectName.innerText   = name;
             document.title          = envName ? `${name} · ${envName}` : name;
         }
+        const version       = hostVersion ? `version: ${hostVersion}\n` : "";
+        projectUrl.title    = `${version}Open project website in new tab`;
         if (website)    projectUrl.href     = website;
         if (envName)    envEl.innerText    = envName;
         if (envColor && CSS.supports('color', envColor)) {

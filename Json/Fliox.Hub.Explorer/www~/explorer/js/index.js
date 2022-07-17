@@ -327,6 +327,7 @@ export class App {
         const dbSchemas = containerMap["schemas"].entities;
         //
         const name = this.hostInfo.projectName;
+        const hostVersion = this.hostInfo.hostVersion;
         const website = this.hostInfo.projectWebsite;
         const envName = this.hostInfo.envName;
         const envColor = this.hostInfo.envColor;
@@ -334,6 +335,8 @@ export class App {
             projectName.innerText = name;
             document.title = envName ? `${name} · ${envName}` : name;
         }
+        const version = hostVersion ? `version: ${hostVersion}\n` : "";
+        projectUrl.title = `${version}Open project website in new tab`;
         if (website)
             projectUrl.href = website;
         if (envName)
