@@ -7,6 +7,9 @@ using Demo;
 namespace DemoHub
 {
     /// <summary>
+    /// This class does not deal with the ORM - the <see cref="DemoClient"/> - at all.
+    /// It illustrates how to separate the use of domain specific types from database access. <br/>   
+    /// <br/>   
     /// <see cref="FakeUtils"/> is used to create random records in the <see cref="DemoClient"/> containers. <br/>
     /// The records are generated with random data by using: <br/>
     /// [bchavez/Bogus: A simple fake data generator for C#] https://github.com/bchavez/Bogus
