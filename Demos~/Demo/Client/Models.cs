@@ -13,6 +13,7 @@ namespace Demo
     // ---------------------------------- entity models ----------------------------------
     public class Article {
         [Key]       public  long            id { get; set; }
+        ///<summary> Descriptive article name - may use Unicodes like 👕 🍏 🍓 </summary>
         [Required]  public  string          name;
         [Relation(nameof(DemoClient.producers))]
                     public  long            producer;

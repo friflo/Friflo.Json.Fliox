@@ -61,6 +61,10 @@ namespace Friflo.Json.Fliox.Schema.Language
             return GenerateSchemaModels(typeSchema, entityTypes, generators, databaseUrl);
         }
 
+        private const string TextPlain      = "text/plain; charset=utf-8";
+        private const string TextHtml       = "text/html; charset=utf-8";
+        private const string TextMarkdown   = "text/markdown; charset=utf-8";
+
         /// <summary>
         /// Generate schema models for build-in supported languages: HTML, JSON Schema / OpenAPI, Typescript, C#, Kotlin
         /// and languages that are generated via the passed <paramref name="generators"/>
@@ -76,7 +80,7 @@ namespace Friflo.Json.Fliox.Schema.Language
             var options             = new JsonTypeOptions(typeSchema);
 
             var htmlGenerator       = HtmlGenerator.Generate(options);
-            var htmlSchema          = new SchemaModel ("html",          "HTML",         "text/html",    ".html",    htmlGenerator.files);
+            var htmlSchema          = new SchemaModel ("html",          "HTML",         TextHtml,       ".html",    htmlGenerator.files);
             result.Add(htmlSchema);
             
             var jsonOptions         = new JsonTypeOptions(typeSchema) { separateTypes = separateTypes, databaseUrl = databaseUrl};
@@ -85,23 +89,23 @@ namespace Friflo.Json.Fliox.Schema.Language
             result.Add(jsonModel);
             
             var graphQLGenerator    = GraphQLGenerator.Generate(options);
-            var graphQLModel        = new SchemaModel ("graphql",       "GraphQL",      "text/plain",   ".graphql", graphQLGenerator.files);
+            var graphQLModel        = new SchemaModel ("graphql",       "GraphQL",      TextPlain,      ".graphql", graphQLGenerator.files);
             result.Add(graphQLModel);
             
             var markdownGenerator   = MarkdownGenerator.Generate(options);
-            var markdownModel       = new SchemaModel ("markdown",      "Markdown",     "text/markdown",".md",      markdownGenerator.files);
+            var markdownModel       = new SchemaModel ("markdown",      "Markdown",     TextMarkdown,   ".md",      markdownGenerator.files);
             result.Add(markdownModel);
             
             var typescriptGenerator = TypescriptGenerator.Generate(options);
-            var typescriptModel     = new SchemaModel ("typescript",    "Typescript",   "text/plain",   ".d.ts",    typescriptGenerator.files);
+            var typescriptModel     = new SchemaModel ("typescript",    "Typescript",   TextPlain,      ".d.ts",    typescriptGenerator.files);
             result.Add(typescriptModel);
             
             var csharpGenerator     = CSharpGenerator.Generate(options);
-            var csharpModel         = new SchemaModel ("csharp",        "C#",           "text/plain",   ".cs",      csharpGenerator.files);
+            var csharpModel         = new SchemaModel ("csharp",        "C#",           TextPlain,      ".cs",      csharpGenerator.files);
             result.Add(csharpModel);
             
             var kotlinGenerator     = KotlinGenerator.Generate(options);
-            var kotlinModel         = new SchemaModel ("kotlin",        "Kotlin",       "text/plain",   ".kt",      kotlinGenerator.files);
+            var kotlinModel         = new SchemaModel ("kotlin",        "Kotlin",       TextPlain,      ".kt",      kotlinGenerator.files);
             result.Add(kotlinModel);
 
             foreach (var generator in generators) {
