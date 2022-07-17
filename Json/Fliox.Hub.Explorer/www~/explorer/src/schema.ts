@@ -55,13 +55,15 @@ export class Schema
         for (const dbSchema of dbSchemas) {
             const jsonSchemas       = dbSchema.jsonSchemas as { [key: string] : JSONSchema};
             const database          = dbSchema.id;
-            const containerRefs     = {} as { [key: string] : string };
+            const containersByType  = {} as { [key: string] : string[] };
             const rootSchema        = jsonSchemas[dbSchema.schemaPath].definitions[dbSchema.schemaName];
             dbSchema._rootSchema    = rootSchema;
             const containers        = rootSchema.properties;
             for (const containerName in containers) {
-                const container = containers[containerName];
-                containerRefs[container.additionalProperties.$ref] = containerName;
+                const container     = containers[containerName];
+                const containerType = container.additionalProperties.$ref;
+                if (!containersByType[containerType]) { containersByType[containerType] = []; }
+                containersByType[containerType].push(containerName);
             }
             databaseSchemas[database]  = dbSchema;
             dbSchema._containerSchemas = {};
@@ -93,10 +95,12 @@ export class Schema
                     const path          = "/" + schemaPath + "#/definitions/" + definitionName;
                     const schemaId      = "." + path;
                     const uri           = "http://" + database + path;
-                    const containerName = containerRefs[schemaId];
                     let schemaRef : JSONSchema = { $ref: schemaId, _resolvedDef: null };
-                    if (containerName) {
-                        dbSchema._containerSchemas[containerName] = definition;
+                    const containers    = containersByType[schemaId];
+                    if (containers) {
+                        for (const container of containers) {
+                            dbSchema._containerSchemas[container] = definition;
+                        }
                         // entityEditor type can either be its entity type or an array using this type
                         schemaRef = { "oneOf": [schemaRef, { type: "array", items: schemaRef } ], _resolvedDef: null };
                     }
