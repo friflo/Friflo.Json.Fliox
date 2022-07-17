@@ -1,6 +1,8 @@
+using System;
 using Friflo.Json.Fliox.Hub.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Hosting.Server.Features;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -46,6 +48,8 @@ namespace DemoHub
                 app.UseDeveloperExceptionPage();
             }
             var httpHost = Program.CreateHttpHost();
+            var startPage = httpHost.GetStartPage(app.ServerFeatures.Get<IServerAddressesFeature>().Addresses);
+            Console.WriteLine($"explorer: {startPage}\n");
             httpHost.sharedEnv.Logger = new HubLoggerAspNetCore(loggerFactory);
 
             app.UseRouting();

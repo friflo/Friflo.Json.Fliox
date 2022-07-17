@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 #if !UNITY_2020_1_OR_NEWER
 
+using System.Collections.Generic;
 using System.Net;
 using System.Net.WebSockets;
 using System.Threading.Tasks;
@@ -56,6 +57,17 @@ namespace Friflo.Json.Fliox.Hub.AspNetCore
                 }
             }
             await httpResponse.Body.WriteAsync(response, 0, response.Length).ConfigureAwait(false);
+        }
+        
+        public static string GetStartPage(this HttpHost httpHost, ICollection<string> addresses) {
+            foreach (var address in addresses) {
+                var portPos = address.LastIndexOf(':');
+                if (portPos != -1) {
+                    var port = address.Substring(portPos + 1);
+                    return $"http://localhost:{port}{httpHost.endpoint}";
+                }
+            }
+            return $"http://localhost{httpHost.endpoint}";
         }
     }
     

@@ -157,19 +157,16 @@ namespace Friflo.Json.Fliox.Hub.Remote
             // Create a Http server and start listening for incoming connections
             listener.Start();
             var sb = new StringBuilder();
+            var startPage = GetStartPage();
+            sb.Append("explorer: ");
+            sb.Append(startPage);
+            sb.AppendLine();
+            sb.AppendLine();
             sb.Append("Listening at:");
             foreach (var prefix in listener.Prefixes) {
                 sb.Append(' ');
                 sb.Append(prefix);
-                if (prefix.Contains('+')) {
-                    var url     = prefix.Replace("+", "localhost");
-                    var trimEnd = url.EndsWith("/") ? 1 : 0;
-                    url         = url.Substring(0, url.Length - trimEnd) + httpHost.endpoint;
-                    sb.Append("   open: ");
-                    sb.Append(url);
-                }
             }
-            sb.Append('\n');
             LogInfo(sb.ToString());
         }
         
@@ -191,6 +188,20 @@ namespace Friflo.Json.Fliox.Hub.Remote
 
         private void LogInfo(string msg) {
             Logger.Log(HubLog.Info, msg);
+        }
+        
+        private string GetStartPage() {
+            foreach (var prefix in listener.Prefixes) {
+                if (prefix.Contains('+')) {
+                    var url     = prefix.Replace("+", "localhost");
+                    var trimEnd = url.EndsWith("/") ? 1 : 0;
+                    return url.Substring(0, url.Length - trimEnd) + httpHost.endpoint; ;
+                }
+            }
+            foreach (var prefix in listener.Prefixes) {
+                return prefix;
+            }
+            return "http://localhost";
         }
     }
 }
