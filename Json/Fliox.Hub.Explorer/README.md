@@ -55,3 +55,4 @@ In case of using an `in-memory` database on localhost the expected execution tim
 at DevTools > Network > Time.  
 
 ![Hub Explorer - Lighthouse Performance](../../docs/images/Hub-Explorer-Lighthouse.png)
+*screenshot: Chrome Lighthouse report of Hub Explorer*
