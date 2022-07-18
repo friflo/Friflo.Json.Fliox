@@ -30,3 +30,17 @@ in yml ->
 ```
 
 Info: Observe further builds to check if solution fixes this Build error.
+
+
+
+# 2022-07-18  Build warnings (10)
+
+`CSC : warning CS8032: An instance of analyzer Microsoft.Extensions.Logging.Generators.LoggerMessageGenerator cannot be created ...`
+https://github.com/friflo/Friflo.Json.Fliox/runs/7387439120
+
+```
+...
+CSC : warning CS8032: An instance of analyzer Microsoft.Extensions.Logging.Generators.LoggerMessageGenerator cannot be created from /home/runner/.nuget/packages/microsoft.extensions.logging.abstractions/6.0.0/analyzers/dotnet/roslyn3.11/cs/Microsoft.Extensions.Logging.Generators.dll : Could not load file or assembly 'Microsoft.CodeAnalysis, Version=3.11.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35'. The system cannot find the file specified.. [/home/runner/work/Friflo.Json.Fliox/Friflo.Json.Fliox/Json/Fliox.Hub.AspNetCore/Friflo.Json.Fliox.Hub.AspNetCore.csproj]
+...
+Build FAILED.
+```
