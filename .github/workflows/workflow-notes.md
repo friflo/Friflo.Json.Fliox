@@ -19,7 +19,7 @@ Similar to:
 
 ## Solution
 
-[Github Actions - analyse: GenerateDepsFile error](https://github.com/friflo/FlioxHub.Demos/commit/1a6fefc26a1b5d60c43a1f9eb7c389fc0e46dfed)
+- [Github Actions - analyse: GenerateDepsFile error](https://github.com/friflo/FlioxHub.Demos/commit/1a6fefc26a1b5d60c43a1f9eb7c389fc0e46dfed)
 
 remove `--framework netcoreapp3.1`  
 in yml ->
@@ -30,6 +30,7 @@ in yml ->
 ```
 
 Info: Observe further builds to check if solution fixes this Build error.
+
 
 
 
@@ -44,3 +45,15 @@ CSC : warning CS8032: An instance of analyzer Microsoft.Extensions.Logging.Gener
 ...
 Build FAILED.
 ```
+
+## Solution
+
+- [sourcegenerators - C# Source Generator cannot be created - Stack Overflow](https://stackoverflow.com/questions/68273070/c-sharp-source-generator-cannot-be-created)
+- [Source Generator cannot be created · Issue #54710 · dotnet/roslyn](https://github.com/dotnet/roslyn/issues/54710#issuecomment-879258612)
+
+Set dependency specific version for `Microsoft.CodeAnalysis` in `Directory.Build.props`
+```
+    <!-- see Build warning documented at: ./.github/workflows/workflow-notes.md -->
+    <PackageReference Include="Microsoft.CodeAnalysis" Version="3.11.0"  PrivateAssets="All" />
+```
+
