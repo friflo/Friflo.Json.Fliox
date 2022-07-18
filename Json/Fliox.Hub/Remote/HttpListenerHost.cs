@@ -192,7 +192,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         
         private string GetStartPage() {
             foreach (var prefix in listener.Prefixes) {
-                if (prefix.Contains('+')) {
+                if (prefix.Contains("+")) {
                     var url     = prefix.Replace("+", "localhost");
                     var trimEnd = url.EndsWith("/") ? 1 : 0;
                     return url.Substring(0, url.Length - trimEnd) + httpHost.endpoint; ;
