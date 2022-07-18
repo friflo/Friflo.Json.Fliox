@@ -112,5 +112,9 @@
         ".vscode",
         ".vscode-insiders",
         "Json.Tests/www~/example-requests/**/*.*"
-    ]
+    ],
+    "explorer.compactFolders": false,
+    "[markdown]": {
+        "editor.wordWrap": "off"
+    }
 }

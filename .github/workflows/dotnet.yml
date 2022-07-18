@@ -26,6 +26,6 @@ jobs:
         GITHUB_PACKAGE_TOKEN: ${{ secrets.PACKAGE_TOKEN }}
       run: dotnet restore
     - name: Build
-      run: dotnet build --no-restore --framework netcoreapp3.1
+      run: dotnet build --no-restore
     - name: Test
       run: dotnet test --no-build --verbosity normal
