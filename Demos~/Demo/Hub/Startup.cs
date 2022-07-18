@@ -31,9 +31,7 @@ namespace DemoHub
                 ).ConfigureLogging(logging => {
                     // single line logs
                     logging.ClearProviders();
-                    logging.AddConsole(configure => {
-                        configure.Format = Microsoft.Extensions.Logging.Console.ConsoleLoggerFormat.Systemd;
-                    });
+                    logging.AddConsole(configure => { configure.FormatterName = "Systemd"; }); 
                 });
         }
         
