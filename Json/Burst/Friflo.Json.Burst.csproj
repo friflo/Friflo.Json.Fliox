@@ -43,4 +43,8 @@
       <None Include="..\package-icon.png" Pack="true" PackagePath=""/>
     </ItemGroup>
 
+    <ItemGroup>
+      <!-- see Build warning documented at: ./.github/workflows/workflow-notes.md -->
+      <PackageReference Include="Microsoft.CodeAnalysis" Version="3.9.0"  PrivateAssets="All" />
+    </ItemGroup>
 </Project>

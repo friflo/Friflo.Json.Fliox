@@ -10,9 +10,6 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.CodeAnalysis.BannedApiAnalyzers" Version="3.3.3"  PrivateAssets="All" />
     <AdditionalFiles Include="$(MSBuildThisFileDirectory)/BannedSymbols.txt" />
-    
-    <!-- see Build warning documented at: ./.github/workflows/workflow-notes.md -->
-    <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="6.0.0"  PrivateAssets="All" />
   </ItemGroup>
   
 </Project>
