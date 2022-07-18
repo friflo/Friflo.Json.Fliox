@@ -13,14 +13,10 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - name: Setup .NET 3.1
+    - name: Setup .NET 6.0
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 3.1.417
-#   - name: Setup .NET 5.0
-#     uses: actions/setup-dotnet@v1
-#     with:
-#       dotnet-version: 5.0.406
+        dotnet-version: 6.0.x
     - name: Restore dependencies
       env:
         GITHUB_PACKAGE_TOKEN: ${{ secrets.PACKAGE_TOKEN }}
