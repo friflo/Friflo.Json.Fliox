@@ -54,6 +54,6 @@ Build FAILED.
 Set dependency specific version for `Microsoft.CodeAnalysis` in `Directory.Build.props`
 ```
     <!-- see Build warning documented at: ./.github/workflows/workflow-notes.md -->
-    <PackageReference Include="Microsoft.CodeAnalysis" Version="3.11.0"  PrivateAssets="All" />
+    <PackageReference Include="Microsoft.CodeAnalysis" Version="3.9.0"  PrivateAssets="All" />
 ```
 
