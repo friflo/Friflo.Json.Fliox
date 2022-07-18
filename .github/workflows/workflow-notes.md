@@ -46,7 +46,9 @@ CSC : warning CS8032: An instance of analyzer Microsoft.Extensions.Logging.Gener
 Build FAILED.
 ```
 
-## Solution
+
+
+## Tries without success
 
 - [sourcegenerators - C# Source Generator cannot be created - Stack Overflow](https://stackoverflow.com/questions/68273070/c-sharp-source-generator-cannot-be-created)
 - [Source Generator cannot be created · Issue #54710 · dotnet/roslyn](https://github.com/dotnet/roslyn/issues/54710#issuecomment-879258612)
@@ -56,4 +58,8 @@ Set dependency specific version for `Microsoft.CodeAnalysis` in `Directory.Build
     <!-- see Build warning documented at: ./.github/workflows/workflow-notes.md -->
     <PackageReference Include="Microsoft.CodeAnalysis" Version="3.9.0"  PrivateAssets="All" />
 ```
+
+## Solution
+
+Finally warning disappeared by upgrading to `dotnet-version: 6.0.x` in `dotnet.yml`
 
