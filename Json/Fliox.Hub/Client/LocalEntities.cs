@@ -22,6 +22,8 @@ namespace Friflo.Json.Fliox.Hub.Client
     /// </list>
     /// <see cref="LocalEntities{TKey,T}"/> adapts the behavior of <see cref="IReadOnlyDictionary{TKey,TValue}"/>
     /// </remarks>
+    /// <typeparam name="TKey">Entity key type</typeparam>
+    /// <typeparam name="T">Entity type</typeparam>
     public class LocalEntities<TKey, T> : IEnumerable<KeyValuePair<TKey, T>> where T : class
     // Note:
     // could implement IReadOnlyDictionary<TKey, T> - but disadvantages predominate. reasons:
@@ -56,7 +58,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
 
         /// <summary>
-        /// Get the <paramref name="entity"/> with the passed <paramref name="key"/> from the <see cref="EntitySet"/>. <br/>
+        /// Get the <paramref name="entity"/> with the passed <paramref name="key"/> from the <see cref="EntitySet"/>.
         /// Return true if the <see cref="EntitySet{TKey,T}"/> contains an entity with the given key. Otherwise false.
         /// </summary>
         public bool TryGetEntity(TKey key, out T entity) {
@@ -118,6 +120,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         #endregion
         
     #region - IEnumerable<>
+        /// <summary> Returns an enumerator that iterates through the <see cref="LocalEntities{TKey,T}"/> </summary>
         public IEnumerator<KeyValuePair<TKey, T>> GetEnumerator() {
             return new Enumerator(entitySet);
         }
