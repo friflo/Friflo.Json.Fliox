@@ -155,7 +155,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         #endregion
 
     #region - user id, client id, token
-        /// <summary>user id - identifies the client at a Hub</summary>
+        /// <summary>user id - identifies the user at a Hub</summary>
         [Browse(Never)]
         public string UserId {
             get => _intern.userId.AsString();
