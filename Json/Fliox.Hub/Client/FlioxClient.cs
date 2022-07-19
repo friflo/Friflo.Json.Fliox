@@ -201,7 +201,7 @@ namespace Friflo.Json.Fliox.Hub.Client
 
     #region - detect all patches
         /// <summary>
-        /// Detect the <b>Patches</b> made to all tracked entities in all <b>EntitySet</b>s of the client. <br/>
+        /// Detect the <b>Patches</b> made to all tracked entities in all <b>EntitySet</b>s of the client.
         /// Detected patches are applied to the database containers when calling <see cref="FlioxClient.SyncTasks"/>.        
         /// </summary>
         /// <remarks>
@@ -320,7 +320,7 @@ namespace Friflo.Json.Fliox.Hub.Client
 
     #region - send message
         /// <summary>
-        /// Send a message with the given <paramref name="name"/> (without a value) to the database used by the client. <br/>
+        /// Send a message with the given <paramref name="name"/> (without a value) to a database.
         /// Other clients can subscribe the message to receive an event with <see cref="SubscribeMessage"/>.
         /// </summary>
         /// <remarks>
@@ -334,7 +334,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
         
         /// <summary>
-        /// Send a message with the given <paramref name="name"/> and <paramref name="param"/> value to the database used by the client. <br/>
+        /// Send a message with the given <paramref name="name"/> and <paramref name="param"/> value to a database.
         /// Other clients can subscribe the message to receive an event with <see cref="SubscribeMessage"/>.
         /// </summary>
         /// <remarks>
@@ -354,7 +354,7 @@ namespace Friflo.Json.Fliox.Hub.Client
 
     #region - send command
         /// <summary>
-        /// Send a command with the given <paramref name="name"/> (without a command value) to the database used by the client. <br/>
+        /// Send a command with the given <paramref name="name"/> (without a command value) to a database.
         /// Other clients can subscribe the command to receive an event with <see cref="SubscribeMessage"/>.
         /// </summary>
         /// <remarks>
@@ -368,7 +368,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
         
         /// <summary>
-        /// Send a command with the given <paramref name="name"/> and <paramref name="param"/> value to the database used by the client. <br/>
+        /// Send a command with the given <paramref name="name"/> and <paramref name="param"/> value to a database.
         /// Other clients can subscribe the command to receive an event with <see cref="SubscribeMessage"/>.
         /// </summary>
         /// <remarks>

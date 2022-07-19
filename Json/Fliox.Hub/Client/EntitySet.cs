@@ -24,14 +24,11 @@ namespace Friflo.Json.Fliox.Hub.Client
     /// </summary>
     /// <remarks>
     /// <see cref="EntitySet{TKey,T}"/>'s are designed to be used as fields or properties inside a <see cref="FlioxClient"/>. <br/>
-    /// The type <typeparamref name="T"/> of a container entity need to be a class containing a field or property used as its <b>key</b>
-    /// - the primary key. <br/>
+    /// The type <typeparamref name="T"/> of a container entity need to be a class containing a field or property used as its <b>key</b> - the primary key. <br/>
     /// This key field is usually named <b>id</b>. Using a different name for the primary key requires the field annotation <b>[Key]</b>.<br/>
     /// Supported <typeparamref name="TKey"/> types are:
-    /// <see cref="string"/>, <see cref="long"/>, <see cref="int"/>, <see cref="short"/>, <see cref="byte"/>
-    /// and <see cref="Guid"/>.
-    /// <br/>
-    /// The type of <typeparamref name="TKey"/> must match the <see cref="Type"/> used for the <b>key</b> field / property in an entity class. <br/>
+    /// <see cref="string"/>, <see cref="long"/>, <see cref="int"/>, <see cref="short"/>, <see cref="byte"/> and <see cref="Guid"/>.
+    /// The type of <typeparamref name="TKey"/> must match the <see cref="Type"/> used for the <b>key</b> field / property in an entity class.
     /// In case of a type mismatch a runtime exceptions is thrown.
     /// </remarks>
     /// <typeparam name="TKey">Entity key type</typeparam>
@@ -420,7 +417,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         
     #region - Patch detection
         /// <summary>
-        /// Detect <see cref="DetectPatchesTask{T}.Patches"/> made to all tracked entities. <br/>
+        /// Detect <see cref="DetectPatchesTask{T}.Patches"/> made to all tracked entities.
         /// Detected patches are applied to the container when calling <see cref="FlioxClient.SyncTasks"/>
         /// </summary>
         /// <remarks> Consider using <see cref="DetectPatches(T)"/> or <see cref="DetectPatches(IEnumerable{T})"/>
@@ -441,7 +438,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
 
         /// <summary>
-        /// Detect <see cref="DetectPatchesTask{T}.Patches"/> made to the passed tracked <paramref name="entity"/>. <br/>
+        /// Detect <see cref="DetectPatchesTask{T}.Patches"/> made to the passed tracked <paramref name="entity"/>.
         /// Detected patches are applied to the container when calling <see cref="FlioxClient.SyncTasks"/>
         /// </summary>
         public DetectPatchesTask<T> DetectPatches(T entity) {
@@ -460,7 +457,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
         
         /// <summary>
-        /// Detect <see cref="DetectPatchesTask{T}.Patches"/> made to the passed tracked <paramref name="entities"/> <br/>
+        /// Detect <see cref="DetectPatchesTask{T}.Patches"/> made to the passed tracked <paramref name="entities"/>.
         /// Detected patches are applied to the container when calling <see cref="FlioxClient.SyncTasks"/>
         /// </summary>
         public DetectPatchesTask<T> DetectPatches(IEnumerable<T> entities) {
