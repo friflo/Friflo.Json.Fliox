@@ -47,11 +47,12 @@ namespace Friflo.Json.Fliox.Hub.Client
     {
         /// <summary> user id sending the <see cref="Messages"/> and causing the <see cref="Changes"/>  </summary>
         public              JsonKey                 SrcUserId       => ev.srcUserId;
+        /// <summary> incrementing sequence number of a received event</summary>
         public              int                     EventSequence   => processor.EventSequence;
         /// <summary> return the <see cref="Messages"/> sent by a user </summary>
         public              IReadOnlyList<Message>  Messages        => processor.messages;
-        /// <summary> <see cref="Changes"/> return the changes per database container. <br/>
-        /// Use <see cref="GetChanges{TKey,T}"/> to access specific container changes </summary>
+        /// <summary> <see cref="Changes"/> return the changes per database container.
+        /// Use <see cref="GetChanges{TKey,T}"/> to get <b>strongly typed</b> container changes </summary>
         public              IReadOnlyList<Changes>  Changes         => processor.contextChanges;
         /// <summary> return the number of <see cref="Messages"/> and <see cref="Changes"/> of the subscription event </summary>
         public              EventInfo               EventInfo       => ev.GetEventInfo();
@@ -74,8 +75,8 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
         
         /// <summary>
-        /// return type-safe access to the changes made to a container. <br/>
-        /// The container is identified by the passed <paramref name="entitySet"/>. <br/> 
+        /// Give <b>strongly typed</b> access to the changes made to a container.
+        /// The container is identified by the passed <paramref name="entitySet"/>.
         /// These changes contain the: <see cref="Changes{TKey,T}.Creates"/>, <see cref="Changes{TKey,T}.Upserts"/>,
         /// <see cref="Changes{TKey,T}.Deletes"/> and <see cref="Changes{TKey,T}.Patches"/> made to a container
         /// </summary>
