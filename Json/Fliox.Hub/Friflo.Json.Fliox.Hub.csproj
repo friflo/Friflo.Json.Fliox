@@ -44,7 +44,7 @@ The Hub support container relations, CRUD, query, messaging, Pub-Sub (changes &a
     <ItemGroup>
       <ProjectReference Include="..\Burst\Friflo.Json.Burst.csproj" />
       <ProjectReference Include="..\Fliox\Friflo.Json.Fliox.csproj" />
-      <None Include="..\package-icon.png" Pack="true" PackagePath=""/>
+      <None Include="..\package-icon.png" Pack="true" PackagePath="" />
     </ItemGroup>
 
 </Project>
