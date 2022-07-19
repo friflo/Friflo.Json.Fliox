@@ -7,24 +7,39 @@ using System.Text;
 
 namespace Friflo.Json.Fliox.Hub.Client
 {
+    /// <summary>
+    /// Contain the number of tracked entities of an <see cref="EntitySet{TKey,T}"/> and the number of tasks grouped by type.
+    /// </summary>
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
     public struct SetInfo
     {
+        /// <summary>container name / <see cref="EntitySet{TKey,T}"/> name</summary>
         public  string  Name  { get; }  // used property to show on top of all members
         
+        /// <summary>number of tracked entities in an <see cref="EntitySet{TKey,T}"/></summary>
         public  int     peers;
+        /// <summary>current number of tasks <see cref="EntitySet{TKey,T}"/> scheduled by an <see cref="EntitySet{TKey,T}"/></summary>
         public  int     tasks;
         //
+        /// <summary>number of create tasks</summary>
         public  int     create;
+        /// <summary>number of upsert tasks</summary>
         public  int     upsert;
+        /// <summary>number of read tasks</summary>
         public  int     read;
+        /// <summary>number of query tasks</summary>
         public  int     query;
+        /// <summary>number of aggregate tasks</summary>
         public  int     aggregate;
+        /// <summary>number of close query cursor tasks</summary>
         public  int     closeCursors;
+        /// <summary>number of container subscription tasks</summary>
         public  int     subscribeChanges;
+        /// <summary>number of patch tasks</summary>
         public  int     patch;
+        /// <summary>number of delete tasks</summary>
         public  int     delete;
         public  int     reserveKeys;
 

@@ -6,6 +6,7 @@ using static System.Diagnostics.DebuggerBrowsableState;
 
 namespace Friflo.Json.Fliox.Hub.Client
 {
+    /// <summary>Contains the tuple of <see cref="userId"/>, <see cref="token"/> and <see cref="clientId"/></summary>
     public readonly struct UserInfo {
                                     public  readonly    JsonKey     userId; 
         [DebuggerBrowsable(Never)]  public  readonly    string      token;
