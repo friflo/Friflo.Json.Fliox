@@ -24,27 +24,26 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// </summary>
         UnhandledException,
         
-        /// <summary>
-        /// Inform about a general database error.<br/>
+        /// <summary>A general database error.</summary>
+        /// <remarks>
         /// E.g. the access is currently not available or accessing a missing table.
         /// maps to <see cref="TaskErrorResultType.DatabaseError"/>
-        /// </summary>
+        /// </remarks>
         DatabaseError,
-        
+        /// <summary>Invalid query filter</summary>
         FilterError,
-        
+        /// <summary>Schema validation of an entity failed</summary>
         ValidationError,
-        
+        /// <summary>Execution of message / command failed caused by invalid input</summary>
         CommandError,
-        
+        /// <summary>database message / command not implemented</summary>
         NotImplemented,
-        
+        /// <summary>Invalid task. E.g. by using an invalid task parameter</summary>
         InvalidTask,
-        
+        /// <summary> Task execution denied </summary>
         PermissionDenied,
-        
+        /// <summary>The entire <see cref="SyncRequest"/> containing a task failed</summary>
         SyncError,
-        
         /// <summary>
         /// It is set for a <see cref="SyncTask"/> if a <see cref="SyncResponse"/> contains errors in its
         /// <see cref="Dictionary{K,V}"/> fields containing <see cref="EntityErrors"/> for entities accessed via a CRUD
@@ -53,10 +52,8 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// No mapping to a <see cref="TaskErrorResultType"/> value.
         /// </summary>
         EntityErrors,
-        /// <summary>
-        /// Use to indicate an invalid response.
-        /// No mapping to a <see cref="TaskErrorResultType"/> value.
-        /// </summary>
+        /// <summary> Use to indicate an invalid response.</summary>
+        /// <remarks>No mapping to a <see cref="TaskErrorResultType"/> value.</remarks>
         InvalidResponse,
     }
     
