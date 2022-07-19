@@ -12,8 +12,8 @@ using static System.Diagnostics.DebuggerBrowsableState;
 namespace Friflo.Json.Fliox.Hub.Client
 {
     /// <summary>
-    /// A <see cref="MessageTask"/> contains the message (or command) <see cref="name"/> and <see cref="param"/> sent to
-    /// an <see cref="EntityDatabase"/> by <see cref="FlioxClient.SendMessage"/>.<br/>
+    /// A <see cref="MessageTask"/> contains the message / command (<b>name</b> and <b>param</b>) sent to
+    /// an <see cref="EntityDatabase"/> by <see cref="FlioxClient.SendMessage"/>
     /// </summary>
     /// <remarks>
     /// The <see cref="EntityDatabase"/> forward the message (or command) as en event to all clients subscribed to the message. <br/>
@@ -67,10 +67,8 @@ namespace Friflo.Json.Fliox.Hub.Client
     }
     
     /// <summary>
-    /// A <see cref="CommandTask"/> is created when a command is send to an <see cref="EntityDatabase"/> by
-    /// <see cref="FlioxClient.SendCommand{TResult}"/>.
-    /// Additional to a <see cref="MessageTask"/> a <see cref="CommandTask"/> also provide a command <see cref="RawResult"/>
-    /// containing the command execution result.
+    /// A <see cref="CommandTask"/> contains the command (<b>name</b> and <b>param</b>) send to an <see cref="EntityDatabase"/> using <see cref="FlioxClient.SendCommand{TResult}"/>.
+    /// Additional to a <see cref="MessageTask"/> a <see cref="CommandTask"/> also provide a command <see cref="RawResult"/> containing its execution result.
     /// </summary>
     /// <remarks>
     /// <b>Note</b>: For type safe access to the result use <see cref="CommandTask{TResult}"/> returned by
@@ -151,8 +149,7 @@ namespace Friflo.Json.Fliox.Hub.Client
     }
 
     /// <summary>
-    /// A <see cref="CommandTask{TResult}"/> is created when a command is send to an <see cref="EntityDatabase"/> by
-    /// <see cref="FlioxClient.SendCommand{TResult}"/>.<br/>
+    /// A <see cref="CommandTask{TResult}"/> contains the command (<b>name</b> and <b>param</b>) send to an <see cref="EntityDatabase"/> using <see cref="FlioxClient.SendCommand{TResult}"/>.
     /// Its <see cref="Result"/> is available after calling <see cref="FlioxClient.SyncTasks"/>.
     /// </summary>
     /// <remarks>
