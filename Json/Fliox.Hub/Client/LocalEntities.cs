@@ -11,7 +11,9 @@ using static System.Diagnostics.DebuggerBrowsableState;
 namespace Friflo.Json.Fliox.Hub.Client
 {
     /// <summary>
-    /// Provide access to entities tracked by an <see cref="EntitySet{TKey,T}"/>. <br/>
+    /// Provide access to entities tracked by an <see cref="EntitySet{TKey,T}"/>.
+    /// </summary>
+    /// <remarks>
     /// An entity become tracked if the <see cref="EntitySet{TKey,T}"/> gets aware of an entity by following calls  
     /// <list type="bullet">
     ///   <item>.Create(), .CreateRange(), .Upsert(), .UpsertRange()</item>
@@ -19,7 +21,7 @@ namespace Friflo.Json.Fliox.Hub.Client
     ///   <item>.Query(), .QueryAll(), .QueryByFilter()</item>
     /// </list>
     /// <see cref="LocalEntities{TKey,T}"/> adapts the behavior of <see cref="IReadOnlyDictionary{TKey,TValue}"/>
-    /// </summary>
+    /// </remarks>
     public class LocalEntities<TKey, T> : IEnumerable<KeyValuePair<TKey, T>> where T : class
     // Note:
     // could implement IReadOnlyDictionary<TKey, T> - but disadvantages predominate. reasons:

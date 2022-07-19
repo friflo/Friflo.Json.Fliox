@@ -27,10 +27,10 @@ namespace Friflo.Json.Fliox.Hub.Client
     
     /// <summary>
     /// The <see cref="EventContext"/> provide all information of subscription events received by a <see cref="FlioxClient"/>.<br/>
-    /// Subscription events are received by a client in case the client setup subscriptions by the <b>Subscribe*()</b> methods
-    /// of <see cref="FlioxClient"/> or <see cref="EntitySet{TKey,T}"/>.<br/>
     /// </summary>
     /// <remarks>
+    /// Subscription events are received by a client in case the client setup subscriptions by the <b>Subscribe*()</b> methods
+    /// of <see cref="FlioxClient"/> or <see cref="EntitySet{TKey,T}"/>.<br/>
     /// The event context provide the following event data.
     /// <list type="bullet">
     ///   <item> The <see cref="SrcUserId"/> - the origin of the event</item>

@@ -21,9 +21,11 @@ namespace Friflo.Json.Fliox.Hub.Client
     }
     
     /// <summary>
-    /// Handle subscription events in the thread a event message arrived. <br/>
-    /// E.g. In case of a <see cref="System.Net.WebSockets.WebSocket"/> in the thread reading data from the WebSocket stream.
+    /// Handle subscription events in the thread a event message arrived.
     /// </summary>
+    /// <remarks>
+    /// E.g. In case of a <see cref="System.Net.WebSockets.WebSocket"/> in the thread reading data from the WebSocket stream.
+    /// </remarks>
     public sealed class DirectEventProcessor : IEventProcessor
     {
         public void EnqueueEvent(FlioxClient client, EventMessage ev) {

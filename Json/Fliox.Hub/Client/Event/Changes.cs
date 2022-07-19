@@ -54,7 +54,9 @@ namespace Friflo.Json.Fliox.Hub.Client
     }
     
     /// <summary>
-    /// Contain the changes (mutations) made to a container subscribed with <see cref="EntitySet{TKey,T}.SubscribeChanges"/>. <br/>
+    /// Contain the changes (mutations) made to a container subscribed with <see cref="EntitySet{TKey,T}.SubscribeChanges"/>.
+    /// </summary>
+    /// <remarks>
     /// Following properties provide type-safe access to the different types of container changes 
     /// <list type="bullet">
     ///   <item> <see cref="Creates"/> - the created container entities</item>
@@ -64,7 +66,7 @@ namespace Friflo.Json.Fliox.Hub.Client
     /// </list>
     /// Container <see cref="Changes{TKey,T}"/> are not automatically applied to an <see cref="EntitySet{TKey,T}"/>.
     /// To apply container changes to a <see cref="EntitySet{TKey,T}"/> call <see cref="ApplyChangesTo(EntitySet{TKey,T},Change)"/>.
-    /// </summary>
+    /// </remarks>
     public sealed class Changes<TKey, T> : Changes where T : class
     {
         /// <summary> return the entities created in a container </summary>
