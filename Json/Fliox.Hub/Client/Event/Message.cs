@@ -11,13 +11,13 @@ namespace Friflo.Json.Fliox.Hub.Client
 {
     /// <summary>
     /// Defines signature of the handler method passed to <see cref="FlioxClient.SubscribeMessage"/>
-    /// <seealso cref="SubscriptionEventHandler"/>
     /// </summary>
+    /// <seealso cref="SubscriptionEventHandler"/>
     public delegate void MessageSubscriptionHandler            (Message            message, EventContext context);
     /// <summary>
     /// Defines signature of the handler method passed to <see cref="FlioxClient.SubscribeMessage{TMessage}"/>
-    /// <seealso cref="SubscriptionEventHandler"/>
     /// </summary>
+    /// <seealso cref="SubscriptionEventHandler"/>
     public delegate void MessageSubscriptionHandler<TMessage>  (Message<TMessage>  message, EventContext context);
 
     /// <summary>

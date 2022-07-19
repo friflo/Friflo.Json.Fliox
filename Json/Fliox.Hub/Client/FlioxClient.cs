@@ -249,8 +249,8 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// <summary>
         /// Subscribe to database changes of all <see cref="EntityContainer"/>'s with the given <paramref name="change"/>.
         /// To unsubscribe from receiving change events set <paramref name="change"/> to <see cref="ChangeFlags.None"/>.
-        /// <seealso cref="FlioxClient.SetEventProcessor"/>
         /// </summary>
+        /// <seealso cref="FlioxClient.SetEventProcessor"/>
         public List<SyncTask> SubscribeAllChanges(Change change, ChangeSubscriptionHandler handler) {
             AssertSubscription();
             var tasks = new List<SyncTask>();
