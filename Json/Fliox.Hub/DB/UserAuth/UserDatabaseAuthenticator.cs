@@ -13,6 +13,8 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
 {
     /// <summary>
     /// Authenticate users stored in the user database.
+    /// </summary>
+    /// <remarks>
     /// If user authentication succeed it returns also the roles attached to a user to enable authorization for each task.
     /// The schema of the user database is defined in <see cref="UserStore"/>.
     /// <br/>
@@ -21,7 +23,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
     /// <br></br>
     /// A <see cref="UserStore.AuthenticationUser"/> user is only able to <see cref="Authenticate"/> itself.
     /// A <see cref="UserStore.Server"/> user is able to read credentials and roles stored in a user database.
-    /// </summary>
+    /// </remarks>
     public class UserDatabaseAuthenticator : Authenticator
     {
         private readonly        Dictionary<JsonKey, Authorizer> userRights;

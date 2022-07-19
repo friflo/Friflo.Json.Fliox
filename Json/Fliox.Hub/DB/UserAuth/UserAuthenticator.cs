@@ -32,13 +32,14 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
     
     /// <summary>
     /// Performs user authentication by validating the "userId" and the "token" assigned to a <see cref="Client.FlioxClient"/>
-    /// <br/>
+    /// </summary>
+    /// <remarks>
     /// If authentication succeed it set the <see cref="AuthState.authorizer"/> derived from the roles assigned to the user. <br/>
     /// If authentication fails the given default <see cref="Authorizer"/> is used for the user.
     /// <br/>
     /// <b>Note:</b> User permissions and roles are cached for successful authenticated users.<br/>
-    /// This enables instant task authorization and reduces the number of reads to the <b>user_db</b> significant. 
-    /// </summary>
+    /// This enables instant task authorization and reduces the number of reads to the <b>user_db</b> significant.
+    /// </remarks> 
     public class UserAuthenticator : Authenticator, IDisposable
     {
         // --- private / internal

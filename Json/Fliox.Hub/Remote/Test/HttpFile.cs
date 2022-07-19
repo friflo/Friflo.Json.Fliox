@@ -9,7 +9,9 @@ using System.Text;
 namespace Friflo.Json.Fliox.Hub.Remote.Test
 {
     /// <summary>
-    /// <see cref="HttpFile"/> run multiple http requests given in a simple text file used for concise regression tests <br/>
+    /// <see cref="HttpFile"/> is used to run multiple HTTP requests given in a simple text file used for concise regression tests
+    /// </summary>
+    /// <remarks>
     /// The text file format is compatible to:
     /// <a href="https://marketplace.visualstudio.com/items?itemName=humao.rest-client">REST Client - Visual Studio Marketplace</a>
     /// <br/>
@@ -36,8 +38,8 @@ namespace Friflo.Json.Fliox.Hub.Remote.Test
     /// <br/>
     /// The generated output files are intended to be added to version control.
     /// The expectation is that after running the tests the output files are <b>unmodified</b> in version control (Git). <br/>
-    /// In case an output file is <b>modified</b> its new version have to be added to version control if the modifications meets expectation. 
-    /// </summary>
+    /// In case an output file is <b>modified</b> its new version have to be added to version control if the modifications meets expectation.
+    /// </remarks> 
     public class HttpFile
     {
         private  readonly   string                      path;

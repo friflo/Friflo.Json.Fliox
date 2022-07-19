@@ -11,10 +11,13 @@ using Friflo.Json.Fliox.Hub.DB.Monitor;
 namespace Friflo.Json.Fliox.Hub.Host.Auth
 {
     /// <summary>
+    /// Prover access to data of an authenticated user 
+    /// </summary>
+    /// <remarks>
     /// <b>Important:</b> <see cref="User"/> instances must be used only within the execution of a single <see cref="Protocol.SyncRequest"/>. <br/>
     /// Caching them may result in dealing with outdated <see cref="User"/> instances as new instances created by an
     /// <see cref="Authenticator"/> whenever its credentials or permissions changes.
-    /// </summary>
+    /// </remarks>
     public sealed class User {
         // --- public
         public   readonly   JsonKey                     userId;

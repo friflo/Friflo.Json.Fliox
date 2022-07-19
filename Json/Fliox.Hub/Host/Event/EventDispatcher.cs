@@ -21,11 +21,13 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
     }
     
     /// <summary>
-    /// An <see cref="EventDispatcher"/> is used to enable Pub-Sub. <br/>
+    /// An <see cref="EventDispatcher"/> is used to enable Pub-Sub.
+    /// </summary>
+    /// <remarks>
     /// If assigned to <see cref="FlioxHub.EventDispatcher"/> the <see cref="FlioxHub"/> send
     /// push events to clients for database changes and messages these clients have subscribed. <br/>
-    /// In case of remote database connections <b>WebSockets</b> are used to send push events to clients.   
-    /// </summary>
+    /// In case of remote database connections <b>WebSockets</b> are used to send push events to clients.
+    /// </remarks> 
     public sealed class EventDispatcher : IDisposable
     {
         private  readonly   SharedEnv                                       sharedEnv;

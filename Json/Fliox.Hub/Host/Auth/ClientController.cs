@@ -11,7 +11,10 @@ using static System.Diagnostics.DebuggerBrowsableState;
 namespace Friflo.Json.Fliox.Hub.Host.Auth
 {
     /// <summary>
-    /// Create a unique client id for a given <see cref="User"/> by <see cref="NewClientIdFor"/> or
+    /// <see cref="ClientController"/> us used to create unique client ids
+    /// </summary>
+    /// <remarks>
+    /// It creates a unique client id for a given <see cref="User"/> by <see cref="NewClientIdFor"/> or
     /// checks if a given client id can be used (added) for a given <see cref="User"/> by <see cref="UseClientIdFor"/>.
     /// Multiple client ids can be added to a <see cref="User"/>. Once added to a <see cref="User"/> the client id
     /// cannot be used (added) by another <see cref="User"/>.
@@ -22,7 +25,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
     ///   <item> enables sending Push messages (events) for protocols supporting this like WebSocket's </item>
     ///   <item> enables monitoring request / execution statistics of <see cref="FlioxHub.ExecuteSync"/> </item>
     /// </list>
-    /// </summary>
+    /// </remarks>
     public abstract class ClientController {
         /// key: clientId
         [DebuggerBrowsable(Never)]
