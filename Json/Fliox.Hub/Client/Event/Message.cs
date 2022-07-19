@@ -25,11 +25,9 @@ namespace Friflo.Json.Fliox.Hub.Client
     /// Use <see cref="GetParam{TParam}"/> to get type safe access to the <see cref="RawParam"/> of a message. 
     /// </summary>
     public interface IMessage {
-        /// <summary>Returns the message name.</summary>
+        /// <summary>message name</summary>
         string              Name        { get; }
-        /// <summary>
-        /// Returns the message param as JSON.
-        /// </summary>
+        /// <summary>raw message parameter as JSON</summary>
         JsonValue           RawParam   { get; }
         
         /// <summary>
@@ -43,7 +41,9 @@ namespace Friflo.Json.Fliox.Hub.Client
     /// Expose the <see cref="Name"/>, the <see cref="RawParam"/> and the type safe <see cref="GetParam"/> of a received message.
     /// </summary>
     public readonly struct Message<TParam> : IMessage {
+        /// <summary>message name</summary>
         public              string          Name        => invokeContext.name;
+        /// <summary>raw message parameter as JSON</summary>
         public              JsonValue       RawParam   => invokeContext.param;
         
         private             TParam          DebugParam {
@@ -79,7 +79,9 @@ namespace Friflo.Json.Fliox.Hub.Client
     /// Expose the <see cref="Name"/> and the <see cref="RawParam"/> of a received message.
     /// </summary>
     public readonly struct Message  : IMessage {
-        public              string          Name        => invokeContext.name; 
+        /// <summary>message name</summary>
+        public              string          Name        => invokeContext.name;
+        /// <summary>raw message parameter as JSON</summary>
         public              JsonValue       RawParam   => invokeContext.param;
         
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
