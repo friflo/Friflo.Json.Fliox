@@ -54,6 +54,9 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
     }
     
+    /// <summary>
+    /// Base class of all tasks create via methods of <see cref="FlioxClient"/> and <see cref="EntitySet{TKey,T}"/>
+    /// </summary>
     public abstract class SyncTask : SyncFunction
     {
         internal  abstract  TaskType        TaskType { get; }

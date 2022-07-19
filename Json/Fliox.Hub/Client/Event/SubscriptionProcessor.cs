@@ -13,6 +13,9 @@ using Friflo.Json.Fliox.Mapper.Map;
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.Client
 {
+    /// <summary>
+    /// Used to process <see cref="EventMessage"/>'s received by a <see cref="FlioxClient"/>.  
+    /// </summary>
     public sealed class SubscriptionProcessor : IDisposable
     {
         private  readonly   EventContext                eventContext;

@@ -28,6 +28,9 @@ namespace Friflo.Json.Fliox.Hub.Client
     /// <seealso cref="SubscriptionEventHandler"/>
     public delegate void ChangeSubscriptionHandler<TKey, T>(Changes<TKey, T> changes, EventContext context) where T : class;
     
+    /// <summary>
+    /// Contain <b>raw</b> changes (mutations) made to a container subscribed with <see cref="EntitySet{TKey,T}.SubscribeChanges"/>.
+    /// </summary>
     public abstract class Changes
     {
         /// <summary> total number of container changes </summary>
@@ -54,7 +57,7 @@ namespace Friflo.Json.Fliox.Hub.Client
     }
     
     /// <summary>
-    /// Contain the changes (mutations) made to a container subscribed with <see cref="EntitySet{TKey,T}.SubscribeChanges"/>.
+    /// Contain <b>strongly typed</b> changes (mutations) made to a container subscribed with <see cref="EntitySet{TKey,T}.SubscribeChanges"/>.
     /// </summary>
     /// <remarks>
     /// Following properties provide type-safe access to the different types of container changes 

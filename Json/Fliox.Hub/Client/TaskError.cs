@@ -57,6 +57,9 @@ namespace Friflo.Json.Fliox.Hub.Client
         InvalidResponse,
     }
     
+    /// <summary>
+    /// Contains the <see cref="type"/> and the error <see cref="Message"/> of task in case its execution failed.
+    /// </summary>
     public sealed class TaskError {
         public   readonly   TaskErrorType                       type;
         /// The entities caused that task failed. Return empty dictionary in case of no entity errors. Is never null.

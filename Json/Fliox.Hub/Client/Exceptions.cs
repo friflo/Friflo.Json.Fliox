@@ -7,16 +7,25 @@ using Friflo.Json.Fliox.Hub.Protocol;
 
 namespace Friflo.Json.Fliox.Hub.Client
 {
+    /// <summary>
+    /// Is throw when accessing the <b>Result</b> of an un-synced task. 
+    /// </summary>
     public sealed class TaskNotSyncedException : Exception
     {
         internal TaskNotSyncedException(string message) : base (message) { }
     }
     
+    /// <summary>
+    /// Is thrown if calling a method on a task which was already executed by <see cref="FlioxClient.SyncTasks"/>
+    /// </summary>
     public sealed class TaskAlreadySyncedException : Exception
     {
         internal TaskAlreadySyncedException(string message) : base (message) { }
     }
     
+    /// <summary>
+    /// Is thrown when accessing the <b>Result</b> of a synced task which returned an <see cref="SyncFunction.Error"/>
+    /// </summary>
     public sealed class TaskResultException : Exception
     {
         public readonly     TaskError       error;
@@ -26,6 +35,9 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
     }
 
+    /// <summary>
+    /// Is thrown in case invocation of <see cref="FlioxClient.SyncTasks"/> failed entirely. E.g. a connection issue. 
+    /// </summary>
     public sealed class SyncTasksException : Exception
     {
         public readonly     IReadOnlyList<SyncFunction>  failed;

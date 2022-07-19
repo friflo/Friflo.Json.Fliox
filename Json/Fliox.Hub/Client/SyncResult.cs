@@ -6,6 +6,9 @@ using Friflo.Json.Fliox.Hub.Protocol;
 
 namespace Friflo.Json.Fliox.Hub.Client
 {
+    /// <summary>
+    /// Contains the result of <see cref="FlioxClient.SyncTasks"/> / <see cref="FlioxClient.TrySyncTasks"/>
+    /// </summary>
     public sealed class SyncResult
     {
         public  readonly    IReadOnlyList<SyncFunction> functions;
