@@ -69,6 +69,9 @@ namespace Friflo.Json.Fliox.Hub.Client
             return false;
         }
 
+        /// <summary>
+        /// Gets the tracked entity associated with the specified <paramref name="key"/>.
+        /// </summary>
         public T this[TKey key] { get {
             var peers = entitySet.GetPeers();
             if (peers != null && peers.TryGetValue(key, out Peer<T> peer)) {

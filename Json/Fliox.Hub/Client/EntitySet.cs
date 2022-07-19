@@ -17,7 +17,7 @@ using Browse = System.Diagnostics.DebuggerBrowsableAttribute;
 namespace Friflo.Json.Fliox.Hub.Client
 {
     /// <summary>
-    /// An EntitySet represents a collection (table) of entities (records) with a specific type <typeparamref name="T"/>.
+    /// An EntitySet represents a collection (table) of entities (records) of type <typeparamref name="T"/> and their key type <typeparamref name="TKey"/>.
     /// The methods of an <see cref="EntitySet{TKey,T}"/> enable to create, read, upsert, delete, patch and aggregate container entities.
     /// It also allows to subscribe to entity changes made by other database clients.
     /// </summary>
@@ -54,7 +54,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// <summary> List of tasks created by its <see cref="EntitySet{TKey,T}"/> methods. These tasks are executed when calling <see cref="FlioxClient.SyncTasks"/> </summary>
         //  Not used internally 
                         public              IReadOnlyList<SyncTask>     Tasks           => syncSet?.tasks;
-        /// <summary> Provide access to entities tracked by the <see cref="EntitySet{TKey,T}"/> </summary>
+        /// <summary> Provide access to the <see cref="LocalEntities{TKey,T}"/> tracked by the <see cref="EntitySet{TKey,T}"/> </summary>
         [Browse(Never)] public              LocalEntities<TKey,T>       Local           => local ?? (local = new LocalEntities<TKey, T>(this));
         [Browse(Never)] private             LocalEntities<TKey,T>       local;
         /// Note: must be private by all means
