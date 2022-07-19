@@ -29,6 +29,8 @@ namespace Friflo.Json.Fliox.Hub.Client
     /// The <see cref="EventContext"/> provide all information of subscription events received by a <see cref="FlioxClient"/>.<br/>
     /// Subscription events are received by a client in case the client setup subscriptions by the <b>Subscribe*()</b> methods
     /// of <see cref="FlioxClient"/> or <see cref="EntitySet{TKey,T}"/>.<br/>
+    /// </summary>
+    /// <remarks>
     /// The event context provide the following event data.
     /// <list type="bullet">
     ///   <item> The <see cref="SrcUserId"/> - the origin of the event</item>
@@ -40,7 +42,7 @@ namespace Friflo.Json.Fliox.Hub.Client
     /// </list>
     /// Database change events are not automatically applied to a <see cref="FlioxClient"/>.<br/>
     /// To apply database change events to a <see cref="FlioxClient"/> call <see cref="ApplyChangesTo"/>.
-    /// </summary>
+    /// </remarks>
     public sealed class EventContext : ILogSource
     {
         /// <summary> user id sending the <see cref="Messages"/> and causing the <see cref="Changes"/>  </summary>

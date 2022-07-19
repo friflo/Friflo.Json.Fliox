@@ -70,11 +70,12 @@ namespace Friflo.Json.Fliox.Hub.Client
     /// A <see cref="CommandTask"/> is created when a command is send to an <see cref="EntityDatabase"/> by
     /// <see cref="FlioxClient.SendCommand{TResult}"/>.<br/>
     /// Additional to a <see cref="MessageTask"/> a <see cref="CommandTask"/> also provide a command <see cref="RawResult"/>
-    /// after the task is synced successful.
-    /// <br/>
+    /// containing the command execution result.
+    /// </summary>
+    /// <remarks>
     /// <b>Note</b>: For type safe access to the result use <see cref="CommandTask{TResult}"/> returned by
     /// <see cref="FlioxClient.SendCommand{TParam,TResult}"/>
-    /// </summary>
+    /// </remarks>
     public class CommandTask : MessageTask
     {
         private  readonly   Pool            pool;
@@ -152,10 +153,12 @@ namespace Friflo.Json.Fliox.Hub.Client
     /// <summary>
     /// A <see cref="CommandTask{TResult}"/> is created when a command is send to an <see cref="EntityDatabase"/> by
     /// <see cref="FlioxClient.SendCommand{TResult}"/>.<br/>
-    /// Its <see cref="Result"/> is available after calling <see cref="FlioxClient.SyncTasks"/>. <br/>
+    /// Its <see cref="Result"/> is available after calling <see cref="FlioxClient.SyncTasks"/>.
+    /// </summary>
+    /// <remarks>
     /// Additional to a <see cref="MessageTask"/> a <see cref="CommandTask{TResult}"/> also provide type safe access
     /// to the command <see cref="Result"/> after the task is synced successful.
-    /// </summary>
+    /// </remarks>
     public sealed class CommandTask<TResult> : CommandTask
     {
         public              TResult         Result => ReadResult<TResult>();

@@ -17,11 +17,12 @@ using Browse = System.Diagnostics.DebuggerBrowsableAttribute;
 namespace Friflo.Json.Fliox.Hub.Client
 {
     /// <summary>
-    /// An EntitySet represents a collection (table) of entities (records) with a specific type <typeparamref name="T"/>. <br/>
-    /// <br/>
-    /// The methods of an <see cref="EntitySet{TKey,T}"/> enable to create, read, upsert, delete, patch and aggregate container entities. <br/>
-    /// It also allows to subscribe to entity changes made by other database clients. <br/>
-    /// <br/>
+    /// An EntitySet represents a collection (table) of entities (records) with a specific type <typeparamref name="T"/>.
+    ///
+    /// The methods of an <see cref="EntitySet{TKey,T}"/> enable to create, read, upsert, delete, patch and aggregate container entities.
+    /// It also allows to subscribe to entity changes made by other database clients.
+    /// </summary>
+    /// <remarks>
     /// <see cref="EntitySet{TKey,T}"/>'s are designed to be used as fields or properties inside a <see cref="FlioxClient"/>. <br/>
     /// The type <typeparamref name="T"/> of a container entity need to be a class containing a field or property used as its <b>key</b>
     /// - the primary key. <br/>
@@ -32,7 +33,7 @@ namespace Friflo.Json.Fliox.Hub.Client
     /// <br/>
     /// The type of <typeparamref name="TKey"/> must match the <see cref="Type"/> used for the <b>key</b> field / property in an entity class. <br/>
     /// In case of a type mismatch a runtime exceptions is thrown.
-    /// </summary>
+    /// </remarks>
     [TypeMapper(typeof(EntitySetMatcher))]
     public sealed partial class EntitySet<TKey, T> : EntitySetBase<T>  where T : class
     {

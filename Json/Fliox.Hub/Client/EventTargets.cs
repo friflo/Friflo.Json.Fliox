@@ -7,10 +7,13 @@ namespace Friflo.Json.Fliox.Hub.Client
 {
     // ---------------------------------------------- EventTargets ----------------------------------------------
     /// <summary>
-    /// <see cref="EventTargets"/> instructs the Hub to forward messages as events only to the specified targets. <br/>
-    /// Event target's can be specified by <see cref="users"/>, <see cref="clients"/> or <see cref="groups"/>. <br/>
-    /// In case no targets are specified - the default - a message is sent to all clients subscribing the message.
+    /// <see cref="EventTargets"/> instructs the Hub to forward messages as events only to the specified targets.
+    ///
+    /// Event target's can be specified its <b>users, clients or groups</b>.
     /// </summary>
+    /// <remarks>
+    /// In case no targets are specified - the default - a message is sent to all clients subscribing the message.
+    /// </remarks>
     public sealed class EventTargets
     {
         internal    List<JsonKey>   users;

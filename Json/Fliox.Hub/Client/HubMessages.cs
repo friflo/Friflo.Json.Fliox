@@ -8,10 +8,10 @@ namespace Friflo.Json.Fliox.Hub.Client
 {
     /// <summary>
     /// Used to group message/command methods by a single class. <br/>
-    /// <br/>
     /// Message/command methods can be added directly to a <see cref="FlioxClient"/> sub class.
     /// When adding many methods it can cause confusion between <see cref="FlioxClient"/> own methods and the message/command methods.
-    /// <br/>
+    /// </summary>
+    /// <remarks>
     /// The intention is to use a sub class of <see cref="HubMessages"/> as a field in a class extending <see cref="FlioxClient"/>.
     /// This establish differentiation between <see cref="FlioxClient"/> own methods and message/command methods added
     /// to a <see cref="FlioxClient"/> sub class.
@@ -33,7 +33,7 @@ namespace Friflo.Json.Fliox.Hub.Client
     ///     public CommandTask &lt;string&gt; Cmd (string param) => SendCommand &lt;string, string&gt;("test.Cmd", param);
     /// }
     /// </code>
-    /// </summary>
+    /// </remarks>
     public class HubMessages
     {
         private readonly    FlioxClient client;

@@ -33,8 +33,11 @@ namespace Friflo.Json.Fliox.Hub.Client
     }
     
     /// <summary>
-    /// Creates a <see cref="IEventProcessor"/> using a <see cref="SynchronizationContext"/>.<br/>
-    /// This ensures that the handler methods passed to the <b>Subscribe*()</b> methods of
+    /// Creates a <see cref="IEventProcessor"/> for UI based applications having a <see cref="SynchronizationContext"/>
+    /// to ensure event callbacks are invoked on the UI thread.
+    /// </summary>
+    /// <remarks>
+    /// The <see cref="SynchronizationContextProcessor"/> ensures that the handler methods passed to the <b>Subscribe*()</b> methods of
     /// <see cref="FlioxClient"/> and <see cref="EntitySet{TKey,T}"/> are called on the on the thread associated with
     /// the <see cref="SynchronizationContext"/>
     /// <br/>
@@ -51,7 +54,7 @@ namespace Friflo.Json.Fliox.Hub.Client
     ///     application / unit test within the <b>Run()</b> method of <see cref="SingleThreadSynchronizationContext"/>
     ///   </item>
     /// </list>
-    /// </summary>
+    /// </remarks>
     public sealed class SynchronizationContextProcessor : IEventProcessor
     {
         private  readonly   SynchronizationContext  synchronizationContext;
@@ -80,12 +83,14 @@ Consider running application / test withing SingleThreadSynchronizationContext.R
     }
     
     /// <summary>
-    /// Is a queuing <see cref="IEventProcessor"/>. <br/>
+    /// Is a queuing <see cref="IEventProcessor"/> giving an application full control when event callback are invoked.
+    /// </summary>
+    /// <remarks>
     /// In this case the application must frequently call <see cref="ProcessEvents"/> to apply changes to the
     /// <see cref="FlioxClient"/>.
     /// This allows to specify the exact code point in an application (e.g. Unity) to call the handler
     /// methods of message and changes subscriptions.
-    /// </summary>
+    /// </remarks>
     public sealed class QueuingEventProcessor : IEventProcessor
     {
         private readonly    ConcurrentQueue <QueuedMessage>      eventQueue = new ConcurrentQueue <QueuedMessage> ();
