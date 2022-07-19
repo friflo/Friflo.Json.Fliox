@@ -22,7 +22,7 @@ namespace Friflo.Json.Fliox.Hub.Client
 
     /// <summary>
     /// Expose the <see cref="Name"/> and the <see cref="RawParam"/> of a received message.
-    /// The method <see cref="GetParam{TParam}"/> provide type safe access to the <see cref="RawParam"/> of a message. 
+    /// Use <see cref="GetParam{TParam}"/> to get type safe access to the <see cref="RawParam"/> of a message. 
     /// </summary>
     public interface IMessage {
         /// <summary>Returns the message name.</summary>

@@ -9,13 +9,15 @@ namespace Friflo.Json.Fliox.Hub.Client
 {
     /// <summary>
     /// Set of utility methods to guide a graceful shutdown by disposing all resources.
+    /// </summary>
+    /// <remarks>
     /// The intended order for shutdown is:
     /// <list type="bullet">
     ///     <item><see cref="DisposeStore"/></item>
     ///     <item><see cref="DisposeDatabase"/></item>
     ///     <item><see cref="DisposeCaches"/></item>
-    /// </list>  
-    /// </summary>
+    /// </list>
+    /// </remarks>
     public static class DisposeUtils
     {
         public static async Task DisposeStore(FlioxClient store) {

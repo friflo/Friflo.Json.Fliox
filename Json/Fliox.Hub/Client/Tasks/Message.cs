@@ -68,7 +68,7 @@ namespace Friflo.Json.Fliox.Hub.Client
     
     /// <summary>
     /// A <see cref="CommandTask"/> is created when a command is send to an <see cref="EntityDatabase"/> by
-    /// <see cref="FlioxClient.SendCommand{TResult}"/>.<br/>
+    /// <see cref="FlioxClient.SendCommand{TResult}"/>.
     /// Additional to a <see cref="MessageTask"/> a <see cref="CommandTask"/> also provide a command <see cref="RawResult"/>
     /// containing the command execution result.
     /// </summary>

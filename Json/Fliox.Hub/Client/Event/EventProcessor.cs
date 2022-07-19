@@ -11,10 +11,12 @@ using Friflo.Json.Fliox.Hub.Threading;
 namespace Friflo.Json.Fliox.Hub.Client
 {
     /// <summary>
-    /// An <see cref="IEventProcessor"/> is used to process subscription events subscribed by a <see cref="FlioxClient"/><br/>
+    /// An <see cref="IEventProcessor"/> is used to process subscription events subscribed by a <see cref="FlioxClient"/>
+    /// </summary>
+    /// <remarks>
     /// By default a <see cref="FlioxClient"/> uses a <see cref="DirectEventProcessor"/> to handle subscription events
     /// in the thread the events arrive.
-    /// </summary>
+    /// </remarks>
     public interface IEventProcessor
     {
         void EnqueueEvent(FlioxClient client, EventMessage ev);
@@ -35,8 +37,7 @@ namespace Friflo.Json.Fliox.Hub.Client
     }
     
     /// <summary>
-    /// Creates a <see cref="IEventProcessor"/> for UI based applications having a <see cref="SynchronizationContext"/>
-    /// to ensure event callbacks are invoked on the UI thread.
+    /// An <see cref="IEventProcessor"/> implementation used for UI based applications having a <see cref="SynchronizationContext"/>
     /// </summary>
     /// <remarks>
     /// The <see cref="SynchronizationContextProcessor"/> ensures that the handler methods passed to the <b>Subscribe*()</b> methods of
