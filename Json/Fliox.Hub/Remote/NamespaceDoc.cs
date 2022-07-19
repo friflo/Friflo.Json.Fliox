@@ -4,7 +4,7 @@
 namespace Friflo.Json.Fliox.Hub.Remote
 {
     /// <summary>
-    /// Contain classes used for remote communication of a <see cref="Client.FlioxClient"/> with a <see cref="Host.FlioxHub"/> via <b>HTTP</b> or <b>HTTP</b> 
+    /// Contain classes used for remote communication of a <see cref="Client.FlioxClient"/> with a <see cref="Host.FlioxHub"/> via <b>HTTP</b> or <b>WebSocket</b> 
     /// </summary>
     internal static class NamespaceDoc { }
 }
