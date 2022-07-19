@@ -48,7 +48,7 @@ namespace Friflo.Json.Fliox.Hub.Client
 
         /// <summary> name of the database the client is attached to </summary>
         [Browse(Never)] public      string                      DatabaseName    => _intern.database ?? _intern.hub.DatabaseName;
-        /// <summary> reference to standard database commands </summary>
+        /// <summary> access to standard database commands - <see cref="StdCommands"/> </summary>
         [Browse(Never)] public readonly   StdCommands           std;
         [Browse(Never)] public      IReadOnlyList<SyncFunction> Functions       => _intern.syncStore.functions;
         /// <summary> general client information: attached database, the number of cached entities and scheduled <see cref="Tasks"/> </summary>
@@ -155,18 +155,21 @@ namespace Friflo.Json.Fliox.Hub.Client
         #endregion
 
     #region - user id, client id, token
+        /// <summary>user id - identifies the client at a Hub</summary>
         [Browse(Never)]
         public string UserId {
             get => _intern.userId.AsString();
             set => _intern.userId = new JsonKey(value);
         }
         
+        /// <summary><see cref="Token"/> - used to authenticate the <see cref="UserId"/> at the Hub</summary>
         [Browse(Never)]
         public string Token {
             get => _intern.token;
             set => _intern.token   = value;
         }
 
+        /// <summary>client id - identifies the client at a Hub</summary>
         [Browse(Never)]
         public string ClientId {
             get => _intern.clientId.AsString();
@@ -185,6 +188,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             }
         }
 
+        /// <summary>Is the tuple of <see cref="UserId"/>, <see cref="Token"/> and <see cref="ClientId"/></summary>
         public UserInfo UserInfo {
             get => new UserInfo (_intern.userId, _intern.token, _intern.clientId);
             set {
