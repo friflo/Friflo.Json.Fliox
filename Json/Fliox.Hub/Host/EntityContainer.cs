@@ -73,11 +73,17 @@ namespace Friflo.Json.Fliox.Hub.Host
         #endregion
 
     #region - abstract container methods
+        /// <summary>Create the entities specified in the given <paramref name="command"/></summary>
         public abstract Task<CreateEntitiesResult>    CreateEntities   (CreateEntities    command, SyncContext syncContext);
+        /// <summary>Upsert the entities specified in the given <paramref name="command"/></summary>
         public abstract Task<UpsertEntitiesResult>    UpsertEntities   (UpsertEntities    command, SyncContext syncContext);
+        /// <summary>Read entities by id with the ids passed in the given <paramref name="command"/></summary>
         public abstract Task<ReadEntitiesResult>      ReadEntities     (ReadEntities      command, SyncContext syncContext);
+        /// <summary>Delete entities by id with the ids passed in the given <paramref name="command"/></summary>
         public abstract Task<DeleteEntitiesResult>    DeleteEntities   (DeleteEntities    command, SyncContext syncContext);
+        /// <summary>Query entities using the filter in the given <paramref name="command"/></summary>
         public abstract Task<QueryEntitiesResult>     QueryEntities    (QueryEntities     command, SyncContext syncContext);
+        /// <summary>Performs an aggregation specified in the given <paramref name="command"/></summary>
         public abstract Task<AggregateEntitiesResult> AggregateEntities(AggregateEntities command, SyncContext syncContext);
         #endregion
 
@@ -94,7 +100,8 @@ namespace Friflo.Json.Fliox.Hub.Host
         #endregion
 
     #region - public utils
-        /// <summary>
+        /// <summary>Apply the given <paramref name="patchEntities"/> to the container entities</summary>
+        /// <remarks>
         /// Default implementation to apply patches to entities.
         /// The implementation perform three steps:
         /// 1. Read entities to be patches from a database
@@ -103,8 +110,8 @@ namespace Friflo.Json.Fliox.Hub.Host
         ///
         /// If the used database has integrated support for patching JSON its <see cref="EntityContainer"/>
         /// implementation can override this method to replace two database requests by one.
-        /// </summary>
-        public virtual async Task<PatchEntitiesResult> PatchEntities   (PatchEntities patchEntities, SyncResponse response, SyncContext syncContext) {
+        /// </remarks>
+        public virtual async Task<PatchEntitiesResult> PatchEntities (PatchEntities patchEntities, SyncResponse response, SyncContext syncContext) {
             var entityPatches = patchEntities.patches.ToDictionary(patch => patch.id, JsonKey.Equality);
             var idSet   = entityPatches.Select(patch => patch.Key).ToHashSet(JsonKey.Equality);
             var ids     = idSet.ToList();

@@ -49,6 +49,7 @@ namespace Friflo.Json.Fliox.Hub.Host
     public abstract class EntityDatabase : IDisposable
     {
     #region - members
+        /// <summary>database name</summary>
         public   readonly   string              name;       // non null
         public   override   string              ToString()  => name;
         
@@ -64,12 +65,12 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// </summary>
         public              DatabaseSchema      Schema          { get; set; }
         
-        /// <summary>
-        /// A mapping function used to assign a custom container name.
+        /// <summary>A mapping function used to assign a custom container name.</summary>
+        /// <remarks>
         /// If using a custom name its value is assigned to the containers <see cref="EntityContainer.instanceName"/>. 
         /// By having the mapping function in <see cref="EntityContainer"/> it enables uniform mapping across different
         /// <see cref="EntityContainer"/> implementations.
-        /// </summary>
+        /// </remarks>
         public   readonly   CustomContainerName customContainerName;
         
         /// <summary>
@@ -77,7 +78,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// An <see cref="EntityDatabase"/> implementation can assign as custom handler by its constructor
         /// </summary>
         internal readonly   TaskHandler         handler;    // never null
-        
+        /// <summary>name of the storage type. E.g. <c>in-memory, file-system, remote, Cosmos, ...</c></summary>
         public   abstract   string              StorageType  { get; }
         #endregion
         
@@ -101,6 +102,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         #endregion
         
     #region - general public methods
+        /// <summary>Create a container with the given <paramref name="name"/> in the database</summary>
         public abstract EntityContainer CreateContainer     (string name, EntityDatabase database);
         
         public virtual Task ExecuteSyncPrepare (SyncRequest syncRequest, SyncContext syncContext) {
@@ -115,6 +117,10 @@ namespace Friflo.Json.Fliox.Hub.Host
             return containers.TryGetValue(name, out container);
         }
 
+        /// <summary>
+        /// return the <see cref="EntityContainer"/> with the given <paramref name="name"/>.
+        /// Create a new <see cref="EntityContainer"/> if not already done.
+        /// </summary>
         public EntityContainer GetOrCreateContainer(string name)
         {
             if (containers.TryGetValue(name, out EntityContainer container))
@@ -131,7 +137,8 @@ namespace Friflo.Json.Fliox.Hub.Host
             }
             return Task.FromResult(containerList);
         }
-            
+        
+        /// <summary>return all database containers</summary>
         public async Task<DbContainers> GetDbContainers() {
             string[] containerList;
             var schema = Schema;
@@ -147,6 +154,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             internal const bool ExposeSchemaCommands = true; // false for debugging
         }
 
+        /// <summary>return all database messages and commands</summary>
         public DbMessages GetDbMessages() {
             string[] commands;
             string[] messages;
@@ -163,7 +171,10 @@ namespace Friflo.Json.Fliox.Hub.Host
         #endregion
 
     #region - seed database
+        /// <summary>Seed the database with content of the given <paramref name="src"/> database</summary>
+        /// <remarks>
         /// If given database has no schema the key name of all entities in all containers need to be "id"
+        /// </remarks>
         public async Task SeedDatabase(EntityDatabase src) {
             var sharedEnv       = new SharedEnv();
             var pool            = sharedEnv.Pool;
