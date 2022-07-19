@@ -19,6 +19,10 @@ namespace Friflo.Json.Fliox.Hub.Client
         
         public   override   string      ToString()  => GetLabel();
 
+        /// <summary>
+        /// Is true in case task execution was successful. Otherwise false. If false <see cref="Error"/> property is set. 
+        /// </summary>
+        /// <exception cref="TaskNotSyncedException"></exception>
         public              bool        Success { get {
             if (State.IsExecuted())
                 return !State.Error.HasErrors;

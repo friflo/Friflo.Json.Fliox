@@ -72,6 +72,9 @@ namespace Friflo.Json.Fliox.Hub.Client
             internal const bool OriginalContext = true;
         }
 
+        /// <summary>
+        /// Return the <see cref="Type"/>'s used by the <see cref="EntitySet{TKey,T}"/> members of a <see cref="FlioxClient"/> as entity Type. 
+        /// </summary>
         public static Type[] GetEntityTypes<TFlioxClient> () where TFlioxClient : FlioxClient => ClientEntityUtils.GetEntityTypes<TFlioxClient>();
         #endregion
 
@@ -223,12 +226,13 @@ namespace Friflo.Json.Fliox.Hub.Client
 
         /// <summary>
         /// Set the <see cref="IEventProcessor"/> used to process subscription events subscribed by a <see cref="FlioxClient"/><br/>
-        /// <br/>
+        /// </summary>
+        /// <remarks>
         /// By default a <see cref="FlioxClient"/> uses a <see cref="DirectEventProcessor"/> to handle subscription events
         /// in the thread an event arrives.<br/>
         /// In case of an <b>UI</b> application consider using a <see cref="SynchronizationContextProcessor"/> used to process
         /// subscription events in the <b>UI</b> thread.
-        /// </summary>
+        /// </remarks>
         public void SetEventProcessor(IEventProcessor eventProcessor) {
             _intern.eventProcessor = eventProcessor ?? throw new ArgumentNullException(nameof(eventProcessor));
         }

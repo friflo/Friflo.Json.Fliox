@@ -15,8 +15,11 @@ namespace Friflo.Json.Fliox.Hub.Client
     /// </summary>
     public sealed class DetectAllPatches
     {
+        /// <summary>List of detected <see cref="DetectPatchesTask"/>'s per <see cref="EntitySet{TKey,T}"/></summary>
         public              IReadOnlyList<DetectPatchesTask>    EntitySetPatches    => entitySetPatches;
+        /// <summary>Number of all detected entity patches</summary>
         public              int                                 PatchCount          => GetPatchCount();
+        /// <summary>Is true in case all <see cref="EntitySetPatches"/> applied successful</summary>
         public              bool                                Success             => GetSuccess();
         
         [DebuggerBrowsable(Never)] private  bool                                isExecuted;
@@ -27,6 +30,7 @@ namespace Friflo.Json.Fliox.Hub.Client
 
         internal DetectAllPatches() { }
         
+        /// <summary>return type-safe patches of the given <paramref name="entitySet"/></summary>
         public DetectPatchesTask<T> GetPatches<TKey,T>(EntitySet<TKey,T> entitySet) where T : class {
             foreach (var detectPatchesTask in entitySetPatches) {
                 if (detectPatchesTask.Container != entitySet.name)
