@@ -29,7 +29,8 @@ namespace Friflo.Json.Fliox.Hub.Host
     /// <summary>
     /// A <see cref="TaskHandler"/> is attached to every <see cref="EntityDatabase"/> to handle all
     /// <see cref="SyncRequest.tasks"/> of a <see cref="SyncRequest"/>.
-    /// <br/>
+    /// </summary>
+    /// <remarks>
     /// Each task is either a database operation, a command or a message.
     /// <list type="bullet">
     ///   <item>
@@ -48,8 +49,8 @@ namespace Friflo.Json.Fliox.Hub.Host
     ///     Each message is a tuple of its name and param. See <see cref="SendMessage"/>.
     ///     In contrast to commands message handlers return void (nothing).
     ///   </item>
-    /// </list>  
-    /// </summary>
+    /// </list>
+    /// </remarks>
     public class TaskHandler
     {
         [DebuggerBrowsable(Never)]

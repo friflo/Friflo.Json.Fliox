@@ -10,14 +10,17 @@ using static System.Diagnostics.DebuggerBrowsableState;
 namespace Friflo.Json.Fliox.Hub.Host
 {
     /// <summary>
-    /// <see cref="MessageContext"/> expose all data relevant for command execution as properties or methods. <br/>
+    /// <see cref="MessageContext"/> expose all data relevant for command execution as properties or methods.
+    /// </summary>
+    /// <remarks>
+    /// In general it provides:
     /// - the command <see cref="Name"/> == method name <br/>
     /// - the <see cref="DatabaseName"/> <br/>
     /// - the <see cref="Database"/> instance <br/>
     /// - the <see cref="Hub"/> exposing general Hub information <br/>
     /// - a <see cref="Pool"/> mainly providing common utilities to transform JSON <br/>
-    /// </summary>
-    /// <remarks>For consistency the API to access the command param is same a <see cref="IMessage"/></remarks>
+    /// For consistency the API to access the command param is same a <see cref="IMessage"/>
+    /// </remarks>
     public sealed class MessageContext { // : IMessage { // uncomment to check API consistency
         public              string          Name            { get; }
         public              FlioxHub        Hub             => syncContext.hub;

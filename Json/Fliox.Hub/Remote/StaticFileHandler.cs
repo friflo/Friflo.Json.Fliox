@@ -13,11 +13,13 @@ using static System.Diagnostics.DebuggerBrowsableState;
 namespace Friflo.Json.Fliox.Hub.Remote
 {
     /// <summary>
-    /// A <see cref="StaticFileHandler"/> is used to serve static files by a <see cref="HttpHost"/>.<br/>
+    /// A <see cref="StaticFileHandler"/> is used to serve static files by a <see cref="HttpHost"/>.
+    /// </summary>
+    /// <remarks>
     /// Therefore add an instance of <see cref="StaticFileHandler"/> with <see cref="HttpHost.AddHandler"/> to the Hub.<br/>
     /// The <b>Media Type</b> assigned to the response <c>Content-Type</c> header is derived from the file name extension.<br/>
-    /// Add additional mappings for <b>file name extension</b> to <b>MediaType</b> with <see cref="AddFileExtension"/>. 
-    /// </summary>
+    /// Add additional mappings for <b>file name extension</b> to <b>MediaType</b> with <see cref="AddFileExtension"/>.
+    /// </remarks> 
     public sealed class StaticFileHandler : IRequestHandler
     {
         private  readonly   IFileHandler                    fileHandler;

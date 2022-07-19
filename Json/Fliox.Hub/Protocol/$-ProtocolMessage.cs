@@ -14,8 +14,9 @@ namespace Friflo.Json.Fliox.Hub.Protocol
     // ----------------------------------- message -----------------------------------
     /// <summary>
     /// <see cref="ProtocolMessage"/> is the base type for all messages which are classified into request, response and event.
-    /// It can also be used in communication going beyond the request / response schema.
-    /// <br/>
+    /// </summary>
+    /// <remarks>
+    /// A <see cref="ProtocolMessage"/> can also be used in communication going beyond the request / response schema.
     /// A <see cref="ProtocolMessage"/> is either one of the following types:
     /// <list type="bullet">
     ///   <item> <see cref="ProtocolRequest"/>  send by clients / received by hosts</item>
@@ -35,7 +36,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol
     ///     This principle also enables using a single <see cref="FlioxHub"/> by multiple clients like
     ///     <see cref="Client.FlioxClient"/> even for remote clients like <see cref="RemoteClientHub"/>.
     /// </para>
-    /// </summary>
+    /// </remarks>
     [Discriminator("msg", Description = "message type")] 
     [PolymorphType(typeof(SyncRequest),    Discriminant = "sync")]
     [PolymorphType(typeof(SyncResponse),   Discriminant = "resp")]
@@ -78,9 +79,11 @@ namespace Friflo.Json.Fliox.Hub.Protocol
     
     // ----------------------------------- response -----------------------------------
     /// <summary>
-    /// Base type for response messages send from a host to a client in reply of <see cref="SyncRequest"/><br/>
-    /// A response is either a <see cref="SyncResponse"/> or a <see cref="ErrorResponse"/> in case of a general error. 
+    /// Base type for response messages send from a host to a client in reply of <see cref="SyncRequest"/>
     /// </summary>
+    /// <remarks>
+    /// A response is either a <see cref="SyncResponse"/> or a <see cref="ErrorResponse"/> in case of a general error.
+    /// </remarks> 
     [Discriminator("msg", Description = "response type")] 
     [PolymorphType(typeof(SyncResponse),        Discriminant = "resp")]
     [PolymorphType(typeof(ErrorResponse),       Discriminant = "error")]

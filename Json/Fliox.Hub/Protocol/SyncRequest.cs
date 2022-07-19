@@ -9,10 +9,12 @@ namespace Friflo.Json.Fliox.Hub.Protocol
 {
     // ----------------------------------- request -----------------------------------
     /// <summary>
-    /// A <see cref="SyncRequest"/> is sent to a <see cref="Host.FlioxHub"/> targeting a specific <see cref="database"/>.<br/>
-    /// It contains a list of <see cref="tasks"/> used to execute container operations or database commands.<br/>
-    /// The <see cref="Host.FlioxHub"/> returns a <see cref="SyncResponse"/> containing the results for each task.
+    /// A <see cref="SyncRequest"/> is sent to a <see cref="Host.FlioxHub"/> targeting a specific <see cref="database"/>.
     /// </summary>
+    /// <remarks>
+    /// <see cref="SyncRequest"/> contains a list of <see cref="tasks"/> used to execute container operations or database commands.
+    /// The <see cref="Host.FlioxHub"/> returns a <see cref="SyncResponse"/> containing the results for each task.
+    /// </remarks>
     public sealed class SyncRequest : ProtocolRequest
     {
         /// <summary>

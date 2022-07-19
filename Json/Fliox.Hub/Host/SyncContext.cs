@@ -16,10 +16,11 @@ namespace Friflo.Json.Fliox.Hub.Host
     /// <summary>
     /// One <see cref="SyncContext"/> is created per <see cref="FlioxHub.ExecuteSync"/> call to enable
     /// multi threaded / concurrent handling of a <see cref="SyncRequest"/>.
-    /// <br/>
+    /// </summary>
+    /// <remarks>
     /// Note: In case of adding transaction support for <see cref="SyncRequest"/>'s in future transaction data / state
     /// need to be handled by this class.
-    /// </summary>
+    /// </remarks>
     public sealed class SyncContext
     {
         // --- public

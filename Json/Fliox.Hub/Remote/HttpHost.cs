@@ -15,7 +15,9 @@ namespace Friflo.Json.Fliox.Hub.Remote
 {
     /// <summary>
     /// A <see cref="HttpHost"/> enables remote access to databases, schemas and static web files via
-    /// <b>HTTP</b> or <b>WebSockets</b>. <br/>
+    /// <b>HTTP</b> or <b>WebSockets</b>.
+    /// </summary>
+    /// <remarks>
     /// The full feature set is listed at:
     /// <a href="https://github.com/friflo/Friflo.Json.Fliox/blob/main/Json/Fliox.Hub/Host/README.md#httphost">Host README.md</a><br/>
     /// In detail:
@@ -37,7 +39,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
     ///   <item><b>REST</b> API to POST, GET, PUT, DELETE and PATCH with via a path like <b><c>./fliox/rest/database/container/id</c></b> </item>
     ///   <item><b>GraphQL</b> via an endpoint like <b><c>/fliox/graphql/database</c></b> - requires package: Friflo.Json.Fliox.Hub.GraphQL</item>
     /// </list>
-    /// </summary>
+    /// </remarks>
     public sealed class HttpHost : RemoteHost
     {
         /// <summary>never null, ends with '/'</summary>

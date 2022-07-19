@@ -19,6 +19,10 @@ namespace Friflo.Json.Fliox.Hub.Remote
         Task        HandleRequest   (RequestContext context);
     }
     
+    /// <summary>
+    /// A <see cref="RequestContext"/> is used to get the data of a HTTP request from a specific HTTP server
+    /// and provide its execution results back to the HTTP server.    
+    /// </summary>
     public sealed class RequestContext
     {
         // --- fields

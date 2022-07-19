@@ -17,14 +17,13 @@ using static System.Diagnostics.DebuggerBrowsableState;
 namespace Friflo.Json.Fliox.Hub.Host
 {
     /// <summary>
-    /// If a <see cref="DatabaseSchema"/> is assigned to a <see cref="EntityDatabase.Schema"/> the JSON payloads of all
-    /// entities used in write operations (create, upsert and patch) are validated against their expected container types.
-    /// <br/>
+    /// A <see cref="DatabaseSchema"/> can be assigned to a <see cref="EntityDatabase.Schema"/> to enable validation
+    /// of entities represented as JSON used in write operations - create, upsert and patch.
+    /// </summary>
+    /// <remarks>
     /// It is intended to be used for <see cref="RemoteHost"/> instances to ensure that the entities
     /// (records) in an <see cref="EntityContainer"/> always meet the expected type. So only successful validated JSON
     /// payloads are written to an <see cref="EntityContainer"/>.
-    /// </summary>
-    /// <remarks>
     /// JSON validation includes the following checks:
     /// <list type="bullet">
     ///   <item>

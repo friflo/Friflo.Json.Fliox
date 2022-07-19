@@ -15,8 +15,11 @@ using Friflo.Json.Fliox.Transform;
 namespace Friflo.Json.Fliox.Hub.Host
 {
     /// <summary>
-    /// An <see cref="EntityContainer"/> is the abstraction of a collection / table used to store its entities / records 
-    /// as key value pairs. It uses a string as key and a JSON object as value. Each container is intended to store the
+    /// An <see cref="EntityContainer"/> is the abstraction of a collection / table used to store entities / records 
+    /// as key value pairs.
+    /// </summary>
+    /// <remarks>
+    /// It uses a string as key and a JSON object as value. Each container is intended to store the
     /// entities / records of a specific type. E.g. one container for storing JSON objects representing 'articles'
     /// another one for storing 'orders'.
     /// <para>
@@ -46,7 +49,7 @@ namespace Friflo.Json.Fliox.Hub.Host
     ///   In case a database command fails completely  <see cref="ICommandResult.Error"/> needs to be set.
     ///   See <see cref="FlioxHub.ExecuteSync"/> for proper error handling.
     /// </para>
-    /// </summary>
+    /// </remarks>
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif

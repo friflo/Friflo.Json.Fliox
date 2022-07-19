@@ -17,20 +17,21 @@ namespace Friflo.Json.Fliox.Hub.Remote
     // Alternatively a HTTP web server could be implemented by using Kestrel.
     // See: [Deprecate HttpListener · Issue #88 · dotnet/platform-compat] https://github.com/dotnet/platform-compat/issues/88#issuecomment-592395933
     // See: [Configure options for the ASP.NET Core Kestrel web server | Microsoft Docs] https://docs.microsoft.com/en-us/aspnet/core/fundamentals/servers/kestrel/options?view=aspnetcore-5.0
+
     /// <summary>
-    /// <see cref="HttpListenerHost"/> is a utility class used to <br/>
-    ///  - handle Fliox requests <br/>
-    ///  - manage the lifecycle of a <see cref="HttpListener"/>. <br/>
-    /// <br/>
-    /// lifecycle methods:
+    /// <see cref="HttpListenerHost"/> is a utility class to enable running a simple HTTP Server by using a <see cref="HttpListener"/>
+    /// </summary>
+    /// <remarks>
+    /// Via its utility methods is manages the lifecycle of a <see cref="HttpListener"/>.
+    /// Lifecycle methods:
     /// <list type="bullet">
     ///     <item>Create an instance: <see cref="HttpListenerHost(string, HttpHost)"/></item>
     ///     <item>Start server: <see cref="Start"/></item>
     ///     <item>Run server loop for incoming connections: <see cref="Run"/></item>
     ///     <item>Stop server: <see cref="Stop"/></item>
     ///     <item>Shutdown server: <see cref="Dispose"/></item>
-    /// </list> 
-    /// </summary>
+    /// </list>
+    /// </remarks>
     public sealed class HttpListenerHost : IDisposable, ILogSource
     {
         private  readonly   HttpListener        listener;

@@ -32,6 +32,8 @@ namespace Friflo.Json.Fliox.Hub.Host
     /// <summary>
     /// <see cref="EntityDatabase"/> is the abstraction for specific database adapter / implementation e.g. a
     /// <see cref="MemoryDatabase"/> or <see cref="FileDatabase"/>.
+    /// </summary>
+    /// <remarks>
     /// An <see cref="EntityDatabase"/> contains multiple <see cref="EntityContainer"/>'s each representing
     /// a table / collection of a database. Each container is intended to store the records / entities of a specific type.
     /// E.g. one container for storing JSON objects representing 'articles' another one for storing 'orders'.
@@ -43,7 +45,7 @@ namespace Friflo.Json.Fliox.Hub.Host
     /// clients e.g. <see cref="Client.FlioxClient"/> operating on the same <see cref="EntityDatabase"/> instance
     /// - used by a <see cref="FlioxHub"/>.
     /// To maintain thread safety <see cref="EntityDatabase"/> implementations must not have any mutable state.
-    /// </summary>
+    /// </remarks>
     public abstract class EntityDatabase : IDisposable
     {
     #region - members

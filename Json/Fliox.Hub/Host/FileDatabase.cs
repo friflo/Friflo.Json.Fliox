@@ -16,7 +16,9 @@ namespace Friflo.Json.Fliox.Hub.Host
 {
     /// <summary>
     /// A <see cref="FileDatabase"/> is used to store the entities / records of its containers as <b>JSON</b>
-    /// files in the <b>file-system</b>.<br/>
+    /// files in the <b>file-system</b>.
+    /// </summary>
+    /// <remarks>
     /// Each database container / table is a sub folder of the path passed to the <see cref="FileDatabase"/> constructor.<br/>
     /// The intention of a <see cref="FileDatabase"/> is providing <b>out of the box</b> persistence without the need of
     /// installation or configuration of a third party database server like: SQLite, Postgres, ...<br/>
@@ -31,7 +33,7 @@ namespace Friflo.Json.Fliox.Hub.Host
     /// In most uses cases a <see cref="FileDatabase"/> in not suitable for production as its read / write performance
     /// cannot compete with databases like: SQLite, Postgres, ... . <br/>
     /// <see cref="FileDatabase"/> has no third party dependencies.
-    /// </summary>
+    /// </remarks>
     public sealed class FileDatabase : EntityDatabase
     {
         private  readonly   string      databaseFolder;

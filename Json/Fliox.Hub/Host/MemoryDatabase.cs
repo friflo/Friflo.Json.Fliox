@@ -12,7 +12,9 @@ using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 namespace Friflo.Json.Fliox.Hub.Host
 {
     /// <summary>
-    /// A <see cref="MemoryDatabase"/> is a non-persistent database used to store records in memory. <br/>
+    /// A <see cref="MemoryDatabase"/> is a non-persistent database used to store records in memory.
+    /// </summary>
+    /// <remarks>
     /// The intention is having a shared database which can be used in high performance scenarios. <br/>
     /// E.g. on a 4 Core CPU it is able to achieve more than 500.000 request / second. <br/>
     /// Following use-cases are suitable for a <see cref="MemoryDatabase"/>
@@ -22,8 +24,6 @@ namespace Friflo.Json.Fliox.Hub.Host
     ///   <item>Use as test database for <b>TDD</b> without any configuration </item>
     /// </list>
     /// <see cref="MemoryDatabase"/> has no third party dependencies.
-    /// </summary>
-    /// <remarks>
     /// <i>Storage characteristics</i> <br/>
     /// <b>Keys</b> are stored as <see cref="JsonKey"/> - keys that can be converted to <see cref="long"/> or <see cref="Guid"/>
     /// are stored without heap allocation. Otherwise a <see cref="string"/> is allocated <br/>

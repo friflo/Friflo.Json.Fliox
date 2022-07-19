@@ -20,10 +20,12 @@ namespace Friflo.Json.Fliox.Hub.Host
 {
     /// <summary>
     /// A <see cref="FlioxHub"/> is the single entry point used to handle <b>all</b> requests send by clients -
-    /// e.g. a <see cref="Client.FlioxClient"/> or a web browser. <br/>
+    /// e.g. a <see cref="Client.FlioxClient"/> or a web browser.
+    /// </summary>
+    /// <remarks>
     /// The <see cref="FlioxHub"/> features and utilization is available at
-    /// <a href="https://github.com/friflo/Friflo.Json.Fliox/blob/main/Json/Fliox.Hub/Host/README.md#flioxhub">Host README.md</a><br/>
-    /// <br/>
+    /// <a href="https://github.com/friflo/Friflo.Json.Fliox/blob/main/Json/Fliox.Hub/Host/README.md#flioxhub">Host README.md</a>
+    ///
     /// When creating a <see cref="FlioxHub"/> a <b>default <see cref="EntityDatabase"/></b> is assigned to the instance
     /// and all tasks requested by a client are applied to this <see cref="database"/>. <br/>
     /// A <see cref="FlioxHub"/> can be configured to support:
@@ -42,9 +44,6 @@ namespace Friflo.Json.Fliox.Hub.Host
     ///     <see cref="AddExtensionDB"/>.
     ///   </item>
     /// </list>
-    /// </summary>
-    /// 
-    /// <remarks>
     /// A <see cref="FlioxHub"/> instance handle client requests by its <see cref="ExecuteSync"/> method. <br/>
     /// A request is represented by a <see cref="SyncRequest"/> and its <see cref="SyncRequest.tasks"/> are executed
     /// on the given <see cref="SyncRequest.database"/>. <br/>
@@ -154,7 +153,9 @@ namespace Friflo.Json.Fliox.Hub.Host
 
     #region - sync request execution
         /// <summary>
-        /// Execute all <see cref="SyncRequest.tasks"/> of a <see cref="SyncRequest"/>.
+        /// Execute all <see cref="SyncRequest.tasks"/> of a <see cref="SyncRequest"/> send by client.
+        /// </summary>
+        /// <remarks>
         /// All requests to a <see cref="FlioxHub"/> are handled by this method.
         /// By design this is the 'front door' all requests have to pass to get processed.
         /// <para>
@@ -173,7 +174,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         ///          <see cref="ICommandResult.Error"/></para>
         ///   <para> 2. An issue in the namespace <see cref="Friflo.Json.Fliox.Hub.Protocol"/> which must to be fixed.</para> 
         /// </para>
-        /// </summary>
+        /// </remarks>
         public virtual async Task<ExecuteSyncResult> ExecuteSync(SyncRequest syncRequest, SyncContext syncContext) {
             syncContext.hub         = this;
             syncContext.eventAck    = syncRequest.eventAck;            

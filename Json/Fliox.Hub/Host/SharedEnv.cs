@@ -11,8 +11,10 @@ using Friflo.Json.Fliox.Schema.Validation;
 namespace Friflo.Json.Fliox.Hub.Host
 {
     /// <summary>
-    /// <see cref="SharedEnv"/> provide a set of shared resources.
-    /// In particular a <see cref="TypeStore"/> and a <see cref="Pool"/>.
+    /// <see cref="SharedEnv"/> provide a set of shared resources available via <see cref="FlioxHub.sharedEnv"/>.
+    /// </summary>
+    /// <remarks>
+    /// In particular it provides a <see cref="TypeStore"/> and a <see cref="Pool"/>.
     /// The resources contained by a <see cref="SharedEnv"/> are designed for being reused to avoid expensive
     /// heap allocations when required.
     /// The intention is to use only a single <see cref="SharedEnv"/> instance within the whole application.
@@ -23,7 +25,7 @@ namespace Friflo.Json.Fliox.Hub.Host
     /// <see cref="SharedEnv()"/> instance and pass it to the constructor to all <see cref="FlioxHub"/> instances it creates.
     /// <br/>
     /// Access to shared resources is thread safe.
-    /// </summary>
+    /// </remarks>
     public class SharedEnv : IDisposable, ILogSource
     {
         private  readonly   TypeStore       typeStore;
