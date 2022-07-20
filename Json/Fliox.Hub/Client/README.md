@@ -8,6 +8,8 @@
 ## `FlioxClient`
 namespace **`Friflo.Json.Fliox.Hub.Client`**
 
+**Client** API reference at [**fliox-docs**](https://github.com/friflo/fliox-docs#client)
+
 The intention of `FlioxClient` is extending it by a domain specific class. See example below.  
 Instances of this class are acting as **clients** to access database **containers**
 and execute database **commands**.

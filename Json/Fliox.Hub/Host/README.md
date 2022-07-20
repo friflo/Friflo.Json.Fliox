@@ -27,6 +27,8 @@ There are two general ways to access a database using a [`FlioxClient`](../../Fl
 ## `FlioxHub`
 namespace **`Friflo.Json.Fliox.Hub.Host`**
 
+**Host** API reference at [**fliox-docs**](https://github.com/friflo/fliox-docs#host)
+
 A `FlioxHub` instance is the single entry point used to handle **all** requests send by a client.  
 E.g. direct/remote via a [`FlioxClient`](../../Fliox.Hub/Client/README.md) or remote-only via an HTTP client - typically a web browser.  
 When instantiating a `FlioxHub` an `EntityDatabase` need to be assigned used to execute all

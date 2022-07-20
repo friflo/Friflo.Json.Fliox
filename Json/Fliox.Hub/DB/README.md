@@ -8,6 +8,8 @@
 ## DB - Hub support databases
 namespace **`Friflo.Json.Fliox.Hub.DB`**
 
+**DB** API reference at [**fliox-docs**](https://github.com/friflo/fliox-docs#db)
+
 This namespace provide a set of administrative databases when using a `FlioxHub` as a server - a `HttpHost`.  
 Using these databases in a `FlioxHub` is optional.  
 If adding these databases to a `FlioxHub` they are available in the [**Hub Explorer**](../../Fliox.Hub.Explorer/README.md)

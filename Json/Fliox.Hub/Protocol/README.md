@@ -8,6 +8,8 @@
 ## Hub Protocol
 namespace **`Friflo.Json.Fliox.Hub.Protocol`**
 
+**Protocol** API reference at [**fliox-docs**](https://github.com/friflo/fliox-docs/blob/master/api/Friflo/Json/Fliox/Hub/Protocol/index.md)
+
 The `Hub Protocol` is a set of model classes used as the communication interface between a `FlioxClient` and a `FlioxHub`.  
 The Protocol is designed to be used for **direct** and **remote** calls.
 
