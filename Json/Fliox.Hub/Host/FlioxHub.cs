@@ -19,8 +19,7 @@ using static System.Diagnostics.DebuggerBrowsableState;
 namespace Friflo.Json.Fliox.Hub.Host
 {
     /// <summary>
-    /// A <see cref="FlioxHub"/> is the single entry point used to handle <b>all</b> requests send by clients -
-    /// e.g. a <see cref="Client.FlioxClient"/> or a web browser.
+    /// A <see cref="FlioxHub"/> act as a Proxy between a <see cref="Client.FlioxClient"/> or a web browser and an <see cref="EntityDatabase"/>.
     /// </summary>
     /// <remarks>
     /// The <see cref="FlioxHub"/> features and utilization is available at
@@ -44,7 +43,7 @@ namespace Friflo.Json.Fliox.Hub.Host
     ///     <see cref="AddExtensionDB"/>.
     ///   </item>
     /// </list>
-    /// A <see cref="FlioxHub"/> instance handle client requests by its <see cref="ExecuteSync"/> method. <br/>
+    /// A <see cref="FlioxHub"/> instance handle <b>all</b> client requests by its <see cref="ExecuteSync"/> method. <br/>
     /// A request is represented by a <see cref="SyncRequest"/> and its <see cref="SyncRequest.tasks"/> are executed
     /// on the given <see cref="SyncRequest.database"/>. <br/>
     /// If database == null the default <see cref="database"/> of <see cref="FlioxHub"/> is used.
