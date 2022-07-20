@@ -22,6 +22,7 @@ namespace Friflo.Json.Fliox.Hub.Host
     ///   <item>Run a big amount of unit tests fast and efficient as instantiation of <see cref="MemoryDatabase"/> take only some micro seconds. </item>
     ///   <item>Use as a Game Session database for online multiplayer games as it provide sub millisecond response latency</item>
     ///   <item>Use as test database for <b>TDD</b> without any configuration </item>
+    ///   <item>Is the benchmark reference for all other database implementations regarding throughput and latency</item>
     /// </list>
     /// <see cref="MemoryDatabase"/> has no third party dependencies.
     /// <i>Storage characteristics</i> <br/>
