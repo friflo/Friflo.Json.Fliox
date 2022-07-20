@@ -43,6 +43,8 @@ f: \.flt ## WinMerge filter
 f: LICENSE
 f: nuget.config
 f: \.gitpod.yml
+f: package.json
+f: package-lock.json
 
 d: \\bin$
 d: \\obj$
@@ -52,3 +54,5 @@ d: \\.github$
 d: \\.idea$
 d: \\.run$
 d: \\.vscode$
+d: \\node_modules$
+d: \\scripts$

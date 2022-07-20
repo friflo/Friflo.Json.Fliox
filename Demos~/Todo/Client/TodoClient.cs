@@ -23,6 +23,7 @@ namespace Todo
     public class Job
     {
         [Key]       public  long        id { get; set; }
+        ///<summary> short job title / name </summary>
         [Required]  public  string      title;
                     public  bool?       completed;
                     public  DateTime?   created;
