@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /app
 # EXPOSE 8010
 # ENV ASPNETCORE_URLS=http://+:8010
@@ -12,9 +12,10 @@ COPY Json/Fliox.Hub/*.csproj            ./Json/Fliox.Hub/
 COPY Json/Fliox.Hub.AspNetCore/*.csproj ./Json/Fliox.Hub.AspNetCore/
 COPY Json/Fliox.Hub.Explorer/*.csproj   ./Json/Fliox.Hub.Explorer/
 COPY Json/Fliox.Hub.GraphQL/*.csproj    ./Json/Fliox.Hub.GraphQL/
-COPY DemoHub/*.csproj                   ./DemoHub/
+COPY Demos~/Demo/Client/*.csproj        ./Demos~/Demo/Client/
+COPY Demos~/Demo/Hub/*.csproj           ./Demos~/Demo/Hub/
 #
-RUN dotnet restore DemoHub/Fliox.DemoHub.csproj
+RUN dotnet restore Demos~/Demo/Hub/DemoHub.csproj
 #
 # copy everything else and build app
 COPY Json/Burst/.                       ./Json/Burst/
@@ -24,16 +25,18 @@ COPY Json/Fliox.Hub/.                   ./Json/Fliox.Hub/
 COPY Json/Fliox.Hub.AspNetCore/.        ./Json/Fliox.Hub.AspNetCore/
 COPY Json/Fliox.Hub.Explorer/.          ./Json/Fliox.Hub.Explorer/
 COPY Json/Fliox.Hub.GraphQL/.           ./Json/Fliox.Hub.GraphQL/
-COPY DemoHub/.                          ./DemoHub/
+COPY Demos~/Demo/Client/.               ./Demos~/Demo/Client/
+COPY Demos~/Demo/Hub/.                  ./Demos~/Demo/Hub/
 #
-WORKDIR /app/DemoHub
-RUN dotnet publish Fliox.DemoHub.csproj -c Release -o out
+WORKDIR /app/Demos~/Demo/Hub/
+RUN dotnet publish DemoHub.csproj -c Release -o out
 #
-FROM mcr.microsoft.com/dotnet/core/aspnet:3.1 AS runtime
+FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS runtime 
+
 WORKDIR /app 
 #
-COPY --from=build /app/DemoHub/out ./
-ENTRYPOINT ["dotnet", "Fliox.DemoHub.dll"]
+COPY --from=build /app/Demos~/Demo/Hub/out ./
+ENTRYPOINT ["dotnet", "DemoHub.dll"]
 
 # --- usage
 # docker build -t demo-hub:latest .
