@@ -14,10 +14,10 @@ Then you may have a short look at this project*  <br/><br/>
 ## Description
 **JSON Fliox** is a **.NET** assembly enable **simple** and **efficient** access to NoSQL databases in two ways.
 
-|              | Description                                                    | API     |
-| ------------ | -------------------------------------------------------------- | ------- |
-| ORM          | Object Relational Mapper for C# clients                        | C# .NET |
-| Database Hub | A service used to host a set of databases via **ASP.NET Core** | HTTP    |
+|              | Description                                                    | API  |
+| ------------ | -------------------------------------------------------------- | ---- |
+| ORM          | Object Relational Mapper for .NET clients                      | C#   |
+| Database Hub | A service used to host a set of databases via **ASP.NET Core** | HTTP |
 
 
 
