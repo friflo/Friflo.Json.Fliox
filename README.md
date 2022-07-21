@@ -5,10 +5,24 @@
 [![.NET Tests](https://github.com/friflo/Friflo.Json.Fliox/workflows/.NET/badge.svg)](https://github.com/friflo/Friflo.Json.Fliox/actions)
 
 
-
 __`SELECT * FROM table1 LEFT JOIN table2 ON 💩 WHERE 💩`__
 
-*Info*: Pronunciation of **io** in **Fliox** is same as in **Riot**
+*Same attitude?  
+Then you may have a short look at this project*  <br/><br/>
+
+
+## Description
+**JSON Fliox** is a **.NET** assembly enable **simple** and **efficient** access to NoSQL databases in two ways.
+
+|              | Description                                                    | API     |
+| ------------ | -------------------------------------------------------------- | ------- |
+| ORM          | Object Relational Mapper for C# clients                        | C# .NET |
+| Database Hub | A service used to host a set of databases via **ASP.NET Core** | HTTP    |
+
+
+
+
+*Info*: Pronunciation of **io** in **Fliox** is same as in **Riot** <br/><br/>
 
 
 ## Content
