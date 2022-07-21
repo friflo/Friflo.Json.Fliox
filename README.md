@@ -12,7 +12,8 @@ Then you may have a short look at this project*  <br/><br/>
 
 
 ## Description
-**JSON Fliox** is a **.NET** assembly enable **simple** and **efficient** access to NoSQL databases in two ways.
+**JSON Fliox** is a **.NET** assembly supporting **simple** and **efficient** access to **NoSQL** databases.  
+Its **ORM** enables **Schema** creation and these Schemas are assigned to the databases hosted on the **Hub**.
 
 |              | Description                                                    | API  |
 | ------------ | -------------------------------------------------------------- | ---- |
