@@ -45,6 +45,7 @@ f: nuget.config
 f: \.gitpod.yml
 f: package.json
 f: package-lock.json
+f: Dockerfile
 
 d: \\bin$
 d: \\obj$
