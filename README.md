@@ -36,6 +36,9 @@ Its **ORM** enables **Schema** creation and these Schemas are assigned to the da
     - absence of using `object` as a type
 - serialization of data on protocol messages are entirely JSON
 - unit testing of Clients and Hubs using Fliox are testable without mocking
+- is extensible
+    - support custom database adapters aka providers
+    - support custom code / schema generators for new programming languages
 
 
 
