@@ -15,10 +15,10 @@ Then you may have a short look at this project*  <br/><br/>
 **JSON Fliox** is a **.NET** assembly supporting **simple** and **efficient** access to **NoSQL** databases.  
 Its **ORM** enables **Schema** creation and these Schemas are assigned to the databases hosted on the **Hub**.
 
-|              | Description                                                                     | API  |
-| ------------ | ------------------------------------------------------------------------------- | ---- |
-| ORM          | Object Relational Mapper - provides access to NoSQL databases with .NET clients | C#   |
-| Database Hub | A service used to host a set of NoSQL databases via an **ASP.NET Core** server  | HTTP |
+|              | Description                                                               | API  |
+| ------------ | ------------------------------------------------------------------------- | ---- |
+| ORM          | Object Relational Mapper - to access to NoSQL databases with .NET clients | C#   |
+| Database Hub | A service hosting a set of NoSQL databases via an **ASP.NET Core** server | HTTP |
 
 
 
