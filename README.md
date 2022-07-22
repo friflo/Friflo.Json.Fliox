@@ -25,7 +25,7 @@ Its **ORM** enables **Schema** creation and these Schemas are assigned to the da
 ### Fundamental principles
 - dependencies
     - no 3rd party dependencies
-    - small size of assemblies (*.dll) ~ 850kb in total
+    - small size of assemblies (*.dll) ~ 850 kb in total, 350 kb zipped
 - targets for optimal performance
     - maximize throughput, minimize latency, minimize heap allocations and boxing
     - enable task batching aka a unit of work
