@@ -23,10 +23,11 @@ Its **ORM** enables **Schema** creation and these Schemas are assigned to the da
 *Info*: Pronunciation of **io** in **Fliox** is same as in **Riot** <br/><br/>
 
 ### Fundamental principles
+
 - dependencies
     - no 3rd party dependencies
     - small size of assemblies (*.dll) ~ 850 kb in total, 350 kb zipped
-- targets for optimal performance
+- target for optimal performance
     - maximize throughput, minimize latency, minimize heap allocations and boxing
     - enable task batching aka a unit of work
     - support bulk operations for CRUD commands
@@ -34,9 +35,9 @@ Its **ORM** enables **Schema** creation and these Schemas are assigned to the da
     - type safe access to entities and their keys when dealing with containers  
     - type safe access to DTO's when dealing with database commands
     - absence of using `object` as a type
-- serialization of data on protocol messages are entirely JSON
-- unit testing of Clients and Hubs using Fliox are testable without mocking
-- is extensible
+- serialization of entities and messages - request, response & event - are entirely JSON
+- Fliox Clients and Hubs are unit testable without mocking
+- extensibility
     - support custom database adapters aka providers
     - support custom code / schema generators for new programming languages
 
