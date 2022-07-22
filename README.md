@@ -5,10 +5,10 @@
 [![.NET Tests](https://github.com/friflo/Friflo.Json.Fliox/workflows/.NET/badge.svg)](https://github.com/friflo/Friflo.Json.Fliox/actions)
 
 
-__`SELECT * FROM table1 LEFT JOIN table2 ON 💩 WHERE 💩`__
+__`SELECT * FROM table1 LEFT JOIN table2 ON 💩 WHERE 💩 💩 💩`__
 
-*Same attitude?  
-Then you may have a short look at this project*  <br/><br/>
+*Same attitude?* 😉  
+*Then you may have a short look at this project*  <br/><br/>
 
 
 ## Description
