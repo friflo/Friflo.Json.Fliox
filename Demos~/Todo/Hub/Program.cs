@@ -13,7 +13,7 @@ namespace TodoHub
         public static void Main()
         {
             var httpHost = CreateHttpHost();
-            HttpListenerHost.RunHost("http://+:8010/", httpHost); // run host
+            HttpListenerHost.RunHost("http://+:8010/", httpHost);
         }
         
         /// <summary>
@@ -22,17 +22,17 @@ namespace TodoHub
         /// </summary>
         private static HttpHost CreateHttpHost()
         {
-            var typeSchema          = NativeTypeSchema.Create(typeof(TodoClient)); // optional - create TypeSchema from Type
+            var typeSchema          = NativeTypeSchema.Create(typeof(TodoClient));
             var database            = new FileDatabase("main_db", "../Test/DB/main_db");
             database.Schema         = new DatabaseSchema(typeSchema);
 
             var hub                 = new FlioxHub(database);
-            hub.Info.projectName    = "TodoHub";                                            // optional
-            hub.Info.projectWebsite = "https://github.com/friflo/FlioxHub.Demos#todohub";   // optional
-            hub.AddExtensionDB (new ClusterDB("cluster", hub));     // optional - expose info of hosted databases. Required by Hub Explorer
+            hub.Info.projectName    = "TodoHub";
+            hub.Info.projectWebsite = "https://github.com/friflo/FlioxHub.Demos#todohub";
+            hub.AddExtensionDB (new ClusterDB("cluster", hub)); // required by HubExplorer
             
             var httpHost            = new HttpHost(hub, "/fliox/");
-            httpHost.AddHandler      (new StaticFileHandler(HubExplorer.Path)); // optional - serve static web files of Hub Explorer
+            httpHost.AddHandler      (new StaticFileHandler(HubExplorer.Path));
             return httpHost;
         }
     }
