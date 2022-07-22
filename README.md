@@ -44,7 +44,7 @@ Its **ORM** enables **Schema** creation and these Schemas are assigned to the da
 
 ## Content
 - **Fliox Hub**
-    - [Demos](#demos)               ❯  [README.md](https://github.com/friflo/FlioxHub.Demos#-flioxhub-demos-)
+    - [Demos](#demos)               ❯  [README.md](https://github.com/friflo/FlioxHub.Demos/blob/main/README.md)
     - [Client](#client)                 ❯  [README.md](Json/Fliox.Hub/Client/README.md)
     - [Host](#host)                   ❯  [README.md](Json/Fliox.Hub/Host/README.md)
     - [Explorer](#explorer)             ❯  [README.md](Json/Fliox.Hub.Explorer/README.md)
@@ -64,7 +64,7 @@ Its **ORM** enables **Schema** creation and these Schemas are assigned to the da
 
 ### **Demos**
 
-📄   [README.md](https://github.com/friflo/FlioxHub.Demos#-flioxhub-demos-)
+📄   [README.md](https://github.com/friflo/FlioxHub.Demos/blob/main/README.md)
 
 
 ### **Client**
