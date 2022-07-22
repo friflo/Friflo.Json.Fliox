@@ -24,16 +24,16 @@ Its **ORM** enables **Schema** creation and these Schemas are assigned to the da
 
 ### Fundamental principles
 - dependencies
-   - no 3rd party dependencies
-   - small size of assemblies (*.dll) ~ 850kb in total
+    - no 3rd party dependencies
+    - small size of assemblies (*.dll) ~ 850kb in total
 - targets for optimal performance
-  - maximize throughput, minimize latency, minimize heap allocations and boxing
+    - maximize throughput, minimize latency, minimize heap allocations and boxing
   - enable task batching and support bulk operations for CRUD commands
-- provide compact and strongly typed API's
-  - type safe access to entities and their keys when dealing with containers  
-  - type safe access to DTO's when dealing with database commands
-  - absence of using `object` as a type
-
+- provide compact and strongly typed API
+    - type safe access to entities and their keys when dealing with containers  
+    - type safe access to DTO's when dealing with database commands
+    - absence of using `object` as a type
+- serialization of data on protocol messages are entirely JSON
 
 
 
