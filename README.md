@@ -20,10 +20,18 @@ Its **ORM** enables **Schema** creation and these Schemas are assigned to the da
 | ORM          | Object Relational Mapper - to access to NoSQL databases with .NET clients | C#   |
 | Database Hub | A service hosting a set of NoSQL databases via an **ASP.NET Core** server | HTTP |
 
-
-
-
 *Info*: Pronunciation of **io** in **Fliox** is same as in **Riot** <br/><br/>
+
+### Fundamental principles
+- no 3rd party dependencies
+- targets for optimal performance
+  - maximize throughput, minimize latency, minimize heap allocations and boxing
+  - enable task batching and support bulk operations for CRUD commands
+- provide compact and strongly typed API's
+  - type safe access to entities and their keys when dealing with containers  
+  - type safe access to DTO's when dealing with database commands
+  - absence of using `object` as a type
+
 
 
 ## Content
