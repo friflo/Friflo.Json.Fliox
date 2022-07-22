@@ -23,7 +23,9 @@ Its **ORM** enables **Schema** creation and these Schemas are assigned to the da
 *Info*: Pronunciation of **io** in **Fliox** is same as in **Riot** <br/><br/>
 
 ### Fundamental principles
-- no 3rd party dependencies
+- dependencies
+   - no 3rd party dependencies
+   - small size of assemblies (*.dll) ~ 850kb in total
 - targets for optimal performance
   - maximize throughput, minimize latency, minimize heap allocations and boxing
   - enable task batching and support bulk operations for CRUD commands
@@ -31,6 +33,7 @@ Its **ORM** enables **Schema** creation and these Schemas are assigned to the da
   - type safe access to entities and their keys when dealing with containers  
   - type safe access to DTO's when dealing with database commands
   - absence of using `object` as a type
+
 
 
 
