@@ -139,8 +139,8 @@ Detailed feature descriptions are available by a set of `README` files linked be
 
 ## Credits
 - [NUnit](https://nunit.org/)                                   · used for unit testing of the Demos and the JSON Fliox library
-- [Swagger](https://swagger.io/)                                · to enable REST / OpenAPI by the Hub Explorer
-- [GraphiQL](https://github.com/graphql/graphiql)               · to enable GraphQL in the Hub Explorer
+- [Swagger](https://swagger.io/)                                · as a REST / OpenAPI UI used by the Hub Explorer
+- [GraphiQL](https://github.com/graphql/graphiql)               · as a GraphQL UI used by the Hub Explorer
 - [Monaco Editor](https://github.com/microsoft/monaco-editor)   · to edit JSON in the Hub Explorer
 - [.NET guys](https://dotnet.microsoft.com/en-us/)              · the platform providing compiler, runtime, IDE's & ASP.NET Core
 - [WinMerge](https://github.com/WinMerge/winmerge)              · heavily used in this project
