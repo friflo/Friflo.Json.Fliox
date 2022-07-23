@@ -20,7 +20,16 @@ Its **ORM** enables **Schema** creation and these Schemas are assigned to the da
 | ORM          | Object Relational Mapper - to access to NoSQL databases with .NET clients | C#   |
 | Database Hub | A service hosting a set of NoSQL databases via an **ASP.NET Core** server | HTTP |
 
+As **JSON Fliox** is an [ORM](https://en.wikipedia.org/wiki/Object-relational_mapping) is has similarities to projects like
+- [Entity Framework Core](https://en.wikipedia.org/wiki/Entity_Framework) · C#
+- [Dapper ORM](https://en.wikipedia.org/wiki/Dapper_ORM) · C#, SQL
+- [Ruby on Rails - Active Record Pattern](https://en.wikipedia.org/wiki/Ruby_on_Rails) · Ruby
+- [Django](https://en.wikipedia.org/wiki/Django_(web_framework)) · Python
+- [Hibernate](https://de.wikipedia.org/wiki/Hibernate_(Framework)) · Java
+- [Prisma](https://www.prisma.io/) · Typescript
+
 *Info*: Pronunciation of **io** in **Fliox** is same as in **Riot** <br/><br/>
+
 
 ## Features
 
