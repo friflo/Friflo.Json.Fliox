@@ -22,13 +22,36 @@ Its **ORM** enables **Schema** creation and these Schemas are assigned to the da
 
 *Info*: Pronunciation of **io** in **Fliox** is same as in **Riot** <br/><br/>
 
-### Features
+<br/>
 
+## Content
+- **Features**
+    - [Overview](#overview)
+    - [Principles](#principles)
+- **Fliox Hub**
+    - [Demos](#demos)               ❯  [README.md](https://github.com/friflo/FlioxHub.Demos/blob/main/README.md)
+    - [Client](#client)                 ❯  [README.md](Json/Fliox.Hub/Client/README.md)
+    - [Host](#host)                   ❯  [README.md](Json/Fliox.Hub/Host/README.md)
+    - [Explorer](#explorer)             ❯  [README.md](Json/Fliox.Hub.Explorer/README.md)
+    - [DB](#db)                      ❯  [README.md](Json/Fliox.Hub/DB/README.md)
+    - [Protocol](#protocol)             ❯  [README.md](Json/Fliox.Hub/Protocol/README.md)
+- **Fliox**
+    - [Schema](#schema)              ❯  [README.md](Json/Fliox/Schema/README.md)
+    - [Mapper](#mapper)              ❯  [README.md](Json/Fliox/Mapper/README.md)
+- **Testing**
+    - [Unit Tests](#unit-tests)           ❯  [README.md](Json.Tests/README.md)
+
+<br/>
+
+
+## Features
+
+### Overview
 A compact feature list is shown at the [FlioxHub.Demos](https://github.com/friflo/FlioxHub.Demos/blob/main/README.md#features) repository.  
 Detailed feature descriptions are available by a set of `README` files linked below.  
 *Topics*: Demos, Client, Host, Hub Explorer, DB - support databases, Protocol, Schema, Mapper & Unit Tests.
 
-### Fundamental principles
+### Principles
 
 - dependencies
     - no 3rd party dependencies
@@ -50,25 +73,8 @@ Detailed feature descriptions are available by a set of `README` files linked be
     - **.NET Core 3.1** and higher
     - **Unity 2020.1** and higher 
 
+<br/><br/>
 
-
-## Content
-- **Fliox Hub**
-    - [Demos](#demos)               ❯  [README.md](https://github.com/friflo/FlioxHub.Demos/blob/main/README.md)
-    - [Client](#client)                 ❯  [README.md](Json/Fliox.Hub/Client/README.md)
-    - [Host](#host)                   ❯  [README.md](Json/Fliox.Hub/Host/README.md)
-    - [Explorer](#explorer)             ❯  [README.md](Json/Fliox.Hub.Explorer/README.md)
-    - [DB](#db)                      ❯  [README.md](Json/Fliox.Hub/DB/README.md)
-    - [Protocol](#protocol)             ❯  [README.md](Json/Fliox.Hub/Protocol/README.md)
-- **Fliox**
-    - [Schema](#schema)              ❯  [README.md](Json/Fliox/Schema/README.md)
-    - [Mapper](#mapper)              ❯  [README.md](Json/Fliox/Mapper/README.md)
-- **Testing**
-    - [Unit Tests](#unit-tests)           ❯  [README.md](Json.Tests/README.md)
-
-
-
-![section](docs/images/new-section.png)
 
 ## **Fliox Hub**
 
@@ -100,7 +106,7 @@ Detailed feature descriptions are available by a set of `README` files linked be
 
 
 
-![section](docs/images/new-section.png)
+<br/><br/>
 
 ## **Fliox**
 
@@ -114,7 +120,7 @@ Detailed feature descriptions are available by a set of `README` files linked be
 
 
 
-![section](docs/images/new-section.png)
+<br/><br/>
 
 ## **Testing**
 
@@ -122,9 +128,12 @@ Detailed feature descriptions are available by a set of `README` files linked be
 📄   [README.md](Json.Tests/README.md)
 
 
+<br/><br/>
 
+Happy coding!
+😊 💻
 
-![section](docs/images/new-section.png)
+<br/>
 
 ## License
 
