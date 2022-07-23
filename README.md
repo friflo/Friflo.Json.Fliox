@@ -22,12 +22,16 @@ Its **ORM** enables **Schema** creation and these Schemas are assigned to the da
 
 *Info*: Pronunciation of **io** in **Fliox** is same as in **Riot** <br/><br/>
 
+## Features
+
+A compact feature list is shown at the [FlioxHub.Demos](https://github.com/friflo/FlioxHub.Demos/blob/main/README.md#features) repository.  
+Detailed feature descriptions are available by a set of `README` files linked below.  
+*Topics*: Demos, Client, Host, Hub Explorer, DB - support databases, Protocol, Schema, Mapper & Unit Tests.
+
 <br/>
 
 ## Content
-- **Features**
-    - [Overview](#overview)
-    - [Principles](#principles)
+
 - **Fliox Hub**
     - [Demos](#demos)               ❯  [README.md](https://github.com/friflo/FlioxHub.Demos/blob/main/README.md)
     - [Client](#client)                 ❯  [README.md](Json/Fliox.Hub/Client/README.md)
@@ -40,40 +44,11 @@ Its **ORM** enables **Schema** creation and these Schemas are assigned to the da
     - [Mapper](#mapper)              ❯  [README.md](Json/Fliox/Mapper/README.md)
 - **Testing**
     - [Unit Tests](#unit-tests)           ❯  [README.md](Json.Tests/README.md)
+- **Design**
+    - [Principles](#principles)
 
 <br/>
 
-
-## Features
-
-### Overview
-A compact feature list is shown at the [FlioxHub.Demos](https://github.com/friflo/FlioxHub.Demos/blob/main/README.md#features) repository.  
-Detailed feature descriptions are available by a set of `README` files linked below.  
-*Topics*: Demos, Client, Host, Hub Explorer, DB - support databases, Protocol, Schema, Mapper & Unit Tests.
-
-### Principles
-
-- dependencies
-    - no 3rd party dependencies
-    - small size of Fliox assemblies (*.dll) ~ 850 kb in total, 350 kb zipped
-- target for optimal performance
-    - maximize throughput, minimize latency, minimize heap allocations and boxing
-    - enable task batching aka a unit of work
-    - support bulk operations for CRUD commands
-- provide compact and strongly typed API
-    - type safe access to entities and their keys when dealing with containers  
-    - type safe access to DTO's when dealing with database commands
-    - absence of using `object` as a type
-- serialization of entities and messages - request, response & event - are entirely JSON
-- Fliox Clients and Hubs are unit testable without mocking
-- extensibility
-    - support custom database adapters aka providers
-    - support custom code / schema generators for new programming languages
-- compatibility
-    - **.NET Core 3.1** and higher
-    - **Unity 2020.1** and higher 
-
-<br/><br/>
 
 
 ## **Fliox Hub**
@@ -102,11 +77,9 @@ Detailed feature descriptions are available by a set of `README` files linked be
 ### **Protocol**
 📄   [README.md](Json/Fliox.Hub/Protocol/README.md)
 
-
-
-
-
 <br/><br/>
+
+
 
 ## **Fliox**
 
@@ -117,18 +90,42 @@ Detailed feature descriptions are available by a set of `README` files linked be
 ### **Mapper**
 📄   [README.md](Json/Fliox/Mapper/README.md)
 
-
-
-
 <br/><br/>
+
+
 
 ## **Testing**
 
 ### **Unit Tests**
 📄   [README.md](Json.Tests/README.md)
 
-
 <br/><br/>
+
+
+
+## **Principles**
+
+- dependencies
+    - no 3rd party dependencies
+    - small size of Fliox assemblies (*.dll) ~ 850 kb in total, 350 kb zipped
+- target for optimal performance
+    - maximize throughput, minimize latency, minimize heap allocations and boxing
+    - enable task batching aka a unit of work
+    - support bulk operations for CRUD commands
+- provide compact and strongly typed API
+    - type safe access to entities and their keys when dealing with containers  
+    - type safe access to DTO's when dealing with database commands
+    - absence of using `object` as a type
+- serialization of entities and messages - request, response & event - are entirely JSON
+- Fliox Clients and Hubs are unit testable without mocking
+- extensibility
+    - support custom database adapters aka providers
+    - support custom code / schema generators for new programming languages
+- compatibility
+    - **.NET Core 3.1** and higher
+    - **Unity 2020.1** and higher 
+
+<br/>
 
 Happy coding!  
 😊 💻
