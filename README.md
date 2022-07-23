@@ -46,6 +46,9 @@ Detailed feature descriptions are available by a set of `README` files linked be
 - extensibility
     - support custom database adapters aka providers
     - support custom code / schema generators for new programming languages
+- compatibility
+    - **.NET Core 3.1** and higher
+    - **Unity 2020.1** and higher 
 
 
 
