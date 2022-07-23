@@ -130,7 +130,7 @@ Detailed feature descriptions are available by a set of `README` files linked be
 
 <br/><br/>
 
-Happy coding!
+Happy coding!  
 😊 💻
 
 <br/>
