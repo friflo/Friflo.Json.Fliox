@@ -137,6 +137,12 @@ Detailed feature descriptions are available by a set of `README` files linked be
 
 <br/>
 
+## Credits
+- [NUnit.org](https://nunit.org/) · used for unit testing of the Demos and the JSON Fliox library
+- [Swagger](https://swagger.io/) · to enable REST / OpenAPI by the Hub Explorer
+- [GraphiQL](https://github.com/graphql/graphiql) · to enable GraphQL in the Hub Explorer
+- [.NET guys](https://dotnet.microsoft.com/en-us/) · the platform providing compiler, runtime, IDE's & ASP.NET Core
+
 Happy coding!  
 😊 💻
 
