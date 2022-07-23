@@ -102,8 +102,9 @@ Detailed feature descriptions are available by a set of `README` files linked be
 <br/><br/>
 
 
+## **Design**
 
-## **Principles**
+### **Principles**
 
 - dependencies
     - no 3rd party dependencies
