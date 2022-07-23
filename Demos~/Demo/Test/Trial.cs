@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Demo;
 using Friflo.Json.Fliox.Hub.Host;
+using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Hub.Remote;
 
 namespace DemoTest {
@@ -10,7 +11,7 @@ namespace DemoTest {
     internal static class Trial
     {
         // custom entry point called by: dotnet run
-        internal static async Task Main(string[] args)
+        internal static async Task Main2(string[] args)
         {
             var option      = args.FirstOrDefault() ?? "http";
             var hub         = CreateHub(option);
@@ -27,6 +28,24 @@ namespace DemoTest {
             foreach (var article in articles.Result) {
                 Console.WriteLine($"id: {article.id}, name: {article.name}");
             }
+        }
+        
+        internal static async Task Main(string[] args)
+        {
+            var option      = args.FirstOrDefault() ?? "ws";
+            var hub         = CreateHub(option);
+            var client      = new DemoClient(hub) { UserId = "admin", Token = "admin", ClientId="TestSub" };
+            client.articles.SubscribeChanges(ChangeFlags.All, (changes, context) => {
+                foreach (var item in changes.Upserts)
+                {
+                    Console.WriteLine($"article: {item.name}");                    
+                }
+            });
+            await client.SyncTasks();
+            Console.WriteLine("wait for events ...");
+
+            await Task.Run ( ( ) => Console.ReadKey ( true ) );
+            Console.ReadKey();
         }
             
         private static FlioxHub CreateHub(string option)
