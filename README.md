@@ -22,6 +22,12 @@ Its **ORM** enables **Schema** creation and these Schemas are assigned to the da
 
 *Info*: Pronunciation of **io** in **Fliox** is same as in **Riot** <br/><br/>
 
+### Features
+
+A compact feature list is shown at the [FlioxHub.Demos](https://github.com/friflo/FlioxHub.Demos/blob/main/README.md#features) repository.  
+Detailed feature descriptions are available by a set of `README` files linked below.  
+*Topics*: Demos, Client, Host, Hub Explorer, DB - support databases, Protocol, Schema, Mapper & Unit Tests.
+
 ### Fundamental principles
 
 - dependencies
