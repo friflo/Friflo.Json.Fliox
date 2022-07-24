@@ -49,7 +49,7 @@ Detailed feature descriptions are explained by a set of `README` files linked be
 ## Content
 
 - **Fliox Hub**
-    - [Demos](#demos)               ❯  [README.md](https://github.com/friflo/FlioxHub.Demos/blob/main/README.md)
+    - [Demos](#demos)               ❯  [friflo/FlioxHub.Demos](https://github.com/friflo/FlioxHub.Demos/blob/main/README.md)
     - [Client](#client)                 ❯  [README.md](Json/Fliox.Hub/Client/README.md)
     - [Host](#host)                   ❯  [README.md](Json/Fliox.Hub/Host/README.md)
     - [Explorer](#explorer)             ❯  [README.md](Json/Fliox.Hub.Explorer/README.md)
@@ -61,6 +61,7 @@ Detailed feature descriptions are explained by a set of `README` files linked be
 - **Testing**
     - [Unit Tests](#unit-tests)           ❯  [README.md](Json.Tests/README.md)
 - **Design**
+    - [API](#api)                     ❯  [friflo/fliox-docs](https://github.com/friflo/fliox-docs)
     - [Principles](#principles)
 
 <br/>
@@ -119,6 +120,12 @@ Detailed feature descriptions are explained by a set of `README` files linked be
 
 
 ## **Design**
+
+### **API**
+
+The Fliox **C# .NET** API is [CLS-compliant](https://docs.microsoft.com/en-us/dotnet/api/system.clscompliantattribute)
+
+The API is available at [**JSON Fliox - API Reference**](https://github.com/friflo/fliox-docs)
 
 ### **Principles**
 
