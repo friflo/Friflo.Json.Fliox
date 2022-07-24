@@ -186,7 +186,7 @@ The API is available at [**JSON Fliox - API Reference**](https://github.com/frif
     - absence of using `object` as a type
     - absence of utility classes & methods to
         - to use the API in an explicit manner
-        - to avoid confusion implementing same features in multiple ways 
+        - to avoid confusion implementing same feature in multiple ways
 - serialization of entities and messages - request, response & event - are entirely JSON
 - Fliox Clients and Hubs are unit testable without mocking
 - extensibility
