@@ -12,7 +12,8 @@ __`SELECT * FROM table1 LEFT JOIN table2 ON 💩 WHERE 💩 💩 💩`__
 
 
 ## Description
-**JSON Fliox** is a set of **.NET NuGet** packages supporting **simple** and **efficient** access to **NoSQL** databases.  
+**JSON Fliox** is a set of **.NET NuGet** packages supporting **simple** and **efficient** access
+to **NoSQL** databases via C# or Web clients.
 Its **ORM** enables **Schema** creation and these Schemas are assigned to the databases hosted on the **Hub**.
 
 |              | Description                                                               | API  |
@@ -29,6 +30,13 @@ As **JSON Fliox** is an [ORM](https://en.wikipedia.org/wiki/Object-relational_ma
 - [Prisma](https://www.prisma.io/) · Typescript
 
 *Info*: Pronunciation of **io** in **Fliox** is same as in **Riot** <br/><br/>
+
+**TL;DR**  
+
+A demo server running on AWS - [**DemoHub**](http://ec2-174-129-178-18.compute-1.amazonaws.com/) (EC2 instance: t2-micro, us-east-1)
+
+The C# project of the **DemoHub** is available at [FlioxHub.Demos](https://github.com/friflo/FlioxHub.Demos)
+
 
 
 ## Features
