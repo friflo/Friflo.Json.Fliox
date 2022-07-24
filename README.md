@@ -128,9 +128,26 @@ Instead they are using a `FlioxClient` that is optimized to transform API calls 
 ### **Schema**
 📄   [README.md](Json/Fliox/Schema/README.md)
 
+This module enables transforming schemas expressed by a set of C# classes into
+other programming languages and schema formats like:
+- C#
+- [JSON Schema](https://json-schema.org/) / [OpenAPI](https://www.openapis.org/)
+- Typescript
+- GraphQL
+- Kotlin
+- HTML
+
+Its main purpose is to generate database schemas and types for various languages of classes extending `FlioxClient`.
+
 
 ### **Mapper**
 📄   [README.md](Json/Fliox/Mapper/README.md)
+
+This module enables serialization / deserialization of C# .NET objects to / from JSON.  
+Its feature set and API is similar to:
+- [JamesNK/Newtonsoft.Json](https://github.com/JamesNK/Newtonsoft.Json)
+- [neuecc/Utf8Json](https://github.com/neuecc/Utf8Json)
+- [System.Text.Json](https://docs.microsoft.com/en-us/dotnet/api/system.text.json)
 
 <br/><br/>
 
