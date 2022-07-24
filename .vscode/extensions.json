@@ -1,5 +1,5 @@
 {
     "recommendations": [
-        "friflo.vscode-friflo-post"
+        "ms-dotnettools.csharp" // C# for Visual Studio Code (powered by OmniSharp)
     ]
 }
