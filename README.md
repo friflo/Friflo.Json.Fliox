@@ -13,7 +13,7 @@ __`SELECT * FROM table1 LEFT JOIN table2 ON 💩 WHERE 💩 💩 💩`__
 
 ## Description
 **JSON Fliox** is **.NET** library supporting **simple** and **efficient** access to **NoSQL** databases via C# or Web clients.  
-Its **ORM** enables **Schema** creation and these Schemas are assigned to the databases hosted on the **Hub**.
+Its **ORM** enables **Schema** creation. Its **Hub** serve hosted databases with these schemas via HTTP.
 
 |              | Description                                                               | API  |
 | ------------ | ------------------------------------------------------------------------- | ---- |
