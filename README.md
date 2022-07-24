@@ -123,7 +123,7 @@ Detailed feature descriptions are explained by a set of `README` files linked be
 
 ### **API**
 
-The Fliox **C# .NET** API is [CLS-compliant](https://docs.microsoft.com/en-us/dotnet/api/system.clscompliantattribute)
+The Fliox **C# .NET** API is [CLS-compliant](https://docs.microsoft.com/en-us/dotnet/api/system.clscompliantattribute#remarks)
 
 The API is available at [**JSON Fliox - API Reference**](https://github.com/friflo/fliox-docs)
 
