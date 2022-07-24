@@ -146,7 +146,6 @@ Its main purpose is to generate database schemas and types for various languages
 This module enables serialization / deserialization of C# .NET objects to / from JSON.  
 Its feature set and API is similar to:
 - [JamesNK/Newtonsoft.Json](https://github.com/JamesNK/Newtonsoft.Json)
-- [neuecc/Utf8Json](https://github.com/neuecc/Utf8Json)
 - [System.Text.Json](https://docs.microsoft.com/en-us/dotnet/api/system.text.json)
 
 The module is utilized by the assembly `Friflo.Json.Fliox.Hub` to serialize entities and DTO's.  
