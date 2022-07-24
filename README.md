@@ -140,6 +140,9 @@ The API is available at [**JSON Fliox - API Reference**](https://github.com/frif
     - type safe access to entities and their keys when dealing with containers  
     - type safe access to DTO's when dealing with database commands
     - absence of using `object` as a type
+    - absence of utility classes & methods to
+        - to use the API in an explicit manner
+        - to avoid confusion implementing same features in multiple ways 
 - serialization of entities and messages - request, response & event - are entirely JSON
 - Fliox Clients and Hubs are unit testable without mocking
 - extensibility
