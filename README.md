@@ -149,6 +149,9 @@ Its feature set and API is similar to:
 - [neuecc/Utf8Json](https://github.com/neuecc/Utf8Json)
 - [System.Text.Json](https://docs.microsoft.com/en-us/dotnet/api/system.text.json)
 
+The module is utilized by the assembly `Friflo.Json.Fliox.Hub` to serialize entities and DTO's.  
+Its also used for serialization of the supported protocols: REST, GraphQL and Batch API.
+
 <br/><br/>
 
 
