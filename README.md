@@ -35,14 +35,12 @@ As **JSON Fliox** is an [ORM](https://en.wikipedia.org/wiki/Object-relational_ma
 
 A demo server running on AWS - [**DemoHub**](http://ec2-174-129-178-18.compute-1.amazonaws.com/) (EC2 instance: t2-micro, us-east-1)
 
-The C# project of the **DemoHub** is available at [FlioxHub.Demos](https://github.com/friflo/FlioxHub.Demos)
-
-
+The **DemoHub** C# project and a compact features list available at the
+[FlioxHub.Demos](https://github.com/friflo/FlioxHub.Demos#features) repository.
 
 ## Features
 
-A compact feature list is shown at the [FlioxHub.Demos](https://github.com/friflo/FlioxHub.Demos/blob/main/README.md#features) repository.  
-Detailed feature descriptions are available by a set of `README` files linked below.  
+Detailed feature descriptions are explained by a set of `README` files linked below.  
 *Topics*: Demos, Client, Host, Hub Explorer, DB - support databases, Protocol, Schema, Mapper & Unit Tests.
 
 <br/>
