@@ -78,7 +78,7 @@ A separate git repository containing two **ready to run ** examples showcasing t
 ### **Client**
 📄   [README.md](Json/Fliox.Hub/Client/README.md)
 
-Fliox clients are strongly-type C# classes used to access NoSQL databases.  
+Fliox clients are strongly typed C# classes used to access NoSQL databases.  
 They are implemented by creating a class e.g. `MyClient` extending `FlioxClient`.  
 The database containers are represented as properties in the derived class `MyClient`.
 
@@ -89,7 +89,7 @@ The `MyClient` can also be used to declare custom database commands using DTO's 
 📄   [README.md](Json/Fliox.Hub/Host/README.md)
 
 A `HttpHost` instance is used to host multiple NoSQL database and enable access to these databases via HTTP or WebSocket.  
-These databases can be accessed various API's like: REST, GraphQL and Batch API.
+These databases can be accessed by various Web API's like: REST, GraphQL and Batch API.
 
 A `FlioxHub` instance is used to configure the hosted databases, authentication / authorization and Pub-Sub.  
 This `FlioxHub` instance need to be passed to the constructor of the `HttpHost`
@@ -98,7 +98,7 @@ This `FlioxHub` instance need to be passed to the constructor of the `HttpHost`
 📄   [README.md](Json/Fliox.Hub.Explorer/README.md)
 
 The Hub Explorer is a generic Web UI - a single page application - used to access
-databases, containers, entities hosted by a Fliox Hub.  
+databases, containers and entities hosted by a Fliox Hub.  
 The Explorer also enables to execute application specific database commands.
 
 ### **DB**
@@ -113,7 +113,7 @@ Provide a set of support databases used to:
 📄   [README.md](Json/Fliox.Hub/Protocol/README.md)
 
 The Protocol is the communication interface between a `FlioxClient` and a `FlioxHub`.  
-Web clients can use this Protocol to access a Hub using the Batch API with HTTP & JSON.
+Web clients can use this Protocol to access a Hub using the Batch API via HTTP & JSON.
 
 The Protocol is not intended to be used by C# .NET clients directly.  
 Instead they are using a `FlioxClient` that is optimized to transform API calls into the Protocol.
