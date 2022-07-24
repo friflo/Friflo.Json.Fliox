@@ -71,7 +71,7 @@ Detailed feature descriptions are explained by a set of `README` files linked be
 ## **Fliox Hub**
 
 ### **Demos**
-📄   [README.md](https://github.com/friflo/FlioxHub.Demos/blob/main/README.md)
+📄   [friflo/FlioxHub.Demos](https://github.com/friflo/FlioxHub.Demos/blob/main/README.md)
 
 A separate git repository containing two **ready to run** examples showcasing the usage of Fliox Clients and Hub.
 
