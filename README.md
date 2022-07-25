@@ -70,6 +70,9 @@ Detailed feature descriptions are explained by a set of `README` files linked be
 
 ## **Fliox Hub**
 
+namespace **`Friflo.Json.Fliox.Hub`**
+
+
 ### **Demos**
 📄   [friflo/FlioxHub.Demos](https://github.com/friflo/FlioxHub.Demos/blob/main/README.md)
 
@@ -137,6 +140,9 @@ Instead they are using a `FlioxClient` that is optimized to transform API calls 
 
 
 ## **Fliox**
+
+namespace **`Friflo.Json.Fliox`**
+
 
 ### **Schema**
 📄   [README.md](Json/Fliox/Schema/README.md)
