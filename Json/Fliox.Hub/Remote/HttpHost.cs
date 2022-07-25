@@ -68,7 +68,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             Console.ForegroundColor = ConsoleColor.Red;
             Console.Write("..oo.  ");
             Console.ForegroundColor = ConsoleColor.DarkRed;
-            Console.WriteLine(".oOOOo..");
+            Console.WriteLine(".oOOo..");
             Console.WriteLine();
             Console.ForegroundColor = old;
         }
