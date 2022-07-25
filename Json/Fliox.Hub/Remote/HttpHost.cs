@@ -54,11 +54,24 @@ namespace Friflo.Json.Fliox.Hub.Remote
         
 
         private static  bool    _titleDisplayed;
-        private const   string  JsonFlioxBanner = @"
-    ____   _   _
+        private const   string  JsonFlioxBanner =
+@"    ____   _   _
    |  __| | | |_|  ____  __  __
    |  _|  | | | | | __ | \ \/ /
-   |_|    |_| |_| |____| /_/\_\ ";
+   |_|    |_| |_| |____| /_/\_\   ";
+        
+        private static void WriteBanner() {
+            Console.Write(JsonFlioxBanner);
+            var old = Console.ForegroundColor;
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.Write(".oOo.  ");
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.Write("..oo.  ");
+            Console.ForegroundColor = ConsoleColor.DarkRed;
+            Console.WriteLine(".oOOOo..");
+            Console.WriteLine();
+            Console.ForegroundColor = old;
+        }
 
         public HttpHost(FlioxHub hub, string endpoint, SharedEnv env = null)
             : base(hub, env)
@@ -69,8 +82,9 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 _titleDisplayed = true;
                 var hubName = hub.Info.ToString();
                 hubName     = string.IsNullOrEmpty(hubName) ? "FlioxHub" : hubName;
-                var title   = $"{hubName} - v{hub.HostVersion}{JsonFlioxBanner} v{FlioxHub.FlioxVersion}\n";
+                var title   = $"{hubName} - v{hub.HostVersion}    FlioxHub - v{FlioxHub.FlioxVersion}";
                 Logger.Log(HubLog.Info, title);
+                WriteBanner();
             }
             hubRoutes = hub.routes;
             hubRoutes.AddRange(restHandler.Routes);
