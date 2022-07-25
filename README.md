@@ -97,8 +97,12 @@ The `MyClient` can be used to declare custom database commands using DTO's as in
 ### **Host**
 📄   [README.md](Json/Fliox.Hub/Host/README.md)
 
-A `HttpHost` instance is used to host multiple NoSQL database and enable access to these databases via HTTP or WebSocket.  
-These databases can be accessed by various Web API's like: REST, GraphQL and Batch API.
+A `HttpHost` instance is used to host multiple NoSQL databases.  
+It is designed to be integrated into HTTP servers like **ASP.NET Core**.  
+This enables access to hosted databases via HTTP or WebSocket supporting the following Web API's:
+- REST
+- GraphQL
+- Batch API
 
 A `FlioxHub` instance is used to configure the hosted databases, authentication / authorization and Pub-Sub.  
 This `FlioxHub` instance need to be passed to the constructor of the `HttpHost`
