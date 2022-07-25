@@ -48,7 +48,7 @@ Detailed feature descriptions are explained by a set of `README` files linked be
 
 ## Content
 
-- **Demos**                        ❯  [friflo/FlioxHub.Demos](https://github.com/friflo/FlioxHub.Demos/blob/main/README.md)
+- **Demos**                       ❯  [friflo/FlioxHub.Demos](https://github.com/friflo/FlioxHub.Demos/blob/main/README.md)
 
 - **Fliox Hub**
     - [Client](#client)                 ❯  [README.md](Json/Fliox.Hub/Client/README.md)
