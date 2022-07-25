@@ -80,9 +80,18 @@ A separate git repository containing two **ready to run** examples showcasing th
 
 Fliox clients are strongly typed C# classes used to access NoSQL databases.  
 They are implemented by creating a class e.g. `MyClient` extending `FlioxClient`.  
-The database containers are represented as properties in the derived class `MyClient`.
+The database containers are represented as properties in the derived class `MyClient`.  
 
-The `MyClient` can also be used to declare custom database commands using DTO's as input and result types.
+These classes also acts as a database schemas. They can be assigned to databases hosted on the Hub.  
+Doing this enables features like:
+- JSON validation of entities aka records
+- generation of schemas for OpenAPI or GraphQL
+- generate a single HTML page with full database API documentation
+- generate a UML class diagram to visualize a database schema
+- generate types declared by the database schema for various programming languages
+- implementing generic database explorers like the Hub Explorer
+
+The `MyClient` can be used to declare custom database commands using DTO's as input and result types.
 
 
 ### **Host**
