@@ -48,8 +48,9 @@ Detailed feature descriptions are explained by a set of `README` files linked be
 
 ## Content
 
+- **Demos**                        ❯  [friflo/FlioxHub.Demos](https://github.com/friflo/FlioxHub.Demos/blob/main/README.md)
+
 - **Fliox Hub**
-    - [Demos](#demos)               ❯  [friflo/FlioxHub.Demos](https://github.com/friflo/FlioxHub.Demos/blob/main/README.md)
     - [Client](#client)                 ❯  [README.md](Json/Fliox.Hub/Client/README.md)
     - [Host](#host)                   ❯  [README.md](Json/Fliox.Hub/Host/README.md)
     - [Explorer](#explorer)             ❯  [README.md](Json/Fliox.Hub.Explorer/README.md)
@@ -67,16 +68,17 @@ Detailed feature descriptions are explained by a set of `README` files linked be
 <br/>
 
 
+## **Demos**
+📄   [friflo/FlioxHub.Demos](https://github.com/friflo/FlioxHub.Demos/blob/main/README.md)
+
+A separate git repository containing two **ready to run** examples showcasing the usage of Fliox Clients and Hubs.
+
+<br/><br/>
+
 
 ## **Fliox Hub**
 
 namespace **`Friflo.Json.Fliox.Hub`**
-
-
-### **Demos**
-📄   [friflo/FlioxHub.Demos](https://github.com/friflo/FlioxHub.Demos/blob/main/README.md)
-
-A separate git repository containing two **ready to run** examples showcasing the usage of Fliox Clients and Hubs.
 
 ### **Client**
 📄   [README.md](Json/Fliox.Hub/Client/README.md)
@@ -133,7 +135,6 @@ Web clients can use this Protocol to access a Hub using the Batch API via HTTP &
 
 The Protocol is not intended to be used by C# .NET clients directly.  
 Instead they are using a `FlioxClient` that is optimized to transform API calls into the Protocol.
-
 
 <br/><br/>
 
