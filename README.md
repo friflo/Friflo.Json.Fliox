@@ -187,7 +187,7 @@ The API is available at [**JSON Fliox - API Reference**](https://github.com/frif
     - small size of Fliox assemblies (*.dll) ~ 850 kb in total, 350 kb zipped
 - target for optimal performance
     - maximize throughput, minimize latency, minimize heap allocations and boxing
-    - enable task batching aka a unit of work
+    - enable task batching as a unit-of-work
     - support bulk operations for CRUD commands
 - provide compact and strongly typed API
     - type safe access to entities and their keys when dealing with containers  
@@ -195,7 +195,7 @@ The API is available at [**JSON Fliox - API Reference**](https://github.com/frif
     - absence of using `object` as a type
     - absence of utility classes & methods to
         - to use the API in an explicit manner
-        - to avoid confusion implementing same feature in multiple ways
+        - to avoid confusion implementing the same feature in multiple ways
 - serialization of entities and messages - request, response & event - are entirely JSON
 - Fliox Clients and Hubs are unit testable without mocking
 - extensibility
