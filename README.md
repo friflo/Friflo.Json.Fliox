@@ -73,7 +73,7 @@ Detailed feature descriptions are explained by a set of `README` files linked be
 ### **Demos**
 📄   [friflo/FlioxHub.Demos](https://github.com/friflo/FlioxHub.Demos/blob/main/README.md)
 
-A separate git repository containing two **ready to run** examples showcasing the usage of Fliox Clients and Hub.
+A separate git repository containing two **ready to run** examples showcasing the usage of Fliox Clients and Hubs.
 
 ### **Client**
 📄   [README.md](Json/Fliox.Hub/Client/README.md)
@@ -86,7 +86,7 @@ These classes also acts as a database schemas. They can be assigned to databases
 Doing this enables features like:
 - JSON validation of entities aka records
 - generation of schemas for OpenAPI or GraphQL
-- generate a single HTML page with full database API documentation
+- generate a single HTML page with a complete schema documentation
 - generate a UML class diagram to visualize a database schema
 - generate types declared by the database schema for various programming languages
 - implementing generic database explorers like the Hub Explorer
