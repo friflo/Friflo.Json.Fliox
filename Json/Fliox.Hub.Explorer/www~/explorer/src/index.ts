@@ -488,7 +488,7 @@ export class App {
         const schema    = this.databaseSchemas[database];
         if (!schema)
             return this.schemaLess;
-        return `<a title="open database schema types in new tab" href="${flioxRoot}schema/${database}/index.html" target="${schema.schemaName}" class="docLink">Typescript, C#, Kotlin, JSON Schema / OpenAPI</a>`;
+        return `<a title="open database schema types in new tab" href="${flioxRoot}schema/${database}/index.html" target="${schema.schemaName}" class="schemaExports">Typescript, C#, Kotlin, JSON Schema / OpenAPI</a>`;
     }
 
     public getSchemaDescription(database: string) : string {
