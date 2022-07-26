@@ -28,7 +28,6 @@ namespace TodoHub
 
             var hub                 = new FlioxHub(database);
             hub.Info.projectName    = "TodoHub";
-            hub.Info.projectWebsite = "https://github.com/friflo/FlioxHub.Demos#todohub";
             hub.AddExtensionDB (new ClusterDB("cluster", hub)); // required by HubExplorer
             
             var httpHost            = new HttpHost(hub, "/fliox/");

@@ -80,10 +80,9 @@ namespace Friflo.Json.Fliox.Hub.Remote
             Logger.Log(HubLog.Info, msg);
             if (!_titleDisplayed) {
                 _titleDisplayed = true;
-                var hubName = hub.Info.ToString();
-                hubName     = string.IsNullOrEmpty(hubName) ? "FlioxHub" : hubName;
-                var title   = $"{hubName} - v{hub.HostVersion}    FlioxHub - v{FlioxHub.FlioxVersion}";
-                Logger.Log(HubLog.Info, title);
+                var hubName     = hub.Info.ToString();
+                var hubLabel    = string.IsNullOrEmpty(hubName) ? "" : $"{hubName} - v{hub.HostVersion},   ";
+                Logger.Log(HubLog.Info, $"{hubLabel}Friflo.Json.Fliox - v{FlioxHub.FlioxVersion}");
                 WriteBanner();
             }
             hubRoutes = hub.routes;
