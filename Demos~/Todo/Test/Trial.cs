@@ -9,7 +9,7 @@ namespace TodoTest {
 
     internal static class Trial
     {
-        // custom entry point called by: dotnet run
+        // custom entry point to run test snippets with: dotnet run
         internal static async Task Main(string[] args)
         {
             await QueryAll(args);
