@@ -33,6 +33,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
             httpClient.Dispose();
         }
         
+        public override bool SupportPushEvents => false;
+        
         public override async Task<ExecuteSyncResult> ExecuteSync(SyncRequest syncRequest, SyncContext syncContext)
         {
             var pooledMapper    = syncContext.ObjectMapper;

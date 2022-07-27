@@ -84,6 +84,8 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// </remarks>
         public              EventDispatcher     EventDispatcher     { get; set; }
         
+        public virtual      bool                SupportPushEvents   => true;
+        
         /// <summary>
         /// An <see cref="Auth.Authenticator"/> performs authentication and authorization for all
         /// <see cref="SyncRequest.tasks"/> in a <see cref="SyncRequest"/> sent by a client.

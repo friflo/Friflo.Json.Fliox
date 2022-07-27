@@ -51,6 +51,10 @@ namespace Friflo.Json.Fliox.Hub.Client
                 var msg = $"subscriptions require a {nameof(ClientId)}. database: {DatabaseName}";
                 throw new InvalidOperationException(msg);
             }
+            if (_intern.eventReceiver == null) {
+                var msg = $"The FlioxHub used by the client don't support PushEvents. hub: {_intern.hub.GetType().Name}";
+                throw new InvalidOperationException(msg);
+            }
         }
         
         private async Task<ExecuteSyncResult> ExecuteSync(SyncRequest syncRequest, SyncContext syncContext) {

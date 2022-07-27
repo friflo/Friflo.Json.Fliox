@@ -28,6 +28,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         internal readonly   SharedCache                 sharedCache;
         internal readonly   IHubLogger                  hubLogger;
         internal readonly   string                      database;
+        /// <summary>is null if <see cref="FlioxHub.SupportPushEvents"/> == false</summary> 
         internal readonly   EventReceiver               eventReceiver;
         
         // --- readonly / private - owned
