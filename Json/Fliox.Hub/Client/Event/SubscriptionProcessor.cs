@@ -24,9 +24,9 @@ namespace Friflo.Json.Fliox.Hub.Client
         internal readonly   List<Changes>               contextChanges  = new List<Changes>();
         internal readonly   List<Message>               messages        = new List<Message>();
         private             ObjectMapper                objectMapper;
-        internal            int                         EventSequence { get; private set ; }
+        internal            int                         EventCount { get; private set ; }
         
-        public   override   string                      ToString()  => $"EventSequence: {EventSequence}";
+        public   override   string                      ToString()  => $"EventCount: {EventCount}";
         
         public SubscriptionProcessor() {
             eventContext = new EventContext(this);
@@ -57,7 +57,7 @@ namespace Friflo.Json.Fliox.Hub.Client
                 change.Clear();
             }
             contextChanges.Clear();
-            EventSequence++;
+            EventCount++;
 
             foreach (var task in ev.tasks) {
                 switch (task.TaskType)

@@ -35,10 +35,13 @@ namespace DemoTest {
             var option      = args.FirstOrDefault() ?? "ws";
             var hub         = CreateHub(option);
             var client      = new DemoClient(hub) { UserId = "admin", Token = "admin", ClientId="TestSub" };
+            client.SubscriptionEventHandler = async context => {
+                await client.SyncTasks();
+            };
             client.articles.SubscribeChanges(ChangeFlags.All, (changes, context) => {
                 foreach (var item in changes.Upserts)
                 {
-                    Console.WriteLine($"seq: {context.EventSequence} - article: {item.name}");                    
+                    Console.WriteLine($"EventCount: {context.EventCount} - article: {item.name}");                    
                 }
             });
             await client.SyncTasks();

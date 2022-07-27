@@ -48,7 +48,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// <summary> user id sending the <see cref="Messages"/> and causing the <see cref="Changes"/>  </summary>
         public              JsonKey                 SrcUserId       => ev.srcUserId;
         /// <summary> incrementing sequence number of a received event</summary>
-        public              int                     EventSequence   => processor.EventSequence;
+        public              int                     EventCount   => processor.EventCount;
         /// <summary> return the <see cref="Messages"/> sent by a user </summary>
         public              IReadOnlyList<Message>  Messages        => processor.messages;
         /// <summary> <see cref="Changes"/> return the changes per database container.

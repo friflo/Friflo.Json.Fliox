@@ -48,10 +48,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                     
                     while (!listenSubscriber.receivedAll ) { await Task.Delay(1); }
 
-                    AreEqual(1, createSubscriber.EventSequence);  // received no change events for changes done by itself
+                    AreEqual(1, createSubscriber.EventCount);  // received no change events for changes done by itself
                 }
                 listenSubscriber.AssertCreateStoreChanges();
-                AreEqual(9, listenSubscriber.EventSequence);           // non protected access
+                AreEqual(9, listenSubscriber.EventCount);           // non protected access
                 await eventDispatcher.FinishQueues();
             }
         }
@@ -168,7 +168,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         internal            int             subscribeEventsCalls;
         internal            bool            receivedAll;
         internal            int             countAllChanges;
-        internal            int             EventSequence { get; private set; }
+        internal            int             EventCount { get; private set; }
         
         private readonly    EventAssertion  eventAssertion;
         
@@ -180,7 +180,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         /// All tests using <see cref="PocStoreSubscriber"/> are required to use "createStore" as userId
         public void OnEvent (EventContext context) {
             AreEqual("createStore", context.SrcUserId.ToString());
-            EventSequence = context.EventSequence;
+            EventCount = context.EventCount;
             
             context.ApplyChangesTo(client);
             
@@ -241,7 +241,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         private void CheckSomeMessages(EventContext context) {
             subscribeEventsCalls++;
             var eventInfo = context.EventInfo;
-            switch (context.EventSequence) {
+            switch (context.EventCount) {
                 case 3:
                     AreEqual(6, eventInfo.Count);
                     AreEqual(6, eventInfo.changes.Count);
@@ -263,7 +263,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         }
         
         private  void AssertChangeEvent (Changes<string, Article> articleChanges) {
-            switch (EventSequence) {
+            switch (EventCount) {
                 case 2:
                     AreEqual("creates: 0, upserts: 2, deletes: 0, patches: 0", articleChanges.ChangeInfo.ToString());
                     var ipad = articleChanges.Upserts.Find(e => e.id == "article-ipad");
@@ -287,7 +287,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         
         /// assert that all database changes by <see cref="TestRelationPoC.CreateStore"/> are reflected
         public void AssertCreateStoreChanges() {
-            AreEqual(9, EventSequence);
+            AreEqual(9, EventCount);
             AreEqual(9, subscribeEventsCalls);
             
             AreSimilar("creates: 0, upserts: 2, deletes: 0, patches: 0", orderSum);

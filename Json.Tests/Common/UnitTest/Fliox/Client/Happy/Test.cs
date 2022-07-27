@@ -172,7 +172,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                         
                         while (!listenSubscriber.receivedAll ) { await Task.Delay(1); }
                         
-                        AreEqual(1, createSubscriber.EventSequence);  // received no change events for changes done by itself
+                        AreEqual(1, createSubscriber.EventCount);  // received no change events for changes done by itself
                         listenSubscriber.AssertCreateStoreChanges();
                         await TestStores(createStore, useStore);
                     }
@@ -205,7 +205,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                         await remoteHub.Close();
                         // all change events sent by createStore doesnt arrive at listenDb
                         await TestRelationPoC.CreateStore(createStore);
-                        AreEqual(0, listenSubscriber.EventSequence);
+                        AreEqual(0, listenSubscriber.EventCount);
                         
                         // subscriber contains send events which are not acknowledged
                         IsTrue(eventDispatcher.QueuedEventsCount() > 0);
@@ -251,7 +251,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                     
                     while (!listenSubscriber.receivedAll ) { await Task.Delay(1); }
                     
-                    AreEqual(1, createSubscriber.EventSequence);  // received no change events for changes done by itself
+                    AreEqual(1, createSubscriber.EventCount);  // received no change events for changes done by itself
                     listenSubscriber.AssertCreateStoreChanges();
                     await TestStores(createStore, useStore);
                 }
