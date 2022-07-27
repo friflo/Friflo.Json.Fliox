@@ -32,3 +32,55 @@ POST {{base}}/
   "token": "admin"
 }
 
+###
+POST {{base}}/
+
+{
+  "msg": "sync",
+  "tasks": [
+    {
+      "task":     "invalidTaskType"
+    }
+  ]
+}
+
+###
+POST {{base}}/
+
+{
+  "msg": "invalidMsgType",
+  "tasks": [ ]
+}
+
+###
+POST {{base}}/
+
+{
+  "msg": "sync"
+}
+
+###
+POST {{base}}/
+
+{
+  "msg": "sync",
+  "tasks": [ ],
+  "user":  "admin",
+  "token": "authFails"
+}
+
+###
+POST {{base}}/
+
+{
+  "msg": "sync",
+  "tasks": [
+    {
+      "task":  "message",
+      "name":  "SomeMessage",
+      "param": "Hello Message"
+    }
+  ],
+  "user":  "admin",
+  "token": "authFails"
+}

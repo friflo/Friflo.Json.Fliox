@@ -34,3 +34,63 @@ POST {{base}}/
     ]
 }
 
+###
+POST {{base}}/
+# StatusCode:   400
+# Content-Type: application/json
+
+{
+    "msg":"error",
+    "message": "JsonReader/error: No [PolymorphType] type declared for discriminant: 'invalidTaskType' on type: SyncRequestTask path: 'tasks[0].task' at position: 77",
+    "type": "BadResponse"
+}
+
+###
+POST {{base}}/
+# StatusCode:   400
+# Content-Type: application/json
+
+{
+    "msg":"error",
+    "message": "JsonReader/error: No [PolymorphType] type declared for discriminant: 'invalidMsgType' on type: ProtocolMessage path: 'msg' at position: 28",
+    "type": "BadResponse"
+}
+
+###
+POST {{base}}/
+# StatusCode:   400
+# Content-Type: application/json
+
+{
+    "msg":"error",
+    "message": "missing field: tasks (array)",
+    "type": "BadRequest"
+}
+
+###
+POST {{base}}/
+# StatusCode:   200
+# Content-Type: application/json
+
+{
+    "msg":"resp",
+    "tasks": [
+    ]
+}
+
+###
+POST {{base}}/
+# StatusCode:   200
+# Content-Type: application/json
+
+{
+    "msg":"resp",
+    "tasks": [
+        {
+            "task":"error",
+            "type": "PermissionDenied",
+            "message": "not authorized. Authentication failed. user: admin"
+        }
+    ]
+}
+
