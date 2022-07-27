@@ -2,8 +2,8 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Demo;
+using Friflo.Json.Fliox.Hub.Client;
 using Friflo.Json.Fliox.Hub.Host;
-using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Hub.Remote;
 
 namespace DemoTest {
@@ -38,7 +38,7 @@ namespace DemoTest {
             client.SubscriptionEventHandler = context => {
                 Task.Factory.StartNew(() => client.SyncTasks()); // acknowledge received event to the Hub
             };
-            client.articles.SubscribeChanges(ChangeFlags.All, (changes, context) => {
+            client.articles.SubscribeChanges(Change.All, (changes, context) => {
                 foreach (var item in changes.Upserts)
                 {
                     Console.WriteLine($"EventSeq: {context.EventSeq} - article: {item.name}");

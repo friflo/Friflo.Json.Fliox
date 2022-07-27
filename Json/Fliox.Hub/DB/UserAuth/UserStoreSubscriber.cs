@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Client;
 using Friflo.Json.Fliox.Hub.Host.Auth;
-using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 
 namespace Friflo.Json.Fliox.Hub.DB.UserAuth
 {
@@ -27,10 +26,10 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
             store.UserId    = UserStore.AuthenticationUser;
             store.ClientId  = "user_db_subscriber";
             store.SetEventProcessor(new DirectEventProcessor());
-        //  store.credentials.SubscribeChanges  (ChangeFlags.All, CredentialChange);
-            store.permissions.SubscribeChanges  (ChangeFlags.All, PermissionChange);
-            store.roles.SubscribeChanges        (ChangeFlags.All, RoleChange);
-            store.targets.SubscribeChanges      (ChangeFlags.All, TargetChange);
+        //  store.credentials.SubscribeChanges  (Change.All, CredentialChange);
+            store.permissions.SubscribeChanges  (Change.All, PermissionChange);
+            store.roles.SubscribeChanges        (Change.All, RoleChange);
+            store.targets.SubscribeChanges      (Change.All, TargetChange);
             await store.SyncTasks().ConfigureAwait(false);
         }
         

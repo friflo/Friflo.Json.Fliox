@@ -8,7 +8,6 @@ using Friflo.Json.Fliox.Hub.Client;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.Event;
 using Friflo.Json.Fliox.Hub.Protocol;
-using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Hub.Threading;
 using Friflo.Json.Fliox.Transform;
 using Friflo.Json.Tests.Common.Utils;
@@ -61,14 +60,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             store.SetEventProcessor(new SynchronizationContextProcessor());
             store.SubscriptionEventHandler += subscriber.OnEvent;
             
-            var subscriptions   = store.SubscribeAllChanges(ChangeFlags.All, context => {
+            var subscriptions   = store.SubscribeAllChanges(Change.All, context => {
                 AreEqual("createStore", context.SrcUserId.AsString());
                 foreach (var changes in context.Changes) {
                     subscriber.countAllChanges += changes.Count;
                 }
             });
             // change subscription of specific EntitySet<Article>
-            var articlesSub         = store.articles.SubscribeChanges(ChangeFlags.All, (changes, context) => { });
+            var articlesSub         = store.articles.SubscribeChanges(Change.All, (changes, context) => { });
             
             var subscribeMessage    = store.SubscribeMessage(TestRelationPoC.EndCreate, (msg, context) => {
                 AreEqual("EndCreate (param: null)", msg.ToString());

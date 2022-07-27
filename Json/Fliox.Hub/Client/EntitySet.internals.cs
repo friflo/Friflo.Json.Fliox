@@ -35,7 +35,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         internal  abstract  void                SyncPeerEntities        (Dictionary<JsonKey, EntityValue> entities, ObjectMapper mapper);
         
         internal  abstract  void                ResetSync               ();
-        internal  abstract  SyncTask            SubscribeChangesInternal(EntityChange change);
+        internal  abstract  SyncTask            SubscribeChangesInternal(Change change);
         internal  abstract  SubscribeChanges    GetSubscription();
         internal  abstract  string              GetKeyName();
         internal  abstract  bool                IsIntKey();
@@ -259,7 +259,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             syncSet    = null;
         }
         
-        internal override SyncTask SubscribeChangesInternal(EntityChange change) {
+        internal override SyncTask SubscribeChangesInternal(Change change) {
             var all = Operation.FilterTrue;
             var task = GetSyncSet().SubscribeChangesFilter(change, all);
             intern.store.AddTask(task);

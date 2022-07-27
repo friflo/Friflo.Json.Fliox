@@ -7,7 +7,6 @@ using DemoHub;
 using Friflo.Json.Fliox.Hub.Client;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.Event;
-using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using NUnit.Framework;
 using static NUnit.Framework.CollectionAssert;
 using static NUnit.Framework.Assert;
@@ -150,7 +149,7 @@ namespace DemoTest {
             // setup subscriber client
             var subClient       = new DemoClient(hub) { UserId = "admin", Token = "admin", ClientId = "sub-1" };
             var createdArticles = new List<long[]>();
-            subClient.articles.SubscribeChanges(ChangeFlags.All, (changes, context) => {
+            subClient.articles.SubscribeChanges(Change.All, (changes, context) => {
                 var created = changes.Creates.Select(o => o.id).ToArray();
                 createdArticles.Add(created);
             });
@@ -165,7 +164,7 @@ namespace DemoTest {
             AreEqual(new long[] { 10 }, createdArticles[0]);
             
             // unsubscribe to free subscription resources on Hub
-            subClient.articles.SubscribeChanges(ChangeFlags.None, (changes, context) => { });
+            subClient.articles.SubscribeChanges(Change.None, (changes, context) => { });
             await subClient.SyncTasks();
             AreEqual(0, hub.EventDispatcher.SubscribedClientsCount);
         }

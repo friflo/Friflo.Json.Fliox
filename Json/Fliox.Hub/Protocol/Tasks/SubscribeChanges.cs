@@ -68,30 +68,9 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         internal override   TaskType    TaskType => TaskType.subscribeChanges;
     }
     
-    /// <summary>Contains predefined sets of common database <see cref="EntityChange"/> filters.</summary>
-    public static class ChangeFlags
-    {
-        /// <summary>Shortcut to subscribe to all types of database changes. These ase <see cref="EntityChange.create"/>,
-        /// <see cref="EntityChange.upsert"/>, <see cref="EntityChange.patch"/> and <see cref="EntityChange.delete"/></summary>
-        public const EntityChange All = EntityChange.create | EntityChange.upsert | EntityChange.delete | EntityChange.patch;
 
-        /// <summary>Shortcut to unsubscribe from all database change types.</summary>
-        public const EntityChange None = 0;
-        
-        internal static IReadOnlyList<EntityChange> ToList(EntityChange change) {
-            var list = new List<EntityChange>(4);
-            if ((change & EntityChange.create) != 0) list.Add(EntityChange.create);
-            if ((change & EntityChange.upsert) != 0) list.Add(EntityChange.upsert);
-            if ((change & EntityChange.delete) != 0) list.Add(EntityChange.delete);
-            if ((change & EntityChange.patch)  != 0) list.Add(EntityChange.patch);
-            return list;
-        }
-    }
     
     /// <summary>Filter type used to specify the type of a database change.</summary>
-    /// <remarks>
-    /// Consider using the predefined sets <see cref="ChangeFlags.All"/> or <see cref="ChangeFlags.None"/> as shortcuts.
-    /// </remarks>
     // ReSharper disable InconsistentNaming
     [Flags]
     public enum EntityChange

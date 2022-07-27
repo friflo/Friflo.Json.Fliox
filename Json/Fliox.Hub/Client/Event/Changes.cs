@@ -68,7 +68,7 @@ namespace Friflo.Json.Fliox.Hub.Client
     ///   <item> <see cref="Patches"/> - the patches applied to container entities</item>
     /// </list>
     /// Container <see cref="Changes{TKey,T}"/> are not automatically applied to an <see cref="EntitySet{TKey,T}"/>.
-    /// To apply container changes to a <see cref="EntitySet{TKey,T}"/> call <see cref="ApplyChangesTo(EntitySet{TKey,T},EntityChange)"/>.
+    /// To apply container changes to a <see cref="EntitySet{TKey,T}"/> call <see cref="ApplyChangesTo(EntitySet{TKey,T},Change)"/>.
     /// </remarks>
     public sealed class Changes<TKey, T> : Changes where T : class
     {
@@ -167,24 +167,24 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
         
         /// <summary> Apply the container changes to the given <paramref name="entitySet"/> </summary>
-        public void ApplyChangesTo(EntitySet<TKey, T> entitySet, EntityChange change = ChangeFlags.All) {
+        public void ApplyChangesTo(EntitySet<TKey, T> entitySet, Change change = Change.All) {
             if (Count == 0)
                 return;
             var client = entitySet.intern.store;
             var localCreates    = rawCreates;
-            if ((change & EntityChange.create) != 0 && localCreates.Count > 0) {
+            if ((change & Change.create) != 0 && localCreates.Count > 0) {
                 var entityKeys = GetKeysFromEntities (client, entitySet.GetKeyName(), localCreates);
                 SyncPeerEntities(entitySet, entityKeys, localCreates, objectMapper);
             }
             var localUpserts    = rawUpserts;
-            if ((change & EntityChange.upsert) != 0 && localUpserts.Count > 0) {
+            if ((change & Change.upsert) != 0 && localUpserts.Count > 0) {
                 var entityKeys = GetKeysFromEntities (client, entitySet.GetKeyName(), localUpserts);
                 SyncPeerEntities(entitySet, entityKeys, localUpserts, objectMapper);
             }
-            if ((change & EntityChange.patch) != 0) {
+            if ((change & Change.patch) != 0) {
                 entitySet.PatchPeerEntities(Patches, objectMapper);
             }
-            if ((change & EntityChange.delete) != 0) {
+            if ((change & Change.delete) != 0) {
                 entitySet.DeletePeerEntities(Deletes);
             }
         }

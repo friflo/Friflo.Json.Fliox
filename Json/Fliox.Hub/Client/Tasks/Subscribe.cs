@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -15,16 +16,16 @@ namespace Friflo.Json.Fliox.Hub.Client
     public sealed class SubscribeChangesTask<T> : SyncTask where T : class
     {
         [DebuggerBrowsable(Never)]
-        internal            TaskState       state;
-        internal            List<EntityChange>    changes;
-        internal            FilterOperation filter;
-        private             string          filterLinq; // use as string identifier of a filter
+        internal            TaskState           state;
+        internal            List<EntityChange>  changes;
+        internal            FilterOperation     filter;
+        private             string              filterLinq; // use as string identifier of a filter
         [DebuggerBrowsable(Never)]
-        private readonly    SyncSetBase<T>  syncSet;
+        private readonly    SyncSetBase<T>      syncSet;
             
-        internal override   TaskState       State   => state;
-        public   override   string          Details => $"SubscribeChangesTask<{typeof(T).Name}> (filter: {filterLinq})";
-        internal override   TaskType        TaskType=> TaskType.subscribeChanges;
+        internal override   TaskState           State   => state;
+        public   override   string              Details => $"SubscribeChangesTask<{typeof(T).Name}> (filter: {filterLinq})";
+        internal override   TaskType            TaskType=> TaskType.subscribeChanges;
         
         internal  SubscribeChangesTask(SyncSetBase<T> syncSet) {
             this.syncSet    = syncSet;
@@ -38,6 +39,41 @@ namespace Friflo.Json.Fliox.Hub.Client
         
         internal override SyncRequestTask CreateRequestTask(in CreateTaskContext context) {
             return syncSet.SubscribeChanges(this, context);
+        }
+    }
+    
+    /// <summary>Filter type used to specify the type of an entity change.</summary>
+    // ReSharper disable InconsistentNaming
+    [Flags]
+    public enum Change
+    {
+        /// <summary>Shortcut to unsubscribe from all entity change types.</summary>
+        None    = 0,
+        /// <summary>Shortcut to subscribe to all types of entity changes.</summary>
+        /// <remarks>
+        /// These ase <see cref="Change.create"/>, <see cref="Change.upsert"/>, <see cref="Change.patch"/> and <see cref="Change.delete"/>
+        /// </remarks>
+        All     = 1 | 2 | 4 | 8,
+        
+        /// <summary>filter change events of created entities.</summary>
+        create  = 1,
+        /// <summary>filter change events of upserted entities.</summary>
+        upsert  = 2,
+        /// <summary>filter change events of entity patches.</summary>
+        patch   = 4,
+        /// <summary>filter change events of deleted entities.</summary>
+        delete  = 8
+    }
+    
+    internal static class ChangeExtension
+    {
+        internal static IReadOnlyList<EntityChange> ChangeToList(this Change change) {
+            var list = new List<EntityChange>(4);
+            if ((change & Change.create) != 0) list.Add(EntityChange.create);
+            if ((change & Change.upsert) != 0) list.Add(EntityChange.upsert);
+            if ((change & Change.delete) != 0) list.Add(EntityChange.delete);
+            if ((change & Change.patch)  != 0) list.Add(EntityChange.patch);
+            return list;
         }
     }
     
