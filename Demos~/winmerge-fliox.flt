@@ -49,11 +49,11 @@ f: Dockerfile
 
 d: \\bin$
 d: \\obj$
-d: \\docs$
 d: \\.obj$
+d: \\.docs$
 d: \\.github$
 d: \\.idea$
 d: \\.run$
+d: \\.scripts$
 d: \\.vscode$
 d: \\node_modules$
-d: \\scripts$
