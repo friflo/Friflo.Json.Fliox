@@ -13,14 +13,14 @@ namespace DemoTest {
         // custom entry point called by: dotnet run
         internal static async Task Main(string[] args)
         {
-            var option  = args.FirstOrDefault() ?? "http";
-            var hub     = CreateHub(option);
-            await QueryRelations(hub);
-            // await SubscribeChanges(hub);
+            await QueryRelations(args);
+            // await SubscribeChanges();
         }
         
-        private static async Task QueryRelations(FlioxHub hub)
+        private static async Task QueryRelations(string[] args)
         {
+            var option      = args.FirstOrDefault() ?? "http";
+            var hub         = CreateHub(option);
             var client      = new DemoClient(hub) { UserId = "admin", Token = "admin" };
             var orders      = client.orders.QueryAll();
             var articles    = orders.ReadRelations(client.articles, o => o.items.Select(a => a.article));
@@ -36,8 +36,9 @@ namespace DemoTest {
             }
         }
         
-        private static async Task SubscribeChanges(FlioxHub hub)
+        private static async Task SubscribeChanges()
         {
+            var hub         = CreateHub("ws");
             var client      = new DemoClient(hub) { UserId = "admin", Token = "admin", ClientId="TestSub" };
             client.SubscriptionEventHandler = context => {
                 Task.Run(() => client.SyncTasks()); // acknowledge received event to the Hub
