@@ -2,7 +2,9 @@
 ## Repository details
 
 ### Description
-A JSON parser / serializer and object mapper trimmed towards performance with clear & compact API C#/.NET
+JSON Fliox - a .NET library for simple & performant access to NoSQL databases.
+ORM + Database Hub with Schema support.
+
 
 ### Website
 https://github.com/friflo/Friflo.Json.Fliox
