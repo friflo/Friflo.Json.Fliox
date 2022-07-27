@@ -18,7 +18,7 @@ export type TaskType =
     | "error"                 /** indicate an error when task was executed */
 ;
 
-/** Filter type used to specify the type of a database change. */
+/** Filter type used to specify the type of an entity change */
 export type EntityChange =
     | "create"      /** filter change events of created entities. */
     | "upsert"      /** filter change events of upserted entities. */

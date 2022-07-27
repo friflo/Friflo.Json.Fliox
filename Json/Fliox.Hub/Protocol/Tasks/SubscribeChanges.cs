@@ -70,7 +70,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     
 
     
-    /// <summary>Filter type used to specify the type of a database change.</summary>
+    /// <summary>Filter type used to specify the type of an entity change</summary>
     // ReSharper disable InconsistentNaming
     [Flags]
     public enum EntityChange
