@@ -36,7 +36,7 @@ namespace DemoTest {
             var hub         = CreateHub(option);
             var client      = new DemoClient(hub) { UserId = "admin", Token = "admin", ClientId="TestSub" };
             client.SubscriptionEventHandler = context => {
-                Task.Factory.StartNew(() => client.SyncTasks()); // acknowledge received event to the Hub
+                Task.Run(() => client.SyncTasks()); // acknowledge received event to the Hub
             };
             client.articles.SubscribeChanges(Change.All, (changes, context) => {
                 foreach (var item in changes.Upserts)
@@ -45,10 +45,10 @@ namespace DemoTest {
                 }
             });
             await client.SyncTasks();
-            Console.WriteLine("wait for events ...");
+            Console.WriteLine("wait for events ... (press key to exit)");
 
             await Task.Run ( ( ) => Console.ReadKey ( true ) );
-            Console.ReadKey();
+            Console.WriteLine("... exit");
         }
             
         private static FlioxHub CreateHub(string option)
