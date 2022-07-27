@@ -1,0 +1,18 @@
+@base = http://localhost:8010/fliox
+
+###
+POST {{base}}/
+
+{
+  "msg": "sync",
+  "tasks": [
+    {
+      "task":       "subscribeChanges",
+      "container":  "articles", 
+      "changes": ["create", "upsert", "delete", "patch"]
+    }
+  ],
+  "user":  "admin",
+  "token": "admin"
+}
+

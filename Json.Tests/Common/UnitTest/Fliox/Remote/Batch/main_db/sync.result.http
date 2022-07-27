@@ -1,0 +1,19 @@
+@base = http://localhost:8010/fliox
+
+###
+POST {{base}}/
+# StatusCode:   200
+# Content-Type: application/json
+
+{
+    "msg":"resp",
+    "clt": "1",
+    "tasks": [
+        {
+            "task":"error",
+            "type": "InvalidTask",
+            "message": "subscribing events requires an eventReceiver. E.g a WebSocket as a target for push events."
+        }
+    ]
+}
+
