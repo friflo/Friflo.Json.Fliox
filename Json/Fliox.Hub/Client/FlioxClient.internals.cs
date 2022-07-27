@@ -116,7 +116,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// in a worker thread while calling <see cref="SyncStore"/> methods from 'main' thread.
         /// 
         /// <see cref="SyncRequest.eventAck"/> is set to acknowledge already received events to clear
-        /// <see cref="EventSubClient.sentEvents"/>. This avoids resending already received events on reconnect. 
+        /// <see cref="EventSubClient.sentEventsList"/>. This avoids resending already received events on reconnect. 
         /// </summary>
         private SyncRequest CreateSyncRequest(out SyncStore syncStore, ObjectMapper mapper) {
             syncStore = _intern.syncStore;

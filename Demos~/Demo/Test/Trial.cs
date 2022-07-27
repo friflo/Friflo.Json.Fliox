@@ -38,7 +38,7 @@ namespace DemoTest {
             client.articles.SubscribeChanges(ChangeFlags.All, (changes, context) => {
                 foreach (var item in changes.Upserts)
                 {
-                    Console.WriteLine($"article: {item.name}");                    
+                    Console.WriteLine($"seq: {context.EventSequence} - article: {item.name}");                    
                 }
             });
             await client.SyncTasks();

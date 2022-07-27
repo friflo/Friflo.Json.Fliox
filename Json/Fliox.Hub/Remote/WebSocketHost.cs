@@ -135,8 +135,10 @@ namespace Friflo.Json.Fliox.Hub.Remote
                     remoteHost.Logger.Log(HubLog.Info, msg);
                     return;
                 }
-                Debug.Fail("AcceptWebSocket() - WebSocketException", e.Message);
-                
+                // e.g. WebSocketException - ErrorCode: 0, HResult: 0x80004005, WebSocketErrorCode: ConnectionClosedPrematurely, Message:The remote party closed the WebSocket connection without completing the close handshake., remote:[::1]:51809
+                var wsMsg = $"WebSocketException - ErrorCode: {e.ErrorCode}, HResult: 0x{e.HResult:X}, WebSocketErrorCode: {e.WebSocketErrorCode}, Message:{e.Message}, remote: {remoteEndPoint} ";
+                remoteHost.Logger.Log(HubLog.Info, wsMsg);
+                return;
             }
             catch (Exception e) {
                 Debug.Fail("AcceptWebSocket() - Exception", e.Message);
