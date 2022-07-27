@@ -16,3 +16,19 @@ POST {{base}}/
   "token": "admin"
 }
 
+###
+POST {{base}}/
+
+{
+  "msg": "sync",
+  "tasks": [
+    {
+      "task":     "subscribeMessage",
+      "name":     "*",
+      "remove":   false
+    }
+  ],
+  "user":  "admin",
+  "token": "admin"
+}
+
