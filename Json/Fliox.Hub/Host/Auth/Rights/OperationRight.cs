@@ -56,7 +56,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth.Rights
         /// <summary>Set of granted operation types</summary>
                     public  List<OperationType> operations;
         /// <summary>Set of granted change subscriptions</summary>
-                    public  List<Change>        subscribeChanges;
+                    public  List<EntityChange>  subscribeChanges;
 
         public override     string              ToString() => name; 
     }

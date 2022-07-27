@@ -88,10 +88,10 @@ OperationRight *-- "0..*" ContainerAccess : containers
 class ContainerAccess {
     name              : string
     operations?       : OperationType[]
-    subscribeChanges? : Change[]
+    subscribeChanges? : EntityChange[]
 }
 ContainerAccess *-- "0..*" OperationType : operations
-ContainerAccess *-- "0..*" Change : subscribeChanges
+ContainerAccess *-- "0..*" EntityChange : subscribeChanges
 
 class OperationType:::cssEnum {
     <<enumeration>>
@@ -133,7 +133,7 @@ class TaskType:::cssEnum {
 }
 
 
-class Change:::cssEnum {
+class EntityChange:::cssEnum {
     <<enumeration>>
     create
     upsert

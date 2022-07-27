@@ -67,7 +67,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Monitor
         /// <summary>name of subscribed container</summary>
         [Required]  public  string              container;
         /// <summary>type of subscribed changes like create, upsert, delete and patch</summary>
-        [Required]  public  List<Change>        changes;
+        [Required]  public  List<EntityChange>  changes;
         /// <summary>filter to narrow the amount of change events</summary>
                     public  string              filter;
     }

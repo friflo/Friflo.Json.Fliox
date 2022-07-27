@@ -17,7 +17,7 @@ export type TaskType =
     | "error"                 /** indicate an error when task was executed */
 ;
 
-export type Change =
+export type EntityChange =
     | "create"      /** filter change events of created entities. */
     | "upsert"      /** filter change events of upserted entities. */
     | "patch"       /** filter change events of entity patches. */

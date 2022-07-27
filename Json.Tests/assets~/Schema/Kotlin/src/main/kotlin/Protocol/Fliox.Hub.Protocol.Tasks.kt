@@ -142,12 +142,12 @@ data class CloseCursors (
 @SerialName("subscribeChanges")
 data class SubscribeChanges (
               val container : String,
-              val changes   : List<Change>,
+              val changes   : List<EntityChange>,
               val filter    : JsonElement? = null,
     override  val info      : JsonElement? = null,
 ) : SyncRequestTask()
 
-enum class Change {
+enum class EntityChange {
     create,
     upsert,
     patch,

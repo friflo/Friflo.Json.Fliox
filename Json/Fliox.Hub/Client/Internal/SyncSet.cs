@@ -75,7 +75,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         }
 
         // --- SubscribeChanges
-        internal SubscribeChangesTask<T> SubscribeChangesFilter(Change change, FilterOperation filter) {
+        internal SubscribeChangesTask<T> SubscribeChangesFilter(EntityChange change, FilterOperation filter) {
             var subscribeChanges = new SubscribeChangesTask<T>(this);
             var changes = ChangeFlags.ToList(change);
             subscribeChanges.Set(changes, filter);

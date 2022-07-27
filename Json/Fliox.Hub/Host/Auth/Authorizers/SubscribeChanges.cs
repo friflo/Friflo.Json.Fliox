@@ -18,16 +18,16 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
         
         public   override   string  ToString() => $"database: {authorizeDatabase.dbLabel}, container: {container}";
         
-        public AuthorizeSubscribeChanges (string container, ICollection<Change> changes, string database)
+        public AuthorizeSubscribeChanges (string container, ICollection<EntityChange> changes, string database)
         {
             authorizeDatabase   = new AuthorizeDatabase(database);
             this.container      = container;
             foreach (var change in changes) {
                 switch (change) {
-                    case Change.create: create = true; break;
-                    case Change.upsert: upsert = true; break;
-                    case Change.delete: delete = true; break;
-                    case Change.patch:  patch  = true; break;
+                    case EntityChange.create: create = true; break;
+                    case EntityChange.upsert: upsert = true; break;
+                    case EntityChange.delete: delete = true; break;
+                    case EntityChange.patch:  patch  = true; break;
                 }
             }
         }
@@ -44,10 +44,10 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
             var authorize = true;
             foreach (var change in subscribe.changes) {
                 switch (change) {
-                    case Change.create:     authorize &= create;    break;
-                    case Change.upsert:     authorize &= upsert;    break;
-                    case Change.delete:     authorize &= delete;    break;
-                    case Change.patch:      authorize &= patch;     break;
+                    case EntityChange.create:     authorize &= create;    break;
+                    case EntityChange.upsert:     authorize &= upsert;    break;
+                    case EntityChange.delete:     authorize &= delete;    break;
+                    case EntityChange.patch:      authorize &= patch;     break;
                 }
             }
             return authorize;

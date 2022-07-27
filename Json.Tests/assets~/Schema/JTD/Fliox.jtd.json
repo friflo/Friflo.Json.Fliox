@@ -231,12 +231,12 @@
         "SubscribeChanges": {
             "properties": {
                 "container": { "type": "string" },
-                "changes":   { "elements": { "ref":  "Change" } },
+                "changes":   { "elements": { "ref":  "EntityChange" } },
                 "filter":    { "nullable": true },
                 "info":      { "nullable": true }
             }
         },
-        "Change": {
+        "EntityChange": {
             "enum": [
                 "create",
                 "upsert",

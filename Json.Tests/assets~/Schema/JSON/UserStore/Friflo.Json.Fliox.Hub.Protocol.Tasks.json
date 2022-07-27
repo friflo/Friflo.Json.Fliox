@@ -37,7 +37,7 @@
             }
 
         },
-        "Change": {
+        "EntityChange": {
             "enum": [
                 "create",
                 "upsert",

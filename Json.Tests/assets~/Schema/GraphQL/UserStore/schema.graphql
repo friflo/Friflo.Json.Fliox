@@ -218,13 +218,13 @@ input OperationRightInput {
 type ContainerAccess {
     name             : String!
     operations       : [OperationType!]
-    subscribeChanges : [Change!]
+    subscribeChanges : [EntityChange!]
 }
 
 input ContainerAccessInput {
     name             : String!
     operations       : [OperationType!]
-    subscribeChanges : [Change!]
+    subscribeChanges : [EntityChange!]
 }
 
 enum OperationType {
@@ -240,7 +240,7 @@ enum OperationType {
     full
 }
 
-enum Change {
+enum EntityChange {
     create
     upsert
     patch

@@ -198,7 +198,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// with <see cref="Changes{TKey,T}.ApplyChangesTo"/>. <br/>
         /// To execute the task call <see cref="FlioxClient.SyncTasks"/> </remarks>
         /// <seealso cref="FlioxClient.SetEventProcessor"/>
-        public SubscribeChangesTask<T> SubscribeChangesFilter(Change change, Expression<Func<T, bool>> filter, ChangeSubscriptionHandler<TKey, T> handler) {
+        public SubscribeChangesTask<T> SubscribeChangesFilter(EntityChange change, Expression<Func<T, bool>> filter, ChangeSubscriptionHandler<TKey, T> handler) {
             if (handler == null) throw new ArgumentNullException(nameof(handler));
             if (filter == null)  throw new ArgumentNullException(nameof(filter));
             intern.store.AssertSubscription();
@@ -217,7 +217,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// with <see cref="Changes{TKey,T}.ApplyChangesTo"/>. <br/>
         /// To execute the task call <see cref="FlioxClient.SyncTasks"/> </remarks>
         /// <seealso cref="FlioxClient.SetEventProcessor"/>
-        public SubscribeChangesTask<T> SubscribeChangesByFilter(Change change, EntityFilter<T> filter, ChangeSubscriptionHandler<TKey, T> handler) {
+        public SubscribeChangesTask<T> SubscribeChangesByFilter(EntityChange change, EntityFilter<T> filter, ChangeSubscriptionHandler<TKey, T> handler) {
             if (handler == null) throw new ArgumentNullException(nameof(handler));
             if (filter == null)  throw new ArgumentNullException(nameof(filter));
             intern.store.AssertSubscription();
@@ -235,7 +235,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// with <see cref="Changes{TKey,T}.ApplyChangesTo"/>. <br/>
         /// To execute the task call <see cref="FlioxClient.SyncTasks"/> </remarks>
         /// <seealso cref="FlioxClient.SetEventProcessor"/>
-        public SubscribeChangesTask<T> SubscribeChanges(Change change, ChangeSubscriptionHandler<TKey, T> handler) {
+        public SubscribeChangesTask<T> SubscribeChanges(EntityChange change, ChangeSubscriptionHandler<TKey, T> handler) {
             if (handler == null) throw new ArgumentNullException(nameof(handler));
             intern.store.AssertSubscription();
             var all = Operation.FilterTrue;

@@ -19,7 +19,7 @@ export type TaskType =
 ;
 
 /** Filter type used to specify the type of a database change. */
-export type Change =
+export type EntityChange =
     | "create"      /** filter change events of created entities. */
     | "upsert"      /** filter change events of upserted entities. */
     | "patch"       /** filter change events of entity patches. */

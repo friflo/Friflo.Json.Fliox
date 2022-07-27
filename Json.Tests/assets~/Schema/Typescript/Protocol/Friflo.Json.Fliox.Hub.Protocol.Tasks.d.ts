@@ -244,7 +244,7 @@ export class SubscribeChanges extends SyncRequestTask {
     /** container name */
     container  : string;
     /** subscribe to entity **changes** of the given **container** */
-    changes    : Change[];
+    changes    : EntityChange[];
     /**
      * subscription filter as a [Lambda expression](https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/operators/lambda-expressions) (infix notation)
      * returning a boolean value. E.g. o.name == 'Smartphone'
@@ -253,7 +253,7 @@ export class SubscribeChanges extends SyncRequestTask {
 }
 
 /** Filter type used to specify the type of a database change. */
-export type Change =
+export type EntityChange =
     | "create"      /** filter change events of created entities. */
     | "upsert"      /** filter change events of upserted entities. */
     | "patch"       /** filter change events of entity patches. */

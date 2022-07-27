@@ -8,7 +8,7 @@ import { HostCluster }  from "./Friflo.Json.Fliox.Hub.DB.Cluster";
 import { UserOptions }  from "./Friflo.Json.Fliox.Hub.DB.Cluster";
 import { UserResult }   from "./Friflo.Json.Fliox.Hub.DB.Cluster";
 import { int32 }        from "./Standard";
-import { Change }       from "./Friflo.Json.Fliox.Hub.Protocol.Tasks";
+import { EntityChange } from "./Friflo.Json.Fliox.Hub.Protocol.Tasks";
 
 /**
  * **MonitorStore** expose access information of the Hub and its databases:  
@@ -113,7 +113,7 @@ export class ChangeSubscription {
     /** name of subscribed container */
     container  : string;
     /** type of subscribed changes like create, upsert, delete and patch */
-    changes    : Change[];
+    changes    : EntityChange[];
     /** filter to narrow the amount of change events */
     filter?    : string | null;
 }

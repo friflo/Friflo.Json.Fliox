@@ -54,7 +54,7 @@ data class OperationRight (
 data class ContainerAccess (
               val name             : String,
               val operations       : List<OperationType>? = null,
-              val subscribeChanges : List<Change>? = null,
+              val subscribeChanges : List<EntityChange>? = null,
 )
 
 enum class OperationType {

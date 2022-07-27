@@ -162,17 +162,17 @@ input EventDeliveryInput {
 
 type ChangeSubscription {
     container : String!
-    changes   : [Change!]!
+    changes   : [EntityChange!]!
     filter    : String
 }
 
 input ChangeSubscriptionInput {
     container : String!
-    changes   : [Change!]!
+    changes   : [EntityChange!]!
     filter    : String
 }
 
-enum Change {
+enum EntityChange {
     create
     upsert
     patch

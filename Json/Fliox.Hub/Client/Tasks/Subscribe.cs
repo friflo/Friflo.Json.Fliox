@@ -16,7 +16,7 @@ namespace Friflo.Json.Fliox.Hub.Client
     {
         [DebuggerBrowsable(Never)]
         internal            TaskState       state;
-        internal            List<Change>    changes;
+        internal            List<EntityChange>    changes;
         internal            FilterOperation filter;
         private             string          filterLinq; // use as string identifier of a filter
         [DebuggerBrowsable(Never)]
@@ -30,8 +30,8 @@ namespace Friflo.Json.Fliox.Hub.Client
             this.syncSet    = syncSet;
         }
             
-        internal void Set(IEnumerable<Change> changes, FilterOperation filter) {
-            this.changes    = changes != null ? changes.ToList() : new List<Change>();
+        internal void Set(IEnumerable<EntityChange> changes, FilterOperation filter) {
+            this.changes    = changes != null ? changes.ToList() : new List<EntityChange>();
             this.filter     = filter;
             this.filterLinq = filter.Linq;
         }

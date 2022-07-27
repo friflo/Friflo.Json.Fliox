@@ -56,7 +56,7 @@ public class ContainerAccess {
     [Required]
     string               name;
     List<OperationType>  operations;
-    List<Change>         subscribeChanges;
+    List<EntityChange>   subscribeChanges;
 }
 
 public enum OperationType {

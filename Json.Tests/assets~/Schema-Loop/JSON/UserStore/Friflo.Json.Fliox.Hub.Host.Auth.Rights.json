@@ -110,7 +110,7 @@
             "properties": {
                 "name":             { "type": "string", "description": "Container name" },
                 "operations":       { "type": ["array", "null"], "items": { "$ref": "#/definitions/OperationType" }, "description": "Set of granted operation types" },
-                "subscribeChanges": { "type": ["array", "null"], "items": { "$ref": "./Friflo.Json.Fliox.Hub.Protocol.Tasks.json#/definitions/Change" }, "description": "Set of granted change subscriptions" }
+                "subscribeChanges": { "type": ["array", "null"], "items": { "$ref": "./Friflo.Json.Fliox.Hub.Protocol.Tasks.json#/definitions/EntityChange" }, "description": "Set of granted change subscriptions" }
             },
             "required": [
                 "name"

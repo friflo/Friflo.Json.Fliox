@@ -17,17 +17,17 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     public sealed class SubscribeChanges : SyncRequestTask
     {
         /// <summary>container name</summary>
-        [Required]  public      string          container;
+        [Required]  public      string              container;
         /// <summary>subscribe to entity <see cref="changes"/> of the given <see cref="container"/></summary>
-        [Required]  public      List<Change>    changes;
+        [Required]  public      List<EntityChange>  changes;
         /// <summary>subscription filter as a <a href="https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/operators/lambda-expressions">Lambda expression</a> (infix notation)
         /// returning a boolean value. E.g. <c>o.name == 'Smartphone'</c></summary>
-                    public      JsonValue       filter;
+                    public      JsonValue           filter;
                         
-        [Ignore]    internal    FilterOperation filterOp;
+        [Ignore]    internal    FilterOperation     filterOp;
         
-        internal override       TaskType        TaskType  => TaskType.subscribeChanges;
-        public   override       string          TaskName  => $"container: '{container}'";
+        internal override       TaskType            TaskType  => TaskType.subscribeChanges;
+        public   override       string              TaskName  => $"container: '{container}'";
 
         internal override Task<SyncTaskResult> Execute(EntityDatabase database, SyncResponse response, SyncContext syncContext) {
             var hub             = syncContext.Hub;
@@ -68,22 +68,22 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         internal override   TaskType    TaskType => TaskType.subscribeChanges;
     }
     
-    /// <summary>Contains predefined sets of common database <see cref="Change"/> filters.</summary>
+    /// <summary>Contains predefined sets of common database <see cref="EntityChange"/> filters.</summary>
     public static class ChangeFlags
     {
-        /// <summary>Shortcut to subscribe to all types of database changes. These ase <see cref="Change.create"/>,
-        /// <see cref="Change.upsert"/>, <see cref="Change.patch"/> and <see cref="Change.delete"/></summary>
-        public const Change All = Change.create | Change.upsert | Change.delete | Change.patch;
+        /// <summary>Shortcut to subscribe to all types of database changes. These ase <see cref="EntityChange.create"/>,
+        /// <see cref="EntityChange.upsert"/>, <see cref="EntityChange.patch"/> and <see cref="EntityChange.delete"/></summary>
+        public const EntityChange All = EntityChange.create | EntityChange.upsert | EntityChange.delete | EntityChange.patch;
 
         /// <summary>Shortcut to unsubscribe from all database change types.</summary>
-        public const Change None = 0;
+        public const EntityChange None = 0;
         
-        internal static IReadOnlyList<Change> ToList(Change change) {
-            var list = new List<Change>(4);
-            if ((change & Change.create) != 0) list.Add(Change.create);
-            if ((change & Change.upsert) != 0) list.Add(Change.upsert);
-            if ((change & Change.delete) != 0) list.Add(Change.delete);
-            if ((change & Change.patch)  != 0) list.Add(Change.patch);
+        internal static IReadOnlyList<EntityChange> ToList(EntityChange change) {
+            var list = new List<EntityChange>(4);
+            if ((change & EntityChange.create) != 0) list.Add(EntityChange.create);
+            if ((change & EntityChange.upsert) != 0) list.Add(EntityChange.upsert);
+            if ((change & EntityChange.delete) != 0) list.Add(EntityChange.delete);
+            if ((change & EntityChange.patch)  != 0) list.Add(EntityChange.patch);
             return list;
         }
     }
@@ -94,7 +94,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     /// </remarks>
     // ReSharper disable InconsistentNaming
     [Flags]
-    public enum Change
+    public enum EntityChange
     {
         /// <summary>filter change events of created entities.</summary>
         create  = 1,

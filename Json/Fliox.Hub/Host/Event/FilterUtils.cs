@@ -17,7 +17,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             switch (task.TaskType) {
                 
                 case TaskType.create:
-                    if (!subscribe.changes.Contains(Change.create))
+                    if (!subscribe.changes.Contains(EntityChange.create))
                         return null;
                     var create = (CreateEntities) task;
                     if (create.container != subscribe.container)
@@ -30,7 +30,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                     return createResult;
                 
                 case TaskType.upsert:
-                    if (!subscribe.changes.Contains(Change.upsert))
+                    if (!subscribe.changes.Contains(EntityChange.upsert))
                         return null;
                     var upsert = (UpsertEntities) task;
                     if (upsert.container != subscribe.container)
@@ -43,7 +43,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                     return upsertResult;
                 
                 case TaskType.delete:
-                    if (!subscribe.changes.Contains(Change.delete))
+                    if (!subscribe.changes.Contains(EntityChange.delete))
                         return null;
                     var delete = (DeleteEntities) task;
                     if (subscribe.container != delete.container)
@@ -52,7 +52,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                     return task;
                 
                 case TaskType.patch:
-                    if (!subscribe.changes.Contains(Change.patch))
+                    if (!subscribe.changes.Contains(EntityChange.patch))
                         return null;
                     var patch = (PatchEntities) task;
                     if (subscribe.container != patch.container)

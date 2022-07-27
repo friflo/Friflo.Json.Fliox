@@ -24,7 +24,7 @@ public enum TaskType {
     error,
 }
 
-public enum Change {
+public enum EntityChange {
     create,
     upsert,
     patch,

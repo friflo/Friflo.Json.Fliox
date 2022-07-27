@@ -30,7 +30,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
         private static readonly Authorizer                      UnknownRights    = new AuthorizeDeny();
         
         public UserDatabaseAuthenticator(string userDbName) : base (null) {
-            var changes         = new [] { Change.create, Change.upsert, Change.delete, Change.patch };
+            var changes         = new [] { EntityChange.create, EntityChange.upsert, EntityChange.delete, EntityChange.patch };
             var authUserRights  = new AuthorizeAny(new Authorizer[] {
                 new AuthorizeSendMessage     (nameof(UserStore.AuthenticateUser), userDbName),
                 new AuthorizeContainer       (nameof(UserStore.permissions), new []{ OperationType.read, OperationType.query },  userDbName),

@@ -239,12 +239,12 @@ SyncRequestTask <|-- SubscribeChanges
 class SubscribeChanges {
     task       : "subscribeChanges"
     container  : string
-    changes    : Change[]
+    changes    : EntityChange[]
     filter?    : any
 }
-SubscribeChanges *-- "0..*" Change : changes
+SubscribeChanges *-- "0..*" EntityChange : changes
 
-class Change:::cssEnum {
+class EntityChange:::cssEnum {
     <<enumeration>>
     create
     upsert

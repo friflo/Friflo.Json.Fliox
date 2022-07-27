@@ -104,7 +104,7 @@
             "properties": {
                 "name":             { "type": "string" },
                 "operations":       { "elements": { "ref":  "OperationType" }, "nullable": true },
-                "subscribeChanges": { "elements": { "ref":  "Change" }, "nullable": true }
+                "subscribeChanges": { "elements": { "ref":  "EntityChange" }, "nullable": true }
             }
         },
         "OperationType": {
@@ -121,7 +121,7 @@
                 "full"
             ]
         },
-        "Change": {
+        "EntityChange": {
             "enum": [
                 "create",
                 "upsert",

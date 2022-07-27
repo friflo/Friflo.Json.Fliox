@@ -21,7 +21,7 @@ enum class TaskType {
     error,
 }
 
-enum class Change {
+enum class EntityChange {
     create,
     upsert,
     patch,
