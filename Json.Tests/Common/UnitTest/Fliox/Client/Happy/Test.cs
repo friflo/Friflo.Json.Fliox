@@ -208,7 +208,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                         AreEqual(0, listenSubscriber.EventSequence);
                         
                         // subscriber contains send events which are not acknowledged
-                        IsTrue(eventDispatcher.NotAcknowledgedEvents() > 0);
+                        IsTrue(eventDispatcher.QueuedEventsCount() > 0);
 
                         await remoteHub.Connect();
                         
@@ -222,7 +222,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                         await listenDb.SyncTasks();  // all changes are received => state of store remains unchanged
                         
                         // subscriber contains NO send events which are not acknowledged
-                        AreEqual(0, eventDispatcher.NotAcknowledgedEvents());
+                        AreEqual(0, eventDispatcher.QueuedEventsCount());
 
                         listenSubscriber.AssertCreateStoreChanges();
                     }

@@ -339,7 +339,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                     await listenDb.SyncTasks();
 
                     // assert no send events are pending which are not acknowledged
-                    AreEqual(0, eventDispatcher.NotAcknowledgedEvents());
+                    AreEqual(0, eventDispatcher.QueuedEventsCount());
                 }
             }
         }
@@ -395,7 +395,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                     await listenExtDb.SyncTasks();
 
                     // assert no send events are pending which are not acknowledged
-                    AreEqual(0, eventDispatcher.NotAcknowledgedEvents());
+                    AreEqual(0, eventDispatcher.QueuedEventsCount());
                 }
             }
         }

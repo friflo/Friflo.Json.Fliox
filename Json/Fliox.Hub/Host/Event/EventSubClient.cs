@@ -41,23 +41,24 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         
         internal            int                                 SubCount    => databaseSubs.Sum(sub => sub.Value.SubCount); 
         
-        /// lock (<see cref="eventQueue"/>) {
+        /// lock (<see cref="unsentEventsQueue"/>) {
         private             int                                 eventCounter;
-        private  readonly   LinkedList<ProtocolEvent>           eventQueue  = new LinkedList<ProtocolEvent>();
+        /// contains all events not yet sent
+        private  readonly   LinkedList<ProtocolEvent>           unsentEventsQueue   = new LinkedList<ProtocolEvent>();
         /// contains all events which are sent but not acknowledged
-        private  readonly   List<ProtocolEvent>                 sentEvents  = new List<ProtocolEvent>();
+        private  readonly   List<ProtocolEvent>                 sentEventsList      = new List<ProtocolEvent>();
         // }
         
         private  readonly   bool                                background;
         internal readonly   Task                                triggerLoop;
         private  readonly   DataChannelWriter<TriggerType>      triggerWriter;
 
-        internal            int                                 Seq             => eventCounter;
-        internal            int                                 EventQueueCount => eventQueue.Count;
-        public   override   string                              ToString()      => $"client: {clientId.AsString()}";
+        internal            int                                 Seq                 => eventCounter;
+        internal            int                                 QueuedEventsCount   => unsentEventsQueue.Count + sentEventsList.Count;
         
-        internal            int                                 SentEventsCount => sentEvents.Count;
-        internal            bool                                IsRemoteTarget  => eventReceiver is WebSocketHost;
+        public   override   string                              ToString()          => $"client: '{clientId.AsString()}'";
+        
+        internal            bool                                IsRemoteTarget      => eventReceiver is WebSocketHost;
         
         internal EventSubClient (
             SharedEnv       env,
@@ -91,9 +92,9 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         }
         
         internal void EnqueueEvent(ProtocolEvent ev) {
-            lock (eventQueue) {
+            lock (unsentEventsQueue) {
                 ev.seq = ++eventCounter;
-                eventQueue.AddLast(ev);
+                unsentEventsQueue.AddLast(ev);
                 if (background) {
                     EnqueueTrigger(TriggerType.Event);
                 }
@@ -101,30 +102,30 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         }
         
         private bool DequeueEvent(out ProtocolEvent ev) {
-            lock (eventQueue) {
-                var node = eventQueue.First;
+            lock (unsentEventsQueue) {
+                var node = unsentEventsQueue.First;
                 if (node == null) {
                     ev = null;
                     return false;
                 }
                 ev = node.Value;
-                eventQueue.RemoveFirst();
-                sentEvents.Add(ev);
+                unsentEventsQueue.RemoveFirst();
+                sentEventsList.Add(ev);
                 return true;
             }
         }
         
-        /// Enqueue all not acknowledged events back to <see cref="eventQueue"/> in their original order
+        /// Enqueue all not acknowledged events back to <see cref="unsentEventsQueue"/> in their original order
         internal void AcknowledgeEvents(int eventAck) {
-            lock (eventQueue) {
-                for (int i = sentEvents.Count - 1; i >= 0; i--) {
-                    var ev = sentEvents[i];
+            lock (unsentEventsQueue) {
+                for (int i = sentEventsList.Count - 1; i >= 0; i--) {
+                    var ev = sentEventsList[i];
                     if (ev.seq <= eventAck)
                         continue;
-                    eventQueue.AddFirst(ev);
+                    unsentEventsQueue.AddFirst(ev);
                 }
-                sentEvents.Clear();
-                if (background && eventQueue.Count > 0) {
+                sentEventsList.Clear();
+                if (background && unsentEventsQueue.Count > 0) {
                     EnqueueTrigger (TriggerType.Event);
                 }
             }

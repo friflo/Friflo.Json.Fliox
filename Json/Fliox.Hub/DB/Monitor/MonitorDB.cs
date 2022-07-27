@@ -102,7 +102,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Monitor
             }
             return new EventDelivery {
                 seq         = subscriber.Seq,
-                queued      = subscriber.EventQueueCount,
+                queued      = subscriber.QueuedEventsCount,
                 messageSubs = msgSubs,
                 changeSubs  = changeSubs
             };

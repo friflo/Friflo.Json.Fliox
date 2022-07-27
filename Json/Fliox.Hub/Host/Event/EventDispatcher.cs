@@ -72,10 +72,10 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         }
         
         /// used for test assertion
-        public int NotAcknowledgedEvents() {
+        public int QueuedEventsCount() {
             int count = 0;
             foreach (var pair in subClients) {
-                count += pair.Value.SentEventsCount;
+                count += pair.Value.QueuedEventsCount;
             }
             return count;
         }
