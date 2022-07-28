@@ -221,6 +221,7 @@ The API is available at [**JSON Fliox - API Reference**](https://github.com/frif
 ## Credits
 - [NUnit](https://nunit.org/)                                               · unit testing of the JSON Fliox library and the Demos
 - [FluentAssertions](https://github.com/fluentassertions/fluentassertions)  · unit testing of the JSON Fliox library
+- [GraphQL.NET Parser](https://github.com/graphql-dotnet/parser)            · used by package: Friflo.Json.Fliox.Schema.GraphQL
 - [Swagger](https://swagger.io/)                                            · a REST / OpenAPI UI used by the Hub Explorer
 - [GraphiQL](https://github.com/graphql/graphiql)                           · a GraphQL UI used by the Hub Explorer
 - [Mermaid](https://github.com/mermaid-js/mermaid)                          · class diagram for database schema
