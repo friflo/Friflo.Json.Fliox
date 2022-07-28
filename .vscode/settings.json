@@ -121,5 +121,7 @@
     "[markdown]": {
         "editor.wordWrap": "off"
     },
-    "omnisharp.enableImportCompletion": true
+    "omnisharp.enableImportCompletion": true,
+    "markdown.preview.doubleClickToSwitchToEditor": false,
+    "markdown.preview.markEditorSelection": false
 }
