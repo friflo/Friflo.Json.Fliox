@@ -12,7 +12,7 @@
    stroke-miterlimit="10"
    id="svg8378"
    inkscape:version="0.91 r13725"
-   sodipodi:docname="Json-Flow.svg"
+   sodipodi:docname="Json-Fliox.svg"
    width="80"
    height="65"
    style="fill:none;stroke:none;stroke-linecap:square;stroke-miterlimit:10">
@@ -110,12 +110,12 @@
      inkscape:pageopacity="0"
      inkscape:pageshadow="2"
      inkscape:window-width="2560"
-     inkscape:window-height="1361"
+     inkscape:window-height="1351"
      id="namedview8425"
      showgrid="false"
      inkscape:zoom="11.3"
-     inkscape:cx="32.198693"
-     inkscape:cy="49.064296"
+     inkscape:cx="58.133181"
+     inkscape:cy="38.444827"
      inkscape:window-x="-9"
      inkscape:window-y="-9"
      inkscape:window-maximized="1"
@@ -128,16 +128,20 @@
        inkscape:connector-curvature="0"
        style="clip-rule:nonzero" />
   </clipPath>
+  <rect
+     style="opacity:1;fill:#0000c9;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:23.39999962;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+     id="rect8095"
+     width="54.070797"
+     height="43.716816"
+     x="25.752213"
+     y="21.194689"
+     rx="4.2652974"
+     ry="4.2994685" />
   <path
      style="fill:#000000;fill-opacity:0;fill-rule:evenodd"
      inkscape:connector-curvature="0"
      id="path8385"
      d="m 0,-475 960,0 0,540 -960,0 z" />
-  <path
-     style="fill:#0000c9;fill-rule:evenodd"
-     inkscape:connector-curvature="0"
-     id="path8387"
-     d="m 25.278584,20.570458 44.756212,0 9.415012,9.509623 0,34.269149 -54.171224,0 z" />
   <path
      style="fill:#000000;fill-opacity:0;fill-rule:evenodd"
      inkscape:connector-curvature="0"
