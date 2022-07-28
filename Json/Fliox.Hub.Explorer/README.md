@@ -6,7 +6,7 @@
 
 namespace **`Friflo.Json.Fliox.Hub.Explorer`**
 
-This package contains an SPA - single page web application - intended for development
+This package contains an SPA - single page web application - used for development
 and administration of databases hosted by a **Fliox Hub**.
 
 The **Hub Explorer** enables:
