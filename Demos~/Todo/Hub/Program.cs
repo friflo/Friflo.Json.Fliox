@@ -18,16 +18,16 @@ namespace TodoHub
         /// <summary> blueprint to showcase a minimal feature set of a <see cref="HttpHost"/> </summary>
         private static HttpHost CreateHttpHost()
         {
-            var database            = new FileDatabase("main_db", "../Test/DB/main_db");
-            var typeSchema          = NativeTypeSchema.Create(typeof(TodoClient));
-            database.Schema         = new DatabaseSchema(typeSchema);
+            var database        = new FileDatabase("main_db", "../Test/DB/main_db"); // uses records stored in 'main_db/jobs' folder
+            var typeSchema      = NativeTypeSchema.Create(typeof(TodoClient));
+            database.Schema     = new DatabaseSchema(typeSchema);
 
-            var hub                 = new FlioxHub(database);
-            hub.Info.projectName    = "TodoHub";
+            var hub             = new FlioxHub(database);
+            hub.Info.projectName= "TodoHub";
             hub.AddExtensionDB (new ClusterDB("cluster", hub)); // required by HubExplorer
             
-            var httpHost            = new HttpHost(hub, "/fliox/");
-            httpHost.AddHandler      (new StaticFileHandler(HubExplorer.Path));
+            var httpHost        = new HttpHost(hub, "/fliox/");
+            httpHost.AddHandler (new StaticFileHandler(HubExplorer.Path));
             return httpHost;
         }
     }

@@ -14,7 +14,7 @@ namespace DemoTest {
         internal static async Task Main(string[] args)
         {
             await QueryRelations(args);
-            // await SubscribeChanges();
+            await SubscribeChanges();
         }
         
         private static async Task QueryRelations(string[] args)
@@ -36,6 +36,8 @@ namespace DemoTest {
             }
         }
         
+        // after calling this method open: 'Hub Explorer > main_db > articles'
+        // changing records in 'articles' trigger the subscription handler in this method.  
         private static async Task SubscribeChanges()
         {
             var hub         = CreateHub("ws");
@@ -44,16 +46,17 @@ namespace DemoTest {
                 Task.Run(() => client.SyncTasks()); // acknowledge received event to the Hub
             };
             client.articles.SubscribeChanges(Change.All, (changes, context) => {
-                foreach (var item in changes.Upserts)
-                {
-                    Console.WriteLine($"EventSeq: {context.EventSeq} - article: {item.name}");
+                foreach (var entity in changes.Upserts) {
+                    Console.WriteLine($"EventSeq: {context.EventSeq} - upsert article: {entity.id}, name: {entity.name}");
+                }
+                foreach (var key in changes.Deletes) {
+                    Console.WriteLine($"EventSeq: {context.EventSeq} - delete article: {key}");
                 }
             });
             await client.SyncTasks();
-            Console.WriteLine("wait for events ... (press key to exit)");
-
-            await Task.Run ( ( ) => Console.ReadKey ( true ) );
-            Console.WriteLine("... exit");
+            
+            Console.WriteLine("\n wait for events ... (exit with: CTRL + C)\n");
+            await Task.Delay(3_600_000); // wait 1 hour
         }
             
         private static FlioxHub CreateHub(string option)
