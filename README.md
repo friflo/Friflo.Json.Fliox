@@ -39,6 +39,11 @@ The **DemoHub** C# project and a compact features list available at the
 
 <br/>
 
+*Note*: JSON Fliox is **not** a UI library. It is designed for simple in integration in UI's like:  
+ASP.NET Razor, Blazor, MAUI, WinUI, ASP.NET MVC, WPF, WinForms, Xamarin.Forms & Unity.
+
+<br/>
+
 ## Features
 
 Detailed feature descriptions are explained by a set of `README` files linked below.  
@@ -219,16 +224,18 @@ The API is available at [**JSON Fliox - API Reference**](https://github.com/frif
 <br/>
 
 ## Credits
-- [NUnit](https://nunit.org/)                                               · unit testing of the JSON Fliox library and the Demos
-- [FluentAssertions](https://github.com/fluentassertions/fluentassertions)  · unit testing of the JSON Fliox library
-- [GraphQL.NET Parser](https://github.com/graphql-dotnet/parser)            · used by package: Friflo.Json.Fliox.Schema.GraphQL
-- [Swagger](https://swagger.io/)                                            · a REST / OpenAPI UI used by the Hub Explorer
-- [GraphiQL](https://github.com/graphql/graphiql)                           · a GraphQL UI used by the Hub Explorer
-- [Mermaid](https://github.com/mermaid-js/mermaid)                          · class diagram for database schema
-- [Monaco Editor](https://github.com/microsoft/monaco-editor)               · to edit JSON in the Hub Explorer
-- [.NET guys](https://dotnet.microsoft.com/en-us/)                          · the platform providing compiler, runtime, IDE's & ASP.NET Core
-- [WinMerge](https://github.com/WinMerge/winmerge)                          · heavily used in this project
-- [Inscape](https://gitlab.com/inkscape/inkscape)                           · to create SVG's for this project
+|                                                                           |             |                                                                 |
+| ------------------------------------------------------------------------- | ----------- | --------------------------------------------------------------- |
+| [NUnit](https://nunit.org/)                                               | C#          | unit testing of the JSON Fliox library and the Demos            |
+| [FluentAssertions](https://github.com/fluentassertions/fluentassertions)  | C#          | unit testing of the JSON Fliox library                          |
+| [GraphQL.NET Parser](https://github.com/graphql-dotnet/parser)            | C#          | used by package: Friflo.Json.Fliox.Schema.GraphQL               |
+| [.NET guys](https://dotnet.microsoft.com/en-us/)                          | C# .NET     | the platform providing compiler, runtime, IDE's & ASP.NET Core  |
+| [Swagger](https://swagger.io/)                                            | static JS   | a REST / OpenAPI UI used by the Hub Explorer                    |
+| [GraphiQL](https://github.com/graphql/graphiql)                           | static JS   | a GraphQL UI used by the Hub Explorer                           |
+| [Monaco Editor](https://github.com/microsoft/monaco-editor)               | static JS   | to edit JSON in the Hub Explorer                                |
+| [Mermaid](https://github.com/mermaid-js/mermaid)                          | static MD   | class diagram for database schema                               |
+| [WinMerge](https://github.com/WinMerge/winmerge)                          | Application | heavily used in this project                                    |
+| [Inscape](https://gitlab.com/inkscape/inkscape)                           | Application | to create SVG's for this project                                |
 
 
 Happy coding!  
