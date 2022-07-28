@@ -233,7 +233,7 @@ The API is available at [**JSON Fliox - API Reference**](https://github.com/frif
 | [Swagger](https://swagger.io/)                                            | static JS   | a REST / OpenAPI UI used by the Hub Explorer                    |
 | [GraphiQL](https://github.com/graphql/graphiql)                           | static JS   | a GraphQL UI used by the Hub Explorer                           |
 | [Monaco Editor](https://github.com/microsoft/monaco-editor)               | static JS   | to edit JSON in the Hub Explorer                                |
-| [Mermaid](https://github.com/mermaid-js/mermaid)                          | static MD   | class diagram for database schema                               |
+| [Mermaid](https://github.com/mermaid-js/mermaid)                          | static JS   | class diagram for database schema                               |
 | [WinMerge](https://github.com/WinMerge/winmerge)                          | Application | heavily used in this project                                    |
 | [Inscape](https://gitlab.com/inkscape/inkscape)                           | Application | to create SVG's for this project                                |
 
