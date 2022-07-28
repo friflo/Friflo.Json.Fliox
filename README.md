@@ -230,10 +230,10 @@ The API is available at [**JSON Fliox - API Reference**](https://github.com/frif
 | [FluentAssertions](https://github.com/fluentassertions/fluentassertions)  | C#          | unit testing of the JSON Fliox library                          |
 | [GraphQL.NET Parser](https://github.com/graphql-dotnet/parser)            | C#          | used by package: Friflo.Json.Fliox.Schema.GraphQL               |
 | [.NET guys](https://dotnet.microsoft.com/en-us/)                          | C# .NET     | the platform providing compiler, runtime, IDE's & ASP.NET Core  |
-| [Swagger](https://swagger.io/)                                            | static JS   | a REST / OpenAPI UI used by the Hub Explorer                    |
-| [GraphiQL](https://github.com/graphql/graphiql)                           | static JS   | a GraphQL UI used by the Hub Explorer                           |
-| [Monaco Editor](https://github.com/microsoft/monaco-editor)               | static JS   | to edit JSON in the Hub Explorer                                |
-| [Mermaid](https://github.com/mermaid-js/mermaid)                          | static JS   | class diagram for database schema                               |
+| [Swagger](https://swagger.io/)                                            | static JS   | a REST / OpenAPI UI linked by the Hub Explorer                  |
+| [GraphiQL](https://github.com/graphql/graphiql)                           | static JS   | a GraphQL UI linked by the Hub Explorer                         |
+| [Mermaid](https://github.com/mermaid-js/mermaid)                          | static JS   | class diagram for database schema linked by the Hub Explorer    |
+| [Monaco Editor](https://github.com/microsoft/monaco-editor)               | static JS   | used as JSON editor integrated in the Hub Explorer              |
 | [WinMerge](https://github.com/WinMerge/winmerge)                          | Application | heavily used in this project                                    |
 | [Inscape](https://gitlab.com/inkscape/inkscape)                           | Application | to create SVG's for this project                                |
 
