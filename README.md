@@ -219,13 +219,15 @@ The API is available at [**JSON Fliox - API Reference**](https://github.com/frif
 <br/>
 
 ## Credits
-- [NUnit](https://nunit.org/)                                   · used for unit testing of the Demos and the JSON Fliox library
-- [Swagger](https://swagger.io/)                                · as a REST / OpenAPI UI used by the Hub Explorer
-- [GraphiQL](https://github.com/graphql/graphiql)               · as a GraphQL UI used by the Hub Explorer
-- [Monaco Editor](https://github.com/microsoft/monaco-editor)   · to edit JSON in the Hub Explorer
-- [.NET guys](https://dotnet.microsoft.com/en-us/)              · the platform providing compiler, runtime, IDE's & ASP.NET Core
-- [WinMerge](https://github.com/WinMerge/winmerge)              · heavily used in this project
-- [Inscape](https://gitlab.com/inkscape/inkscape)               · to create SVG's for this project
+- [NUnit](https://nunit.org/)                                               · unit testing of the JSON Fliox library and the Demos
+- [FluentAssertions](https://github.com/fluentassertions/fluentassertions)  · unit testing of the JSON Fliox library
+- [Swagger](https://swagger.io/)                                            · a REST / OpenAPI UI used by the Hub Explorer
+- [GraphiQL](https://github.com/graphql/graphiql)                           · a GraphQL UI used by the Hub Explorer
+- [Mermaid](https://github.com/mermaid-js/mermaid)                          · class diagram for database schema
+- [Monaco Editor](https://github.com/microsoft/monaco-editor)               · to edit JSON in the Hub Explorer
+- [.NET guys](https://dotnet.microsoft.com/en-us/)                          · the platform providing compiler, runtime, IDE's & ASP.NET Core
+- [WinMerge](https://github.com/WinMerge/winmerge)                          · heavily used in this project
+- [Inscape](https://gitlab.com/inkscape/inkscape)                           · to create SVG's for this project
 
 
 Happy coding!  
