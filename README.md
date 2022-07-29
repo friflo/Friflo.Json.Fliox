@@ -186,6 +186,10 @@ Its main purpose is to generate database schemas and types for various languages
 
 *screenshot: `monitor` database with Swagger UI*
 
+<img src="docs/images/MonitorStore-graphql.png" width="739" height="222">
+
+*screenshot: `monitor` database with GraphiQL UI*
+
 
 
 ### **Mapper**
