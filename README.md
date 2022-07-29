@@ -194,7 +194,7 @@ Its also used for serialization of the supported protocols: REST, GraphQL and Ba
 
 The Fliox **C# .NET** API is [CLS-compliant](https://docs.microsoft.com/en-us/dotnet/api/system.clscompliantattribute#remarks)
 
-The API is available at [**JSON Fliox - API Reference**](https://github.com/friflo/fliox-docs)
+The API is available at [**fliox-docs API Reference**](https://github.com/friflo/fliox-docs)
 
 ### **Principles**
 
