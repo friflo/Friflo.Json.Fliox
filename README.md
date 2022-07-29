@@ -26,7 +26,7 @@ As **JSON Fliox** is an [ORM](https://en.wikipedia.org/wiki/Object-relational_ma
 - [Ruby on Rails - Active Record Pattern](https://en.wikipedia.org/wiki/Ruby_on_Rails) · Ruby
 - [Django](https://en.wikipedia.org/wiki/Django_(web_framework)) · Python
 - [Hibernate](https://de.wikipedia.org/wiki/Hibernate_(Framework)) · Java
-- [Prisma](https://www.prisma.io/) · Typescript
+- [Prisma](https://github.com/prisma/prisma) · Typescript
 
 *Info*: Pronunciation of **io** in **Fliox** is same as in **Riot** <br/><br/>
 
