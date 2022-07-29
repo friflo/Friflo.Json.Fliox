@@ -23,6 +23,7 @@ From these input schemas the following output schemas can be generate:
 - GraphQL
 - Kotlin
 - HTML
+- Mermaid - database schema as UML class diagram
 
 ## Features:
 - Code generators and JSON Validator support the C#/.NET language features:

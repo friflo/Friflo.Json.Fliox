@@ -161,6 +161,7 @@ other programming languages and schema formats like:
 - GraphQL
 - Kotlin
 - HTML
+- Mermaid - database schema as UML class diagram
 
 Its main purpose is to generate database schemas and types for various languages of classes extending `FlioxClient`.
 
