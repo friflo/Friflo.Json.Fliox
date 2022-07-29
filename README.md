@@ -127,7 +127,7 @@ The Hub Explorer is a generic Web UI - a single page application - used to acces
 databases, containers and entities hosted by a Fliox Hub.  
 The Explorer also enables to execute application specific database commands.
 
-[<img src="docs/images/Fliox-Hub-Explorer.png" width="359" height="139">](Json/Fliox.Hub.Explorer/README.md)  
+[<img src="docs/images/Fliox-Hub-Explorer.png" width="717" height="278">](Json/Fliox.Hub.Explorer/README.md)  
 *screenshot: Hub Explorer*
 
 ### **DB**
@@ -172,10 +172,20 @@ other programming languages and schema formats like:
 - HTML
 - Mermaid - database schema as UML class diagram.
 
-[<img src="docs/images/MonitorStore-schema.png" width="739" height="226">](Json.Tests/assets~/Schema/Markdown/MonitorStore/class-diagram.md)  
-*screenshot: MonitorStore schema*
-
 Its main purpose is to generate database schemas and types for various languages of classes extending `FlioxClient`.
+
+<img src="docs/images/MonitorStore-html.png" width="739" height="278">
+
+*screenshot: MonitorStore schema as single page HTML*
+
+<img src="docs/images/MonitorStore-schema.png" width="739" height="226">
+
+*screenshot: MonitorStore schema as class diagram*
+
+<img src="docs/images/MonitorStore-swagger.png" width="739" height="280">
+
+*screenshot: `monitor` database with Swagger UI*
+
 
 
 ### **Mapper**
