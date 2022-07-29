@@ -182,13 +182,8 @@ Its main purpose is to generate database schemas and types for various languages
 
 *screenshot: MonitorStore schema as class diagram*
 
-<img src="docs/images/MonitorStore-swagger.png" width="739" height="280">
-
-*screenshot: `monitor` database with Swagger UI*
-
-<img src="docs/images/MonitorStore-graphql.png" width="739" height="222">
-
-*screenshot: `monitor` database with GraphiQL UI*
+[Swagger UI screenshot](Json/Fliox/Schema/README.md#swagger-ui)  
+[GraphiQL screenshot](Json/Fliox/Schema/README.md#graphiql)
 
 
 

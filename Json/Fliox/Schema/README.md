@@ -58,6 +58,18 @@ From these input schemas the following output schemas can be generate:
   and follow the link **Typescript, C#, Kotlin, JSON Schema / OpenAPI** on the top of the schema page.
 
 
+## Swagger UI
+
+<img src="../../../docs/images/MonitorStore-swagger.png" width="739" height="280">
+
+*screenshot: `monitor` database with Swagger UI*
+
+## GraphiQL
+<img src="../../../docs/images/MonitorStore-graphql.png" width="739" height="222">
+
+*screenshot: `monitor` database with GraphiQL*
+
+
 ## Examples
 
 - A code example showing code generation based on a C# `Type` is shown at [FlioxClient](../../Fliox.Hub/Client/README.md#schema-generation)
