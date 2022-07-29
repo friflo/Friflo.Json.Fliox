@@ -170,7 +170,10 @@ other programming languages and schema formats like:
 - GraphQL
 - Kotlin
 - HTML
-- Mermaid - database schema as UML class diagram. [example](Json.Tests/assets~/Schema/Markdown/UserStore/class-diagram.md)
+- Mermaid - database schema as UML class diagram.
+
+[<img src="docs/images/MonitorStore-schema.png" width="739" height="226">](Json.Tests/assets~/Schema/Markdown/MonitorStore/class-diagram.md)  
+*screenshot: MonitorStore schema*
 
 Its main purpose is to generate database schemas and types for various languages of classes extending `FlioxClient`.
 
