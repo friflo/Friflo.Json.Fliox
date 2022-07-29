@@ -174,14 +174,11 @@ other programming languages and schema formats like:
 
 Its main purpose is to generate database schemas and types for various languages of classes extending `FlioxClient`.
 
-<img src="docs/images/MonitorStore-html.png" width="739" height="250">
-
-*screenshot: MonitorStore schema as single page HTML*
-
 <img src="docs/images/MonitorStore-schema.png" width="739" height="226">
 
 *screenshot: MonitorStore schema as class diagram*
 
+[HTML Schema screenshot](Json/Fliox/Schema/README.md#html-schema)  
 [Swagger UI screenshot](Json/Fliox/Schema/README.md#swagger-ui)  
 [GraphiQL screenshot](Json/Fliox/Schema/README.md#graphiql)
 

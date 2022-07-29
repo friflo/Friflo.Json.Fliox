@@ -57,6 +57,11 @@ From these input schemas the following output schemas can be generate:
   To retrieve a zip or a single file click on a schema or type link in the [Hub Explorer](../../Fliox.Hub.Explorer/README.md)
   and follow the link **Typescript, C#, Kotlin, JSON Schema / OpenAPI** on the top of the schema page.
 
+## HTML Schema
+
+<img src="../../../docs/images/MonitorStore-html.png" width="739" height="250">
+
+*screenshot: MonitorStore schema as single page HTML*
 
 ## Swagger UI
 
