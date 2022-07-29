@@ -223,7 +223,7 @@ The API is available at [**fliox-docs API Reference**](https://github.com/friflo
     - no heap allocations if possible
     - no noise in `.ToString()` methods while debugging - only relevant state.  
       E.g. instances of `FlioxClient`, `EntitySet<,>`, `FlioxHub` and `EntityDatabase`
-    - no astonishment using the API.  
+    - no surprise of API behavior.  
       See [Principle of least astonishment](https://en.wikipedia.org/wiki/Principle_of_least_astonishment)
 - extensibility
     - support custom database adapters aka providers
