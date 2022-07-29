@@ -134,9 +134,12 @@ The Explorer also enables to execute application specific database commands.
 📄   [README.md](Json/Fliox.Hub/DB/README.md)
 
 Provide a set of support databases used to:
-- serve the Hub configuration
-- serve monitoring data
-- perform user authentication, authorization and management.
+- serve the Hub configuration. Schema:
+  [ClusterStore](Json.Tests/assets~/Schema/Markdown/ClusterStore/class-diagram.md)
+- serve monitoring data. Schema:
+  [MonitorStore](Json.Tests/assets~/Schema/Markdown/MonitorStore/class-diagram.md)
+- perform user authentication, authorization and management. Schema:
+  [UserStore](Json.Tests/assets~/Schema/Markdown/UserStore/class-diagram.md)
 
 ### **Protocol**
 📄   [README.md](Json/Fliox.Hub/Protocol/README.md)
