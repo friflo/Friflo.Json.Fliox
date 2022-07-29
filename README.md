@@ -192,6 +192,8 @@ Its also used for serialization of the supported protocols: REST, GraphQL and Ba
 ### **Unit Tests**
 📄   [README.md](Json.Tests/README.md)
 
+Code coverage: **86%** measured with **JetBrains • docCover**
+
 *summarized logs of test execution*
 ```yaml
 Passed! - Failed:   0, Passed:   6, Skipped:   0, Total:   6, Duration: 2 s -  .../DemoTest.dll
