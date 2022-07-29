@@ -219,6 +219,8 @@ The API is available at [**fliox-docs API Reference**](https://github.com/friflo
     - 0 ReSharper errors, warnings, suggestions and hints
     - 0 unit test errors
     - 0 typos - observed by spell checker
+    - no synchronous calls to API's dealing with **IO** like network or disc    
+      Instead using `async` / `await`
     - no 3rd party dependencies
     - no heap allocations if possible
     - no noise in `.ToString()` methods while debugging - only relevant state.  
