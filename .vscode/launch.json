@@ -10,7 +10,7 @@
             "request": "launch",
             "preLaunchTask": "build",
             // If you have changed target frameworks, make sure to update the program path.
-            "program": "${workspaceFolder}/Json.Tests/.bin/Debug/netcoreapp3.1/Friflo.Json.Tests.dll",
+            "program": "${workspaceFolder}/Json.Tests/.bin/Debug/net6.0/Friflo.Json.Tests.dll",
             "args": ["--module", "FlioxServer"],
             "cwd": "${workspaceFolder}",
             // For more information about the 'console' field, see https://aka.ms/VSCode-CS-LaunchJson-Console
@@ -25,7 +25,7 @@
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
-            "program": "${workspaceFolder}/Demos~/Todo/Hub/bin/Debug/netcoreapp3.1/TodoHub.dll",
+            "program": "${workspaceFolder}/Demos~/Todo/Hub/bin/Debug/net6.0/TodoHub.dll",
             "args": [],
             "cwd": "${workspaceFolder}",
             "console": "internalConsole",
@@ -39,7 +39,7 @@
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
-            "program": "${workspaceFolder}/Demos~/Demo/Hub/bin/Debug/netcoreapp3.1/DemoHub.dll",
+            "program": "${workspaceFolder}/Demos~/Demo/Hub/bin/Debug/net6.0/DemoHub.dll",
             "args": [],
             "cwd": "${workspaceFolder}",
             "console": "internalConsole",
