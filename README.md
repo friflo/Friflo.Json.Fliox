@@ -51,6 +51,7 @@ Detailed feature descriptions are explained by a set of `README` files linked be
 
 <br/>
 
+
 ## Content
 
 - **Demos**                       ❯  [friflo/FlioxHub.Demos](https://github.com/friflo/FlioxHub.Demos/blob/main/README.md)
@@ -70,7 +71,9 @@ Detailed feature descriptions are explained by a set of `README` files linked be
     - [API](#api)                     ❯  [friflo/fliox-docs](https://github.com/friflo/fliox-docs)
     - [Principles](#principles)
 
-<br/>
+<p align="center" width="100%">
+    <img src="docs/images/welcome.svg" width="320" height="120" >
+</p>
 
 
 ## **Demos**
@@ -123,6 +126,9 @@ This `FlioxHub` instance need to be passed to the constructor of the `HttpHost`
 The Hub Explorer is a generic Web UI - a single page application - used to access
 databases, containers and entities hosted by a Fliox Hub.  
 The Explorer also enables to execute application specific database commands.
+
+[<img src="docs/images/Fliox-Hub-Explorer.png" width="359" height="139">](Json/Fliox.Hub.Explorer/README.md)  
+*screenshot: Hub Explorer*
 
 ### **DB**
 📄   [README.md](Json/Fliox.Hub/DB/README.md)
