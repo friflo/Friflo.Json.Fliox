@@ -194,9 +194,9 @@ Its also used for serialization of the supported protocols: REST, GraphQL and Ba
 
 *summarized logs of test execution*
 ```yaml
-Passed!  - Failed:     0, Passed:     6, Skipped:     0, Total:     6, Duration: 2 s -  .../DemoTest.dll (net6.0)
-Passed!  - Failed:     0, Passed:     7, Skipped:     0, Total:     7, Duration: 1 s -  .../TodoTest.dll (net6.0)
-Passed!  - Failed:     0, Passed:   347, Skipped:     0, Total:   347, Duration: 15 s - .../Friflo.Json.Tests.dll (net6.0)
+Passed! - Failed:   0, Passed:   6, Skipped:   0, Total:   6, Duration: 2 s -  .../DemoTest.dll
+Passed! - Failed:   0, Passed:   7, Skipped:   0, Total:   7, Duration: 1 s -  .../TodoTest.dll
+Passed! - Failed:   0, Passed: 347, Skipped:   0, Total: 347, Duration: 15 s - .../Friflo.Json.Tests.dll
 ```
 
 
