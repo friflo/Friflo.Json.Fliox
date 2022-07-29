@@ -162,7 +162,7 @@ namespace **`Friflo.Json.Fliox`**
 This module enables transforming schemas expressed by a set of C# classes into
 other programming languages and schema formats like:
 - C#
-- [JSON Schema](https://json-schema.org/) / [OpenAPI](https://www.openapis.org/)
+- JSON Schema / OpenAPI
 - Typescript
 - GraphQL
 - Kotlin
@@ -176,7 +176,7 @@ Its main purpose is to generate database schemas and types for various languages
 📄   [README.md](Json/Fliox/Mapper/README.md)
 
 This module enables serialization / deserialization of C# .NET objects to / from JSON.  
-Its feature set and API is similar to:
+Its feature set and API is similar to the .NET packages:
 - [JamesNK/Newtonsoft.Json](https://github.com/JamesNK/Newtonsoft.Json)
 - [System.Text.Json](https://docs.microsoft.com/en-us/dotnet/api/system.text.json)
 
