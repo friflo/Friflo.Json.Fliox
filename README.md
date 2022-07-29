@@ -214,7 +214,7 @@ The API is available at [**fliox-docs API Reference**](https://github.com/friflo
         - to avoid confusion implementing the same feature in multiple ways
 - serialization of entities and messages - request, response & event - are entirely JSON
 - Fliox Clients and Hubs are unit testable without mocking
-- zero principles
+- **Zero principles**
     - 0 compiler errors and warnings
     - 0 ReSharper errors, warnings, suggestions and hints
     - 0 unit test errors
