@@ -174,7 +174,7 @@ other programming languages and schema formats like:
 
 Its main purpose is to generate database schemas and types for various languages of classes extending `FlioxClient`.
 
-<img src="docs/images/MonitorStore-html.png" width="739" height="278">
+<img src="docs/images/MonitorStore-html.png" width="739" height="250">
 
 *screenshot: MonitorStore schema as single page HTML*
 
