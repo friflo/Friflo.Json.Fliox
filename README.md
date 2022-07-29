@@ -229,7 +229,7 @@ The API is available at [**fliox-docs API Reference**](https://github.com/friflo
 | [NUnit](https://nunit.org/)                                               | C#          | unit testing of the JSON Fliox library and the Demos            |
 | [FluentAssertions](https://github.com/fluentassertions/fluentassertions)  | C#          | unit testing of the JSON Fliox library                          |
 | [GraphQL.NET Parser](https://github.com/graphql-dotnet/parser)            | C#          | used by package: Friflo.Json.Fliox.Hub.GraphQL                  |
-| [.NET guys](https://dotnet.microsoft.com/en-us/)                          | C# .NET     | the platform providing compiler, runtime, IDE's & ASP.NET Core  |
+| [.NET platform](https://dotnet.microsoft.com/en-us/)                      | C# .NET     | the platform providing compiler, runtime, IDE's & ASP.NET Core  |
 | [Swagger](https://swagger.io/)                                            | static JS   | a REST / OpenAPI UI linked by the Hub Explorer                  |
 | [GraphiQL](https://github.com/graphql/graphiql)                           | static JS   | a GraphQL UI linked by the Hub Explorer                         |
 | [Mermaid](https://github.com/mermaid-js/mermaid)                          | static JS   | class diagram for database schema linked by the Hub Explorer    |
