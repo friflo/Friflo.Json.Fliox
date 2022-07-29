@@ -200,7 +200,8 @@ The API is available at [**fliox-docs API Reference**](https://github.com/friflo
 
 - dependencies
     - no 3rd party dependencies
-    - small size of Fliox assemblies (*.dll) ~ 850 kb in total, 350 kb zipped
+    - small size of Fliox assemblies (*.dll) ~ 850 kb in total, 350 kb zipped  
+      source code: library 47k LOC, unit tests: 18k LOC
 - target for optimal performance
     - maximize throughput, minimize latency, minimize heap allocations and boxing
     - enable task batching as a unit-of-work
