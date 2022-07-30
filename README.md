@@ -39,8 +39,12 @@ The **DemoHub** C# project and a compact features list available at the
 
 <br/>
 
-*Note*: JSON Fliox is **not** a UI library. It is designed for simple in integration in UI's like:  
-ASP.NET Razor, Blazor, MAUI, WinUI, ASP.NET MVC, WPF, WinForms, Xamarin.Forms & Unity.
+*Note*: JSON Fliox is **not** a UI library. It is designed for simple integration in UI's like:
+
+| Platform | Frameworks                                                                             |
+|:--------:| -------------------------------------------------------------------------------------- |
+| **.NET** | ASP.NET Razor, Blazor, MAUI, WinUI, ASP.NET MVC, WPF, WinForms, Xamarin.Forms & Unity. |
+| **Web**  | React, Angular, Vue.js, Svelte, Preact, Ember.js, ...                                  |
 
 <br/>
 
