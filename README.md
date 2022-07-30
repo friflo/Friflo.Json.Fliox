@@ -170,15 +170,15 @@ namespace **`Friflo.Json.Fliox`**
 This module enables transforming schemas expressed by a set of C# classes into
 other programming languages and schema formats like:
 
-| Language / Schema     | used in Hub Explorer by ...                           |
-| --------------------- | ----------------------------------------------------- |
-| C#                    |                                                       |
-| Typescript            |                                                       |
-| Kotlin                |                                                       |
-| HTML                  | ![HTML](docs/images/doc.svg) links to documentation   |
-| JSON Schema / OpenAPI | ![OAS](docs/images/oas.svg) links to Swagger UI       |
-| GraphQL               | ![GQL](docs/images/gql.svg) links to GraphiQL         |
-| Mermaid               | ![CD](docs/images/cd.svg) links to class diagram      |
+| Language / Schema     | used in Hub Explorer by ...                                                                           |
+| --------------------- | ----------------------------------------------------------------------------------------------------- |
+| C#                    |                                                                                                       |
+| Typescript            |                                                                                                       |
+| Kotlin                |                                                                                                       |
+| HTML                  | [![HTML](docs/images/doc.svg)](Json/Fliox/Schema/README.md#html-documentation) links to documentation |
+| JSON Schema / OpenAPI | [![OAS](docs/images/oas.svg)](Json/Fliox/Schema/README.md#swagger-ui) links to Swagger UI             |
+| GraphQL               | [![GQL](docs/images/gql.svg)](Json/Fliox/Schema/README.md#graphiql) links to GraphiQL                 |
+| Mermaid               | [![CD](docs/images/cd.svg)](Json/Fliox/Schema/README.md#class-diagram) links to class diagram         |
 
 Its main purpose is to generate database schemas and types for various languages of classes extending `FlioxClient`.
 
