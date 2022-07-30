@@ -29,6 +29,6 @@ Its **ORM** enables **Schema** creation. Its **Hub** serve hosted databases usin
 ## Links
 
 - [Homepage](https://github.com/friflo/Friflo.Json.Fliox)
-- [NuGet Package](https://www.nuget.org/Friflo.Json.Fliox)
+- [NuGet Package](https://www.nuget.org/Friflo.Json.Fliox.Hub.Explorer)
 - [License](https://github.com/friflo/Friflo.Json.Fliox/blob/main/LICENSE)
 - [Stack Overflow](https://stackoverflow.com/questions/tagged/fliox)
