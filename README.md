@@ -165,15 +165,15 @@ namespace **`Friflo.Json.Fliox`**
 This module enables transforming schemas expressed by a set of C# classes into
 other programming languages and schema formats like:
 
-| Language / Schema     | used by Hub Explorer by ...                                  |
-| --------------------- | ------------------------------------------------------------ |
-| C#                    |                                                              |
-| Typescript            |                                                              |
-| Kotlin                |                                                              |
-| HTML                  | <span class="doc btn">TypeName</span> links to documentation |
-| JSON Schema / OpenAPI | <span class="oas btn">OAS</span> links to Swagger UI         |
-| GraphQL               | <span class="gql btn">GQL</span> links to GraphiQL           |
-| Mermaid               | <span class="cd btn">CD</span> links to class diagram        |
+| Language / Schema     | used in Hub Explorer by ...                           |
+| --------------------- | ----------------------------------------------------- |
+| C#                    |                                                       |
+| Typescript            |                                                       |
+| Kotlin                |                                                       |
+| HTML                  | ![HTML](docs/images/doc.svg) links to documentation   |
+| JSON Schema / OpenAPI | ![OAS](docs/images/oas.svg) links to Swagger UI       |
+| GraphQL               | ![GQL](docs/images/gql.svg) links to GraphiQL         |
+| Mermaid               | ![CD](docs/images/cd.svg) links to class diagram      |
 
 Its main purpose is to generate database schemas and types for various languages of classes extending `FlioxClient`.
 
@@ -187,13 +187,6 @@ The links in the table above navigate to pages utilizing the generated schemas. 
 [Swagger UI screenshot](Json/Fliox/Schema/README.md#swagger-ui)  
 [GraphiQL screenshot](Json/Fliox/Schema/README.md#graphiql)
 
-<style>
-    .cd   { background: #6c6cff; color: white; }
-    .doc  { color: #5555c0; }
-    .oas  { background: #55cf42; color: white; }
-    .gql  { background: #ff6dcf; color: white; }
-    .btn  { padding: 0px 2px; font-size: 12px; border-radius: 3px; font-weight: bold; }
-</style>
 
 
 ### **Mapper**

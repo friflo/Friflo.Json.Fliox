@@ -18,15 +18,15 @@ Currently supported input type schemas are:
 
 From these input schemas the following output schemas can be generate:
 
-| Language / Schema     | used by Hub Explorer by ...                                  |
+| Language / Schema     | used in Hub Explorer by ...                                  |
 | --------------------- | ------------------------------------------------------------ |
 | C#                    |                                                              |
 | Typescript            |                                                              |
 | Kotlin                |                                                              |
-| HTML                  | <span class="doc btn">TypeName</span> links to documentation |
-| JSON Schema / OpenAPI | <span class="oas btn">OAS</span> links to Swagger UI         |
-| GraphQL               | <span class="gql btn">GQL</span> links to GraphiQL           |
-| Mermaid               | <span class="cd btn">CD</span> links to class diagram        |
+| HTML                  | ![HTML](../../../docs/images/doc.svg) links to documentation |
+| JSON Schema / OpenAPI | ![OAS](../../../docs/images/oas.svg) links to Swagger UI     |
+| GraphQL               | ![GQL](../../../docs/images/gql.svg) links to GraphiQL       |
+| Mermaid               | ![CD](../../../docs/images/cd.svg) links to class diagram    |
 
 The links in the table above navigate to pages utilizing the generated schemas. See screenshots below.
 
@@ -80,15 +80,6 @@ The links in the table above navigate to pages utilizing the generated schemas. 
 <img src="../../../docs/images/MonitorStore-graphql.png" width="739" height="222">
 
 *screenshot: `monitor` database with GraphiQL*
-
-
-<style>
-    .cd   { background: #6c6cff; color: white; }
-    .doc  { color: #5555c0; }
-    .oas  { background: #55cf42; color: white; }
-    .gql  { background: #ff6dcf; color: white; }
-    .btn  { padding: 0px 2px; font-size: 12px; border-radius: 3px; font-weight: bold; }
-</style>
 
 
 ## Examples
