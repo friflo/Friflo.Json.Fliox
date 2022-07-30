@@ -53,8 +53,10 @@ The **DemoHub** C# project and a compact features list available at the
 Detailed feature descriptions are explained by a set of `README` files linked below.  
 *Topics*: Demos, Client, Host, Hub Explorer, DB - support databases, Protocol, Schema, Mapper & Unit Tests.
 
-<br/>
 
+
+<br/><br/>
+<p>             <img src="docs/images/welcome.svg" width="320" height="120" ></p>
 
 ## Content
 
@@ -75,9 +77,7 @@ Detailed feature descriptions are explained by a set of `README` files linked be
     - [API](#api)                     ❯  [friflo/fliox-docs](https://github.com/friflo/fliox-docs)
     - [Principles](#principles)
 
-<br/><br/>
-<p>                         <img src="docs/images/welcome.svg" width="320" height="120" ></p>
-
+<br/>
 
 ## **Demos**
 📄   [friflo/FlioxHub.Demos](https://github.com/friflo/FlioxHub.Demos/blob/main/README.md)
