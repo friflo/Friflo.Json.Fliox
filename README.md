@@ -71,9 +71,8 @@ Detailed feature descriptions are explained by a set of `README` files linked be
     - [API](#api)                     ❯  [friflo/fliox-docs](https://github.com/friflo/fliox-docs)
     - [Principles](#principles)
 
-<p align="center" width="100%">
-    <img src="docs/images/welcome.svg" width="320" height="120" >
-</p>
+<br/><br/>
+<p>                         <img src="docs/images/welcome.svg" width="320" height="120" ></p>
 
 
 ## **Demos**
