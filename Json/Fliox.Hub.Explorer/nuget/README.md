@@ -1,28 +1,18 @@
-# [![JSON Fliox](https://raw.githubusercontent.com/friflo/Friflo.Json.Fliox/main/docs/images/Json-Fliox.svg)](https://github.com/friflo/Friflo.Json.Fliox)    **Friflo.Json.Fliox.Hub**      ![splash](https://raw.githubusercontent.com/friflo/Friflo.Json.Fliox/main/docs/images/paint-splatter.svg)
+# [![JSON Fliox](https://raw.githubusercontent.com/friflo/Friflo.Json.Fliox/main/docs/images/Json-Fliox.svg)](https://github.com/friflo/Friflo.Json.Fliox)    **Friflo.Json.Fliox.Hub.Explorer**      ![splash](https://raw.githubusercontent.com/friflo/Friflo.Json.Fliox/main/docs/images/paint-splatter.svg)
 
 ## Package
 
 This package is part of the project described below.
 
 **Content**  
-The package contains the fundamental API to create Fliox Hub's and Client's.  
-The fundamental classes are:
-- `FlioxClient` and `EntitySet<,>` used by clients
-- `FlioxHub` and `HttpHost` used by HTTP servers
+Contains a small assembly used to package web files - html, js, images, css - required by the Hub Explorer.  
 
+The Hub Explorer is a single page web application used by the Fliox Hub to explore hosted databases and containers.
 
-## Hub features
-- CRUD
-- Queries
-- Container relations
-- Messaging
-- Pub-Sub
-- JSON Schema / OpenAPI
-- GraphQL API
-- Batch API
-- Hub Explorer - Web UI to access databases and containers hosted by the Hub
-- Monitoring
-- Authentication / Authorization
+The package contains:
+- Hub Explorer
+- Swagger UI
+- GraphiQL
 
 
 ## Project
