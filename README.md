@@ -164,24 +164,36 @@ namespace **`Friflo.Json.Fliox`**
 
 This module enables transforming schemas expressed by a set of C# classes into
 other programming languages and schema formats like:
-- C#
-- JSON Schema / OpenAPI
-- Typescript
-- GraphQL
-- Kotlin
-- HTML
-- Mermaid - database schema as UML class diagram.
+
+| Language / Schema     | used by Hub Explorer by ...                                  |
+| --------------------- | ------------------------------------------------------------ |
+| C#                    |                                                              |
+| Typescript            |                                                              |
+| Kotlin                |                                                              |
+| HTML                  | <span class="doc btn">TypeName</span> links to documentation |
+| JSON Schema / OpenAPI | <span class="oas btn">OAS</span> links to Swagger UI         |
+| GraphQL               | <span class="gql btn">GQL</span> links to GraphiQL           |
+| Mermaid               | <span class="cd btn">CD</span> links to class diagram        |
 
 Its main purpose is to generate database schemas and types for various languages of classes extending `FlioxClient`.
+
+The links in the table above navigate to pages utilizing the generated schemas. Like the class diagram below.
 
 <img src="docs/images/MonitorStore-schema.png" width="739" height="226">
 
 *screenshot: MonitorStore schema as class diagram*
 
-[HTML Schema screenshot](Json/Fliox/Schema/README.md#html-schema)  
+[HTML Schema screenshot](Json/Fliox/Schema/README.md#html-documentation)  
 [Swagger UI screenshot](Json/Fliox/Schema/README.md#swagger-ui)  
 [GraphiQL screenshot](Json/Fliox/Schema/README.md#graphiql)
 
+<style>
+    .cd   { background: #6c6cff; color: white; }
+    .doc  { color: #5555c0; }
+    .oas  { background: #55cf42; color: white; }
+    .gql  { background: #ff6dcf; color: white; }
+    .btn  { padding: 0px 2px; font-size: 12px; border-radius: 3px; font-weight: bold; }
+</style>
 
 
 ### **Mapper**

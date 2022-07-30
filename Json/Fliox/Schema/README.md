@@ -17,13 +17,18 @@ Currently supported input type schemas are:
 - [JSON Schema](https://json-schema.org/)
 
 From these input schemas the following output schemas can be generate:
-- C#
-- [JSON Schema](https://json-schema.org/) / [OpenAPI](https://www.openapis.org/)
-- Typescript
-- GraphQL
-- Kotlin
-- HTML
-- Mermaid - database schema as UML class diagram. [example](../../../Json.Tests/assets~/Schema/Markdown/UserStore/class-diagram.md)
+
+| Language / Schema     | used by Hub Explorer by ...                                  |
+| --------------------- | ------------------------------------------------------------ |
+| C#                    |                                                              |
+| Typescript            |                                                              |
+| Kotlin                |                                                              |
+| HTML                  | <span class="doc btn">TypeName</span> links to documentation |
+| JSON Schema / OpenAPI | <span class="oas btn">OAS</span> links to Swagger UI         |
+| GraphQL               | <span class="gql btn">GQL</span> links to GraphiQL           |
+| Mermaid               | <span class="cd btn">CD</span> links to class diagram        |
+
+The links in the table above navigate to pages utilizing the generated schemas. See screenshots below.
 
 ## Features:
 - Code generators and JSON Validator support the C#/.NET language features:
@@ -57,11 +62,12 @@ From these input schemas the following output schemas can be generate:
   To retrieve a zip or a single file click on a schema or type link in the [Hub Explorer](../../Fliox.Hub.Explorer/README.md)
   and follow the link **Typescript, C#, Kotlin, JSON Schema / OpenAPI** on the top of the schema page.
 
-### HTML Schema
+### HTML Documentation
 
 <img src="../../../docs/images/MonitorStore-html.png" width="739" height="250">
 
 *screenshot: MonitorStore schema as single page HTML*
+
 
 ### Swagger UI
 
@@ -69,10 +75,20 @@ From these input schemas the following output schemas can be generate:
 
 *screenshot: `monitor` database with Swagger UI*
 
+
 ### GraphiQL
 <img src="../../../docs/images/MonitorStore-graphql.png" width="739" height="222">
 
 *screenshot: `monitor` database with GraphiQL*
+
+
+<style>
+    .cd   { background: #6c6cff; color: white; }
+    .doc  { color: #5555c0; }
+    .oas  { background: #55cf42; color: white; }
+    .gql  { background: #ff6dcf; color: white; }
+    .btn  { padding: 0px 2px; font-size: 12px; border-radius: 3px; font-weight: bold; }
+</style>
 
 
 ## Examples
