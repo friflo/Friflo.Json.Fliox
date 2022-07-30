@@ -264,6 +264,8 @@ The API is available at [**fliox-docs API Reference**](https://github.com/friflo
       E.g. instances of `FlioxClient`, `EntitySet<,>`, `FlioxHub` and `EntityDatabase`
     - no surprise of API behavior.  
       See [Principle of least astonishment](https://en.wikipedia.org/wiki/Principle_of_least_astonishment)
+    - no automatic C# Code formatting - as no Code Formatter supports the code style of this project.  
+      That concerns tabular indentation of fields, properties and variables.      
 - extensibility
     - support custom database adapters aka providers
     - support custom code / schema generators for new programming languages
