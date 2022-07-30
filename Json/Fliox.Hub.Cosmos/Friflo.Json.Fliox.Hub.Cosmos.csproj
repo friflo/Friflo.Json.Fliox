@@ -40,9 +40,9 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="Microsoft.Azure.Cosmos" Version="3.20.1" />
+      <PackageReference Include="Microsoft.Azure.Cosmos" Version="3.29.0" />
       <ProjectReference Include="..\Fliox.Hub\Friflo.Json.Fliox.Hub.csproj" />
-      <None Include="..\package-icon.png" Pack="true" PackagePath=""/>
+      <None Include="..\package-icon.png" Pack="true" PackagePath="" />
     </ItemGroup>
 
 </Project>
