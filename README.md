@@ -182,7 +182,7 @@ Its main purpose is to generate database schemas and types for various languages
 
 The links in the table above navigate to pages utilizing the generated schemas. Like the class diagram below.
 
-<img src="docs/images/MonitorStore-schema.png" width="739" height="226">
+[<img src="docs/images/MonitorStore-schema.png" width="739" height="226">](Json/Fliox/Schema/README.md#class-diagram)
 
 *screenshot: MonitorStore schema as class diagram*
 
