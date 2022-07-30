@@ -84,6 +84,8 @@ Detailed feature descriptions are explained by a set of `README` files linked be
 
 A separate git repository containing two **ready to run** examples showcasing the usage of Fliox Clients and Hubs.
 
+[<img src="docs/images/server-log.png" width="485" height="144">](https://github.com/friflo/FlioxHub.Demos/blob/main/README.md)  
+*screenshot: DemoHub server logs*
 <br/><br/>
 
 
