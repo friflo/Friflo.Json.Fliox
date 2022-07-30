@@ -242,7 +242,7 @@ The API is available at [**fliox-docs API Reference**](https://github.com/friflo
     - maximize throughput, minimize latency, minimize heap allocations and boxing
     - enable task batching as a unit-of-work
     - support bulk operations for CRUD commands
-- provide compact and strongly typed API
+- compact and strongly typed API
     - type safe access to entities and their keys when dealing with containers  
     - type safe access to DTO's when dealing with database commands
     - absence of using `object` as a type
