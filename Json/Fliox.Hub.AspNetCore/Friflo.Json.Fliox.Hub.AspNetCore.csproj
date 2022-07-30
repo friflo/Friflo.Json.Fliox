@@ -14,7 +14,12 @@
         <Authors>Ullrich Praetz</Authors>
         <Description>Enable JSON Fliox Hub integration into ASP.NET Core</Description>
         <PackageIcon>package-icon.png</PackageIcon>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
     </PropertyGroup>
+
+    <ItemGroup>
+      <None Include="README.md" Pack="true" PackagePath="\" />
+    </ItemGroup>
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
       <OutputPath>.bin\Debug\</OutputPath>

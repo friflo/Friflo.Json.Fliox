@@ -17,7 +17,12 @@
         <PackageIconUrl></PackageIconUrl>
         <RepositoryType>git</RepositoryType>
         <PackageIcon>package-icon.png</PackageIcon>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
     </PropertyGroup>
+
+    <ItemGroup>
+      <None Include="README.md" Pack="true" PackagePath="\" />
+    </ItemGroup>
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
       <OutputPath>.bin\Debug\</OutputPath>
