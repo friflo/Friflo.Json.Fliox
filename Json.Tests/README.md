@@ -6,14 +6,20 @@
 
 namespace **`Friflo.Json.Tests`**
 
+<br/>
+
 # Console application
 
 The project contains unit tests and a Console application used
-- to run a Test Server
+- to run a Test server
 ```
 dotnet run --module TestServer -c Release --no-build
 ```
-- to run performance checks.
+- to run performance checks.  
+  The performance checks are used to measure the throughput of `SyncTasks()` calls in various scenarios.  
+  - remote (HTTP / WebSocket) vs in-process 
+  - file-system vs in-memory database
+  - number of concurrent clients
 ```
 dotnet run --module MemoryDbThroughput    -c Release --no-build
 dotnet run --module FileDbThroughput      -c Release --no-build
@@ -22,6 +28,7 @@ dotnet run --module HttpDbThroughput      -c Release --no-build
 dotnet run --module LoopbackDbThroughput  -c Release --no-build
 ```
 
+<br/><br/>
 
 # Unit tests
 
