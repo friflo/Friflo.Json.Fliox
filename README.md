@@ -65,7 +65,7 @@ Compact list of features supported by Clients and Hubs
     - GraphQL Schema
     - Database Schema diagram
 - JSON Validation - Records & DTO's
-- Messages & Commands using DTO's
+- Send Messages & Commands using DTO's
 - Pub-Sub
 - Hub Explorer
 - Monitoring
