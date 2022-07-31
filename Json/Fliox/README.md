@@ -15,7 +15,7 @@ Contains classes used to process JSON in various ways utilized by `Friflo.Json.F
 
 ## Project
 
-**JSON Fliox** is **.NET** library supporting **simple** and **efficient** access to **NoSQL** databases via C# or Web clients.  
+**JSON Fliox** is a **.NET** library supporting **simple** and **efficient** access to **NoSQL** databases via C# or Web clients.  
 Its **ORM** enables **Schema** creation. Its **Hub** serve hosted databases using these schemas via HTTP.
 
 |              | Description                                                               | API  |

@@ -12,7 +12,7 @@ __`SELECT * FROM table1 LEFT JOIN table2 ON 💩 WHERE 💩 💩 💩`__
 
 
 ## Description
-**JSON Fliox** is **.NET** library supporting **simple** and **efficient** access to **NoSQL** databases via C# or Web clients.  
+**JSON Fliox** is a **.NET** library supporting **simple** and **efficient** access to **NoSQL** databases via C# or Web clients.  
 Its **ORM** enables **Schema** creation. Its **Hub** serve hosted databases using these schemas via HTTP.
 
 |              | Description                                                               | API  |
@@ -92,7 +92,7 @@ So development is entirely done with .NET Core while checking Unity compatibilit
 The result is a project with a feature set useful in enterprise & gaming projects and targeting for optimal performance.  
 The common ground of both areas - enterprise & game development - is the need of databases.
 In context of game development the game state (Players, NPC, objects, ...) is represented as an in-memory database.  
-In enterprise projects instead database are used to store any kind of data persistent by using any popular DBMS.
+In enterprise projects instead databases are used to store any kind of data persistent by using any popular DBMS.
 
 <br/><br/>
 <p>             <img src="docs/images/welcome.svg" width="320" height="120" ></p>
