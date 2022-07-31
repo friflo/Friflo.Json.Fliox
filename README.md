@@ -342,7 +342,6 @@ The API is available at [**fliox-docs API Reference**](https://github.com/friflo
 Leave a ⭐
 
 Happy coding!  
-😊 💻
 
 <br/>
 
