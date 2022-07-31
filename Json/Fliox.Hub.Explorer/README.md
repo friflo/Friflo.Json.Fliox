@@ -1,6 +1,6 @@
 
 
-# ![logo](../../docs/images/Json-Fliox.svg)        **Fliox Hub Explorer**
+# [![JSON Fliox](../../docs/images/Json-Fliox.svg)](https://github.com/friflo/Friflo.Json.Fliox)        **Fliox Hub Explorer**
 
 
 
