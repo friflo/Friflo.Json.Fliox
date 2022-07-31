@@ -29,7 +29,7 @@ Its **ORM** enables **Schema** creation. Its **Hub** serve hosted databases usin
 - [TypeORM](https://github.com/typeorm/typeorm) · Typescript
 - [Prisma](https://github.com/prisma/prisma) · Typescript
 
-*Info*: Pronunciation of **io** in **Fliox** is same as in **Riot** <br/><br/>
+*Pronunciation*: **io** in **Fliox** is same as in **Riot** <br/><br/>
 
 ### **TL;DR**
 
