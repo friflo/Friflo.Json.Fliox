@@ -254,7 +254,7 @@ The API is available at [**fliox-docs API Reference**](https://github.com/friflo
 - the **Zero** principles
     - 0 compiler errors and warnings
     - 0 ReSharper errors, warnings, suggestions and hints
-    - 0 unit test errors
+    - 0 unit test errors, no flaky tests
     - 0 typos - observed by spell checker
     - no synchronous calls to API's dealing with **IO** like network or disc    
       Instead using `async` / `await`
