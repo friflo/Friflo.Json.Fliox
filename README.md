@@ -41,8 +41,8 @@ Its **ORM** enables **Schema** creation. Its **Hub** serve hosted databases usin
 ### **TL;DR**
 
 A demo server running on AWS - [**DemoHub**](http://ec2-174-129-178-18.compute-1.amazonaws.com/) (EC2 instance: t2-micro, us-east-1)  
-The **DemoHub** .NET project is available at the
-[friflo/FlioxHub.Demos](https://github.com/friflo/FlioxHub.Demos#-flioxhubdemos-) repository.
+The **DemoHub** .NET project is available as example at
+[🚀 friflo/FlioxHub.Demos](https://github.com/friflo/FlioxHub.Demos#-flioxhubdemos-) repository.
 
 <br/>
 
@@ -109,18 +109,18 @@ This is enabled by supporting Pub-Sub with sub millisecond latency on *localhost
 
 ## Content
 
-- **Demos**               ❯  [friflo/FlioxHub.Demos](https://github.com/friflo/FlioxHub.Demos#-flioxhubdemos-)
+- 🚀 **Demos**               ❯  [friflo/FlioxHub.Demos](https://github.com/friflo/FlioxHub.Demos#-flioxhubdemos-)
 
-- **Fliox Hub**
+- 🌌 **Fliox Hub**
     - [Client](#client)                 ❯  [README.md](Json/Fliox.Hub/Client/README.md)
     - [Host](#host)                   ❯  [README.md](Json/Fliox.Hub/Host/README.md)
     - [Explorer](#explorer)             ❯  [README.md](Json/Fliox.Hub.Explorer/README.md)
     - [DB](#db)                      ❯  [README.md](Json/Fliox.Hub/DB/README.md)
     - [Protocol](#protocol)             ❯  [README.md](Json/Fliox.Hub/Protocol/README.md)
-- **Fliox**
+- ✨ **Fliox**
     - [Schema](#schema)              ❯  [README.md](Json/Fliox/Schema/README.md)
     - [Mapper](#mapper)              ❯  [README.md](Json/Fliox/Mapper/README.md)
-- **Project**
+- 📦 **Project**
     - [Unit Tests](#unit-tests)           ❯  [README.md](Json.Tests/README.md)
     - [API](#api)                     ❯  [friflo/fliox-docs](https://github.com/friflo/fliox-docs)
     - [Principles](#principles)
@@ -208,7 +208,7 @@ Instead they are using a `FlioxClient` that is optimized to transform API calls 
 
 
 
-## 💦 **Fliox**
+## ✨ **Fliox**
 
 namespace **`Friflo.Json.Fliox`**
 
