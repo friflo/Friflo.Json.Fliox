@@ -93,13 +93,13 @@ As Unity is selected as the Game engine C# .NET is the way to go.
 
 Another objective is to create an open source software project which has the potential to be popular.  
 As I have 15+ years experience as a software developer in enterprise environment - Shout-Out to [HERE Technologies](https://www.here.com/) -
-I decided to avoid a Vendor Lock-In to Unity and target for a solution which fits also the needs of enterprise projects.
+I decided to avoid a Vendor Lock-In to Unity and target for a solution which fits also the needs of common .NET projects.
 So development is entirely done with .NET Core while checking Unity compatibility on a regular basis.
 
-The result is a project with a feature set useful in enterprise & gaming projects and targeting for optimal performance.  
-The common ground of both areas - enterprise & game development - is the need of databases.  
+The result is a project with a feature set useful in common & gaming projects and targeting for optimal performance.  
+The common ground of both areas is the need of databases.  
 In context of game development the game state (Players, NPC, objects, ...) is represented as an in-memory database.  
-In enterprise projects databases are used to store any kind of data persistent by using popular DBMS.  
+In common projects databases are used to store any kind of data persistent by using popular DBMS.  
 Specific for online gaming is the ability to send messages from one client to another in *real time*.
 This is enabled by supporting Pub-Sub with sub millisecond latency on *localhost*.
 
