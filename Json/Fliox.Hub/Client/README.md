@@ -1,6 +1,6 @@
 
 
-# [![JSON Fliox](../../../docs/images/Json-Fliox.svg)](https://github.com/friflo/Friflo.Json.Fliox)     **Fliox Hub Client** ![SPLASH](../../../docs/images/paint-splatter.svg)
+# [![JSON Fliox](../../../docs/images/Json-Fliox.svg)](https://github.com/friflo/Friflo.Json.Fliox)     **Hub Client** ![SPLASH](../../../docs/images/paint-splatter.svg)
 
 [![.NET Tests](https://github.com/friflo/Friflo.Json.Fliox/workflows/.NET/badge.svg)](https://github.com/friflo/Friflo.Json.Fliox/actions)
 
