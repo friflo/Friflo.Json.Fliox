@@ -339,7 +339,7 @@ The API is available at [**fliox-docs API Reference**](https://github.com/friflo
 
 
 💖 *Like this project?*  
-*Leave a* ⭐  [friflo/Friflo.Json.Fliox](https://github.com/friflo/Friflo.Json.Fliox)
+*Leave a* ⭐ at  [friflo/Friflo.Json.Fliox](https://github.com/friflo/Friflo.Json.Fliox)
 
 Happy coding!  
 
