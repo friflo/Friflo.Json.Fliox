@@ -74,7 +74,25 @@ Compact list of features supported by Clients and Hubs
 The features are explained via a set of `README` files grouped by their topic linked below.  
 *Topics*: Demos, Client, Host, Hub Explorer, DB - support databases, Protocol, Schema & Mapper.
 
+<br/>
 
+## Motivation
+
+The main driver of this project is the development of an competitive online multiplayer game -
+a still unresolved task in my life todo list.  
+The foundation to achieve this is commonly a module called *Netcode* in online multiplayer games.  
+The key aspects of *NetCode* are: Synchronizing game state, low latency, high throughput, minimal use of system resources, reliability & easy to use API.
+As Unity is selected as the Game engine C# .NET is the way to go.
+
+Another objective is to create an open source software project which has the potential to be popular.  
+As I have 15+ years experience as a software developer in enterprise environment - greetings to [HERE Technologies](https://www.here.com/) -
+I decided to avoid a Vendor Lock-In to Unity and target for a solution which fits also the needs of enterprise projects.
+So development is entirely done with .NET Core while checking Unity compatibility on a regular basis.
+
+The result is a project with a feature set useful in enterprise & gaming projects and targeting for optimal performance.  
+The common ground of both areas - enterprise & game development - is the need of databases.
+In context of game development the game state (Players, NPC, objects, ...) is represented a an in-memory database for a game session.  
+In enterprise projects instead database are used to store any kind of data persistent by using any popular DBMS.
 
 <br/><br/>
 <p>             <img src="docs/images/welcome.svg" width="320" height="120" ></p>
