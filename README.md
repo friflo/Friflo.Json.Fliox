@@ -11,7 +11,7 @@ __`SELECT * FROM table1 LEFT JOIN table2 ON 💩 WHERE 💩 💩 💩`__
 *Then you may have a short look at this project*  <br/><br/>
 
 
-## Description
+## 🎯 Description
 **JSON Fliox** is a **.NET** library supporting **simple** and **efficient** access to **NoSQL** databases via C# or Web clients.  
 Its **ORM** enables **Schema** creation. Its **Hub** serve hosted databases using these schemas via HTTP.
 
@@ -55,7 +55,7 @@ The **DemoHub** .NET project is available at the
 
 <br/>
 
-## Features
+## 🎨 Features
 
 Compact list of features supported by Clients and Hubs
 - ASP.NET Core & HttpListener integration
@@ -83,7 +83,7 @@ The features are explained via a set of `README` files grouped by their topic li
 
 <br/>
 
-## Motivation
+## ⚡ Motivation
 
 The main driver of this project is the development of an competitive online multiplayer game -
 a still unresolved task in my todo list.  
@@ -120,15 +120,14 @@ This is enabled by supporting Pub-Sub with sub millisecond latency on *localhost
 - **Fliox**
     - [Schema](#schema)              ❯  [README.md](Json/Fliox/Schema/README.md)
     - [Mapper](#mapper)              ❯  [README.md](Json/Fliox/Mapper/README.md)
-- **Testing**
+- **Project**
     - [Unit Tests](#unit-tests)           ❯  [README.md](Json.Tests/README.md)
-- **Design**
     - [API](#api)                     ❯  [friflo/fliox-docs](https://github.com/friflo/fliox-docs)
     - [Principles](#principles)
 
 <br/>
 
-## **Demos**
+## 🚀 **Demos**
 📄   [friflo/FlioxHub.Demos](https://github.com/friflo/FlioxHub.Demos#-flioxhubdemos-)
 
 A separate git repository containing two **ready to run** examples showcasing the usage of Fliox Clients and Hubs.  
@@ -139,7 +138,7 @@ The examples are **the place to go** showing how to use the C# and the Web API.
 <br/><br/>
 
 
-## **Fliox Hub**
+## 🌌 **Fliox Hub**
 
 namespace **`Friflo.Json.Fliox.Hub`**
 
@@ -209,7 +208,7 @@ Instead they are using a `FlioxClient` that is optimized to transform API calls 
 
 
 
-## **Fliox**
+## 💦 **Fliox**
 
 namespace **`Friflo.Json.Fliox`**
 
@@ -259,7 +258,7 @@ Its also used for serialization of the supported protocols: REST, GraphQL and Ba
 
 
 
-## **Testing**
+## 📦 **Project**
 
 ### **Unit Tests**
 📄   [README.md](Json.Tests/README.md)
@@ -274,13 +273,12 @@ Passed! - Failed:   0, Passed: 347, Skipped:   0, Total: 347, Duration: 15 s - .
 ```
 
 
-## **Design**
-
 ### **API**
 
 The Fliox **C# .NET** API is [CLS-compliant](https://docs.microsoft.com/en-us/dotnet/api/system.clscompliantattribute#remarks)
 
 The API is available at [**fliox-docs API Reference**](https://github.com/friflo/fliox-docs)
+
 
 ### **Principles**
 
@@ -325,7 +323,7 @@ The API is available at [**fliox-docs API Reference**](https://github.com/friflo
 
 <br/>
 
-## Credits
+## 🙏 Credits
 |                                                                           |             |                                                                 |
 | ------------------------------------------------------------------------- | ----------- | --------------------------------------------------------------- |
 | [NUnit](https://nunit.org/)                                               | C#          | unit testing of the JSON Fliox library and the Demos            |
@@ -355,4 +353,4 @@ This project is licensed under AGPLv3.
 Project not published nor released yet.
 
 friflo JSON Fliox  
-Copyright © 2022   👨‍🦲 Ullrich Praetz
+Copyright © 2022   Ullrich Praetz
