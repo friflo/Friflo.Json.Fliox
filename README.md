@@ -121,7 +121,7 @@ This is enabled by supporting Pub-Sub with sub millisecond latency on *localhost
     - [Schema](#schema)              ❯  [README.md](Json/Fliox/Schema/README.md)
     - [Mapper](#mapper)              ❯  [README.md](Json/Fliox/Mapper/README.md)
 - 📦 **Project**
-    - [Build](#build)                    ❯  [README.md](Json.Tests/README.md)
+    - [Build](#build)                  ❯  [README.md](Json.Tests/README.md)
     - [API](#api)                     ❯  [friflo/fliox-docs](https://github.com/friflo/fliox-docs)
     - [Principles](#principles)
 
