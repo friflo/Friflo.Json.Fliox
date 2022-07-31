@@ -50,7 +50,28 @@ The **DemoHub** C# project and a compact features list available at the
 
 ## Features
 
-Detailed feature descriptions are explained by a set of `README` files linked below.  
+Compact list of features supported by Clients and Hubs
+- ASP.NET Core & HttpListener integration
+    - REST API - JSON Schema / OpenAPI
+    - GraphQL API
+    - Batch API - HTTP & WebSocket
+- CRUD
+- Queries - LINQ expressions
+- Container relations
+- Database Schema
+- Code generation
+    - C#, Typescript & Kotlin
+    - JSON Schema / OpenAPI
+    - GraphQL
+    - Database Schema diagram
+- JSON Validation: Records & DTO's
+- Messages & Commands using DTO's
+- Pub-Sub
+- Hub Explorer
+- Monitoring
+- Authentication / Authorization
+
+The features are explained as a set of `README` files grouped by their topic linked below.  
 *Topics*: Demos, Client, Host, Hub Explorer, DB - support databases, Protocol, Schema, Mapper & Unit Tests.
 
 
