@@ -103,9 +103,10 @@ The features are explained as a set of `README` files grouped by their topic lin
 ## **Demos**
 📄   [friflo/FlioxHub.Demos](https://github.com/friflo/FlioxHub.Demos/blob/main/README.md)
 
-A separate git repository containing two **ready to run** examples showcasing the usage of Fliox Clients and Hubs.
+A separate git repository containing two **ready to run** examples showcasing the usage of Fliox Clients and Hubs.  
+The examples are the place to go showing how to use the C# and the Web API.
 
-[<img src="docs/images/server-log.png" width="485" height="144">](https://github.com/friflo/FlioxHub.Demos/blob/main/README.md)  
+[<img src="docs/images/server-log.png" width="647" height="191">](https://github.com/friflo/FlioxHub.Demos/blob/main/README.md)  
 *screenshot: DemoHub server logs*
 <br/><br/>
 
