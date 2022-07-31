@@ -1,8 +1,8 @@
 {
   "profiles": {
-    "FlioxServer": {
+    "TestServer": {
       "commandName": "Project",
-      "commandLineArgs": "--module FlioxServer",
+      "commandLineArgs": "--module TestServer",
       "workingDirectory": "$(SolutionDir)"
     },
     "MemoryDbThroughput": {

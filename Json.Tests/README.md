@@ -1,15 +1,29 @@
 
 
-# ![logo](../docs/images/Json-Fliox.svg)     **Unit Tests**      ![SPLASH](../docs/images/paint-splatter.svg)
+# ![logo](../docs/images/Json-Fliox.svg)     **Json.Tests**      ![SPLASH](../docs/images/paint-splatter.svg)
 
 [![.NET Tests](https://github.com/friflo/Friflo.Json.Fliox/workflows/.NET/badge.svg)](https://github.com/friflo/Friflo.Json.Fliox/actions)
 
-
-
-# **Unit tests**
-
 namespace **`Friflo.Json.Tests`**
 
+# Console application
+
+The project contains unit tests and a Console application used
+- to run a Test Server
+```
+dotnet run --module TestServer -c Release --no-build
+```
+- to run performance checks.
+```
+dotnet run --module MemoryDbThroughput    -c Release --no-build
+dotnet run --module FileDbThroughput      -c Release --no-build
+dotnet run --module WebsocketDbThroughput -c Release --no-build
+dotnet run --module HttpDbThroughput      -c Release --no-build
+dotnet run --module LoopbackDbThroughput  -c Release --no-build
+```
+
+
+# Unit tests
 
 The current result of the unit test are available as **CI tests** at
 [Github actions](https://github.com/friflo/Friflo.Json.Fliox/actions).

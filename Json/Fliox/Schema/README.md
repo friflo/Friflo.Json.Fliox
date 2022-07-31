@@ -98,5 +98,5 @@ The links in the table above navigate to pages utilizing the generated schemas. 
   [Schema generators & JSON Validation tests](../../../Json.Tests/Common/UnitTest/Fliox/Schema)
 
 - Schema validation for an `EntityDatabase` by a `JSON.Fliox` server is demonstrated at:  
-  [FlioxServer](../../../Json.Tests/Main/Program.cs)
+  [TestServer](../../../Json.Tests/Main/Program.cs)
 

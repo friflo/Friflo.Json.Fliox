@@ -28,7 +28,7 @@ namespace Friflo.Json.Tests.Main
         // Get DOMAIN\USER via  PowerShell
         //     $env:UserName
         //     $env:UserDomain 
-        private static void FlioxServer(string endpoint) {
+        private static void TestServer(string endpoint) {
             var hostHub = CreateHttpHost(new Config());
         //  var hostHub = CreateMiniHost();
             var server = new HttpListenerHost(endpoint, hostHub);

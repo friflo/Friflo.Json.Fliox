@@ -121,7 +121,7 @@ This is enabled by supporting Pub-Sub with sub millisecond latency on *localhost
     - [Schema](#schema)              ❯  [README.md](Json/Fliox/Schema/README.md)
     - [Mapper](#mapper)              ❯  [README.md](Json/Fliox/Mapper/README.md)
 - 📦 **Project**
-    - [Unit Tests](#unit-tests)           ❯  [README.md](Json.Tests/README.md)
+    - [Build](#build)                 ❯  [README.md](Json.Tests/README.md)
     - [API](#api)                     ❯  [friflo/fliox-docs](https://github.com/friflo/fliox-docs)
     - [Principles](#principles)
 
@@ -260,9 +260,13 @@ Its also used for serialization of the supported protocols: REST, GraphQL and Ba
 
 ## 📦 **Project**
 
-### **Unit Tests**
+### **Build**
 📄   [README.md](Json.Tests/README.md)
 
+The project **Json.Tests** contains a console application and unit tests.  
+The run commands are in the README file.
+
+**unit tests**  
 Code coverage: **86%** measured with **JetBrains • docCover**
 
 *summarized logs of test execution*

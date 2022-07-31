@@ -11,7 +11,7 @@ namespace Friflo.Json.Tests.Main
     {
         private enum Module
         {
-            FlioxServer,
+            TestServer,
             FlioxServerAspNetCore,
             //
             MemoryDbThroughput,
@@ -21,12 +21,12 @@ namespace Friflo.Json.Tests.Main
             LoopbackDbThroughput
         }
         
-        // run FlioxServer via one of the following methods:
-        //   dotnet run --project ./Json.Tests/Friflo.Json.Tests.csproj -- --module FlioxServer        (also compiles project)
-        //   dotnet ./Json.Tests/.bin/Debug/netcoreapp3.1/Friflo.Json.Tests.dll --module FlioxServer   (requires Debug build)
-        //   VSCode        > Run > FlioxServer
-        //   Rider         > Run > FlioxServer
-        //   Visual Studio > Debug > FlioxServer
+        // run TestServer via one of the following methods:
+        //   dotnet run --project ./Json.Tests/Friflo.Json.Tests.csproj -- --module TestServer        (also compiles project)
+        //   dotnet ./Json.Tests/.bin/Debug/netcoreapp3.1/Friflo.Json.Tests.dll --module TestServer   (requires Debug build)
+        //   VSCode        > Run > TestServer
+        //   Rider         > Run > TestServer
+        //   Visual Studio > Debug > TestServer
         public static void Main(string[] args)
         {
             Console.WriteLine($"Friflo.Json.Tests - current directory: {Directory.GetCurrentDirectory()}");
@@ -45,8 +45,8 @@ namespace Friflo.Json.Tests.Main
             {
                 Console.WriteLine($"module: {module}");
                 switch (module) {
-                    case Module.FlioxServer:
-                        FlioxServer(endpoint);
+                    case Module.TestServer:
+                        TestServer(endpoint);
                         break;
                     case Module.FlioxServerAspNetCore:
                         FlioxServerAspNetCore(endpoint);

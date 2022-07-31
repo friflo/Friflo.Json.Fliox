@@ -11,7 +11,7 @@
             "preLaunchTask": "build",
             // If you have changed target frameworks, make sure to update the program path.
             "program": "${workspaceFolder}/Json.Tests/.bin/Debug/net6.0/Friflo.Json.Tests.dll",
-            "args": ["--module", "FlioxServer"],
+            "args": ["--module", "TestServer"],
             "cwd": "${workspaceFolder}",
             // For more information about the 'console' field, see https://aka.ms/VSCode-CS-LaunchJson-Console
             "console": "internalConsole",
