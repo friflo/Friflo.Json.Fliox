@@ -153,7 +153,7 @@ The database containers are represented as properties in the derived class `MyCl
 These classes also acts as a database schemas. They can be assigned to databases hosted on the Hub.  
 Doing this enables features like:
 - JSON validation of entities aka records
-- generation of schemas for OpenAPI or GraphQL
+- generation of JSON Schema / OpenAPI or a GraphQL Schema
 - generate a single HTML page with a complete schema documentation
 - generate a UML class diagram to visualize a database schema
 - generate types declared by the database schema for various programming languages
@@ -227,8 +227,8 @@ other programming languages and schema formats like:
 | Kotlin                |                                                                                                       |
 | HTML                  | [![HTML](docs/images/doc.svg)](Json/Fliox/Schema/README.md#html-documentation) links to documentation |
 | JSON Schema / OpenAPI | [![OAS](docs/images/oas.svg)](Json/Fliox/Schema/README.md#swagger-ui) links to Swagger UI             |
-| GraphQL               | [![GQL](docs/images/gql.svg)](Json/Fliox/Schema/README.md#graphiql) links to GraphiQL                 |
-| Mermaid               | [![CD](docs/images/cd.svg)](Json/Fliox/Schema/README.md#class-diagram) links to class diagram         |
+| GraphQL Schema        | [![GQL](docs/images/gql.svg)](Json/Fliox/Schema/README.md#graphiql) links to GraphiQL                 |
+| Mermaid Class Diagram | [![CD](docs/images/cd.svg)](Json/Fliox/Schema/README.md#class-diagram) links to Class Diagram         |
 
 Its main purpose is to generate database schemas and types for various languages of classes extending `FlioxClient`.
 
