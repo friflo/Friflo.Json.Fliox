@@ -6,11 +6,15 @@
 
 namespace **`Friflo.Json.Tests`**
 
+The project contains a Console application and unit tests.  
+Execution of both is described below
+
 <br/>
 
 # Console application
 
-The project contains unit tests and a Console application used
+The Console application is used:
+
 - to run a Test server
 ```
 dotnet run --module TestServer -c Release --no-build
