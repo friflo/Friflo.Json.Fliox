@@ -79,7 +79,7 @@ The features are explained via a set of `README` files grouped by their topic li
 ## Motivation
 
 The main driver of this project is the development of an competitive online multiplayer game -
-a still unresolved task in my life todo list.  
+a still unresolved task in my todo list.  
 The foundation to achieve this is commonly a module called *Netcode* in online multiplayer games.  
 The key aspects of *Netcode* are: Synchronizing game state, low latency, high throughput, minimal use of system resources, reliability & easy to use API.
 As Unity is selected as the Game engine C# .NET is the way to go.
