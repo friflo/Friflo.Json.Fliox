@@ -90,9 +90,12 @@ I decided to avoid a Vendor Lock-In to Unity and target for a solution which fit
 So development is entirely done with .NET Core while checking Unity compatibility on a regular basis.
 
 The result is a project with a feature set useful in enterprise & gaming projects and targeting for optimal performance.  
-The common ground of both areas - enterprise & game development - is the need of databases.
+The common ground of both areas - enterprise & game development - is the need of databases.  
 In context of game development the game state (Players, NPC, objects, ...) is represented as an in-memory database.  
-In enterprise projects instead databases are used to store any kind of data persistent by using any popular DBMS.
+In enterprise projects databases are used to store any kind of data persistent by using popular DBMS.  
+Specific for online gaming is the ability to send messages from one client to another in *real time*.
+This is enabled by supporting Pub-Sub with sub millisecond latency on *localhost*.
+
 
 <br/><br/>
 <p>             <img src="docs/images/welcome.svg" width="320" height="120" ></p>
