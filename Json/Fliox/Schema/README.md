@@ -1,6 +1,6 @@
 
 
-# [![JSON Fliox](../../../docs/images/Json-Fliox.svg)](https://github.com/friflo/Friflo.Json.Fliox)        **Fliox Schema**
+# [![JSON Fliox](../../../docs/images/Json-Fliox.svg)](https://github.com/friflo/Friflo.Json.Fliox)        **Fliox Schema** ![SPLASH](../../../docs/images/paint-splatter.svg)
 
 
 

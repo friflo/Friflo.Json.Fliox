@@ -1,6 +1,6 @@
 
 
-# [![JSON Fliox](../docs/images/Json-Fliox.svg)](https://github.com/friflo/Friflo.Json.Fliox)     **FlioxHub Demos**      ![SPLASH](../docs/images/paint-splatter.svg)
+# [![JSON Fliox](../docs/images/Json-Fliox.svg)](https://github.com/friflo/Friflo.Json.Fliox)     **FlioxHub Demos** ![SPLASH](../docs/images/paint-splatter.svg)
 
 
 The examples in this folder are the same examples as in the separate Git repository
