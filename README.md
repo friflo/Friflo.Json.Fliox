@@ -17,7 +17,7 @@ Its **ORM** enables **Schema** creation. Its **Hub** serve hosted databases usin
 
 |              | Description                                                               | API  |
 | ------------ | ------------------------------------------------------------------------- | ---- |
-| ORM          | Object Relational Mapper - to access to NoSQL databases with .NET clients | C#   |
+| ORM Client   | Object Relational Mapper - to access to NoSQL databases with .NET clients | C#   |
 | Database Hub | A service hosting a set of NoSQL databases via an **ASP.NET Core** server | HTTP |
 
 As **JSON Fliox** is an [ORM](https://en.wikipedia.org/wiki/Object-relational_mapping) is has similarities to projects like
@@ -33,14 +33,13 @@ As **JSON Fliox** is an [ORM](https://en.wikipedia.org/wiki/Object-relational_ma
 
 ### **TL;DR**
 
-A demo server running on AWS - [**DemoHub**](http://ec2-174-129-178-18.compute-1.amazonaws.com/) (EC2 instance: t2-micro, us-east-1)
-
-The **DemoHub** C# project and a compact features list available at the
+A demo server running on AWS - [**DemoHub**](http://ec2-174-129-178-18.compute-1.amazonaws.com/) (EC2 instance: t2-micro, us-east-1)  
+The **DemoHub** .NET project is available at the
 [friflo/FlioxHub.Demos](https://github.com/friflo/FlioxHub.Demos#features) repository.
 
 <br/>
 
-*Note*: JSON Fliox is **not** a UI library. It is designed for simple integration in UI's like:
+*Note*: JSON Fliox is **not** a UI library. It is designed for simple integration in UI frameworks like:
 
 | Platform | Frameworks                                                                             |
 |:--------:| -------------------------------------------------------------------------------------- |
@@ -65,15 +64,15 @@ Compact list of features supported by Clients and Hubs
     - JSON Schema / OpenAPI
     - GraphQL
     - Database Schema diagram
-- JSON Validation: Records & DTO's
+- JSON Validation - Records & DTO's
 - Messages & Commands using DTO's
 - Pub-Sub
 - Hub Explorer
 - Monitoring
 - Authentication / Authorization
 
-The features are explained as a set of `README` files grouped by their topic linked below.  
-*Topics*: Demos, Client, Host, Hub Explorer, DB - support databases, Protocol, Schema, Mapper & Unit Tests.
+The features are explained via a set of `README` files grouped by their topic linked below.  
+*Topics*: Demos, Client, Host, Hub Explorer, DB - support databases, Protocol, Schema & Mapper.
 
 
 
