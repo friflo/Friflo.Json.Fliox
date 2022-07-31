@@ -91,7 +91,7 @@ So development is entirely done with .NET Core while checking Unity compatibilit
 
 The result is a project with a feature set useful in enterprise & gaming projects and targeting for optimal performance.  
 The common ground of both areas - enterprise & game development - is the need of databases.
-In context of game development the game state (Players, NPC, objects, ...) is represented a an in-memory database for a game session.  
+In context of game development the game state (Players, NPC, objects, ...) is represented as an in-memory database.  
 In enterprise projects instead database are used to store any kind of data persistent by using any popular DBMS.
 
 <br/><br/>
