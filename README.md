@@ -338,8 +338,8 @@ The API is available at [**fliox-docs API Reference**](https://github.com/friflo
 | [Inscape](https://gitlab.com/inkscape/inkscape)                           | Application | to create SVG's for this project                                |
 
 
-💖 Like this project?  
-Leave a ⭐
+💖 *Like this project?*  
+*Leave a* ⭐  [friflo/Friflo.Json.Fliox](https://github.com/friflo/Friflo.Json.Fliox)
 
 Happy coding!  
 
