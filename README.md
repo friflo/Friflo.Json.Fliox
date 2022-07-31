@@ -83,7 +83,7 @@ The features are explained via a set of `README` files grouped by their topic li
 
 <br/>
 
-## ⚡ Motivation
+## 🔥 Motivation
 
 The main driver of this project is the development of an competitive online multiplayer game -
 a still unresolved task in my todo list.  
