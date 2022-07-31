@@ -42,7 +42,7 @@ Its **ORM** enables **Schema** creation. Its **Hub** serve hosted databases usin
 
 A demo server running on AWS - [**DemoHub**](http://ec2-174-129-178-18.compute-1.amazonaws.com/) (EC2 instance: t2-micro, us-east-1)  
 The **DemoHub** .NET project is available as example at
-[🚀 friflo/FlioxHub.Demos](https://github.com/friflo/FlioxHub.Demos#-flioxhubdemos-) repository.
+[🚀 friflo/FlioxHub.Demos](https://github.com/friflo/FlioxHub.Demos#content) repository.
 
 <br/>
 
@@ -109,7 +109,7 @@ This is enabled by supporting Pub-Sub with sub millisecond latency on *localhost
 
 ## Content
 
-- 🚀 **Demos**               ❯  [friflo/FlioxHub.Demos](https://github.com/friflo/FlioxHub.Demos#-flioxhubdemos-)
+- 🚀 **Demos**           ❯  [friflo/FlioxHub.Demos](https://github.com/friflo/FlioxHub.Demos#content)
 
 - 🌌 **Fliox Hub**
     - [Client](#client)                 ❯  [README.md](Json/Fliox.Hub/Client/README.md)
@@ -128,12 +128,12 @@ This is enabled by supporting Pub-Sub with sub millisecond latency on *localhost
 <br/>
 
 ## 🚀 **Demos**
-📄   [friflo/FlioxHub.Demos](https://github.com/friflo/FlioxHub.Demos#-flioxhubdemos-)
+📄   [friflo/FlioxHub.Demos](https://github.com/friflo/FlioxHub.Demos#content)
 
 A separate git repository containing two **ready to run** examples showcasing the usage of Fliox Clients and Hubs.  
 The examples are **the place to go** showing how to use the C# and the Web API.
 
-[<img src="docs/images/server-log.png" width="647" height="191">](https://github.com/friflo/FlioxHub.Demos#-flioxhubdemos-)  
+[<img src="docs/images/server-log.png" width="647" height="191">](https://github.com/friflo/FlioxHub.Demos#content)  
 *screenshot: DemoHub server logs*
 <br/><br/>
 
