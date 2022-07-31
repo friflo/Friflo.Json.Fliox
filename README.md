@@ -62,7 +62,7 @@ Compact list of features supported by Clients and Hubs
 - Code generation
     - C#, Typescript & Kotlin
     - JSON Schema / OpenAPI
-    - GraphQL
+    - GraphQL Schema
     - Database Schema diagram
 - JSON Validation - Records & DTO's
 - Messages & Commands using DTO's
