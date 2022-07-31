@@ -92,7 +92,7 @@ The key aspects of *Netcode* are: Synchronizing game state, low latency, high th
 As Unity is selected as the Game engine C# .NET is the way to go.
 
 Another objective is to create an open source software project which has the potential to be popular.  
-As I have 15+ years experience as a software developer in enterprise environment - greetings to [HERE Technologies](https://www.here.com/) -
+As I have 15+ years experience as a software developer in enterprise environment - Shout-Out to [HERE Technologies](https://www.here.com/) -
 I decided to avoid a Vendor Lock-In to Unity and target for a solution which fits also the needs of enterprise projects.
 So development is entirely done with .NET Core while checking Unity compatibility on a regular basis.
 
