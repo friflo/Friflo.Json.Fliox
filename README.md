@@ -324,8 +324,8 @@ This is enabled by supporting Pub-Sub with sub millisecond latency on *localhost
 ## 🙏 Credits
 |                                                                           |             |                                                                 |
 | ------------------------------------------------------------------------- | ----------- | --------------------------------------------------------------- |
-| [NUnit](https://nunit.org/)                                               | C#          | unit testing of the JSON Fliox library and the Demos            |
-| [FluentAssertions](https://github.com/fluentassertions/fluentassertions)  | C#          | unit testing of the JSON Fliox library                          |
+| [NUnit](https://nunit.org/)                                               | C#          | unit testing of the library in the CLR and Unity                |
+| [FluentAssertions](https://github.com/fluentassertions/fluentassertions)  | C#          | unit testing of the library                                     |
 | [GraphQL.NET Parser](https://github.com/graphql-dotnet/parser)            | C#          | used by package: Friflo.Json.Fliox.Hub.GraphQL                  |
 | [.NET platform](https://dotnet.microsoft.com/en-us/)                      | C# .NET     | the platform providing compiler, runtime, IDE's & ASP.NET Core  |
 | [Swagger](https://swagger.io/)                                            | static JS   | a REST / OpenAPI UI linked by the Hub Explorer                  |
