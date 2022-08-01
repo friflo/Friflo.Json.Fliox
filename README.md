@@ -71,7 +71,7 @@ Compact list of features supported by Clients and Hubs
     - Batch API - HTTP & WebSocket
 - CRUD
 - Queries - LINQ expressions
-- Container relations & associations
+- Container relations (associations)
 - Database Schema
 - Code generation
     - C#, Typescript & Kotlin
