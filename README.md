@@ -30,7 +30,7 @@ This improves performance and bypass the [object–relational impedance mismatch
 
 Try the example Hub online running on AWS - [**DemoHub**](http://ec2-174-129-178-18.compute-1.amazonaws.com/) (EC2 instance: t2-micro, us-east-1)  
 The **DemoHub** .NET project is available as example at
-[🚀 friflo/Fliox.Examples](https://github.com/friflo/Fliox.Examples#content) repository.
+[**🚀 friflo/Fliox.Examples**](https://github.com/friflo/Fliox.Examples#content) repository.
 
 <br/>
 
