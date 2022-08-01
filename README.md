@@ -154,7 +154,7 @@ The Explorer also enables to execute application specific database commands.
 📄   [README.md](Json/Fliox.Hub/DB/README.md)
 
 Provide a set of support databases used to:
-- serve the Hub configuration. Schema:
+- serve the Hub configuration - used by the Hub Explorer. Schema:
   [ClusterStore](Json.Tests/assets~/Schema/Markdown/ClusterStore/class-diagram.md)
 - serve monitoring data. Schema:
   [MonitorStore](Json.Tests/assets~/Schema/Markdown/MonitorStore/class-diagram.md)
@@ -165,7 +165,8 @@ Provide a set of support databases used to:
 📄   [README.md](Json/Fliox.Hub/Protocol/README.md)
 
 The Protocol is the communication interface between a `FlioxClient` and a `FlioxHub`.  
-Web clients can use this Protocol to access a Hub using the Batch API via HTTP & JSON.
+Web clients can use this Protocol to access a Hub using the Batch API via HTTP & JSON.  
+A language specific API - e.g. written in Typescript, Kotlin, ... - is not a requirement.
 
 The Protocol is not intended to be used by C# .NET clients directly.  
 Instead they are using a `FlioxClient` that is optimized to transform API calls into the Protocol.
