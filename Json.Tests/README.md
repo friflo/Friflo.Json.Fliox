@@ -14,14 +14,14 @@ It can be used with the IDE's: **VSCode**, **Rider** & **Visual Studio 2022**.
 
 *Note*: In order to build and run the examples the [**.NET 6.0 SDK**](https://dotnet.microsoft.com/en-us/download) is required.
 
-clone repository and open its directory
+clone the repository and open its directory
 ```cmd
 git clone https://github.com/friflo/Friflo.Json.Fliox.git
+cd Friflo.Json.Fliox
 ```
 
 build the library, the unit tests and the console application with
 ```cmd
-cd Friflo.Json.Fliox
 dotnet build
 ```
 
