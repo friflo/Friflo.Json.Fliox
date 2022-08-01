@@ -3,7 +3,7 @@
     "TestServer": {
       "commandName": "Project",
       "commandLineArgs": "--module TestServer",
-      "workingDirectory": "$(SolutionDir)"
+      "workingDirectory": "$(SolutionDir)/Json.Tests"
     },
     "MemoryDbThroughput": {
       "commandName": "Project",
