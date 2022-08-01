@@ -55,7 +55,7 @@ namespace DemoTest {
             });
             await client.SyncTasks();
             
-            Console.WriteLine("\n wait for events ... (exit with: CTRL + C)\n");
+            Console.WriteLine("\n wait for events ... (exit with: CTRL + C) note: generate events by clicking 'Save' on an article in the Hub Explorer\n");
             await Task.Delay(3_600_000); // wait 1 hour
         }
             
