@@ -19,7 +19,7 @@ Similar to:
 
 ## Solution
 
-- [Github Actions - analyse: GenerateDepsFile error](https://github.com/friflo/FlioxHub.Demos/commit/1a6fefc26a1b5d60c43a1f9eb7c389fc0e46dfed)
+- [Github Actions - analyse: GenerateDepsFile error](https://github.com/friflo/FlioxHub.Examples/commit/1a6fefc26a1b5d60c43a1f9eb7c389fc0e46dfed)
 
 remove `--framework netcoreapp3.1`  
 in yml ->

@@ -4,7 +4,7 @@
 
 
 The examples in this folder are the same examples as in the separate Git repository
-[FlioxHub.Demos](https://github.com/friflo/FlioxHub.Demos#-flioxhubdemos-)
+[FlioxHub.Examples](https://github.com/friflo/FlioxHub.Examples#-flioxhubdemos-)
 
 The examples here are only used for development of the **JSON Fliox** library itself.  
 
