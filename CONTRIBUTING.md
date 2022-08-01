@@ -11,6 +11,9 @@ Eventually refine the results with **Languages > Markdown**
 
 ## Found an Issue?
 
+Before creating a **New issue** check if it is already reported at [friflo/Friflo.Json.Fliox/issues](https://github.com/friflo/Friflo.Json.Fliox/issues).  
+If yes it is sufficient to comment on this issue.
+
 Create a **Fork** of [friflo/Fliox.Examples](https://github.com/friflo/Fliox.Examples) and add the source to reproduce the issue.  
 Use either the **Demo** or **Todo** example. Choose the one which fits better.  
 
@@ -21,6 +24,9 @@ In case an issue can be reproduced with the **Hub Explorer** add the steps to th
 
 
 ## Want a Feature?
+
+Before creating a **New issue** check if a similar feature requests is already reported at [friflo/Friflo.Json.Fliox/issues](https://github.com/friflo/Friflo.Json.Fliox/issues).  
+If yes it is sufficient to comment on this issue.
 
 Create a new issue at [friflo/Friflo.Json.Fliox/issues](https://github.com/friflo/Friflo.Json.Fliox/issues).  
 
