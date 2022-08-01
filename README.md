@@ -20,18 +20,15 @@ Its **ORM** enables **Schema** creation. Its **Hub** serve hosted databases usin
 | ORM Client   | Object Relational Mapper - to access to NoSQL databases with .NET clients | C#   |
 | Database Hub | A service hosting a set of NoSQL databases via an **ASP.NET Core** server | HTTP |
 
-*Project classification*: As **JSON Fliox** is an [ORM](https://en.wikipedia.org/wiki/Object-relational_mapping) is has similarities to projects like
-- [Entity Framework Core](https://en.wikipedia.org/wiki/Entity_Framework) · C#
-- [Ruby on Rails - Active Record Pattern](https://en.wikipedia.org/wiki/Ruby_on_Rails) · Ruby
-- [Django](https://en.wikipedia.org/wiki/Django_(web_framework)) · Python
-- [Hibernate](https://de.wikipedia.org/wiki/Hibernate_(Framework)) · Java
-- [TypeORM](https://github.com/typeorm/typeorm) · Typescript
-- [Prisma](https://github.com/prisma/prisma) · Typescript
-
-*Project specific*: Fliox sets its focus on **NoSQL** databases.
+As Fliox is an [ORM](https://en.wikipedia.org/wiki/Object-relational_mapping) is has similarities to projects like
+[Entity Framework Core](https://en.wikipedia.org/wiki/Entity_Framework),
+[Ruby on Rails](https://en.wikipedia.org/wiki/Ruby_on_Rails),
+[Django](https://en.wikipedia.org/wiki/Django_(web_framework)) or
+[Hibernate](https://de.wikipedia.org/wiki/Hibernate_(Framework)).  
+Fliox sets its focus on **NoSQL** databases.
 This improves performance by simplified entity serialization and bypass the [object–relational impedance mismatch](https://en.wikipedia.org/wiki/Object%E2%80%93relational_impedance_mismatch)
 
-*Pronunciation*: **io** in **Fliox** is same as in **Riot** <br/><br/>
+*Pronunciation*: **io** in **Fliox** is same as in **Riot** <br/><br/>
 
 ### **TL;DR**
 
