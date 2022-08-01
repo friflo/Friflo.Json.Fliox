@@ -24,7 +24,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
         private static  SharedEnv       _env;
         
         [OneTimeSetUp]    public static void  Init() {
-            var baseFolder  = CommonUtils.GetBasePath("../");
+            var baseFolder  = CommonUtils.GetBasePath("./");
             _env            = new SharedEnv();
             _mapper         = new ObjectMapper(_env.TypeStore);
             // use NonConcurrent in-memory DB to preserve entity order of query results
