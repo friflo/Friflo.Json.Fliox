@@ -40,14 +40,14 @@ The **DemoHub** .NET project is available as example at
 
 *Note*: JSON Fliox is **not** a UI library. It is designed for simple integration in .NET and Web UI frameworks.
 
-<br/><br/>
-<p>             <img src="docs/images/welcome.svg" width="320" height="120" ></p>
+<br/>
 
-## Content
+
+## 🚩 Content
 
 - [Features](#-features)
 - [Examples](#-examples)           ❯  [friflo/FlioxHub.Demos](https://github.com/friflo/FlioxHub.Demos#content)
-- [Fliox Hub](#-fliox-Hub)
+- [Hub](#-hub)
     - [Client](#client)                 ❯  [README.md](Json/Fliox.Hub/Client/README.md)
     - [Host](#host)                   ❯  [README.md](Json/Fliox.Hub/Host/README.md)
     - [Explorer](#explorer)             ❯  [README.md](Json/Fliox.Hub.Explorer/README.md)
@@ -106,7 +106,7 @@ The examples are **the place to go** showing how to use the C# and the Web API.
 <br/><br/>
 
 
-## 🌌 **Fliox Hub**
+## 🌌 **Hub**
 
 namespace **`Friflo.Json.Fliox.Hub`**
 
