@@ -85,8 +85,8 @@ Compact list of features supported by Clients and Hubs
 - Monitoring
 - Authentication / Authorization
 
-The features are explained via a set of `README` files grouped by their topic linked below.  
-*Topics*: Demos, Client, Host, Hub Explorer, DB - support databases, Protocol, Schema & Mapper.
+The features are explained within the topics (= namespaces) below.  
+*Topics*: Client, Host, Hub Explorer, DB - support databases, Protocol, Schema & Mapper.
 
 <br/>
 
