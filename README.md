@@ -13,7 +13,7 @@ __`SELECT * FROM table1 LEFT JOIN table2 ON 💩 WHERE 💩 💩 💩`__
 **JSON Fliox** is a **.NET** library supporting **simple** and **efficient** access to **NoSQL** databases via C# or Web clients.  
 Its **ORM** enables **Schema** creation. Its **Hub** serve hosted databases using these schemas via HTTP.
 
-The **ORM** client - Object Relational Mapper - is used to access to NoSQL databases via .NET.  
+The **ORM** client - Object Relational Mapper - is used to access NoSQL databases via .NET.  
 The **Hub** is a service hosting a set of NoSQL databases via an **ASP.NET Core** server.
 
 As Fliox is an [ORM](https://en.wikipedia.org/wiki/Object-relational_mapping) it has similarities to projects like
@@ -22,7 +22,7 @@ As Fliox is an [ORM](https://en.wikipedia.org/wiki/Object-relational_mapping) it
 [Django](https://en.wikipedia.org/wiki/Django_(web_framework)) or
 [Hibernate](https://de.wikipedia.org/wiki/Hibernate_(Framework)).  
 Fliox sets its focus on **NoSQL** databases.
-This improves performance and bypass the [object–relational impedance mismatch](https://en.wikipedia.org/wiki/Object%E2%80%93relational_impedance_mismatch)
+This improves performance and bypass the [object–relational impedance mismatch](https://en.wikipedia.org/wiki/Object%E2%80%93relational_impedance_mismatch).
 
 *Pronunciation*: **io** in **Fliox** is same as in **Riot** <br/><br/>
 
@@ -30,7 +30,7 @@ This improves performance and bypass the [object–relational impedance mismatch
 
 Try the example Hub online running on AWS - [**DemoHub**](http://ec2-174-129-178-18.compute-1.amazonaws.com/) (EC2 instance: t2-micro, us-east-1)  
 The **DemoHub** .NET project is available as example at
-[**🚀 friflo/Fliox.Examples**](https://github.com/friflo/Fliox.Examples#content) repository.
+[**🚀 friflo/Fliox.Examples**](https://github.com/friflo/Fliox.Examples#-content) repository.
 
 <br/>
 
@@ -42,7 +42,7 @@ The **DemoHub** .NET project is available as example at
 ## 🚩 Content
 
 - [Features](#-features)
-- [Examples](#-examples)           ❯  [friflo/Fliox.Examples](https://github.com/friflo/Fliox.Examples#content)
+- [Examples](#-examples)           ❯  [friflo/Fliox.Examples](https://github.com/friflo/Fliox.Examples#-content)
 - [Hub](#-hub)
     - [Client](#client)                 ❯  [README.md](Json/Fliox.Hub/Client/README.md)
     - [Host](#host)                   ❯  [README.md](Json/Fliox.Hub/Host/README.md)
@@ -92,12 +92,12 @@ The features are explained via a set of `README` files grouped by their topic li
 
 
 ## 🚀 **Examples**
-📄   [friflo/Fliox.Examples](https://github.com/friflo/Fliox.Examples#content)
+📄   [friflo/Fliox.Examples](https://github.com/friflo/Fliox.Examples#-content)
 
 A separate git repository containing two **ready to run** examples showcasing the usage of Fliox Clients and Hubs.  
 The examples are **the place to go** showing how to use the C# and the Web API.
 
-[<img src="docs/images/server-log.png" width="647" height="191">](https://github.com/friflo/Fliox.Examples#content)  
+[<img src="docs/images/server-log.png" width="647" height="191">](https://github.com/friflo/Fliox.Examples#-content)  
 *screenshot: DemoHub server logs*
 <br/><br/>
 
