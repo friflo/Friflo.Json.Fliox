@@ -10,8 +10,6 @@ __`SELECT * FROM table1 LEFT JOIN table2 ON 💩 WHERE 💩 💩 💩`__
 *Same attitude?* 😉  
 *Then you may have a short look at this project*  <br/><br/>
 
-
-## Description
 **JSON Fliox** is a **.NET** library supporting **simple** and **efficient** access to **NoSQL** databases via C# or Web clients.  
 Its **ORM** enables **Schema** creation. Its **Hub** serve hosted databases using these schemas via HTTP.
 
@@ -30,7 +28,7 @@ This improves performance and bypass the [object–relational impedance mismatch
 
 *Pronunciation*: **io** in **Fliox** is same as in **Riot** <br/><br/>
 
-### **TL;DR**
+**TL;DR**
 
 A demo server running on AWS - [**DemoHub**](http://ec2-174-129-178-18.compute-1.amazonaws.com/) (EC2 instance: t2-micro, us-east-1)  
 The **DemoHub** .NET project is available as example at
