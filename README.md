@@ -34,7 +34,7 @@ This improves performance and bypass the [object–relational impedance mismatch
 
 A demo server running on AWS - [**DemoHub**](http://ec2-174-129-178-18.compute-1.amazonaws.com/) (EC2 instance: t2-micro, us-east-1)  
 The **DemoHub** .NET project is available as example at
-[🚀 friflo/FlioxHub.Demos](https://github.com/friflo/FlioxHub.Demos#content) repository.
+[🚀 friflo/FlioxHub.Examples](https://github.com/friflo/FlioxHub.Examples#content) repository.
 
 <br/>
 
@@ -46,7 +46,7 @@ The **DemoHub** .NET project is available as example at
 ## 🚩 Content
 
 - [Features](#-features)
-- [Examples](#-examples)           ❯  [friflo/FlioxHub.Demos](https://github.com/friflo/FlioxHub.Demos#content)
+- [Examples](#-examples)           ❯  [friflo/FlioxHub.Examples](https://github.com/friflo/FlioxHub.Examples#content)
 - [Hub](#-hub)
     - [Client](#client)                 ❯  [README.md](Json/Fliox.Hub/Client/README.md)
     - [Host](#host)                   ❯  [README.md](Json/Fliox.Hub/Host/README.md)
@@ -96,12 +96,12 @@ The features are explained via a set of `README` files grouped by their topic li
 
 
 ## 🚀 **Examples**
-📄   [friflo/FlioxHub.Demos](https://github.com/friflo/FlioxHub.Demos#content)
+📄   [friflo/FlioxHub.Examples](https://github.com/friflo/FlioxHub.Examples#content)
 
 A separate git repository containing two **ready to run** examples showcasing the usage of Fliox Clients and Hubs.  
 The examples are **the place to go** showing how to use the C# and the Web API.
 
-[<img src="docs/images/server-log.png" width="647" height="191">](https://github.com/friflo/FlioxHub.Demos#content)  
+[<img src="docs/images/server-log.png" width="647" height="191">](https://github.com/friflo/FlioxHub.Examples#content)  
 *screenshot: DemoHub server logs*
 <br/><br/>
 
@@ -332,6 +332,7 @@ This is enabled by supporting Pub-Sub with sub millisecond latency on *localhost
 | [WinMerge](https://github.com/WinMerge/winmerge)                          | Application | heavily used in this project                                    |
 | [Inscape](https://gitlab.com/inkscape/inkscape)                           | Application | to create SVG's for this project                                |
 
+<br/>
 
 💖 *Like this project?*  
 *Leave a* ⭐ at  [friflo/Friflo.Json.Fliox](https://github.com/friflo/Friflo.Json.Fliox)
