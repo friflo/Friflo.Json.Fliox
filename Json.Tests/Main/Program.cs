@@ -69,9 +69,9 @@ namespace Friflo.Json.Tests.Main
         public class Config {
             internal readonly   SharedEnv   env; 
             private  readonly   string      rootPath;
-            internal            string      MainDbPath  => rootPath + "./Json.Tests/assets~/DB/main_db";
-            internal            string      UserDbPath  => rootPath + "./Json.Tests/assets~/DB/user_db";
-            internal            string      Www         => rootPath + "./Json/Fliox.Hub.Explorer/www~"; // HubExplorer.Path;
+            internal            string      MainDbPath  => rootPath + "./assets~/DB/main_db";
+            internal            string      UserDbPath  => rootPath + "./assets~/DB/user_db";
+            internal            string      Www         => rootPath + "../Json/Fliox.Hub.Explorer/www~"; // HubExplorer.Path;
             internal readonly   string      cache       = null; // "max-age=600"; // HTTP Cache-Control
             internal readonly   bool        useMemoryDb;
             internal readonly   MemoryType  memoryType  = MemoryType.Concurrent;
