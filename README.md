@@ -11,7 +11,7 @@ __`SELECT * FROM table1 LEFT JOIN table2 ON 💩 WHERE 💩 💩 💩`__
 *Then you may have a short look at this project*  <br/><br/>
 
 
-## 🎯 Description
+## Description
 **JSON Fliox** is a **.NET** library supporting **simple** and **efficient** access to **NoSQL** databases via C# or Web clients.  
 Its **ORM** enables **Schema** creation. Its **Hub** serve hosted databases using these schemas via HTTP.
 
@@ -20,23 +20,18 @@ Its **ORM** enables **Schema** creation. Its **Hub** serve hosted databases usin
 | ORM Client   | Object Relational Mapper - to access to NoSQL databases with .NET clients | C#   |
 | Database Hub | A service hosting a set of NoSQL databases via an **ASP.NET Core** server | HTTP |
 
-*Project classification*  
-    As **JSON Fliox** is an [ORM](https://en.wikipedia.org/wiki/Object-relational_mapping) is has similarities to projects like
+*Project classification*: As **JSON Fliox** is an [ORM](https://en.wikipedia.org/wiki/Object-relational_mapping) is has similarities to projects like
 - [Entity Framework Core](https://en.wikipedia.org/wiki/Entity_Framework) · C#
-- [Dapper ORM](https://en.wikipedia.org/wiki/Dapper_ORM) · C#, SQL
 - [Ruby on Rails - Active Record Pattern](https://en.wikipedia.org/wiki/Ruby_on_Rails) · Ruby
 - [Django](https://en.wikipedia.org/wiki/Django_(web_framework)) · Python
 - [Hibernate](https://de.wikipedia.org/wiki/Hibernate_(Framework)) · Java
 - [TypeORM](https://github.com/typeorm/typeorm) · Typescript
 - [Prisma](https://github.com/prisma/prisma) · Typescript
 
-*Project specific*  
-    Fliox sets its focus on **NoSQL** databases
-- to improve performance by simplified entity serialization
-- to bypass the [object–relational impedance mismatch](https://en.wikipedia.org/wiki/Object%E2%80%93relational_impedance_mismatch)
+*Project specific*: Fliox sets its focus on **NoSQL** databases.
+This improves performance by simplified entity serialization and bypass the [object–relational impedance mismatch](https://en.wikipedia.org/wiki/Object%E2%80%93relational_impedance_mismatch)
 
-*Pronunciation*  
-    **io** in **Fliox** is same as in **Riot** <br/><br/>
+*Pronunciation*: **io** in **Fliox** is same as in **Riot** <br/><br/>
 
 ### **TL;DR**
 
@@ -46,12 +41,33 @@ The **DemoHub** .NET project is available as example at
 
 <br/>
 
-*Note*: JSON Fliox is **not** a UI library. It is designed for simple integration in UI frameworks like:
+*Note*: JSON Fliox is **not** a UI library. It is designed for simple integration in UI frameworks like:  
+**.NET**: ASP.NET Razor, Blazor, MAUI, WinUI, ASP.NET MVC, WPF, WinForms & Unity.  
+**Web**: React, Angular, Vue.js, Svelte, Preact, Ember.js, ...  
 
-| Platform | Frameworks                                                                             |
-|:--------:| -------------------------------------------------------------------------------------- |
-| **.NET** | ASP.NET Razor, Blazor, MAUI, WinUI, ASP.NET MVC, WPF, WinForms, Xamarin.Forms & Unity. |
-| **Web**  | React, Angular, Vue.js, Svelte, Preact, Ember.js, ...                                  |
+<br/><br/>
+<p>             <img src="docs/images/welcome.svg" width="320" height="120" ></p>
+
+## Content
+
+- [Features](#-features)
+- [Examples](#-examples)           ❯  [friflo/FlioxHub.Demos](https://github.com/friflo/FlioxHub.Demos#content)
+- [Fliox Hub](#fliox-Hub)
+    - [Client](#client)                 ❯  [README.md](Json/Fliox.Hub/Client/README.md)
+    - [Host](#host)                   ❯  [README.md](Json/Fliox.Hub/Host/README.md)
+    - [Explorer](#explorer)             ❯  [README.md](Json/Fliox.Hub.Explorer/README.md)
+    - [DB](#db)                      ❯  [README.md](Json/Fliox.Hub/DB/README.md)
+    - [Protocol](#protocol)             ❯  [README.md](Json/Fliox.Hub/Protocol/README.md)
+- [Fliox](#fliox)
+    - [Schema](#schema)              ❯  [README.md](Json/Fliox/Schema/README.md)
+    - [Mapper](#mapper)              ❯  [README.md](Json/Fliox/Mapper/README.md)
+- [Project]()
+    - [Build](#build)                  ❯  [README.md](Json.Tests/README.md)
+    - [API](#api)                     ❯  [friflo/fliox-docs](https://github.com/friflo/fliox-docs)
+    - [Principles](#principles)
+- [Motivation](#-motivation)
+- [Credits](#-credits)
+
 
 <br/>
 
@@ -83,51 +99,8 @@ The features are explained via a set of `README` files grouped by their topic li
 
 <br/>
 
-## 🔥 Motivation
 
-The main driver of this project is the development of an competitive online multiplayer game -
-a still unresolved task in my todo list.  
-The foundation to achieve this is commonly a module called *Netcode* in online multiplayer games.  
-The key aspects of *Netcode* are: Synchronizing game state, low latency, high throughput, minimal use of system resources, reliability & easy to use API.
-As Unity is selected as the Game engine C# .NET is the way to go.
-
-Another objective is to create an open source software project which has the potential to be popular.  
-As I have 15+ years experience as a software developer in enterprise environment - Shout-Out to [HERE Technologies](https://www.here.com/) -
-I decided to avoid a Vendor Lock-In to Unity and target for a solution which fits also the needs of common .NET projects.
-So development is entirely done with .NET Core while checking Unity compatibility on a regular basis.
-
-The result is a project with a feature set useful in common & gaming projects and targeting for optimal performance.  
-The common ground of both areas is the need of databases.  
-In context of game development the game state (Players, NPC, objects, ...) is represented as an in-memory database.  
-In common projects databases are used to store any kind of data persistent by using popular DBMS.  
-Specific for online gaming is the ability to send messages from one client to another in *real time*.
-This is enabled by supporting Pub-Sub with sub millisecond latency on *localhost*.
-
-
-<br/><br/>
-<p>             <img src="docs/images/welcome.svg" width="320" height="120" ></p>
-
-## Content
-
-- 🚀 **Demos**           ❯  [friflo/FlioxHub.Demos](https://github.com/friflo/FlioxHub.Demos#content)
-
-- 🌌 **Fliox Hub**
-    - [Client](#client)                 ❯  [README.md](Json/Fliox.Hub/Client/README.md)
-    - [Host](#host)                   ❯  [README.md](Json/Fliox.Hub/Host/README.md)
-    - [Explorer](#explorer)             ❯  [README.md](Json/Fliox.Hub.Explorer/README.md)
-    - [DB](#db)                      ❯  [README.md](Json/Fliox.Hub/DB/README.md)
-    - [Protocol](#protocol)             ❯  [README.md](Json/Fliox.Hub/Protocol/README.md)
-- ✨ **Fliox**
-    - [Schema](#schema)              ❯  [README.md](Json/Fliox/Schema/README.md)
-    - [Mapper](#mapper)              ❯  [README.md](Json/Fliox/Mapper/README.md)
-- 📦 **Project**
-    - [Build](#build)                  ❯  [README.md](Json.Tests/README.md)
-    - [API](#api)                     ❯  [friflo/fliox-docs](https://github.com/friflo/fliox-docs)
-    - [Principles](#principles)
-
-<br/>
-
-## 🚀 **Demos**
+## 🚀 **Examples**
 📄   [friflo/FlioxHub.Demos](https://github.com/friflo/FlioxHub.Demos#content)
 
 A separate git repository containing two **ready to run** examples showcasing the usage of Fliox Clients and Hubs.  
@@ -138,7 +111,7 @@ The examples are **the place to go** showing how to use the C# and the Web API.
 <br/><br/>
 
 
-## 🌌 **Fliox Hub**
+## **Fliox Hub**
 
 namespace **`Friflo.Json.Fliox.Hub`**
 
@@ -208,7 +181,7 @@ Instead they are using a `FlioxClient` that is optimized to transform API calls 
 
 
 
-## ✨ **Fliox**
+## **Fliox**
 
 namespace **`Friflo.Json.Fliox`**
 
@@ -326,6 +299,29 @@ The API is available at [**fliox-docs API Reference**](https://github.com/friflo
     - **Unity 2020.1** and higher 
 
 <br/>
+
+## 🔥 Motivation
+
+The main driver of this project is the development of an competitive online multiplayer game -
+a still unresolved task in my todo list.  
+The foundation to achieve this is commonly a module called *Netcode* in online multiplayer games.  
+The key aspects of *Netcode* are: Synchronizing game state, low latency, high throughput, minimal use of system resources, reliability & easy to use API.
+As Unity is selected as the Game engine C# .NET is the way to go.
+
+Another objective is to create an open source software project which has the potential to be popular.  
+As I have 15+ years experience as a software developer in enterprise environment - Shout-Out to [HERE Technologies](https://www.here.com/) -
+I decided to avoid a Vendor Lock-In to Unity and target for a solution which fits also the needs of common .NET projects.
+So development is entirely done with .NET Core while checking Unity compatibility on a regular basis.
+
+The result is a project with a feature set useful in common & gaming projects and targeting for optimal performance.  
+The common ground of both areas is the need of databases.  
+In context of game development the game state (Players, NPC, objects, ...) is represented as an in-memory database.  
+In common projects databases are used to store any kind of data persistent by using popular DBMS.  
+Specific for online gaming is the ability to send messages from one client to another in *real time*.
+This is enabled by supporting Pub-Sub with sub millisecond latency on *localhost*.
+
+<br/>
+
 
 ## 🙏 Credits
 |                                                                           |             |                                                                 |
