@@ -30,7 +30,7 @@ This improves performance and bypass the [object–relational impedance mismatch
 
 A demo server running on AWS - [**DemoHub**](http://ec2-174-129-178-18.compute-1.amazonaws.com/) (EC2 instance: t2-micro, us-east-1)  
 The **DemoHub** .NET project is available as example at
-[🚀 friflo/FlioxHub.Examples](https://github.com/friflo/FlioxHub.Examples#content) repository.
+[🚀 friflo/Fliox.Examples](https://github.com/friflo/Fliox.Examples#content) repository.
 
 <br/>
 
@@ -42,7 +42,7 @@ The **DemoHub** .NET project is available as example at
 ## 🚩 Content
 
 - [Features](#-features)
-- [Examples](#-examples)           ❯  [friflo/FlioxHub.Examples](https://github.com/friflo/FlioxHub.Examples#content)
+- [Examples](#-examples)           ❯  [friflo/Fliox.Examples](https://github.com/friflo/Fliox.Examples#content)
 - [Hub](#-hub)
     - [Client](#client)                 ❯  [README.md](Json/Fliox.Hub/Client/README.md)
     - [Host](#host)                   ❯  [README.md](Json/Fliox.Hub/Host/README.md)
@@ -92,12 +92,12 @@ The features are explained via a set of `README` files grouped by their topic li
 
 
 ## 🚀 **Examples**
-📄   [friflo/FlioxHub.Examples](https://github.com/friflo/FlioxHub.Examples#content)
+📄   [friflo/Fliox.Examples](https://github.com/friflo/Fliox.Examples#content)
 
 A separate git repository containing two **ready to run** examples showcasing the usage of Fliox Clients and Hubs.  
 The examples are **the place to go** showing how to use the C# and the Web API.
 
-[<img src="docs/images/server-log.png" width="647" height="191">](https://github.com/friflo/FlioxHub.Examples#content)  
+[<img src="docs/images/server-log.png" width="647" height="191">](https://github.com/friflo/Fliox.Examples#content)  
 *screenshot: DemoHub server logs*
 <br/><br/>
 
