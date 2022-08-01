@@ -27,7 +27,7 @@ dotnet build
 
 <br/><br/>
 
-# Console application
+# 💻 Console application
 
 The Console application is used:
 
@@ -51,7 +51,7 @@ dotnet run --module LoopbackDbThroughput  -c Release
 
 <br/><br/>
 
-# Unit tests
+# 🧪 Unit tests
 
 The current result of the unit test are available as **CI tests** at
 [Github actions](https://github.com/friflo/Friflo.Json.Fliox/actions).
