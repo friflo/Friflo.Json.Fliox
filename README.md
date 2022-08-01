@@ -52,16 +52,16 @@ The **DemoHub** .NET project is available as example at
 
 - [Features](#-features)
 - [Examples](#-examples)           ❯  [friflo/FlioxHub.Demos](https://github.com/friflo/FlioxHub.Demos#content)
-- [Fliox Hub](#fliox-Hub)
+- [Fliox Hub](#-fliox-Hub)
     - [Client](#client)                 ❯  [README.md](Json/Fliox.Hub/Client/README.md)
     - [Host](#host)                   ❯  [README.md](Json/Fliox.Hub/Host/README.md)
     - [Explorer](#explorer)             ❯  [README.md](Json/Fliox.Hub.Explorer/README.md)
     - [DB](#db)                      ❯  [README.md](Json/Fliox.Hub/DB/README.md)
     - [Protocol](#protocol)             ❯  [README.md](Json/Fliox.Hub/Protocol/README.md)
-- [Fliox](#fliox)
+- [Fliox](#-fliox)
     - [Schema](#schema)              ❯  [README.md](Json/Fliox/Schema/README.md)
     - [Mapper](#mapper)              ❯  [README.md](Json/Fliox/Mapper/README.md)
-- [Project]()
+- [Project](-project)
     - [Build](#build)                  ❯  [README.md](Json.Tests/README.md)
     - [API](#api)                     ❯  [friflo/fliox-docs](https://github.com/friflo/fliox-docs)
     - [Principles](#principles)
@@ -111,7 +111,7 @@ The examples are **the place to go** showing how to use the C# and the Web API.
 <br/><br/>
 
 
-## **Fliox Hub**
+## 🌌 **Fliox Hub**
 
 namespace **`Friflo.Json.Fliox.Hub`**
 
@@ -181,7 +181,7 @@ Instead they are using a `FlioxClient` that is optimized to transform API calls 
 
 
 
-## **Fliox**
+## 🌌 **Fliox**
 
 namespace **`Friflo.Json.Fliox`**
 
