@@ -201,9 +201,10 @@ The links in the table above navigate to pages utilizing the generated schemas. 
 
 *screenshot: MonitorStore schema as class diagram*
 
-[HTML Schema screenshot](Json/Fliox/Schema/README.md#html-documentation)  
-[Swagger UI screenshot](Json/Fliox/Schema/README.md#swagger-ui)  
-[GraphiQL screenshot](Json/Fliox/Schema/README.md#graphiql)
+more screenshots:
+[HTML documentation](Json/Fliox/Schema/README.md#html-documentation)
+[Swagger UI](Json/Fliox/Schema/README.md#swagger-ui)
+[GraphiQL](Json/Fliox/Schema/README.md#graphiql)
 
 
 
