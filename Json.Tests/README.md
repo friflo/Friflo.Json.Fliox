@@ -6,8 +6,24 @@
 
 namespace **`Friflo.Json.Tests`**
 
-The project contains a Console application and unit tests.  
-Execution of both is described below
+The project contains a Console application and Unit tests.  
+Execution of both is described below.  
+
+The solution and its projects can be build, tested and executed on **Windows**, **Linux**, and **macOS**.  
+It can be used with following IDE's: **VSCode**, **Rider** & **Visual Studio 2022**.
+
+*Note*: In order to build and run the examples the [**.NET 6.0 SDK**](https://dotnet.microsoft.com/en-us/download) is required.
+
+clone repository and open its directory
+```cmd
+git clone https://github.com/friflo/Friflo.Json.Fliox.git
+cd Friflo.Json.Fliox
+```
+
+build the library, the unit tests and the console application with
+```cmd
+dotnet build
+```
 
 <br/>
 
@@ -17,7 +33,8 @@ The Console application is used:
 
 - to run a Test server
 ```
-dotnet run --module TestServer -c Release --no-build
+cd Json.Tests
+dotnet run --module TestServer -c Release
 ```
 - to run performance checks.  
   The performance checks are used to measure the throughput of `SyncTasks()` calls in various scenarios.  
@@ -25,11 +42,11 @@ dotnet run --module TestServer -c Release --no-build
   - file-system vs in-memory database
   - number of concurrent clients
 ```
-dotnet run --module MemoryDbThroughput    -c Release --no-build
-dotnet run --module FileDbThroughput      -c Release --no-build
-dotnet run --module WebsocketDbThroughput -c Release --no-build
-dotnet run --module HttpDbThroughput      -c Release --no-build
-dotnet run --module LoopbackDbThroughput  -c Release --no-build
+dotnet run --module MemoryDbThroughput    -c Release
+dotnet run --module FileDbThroughput      -c Release
+dotnet run --module WebsocketDbThroughput -c Release
+dotnet run --module HttpDbThroughput      -c Release
+dotnet run --module LoopbackDbThroughput  -c Release
 ```
 
 <br/><br/>
@@ -41,6 +58,7 @@ The current result of the unit test are available as **CI tests** at
 
 The project is using [NUnit](https://nunit.org/) for unit testing. Execute them locally by running:
 ```
+cd Json.Tests
 dotnet test -c Release -l "console;verbosity=detailed"
 ```
 The unit tests can be executed also within various IDEs. [Visual Studio](https://visualstudio.microsoft.com/),
