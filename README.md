@@ -52,7 +52,7 @@ The **DemoHub** .NET project is available as example at
 - [Fliox](#-fliox)
     - [Schema](#schema)              ❯  [README.md](Json/Fliox/Schema/README.md)
     - [Mapper](#mapper)              ❯  [README.md](Json/Fliox/Mapper/README.md)
-- [Project](-project)
+- [Project](#-project)
     - [Build](#build)                  ❯  [README.md](Json.Tests/README.md)
     - [API](#api)                     ❯  [friflo/fliox-docs](https://github.com/friflo/fliox-docs)
     - [Principles](#principles)
