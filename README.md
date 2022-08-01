@@ -20,13 +20,13 @@ Its **ORM** enables **Schema** creation. Its **Hub** serve hosted databases usin
 | ORM Client   | Object Relational Mapper - to access to NoSQL databases with .NET clients | C#   |
 | Database Hub | A service hosting a set of NoSQL databases via an **ASP.NET Core** server | HTTP |
 
-As Fliox is an [ORM](https://en.wikipedia.org/wiki/Object-relational_mapping) is has similarities to projects like
+As Fliox is an [ORM](https://en.wikipedia.org/wiki/Object-relational_mapping) it has similarities to projects like
 [Entity Framework Core](https://en.wikipedia.org/wiki/Entity_Framework),
 [Ruby on Rails](https://en.wikipedia.org/wiki/Ruby_on_Rails),
 [Django](https://en.wikipedia.org/wiki/Django_(web_framework)) or
 [Hibernate](https://de.wikipedia.org/wiki/Hibernate_(Framework)).  
 Fliox sets its focus on **NoSQL** databases.
-This improves performance by simplified entity serialization and bypass the [object–relational impedance mismatch](https://en.wikipedia.org/wiki/Object%E2%80%93relational_impedance_mismatch)
+This improves performance and bypass the [object–relational impedance mismatch](https://en.wikipedia.org/wiki/Object%E2%80%93relational_impedance_mismatch)
 
 *Pronunciation*: **io** in **Fliox** is same as in **Riot** <br/><br/>
 
@@ -38,9 +38,7 @@ The **DemoHub** .NET project is available as example at
 
 <br/>
 
-*Note*: JSON Fliox is **not** a UI library. It is designed for simple integration in UI frameworks like:  
-**.NET**: ASP.NET Razor, Blazor, MAUI, WinUI, ASP.NET MVC, WPF, WinForms & Unity.  
-**Web**: React, Angular, Vue.js, Svelte, Preact, Ember.js, ...  
+*Note*: JSON Fliox is **not** a UI library. It is designed for simple integration in .NET and Web UI frameworks.
 
 <br/><br/>
 <p>             <img src="docs/images/welcome.svg" width="320" height="120" ></p>
