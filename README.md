@@ -102,7 +102,7 @@ The examples are **the place to go** showing how to use the C# and the Web API.
 <br/><br/>
 
 
-## 🌌 **Hub**
+## 📦 **Hub**
 
 namespace **`Friflo.Json.Fliox.Hub`**
 
@@ -172,7 +172,7 @@ Instead they are using a `FlioxClient` that is optimized to transform API calls 
 
 
 
-## 🌌 **Fliox**
+## 📦 **Fliox**
 
 namespace **`Friflo.Json.Fliox`**
 
@@ -222,7 +222,7 @@ Its also used for serialization of the supported protocols: REST, GraphQL and Ba
 
 
 
-## 📦 **Project**
+## 🔧 **Project**
 
 ### **Build**
 📄   [README.md](Json.Tests/README.md)
