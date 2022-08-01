@@ -104,7 +104,8 @@ The examples are **the place to go** showing how to use the C# and the Web API.
 
 ## 📦 **Hub**
 
-namespace **`Friflo.Json.Fliox.Hub`**
+Namespace    Friflo.Json.Fliox.Hub.*  
+Assembly     Friflo.Json.Fliox.Hub.dll
 
 ### **Client**
 📄   [README.md](Json/Fliox.Hub/Client/README.md)
@@ -139,7 +140,8 @@ A `FlioxHub` instance is used to configure the hosted databases, authentication 
 This `FlioxHub` instance need to be passed to the constructor of the `HttpHost`
 
 ### **Explorer**
-📄   [README.md](Json/Fliox.Hub.Explorer/README.md)
+📄   [README.md](Json/Fliox.Hub.Explorer/README.md)  
+Assembly     Friflo.Json.Fliox.Hub.Explorer.dll
 
 The Hub Explorer is a generic Web UI - a single page application - used to access
 databases, containers and entities hosted by a Fliox Hub.  
@@ -174,7 +176,8 @@ Instead they are using a `FlioxClient` that is optimized to transform API calls 
 
 ## 📦 **Fliox**
 
-namespace **`Friflo.Json.Fliox`**
+Namespace    Friflo.Json.Fliox.*  
+Assembly     Friflo.Json.Fliox.dll
 
 
 ### **Schema**
