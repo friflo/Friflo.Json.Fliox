@@ -42,7 +42,7 @@ The **DemoHub** .NET project is available as example at
 ## 🚩 Content
 
 - [Features](#-features)
-- [Examples](#-examples)           ❯  [friflo/Fliox.Examples](https://github.com/friflo/Fliox.Examples#-content)
+- [Examples](#-examples)           ❯  [🚀 friflo/Fliox.Examples](https://github.com/friflo/Fliox.Examples#-content)
 - [Hub](#-hub)
     - [Client](#client)                 ❯  [README.md](Json/Fliox.Hub/Client/README.md)
     - [Host](#host)                   ❯  [README.md](Json/Fliox.Hub/Host/README.md)
