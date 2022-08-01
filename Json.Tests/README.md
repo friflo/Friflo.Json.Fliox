@@ -10,22 +10,22 @@ The project contains a Console application and Unit tests.
 Execution of both is described below.  
 
 The solution and its projects can be build, tested and executed on **Windows**, **Linux**, and **macOS**.  
-It can be used with following IDE's: **VSCode**, **Rider** & **Visual Studio 2022**.
+It can be used with the IDE's: **VSCode**, **Rider** & **Visual Studio 2022**.
 
 *Note*: In order to build and run the examples the [**.NET 6.0 SDK**](https://dotnet.microsoft.com/en-us/download) is required.
 
 clone repository and open its directory
 ```cmd
 git clone https://github.com/friflo/Friflo.Json.Fliox.git
-cd Friflo.Json.Fliox
 ```
 
 build the library, the unit tests and the console application with
 ```cmd
+cd Friflo.Json.Fliox
 dotnet build
 ```
 
-<br/>
+<br/><br/>
 
 # Console application
 
@@ -61,14 +61,18 @@ The project is using [NUnit](https://nunit.org/) for unit testing. Execute them 
 cd Json.Tests
 dotnet test -c Release -l "console;verbosity=detailed"
 ```
-The unit tests can be executed also within various IDEs. [Visual Studio](https://visualstudio.microsoft.com/),
-[Rider](https://www.jetbrains.com/rider/) and [Visual Studio Code](https://visualstudio.microsoft.com/).
+Unit test execution will finish in about 7 seconds.
 
-By using NUnit the unit tests can be executed via the Test Runner in the [Unity Editor](https://unity.com/)
+
+## NUnit
+The unit tests can be executed in the **Test Explorer** of **VSCode**, **Rider** & **Visual Studio 2022**.  
+For VSCode [.NET Core Test Explorer](https://marketplace.visualstudio.com/items?itemName=formulahendry.dotnet-test-explorer) can be used.
+
+By using NUnit the unit tests can be executed in the Unity **Test Runner** in the [Unity Editor](https://unity.com/)
 (Window > General > Test Runner) as `EditMode` tests.
 
-Additional to common unit testing of expected behavior, the test also ensure the following principles
-with additional assertions:
+## Memory assertions
+Additional to common unit testing of expected behavior, some tests also check heap allocations with assertions:
 - **No (0) allocations** occur on the heap while running a parser or serializer a couple of times.
 - **No leaks of `native containers`** are left over after tear down a unit test.  
   This is relevant only when using the library in Unity compiled with **JSON_BURST** - it is not relevant when running in CLR
