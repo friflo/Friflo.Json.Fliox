@@ -63,7 +63,7 @@ namespace DemoTest {
         {
             switch (option) {
                 case "http":    return new HttpClientHub("main_db", "http://localhost:8010/fliox/");
-                case "ws":
+                case "ws":  // todo simplify
                     var wsHub = new WebSocketClientHub("main_db", "ws://localhost:8010/fliox/");
                     wsHub.Connect().Wait();
                     return wsHub;

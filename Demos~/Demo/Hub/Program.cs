@@ -44,9 +44,9 @@ namespace DemoHub
             var database            = CreateDatabase(databaseSchema, new MessageHandler());
 
             var hub                 = new FlioxHub(database);
-            hub.Info.projectName    = "DemoHub";                                    // optional
-            hub.Info.projectWebsite = "https://github.com/friflo/Fliox.Examples";   // optional
-            hub.Info.envName        = "dev"; hub.Info.envColor = "rgb(0 171 145)";  // optional
+            hub.Info.projectName    = "DemoHub";                                        // optional
+            hub.Info.projectWebsite = "https://github.com/friflo/Fliox.Examples#demo";  // optional
+            hub.Info.envName        = "dev"; hub.Info.envColor = "rgb(0 171 145)";      // optional
             hub.AddExtensionDB (new ClusterDB("cluster", hub));     // optional - expose info of hosted databases. cluster is required by Hub Explorer
             hub.AddExtensionDB (new MonitorDB("monitor", hub));     // optional - expose monitor stats as extension database
             hub.EventDispatcher     = new EventDispatcher(true);    // optional - enables Pub-Sub (sending events for subscriptions)
