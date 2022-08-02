@@ -80,7 +80,7 @@ The unit tests can be executed in the **Test Explorer** of **VSCode**, **Rider**
 For VSCode [.NET Core Test Explorer](https://marketplace.visualstudio.com/items?itemName=formulahendry.dotnet-test-explorer) can be used.
 
 By using NUnit the unit tests can be executed in the Unity **Test Runner** in the [Unity Editor](https://unity.com/)
-(Window > General > Test Runner) as `EditMode` tests.
+(Window > General > Test Runner) as **EditMode** tests.
 
 ## Memory assertions
 Additional to common unit testing of expected behavior, some tests also check heap allocations with assertions:
@@ -88,3 +88,15 @@ Additional to common unit testing of expected behavior, some tests also check he
 - **No leaks of `native containers`** are left over after tear down a unit test.  
   This is relevant only when using the library in Unity compiled with **JSON_BURST** - it is not relevant when running in CLR
 
+<br/><br/>
+
+# 🕹️ Unity
+
+clone the repository in the `Assets` folder
+```
+cd Assets
+git clone https://github.com/friflo/Friflo.Json.Fliox.git
+```
+
+Run the unit tests in the **Test Runner** in the [Unity Editor](https://unity.com/)
+(Window > General > Test Runner) as **EditMode** tests.

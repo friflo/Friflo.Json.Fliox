@@ -233,7 +233,7 @@ Its also used for serialization of the supported protocols: REST, GraphQL and Ba
 📄   [README.md](Json.Tests/README.md)
 
 The project **Json.Tests** contains a console application and unit tests.  
-The run commands are in the README file.
+Build and run instructions for .NET and Unity are in the README file.
 
 **unit tests**  
 Code coverage: **86%** measured with **JetBrains • docCover**
