@@ -38,7 +38,7 @@ dotnet run --module TestServer -c Release
 ```
 - to run performance checks.  
   The performance checks are used to measure the throughput of `SyncTasks()` calls in various scenarios.  
-  - remote (HTTP / WebSocket) vs in-process 
+  - remote HTTP vs WebSocket vs Loopback vs in-process 
   - file-system vs in-memory database
   - number of concurrent clients. Default: 4
 
