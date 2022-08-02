@@ -322,18 +322,19 @@ This is enabled by supporting Pub-Sub with sub millisecond latency on *localhost
 
 
 ## 🙏 Credits
-|                                                                           |             |                                                                 |
-| ------------------------------------------------------------------------- | ----------- | --------------------------------------------------------------- |
-| [NUnit](https://nunit.org/)                                               | C#          | unit testing of the library in the CLR and Unity                |
-| [FluentAssertions](https://github.com/fluentassertions/fluentassertions)  | C#          | unit testing of the library                                     |
-| [GraphQL.NET Parser](https://github.com/graphql-dotnet/parser)            | C#          | used by package: Friflo.Json.Fliox.Hub.GraphQL                  |
-| [.NET platform](https://dotnet.microsoft.com/en-us/)                      | C# .NET     | the platform providing compiler, runtime, IDE's & ASP.NET Core  |
-| [Swagger](https://swagger.io/)                                            | static JS   | a REST / OpenAPI UI linked by the Hub Explorer                  |
-| [GraphiQL](https://github.com/graphql/graphiql)                           | static JS   | a GraphQL UI linked by the Hub Explorer                         |
-| [Mermaid](https://github.com/mermaid-js/mermaid)                          | static JS   | class diagram for database schema linked by the Hub Explorer    |
-| [Monaco Editor](https://github.com/microsoft/monaco-editor)               | static JS   | used as JSON editor integrated in the Hub Explorer              |
-| [WinMerge](https://github.com/WinMerge/winmerge)                          | Application | heavily used in this project                                    |
-| [Inscape](https://gitlab.com/inkscape/inkscape)                           | Application | to create SVG's for this project                                |
+|                                                                           |             |                                                                      |
+| ------------------------------------------------------------------------- | ----------- | -------------------------------------------------------------------- |
+| [NUnit](https://nunit.org/)                                               | C#          | unit testing of the library in the CLR and Unity                     |
+| [FluentAssertions](https://github.com/fluentassertions/fluentassertions)  | C#          | unit testing of the library                                          |
+| [GraphQL.NET Parser](https://github.com/graphql-dotnet/parser)            | C#          | used by package: Friflo.Json.Fliox.Hub.GraphQL                       |
+| [MdDocs](https://github.com/ap0llo/mddocs)                                | C#          | for [fliox-docs API Reference](https://github.com/friflo/fliox-docs) |
+| [.NET platform](https://dotnet.microsoft.com/en-us/)                      | C# .NET     | the platform providing compiler, runtime, IDE's & ASP.NET Core       |
+| [Swagger](https://swagger.io/)                                            | static JS   | a REST / OpenAPI UI linked by the Hub Explorer                       |
+| [GraphiQL](https://github.com/graphql/graphiql)                           | static JS   | a GraphQL UI linked by the Hub Explorer                              |
+| [Mermaid](https://github.com/mermaid-js/mermaid)                          | static JS   | class diagram for database schema linked by the Hub Explorer         |
+| [Monaco Editor](https://github.com/microsoft/monaco-editor)               | static JS   | used as JSON editor integrated in the Hub Explorer                   |
+| [WinMerge](https://github.com/WinMerge/winmerge)                          | Application | heavily used in this project                                         |
+| [Inscape](https://gitlab.com/inkscape/inkscape)                           | Application | to create SVG's for this project                                     |
 
 <br/>
 
