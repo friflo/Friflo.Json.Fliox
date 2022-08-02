@@ -40,13 +40,24 @@ dotnet run --module TestServer -c Release
   The performance checks are used to measure the throughput of `SyncTasks()` calls in various scenarios.  
   - remote (HTTP / WebSocket) vs in-process 
   - file-system vs in-memory database
-  - number of concurrent clients
+  - number of concurrent clients. Default: 4
+
+each run show a representative sample [requests / sec]
 ```
 dotnet run --module MemoryDbThroughput    -c Release
+⏩ requests: 680796 / sec
+
 dotnet run --module FileDbThroughput      -c Release
+⏩ requests: 6251 / sec
+
 dotnet run --module WebsocketDbThroughput -c Release
+⏩ requests: 27221 / sec
+
 dotnet run --module HttpDbThroughput      -c Release
+⏩ requests: 12753 / sec
+
 dotnet run --module LoopbackDbThroughput  -c Release
+⏩ requests: 172433 / sec
 ```
 
 <br/><br/>
