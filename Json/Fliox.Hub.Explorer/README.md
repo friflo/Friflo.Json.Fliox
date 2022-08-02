@@ -13,10 +13,11 @@ The **Hub Explorer** enables:
 
 1. browse databases, containers and entities.
 2. view and edit JSON records with auto completion and instant validation using the database schema
-3. mark properties defined as relations in the schema as links in the entity editor
-4. execute container queries using a LINQ filter expression
-5. execute standard or custom database commands. E.g. `std.Echo`
-6. send batch requests via HTTP or WebSocket to the Fliox.Hub server using the **Playground**
+3. display hover documentation of properties defined in the database schema
+4. mark properties defined as relations in the schema as links in the entity editor
+5. execute container queries using a LINQ filter expression
+6. execute standard or custom database commands. E.g. `std.Echo`
+7. send batch requests via HTTP or WebSocket to the Fliox.Hub server using the **Playground**
 
 As the **Hub Explorer** is optional it is distributed as a separate
 **NuGet** package: **Friflo.Json.Fliox.Hub.Explorer**.
