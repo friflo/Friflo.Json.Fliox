@@ -74,15 +74,18 @@ dotnet test -c Release -l "console;verbosity=detailed"
 ```
 Unit test execution will finish in about 7 seconds.
 
+<br/>
 
-## NUnit
 The unit tests can be executed in the **Test Explorer** of **VSCode**, **Rider** & **Visual Studio 2022**.  
 For VSCode [.NET Core Test Explorer](https://marketplace.visualstudio.com/items?itemName=formulahendry.dotnet-test-explorer) can be used.
 
-By using NUnit the unit tests can be executed in the Unity **Test Runner** in the [Unity Editor](https://unity.com/)
+By using **NUnit** the unit tests can be executed in the Unity **Test Runner** in the [Unity Editor](https://unity.com/)
 (Window > General > Test Runner) as **EditMode** tests.
 
-## Memory assertions
+<br/>
+
+**Memory assertions**
+
 Additional to common unit testing of expected behavior, some tests also check heap allocations with assertions:
 - **No (0) allocations** occur on the heap while running a parser or serializer a couple of times.
 - **No leaks of `native containers`** are left over after tear down a unit test.  
