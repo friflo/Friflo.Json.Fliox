@@ -33,6 +33,6 @@ jobs:
       uses: battila7/get-version-action@v2
     
     - name: Pack
-      run: dotnet pack -p:PackageVersion=${{ steps.version.outputs.version-without-v }} /p:Version==${{ steps.version.outputs.version-without-v }} /p:FileVersion==${{ steps.version.outputs.version-without-v }} /p:AssemblyVersion==${{ steps.version.outputs.version-without-v }} --output ${{ PACKAGE_DIRECTORY }} -c Release
+      run: dotnet pack --no-restore --no-build -p:PackageVersion=${{ steps.version.outputs.version-without-v }} /p:Version==${{ steps.version.outputs.version-without-v }} /p:FileVersion==${{ steps.version.outputs.version-without-v }} /p:AssemblyVersion==${{ steps.version.outputs.version-without-v }} --output ${{ env.PACKAGE_DIRECTORY }} -c Release
 
     
