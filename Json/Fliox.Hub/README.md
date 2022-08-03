@@ -30,10 +30,8 @@ The fundamental classes are:
 **JSON Fliox** is a **.NET** library supporting **simple** and **efficient** access to **NoSQL** databases via C# or Web clients.  
 Its **ORM** enables **Schema** creation. Its **Hub** serve hosted databases using these schemas via HTTP.
 
-|              | Description                                                               | API  |
-| ------------ | ------------------------------------------------------------------------- | ---- |
-| ORM          | Object Relational Mapper - to access to NoSQL databases with .NET clients | C#   |
-| Database Hub | A service hosting a set of NoSQL databases via an **ASP.NET Core** server | HTTP |
+The **ORM** client - Object Relational Mapper - is used to access NoSQL databases via .NET.  
+The **Hub** is a service hosting a set of NoSQL databases via an **ASP.NET Core** server.
 
 
 ## Links
