@@ -6,10 +6,6 @@ This package is part of the project described below.
 
 **Content**  
 The package contains the fundamental API to create Fliox Hub's and Client's.  
-The fundamental classes are:
-- `FlioxClient` and `EntitySet<,>` used by clients
-- `FlioxHub` and `HttpHost` used by HTTP servers
-
 
 ## Hub features
 - ASP.NET Core & HttpListener integration
