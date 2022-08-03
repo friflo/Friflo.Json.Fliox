@@ -12,15 +12,23 @@ The fundamental classes are:
 
 
 ## Hub features
+- ASP.NET Core & HttpListener integration
+    - REST API - JSON Schema / OpenAPI
+    - GraphQL API
+    - Batch API - HTTP & WebSocket
 - CRUD
-- Queries
-- Container relations
-- Messaging
+- Queries - LINQ expressions
+- Container relations (associations)
+- Database Schema
+- Code generation
+    - C#, Typescript & Kotlin
+    - JSON Schema / OpenAPI
+    - GraphQL Schema
+    - Database Schema diagram
+- JSON Validation - Records & DTO's
+- Send Messages & Commands using DTO's
 - Pub-Sub
-- JSON Schema / OpenAPI
-- GraphQL API
-- Batch API
-- Hub Explorer - Web UI to access databases and containers hosted by the Hub
+- Hub Explorer
 - Monitoring
 - Authentication / Authorization
 
