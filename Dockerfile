@@ -27,11 +27,19 @@ COPY Json/Fliox.Hub.Explorer/.          ./Json/Fliox.Hub.Explorer/
 COPY Json/Fliox.Hub.GraphQL/.           ./Json/Fliox.Hub.GraphQL/
 COPY Demos~/Demo/Client/.               ./Demos~/Demo/Client/
 COPY Demos~/Demo/Hub/.                  ./Demos~/Demo/Hub/
+COPY Demos~/Demo/Test/.                 ./Demos~/Demo/Test/
 #
 WORKDIR /app/Demos~/Demo/Hub/
 RUN dotnet publish DemoHub.csproj -c Release -o out
 #
-FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS runtime 
+FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS runtime
+
+# copy test databases: main_db & user_db
+COPY --from=build /app/Demos~/Demo/Test/DB /Test/DB
+
+WORKDIR /app 
+#
+COPY --from=build /app/Demos~/Demo/Hub/out ./
 
 WORKDIR /app 
 #
