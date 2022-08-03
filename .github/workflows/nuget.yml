@@ -1,0 +1,38 @@
+name: "Deploy to nuget"
+
+on:
+  push:
+    tags:
+    - 'v*'
+  
+env:
+  PACKAGE_DIRECTORY: ${{ github.workspace }}/output
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET 6.0
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 6.0.x
+    - name: Restore dependencies
+      run: dotnet restore
+
+    - name: Build
+      run: dotnet build --no-restore
+
+    - name: Test
+      run: dotnet test --no-build --verbosity normal
+
+    - name: GetVersion
+      id: version
+      uses: battila7/get-version-action@v2
+    
+    - name: Pack
+      run: dotnet pack -p:PackageVersion=${{ steps.version.outputs.version-without-v }} /p:Version==${{ steps.version.outputs.version-without-v }} /p:FileVersion==${{ steps.version.outputs.version-without-v }} /p:AssemblyVersion==${{ steps.version.outputs.version-without-v }} --output ${{ PACKAGE_DIRECTORY }} -c Release
+
+    
