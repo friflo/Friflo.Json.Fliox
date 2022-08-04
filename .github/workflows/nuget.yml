@@ -37,13 +37,13 @@ jobs:
 
     - name: Push
       run: |
-        dotnet nuget push ${{ env.PACKAGE_DIRECTORY }}/Friflo.Json.Burst.${{ steps.version.outputs.version-without-v }}.nupkg                --source https://api.nuget.org/v3/index.json -k ${{ secrets.NUGET_AUTH_TOKEN }}
-        dotnet nuget push ${{ env.PACKAGE_DIRECTORY }}/Friflo.Json.Fliox.${{ steps.version.outputs.version-without-v }}.nupkg                --source https://api.nuget.org/v3/index.json -k ${{ secrets.NUGET_AUTH_TOKEN }}
-        dotnet nuget push ${{ env.PACKAGE_DIRECTORY }}/Friflo.Json.Fliox.Annotation.${{ steps.version.outputs.version-without-v }}.nupkg     --source https://api.nuget.org/v3/index.json -k ${{ secrets.NUGET_AUTH_TOKEN }}
-        dotnet nuget push ${{ env.PACKAGE_DIRECTORY }}/Friflo.Json.Fliox.Hub.${{ steps.version.outputs.version-without-v }}.nupkg            --source https://api.nuget.org/v3/index.json -k ${{ secrets.NUGET_AUTH_TOKEN }}
-        dotnet nuget push ${{ env.PACKAGE_DIRECTORY }}/Friflo.Json.Fliox.Hub.AspNetCore.${{ steps.version.outputs.version-without-v }}.nupkg --source https://api.nuget.org/v3/index.json -k ${{ secrets.NUGET_AUTH_TOKEN }}
-        dotnet nuget push ${{ env.PACKAGE_DIRECTORY }}/Friflo.Json.Fliox.Hub.Cosmos.${{ steps.version.outputs.version-without-v }}.nupkg     --source https://api.nuget.org/v3/index.json -k ${{ secrets.NUGET_AUTH_TOKEN }}
-        dotnet nuget push ${{ env.PACKAGE_DIRECTORY }}/Friflo.Json.Fliox.Hub.Explorer.${{ steps.version.outputs.version-without-v }}.nupkg   --source https://api.nuget.org/v3/index.json -k ${{ secrets.NUGET_AUTH_TOKEN }}
-        dotnet nuget push ${{ env.PACKAGE_DIRECTORY }}/Friflo.Json.Fliox.Hub.GraphQL.${{ steps.version.outputs.version-without-v }}.nupkg    --source https://api.nuget.org/v3/index.json -k ${{ secrets.NUGET_AUTH_TOKEN }}
+        dotnet nuget push ${{ env.PACKAGE_DIRECTORY }}/Friflo.Json.Burst.${{ steps.version.outputs.version-without-v }}.snupkg                --source https://api.nuget.org/v3/index.json -k ${{ secrets.NUGET_AUTH_TOKEN }}
+        dotnet nuget push ${{ env.PACKAGE_DIRECTORY }}/Friflo.Json.Fliox.${{ steps.version.outputs.version-without-v }}.snupkg                --source https://api.nuget.org/v3/index.json -k ${{ secrets.NUGET_AUTH_TOKEN }}
+        dotnet nuget push ${{ env.PACKAGE_DIRECTORY }}/Friflo.Json.Fliox.Annotation.${{ steps.version.outputs.version-without-v }}.snupkg     --source https://api.nuget.org/v3/index.json -k ${{ secrets.NUGET_AUTH_TOKEN }}
+        dotnet nuget push ${{ env.PACKAGE_DIRECTORY }}/Friflo.Json.Fliox.Hub.${{ steps.version.outputs.version-without-v }}.snupkg            --source https://api.nuget.org/v3/index.json -k ${{ secrets.NUGET_AUTH_TOKEN }}
+        dotnet nuget push ${{ env.PACKAGE_DIRECTORY }}/Friflo.Json.Fliox.Hub.AspNetCore.${{ steps.version.outputs.version-without-v }}.snupkg --source https://api.nuget.org/v3/index.json -k ${{ secrets.NUGET_AUTH_TOKEN }}
+        dotnet nuget push ${{ env.PACKAGE_DIRECTORY }}/Friflo.Json.Fliox.Hub.Cosmos.${{ steps.version.outputs.version-without-v }}.snupkg     --source https://api.nuget.org/v3/index.json -k ${{ secrets.NUGET_AUTH_TOKEN }}
+        dotnet nuget push ${{ env.PACKAGE_DIRECTORY }}/Friflo.Json.Fliox.Hub.Explorer.${{ steps.version.outputs.version-without-v }}.snupkg   --source https://api.nuget.org/v3/index.json -k ${{ secrets.NUGET_AUTH_TOKEN }}
+        dotnet nuget push ${{ env.PACKAGE_DIRECTORY }}/Friflo.Json.Fliox.Hub.GraphQL.${{ steps.version.outputs.version-without-v }}.snupkg    --source https://api.nuget.org/v3/index.json -k ${{ secrets.NUGET_AUTH_TOKEN }}
 
     
