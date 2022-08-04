@@ -18,15 +18,13 @@ Currently supported input type schemas are:
 
 From these input schemas the following output schemas can be generate:
 
-| Language / Schema     | used in Hub Explorer by ...                                  |
-| --------------------- | ------------------------------------------------------------ |
-| C#                    |                                                              |
-| Typescript            |                                                              |
-| Kotlin                |                                                              |
-| HTML                  | ![HTML](../../../docs/images/doc.svg) links to documentation |
-| JSON Schema / OpenAPI | ![OAS](../../../docs/images/oas.svg) links to Swagger UI     |
-| GraphQL               | ![GQL](../../../docs/images/gql.svg) links to GraphiQL       |
-| Mermaid               | ![CD](../../../docs/images/cd.svg) links to class diagram    |
+- C#
+- Typescript
+- Kotlin
+- HTML
+- JSON Schema / OpenAPI
+- GraphQL
+- Mermaid
 
 The links in the table above navigate to pages utilizing the generated schemas. See screenshots below.
 
@@ -66,11 +64,14 @@ The links in the table above navigate to pages utilizing the generated schemas. 
 ## Screenshots
 
 Try out the web pages shown as screenshots below.  
-The are links in the [**DemoHub Explorer**](http://ec2-174-129-178-18.compute-1.amazonaws.com/) (EC2 instance: t2-micro, us-east-1)  
-- Blue CD links - Class Diagram
-- Blue text links - Schema documentation
-- Green OAS links - OpenAPI specification (Swagger UI)
-- Violet GQL links - GraphQL (GraphiQL UI)
+They are linked by the online [**DemoHub Explorer**](http://ec2-174-129-178-18.compute-1.amazonaws.com/) (EC2 instance: t2-micro, us-east-1)  
+
+| Link symbol                           | links to                                   |
+| ------------------------------------- | ---------------------------------- |
+| ![HTML](../../../docs/images/doc.svg) | Schema documentation               |
+| ![CD](../../../docs/images/cd.svg)    | Class Diagram                      |
+| ![OAS](../../../docs/images/oas.svg)  | OpenAPI Specification - Swagger UI |
+| ![GQL](../../../docs/images/gql.svg)  | GraphQL API - GraphiQL             |
 
 
 ### Class Diagram
