@@ -1,4 +1,4 @@
-name: "Deploy to nuget"
+name: CD
 
 on:
   push:
