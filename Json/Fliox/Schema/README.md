@@ -63,6 +63,16 @@ The links in the table above navigate to pages utilizing the generated schemas. 
   and follow the link **Typescript, C#, Kotlin, JSON Schema / OpenAPI** on the top of the schema page.
 
 
+## Screenshots
+
+Try out the web pages shown as screenshots below.  
+The are links in the [**DemoHub Explorer**](http://ec2-174-129-178-18.compute-1.amazonaws.com/) (EC2 instance: t2-micro, us-east-1)  
+- Blue CD links - Class Diagram
+- Blue text links - Schema documentation
+- Green OAS links - OpenAPI specification (Swagger UI)
+- Violet GQL links - GraphQL (GraphiQL UI)
+
+
 ### Class Diagram
 
 <img src="../../../docs/images/MonitorStore-schema.png" width="739" height="250">
