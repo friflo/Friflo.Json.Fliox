@@ -28,7 +28,7 @@ From these input schemas the following output schemas can be generate:
 
 The links in the table above navigate to pages utilizing the generated schemas. See screenshots below.
 
-## Features:
+# Features
 - Code generators and JSON Validator support the C#/.NET language features:
     - general language types like `class`, `struct` and `enum`
     - primitives types like `long`, `int`, `short`, `byte`, `bool`, `float` & `double`  
@@ -61,7 +61,7 @@ The links in the table above navigate to pages utilizing the generated schemas. 
   and follow the link **Typescript, C#, Kotlin, JSON Schema / OpenAPI** on the top of the schema page.
 
 
-## Screenshots
+# Screenshots
 
 Try out the web pages shown as screenshots below.  
 They are linked by the online [**DemoHub Explorer**](http://ec2-174-129-178-18.compute-1.amazonaws.com/) (EC2 instance: t2-micro, us-east-1)  
