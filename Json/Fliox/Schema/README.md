@@ -70,9 +70,9 @@ The links in the table above navigate to pages utilizing the generated schemas. 
 *screenshot: MonitorStore schema as class diagram*
 
 
-### HTML Documentation
+### Schema Documentation
 
-<img src="../../../docs/images/MonitorStore-html.png" width="739" height="250">
+<img src="../../../docs/images/MonitorStore-html.png" width="739" height="280">
 
 *screenshot: MonitorStore schema as single page HTML*
 
