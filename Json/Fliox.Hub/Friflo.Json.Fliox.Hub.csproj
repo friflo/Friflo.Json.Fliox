@@ -11,7 +11,7 @@
         <Authors>Ullrich Praetz</Authors>
         <Description>Provide an ORM (Object-relational Mapper) and a database Hub targeting NoSQL and key-value databases.
 Hub API's: REST/OpenAPI, GraphQL, Batch (HTTP &amp; WebSocket).
-The Hub support container relations, CRUD, query, messaging, Pub-Sub (changes &amp; messages)  and a Web UI (Hub Explorer)</Description>
+The Hub support container relations, CRUD, query, messaging, Pub-Sub (changes &amp; messages) and a admin page (Hub Explorer)</Description>
         <Copyright>Ullrich Praetz</Copyright>
         <PackageProjectUrl>https://github.com/friflo/Friflo.Json.Fliox</PackageProjectUrl>
         <RepositoryUrl>https://github.com/friflo/Friflo.Json.Fliox</RepositoryUrl>

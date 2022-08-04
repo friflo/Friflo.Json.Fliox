@@ -144,7 +144,7 @@ This `FlioxHub` instance need to be passed to the constructor of the `HttpHost`
 📄   [README.md](Json/Fliox.Hub.Explorer/README.md)  
 Assembly     Friflo.Json.Fliox.Hub.Explorer.dll
 
-The Hub Explorer is a generic Web UI - a single page application - used to access
+The Hub Explorer is an admin page used to access
 databases, containers and entities hosted by a Fliox Hub.  
 The Explorer also enables to execute application specific database commands.
 
