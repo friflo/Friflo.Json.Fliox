@@ -207,7 +207,7 @@ The links in the table above navigate to pages utilizing the generated schemas. 
 
 
 [<img src="docs/images/schema-screenshots.png" width="770" height="85">](Json/Fliox/Schema/README.md#html-documentation)  
-*screenshots: HTML documentation, Swagger UI & GraphiQL*
+*screenshots: Schema documentation, Swagger UI & GraphiQL*
 
 
 

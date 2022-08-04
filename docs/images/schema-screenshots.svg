@@ -37,9 +37,9 @@
      inkscape:window-height="1121"
      id="namedview8425"
      showgrid="false"
-     inkscape:zoom="1.4125"
-     inkscape:cx="522.83186"
-     inkscape:cy="165.30973"
+     inkscape:zoom="0.99878833"
+     inkscape:cx="302.36637"
+     inkscape:cy="175.71291"
      inkscape:window-x="-9"
      inkscape:window-y="-9"
      inkscape:window-maximized="1"
@@ -57,12 +57,12 @@
      id="path8385"
      d="m 0,-475 h 960 v 540 h -960 z" /><image
      width="500"
-     height="141.90649"
+     height="167"
      preserveAspectRatio="none"
      xlink:href="MonitorStore-html.png"
      id="image364"
      x="0"
-     y="15" /><image
+     y="0" /><image
      width="500"
      height="167.66032"
      preserveAspectRatio="none"
