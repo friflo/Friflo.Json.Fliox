@@ -2,7 +2,7 @@
 
 # [![JSON Fliox](docs/images/Json-Fliox.svg)](https://github.com/friflo/Friflo.Json.Fliox)    **JSON Fliox** ![SPLASH](docs/images/paint-splatter.svg)
 
-[![nuget](https://img.shields.io/nuget/v/Friflo.Json.Fliox.Hub.svg?color=blue)](https://www.nuget.org/packages/Friflo.Json.Fliox.Hub)  
+[![nuget](https://img.shields.io/nuget/v/Friflo.Json.Fliox.Hub.svg?color=blue)](https://www.nuget.org/packages/Friflo.Json.Fliox.Hub) 
 [![.NET Tests](https://github.com/friflo/Friflo.Json.Fliox/workflows/.NET/badge.svg)](https://github.com/friflo/Friflo.Json.Fliox/actions)
 
 
