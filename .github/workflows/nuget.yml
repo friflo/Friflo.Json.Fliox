@@ -27,7 +27,7 @@ jobs:
       uses: battila7/get-version-action@v2
 
     - name: Build
-      run: dotnet build --no-restore /p:Version=${{ steps.version.outputs.version-without-v }} /p:FileVersion=${{ steps.version.outputs.version-without-v }} /p:AssemblyVersion=${{ steps.version.outputs.version-without-v }} /p:ContinuousIntegrationBuild=true -c Release
+      run: dotnet build --no-restore /p:Version=${{ steps.version.outputs.version-without-v }} /p:FileVersion=${{ steps.version.outputs.version-without-v }} /p:AssemblyVersion=${{ steps.version.outputs.version-without-v }} -c Release
 
     - name: Test
       run: dotnet test --no-build --verbosity normal -c Release
