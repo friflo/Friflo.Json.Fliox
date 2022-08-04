@@ -20,6 +20,10 @@ The Hub support container relations, CRUD, query, messaging, Pub-Sub (changes &a
         <RepositoryType>git</RepositoryType>
         <PackageIcon>package-icon.png</PackageIcon>
         <PackageReadmeFile>README.md</PackageReadmeFile>
+        <IncludeSymbols>true</IncludeSymbols>
+        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+        <EmbedAllSources>true</EmbedAllSources>
+        <Deterministic>true</Deterministic>
     </PropertyGroup>
 
     <ItemGroup>

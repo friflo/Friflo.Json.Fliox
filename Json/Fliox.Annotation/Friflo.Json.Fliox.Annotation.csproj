@@ -20,6 +20,10 @@
         <Description>Attributes used to control JSON serialization, Schema generation and Hub behavior of JSON Fliox</Description>
         <PackageIcon>package-icon.png</PackageIcon>
         <PackageReadmeFile>README.md</PackageReadmeFile>
+        <IncludeSymbols>true</IncludeSymbols>
+        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+        <EmbedAllSources>true</EmbedAllSources>
+        <Deterministic>true</Deterministic>
     </PropertyGroup>
 
     <ItemGroup>
