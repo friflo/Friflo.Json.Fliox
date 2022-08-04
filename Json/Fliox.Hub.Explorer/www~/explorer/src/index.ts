@@ -20,6 +20,7 @@ declare global {
     }
 }
 
+const flioxVersionEl        = el("flioxVersion");
 const projectName           = el("projectName");
 const projectUrl            = el("projectUrl")      as HTMLAnchorElement;
 const envEl                 = el("envEl");
@@ -371,9 +372,12 @@ export class App {
         //
         const name          = this.hostInfo.projectName;
         const hostVersion   = this.hostInfo.hostVersion;
+        const flioxVersion  = this.hostInfo.flioxVersion;
         const website       = this.hostInfo.projectWebsite;
         const envName       = this.hostInfo.envName;
         const envColor      = this.hostInfo.envColor;
+
+        flioxVersionEl.innerText = "Version " + flioxVersion;
         if (name) {
             projectName.innerText   = name;
             document.title          = envName ? `${name} · ${envName}` : name;
