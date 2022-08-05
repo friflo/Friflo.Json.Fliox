@@ -186,19 +186,14 @@ Assembly     Friflo.Json.Fliox.dll
 This module enables transforming schemas expressed by a set of C# classes into
 other programming languages and schema formats like:
 
-| Language / Schema     | used in Hub Explorer by ...                                                                           |
-| --------------------- | ----------------------------------------------------------------------------------------------------- |
-| C#                    |                                                                                                       |
-| Typescript            |                                                                                                       |
-| Kotlin                |                                                                                                       |
-| HTML                  | [![HTML](docs/images/doc.svg)](Json/Fliox/Schema/README.md#html-documentation) links to documentation |
-| JSON Schema / OpenAPI | [![OAS](docs/images/oas.svg)](Json/Fliox/Schema/README.md#swagger-ui) links to Swagger UI             |
-| GraphQL Schema        | [![GQL](docs/images/gql.svg)](Json/Fliox/Schema/README.md#graphiql) links to GraphiQL                 |
-| Mermaid Class Diagram | [![CD](docs/images/cd.svg)](Json/Fliox/Schema/README.md#class-diagram) links to Class Diagram         |
+- C#, Typescript, Kotlin
+- HTML
+- JSON Schema / OpenAPI
+- GraphQL Schema
+- Mermaid Class Diagram
 
-Its main purpose is to generate database schemas and types for various languages of classes extending `FlioxClient`.
-
-The links in the table above navigate to pages utilizing the generated schemas. Like the class diagram below.
+Its main purpose is to generate schemas and types for various languages of classes extending `FlioxClient`.  
+The screenshots below show Hub pages utilizing the schemas mentioned above.
 
 [<img src="docs/images/MonitorStore-schema.png" width="739" height="226">](Json/Fliox/Schema/README.md#class-diagram)  
 *screenshot: MonitorStore schema as class diagram*
