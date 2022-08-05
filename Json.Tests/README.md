@@ -2,7 +2,7 @@
 
 # [![JSON Fliox](../docs/images/Json-Fliox.svg)](https://github.com/friflo/Friflo.Json.Fliox)     **Json.Tests** ![SPLASH](../docs/images/paint-splatter.svg)
 
-[![.NET Tests](https://github.com/friflo/Friflo.Json.Fliox/workflows/.NET/badge.svg)](https://github.com/friflo/Friflo.Json.Fliox/actions)
+[![CI](https://github.com/friflo/Friflo.Json.Fliox/workflows/CI/badge.svg)](https://github.com/friflo/Friflo.Json.Fliox/actions/workflows/dotnet.yml) 
 
 namespace **`Friflo.Json.Tests`**
 
