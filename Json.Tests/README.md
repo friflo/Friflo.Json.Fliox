@@ -14,7 +14,15 @@ It can be used with the IDE's: **VSCode**, **Rider** & **Visual Studio 2022**.
 
 *Note*: In order to build and run the examples the [**.NET 6.0 SDK**](https://dotnet.microsoft.com/en-us/download) is required.
 
-clone the repository and open its directory
+Or use **Gitpod** to build and run the server using a browser without installing anything.  Workspace available in 30 sec.  
+<a href="https://gitpod.io/#https://github.com/friflo/Friflo.Json.Fliox">
+  <img
+    src="https://img.shields.io/badge/Build%20with-Gitpod-908a85?logo=gitpod"
+    alt="Build with Gitpod"
+  />
+</a>
+
+clone the repository and open its directory - leave out this step when using Gitpod.
 ```cmd
 git clone https://github.com/friflo/Friflo.Json.Fliox.git
 cd Friflo.Json.Fliox
