@@ -35,6 +35,8 @@ The **DemoHub** .NET project is available as example at
 
 *Note*: JSON Fliox is **not** a UI library. It is designed for simple integration in .NET and Web UI frameworks.
 
+Published project on GitHub 2022-08
+
 <br/>
 
 
