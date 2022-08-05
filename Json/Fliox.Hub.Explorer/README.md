@@ -14,7 +14,7 @@ An explanation of the Explorer is available at the [🐾 Examples - Walkthrough]
 
 
 
-The **Hub Explorer** enables:
+The Explorer enables:
 
 1. browse databases, containers and entities.
 2. view and edit JSON records with auto completion and instant validation using the database schema
@@ -24,13 +24,13 @@ The **Hub Explorer** enables:
 6. execute standard or custom database commands. E.g. `std.Echo`
 7. send batch requests via HTTP or WebSocket to the Fliox.Hub server using the **Playground**
 
-As the **Hub Explorer** is optional it is distributed as a separate
-**NuGet** package: **Friflo.Json.Fliox.Hub.Explorer**.
+As the Hub Explorer is optional it is distributed as a separate
+**NuGet** package: [Friflo.Json.Fliox.Hub.Explorer](https://www.nuget.org/packages/Friflo.Json.Fliox.Hub.Explorer/).
 
-The static web files are added to the **HTTP Fliox Hub** by adding the root folder
+The static web files are added to the **HttpHost** by adding the root folder
 available via the `HubExplorer.Path`
 
-For integration to a **HTTP Fliox Hub** server call:
+For integration to a **HttpHost** server call:
 
 ```csharp
      HttpHost httpHost;
