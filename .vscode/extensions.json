@@ -1,5 +1,5 @@
 {
     "recommendations": [
-        "ms-dotnettools.csharp" // C# for Visual Studio Code (powered by OmniSharp)
+        // "ms-dotnettools.csharp" // C# for Visual Studio Code (powered by OmniSharp) - disabled to avoid Gitpod warning: The 1 extension(s) below, in workspace recommendations have issues: ms-dotnettools.csharp (not found in marketplace)
     ]
 }
