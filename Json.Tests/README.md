@@ -53,19 +53,19 @@ dotnet run --module TestServer -c Release
 each run show a representative sample [requests / sec]
 ```
 dotnet run --module MemoryDbThroughput    -c Release
-⏩ requests: 680796 / sec
+⏩ requests: 680796 / sec  # CPU-bound
 
 dotnet run --module FileDbThroughput      -c Release
-⏩ requests: 6251 / sec
+⏩ requests: 6251 / sec    # disc-bound
 
 dotnet run --module WebsocketDbThroughput -c Release
-⏩ requests: 27221 / sec
+⏩ requests: 27221 / sec   # network-bound
 
 dotnet run --module HttpDbThroughput      -c Release
-⏩ requests: 12753 / sec
+⏩ requests: 12753 / sec   # network-bound
 
 dotnet run --module LoopbackDbThroughput  -c Release
-⏩ requests: 172433 / sec
+⏩ requests: 172433 / sec  # CPU-bound
 ```
 
 <br/><br/>
