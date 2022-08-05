@@ -232,12 +232,13 @@ Build and run instructions for .NET and Unity are in the README file.
 **unit tests**  
 Code coverage: **86%** measured with **JetBrains • docCover**
 
-*summarized logs of test execution*
 ```yaml
 Passed! - Failed:   0, Passed:   6, Skipped:   0, Total:   6, Duration: 2 s -  .../DemoTest.dll
 Passed! - Failed:   0, Passed:   7, Skipped:   0, Total:   7, Duration: 1 s -  .../TodoTest.dll
 Passed! - Failed:   0, Passed: 347, Skipped:   0, Total: 347, Duration: 15 s - .../Friflo.Json.Tests.dll
 ```
+*summarized logs of test execution - they are executed in*  
+[![CI](https://github.com/friflo/Friflo.Json.Fliox/workflows/CI/badge.svg)](https://github.com/friflo/Friflo.Json.Fliox/actions/workflows/dotnet.yml) 
 
 
 ### **API**
