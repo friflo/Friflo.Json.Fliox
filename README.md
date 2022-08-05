@@ -34,10 +34,10 @@ The **DemoHub** .NET project is available as example at
 <br/>
 
 **Some numbers**  
-- RTT - Request / Response roundtrip with WebSocket:    **0.3 ms**
-- Pub-Sub latency from publisher to subscriber: **sub millisecond**
-- Throughput Request/Response WebSocket, 4 concurrent users: **27k requests / sec**
-- Hub integration to ASP.NET Core:              [5 LOC - lines of code](https://github.com/friflo/Fliox.Examples/blob/main/Demo/Hub/Startup.cs#L66)
+- RTT - Request / Response roundtrip with WebSocket:            **0.3 ms**
+- Pub-Sub latency from publisher to subscriber:                 **sub millisecond**
+- Throughput Request/Response WebSocket, 4 concurrent users:    **27k requests / sec**
+- Hub integration into ASP.NET Core:                            [5 LOC - lines of code](https://github.com/friflo/Fliox.Examples/blob/main/Demo/Hub/Startup.cs#L66)
 
 
 *Note*: JSON Fliox is **not** a UI library. It is designed for simple integration in .NET and Web UI frameworks.
