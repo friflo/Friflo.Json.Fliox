@@ -41,7 +41,7 @@ public static class StartupAsp6
         
         // use app.Start() / app.WaitForShutdown() instead of app.Run() to get startPage
         app.Start();
-        var addresses   = app.Services.GetRequiredService<IServer>().Features.Get<IServerAddressesFeature>().Addresses;
+        var addresses   = app.Services.GetRequiredService<IServer>().Features.Get<IServerAddressesFeature>()!.Addresses;
         var startPage   = httpHost.GetStartPage(addresses);
         Console.WriteLine($"Hub Explorer - {startPage}\n");
         app.WaitForShutdown();

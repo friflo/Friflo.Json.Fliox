@@ -48,7 +48,7 @@ namespace DemoHub
                 app.UseDeveloperExceptionPage();
             }
             var httpHost = Program.CreateHttpHost();
-            var startPage = httpHost.GetStartPage(app.ServerFeatures.Get<IServerAddressesFeature>().Addresses);
+            var startPage = httpHost.GetStartPage(app.ServerFeatures.Get<IServerAddressesFeature>()!.Addresses);
             Console.WriteLine($"Hub Explorer - {startPage}\n");
             httpHost.sharedEnv.Logger = new HubLoggerAspNetCore(loggerFactory);
 
