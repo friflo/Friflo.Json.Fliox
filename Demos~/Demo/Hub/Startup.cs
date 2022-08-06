@@ -57,6 +57,7 @@ namespace DemoHub
 
             app.UseEndpoints(endpoints => {
                 endpoints.MapGet("hello/", () => "Hello World");
+                // add redirect only to enable using http://localhost:8010 for debugging
                 endpoints.MapGet("/", async context => {
                     context.Response.Redirect(httpHost.endpoint, false);
                     await context.Response.WriteAsync("redirect");

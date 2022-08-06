@@ -30,6 +30,7 @@ public static class StartupAsp6
         app.UseWebSockets();
 
         app.MapGet("hello/", () => "Hello World");
+        // add redirect only to enable using http://localhost:8010 for debugging  
         app.MapGet("/", async context => {
             context.Response.Redirect(httpHost.endpoint, false);
             await context.Response.WriteAsync("redirect");
