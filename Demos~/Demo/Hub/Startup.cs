@@ -11,7 +11,7 @@ using Microsoft.Extensions.Logging;
 namespace DemoHub
 {
     /// <summary>
-    /// Bootstrapping of ASP.NET Core and adding the Hub returned by <see cref="Program.CreateHttpHost"/>.
+    /// Bootstrapping of ASP.NET Core 3, 3.1, 5 and adding the Hub returned by <see cref="Program.CreateHttpHost"/>.
     /// </summary> 
     public class Startup
     {
@@ -56,10 +56,8 @@ namespace DemoHub
             app.UseWebSockets();
 
             app.UseEndpoints(endpoints => {
-                endpoints.MapGet("hello/", async context => {
-                    await context.Response.WriteAsync("Hello World!");
-                });
-                endpoints.Map("/", async context => {
+                endpoints.MapGet("hello/", () => "Hello World");
+                endpoints.MapGet("/", async context => {
                     context.Response.Redirect(httpHost.endpoint, false);
                     await context.Response.WriteAsync("redirect");
                 });

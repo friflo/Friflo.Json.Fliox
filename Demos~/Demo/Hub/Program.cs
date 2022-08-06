@@ -22,7 +22,8 @@ namespace DemoHub
                 HttpListenerHost.RunHost("http://+:8010/", httpHost);
                 return;
             }
-            Startup.RunAspNetCore(args);
+            Startup.RunAspNetCore(args);    // ASP.NET Core 3, 3.1, 5
+        //  StartupAsp6.Run(args);          // ASP.NET Core 6
         }
 
         /// <summary>

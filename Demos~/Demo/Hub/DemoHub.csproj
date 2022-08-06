@@ -6,7 +6,7 @@
         <!-- disable automatic creation of: Properties/launchSettings.json -->
         <NoDefaultLaunchSettingsFile>true</NoDefaultLaunchSettingsFile>
 
-        <LangVersion>7.3</LangVersion>
+        <LangVersion>10</LangVersion>
 		<GenerateProgramFile>false</GenerateProgramFile>
         <!-- EnableDefaultContentItems: false prevents files in DB~/ copied to output directory -->
         <EnableDefaultContentItems>true</EnableDefaultContentItems>
