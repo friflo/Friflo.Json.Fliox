@@ -37,7 +37,6 @@ public static class StartupAsp6
             context.Response.Redirect(httpHost.endpoint, false);
             await context.Response.WriteAsync("redirect");
         });
-
         app.Map("/fliox/{*path}", async context =>  {
             await context.HandleFlioxRequest(httpHost).ConfigureAwait(false);
         });
