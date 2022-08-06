@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Hosting.Server.Features;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
 namespace DemoHub;
@@ -22,11 +23,7 @@ public static class StartupAsp6
         var builder     = WebApplication.CreateBuilder(args);
         builder.WebHost.ConfigureKestrel(options => options.ListenAnyIP(8010));
         var app         = builder.Build();
-        var server      = app.Services.GetRequiredService<IServer>();
-        var addresses   = server.Features.Get<IServerAddressesFeature>().Addresses;
-        var startPage   = httpHost.GetStartPage(addresses);
-        Console.WriteLine($"Hub Explorer - {startPage}\n");
-        
+
         var loggerFactory = app.Services.GetService<ILoggerFactory>();
         httpHost.sharedEnv.Logger = new HubLoggerAspNetCore(loggerFactory);
         
@@ -40,6 +37,12 @@ public static class StartupAsp6
         app.Map("/fliox/{*path}", async context =>  {
             await context.HandleFlioxRequest(httpHost).ConfigureAwait(false);
         });
-        app.Run();
+        
+        // use app.Start() / app.WaitForShutdown() instead of app.Run() to get startPage
+        app.Start();
+        var addresses   = app.Services.GetRequiredService<IServer>().Features.Get<IServerAddressesFeature>().Addresses;
+        var startPage   = httpHost.GetStartPage(addresses);
+        Console.WriteLine($"Hub Explorer - {startPage}\n");
+        app.WaitForShutdown();
     }
 }
