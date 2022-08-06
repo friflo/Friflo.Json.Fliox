@@ -19,6 +19,25 @@ namespace Friflo.Json.Fliox.Hub.AspNetCore
 {
     public static class AspNetCoreExtensions
     {
+        /// <summary>
+        /// Execute the request and write the response to the given <paramref name="context"/>.
+        /// </summary>
+        /// <remarks>
+        /// It a shortcut for
+        /// <code>
+        ///     var response = await context.ExecuteFlioxRequest(httpHost).ConfigureAwait(false);
+        ///     await context.WriteFlioxResponse(response).ConfigureAwait(false);
+        /// </code>
+        /// </remarks>
+        public static async Task HandleFlioxRequest(this HttpContext context, HttpHost httpHost) {
+            var requestContext = await ExecuteFlioxRequest(context, httpHost).ConfigureAwait(false);
+            await WriteFlioxResponse(context, requestContext).ConfigureAwait(false);
+        }
+        
+        /// <summary>
+        /// Execute the request return a RequestContext containing the execution result.
+        /// To return a HTTP response <see cref="WriteFlioxResponse"/> need to be called. 
+        /// </summary>
         public static async Task<RequestContext> ExecuteFlioxRequest(this HttpContext context, HttpHost httpHost) {
             var httpRequest = context.Request;
             var path        = httpRequest.Path.Value;
@@ -42,6 +61,9 @@ namespace Friflo.Json.Fliox.Hub.AspNetCore
             return reqCtx;
         }
         
+        /// <summary>
+        /// Write the result of <see cref="ExecuteFlioxRequest"/> to the given <paramref name="context"/>
+        /// </summary>
         public static async Task WriteFlioxResponse(this HttpContext context, RequestContext requestContext) {
             if (requestContext == null)
                 return; // request was WebSocket
@@ -59,6 +81,12 @@ namespace Friflo.Json.Fliox.Hub.AspNetCore
             await httpResponse.Body.WriteAsync(response, 0, response.Length).ConfigureAwait(false);
         }
         
+        /// <summary>
+        /// Return the start page url intended to be written to the console to simplify debugging.<br/>
+        /// Like: <c>http://localhost:8010/fliox/</c>
+        /// </summary>
+        /// <param name="httpHost">used to get the path of the start page url</param>
+        /// <param name="addresses">used to get the port of the start page url</param>
         public static string GetStartPage(this HttpHost httpHost, ICollection<string> addresses) {
             foreach (var address in addresses) {
                 var portPos = address.LastIndexOf(':');
