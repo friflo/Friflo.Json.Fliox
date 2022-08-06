@@ -15,7 +15,7 @@ namespace DemoHub
     /// </summary> 
     public class Startup
     {
-        internal static void RunAspNetCore(string[] args)
+        internal static void Run(string[] args)
         {
             CreateHostBuilder(args).Build().Run();
         }
