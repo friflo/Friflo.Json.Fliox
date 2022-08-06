@@ -63,7 +63,7 @@ namespace DemoHub
             return httpHost;
         }
         
-        private static bool UseMemoryDbClone = true;
+        private static readonly bool UseMemoryDbClone = true;
         
         private static EntityDatabase CreateDatabase(DatabaseSchema schema, TaskHandler handler)
         {
