@@ -7,7 +7,7 @@
 [![CD](https://github.com/friflo/Friflo.Json.Fliox/workflows/CD/badge.svg)](https://github.com/friflo/Friflo.Json.Fliox/actions/workflows/nuget.yml) 
 
 
-**.NET** library supporting **simple** and **efficient** access to **NoSQL** databases via C# or Web clients.  
+**.NET** library supporting **simple** and **performant** access to **NoSQL** databases via C# or Web clients.  
 Its **ORM** enables **Schema** creation. Its **Hub** serve hosted databases using these schemas via HTTP.
 
 The **ORM** client - Object Relational Mapper - is used to access NoSQL databases via .NET.  
