@@ -16,7 +16,7 @@ namespace Friflo.Json.Fliox.Schema.Language
     {
         private  readonly   Generator                   generator;
         private  readonly   Dictionary<TypeDef, string> standardTypes;
-        private  const      string                      Next = ",\r\n";
+        private  const      string                      Next = ",\n";
         
         private JsonSchemaGenerator (Generator generator) {
             this.generator  = generator;

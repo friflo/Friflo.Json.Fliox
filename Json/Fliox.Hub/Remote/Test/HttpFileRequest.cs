@@ -31,10 +31,10 @@ namespace Friflo.Json.Fliox.Hub.Remote.Test
         private static readonly Regex   RegExVariables  = new Regex(@"\{{([^}]+)\}}", RegexOptions.Compiled);
         
         public HttpFileRequest (string request, HttpFile httpFile) {
-            var parts       = request.Split(new [] { "\r\n\r\n" }, StringSplitOptions.None);
+            var parts       = request.Split(new [] { "\r\n\r\n", "\n\n" }, StringSplitOptions.None);
             var head        = parts[0];
             body            = parts.Length > 1 ? parts[1] : null;
-            var lines       = head.Split(new [] {"\r\n"}, StringSplitOptions.None);
+            var lines       = head.Split(new [] {"\r\n", "\n"}, StringSplitOptions.None);
             var requestLine = lines[0];
             
             var spacePos    = requestLine.IndexOf(' ');

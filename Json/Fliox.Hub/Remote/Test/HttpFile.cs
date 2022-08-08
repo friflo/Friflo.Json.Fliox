@@ -51,7 +51,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.Test
         public HttpFile(string path, string content) {
             this.path       = path;
             requests        = new List <HttpFileRequest>();
-            var sections    = content.Split(new [] {"###\r\n"}, StringSplitOptions.None);
+            var sections    = content.Split(new [] {"###\r\n", "###\n"}, StringSplitOptions.None);
             variables       = ReadVariables(sections[0]);
             
             // skip first entry containing variables
@@ -64,7 +64,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.Test
         
         private static Dictionary<string, string> ReadVariables (string head) {
             var result  = new Dictionary<string, string>();
-            var lines   = head.Split(new [] {"\r\n"}, StringSplitOptions.None);
+            var lines   = head.Split(new [] {"\r\n", "\n"}, StringSplitOptions.None);
             foreach (var line in lines) {
                 if (!line.StartsWith("@"))
                     continue;
