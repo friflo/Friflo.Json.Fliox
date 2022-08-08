@@ -61,6 +61,7 @@ Published project on GitHub 2022-08
 - [Project](#-project)
     - [Build](#build)                  ❯  [README.md](Json.Tests/README.md)
     - [API](#api)                     ❯  [friflo/fliox-docs](https://github.com/friflo/fliox-docs)
+    - [Properties](#properties)
     - [Principles](#principles)
 - [Motivation](#-motivation)
 - [Credits](#-credits)
@@ -251,6 +252,30 @@ Passed! - Failed:   0, Passed: 347, Skipped:   0, Total: 347, Duration: 15 s - .
 The Fliox **C# .NET** API is [CLS-compliant](https://docs.microsoft.com/en-us/dotnet/api/system.clscompliantattribute#remarks)
 
 The API is available at [**fliox-docs API Reference**](https://github.com/friflo/fliox-docs)
+
+
+### **Properties**
+
+The goal of the library, its components and API is to be easy digestible for software developers.  
+The properties describe the characteristics of this project - at least what it aims for.  
+These properties are targeted to user of the library. In contrast to the principles - which are strict rules - it is a positive
+way describing the design of the software architecture.  
+They fit mostly the aspects described in [CUPID-for joyful coding](https://dannorth.net/2022/02/10/cupid-for-joyful-coding/).
+
+Topics of the CUPID properties focused by this project
+- Composable
+    - Seamless integration into existing ASP.NET Core applications with a handful lines of code
+    - Ensure independence from other parts of an existing applications
+    - The API surface is as small as possible
+    - Has no dependencies to other libraries - except the GraphQL library
+- Predictable
+    - Naming of classes, methods and properties are compact, short and easy to pronounce
+    - Class names typically are a concatenation of two short words to be expressive and to avoid name collisions
+    - Avoid using long, cryptic or scientific words in the API
+    - Observable
+        - Monitoring is integral part of the Hub
+        - The `ToString()` methods of fundamental classes show only relevant state to avoid noise in debugging sessions.
+        - Error and runtime assertion messages are short and expressive
 
 
 ### **Principles**
