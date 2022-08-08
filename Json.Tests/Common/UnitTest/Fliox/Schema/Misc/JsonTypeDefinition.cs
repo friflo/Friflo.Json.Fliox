@@ -21,7 +21,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema.Misc
         private  readonly   Generator                   generator;
         private  readonly   Dictionary<TypeDef, string> standardTypes;
         private  readonly   Dictionary<TypeDef, string> primitiveTypes;
-        private  const      string                      Next = ",\r\n";
+        private  const      string                      Next = ",\n";
         
         private JsonTypeDefinition (Generator generator) {
             this.generator  = generator;
