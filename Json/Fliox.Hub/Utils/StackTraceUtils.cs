@@ -14,7 +14,8 @@ namespace Friflo.Json.Fliox.Hub.Utils
                 stack   = e.StackTrace;                         // contains file info: source path & line
             } else {
                 stack   = new StackTrace(e, false).ToString();  // stacktrace without file info: source path & line
-                stack   = stack.Substring(0, stack.Length - 2); // remove trailing CR LF
+                stack   = stack.Replace("\r\n", "\n");
+                stack   = stack.Substring(0, stack.Length - 1); // remove trailing LF
             }
             
 #if UNITY_5_3_OR_NEWER
