@@ -32,6 +32,23 @@ namespace System.Collections.Generic
     }
 }
 
+namespace System.Text
+{
+    public static class TextExtensions
+    {
+        public static StringBuilder AppendLF(this StringBuilder sb) {
+            sb.Append('\n');
+            return sb;
+        }
+
+        public static StringBuilder AppendLF(this StringBuilder sb, string value)
+        {
+            sb.Append(value);
+            return sb.Append('\n');
+        }
+    }
+}
+
 #if UNITY_5_3_OR_NEWER
 
 namespace System.Collections.Generic

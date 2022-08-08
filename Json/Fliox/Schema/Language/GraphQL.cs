@@ -157,13 +157,13 @@ namespace Friflo.Json.Fliox.Schema.Language
                     gqlType = new GqlInputObject { inputFields  = gqlFields };
                 }
                 // var typeName = type.IsSchema ? "interface" : type.IsAbstract ? "abstract class" : "class";
-                // sb.AppendLine($"export {typeName} {type.Name} {extendsStr}{{");
+                // sb.AppendLF($"export {typeName} {type.Name} {extendsStr}{{");
             } else {
                 if (kind == Kind.Output) { 
                     var union   = new GqlUnion { possibleTypes = new List<GqlType>() };
                     gqlType     = union;
                     // var fieldDoc    = GetDoc(unionType.doc, "    ");
-                    // sb.AppendLine($"    abstract {unionType.discriminator}:");
+                    // sb.AppendLF($"    abstract {unionType.discriminator}:");
                     foreach (var polyType in unionType.types) {
                         var unionItemType = Gql.Scalar(polyType.typeDef.Name);
                         union.possibleTypes.Add(unionItemType);

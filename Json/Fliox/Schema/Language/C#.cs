@@ -69,12 +69,12 @@ namespace Friflo.Json.Fliox.Schema.Language
             }
             if (type.IsEnum) {
                 var enumValues = type.EnumValues;
-                sb.AppendLine($"public enum {type.Name} {{");
+                sb.AppendLF($"public enum {type.Name} {{");
                 foreach (var enumValue in enumValues) {
-                    sb.AppendLine($"    {enumValue.name},");
+                    sb.AppendLF($"    {enumValue.name},");
                 }
-                sb.AppendLine("}");
-                sb.AppendLine();
+                sb.AppendLF("}");
+                sb.AppendLF();
                 return new EmitType(type, sb);
             }
             return null;
@@ -94,17 +94,17 @@ namespace Friflo.Json.Fliox.Schema.Language
             if (unionType == null) {
                 var classType = type.IsStruct ? "struct" : "class";
                 var abstractStr = type.IsAbstract ? "abstract " : "";
-                sb.AppendLine($"public {abstractStr}{classType} {type.Name} {extendsStr}{{");
+                sb.AppendLF($"public {abstractStr}{classType} {type.Name} {extendsStr}{{");
             } else {
-                sb.AppendLine($"[Discriminator(\"{unionType.discriminator}\")]");
+                sb.AppendLF($"[Discriminator(\"{unionType.discriminator}\")]");
                 int max    = unionType.types.MaxLength(polyType => polyType.typeDef.Name.Length);
                 foreach (var polyType in unionType.types) {
                     var polyTypeDef = polyType.typeDef;
                     var indent   = Indent(max, polyTypeDef.Name);
-                    sb.AppendLine($"[PolymorphType(typeof({polyTypeDef.Name}),{indent} Discriminant = \"{polyType.discriminant}\")]");
+                    sb.AppendLF($"[PolymorphType(typeof({polyTypeDef.Name}),{indent} Discriminant = \"{polyType.discriminant}\")]");
                     imports.Add(polyTypeDef);
                 }
-                sb.AppendLine($"public abstract class {type.Name} {extendsStr}{{");
+                sb.AppendLF($"public abstract class {type.Name} {extendsStr}{{");
             }
             var emitFields = new List<EmitField>(fields.Count);
             foreach (var field in fields) {
@@ -122,13 +122,13 @@ namespace Friflo.Json.Fliox.Schema.Language
                 bool notNull        = def.required || isReferenceType;
                 var nullStr         = notNull ? " " : "?";
                 if (def.isKey)
-                    sb.AppendLine("    [Key]");
+                    sb.AppendLF("    [Key]");
                 if (def.required && isReferenceType)
-                    sb.AppendLine("    [Required]");
-                sb.AppendLine($"    {field.type}{nullStr}{indent} {def.name};");
+                    sb.AppendLF("    [Required]");
+                sb.AppendLF($"    {field.type}{nullStr}{indent} {def.name};");
             }
-            sb.AppendLine("}");
-            sb.AppendLine();
+            sb.AppendLF("}");
+            sb.AppendLF();
             return new EmitType(type, sb, imports);
         }
         
@@ -163,9 +163,9 @@ namespace Friflo.Json.Fliox.Schema.Language
                 EmitFile    emitFile    = pair.Value;
                 string      filePath    = pair.Key;
                 sb.Clear();
-                sb.AppendLine($"// {Note}");
-                sb.AppendLine("using System.Collections.Generic;");
-                sb.AppendLine("using System.ComponentModel.DataAnnotations;");
+                sb.AppendLF($"// {Note}");
+                sb.AppendLF("using System.Collections.Generic;");
+                sb.AppendLF("using System.ComponentModel.DataAnnotations;");
                 var namespaces = new HashSet<string> {"Friflo.Json.Fliox"};
                 foreach (var importPair in emitFile.imports) {
                     var import = importPair.Value;
@@ -178,12 +178,12 @@ namespace Friflo.Json.Fliox.Schema.Language
                     namespaces.Add(import.@namespace);
                 }
                 foreach (var ns in namespaces) {
-                    sb.AppendLine($"using {ns};");
+                    sb.AppendLF($"using {ns};");
                 }
-                sb.AppendLine();
-                sb.AppendLine("#pragma warning disable 0169 // [CS0169] The field '...' is never used");
-                sb.AppendLine();
-                sb.AppendLine($"namespace {emitFile.@namespace} {{");
+                sb.AppendLF();
+                sb.AppendLF("#pragma warning disable 0169 // [CS0169] The field '...' is never used");
+                sb.AppendLF();
+                sb.AppendLF($"namespace {emitFile.@namespace} {{");
 
                 emitFile.header = sb.ToString();
             }
@@ -193,7 +193,7 @@ namespace Friflo.Json.Fliox.Schema.Language
             foreach (var pair in generator.fileEmits) {
                 EmitFile    emitFile    = pair.Value;
                 sb.Clear();
-                sb.AppendLine("}");
+                sb.AppendLF("}");
                 emitFile.footer = sb.ToString();
             }
         }

@@ -249,7 +249,7 @@ namespace Friflo.Json.Fliox.Schema.Language
                 string      path        = pair.Key;
                 EmitFile    emitFile    = pair.Value;
                 sb.Clear();
-                sb.AppendLine(emitFile.header);
+                sb.AppendLF(emitFile.header);
                 bool first = true;
                 foreach (var result in emitFile.emitTypes) {
                     if (delimiter != null)
@@ -257,7 +257,7 @@ namespace Friflo.Json.Fliox.Schema.Language
                     sb.Append(result.content);
                 }
                 if (emitFile.footer != null)
-                    sb.AppendLine(emitFile.footer);
+                    sb.AppendLF(emitFile.footer);
                 var filename = toFilename(path);
                 files.Add(filename, sb.ToString());
             }

@@ -161,8 +161,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
             var startPage = GetStartPage();
             sb.Append("Hub Explorer - ");
             sb.Append(startPage);
-            sb.AppendLine();
-            sb.AppendLine();
+            sb.AppendLF();
+            sb.AppendLF();
             sb.Append("Listening at:");
             foreach (var prefix in listener.Prefixes) {
                 sb.Append(' ');

@@ -81,7 +81,7 @@ $@"    <div class='type'>
                 var enumValues      = type.EnumValues;
                 var qualifiedName   = type.Namespace + "." + type.Name;
                 var doc             = GetDoc("\n    <desc>", type.doc, "</desc>");
-                sb.AppendLine(
+                sb.AppendLF(
 $@"    <div class='type enum'>
     <h3 id='{qualifiedName}'>
         <a href='#{qualifiedName}'>{type.Name}</a>
@@ -90,9 +90,9 @@ $@"    <div class='type enum'>
     <table>");
                 foreach (var enumValue in enumValues) {
                     var enumDoc = GetDoc("<docs>", enumValue.doc, "</docs>");  
-                    sb.AppendLine($"        <tr><td>{enumValue.name}</td><td>{enumDoc}</td></tr>");
+                    sb.AppendLF($"        <tr><td>{enumValue.name}</td><td>{enumDoc}</td></tr>");
                 }
-                sb.AppendLine(
+                sb.AppendLF(
 @"    </table>
     </div>");
                 return new EmitType(type, sb);
@@ -113,28 +113,28 @@ $@"    <div class='type enum'>
             var oasLink         = type.IsSchema ? GetOasLink("/", "open schema API", "") : "";
             var doc             = GetDoc("    <desc>", type.doc, "\n    </desc>");
 
-            sb.AppendLine(
+            sb.AppendLF(
 $@"    <div class='type'>
     <h3 id='{qualifiedName}'>
         <a href='#{qualifiedName}'>{type.Name}</a>
         <keyword>{typeName}</keyword>{oasLink}");
             if (baseType != null) {
                 var baseName = GetTypeName(baseType, context);
-                sb.AppendLine($"        <keyword>extends</keyword> <extends>{baseName}</extends>");
+                sb.AppendLF($"        <keyword>extends</keyword> <extends>{baseName}</extends>");
                 dependencies.Add(baseType);
                 imports.Add(baseType);
             }
-            sb.AppendLine("    </h3>");
+            sb.AppendLF("    </h3>");
             if (doc != "")
-                sb.AppendLine(doc);
+                sb.AppendLF(doc);
             string  discriminant    = type.Discriminant;
             string  discriminator   = type.Discriminator;
             if (type.IsSchema) {
-                sb.AppendLine($"    <chapter id='containers'><a href='#containers'>containers</a></chapter>");
+                sb.AppendLF($"    <chapter id='containers'><a href='#containers'>containers</a></chapter>");
             }
-            sb.AppendLine($"    <table class='fields'>");
+            sb.AppendLF($"    <table class='fields'>");
             if (unionType != null) {
-                sb.AppendLine(
+                sb.AppendLF(
                     $@"        <tr>
             <td><discUnion>{unionType.discriminator}</discUnion></td>
             <td><keyword>discriminator</keyword></td>
@@ -143,20 +143,20 @@ $@"    <div class='type'>
                 foreach (var polyType in unionType.types) {
                     var polyTypeDef = polyType.typeDef;
                     var name = GetTypeName (polyTypeDef, context);
-                    sb.AppendLine(
+                    sb.AppendLF(
                         $@"            <tr>
                 <td><discriminant>""{polyType.discriminant}""</discriminant></td>
                 <td>{name}</td>
             </tr>");
                     imports.Add(polyTypeDef);
                 }
-                sb.AppendLine(
+                sb.AppendLF(
 @"            </table></td>
         </tr>");
             }
             if (discriminant != null) {
                 var discDoc     = GetDoc("<td><docs>", type.DiscriminatorDoc, "</docs></td>");
-                sb.AppendLine(
+                sb.AppendLF(
 $@"        <tr>
             <td><disc>{discriminator}</disc></td>
             <td><discriminant>""{discriminant}""</discriminant></td>{discDoc}
@@ -179,16 +179,16 @@ $@"        <tr>
                 var fieldDoc    = GetDoc("\n            <td><docs>", field.doc, "</docs></td>");
                 var oasContainer= type.IsSchema ? $"\n            <td>{GetOasLink("/", $"open {field.name} API", field.name)}</td>" : "";
                 // var nullStr = required ? "" : " | null";
-                sb.AppendLine(
+                sb.AppendLF(
 $@"        <tr>
             <td><{fieldTag}>{field.name}</{fieldTag}></td>
             <td><type>{fieldType}{reference}</type></td>{oasContainer}{fieldDoc}
         </tr>");
             }
-            sb.AppendLine("    </table>");
+            sb.AppendLF("    </table>");
             EmitMessages("commands", type.Commands, context, sb);
             EmitMessages("messages", type.Messages, context, sb);
-            sb.AppendLine("    </div>");
+            sb.AppendLF("    </div>");
             return new EmitType(type, sb, imports, dependencies);
         }
         
@@ -206,14 +206,14 @@ $@"    <chapter id='{type}'><a href='#{type}'>{type}</a>{oasCommandsLink}</chapt
                 var doc     = GetDoc("\n            <td><docs>", messageDef.doc, "</docs></td>");
                 var signature = $"({param}) : {result}";
                 var oasLink = GetOasLink("/commands/post__command_", $"open {messageDef.name} API", messageDef.name);
-                sb.AppendLine(
+                sb.AppendLF(
 $@"        <tr>
             <td><cmd>{messageDef.name}</cmd></td>
             <td><sig>{signature}</sig></td>
             <td>{oasLink}</td>{doc}
         </tr>");
             }
-            sb.AppendLine("    </table>");
+            sb.AppendLF("    </table>");
         }
         
         private static string GetMessageArg(string name, FieldDef fieldDef, TypeContext context) {
@@ -287,7 +287,7 @@ $@"
         <a href='#{ns}'>{ns}</a> <keyword>namespace</keyword>
     </h2>
 ");
-                // sb.AppendLine(emitFile.header);
+                // sb.AppendLF(emitFile.header);
                 sbNav.Append(
 $@"    <li><a href='#{ns}'>{ns}</a>
         <ul>
@@ -322,8 +322,8 @@ $@"            <li><a href='#{ns}.{typeName}'><div><span>{typeName}</span>{discT
     </li>
 ");
                 if (emitFile.footer != null)
-                    sb.AppendLine(emitFile.footer);
-                sb.AppendLine("</div>");
+                    sb.AppendLF(emitFile.footer);
+                sb.AppendLF("</div>");
             }
             sbNav.Append("</ul>\n");
 

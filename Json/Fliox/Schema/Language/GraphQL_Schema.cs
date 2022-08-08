@@ -24,14 +24,14 @@ namespace Friflo.Json.Fliox.Schema.Language
                     case GqlEnum        enumType:    EmitEnum       (enumType,      sb);    break;
                     case GqlInputObject inputObject: EmitInputObject(inputObject,   sb);    break;
                 }
-                sb.AppendLine();
+                sb.AppendLF();
             }
             return sb.ToString();
         }
         
         private static void EmitMetaInfo(SchemaInfo si, StringBuilder sb) {
-            sb.AppendLine($"# {Note}");
-            sb.AppendLine();
+            sb.AppendLF($"# {Note}");
+            sb.AppendLF();
             if (si == null)
                 return;
             Comment("version",          si.version,         sb);
@@ -39,7 +39,7 @@ namespace Friflo.Json.Fliox.Schema.Language
             Comment("contactName",      si.contactName,     sb);
             Comment("contactUrl",       si.contactUrl,      sb);
             Comment("contactEmail",     si.contactEmail,    sb);
-            sb.AppendLine();
+            sb.AppendLF();
         }
 
         private static void Comment(string key, string value, StringBuilder sb) {
@@ -49,23 +49,23 @@ namespace Friflo.Json.Fliox.Schema.Language
             sb.Append(key);
             sb.Append(": ");
             sb.Append(Indent(14, key));
-            sb.AppendLine(value);
+            sb.AppendLF(value);
         }
 
         private static void EmitScalar(GqlScalar type, StringBuilder sb) {
-            sb.AppendLine($"scalar {type.name}");
+            sb.AppendLF($"scalar {type.name}");
         }
         
         private static void EmitObject(GqlObject type, StringBuilder sb) {
             int maxFieldName    = type.fields.MaxLength(field => field.name.Length);
-            sb.AppendLine($"type {type.name} {{");
+            sb.AppendLF($"type {type.name} {{");
             foreach (var field in type.fields) {
                 var fieldType   = GetType(field.type);
                 var indent      = Indent(maxFieldName, field.name);
                 var args        = GetArgs(field.args);
-                sb.AppendLine($"    {field.name}{indent}{args} : {fieldType}");
+                sb.AppendLF($"    {field.name}{indent}{args} : {fieldType}");
             }
-            sb.AppendLine("}");
+            sb.AppendLF("}");
         }
         
         private static string GetArgs(List<GqlInputValue> args) {
@@ -91,28 +91,28 @@ namespace Friflo.Json.Fliox.Schema.Language
         
         private static void EmitInputObject(GqlInputObject type, StringBuilder sb) {
             int maxFieldName    = type.inputFields.MaxLength(field => field.name.Length);
-            sb.AppendLine($"input {type.name} {{");
+            sb.AppendLF($"input {type.name} {{");
             foreach (var field in type.inputFields) {
                 var fieldType   = GetType(field.type);
                 var indent      = Indent(maxFieldName, field.name);
-                sb.AppendLine($"    {field.name}{indent} : {fieldType}");
+                sb.AppendLF($"    {field.name}{indent} : {fieldType}");
             }
-            sb.AppendLine("}");
+            sb.AppendLF("}");
         }
         
         private static void EmitUnion(GqlUnion type, StringBuilder sb) {
-            sb.AppendLine($"union {type.name} =");
+            sb.AppendLF($"union {type.name} =");
             foreach (var itemType in type.possibleTypes) {
-                sb.AppendLine($"    | {itemType.name}");
+                sb.AppendLF($"    | {itemType.name}");
             }
         }
         
         private static void EmitEnum(GqlEnum type, StringBuilder sb) {
-            sb.AppendLine($"enum {type.name} {{");
+            sb.AppendLF($"enum {type.name} {{");
             foreach (var value in type.enumValues) {
-                sb.AppendLine($"    {value.name}");
+                sb.AppendLF($"    {value.name}");
             }
-            sb.AppendLine("}");
+            sb.AppendLF("}");
         }
         
         

@@ -46,12 +46,12 @@ namespace Friflo.Json.Fliox.Hub.Remote
             if (path == "index.html") {
                 var sb = new StringBuilder();
                 HtmlHeader(sb, new []{"Hub", schemaName}, $"Available schemas / languages for schema <b>{storeName}</b>", handler);
-                sb.AppendLine("<ul>");
+                sb.AppendLF("<ul>");
                 foreach (var pair in modelResources) {
                     var model = pair.Value.schemaModel;
-                    sb.AppendLine($"<li><a href='./{pair.Key}/index.html'>{model.label}</a></li>");
+                    sb.AppendLF($"<li><a href='./{pair.Key}/index.html'>{model.label}</a></li>");
                 }
-                sb.AppendLine("</ul>");
+                sb.AppendLF("</ul>");
                 HtmlFooter(sb);
                 return Result.Success(sb.ToString(), "text/html");
             }
@@ -78,14 +78,14 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 var zipFile = $"{storeName}{modelResource.zipNameSuffix}";
                 var sb = new StringBuilder();
                 HtmlHeader(sb, new[]{"Hub", schemaName, schemaModel.label}, $"{schemaModel.label} schema: <b>{storeName}</b>", handler);
-                sb.AppendLine($"<a href='{zipFile}'>{zipFile}</a><br/>");
-                sb.AppendLine($"<a href='directory' target='_blank'>file list</a>");
-                sb.AppendLine("<ul>");
+                sb.AppendLF($"<a href='{zipFile}'>{zipFile}</a><br/>");
+                sb.AppendLF($"<a href='directory' target='_blank'>file list</a>");
+                sb.AppendLF("<ul>");
                 var target = schemaModel.contentType == "text/html" ? "" : " target='_blank'";
                 foreach (var file in files.Keys) {
-                    sb.AppendLine($"<li><a href='./{file}'{target}>{file}</a></li>");
+                    sb.AppendLF($"<li><a href='./{file}'{target}>{file}</a></li>");
                 }
-                sb.AppendLine("</ul>");
+                sb.AppendLF("</ul>");
                 HtmlFooter(sb);
                 return Result.Success(sb.ToString(), "text/html");
             }
@@ -126,27 +126,27 @@ namespace Friflo.Json.Fliox.Hub.Remote
             
             var titleLinks = string.Join(" · ", titleElements);
             
-            sb.AppendLine("<!DOCTYPE html>");
-            sb.AppendLine("<html lang='en'>");
-            sb.AppendLine("<head>");
-            sb.AppendLine("<meta charset='UTF-8'>");
-            sb.AppendLine("<meta name='viewport' content='width=device-width, initial-scale=1'>");
-            sb.AppendLine($"<meta name='description' content='{description}'>");
-            sb.AppendLine("<meta name='color-scheme' content='dark light'>");
-            sb.AppendLine($"<link rel='icon' href='{imageUrl}' width='53' height='43' type='image/x-icon'>");
-            sb.AppendLine($"<title>{title}</title>");
-            sb.AppendLine("<style>a {text-decoration: none; }</style>");
-            sb.AppendLine("</head>");
-            sb.AppendLine("<body style='font-family: sans-serif'>");
-            sb.AppendLine($"<h2><a href='{Generator.Link}' target='_blank' rel='noopener'><img src='{imageUrl}' alt='JSON Fliox' /></a>");
-            sb.AppendLine($"&nbsp;&nbsp;&nbsp;&nbsp;{titleLinks}</h2>");
-            sb.AppendLine($"<p>{description}</p>");
+            sb.AppendLF("<!DOCTYPE html>");
+            sb.AppendLF("<html lang='en'>");
+            sb.AppendLF("<head>");
+            sb.AppendLF("<meta charset='UTF-8'>");
+            sb.AppendLF("<meta name='viewport' content='width=device-width, initial-scale=1'>");
+            sb.AppendLF($"<meta name='description' content='{description}'>");
+            sb.AppendLF("<meta name='color-scheme' content='dark light'>");
+            sb.AppendLF($"<link rel='icon' href='{imageUrl}' width='53' height='43' type='image/x-icon'>");
+            sb.AppendLF($"<title>{title}</title>");
+            sb.AppendLF("<style>a {text-decoration: none; }</style>");
+            sb.AppendLF("</head>");
+            sb.AppendLF("<body style='font-family: sans-serif'>");
+            sb.AppendLF($"<h2><a href='{Generator.Link}' target='_blank' rel='noopener'><img src='{imageUrl}' alt='JSON Fliox' /></a>");
+            sb.AppendLF($"&nbsp;&nbsp;&nbsp;&nbsp;{titleLinks}</h2>");
+            sb.AppendLF($"<p>{description}</p>");
         }
         
         // override intended
         private static void HtmlFooter(StringBuilder sb) {
-            sb.AppendLine("</body>");
-            sb.AppendLine("</html>");
+            sb.AppendLF("</body>");
+            sb.AppendLF("</html>");
         }
         
         private static  JsonValue GetFullJsonSchema(SchemaModel schemaModel, RequestContext context) {

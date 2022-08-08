@@ -86,15 +86,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema.Misc
             }
             if (type.IsEnum) {
                 var enumValues = type.EnumValues;
-                sb.AppendLine($"        \"{type.Name}\": {{");
-                sb.AppendLine($"            \"enum\": [");
+                sb.AppendLF($"        \"{type.Name}\": {{");
+                sb.AppendLF($"            \"enum\": [");
                 bool firstValue = true;
                 foreach (var enumValue in enumValues) {
                     Delimiter(sb, Next, ref firstValue);
                     sb.Append($"                \"{enumValue.name}\"");
                 }
-                sb.AppendLine();
-                sb.AppendLine("            ]");
+                sb.AppendLF();
+                sb.AppendLF("            ]");
                 sb.Append    ("        }");
                 return new EmitType(type, sb);
             }
@@ -106,11 +106,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema.Misc
             var fields          = type.Fields;
             int maxFieldName    = fields.MaxLength(field => field.name.Length);
             var unionType       = type.UnionType;
-            sb.AppendLine($"        \"{type.Name}\": {{");
+            sb.AppendLF($"        \"{type.Name}\": {{");
             if (unionType == null) {
             } else {
-                sb.AppendLine($"            \"discriminator\": \"{unionType.discriminator}\",");
-                sb.AppendLine( "            \"mapping\": {");
+                sb.AppendLF($"            \"discriminator\": \"{unionType.discriminator}\",");
+                sb.AppendLF( "            \"mapping\": {");
                 bool firstElem = true;
                 int maxDiscriminant = unionType.types.MaxLength(t => t.discriminant.Length);
                 foreach (var polyType in unionType.types) {
@@ -119,10 +119,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema.Misc
                     var indent = Indent(maxDiscriminant, discName);
                     sb.Append($"                \"{discName}\": {indent}{{ {Ref(polyType.typeDef)} }}");
                 }
-                sb.AppendLine();
-                sb.AppendLine("            },");
+                sb.AppendLF();
+                sb.AppendLF("            },");
             }
-            sb.AppendLine($"            \"properties\": {{");
+            sb.AppendLF($"            \"properties\": {{");
             bool firstField     = true;
             string  discriminant    = type.Discriminant;
             string  discriminator   = type.Discriminator;
@@ -137,10 +137,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema.Misc
                 var nullableStr = required ? "" : fieldType.Length == 0 ? "\"nullable\": true" : ", \"nullable\": true";
                 sb.Append($"                \"{field.name}\":{indent} {{ {fieldType}{nullableStr} }}");
             }
-            sb.AppendLine();
-            sb.AppendLine("            }");
+            sb.AppendLF();
+            sb.AppendLF("            }");
             // var additionalProperties = unionType != null ? "true" : "false"; 
-            // sb.AppendLine($"            \"additionalProperties\": {additionalProperties}");
+            // sb.AppendLF($"            \"additionalProperties\": {additionalProperties}");
             sb.Append     ("        }");
             return new EmitType(type, sb);
         }
@@ -171,9 +171,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema.Misc
             foreach (var pair in generator.fileEmits) {
                 var emitFile = pair.Value;
                 sb.Clear();
-                sb.AppendLine("{");
-                // sb.AppendLine( "    \"$schema\": \"http://json-schema.org/draft-07/schema#\",");
-                sb.AppendLine($"    \"$comment\": \"{Note}\",");
+                sb.AppendLF("{");
+                // sb.AppendLF( "    \"$schema\": \"http://json-schema.org/draft-07/schema#\",");
+                sb.AppendLF($"    \"$comment\": \"{Note}\",");
                 sb.Append    ("    \"definitions\": {");
                 emitFile.header = sb.ToString();
             }
@@ -183,9 +183,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema.Misc
             foreach (var pair in generator.fileEmits) {
                 var emitFile = pair.Value;
                 sb.Clear();
-                sb.AppendLine();
-                sb.AppendLine("    }");
-                sb.AppendLine("}");
+                sb.AppendLF();
+                sb.AppendLF("    }");
+                sb.AppendLF("}");
                 emitFile.footer = sb.ToString();
             }
         }

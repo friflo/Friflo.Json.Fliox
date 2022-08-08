@@ -64,8 +64,8 @@ namespace Friflo.Json.Fliox.Schema.Language
             if (!standardTypes.TryGetValue(type, out var definition))
                 return null;
             sb.Append(definition);
-            sb.AppendLine(";");
-            sb.AppendLine();
+            sb.AppendLF(";");
+            sb.AppendLF();
             return new EmitType(type, sb);
         }
         
@@ -80,13 +80,13 @@ namespace Friflo.Json.Fliox.Schema.Language
             if (type.IsEnum) {
                 var enumValues  = type.EnumValues;
                 // var doc         = GetDoc(type.doc, "");
-                sb.AppendLine($"class {type.Name}:::cssEnum {{");
-                sb.AppendLine("    <<enumeration>>");
+                sb.AppendLF($"class {type.Name}:::cssEnum {{");
+                sb.AppendLF("    <<enumeration>>");
                 foreach (var enumValue in enumValues) {
-                    sb.AppendLine($"    {enumValue.name}");
+                    sb.AppendLF($"    {enumValue.name}");
                 }
-                sb.AppendLine("}");
-                sb.AppendLine();
+                sb.AppendLF("}");
+                sb.AppendLF();
                 return new EmitType(type, sb);
             }
             return null;
@@ -103,18 +103,18 @@ namespace Friflo.Json.Fliox.Schema.Language
             if (baseType != null) {
                 dependencies.Add(baseType);
                 imports.Add(baseType);
-                sb.AppendLine($"{baseType.Name} <|-- {type.Name}");
+                sb.AppendLF($"{baseType.Name} <|-- {type.Name}");
             }
             var unionType = type.UnionType;
             var cssType = type.isEntity ? ":::cssEntity" : type.IsSchema ? ":::cssSchema" : "";
             if (unionType == null) {
-                sb.AppendLine($"class {type.Name}{cssType} {{");
-                if (type.IsSchema)      sb.AppendLine("    <<Schema>>");
-                if (type.IsAbstract)    sb.AppendLine("    <<abstract>>");
-                if (type.IsEntity)      sb.AppendLine($"    <<Entity · {type.KeyField}>>");
+                sb.AppendLF($"class {type.Name}{cssType} {{");
+                if (type.IsSchema)      sb.AppendLF("    <<Schema>>");
+                if (type.IsAbstract)    sb.AppendLF("    <<abstract>>");
+                if (type.IsEntity)      sb.AppendLF($"    <<Entity · {type.KeyField}>>");
             } else {
-                sb.AppendLine($"class {type.Name}{Union}{cssType} {{");
-                sb.AppendLine("    <<abstract>>");
+                sb.AppendLF($"class {type.Name}{Union}{cssType} {{");
+                sb.AppendLF("    <<abstract>>");
             }
             string  discriminant    = type.Discriminant;
             string  discriminator   = type.Discriminator;
@@ -122,7 +122,7 @@ namespace Friflo.Json.Fliox.Schema.Language
                 maxFieldName    = Math.Max(maxFieldName, discriminator.Length);
                 var indent      = Indent(maxFieldName, discriminator);
                 // sb.Append(GetDoc(type.DiscriminatorDoc, "    "));
-                sb.AppendLine($"    {discriminator}{indent}  : \"{discriminant}\"");
+                sb.AppendLF($"    {discriminator}{indent}  : \"{discriminant}\"");
             }
             foreach (var field in fields) {
                 if (field.IsDerivedField)
@@ -132,9 +132,9 @@ namespace Friflo.Json.Fliox.Schema.Language
                 var fieldType   = GetFieldType(field, context, true); // required);
                 var indent      = Indent(maxFieldName, field.name);
                 var optStr      = required ? " ": "?";
-                sb.AppendLine($"    {field.name}{optStr}{indent} : {fieldType}");
+                sb.AppendLF($"    {field.name}{optStr}{indent} : {fieldType}");
             }
-            sb.AppendLine("}");
+            sb.AppendLF("}");
             foreach (var field in fields) {
                 if (field.IsDerivedField)
                     continue;
@@ -143,16 +143,16 @@ namespace Friflo.Json.Fliox.Schema.Language
                 var cardinality = GetFieldCardinality(field);
                 if (!standardTypes.ContainsKey(fieldType)) {
                     // ◆⎯⎯⎯  Relationship: Composition - the lifetime of item(s) is bound to its owner instance
-                    sb.AppendLine($"{type.Name} *-- \"{cardinality}\" {fieldType.Name} : {field.name}");
+                    sb.AppendLF($"{type.Name} *-- \"{cardinality}\" {fieldType.Name} : {field.name}");
                 }
                 var relationType = field.RelationType;
                 if (relationType != null) {
                     // ◇⎯⎯⎯  Relationship: Aggregation - the lifetime of referenced entities are independent from its owner instance
-                    sb.AppendLine($"{type.Name} o.. \"{cardinality}\" {relationType.Name} : {field.name}");
+                    sb.AppendLF($"{type.Name} o.. \"{cardinality}\" {relationType.Name} : {field.name}");
                 }
             }
             if (EmitMessagesFlag && type.IsSchema) {
-                sb.AppendLine($"{type.Name} ..> Messages");
+                sb.AppendLF($"{type.Name} ..> Messages");
                 EmitMessages(type.Commands, context, sb);
                 EmitMessages(type.Messages, context, sb);
             }
@@ -162,9 +162,9 @@ namespace Friflo.Json.Fliox.Schema.Language
         private void EmitMessages(IReadOnlyList<MessageDef> messageDefs, TypeContext context, StringBuilder sb) {
             if (messageDefs == null)
                 return;
-            sb.AppendLine();
-            sb.AppendLine("class Messages:::cssSchema {");
-            sb.AppendLine("    <<Service>>");
+            sb.AppendLF();
+            sb.AppendLF("class Messages:::cssSchema {");
+            sb.AppendLF("    <<Service>>");
             int maxFieldName    = messageDefs.MaxLength(field => field.name.Length + 4); // 4 <= ["..."]
             foreach (var messageDef in messageDefs) {
                 var param   = GetMessageArg("param", messageDef.param,  context);
@@ -174,9 +174,9 @@ namespace Friflo.Json.Fliox.Schema.Language
                 var indent  = Indent(maxFieldName, messageDef.name);
                 var signature = $"({param}) {result ?? "void"}";
                 var name    = messageDef.name.Replace('.', '_');
-                sb.AppendLine($"    {name}{indent} {signature}");
+                sb.AppendLF($"    {name}{indent} {signature}");
             }
-            sb.AppendLine("}");
+            sb.AppendLF("}");
             foreach (var messageDef in messageDefs) {
                 Link(messageDef.name, messageDef.param,   sb);
                 Link(messageDef.name, messageDef.result,  sb);
@@ -199,7 +199,7 @@ namespace Friflo.Json.Fliox.Schema.Language
             var fieldType = fieldDef.type;
             if (standardTypes.ContainsKey(fieldType))
                 return;
-            sb.AppendLine($"Messages ..> {fieldType.Name} : {name}");
+            sb.AppendLF($"Messages ..> {fieldType.Name} : {name}");
         }
         
         private static string GetFieldType(FieldDef field, TypeContext context, bool required) {
@@ -252,9 +252,9 @@ namespace Friflo.Json.Fliox.Schema.Language
         
         private static void EmitMermaidERFile(Generator generator, StringBuilder sb) {
             sb.Clear();
-            sb.AppendLine("classDiagram");
-            sb.AppendLine("direction LR");
-            sb.AppendLine();
+            sb.AppendLF("classDiagram");
+            sb.AppendLF("direction LR");
+            sb.AppendLF();
             var fileEmits = generator.OrderNamespaces();
             
             var dependencies = new HashSet<TypeDef>();
@@ -271,7 +271,7 @@ namespace Friflo.Json.Fliox.Schema.Language
                 foreach (var result in emitFile.emitTypes) {
                     if (!dependencies.Contains(result.type))
                         continue;
-                    sb.AppendLine(result.content);
+                    sb.AppendLF(result.content);
                 }
             }
             var mermaidFile     = sb.ToString();

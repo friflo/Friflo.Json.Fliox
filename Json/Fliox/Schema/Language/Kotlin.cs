@@ -69,12 +69,12 @@ namespace Friflo.Json.Fliox.Schema.Language
             }
             if (type.IsEnum) {
                 var enumValues = type.EnumValues;
-                sb.AppendLine($"enum class {type.Name} {{");
+                sb.AppendLF($"enum class {type.Name} {{");
                 foreach (var enumValue in enumValues) {
-                    sb.AppendLine($"    {enumValue.name},");
+                    sb.AppendLF($"    {enumValue.name},");
                 }
-                sb.AppendLine("}");
-                sb.AppendLine();
+                sb.AppendLF("}");
+                sb.AppendLF();
                 return new EmitType(type, sb);
             }
             return null;
@@ -88,9 +88,9 @@ namespace Friflo.Json.Fliox.Schema.Language
             int maxFieldName    = fields.MaxLength(field => field.name.Length);
             var extendsStr      = "";
             var baseType        = type.BaseType;
-            sb.AppendLine("@Serializable");
+            sb.AppendLF("@Serializable");
             if (type.Discriminant != null) {
-                sb.AppendLine($"@SerialName(\"{type.Discriminant}\")");
+                sb.AppendLF($"@SerialName(\"{type.Discriminant}\")");
             }
             // [inheritance - Extend data class in Kotlin - Stack Overflow] https://stackoverflow.com/questions/26444145/extend-data-class-in-kotlin
             if (!type.IsAbstract && baseType != null && baseType.IsAbstract) {
@@ -101,16 +101,16 @@ namespace Friflo.Json.Fliox.Schema.Language
             if (unionType == null) {
                 if (type.IsAbstract) {
                     // var baseClass = (baseType != null && baseType.IsAbstract) ? $": {baseType.Name}() " : "";
-                    sb.AppendLine($"abstract class {type.Name} {{");
+                    sb.AppendLF($"abstract class {type.Name} {{");
                 } else {
                     var classType = type.Fields.Count == 0 ? "" : "data "; 
-                    sb.AppendLine($"{classType}class {type.Name} (");
+                    sb.AppendLF($"{classType}class {type.Name} (");
                 }
             } else {
                 // [Support multiple class discriminators for polymorphism. · Issue #546 · Kotlin/kotlinx.serialization] https://github.com/Kotlin/kotlinx.serialization/issues/546
                 var baseClass = (baseType != null && baseType.IsAbstract) ? $": {baseType.Name}() " : "";
-                sb.AppendLine($"// @JsonClassDiscriminator(\"{unionType.discriminator}\") https://github.com/Kotlin/kotlinx.serialization/issues/546");
-                sb.AppendLine($"abstract class {type.Name}  {baseClass}{{");
+                sb.AppendLF($"// @JsonClassDiscriminator(\"{unionType.discriminator}\") https://github.com/Kotlin/kotlinx.serialization/issues/546");
+                sb.AppendLF($"abstract class {type.Name}  {baseClass}{{");
             }
             foreach (var field in fields) {
                 var @override =  field.IsDerivedField && type.BaseType.IsAbstract;
@@ -121,14 +121,14 @@ namespace Friflo.Json.Fliox.Schema.Language
                 var indent      = Indent(maxFieldName, field.name);
                 var nullable    = type.IsAbstract ? required ? "" : "?": required ? "": "? = null";
                 if (field.type == context.standardTypes.BigInteger)
-                    sb.AppendLine("              @Serializable(with = BigIntegerSerializer::class)");
+                    sb.AppendLF("              @Serializable(with = BigIntegerSerializer::class)");
                 if (field.type == context.standardTypes.Guid)
-                    sb.AppendLine("              @Serializable(with = UUIDSerializer::class)");
-                sb.AppendLine($"    {fieldModifier} val {field.name}{indent} : {fieldType}{nullable}{delimiter}");
+                    sb.AppendLF("              @Serializable(with = UUIDSerializer::class)");
+                sb.AppendLF($"    {fieldModifier} val {field.name}{indent} : {fieldType}{nullable}{delimiter}");
             }
             var closeBracket = type.IsAbstract ? "}" : ")";
-            sb.AppendLine($"{closeBracket}{extendsStr}");
-            sb.AppendLine();
+            sb.AppendLF($"{closeBracket}{extendsStr}");
+            sb.AppendLF();
             return new EmitType(type, sb, imports, dependencies);
         }
         
@@ -169,11 +169,11 @@ namespace Friflo.Json.Fliox.Schema.Language
                 EmitFile    emitFile    = pair.Value;
                 string      filePath    = pair.Key;
                 sb.Clear();
-                sb.AppendLine($"// {Note}");
-                sb.AppendLine($"package {emitFile.@namespace}");
-                sb.AppendLine();
-                sb.AppendLine("import kotlinx.serialization.*");
-                sb.AppendLine("import CustomSerializer.*");
+                sb.AppendLF($"// {Note}");
+                sb.AppendLF($"package {emitFile.@namespace}");
+                sb.AppendLF();
+                sb.AppendLF("import kotlinx.serialization.*");
+                sb.AppendLF("import CustomSerializer.*");
                 
                 var namespaces = new HashSet<string>();
                 foreach (var importPair in emitFile.imports) {
@@ -187,7 +187,7 @@ namespace Friflo.Json.Fliox.Schema.Language
                     namespaces.Add(import.@namespace);
                 }
                 foreach (var ns in namespaces) {
-                    sb.AppendLine($"import {ns}.*");
+                    sb.AppendLF($"import {ns}.*");
                 }
                 emitFile.header = sb.ToString();
             }

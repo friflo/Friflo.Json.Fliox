@@ -60,8 +60,8 @@ namespace Friflo.Json.Fliox.Schema.Language
             if (!standardTypes.TryGetValue(type, out var definition))
                 return null;
             var typeName = type.Name;
-            sb.AppendLine($"        \"{typeName}\": {{");
-            sb.AppendLine($"            {definition}");
+            sb.AppendLF($"        \"{typeName}\": {{");
+            sb.AppendLF($"            {definition}");
             sb.Append    ( "        }");
             return new EmitType(type, sb);
         }
@@ -76,8 +76,8 @@ namespace Friflo.Json.Fliox.Schema.Language
             }
             if (type.IsEnum) {
                 var enumValues = type.EnumValues;
-                sb.AppendLine($"        \"{type.Name}\": {{");
-                sb.AppendLine($"            \"enum\": [");
+                sb.AppendLF($"        \"{type.Name}\": {{");
+                sb.AppendLF($"            \"enum\": [");
                 bool firstValue = true;
                 var maxNameLen     = 0;
                 foreach (var enumValue in enumValues) {
@@ -85,11 +85,11 @@ namespace Friflo.Json.Fliox.Schema.Language
                     Delimiter(sb, Next, ref firstValue);
                     sb.Append($"                \"{enumValue.name}\"");
                 }
-                sb.AppendLine();
+                sb.AppendLF();
                 sb.Append("            ]");
                 var docCount = enumValues.Count(e => e.doc != null);
                 if (docCount > 0 ) {
-                    sb.AppendLine($",\n            \"descriptions\": {{");
+                    sb.AppendLF($",\n            \"descriptions\": {{");
                     firstValue = true;
                     foreach (var enumValue in enumValues) {
                         var doc = GetDoc("", enumValue.doc, "");
@@ -99,10 +99,10 @@ namespace Friflo.Json.Fliox.Schema.Language
                         var indent      = Indent(maxNameLen, enumValue.name);
                         sb.Append($"                \"{enumValue.name}\": {indent}{doc}");
                     }
-                    sb.AppendLine();
-                    sb.AppendLine("            }");
+                    sb.AppendLF();
+                    sb.AppendLF("            }");
                 }
-                sb.AppendLine();
+                sb.AppendLF();
                 sb.Append    ("        }");
                 return new EmitType(type, sb);
             }
@@ -113,36 +113,36 @@ namespace Friflo.Json.Fliox.Schema.Language
             var context         = new TypeContext (generator, null, type);
             var fields          = type.Fields;
             int maxFieldName    = fields.MaxLength(field => field.name.Length);
-            sb.AppendLine($"        \"{type.Name}\": {{");
+            sb.AppendLF($"        \"{type.Name}\": {{");
             var baseType    = type.BaseType;
             var unionType   = type.UnionType;
             if (unionType == null) {
-                sb.AppendLine($"            \"type\": \"object\",");
+                sb.AppendLF($"            \"type\": \"object\",");
                 if (baseType != null)
-                    sb.AppendLine($"            \"extends\": {{ {Ref(baseType, true, context)} }},");
+                    sb.AppendLF($"            \"extends\": {{ {Ref(baseType, true, context)} }},");
                 if (type.IsStruct)
-                    sb.AppendLine($"            \"isStruct\": true,");
+                    sb.AppendLF($"            \"isStruct\": true,");
                 if (type.IsAbstract)
-                    sb.AppendLine($"            \"isAbstract\": true,");
+                    sb.AppendLF($"            \"isAbstract\": true,");
                 var doc = GetDoc("            \"description\": ", type.doc, ",");
                 if (doc != "")
-                    sb.AppendLine(doc);
+                    sb.AppendLF(doc);
             } else {
-                sb.AppendLine($"            \"discriminator\": \"{unionType.discriminator}\",");
-                sb.AppendLine($"            \"oneOf\": [");
+                sb.AppendLF($"            \"discriminator\": \"{unionType.discriminator}\",");
+                sb.AppendLF($"            \"oneOf\": [");
                 bool firstElem = true;
                 foreach (var polyType in unionType.types) {
                     Delimiter(sb, Next, ref firstElem);
                     sb.Append($"                {{ {Ref(polyType.typeDef, true, context)} }}");
                 }
-                sb.AppendLine();
-                sb.AppendLine($"            ],");
+                sb.AppendLF();
+                sb.AppendLF($"            ],");
             }
             var key = type.KeyField; 
             if (key != null && key != "id") {
-                sb.AppendLine($"            \"key\": \"{key}\",");    
+                sb.AppendLF($"            \"key\": \"{key}\",");    
             }
-            sb.AppendLine($"            \"properties\": {{");
+            sb.AppendLF($"            \"properties\": {{");
             bool    firstField      = true;
             var     requiredFields  = new List<string>(fields.Count);
             string  discriminant    = type.Discriminant;
@@ -179,23 +179,23 @@ namespace Friflo.Json.Fliox.Schema.Language
                 var values  = JoinValues(new [] { fieldType, autoStr, relStr, doc });
                 sb.Append($"                \"{field.name}\":{indent} {{ {values} }}");
             }
-            sb.AppendLine();
-            sb.AppendLine("            },");
+            sb.AppendLF();
+            sb.AppendLF("            },");
             if (requiredFields.Count > 0 ) {
                 bool firstReq = true;
-                sb.AppendLine("            \"required\": [");
+                sb.AppendLF("            \"required\": [");
                 foreach (var item in requiredFields) {
                     Delimiter(sb, Next, ref firstReq);
                     sb.Append ($"                \"{item}\"");
                 }
-                sb.AppendLine();
-                sb.AppendLine("            ],");
+                sb.AppendLF();
+                sb.AppendLF("            ],");
             }
             var additionalProperties = unionType != null ? "true" : "false";
             sb.Append($"            \"additionalProperties\": {additionalProperties}");
             EmitMessages("commands", type.Commands, context, sb);
             EmitMessages("messages", type.Messages, context, sb);
-            sb.AppendLine();
+            sb.AppendLF();
 
             sb.Append     ("        }");
             return new EmitType(type, sb);
@@ -206,8 +206,8 @@ namespace Friflo.Json.Fliox.Schema.Language
                 return;
             bool    firstField  = true;
             int maxFieldName    = messageDefs.MaxLength(field => field.name.Length);
-            sb.AppendLine(",");
-            sb.AppendLine($"            \"{type}\": {{");
+            sb.AppendLF(",");
+            sb.AppendLF($"            \"{type}\": {{");
             foreach (var messageDef in messageDefs) {
                 var param           = GetMessageArg("param",  messageDef.param,  context);
                 var result          = GetMessageArg("result", messageDef.result, context);
@@ -276,13 +276,13 @@ namespace Friflo.Json.Fliox.Schema.Language
             foreach (var pair in generator.fileEmits) {
                 var emitFile = pair.Value;
                 sb.Clear();
-                sb.AppendLine("{");
-                sb.AppendLine( "    \"$schema\": \"http://json-schema.org/draft-07/schema#\",");
-                sb.AppendLine($"    \"$comment\": \"{Note}\",");
+                sb.AppendLF("{");
+                sb.AppendLF( "    \"$schema\": \"http://json-schema.org/draft-07/schema#\",");
+                sb.AppendLF($"    \"$comment\": \"{Note}\",");
                 var first = emitFile.emitTypes.FirstOrDefault();
                 if (first != null && generator.separateTypes.Contains(first.type)) {
                     var entityName = first.type.Name;
-                    sb.AppendLine($"    \"$ref\": \"#/definitions/{entityName}\",");
+                    sb.AppendLF($"    \"$ref\": \"#/definitions/{entityName}\",");
                 }
                 sb.Append    ("    \"definitions\": {");
                 emitFile.header = sb.ToString();
@@ -293,9 +293,9 @@ namespace Friflo.Json.Fliox.Schema.Language
             foreach (var pair in generator.fileEmits) {
                 var emitFile = pair.Value;
                 sb.Clear();
-                sb.AppendLine();
-                sb.AppendLine("    }");
-                sb.AppendLine("}");
+                sb.AppendLF();
+                sb.AppendLF("    }");
+                sb.AppendLF("}");
                 emitFile.footer = sb.ToString();
             }
         }

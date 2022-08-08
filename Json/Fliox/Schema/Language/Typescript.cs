@@ -62,8 +62,8 @@ namespace Friflo.Json.Fliox.Schema.Language
             if (!standardTypes.TryGetValue(type, out var definition))
                 return null;
             sb.Append(definition);
-            sb.AppendLine(";");
-            sb.AppendLine();
+            sb.AppendLF(";");
+            sb.AppendLF();
             return new EmitType(type, sb);
         }
         
@@ -79,7 +79,7 @@ namespace Friflo.Json.Fliox.Schema.Language
                 var enumValues  = type.EnumValues;
                 var doc         = GetDoc(type.doc, "");
                 var maxNameLen  = enumValues.Max(e => e.name.Length);
-                sb.AppendLine($"{doc}export type {type.Name} =");
+                sb.AppendLF($"{doc}export type {type.Name} =");
                 foreach (var enumValue in enumValues) {
                     sb.Append($"    | \"{enumValue.name}\"");
                     var enumDoc = enumValue.doc;
@@ -88,10 +88,10 @@ namespace Friflo.Json.Fliox.Schema.Language
                         sb.Append(GetDoc(enumDoc, "      "));
                         continue;
                     }
-                    sb.AppendLine();
+                    sb.AppendLF();
                 }
-                sb.AppendLine($";");
-                sb.AppendLine();
+                sb.AppendLF($";");
+                sb.AppendLF();
                 return new EmitType(type, sb);
             }
             return null;
@@ -114,28 +114,28 @@ namespace Friflo.Json.Fliox.Schema.Language
             }
             var unionType = type.UnionType;
             if (unionType == null) {
-                if (type.IsSchema) sb.AppendLine("// schema documentation only - not implemented right now");
+                if (type.IsSchema) sb.AppendLF("// schema documentation only - not implemented right now");
                 var typeName = type.IsSchema ? "interface" : type.IsAbstract ? "abstract class" : "class";
-                sb.AppendLine($"export {typeName} {type.Name} {extendsStr}{{");
+                sb.AppendLF($"export {typeName} {type.Name} {extendsStr}{{");
                 if (type.IsSchema)
-                    sb.AppendLine("    // --- containers");
+                    sb.AppendLF("    // --- containers");
             } else {
-                sb.AppendLine($"export type {type.Name}{Union} =");
+                sb.AppendLF($"export type {type.Name}{Union} =");
                 foreach (var polyType in unionType.types) {
                     var polyTypeDef = polyType.typeDef;
-                    sb.AppendLine($"    | {polyTypeDef.Name}");
+                    sb.AppendLF($"    | {polyTypeDef.Name}");
                     imports.Add(polyTypeDef);
                 }
                 var fieldDoc    = GetDoc(unionType.doc, "    ");
-                sb.AppendLine($";");
-                sb.AppendLine();
-                sb.AppendLine($"export abstract class {type.Name} {extendsStr}{{");
+                sb.AppendLF($";");
+                sb.AppendLF();
+                sb.AppendLF($"export abstract class {type.Name} {extendsStr}{{");
                 sb.Append(fieldDoc);
-                sb.AppendLine($"    abstract {unionType.discriminator}:");
+                sb.AppendLF($"    abstract {unionType.discriminator}:");
                 foreach (var polyType in unionType.types) {
-                    sb.AppendLine($"        | \"{polyType.discriminant}\"");
+                    sb.AppendLF($"        | \"{polyType.discriminant}\"");
                 }
-                sb.AppendLine($"    ;");
+                sb.AppendLF($"    ;");
             }
             string  discriminant    = type.Discriminant;
             string  discriminator   = type.Discriminator;
@@ -143,7 +143,7 @@ namespace Friflo.Json.Fliox.Schema.Language
                 maxFieldName    = Math.Max(maxFieldName, discriminator.Length);
                 var indent      = Indent(maxFieldName, discriminator);
                 sb.Append(GetDoc(type.DiscriminatorDoc, "    "));
-                sb.AppendLine($"    {discriminator}{indent}  : \"{discriminant}\";");
+                sb.AppendLF($"    {discriminator}{indent}  : \"{discriminant}\";");
             }
             foreach (var field in fields) {
                 if (field.IsDerivedField)
@@ -154,20 +154,20 @@ namespace Friflo.Json.Fliox.Schema.Language
                 var fieldType   = GetFieldType(field, context, required);
                 var indent      = Indent(maxFieldName, field.name);
                 var optStr      = required ? " ": "?";
-                sb.AppendLine($"    {field.name}{optStr}{indent} : {fieldType};");
+                sb.AppendLF($"    {field.name}{optStr}{indent} : {fieldType};");
             }
             EmitMessages("commands", type.Commands, context, sb);
             EmitMessages("messages", type.Messages, context, sb);
 
-            sb.AppendLine("}");
-            sb.AppendLine();
+            sb.AppendLF("}");
+            sb.AppendLF();
             return new EmitType(type, sb, imports, dependencies);
         }
         
         private static void EmitMessages(string type, IReadOnlyList<MessageDef> messageDefs, TypeContext context, StringBuilder sb) {
             if (messageDefs == null)
                 return;
-            sb.AppendLine($"\n    // --- {type}");
+            sb.AppendLF($"\n    // --- {type}");
             int maxFieldName    = messageDefs.MaxLength(field => field.name.Length + 4); // 4 <= ["..."]
             foreach (var messageDef in messageDefs) {
                 var param   = GetMessageArg("param", messageDef.param,  context);
@@ -176,7 +176,7 @@ namespace Friflo.Json.Fliox.Schema.Language
                 sb.Append(doc);
                 var indent  = Indent(maxFieldName, messageDef.name);
                 var signature = $"({param}) : {result ?? "void"}";
-                sb.AppendLine($"    [\"{messageDef.name}\"]{indent} {signature};");
+                sb.AppendLF($"    [\"{messageDef.name}\"]{indent} {signature};");
             }
         }
         
@@ -230,7 +230,7 @@ namespace Friflo.Json.Fliox.Schema.Language
                 EmitFile    emitFile    = pair.Value;
                 string      filePath    = pair.Key;
                 sb.Clear();
-                sb.AppendLine($"// {Note}");
+                sb.AppendLF($"// {Note}");
                 var max = emitFile.imports.MaxLength(imp => {
                     var typeDef = imp.Value.type;
                     var len = typeDef.UnionType != null ? typeDef.Name.Length + Union.Length : typeDef.Name.Length;
@@ -242,11 +242,11 @@ namespace Friflo.Json.Fliox.Schema.Language
                         continue;
                     var typeName    = import.Name;
                     var indent      = Indent(max, typeName);
-                    sb.AppendLine($"import {{ {typeName} }}{indent} from \"./{import.Path}\";");
+                    sb.AppendLF($"import {{ {typeName} }}{indent} from \"./{import.Path}\";");
                     if (import.UnionType != null) {
                         var unionName = $"{typeName}{Union}";
                         indent      = Indent(max, unionName);
-                        sb.AppendLine($"import {{ {unionName} }}{indent} from \"./{import.Path}\";");
+                        sb.AppendLF($"import {{ {unionName} }}{indent} from \"./{import.Path}\";");
                     }
                 }
                 emitFile.header = sb.ToString();

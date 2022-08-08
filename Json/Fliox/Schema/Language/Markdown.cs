@@ -17,11 +17,11 @@ namespace Friflo.Json.Fliox.Schema.Language
             var mermaidGenerator   = new Generator(generator.typeSchema, ".mmd");
             MermaidClassDiagramGenerator.Generate(mermaidGenerator);
             var mermaidFile   = mermaidGenerator.files["class-diagram.mmd"];
-            sb.AppendLine($"[generated-by]: {Generator.Link}");
-            sb.AppendLine();
-            sb.AppendLine("```mermaid");
-            sb.AppendLine(mermaidFile);
-            sb.AppendLine("```");
+            sb.AppendLF($"[generated-by]: {Generator.Link}");
+            sb.AppendLF();
+            sb.AppendLF("```mermaid");
+            sb.AppendLF(mermaidFile);
+            sb.AppendLF("```");
             var markdownMermaidER = sb.ToString();
             generator.files.Add("class-diagram.md", markdownMermaidER);
         }

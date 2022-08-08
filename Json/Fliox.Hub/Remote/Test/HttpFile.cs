@@ -83,14 +83,14 @@ namespace Friflo.Json.Fliox.Hub.Remote.Test
                 sb.Append('@');
                 sb.Append(pair.Key);
                 sb.Append(" = ");
-                sb.AppendLine(pair.Value);
+                sb.AppendLF(pair.Value);
             }
-            sb.AppendLine();
+            sb.AppendLF();
         }
         
         public static void AppendRequest(StringBuilder sb, RequestContext context)
         {
-            sb.AppendLine("###");
+            sb.AppendLF("###");
             // --- request line
             sb.Append(context.method);
             sb.Append(' ');
@@ -100,23 +100,23 @@ namespace Friflo.Json.Fliox.Hub.Remote.Test
                 sb.Append('?');
                 sb.Append(context.query);
             }
-            sb.AppendLine();
+            sb.AppendLF();
             
             // --- StatusCode
             sb.Append("# StatusCode:   ");
             sb.Append(context.StatusCode);
-            sb.AppendLine();
+            sb.AppendLF();
             
             // --- Content-Type
             sb.Append("# Content-Type: ");
             sb.Append(context.ResponseContentType);
-            sb.AppendLine();
+            sb.AppendLF();
             
             // --- response body
-            sb.AppendLine();
+            sb.AppendLF();
             var responseBody = context.Response.AsString();
-            sb.AppendLine(responseBody);
-            sb.AppendLine();
+            sb.AppendLF(responseBody);
+            sb.AppendLF();
         }
     }
 }
