@@ -87,7 +87,7 @@ namespace Friflo.Json.Fliox.Schema.Language
         
         private static Dictionary<TypeDef, GqlType> GetStandardTypes(StandardTypes standard) {
             var map = new Dictionary<TypeDef, GqlType>();
-            var nl  = Environment.NewLine;
+            var nl= '\n'; // not Environment.NewLine;
             AddType (map, standard.Uint8,       Gql.Int(),      $"unsigned integer 8-bit. Range: [0 - 255]" );
             AddType (map, standard.Int16,       Gql.Int(),      $"signed integer 16-bit. Range: [-32768, 32767]" );
             AddType (map, standard.Int32,       Gql.Int(),      $"signed integer 32-bit. Range: [-2147483648, 2147483647]" );
