@@ -274,8 +274,10 @@ Topics of the CUPID properties focused by this project
     - Avoid using long, cryptic or scientific words in the API
     - Observable
         - Monitoring is integral part of the Hub
-        - The `ToString()` methods of fundamental classes show only relevant state to avoid noise in debugging sessions.
+        - The `ToString()` methods of fundamental classes show only relevant state to avoid noise in debugging sessions
         - Error and runtime assertion messages are short and expressive
+- Domain based
+    - Enable implementing compact applications which are easy to read and to maintain
 
 
 ### **Principles**
