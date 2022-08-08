@@ -265,9 +265,9 @@ They fit mostly the aspects described in [CUPID-for joyful coding](https://danno
 Topics of the CUPID properties focused by this project
 - Composable
     - Seamless integration into existing ASP.NET Core applications with a handful lines of code
-    - Ensure independence from other parts of an existing applications
+    - Ensure independence from other parts of existing applications
     - The API surface is as small as possible
-    - Has no dependencies to other libraries - except the GraphQL library
+    - Has no dependencies to other libraries - except the GraphQL assembly
 - Predictable
     - Naming of classes, methods and properties are compact, short and easy to pronounce
     - Class names typically are a concatenation of two short words to be expressive and to avoid name collisions
