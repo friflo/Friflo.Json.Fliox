@@ -416,13 +416,13 @@
              font-family: var(--sans-serif); background-color: var(--background2);">
   <!--- [monaco-editor-samples/index.html at main · microsoft/monaco-editor-samples]
         https://github.com/microsoft/monaco-editor-samples/blob/main/browser-script-editor/index.html --->
-  <link rel="stylesheet" data-name="vs/editor/editor.main" href="https://microsoft.github.io/monaco-editor/node_modules/monaco-editor/min/vs/editor/editor.main.css"/>
+  <link rel="stylesheet" data-name="vs/editor/editor.main" href="./monaco-editor/min/vs/editor/editor.main.css"/>
   <script>
-     var require = { paths: { vs: 'https://microsoft.github.io/monaco-editor/node_modules/monaco-editor/min/vs' } };
+     var require = { paths: { vs: './monaco-editor/min/vs' } };
   </script>
-  <script src="https://microsoft.github.io/monaco-editor/node_modules/monaco-editor/min/vs/loader.js"></script>
-  <script src="https://microsoft.github.io/monaco-editor/node_modules/monaco-editor/min/vs/editor/editor.main.nls.js"></script>
-  <script src="https://microsoft.github.io/monaco-editor/node_modules/monaco-editor/min/vs/editor/editor.main.js"></script>
+  <script src="./monaco-editor/min/vs/loader.js"></script>
+  <script src="./monaco-editor/min/vs/editor/editor.main.nls.js"></script>
+  <script src="./monaco-editor/min/vs/editor/editor.main.js"></script>
   <script type="module">
     app.setupEditors();
   </script>
