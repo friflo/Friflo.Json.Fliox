@@ -101,8 +101,8 @@ The features are explained within the topics (= namespaces) below.
 ## 🚀 **Examples**
 📄   [friflo/Fliox.Examples](https://github.com/friflo/Fliox.Examples#-content)
 
-A separate git repository containing two **ready to run** examples showcasing the usage of Fliox Clients and Hubs.  
-The examples are **the place to go** showing how to use the C# and the Web API.
+A separate git repository containing two **ready to run** examples showcasing the usage of Fliox Clients and Servers.  
+Build and run a server with [**Gitpod**](https://github.com/friflo/Fliox.Examples#-build) in the browser without installing anything.
 
 [<img src="docs/images/server-log.png" width="647" height="191">](https://github.com/friflo/Fliox.Examples#-content)  
 *screenshot: DemoHub server logs*
