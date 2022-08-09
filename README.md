@@ -124,11 +124,9 @@ The database containers are represented as properties in the derived class `MyCl
 These classes also acts as a database schemas. They can be assigned to databases hosted on the Hub.  
 Doing this enables features like:
 - JSON validation of entities aka records
-- generation of JSON Schema / OpenAPI or a GraphQL Schema
-- generate a single HTML page with a complete schema documentation
-- generate a UML class diagram to visualize a database schema
-- generate types declared by the database schema for various programming languages
-- implementing generic database explorers like the Hub Explorer
+- generate a JSON Schema, an OpenAPI Schema and a GraphQL Schema
+- generate a HTML Schema documentation and a UML class diagram
+- generate classes for various programming languages: C#, Typescript & Kotlin
 
 The `MyClient` can be used to declare custom database commands using DTO's as input and result types.
 
@@ -195,10 +193,8 @@ This module enables transforming schemas expressed by a set of C# classes into
 other programming languages and schema formats like:
 
 - C#, Typescript, Kotlin
-- HTML
-- JSON Schema / OpenAPI
-- GraphQL Schema
-- Mermaid Class Diagram
+- HTML documentation, Schema Class Diagram
+- JSON Schema, OpenAPI Schema, GraphQL Schema
 
 Its main purpose is to generate schemas and types for various languages of classes extending `FlioxClient`.  
 The screenshots below show Hub pages utilizing the schemas mentioned above.
