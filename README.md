@@ -102,7 +102,7 @@ The features are explained within the topics (= namespaces) below.
 📄   [friflo/Fliox.Examples](https://github.com/friflo/Fliox.Examples/blob/main/README.md#-content)
 
 A separate git repository with two small **ready-to-run** examples (70 LOC & 550 LOC) using Fliox Clients and Servers.  
-Build and run a server with [**Gitpod**](https://github.com/friflo/Fliox.Examples/blob/main/README.md#-build) in the browser without installing anything.
+Build and run a server with [**Gitpod**](https://github.com/friflo/Fliox.Examples/blob/main/README.md#-build) using VSCode in the browser without installing anything.
 
 [<img src="docs/images/server-log.png" width="647" height="191">](https://github.com/friflo/Fliox.Examples/blob/main/README.md#-content)  
 *screenshot: DemoHub server logs*
