@@ -63,18 +63,21 @@ async function main() : Promise<void> {
     }
     for (const ext in extensions) {
         const files = extensions[ext]
-        console.log(`${ext} - ${files.length}`);
+        console.log(`--- *${ext} files: ${files.length}`);
+        let count = 0;
         for (const file of files) {
             const content = await readFileAsync(file, {encoding: 'utf8'}); // first character is the BOM
             const contentLF = content.replace(/\r\n/g, "\n");
-            console.log(`Convert files with ext: ${ext}`);
             if (content != contentLF) {
-                console.log(`${file} - ${content.length}`);
+                console.log(`${file}`);
                 await writeFileAsync(file, contentLF, { encoding: 'utf8'});
+                count++;
             }
         }
+        console.log (`--- converted files to LF ending. count: ${count}`);
     }
 }
 
 await main();
+console.log ("");
 
