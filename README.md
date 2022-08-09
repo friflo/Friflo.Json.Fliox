@@ -254,68 +254,32 @@ The API is available at [**fliox-docs API Reference**](https://github.com/friflo
 
 The goal of the library, its components and API is to be easy digestible for software developers.  
 The properties describe the characteristics of this project - at least what it aims for.  
-These properties are targeted to user of the library. In contrast to the principles - which are strict rules - it is a positive
-way describing the design of the software architecture.  
+These properties are targeted to the needs of users using the library.  
 They fit mostly the aspects described in [CUPID-for joyful coding](https://dannorth.net/2022/02/10/cupid-for-joyful-coding/).
 
-Topics of the CUPID properties focused by this project
+Topics of the CUPID properties focused by this project are
 - Composable
+    - **No 3rd party dependencies**
+    - Compatibility **.NET Core 3.1** and higher, **Unity 2020.1** and higher
     - Seamless integration into existing ASP.NET Core applications with a handful lines of code
-    - Ensure independence from other parts of existing applications
-    - The API surface is as small as possible
-    - Has no dependencies to other libraries - except the GraphQL assembly
+    - Independence from other parts of existing applications
+    - Fliox Clients and Hubs are unit testable without mocking
+    - Replace the underlying database without changing application code
+    - Add custom code / schema generators without changing the application code
 - Predictable
-    - Naming of classes, methods and properties are compact, short and easy to pronounce
-    - Class names typically are a concatenation of two short words to be expressive and to avoid name collisions
-    - Avoid using long, cryptic or scientific words in the API
+    - API surface is as small as possible
+    - API: class, method and property names are short, simple, and easy to pronounce
     - Observable
         - Monitoring is integral part of the Hub
-        - The `ToString()` methods of fundamental classes show only relevant state to avoid noise in debugging sessions
+        - The `ToString()` methods of classes show only relevant state to avoid noise in debugging sessions
         - Error and runtime assertion messages are short and expressive
 - Domain based
     - Enable implementing compact applications which are easy to read and to maintain
 
+### Principles
 
-### **Principles**
+A set of rules followed by this project to aim for simplicity and performance. See [Principles](docs/principles.md)
 
-- dependencies
-    - no 3rd party dependencies
-    - small size of Fliox assemblies (*.dll) ~ 850 kb in total, 350 kb zipped  
-      source code: library 47k LOC, unit tests: 18k LOC
-- target for optimal performance
-    - maximize throughput, minimize latency, minimize heap allocations and boxing
-    - enable task batching as a unit-of-work
-    - support bulk operations for CRUD commands
-- compact and strongly typed API
-    - type safe access to entities and their keys when dealing with containers  
-    - type safe access to DTO's when dealing with database commands
-    - absence of using `object` as a type
-    - absence of utility classes & methods to
-        - to use the API in an explicit manner
-        - to avoid confusion implementing the same feature in multiple ways
-- serialization of entities and messages - request, response & event - are entirely JSON
-- Fliox Clients and Hubs are unit testable without mocking
-- the **Zero** principles
-    - 0 compiler errors and warnings
-    - 0 ReSharper errors, warnings, suggestions and hints
-    - 0 unit test errors, no flaky tests
-    - 0 typos - observed by spell checker
-    - no synchronous calls to API's dealing with **IO** like network or disc    
-      Instead using `async` / `await`
-    - no 3rd party dependencies
-    - no heap allocations if possible
-    - no noise in `.ToString()` methods while debugging - only relevant state.  
-      E.g. instances of `FlioxClient`, `EntitySet<,>`, `FlioxHub` and `EntityDatabase`
-    - no surprise of API behavior.  
-      See [Principle of least astonishment](https://en.wikipedia.org/wiki/Principle_of_least_astonishment)
-    - no automatic C# Code formatting - as no Code Formatter supports the code style of this project.  
-      That concerns tabular indentation of fields, properties, variables and switch cases.
-- extensibility
-    - support custom database adapters aka providers
-    - support custom code / schema generators for new programming languages
-- compatibility
-    - **.NET Core 3.1** and higher
-    - **Unity 2020.1** and higher 
 
 <br/>
 
