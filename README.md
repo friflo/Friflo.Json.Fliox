@@ -25,7 +25,7 @@ This improves performance and bypass the [object–relational impedance mismatch
 
 Try the example Hub online running on AWS - [**DemoHub**](http://ec2-174-129-178-18.compute-1.amazonaws.com/) (EC2 instance: t2-micro, us-east-1)  
 The **DemoHub** .NET project is available at
-[**🚀 friflo/Fliox.Examples**](https://github.com/friflo/Fliox.Examples#-content).
+[**🚀 friflo/Fliox.Examples**](https://github.com/friflo/Fliox.Examples/blob/main/README.md#-content).
 
 <br/>
 
@@ -48,7 +48,7 @@ Published project on GitHub 2022-08
 ## 🚩 Content
 
 - [Features](#-features)
-- [Examples](#-examples)           ❯  [🚀 friflo/Fliox.Examples](https://github.com/friflo/Fliox.Examples#-content)
+- [Examples](#-examples)           ❯  [🚀 friflo/Fliox.Examples](https://github.com/friflo/Fliox.Examples/blob/main/README.md#-content)
 - [Hub](#-hub)
     - [Client](#client)                 ❯  [README.md](Json/Fliox.Hub/Client/README.md)
     - [Host](#host)                   ❯  [README.md](Json/Fliox.Hub/Host/README.md)
@@ -99,12 +99,12 @@ The features are explained within the topics (= namespaces) below.
 
 
 ## 🚀 **Examples**
-📄   [friflo/Fliox.Examples](https://github.com/friflo/Fliox.Examples#-content)
+📄   [friflo/Fliox.Examples](https://github.com/friflo/Fliox.Examples/blob/main/README.md#-content)
 
 A separate git repository containing two **ready to run** examples showcasing the usage of Fliox Clients and Servers.  
-Build and run a server with [**Gitpod**](https://github.com/friflo/Fliox.Examples#-build) in the browser without installing anything.
+Build and run a server with [**Gitpod**](https://github.com/friflo/Fliox.Examples/blob/main/README.md#-build) in the browser without installing anything.
 
-[<img src="docs/images/server-log.png" width="647" height="191">](https://github.com/friflo/Fliox.Examples#-content)  
+[<img src="docs/images/server-log.png" width="647" height="191">](https://github.com/friflo/Fliox.Examples/blob/main/README.md#-content)  
 *screenshot: DemoHub server logs*
 <br/><br/>
 
