@@ -210,7 +210,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
                     }
                     enc.TypeCache.ClearCounts();
                 }
-                AreEqual(652000,   enc.ProcessedBytes);
+                AreEqual(636000,   enc.ProcessedBytes);
             }
             memLog.AssertNoAllocations();
         }

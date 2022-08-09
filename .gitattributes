@@ -1,2 +1,2 @@
-# Declare files that will always have CRLF line endings on checkout.
-# *.cs text eol=lf
+# To turn off conversion on all text files
+* -text

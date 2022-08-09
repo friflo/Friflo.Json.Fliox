@@ -23,7 +23,7 @@ const fileExtensions = [
     ".cs",
 ];
 
-async function scanFiles(directoryPath: string, results : string[] = []) {
+async function scanFiles(directoryPath: string, results : string[]) {
     const files = await readdirAsync(directoryPath);
     // console.log(`${directoryPath}    ${files.length}`)
 
@@ -50,7 +50,9 @@ async function scanFiles(directoryPath: string, results : string[] = []) {
 
 async function main() : Promise<void> {
     // --- scan files in folder
-    const allFiles = await scanFiles("./Json.Tests/");
+    const allFiles = []
+    await scanFiles("./Json/",          allFiles);
+    await scanFiles("./Json.Tests/",    allFiles);
 
     const extensions: { [ext: string]: string[]} = { };
 
