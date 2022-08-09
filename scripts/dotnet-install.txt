@@ -1,0 +1,6 @@
+
+
+chmod +x dotnet-install.sh
+./dotnet-install.sh
+
+export PATH="$PATH:$HOME/.dotnet"
