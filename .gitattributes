@@ -1,2 +1,2 @@
-# To turn off conversion on all text files
+# To turn off end of line conversion (CRLR <-> LF) on all text files
 * -text
