@@ -21,6 +21,7 @@ const ignoreFolders = [
 
 const fileExtensions = [
     ".cs",
+    ".json",
 ];
 
 async function scanFiles(directoryPath: string, results : string[]) {
