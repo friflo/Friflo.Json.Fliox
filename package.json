@@ -14,6 +14,8 @@
     "markdown:check": "ts-node ./scripts/check-markdown.ts",
     "markdown:links": "ts-node ./scripts/check-markdown.ts --links",
 
+    "dos2unix": "ts-node ./scripts/dos2unix.ts --links",
+
     "postinstall": "node scripts/postinstall.js"
   },
   "type": "module",
