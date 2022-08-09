@@ -50,7 +50,7 @@ async function scanFiles(directoryPath: string, results : string[] = []) {
 
 async function main() : Promise<void> {
     // --- scan files in folder
-    const allFiles = await scanFiles("./Json/");
+    const allFiles = await scanFiles("./Json.Tests/");
 
     const extensions: { [ext: string]: string[]} = { };
 
