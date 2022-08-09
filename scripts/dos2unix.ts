@@ -22,6 +22,11 @@ const ignoreFolders = [
 const fileExtensions = [
     ".cs",
     ".json",
+    ".html",
+    ".http",
+    ".ts",
+    ".graphql",
+    ".md"
 ];
 
 async function scanFiles(directoryPath: string, results : string[]) {
@@ -77,7 +82,9 @@ async function main() : Promise<void> {
                 count++;
             }
         }
-        console.log (`--- converted files to LF ending. count: ${count}`);
+        if (count > 0) {
+            console.log (`--- converted files to LF ending. count: ${count}`);
+        }
     }
 }
 

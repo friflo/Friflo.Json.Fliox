@@ -3,7 +3,8 @@
         "target": "ES2021",
         "module": "ESNext",
         "moduleResolution": "Node",
-        "lib": ["ES2021"]
+        "lib": ["ES2021"],
+        "newLine": "lf",
     },
     "ts-node": {
         "esm": true
