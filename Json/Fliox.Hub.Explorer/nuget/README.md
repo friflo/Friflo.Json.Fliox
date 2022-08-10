@@ -7,10 +7,11 @@ This package is part of the project described below.
 **Content**  
 Contains a small assembly used to package web files - html, js, images, css - required by the Hub Explorer.  
 
-The Hub Explorer is a single page web application used by the Fliox Hub to explore hosted databases and containers.
+The Hub Explorer is an admin page used by the Fliox Hub to explore hosted databases and containers.
 
 The package contains:
 - Hub Explorer
+- Monaco Editor
 - Swagger UI
 - GraphiQL
 
