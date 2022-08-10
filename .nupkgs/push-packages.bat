@@ -1,4 +1,8 @@
 
+rem batch file is obsolete
+rem packages are now created by creating a git tag which starts the CD pipeline:
+rem   https://github.com/friflo/Friflo.Json.Fliox/actions/workflows/nuget.yml
+
 rem dotnet pack -p:PackageVersion=0.2.4 /p:Version=0.2.4 /p:FileVersion=0.2.4 /p:AssemblyVersion=0.2.4 --output .nupkgs -c Release -p:SymbolPackageFormat=snupkg
 rem cd .nupkgs
 rem push-packages.bat
