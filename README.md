@@ -59,10 +59,10 @@ Published project on GitHub 2022-08
     - [Schema](#schema)              ❯  [README.md](Json/Fliox/Schema/README.md)
     - [Mapper](#mapper)              ❯  [README.md](Json/Fliox/Mapper/README.md)
 - [Project](#-project)
-    - [Build](#build)                  ❯  [README.md](Json.Tests/README.md)
     - [API](#api)                     ❯  [friflo/fliox-docs](https://github.com/friflo/fliox-docs)
     - [Properties](#properties)
     - [Principles](#principles)
+    - [Build](#build)                  ❯  [README.md](Json.Tests/README.md)
 - [Motivation](#-motivation)
 - [Credits](#-credits)
 
@@ -82,13 +82,12 @@ Compact list of features supported by Clients and Hubs
 - Database Schema
 - Code generation
     - C#, Typescript & Kotlin
-    - JSON Schema / OpenAPI
-    - GraphQL Schema
-    - Database Schema diagram
+    - JSON Schema, OpenAPI Schema & GraphQL Schema
+    - Schema documentation & class diagram
 - JSON Validation - Records & DTO's
-- Send Messages & Commands using DTO's
+- Messaging & Sending Commands using DTO's
 - Pub-Sub
-- Hub Explorer
+- Hub Explorer - the admin page
 - Monitoring
 - Authentication / Authorization
 
@@ -225,28 +224,9 @@ Its also used for serialization of the supported protocols: REST, GraphQL and Ba
 
 ## 🔧 **Project**
 
-### **Build**
-📄   [README.md](Json.Tests/README.md)
-
-The project **Json.Tests** contains a console application and unit tests.  
-Build and run instructions for .NET and Unity are in the README file.
-
-**unit tests**  
-Code coverage: **86%** measured with **JetBrains • docCover**
-
-```yaml
-Passed! - Failed:   0, Passed:   6, Skipped:   0, Total:   6, Duration: 2 s -  .../DemoTest.dll
-Passed! - Failed:   0, Passed:   7, Skipped:   0, Total:   7, Duration: 1 s -  .../TodoTest.dll
-Passed! - Failed:   0, Passed: 347, Skipped:   0, Total: 347, Duration: 15 s - .../Friflo.Json.Tests.dll
-```
-*summarized logs of test execution - they are executed in*  
-[![CI](https://github.com/friflo/Friflo.Json.Fliox/workflows/CI/badge.svg)](https://github.com/friflo/Friflo.Json.Fliox/actions/workflows/dotnet.yml) 
-
-
 ### **API**
 
-The Fliox **C# .NET** API is [CLS-compliant](https://docs.microsoft.com/en-us/dotnet/api/system.clscompliantattribute#remarks)
-
+The Fliox **C# .NET** API is [CLS-compliant](https://docs.microsoft.com/en-us/dotnet/api/system.clscompliantattribute#remarks)  
 The API is available at [**fliox-docs API Reference**](https://github.com/friflo/fliox-docs)
 
 
@@ -279,6 +259,25 @@ Topics of the CUPID properties focused by this project are
 ### Principles
 
 A set of rules followed by this project to aim for simplicity and performance. See [Principles](docs/principles.md)
+
+### **Build**
+📄   [README.md](Json.Tests/README.md)
+
+The project **Json.Tests** contains a console application and unit tests.  
+Build and run instructions for .NET and Unity are in the README file.
+
+**unit tests**  
+Code coverage: **86%** measured with **JetBrains • docCover**
+
+```yaml
+Passed! - Failed:   0, Passed:   6, Skipped:   0, Total:   6, Duration: 2 s -  .../DemoTest.dll
+Passed! - Failed:   0, Passed:   7, Skipped:   0, Total:   7, Duration: 1 s -  .../TodoTest.dll
+Passed! - Failed:   0, Passed: 347, Skipped:   0, Total: 347, Duration: 15 s - .../Friflo.Json.Tests.dll
+```
+*summarized logs of unit test execution* - they are executed in  
+<a href="https://github.com/friflo/Friflo.Json.Fliox/actions/workflows/dotnet.yml">
+  <img src="https://github.com/friflo/Friflo.Json.Fliox/workflows/CI/badge.svg" alt="CI" align = "center"/>
+</a>
 
 
 <br/>
