@@ -5,7 +5,7 @@ export const defaultConfig = {
     formatEntities: false,
     formatResponses: true,
     activeTab: "explorer",
-    showDescription: true,
+    showDescription: false,
     filters: {}
 };
 export function el(id) {

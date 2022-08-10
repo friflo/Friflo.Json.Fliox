@@ -16,7 +16,7 @@ export const defaultConfig = {
     formatEntities  : false,
     formatResponses : true,
     activeTab       : "explorer",
-    showDescription : true,
+    showDescription : false,
     filters         : {} as { [database: string]: { [container: string]: string[]}}
 };
 
