@@ -111,7 +111,9 @@ Build and run a server with [**Gitpod**](https://github.com/friflo/Fliox.Example
 ## 📦 **Hub**
 
 Namespace    Friflo.Json.Fliox.Hub.*  
-Assembly     Friflo.Json.Fliox.Hub.dll
+Assembly     Friflo.Json.Fliox.Hub.dll  <a href="https://www.nuget.org/packages/Friflo.Json.Fliox.Hub">
+  <img src="https://img.shields.io/nuget/v/Friflo.Json.Fliox.Hub.svg?color=blue" alt="CI" align = "center"/>
+</a>
 
 ### **Client**
 📄   [README.md](Json/Fliox.Hub/Client/README.md)
@@ -145,7 +147,9 @@ This `FlioxHub` instance need to be passed to the constructor of the `HttpHost`
 
 ### **Explorer**
 📄   [README.md](Json/Fliox.Hub.Explorer/README.md)  
-Assembly     Friflo.Json.Fliox.Hub.Explorer.dll
+Assembly     Friflo.Json.Fliox.Hub.Explorer.dll  <a href="https://www.nuget.org/packages/Friflo.Json.Fliox.Hub.Explorer">
+  <img src="https://img.shields.io/nuget/v/Friflo.Json.Fliox.Hub.Explorer.svg?color=blue" alt="CI" align = "center"/>
+</a>
 
 The Hub Explorer is an admin page used to access
 databases, containers and entities hosted by a Fliox Hub.  
@@ -182,7 +186,9 @@ Instead they are using a `FlioxClient` that is optimized to transform API calls 
 ## 📦 **Fliox**
 
 Namespace    Friflo.Json.Fliox.*  
-Assembly     Friflo.Json.Fliox.dll
+Assembly     Friflo.Json.Fliox.dll  <a href="https://www.nuget.org/packages/Friflo.Json.Fliox">
+  <img src="https://img.shields.io/nuget/v/Friflo.Json.Fliox.svg?color=blue" alt="CI" align = "center"/>
+</a>
 
 
 ### **Schema**
