@@ -131,6 +131,7 @@
                 "body-tabs"
                 "body-playground"
                 "body-explorer"
+                "body-events"
                 "body-settings";
             grid-template-columns:  1fr;
             grid-template-rows:     var(--header-height) var(--tab-height) 0 1fr 0; /* dynamically overwritten by body.style */
@@ -165,6 +166,16 @@
                 "ex-database    ex-bar1     ex-container        ex-bar2             ex-entity";
             grid-template-columns:  150px var(--bar-width) 400px var(--bar-width) 1fr;    /* dynamically overwritten by #explorer.style */
             grid-template-rows:     22px 28px 19px 14px 1fr;
+            grid-gap:   0px;
+        }
+
+        #events {
+            display: none;
+            grid-template-areas: 
+                "ev-header          ev-header"
+                ".                  ev-editor";
+            grid-template-columns:  200px 1fr;
+            grid-template-rows:     28px  1fr;
             grid-gap:   0px;
         }
 
@@ -471,6 +482,8 @@
     </div>
     <a class="tab" href="#" onclick="app.openTab('explorer')"   value="explorer" style="border-top-left-radius:  3px;"
        title="explore databases and containers, edit entities and send commands">Explorer</a>
+    <a class="tab" href="#" onclick="app.openTab('events')" value="events"
+       title="view subscription events received from WebSocket">Events</a>
     <a class="tab" href="#" onclick="app.openTab('playground')" value="playground"
        title="edit and send batch requests containing an array of tasks via HTTP POST or WebSocket">Playground</a>
     <a class="tab" href="#" onclick="app.openTab('settings')"   value="settings" style="border-top-right-radius: 3px;"
@@ -583,9 +596,9 @@
       <span  id="explorerTools"></span>
       <small id="catalogSchema" class="docLink" style="display: flex; justify-content: center; align-items: center;"></small>
       <span style="flex-grow: 1"></span>
-      <div title="events" class="navigate" onclick="app.editor.showEvents()">
+      <!-- <div title="events" class="navigate" onclick="app.editor.showEvents()">
         <span style="vertical-align: text-bottom; font-size: 10px;">💬</span>
-      </div>
+      </div> -->
     </div>
     <div style="grid-area: ex-action; display:flex; overflow:hidden; white-space:nowrap; height: 23px; padding-top: 1px;">
         <div title="Go back (Alt + 🠔)"    class="navigate" onclick="app.editor.navigateEntity(app.editor.entityHistoryPos - 1)">⏴</div>
@@ -680,7 +693,6 @@
         </div>
         <div style="grid-area: edit-response; display: flex;">
             <div id="entityContainer" style="flex-grow: 1; display: none;"></div>
-            <div id="eventsContainer" style="flex-grow: 1; display: none;"></div>
             <div id="dbInfo" style="flex-grow: 1; display: none; padding-top: 15px; font-size: 13px; border-top: 2px solid var(--tab-border);">
                 <div>
                     <table style="border-spacing: 10px 2px;">
@@ -714,10 +726,20 @@
     </div>
   </div>
 
+  <!-- ------------------------------------------- Events ------------------------------------------- -->
+  <div id="events" class="tabContent" style="grid-area: body-events; overflow: hidden; padding-top: 10px;">
+    <div style="grid-area: ev-header; overflow:hidden; white-space:nowrap; padding-left: 7px; padding-top: 1px;">
+        <div>Pub-Sub events</div>
+    </div>
+    <div class="editor" style="grid-area: ev-editor; overflow: visible;">
+        <!-- <div class="editor" id="requestContainer"></div> -->
+        <div id="eventsContainer" class="editor"></div>
+    </div>
+  </div>
+
   <!-- ------------------------------------------- Settings ------------------------------------------- -->
   <div id="settings" class="tabContent" style="grid-area: body-settings; overflow: hidden; padding: 10px;">
-    <div>
-
+  <div>
     <div>Settings</div>
     <div class="settings">
       <ul>
@@ -775,6 +797,7 @@
             <span style="opacity: 0.6; ">Copyright © 2022 Ullrich Praetz</span>
         </div>
     </div>
+  </div>  
   </div>
   
 </body>

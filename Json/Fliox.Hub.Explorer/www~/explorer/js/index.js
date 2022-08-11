@@ -803,12 +803,18 @@ export class App {
             }
             case "explorer": {
                 // layout from right to left. Otherwise commandValueEditor.clientWidth is 0px;
-                const editors2 = [
+                const editors = [
                     { editor: this.entityEditor, elem: entityContainer },
                     { editor: this.commandValueEditor, elem: commandValue },
+                ];
+                this.layoutMonacoEditors(editors);
+                break;
+            }
+            case "events": {
+                const editors = [
                     { editor: this.eventsEditor, elem: eventsContainer },
                 ];
-                this.layoutMonacoEditors(editors2);
+                this.layoutMonacoEditors(editors);
                 break;
             }
         }

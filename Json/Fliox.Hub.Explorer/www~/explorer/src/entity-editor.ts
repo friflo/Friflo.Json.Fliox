@@ -14,7 +14,7 @@ type FindRange = {
     readonly lastPath:      string[];
 }
 
-type ExplorerEditor = "command" | "entity" | "dbInfo" | "events"
+type ExplorerEditor = "command" | "entity" | "dbInfo"
 type CodeEditor     = monaco.editor.IStandaloneCodeEditor;
 
 
@@ -42,7 +42,6 @@ const commandDocs       = el("commandDocs");
 const commandValueContainer  = el("commandValueContainer");
 const commandParamBar        = el("commandParamBar");
 const entityContainer        = el("entityContainer");
-const eventsContainer        = el("eventsContainer");
 
 
 type MsgType = "command" | "message";
@@ -70,17 +69,15 @@ export class EntityEditor
         this.commandValueEditor = commandValueEditor;
     }
 
-    private setEditorHeader(show: "entity" | "command" | "database" |  "events" | "none") {
+    private setEditorHeader(show: "entity" | "command" | "database" | "none") {
         const displayEntity  = show == "entity"     ? "contents" : "none";
         const displayCommand = show == "command"    ? "contents" : "none";
         const displayDB      = show == "database"   ? "contents" : "none";
-        const displayEvents  = show == "events"     ? "contents" : "none";
         el("entityTools")  .style.display = displayEntity;        
         el("entityHeader") .style.display = displayEntity;        
         el("commandTools") .style.display = displayCommand;
         el("commandHeader").style.display = displayCommand;
         el("databaseTools").style.display = displayDB;
-        el("eventTools")   .style.display = displayEvents;
     }
 
     public async sendCommand() : Promise<void> {
@@ -259,12 +256,6 @@ export class EntityEditor
         if (this.entityHistoryPos < 0)
             return;
         this.entityHistory[this.entityHistoryPos].selection    = this.entityEditor.getSelection();
-    }
-
-    public showEvents() : void {
-        // console.log("showEvents");
-        this.setExplorerEditor("events");
-        this.setEditorHeader("events");
     }
 
     public navigateEntity(pos: number) : void {
@@ -720,9 +711,6 @@ export class EntityEditor
         const editorActive              = edit == "command" || edit == "entity";
         entityContainer.style.display   = editorActive      ? "" : "none";
         el("dbInfo").style.display      = edit == "dbInfo"  ? "" : "none";
-        //
-        const eventsActive              = edit == "events";
-        eventsContainer.style.display   = eventsActive      ? "" : "none";
 
         app.layoutEditors();
     }
