@@ -738,7 +738,7 @@ export class App {
 
     private readonly    allMonacoSchemas:   MonacoSchema[] = [];
 
-    addSchemas (monacoSchemas: MonacoSchema[]): void {
+    private addSchemas (monacoSchemas: MonacoSchema[]): void {
         this.allMonacoSchemas.push(...monacoSchemas);
         // [LanguageServiceDefaults | Monaco Editor API] https://microsoft.github.io/monaco-editor/api/interfaces/monaco.languages.json.LanguageServiceDefaults.html
         monaco.languages.json.jsonDefaults.setDiagnosticsOptions({
@@ -747,26 +747,43 @@ export class App {
         });
     }
 
+    private static findSchema (monacoSchemas: MonacoSchema[], uri: string): MonacoSchema | null {
+        for (let i = 0; i < monacoSchemas.length; i++) {
+            if (monacoSchemas[i].uri == uri) {
+                return monacoSchemas[i];
+            }
+        }
+        return null;
+    }
+
     async setupEditors () : Promise<void>
     {
         // this.setExplorerEditor("none");
         
         // --- setup JSON Schema for monaco
-        const requestUri      = monaco.Uri.parse("request://jsonRequest.json");     // a made up unique URI for our model
-        const responseUri     = monaco.Uri.parse("request://jsonResponse.json");    // a made up unique URI for our model
-        const eventUri        = monaco.Uri.parse("request://jsonEvent.json");       // a made up unique URI for our model
-        const monacoSchemas   = await this.createProtocolSchemas();
+        const requestUri    = monaco.Uri.parse("request://jsonRequest.json");     // a made up unique URI for our model
+        const responseUri   = monaco.Uri.parse("request://jsonResponse.json");     // a made up unique URI for our model
+        const eventUri      = monaco.Uri.parse("request://jsonEvent.json");     // a made up unique URI for our model
+        const monacoSchemas = await this.createProtocolSchemas();
 
-        for (let i = 0; i < monacoSchemas.length; i++) {
-            if (monacoSchemas[i].uri == "http://protocol/json-schema/Friflo.Json.Fliox.Hub.Protocol.ProtocolRequest.json") {
-                monacoSchemas[i].fileMatch = [requestUri.toString()]; // associate with our model
-            }
-            if (monacoSchemas[i].uri == "http://protocol/json-schema/Friflo.Json.Fliox.Hub.Protocol.ProtocolMessage.json") {
-                monacoSchemas[i].fileMatch = [responseUri.toString()]; // associate with our model
-            }
-            if (monacoSchemas[i].uri == "http://protocol/json-schema/Friflo.Json.Fliox.Hub.Protocol.ProtocolEvent.json") {
-                monacoSchemas[i].fileMatch = [eventUri.toString()]; // associate with our model
-            }
+        {
+            const schema = App.findSchema(monacoSchemas, "http://protocol/json-schema/Friflo.Json.Fliox.Hub.Protocol.ProtocolRequest.json");
+            schema.fileMatch = [requestUri.toString()]; // associate with model
+        } {
+            const schema = App.findSchema(monacoSchemas, "http://protocol/json-schema/Friflo.Json.Fliox.Hub.Protocol.ProtocolMessage.json");
+            schema.fileMatch = [responseUri.toString()]; // associate with model
+        } {
+            const uri = "http://protocol/json-schema/Friflo.Json.Fliox.Hub.Protocol.ProtocolEvent.json";
+            const schema = App.findSchema(monacoSchemas, uri);
+            if (!schema)
+                throw "ProtocolEvent schema not found";
+            const eventsArray = { "type": "array", "items": { "$ref": uri } } as unknown as JSONSchema;
+            const eventListSchema : MonacoSchema = {
+                schema:    eventsArray,
+                uri:       null,
+                fileMatch: [eventUri.toString()]
+            };
+            monacoSchemas.push(eventListSchema);
         }
         this.addSchemas(monacoSchemas);
 
