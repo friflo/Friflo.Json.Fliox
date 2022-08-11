@@ -367,24 +367,6 @@ export class App {
         clusterExplorer.appendChild(ulCluster);
         this.editor.listCommands(dbMessages[0].id, dbMessages[0], dbContainers[0]);
     }
-    // --------------------------------------- subscription events ---------------------------------------
-    addSubscriptionEvent(ev) {
-        const editor = this.eventsEditor;
-        const model = editor.getModel();
-        const length = model.getValue().length;
-        if (length == 0) {
-            model.setValue("[]");
-        }
-        else {
-            ev = ',' + ev;
-        }
-        const endPos = model.getPositionAt(length);
-        const match = model.findPreviousMatch("]", endPos, false, true, null, false);
-        // const pos       = lastPos;
-        const pos = new monaco.Position(match.range.startLineNumber, match.range.startColumn);
-        const range = new monaco.Range(pos.lineNumber, pos.column, pos.lineNumber, pos.column);
-        editor.executeEdits("addSubscriptionEvent", [{ range: range, text: ev, forceMoveMarkers: true }]);
-    }
     getSchemaType(database) {
         const schema = this.databaseSchemas[database];
         if (!schema)
