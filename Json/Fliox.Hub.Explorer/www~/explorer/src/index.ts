@@ -105,17 +105,23 @@ export class App {
     private lastCtrlKey:        boolean;
     public  refLinkDecoration:  CSSStyleRule;
 
+    private static getCssRuleByName (name: string) : CSSStyleRule {
+        const cssRules = document.styleSheets[0].cssRules;
+        for (let n = 0; n < cssRules.length; n++) {
+            const rule = cssRules[n] as CSSStyleRule;
+            if (rule.selectorText == name)
+                return rule;
+        }
+        return null;
+    }
+
     private applyCtrlKey(event: KeyboardEvent) {
         if (this.lastCtrlKey == event.ctrlKey)
             return;
         this.lastCtrlKey = event.ctrlKey;
         if (!this.refLinkDecoration) {
-            const cssRules = document.styleSheets[0].cssRules;
-            for (let n = 0; n < cssRules.length; n++) {
-                const rule = cssRules[n] as CSSStyleRule;
-                if (rule.selectorText == ".refLinkDecoration:hover")
-                    this.refLinkDecoration = rule;
-            }
+            const rule = App.getCssRuleByName(".refLinkDecoration:hover");
+            this.refLinkDecoration = rule;
         }
         this.refLinkDecoration.style.cursor = this.lastCtrlKey ? "pointer" : "";
     }
@@ -921,10 +927,10 @@ export class App {
 
 
     // --------------------------------------- grid-area drag bars --------------------------------------- 
-    private dragTemplate :  HTMLElement;
-    private dragBar:        HTMLElement;
-    private dragOffset:     number;
-    private dragHorizontal: boolean;
+    private dragTemplate :          HTMLElement;
+    private dragBar:                HTMLElement;
+    private dragOffset:             number;
+    private dragHorizontal:         boolean;
 
     public startDrag(event: MouseEvent, template: string, bar: string, horizontal: boolean): void {
         // console.log(`drag start: ${event.offsetX}, ${template}, ${bar}`)
@@ -932,6 +938,11 @@ export class App {
         this.dragOffset     = horizontal ? event.offsetX : event.offsetY;
         this.dragTemplate   = el(template);
         this.dragBar        = el(bar);
+        if (!this.dragTemplate.style.gridTemplateColumns) {
+            const cssRules  = App.getCssRuleByName(`#${template}`);
+            if (!cssRules) throw `cssRules not found: #${template}`;
+            this.dragTemplate.style.gridTemplateColumns = cssRules.style.gridTemplateColumns;
+        }
         document.body.style.cursor = "ew-resize";
         document.body.onmousemove = (event)  => app.onDrag(event);
         document.body.onmouseup   = ()       => app.endDrag();

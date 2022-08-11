@@ -82,17 +82,22 @@ export class App {
         this.setUser(value);
         this.setToken(value);
     }
+    static getCssRuleByName(name) {
+        const cssRules = document.styleSheets[0].cssRules;
+        for (let n = 0; n < cssRules.length; n++) {
+            const rule = cssRules[n];
+            if (rule.selectorText == name)
+                return rule;
+        }
+        return null;
+    }
     applyCtrlKey(event) {
         if (this.lastCtrlKey == event.ctrlKey)
             return;
         this.lastCtrlKey = event.ctrlKey;
         if (!this.refLinkDecoration) {
-            const cssRules = document.styleSheets[0].cssRules;
-            for (let n = 0; n < cssRules.length; n++) {
-                const rule = cssRules[n];
-                if (rule.selectorText == ".refLinkDecoration:hover")
-                    this.refLinkDecoration = rule;
-            }
+            const rule = App.getCssRuleByName(".refLinkDecoration:hover");
+            this.refLinkDecoration = rule;
         }
         this.refLinkDecoration.style.cursor = this.lastCtrlKey ? "pointer" : "";
     }
@@ -803,6 +808,12 @@ export class App {
         this.dragOffset = horizontal ? event.offsetX : event.offsetY;
         this.dragTemplate = el(template);
         this.dragBar = el(bar);
+        if (!this.dragTemplate.style.gridTemplateColumns) {
+            const cssRules = App.getCssRuleByName(`#${template}`);
+            if (!cssRules)
+                throw `cssRules not found: #${template}`;
+            this.dragTemplate.style.gridTemplateColumns = cssRules.style.gridTemplateColumns;
+        }
         document.body.style.cursor = "ew-resize";
         document.body.onmousemove = (event) => app.onDrag(event);
         document.body.onmouseup = () => app.endDrag();
