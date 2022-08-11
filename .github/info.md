@@ -2,8 +2,8 @@
 ## Repository details
 
 ### Description
-JSON Fliox - a .NET library for simple & performant access to NoSQL databases.
-With ORM, Database Hub & Schema support.
+.NET library for simple & performant access to NoSQL databases.
+With ORM, Messaging, Pub-Sub, Database Hub, Schema & ASP.NET Core support.
 
 
 ### Website

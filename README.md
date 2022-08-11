@@ -85,7 +85,7 @@ Compact list of features supported by Clients and Hubs
     - JSON Schema, OpenAPI Schema & GraphQL Schema
     - Schema documentation & class diagram
 - JSON Validation - Records & DTO's
-- Messaging & Sending Commands using DTO's
+- Messaging & Commands (RPC) using DTO's
 - Pub-Sub
 - Hub Explorer - the admin page
 - Monitoring
