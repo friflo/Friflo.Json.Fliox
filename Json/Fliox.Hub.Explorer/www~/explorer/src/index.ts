@@ -57,9 +57,10 @@ export class App {
     readonly playground:    Playground;
 
     constructor() {
-        this.explorer   = new Explorer(this.config);
-        this.editor     = new EntityEditor();
-        this.playground = new Playground();
+        this.explorer       = new Explorer(this.config);
+        this.editor         = new EntityEditor();
+        this.playground     = new Playground();
+        this.clusterTree    = new ClusterTree();
 
         window.addEventListener("keydown", event => this.onKeyDown(event), true);
         window.addEventListener("keyup",   event => this.onKeyUp(event),   true);
@@ -336,15 +337,9 @@ export class App {
         classList.remove(className);        
     }
 
-    private selectedTreeEl: HTMLElement;
-    private hostInfo:       HostInfo;
+    private             hostInfo:       HostInfo;
+    private readonly    clusterTree:    ClusterTree;
 
-    private selectTreeElement(element: HTMLElement) {
-        if (this.selectedTreeEl)
-            this.selectedTreeEl.classList.remove("selected");
-        this.selectedTreeEl =element;
-        element.classList.add("selected");
-    }
 
     private async loadCluster () {
         const tasks: SyncRequestTask_Union[] = [
@@ -391,8 +386,18 @@ export class App {
             envEl.style.backgroundColor = envColor;
             envEl.style.color = getColorBasedOnBackground(envEl.style.backgroundColor);
         }
-        const ulCluster     = this.createClusterUl(dbContainers, dbMessages);
-        
+        const tree      = this.clusterTree;
+        const ulCluster = tree.createClusterUl(dbContainers);
+        tree.onSelectDatabase = (databaseName: string) => {
+            const messages      = dbMessages.find   (c => c.id == databaseName);
+            const containers    = dbContainers.find (c => c.id == databaseName);
+            this.editor.listCommands(databaseName, messages, containers);
+        };
+        tree.onSelectContainer = (databaseName: string, containerName: string) => {
+            const params: Resource  = { database: databaseName, container: containerName, ids: [] };
+            this.editor.clearEntity(databaseName, containerName);
+            this.explorer.loadContainer(params, null);
+        };
         const schemaMap     = Schema.createEntitySchemas(this.databaseSchemas, dbSchemas);
         const monacoSchemas = Object.values(schemaMap);
         this.addSchemas(monacoSchemas);
@@ -403,78 +408,7 @@ export class App {
         this.editor.listCommands(dbMessages[0].id, dbMessages[0], dbContainers[0]);
     }
 
-    private createClusterUl(dbContainers: DbContainers[], dbMessages: DbMessages[]) : HTMLUListElement {
-        const ulCluster = createEl('ul');
-        ulCluster.onclick = (ev) => {
-            const path = ev.composedPath() as HTMLElement[];
-            const databaseElement = path[0];
-            if (databaseElement.classList.contains("caret")) {
-                path[2].classList.toggle("active");
-                return;
-            }
-            const treeEl = path[1];
-            if (this.selectedTreeEl == databaseElement) {
-                if (treeEl.classList.contains("active"))
-                    treeEl.classList.remove("active");
-                else 
-                    treeEl.classList.add("active");
-                return;
-            }
-            treeEl.classList.add("active");
-            this.selectTreeElement(databaseElement);
 
-            const databaseName      = databaseElement.childNodes[1].textContent;
-            const messages          = dbMessages.find   (c => c.id == databaseName);
-            const containers        = dbContainers.find (c => c.id == databaseName);
-            this.editor.listCommands(databaseName, messages, containers);
-        };
-        let firstDatabase = true;
-        for (const dbContainer of dbContainers) {
-            const liDatabase = createEl('li');
-
-            const divDatabase           = createEl('div');
-            const dbCaret               = createEl('div');
-            dbCaret.classList.value     = "caret";
-            const dbLabel               = createEl('span');
-            dbLabel.innerText           = dbContainer.id;
-            divDatabase.title           = "database";
-            dbLabel.style.pointerEvents = "none";
-            divDatabase.append(dbCaret);
-            divDatabase.append(dbLabel);
-            liDatabase.appendChild(divDatabase);
-            ulCluster.append(liDatabase);
-            if (firstDatabase) {
-                firstDatabase = false;
-                liDatabase.classList.add("active");
-                this.selectTreeElement(divDatabase);
-            }
-            const ulContainers = createEl('ul');
-            ulContainers.onclick = (ev) => {
-                ev.stopPropagation();
-                const path = ev.composedPath() as HTMLElement[];
-                const containerElement = path[0];
-                // in case of a multiline text selection selectedElement is the parent
-                if (containerElement.tagName.toLowerCase() != "div")
-                    return;
-                this.selectTreeElement(containerElement);
-                const containerName     = this.selectedTreeEl.innerText.trim();
-                const databaseName      = path[3].childNodes[0].childNodes[1].textContent;
-                const params: Resource  = { database: databaseName, container: containerName, ids: [] };
-                this.editor.clearEntity(databaseName, containerName);
-                this.explorer.loadContainer(params, null);
-            };
-            liDatabase.append(ulContainers);
-            for (const containerName of dbContainer.containers) {
-                const liContainer       = createEl('li');
-                liContainer.title       = "container";
-                const containerLabel    = createEl('div');
-                containerLabel.innerHTML= "&nbsp;" + containerName;
-                liContainer.append(containerLabel);
-                ulContainers.append(liContainer);
-            }
-        }
-        return ulCluster;
-    }
 
     // --------------------------------------- subscription events ---------------------------------------
     public addSubscriptionEvent(ev: string) : void {
@@ -1084,5 +1018,87 @@ export class App {
     }
 }
 
-export const app = new App();
+class ClusterTree {
+    private selectedTreeEl: HTMLElement;
 
+    onSelectDatabase  : (databaseName: string) => void;
+    onSelectContainer : (databaseName: string, containerName: string) => void;
+
+    private selectTreeElement(element: HTMLElement) {
+        if (this.selectedTreeEl)
+            this.selectedTreeEl.classList.remove("selected");
+        this.selectedTreeEl =element;
+        element.classList.add("selected");
+    }
+
+    public createClusterUl(dbContainers: DbContainers[]) : HTMLUListElement {
+        const ulCluster = createEl('ul');
+        ulCluster.onclick = (ev) => {
+            const path = ev.composedPath() as HTMLElement[];
+            const databaseElement = path[0];
+            if (databaseElement.classList.contains("caret")) {
+                path[2].classList.toggle("active");
+                return;
+            }
+            const treeEl = path[1];
+            if (this.selectedTreeEl == databaseElement) {
+                if (treeEl.classList.contains("active"))
+                    treeEl.classList.remove("active");
+                else 
+                    treeEl.classList.add("active");
+                return;
+            }
+            treeEl.classList.add("active");
+            this.selectTreeElement(databaseElement);
+
+            const databaseName  = databaseElement.childNodes[1].textContent;
+            this.onSelectDatabase(databaseName);
+        };
+        let firstDatabase = true;
+        for (const dbContainer of dbContainers) {
+            const liDatabase = createEl('li');
+
+            const divDatabase           = createEl('div');
+            const dbCaret               = createEl('div');
+            dbCaret.classList.value     = "caret";
+            const dbLabel               = createEl('span');
+            dbLabel.innerText           = dbContainer.id;
+            divDatabase.title           = "database";
+            dbLabel.style.pointerEvents = "none";
+            divDatabase.append(dbCaret);
+            divDatabase.append(dbLabel);
+            liDatabase.appendChild(divDatabase);
+            ulCluster.append(liDatabase);
+            if (firstDatabase) {
+                firstDatabase = false;
+                liDatabase.classList.add("active");
+                this.selectTreeElement(divDatabase);
+            }
+            const ulContainers = createEl('ul');
+            ulContainers.onclick = (ev) => {
+                ev.stopPropagation();
+                const path = ev.composedPath() as HTMLElement[];
+                const containerElement = path[0];
+                // in case of a multiline text selection selectedElement is the parent
+                if (containerElement.tagName.toLowerCase() != "div")
+                    return;
+                this.selectTreeElement(containerElement);
+                const containerName     = this.selectedTreeEl.innerText.trim();
+                const databaseName      = path[3].childNodes[0].childNodes[1].textContent;
+                this.onSelectContainer(databaseName, containerName);
+            };
+            liDatabase.append(ulContainers);
+            for (const containerName of dbContainer.containers) {
+                const liContainer       = createEl('li');
+                liContainer.title       = "container";
+                const containerLabel    = createEl('div');
+                containerLabel.innerHTML= "&nbsp;" + containerName;
+                liContainer.append(containerLabel);
+                ulContainers.append(liContainer);
+            }
+        }
+        return ulCluster;
+    }
+}
+
+export const app = new App();
