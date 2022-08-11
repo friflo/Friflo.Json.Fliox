@@ -752,8 +752,9 @@ export class App {
         // this.setExplorerEditor("none");
         
         // --- setup JSON Schema for monaco
-        const requestUri      = monaco.Uri.parse("request://jsonRequest.json");   // a made up unique URI for our model
-        const responseUri     = monaco.Uri.parse("request://jsonResponse.json");  // a made up unique URI for our model
+        const requestUri      = monaco.Uri.parse("request://jsonRequest.json");     // a made up unique URI for our model
+        const responseUri     = monaco.Uri.parse("request://jsonResponse.json");    // a made up unique URI for our model
+        const eventUri        = monaco.Uri.parse("request://jsonEvent.json");       // a made up unique URI for our model
         const monacoSchemas   = await this.createProtocolSchemas();
 
         for (let i = 0; i < monacoSchemas.length; i++) {
@@ -762,6 +763,9 @@ export class App {
             }
             if (monacoSchemas[i].uri == "http://protocol/json-schema/Friflo.Json.Fliox.Hub.Protocol.ProtocolMessage.json") {
                 monacoSchemas[i].fileMatch = [responseUri.toString()]; // associate with our model
+            }
+            if (monacoSchemas[i].uri == "http://protocol/json-schema/Friflo.Json.Fliox.Hub.Protocol.ProtocolEvent.json") {
+                monacoSchemas[i].fileMatch = [eventUri.toString()]; // associate with our model
             }
         }
         this.addSchemas(monacoSchemas);
@@ -818,7 +822,9 @@ export class App {
 
         // --- create subscription event editor
         {
-            this.eventsEditor     = monaco.editor.create(eventsContainer, { });
+            this.eventsEditor   = monaco.editor.create(eventsContainer, { });
+            const eventModel    = monaco.editor.createModel(null, "json", eventUri);
+            this.eventsEditor.setModel (eventModel);
         }
 
         // this.commandResponseModel = monaco.editor.createModel(null, "json");
