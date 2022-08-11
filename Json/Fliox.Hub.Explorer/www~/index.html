@@ -176,7 +176,7 @@
                 ".                  .           ev-title-subs   .           ev-title-events"
                 "ev-tree            ev-bar1     ev-subs         ev-bar2     ev-editor";
             grid-template-columns:  150px var(--bar-width) 200px var(--bar-width) 1fr;    /* dynamically overwritten by #explorer.style */
-            grid-template-rows:     16px  20px 1fr;
+            grid-template-rows:     22px  22px 1fr;
             grid-gap:   0px;
         }
 
@@ -728,9 +728,11 @@
   </div>
 
   <!-- ------------------------------------------- Events ------------------------------------------- -->
-  <div id="events" class="tabContent" style="grid-area: body-events; overflow: hidden; padding-top: 10px;">
-    <div style="grid-area: ev-header; overflow:hidden; white-space:nowrap; padding-left: 7px; padding-top: 1px;">
-        <small>Pub-Sub</small>
+  <div id="events" class="tabContent" style="grid-area: body-events; overflow: hidden; padding-top: 5px;">
+    <div style="grid-area: ev-header; overflow:hidden; white-space:nowrap; padding-left: 7px; padding-top: 1px; font-size: 14px;">
+        Pub-Sub
+        <input type="checkbox" id="scrollToEnd"  onclick="app.changeConfig(id, checked)">
+        <label for="scrollToEnd">Scroll to End</label>
     </div>
     <div style="grid-area: ev-title-subs; padding-right: 7px;" class="nobreak">
         <small>Subscriptions</small>

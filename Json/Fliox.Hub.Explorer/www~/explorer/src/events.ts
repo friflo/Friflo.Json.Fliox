@@ -3,7 +3,8 @@ import { ClusterTree }  from "./components.js";
 import { el }           from "./types.js";
 import { app }          from "./index.js";
 
-const subscriptionTree       = el("subscriptionTree");
+const subscriptionTree      = el("subscriptionTree");
+const scrollToEnd           = el("scrollToEnd") as HTMLInputElement;
 
 // ----------------------------------------------- Events -----------------------------------------------
 export class Events
@@ -41,6 +42,21 @@ export class Events
         // const pos       = lastPos;
         const pos       = new monaco.Position(match.range.startLineNumber, match.range.startColumn);
         const range     = new monaco.Range(pos.lineNumber, pos.column, pos.lineNumber, pos.column);
-        editor.executeEdits("addSubscriptionEvent", [{ range: range, text: ev, forceMoveMarkers: true }]);
+
+        let callback: monaco.editor.ICursorStateComputer = null;
+        if (scrollToEnd.checked) {
+            callback = (inverseEditOperations) => {
+                const inverseRange = inverseEditOperations[0].range;
+                window.setTimeout(() => { 
+                    editor.revealRange (inverseRange);
+                    const start         = inverseRange.getStartPosition();
+                    const startRange    = new monaco.Range (start.lineNumber, start.column + 1, start.lineNumber, start.column + 1);
+                    editor.setSelection(startRange);
+                    // editor.setSelection(inverseRange);
+                }, 1);            
+                return null;
+            };
+        }
+        editor.executeEdits("addSubscriptionEvent", [{ range: range, text: ev, forceMoveMarkers: true }], callback);
     }
 }
