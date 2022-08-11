@@ -13,15 +13,13 @@ namespace Friflo.Json.Fliox.Hub.Protocol
         /// <summary>The database the <see cref="tasks"/> refer to</summary>
         [Required]  public      string              db;
         /// <summary>
-        /// Contains the events an application subscribed. These are:
-        /// <list type="bullet">
-        ///   <item><see cref="CreateEntities"/></item>
-        ///   <item><see cref="UpsertEntities"/></item>
-        ///   <item><see cref="DeleteEntities"/></item>
-        ///   <item><see cref="PatchEntities"/></item>
-        ///   <item><see cref="SendMessage"/></item>
-        ///   <item><see cref="SendCommand"/></item>
-        /// </list>
+        /// Contains the events an application subscribed. These are:<br/>
+        /// <see cref="CreateEntities"/>, 
+        /// <see cref="UpsertEntities"/>, 
+        /// <see cref="DeleteEntities"/>, 
+        /// <see cref="PatchEntities"/>, 
+        /// <see cref="SendMessage"/>, 
+        /// <see cref="SendCommand"/>
         /// </summary>
                     public      SyncRequestTask[]   tasks;
         /// Used for optimization. Either <see cref="tasks"/> or <see cref="tasksJson"/> is set
