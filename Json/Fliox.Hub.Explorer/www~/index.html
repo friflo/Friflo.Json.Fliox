@@ -172,10 +172,11 @@
         #events {
             display: none;
             grid-template-areas: 
-                "ev-header          ev-header   ev-header   ev-header   ev-header"
-                "ev-tree            ev-bar1     ev-subs     ev-bar2     ev-editor";
+                "ev-header          ev-header   ev-header       ev-header   ev-header"
+                ".                  .           ev-title-subs   .           ev-title-events"
+                "ev-tree            ev-bar1     ev-subs         ev-bar2     ev-editor";
             grid-template-columns:  150px var(--bar-width) 200px var(--bar-width) 1fr;    /* dynamically overwritten by #explorer.style */
-            grid-template-rows:     28px  1fr;
+            grid-template-rows:     16px  20px 1fr;
             grid-gap:   0px;
         }
 
@@ -729,7 +730,13 @@
   <!-- ------------------------------------------- Events ------------------------------------------- -->
   <div id="events" class="tabContent" style="grid-area: body-events; overflow: hidden; grid-template-columns: 150px var(--bar-width) 200px var(--bar-width) 1fr; padding-top: 10px;">
     <div style="grid-area: ev-header; overflow:hidden; white-space:nowrap; padding-left: 7px; padding-top: 1px;">
-        <div>Pub-Sub events</div>
+        <small>Pub-Sub</small>
+    </div>
+    <div style="grid-area: ev-title-subs; padding-right: 7px;" class="nobreak">
+        <small>Subscriptions</small>
+    </div>
+    <div style="grid-area: ev-title-events; padding-right: 7px;" class="nobreak">
+        <small>Events</small>
     </div>
     <div style="grid-area: ev-tree; background-color: var(--background2); overflow: auto; ">
       <div class="catalogs" id="subscriptionTree" style="display: block; min-height: 50px; white-space: nowrap;">
