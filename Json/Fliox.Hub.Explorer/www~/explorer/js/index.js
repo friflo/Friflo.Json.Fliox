@@ -816,13 +816,20 @@ export class App {
             xy = 20;
         // console.log (`drag x: ${x}`);
         switch (this.dragTemplate.id) {
-            case "events": return [xy + "px", "var(--bar-width)", "1fr"];
             case "playground": return [xy + "px", "var(--bar-width)", "1fr"];
             case "explorer": {
                 const cols = this.dragTemplate.style.gridTemplateColumns.split(" ");
                 switch (this.dragBar.id) { //  [150px var(--bar-width) 200px var(--bar-width) 1fr];
                     case "exBar1": return [xy + "px", cols[1], cols[2], cols[3]];
                     case "exBar2": return [cols[0], cols[1], xy + "px", cols[3]];
+                }
+                break;
+            }
+            case "events": {
+                const cols = this.dragTemplate.style.gridTemplateColumns.split(" ");
+                switch (this.dragBar.id) { //  [150px var(--bar-width) 200px var(--bar-width) 1fr];
+                    case "evBar1": return [xy + "px", cols[1], cols[2], cols[3]];
+                    case "evBar2": return [cols[0], cols[1], xy + "px", cols[3]];
                 }
                 break;
             }

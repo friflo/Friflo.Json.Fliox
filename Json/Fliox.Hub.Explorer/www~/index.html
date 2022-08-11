@@ -172,9 +172,9 @@
         #events {
             display: none;
             grid-template-areas: 
-                "ev-header          ev-header   ev-header"
-                "ev-subs            pl-bar      ev-editor";
-            grid-template-columns:  200px var(--bar-width) 1fr;
+                "ev-header          ev-header   ev-header   ev-header   ev-header"
+                "ev-tree            ev-bar1     ev-subs     ev-bar2     ev-editor";
+            grid-template-columns:  150px var(--bar-width) 200px var(--bar-width) 1fr;    /* dynamically overwritten by #explorer.style */
             grid-template-rows:     28px  1fr;
             grid-gap:   0px;
         }
@@ -727,16 +727,20 @@
   </div>
 
   <!-- ------------------------------------------- Events ------------------------------------------- -->
-  <div id="events" class="tabContent" style="grid-area: body-events; overflow: hidden; padding-top: 10px;">
+  <div id="events" class="tabContent" style="grid-area: body-events; overflow: hidden; grid-template-columns: 150px var(--bar-width) 200px var(--bar-width) 1fr; padding-top: 10px;">
     <div style="grid-area: ev-header; overflow:hidden; white-space:nowrap; padding-left: 7px; padding-top: 1px;">
         <div>Pub-Sub events</div>
     </div>
-    <div style="grid-area: ev-subs; background-color: var(--background2); overflow: auto; ">
+    <div style="grid-area: ev-tree; background-color: var(--background2); overflow: auto; ">
       <div class="catalogs" id="subscriptionTree" style="display: block; min-height: 50px; white-space: nowrap;">
           <!-- [How To Create a Tree View] https://www.w3schools.com/howto/howto_js_treeview.asp -->
       </div>
     </div>
-    <div id="evBar" style="grid-area: pl-bar; cursor: ew-resize;" class="vbar" onmousedown="app.startDrag(event, 'events', id, true)"></div>
+    <div id="evBar1" style="grid-area: ev-bar1; cursor: ew-resize;" class="vbar" onmousedown="app.startDrag(event, 'events', id, true)"></div>
+    <div class="editor" style="grid-area: ev-subs; overflow: visible;">
+
+    </div>
+    <div id="evBar2" style="grid-area: ev-bar2; cursor: ew-resize;" class="vbar" onmousedown="app.startDrag(event, 'events', id, true)"></div>
     <div class="editor" style="grid-area: ev-editor; overflow: visible;">
         <!-- <div class="editor" id="requestContainer"></div> -->
         <div id="eventsContainer" class="editor"></div>
