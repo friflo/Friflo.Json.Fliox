@@ -428,12 +428,18 @@ export class App {
         const editor = this.eventsEditor;
         const model = editor.getModel();
         const length = model.getValue().length;
-        const lastPos = model.getPositionAt(length);
-        // model.findPreviousMatch ("]", ...)
-        const pos = lastPos;
+        if (length == 0) {
+            model.setValue("[]");
+        }
+        else {
+            ev = ',' + ev;
+        }
+        const endPos = model.getPositionAt(length);
+        const match = model.findPreviousMatch("]", endPos, false, true, null, false);
+        // const pos       = lastPos;
+        const pos = new monaco.Position(match.range.startLineNumber, match.range.startColumn);
         const range = new monaco.Range(pos.lineNumber, pos.column, pos.lineNumber, pos.column);
-        const op = { range: range, text: ev, forceMoveMarkers: true };
-        editor.executeEdits("addSubscriptionEvent", [op]);
+        editor.executeEdits("addSubscriptionEvent", [{ range: range, text: ev, forceMoveMarkers: true }]);
     }
     getSchemaType(database) {
         const schema = this.databaseSchemas[database];
