@@ -58,7 +58,11 @@ namespace Friflo.Json.Fliox.Hub.Client
             }
             contextChanges.Clear();
             EventCount++;
-
+            if (client.DatabaseName != ev.db) {
+                var msg = $"invalid EventMessage db: {ev.db}. expect: {client.DatabaseName}";
+                eventContext.Logger.Log(HubLog.Error, msg);
+                return;
+            }
             foreach (var task in ev.tasks) {
                 switch (task.TaskType)
                 {

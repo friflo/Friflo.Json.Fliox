@@ -81,6 +81,7 @@ class ProtocolEvent {
 ProtocolEvent <|-- EventMessage
 class EventMessage {
     msg    : "ev"
+    db     : string
     tasks? : SyncRequestTask[]
 }
 EventMessage *-- "0..*" SyncRequestTask : tasks

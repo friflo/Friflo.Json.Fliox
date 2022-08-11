@@ -14,6 +14,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         /** map to <see cref="ProtocolEvent.seq"/> */           public  int         seq; 
         /** map to <see cref="ProtocolEvent.srcUserId"/> */     public  JsonKey     src;
         /** map to <see cref="ProtocolEvent.dstClientId"/> */   public  JsonKey     clt;
+        /** map to <see cref="EventMessage.db"/> */             public  string      db;
         /** map to <see cref="EventMessage.tasks"/> */          public  JsonValue[] tasks;
     }
     
@@ -31,7 +32,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
                         seq     = ev.seq,
                         src     = ev.srcUserId,
                         clt     = ev.dstClientId,
-                        tasks   = ev.tasksJson
+                        db      = ev.db,
+                        tasks   = ev.tasksJson,
                     };
                     return new JsonValue(mapper.WriteAsArray(remoteEv));
                 }

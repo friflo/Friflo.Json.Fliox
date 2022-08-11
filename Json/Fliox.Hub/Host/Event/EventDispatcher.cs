@@ -252,6 +252,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                     if (eventTasks == null)
                         continue;
                     var eventMessage = new EventMessage {
+                        db          = database,
                         tasks       = eventTasks.ToArray(),
                         srcUserId   = syncRequest.userId,
                         dstClientId = subClient.clientId
