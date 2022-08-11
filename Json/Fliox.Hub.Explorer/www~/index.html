@@ -172,9 +172,9 @@
         #events {
             display: none;
             grid-template-areas: 
-                "ev-header          ev-header"
-                ".                  ev-editor";
-            grid-template-columns:  200px 1fr;
+                "ev-header          ev-header   ev-header"
+                "ev-subs            pl-bar      ev-editor";
+            grid-template-columns:  200px var(--bar-width) 1fr;
             grid-template-rows:     28px  1fr;
             grid-gap:   0px;
         }
@@ -730,6 +730,11 @@
   <div id="events" class="tabContent" style="grid-area: body-events; overflow: hidden; padding-top: 10px;">
     <div style="grid-area: ev-header; overflow:hidden; white-space:nowrap; padding-left: 7px; padding-top: 1px;">
         <div>Pub-Sub events</div>
+    </div>
+    <div style="grid-area: ev-subs; background-color: var(--background2); overflow: auto; ">
+      <div class="catalogs" id="subscriptionTree" style="display: block; min-height: 50px; white-space: nowrap;">
+          <!-- [How To Create a Tree View] https://www.w3schools.com/howto/howto_js_treeview.asp -->
+      </div>
     </div>
     <div class="editor" style="grid-area: ev-editor; overflow: visible;">
         <!-- <div class="editor" id="requestContainer"></div> -->

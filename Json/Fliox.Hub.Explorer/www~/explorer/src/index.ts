@@ -11,6 +11,7 @@ import { DbSchema, DbContainers, DbMessages, HostInfo }         from "../../../.
 import { SyncRequest, SyncResponse, ProtocolResponse_Union,
          ContainerEntities }                                    from "../../../../../Json.Tests/assets~/Schema/Typescript/Protocol/Friflo.Json.Fliox.Hub.Protocol";
 import { SyncRequestTask_Union, SendCommandResult }             from "../../../../../Json.Tests/assets~/Schema/Typescript/Protocol/Friflo.Json.Fliox.Hub.Protocol.Tasks";
+import { Events } from "./events.js";
 
 declare global {
     interface Window {
@@ -54,11 +55,13 @@ export const flioxRoot = "./";
 export class App {
     readonly explorer:      Explorer;
     readonly editor:        EntityEditor;
+    readonly events:        Events;
     readonly playground:    Playground;
 
     constructor() {
         this.explorer       = new Explorer(this.config);
         this.editor         = new EntityEditor();
+        this.events         = new Events();
         this.playground     = new Playground();
         this.clusterTree    = new ClusterTree();
 
@@ -398,6 +401,8 @@ export class App {
             this.editor.clearEntity(databaseName, containerName);
             this.explorer.loadContainer(params, null);
         };
+        this.events.initEvents(dbContainers);
+
         const schemaMap     = Schema.createEntitySchemas(this.databaseSchemas, dbSchemas);
         const monacoSchemas = Object.values(schemaMap);
         this.addSchemas(monacoSchemas);
@@ -1018,7 +1023,7 @@ export class App {
     }
 }
 
-class ClusterTree {
+export class ClusterTree {
     private selectedTreeEl: HTMLElement;
 
     onSelectDatabase  : (databaseName: string) => void;

@@ -4,6 +4,7 @@ import { Schema } from "./schema.js";
 import { Explorer } from "./explorer.js";
 import { EntityEditor } from "./entity-editor.js";
 import { Playground } from "./playground.js";
+import { Events } from "./events.js";
 const flioxVersionEl = el("flioxVersion");
 const projectName = el("projectName");
 const projectUrl = el("projectUrl");
@@ -47,6 +48,7 @@ export class App {
         this.config = defaultConfig;
         this.explorer = new Explorer(this.config);
         this.editor = new EntityEditor();
+        this.events = new Events();
         this.playground = new Playground();
         this.clusterTree = new ClusterTree();
         window.addEventListener("keydown", event => this.onKeyDown(event), true);
@@ -356,6 +358,7 @@ export class App {
             this.editor.clearEntity(databaseName, containerName);
             this.explorer.loadContainer(params, null);
         };
+        this.events.initEvents(dbContainers);
         const schemaMap = Schema.createEntitySchemas(this.databaseSchemas, dbSchemas);
         const monacoSchemas = Object.values(schemaMap);
         this.addSchemas(monacoSchemas);
@@ -886,7 +889,7 @@ export class App {
     }
 }
 App.bracketValue = /\[(.*?)\]/;
-class ClusterTree {
+export class ClusterTree {
     selectTreeElement(element) {
         if (this.selectedTreeEl)
             this.selectedTreeEl.classList.remove("selected");
