@@ -72,6 +72,7 @@ export class Playground {
                         if (this.clt == data.clt) {
                             subscriptionSeq.innerText = subSeq ? String(subSeq) : " - ";
                             ackElement.innerText = subSeq ? String(subSeq) : " - ";
+                            app.addSubscriptionEvent(e.data);
                         }
                         break;
                     }

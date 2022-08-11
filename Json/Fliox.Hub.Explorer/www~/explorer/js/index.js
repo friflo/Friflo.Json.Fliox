@@ -423,6 +423,18 @@ export class App {
         catalogExplorer.appendChild(ulCatalogs);
         this.editor.listCommands(dbMessages[0].id, dbMessages[0], dbContainers[0]);
     }
+    // --------------------------------------- subscription events ---------------------------------------
+    addSubscriptionEvent(ev) {
+        const editor = this.eventsEditor;
+        const model = editor.getModel();
+        const length = model.getValue().length;
+        const lastPos = model.getPositionAt(length);
+        // model.findPreviousMatch ("]", ...)
+        const pos = lastPos;
+        const range = new monaco.Range(pos.lineNumber, pos.column, pos.lineNumber, pos.column);
+        const op = { range: range, text: ev, forceMoveMarkers: true };
+        editor.executeEdits("addSubscriptionEvent", [op]);
+    }
     getSchemaType(database) {
         const schema = this.databaseSchemas[database];
         if (!schema)

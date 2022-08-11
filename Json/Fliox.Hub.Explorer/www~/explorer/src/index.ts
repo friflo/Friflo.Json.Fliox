@@ -471,6 +471,19 @@ export class App {
         this.editor.listCommands(dbMessages[0].id, dbMessages[0], dbContainers[0]);
     }
 
+    // --------------------------------------- subscription events ---------------------------------------
+    public addSubscriptionEvent(ev: string) : void {
+        const editor    = this.eventsEditor;
+        const model     = editor.getModel();
+        const length    = model.getValue().length;
+        const lastPos   = model.getPositionAt(length);
+        // model.findPreviousMatch ("]", ...)
+        const pos       = lastPos;
+        const range     = new monaco.Range(pos.lineNumber, pos.column, pos.lineNumber, pos.column);
+        const op        = { range: range, text: ev, forceMoveMarkers: true };
+        editor.executeEdits("addSubscriptionEvent", [op]);
+    }
+
 
     // --------------------------------------- schema ---------------------------------------
     public readonly databaseSchemas: { [key: string]: DbSchema} = {};
