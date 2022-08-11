@@ -35,9 +35,10 @@ const entityFilter          = el("entityFilter")    as HTMLInputElement;
 const requestContainer      = el("requestContainer");
 const responseContainer     = el("responseContainer");
 
-// entity/command editor
+// entity/command/events editor
 const commandValue          = el("commandValue");
 const entityContainer       = el("entityContainer");
+const eventsContainer       = el("eventsContainer");
 
 /* if ("serviceWorker" in navigator) {
     navigator.serviceWorker.register("./sw.js").then(registration => {
@@ -720,6 +721,7 @@ export class App {
     public              responseEditor:     monaco.editor.IStandaloneCodeEditor;
     public              entityEditor:       monaco.editor.IStandaloneCodeEditor;
     public              commandValueEditor: monaco.editor.IStandaloneCodeEditor;
+    public              eventsEditor:       monaco.editor.IStandaloneCodeEditor;
 
     private readonly    allMonacoSchemas:   MonacoSchema[] = [];
 
@@ -801,6 +803,11 @@ export class App {
         }
         this.editor.initEditor(this.entityEditor, this.commandValueEditor);
 
+        // --- create subscription event editor
+        {
+            this.eventsEditor     = monaco.editor.create(eventsContainer, { });
+        }
+
         // this.commandResponseModel = monaco.editor.createModel(null, "json");
         this.setEditorOptions();
         window.onresize = () => {
@@ -819,6 +826,7 @@ export class App {
         this.responseEditor.    updateOptions ({ ...editorSettings });
         this.entityEditor.      updateOptions ({ ...editorSettings });
         this.commandValueEditor.updateOptions ({ ...editorSettings });
+        this.eventsEditor.      updateOptions ({ ...editorSettings });
     }
 
 
@@ -906,8 +914,9 @@ export class App {
             case "explorer": {
                 // layout from right to left. Otherwise commandValueEditor.clientWidth is 0px;
                 const editors2 = [
-                    { editor: this.entityEditor,        elem: entityContainer },               
+                    { editor: this.entityEditor,        elem: entityContainer },
                     { editor: this.commandValueEditor,  elem: commandValue },
+                    { editor: this.eventsEditor,        elem: eventsContainer },
                 ];
                 this.layoutMonacoEditors(editors2);
                 break;

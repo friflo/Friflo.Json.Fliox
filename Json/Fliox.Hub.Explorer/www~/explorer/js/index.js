@@ -16,9 +16,10 @@ const entityFilter = el("entityFilter");
 // request response editor
 const requestContainer = el("requestContainer");
 const responseContainer = el("responseContainer");
-// entity/command editor
+// entity/command/events editor
 const commandValue = el("commandValue");
 const entityContainer = el("entityContainer");
+const eventsContainer = el("eventsContainer");
 /* if ("serviceWorker" in navigator) {
     navigator.serviceWorker.register("./sw.js").then(registration => {
         console.log("SW registered");
@@ -691,6 +692,10 @@ export class App {
             //this.commandValueEditor.setValue("{}");
         }
         this.editor.initEditor(this.entityEditor, this.commandValueEditor);
+        // --- create subscription event editor
+        {
+            this.eventsEditor = monaco.editor.create(eventsContainer, {});
+        }
         // this.commandResponseModel = monaco.editor.createModel(null, "json");
         this.setEditorOptions();
         window.onresize = () => {
@@ -708,6 +713,7 @@ export class App {
         this.responseEditor.updateOptions(Object.assign({}, editorSettings));
         this.entityEditor.updateOptions(Object.assign({}, editorSettings));
         this.commandValueEditor.updateOptions(Object.assign({}, editorSettings));
+        this.eventsEditor.updateOptions(Object.assign({}, editorSettings));
     }
     // -------------------------------------- config --------------------------------------------
     setConfig(key, value) {
@@ -788,6 +794,7 @@ export class App {
                 const editors2 = [
                     { editor: this.entityEditor, elem: entityContainer },
                     { editor: this.commandValueEditor, elem: commandValue },
+                    { editor: this.eventsEditor, elem: eventsContainer },
                 ];
                 this.layoutMonacoEditors(editors2);
                 break;

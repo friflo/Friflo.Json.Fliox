@@ -582,6 +582,10 @@
     <div style="grid-area: ex-schema; display:flex; height: 23px; padding-top: 1px; overflow:hidden;">
       <span  id="explorerTools"></span>
       <small id="catalogSchema" class="docLink" style="display: flex; justify-content: center; align-items: center;"></small>
+      <span style="flex-grow: 1"></span>
+      <div title="events" class="navigate" onclick="app.editor.showEvents()">
+        <span style="vertical-align: text-bottom; font-size: 10px;">💬</span>
+      </div>
     </div>
     <div style="grid-area: ex-action; display:flex; overflow:hidden; white-space:nowrap; height: 23px; padding-top: 1px;">
         <div title="Go back (Alt + 🠔)"    class="navigate" onclick="app.editor.navigateEntity(app.editor.entityHistoryPos - 1)">⏴</div>
@@ -608,6 +612,9 @@
         </span>
         <span id="databaseTools" style="display: none;">
             <small id="databaseLabel" title="database schema" style="display: flex; justify-content: center; align-items: center;"></small>
+        </span>
+        <span id="eventTools" style="display: none;">
+            <small title="subscription events" style="display: flex; justify-content: center; align-items: center;">Subscription events</small>
         </span>
     </div>
 
@@ -673,6 +680,7 @@
         </div>
         <div style="grid-area: edit-response; display: flex;">
             <div id="entityContainer" style="flex-grow: 1; display: none;"></div>
+            <div id="eventsContainer" style="flex-grow: 1; display: none;"></div>
             <div id="dbInfo" style="flex-grow: 1; display: none; padding-top: 15px; font-size: 13px; border-top: 2px solid var(--tab-border);">
                 <div>
                     <table style="border-spacing: 10px 2px;">
