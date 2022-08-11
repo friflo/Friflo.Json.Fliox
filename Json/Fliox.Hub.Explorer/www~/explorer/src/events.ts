@@ -1,5 +1,5 @@
 import { DbContainers } from "../../../../../Json.Tests/assets~/Schema/Typescript/ClusterStore/Friflo.Json.Fliox.Hub.DB.Cluster.js";
-import { ClusterTree }  from "./index.js";
+import { ClusterTree }  from "./components.js";
 import { el }           from "./types.js";
 
 const subscriptionTree       = el("subscriptionTree");
