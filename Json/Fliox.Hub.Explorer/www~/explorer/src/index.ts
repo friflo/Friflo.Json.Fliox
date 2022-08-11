@@ -26,7 +26,7 @@ const projectUrl            = el("projectUrl")      as HTMLAnchorElement;
 const envEl                 = el("envEl");
 const defaultUser           = el("user")            as HTMLInputElement;
 const defaultToken          = el("token")           as HTMLInputElement;
-const catalogExplorer       = el("catalogExplorer");
+const clusterExplorer       = el("clusterExplorer");
 const entityExplorer        = el("entityExplorer");
 
 const entityFilter          = el("entityFilter")    as HTMLInputElement;
@@ -353,12 +353,12 @@ export class App {
             { "task": "query",  "container": "messages"},
             { "task": "query",  "container": "schemas"},
         ];
-        catalogExplorer.innerHTML = 'read databases <span class="spinner"></span>';
+        clusterExplorer.innerHTML = 'read databases <span class="spinner"></span>';
         const response  = await App.postRequestTasks("cluster", tasks, null);
         const content   = response.json as SyncResponse;
         const error     = App.getTaskError (content, 0);
         if (error) {
-            catalogExplorer.innerHTML = App.errorAsHtml(error, null);
+            clusterExplorer.innerHTML = App.errorAsHtml(error, null);
             return;
         }
         const hubInfoResult = content.tasks[0]                  as SendCommandResult;
@@ -390,10 +390,22 @@ export class App {
         if (envColor && CSS.supports('color', envColor)) {
             envEl.style.backgroundColor = envColor;
             envEl.style.color = getColorBasedOnBackground(envEl.style.backgroundColor);
-        }        
+        }
+        const ulCluster     = this.createClusterUl(dbContainers, dbMessages);
+        
+        const schemaMap     = Schema.createEntitySchemas(this.databaseSchemas, dbSchemas);
+        const monacoSchemas = Object.values(schemaMap);
+        this.addSchemas(monacoSchemas);
 
-        const ulCatalogs = createEl('ul');
-        ulCatalogs.onclick = (ev) => {
+        clusterExplorer.textContent = "";
+        clusterExplorer.appendChild(ulCluster);
+
+        this.editor.listCommands(dbMessages[0].id, dbMessages[0], dbContainers[0]);
+    }
+
+    private createClusterUl(dbContainers: DbContainers[], dbMessages: DbMessages[]) : HTMLUListElement {
+        const ulCluster = createEl('ul');
+        ulCluster.onclick = (ev) => {
             const path = ev.composedPath() as HTMLElement[];
             const databaseElement = path[0];
             if (databaseElement.classList.contains("caret")) {
@@ -418,23 +430,23 @@ export class App {
         };
         let firstDatabase = true;
         for (const dbContainer of dbContainers) {
-            const liCatalog = createEl('li');
+            const liDatabase = createEl('li');
 
-            const liDatabase            = createEl('div');
-            const catalogCaret          = createEl('div');
-            catalogCaret.classList.value= "caret";
-            const catalogLabel          = createEl('span');
-            catalogLabel.innerText      = dbContainer.id;
-            liDatabase.title            = "database";
-            catalogLabel.style.pointerEvents = "none";
-            liDatabase.append(catalogCaret);
-            liDatabase.append(catalogLabel);
-            liCatalog.appendChild(liDatabase);
-            ulCatalogs.append(liCatalog);
+            const divDatabase           = createEl('div');
+            const dbCaret               = createEl('div');
+            dbCaret.classList.value     = "caret";
+            const dbLabel               = createEl('span');
+            dbLabel.innerText           = dbContainer.id;
+            divDatabase.title           = "database";
+            dbLabel.style.pointerEvents = "none";
+            divDatabase.append(dbCaret);
+            divDatabase.append(dbLabel);
+            liDatabase.appendChild(divDatabase);
+            ulCluster.append(liDatabase);
             if (firstDatabase) {
                 firstDatabase = false;
-                liCatalog.classList.add("active");
-                this.selectTreeElement(liDatabase);
+                liDatabase.classList.add("active");
+                this.selectTreeElement(divDatabase);
             }
             const ulContainers = createEl('ul');
             ulContainers.onclick = (ev) => {
@@ -451,7 +463,7 @@ export class App {
                 this.editor.clearEntity(databaseName, containerName);
                 this.explorer.loadContainer(params, null);
             };
-            liCatalog.append(ulContainers);
+            liDatabase.append(ulContainers);
             for (const containerName of dbContainer.containers) {
                 const liContainer       = createEl('li');
                 liContainer.title       = "container";
@@ -461,14 +473,7 @@ export class App {
                 ulContainers.append(liContainer);
             }
         }
-        const schemaMap     = Schema.createEntitySchemas(this.databaseSchemas, dbSchemas);
-        const monacoSchemas = Object.values(schemaMap);
-        this.addSchemas(monacoSchemas);
-
-        catalogExplorer.textContent = "";
-        catalogExplorer.appendChild(ulCatalogs);
-
-        this.editor.listCommands(dbMessages[0].id, dbMessages[0], dbContainers[0]);
+        return ulCluster;
     }
 
     // --------------------------------------- subscription events ---------------------------------------
