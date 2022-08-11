@@ -833,6 +833,7 @@ export class App {
             xy = 20;
         // console.log (`drag x: ${x}`);
         switch (this.dragTemplate.id) {
+            case "events": return [xy + "px", "var(--bar-width)", "1fr"];
             case "playground": return [xy + "px", "var(--bar-width)", "1fr"];
             case "explorer": {
                 const cols = this.dragTemplate.style.gridTemplateColumns.split(" ");
