@@ -2,6 +2,7 @@ import { DbContainers } from "../../../../../Json.Tests/assets~/Schema/Typescrip
 import { ClusterTree }  from "./components.js";
 import { el }           from "./types.js";
 import { app }          from "./index.js";
+import { EventMessage } from "../../../../../Json.Tests/assets~/Schema/Typescript/Protocol/Friflo.Json.Fliox.Hub.Protocol.js";
 
 const subscriptionTree      = el("subscriptionTree");
 const scrollToEnd           = el("scrollToEnd") as HTMLInputElement;
@@ -28,14 +29,15 @@ export class Events
         subscriptionTree.appendChild(ulCluster);
     }
 
-    public addSubscriptionEvent(ev: string) : void {
+    public addSubscriptionEvent(eventMessage: EventMessage) : void {
         const editor    = app.eventsEditor;
         const model     = editor.getModel();
         const length    = model.getValue().length;
+        let   ev = JSON.stringify(eventMessage, null, 2);
         if (length == 0) {
             model.setValue("[]");
         } else {
-            ev = ',' + ev;
+            ev = `,${ev}`;
         }
         const endPos    = model.getPositionAt(length);
         const match     = model.findPreviousMatch ("]", endPos, false, true, null, false);

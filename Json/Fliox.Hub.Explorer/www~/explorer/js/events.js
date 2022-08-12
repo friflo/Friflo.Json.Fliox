@@ -20,15 +20,16 @@ export class Events {
         subscriptionTree.textContent = "";
         subscriptionTree.appendChild(ulCluster);
     }
-    addSubscriptionEvent(ev) {
+    addSubscriptionEvent(eventMessage) {
         const editor = app.eventsEditor;
         const model = editor.getModel();
         const length = model.getValue().length;
+        let ev = JSON.stringify(eventMessage, null, 2);
         if (length == 0) {
             model.setValue("[]");
         }
         else {
-            ev = ',' + ev;
+            ev = `,${ev}`;
         }
         const endPos = model.getPositionAt(length);
         const match = model.findPreviousMatch("]", endPos, false, true, null, false);

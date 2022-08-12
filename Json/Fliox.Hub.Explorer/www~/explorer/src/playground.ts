@@ -1,5 +1,6 @@
 import { el, createEl }     from "./types.js";
 import { App, app }         from "./index.js";
+import { ProtocolMessage_Union } from "../../../../../Json.Tests/assets~/Schema/Typescript/Protocol/Friflo.Json.Fliox.Hub.Protocol.js";
 
 
 const responseState     = el("response-state");
@@ -64,7 +65,7 @@ export class Playground
             // Log messages from the server
             connection.onmessage = (e) => {
                 const duration = new Date().getTime() - this.requestStart;
-                const data = JSON.parse(e.data);
+                const data = JSON.parse(e.data) as ProtocolMessage_Union;
                 // console.log('server:', e.data);
                 switch (data.msg) {
                     case "resp":
@@ -83,7 +84,7 @@ export class Playground
                         if (this.clt == data.clt) {
                             subscriptionSeq.innerText   = subSeq ? String(subSeq) : " - ";
                             ackElement.innerText        = subSeq ? String(subSeq) : " - ";
-                            app.events.addSubscriptionEvent(e.data);
+                            app.events.addSubscriptionEvent(data);
                         }
                         break;
                     }
