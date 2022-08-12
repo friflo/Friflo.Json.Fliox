@@ -29,13 +29,14 @@ The **DemoHub** .NET project is available at
 
 <br/>
 
-| Some numbers                                                              |                                                                                                       |
-| ------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
-| **RTT** Request / Response roundtrip                                      | **0.3 ms**                                                                                            |
-| **Pub-Sub delay** send message ➞ subscriber event                        | **sub millisecond latency**                                                                           |
-| **Throughput** Request/Response WebSocket, 4 concurrent clients, 4 cores  | **27k requests / sec**                                                                                |
-| Hub integration in ASP.NET Core                                           | **4 LOC** [Startup.cs](https://github.com/friflo/Fliox.Examples/blob/main/Demo/Hub/StartupAsp6.cs#L38)|
-| Full functional Client & Server: REST, CRUD, Queries, Pub-Sub & Explorer  | **70 LOC** [Client](https://github.com/friflo/Fliox.Examples/blob/main/Todo/Client/TodoClient.cs) & [Server](https://github.com/friflo/Fliox.Examples/blob/main/Todo/Hub/Program.cs) |
+| Some numbers                                                                |                                                                                                       |
+| --------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
+| **RTT**           Request / Response roundtrip                              | **0.3 ms**                                                                                            |
+| **Pub-Sub delay** send message ➞ subscriber event                          | **sub millisecond latency**                                                                           |
+| **Query**         1M rows, each row 124 byte => response 125MB              | **1.3 sec**                                                                                           |
+| **Throughput**    Request/Response WebSocket, 4 concurrent clients, 4 cores | **27k requests / sec**                                                                                |
+| Hub integration in ASP.NET Core                                             | **4 LOC** [Startup.cs](https://github.com/friflo/Fliox.Examples/blob/main/Demo/Hub/StartupAsp6.cs#L38)|
+| Full functional Client & Server: REST, CRUD, Queries, Pub-Sub & Explorer    | **70 LOC** [Client](https://github.com/friflo/Fliox.Examples/blob/main/Todo/Client/TodoClient.cs) & [Server](https://github.com/friflo/Fliox.Examples/blob/main/Todo/Hub/Program.cs) |
 
 
 *Note*: JSON Fliox is **not** a UI library. It is designed for simple integration in .NET and Web UI frameworks.
