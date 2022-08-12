@@ -3,6 +3,10 @@ import { el } from "./types.js";
 import { app } from "./index.js";
 const subscriptionTree = el("subscriptionTree");
 const scrollToEnd = el("scrollToEnd");
+const formatEvents = el("formatEvents");
+function str(value) {
+    return JSON.stringify(value);
+}
 // ----------------------------------------------- Events -----------------------------------------------
 export class Events {
     constructor() {
@@ -20,16 +24,29 @@ export class Events {
         subscriptionTree.textContent = "";
         subscriptionTree.appendChild(ulCluster);
     }
-    addSubscriptionEvent(eventMessage) {
+    static event2String(ev, format) {
+        if (!format) {
+            return JSON.stringify(ev, null, 4);
+        }
+        const tasksJson = ev.tasks.map(task => JSON.stringify(task));
+        const tasks = tasksJson.join(",\n        ");
+        return `{
+    "msg":"ev", "seq":${str(ev.seq)}, "src":${str(ev.src)}, "clt":${str(ev.clt)}, "db":${str(ev.db)},
+    "tasks": [
+        ${tasks}
+    ]
+}`;
+    }
+    addSubscriptionEvent(ev) {
         const editor = app.eventsEditor;
         const model = editor.getModel();
         const length = model.getValue().length;
-        let ev = JSON.stringify(eventMessage, null, 2);
+        let evStr = Events.event2String(ev, formatEvents.checked);
         if (length == 0) {
             model.setValue("[]");
         }
         else {
-            ev = `,${ev}`;
+            evStr = `,${evStr}`;
         }
         const endPos = model.getPositionAt(length);
         const match = model.findPreviousMatch("]", endPos, false, true, null, false);
@@ -50,7 +67,7 @@ export class Events {
                 return null;
             };
         }
-        editor.executeEdits("addSubscriptionEvent", [{ range: range, text: ev, forceMoveMarkers: true }], callback);
+        editor.executeEdits("addSubscriptionEvent", [{ range: range, text: evStr, forceMoveMarkers: true }], callback);
     }
 }
 //# sourceMappingURL=events.js.map

@@ -731,8 +731,11 @@
   <div id="events" class="tabContent" style="grid-area: body-events; overflow: hidden; padding-top: 5px;">
     <div style="grid-area: ev-header; overflow:hidden; white-space:nowrap; padding-left: 7px; padding-top: 1px; font-size: 13px;">
         Pub-Sub
-        <input style="margin-left: 20px;" type="checkbox" checked id="scrollToEnd"  onclick="app.changeConfig(id, checked)">
+        <input style="margin-left: 20px;" type="checkbox" checked id="scrollToEnd">
         <label for="scrollToEnd">Scroll to End</label>
+
+        <input style="margin-left: 20px;" type="checkbox" checked id="formatEvents">
+        <label for="formatEvents">Format events</label>
     </div>
     <div style="grid-area: ev-title-subs; padding-right: 7px;" class="nobreak">
         <small>Subscriptions</small>
