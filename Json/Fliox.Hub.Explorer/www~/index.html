@@ -297,19 +297,26 @@
         .input::placeholder { opacity: 0.3; color: var(--color); font-family: var(--sans-serif); font-size: 12px; }
 
 
-        .caret                      { display: inline-block; width: 12px; height: 12px; cursor: default; text-align: center; font-size: 10px;}
+        .caret                      { width: 12px; height: 12px; text-align: center; font-size: 10px;}
         .caret::before              { content: "❯"; } /* using ::before avoids getting copied to clipboard */
         .caret:hover                { font-weight: bold; color: darkturquoise;}
 
         .catalogs > ul              { padding-left: 0px; padding-right: 0px; }
         .catalogs > ul > li > ul    { margin-top: 0px; margin-left: 0px; margin-right: 0px; display: none; }
         .catalogs > ul > li.active > ul    { display: block; }
-        .catalogs > ul > li.active > div > div    { -ms-transform: rotate(90deg); -webkit-transform: rotate(90deg); transform: rotate(90deg) }
+        .catalogs > ul > li.active > div > div    { -ms-transform: translateY(5px) rotate(90deg); -webkit-transform: translateY(5px) rotate(90deg); transform: translateY(5px) rotate(90deg) }
         .catalogs li                { list-style:none; }
         .catalogs li                { cursor: pointer; }
-        .catalogs ul li div.selected{ background-color: var(--selected-color); }
-        .catalogs li div.selected   { background-color: var(--selected-color); }
-        .catalogs ul li div:hover   { background-color: var(--item-hover); }
+        .catalogs ul li ul li.selected,
+        .catalogs ul li div.selected    { background-color: var(--selected-color); }
+
+        .catalogs ul li ul li:hover,
+        .catalogs ul li div:hover       { background-color: var(--item-hover); }
+
+        .catalogs ul li div:nth-child(1),
+        .catalogs ul li ul li                   { padding-left: 0px; cursor: pointer; list-style:none; display: flex; }
+        .catalogs ul li div span:nth-child(2),
+        .catalogs ul li ul li div:nth-child(1)  { flex-grow: 1; }
 
          .oas                       { background-color: var(--oas-color); padding: 0px 2px; font-size: 12px; border-radius: 3px; font-weight: bold; }
         a.oas:link,
@@ -381,7 +388,7 @@
         .entities tr td.editCell div textarea,
         .entities tr td.editCell div::after   { grid-area: 1 / 1 / 2 / 2; font: inherit; line-height: 18px; border: 2px solid var(--color); }
 
-        
+
 
         .database                           { padding-left: 0px; margin-right: 0px; }
         .database li > ul                   { padding-left: 0px; margin-top: 0px; margin-left: 0px; }

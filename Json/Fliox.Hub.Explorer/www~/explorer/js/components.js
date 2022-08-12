@@ -38,8 +38,11 @@ export class ClusterTree {
             dbLabel.innerText = dbContainer.id;
             divDatabase.title = "database";
             dbLabel.style.pointerEvents = "none";
+            const containerTag = createEl('span');
+            containerTag.innerHTML = "tag";
             divDatabase.append(dbCaret);
             divDatabase.append(dbLabel);
+            // divDatabase.append(containerTag);
             liDatabase.appendChild(divDatabase);
             ulCluster.append(liDatabase);
             if (firstDatabase) {
@@ -55,8 +58,9 @@ export class ClusterTree {
                 // in case of a multiline text selection selectedElement is the parent
                 if (containerElement.tagName.toLowerCase() != "div")
                     return;
-                this.selectTreeElement(containerElement);
-                const containerName = this.selectedTreeEl.innerText.trim();
+                this.selectTreeElement(path[1]);
+                const containerNameDiv = this.selectedTreeEl.children[0];
+                const containerName = containerNameDiv.innerText.trim();
                 const databaseName = path[3].childNodes[0].childNodes[1].textContent;
                 this.onSelectContainer(databaseName, containerName);
             };
@@ -67,6 +71,9 @@ export class ClusterTree {
                 const containerLabel = createEl('div');
                 containerLabel.innerHTML = "&nbsp;" + containerName;
                 liContainer.append(containerLabel);
+                const containerTag = createEl('div');
+                containerTag.innerHTML = "tag";
+                // liContainer.append(containerTag);
                 ulContainers.append(liContainer);
             }
         }
