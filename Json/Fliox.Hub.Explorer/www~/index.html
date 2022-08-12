@@ -172,11 +172,11 @@
         #events {
             display: none;
             grid-template-areas: 
-                "ev-head    ev-head     ev-head         ev-head     ev-head"
-                ".          .           ev-title-subs   .           ev-title-events"
-                "ev-tree    ev-bar1     ev-subs         ev-bar2     ev-editor";
-            grid-template-columns:  150px var(--bar-width) 200px var(--bar-width) 1fr;    /* dynamically overwritten by #explorer.style */
-            grid-template-rows:     5px  22px 1fr;
+                "ev-head        ev-head     ev-head"
+                "ev-title-tree  .           ev-title-events"
+                "ev-tree        ev-bar1     ev-editor";
+            grid-template-columns:  200px var(--bar-width) 1fr;    /* dynamically overwritten by #explorer.style */
+            grid-template-rows:     0px  22px 1fr;
             grid-gap:   0px;
         }
 
@@ -484,7 +484,7 @@
     <a class="tab" href="#" onclick="app.openTab('explorer')"   value="explorer" style="border-top-left-radius:  3px;"
        title="explore databases and containers, edit entities and send commands">Explorer</a>
     <a class="tab" href="#" onclick="app.openTab('events')" value="events"
-       title="view subscription events received from WebSocket">Events</a>
+       title="view subscription events received from WebSocket">Pub-Sub</a>
     <a class="tab" href="#" onclick="app.openTab('playground')" value="playground"
        title="edit and send batch requests containing an array of tasks via HTTP POST or WebSocket">Playground</a>
     <a class="tab" href="#" onclick="app.openTab('settings')"   value="settings" style="border-top-right-radius: 3px;"
@@ -732,10 +732,10 @@
     <div style="grid-area: ev-head; overflow:hidden; white-space:nowrap; padding-left: 7px; padding-top: 1px; font-size: 13px;">
     </div>
 
-    <div style="grid-area: ev-title-subs;   overflow: hidden; align-self: baseline; padding-right: 7px;" class="nobreak">
-        <small>Subscriptions</small>
+    <div style="grid-area: ev-title-tree;   overflow: hidden; align-self: baseline; padding-left: 7px;" class="nobreak">
+        <small>Subscription</small>
     </div>
-    <div style="grid-area: ev-title-events; overflow: hidden; align-self: baseline; padding-right: 7px;" class="nobreak">
+    <div style="grid-area: ev-title-events; overflow: hidden; align-self: baseline;" class="nobreak">
         <small>
             Events
             <input style="margin-left: 20px;" type="checkbox" checked id="scrollToEnd" title="Scroll to end on new events">
@@ -751,10 +751,6 @@
       </div>
     </div>
     <div id="evBar1" style="grid-area: ev-bar1; cursor: ew-resize;" class="vbar" onmousedown="app.startDrag(event, 'events', id, true)"></div>
-    <div class="editor" style="grid-area: ev-subs; overflow: visible;">
-
-    </div>
-    <div id="evBar2" style="grid-area: ev-bar2; cursor: ew-resize;" class="vbar" onmousedown="app.startDrag(event, 'events', id, true)"></div>
     <div class="editor" style="grid-area: ev-editor; overflow: visible;">
         <!-- <div class="editor" id="requestContainer"></div> -->
         <div id="eventsContainer" class="editor"></div>
