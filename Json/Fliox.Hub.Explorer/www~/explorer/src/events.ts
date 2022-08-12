@@ -33,6 +33,10 @@ export class Events
         subscriptionTree.appendChild(ulCluster);
     }
 
+    public clearAllEvents() : void {
+        app.eventsEditor.setValue("");
+    }
+
     private static event2String (ev: EventMessage, format: boolean) : string {
         if (!format) {
             return JSON.stringify(ev, null, 4);

@@ -24,6 +24,9 @@ export class Events {
         subscriptionTree.textContent = "";
         subscriptionTree.appendChild(ulCluster);
     }
+    clearAllEvents() {
+        app.eventsEditor.setValue("");
+    }
     static event2String(ev, format) {
         if (!format) {
             return JSON.stringify(ev, null, 4);

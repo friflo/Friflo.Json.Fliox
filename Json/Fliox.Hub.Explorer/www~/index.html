@@ -176,7 +176,7 @@
                 "ev-title-tree  .           ev-title-events"
                 "ev-tree        ev-bar1     ev-editor";
             grid-template-columns:  200px var(--bar-width) 1fr;    /* dynamically overwritten by #explorer.style */
-            grid-template-rows:     0px  22px 1fr;
+            grid-template-rows:     0px  26px 1fr;
             grid-gap:   0px;
         }
 
@@ -732,18 +732,19 @@
     <div style="grid-area: ev-head; overflow:hidden; white-space:nowrap; padding-left: 7px; padding-top: 1px; font-size: 13px;">
     </div>
 
-    <div style="grid-area: ev-title-tree;   overflow: hidden; align-self: baseline; padding-left: 7px;" class="nobreak">
-        <small>Subscription</small>
+    <div style="grid-area: ev-title-tree;  display:flex; overflow:hidden; white-space:nowrap; height: 23px;  font-size: 13px; padding-top: 1px; align-items: center;">
+        <span style="margin-left: 10px;">Subscription</span>
     </div>
-    <div style="grid-area: ev-title-events; overflow: hidden; align-self: baseline;" class="nobreak">
-        <small>
-            Events
-            <input style="margin-left: 20px;" type="checkbox" checked id="scrollToEnd" title="Scroll to end on new events">
-            <label for="scrollToEnd" title="Scroll to end on new events">Scroll to End</label>
-    
-            <input style="margin-left: 20px;" type="checkbox" checked id="formatEvents" title="Format new events">
-            <label for="formatEvents"  title="Format new events">Format</label>
-        </small>
+    <div style="grid-area: ev-title-events; display:flex; overflow:hidden; white-space:nowrap; height: 23px;  font-size: 13px; padding-top: 1px; align-items: center;" class="nobreak">
+
+        <div title="Clear all events" class="navigate" onclick="app.events.clearAllEvents()" style="opacity: 0.5;">🗑️</div>
+
+        <span style="margin-left: 10px;">Events</span>
+        <input style="margin-left: 20px;" type="checkbox" checked id="scrollToEnd" title="Scroll to end on new events">
+        <label for="scrollToEnd" title="Scroll to end on new events">Scroll to End</label>
+
+        <input style="margin-left: 20px;" type="checkbox" checked id="formatEvents" title="Format new events">
+        <label for="formatEvents"  title="Format new events">Format</label>
     </div>
     <div style="grid-area: ev-tree; background-color: var(--background2); overflow: auto; ">
       <div class="catalogs" id="subscriptionTree" style="display: block; min-height: 50px; white-space: nowrap;">
