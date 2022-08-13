@@ -10,7 +10,10 @@ function str(value) {
 class ContainerSub {
     constructor() {
         this.subscribed = false;
-        this.events = 0;
+        this.creates = 0;
+        this.upserts = 0;
+        this.deletes = 0;
+        this.patches = 0;
     }
 }
 class DatabaseSub {
@@ -99,15 +102,23 @@ export class Events {
         const databaseSub = this.databaseSubs[ev.db];
         for (const task of ev.tasks) {
             switch (task.task) {
-                case "patch":
-                case "create":
                 case "upsert":
+                case "create": {
+                    const containerSub = databaseSub.containerSubs[task.container];
+                    containerSub.creates += task.entities.length;
+                    this.uiContainerText(ev.db, task.container, containerSub);
+                    break;
+                }
                 case "delete": {
                     const containerSub = databaseSub.containerSubs[task.container];
-                    containerSub.events++;
-                    const text = containerSub.events.toString();
-                    this.clusterTree.setContainerText(ev.db, task.container, text);
-                    app.clusterTree.setContainerText(ev.db, task.container, text);
+                    containerSub.deletes += task.ids.length;
+                    this.uiContainerText(ev.db, task.container, containerSub);
+                    break;
+                }
+                case "patch": {
+                    const containerSub = databaseSub.containerSubs[task.container];
+                    containerSub.patches += task.patches.length;
+                    this.uiContainerText(ev.db, task.container, containerSub);
                     break;
                 }
             }
@@ -122,15 +133,12 @@ export class Events {
             containerSub.subscribed = true;
             changes = ["create", "upsert", "patch", "delete"];
             this.uiContainerSubscribed(databaseName, containerName, true);
-            const text = containerSub.events.toString();
-            this.uiContainerText(databaseName, containerName, text);
+            this.uiContainerText(databaseName, containerName, containerSub);
         }
         else {
             containerSub.subscribed = false;
             this.uiContainerSubscribed(databaseName, containerName, false);
-            if (containerSub.events == 0) {
-                this.uiContainerText(databaseName, containerName, "");
-            }
+            this.uiContainerText(databaseName, containerName, containerSub);
         }
         const subscribeChanges = {
             task: "subscribeChanges",
@@ -159,7 +167,11 @@ export class Events {
         this.clusterTree.removeContainerClass(databaseName, containerName, "subscribed");
         app.clusterTree.removeContainerClass(databaseName, containerName, "subscribed");
     }
-    uiContainerText(databaseName, containerName, text) {
+    uiContainerText(databaseName, containerName, cs) {
+        let text = "";
+        if (cs.subscribed || cs.creates + cs.upserts + cs.deletes + cs.patches > 0) {
+            text = `<span class="creates">${cs.creates + cs.upserts}</span> <span class="deletes">${cs.deletes}</span> <span class="patches">${cs.patches}</span>`;
+        }
         this.clusterTree.setContainerText(databaseName, containerName, text);
         app.clusterTree.setContainerText(databaseName, containerName, text);
     }

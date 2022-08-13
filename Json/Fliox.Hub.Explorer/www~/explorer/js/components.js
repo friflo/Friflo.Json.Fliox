@@ -105,7 +105,7 @@ export class ClusterTree {
     }
     setContainerText(database, container, text) {
         const el = this.databaseTags[database].containerTags[container];
-        el.innerText = text;
+        el.innerHTML = text;
     }
     static findTreeEl(path, itemClass) {
         var _a;
