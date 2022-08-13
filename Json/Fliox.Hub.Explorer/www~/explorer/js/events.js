@@ -123,11 +123,18 @@ export class Events {
             changes = ["create", "upsert", "patch", "delete"];
             this.clusterTree.addContainerClass(databaseName, containerName, "subscribed");
             app.clusterTree.addContainerClass(databaseName, containerName, "subscribed");
+            const text = containerSub.events.toString();
+            this.clusterTree.setContainerText(databaseName, containerName, text);
+            app.clusterTree.setContainerText(databaseName, containerName, text);
         }
         else {
             containerSub.subscribed = false;
             this.clusterTree.removeContainerClass(databaseName, containerName, "subscribed");
             app.clusterTree.removeContainerClass(databaseName, containerName, "subscribed");
+            if (containerSub.events == 0) {
+                this.clusterTree.setContainerText(databaseName, containerName, "");
+                app.clusterTree.setContainerText(databaseName, containerName, "");
+            }
         }
         const subscribeChanges = {
             task: "subscribeChanges",

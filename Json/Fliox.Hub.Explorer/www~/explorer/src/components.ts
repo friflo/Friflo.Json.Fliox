@@ -59,7 +59,7 @@ export class ClusterTree {
             divDatabase.className       = "clusterDatabase";
 
             const containerTag    = createEl('span');
-            containerTag.innerHTML= "sub";
+            // containerTag.innerHTML= "sub";
             containerTag.className = "sub";
 
             divDatabase.append(dbCaret);
@@ -96,7 +96,7 @@ export class ClusterTree {
                 liContainer.append(containerLabel);
 
                 const containerTag    = createEl('div');
-                containerTag.innerHTML= "sub";
+                // containerTag.innerHTML= "sub";
                 containerTag.className = "sub";
                 liContainer.append(containerTag);
                 databaseTags.containerTags[containerName] = containerTag;

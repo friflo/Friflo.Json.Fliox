@@ -65,6 +65,8 @@
             --graphql-color:        #ff6dcf;
             --diagram-color:        #6c6cff;
             --schemaExports-color:  #a0a0a0;
+            --sub-color:            #b5ffae;
+            --sub-border:           #00c103;
         }
         [data-theme="dark"] {
             --selected-color:       #3b38b7;
@@ -88,6 +90,8 @@
             --graphql-color:        #de33a6;
             --diagram-color:        #0000ee;
             --schemaExports-color:  #555555;
+            --sub-color:            #277f1e;
+            --sub-border:           #02bd05;
         }
 
         /* text-decoration: underline;      text-decoration-color: var(--link-deco) !important;
@@ -308,10 +312,12 @@
         .catalogs li                { list-style:none; }
         .catalogs li                { cursor: pointer; }
 
-        .sub                        { border: 1px solid var(--tab-color); border-radius: 2px; font-size: 12px; height: 14px; }
-        .sub:hover                  { background-color: greenyellow; }
+        .sub                        { border: 1px solid #00000000; border-radius: 3px; font-size: 12px; height: 13px; min-width: 20px;
+                                      color: rgb(177, 177, 177); align-self: center; text-align: right; padding-left: 3px; padding-right: 3px; }
+        .sub:hover                  { background-color: var(--sub-color); color: var(--color); }
+        .clusterContainer:hover .sub:empty::before { content: "sub"; }
         .subscribed,
-        .subscribed:hover           { background-color: rgb(2, 199, 2); }
+        .subscribed:hover           { border: 1px solid var(--sub-border); color: var(--color); }
 
         .clusterDatabase.selected,
         .clusterContainer.selected  { background-color: var(--selected-color); }
