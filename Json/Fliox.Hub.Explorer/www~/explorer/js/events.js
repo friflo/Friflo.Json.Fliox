@@ -4,8 +4,10 @@ import { app } from "./index.js";
 const subscriptionTree = el("subscriptionTree");
 const scrollToEnd = el("scrollToEnd");
 const formatEvents = el("formatEvents");
-function str(value) {
-    return JSON.stringify(value);
+function KV(key, value) {
+    if (value === undefined)
+        return "";
+    return `, "${key}":${JSON.stringify(value)}`;
 }
 class ContainerSub {
     constructor() {
@@ -64,11 +66,17 @@ export class Events {
         const tasksJson = [];
         for (const task of ev.tasks) {
             switch (task.task) {
+                case "message":
+                case "command": {
+                    const json = JSON.stringify(task);
+                    tasksJson.push(json);
+                    break;
+                }
                 case "create":
                 case "upsert": {
                     const entities = task.entities.map(entity => JSON.stringify(entity));
                     const entitiesJson = entities.join(",\n            ");
-                    const json = `{"task":"${task.task}", "container":"${task.container}", "keyName":"${task.keyName}", "entities":[
+                    const json = `{"task":"${task.task}"${KV("container", task.container)}${KV("keyName", task.keyName)}, "entities":[
             ${entitiesJson}
         ]}`;
                     tasksJson.push(json);
@@ -77,7 +85,7 @@ export class Events {
                 case "delete": {
                     const ids = task.ids.map(entity => JSON.stringify(entity));
                     const idsJson = ids.join(",\n            ");
-                    const json = `{"task":"${task.task}", "container":"${task.container}", "ids":[
+                    const json = `{"task":"${task.task}"${KV("container", task.container)}, "ids":[
             ${idsJson}
         ]}`;
                     tasksJson.push(json);
@@ -86,7 +94,7 @@ export class Events {
                 case "patch": {
                     const patches = task.patches.map(patch => JSON.stringify(patch));
                     const patchesJson = patches.join(",\n            ");
-                    const json = `{"task":"${task.task}", "container":"${task.container}", "patches":[
+                    const json = `{"task":"${task.task}"${KV("container", task.container)}, "patches":[
             ${patchesJson}
         ]}`;
                     tasksJson.push(json);
@@ -96,7 +104,7 @@ export class Events {
         }
         const tasks = tasksJson.join(",\n        ");
         return `{
-    "msg":"ev", "seq":${str(ev.seq)}, "src":${str(ev.src)}, "clt":${str(ev.clt)}, "db":${str(ev.db)},
+    "msg":"ev"${KV("seq", ev.seq)}${KV("src", ev.src)}${KV("clt", ev.clt)}${KV("db", ev.db)},
     "tasks": [
         ${tasks}
     ]
