@@ -60,7 +60,40 @@ export class Events {
         if (!format) {
             return JSON.stringify(ev, null, 4);
         }
-        const tasksJson = ev.tasks.map(task => JSON.stringify(task));
+        // const tasksJson = ev.tasks.map(task => JSON.stringify(task));
+        const tasksJson = [];
+        for (const task of ev.tasks) {
+            switch (task.task) {
+                case "create":
+                case "upsert": {
+                    const entities = task.entities.map(entity => JSON.stringify(entity));
+                    const entitiesJson = entities.join(",\n            ");
+                    const json = `{"task":"${task.task}", "container":"${task.container}", "keyName":"${task.keyName}", "entities":[
+            ${entitiesJson}
+        ]}`;
+                    tasksJson.push(json);
+                    break;
+                }
+                case "delete": {
+                    const ids = task.ids.map(entity => JSON.stringify(entity));
+                    const idsJson = ids.join(",\n            ");
+                    const json = `{"task":"${task.task}", "container":"${task.container}", "ids":[
+            ${idsJson}
+        ]}`;
+                    tasksJson.push(json);
+                    break;
+                }
+                case "patch": {
+                    const patches = task.patches.map(patch => JSON.stringify(patch));
+                    const patchesJson = patches.join(",\n            ");
+                    const json = `{"task":"${task.task}", "container":"${task.container}", "patches":[
+            ${patchesJson}
+        ]}`;
+                    tasksJson.push(json);
+                    break;
+                }
+            }
+        }
         const tasks = tasksJson.join(",\n        ");
         return `{
     "msg":"ev", "seq":${str(ev.seq)}, "src":${str(ev.src)}, "clt":${str(ev.clt)}, "db":${str(ev.db)},
