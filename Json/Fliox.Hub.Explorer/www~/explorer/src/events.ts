@@ -147,7 +147,7 @@ export class Events
         editor.executeEdits("addSubscriptionEvent", [{ range: range, text: evStr, forceMoveMarkers: true }], callback);
     }
 
-    public toggleContainerSub(databaseName: string, containerName: string) : void {
+    public toggleContainerSub(databaseName: string, containerName: string) : ContainerSub {
         const containerSubs = this.databaseSubs[databaseName].containerSubs;
         const containerSub = containerSubs[containerName];
         let changes: EntityChange[] = [];
@@ -178,6 +178,7 @@ export class Events
             }
             app.playground.sendWebSocketRequest(request);
         });
+        return containerSub;
     }
 
     private uiContainerSubscribed(databaseName: string, containerName: string, enable: boolean) {

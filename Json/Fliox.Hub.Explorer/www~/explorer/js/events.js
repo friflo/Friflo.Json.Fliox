@@ -157,6 +157,7 @@ export class Events {
             }
             app.playground.sendWebSocketRequest(request);
         });
+        return containerSub;
     }
     uiContainerSubscribed(databaseName, containerName, enable) {
         if (enable) {
