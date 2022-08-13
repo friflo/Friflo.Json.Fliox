@@ -23,10 +23,16 @@ export class Events
     public initEvents(dbContainers: DbContainers[]) : void {
         const tree      = this.clusterTree;
         const ulCluster = tree.createClusterUl(dbContainers);
-        tree.onSelectDatabase = (databaseName: string) => {
+        tree.onSelectDatabase = (databaseName: string, classList: DOMTokenList) => {
+            if (classList.length > 0) {
+                return;
+            }
             console.log(`onSelectDatabase ${databaseName}`);
         };
-        tree.onSelectContainer = (databaseName: string, containerName: string) => {
+        tree.onSelectContainer = (databaseName: string, containerName: string, classList: DOMTokenList) => {
+            if (classList.length > 0) {
+                return;
+            }
             console.log(`onSelectContainer ${databaseName} ${containerName}`);
         };
         subscriptionTree.textContent = "";

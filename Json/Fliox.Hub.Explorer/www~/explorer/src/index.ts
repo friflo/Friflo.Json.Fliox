@@ -398,12 +398,18 @@ export class App {
         }
         const tree      = this.clusterTree;
         const ulCluster = tree.createClusterUl(dbContainers);
-        tree.onSelectDatabase = (databaseName: string) => {
+        tree.onSelectDatabase = (databaseName: string, classList: DOMTokenList) => {
+            if (classList.length > 0) {
+                return;
+            }
             const messages      = dbMessages.find   (c => c.id == databaseName);
             const containers    = dbContainers.find (c => c.id == databaseName);
             this.editor.listCommands(databaseName, messages, containers);
         };
-        tree.onSelectContainer = (databaseName: string, containerName: string) => {
+        tree.onSelectContainer = (databaseName: string, containerName: string, classList: DOMTokenList) => {
+            if (classList.length > 0) {
+                return;
+            }
             const params: Resource  = { database: databaseName, container: containerName, ids: [] };
             this.editor.clearEntity(databaseName, containerName);
             this.explorer.loadContainer(params, null);

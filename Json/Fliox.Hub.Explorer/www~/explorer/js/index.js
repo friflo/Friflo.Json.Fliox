@@ -354,12 +354,18 @@ export class App {
         }
         const tree = this.clusterTree;
         const ulCluster = tree.createClusterUl(dbContainers);
-        tree.onSelectDatabase = (databaseName) => {
+        tree.onSelectDatabase = (databaseName, classList) => {
+            if (classList.length > 0) {
+                return;
+            }
             const messages = dbMessages.find(c => c.id == databaseName);
             const containers = dbContainers.find(c => c.id == databaseName);
             this.editor.listCommands(databaseName, messages, containers);
         };
-        tree.onSelectContainer = (databaseName, containerName) => {
+        tree.onSelectContainer = (databaseName, containerName, classList) => {
+            if (classList.length > 0) {
+                return;
+            }
             const params = { database: databaseName, container: containerName, ids: [] };
             this.editor.clearEntity(databaseName, containerName);
             this.explorer.loadContainer(params, null);

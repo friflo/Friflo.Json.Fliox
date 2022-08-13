@@ -16,6 +16,7 @@ export class ClusterTree {
                 databaseEl.parentElement.classList.toggle("active");
                 return;
             }
+            const databaseName = databaseEl.childNodes[1].textContent;
             const treeEl = databaseEl.parentElement;
             if (this.selectedTreeEl == databaseEl) {
                 if (treeEl.classList.contains("active"))
@@ -26,8 +27,7 @@ export class ClusterTree {
             }
             treeEl.classList.add("active");
             this.selectTreeElement(databaseEl);
-            const databaseName = databaseEl.childNodes[1].textContent;
-            this.onSelectDatabase(databaseName);
+            this.onSelectDatabase(databaseName, path[0].classList);
         };
         let firstDatabase = true;
         for (const dbContainer of dbContainers) {
@@ -39,9 +39,9 @@ export class ClusterTree {
             dbLabel.innerText = dbContainer.id;
             divDatabase.title = "database";
             divDatabase.className = "clusterDatabase";
-            dbLabel.style.pointerEvents = "none";
             const containerTag = createEl('span');
-            containerTag.innerHTML = "tag";
+            containerTag.innerHTML = "sub";
+            containerTag.className = "sub";
             divDatabase.append(dbCaret);
             divDatabase.append(dbLabel);
             divDatabase.append(containerTag);
@@ -57,12 +57,14 @@ export class ClusterTree {
                 ev.stopPropagation();
                 const path = ev.composedPath();
                 const containerEl = ClusterTree.findTreeEl(path, "clusterContainer");
+                if (!containerEl)
+                    return;
                 const databaseEl = containerEl.parentNode.parentNode;
                 this.selectTreeElement(containerEl);
                 const containerNameDiv = containerEl.children[0];
                 const containerName = containerNameDiv.innerText.trim();
                 const databaseName = databaseEl.childNodes[0].childNodes[1].textContent;
-                this.onSelectContainer(databaseName, containerName);
+                this.onSelectContainer(databaseName, containerName, path[0].classList);
             };
             liDatabase.append(ulContainers);
             for (const containerName of dbContainer.containers) {
@@ -73,7 +75,8 @@ export class ClusterTree {
                 containerLabel.innerHTML = "&nbsp;" + containerName;
                 liContainer.append(containerLabel);
                 const containerTag = createEl('div');
-                containerTag.innerHTML = "tag";
+                containerTag.innerHTML = "sub";
+                containerTag.className = "sub";
                 liContainer.append(containerTag);
                 ulContainers.append(liContainer);
             }
