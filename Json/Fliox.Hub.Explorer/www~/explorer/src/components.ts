@@ -95,9 +95,10 @@ export class ClusterTree {
                 containerLabel.innerHTML= "&nbsp;" + containerName;
                 liContainer.append(containerLabel);
 
-                const containerTag    = createEl('div');
+                const containerTag      = createEl('div');
                 // containerTag.innerHTML= "sub";
-                containerTag.className = "sub";
+                containerTag.className  = "sub";
+                containerTag.title      = "subscribe container changes";
                 liContainer.append(containerTag);
                 databaseTags.containerTags[containerName] = containerTag;
 

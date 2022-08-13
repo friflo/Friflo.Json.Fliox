@@ -121,19 +121,15 @@ export class Events {
         if (!containerSub.subscribed) {
             containerSub.subscribed = true;
             changes = ["create", "upsert", "patch", "delete"];
-            this.clusterTree.addContainerClass(databaseName, containerName, "subscribed");
-            app.clusterTree.addContainerClass(databaseName, containerName, "subscribed");
+            this.uiContainerSubscribed(databaseName, containerName, true);
             const text = containerSub.events.toString();
-            this.clusterTree.setContainerText(databaseName, containerName, text);
-            app.clusterTree.setContainerText(databaseName, containerName, text);
+            this.uiContainerText(databaseName, containerName, text);
         }
         else {
             containerSub.subscribed = false;
-            this.clusterTree.removeContainerClass(databaseName, containerName, "subscribed");
-            app.clusterTree.removeContainerClass(databaseName, containerName, "subscribed");
+            this.uiContainerSubscribed(databaseName, containerName, false);
             if (containerSub.events == 0) {
-                this.clusterTree.setContainerText(databaseName, containerName, "");
-                app.clusterTree.setContainerText(databaseName, containerName, "");
+                this.uiContainerText(databaseName, containerName, "");
             }
         }
         const subscribeChanges = {
@@ -153,6 +149,19 @@ export class Events {
             }
             app.playground.sendWebSocketRequest(request);
         });
+    }
+    uiContainerSubscribed(databaseName, containerName, enable) {
+        if (enable) {
+            this.clusterTree.addContainerClass(databaseName, containerName, "subscribed");
+            app.clusterTree.addContainerClass(databaseName, containerName, "subscribed");
+            return;
+        }
+        this.clusterTree.removeContainerClass(databaseName, containerName, "subscribed");
+        app.clusterTree.removeContainerClass(databaseName, containerName, "subscribed");
+    }
+    uiContainerText(databaseName, containerName, text) {
+        this.clusterTree.setContainerText(databaseName, containerName, text);
+        app.clusterTree.setContainerText(databaseName, containerName, text);
     }
 }
 //# sourceMappingURL=events.js.map
