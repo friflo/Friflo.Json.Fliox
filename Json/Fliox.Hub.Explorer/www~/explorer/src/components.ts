@@ -58,13 +58,13 @@ export class ClusterTree {
             divDatabase.title           = "database";
             divDatabase.className       = "clusterDatabase";
 
-            const containerTag    = createEl('span');
-            // containerTag.innerHTML= "sub";
-            containerTag.className = "sub";
+
 
             divDatabase.append(dbCaret);
             divDatabase.append(dbLabel);
-            divDatabase.append(containerTag);
+            /* const containerTag    = createEl('span');
+            containerTag.className = "sub";
+            divDatabase.append(containerTag); */
             liDatabase.appendChild(divDatabase);
             ulCluster.append(liDatabase);
             if (firstDatabase) {
@@ -96,9 +96,8 @@ export class ClusterTree {
                 liContainer.append(containerLabel);
 
                 const containerTag      = createEl('div');
-                // containerTag.innerHTML= "sub";
                 containerTag.className  = "sub";
-                containerTag.title      = "subscribe container changes";
+                containerTag.title      = "subscribe container changes\n(creates + upserts, deletes, patches)";
                 liContainer.append(containerTag);
                 databaseTags.containerTags[containerName] = containerTag;
 
