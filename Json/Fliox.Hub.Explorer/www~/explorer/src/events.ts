@@ -1,8 +1,9 @@
 import { DbContainers } from "../../../../../Json.Tests/assets~/Schema/Typescript/ClusterStore/Friflo.Json.Fliox.Hub.DB.Cluster.js";
+import { EventMessage, SyncRequest } from "../../../../../Json.Tests/assets~/Schema/Typescript/Protocol/Friflo.Json.Fliox.Hub.Protocol.js";
+import { EntityChange, SubscribeChanges } from "../../../../../Json.Tests/assets~/Schema/Typescript/Protocol/Friflo.Json.Fliox.Hub.Protocol.Tasks.js";
 import { ClusterTree }  from "./components.js";
 import { el }           from "./types.js";
 import { app }          from "./index.js";
-import { EventMessage } from "../../../../../Json.Tests/assets~/Schema/Typescript/Protocol/Friflo.Json.Fliox.Hub.Protocol.js";
 
 const subscriptionTree      = el("subscriptionTree");
 const scrollToEnd           = el("scrollToEnd") as HTMLInputElement;
@@ -11,10 +12,16 @@ const formatEvents          = el("formatEvents") as HTMLInputElement;
 function str(value: any) {
     return JSON.stringify(value);
 }
+
+class DatabaseSub {
+    containerSubs : string[] = [];
+}
+
 // ----------------------------------------------- Events -----------------------------------------------
 export class Events
 {
     private readonly clusterTree: ClusterTree;
+    private readonly databaseSubs: { [database: string] : DatabaseSub } = {}
 
     public constructor() {
         this.clusterTree = new ClusterTree();
@@ -31,12 +38,18 @@ export class Events
         };
         tree.onSelectContainer = (databaseName: string, containerName: string, classList: DOMTokenList) => {
             if (classList.length > 0) {
+                this.toggleContainerSub(databaseName, containerName);
                 return;
             }
             console.log(`onSelectContainer ${databaseName} ${containerName}`);
         };
         subscriptionTree.textContent = "";
         subscriptionTree.appendChild(ulCluster);
+
+        for (const database of dbContainers) {
+            const databaseSub = new DatabaseSub();
+            this.databaseSubs[database.id] = databaseSub;
+        }
     }
 
     public clearAllEvents() : void {
@@ -89,5 +102,29 @@ export class Events
             };
         }
         editor.executeEdits("addSubscriptionEvent", [{ range: range, text: evStr, forceMoveMarkers: true }], callback);
+    }
+
+    public toggleContainerSub(databaseName: string, containerName: string) : void {
+        const containerSubs = this.databaseSubs[databaseName].containerSubs;
+        const index = containerSubs.indexOf(containerName);
+        let changes: EntityChange[] = [];
+        if (index == -1) {
+            containerSubs.push(containerName);
+            changes = ["create", "upsert", "patch", "delete"];
+        } else {
+            containerSubs.splice(index, 1);
+        }
+        const subscribeChanges: SubscribeChanges = {
+            task:       "subscribeChanges",
+            changes:    changes,
+            container: containerName
+        };
+        const syncRequest: SyncRequest = {
+            msg:        "sync",
+            database:   databaseName,
+            tasks:      [subscribeChanges]
+        };
+        const request = JSON.stringify(syncRequest);
+        app.playground.sendWebSocketRequest(request);
     }
 }

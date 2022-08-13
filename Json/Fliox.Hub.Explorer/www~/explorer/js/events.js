@@ -7,9 +7,15 @@ const formatEvents = el("formatEvents");
 function str(value) {
     return JSON.stringify(value);
 }
+class DatabaseSub {
+    constructor() {
+        this.containerSubs = [];
+    }
+}
 // ----------------------------------------------- Events -----------------------------------------------
 export class Events {
     constructor() {
+        this.databaseSubs = {};
         this.clusterTree = new ClusterTree();
     }
     initEvents(dbContainers) {
@@ -23,12 +29,17 @@ export class Events {
         };
         tree.onSelectContainer = (databaseName, containerName, classList) => {
             if (classList.length > 0) {
+                this.toggleContainerSub(databaseName, containerName);
                 return;
             }
             console.log(`onSelectContainer ${databaseName} ${containerName}`);
         };
         subscriptionTree.textContent = "";
         subscriptionTree.appendChild(ulCluster);
+        for (const database of dbContainers) {
+            const databaseSub = new DatabaseSub();
+            this.databaseSubs[database.id] = databaseSub;
+        }
     }
     clearAllEvents() {
         app.eventsEditor.setValue("");
@@ -77,6 +88,30 @@ export class Events {
             };
         }
         editor.executeEdits("addSubscriptionEvent", [{ range: range, text: evStr, forceMoveMarkers: true }], callback);
+    }
+    toggleContainerSub(databaseName, containerName) {
+        const containerSubs = this.databaseSubs[databaseName].containerSubs;
+        const index = containerSubs.indexOf(containerName);
+        let changes = [];
+        if (index == -1) {
+            containerSubs.push(containerName);
+            changes = ["create", "upsert", "patch", "delete"];
+        }
+        else {
+            containerSubs.splice(index, 1);
+        }
+        const subscribeChanges = {
+            task: "subscribeChanges",
+            changes: changes,
+            container: containerName
+        };
+        const syncRequest = {
+            msg: "sync",
+            database: databaseName,
+            tasks: [subscribeChanges]
+        };
+        const request = JSON.stringify(syncRequest);
+        app.playground.sendWebSocketRequest(request);
     }
 }
 //# sourceMappingURL=events.js.map

@@ -364,6 +364,7 @@ export class App {
         };
         tree.onSelectContainer = (databaseName, containerName, classList) => {
             if (classList.length > 0) {
+                this.events.toggleContainerSub(databaseName, containerName);
                 return;
             }
             const params = { database: databaseName, container: containerName, ids: [] };

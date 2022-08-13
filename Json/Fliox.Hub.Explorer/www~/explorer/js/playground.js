@@ -98,13 +98,16 @@ export class Playground {
         return `${before},${userToken}${after}`;
     }
     sendSyncRequest() {
+        const jsonRequest = app.requestModel.getValue();
+        this.sendWebSocketRequest(jsonRequest);
+    }
+    sendWebSocketRequest(jsonRequest) {
         const connection = this.connection;
         if (!connection || connection.readyState != 1) { // 1 == OPEN {
             app.responseModel.setValue(`Request ${this.req} failed. WebSocket not connected`);
             responseState.innerHTML = "";
         }
         else {
-            let jsonRequest = app.requestModel.getValue();
             jsonRequest = this.addUserToken(jsonRequest);
             try {
                 const request = JSON.parse(jsonRequest);

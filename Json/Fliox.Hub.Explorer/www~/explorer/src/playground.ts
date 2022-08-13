@@ -101,23 +101,27 @@ export class Playground
     }
 
     private addUserToken (jsonRequest: string) {
-        const endBracket  = jsonRequest.lastIndexOf("}");
+        const endBracket    = jsonRequest.lastIndexOf("}");
         if (endBracket == -1)
             return jsonRequest;
-        const before      = jsonRequest.substring(0, endBracket);
-        const after       = jsonRequest.substring(endBracket);
-        let   userToken   = JSON.stringify({ user: defaultUser.value, token: defaultToken.value});
-        userToken       = userToken.substring(1, userToken.length - 1);
+        const before        = jsonRequest.substring(0, endBracket);
+        const after         = jsonRequest.substring(endBracket);
+        let   userToken     = JSON.stringify({ user: defaultUser.value, token: defaultToken.value});
+        userToken           = userToken.substring(1, userToken.length - 1);
         return `${before},${userToken}${after}`;
     }
 
     public sendSyncRequest (): void {
+        const jsonRequest = app.requestModel.getValue();
+        this.sendWebSocketRequest(jsonRequest);
+    }
+
+    public sendWebSocketRequest (jsonRequest: string): void {
         const connection = this.connection;
         if (!connection || connection.readyState != 1) { // 1 == OPEN {
             app.responseModel.setValue(`Request ${this.req} failed. WebSocket not connected`);
             responseState.innerHTML = "";
         } else {
-            let jsonRequest = app.requestModel.getValue();
             jsonRequest = this.addUserToken(jsonRequest);
             try {
                 const request     = JSON.parse(jsonRequest);
