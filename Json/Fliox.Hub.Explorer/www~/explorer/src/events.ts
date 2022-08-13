@@ -13,8 +13,18 @@ function str(value: any) {
     return JSON.stringify(value);
 }
 
+class ContainerSub {
+    subscribed: boolean;
+    events:     number;
+
+    constructor() {
+        this.subscribed = false;
+        this.events     = 0;
+    }
+}
+
 class DatabaseSub {
-    containerSubs : string[] = [];
+    containerSubs : { [container: string] : ContainerSub} = {};
 }
 
 // ----------------------------------------------- Events -----------------------------------------------
@@ -49,6 +59,9 @@ export class Events
         for (const database of dbContainers) {
             const databaseSub = new DatabaseSub();
             this.databaseSubs[database.id] = databaseSub;
+            for (const container of database.containers) {
+                databaseSub.containerSubs[container] = new ContainerSub();
+            }
         }
     }
 
@@ -101,20 +114,36 @@ export class Events
                 return null;
             };
         }
+        const databaseSub = this.databaseSubs[ev.db];
+        for (const task of ev.tasks) {
+            switch (task.task) {
+                case "patch":
+                case "create":
+                case "upsert": 
+                case "delete": {
+                    const containerSub = databaseSub.containerSubs[task.container];
+                    containerSub.events++;
+                    const text = containerSub.events.toString();
+                    this.clusterTree.setContainerText(ev.db, task.container, text);
+                    app. clusterTree.setContainerText(ev.db, task.container, text);
+                    break;
+                }
+            }
+        }
         editor.executeEdits("addSubscriptionEvent", [{ range: range, text: evStr, forceMoveMarkers: true }], callback);
     }
 
     public toggleContainerSub(databaseName: string, containerName: string) : void {
         const containerSubs = this.databaseSubs[databaseName].containerSubs;
-        const index = containerSubs.indexOf(containerName);
+        const containerSub = containerSubs[containerName];
         let changes: EntityChange[] = [];
-        if (index == -1) {
-            containerSubs.push(containerName);
+        if (!containerSub.subscribed) {
+            containerSub.subscribed = true;
             changes = ["create", "upsert", "patch", "delete"];
             this.clusterTree.addContainerClass(databaseName, containerName, "subscribed");
             app. clusterTree.addContainerClass(databaseName, containerName, "subscribed");
         } else {
-            containerSubs.splice(index, 1);
+            containerSub.subscribed = false;
             this.clusterTree.removeContainerClass(databaseName, containerName, "subscribed");
             app. clusterTree.removeContainerClass(databaseName, containerName, "subscribed");
         }

@@ -102,6 +102,10 @@ export class ClusterTree {
         const el = this.databaseTags[database].containerTags[container];
         el.classList.remove(className);
     }
+    setContainerText(database, container, text) {
+        const el = this.databaseTags[database].containerTags[container];
+        el.innerText = text;
+    }
     static findTreeEl(path, itemClass) {
         var _a;
         for (const el of path) {

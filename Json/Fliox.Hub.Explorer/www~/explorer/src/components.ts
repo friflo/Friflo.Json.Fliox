@@ -117,6 +117,11 @@ export class ClusterTree {
         el.classList.remove(className);
     }
 
+    public setContainerText (database: string, container: string, text: string) : void {
+        const el = this.databaseTags[database].containerTags[container];
+        el.innerText = text;
+    }   
+
     private static findTreeEl(path: HTMLElement[], itemClass: string) {
         for (const el of path) {
             if (el.classList?.contains(itemClass))
