@@ -25,6 +25,13 @@ export class Playground {
             this.connection.close();
             this.connection = null;
         }
+        this.connect();
+    }
+    connect(connectResult) {
+        if (this.connection) {
+            connectResult(null);
+            return;
+        }
         const loc = window.location;
         const nr = ("" + (++this.websocketCount)).padStart(3, "0");
         const path = loc.pathname.substring(0, loc.pathname.lastIndexOf("/") + 1);
@@ -38,6 +45,7 @@ export class Playground {
                 console.log('WebSocket connected');
                 this.req = 1;
                 this.subCount = 0;
+                connectResult(null);
             };
             connection.onclose = (e) => {
                 socketStatus.innerText = "closed (code: " + e.code + ")";
@@ -48,6 +56,7 @@ export class Playground {
             connection.onerror = (error) => {
                 socketStatus.innerText = "error";
                 console.log('WebSocket Error ' + error);
+                connectResult(error);
             };
             // Log messages from the server
             connection.onmessage = (e) => {
@@ -86,6 +95,7 @@ export class Playground {
     }
     closeWebsocket() {
         this.connection.close();
+        this.connection = null;
     }
     addUserToken(jsonRequest) {
         const endBracket = jsonRequest.lastIndexOf("}");

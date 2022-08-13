@@ -17,6 +17,8 @@ const defaultUser       = el("user")            as HTMLInputElement;
 const defaultToken      = el("token")           as HTMLInputElement;
 
 
+type ConnectResult = (error: string | null) => void;
+
 // ----------------------------------------------- Playground -----------------------------------------------
 export class Playground
 {
@@ -34,6 +36,14 @@ export class Playground
             this.connection.close();
             this.connection = null;
         }
+        this.connect();
+    }
+
+    public connect (connectResult?: ConnectResult): void {
+        if (this.connection) {
+            connectResult(null);
+            return;
+        }
         const loc   = window.location;
         const nr    = ("" + (++this.websocketCount)).padStart(3, "0");
         const path  = loc.pathname.substring(0, loc.pathname.lastIndexOf("/") + 1);
@@ -48,6 +58,7 @@ export class Playground
                 console.log('WebSocket connected');
                 this.req         = 1;
                 this.subCount    = 0;
+                connectResult(null);
             };
 
             connection.onclose = (e) => {
@@ -60,6 +71,7 @@ export class Playground
             connection.onerror = (error) => {
                 socketStatus.innerText = "error";
                 console.log('WebSocket Error ' + error);
+                connectResult(error as unknown as string);
             };
 
             // Log messages from the server
@@ -98,6 +110,7 @@ export class Playground
 
     public closeWebsocket  () : void {
         this.connection.close();
+        this.connection = null;
     }
 
     private addUserToken (jsonRequest: string) {

@@ -96,9 +96,13 @@ export class Events {
         if (index == -1) {
             containerSubs.push(containerName);
             changes = ["create", "upsert", "patch", "delete"];
+            this.clusterTree.addContainerClass(databaseName, containerName, "subscribed");
+            app.clusterTree.addContainerClass(databaseName, containerName, "subscribed");
         }
         else {
             containerSubs.splice(index, 1);
+            this.clusterTree.removeContainerClass(databaseName, containerName, "subscribed");
+            app.clusterTree.removeContainerClass(databaseName, containerName, "subscribed");
         }
         const subscribeChanges = {
             task: "subscribeChanges",
@@ -111,7 +115,12 @@ export class Events {
             tasks: [subscribeChanges]
         };
         const request = JSON.stringify(syncRequest);
-        app.playground.sendWebSocketRequest(request);
+        app.playground.connect((error) => {
+            if (error) {
+                return;
+            }
+            app.playground.sendWebSocketRequest(request);
+        });
     }
 }
 //# sourceMappingURL=events.js.map

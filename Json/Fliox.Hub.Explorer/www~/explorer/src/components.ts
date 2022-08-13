@@ -2,8 +2,13 @@ import { DbContainers } from "../../../../../Json.Tests/assets~/Schema/Typescrip
 import { createEl } from "./types.js";
 
 
+class DatabaseTags {
+    containerTags: { [container: string] : HTMLElement } = {}
+}
+
 export class ClusterTree {
     private selectedTreeEl: HTMLElement;
+    private databaseTags:  { [database: string] : DatabaseTags} = {};
 
     onSelectDatabase  : (databaseName: string, classList: DOMTokenList) => void;
     onSelectContainer : (databaseName: string, containerName: string, classList: DOMTokenList) => void;
@@ -40,6 +45,9 @@ export class ClusterTree {
         };
         let firstDatabase = true;
         for (const dbContainer of dbContainers) {
+            const databaseTags = new DatabaseTags();
+            this.databaseTags[dbContainer.id] = databaseTags;
+
             const liDatabase = createEl('li');
 
             const divDatabase           = createEl('div');
@@ -91,11 +99,22 @@ export class ClusterTree {
                 containerTag.innerHTML= "sub";
                 containerTag.className = "sub";
                 liContainer.append(containerTag);
+                databaseTags.containerTags[containerName] = containerTag;
 
                 ulContainers.append(liContainer);
             }
         }
         return ulCluster;
+    }
+
+    public addContainerClass (database: string, container: string, className: "subscribed") : void {
+        const el = this.databaseTags[database].containerTags[container];
+        el.classList.add(className);
+    }
+
+    public removeContainerClass (database: string, container: string, className: "subscribed") : void {
+        const el = this.databaseTags[database].containerTags[container];
+        el.classList.remove(className);
     }
 
     private static findTreeEl(path: HTMLElement[], itemClass: string) {

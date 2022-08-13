@@ -1,5 +1,13 @@
 import { createEl } from "./types.js";
+class DatabaseTags {
+    constructor() {
+        this.containerTags = {};
+    }
+}
 export class ClusterTree {
+    constructor() {
+        this.databaseTags = {};
+    }
     selectTreeElement(element) {
         if (this.selectedTreeEl)
             this.selectedTreeEl.classList.remove("selected");
@@ -31,6 +39,8 @@ export class ClusterTree {
         };
         let firstDatabase = true;
         for (const dbContainer of dbContainers) {
+            const databaseTags = new DatabaseTags();
+            this.databaseTags[dbContainer.id] = databaseTags;
             const liDatabase = createEl('li');
             const divDatabase = createEl('div');
             const dbCaret = createEl('div');
@@ -78,10 +88,19 @@ export class ClusterTree {
                 containerTag.innerHTML = "sub";
                 containerTag.className = "sub";
                 liContainer.append(containerTag);
+                databaseTags.containerTags[containerName] = containerTag;
                 ulContainers.append(liContainer);
             }
         }
         return ulCluster;
+    }
+    addContainerClass(database, container, className) {
+        const el = this.databaseTags[database].containerTags[container];
+        el.classList.add(className);
+    }
+    removeContainerClass(database, container, className) {
+        const el = this.databaseTags[database].containerTags[container];
+        el.classList.remove(className);
     }
     static findTreeEl(path, itemClass) {
         var _a;

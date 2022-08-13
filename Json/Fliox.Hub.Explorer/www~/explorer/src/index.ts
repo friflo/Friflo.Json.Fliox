@@ -348,7 +348,7 @@ export class App {
     }
 
     private             hostInfo:       HostInfo;
-    private readonly    clusterTree:    ClusterTree;
+    public  readonly    clusterTree:    ClusterTree;
 
 
     private async loadCluster () {
