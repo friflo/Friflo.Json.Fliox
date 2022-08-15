@@ -84,28 +84,32 @@ export class Events {
             if (classList.length > 0) {
                 return;
             }
-            console.log(`onSelectDatabase ${databaseName}`);
+            const filter = new EventFilter(false, databaseName, true, null, true, null);
+            this.setEditorLog(filter);
         };
         tree.onSelectContainer = (databaseName, containerName, classList) => {
             if (classList.length > 0) {
                 this.toggleContainerSub(databaseName, containerName);
                 return;
             }
-            console.log(`onSelectContainer ${databaseName} ${containerName}`);
+            const filter = new EventFilter(false, databaseName, false, containerName, false, null);
+            this.setEditorLog(filter);
         };
         tree.onSelectMessage = (databaseName, messageName, classList) => {
             if (classList.length > 0) {
                 this.toggleMessageSub(databaseName, messageName);
                 return;
             }
-            console.log(`onSelectMessage ${databaseName} ${messageName}`);
+            const filter = new EventFilter(false, databaseName, false, null, false, messageName);
+            this.setEditorLog(filter);
         };
         tree.onSelectMessages = (databaseName, classList) => {
             if (classList.length > 0) {
                 this.toggleMessageSub(databaseName, "*");
                 return;
             }
-            console.log(`onSelectMessageGroup ${databaseName}`);
+            const filter = new EventFilter(false, databaseName, false, null, true, null);
+            this.setEditorLog(filter);
         };
         subscriptionTree.textContent = "";
         subscriptionTree.appendChild(ulCluster);
@@ -179,6 +183,12 @@ export class Events {
         ${tasks}
     ]
 }`;
+    }
+    setEditorLog(filter) {
+        this.filter = filter;
+        const log = filter.filterEvents(this.subEvents);
+        const editor = app.eventsEditor;
+        editor.setValue(log);
     }
     addSubscriptionEvent(ev) {
         const editor = app.eventsEditor;
@@ -351,6 +361,43 @@ export class Events {
             text = `<span class="creates">${cs.events}</span>`;
         }
         this.clusterTree.setMessageText(databaseName, messageName, text);
+    }
+}
+// ----------------------------------- EventFilter -----------------------------------
+class EventFilter {
+    constructor(allEVents, db, allContainers, container, allMessages, message) {
+        this.allEvents = allEVents;
+        this.db = db;
+        this.allMessages = allMessages;
+        this.message = message;
+        this.allContainers = allContainers;
+        this.container = container;
+    }
+    match(ev) {
+        if (this.allEvents)
+            return true;
+        if (ev.db != this.db)
+            return false;
+        const containers = ev.containers;
+        if (this.allContainers && (containers === null || containers === void 0 ? void 0 : containers.length) > 0)
+            return true;
+        if (containers === null || containers === void 0 ? void 0 : containers.includes(this.container))
+            return true;
+        const messages = ev.messages;
+        if (this.allMessages && (messages === null || messages === void 0 ? void 0 : messages.length) > 0)
+            return true;
+        if (messages === null || messages === void 0 ? void 0 : messages.includes(this.message))
+            return true;
+        return false;
+    }
+    filterEvents(events) {
+        const matches = [];
+        for (const ev of events) {
+            if (!this.match(ev))
+                continue;
+            matches.push(ev.msg);
+        }
+        return `[${matches.join(',')}]`;
     }
 }
 //# sourceMappingURL=events.js.map

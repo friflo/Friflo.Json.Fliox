@@ -97,9 +97,10 @@ class SubEvent {
 // ----------------------------------------------- Events -----------------------------------------------
 export class Events
 {
-    private readonly clusterTree:   ClusterTree;
-    private readonly databaseSubs:  { [database: string] : DatabaseSub } = {}
-    private readonly subEvents:     SubEvent[] = [];
+    private readonly    clusterTree:    ClusterTree;
+    private readonly    databaseSubs:   { [database: string] : DatabaseSub } = {}
+    private readonly    subEvents:      SubEvent[] = [];
+    private             filter:         EventFilter;
 
     public constructor() {
         this.clusterTree = new ClusterTree();
@@ -112,28 +113,32 @@ export class Events
             if (classList.length > 0) {
                 return;
             }
-            console.log(`onSelectDatabase ${databaseName}`);
+            const filter = new EventFilter(false, databaseName, true, null, true, null);
+            this.setEditorLog(filter);
         };
         tree.onSelectContainer = (databaseName: string, containerName: string, classList: DOMTokenList) => {
             if (classList.length > 0) {
                 this.toggleContainerSub(databaseName, containerName);
                 return;
             }
-            console.log(`onSelectContainer ${databaseName} ${containerName}`);
+            const filter = new EventFilter(false, databaseName, false, containerName, false, null);
+            this.setEditorLog(filter);
         };
         tree.onSelectMessage = (databaseName: string, messageName: string, classList: DOMTokenList) => {
             if (classList.length > 0) {
                 this.toggleMessageSub(databaseName, messageName);
                 return;
             }
-            console.log(`onSelectMessage ${databaseName} ${messageName}`);
+            const filter = new EventFilter(false, databaseName, false, null, false, messageName);
+            this.setEditorLog(filter);
         };
         tree.onSelectMessages = (databaseName: string, classList: DOMTokenList) => {
             if (classList.length > 0) {
                 this.toggleMessageSub(databaseName, "*");
                 return;
             }
-            console.log(`onSelectMessageGroup ${databaseName}`);
+            const filter = new EventFilter(false, databaseName, false, null, true, null);
+            this.setEditorLog(filter);
         };
         subscriptionTree.textContent = "";
         subscriptionTree.appendChild(ulCluster);
@@ -210,6 +215,13 @@ export class Events
         ${tasks}
     ]
 }`;
+    }
+
+    private setEditorLog(filter: EventFilter) {
+        this.filter     = filter;
+        const log       = filter.filterEvents(this.subEvents);
+        const editor    = app.eventsEditor;
+        editor.setValue(log);
     }
 
     public addSubscriptionEvent(ev: EventMessage) : void {
@@ -394,6 +406,52 @@ export class Events
         this.clusterTree.setMessageText(databaseName, messageName, text);
     }
 
-    // ----------------------------------- filter events -----------------------------------
 
+}
+
+// ----------------------------------- EventFilter -----------------------------------
+class EventFilter {
+    private readonly allEvents:     boolean;
+    private readonly db:            string;
+    private readonly allContainers: boolean;
+    private readonly container:     string;
+    private readonly message:       string;
+    private readonly allMessages:   boolean;
+
+    constructor(allEVents: boolean, db: string, allContainers: boolean, container: string, allMessages: boolean, message: string) {
+        this.allEvents      = allEVents;
+        this.db             = db;
+        this.allMessages    = allMessages;
+        this.message        = message;
+        this.allContainers  = allContainers;
+        this.container      = container;
+    }
+
+    public match(ev: SubEvent) : boolean {
+        if (this.allEvents)
+            return true;
+        if (ev.db != this.db)
+            return false;
+        const containers = ev.containers;
+        if (this.allContainers && containers?.length > 0)
+            return true;
+        if (containers?.includes(this.container))
+            return true;
+        const messages = ev.messages;
+        if (this.allMessages && messages?.length > 0)
+            return true;
+        if (messages?.includes(this.message))
+            return true;
+        return false;
+    }
+
+    public filterEvents(events: SubEvent[]) : string {
+        const matches: string[] = [];
+        for (const ev of events) {
+            if (!this.match(ev)) 
+                continue;
+            matches.push(ev.msg);
+        }
+        return `[${matches.join(',')}]`;
+    }
 }
