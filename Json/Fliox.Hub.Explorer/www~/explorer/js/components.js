@@ -14,7 +14,7 @@ export class ClusterTree {
         this.selectedTreeEl = element;
         element.classList.add("selected");
     }
-    createClusterUl(dbContainers) {
+    createClusterUl(dbContainers, dbMessages) {
         const ulCluster = createEl('ul');
         ulCluster.onclick = (ev) => {
             const path = ev.composedPath();
@@ -39,9 +39,11 @@ export class ClusterTree {
         };
         let firstDatabase = true;
         for (const dbContainer of dbContainers) {
+            const databaseName = dbContainer.id;
             const databaseTags = new DatabaseTags();
             this.databaseTags[dbContainer.id] = databaseTags;
             const liDatabase = createEl('li');
+            liDatabase.classList.add('treeParent');
             const divDatabase = createEl('div');
             const dbCaret = createEl('div');
             dbCaret.classList.value = "caret";
@@ -76,6 +78,13 @@ export class ClusterTree {
                 this.onSelectContainer(databaseName, containerName, path[0].classList);
             };
             liDatabase.append(ulContainers);
+            if (dbMessages) {
+                const messages = dbMessages.find(entry => entry.id == databaseName);
+                const commandsLi = this.createMessages("commands", messages.commands);
+                ulContainers.append(commandsLi);
+                const messagesLi = this.createMessages("messages", messages.messages);
+                ulContainers.append(messagesLi);
+            }
             for (const containerName of dbContainer.containers) {
                 const liContainer = createEl('li');
                 liContainer.title = "container";
@@ -92,6 +101,41 @@ export class ClusterTree {
             }
         }
         return ulCluster;
+    }
+    createMessages(category, messages) {
+        const liMessages = createEl('li');
+        liMessages.classList.add('treeParent');
+        const divMessages = createEl('div');
+        const dbCaret = createEl('div');
+        dbCaret.classList.value = "caret";
+        const dbLabel = createEl('span');
+        dbLabel.innerText = category;
+        dbLabel.style.opacity = "0.6";
+        divMessages.title = category;
+        divMessages.className = "clusterDatabase";
+        divMessages.append(dbCaret);
+        divMessages.append(dbLabel);
+        const messagesTag = createEl('div');
+        messagesTag.className = "sub";
+        messagesTag.title = `subscribe ${category}`;
+        divMessages.append(messagesTag);
+        // databaseTags.containerTags[containerName] = containerTag;
+        const ulMessages = createEl('ul');
+        for (const message of messages) {
+            const liMessage = createEl('li');
+            liMessage.classList.add("dbMessage");
+            const divMessage = createEl('div');
+            divMessage.innerText = message;
+            const messageTag = createEl('div');
+            messageTag.className = "sub";
+            messageTag.title = `subscribe ${message}`;
+            liMessage.append(divMessage);
+            liMessage.append(messageTag);
+            ulMessages.append(liMessage);
+        }
+        liMessages.append(divMessages);
+        liMessages.append(ulMessages);
+        return liMessages;
     }
     addContainerClass(database, container, className) {
         const el = this.databaseTags[database].containerTags[container];

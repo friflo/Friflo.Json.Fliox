@@ -308,9 +308,11 @@
         .caret:hover                { font-weight: bold; color: darkturquoise;}
 
         .catalogs > ul              { padding-left: 0px; padding-right: 0px; }
-        .catalogs > ul > li > ul    { margin-top: 0px; margin-left: 0px; margin-right: 0px; display: none; }
-        .catalogs > ul > li.active > ul    { display: block; }
-        .catalogs > ul > li.active > div > div    { -ms-transform: translateY(3px) rotate(90deg); -webkit-transform: translateY(3px) rotate(90deg); transform: translateY(3px) rotate(90deg) }
+
+
+        .treeParent > ul    { margin-top: 0px; margin-left: 0px; margin-right: 0px; display: none; }
+        .treeParent.active > ul    { display: block; }
+        .treeParent.active > div > div    { -ms-transform: translateY(3px) rotate(90deg); -webkit-transform: translateY(3px) rotate(90deg); transform: translateY(3px) rotate(90deg) }
         .catalogs li                { list-style:none; }
         .catalogs li                { cursor: pointer; }
 
@@ -330,9 +332,11 @@
         .clusterDatabase:hover,
         .clusterContainer:hover     { background-color: var(--item-hover); }
 
+        .dbMessage,
         .clusterDatabase,
         .clusterContainer           { padding-left: 0px; cursor: pointer; list-style:none; display: flex; }
-        .clusterDatabase span:nth-child(2),
+        .dbMessage        div:nth-child(1),
+        .clusterDatabase  span:nth-child(2),
         .clusterContainer div:nth-child(1)  { flex-grow: 1; }
 
          .oas                       { background-color: var(--oas-color); padding: 0px 2px; font-size: 12px; border-radius: 3px; font-weight: bold; }

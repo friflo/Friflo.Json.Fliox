@@ -397,7 +397,7 @@ export class App {
             envEl.style.color = getColorBasedOnBackground(envEl.style.backgroundColor);
         }
         const tree      = this.clusterTree;
-        const ulCluster = tree.createClusterUl(dbContainers);
+        const ulCluster = tree.createClusterUl(dbContainers, null);
         tree.onSelectDatabase = (databaseName: string, classList: DOMTokenList) => {
             if (classList.length > 0) {
                 return;
@@ -415,7 +415,7 @@ export class App {
             this.editor.clearEntity(databaseName, containerName);
             this.explorer.loadContainer(params, null);
         };
-        this.events.initEvents(dbContainers);
+        this.events.initEvents(dbContainers, dbMessages);
 
         const schemaMap     = Schema.createEntitySchemas(this.databaseSchemas, dbSchemas);
         const monacoSchemas = Object.values(schemaMap);

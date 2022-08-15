@@ -29,9 +29,9 @@ export class Events {
         this.databaseSubs = {};
         this.clusterTree = new ClusterTree();
     }
-    initEvents(dbContainers) {
+    initEvents(dbContainers, dbMessages) {
         const tree = this.clusterTree;
-        const ulCluster = tree.createClusterUl(dbContainers);
+        const ulCluster = tree.createClusterUl(dbContainers, dbMessages);
         tree.onSelectDatabase = (databaseName, classList) => {
             if (classList.length > 0) {
                 return;

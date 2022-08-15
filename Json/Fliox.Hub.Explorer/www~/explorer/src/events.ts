@@ -1,4 +1,4 @@
-import { DbContainers } from "../../../../../Json.Tests/assets~/Schema/Typescript/ClusterStore/Friflo.Json.Fliox.Hub.DB.Cluster.js";
+import { DbContainers, DbMessages } from "../../../../../Json.Tests/assets~/Schema/Typescript/ClusterStore/Friflo.Json.Fliox.Hub.DB.Cluster.js";
 import { EventMessage, SyncRequest } from "../../../../../Json.Tests/assets~/Schema/Typescript/Protocol/Friflo.Json.Fliox.Hub.Protocol.js";
 import { EntityChange, SubscribeChanges } from "../../../../../Json.Tests/assets~/Schema/Typescript/Protocol/Friflo.Json.Fliox.Hub.Protocol.Tasks.js";
 import { ClusterTree }  from "./components.js";
@@ -45,9 +45,9 @@ export class Events
         this.clusterTree = new ClusterTree();
     }
 
-    public initEvents(dbContainers: DbContainers[]) : void {
+    public initEvents(dbContainers: DbContainers[], dbMessages: DbMessages[]) : void {
         const tree      = this.clusterTree;
-        const ulCluster = tree.createClusterUl(dbContainers);
+        const ulCluster = tree.createClusterUl(dbContainers, dbMessages);
         tree.onSelectDatabase = (databaseName: string, classList: DOMTokenList) => {
             if (classList.length > 0) {
                 return;

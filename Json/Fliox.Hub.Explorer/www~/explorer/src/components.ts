@@ -1,4 +1,4 @@
-import { DbContainers } from "../../../../../Json.Tests/assets~/Schema/Typescript/ClusterStore/Friflo.Json.Fliox.Hub.DB.Cluster";
+import { DbContainers, DbMessages } from "../../../../../Json.Tests/assets~/Schema/Typescript/ClusterStore/Friflo.Json.Fliox.Hub.DB.Cluster";
 import { createEl } from "./types.js";
 
 
@@ -20,7 +20,7 @@ export class ClusterTree {
         element.classList.add("selected");
     }
 
-    public createClusterUl(dbContainers: DbContainers[]) : HTMLUListElement {
+    public createClusterUl(dbContainers: DbContainers[], dbMessages: DbMessages[] | null) : HTMLUListElement {
         const ulCluster = createEl('ul');
         ulCluster.onclick = (ev) => {
             const path          = ev.composedPath() as HTMLElement[];
@@ -45,10 +45,12 @@ export class ClusterTree {
         };
         let firstDatabase = true;
         for (const dbContainer of dbContainers) {
+            const databaseName = dbContainer.id;
             const databaseTags = new DatabaseTags();
             this.databaseTags[dbContainer.id] = databaseTags;
 
             const liDatabase = createEl('li');
+            liDatabase.classList.add('treeParent');
 
             const divDatabase           = createEl('div');
             const dbCaret               = createEl('div');
@@ -87,6 +89,13 @@ export class ClusterTree {
                 this.onSelectContainer(databaseName, containerName, path[0].classList);
             };
             liDatabase.append(ulContainers);
+            if (dbMessages) {
+                const messages = dbMessages.find(entry => entry.id == databaseName);
+                const commandsLi = this.createMessages("commands", messages.commands);
+                ulContainers.append(commandsLi);
+                const messagesLi = this.createMessages("messages", messages.messages);
+                ulContainers.append(messagesLi);
+            }
             for (const containerName of dbContainer.containers) {
                 const liContainer       = createEl('li');
                 liContainer.title       = "container";
@@ -105,6 +114,47 @@ export class ClusterTree {
             }
         }
         return ulCluster;
+    }
+
+    private createMessages(category: "commands" | "messages", messages: string[]) : HTMLLIElement {
+
+        const liMessages            = createEl('li');
+        liMessages.classList.add('treeParent');
+        const divMessages           = createEl('div');
+        const dbCaret               = createEl('div');
+        dbCaret.classList.value     = "caret";
+        const dbLabel               = createEl('span');
+        dbLabel.innerText           = category;
+        dbLabel.style.opacity       = "0.6";
+        divMessages.title           = category;
+        divMessages.className       = "clusterDatabase";
+
+        divMessages.append(dbCaret);
+        divMessages.append(dbLabel);
+
+
+        const messagesTag      = createEl('div');
+        messagesTag.className  = "sub";
+        messagesTag.title      = `subscribe ${category}`;
+        divMessages.append(messagesTag);
+        // databaseTags.containerTags[containerName] = containerTag;
+
+        const ulMessages        = createEl('ul');
+        for (const message of messages) {
+            const liMessage         = createEl('li');
+            liMessage.classList.add("dbMessage");
+            const divMessage        = createEl('div');
+            divMessage.innerText    = message;
+            const messageTag        = createEl('div');
+            messageTag.className    = "sub";
+            messageTag.title        = `subscribe ${message}`;
+            liMessage.append(divMessage);
+            liMessage.append(messageTag);
+            ulMessages.append(liMessage);
+        }
+        liMessages.append(divMessages);
+        liMessages.append(ulMessages);
+        return liMessages;
     }
 
     public addContainerClass (database: string, container: string, className: "subscribed") : void {
