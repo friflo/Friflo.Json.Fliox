@@ -59,6 +59,13 @@ export class Events {
             }
             console.log(`onSelectMessage ${databaseName} ${messageName}`);
         };
+        tree.onSelectMessages = (databaseName, classList) => {
+            if (classList.length > 0) {
+                this.toggleMessageSub(databaseName, "*");
+                return;
+            }
+            console.log(`onSelectMessageGroup ${databaseName}`);
+        };
         subscriptionTree.textContent = "";
         subscriptionTree.appendChild(ulCluster);
         for (const database of dbContainers) {
@@ -68,6 +75,7 @@ export class Events {
                 databaseSub.containerSubs[container] = new ContainerSub();
             }
             const dbMessage = dbMessages.find(entry => entry.id == database.id);
+            databaseSub.messageSubs["*"] = new MessageSub();
             for (const command of dbMessage.commands) {
                 databaseSub.messageSubs[command] = new MessageSub();
             }
@@ -166,6 +174,9 @@ export class Events {
             switch (task.task) {
                 case "command":
                 case "message": {
+                    const allMessageSub = databaseSub.messageSubs["*"];
+                    allMessageSub.events++;
+                    this.uiMessageText(ev.db, "*", allMessageSub);
                     const messageSub = databaseSub.messageSubs[task.name];
                     messageSub.events++;
                     this.uiMessageText(ev.db, task.name, messageSub);

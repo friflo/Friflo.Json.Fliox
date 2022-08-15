@@ -75,6 +75,10 @@ export class ClusterTree {
                         messagesEl.parentElement.classList.toggle("active");
                         return;
                     }
+                    const databaseEl = messagesEl.parentNode.parentNode.parentNode;
+                    this.selectTreeElement(messagesEl);
+                    const databaseName = databaseEl.childNodes[0].childNodes[1].textContent;
+                    this.onSelectMessages(databaseName, path[0].classList);
                     return;
                 }
                 const messageEl = ClusterTree.findTreeEl(path, "dbMessage");
@@ -100,10 +104,8 @@ export class ClusterTree {
             liDatabase.append(ulContainers);
             if (dbMessages) {
                 const messages = dbMessages.find(entry => entry.id == databaseName);
-                const commandsLi = this.createMessages(databaseTags, "commands", messages.commands);
+                const commandsLi = this.createMessages(databaseTags, messages);
                 ulContainers.append(commandsLi);
-                const messagesLi = this.createMessages(databaseTags, "messages", messages.messages);
-                ulContainers.append(messagesLi);
             }
             for (const containerName of dbContainer.containers) {
                 const liContainer = createEl('li');
@@ -122,25 +124,33 @@ export class ClusterTree {
         }
         return ulCluster;
     }
-    createMessages(databaseTags, category, messages) {
+    createMessages(databaseTags, dbMessages) {
         const liMessages = createEl('li');
         liMessages.classList.add('treeParent');
         const divMessages = createEl('div');
         const dbCaret = createEl('div');
         dbCaret.classList.value = "caret";
         const dbLabel = createEl('span');
-        dbLabel.innerText = category;
+        dbLabel.innerText = "messages";
         dbLabel.style.opacity = "0.6";
-        divMessages.title = category;
+        divMessages.title = "messages";
         divMessages.className = "dbMessages";
         divMessages.append(dbCaret);
         divMessages.append(dbLabel);
         const messagesTag = createEl('div');
         messagesTag.className = "sub";
-        messagesTag.title = `subscribe ${category}`;
+        messagesTag.title = `subscribe messages / commands`;
         divMessages.append(messagesTag);
         // databaseTags.containerTags[containerName] = containerTag;
+        databaseTags.messageTags["*"] = messagesTag;
         const ulMessages = createEl('ul');
+        this.addMessages(databaseTags, ulMessages, dbMessages.commands);
+        this.addMessages(databaseTags, ulMessages, dbMessages.messages);
+        liMessages.append(divMessages);
+        liMessages.append(ulMessages);
+        return liMessages;
+    }
+    addMessages(databaseTags, ulMessages, messages) {
         for (const message of messages) {
             const liMessage = createEl('li');
             liMessage.classList.add("dbMessage");
@@ -154,9 +164,6 @@ export class ClusterTree {
             liMessage.append(messageTag);
             ulMessages.append(liMessage);
         }
-        liMessages.append(divMessages);
-        liMessages.append(ulMessages);
-        return liMessages;
     }
     // --- containerTags 
     addContainerClass(database, container, className) {
