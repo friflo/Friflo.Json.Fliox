@@ -322,8 +322,15 @@
         .sub                        { border: 1px solid #00000000; border-radius: 3px; font-size: 12px; height: 13px; min-width: 25px;
                                       color: rgb(177, 177, 177); align-self: center; text-align: right; margin-left: 4px; padding-left: 2px; padding-right: 2px; }
         .sub:hover                  { background-color: var(--sub-color); }
+
+        .dbMessages:hover       .sub:empty,
+        .dbMessage:hover        .sub:empty,
+        .clusterContainer:hover .sub:empty { text-align: center; }
+
+        .dbMessages:hover       .sub:empty::before,
         .dbMessage:hover        .sub:empty::before,
         .clusterContainer:hover .sub:empty::before { content: "sub"; }
+        
         .subscribed,
         .subscribed:hover           { border: 1px solid var(--sub-border); }
 
