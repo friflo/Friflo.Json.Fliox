@@ -18,9 +18,16 @@ class ContainerSub {
         this.patches = 0;
     }
 }
+class MessageSub {
+    constructor() {
+        this.subscribed = false;
+        this.events = 0;
+    }
+}
 class DatabaseSub {
     constructor() {
         this.containerSubs = {};
+        this.messageSubs = {};
     }
 }
 // ----------------------------------------------- Events -----------------------------------------------
@@ -45,6 +52,13 @@ export class Events {
             }
             console.log(`onSelectContainer ${databaseName} ${containerName}`);
         };
+        tree.onSelectMessage = (databaseName, messageName, classList) => {
+            if (classList.length > 0) {
+                this.toggleMessageSub(databaseName, messageName);
+                return;
+            }
+            console.log(`onSelectMessage ${databaseName} ${messageName}`);
+        };
         subscriptionTree.textContent = "";
         subscriptionTree.appendChild(ulCluster);
         for (const database of dbContainers) {
@@ -52,6 +66,13 @@ export class Events {
             this.databaseSubs[database.id] = databaseSub;
             for (const container of database.containers) {
                 databaseSub.containerSubs[container] = new ContainerSub();
+            }
+            const dbMessage = dbMessages.find(entry => entry.id == database.id);
+            for (const command of dbMessage.commands) {
+                databaseSub.messageSubs[command] = new MessageSub();
+            }
+            for (const message of dbMessage.messages) {
+                databaseSub.messageSubs[message] = new MessageSub();
             }
         }
     }
@@ -143,6 +164,13 @@ export class Events {
         const databaseSub = this.databaseSubs[ev.db];
         for (const task of ev.tasks) {
             switch (task.task) {
+                case "command":
+                case "message": {
+                    const messageSub = databaseSub.messageSubs[task.name];
+                    messageSub.events++;
+                    this.uiMessageText(ev.db, task.name, messageSub);
+                    break;
+                }
                 case "upsert":
                 case "create": {
                     const containerSub = databaseSub.containerSubs[task.container];
@@ -216,6 +244,54 @@ export class Events {
         }
         this.clusterTree.setContainerText(databaseName, containerName, text);
         app.clusterTree.setContainerText(databaseName, containerName, text);
+    }
+    toggleMessageSub(databaseName, messageName) {
+        const messageSubs = this.databaseSubs[databaseName].messageSubs;
+        const messageSub = messageSubs[messageName];
+        let remove = false;
+        if (!messageSub.subscribed) {
+            messageSub.subscribed = true;
+            this.uiMessageSubscribed(databaseName, messageName, true);
+            this.uiMessageText(databaseName, messageName, messageSub);
+        }
+        else {
+            remove = true;
+            messageSub.subscribed = false;
+            this.uiMessageSubscribed(databaseName, messageName, false);
+            this.uiMessageText(databaseName, messageName, messageSub);
+        }
+        const subscribeMessage = {
+            task: "subscribeMessage",
+            remove: remove,
+            name: messageName
+        };
+        const syncRequest = {
+            msg: "sync",
+            database: databaseName,
+            tasks: [subscribeMessage]
+        };
+        const request = JSON.stringify(syncRequest);
+        app.playground.connect((error) => {
+            if (error) {
+                return;
+            }
+            app.playground.sendWebSocketRequest(request);
+        });
+        return messageSub;
+    }
+    uiMessageSubscribed(databaseName, message, enable) {
+        if (enable) {
+            this.clusterTree.addMessageClass(databaseName, message, "subscribed");
+            return;
+        }
+        this.clusterTree.removeMessageClass(databaseName, message, "subscribed");
+    }
+    uiMessageText(databaseName, messageName, cs) {
+        let text = "";
+        if (cs.subscribed || cs.events > 0) {
+            text = `<span class="creates">${cs.events}</span>`;
+        }
+        this.clusterTree.setMessageText(databaseName, messageName, text);
     }
 }
 //# sourceMappingURL=events.js.map

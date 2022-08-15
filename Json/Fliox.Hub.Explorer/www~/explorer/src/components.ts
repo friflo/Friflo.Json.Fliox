@@ -3,7 +3,8 @@ import { createEl } from "./types.js";
 
 
 class DatabaseTags {
-    containerTags: { [container: string] : HTMLElement } = {}
+    containerTags:  { [container: string] : HTMLElement } = {}
+    messageTags:    { [message:   string] : HTMLElement } = {}
 }
 
 export class ClusterTree {
@@ -12,6 +13,7 @@ export class ClusterTree {
 
     onSelectDatabase  : (databaseName: string, classList: DOMTokenList) => void;
     onSelectContainer : (databaseName: string, containerName: string, classList: DOMTokenList) => void;
+    onSelectMessage   : (databaseName: string, messageName: string, classList: DOMTokenList) => void;
 
     private selectTreeElement(element: HTMLElement) {
         if (this.selectedTreeEl)
@@ -78,22 +80,41 @@ export class ClusterTree {
             ulContainers.onclick = (ev) => {
                 ev.stopPropagation();
                 const path              = ev.composedPath() as HTMLElement[];
-                const containerEl       = ClusterTree.findTreeEl (path, "clusterContainer");
-                if (!containerEl)
+                const messagesEl        = ClusterTree.findTreeEl (path, "dbMessages");
+                if (messagesEl) {
+                    const caretEl           = ClusterTree.findTreeEl (path, "caret");
+                    if (caretEl) {
+                        messagesEl.parentElement.classList.toggle("active");
+                        return;
+                    }
                     return;
-                const databaseEl        = containerEl.parentNode.parentNode;
-                this.selectTreeElement(containerEl);
-                const containerNameDiv  = containerEl.children[0] as HTMLDivElement;
-                const containerName     = containerNameDiv.innerText.trim();
-                const databaseName      = databaseEl.childNodes[0].childNodes[1].textContent;
-                this.onSelectContainer(databaseName, containerName, path[0].classList);
+                }
+                const messageEl         = ClusterTree.findTreeEl (path, "dbMessage");
+                if (messageEl) {
+                    const databaseEl        = messageEl.parentNode.parentNode.parentNode.parentNode;
+                    this.selectTreeElement(messageEl);
+                    const messageNameDiv    = messageEl.children[0] as HTMLDivElement;
+                    const messageName       = messageNameDiv.innerText.trim();
+                    const databaseName      = databaseEl.childNodes[0].childNodes[1].textContent;
+                    this.onSelectMessage(databaseName, messageName, path[0].classList);
+                    return;
+                }
+                const containerEl       = ClusterTree.findTreeEl (path, "clusterContainer");
+                if (containerEl) {
+                    const databaseEl        = containerEl.parentNode.parentNode;
+                    this.selectTreeElement(containerEl);
+                    const containerNameDiv  = containerEl.children[0] as HTMLDivElement;
+                    const containerName     = containerNameDiv.innerText.trim();
+                    const databaseName      = databaseEl.childNodes[0].childNodes[1].textContent;
+                    this.onSelectContainer(databaseName, containerName, path[0].classList);
+                }
             };
             liDatabase.append(ulContainers);
             if (dbMessages) {
                 const messages = dbMessages.find(entry => entry.id == databaseName);
-                const commandsLi = this.createMessages("commands", messages.commands);
+                const commandsLi = this.createMessages(databaseTags, "commands", messages.commands);
                 ulContainers.append(commandsLi);
-                const messagesLi = this.createMessages("messages", messages.messages);
+                const messagesLi = this.createMessages(databaseTags, "messages", messages.messages);
                 ulContainers.append(messagesLi);
             }
             for (const containerName of dbContainer.containers) {
@@ -116,7 +137,7 @@ export class ClusterTree {
         return ulCluster;
     }
 
-    private createMessages(category: "commands" | "messages", messages: string[]) : HTMLLIElement {
+    private createMessages(databaseTags: DatabaseTags, category: "commands" | "messages", messages: string[]) : HTMLLIElement {
 
         const liMessages            = createEl('li');
         liMessages.classList.add('treeParent');
@@ -127,7 +148,7 @@ export class ClusterTree {
         dbLabel.innerText           = category;
         dbLabel.style.opacity       = "0.6";
         divMessages.title           = category;
-        divMessages.className       = "clusterDatabase";
+        divMessages.className       = "dbMessages";
 
         divMessages.append(dbCaret);
         divMessages.append(dbLabel);
@@ -148,6 +169,7 @@ export class ClusterTree {
             const messageTag        = createEl('div');
             messageTag.className    = "sub";
             messageTag.title        = `subscribe ${message}`;
+            databaseTags.messageTags[message] = messageTag;
             liMessage.append(divMessage);
             liMessage.append(messageTag);
             ulMessages.append(liMessage);
@@ -157,6 +179,7 @@ export class ClusterTree {
         return liMessages;
     }
 
+    // --- containerTags 
     public addContainerClass (database: string, container: string, className: "subscribed") : void {
         const el = this.databaseTags[database].containerTags[container];
         el.classList.add(className);
@@ -170,7 +193,23 @@ export class ClusterTree {
     public setContainerText (database: string, container: string, text: string) : void {
         const el = this.databaseTags[database].containerTags[container];
         el.innerHTML = text;
-    }   
+    }
+
+    // --- messageTags 
+    public addMessageClass (database: string, message: string, className: "subscribed") : void {
+        const el = this.databaseTags[database].messageTags[message];
+        el.classList.add(className);
+    }
+
+    public removeMessageClass (database: string, message: string, className: "subscribed") : void {
+        const el = this.databaseTags[database].messageTags[message];
+        el.classList.remove(className);
+    }
+
+    public setMessageText (database: string, message: string, text: string) : void {
+        const el = this.databaseTags[database].messageTags[message];
+        el.innerHTML = text;
+    }  
 
     private static findTreeEl(path: HTMLElement[], itemClass: string) {
         for (const el of path) {

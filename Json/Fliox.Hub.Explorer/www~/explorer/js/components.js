@@ -2,6 +2,7 @@ import { createEl } from "./types.js";
 class DatabaseTags {
     constructor() {
         this.containerTags = {};
+        this.messageTags = {};
     }
 }
 export class ClusterTree {
@@ -67,22 +68,41 @@ export class ClusterTree {
             ulContainers.onclick = (ev) => {
                 ev.stopPropagation();
                 const path = ev.composedPath();
-                const containerEl = ClusterTree.findTreeEl(path, "clusterContainer");
-                if (!containerEl)
+                const messagesEl = ClusterTree.findTreeEl(path, "dbMessages");
+                if (messagesEl) {
+                    const caretEl = ClusterTree.findTreeEl(path, "caret");
+                    if (caretEl) {
+                        messagesEl.parentElement.classList.toggle("active");
+                        return;
+                    }
                     return;
-                const databaseEl = containerEl.parentNode.parentNode;
-                this.selectTreeElement(containerEl);
-                const containerNameDiv = containerEl.children[0];
-                const containerName = containerNameDiv.innerText.trim();
-                const databaseName = databaseEl.childNodes[0].childNodes[1].textContent;
-                this.onSelectContainer(databaseName, containerName, path[0].classList);
+                }
+                const messageEl = ClusterTree.findTreeEl(path, "dbMessage");
+                if (messageEl) {
+                    const databaseEl = messageEl.parentNode.parentNode.parentNode.parentNode;
+                    this.selectTreeElement(messageEl);
+                    const messageNameDiv = messageEl.children[0];
+                    const messageName = messageNameDiv.innerText.trim();
+                    const databaseName = databaseEl.childNodes[0].childNodes[1].textContent;
+                    this.onSelectMessage(databaseName, messageName, path[0].classList);
+                    return;
+                }
+                const containerEl = ClusterTree.findTreeEl(path, "clusterContainer");
+                if (containerEl) {
+                    const databaseEl = containerEl.parentNode.parentNode;
+                    this.selectTreeElement(containerEl);
+                    const containerNameDiv = containerEl.children[0];
+                    const containerName = containerNameDiv.innerText.trim();
+                    const databaseName = databaseEl.childNodes[0].childNodes[1].textContent;
+                    this.onSelectContainer(databaseName, containerName, path[0].classList);
+                }
             };
             liDatabase.append(ulContainers);
             if (dbMessages) {
                 const messages = dbMessages.find(entry => entry.id == databaseName);
-                const commandsLi = this.createMessages("commands", messages.commands);
+                const commandsLi = this.createMessages(databaseTags, "commands", messages.commands);
                 ulContainers.append(commandsLi);
-                const messagesLi = this.createMessages("messages", messages.messages);
+                const messagesLi = this.createMessages(databaseTags, "messages", messages.messages);
                 ulContainers.append(messagesLi);
             }
             for (const containerName of dbContainer.containers) {
@@ -102,7 +122,7 @@ export class ClusterTree {
         }
         return ulCluster;
     }
-    createMessages(category, messages) {
+    createMessages(databaseTags, category, messages) {
         const liMessages = createEl('li');
         liMessages.classList.add('treeParent');
         const divMessages = createEl('div');
@@ -112,7 +132,7 @@ export class ClusterTree {
         dbLabel.innerText = category;
         dbLabel.style.opacity = "0.6";
         divMessages.title = category;
-        divMessages.className = "clusterDatabase";
+        divMessages.className = "dbMessages";
         divMessages.append(dbCaret);
         divMessages.append(dbLabel);
         const messagesTag = createEl('div');
@@ -129,6 +149,7 @@ export class ClusterTree {
             const messageTag = createEl('div');
             messageTag.className = "sub";
             messageTag.title = `subscribe ${message}`;
+            databaseTags.messageTags[message] = messageTag;
             liMessage.append(divMessage);
             liMessage.append(messageTag);
             ulMessages.append(liMessage);
@@ -137,6 +158,7 @@ export class ClusterTree {
         liMessages.append(ulMessages);
         return liMessages;
     }
+    // --- containerTags 
     addContainerClass(database, container, className) {
         const el = this.databaseTags[database].containerTags[container];
         el.classList.add(className);
@@ -147,6 +169,19 @@ export class ClusterTree {
     }
     setContainerText(database, container, text) {
         const el = this.databaseTags[database].containerTags[container];
+        el.innerHTML = text;
+    }
+    // --- messageTags 
+    addMessageClass(database, message, className) {
+        const el = this.databaseTags[database].messageTags[message];
+        el.classList.add(className);
+    }
+    removeMessageClass(database, message, className) {
+        const el = this.databaseTags[database].messageTags[message];
+        el.classList.remove(className);
+    }
+    setMessageText(database, message, text) {
+        const el = this.databaseTags[database].messageTags[message];
         el.innerHTML = text;
     }
     static findTreeEl(path, itemClass) {

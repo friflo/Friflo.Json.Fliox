@@ -181,7 +181,7 @@
                 "ev-head        ev-head     ev-head"
                 "ev-title-tree  .           ev-title-events"
                 "ev-tree        ev-bar1     ev-editor";
-            grid-template-columns:  200px var(--bar-width) 1fr;    /* dynamically overwritten by #explorer.style */
+            grid-template-columns:  250px var(--bar-width) 1fr;    /* dynamically overwritten by #explorer.style */
             grid-template-rows:     0px  26px 1fr;
             grid-gap:   0px;
         }
@@ -322,20 +322,27 @@
         .sub                        { border: 1px solid #00000000; border-radius: 3px; font-size: 12px; height: 13px; min-width: 25px;
                                       color: rgb(177, 177, 177); align-self: center; text-align: right; margin-left: 4px; padding-left: 2px; padding-right: 2px; }
         .sub:hover                  { background-color: var(--sub-color); }
+        .dbMessage:hover        .sub:empty::before,
         .clusterContainer:hover .sub:empty::before { content: "sub"; }
         .subscribed,
         .subscribed:hover           { border: 1px solid var(--sub-border); }
 
+        .dbMessage.selected,
+        .dbMessages.selected,
         .clusterDatabase.selected,
         .clusterContainer.selected  { background-color: var(--selected-color); }
 
+        .dbMessage:hover,
+        .dbMessages:hover,
         .clusterDatabase:hover,
         .clusterContainer:hover     { background-color: var(--item-hover); }
 
         .dbMessage,
+        .dbMessages,
         .clusterDatabase,
         .clusterContainer           { padding-left: 0px; cursor: pointer; list-style:none; display: flex; }
         .dbMessage        div:nth-child(1),
+        .dbMessages       span:nth-child(2),
         .clusterDatabase  span:nth-child(2),
         .clusterContainer div:nth-child(1)  { flex-grow: 1; }
 
