@@ -218,20 +218,29 @@ export class Events
     }
 
     private setEditorLog(filter: EventFilter) {
-        this.filter     = filter;
-        const log       = filter.filterEvents(this.subEvents);
-        const editor    = app.eventsEditor;
-        editor.setValue(log);
+        this.filter         = filter;
+        const filterResult  = filter.filterEvents(this.subEvents);
+        const editor        = app.eventsEditor;
+        editor.setValue(filterResult.logs);
+        const pos           = editor.getModel().getPositionAt (filterResult.lastLog);
+        editor.revealPositionNearTop(pos);
     }
 
     public addSubscriptionEvent(ev: EventMessage) : void {
+        const evStr     = Events.event2String (ev, formatEvents.checked);
+        const msg       = new SubEvent(evStr, ev);
+        this.subEvents.push (msg);
+        this.updateUI(ev);
+
+        if (!this.filter.match(msg))
+            return;
+        this.addLog(evStr);
+    }
+
+    private addLog(evStr: string) {
         const editor    = app.eventsEditor;
         const model     = editor.getModel();
         const length    = model.getValue().length;
-        let   evStr     = Events.event2String (ev, formatEvents.checked);
-
-        const msg = new SubEvent(evStr, ev);
-        this.subEvents.push (msg);
 
         if (length == 0) {
             model.setValue("[]");
@@ -257,9 +266,7 @@ export class Events
                 }, 1);            
                 return null;
             };
-        }
-        this.updateUI(ev);
- 
+        } 
         editor.executeEdits("addSubscriptionEvent", [{ range: range, text: evStr, forceMoveMarkers: true }], callback);
     }
 
@@ -410,6 +417,11 @@ export class Events
 }
 
 // ----------------------------------- EventFilter -----------------------------------
+type FilterResult = {
+    readonly logs:       string;
+    readonly lastLog:   number;
+}
+
 class EventFilter {
     private readonly allEvents:     boolean;
     private readonly db:            string;
@@ -445,13 +457,19 @@ class EventFilter {
         return false;
     }
 
-    public filterEvents(events: SubEvent[]) : string {
+    public filterEvents(events: SubEvent[]) : FilterResult {
         const matches: string[] = [];
         for (const ev of events) {
             if (!this.match(ev)) 
                 continue;
             matches.push(ev.msg);
         }
-        return `[${matches.join(',')}]`;
+        const logs      = `[${matches.join(',')}]`;
+        const lastLog   = matches.length == 0 ? 0 : logs.length - matches[matches.length - 1].length;
+        const result: FilterResult = {
+            logs:      logs,
+            lastLog:   lastLog
+        };
+        return result;
     }
 }

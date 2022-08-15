@@ -186,17 +186,25 @@ export class Events {
     }
     setEditorLog(filter) {
         this.filter = filter;
-        const log = filter.filterEvents(this.subEvents);
+        const filterResult = filter.filterEvents(this.subEvents);
         const editor = app.eventsEditor;
-        editor.setValue(log);
+        editor.setValue(filterResult.logs);
+        const pos = editor.getModel().getPositionAt(filterResult.lastLog);
+        editor.revealPositionNearTop(pos);
     }
     addSubscriptionEvent(ev) {
+        const evStr = Events.event2String(ev, formatEvents.checked);
+        const msg = new SubEvent(evStr, ev);
+        this.subEvents.push(msg);
+        this.updateUI(ev);
+        if (!this.filter.match(msg))
+            return;
+        this.addLog(evStr);
+    }
+    addLog(evStr) {
         const editor = app.eventsEditor;
         const model = editor.getModel();
         const length = model.getValue().length;
-        let evStr = Events.event2String(ev, formatEvents.checked);
-        const msg = new SubEvent(evStr, ev);
-        this.subEvents.push(msg);
         if (length == 0) {
             model.setValue("[]");
         }
@@ -222,7 +230,6 @@ export class Events {
                 return null;
             };
         }
-        this.updateUI(ev);
         editor.executeEdits("addSubscriptionEvent", [{ range: range, text: evStr, forceMoveMarkers: true }], callback);
     }
     updateUI(ev) {
@@ -363,7 +370,6 @@ export class Events {
         this.clusterTree.setMessageText(databaseName, messageName, text);
     }
 }
-// ----------------------------------- EventFilter -----------------------------------
 class EventFilter {
     constructor(allEVents, db, allContainers, container, allMessages, message) {
         this.allEvents = allEVents;
@@ -397,7 +403,13 @@ class EventFilter {
                 continue;
             matches.push(ev.msg);
         }
-        return `[${matches.join(',')}]`;
+        const logs = `[${matches.join(',')}]`;
+        const lastLog = matches.length == 0 ? 0 : logs.length - matches[matches.length - 1].length;
+        const result = {
+            logs: logs,
+            lastLog: lastLog
+        };
+        return result;
     }
 }
 //# sourceMappingURL=events.js.map
