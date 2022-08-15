@@ -6,8 +6,9 @@ import { el }           from "./types.js";
 import { app }          from "./index.js";
 
 const subscriptionTree      = el("subscriptionTree");
-const scrollToEnd           = el("scrollToEnd") as HTMLInputElement;
-const formatEvents          = el("formatEvents") as HTMLInputElement;
+const scrollToEnd           = el("scrollToEnd")     as HTMLInputElement;
+const formatEvents          = el("formatEvents")    as HTMLInputElement;
+const subFilter             = el("subFilter")       as HTMLSpanElement;
 
 function KV(key: string, value: any) {
     if (value === undefined)
@@ -220,6 +221,8 @@ export class Events
     private setEditorLog(filter: EventFilter) {
         this.filter         = filter;
         const filterResult  = filter.filterEvents(this.subEvents);
+        subFilter.innerText = filter.getFilterName();
+
         const editor        = app.eventsEditor;
         editor.setValue(filterResult.logs);
         const pos           = editor.getModel().getPositionAt (filterResult.lastLog);
@@ -425,17 +428,17 @@ type FilterResult = {
 class EventFilter {
     private readonly allEvents:     boolean;
     private readonly db:            string;
-    private readonly allContainers: boolean;
+    private readonly allDbEvents:   boolean;
     private readonly container:     string;
     private readonly message:       string;
     private readonly allMessages:   boolean;
 
-    constructor(allEVents: boolean, db: string, allContainers: boolean, container: string, allMessages: boolean, message: string) {
+    constructor(allEVents: boolean, db: string, allDbEvents: boolean, container: string, allMessages: boolean, message: string) {
         this.allEvents      = allEVents;
         this.db             = db;
+        this.allDbEvents    = allDbEvents;
         this.allMessages    = allMessages;
         this.message        = message;
-        this.allContainers  = allContainers;
         this.container      = container;
     }
 
@@ -445,7 +448,7 @@ class EventFilter {
         if (ev.db != this.db)
             return false;
         const containers = ev.containers;
-        if (this.allContainers && containers?.length > 0)
+        if (this.allDbEvents && containers?.length > 0)
             return true;
         if (containers?.includes(this.container))
             return true;
@@ -455,6 +458,19 @@ class EventFilter {
         if (messages?.includes(this.message))
             return true;
         return false;
+    }
+
+    public getFilterName() : string {
+        if (this.allEvents)
+            return "all";
+        const name = this.db;
+        if (this.allDbEvents)
+            return name;
+        if (this.allMessages)
+            return `${name} · messages`;
+        if (this.container)
+            return `${name} / ${this.container}`;
+        return `${name} · ${this.message}`;
     }
 
     public filterEvents(events: SubEvent[]) : FilterResult {

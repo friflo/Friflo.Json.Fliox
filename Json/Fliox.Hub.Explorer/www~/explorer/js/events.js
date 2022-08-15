@@ -4,6 +4,7 @@ import { app } from "./index.js";
 const subscriptionTree = el("subscriptionTree");
 const scrollToEnd = el("scrollToEnd");
 const formatEvents = el("formatEvents");
+const subFilter = el("subFilter");
 function KV(key, value) {
     if (value === undefined)
         return "";
@@ -187,6 +188,7 @@ export class Events {
     setEditorLog(filter) {
         this.filter = filter;
         const filterResult = filter.filterEvents(this.subEvents);
+        subFilter.innerText = filter.getFilterName();
         const editor = app.eventsEditor;
         editor.setValue(filterResult.logs);
         const pos = editor.getModel().getPositionAt(filterResult.lastLog);
@@ -371,12 +373,12 @@ export class Events {
     }
 }
 class EventFilter {
-    constructor(allEVents, db, allContainers, container, allMessages, message) {
+    constructor(allEVents, db, allDbEvents, container, allMessages, message) {
         this.allEvents = allEVents;
         this.db = db;
+        this.allDbEvents = allDbEvents;
         this.allMessages = allMessages;
         this.message = message;
-        this.allContainers = allContainers;
         this.container = container;
     }
     match(ev) {
@@ -385,7 +387,7 @@ class EventFilter {
         if (ev.db != this.db)
             return false;
         const containers = ev.containers;
-        if (this.allContainers && (containers === null || containers === void 0 ? void 0 : containers.length) > 0)
+        if (this.allDbEvents && (containers === null || containers === void 0 ? void 0 : containers.length) > 0)
             return true;
         if (containers === null || containers === void 0 ? void 0 : containers.includes(this.container))
             return true;
@@ -395,6 +397,18 @@ class EventFilter {
         if (messages === null || messages === void 0 ? void 0 : messages.includes(this.message))
             return true;
         return false;
+    }
+    getFilterName() {
+        if (this.allEvents)
+            return "all";
+        const name = this.db;
+        if (this.allDbEvents)
+            return name;
+        if (this.allMessages)
+            return `${name} · messages`;
+        if (this.container)
+            return `${name} / ${this.container}`;
+        return `${name} · ${this.message}`;
     }
     filterEvents(events) {
         const matches = [];
