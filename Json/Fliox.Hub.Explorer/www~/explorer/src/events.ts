@@ -243,12 +243,13 @@ export class Events
     private addLog(evStr: string) {
         const editor    = app.eventsEditor;
         const model     = editor.getModel();
-        const length    = model.getValue().length;
+        const value     = model.getValue();
+        const length    = value.length;
 
         if (length == 0) {
             model.setValue("[]");
         } else {
-            evStr = `,${evStr}`;
+            evStr = value == "[]" ? evStr : `,${evStr}`;
         }
         const endPos    = model.getPositionAt(length);
         const match     = model.findPreviousMatch ("]", endPos, false, true, null, false);
