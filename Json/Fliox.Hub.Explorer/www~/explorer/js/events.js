@@ -30,10 +30,51 @@ class DatabaseSub {
         this.messageSubs = {};
     }
 }
+class SubEvent {
+    constructor(msg, ev) {
+        this.msg = msg;
+        this.db = ev.db;
+        const messages = [];
+        const containers = [];
+        for (const task of ev.tasks) {
+            switch (task.task) {
+                case "message":
+                case "command": {
+                    const msgName = SubEvent.internName(task.name);
+                    messages.push(msgName);
+                    break;
+                }
+                case "create":
+                case "upsert":
+                case "delete":
+                case "patch": {
+                    const containerName = SubEvent.internName(task.container);
+                    containers.push(containerName);
+                    break;
+                }
+            }
+        }
+        if (messages.length > 0) {
+            this.messages = messages;
+        }
+        if (containers.length > 0) {
+            this.containers = containers;
+        }
+    }
+    static internName(name) {
+        const intern = SubEvent.internNames[name];
+        if (intern)
+            return intern;
+        SubEvent.internNames[name] = name;
+        return name;
+    }
+}
+SubEvent.internNames = {};
 // ----------------------------------------------- Events -----------------------------------------------
 export class Events {
     constructor() {
         this.databaseSubs = {};
+        this.subEvents = [];
         this.clusterTree = new ClusterTree();
     }
     initEvents(dbContainers, dbMessages) {
@@ -144,6 +185,8 @@ export class Events {
         const model = editor.getModel();
         const length = model.getValue().length;
         let evStr = Events.event2String(ev, formatEvents.checked);
+        const msg = new SubEvent(evStr, ev);
+        this.subEvents.push(msg);
         if (length == 0) {
             model.setValue("[]");
         }
@@ -169,6 +212,10 @@ export class Events {
                 return null;
             };
         }
+        this.updateUI(ev);
+        editor.executeEdits("addSubscriptionEvent", [{ range: range, text: evStr, forceMoveMarkers: true }], callback);
+    }
+    updateUI(ev) {
         const databaseSub = this.databaseSubs[ev.db];
         for (const task of ev.tasks) {
             switch (task.task) {
@@ -203,8 +250,8 @@ export class Events {
                 }
             }
         }
-        editor.executeEdits("addSubscriptionEvent", [{ range: range, text: evStr, forceMoveMarkers: true }], callback);
     }
+    // ----------------------------------- container subs -----------------------------------
     toggleContainerSub(databaseName, containerName) {
         const containerSubs = this.databaseSubs[databaseName].containerSubs;
         const containerSub = containerSubs[containerName];
@@ -256,6 +303,7 @@ export class Events {
         this.clusterTree.setContainerText(databaseName, containerName, text);
         app.clusterTree.setContainerText(databaseName, containerName, text);
     }
+    // ----------------------------------- message subs -----------------------------------
     toggleMessageSub(databaseName, messageName) {
         const messageSubs = this.databaseSubs[databaseName].messageSubs;
         const messageSub = messageSubs[messageName];

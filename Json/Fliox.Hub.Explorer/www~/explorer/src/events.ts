@@ -46,11 +46,60 @@ class DatabaseSub {
     messageSubs     : { [message:   string] : MessageSub} = {};
 }
 
+class SubEvent {
+    readonly db:            string;
+    readonly messages:      string[];
+    readonly containers:    string[];
+    readonly msg:           string;
+
+    private static readonly  internNames : { [name: string]: string} = {};
+
+    private static internName (name: string) {
+        const intern = SubEvent.internNames[name];
+        if (intern)
+            return intern;
+        SubEvent.internNames[name] = name;
+        return name;
+    }
+
+    constructor(msg: string, ev: EventMessage) {
+        this.msg                    = msg;
+        this.db                     = ev.db;
+        const messages:   string[]  = []; 
+        const containers: string[]  = [];
+        for (const task of ev.tasks) {
+            switch (task.task) {
+                case "message":
+                case "command": {
+                    const msgName = SubEvent.internName(task.name);
+                    messages.push(msgName);
+                    break;
+                }
+                case "create":
+                case "upsert":
+                case "delete":
+                case "patch": {
+                    const containerName = SubEvent.internName(task.container);
+                    containers.push(containerName);
+                    break;
+                }
+            }
+        }
+        if (messages.length > 0) {
+            this.messages = messages;
+        }
+        if (containers.length > 0) {
+            this.containers = containers;
+        }
+    }
+}
+
 // ----------------------------------------------- Events -----------------------------------------------
 export class Events
 {
     private readonly clusterTree:   ClusterTree;
     private readonly databaseSubs:  { [database: string] : DatabaseSub } = {}
+    private readonly subEvents:     SubEvent[] = [];
 
     public constructor() {
         this.clusterTree = new ClusterTree();
@@ -169,6 +218,9 @@ export class Events
         const length    = model.getValue().length;
         let   evStr     = Events.event2String (ev, formatEvents.checked);
 
+        const msg = new SubEvent(evStr, ev);
+        this.subEvents.push (msg);
+
         if (length == 0) {
             model.setValue("[]");
         } else {
@@ -194,6 +246,12 @@ export class Events
                 return null;
             };
         }
+        this.updateUI(ev);
+ 
+        editor.executeEdits("addSubscriptionEvent", [{ range: range, text: evStr, forceMoveMarkers: true }], callback);
+    }
+
+    private updateUI(ev: EventMessage) {
         const databaseSub = this.databaseSubs[ev.db];
         for (const task of ev.tasks) {
             switch (task.task) {
@@ -229,9 +287,9 @@ export class Events
                 }
             }
         }
-        editor.executeEdits("addSubscriptionEvent", [{ range: range, text: evStr, forceMoveMarkers: true }], callback);
     }
 
+    // ----------------------------------- container subs -----------------------------------
     public toggleContainerSub(databaseName: string, containerName: string) : ContainerSub {
         const containerSubs = this.databaseSubs[databaseName].containerSubs;
         const containerSub = containerSubs[containerName];
@@ -285,6 +343,7 @@ export class Events
         app. clusterTree.setContainerText(databaseName, containerName, text);
     }
 
+    // ----------------------------------- message subs -----------------------------------
     public toggleMessageSub(databaseName: string, messageName: string) : MessageSub {
         const messageSubs   = this.databaseSubs[databaseName].messageSubs;
         const messageSub    = messageSubs[messageName];
@@ -334,4 +393,7 @@ export class Events
         }
         this.clusterTree.setMessageText(databaseName, messageName, text);
     }
+
+    // ----------------------------------- filter events -----------------------------------
+
 }
