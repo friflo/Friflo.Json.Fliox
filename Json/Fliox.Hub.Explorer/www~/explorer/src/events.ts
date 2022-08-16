@@ -244,6 +244,12 @@ export class Events
     }
 
     public addSubscriptionEvent(ev: EventMessage) : void {
+        const acknowledgeEvent = false;
+        if (acknowledgeEvent) {
+            const syncRequest: SyncRequest = { msg: "sync", database: ev.db, tasks: [], info: "acknowledge received event" };
+            const request = JSON.stringify(syncRequest);
+            app.playground.sendWebSocketRequest(request);
+        }            
         const evStr     = Events.event2String (ev, formatEvents.checked);
         const msg       = new SubEvent(evStr, ev);
         this.subEvents.push (msg);
@@ -341,16 +347,8 @@ export class Events
             this.uiContainerSubscribed(databaseName, containerName, false);
             this.uiContainerText(databaseName, containerName, containerSub);
         }
-        const subscribeChanges: SubscribeChanges = {
-            task:       "subscribeChanges",
-            changes:    changes,
-            container: containerName
-        };
-        const syncRequest: SyncRequest = {
-            msg:        "sync",
-            database:   databaseName,
-            tasks:      [subscribeChanges]
-        };
+        const subscribeChanges: SubscribeChanges = { task: "subscribeChanges", changes: changes, container: containerName };
+        const syncRequest: SyncRequest = { msg: "sync", database: databaseName, tasks: [subscribeChanges] };
         const request = JSON.stringify(syncRequest);
         app.playground.connect((error: string) => {
             if (error) {
