@@ -101,7 +101,7 @@
             ],
             "additionalProperties": false
         },
-        "UserOptions": {
+        "UserParam": {
             "type": "object",
             "properties": {
                 "addGroups":    { "type": ["array", "null"], "items": { "type": "string" } },
@@ -116,6 +116,26 @@
             },
             "required": [
                 "groups"
+            ],
+            "additionalProperties": false
+        },
+        "ClientParam": {
+            "type": "object",
+            "properties": {
+                "sendUnacknowledgedEvents": { "type": "boolean" }
+            },
+            "required": [
+                "sendUnacknowledgedEvents"
+            ],
+            "additionalProperties": false
+        },
+        "ClientResult": {
+            "type": "object",
+            "properties": {
+                "queuedEvents": { "$ref": "./Standard.json#/definitions/int32" }
+            },
+            "required": [
+                "queuedEvents"
             ],
             "additionalProperties": false
         }

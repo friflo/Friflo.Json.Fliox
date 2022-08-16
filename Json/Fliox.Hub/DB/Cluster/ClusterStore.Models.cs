@@ -100,12 +100,20 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
         [Required]  public  List<DbContainers>  databases;
     }
     
-    public sealed class UserOptions {
+    public sealed class UserParam {
                     public  List<string>    addGroups;
                     public  List<string>    removeGroups;
     }
 
     public sealed class UserResult {
         [Required]  public  string[]        groups;
+    }
+    
+    public sealed class ClientParam {
+                    public  bool            sendUnacknowledgedEvents;
+    }
+    
+    public sealed class ClientResult {
+                    public  int             queuedEvents;
     }
 }

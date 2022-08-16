@@ -201,7 +201,7 @@
                 "databases": { "elements": { "ref":  "DbContainers" } }
             }
         },
-        "UserOptions": {
+        "UserParam": {
             "properties": {
                 "addGroups":    { "elements": { "type": "string" }, "nullable": true },
                 "removeGroups": { "elements": { "type": "string" }, "nullable": true }
@@ -210,6 +210,16 @@
         "UserResult": {
             "properties": {
                 "groups": { "elements": { "type": "string" } }
+            }
+        },
+        "ClientParam": {
+            "properties": {
+                "sendUnacknowledgedEvents": { "type": "boolean" }
+            }
+        },
+        "ClientResult": {
+            "properties": {
+                "queuedEvents": { "type": "int32" }
             }
         }
     }

@@ -87,7 +87,12 @@ namespace Friflo.Json.Fliox.Hub.Client
         
         // --- commands: user
         /// <summary>return the groups of the current user. Optionally change the groups of the current user</summary>
-        public CommandTask<UserResult>  User(UserOptions options) => SendCommand<UserOptions,UserResult> (Std.User, options);
+        public CommandTask<UserResult>  User(UserParam param) => SendCommand<UserParam,UserResult>  (Std.User, param);
+        
+        // --- commands: client
+        /// <summary>return client specific state stored in the Hub like number of queued events</summary>
+        public CommandTask<ClientResult> Client(ClientParam param)=> SendCommand<ClientParam, ClientResult>(Std.Client, param);
+
     }
     
     
@@ -100,6 +105,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         public const string Messages    = "std.Messages";
         public const string Schema      = "std.Schema";
         public const string Stats       = "std.Stats";
+        public const string Client      = "std.Client";
 
         // --- host
         public const string HostInfo    = "std.Host";

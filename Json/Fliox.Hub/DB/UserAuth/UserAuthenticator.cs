@@ -221,19 +221,19 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
             throw new InvalidOperationException ("unexpected clientIdValidation state");
         }
         
-        public override async Task SetUserOptions (User user, UserOptions options) {
+        public override async Task SetUserOptions (User user, UserParam param) {
             var store       = new UserStore(userHub);
             store.UserId    = UserStore.AuthenticationUser;
             var read        = store.targets.Read().Find(user.userId);
             await store.SyncTasks().ConfigureAwait(false);
             
             var userTarget      = read.Result ?? new UserTarget { id = user.userId, groups = new List<string>() };
-            var groups          = User.UpdateGroups(userTarget.groups, options);
+            var groups          = User.UpdateGroups(userTarget.groups, param);
             userTarget.groups   = groups.ToList();
             store.targets.Upsert(userTarget);
             await store.SyncTasks().ConfigureAwait(false);
 
-            await base.SetUserOptions(user, options).ConfigureAwait(false); 
+            await base.SetUserOptions(user, param).ConfigureAwait(false); 
         }
 
         private async Task<Result<UserAuthInfo>> GetUserAuthInfo(UserStore userStore, JsonKey userId) {

@@ -186,7 +186,14 @@ export class EventMessage extends ProtocolEvent {
     msg    : "ev";
     /** The database the **tasks** refer to */
     db     : string;
-    /** Contains the events an application subscribed. These are:  **CreateEntities**,  **UpsertEntities**,  **DeleteEntities**,  **PatchEntities**,  **SendMessage**,  **SendCommand**   */
+    /**
+     * Contains the events an application subscribed. These are:  **CreateEntities**, 
+     * **UpsertEntities**, 
+     * **DeleteEntities**, 
+     * **PatchEntities**, 
+     * **SendMessage**, 
+     * **SendCommand**
+     */
     tasks? : SyncRequestTask_Union[] | null;
 }
 

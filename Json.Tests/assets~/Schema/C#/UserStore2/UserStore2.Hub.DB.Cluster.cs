@@ -65,7 +65,7 @@ public class HostCluster {
     List<DbContainers>  databases;
 }
 
-public class UserOptions {
+public class UserParam {
     List<string>  addGroups;
     List<string>  removeGroups;
 }
@@ -73,6 +73,14 @@ public class UserOptions {
 public class UserResult {
     [Required]
     List<string>  groups;
+}
+
+public class ClientParam {
+    bool  sendUnacknowledgedEvents;
+}
+
+public class ClientResult {
+    int  queuedEvents;
 }
 
 }

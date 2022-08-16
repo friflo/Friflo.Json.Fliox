@@ -441,7 +441,7 @@
           "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/UserOptions"
+                  "$ref": "Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/UserParam"
                 }
               }
             }
@@ -453,6 +453,33 @@
               "application/json": {
                 "schema": {
                   "$ref": "Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/UserResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/?command=std.Client": {
+      "post": {
+        "summary":    "return client specific state stored in the Hub like number of queued events",
+        "tags":       ["commands"],
+        "requestBody": {          
+          "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/ClientParam"
+                }
+              }
+            }
+        },
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/ClientResult"
                 }
               }
             }

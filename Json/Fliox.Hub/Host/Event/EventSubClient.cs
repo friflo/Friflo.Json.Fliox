@@ -46,7 +46,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         /// contains all events not yet sent
         private  readonly   LinkedList<ProtocolEvent>           unsentEventsQueue   = new LinkedList<ProtocolEvent>();
         /// contains all events which are sent but not acknowledged
-        private  readonly   List<ProtocolEvent>                 sentEventsList      = new List<ProtocolEvent>();
+        private  readonly   Queue<ProtocolEvent>                sentEventsQueue     = new Queue<ProtocolEvent>();
         // }
         
         private  readonly   bool                                background;
@@ -55,7 +55,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
 
         internal            int                                 Seq                 => eventCounter;
         /// <summary> number of events stored for a client not yet acknowledged by the client </summary>
-        internal            int                                 QueuedEventsCount   => unsentEventsQueue.Count + sentEventsList.Count;
+        internal            int                                 QueuedEventsCount   => unsentEventsQueue.Count + sentEventsQueue.Count;
         
         public   override   string                              ToString()          => $"client: '{clientId.AsString()}'";
         
@@ -111,7 +111,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                 }
                 ev = node.Value;
                 unsentEventsQueue.RemoveFirst();
-                sentEventsList.Add(ev);
+                sentEventsQueue.Enqueue(ev);
                 return true;
             }
         }
@@ -119,14 +119,38 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         /// Enqueue all not acknowledged events back to <see cref="unsentEventsQueue"/> in their original order
         internal void AcknowledgeEvents(int eventAck) {
             lock (unsentEventsQueue) {
-                for (int i = sentEventsList.Count - 1; i >= 0; i--) {
-                    var ev = sentEventsList[i];
-                    if (ev.seq <= eventAck)
+                LinkedListNode<ProtocolEvent> head = null;
+                while (sentEventsQueue.Count > 0) {
+                    var ev = sentEventsQueue.Peek();
+                    sentEventsQueue.Dequeue();
+                    if (ev.seq <= eventAck) {
                         continue;
+                    }
+                    if (head == null) {
+                        head = unsentEventsQueue.AddFirst(ev);
+                    } else  {
+                        head = unsentEventsQueue.AddAfter(head, ev);
+                    }
+                    // break; // todo uncomment 
+                }
+                // todo remove EnqueueTrigger()
+                if (background && unsentEventsQueue.Count > 0) {
+                    EnqueueTrigger (TriggerType.Event);
+                }
+            }
+        }
+
+        /// <summary>Prepend all not acknowledged events to <see cref="unsentEventsQueue"/> in their original order</summary>
+        internal void SendUnacknowledgedEvents() {
+            lock (unsentEventsQueue) {
+                var queueArray = sentEventsQueue.ToArray();
+                sentEventsQueue.Clear();
+                for (int n = queueArray.Length - 1; n >= 0; n--) {
+                    var ev = queueArray[n];
                     unsentEventsQueue.AddFirst(ev);
                 }
-                sentEventsList.Clear();
                 if (background && unsentEventsQueue.Count > 0) {
+                    // Console.WriteLine($"unsentEventsQueue: {unsentEventsQueue.Count}");
                     EnqueueTrigger (TriggerType.Event);
                 }
             }

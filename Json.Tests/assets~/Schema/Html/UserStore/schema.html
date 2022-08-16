@@ -307,8 +307,10 @@
             <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.ContainerStats'><div><span>ContainerStats</span></div></a></li>
             <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.HostInfo'><div><span>HostInfo</span></div></a></li>
             <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.HostCluster'><div><span>HostCluster</span></div></a></li>
-            <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.UserOptions'><div><span>UserOptions</span></div></a></li>
+            <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.UserParam'><div><span>UserParam</span></div></a></li>
             <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.UserResult'><div><span>UserResult</span></div></a></li>
+            <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.ClientParam'><div><span>ClientParam</span></div></a></li>
+            <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.ClientResult'><div><span>ClientResult</span></div></a></li>
         </ul>
     </li>
     <li><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights'>Friflo.Json.Fliox.Hub.Host.Auth.Rights</a>
@@ -333,6 +335,7 @@
     <li><a href='#Standard'>Standard</a>
         <ul>
             <li><a href='#Standard.int64'><div><span>int64</span></div></a></li>
+            <li><a href='#Standard.int32'><div><span>int32</span></div></a></li>
         </ul>
     </li>
 </ul>
@@ -443,9 +446,15 @@ Each <b>role</b> in container <b>roles</b> has a set of <b>rights</b> which gran
         </tr>
         <tr>
             <td><cmd>std.User</cmd></td>
-            <td><sig>(<keyword>param</keyword>: <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.UserOptions'>UserOptions</a> | null) : <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.UserResult'>UserResult</a></sig></td>
+            <td><sig>(<keyword>param</keyword>: <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.UserParam'>UserParam</a> | null) : <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.UserResult'>UserResult</a></sig></td>
             <td><oas><a href='../open-api.html#/commands/post__command_std_User' target='_blank' title='open std.User API as OpenAPI specification (OAS) in new tab'>OAS</a></oas></td>
             <td><docs>return the groups of the current user. Optionally change the groups of the current user</docs></td>
+        </tr>
+        <tr>
+            <td><cmd>std.Client</cmd></td>
+            <td><sig>(<keyword>param</keyword>: <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.ClientParam'>ClientParam</a> | null) : <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.ClientResult'>ClientResult</a></sig></td>
+            <td><oas><a href='../open-api.html#/commands/post__command_std_Client' target='_blank' title='open std.Client API as OpenAPI specification (OAS) in new tab'>OAS</a></oas></td>
+            <td><docs>return client specific state stored in the Hub like number of queued events</docs></td>
         </tr>
     </table>
     </div>
@@ -773,8 +782,8 @@ E.g. using red for a production environment: "#ff0000" or "rgb(255 0 0)"</docs><
     </table>
     </div>
     <div class='type'>
-    <h3 id='Friflo.Json.Fliox.Hub.DB.Cluster.UserOptions'>
-        <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.UserOptions'>UserOptions</a>
+    <h3 id='Friflo.Json.Fliox.Hub.DB.Cluster.UserParam'>
+        <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.UserParam'>UserParam</a>
         <keyword>class</keyword>
     </h3>
     <table class='fields'>
@@ -797,6 +806,30 @@ E.g. using red for a production environment: "#ff0000" or "rgb(255 0 0)"</docs><
         <tr>
             <td><field>groups</field></td>
             <td><type><predef>string</predef>[]</type></td>
+        </tr>
+    </table>
+    </div>
+    <div class='type'>
+    <h3 id='Friflo.Json.Fliox.Hub.DB.Cluster.ClientParam'>
+        <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.ClientParam'>ClientParam</a>
+        <keyword>class</keyword>
+    </h3>
+    <table class='fields'>
+        <tr>
+            <td><field>sendUnacknowledgedEvents</field></td>
+            <td><type><predef>boolean</predef></type></td>
+        </tr>
+    </table>
+    </div>
+    <div class='type'>
+    <h3 id='Friflo.Json.Fliox.Hub.DB.Cluster.ClientResult'>
+        <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.ClientResult'>ClientResult</a>
+        <keyword>class</keyword>
+    </h3>
+    <table class='fields'>
+        <tr>
+            <td><field>queuedEvents</field></td>
+            <td><type><a href='#Standard.int32'>int32</a></type></td>
         </tr>
     </table>
     </div>
@@ -1095,6 +1128,12 @@ It also allows subscribing database changes by <b>subscribeChanges</b>
         <a href='#Standard.int64'>int64</a>
     </h3>
     <desc>signed integer 64-bit. Range: [-9223372036854775808, 9223372036854775807]<br/>number in JavaScript.  Range: [-9007199254740991, 9007199254740991]</desc>
+    </div>
+    <div class='type'>
+    <h3 id='Standard.int32'>
+        <a href='#Standard.int32'>int32</a>
+    </h3>
+    <desc>signed integer 32-bit. Range: [-2147483648, 2147483647]</desc>
     </div>
 </div>
 

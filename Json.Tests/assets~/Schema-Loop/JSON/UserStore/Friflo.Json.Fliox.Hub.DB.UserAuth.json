@@ -38,8 +38,10 @@
                     "description": "returns general information about the Hub like version, host, project and environment name" },
                 "std.Cluster":      { "result": { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/HostCluster" },
                     "description": "list all databases and their containers hosted by the Hub" },
-                "std.User":         { "param": { "oneOf": [{ "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/UserOptions" }, {"type": "null"}] }, "result": { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/UserResult" },
-                    "description": "return the groups of the current user. Optionally change the groups of the current user" }
+                "std.User":         { "param": { "oneOf": [{ "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/UserParam" }, {"type": "null"}] }, "result": { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/UserResult" },
+                    "description": "return the groups of the current user. Optionally change the groups of the current user" },
+                "std.Client":       { "param": { "oneOf": [{ "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/ClientParam" }, {"type": "null"}] }, "result": { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/ClientResult" },
+                    "description": "return client specific state stored in the Hub like number of queued events" }
             }
         },
         "Credentials": {

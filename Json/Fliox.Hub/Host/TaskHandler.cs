@@ -71,7 +71,9 @@ namespace Friflo.Json.Fliox.Hub.Host
             AddCommandHandler      <Empty,       HostInfo>      (Std.HostInfo,      HostInfo);
             AddCommandHandlerAsync <Empty,       HostCluster>   (Std.HostCluster,   HostCluster);
             // --- user
-            AddCommandHandlerAsync <UserOptions, UserResult>    (Std.User,          User);
+            AddCommandHandlerAsync <UserParam,   UserResult>    (Std.User,          User);
+            // --- client
+            AddCommandHandler      <ClientParam, ClientResult>  (Std.Client,        Client);
         }
         
         /// <summary>
@@ -280,12 +282,12 @@ namespace Friflo.Json.Fliox.Hub.Host
             return await ClusterStore.GetDbList(context).ConfigureAwait(false);
         }
         
-        private static async Task<UserResult> User (Param<UserOptions> param, MessageContext context) {
+        private static async Task<UserResult> User (Param<UserParam> param, MessageContext context) {
             var user = context.User;
             if (param.RawParam.IsNull()) {
                 return new UserResult { groups = user.GetGroups().ToArray() };
             }
-            if (!param.GetValidate(out UserOptions options, out var error)) {
+            if (!param.GetValidate(out UserParam options, out var error)) {
                 return context.Error<UserResult>(error);
             }
             var eventDispatcher  = context.Hub.EventDispatcher;
@@ -299,6 +301,27 @@ namespace Friflo.Json.Fliox.Hub.Host
             eventDispatcher.UpdateSubUserGroups(user.userId, groups);
             
             return new UserResult { groups = groups.ToArray() };
+        }
+        
+        private static ClientResult Client (Param<ClientParam> param, MessageContext context) {
+            if (context.ClientId.IsNull()) {
+                return context.Error<ClientResult>("Missing client id (clt)");
+            }
+            if (!param.GetValidate(out var clientParam, out string error)) {
+                return context.Error<ClientResult>(error);
+            }
+            var hub         = context.Hub;
+            var dispatcher  = hub.EventDispatcher;
+            if (dispatcher == null) {
+                return context.Error<ClientResult>("command requires an EventDispatcher");
+            }
+            if (dispatcher.TryGetSubscriber(context.ClientId, out var client)) {
+                return context.Error<ClientResult>($"unknown client id: {context.ClientId}");
+            }
+            if (clientParam.sendUnacknowledgedEvents) {
+                client.SendUnacknowledgedEvents();
+            }
+            return new ClientResult { queuedEvents = client.QueuedEventsCount };
         }
         
         // --- internal API ---

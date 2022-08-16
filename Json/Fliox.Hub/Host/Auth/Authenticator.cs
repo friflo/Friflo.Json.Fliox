@@ -69,8 +69,8 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
             throw new InvalidOperationException ("unexpected clientIdValidation state");
         }
         
-        public virtual Task SetUserOptions (User user, UserOptions options) {
-            user.SetUserOptions(options);
+        public virtual Task SetUserOptions (User user, UserParam param) {
+            user.SetUserOptions(param);
             return Task.CompletedTask;
         }
 

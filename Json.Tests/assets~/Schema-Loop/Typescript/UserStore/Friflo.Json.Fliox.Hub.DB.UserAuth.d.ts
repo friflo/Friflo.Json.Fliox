@@ -5,8 +5,10 @@ import { DbSchema }     from "./Friflo.Json.Fliox.Hub.DB.Cluster";
 import { DbStats }      from "./Friflo.Json.Fliox.Hub.DB.Cluster";
 import { HostInfo }     from "./Friflo.Json.Fliox.Hub.DB.Cluster";
 import { HostCluster }  from "./Friflo.Json.Fliox.Hub.DB.Cluster";
-import { UserOptions }  from "./Friflo.Json.Fliox.Hub.DB.Cluster";
+import { UserParam }    from "./Friflo.Json.Fliox.Hub.DB.Cluster";
 import { UserResult }   from "./Friflo.Json.Fliox.Hub.DB.Cluster";
+import { ClientParam }  from "./Friflo.Json.Fliox.Hub.DB.Cluster";
+import { ClientResult } from "./Friflo.Json.Fliox.Hub.DB.Cluster";
 import { Right }        from "./Friflo.Json.Fliox.Hub.Host.Auth.Rights";
 import { Right_Union }  from "./Friflo.Json.Fliox.Hub.Host.Auth.Rights";
 
@@ -43,7 +45,9 @@ export interface UserStore {
     /** list all databases and their containers hosted by the Hub */
     ["std.Cluster"]          () : HostCluster;
     /** return the groups of the current user. Optionally change the groups of the current user */
-    ["std.User"]             (param: UserOptions | null) : UserResult;
+    ["std.User"]             (param: UserParam | null) : UserResult;
+    /** return client specific state stored in the Hub like number of queued events */
+    ["std.Client"]           (param: ClientParam | null) : ClientResult;
 }
 
 /** user **Credentials** used for authentication */

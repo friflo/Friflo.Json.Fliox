@@ -4,3 +4,6 @@
  *  number in JavaScript.  Range: [-9007199254740991, 9007199254740991]       */
 export type int64 = number;
 
+/** signed integer 32-bit. Range: [-2147483648, 2147483647]                   */
+export type int32 = number;
+

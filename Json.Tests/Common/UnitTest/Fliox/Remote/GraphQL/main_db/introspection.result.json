@@ -1010,7 +1010,7 @@
                             "name": "param",
                             "type": {
                                 "kind":"SCALAR",
-                                "name": "UserOptionsInput"
+                                "name": "UserParamInput"
                             }
                         }
                     ],
@@ -1019,6 +1019,26 @@
                         "ofType": {
                             "kind":"SCALAR",
                             "name": "UserResult"
+                        }
+                    }
+                },
+                {
+                    "name": "std_Client",
+                    "description": "/** return client specific state stored in the Hub like number of queued events */\n",
+                    "args": [
+                        {
+                            "name": "param",
+                            "type": {
+                                "kind":"SCALAR",
+                                "name": "ClientParamInput"
+                            }
+                        }
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "ClientResult"
                         }
                     }
                 },
@@ -4354,7 +4374,7 @@
         },
         {
             "kind":"OBJECT",
-            "name": "UserOptions",
+            "name": "UserParam",
             "description": "",
             "fields": [
                 {
@@ -4395,7 +4415,7 @@
         },
         {
             "kind":"INPUT_OBJECT",
-            "name": "UserOptionsInput",
+            "name": "UserParamInput",
             "description": "",
             "inputFields": [
                 {
@@ -4481,6 +4501,90 @@
                                     "name": "String"
                                 }
                             }
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "kind":"OBJECT",
+            "name": "ClientParam",
+            "description": "",
+            "fields": [
+                {
+                    "name": "sendUnacknowledgedEvents",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "Boolean"
+                        }
+                    }
+                }
+            ],
+            "interfaces": [
+            ]
+        },
+        {
+            "kind":"INPUT_OBJECT",
+            "name": "ClientParamInput",
+            "description": "",
+            "inputFields": [
+                {
+                    "name": "sendUnacknowledgedEvents",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "Boolean"
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "kind":"OBJECT",
+            "name": "ClientResult",
+            "description": "",
+            "fields": [
+                {
+                    "name": "queuedEvents",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "Int"
+                        }
+                    }
+                }
+            ],
+            "interfaces": [
+            ]
+        },
+        {
+            "kind":"INPUT_OBJECT",
+            "name": "ClientResultInput",
+            "description": "",
+            "inputFields": [
+                {
+                    "name": "queuedEvents",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "Int"
                         }
                     }
                 }

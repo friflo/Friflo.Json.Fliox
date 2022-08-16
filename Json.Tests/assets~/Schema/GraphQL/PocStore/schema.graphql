@@ -53,7 +53,8 @@ type Query {
     std_Stats                     (param: String) : DbStats!
     std_Host                       : HostInfo!
     std_Cluster                    : HostCluster!
-    std_User                      (param: UserOptionsInput) : UserResult!
+    std_User                      (param: UserParamInput) : UserResult!
+    std_Client                    (param: ClientParamInput) : ClientResult!
     Message1                      (param: String) : Any
     AsyncMessage                  (param: String) : Any
     test_Message2                 (param: String) : Any
@@ -397,12 +398,12 @@ input HostClusterInput {
     databases : [DbContainersInput!]!
 }
 
-type UserOptions {
+type UserParam {
     addGroups    : [String!]
     removeGroups : [String!]
 }
 
-input UserOptionsInput {
+input UserParamInput {
     addGroups    : [String!]
     removeGroups : [String!]
 }
@@ -413,5 +414,21 @@ type UserResult {
 
 input UserResultInput {
     groups : [String!]!
+}
+
+type ClientParam {
+    sendUnacknowledgedEvents : Boolean!
+}
+
+input ClientParamInput {
+    sendUnacknowledgedEvents : Boolean!
+}
+
+type ClientResult {
+    queuedEvents : Int!
+}
+
+input ClientResultInput {
+    queuedEvents : Int!
 }
 

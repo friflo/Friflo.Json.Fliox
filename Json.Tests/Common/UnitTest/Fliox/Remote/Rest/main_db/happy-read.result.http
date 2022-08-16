@@ -220,7 +220,8 @@ GET {{base}}/rest/main_db?command=std.Messages
         "std.Stats",
         "std.Host",
         "std.Cluster",
-        "std.User"
+        "std.User",
+        "std.Client"
     ],
     "messages": [
         "Message1",

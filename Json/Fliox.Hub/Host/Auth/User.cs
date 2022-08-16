@@ -52,17 +52,17 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
             this.groups = groups?.ToHashSet();
         }
         
-        public void SetUserOptions(UserOptions options) {
-            groups = UpdateGroups(groups, options);
+        public void SetUserOptions(UserParam param) {
+            groups = UpdateGroups(groups, param);
         }
         
-        public static HashSet<string> UpdateGroups(ICollection<string> groups, UserOptions options) {
+        public static HashSet<string> UpdateGroups(ICollection<string> groups, UserParam param) {
             var result = groups != null ? new HashSet<string>(groups) : new HashSet<string>();
-            var addGroups = options.addGroups;
+            var addGroups = param.addGroups;
             if (addGroups != null) {
                 result.UnionWith(addGroups);
             }
-            var removeGroups = options.removeGroups;
+            var removeGroups = param.removeGroups;
             if (removeGroups != null) {
                 foreach (var item in removeGroups) {
                     result.Remove(item);                    

@@ -56,7 +56,7 @@ data class HostCluster (
 )
 
 @Serializable
-data class UserOptions (
+data class UserParam (
               val addGroups    : List<String>? = null,
               val removeGroups : List<String>? = null,
 )
@@ -64,5 +64,15 @@ data class UserOptions (
 @Serializable
 data class UserResult (
               val groups : List<String>,
+)
+
+@Serializable
+data class ClientParam (
+              val sendUnacknowledgedEvents : Boolean,
+)
+
+@Serializable
+data class ClientResult (
+              val queuedEvents : Int,
 )
 
