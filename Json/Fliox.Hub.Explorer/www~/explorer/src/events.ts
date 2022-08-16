@@ -109,46 +109,48 @@ export class Events
         this.clusterTree    = new ClusterTree();
     }
 
-    public selectEvents(element: HTMLElement, selection: "all" | "none") : void {
-        this.clusterTree.selectTreeElement(element);
-        const filter = selection == "all"
-            ? new EventFilter(true, null, true, null, true, null)
-            : new EventFilter(false, null, false, null, false, null);        
+    public selectAllEvents(element: HTMLElement) : void {
+        const on = this.clusterTree.toggleTreeElement(element);
+        const filter = on ? new EventFilter(true, null, true, null, true, null) : EventFilter.None();
         this.setEditorLog(filter);
     }
 
     public initEvents(dbContainers: DbContainers[], dbMessages: DbMessages[]) : void {
         const tree      = this.clusterTree;
         const ulCluster = tree.createClusterUl(dbContainers, dbMessages);
-        tree.onSelectDatabase = (databaseName: string, classList: DOMTokenList) => {
+        tree.onSelectDatabase = (elem: HTMLElement, classList: DOMTokenList, databaseName: string) => {
             if (classList.length > 0) {
                 return;
             }
-            const filter = new EventFilter(false, databaseName, true, null, true, null);
+            const on = tree.toggleTreeElement(elem);
+            const filter = on ? new EventFilter(false, databaseName, true, null, true, null) : EventFilter.None();
             this.setEditorLog(filter);
         };
-        tree.onSelectContainer = (databaseName: string, containerName: string, classList: DOMTokenList) => {
+        tree.onSelectContainer = (elem: HTMLElement, classList: DOMTokenList, databaseName: string, containerName: string) => {
             if (classList.length > 0) {
                 this.toggleContainerSub(databaseName, containerName);
                 return;
             }
-            const filter = new EventFilter(false, databaseName, false, containerName, false, null);
+            const on = tree.toggleTreeElement(elem);
+            const filter = on ? new EventFilter(false, databaseName, false, containerName, false, null) : EventFilter.None();
             this.setEditorLog(filter);
         };
-        tree.onSelectMessage = (databaseName: string, messageName: string, classList: DOMTokenList) => {
+        tree.onSelectMessage = (elem: HTMLElement, classList: DOMTokenList, databaseName: string, messageName: string) => {
             if (classList.length > 0) {
                 this.toggleMessageSub(databaseName, messageName);
                 return;
             }
-            const filter = new EventFilter(false, databaseName, false, null, false, messageName);
+            const on = tree.toggleTreeElement(elem);
+            const filter = on ? new EventFilter(false, databaseName, false, null, false, messageName) : EventFilter.None();
             this.setEditorLog(filter);
         };
-        tree.onSelectMessages = (databaseName: string, classList: DOMTokenList) => {
+        tree.onSelectMessages = (elem: HTMLElement, classList: DOMTokenList, databaseName: string) => {
             if (classList.length > 0) {
                 this.toggleMessageSub(databaseName, "*");
                 return;
             }
-            const filter = new EventFilter(false, databaseName, false, null, true, null);
+            const on = tree.toggleTreeElement(elem);
+            const filter = on ? new EventFilter(false, databaseName, false, null, true, null) : EventFilter.None();
             this.setEditorLog(filter);
         };
         ulCluster.style.margin = "0";
@@ -452,6 +454,10 @@ class EventFilter {
         this.allMessages    = allMessages;
         this.message        = message;
         this.container      = container;
+    }
+
+    public static None() : EventFilter {
+        return new EventFilter(false, null, false, null, false, null);
     }
 
     public match(ev: SubEvent) : boolean {

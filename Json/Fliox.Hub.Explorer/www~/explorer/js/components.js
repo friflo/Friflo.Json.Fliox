@@ -9,11 +9,23 @@ export class ClusterTree {
     constructor() {
         this.databaseTags = {};
     }
-    selectTreeElement(element) {
+    selectTreeElement(elem) {
         if (this.selectedTreeEl)
             this.selectedTreeEl.classList.remove("selected");
-        this.selectedTreeEl = element;
-        element.classList.add("selected");
+        this.selectedTreeEl = elem;
+        elem.classList.add("selected");
+    }
+    toggleTreeElement(elem) {
+        if (this.selectedTreeEl) {
+            this.selectedTreeEl.classList.remove("selected");
+            if (elem == this.selectedTreeEl) {
+                this.selectedTreeEl = null;
+                return false;
+            }
+        }
+        this.selectedTreeEl = elem;
+        elem.classList.add("selected");
+        return true;
     }
     createClusterUl(dbContainers, dbMessages) {
         const ulCluster = createEl('ul');
@@ -35,8 +47,7 @@ export class ClusterTree {
                 return;
             }
             treeEl.classList.add("active");
-            this.selectTreeElement(databaseEl);
-            this.onSelectDatabase(databaseName, path[0].classList);
+            this.onSelectDatabase(databaseEl, path[0].classList, databaseName);
         };
         let firstDatabase = true;
         for (const dbContainer of dbContainers) {
@@ -77,35 +88,26 @@ export class ClusterTree {
                         return;
                     }
                     const databaseEl = messagesEl.parentNode.parentNode.parentNode;
-                    if (classList.length == 0) {
-                        this.selectTreeElement(messagesEl);
-                    }
                     const databaseName = databaseEl.childNodes[0].childNodes[1].textContent;
-                    this.onSelectMessages(databaseName, classList);
+                    this.onSelectMessages(messagesEl, classList, databaseName);
                     return;
                 }
                 const messageEl = ClusterTree.findTreeEl(path, "dbMessage");
                 if (messageEl) {
                     const databaseEl = messageEl.parentNode.parentNode.parentNode.parentNode;
-                    if (classList.length == 0) {
-                        this.selectTreeElement(messageEl);
-                    }
                     const messageNameDiv = messageEl.children[0];
                     const messageName = messageNameDiv.innerText.trim();
                     const databaseName = databaseEl.childNodes[0].childNodes[1].textContent;
-                    this.onSelectMessage(databaseName, messageName, classList);
+                    this.onSelectMessage(messageEl, classList, databaseName, messageName);
                     return;
                 }
                 const containerEl = ClusterTree.findTreeEl(path, "clusterContainer");
                 if (containerEl) {
                     const databaseEl = containerEl.parentNode.parentNode;
-                    if (classList.length == 0) {
-                        this.selectTreeElement(containerEl);
-                    }
                     const containerNameDiv = containerEl.children[0];
                     const containerName = containerNameDiv.innerText.trim();
                     const databaseName = databaseEl.childNodes[0].childNodes[1].textContent;
-                    this.onSelectContainer(databaseName, containerName, classList);
+                    this.onSelectContainer(containerEl, classList, databaseName, containerName);
                 }
             };
             liDatabase.append(ulContainers);

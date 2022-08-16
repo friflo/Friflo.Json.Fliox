@@ -335,9 +335,13 @@
         .subscribed:hover           { border: 1px solid var(--sub-border); }
 
         .dbMessage.selected,
+        .dbMessage.selected:hover,        
         .dbMessages.selected,
+        .dbMessages.selected:hover,
         .clusterDatabase.selected,
-        .clusterContainer.selected  { background-color: var(--selected-color); }
+        .clusterDatabase.selected:hover,
+        .clusterContainer.selected,
+        .clusterContainer.selected:hover  { background-color: var(--selected-color); }
 
         .dbMessage:hover,
         .dbMessages:hover,
@@ -790,8 +794,7 @@
     </div>
     <div style="grid-area: ev-tree; background-color: var(--background2); overflow: auto; padding: 5px">
       <div class="catalogs" id="subscriptionTree" style="display: block; min-height: 50px; white-space: nowrap;">
-        <li id="noEvents"  title="show no event"   class="clusterContainer" onclick="app.events.selectEvents(this, 'none')"><div style="opacity: 0.5;">&nbsp;none</div></li>
-        <li id="allEvents" title="show all events" class="clusterContainer" onclick="app.events.selectEvents(this, 'all')"><div style="opacity: 0.5;">&nbsp;all</div></li>
+        <li id="allEvents" title="show all events" class="clusterContainer" onclick="app.events.selectAllEvents(this)"><div style="opacity: 0.5;">&nbsp;all</div></li>
           <!-- [How To Create a Tree View] https://www.w3schools.com/howto/howto_js_treeview.asp -->
       </div>
     </div>
