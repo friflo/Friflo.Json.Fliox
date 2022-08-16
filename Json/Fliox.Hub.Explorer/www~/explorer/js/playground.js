@@ -20,6 +20,7 @@ export class Playground {
         this.subSeq = 0;
         this.subCount = 0;
     }
+    getClientId() { return this.clt; }
     connectWebsocket() {
         if (this.connection) {
             this.connection.close();

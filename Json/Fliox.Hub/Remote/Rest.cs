@@ -446,11 +446,13 @@ namespace Friflo.Json.Fliox.Hub.Remote
             var tasks   = new List<SyncRequestTask> { task };
             var userId  = context.cookies["fliox-user"];
             var token   = context.cookies["fliox-token"];
+            var clientId= context.headers["fliox-client"];
             var syncRequest = new SyncRequest {
                 database    = database,
                 tasks       = tasks,
                 userId      = new JsonKey(userId),
-                token       = token
+                token       = token,
+                clientId    = new JsonKey(clientId) 
             };
             var hub         = context.hub;
             var sharedCache = context.SharedCache;

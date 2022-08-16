@@ -220,11 +220,12 @@ export class App {
     }
     static async restRequest(method, body, database, container, query) {
         const path = App.getRestPath(database, container, query);
-        const init = {
-            method: method,
-            headers: { 'Content-Type': 'application/json' },
-            body: body
-        };
+        const headers = { 'Content-Type': 'application/json' };
+        const clientId = app.playground.getClientId();
+        if (clientId) {
+            headers["fliox-client"] = clientId;
+        }
+        const init = { method: method, headers: headers, body: body };
         try {
             // authenticate with cookies: "fliox-user" & "fliox-token"
             return await fetch(path, init);

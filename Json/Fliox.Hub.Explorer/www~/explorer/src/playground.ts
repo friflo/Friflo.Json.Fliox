@@ -31,6 +31,8 @@ export class Playground
     private subSeq          = 0;
     private subCount        = 0;
 
+    public getClientId() : string { return this.clt; }
+
     public connectWebsocket (): void {
         if (this.connection) {
             this.connection.close();
