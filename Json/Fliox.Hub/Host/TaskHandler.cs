@@ -312,11 +312,8 @@ namespace Friflo.Json.Fliox.Hub.Host
             }
             var hub         = context.Hub;
             var dispatcher  = hub.EventDispatcher;
-            if (dispatcher == null) {
-                return context.Error<ClientResult>("command requires an EventDispatcher");
-            }
             int queuedEvents = 0;
-            if (dispatcher.TryGetSubscriber(context.ClientId, out var client)) {
+            if (dispatcher != null && dispatcher.TryGetSubscriber(context.ClientId, out var client)) {
                 queuedEvents = client.QueuedEventsCount;
                 if (clientParam != null && clientParam.sendUnacknowledgedEvents) {
                     client.SendUnacknowledgedEvents();
