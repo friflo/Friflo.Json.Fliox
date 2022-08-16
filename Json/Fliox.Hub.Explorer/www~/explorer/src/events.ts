@@ -9,6 +9,8 @@ const subscriptionTree      = el("subscriptionTree");
 const scrollToEnd           = el("scrollToEnd")     as HTMLInputElement;
 const formatEvents          = el("formatEvents")    as HTMLInputElement;
 const subFilter             = el("subFilter")       as HTMLSpanElement;
+const allEvents             = el("allEvents")       as HTMLLIElement;
+
 
 function KV(key: string, value: any) {
     if (value === undefined)
@@ -104,7 +106,15 @@ export class Events
     private             filter:         EventFilter;
 
     public constructor() {
-        this.clusterTree = new ClusterTree();
+        this.clusterTree    = new ClusterTree();
+    }
+
+    public selectEvents(element: HTMLElement, selection: "all" | "none") : void {
+        this.clusterTree.selectTreeElement(element);
+        const filter = selection == "all"
+            ? new EventFilter(true, null, true, null, true, null)
+            : new EventFilter(false, null, false, null, false, null);        
+        this.setEditorLog(filter);
     }
 
     public initEvents(dbContainers: DbContainers[], dbMessages: DbMessages[]) : void {
@@ -141,8 +151,10 @@ export class Events
             const filter = new EventFilter(false, databaseName, false, null, true, null);
             this.setEditorLog(filter);
         };
-        subscriptionTree.textContent = "";
+        ulCluster.style.margin = "0";
         subscriptionTree.appendChild(ulCluster);
+        this.filter = new EventFilter(true, null, true, null, true, null);
+        tree.selectTreeElement(allEvents);
 
         for (const database of dbContainers) {
             const databaseSub = new DatabaseSub();
@@ -313,7 +325,7 @@ export class Events
     }
 
     // ----------------------------------- container subs -----------------------------------
-    public toggleContainerSub(databaseName: string, containerName: string) : ContainerSub {
+    public toggleContainerSub(databaseName: string, containerName: string) : void {
         const containerSubs = this.databaseSubs[databaseName].containerSubs;
         const containerSub = containerSubs[containerName];
         let changes: EntityChange[] = [];
@@ -344,7 +356,6 @@ export class Events
             }
             app.playground.sendWebSocketRequest(request);
         });
-        return containerSub;
     }
 
     private uiContainerSubscribed(databaseName: string, containerName: string, enable: boolean) {
@@ -434,8 +445,8 @@ class EventFilter {
     private readonly message:       string;
     private readonly allMessages:   boolean;
 
-    constructor(allEVents: boolean, db: string, allDbEvents: boolean, container: string, allMessages: boolean, message: string) {
-        this.allEvents      = allEVents;
+    constructor(allEvents: boolean, db: string, allDbEvents: boolean, container: string, allMessages: boolean, message: string) {
+        this.allEvents      = allEvents;
         this.db             = db;
         this.allDbEvents    = allDbEvents;
         this.allMessages    = allMessages;
@@ -465,6 +476,8 @@ class EventFilter {
         if (this.allEvents)
             return "all";
         const name = this.db;
+        if (name == null)
+            return "none";
         if (this.allDbEvents)
             return name;
         if (this.allMessages)

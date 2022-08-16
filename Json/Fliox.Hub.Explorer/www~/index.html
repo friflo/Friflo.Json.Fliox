@@ -788,8 +788,10 @@
         <input style="margin-left: 20px;" type="checkbox" checked id="formatEvents" title="Format new events">
         <label for="formatEvents"  title="Format new events">Format</label>
     </div>
-    <div style="grid-area: ev-tree; background-color: var(--background2); overflow: auto; ">
+    <div style="grid-area: ev-tree; background-color: var(--background2); overflow: auto; padding: 5px">
       <div class="catalogs" id="subscriptionTree" style="display: block; min-height: 50px; white-space: nowrap;">
+        <li id="noEvents"  title="show no event"   class="clusterContainer" onclick="app.events.selectEvents(this, 'none')"><div style="opacity: 0.5;">&nbsp;none</div></li>
+        <li id="allEvents" title="show all events" class="clusterContainer" onclick="app.events.selectEvents(this, 'all')"><div style="opacity: 0.5;">&nbsp;all</div></li>
           <!-- [How To Create a Tree View] https://www.w3schools.com/howto/howto_js_treeview.asp -->
       </div>
     </div>

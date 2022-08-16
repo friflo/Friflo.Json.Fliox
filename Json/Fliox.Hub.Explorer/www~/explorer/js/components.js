@@ -68,6 +68,7 @@ export class ClusterTree {
             ulContainers.onclick = (ev) => {
                 ev.stopPropagation();
                 const path = ev.composedPath();
+                const classList = path[0].classList;
                 const messagesEl = ClusterTree.findTreeEl(path, "dbMessages");
                 if (messagesEl) {
                     const caretEl = ClusterTree.findTreeEl(path, "caret");
@@ -76,29 +77,35 @@ export class ClusterTree {
                         return;
                     }
                     const databaseEl = messagesEl.parentNode.parentNode.parentNode;
-                    this.selectTreeElement(messagesEl);
+                    if (classList.length == 0) {
+                        this.selectTreeElement(messagesEl);
+                    }
                     const databaseName = databaseEl.childNodes[0].childNodes[1].textContent;
-                    this.onSelectMessages(databaseName, path[0].classList);
+                    this.onSelectMessages(databaseName, classList);
                     return;
                 }
                 const messageEl = ClusterTree.findTreeEl(path, "dbMessage");
                 if (messageEl) {
                     const databaseEl = messageEl.parentNode.parentNode.parentNode.parentNode;
-                    this.selectTreeElement(messageEl);
+                    if (classList.length == 0) {
+                        this.selectTreeElement(messageEl);
+                    }
                     const messageNameDiv = messageEl.children[0];
                     const messageName = messageNameDiv.innerText.trim();
                     const databaseName = databaseEl.childNodes[0].childNodes[1].textContent;
-                    this.onSelectMessage(databaseName, messageName, path[0].classList);
+                    this.onSelectMessage(databaseName, messageName, classList);
                     return;
                 }
                 const containerEl = ClusterTree.findTreeEl(path, "clusterContainer");
                 if (containerEl) {
                     const databaseEl = containerEl.parentNode.parentNode;
-                    this.selectTreeElement(containerEl);
+                    if (classList.length == 0) {
+                        this.selectTreeElement(containerEl);
+                    }
                     const containerNameDiv = containerEl.children[0];
                     const containerName = containerNameDiv.innerText.trim();
                     const databaseName = databaseEl.childNodes[0].childNodes[1].textContent;
-                    this.onSelectContainer(databaseName, containerName, path[0].classList);
+                    this.onSelectContainer(databaseName, containerName, classList);
                 }
             };
             liDatabase.append(ulContainers);

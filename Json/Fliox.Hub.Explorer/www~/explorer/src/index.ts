@@ -408,8 +408,8 @@ export class App {
         };
         tree.onSelectContainer = (databaseName: string, containerName: string, classList: DOMTokenList) => {
             if (classList.length > 0) {
-                const containerSub = this.events.toggleContainerSub(databaseName, containerName);
-                if (!containerSub.subscribed) return;
+                this.events.toggleContainerSub(databaseName, containerName);
+                return;
             }
             const params: Resource  = { database: databaseName, container: containerName, ids: [] };
             this.editor.clearEntity(databaseName, containerName);

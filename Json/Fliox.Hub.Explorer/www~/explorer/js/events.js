@@ -5,6 +5,7 @@ const subscriptionTree = el("subscriptionTree");
 const scrollToEnd = el("scrollToEnd");
 const formatEvents = el("formatEvents");
 const subFilter = el("subFilter");
+const allEvents = el("allEvents");
 function KV(key, value) {
     if (value === undefined)
         return "";
@@ -78,6 +79,13 @@ export class Events {
         this.subEvents = [];
         this.clusterTree = new ClusterTree();
     }
+    selectEvents(element, selection) {
+        this.clusterTree.selectTreeElement(element);
+        const filter = selection == "all"
+            ? new EventFilter(true, null, true, null, true, null)
+            : new EventFilter(false, null, false, null, false, null);
+        this.setEditorLog(filter);
+    }
     initEvents(dbContainers, dbMessages) {
         const tree = this.clusterTree;
         const ulCluster = tree.createClusterUl(dbContainers, dbMessages);
@@ -112,8 +120,10 @@ export class Events {
             const filter = new EventFilter(false, databaseName, false, null, true, null);
             this.setEditorLog(filter);
         };
-        subscriptionTree.textContent = "";
+        ulCluster.style.margin = "0";
         subscriptionTree.appendChild(ulCluster);
+        this.filter = new EventFilter(true, null, true, null, true, null);
+        tree.selectTreeElement(allEvents);
         for (const database of dbContainers) {
             const databaseSub = new DatabaseSub();
             this.databaseSubs[database.id] = databaseSub;
@@ -304,7 +314,6 @@ export class Events {
             }
             app.playground.sendWebSocketRequest(request);
         });
-        return containerSub;
     }
     uiContainerSubscribed(databaseName, containerName, enable) {
         if (enable) {
@@ -374,8 +383,8 @@ export class Events {
     }
 }
 class EventFilter {
-    constructor(allEVents, db, allDbEvents, container, allMessages, message) {
-        this.allEvents = allEVents;
+    constructor(allEvents, db, allDbEvents, container, allMessages, message) {
+        this.allEvents = allEvents;
         this.db = db;
         this.allDbEvents = allDbEvents;
         this.allMessages = allMessages;
@@ -403,6 +412,8 @@ class EventFilter {
         if (this.allEvents)
             return "all";
         const name = this.db;
+        if (name == null)
+            return "none";
         if (this.allDbEvents)
             return name;
         if (this.allMessages)
