@@ -315,13 +315,14 @@ namespace Friflo.Json.Fliox.Hub.Host
             if (dispatcher == null) {
                 return context.Error<ClientResult>("command requires an EventDispatcher");
             }
+            int queuedEvents = 0;
             if (dispatcher.TryGetSubscriber(context.ClientId, out var client)) {
-                return context.Error<ClientResult>($"unknown client id: {context.ClientId}");
+                queuedEvents = client.QueuedEventsCount;
+                if (clientParam != null && clientParam.sendUnacknowledgedEvents) {
+                    client.SendUnacknowledgedEvents();
+                }
             }
-            if (clientParam.sendUnacknowledgedEvents) {
-                client.SendUnacknowledgedEvents();
-            }
-            return new ClientResult { queuedEvents = client.QueuedEventsCount };
+            return new ClientResult { queuedEvents = queuedEvents };
         }
         
         // --- internal API ---
