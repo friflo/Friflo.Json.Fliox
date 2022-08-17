@@ -297,11 +297,11 @@ input UserResultInput {
 }
 
 type ClientParam {
-    sendUnacknowledgedEvents : Boolean!
+    syncEvents : Boolean!
 }
 
 input ClientParamInput {
-    sendUnacknowledgedEvents : Boolean!
+    syncEvents : Boolean!
 }
 
 type ClientResult {

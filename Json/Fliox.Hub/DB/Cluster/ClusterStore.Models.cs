@@ -110,7 +110,8 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
     }
     
     public sealed class ClientParam {
-                    public  bool            sendUnacknowledgedEvents;
+        /// <summary>if true the Hub resent all unacknowledged events</summary>
+                    public  bool            syncEvents;
     }
     
     public sealed class ClientResult {

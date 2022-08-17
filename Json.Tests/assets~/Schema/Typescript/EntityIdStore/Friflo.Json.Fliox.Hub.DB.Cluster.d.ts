@@ -98,7 +98,8 @@ export class UserResult {
 }
 
 export class ClientParam {
-    sendUnacknowledgedEvents  : boolean;
+    /** if true the Hub resent all unacknowledged events */
+    syncEvents  : boolean;
 }
 
 export class ClientResult {

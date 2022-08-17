@@ -172,7 +172,7 @@
         },
         "ClientParam": {
             "properties": {
-                "sendUnacknowledgedEvents": { "type": "boolean" }
+                "syncEvents": { "type": "boolean" }
             }
         },
         "ClientResult": {

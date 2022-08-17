@@ -122,10 +122,10 @@
         "ClientParam": {
             "type": "object",
             "properties": {
-                "sendUnacknowledgedEvents": { "type": "boolean" }
+                "syncEvents": { "type": "boolean", "description": "if true the Hub resent all unacknowledged events" }
             },
             "required": [
-                "sendUnacknowledgedEvents"
+                "syncEvents"
             ],
             "additionalProperties": false
         },

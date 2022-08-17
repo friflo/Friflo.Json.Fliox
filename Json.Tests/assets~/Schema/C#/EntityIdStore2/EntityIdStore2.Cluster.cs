@@ -76,7 +76,7 @@ public class UserResult {
 }
 
 public class ClientParam {
-    bool  sendUnacknowledgedEvents;
+    bool  syncEvents;
 }
 
 public class ClientResult {

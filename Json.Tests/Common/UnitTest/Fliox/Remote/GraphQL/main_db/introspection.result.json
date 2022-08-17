@@ -4512,8 +4512,8 @@
             "description": "",
             "fields": [
                 {
-                    "name": "sendUnacknowledgedEvents",
-                    "description": "",
+                    "name": "syncEvents",
+                    "description": "    /** if true the Hub resent all unacknowledged events */\n",
                     "args": [
                     ],
                     "type": {
@@ -4534,8 +4534,8 @@
             "description": "",
             "inputFields": [
                 {
-                    "name": "sendUnacknowledgedEvents",
-                    "description": "",
+                    "name": "syncEvents",
+                    "description": "    /** if true the Hub resent all unacknowledged events */\n",
                     "args": [
                     ],
                     "type": {

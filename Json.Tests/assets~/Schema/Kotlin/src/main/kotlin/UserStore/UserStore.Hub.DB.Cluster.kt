@@ -68,7 +68,7 @@ data class UserResult (
 
 @Serializable
 data class ClientParam (
-              val sendUnacknowledgedEvents : Boolean,
+              val syncEvents : Boolean,
 )
 
 @Serializable
