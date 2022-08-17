@@ -166,7 +166,7 @@ namespace DemoTest {
             // unsubscribe to free subscription resources on Hub
             subClient.articles.SubscribeChanges(Change.None, (changes, context) => { });
             await subClient.SyncTasks();
-            AreEqual(0, hub.EventDispatcher.SubscribedClientsCount);
+            AreEqual(1, hub.EventDispatcher.SubscribedClientsCount);
         }
         
         [Test]
@@ -199,7 +199,7 @@ namespace DemoTest {
             // unsubscribe to free subscription resources on Hub
             subClient.UnsubscribeMessage("demo.Add", null);
             await subClient.SyncTasks();
-            AreEqual(0, hub.EventDispatcher.SubscribedClientsCount);
+            AreEqual(1, hub.EventDispatcher.SubscribedClientsCount);
         }
     }
 }
