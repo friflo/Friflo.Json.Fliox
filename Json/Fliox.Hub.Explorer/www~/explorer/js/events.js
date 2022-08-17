@@ -207,7 +207,7 @@ export class Events {
         editor.revealPositionNearTop(pos);
     }
     addSubscriptionEvent(ev) {
-        const acknowledgeEvent = false;
+        const acknowledgeEvent = true;
         if (acknowledgeEvent) {
             const syncRequest = { msg: "sync", database: ev.db, tasks: [], info: "acknowledge received event" };
             const request = JSON.stringify(syncRequest);

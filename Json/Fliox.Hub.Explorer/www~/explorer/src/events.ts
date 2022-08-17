@@ -244,7 +244,7 @@ export class Events
     }
 
     public addSubscriptionEvent(ev: EventMessage) : void {
-        const acknowledgeEvent = false;
+        const acknowledgeEvent = true;
         if (acknowledgeEvent) {
             const syncRequest: SyncRequest = { msg: "sync", database: ev.db, tasks: [], info: "acknowledge received event" };
             const request = JSON.stringify(syncRequest);
