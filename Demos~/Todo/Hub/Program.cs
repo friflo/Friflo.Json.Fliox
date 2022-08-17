@@ -1,6 +1,7 @@
 ﻿using Friflo.Json.Fliox.Hub.DB.Cluster;
 using Friflo.Json.Fliox.Hub.Explorer;
 using Friflo.Json.Fliox.Hub.Host;
+using Friflo.Json.Fliox.Hub.Host.Event;
 using Friflo.Json.Fliox.Hub.Remote;
 using Friflo.Json.Fliox.Schema.Native;
 using Todo;
@@ -25,6 +26,7 @@ namespace TodoHub
             var hub             = new FlioxHub(database);
             hub.Info.projectName= "TodoHub";
             hub.AddExtensionDB (new ClusterDB("cluster", hub)); // required by HubExplorer
+            hub.EventDispatcher = new EventDispatcher(true);    // optional - enables Pub-Sub
             
             var httpHost        = new HttpHost(hub, "/fliox/");
             httpHost.AddHandler (new StaticFileHandler(HubExplorer.Path));
