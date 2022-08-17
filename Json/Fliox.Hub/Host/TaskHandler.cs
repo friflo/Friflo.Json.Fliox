@@ -303,6 +303,10 @@ namespace Friflo.Json.Fliox.Hub.Host
             return new UserResult { groups = groups.ToArray() };
         }
         
+        /// <summary>
+        /// Calling <see cref="Event.EventSubClient.SendUnacknowledgedEvents"/> here is too early.
+        /// An outdated <see cref="Event.EventSubClient.eventReceiver"/> may be used.
+        /// </summary>
         private static ClientResult Client (Param<ClientParam> param, MessageContext context) {
             if (context.ClientId.IsNull()) {
                 return context.Error<ClientResult>("Missing client id (clt)");
@@ -316,7 +320,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             if (dispatcher != null && dispatcher.TryGetSubscriber(context.ClientId, out var client)) {
                 queuedEvents = client.QueuedEventsCount;
                 if (clientParam != null && clientParam.syncEvents) {
-                    client.SendUnacknowledgedEvents();
+                    // client.SendUnacknowledgedEvents(); see comment above
                 }
             }
             return new ClientResult { queuedEvents = queuedEvents };

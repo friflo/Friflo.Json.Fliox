@@ -177,8 +177,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// </para>
         /// </remarks>
         public virtual async Task<ExecuteSyncResult> ExecuteSync(SyncRequest syncRequest, SyncContext syncContext) {
-            syncContext.hub         = this;
-            syncContext.eventAck    = syncRequest.eventAck;            
+            syncContext.hub = this;
             var syncDbName  = syncRequest.database;             // is nullable
             var hubDbName   = syncContext.hub.DatabaseName;     // not null
             var dbName      = syncDbName ?? hubDbName;          // not null

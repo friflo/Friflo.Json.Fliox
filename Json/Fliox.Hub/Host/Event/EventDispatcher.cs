@@ -98,7 +98,6 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             SubscribeMessage    subscribe,
             User                user,
             in JsonKey          clientId,
-            int                 eventAck,
             IEventReceiver      eventReceiver,
             out string          error)
         {
@@ -119,7 +118,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                 RemoveEmptySubClient(subClient);
                 return true;
             } else {
-                subClient = GetOrCreateSubClient(user, clientId, eventAck, eventReceiver);
+                subClient = GetOrCreateSubClient(user, clientId, eventReceiver);
                 if (!subClient.databaseSubs.TryGetValue(database, out var databaseSubs)) {
                     databaseSubs = new DatabaseSubs(database);
                     subClient.databaseSubs.Add(database, databaseSubs);
@@ -134,7 +133,6 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             SubscribeChanges    subscribe,
             User                user,
             in JsonKey          clientId,
-            int                 eventAck,
             IEventReceiver      eventReceiver,
             out string          error)
         {
@@ -153,7 +151,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                 RemoveEmptySubClient(subClient);
                 return true;
             } else {
-                subClient = GetOrCreateSubClient(user, clientId, eventAck, eventReceiver);
+                subClient = GetOrCreateSubClient(user, clientId, eventReceiver);
                 if (!subClient.databaseSubs.TryGetValue(database, out var databaseSubs)) {
                     databaseSubs = new DatabaseSubs(database);
                     subClient.databaseSubs.Add(database, databaseSubs);
@@ -163,7 +161,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             }
         }
         
-        private EventSubClient GetOrCreateSubClient(User user, in JsonKey clientId, int eventAck, IEventReceiver eventReceiver) {
+        private EventSubClient GetOrCreateSubClient(User user, in JsonKey clientId, IEventReceiver eventReceiver) {
             subClients.TryGetValue(clientId, out EventSubClient subClient);
             if (subClient != null)
                 return subClient;
@@ -171,21 +169,24 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                 subUser = new EventSubUser (user.userId, user.GetGroups());
                 subUsers.TryAdd(user.userId, subUser);
             }
-            subClient = new EventSubClient(sharedEnv, subUser, clientId, eventAck, eventReceiver, background);
+            subClient = new EventSubClient(sharedEnv, subUser, clientId, eventReceiver, background);
             subClients.TryAdd(clientId, subClient);
             subUser.clients.Add(subClient);
             return subClient;
         }
-        
+
+        /// <summary>
+        /// Don't remove empty subClient as the state of <see cref="EventSubClient.eventCounter"/> need to be preserved.
+        /// </summary>
         private void RemoveEmptySubClient(EventSubClient subClient) {
-            if (subClient.SubCount > 0)
+            /* if (subClient.SubCount > 0)
                 return;
             subClients.TryRemove(subClient.clientId, out _);
             var user = subClient.user;
             user.clients.Remove(subClient);
             if (user.clients.Count == 0) {
                 subUsers.TryRemove(user.userId, out _);
-            }
+            } */
         }
         
         internal void UpdateSubUserGroups(in JsonKey userId, IReadOnlyCollection<String> groups) {
@@ -239,8 +240,8 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                 foreach (var pair in subClients) {
                     List<SyncRequestTask>  eventTasks = null;
                     EventSubClient     subClient = pair.Value;
-                    if (subClient.SubCount == 0)
-                        throw new InvalidOperationException("Expect SubscriptionCount > 0");
+                    // if (subClient.SubCount == 0)
+                    //    throw new InvalidOperationException("Expect SubscriptionCount > 0");
                     
                     if (!subClient.databaseSubs.TryGetValue(database, out var databaseSubs))
                         continue;

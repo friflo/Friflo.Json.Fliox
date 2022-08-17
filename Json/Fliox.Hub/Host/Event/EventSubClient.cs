@@ -43,7 +43,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         
         /// lock (<see cref="unsentEventsQueue"/>) {
         private             int                                 eventCounter;
-        /// contains all events not yet sent
+        /// contains all events not yet sent. Should be a Dqueue but C# doesn't contain this container type. 
         private  readonly   LinkedList<ProtocolEvent>           unsentEventsQueue   = new LinkedList<ProtocolEvent>();
         /// contains all events which are sent but not acknowledged
         private  readonly   Queue<ProtocolEvent>                sentEventsQueue     = new Queue<ProtocolEvent>();
@@ -65,14 +65,12 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             SharedEnv       env,
             EventSubUser    user,
             in JsonKey      clientId,
-            int             eventAck,
             IEventReceiver  eventReceiver,
             bool            background)
         {
             Logger              = env.hubLogger;
             this.clientId       = clientId;
             this.user           = user;
-            this.eventCounter   = eventAck;
             this.eventReceiver  = eventReceiver;
             this.background     = background;
             if (!this.background)
@@ -90,6 +88,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                 return;
             Logger.Log(HubLog.Info, $"EventSubscriber: eventReceiver changed. dstId: {clientId}");
             this.eventReceiver = eventReceiver;
+            SendUnacknowledgedEvents();
         }
         
         internal void EnqueueEvent(ProtocolEvent ev) {
@@ -116,41 +115,40 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             }
         }
         
-        /// Enqueue all not acknowledged events back to <see cref="unsentEventsQueue"/> in their original order
+        /// <summary>
+        /// Remove all acknowledged events from <see cref="sentEventsQueue"/>
+        /// </summary>
         internal void AcknowledgeEvents(int eventAck) {
             lock (unsentEventsQueue) {
-                LinkedListNode<ProtocolEvent> head = null;
                 while (sentEventsQueue.Count > 0) {
                     var ev = sentEventsQueue.Peek();
-                    sentEventsQueue.Dequeue();
                     if (ev.seq <= eventAck) {
+                        sentEventsQueue.Dequeue();
                         continue;
                     }
+                    break; 
+                }
+            }
+        }
+
+        /// <summary>
+        /// Prepend all not acknowledged events to <see cref="unsentEventsQueue"/> in their original order
+        /// and trigger sending these events stored in <see cref="unsentEventsQueue"/>
+        /// </summary>
+        private void SendUnacknowledgedEvents() {
+            lock (unsentEventsQueue) {
+                LinkedListNode<ProtocolEvent> head = null;
+                foreach (var ev in sentEventsQueue) {
                     if (head == null) {
                         head = unsentEventsQueue.AddFirst(ev);
                     } else  {
                         head = unsentEventsQueue.AddAfter(head, ev);
                     }
-                    // break; // todo uncomment 
                 }
-                // todo remove EnqueueTrigger()
-                if (background && unsentEventsQueue.Count > 0) {
-                    EnqueueTrigger (TriggerType.Event);
-                }
-            }
-        }
-
-        /// <summary>Prepend all not acknowledged events to <see cref="unsentEventsQueue"/> in their original order</summary>
-        internal void SendUnacknowledgedEvents() {
-            lock (unsentEventsQueue) {
-                var queueArray = sentEventsQueue.ToArray();
                 sentEventsQueue.Clear();
-                for (int n = queueArray.Length - 1; n >= 0; n--) {
-                    var ev = queueArray[n];
-                    unsentEventsQueue.AddFirst(ev);
-                }
                 if (background && unsentEventsQueue.Count > 0) {
                     // Console.WriteLine($"unsentEventsQueue: {unsentEventsQueue.Count}");
+                    // Trace.WriteLine($"*** SendUnacknowledgedEvents. Count: {unsentEventsQueue.Count}");
                     EnqueueTrigger (TriggerType.Event);
                 }
             }
@@ -160,8 +158,11 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             // early out in case the target is a remote connection which already closed.
             if (!eventReceiver.IsOpen())
                 return;
-            
+            // Trace.WriteLine("--- SendEvents");
             while (DequeueEvent(out var ev)) {
+                // var msg = $"DequeueEvent {ev.seq}";
+                // Trace.WriteLine(msg);
+                // Console.WriteLine(msg);
                 try {
                     // In case the event target is remote connection it is not guaranteed that the event arrives.
                     // The remote target may already be disconnected and this is still not know when sending the event.
