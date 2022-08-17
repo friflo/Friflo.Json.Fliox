@@ -34,9 +34,10 @@ export class Playground {
             return;
         }
         const loc = window.location;
+        const protocol = loc.protocol == "http:" ? "ws:" : "wss:";
         const nr = ("" + (++this.websocketCount)).padStart(3, "0");
         const path = loc.pathname.substring(0, loc.pathname.lastIndexOf("/") + 1);
-        const uri = `ws://${loc.host}${path}ws-${nr}`;
+        const uri = `${protocol}//${loc.host}${path}ws-${nr}`;
         // const uri  = `ws://google.com:8080/`; // test connection timeout
         socketStatus.innerHTML = 'connecting <span class="spinner"></span>';
         try {
@@ -46,7 +47,9 @@ export class Playground {
                 console.log('WebSocket connected');
                 this.req = 1;
                 this.subCount = 0;
-                connectResult(null);
+                if (connectResult) {
+                    connectResult(null);
+                }
             };
             connection.onclose = (e) => {
                 socketStatus.innerText = "closed (code: " + e.code + ")";
@@ -57,7 +60,8 @@ export class Playground {
             connection.onerror = (error) => {
                 socketStatus.innerText = "error";
                 console.log('WebSocket Error ' + error);
-                connectResult(error);
+                if (connectResult)
+                    connectResult(error);
             };
             // Log messages from the server
             connection.onmessage = (e) => {
