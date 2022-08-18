@@ -204,10 +204,15 @@ export class ClusterTree {
             if (texts[n] == child.innerText)
                 continue;
             child.innerText = text;
-            child.classList.remove('updated');
-            setTimeout(() => {
-                child.classList.add('updated');
-            }, 40);
+            const classList = child.classList;
+            if (classList.contains('updated')) {
+                classList.remove('updated');
+                classList.add('updated2');
+            }
+            else {
+                classList.add('updated');
+                classList.remove('updated2');
+            }
         }
     }
     // --- messageTags 
