@@ -20,11 +20,9 @@ using static Friflo.Json.Tests.Common.Utils.AssertUtils;
 namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
 {
     internal enum EventAssertion {
-        /// <summary>Assert a <see cref="Friflo.Json.Fliox.Hub.Client.SubscriptionProcessor"/> will not get change events from the
-        /// <see cref="FlioxClient"/> it is attached to.</summary>.
+        /// <summary>Assert <see cref="EventContext.IsOrigin"/> is true for change events</summary>.
         NoChanges,
-        /// <summary>Assert a <see cref="Friflo.Json.Fliox.Hub.Client.SubscriptionProcessor"/> will get change events from all
-        /// <see cref="FlioxClient"/>'s it is not attached to.</summary>.
+        /// <summary>Assert <see cref="EventContext.IsOrigin"/> is false for change events</summary>.
         Changes
     }
     
@@ -47,10 +45,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                     
                     while (!listenSubscriber.receivedAll ) { await Task.Delay(1); }
 
-                    AreEqual(1, createSubscriber.EventCount);  // received no change events for changes done by itself
+                    AreEqual(9, createSubscriber.EventCount);
+                    IsTrue(createSubscriber.IsOrigin);
                 }
                 listenSubscriber.AssertCreateStoreChanges();
                 AreEqual(9, listenSubscriber.EventCount);           // non protected access
+                IsFalse(listenSubscriber.IsOrigin);
                 await eventDispatcher.FinishQueues();
             }
         }
@@ -168,6 +168,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         internal            bool            receivedAll;
         internal            int             countAllChanges;
         internal            int             EventCount { get; private set; }
+        internal            bool            IsOrigin   { get; private set; }
         
         private readonly    EventAssertion  eventAssertion;
         
@@ -179,7 +180,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         /// All tests using <see cref="PocStoreSubscriber"/> are required to use "createStore" as userId
         public void OnEvent (EventContext context) {
             AreEqual("createStore", context.SrcUserId.ToString());
-            EventCount = context.EventCount;
+            EventCount  = context.EventCount;
+            IsOrigin    = context.IsOrigin;
             
             context.ApplyChangesTo(client);
             
@@ -223,16 +225,16 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                         break;
                 }
             }
+            var changeInfo = context.Changes;
+            IsTrue(changeInfo.Count > 0);
+            AssertChangeEvent(articleChanges);
             
             switch (eventAssertion) {
                 case EventAssertion.NoChanges:
-                    var changeInfo = context.Changes;
-                    IsTrue(changeInfo.Count == 0);
+                    IsTrue(context.IsOrigin);
                     break;
                 case EventAssertion.Changes:
-                    changeInfo = context.Changes;
-                    IsTrue(changeInfo.Count > 0);
-                    AssertChangeEvent(articleChanges);
+                    IsFalse(context.IsOrigin);
                     break;
             }
         }

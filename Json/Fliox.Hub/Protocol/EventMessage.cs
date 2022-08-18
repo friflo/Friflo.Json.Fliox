@@ -22,6 +22,11 @@ namespace Friflo.Json.Fliox.Hub.Protocol
         /// <see cref="SendCommand"/>
         /// </summary>
                     public      SyncRequestTask[]   tasks;
+        /// <summary>
+        /// Is true if the receiving client is the origin of the event
+        /// </summary>
+        public      bool?       isOrigin   { get; set; }
+
         /// Used for optimization. Either <see cref="tasks"/> or <see cref="tasksJson"/> is set
         [Ignore]    internal    JsonValue[]         tasksJson;
         

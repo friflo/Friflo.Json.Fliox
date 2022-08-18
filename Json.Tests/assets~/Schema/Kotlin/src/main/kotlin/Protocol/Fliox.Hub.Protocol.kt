@@ -77,11 +77,12 @@ enum class ErrorResponseType {
 @Serializable
 @SerialName("ev")
 data class EventMessage (
-    override  val seq   : Int,
-    override  val src   : String,
-    override  val clt   : String,
-              val db    : String,
-              val tasks : List<SyncRequestTask>? = null,
+              val isOrigin : Boolean? = null,
+    override  val seq      : Int,
+    override  val src      : String,
+    override  val clt      : String,
+              val db       : String,
+              val tasks    : List<SyncRequestTask>? = null,
 ) : ProtocolEvent()
 
 @Serializable

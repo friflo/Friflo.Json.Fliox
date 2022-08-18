@@ -246,17 +246,19 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                     if (!subClient.databaseSubs.TryGetValue(database, out var databaseSubs))
                         continue;
                     
-                    // Enqueue only change events for (change) tasks which are not send by the client itself
-                    bool subscriberIsSender = syncContext.clientId.IsEqual(subClient.clientId);
-                    databaseSubs.AddEventTasks(syncRequest, subClient, subscriberIsSender, ref eventTasks, jsonEvaluator);
+                    databaseSubs.AddEventTasks(syncRequest, subClient, ref eventTasks, jsonEvaluator);
 
                     if (eventTasks == null)
                         continue;
+                    // mark change events for (change) tasks which are sent by the client itself
+                    bool? isOrigin = syncContext.clientId.IsEqual(subClient.clientId) ? true : (bool?)null;
+
                     var eventMessage = new EventMessage {
                         db          = database,
                         tasks       = eventTasks.ToArray(),
                         srcUserId   = syncRequest.userId,
-                        dstClientId = subClient.clientId
+                        dstClientId = subClient.clientId,
+                        isOrigin    = isOrigin
                     };
                     if (SerializeRemoteEvents && subClient.IsRemoteTarget) {
                         SerializeRemoteEvent(eventMessage, eventTasks, writer);

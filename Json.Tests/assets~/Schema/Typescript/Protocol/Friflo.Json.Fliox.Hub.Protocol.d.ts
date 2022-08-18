@@ -183,9 +183,11 @@ export abstract class ProtocolEvent extends ProtocolMessage {
 
 export class EventMessage extends ProtocolEvent {
     /** message type */
-    msg    : "ev";
+    msg       : "ev";
+    /** Is true if the receiving client is the origin of the event */
+    isOrigin? : boolean | null;
     /** The database the **tasks** refer to */
-    db     : string;
+    db        : string;
     /**
      * Contains the events an application subscribed. These are:  **CreateEntities**, 
      * **UpsertEntities**, 
@@ -194,6 +196,6 @@ export class EventMessage extends ProtocolEvent {
      * **SendMessage**, 
      * **SendCommand**
      */
-    tasks? : SyncRequestTask_Union[] | null;
+    tasks?    : SyncRequestTask_Union[] | null;
 }
 

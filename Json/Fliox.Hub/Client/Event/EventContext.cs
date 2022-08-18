@@ -58,6 +58,8 @@ namespace Friflo.Json.Fliox.Hub.Client
         public              IReadOnlyList<Changes>  Changes         => processor.contextChanges;
         /// <summary> return the number of <see cref="Messages"/> and <see cref="Changes"/> of the subscription event </summary>
         public              EventInfo               EventInfo       => ev.GetEventInfo();
+        /// <summary> is true if the client is the origin of the event </summary>
+        public              bool                    IsOrigin        => ev.isOrigin == true;
         /// <summary> is private to be exposed only in Debugger </summary>
         private             FlioxClient             Client          { get; set; }
         

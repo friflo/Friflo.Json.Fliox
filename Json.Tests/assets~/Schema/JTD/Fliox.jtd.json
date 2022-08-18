@@ -456,11 +456,12 @@
         },
         "EventMessage": {
             "properties": {
-                "seq":   { "type": "int32" },
-                "src":   { "type": "string" },
-                "clt":   { "type": "string" },
-                "db":    { "type": "string" },
-                "tasks": { "elements": { "ref":  "SyncRequestTask" }, "nullable": true }
+                "isOrigin": { "type": "boolean", "nullable": true },
+                "seq":      { "type": "int32" },
+                "src":      { "type": "string" },
+                "clt":      { "type": "string" },
+                "db":       { "type": "string" },
+                "tasks":    { "elements": { "ref":  "SyncRequestTask" }, "nullable": true }
             }
         },
         "ProtocolEvent": {
