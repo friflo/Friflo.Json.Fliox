@@ -369,12 +369,12 @@ export class Events
     }
 
     private uiContainerText(databaseName: string, containerName: string, cs: ContainerSub) {
-        let text = "";
+        let values: string[] = null;
         if (cs.subscribed || cs.creates + cs.upserts + cs.deletes + cs.patches > 0) {
-            text = `<span class="creates">${cs.creates + cs.upserts}</span> <span class="deletes">${cs.deletes}</span> <span class="patches">${cs.patches}</span>`;
+            values = [`${cs.creates + cs.upserts}`, `${cs.deletes}`, `${cs.patches}`];
         }
-        this.clusterTree.setContainerText(databaseName, containerName, text);
-        app. clusterTree.setContainerText(databaseName, containerName, text);
+        this.clusterTree.setContainerText(databaseName, containerName, values);
+        app. clusterTree.setContainerText(databaseName, containerName, values);
     }
 
     // ----------------------------------- message subs -----------------------------------
@@ -423,7 +423,7 @@ export class Events
     private uiMessageText(databaseName: string, messageName: string, cs: MessageSub) {
         let text = "";
         if (cs.subscribed || cs.events > 0) {
-            text = `<span class="creates">${cs.events}</span>`;
+            text = `${cs.events}`;
         }
         this.clusterTree.setMessageText(databaseName, messageName, text);
     }

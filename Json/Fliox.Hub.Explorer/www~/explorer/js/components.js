@@ -183,9 +183,32 @@ export class ClusterTree {
         const el = this.databaseTags[database].containerTags[container];
         el.classList.remove(className);
     }
-    setContainerText(database, container, text) {
+    setContainerText(database, container, texts) {
         const el = this.databaseTags[database].containerTags[container];
-        el.innerHTML = text;
+        if (!texts) {
+            el.innerText = "";
+            return;
+        }
+        if (el.children.length > 0) {
+            ClusterTree.setTextChildren(el, texts);
+        }
+        else {
+            el.innerHTML = `<span class="creates">${texts[0]}</span> <span class="deletes">${texts[1]}</span> <span class="patches">${texts[2]}</span>`;
+        }
+    }
+    static setTextChildren(el, texts) {
+        const children = el.children;
+        for (let n = 0; n < children.length; n++) {
+            const child = children[n];
+            const text = texts[n];
+            if (texts[n] == child.innerText)
+                continue;
+            child.innerText = text;
+            child.classList.remove('updated');
+            setTimeout(() => {
+                child.classList.add('updated');
+            }, 40);
+        }
     }
     // --- messageTags 
     addMessageClass(database, message, className) {
@@ -198,7 +221,16 @@ export class ClusterTree {
     }
     setMessageText(database, message, text) {
         const el = this.databaseTags[database].messageTags[message];
-        el.innerHTML = text;
+        if (!text) {
+            el.innerText = "";
+            return;
+        }
+        if (el.children.length > 0) {
+            ClusterTree.setTextChildren(el, [text]);
+        }
+        else {
+            el.innerHTML = `<span class="creates">${text}</span>`;
+        }
     }
     static findTreeEl(path, itemClass) {
         var _a;

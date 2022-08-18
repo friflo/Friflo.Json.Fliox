@@ -325,12 +325,12 @@ export class Events {
         app.clusterTree.removeContainerClass(databaseName, containerName, "subscribed");
     }
     uiContainerText(databaseName, containerName, cs) {
-        let text = "";
+        let values = null;
         if (cs.subscribed || cs.creates + cs.upserts + cs.deletes + cs.patches > 0) {
-            text = `<span class="creates">${cs.creates + cs.upserts}</span> <span class="deletes">${cs.deletes}</span> <span class="patches">${cs.patches}</span>`;
+            values = [`${cs.creates + cs.upserts}`, `${cs.deletes}`, `${cs.patches}`];
         }
-        this.clusterTree.setContainerText(databaseName, containerName, text);
-        app.clusterTree.setContainerText(databaseName, containerName, text);
+        this.clusterTree.setContainerText(databaseName, containerName, values);
+        app.clusterTree.setContainerText(databaseName, containerName, values);
     }
     // ----------------------------------- message subs -----------------------------------
     toggleMessageSub(databaseName, messageName) {
@@ -377,7 +377,7 @@ export class Events {
     uiMessageText(databaseName, messageName, cs) {
         let text = "";
         if (cs.subscribed || cs.events > 0) {
-            text = `<span class="creates">${cs.events}</span>`;
+            text = `${cs.events}`;
         }
         this.clusterTree.setMessageText(databaseName, messageName, text);
     }

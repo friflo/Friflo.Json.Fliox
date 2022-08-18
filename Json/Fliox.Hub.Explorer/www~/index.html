@@ -66,6 +66,8 @@
             --diagram-color:        #6c6cff;
             --schemaExports-color:  #a0a0a0;
             --sub-color:            #b5ffae;
+            --update-start:         #66ff66;
+            --update-end:           #66ff6600;
             --sub-border:           #d0d0d0;
             --sub-delete:           #d00000;
         }
@@ -92,6 +94,8 @@
             --diagram-color:        #0000ee;
             --schemaExports-color:  #555555;
             --sub-color:            #277f1e;
+            --update-start:         #0e8e00;
+            --update-end:           #0e8e0000;
             --sub-border:           #606060;
             --sub-delete:           #ffa0a0;
         }
@@ -315,6 +319,9 @@
         .treeParent.active > div > div:nth-child(1)  { -ms-transform: translateY(3px) rotate(90deg); -webkit-transform: translateY(3px) rotate(90deg); transform: translateY(3px) rotate(90deg) }
         .catalogs li                { list-style:none; }
         .catalogs li                { cursor: pointer; }
+
+        .updated                    { animation-name: update; animation-duration: 2s; }
+        @keyframes update           { from { background-color: var(--update-start); } to  {background-color: var(--update-end); } }
 
         .subscribed .creates        { color: var(--color); }
         .subscribed .deletes        { color: var(--sub-delete); }
