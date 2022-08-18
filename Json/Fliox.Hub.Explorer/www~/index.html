@@ -65,7 +65,8 @@
             --graphql-color:        #ff6dcf;
             --diagram-color:        #6c6cff;
             --schemaExports-color:  #a0a0a0;
-            --sub-color:            #b5ffae;
+            --sub-color:            #909090;
+            --sub-hover:            #b5ffae;
             --update-start:         #66ff66;
             --update-end:           #66ff6600;
             --sub-border:           #d0d0d0;
@@ -93,7 +94,8 @@
             --graphql-color:        #de33a6;
             --diagram-color:        #0000ee;
             --schemaExports-color:  #555555;
-            --sub-color:            #277f1e;
+            --sub-color:            #a0a0a0;
+            --sub-hover:            #277f1e;
             --update-start:         #0e8e00;
             --update-end:           #0e8e0000;
             --sub-border:           #606060;
@@ -329,8 +331,8 @@
         .subscribed .deletes        { color: var(--sub-delete); }
         .subscribed .patches        { color: var(--color); }
         .sub                        { border: 1px solid #00000000; border-radius: 3px; font-size: 12px; height: 13px; min-width: 25px;
-                                      color: rgb(177, 177, 177); align-self: center; text-align: right; margin-left: 4px; padding-left: 2px; padding-right: 2px; }
-        .sub:hover                  { background-color: var(--sub-color); }
+                                      color: var(--sub-color); align-self: center; text-align: right; margin-left: 4px; padding-left: 2px; padding-right: 2px; }
+        .sub:hover                  { background-color: var(--sub-hover); }
 
         .dbMessages:hover       .sub:empty,
         .dbMessage:hover        .sub:empty,
