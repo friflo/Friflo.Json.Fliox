@@ -213,6 +213,11 @@ export class ClusterTree {
             ClusterTree.setTextChildren(el, texts);
         } else {
             el.innerHTML = `<span class="creates">${texts[0]}</span> <span class="deletes">${texts[1]}</span> <span class="patches">${texts[2]}</span>`;
+            for (const child of el.children) {
+                (child as HTMLElement).addEventListener("animationend", () => {
+                    child.classList.remove("updated", "updated2");
+                });
+            }
         }
     }
 
@@ -226,11 +231,9 @@ export class ClusterTree {
             child.innerText = text;
             const classList = child.classList;
             if (classList.contains('updated')) {
-                classList.remove('updated');
-                classList.add('updated2');
+                classList.remove('updated');    classList.add('updated2');
             } else {                
-                classList.add('updated');
-                classList.remove('updated2');
+                classList.add('updated');       classList.remove('updated2');
             }
         }
     }
@@ -256,6 +259,8 @@ export class ClusterTree {
             ClusterTree.setTextChildren(el, [text]);
         } else{
             el.innerHTML = `<span class="creates">${text}</span>`;
+            const child = el.firstChild as HTMLElement;
+            child.addEventListener("animationend", () => { child.classList.remove("updated", "updated2"); });            
         }
     }  
 

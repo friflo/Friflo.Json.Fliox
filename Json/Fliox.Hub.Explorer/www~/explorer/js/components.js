@@ -188,6 +188,11 @@ export class ClusterTree {
         }
         else {
             el.innerHTML = `<span class="creates">${texts[0]}</span> <span class="deletes">${texts[1]}</span> <span class="patches">${texts[2]}</span>`;
+            for (const child of el.children) {
+                child.addEventListener("animationend", () => {
+                    child.classList.remove("updated", "updated2");
+                });
+            }
         }
     }
     static setTextChildren(el, texts) {
@@ -229,6 +234,8 @@ export class ClusterTree {
         }
         else {
             el.innerHTML = `<span class="creates">${text}</span>`;
+            const child = el.firstChild;
+            child.addEventListener("animationend", () => { child.classList.remove("updated", "updated2"); });
         }
     }
     static findTreeEl(path, itemClass) {
