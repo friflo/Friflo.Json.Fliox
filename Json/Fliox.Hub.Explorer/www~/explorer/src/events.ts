@@ -9,8 +9,14 @@ const subscriptionTree      = el("subscriptionTree");
 const scrollToEnd           = el("scrollToEnd")     as HTMLInputElement;
 const formatEvents          = el("formatEvents")    as HTMLInputElement;
 const subFilter             = el("subFilter")       as HTMLSpanElement;
-const allEvents             = el("allEvents")       as HTMLLIElement;
 
+
+export const eventsInfo = `
+
+    info
+
+- subscribe to container changes and messages by clicking the 'sub' tag of a tree item
+- show subscription event log by clicking its tree entry`;
 
 function KV(key: string, value: any) {
     if (value === undefined)
@@ -116,6 +122,7 @@ export class Events
     }
 
     public initEvents(dbContainers: DbContainers[], dbMessages: DbMessages[]) : void {
+
         const tree      = this.clusterTree;
         const ulCluster = tree.createClusterUl(dbContainers, dbMessages);
         tree.onSelectDatabase = (elem: HTMLElement, classList: DOMTokenList, databaseName: string) => {
@@ -155,8 +162,11 @@ export class Events
         };
         ulCluster.style.margin = "0";
         subscriptionTree.appendChild(ulCluster);
-        this.filter = new EventFilter(true, null, true, null, true, null);
-        tree.selectTreeElement(allEvents);
+        this.filter = EventFilter.None();
+        const firstDb   = ulCluster.children[0] as HTMLElement;
+        if (firstDb) {
+            firstDb.classList.add("active");
+        }
 
         for (const database of dbContainers) {
             const databaseSub = new DatabaseSub();

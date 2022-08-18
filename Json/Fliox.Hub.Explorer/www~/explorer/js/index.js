@@ -4,7 +4,7 @@ import { Schema } from "./schema.js";
 import { Explorer } from "./explorer.js";
 import { EntityEditor } from "./entity-editor.js";
 import { Playground } from "./playground.js";
-import { Events } from "./events.js";
+import { Events, eventsInfo } from "./events.js";
 import { ClusterTree } from "./components.js";
 const flioxVersionEl = el("flioxVersion");
 const projectName = el("projectName");
@@ -355,6 +355,11 @@ export class App {
         }
         const tree = this.clusterTree;
         const ulCluster = tree.createClusterUl(dbContainers, null);
+        const firstDb = ulCluster.children[0];
+        if (firstDb) {
+            firstDb.classList.add("active");
+            tree.selectTreeElement(firstDb.firstChild);
+        }
         tree.onSelectDatabase = (elem, classList, databaseName) => {
             if (classList.length > 0) {
                 return;
@@ -678,6 +683,7 @@ export class App {
             this.eventsEditor = monaco.editor.create(eventsContainer, {});
             const eventModel = monaco.editor.createModel(null, "json", eventUri);
             this.eventsEditor.setModel(eventModel);
+            this.eventsEditor.setValue(eventsInfo);
         }
         // this.commandResponseModel = monaco.editor.createModel(null, "json");
         this.setEditorOptions();

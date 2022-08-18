@@ -5,7 +5,12 @@ const subscriptionTree = el("subscriptionTree");
 const scrollToEnd = el("scrollToEnd");
 const formatEvents = el("formatEvents");
 const subFilter = el("subFilter");
-const allEvents = el("allEvents");
+export const eventsInfo = `
+
+    info
+
+- subscribe to container changes and messages by clicking the 'sub' tag of a tree item
+- show subscription event log by clicking its tree entry`;
 function KV(key, value) {
     if (value === undefined)
         return "";
@@ -124,8 +129,11 @@ export class Events {
         };
         ulCluster.style.margin = "0";
         subscriptionTree.appendChild(ulCluster);
-        this.filter = new EventFilter(true, null, true, null, true, null);
-        tree.selectTreeElement(allEvents);
+        this.filter = EventFilter.None();
+        const firstDb = ulCluster.children[0];
+        if (firstDb) {
+            firstDb.classList.add("active");
+        }
         for (const database of dbContainers) {
             const databaseSub = new DatabaseSub();
             this.databaseSubs[database.id] = databaseSub;

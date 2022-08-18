@@ -49,7 +49,6 @@ export class ClusterTree {
             treeEl.classList.add("active");
             this.onSelectDatabase(databaseEl, path[0].classList, databaseName);
         };
-        let firstDatabase = true;
         for (const dbContainer of dbContainers) {
             const databaseName = dbContainer.id;
             const databaseTags = new DatabaseTags();
@@ -70,11 +69,6 @@ export class ClusterTree {
             divDatabase.append(containerTag); */
             liDatabase.appendChild(divDatabase);
             ulCluster.append(liDatabase);
-            if (firstDatabase) {
-                firstDatabase = false;
-                liDatabase.classList.add("active");
-                this.selectTreeElement(divDatabase);
-            }
             const ulContainers = createEl('ul');
             ulContainers.onclick = (ev) => {
                 ev.stopPropagation();
