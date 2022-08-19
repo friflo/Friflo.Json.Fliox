@@ -177,25 +177,23 @@ export class ClusterTree {
         const el = this.databaseTags[database].containerTags[container];
         el.classList.remove(className);
     }
-    setContainerText(database, container, texts) {
+    setContainerText(database, container, texts, trigger) {
         const el = this.databaseTags[database].containerTags[container];
         if (!texts) {
             el.innerText = "";
             return;
         }
-        if (el.children.length > 0) {
-            ClusterTree.setTextChildren(el, texts);
-        }
-        else {
-            el.innerHTML = `<span class="creates">${texts[0]}</span> <span class="deletes">${texts[1]}</span> <span class="patches">${texts[2]}</span>`;
+        if (el.children.length == 0) {
+            el.innerHTML = `<span class="creates"></span> <span class="deletes"></span> <span class="patches"></span>`;
             for (const child of el.children) {
                 child.addEventListener("animationend", () => {
                     child.classList.remove("updated", "updated2");
                 });
             }
         }
+        ClusterTree.setTextChildren(el, texts, trigger);
     }
-    static setTextChildren(el, texts) {
+    static setTextChildren(el, texts, trigger) {
         const children = el.children;
         for (let n = 0; n < children.length; n++) {
             const child = children[n];
@@ -203,6 +201,8 @@ export class ClusterTree {
             if (texts[n] == child.innerText)
                 continue;
             child.innerText = text;
+            if (trigger != "event")
+                continue;
             const classList = child.classList;
             if (classList.contains('updated')) {
                 classList.remove('updated');
@@ -223,20 +223,18 @@ export class ClusterTree {
         const el = this.databaseTags[database].messageTags[message];
         el.classList.remove(className);
     }
-    setMessageText(database, message, text) {
+    setMessageText(database, message, text, trigger) {
         const el = this.databaseTags[database].messageTags[message];
         if (!text) {
             el.innerText = "";
             return;
         }
-        if (el.children.length > 0) {
-            ClusterTree.setTextChildren(el, [text]);
-        }
-        else {
-            el.innerHTML = `<span class="creates">${text}</span>`;
+        if (el.children.length == 0) {
+            el.innerHTML = `<span class="creates"></span>`;
             const child = el.firstChild;
             child.addEventListener("animationend", () => { child.classList.remove("updated", "updated2"); });
         }
+        ClusterTree.setTextChildren(el, [text], trigger);
     }
     static findTreeEl(path, itemClass) {
         var _a;

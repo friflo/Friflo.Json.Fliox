@@ -203,25 +203,24 @@ export class ClusterTree {
         el.classList.remove(className);
     }
 
-    public setContainerText (database: string, container: string, texts: string[]) : void {
+    public setContainerText (database: string, container: string, texts: string[], trigger: "event") : void {
         const el = this.databaseTags[database].containerTags[container];
         if (!texts) {
             el.innerText = "";
             return;
         }
-        if (el.children.length > 0) {
-            ClusterTree.setTextChildren(el, texts);
-        } else {
-            el.innerHTML = `<span class="creates">${texts[0]}</span> <span class="deletes">${texts[1]}</span> <span class="patches">${texts[2]}</span>`;
+        if (el.children.length == 0) {
+            el.innerHTML = `<span class="creates"></span> <span class="deletes"></span> <span class="patches"></span>`;
             for (const child of el.children) {
                 (child as HTMLElement).addEventListener("animationend", () => {
                     child.classList.remove("updated", "updated2");
                 });
             }
         }
+        ClusterTree.setTextChildren(el, texts, trigger);
     }
 
-    private static setTextChildren (el: HTMLElement, texts: string[]) : void {
+    private static setTextChildren (el: HTMLElement, texts: string[], trigger: "event") : void {
         const children = el.children as unknown as HTMLElement[];
         for (let n = 0; n < children.length; n++) {
             const child = children[n];
@@ -229,6 +228,8 @@ export class ClusterTree {
             if (texts[n] == child.innerText)
                 continue;
             child.innerText = text;
+            if (trigger != "event")
+                continue;
             const classList = child.classList;
             if (classList.contains('updated')) {
                 classList.remove('updated');    classList.add('updated2');
@@ -249,19 +250,18 @@ export class ClusterTree {
         el.classList.remove(className);
     }
 
-    public setMessageText (database: string, message: string, text: string) : void {
+    public setMessageText (database: string, message: string, text: string, trigger: "event") : void {
         const el = this.databaseTags[database].messageTags[message];
         if (!text) {
             el.innerText = "";
             return;
         }
-        if (el.children.length > 0) {
-            ClusterTree.setTextChildren(el, [text]);
-        } else{
-            el.innerHTML = `<span class="creates">${text}</span>`;
+        if (el.children.length == 0) {
+            el.innerHTML = `<span class="creates"></span>`;
             const child = el.firstChild as HTMLElement;
             child.addEventListener("animationend", () => { child.classList.remove("updated", "updated2"); });            
         }
+        ClusterTree.setTextChildren(el, [text], trigger);
     }  
 
     private static findTreeEl(path: HTMLElement[], itemClass: string) {

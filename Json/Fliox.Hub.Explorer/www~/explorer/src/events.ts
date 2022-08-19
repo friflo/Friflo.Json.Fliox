@@ -312,30 +312,30 @@ export class Events
                 case "message": {
                     const allMessageSub = databaseSub.messageSubs["*"];
                     allMessageSub.events++;
-                    this.uiMessageText(ev.db, "*", allMessageSub);
+                    this.uiMessageText(ev.db, "*", allMessageSub, "event");
 
                     const messageSub = databaseSub.messageSubs[task.name];
                     messageSub.events++;
-                    this.uiMessageText(ev.db, task.name, messageSub);
+                    this.uiMessageText(ev.db, task.name, messageSub, "event");
                     break;
                 }
                 case "upsert": 
                 case "create": {
                     const containerSub = databaseSub.containerSubs[task.container];
                     containerSub.creates += task.entities.length;
-                    this.uiContainerText(ev.db, task.container, containerSub);
+                    this.uiContainerText(ev.db, task.container, containerSub, "event");
                     break;
                 }
                 case "delete": {
                     const containerSub = databaseSub.containerSubs[task.container];
                     containerSub.deletes += task.ids.length;
-                    this.uiContainerText(ev.db, task.container, containerSub);
+                    this.uiContainerText(ev.db, task.container, containerSub, "event");
                     break;
                 }
                 case "patch": {
                     const containerSub = databaseSub.containerSubs[task.container];
                     containerSub.patches += task.patches.length;
-                    this.uiContainerText(ev.db, task.container, containerSub);
+                    this.uiContainerText(ev.db, task.container, containerSub, "event");
                     break;
                 }
             }
@@ -351,11 +351,11 @@ export class Events
             containerSub.subscribed = true;
             changes = ["create", "upsert", "patch", "delete"];
             this.uiContainerSubscribed(databaseName, containerName, true);
-            this.uiContainerText(databaseName, containerName, containerSub);
+            this.uiContainerText(databaseName, containerName, containerSub, null);
         } else {
             containerSub.subscribed = false;
             this.uiContainerSubscribed(databaseName, containerName, false);
-            this.uiContainerText(databaseName, containerName, containerSub);
+            this.uiContainerText(databaseName, containerName, containerSub, null);
         }
         const subscribeChanges: SubscribeChanges = { task: "subscribeChanges", changes: changes, container: containerName };
         const syncRequest: SyncRequest = { msg: "sync", database: databaseName, tasks: [subscribeChanges] };
@@ -378,13 +378,13 @@ export class Events
         app. clusterTree.removeContainerClass(databaseName, containerName, "subscribed");
     }
 
-    private uiContainerText(databaseName: string, containerName: string, cs: ContainerSub) {
+    private uiContainerText(databaseName: string, containerName: string, cs: ContainerSub, trigger: "event") {
         let values: string[] = null;
         if (cs.subscribed || cs.creates + cs.upserts + cs.deletes + cs.patches > 0) {
             values = [`${cs.creates + cs.upserts}`, `${cs.deletes}`, `${cs.patches}`];
         }
-        this.clusterTree.setContainerText(databaseName, containerName, values);
-        app. clusterTree.setContainerText(databaseName, containerName, values);
+        this.clusterTree.setContainerText(databaseName, containerName, values, trigger);
+        app. clusterTree.setContainerText(databaseName, containerName, values, trigger);
     }
 
     // ----------------------------------- message subs -----------------------------------
@@ -395,12 +395,12 @@ export class Events
         if (!messageSub.subscribed) {
             messageSub.subscribed = true;
             this.uiMessageSubscribed(databaseName, messageName, true);
-            this.uiMessageText(databaseName, messageName, messageSub);
+            this.uiMessageText(databaseName, messageName, messageSub, null);
         } else {
             remove = true;
             messageSub.subscribed = false;
             this.uiMessageSubscribed(databaseName, messageName, false);
-            this.uiMessageText(databaseName, messageName, messageSub);
+            this.uiMessageText(databaseName, messageName, messageSub, null);
         }
         const subscribeMessage: SubscribeMessage = {
             task:       "subscribeMessage",
@@ -430,12 +430,12 @@ export class Events
         this.clusterTree.removeMessageClass(databaseName, message, "subscribed");
     }
 
-    private uiMessageText(databaseName: string, messageName: string, cs: MessageSub) {
+    private uiMessageText(databaseName: string, messageName: string, cs: MessageSub, trigger: "event") {
         let text = "";
         if (cs.subscribed || cs.events > 0) {
             text = `${cs.events}`;
         }
-        this.clusterTree.setMessageText(databaseName, messageName, text);
+        this.clusterTree.setMessageText(databaseName, messageName, text, trigger);
     }
 
 
