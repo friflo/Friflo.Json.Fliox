@@ -322,8 +322,8 @@
         .catalogs li                { list-style:none; }
         .catalogs li                { cursor: pointer; }
 
-        .updated                    { animation-name: update;  animation-duration: 3s; }
-        .updated2                   { animation-name: update2; animation-duration: 3s; }
+        .updated                    { animation-name: update;  animation-duration: 3s; animation-timing-function: ease-in; }
+        .updated2                   { animation-name: update2; animation-duration: 3s; animation-timing-function: ease-in; }
         @keyframes update           { from { background-color: var(--update-start); } to  {background-color: var(--update-end); } }
         @keyframes update2          { from { background-color: var(--update-start); } to  {background-color: var(--update-end); } }
 
