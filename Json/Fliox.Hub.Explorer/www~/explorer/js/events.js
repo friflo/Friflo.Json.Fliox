@@ -7,6 +7,7 @@ const prettifyEvents = el("prettifyEvents");
 const subFilter = el("subFilter");
 const eventCount = el("eventCount");
 const logCount = el("logCount");
+const eventUserFilter = el("eventUserFilter");
 export const eventsInfo = `
 
     info
@@ -41,8 +42,9 @@ class DatabaseSub {
 }
 class SubEvent {
     constructor(msg, ev) {
-        this.msg = msg;
-        this.db = ev.db;
+        this.msg = SubEvent.internName(msg);
+        this.db = SubEvent.internName(ev.db);
+        this.src = SubEvent.internName(ev.src);
         const messages = [];
         const containers = [];
         for (const task of ev.tasks) {
@@ -70,6 +72,9 @@ class SubEvent {
             this.containers = containers;
         }
     }
+    isFromUser(users) {
+        return users == null || users.includes(this.src);
+    }
     static internName(name) {
         const intern = SubEvent.internNames[name];
         if (intern)
@@ -84,6 +89,7 @@ export class Events {
     constructor() {
         this.databaseSubs = {};
         this.subEvents = [];
+        this.userFilter = null;
         this.eventCount = 0;
         this.logCount = 0;
         this.clusterTree = new ClusterTree();
@@ -153,6 +159,17 @@ export class Events {
                 databaseSub.messageSubs[message] = new MessageSub();
             }
         }
+        eventUserFilter.onblur = () => { this.setUserFilter(); };
+        eventUserFilter.onkeydown = (ev) => {
+            if (ev.key == 'Enter')
+                this.setUserFilter();
+        };
+    }
+    setUserFilter() {
+        const value = eventUserFilter.value;
+        // console.log(`user filter: ${eventUserFilter.value}`);
+        this.userFilter = value ? value.split(",") : null;
+        this.setEditorLog(this.filter);
     }
     clearAllEvents() {
         app.eventsEditor.setValue("");
@@ -211,7 +228,7 @@ export class Events {
     }
     setEditorLog(filter) {
         this.filter = filter;
-        const filterResult = filter.filterEvents(this.subEvents);
+        const filterResult = filter.filterEvents(this.subEvents, this.userFilter);
         subFilter.innerText = filter.getFilterName();
         this.logCount = filterResult.eventCount;
         logCount.innerText = String(this.logCount);
@@ -234,6 +251,8 @@ export class Events {
         this.subEvents.push(msg);
         this.updateUI(ev);
         if (!this.filter.match(msg))
+            return;
+        if (!msg.isFromUser(this.userFilter))
             return;
         this.logCount++;
         logCount.innerText = String(this.logCount);
@@ -443,9 +462,11 @@ class EventFilter {
             return `${name} / ${this.container}`;
         return `${name} · ${this.message}`;
     }
-    filterEvents(events) {
+    filterEvents(events, users) {
         const matches = [];
         for (const ev of events) {
+            if (!ev.isFromUser(users))
+                continue;
             if (!this.match(ev))
                 continue;
             matches.push(ev.msg);

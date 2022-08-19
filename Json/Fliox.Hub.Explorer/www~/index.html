@@ -800,11 +800,14 @@
 
         <span style="margin-left:  0px;">events</span> <span id="eventCount" style="margin-left: 5px; min-width: 35px; margin-right: 5px;">0</span>
 
-        <input style="margin-left: 5px;" type="checkbox" checked id="scrollToEnd" title="Scroll to end on new events">
+        <input style="margin-left: 10px;" type="checkbox" checked id="scrollToEnd" title="Scroll to end on new events">
         <label for="scrollToEnd" title="Scroll to end on new events">Scroll to End</label>
 
-        <input style="margin-left: 5px;" type="checkbox" checked id="prettifyEvents" title="Prettify new events">
+        <input style="margin-left: 10px;" type="checkbox" checked id="prettifyEvents" title="Prettify new events">
         <label for="prettifyEvents"  title="Prettify new events">Prettify</label>
+
+        <label style="margin-left: 10px;" for="eventUserFilter"  title="filter given users in log">users</label>
+        <input style="margin-left: 5px; width:100px;" type="text" title="filter given users in log" id="eventUserFilter" name="eventUserFilter"><br><br>
     </div>
     <div style="grid-area: ev-tree; background-color: var(--background2); overflow: auto; padding: 5px">
       <div class="catalogs" id="subscriptionTree" style="display: block; min-height: 50px; white-space: nowrap;">

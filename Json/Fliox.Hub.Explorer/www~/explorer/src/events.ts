@@ -11,6 +11,8 @@ const prettifyEvents    = el("prettifyEvents")  as HTMLInputElement;
 const subFilter         = el("subFilter")       as HTMLSpanElement;
 const eventCount        = el("eventCount")      as HTMLSpanElement;
 const logCount          = el("logCount")        as HTMLSpanElement;
+const eventUserFilter   = el("eventUserFilter") as HTMLInputElement;
+
 
 export const eventsInfo = `
 
@@ -58,9 +60,14 @@ class DatabaseSub {
 
 class SubEvent {
     readonly    db:         string;
+    readonly    msg:        string;
+    readonly    src:        string;
     readonly    messages:   string[];
     readonly    containers: string[];
-    readonly    msg:        string;
+
+    public isFromUser(users: string[]) : boolean {
+        return users == null || users.includes(this.src);
+    }
 
     private static readonly  internNames : { [name: string]: string} = {};
 
@@ -73,8 +80,9 @@ class SubEvent {
     }
 
     constructor(msg: string, ev: EventMessage) {
-        this.msg                    = msg;
-        this.db                     = ev.db;
+        this.msg                    = SubEvent.internName(msg);
+        this.db                     = SubEvent.internName(ev.db);
+        this.src                    = SubEvent.internName(ev.src);
         const messages:   string[]  = []; 
         const containers: string[]  = [];
         for (const task of ev.tasks) {
@@ -111,6 +119,7 @@ export class Events
     private readonly    databaseSubs:   { [database: string] : DatabaseSub } = {}
     private readonly    subEvents:      SubEvent[] = [];
     private             filter:         EventFilter;
+    private             userFilter:     string[] = null;
     private             eventCount  = 0;
     private             logCount    = 0;
 
@@ -187,6 +196,17 @@ export class Events
                 databaseSub.messageSubs[message] = new MessageSub();
             }
         }
+        eventUserFilter.onblur      = () => { this.setUserFilter(); };
+        eventUserFilter.onkeydown   = (ev: KeyboardEvent) => {
+            if (ev.key  == 'Enter') this.setUserFilter();
+        };
+    }
+
+    private setUserFilter() {
+        const value = eventUserFilter.value;
+        // console.log(`user filter: ${eventUserFilter.value}`);
+        this.userFilter = value ? value.split(",") : null;
+        this.setEditorLog(this.filter);
     }
 
     public clearAllEvents() : void {
@@ -248,7 +268,7 @@ export class Events
 
     private setEditorLog(filter: EventFilter) {
         this.filter         = filter;
-        const filterResult  = filter.filterEvents(this.subEvents);
+        const filterResult  = filter.filterEvents(this.subEvents, this.userFilter);
         subFilter.innerText = filter.getFilterName();
         this.logCount       = filterResult.eventCount;
         logCount.innerText  = String(this.logCount);
@@ -274,6 +294,8 @@ export class Events
         this.updateUI(ev);
 
         if (!this.filter.match(msg))
+            return;
+        if (!msg.isFromUser(this.userFilter))
             return;
         this.logCount++;
         logCount.innerText  = String(this.logCount);
@@ -512,9 +534,11 @@ class EventFilter {
         return `${name} · ${this.message}`;
     }
 
-    public filterEvents(events: SubEvent[]) : FilterResult {
+    public filterEvents(events: SubEvent[], users: string[]) : FilterResult {
         const matches: string[] = [];
         for (const ev of events) {
+            if (!ev.isFromUser(users))
+                continue;
             if (!this.match(ev)) 
                 continue;
             matches.push(ev.msg);
