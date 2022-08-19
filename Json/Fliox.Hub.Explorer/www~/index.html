@@ -794,13 +794,16 @@
     </div>
     <div style="grid-area: ev-title-events; display:flex; overflow:hidden; white-space:nowrap; height: 23px;  font-size: 13px; padding-top: 1px; align-items: center;" class="nobreak">
 
-        <div title="Clear all events" class="navigate" onclick="app.events.clearAllEvents()" ><div style="opacity: 0.5; margin-top: 3px; font-size: 11px;">🗑️</div></div>
 
-        <span style="margin-left: 10px;">Events</span>
-        <input style="margin-left: 20px;" type="checkbox" checked id="scrollToEnd" title="Scroll to end on new events">
+        <div  style="margin-right: 0x;" title="Clear log" class="navigate" onclick="app.events.clearAllEvents()" ><div style="opacity: 0.5; margin-top: 3px; font-size: 11px;">🗑️</div></div>
+        <span style="margin-left: 3px;">log</span>     <span id="logCount"   style="margin-left: 5px; min-width: 35px; margin-right: 5px;">0</span>
+
+        <span style="margin-left:  0px;">events</span> <span id="eventCount" style="margin-left: 5px; min-width: 35px; margin-right: 5px;">0</span>
+
+        <input style="margin-left: 5px;" type="checkbox" checked id="scrollToEnd" title="Scroll to end on new events">
         <label for="scrollToEnd" title="Scroll to end on new events">Scroll to End</label>
 
-        <input style="margin-left: 20px;" type="checkbox" checked id="prettifyEvents" title="Prettify new events">
+        <input style="margin-left: 5px;" type="checkbox" checked id="prettifyEvents" title="Prettify new events">
         <label for="prettifyEvents"  title="Prettify new events">Prettify</label>
     </div>
     <div style="grid-area: ev-tree; background-color: var(--background2); overflow: auto; padding: 5px">

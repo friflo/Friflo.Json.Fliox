@@ -5,6 +5,8 @@ const subscriptionTree = el("subscriptionTree");
 const scrollToEnd = el("scrollToEnd");
 const prettifyEvents = el("prettifyEvents");
 const subFilter = el("subFilter");
+const eventCount = el("eventCount");
+const logCount = el("logCount");
 export const eventsInfo = `
 
     info
@@ -82,6 +84,8 @@ export class Events {
     constructor() {
         this.databaseSubs = {};
         this.subEvents = [];
+        this.eventCount = 0;
+        this.logCount = 0;
         this.clusterTree = new ClusterTree();
     }
     selectAllEvents(element) {
@@ -209,6 +213,8 @@ export class Events {
         this.filter = filter;
         const filterResult = filter.filterEvents(this.subEvents);
         subFilter.innerText = filter.getFilterName();
+        this.logCount = filterResult.eventCount;
+        logCount.innerText = String(this.logCount);
         const editor = app.eventsEditor;
         editor.setValue(filterResult.logs);
         const pos = editor.getModel().getPositionAt(filterResult.lastLog);
@@ -221,12 +227,16 @@ export class Events {
             const request = JSON.stringify(syncRequest);
             app.playground.sendWebSocketRequest(request);
         }
+        this.eventCount++;
+        eventCount.innerText = String(this.eventCount);
         const evStr = Events.event2String(ev, prettifyEvents.checked);
         const msg = new SubEvent(evStr, ev);
         this.subEvents.push(msg);
         this.updateUI(ev);
         if (!this.filter.match(msg))
             return;
+        this.logCount++;
+        logCount.innerText = String(this.logCount);
         this.addLog(evStr);
     }
     addLog(evStr) {
@@ -444,7 +454,8 @@ class EventFilter {
         const lastLog = matches.length == 0 ? 0 : logs.length - matches[matches.length - 1].length;
         const result = {
             logs: logs,
-            lastLog: lastLog
+            lastLog: lastLog,
+            eventCount: matches.length,
         };
         return result;
     }

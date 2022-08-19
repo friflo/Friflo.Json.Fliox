@@ -5,11 +5,12 @@ import { ClusterTree }  from "./components.js";
 import { el }           from "./types.js";
 import { app }          from "./index.js";
 
-const subscriptionTree      = el("subscriptionTree");
-const scrollToEnd           = el("scrollToEnd")     as HTMLInputElement;
-const prettifyEvents        = el("prettifyEvents")    as HTMLInputElement;
-const subFilter             = el("subFilter")       as HTMLSpanElement;
-
+const subscriptionTree  = el("subscriptionTree");
+const scrollToEnd       = el("scrollToEnd")     as HTMLInputElement;
+const prettifyEvents    = el("prettifyEvents")  as HTMLInputElement;
+const subFilter         = el("subFilter")       as HTMLSpanElement;
+const eventCount        = el("eventCount")      as HTMLSpanElement;
+const logCount          = el("logCount")        as HTMLSpanElement;
 
 export const eventsInfo = `
 
@@ -56,10 +57,10 @@ class DatabaseSub {
 }
 
 class SubEvent {
-    readonly db:            string;
-    readonly messages:      string[];
-    readonly containers:    string[];
-    readonly msg:           string;
+    readonly    db:         string;
+    readonly    messages:   string[];
+    readonly    containers: string[];
+    readonly    msg:        string;
 
     private static readonly  internNames : { [name: string]: string} = {};
 
@@ -110,6 +111,9 @@ export class Events
     private readonly    databaseSubs:   { [database: string] : DatabaseSub } = {}
     private readonly    subEvents:      SubEvent[] = [];
     private             filter:         EventFilter;
+    private             eventCount  = 0;
+    private             logCount    = 0;
+
 
     public constructor() {
         this.clusterTree    = new ClusterTree();
@@ -246,6 +250,8 @@ export class Events
         this.filter         = filter;
         const filterResult  = filter.filterEvents(this.subEvents);
         subFilter.innerText = filter.getFilterName();
+        this.logCount       = filterResult.eventCount;
+        logCount.innerText  = String(this.logCount);
 
         const editor        = app.eventsEditor;
         editor.setValue(filterResult.logs);
@@ -259,7 +265,9 @@ export class Events
             const syncRequest: SyncRequest = { msg: "sync", database: ev.db, tasks: [], info: "acknowledge received event" };
             const request = JSON.stringify(syncRequest);
             app.playground.sendWebSocketRequest(request);
-        }            
+        }
+        this.eventCount++;
+        eventCount.innerText = String(this.eventCount);
         const evStr     = Events.event2String (ev, prettifyEvents.checked);
         const msg       = new SubEvent(evStr, ev);
         this.subEvents.push (msg);
@@ -267,6 +275,8 @@ export class Events
 
         if (!this.filter.match(msg))
             return;
+        this.logCount++;
+        logCount.innerText  = String(this.logCount);
         this.addLog(evStr);
     }
 
@@ -443,8 +453,9 @@ export class Events
 
 // ----------------------------------- EventFilter -----------------------------------
 type FilterResult = {
-    readonly logs:       string;
-    readonly lastLog:   number;
+    readonly logs:          string;
+    readonly lastLog:       number;
+    readonly eventCount:    number;
 }
 
 class EventFilter {
@@ -511,8 +522,9 @@ class EventFilter {
         const logs      = `[${matches.join(',')}]`;
         const lastLog   = matches.length == 0 ? 0 : logs.length - matches[matches.length - 1].length;
         const result: FilterResult = {
-            logs:      logs,
-            lastLog:   lastLog
+            logs:       logs,
+            lastLog:    lastLog,
+            eventCount: matches.length,
         };
         return result;
     }
