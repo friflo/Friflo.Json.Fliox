@@ -800,17 +800,21 @@
 
         <span style="margin-left:  0px;">events</span> <span id="eventCount" style="margin-left: 5px; min-width: 35px; margin-right: 5px;">0</span>
 
+        <label style="margin-left: 10px;" for="eventSeqStart"       title="filter seq start in log">seq</label>
+        <input style="margin-left: 5px; width:40px;"  type="text"   title="filter seq start in log" id="eventSeqStart" name="eventSeqStart">
+
+        <label style="margin-left: 5px;" for="eventSeqEnd"          title="filter seq end in log">to</label>
+        <input style="margin-left: 5px; width:40px;"  type="text"   title="filter seq end in log" id="eventSeqEnd" name="eventSeqEnd">
+        
+        <label style="margin-left: 10px;" for="eventSrcFilter"      title="filter src users in log">src</label>
+        <input style="margin-left: 5px; width:100px;" type="text"   title="filter src users in log" id="eventSrcFilter" name="eventSrcFilter" spellcheck="false">
+
         <input style="margin-left: 10px;" type="checkbox" checked id="scrollToEnd" title="Scroll to end on new events">
         <label for="scrollToEnd" title="Scroll to end on new events">Scroll to End</label>
 
         <input style="margin-left: 10px;" type="checkbox" checked id="prettifyEvents" title="Prettify new events">
         <label for="prettifyEvents"  title="Prettify new events">Prettify</label>
 
-        <label style="margin-left: 10px;" for="eventSeqStart"     title="filter seq start in log">seq</label>
-        <input style="margin-left: 5px; width:30px;" type="text" title="filter seq start in log" id="eventSeqStart" name="eventSeqStart"><br><br>
-        
-        <label style="margin-left: 10px;" for="eventSrcFilter"    title="filter src users in log">src</label>
-        <input style="margin-left: 5px; width:100px;" type="text" title="filter src users in log" id="eventSrcFilter" name="eventSrcFilter"><br><br>
     </div>
     <div style="grid-area: ev-tree; background-color: var(--background2); overflow: auto; padding: 5px">
       <div class="catalogs" id="subscriptionTree" style="display: block; min-height: 50px; white-space: nowrap;">

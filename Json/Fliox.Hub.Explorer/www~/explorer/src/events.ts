@@ -13,6 +13,7 @@ const eventCount        = el("eventCount")      as HTMLSpanElement;
 const logCount          = el("logCount")        as HTMLSpanElement;
 const eventSrcFilter    = el("eventSrcFilter")  as HTMLInputElement;
 const eventSeqStart     = el("eventSeqStart")   as HTMLInputElement;
+const eventSeqEnd       = el("eventSeqEnd")     as HTMLInputElement;
 
 export const eventsInfo = `
 
@@ -66,8 +67,10 @@ class SubEvent {
     readonly    messages:   string[];
     readonly    containers: string[];
 
-    public isFromUser(users: string[], seqStart: number) : boolean {
-        return (this.seq >= seqStart) && (users == null || users.includes(this.src));
+    public filterSeqSrc(users: string[], seqStart: number, seqEnd: number) : boolean {
+        return  (this.seq >= seqStart)  && 
+                (this.seq <= seqEnd)    &&
+                (users == null || users.includes(this.src));
     }
 
     private static readonly  internNames : { [name: string]: string} = {};
@@ -123,6 +126,7 @@ export class Events
     private             filter:         EventFilter;
     private             userFilter:     string[] = null;
     private             seqStart    = 0;
+    private             seqEnd      = Number.MAX_SAFE_INTEGER;
     private             eventCount  = 0;
     private             logCount    = 0;
 
@@ -202,16 +206,23 @@ export class Events
         eventSrcFilter.onblur      = () =>                  { this.setLogFilter(); };
         eventSrcFilter.onkeydown   = (ev: KeyboardEvent) => { if (ev.key  == 'Enter') this.setLogFilter(); };
 
-        eventSeqStart.onblur      = () =>                  { this.setLogFilter(); };
-        eventSeqStart.onkeydown   = (ev: KeyboardEvent) => { if (ev.key  == 'Enter') this.setLogFilter(); };
+        eventSeqStart.onblur      = () =>                   { this.setLogFilter(); };
+        eventSeqStart.onkeydown   = (ev: KeyboardEvent) =>  { if (ev.key  == 'Enter') this.setLogFilter(); };
+
+        eventSeqEnd.onblur      = () =>                     { this.setLogFilter(); };
+        eventSeqEnd.onkeydown   = (ev: KeyboardEvent) =>    { if (ev.key  == 'Enter') this.setLogFilter(); };
+
     }
 
     private setLogFilter() {
-        const srcValue = eventSrcFilter.value;
-        this.userFilter = srcValue ? srcValue.split(",") : null;
+        const srcValue  = eventSrcFilter.value;
+        this.userFilter = srcValue  ? srcValue.split(",") : null;
 
-        const seqValue = eventSeqStart.value;
-        this.seqStart   = seqValue ? parseInt(seqValue) : 0;
+        const seqStart  = eventSeqStart.value;
+        this.seqStart   = seqStart  ? parseInt(seqStart) : 0;
+
+        const seqEnd    = eventSeqEnd.value;
+        this.seqEnd     = seqEnd    ? parseInt(seqEnd) : Number.MAX_SAFE_INTEGER;
 
         this.setEditorLog(this.filter);
     }
@@ -275,7 +286,7 @@ export class Events
 
     private setEditorLog(filter: EventFilter) {
         this.filter         = filter;
-        const filterResult  = filter.filterEvents(this.subEvents, this.userFilter, this.seqStart);
+        const filterResult  = filter.filterEvents(this.subEvents, this.userFilter, this.seqStart, this.seqEnd);
         subFilter.innerText = filter.getFilterName();
         this.logCount       = filterResult.eventCount;
         logCount.innerText  = String(this.logCount);
@@ -302,7 +313,7 @@ export class Events
 
         if (!this.filter.match(msg))
             return;
-        if (!msg.isFromUser(this.userFilter, this.seqStart))
+        if (!msg.filterSeqSrc(this.userFilter, this.seqStart, this.seqEnd))
             return;
         this.logCount++;
         logCount.innerText  = String(this.logCount);
@@ -541,10 +552,10 @@ class EventFilter {
         return `${name} · ${this.message}`;
     }
 
-    public filterEvents(events: SubEvent[], users: string[], seqStart: number) : FilterResult {
+    public filterEvents(events: SubEvent[], users: string[], seqStart: number, seqEnd: number) : FilterResult {
         const matches: string[] = [];
         for (const ev of events) {
-            if (!ev.isFromUser(users, seqStart))
+            if (!ev.filterSeqSrc(users, seqStart, seqEnd))
                 continue;
             if (!this.match(ev)) 
                 continue;

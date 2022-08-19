@@ -9,6 +9,7 @@ const eventCount = el("eventCount");
 const logCount = el("logCount");
 const eventSrcFilter = el("eventSrcFilter");
 const eventSeqStart = el("eventSeqStart");
+const eventSeqEnd = el("eventSeqEnd");
 export const eventsInfo = `
 
     info
@@ -74,8 +75,10 @@ class SubEvent {
             this.containers = containers;
         }
     }
-    isFromUser(users, seqStart) {
-        return (this.seq >= seqStart) && (users == null || users.includes(this.src));
+    filterSeqSrc(users, seqStart, seqEnd) {
+        return (this.seq >= seqStart) &&
+            (this.seq <= seqEnd) &&
+            (users == null || users.includes(this.src));
     }
     static internName(name) {
         const intern = SubEvent.internNames[name];
@@ -93,6 +96,7 @@ export class Events {
         this.subEvents = [];
         this.userFilter = null;
         this.seqStart = 0;
+        this.seqEnd = Number.MAX_SAFE_INTEGER;
         this.eventCount = 0;
         this.logCount = 0;
         this.clusterTree = new ClusterTree();
@@ -168,12 +172,17 @@ export class Events {
         eventSeqStart.onblur = () => { this.setLogFilter(); };
         eventSeqStart.onkeydown = (ev) => { if (ev.key == 'Enter')
             this.setLogFilter(); };
+        eventSeqEnd.onblur = () => { this.setLogFilter(); };
+        eventSeqEnd.onkeydown = (ev) => { if (ev.key == 'Enter')
+            this.setLogFilter(); };
     }
     setLogFilter() {
         const srcValue = eventSrcFilter.value;
         this.userFilter = srcValue ? srcValue.split(",") : null;
-        const seqValue = eventSeqStart.value;
-        this.seqStart = seqValue ? parseInt(seqValue) : 0;
+        const seqStart = eventSeqStart.value;
+        this.seqStart = seqStart ? parseInt(seqStart) : 0;
+        const seqEnd = eventSeqEnd.value;
+        this.seqEnd = seqEnd ? parseInt(seqEnd) : Number.MAX_SAFE_INTEGER;
         this.setEditorLog(this.filter);
     }
     clearAllEvents() {
@@ -233,7 +242,7 @@ export class Events {
     }
     setEditorLog(filter) {
         this.filter = filter;
-        const filterResult = filter.filterEvents(this.subEvents, this.userFilter, this.seqStart);
+        const filterResult = filter.filterEvents(this.subEvents, this.userFilter, this.seqStart, this.seqEnd);
         subFilter.innerText = filter.getFilterName();
         this.logCount = filterResult.eventCount;
         logCount.innerText = String(this.logCount);
@@ -257,7 +266,7 @@ export class Events {
         this.updateUI(ev);
         if (!this.filter.match(msg))
             return;
-        if (!msg.isFromUser(this.userFilter, this.seqStart))
+        if (!msg.filterSeqSrc(this.userFilter, this.seqStart, this.seqEnd))
             return;
         this.logCount++;
         logCount.innerText = String(this.logCount);
@@ -467,10 +476,10 @@ class EventFilter {
             return `${name} / ${this.container}`;
         return `${name} · ${this.message}`;
     }
-    filterEvents(events, users, seqStart) {
+    filterEvents(events, users, seqStart, seqEnd) {
         const matches = [];
         for (const ev of events) {
-            if (!ev.isFromUser(users, seqStart))
+            if (!ev.filterSeqSrc(users, seqStart, seqEnd))
                 continue;
             if (!this.match(ev))
                 continue;
