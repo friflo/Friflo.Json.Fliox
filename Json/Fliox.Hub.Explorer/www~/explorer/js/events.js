@@ -341,7 +341,7 @@ export class Events {
         }
     }
     // ----------------------------------- container subs -----------------------------------
-    toggleContainerSub(databaseName, containerName) {
+    async toggleContainerSub(databaseName, containerName) {
         const containerSubs = this.databaseSubs[databaseName].containerSubs;
         const containerSub = containerSubs[containerName];
         let changes = [];
@@ -359,12 +359,10 @@ export class Events {
         const subscribeChanges = { task: "subscribeChanges", changes: changes, container: containerName };
         const syncRequest = { msg: "sync", database: databaseName, tasks: [subscribeChanges] };
         const request = JSON.stringify(syncRequest);
-        app.playground.connect((error) => {
-            if (error) {
-                return;
-            }
-            app.playground.sendWebSocketRequest(request);
-        });
+        const error = await app.playground.connect();
+        if (error)
+            throw error;
+        app.playground.sendWebSocketRequest(request);
     }
     uiContainerSubscribed(databaseName, containerName, enable) {
         if (enable) {
@@ -384,7 +382,7 @@ export class Events {
         app.clusterTree.setContainerText(databaseName, containerName, values, trigger);
     }
     // ----------------------------------- message subs -----------------------------------
-    toggleMessageSub(databaseName, messageName) {
+    async toggleMessageSub(databaseName, messageName) {
         const messageSubs = this.databaseSubs[databaseName].messageSubs;
         const messageSub = messageSubs[messageName];
         let remove = false;
@@ -410,12 +408,11 @@ export class Events {
             tasks: [subscribeMessage]
         };
         const request = JSON.stringify(syncRequest);
-        app.playground.connect((error) => {
-            if (error) {
-                return;
-            }
-            app.playground.sendWebSocketRequest(request);
-        });
+        const error = await app.playground.connect();
+        if (error) {
+            throw error;
+        }
+        app.playground.sendWebSocketRequest(request);
         return messageSub;
     }
     uiMessageSubscribed(databaseName, message, enable) {

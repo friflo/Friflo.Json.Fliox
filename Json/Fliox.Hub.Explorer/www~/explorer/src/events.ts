@@ -393,7 +393,7 @@ export class Events
     }
 
     // ----------------------------------- container subs -----------------------------------
-    public toggleContainerSub(databaseName: string, containerName: string) : void {
+    public async toggleContainerSub(databaseName: string, containerName: string) : Promise<void> {
         const containerSubs = this.databaseSubs[databaseName].containerSubs;
         const containerSub = containerSubs[containerName];
         let changes: EntityChange[] = [];
@@ -410,12 +410,10 @@ export class Events
         const subscribeChanges: SubscribeChanges = { task: "subscribeChanges", changes: changes, container: containerName };
         const syncRequest: SyncRequest = { msg: "sync", database: databaseName, tasks: [subscribeChanges] };
         const request = JSON.stringify(syncRequest);
-        app.playground.connect((error: string) => {
-            if (error) {
-                return;
-            }
-            app.playground.sendWebSocketRequest(request);
-        });
+        const error = await app.playground.connect();
+        if (error)
+            throw error;
+        app.playground.sendWebSocketRequest(request);
     }
 
     private uiContainerSubscribed(databaseName: string, containerName: string, enable: boolean) {
@@ -438,7 +436,7 @@ export class Events
     }
 
     // ----------------------------------- message subs -----------------------------------
-    public toggleMessageSub(databaseName: string, messageName: string) : MessageSub {
+    public async toggleMessageSub(databaseName: string, messageName: string) : Promise<MessageSub> {
         const messageSubs   = this.databaseSubs[databaseName].messageSubs;
         const messageSub    = messageSubs[messageName];
         let remove = false;
@@ -463,12 +461,11 @@ export class Events
             tasks:      [subscribeMessage]
         };
         const request = JSON.stringify(syncRequest);
-        app.playground.connect((error: string) => {
-            if (error) {
-                return;
-            }
-            app.playground.sendWebSocketRequest(request);
-        });
+        const error = await app.playground.connect();
+        if (error) {
+            throw error;
+        }
+        app.playground.sendWebSocketRequest(request);
         return messageSub;
     }
 

@@ -17,8 +17,6 @@ const defaultUser       = el("user")            as HTMLInputElement;
 const defaultToken      = el("token")           as HTMLInputElement;
 
 
-type ConnectResult = (error: string | null) => void;
-
 // ----------------------------------------------- Playground -----------------------------------------------
 export class Playground
 {
@@ -41,11 +39,21 @@ export class Playground
         this.connect();
     }
 
-    public connect (connectResult?: ConnectResult): void {
+    public async connect (): Promise<string> {
         if (this.connection) {
-            connectResult(null);
-            return;
+            return null;
         }
+
+        try {
+            return await this.connectWebSocket();
+        } catch (err) {
+            const errMsg = `connect failed: ${err}`;
+            socketStatus.innerText = errMsg;
+            return errMsg;
+        }
+    }
+
+    public connectWebSocket() : Promise <string> {
         const loc       = window.location;
         const protocol  = loc.protocol == "http:" ? "ws:" : "wss:";
         const nr        = ("" + (++this.websocketCount)).padStart(3, "0");
@@ -53,7 +61,9 @@ export class Playground
         const uri       = `${protocol}//${loc.host}${path}ws-${nr}`;
         // const uri  = `ws://google.com:8080/`; // test connection timeout
         socketStatus.innerHTML = 'connecting <span class="spinner"></span>';
-        try {
+        
+        return new Promise<string>((resolve, reject) =>
+        {
             const connection = this.connection = new WebSocket(uri);
 
             connection.onopen = () => {
@@ -61,7 +71,7 @@ export class Playground
                 console.log('WebSocket connected');
                 this.req         = 1;
                 this.subCount    = 0;
-                if (connectResult) { connectResult(null); }
+                resolve(null);
             };
 
             connection.onclose = (e) => {
@@ -74,7 +84,7 @@ export class Playground
             connection.onerror = (error) => {
                 socketStatus.innerText = "error";
                 console.log('WebSocket Error ' + error);
-                if (connectResult) connectResult(error as unknown as string);
+                reject(error);
             };
 
             // Log messages from the server
@@ -105,10 +115,7 @@ export class Playground
                     }
                 }
             };
-        } catch (err) {
-            socketStatus.innerText = "connect failed: err";
-            return;
-        }
+        });
     }
 
     public closeWebsocket  () : void {
@@ -132,7 +139,7 @@ export class Playground
         this.sendWebSocketRequest(jsonRequest);
     }
 
-    public sendWebSocketRequest (jsonRequest: string): void {
+    public async sendWebSocketRequest (jsonRequest: string): Promise<void> {
         const connection = this.connection;
         if (!connection || connection.readyState != 1) { // 1 == OPEN {
             app.responseModel.setValue(`Request ${this.req} failed. WebSocket not connected`);
