@@ -11,7 +11,7 @@ const prettifyEvents    = el("prettifyEvents")  as HTMLInputElement;
 const subFilter         = el("subFilter")       as HTMLSpanElement;
 const eventCount        = el("eventCount")      as HTMLSpanElement;
 const logCount          = el("logCount")        as HTMLSpanElement;
-const eventUserFilter   = el("eventUserFilter") as HTMLInputElement;
+const eventSrcFilter    = el("eventSrcFilter")  as HTMLInputElement;
 
 
 export const eventsInfo = `
@@ -196,15 +196,15 @@ export class Events
                 databaseSub.messageSubs[message] = new MessageSub();
             }
         }
-        eventUserFilter.onblur      = () => { this.setUserFilter(); };
-        eventUserFilter.onkeydown   = (ev: KeyboardEvent) => {
+        eventSrcFilter.onblur      = () => { this.setUserFilter(); };
+        eventSrcFilter.onkeydown   = (ev: KeyboardEvent) => {
             if (ev.key  == 'Enter') this.setUserFilter();
         };
     }
 
     private setUserFilter() {
-        const value = eventUserFilter.value;
-        // console.log(`user filter: ${eventUserFilter.value}`);
+        const value = eventSrcFilter.value;
+        // console.log(`user filter: ${eventSrcFilter.value}`);
         this.userFilter = value ? value.split(",") : null;
         this.setEditorLog(this.filter);
     }

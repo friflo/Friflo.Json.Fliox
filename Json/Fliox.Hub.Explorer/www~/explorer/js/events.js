@@ -7,7 +7,7 @@ const prettifyEvents = el("prettifyEvents");
 const subFilter = el("subFilter");
 const eventCount = el("eventCount");
 const logCount = el("logCount");
-const eventUserFilter = el("eventUserFilter");
+const eventSrcFilter = el("eventSrcFilter");
 export const eventsInfo = `
 
     info
@@ -159,15 +159,15 @@ export class Events {
                 databaseSub.messageSubs[message] = new MessageSub();
             }
         }
-        eventUserFilter.onblur = () => { this.setUserFilter(); };
-        eventUserFilter.onkeydown = (ev) => {
+        eventSrcFilter.onblur = () => { this.setUserFilter(); };
+        eventSrcFilter.onkeydown = (ev) => {
             if (ev.key == 'Enter')
                 this.setUserFilter();
         };
     }
     setUserFilter() {
-        const value = eventUserFilter.value;
-        // console.log(`user filter: ${eventUserFilter.value}`);
+        const value = eventSrcFilter.value;
+        // console.log(`user filter: ${eventSrcFilter.value}`);
         this.userFilter = value ? value.split(",") : null;
         this.setEditorLog(this.filter);
     }
