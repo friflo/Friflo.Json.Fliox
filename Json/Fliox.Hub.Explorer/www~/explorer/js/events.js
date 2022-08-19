@@ -3,7 +3,7 @@ import { el } from "./types.js";
 import { app } from "./index.js";
 const subscriptionTree = el("subscriptionTree");
 const scrollToEnd = el("scrollToEnd");
-const formatEvents = el("formatEvents");
+const prettifyEvents = el("prettifyEvents");
 const subFilter = el("subFilter");
 export const eventsInfo = `
 
@@ -221,7 +221,7 @@ export class Events {
             const request = JSON.stringify(syncRequest);
             app.playground.sendWebSocketRequest(request);
         }
-        const evStr = Events.event2String(ev, formatEvents.checked);
+        const evStr = Events.event2String(ev, prettifyEvents.checked);
         const msg = new SubEvent(evStr, ev);
         this.subEvents.push(msg);
         this.updateUI(ev);

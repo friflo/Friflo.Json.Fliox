@@ -7,7 +7,7 @@ import { app }          from "./index.js";
 
 const subscriptionTree      = el("subscriptionTree");
 const scrollToEnd           = el("scrollToEnd")     as HTMLInputElement;
-const formatEvents          = el("formatEvents")    as HTMLInputElement;
+const prettifyEvents        = el("prettifyEvents")    as HTMLInputElement;
 const subFilter             = el("subFilter")       as HTMLSpanElement;
 
 
@@ -260,7 +260,7 @@ export class Events
             const request = JSON.stringify(syncRequest);
             app.playground.sendWebSocketRequest(request);
         }            
-        const evStr     = Events.event2String (ev, formatEvents.checked);
+        const evStr     = Events.event2String (ev, prettifyEvents.checked);
         const msg       = new SubEvent(evStr, ev);
         this.subEvents.push (msg);
         this.updateUI(ev);
