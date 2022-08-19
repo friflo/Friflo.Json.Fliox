@@ -12,7 +12,7 @@ const subFilter         = el("subFilter")       as HTMLSpanElement;
 const eventCount        = el("eventCount")      as HTMLSpanElement;
 const logCount          = el("logCount")        as HTMLSpanElement;
 const eventSrcFilter    = el("eventSrcFilter")  as HTMLInputElement;
-
+const eventSeqStart     = el("eventSeqStart")   as HTMLInputElement;
 
 export const eventsInfo = `
 
@@ -61,12 +61,13 @@ class DatabaseSub {
 class SubEvent {
     readonly    db:         string;
     readonly    msg:        string;
+    readonly    seq:        number;
     readonly    src:        string;
     readonly    messages:   string[];
     readonly    containers: string[];
 
-    public isFromUser(users: string[]) : boolean {
-        return users == null || users.includes(this.src);
+    public isFromUser(users: string[], seqStart: number) : boolean {
+        return (this.seq >= seqStart) && (users == null || users.includes(this.src));
     }
 
     private static readonly  internNames : { [name: string]: string} = {};
@@ -82,6 +83,7 @@ class SubEvent {
     constructor(msg: string, ev: EventMessage) {
         this.msg                    = SubEvent.internName(msg);
         this.db                     = SubEvent.internName(ev.db);
+        this.seq                    = ev.seq;
         this.src                    = SubEvent.internName(ev.src);
         const messages:   string[]  = []; 
         const containers: string[]  = [];
@@ -120,6 +122,7 @@ export class Events
     private readonly    subEvents:      SubEvent[] = [];
     private             filter:         EventFilter;
     private             userFilter:     string[] = null;
+    private             seqStart    = 0;
     private             eventCount  = 0;
     private             logCount    = 0;
 
@@ -196,16 +199,20 @@ export class Events
                 databaseSub.messageSubs[message] = new MessageSub();
             }
         }
-        eventSrcFilter.onblur      = () => { this.setUserFilter(); };
-        eventSrcFilter.onkeydown   = (ev: KeyboardEvent) => {
-            if (ev.key  == 'Enter') this.setUserFilter();
-        };
+        eventSrcFilter.onblur      = () =>                  { this.setLogFilter(); };
+        eventSrcFilter.onkeydown   = (ev: KeyboardEvent) => { if (ev.key  == 'Enter') this.setLogFilter(); };
+
+        eventSeqStart.onblur      = () =>                  { this.setLogFilter(); };
+        eventSeqStart.onkeydown   = (ev: KeyboardEvent) => { if (ev.key  == 'Enter') this.setLogFilter(); };
     }
 
-    private setUserFilter() {
-        const value = eventSrcFilter.value;
-        // console.log(`user filter: ${eventSrcFilter.value}`);
-        this.userFilter = value ? value.split(",") : null;
+    private setLogFilter() {
+        const srcValue = eventSrcFilter.value;
+        this.userFilter = srcValue ? srcValue.split(",") : null;
+
+        const seqValue = eventSeqStart.value;
+        this.seqStart   = seqValue ? parseInt(seqValue) : 0;
+
         this.setEditorLog(this.filter);
     }
 
@@ -268,7 +275,7 @@ export class Events
 
     private setEditorLog(filter: EventFilter) {
         this.filter         = filter;
-        const filterResult  = filter.filterEvents(this.subEvents, this.userFilter);
+        const filterResult  = filter.filterEvents(this.subEvents, this.userFilter, this.seqStart);
         subFilter.innerText = filter.getFilterName();
         this.logCount       = filterResult.eventCount;
         logCount.innerText  = String(this.logCount);
@@ -295,7 +302,7 @@ export class Events
 
         if (!this.filter.match(msg))
             return;
-        if (!msg.isFromUser(this.userFilter))
+        if (!msg.isFromUser(this.userFilter, this.seqStart))
             return;
         this.logCount++;
         logCount.innerText  = String(this.logCount);
@@ -534,10 +541,10 @@ class EventFilter {
         return `${name} · ${this.message}`;
     }
 
-    public filterEvents(events: SubEvent[], users: string[]) : FilterResult {
+    public filterEvents(events: SubEvent[], users: string[], seqStart: number) : FilterResult {
         const matches: string[] = [];
         for (const ev of events) {
-            if (!ev.isFromUser(users))
+            if (!ev.isFromUser(users, seqStart))
                 continue;
             if (!this.match(ev)) 
                 continue;
