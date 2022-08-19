@@ -17,6 +17,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
 {
     public interface IEventReceiver {
         bool        IsOpen ();
+        bool        IsRemoteTarget ();
         Task<bool>  ProcessEvent(ProtocolEvent ev);
     }
     
@@ -218,7 +219,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             if (!subClients.TryGetValue(clientId, out var subClient))
                 return;
             var eventReceiver = syncContext.eventReceiver;
-            if (eventReceiver != null) {
+            if (eventReceiver != null && eventReceiver.IsRemoteTarget()) {
                 subClient.UpdateTarget (eventReceiver);
             }
             

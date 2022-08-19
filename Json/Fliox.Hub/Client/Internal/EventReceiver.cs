@@ -17,7 +17,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         } 
             
         // --- IEventReceiver
-        public bool     IsOpen ()   => true;
+        public bool     IsRemoteTarget ()   => false;
+        public bool     IsOpen ()           => true;
 
         public Task<bool> ProcessEvent(ProtocolEvent ev) {
             if (!ev.dstClientId.IsEqual(client._intern.clientId))

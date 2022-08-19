@@ -47,6 +47,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         }
         
         // --- IEventReceiver
+        public bool IsRemoteTarget ()   => true;
         public bool IsOpen () {
             if (fakeOpenClosedSocket)
                 return true;
