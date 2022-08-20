@@ -34,23 +34,27 @@ class ContainerSub {
     upserts:    number;
     deletes:    number;
     patches:    number;
+    error:      string;
 
     constructor() {
         this.subscribed = false;
         this.creates    = 0;
         this.upserts    = 0;
         this.deletes    = 0;
-        this.patches    = 0;        
+        this.patches    = 0;
+        this.error      = null;
     }
 }
 
 class MessageSub {
     subscribed: boolean;
     events:     number;
+    error:      string;
 
     constructor() {
         this.subscribed = false;
         this.events     = 0;
+        this.error      = null;
     }
 }
 
@@ -391,10 +395,24 @@ export class Events
         }
     }
 
+    private async sendSubscriptionRequest(syncRequest: SyncRequest) : Promise<string>{
+        const response = await app.playground.sendWebSocketRequest(syncRequest);
+        const message   = response.message;
+        if (message.msg == "error") {
+            return message.message;
+        }
+        const task =  message.tasks[0];
+        if (task.task == "error") {
+            return task.message;
+        }
+        return null;
+    }
+
     // ----------------------------------- container subs -----------------------------------
     public async toggleContainerSub(databaseName: string, containerName: string) : Promise<void> {
         const containerSubs = this.databaseSubs[databaseName].containerSubs;
-        const containerSub = containerSubs[containerName];
+        const containerSub  = containerSubs[containerName];
+        containerSub.error  = null;
         let changes: EntityChange[] = [];
         if (!containerSub.subscribed) {
             containerSub.subscribed = true;
@@ -411,7 +429,11 @@ export class Events
         const error = await app.playground.connect();
         if (error)
             throw error;
-        app.playground.sendWebSocketRequest(syncRequest);
+        const err = await this.sendSubscriptionRequest(syncRequest);
+        if (err) {
+            containerSub.error = err;
+            this.uiContainerText(databaseName, containerName, containerSub, null);
+        }
     }
 
     private uiContainerSubscribed(databaseName: string, containerName: string, enable: boolean) {
@@ -425,6 +447,12 @@ export class Events
     }
 
     private uiContainerText(databaseName: string, containerName: string, cs: ContainerSub, trigger: "event") {
+        if (cs.error) {
+            const error = cs.subscribed ? cs.error : null;
+            this.clusterTree.setContainerError(databaseName, containerName, error);
+            app. clusterTree.setContainerError(databaseName, containerName, error);
+            return;
+        }
         let values: string[] = null;
         if (cs.subscribed || cs.creates + cs.upserts + cs.deletes + cs.patches > 0) {
             values = [`${cs.creates + cs.upserts}`, `${cs.deletes}`, `${cs.patches}`];
@@ -434,12 +462,13 @@ export class Events
     }
 
     // ----------------------------------- message subs -----------------------------------
-    public async toggleMessageSub(databaseName: string, messageName: string) : Promise<MessageSub> {
+    public async toggleMessageSub(databaseName: string, messageName: string) : Promise<void> {
         const messageSubs   = this.databaseSubs[databaseName].messageSubs;
         const messageSub    = messageSubs[messageName];
+        messageSub.error    = null;
         let remove = false;
         if (!messageSub.subscribed) {
-            messageSub.subscribed = true;
+            messageSub.subscribed   = true;
             this.uiMessageSubscribed(databaseName, messageName, true);
             this.uiMessageText(databaseName, messageName, messageSub, null);
         } else {
@@ -462,8 +491,11 @@ export class Events
         if (error) {
             throw error;
         }
-        app.playground.sendWebSocketRequest(syncRequest);
-        return messageSub;
+        const err = await this.sendSubscriptionRequest(syncRequest);
+        if (err) {
+            messageSub.error = err;
+            this.uiMessageText(databaseName, messageName, messageSub, null);
+        }
     }
 
     private uiMessageSubscribed(databaseName: string, message: string, enable: boolean) {
@@ -475,6 +507,10 @@ export class Events
     }
 
     private uiMessageText(databaseName: string, messageName: string, cs: MessageSub, trigger: "event") {
+        if (cs.error) {
+            this.clusterTree.setMessageError(databaseName, messageName, cs.subscribed ? cs.error : null);
+            return;
+        }
         let text = "";
         if (cs.subscribed || cs.events > 0) {
             text = `${cs.events}`;

@@ -203,6 +203,11 @@ export class ClusterTree {
         el.classList.remove(className);
     }
 
+    public setContainerError (database: string, container: string, text: string) : void {
+        const el = this.databaseTags[database].containerTags[container];
+        el.innerHTML = text ? `<span class='error' title='${text}'>error</span>` : "";
+    }
+
     public setContainerText (database: string, container: string, texts: string[], trigger: "event") : void {
         const el = this.databaseTags[database].containerTags[container];
         if (!texts) {
@@ -248,6 +253,11 @@ export class ClusterTree {
     public removeMessageClass (database: string, message: string, className: "subscribed") : void {
         const el = this.databaseTags[database].messageTags[message];
         el.classList.remove(className);
+    }
+
+    public setMessageError (database: string, message: string, text: string) : void {
+        const el = this.databaseTags[database].messageTags[message];
+        el.innerHTML = text ? `<span class='error' title='${text}'>error</span>` : "";
     }
 
     public setMessageText (database: string, message: string, text: string, trigger: "event") : void {

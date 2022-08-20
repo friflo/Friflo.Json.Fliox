@@ -128,7 +128,7 @@ export class Playground
         const duration          = response.end - response.start;
         const content           = app.formatJson(app.config.formatResponses, response.json);
         app.responseModel.setValue(content);
-        responseState.innerHTML = `· ${duration} ms`;
+        responseState.innerHTML = `· ${duration.toFixed(1)} ms`;
     }
 
     public async sendWebSocketRequest (syncRequest: SyncRequest): Promise<WebSocketResponse> {
@@ -158,19 +158,19 @@ export class Playground
         let jsonRequest         = app.requestModel.getValue();
         jsonRequest             = this.addUserToken(jsonRequest);
         responseState.innerHTML = '<span class="spinner"></span>';
-        const start = new Date().getTime();
+        const start = performance.now();
         let  duration: number;
         try {
             const response  = await App.postRequest(jsonRequest, "POST");
             let content     = response.text;
             content         = app.formatJson(app.config.formatResponses, content);
-            duration        = new Date().getTime() - start;
+            duration        = performance.now() - start;
             app.responseModel.setValue(content);
         } catch(error) {
-            duration = new Date().getTime() - start;
+            duration = performance.now() - start;
             app.responseModel.setValue("POST error: " + error.message);
         }
-        responseState.innerHTML = `· ${duration} ms`;
+        responseState.innerHTML = `· ${duration.toFixed(1)} ms`;
     }
 
     // --------------------------------------- example requests ---------------------------------------

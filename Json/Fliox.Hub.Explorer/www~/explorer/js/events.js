@@ -28,12 +28,14 @@ class ContainerSub {
         this.upserts = 0;
         this.deletes = 0;
         this.patches = 0;
+        this.error = null;
     }
 }
 class MessageSub {
     constructor() {
         this.subscribed = false;
         this.events = 0;
+        this.error = null;
     }
 }
 class DatabaseSub {
@@ -339,10 +341,23 @@ export class Events {
             }
         }
     }
+    async sendSubscriptionRequest(syncRequest) {
+        const response = await app.playground.sendWebSocketRequest(syncRequest);
+        const message = response.message;
+        if (message.msg == "error") {
+            return message.message;
+        }
+        const task = message.tasks[0];
+        if (task.task == "error") {
+            return task.message;
+        }
+        return null;
+    }
     // ----------------------------------- container subs -----------------------------------
     async toggleContainerSub(databaseName, containerName) {
         const containerSubs = this.databaseSubs[databaseName].containerSubs;
         const containerSub = containerSubs[containerName];
+        containerSub.error = null;
         let changes = [];
         if (!containerSub.subscribed) {
             containerSub.subscribed = true;
@@ -360,7 +375,11 @@ export class Events {
         const error = await app.playground.connect();
         if (error)
             throw error;
-        app.playground.sendWebSocketRequest(syncRequest);
+        const err = await this.sendSubscriptionRequest(syncRequest);
+        if (err) {
+            containerSub.error = err;
+            this.uiContainerText(databaseName, containerName, containerSub, null);
+        }
     }
     uiContainerSubscribed(databaseName, containerName, enable) {
         if (enable) {
@@ -372,6 +391,12 @@ export class Events {
         app.clusterTree.removeContainerClass(databaseName, containerName, "subscribed");
     }
     uiContainerText(databaseName, containerName, cs, trigger) {
+        if (cs.error) {
+            const error = cs.subscribed ? cs.error : null;
+            this.clusterTree.setContainerError(databaseName, containerName, error);
+            app.clusterTree.setContainerError(databaseName, containerName, error);
+            return;
+        }
         let values = null;
         if (cs.subscribed || cs.creates + cs.upserts + cs.deletes + cs.patches > 0) {
             values = [`${cs.creates + cs.upserts}`, `${cs.deletes}`, `${cs.patches}`];
@@ -383,6 +408,7 @@ export class Events {
     async toggleMessageSub(databaseName, messageName) {
         const messageSubs = this.databaseSubs[databaseName].messageSubs;
         const messageSub = messageSubs[messageName];
+        messageSub.error = null;
         let remove = false;
         if (!messageSub.subscribed) {
             messageSub.subscribed = true;
@@ -409,8 +435,11 @@ export class Events {
         if (error) {
             throw error;
         }
-        app.playground.sendWebSocketRequest(syncRequest);
-        return messageSub;
+        const err = await this.sendSubscriptionRequest(syncRequest);
+        if (err) {
+            messageSub.error = err;
+            this.uiMessageText(databaseName, messageName, messageSub, null);
+        }
     }
     uiMessageSubscribed(databaseName, message, enable) {
         if (enable) {
@@ -420,6 +449,10 @@ export class Events {
         this.clusterTree.removeMessageClass(databaseName, message, "subscribed");
     }
     uiMessageText(databaseName, messageName, cs, trigger) {
+        if (cs.error) {
+            this.clusterTree.setMessageError(databaseName, messageName, cs.subscribed ? cs.error : null);
+            return;
+        }
         let text = "";
         if (cs.subscribed || cs.events > 0) {
             text = `${cs.events}`;

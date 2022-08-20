@@ -328,7 +328,8 @@
         @keyframes update2          { from { background-color: var(--update-start); } to  {background-color: var(--update-end); } }
 
         .subscribed .creates        { color: var(--color); }
-        .subscribed .deletes        { color: var(--sub-delete); }
+        .subscribed .deletes,
+        .subscribed .error          { color: var(--sub-delete); }
         .subscribed .patches        { color: var(--color); }
         .sub                        { border: 1px solid #00000000; border-radius: 3px; font-size: 12px; height: 13px; min-width: 25px;
                                       color: var(--sub-color); align-self: center; text-align: right; margin-left: 4px; padding-left: 2px; padding-right: 2px; }

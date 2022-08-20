@@ -54,7 +54,7 @@ export class WebSocketClient {
                 reject(error);
             };
             connection.onmessage = (e: MessageEvent) => {
-                const end       = new Date().getTime();
+                const end       = performance.now();
                 const json      = e.data;
                 const message   = JSON.parse(json) as ProtocolMessage_Union;
                 // console.log('server:', data);
@@ -101,7 +101,7 @@ export class WebSocketClient {
             throw `req id already in use: ${reqId}`;
         }
         this.requests.set(reqId, wsRequest);
-        wsRequest.start         = new Date().getTime();
+        wsRequest.start         = performance.now();
         this.webSocket.send(jsonRequest);
 
         return wsRequest.promise;
