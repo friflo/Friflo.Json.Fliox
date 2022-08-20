@@ -1,5 +1,6 @@
 import { el, createEl } from "./types.js";
 import { App, app } from "./index.js";
+import { WebSocketClient } from "./websocket.js";
 const responseState = el("response-state");
 const subscriptionCount = el("subscriptionCount");
 const subscriptionSeq = el("subscriptionSeq");
@@ -22,14 +23,14 @@ export class Playground {
     }
     getClientId() { return this.clt; }
     connectWebsocket() {
-        if (this.connection) {
-            this.connection.close();
-            this.connection = null;
+        if (this.wsClient) {
+            this.wsClient.close();
+            this.wsClient = null;
         }
         this.connect();
     }
     async connect() {
-        if (this.connection) {
+        if (this.wsClient) {
             return null;
         }
         try {
@@ -41,7 +42,7 @@ export class Playground {
             return errMsg;
         }
     }
-    connectWebSocket() {
+    async connectWebSocket() {
         const loc = window.location;
         const protocol = loc.protocol == "http:" ? "ws:" : "wss:";
         const nr = ("" + (++this.websocketCount)).padStart(3, "0");
@@ -49,60 +50,33 @@ export class Playground {
         const uri = `${protocol}//${loc.host}${path}ws-${nr}`;
         // const uri  = `ws://google.com:8080/`; // test connection timeout
         socketStatus.innerHTML = 'connecting <span class="spinner"></span>';
-        return new Promise((resolve, reject) => {
-            const connection = this.connection = new WebSocket(uri);
-            connection.onopen = () => {
-                socketStatus.innerHTML = "connected <small>🟢</small>";
-                console.log('WebSocket connected');
-                this.req = 1;
-                this.subCount = 0;
-                resolve(null);
-            };
-            connection.onclose = (e) => {
-                socketStatus.innerText = "closed (code: " + e.code + ")";
-                responseState.innerText = "";
-                console.log('WebSocket closed');
-            };
-            // Log errors
-            connection.onerror = (error) => {
-                socketStatus.innerText = "error";
-                console.log('WebSocket Error ' + error);
-                reject(error);
-            };
-            // Log messages from the server
-            connection.onmessage = (e) => {
-                var _a;
-                const duration = new Date().getTime() - this.requestStart;
-                const data = JSON.parse(e.data);
-                // console.log('server:', e.data);
-                switch (data.msg) {
-                    case "resp":
-                    case "error": {
-                        this.clt = data.clt;
-                        cltElement.innerText = (_a = this.clt) !== null && _a !== void 0 ? _a : " - ";
-                        const content = app.formatJson(app.config.formatResponses, e.data);
-                        app.responseModel.setValue(content);
-                        responseState.innerHTML = `· ${duration} ms`;
-                        break;
-                    }
-                    case "ev": {
-                        subscriptionCount.innerText = String(++this.subCount);
-                        const subSeq = this.subSeq = data.seq;
-                        // multiple clients can use the same WebSocket. Use the latest
-                        if (this.clt == data.clt) {
-                            subscriptionSeq.innerText = subSeq ? String(subSeq) : " - ";
-                            ackElement.innerText = subSeq ? String(subSeq) : " - ";
-                            app.events.addSubscriptionEvent(data);
-                        }
-                        break;
-                    }
-                }
-            };
-        });
+        this.wsClient = new WebSocketClient();
+        this.wsClient.onClose = (e) => {
+            socketStatus.innerText = "closed (code: " + e.code + ")";
+            responseState.innerText = "";
+        };
+        this.wsClient.onEvent = (data) => {
+            subscriptionCount.innerText = String(++this.subCount);
+            const subSeq = this.subSeq = data.seq;
+            // multiple clients can use the same WebSocket. Use the latest
+            if (this.clt == data.clt) {
+                subscriptionSeq.innerText = subSeq ? String(subSeq) : " - ";
+                ackElement.innerText = subSeq ? String(subSeq) : " - ";
+                app.events.addSubscriptionEvent(data);
+            }
+        };
+        const error = await this.wsClient.connect(uri);
+        this.subCount = 0;
+        if (error) {
+            socketStatus.innerText = "error";
+            return error;
+        }
+        socketStatus.innerHTML = "connected <small>🟢</small>";
+        return null;
     }
     closeWebsocket() {
-        this.connection.close();
-        this.connection = null;
+        this.wsClient.close();
+        this.wsClient = null;
     }
     addUserToken(jsonRequest) {
         const endBracket = jsonRequest.lastIndexOf("}");
@@ -119,39 +93,40 @@ export class Playground {
         this.sendWebSocketRequest(jsonRequest);
     }
     async sendWebSocketRequest(jsonRequest) {
-        const connection = this.connection;
-        if (!connection || connection.readyState != 1) { // 1 == OPEN {
+        var _a;
+        const wsClient = this.wsClient;
+        if (!wsClient || !wsClient.isOpen()) {
             app.responseModel.setValue(`Request ${this.req} failed. WebSocket not connected`);
             responseState.innerHTML = "";
         }
         else {
             jsonRequest = this.addUserToken(jsonRequest);
-            try {
-                const request = JSON.parse(jsonRequest);
-                if (request) {
-                    // Enable overrides of WebSocket specific members
-                    if (request.req !== undefined) {
-                        this.req = request.req;
-                    }
-                    if (request.ack !== undefined) {
-                        this.subSeq = request.ack;
-                    }
-                    if (request.clt !== undefined) {
-                        this.clt = request.clt;
-                    }
-                    // Add WebSocket specific members to request
-                    request.req = this.req;
-                    request.ack = this.subSeq;
-                    if (this.clt) {
-                        request.clt = this.clt;
-                    }
-                }
-                jsonRequest = JSON.stringify(request);
+            const request = JSON.parse(jsonRequest);
+            // Enable overrides of WebSocket specific members
+            if (request.req !== undefined) {
+                this.req = request.req;
             }
-            catch (_a) { }
+            if (request.ack !== undefined) {
+                this.subSeq = request.ack;
+            }
+            if (request.clt !== undefined) {
+                this.clt = request.clt;
+            }
+            // Add WebSocket specific members to request
+            request.req = this.req;
+            request.ack = this.subSeq;
+            if (this.clt) {
+                request.clt = this.clt;
+            }
             responseState.innerHTML = '<span class="spinner"></span>';
-            connection.send(jsonRequest);
             this.requestStart = new Date().getTime();
+            const response = await wsClient.syncRequest(request);
+            const duration = new Date().getTime() - this.requestStart;
+            this.clt = response.message.clt;
+            cltElement.innerText = (_a = this.clt) !== null && _a !== void 0 ? _a : " - ";
+            const content = app.formatJson(app.config.formatResponses, response.json);
+            app.responseModel.setValue(content);
+            responseState.innerHTML = `· ${duration} ms`;
         }
         this.req++;
         reqIdElement.innerText = String(this.req);
@@ -164,7 +139,7 @@ export class Playground {
         let duration;
         try {
             const response = await App.postRequest(jsonRequest, "POST");
-            let content = await response.text;
+            let content = response.text;
             content = app.formatJson(app.config.formatResponses, content);
             duration = new Date().getTime() - start;
             app.responseModel.setValue(content);
