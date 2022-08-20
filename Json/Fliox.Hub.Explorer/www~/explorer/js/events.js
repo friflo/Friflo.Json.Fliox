@@ -254,11 +254,6 @@ export class Events {
         editor.revealPositionNearTop(pos);
     }
     addSubscriptionEvent(ev) {
-        const acknowledgeEvent = true;
-        if (acknowledgeEvent) {
-            const syncRequest = { msg: "sync", database: ev.db, tasks: [], info: "acknowledge received event" };
-            app.playground.sendWebSocketRequest(syncRequest);
-        }
         this.eventCount++;
         eventCount.innerText = String(this.eventCount);
         const evStr = Events.event2String(ev, prettifyEvents.checked);

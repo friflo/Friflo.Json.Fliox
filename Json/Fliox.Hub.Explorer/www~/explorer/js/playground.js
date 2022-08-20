@@ -63,6 +63,9 @@ export class Playground {
                 subscriptionSeq.innerText = subSeq ? String(subSeq) : " - ";
                 ackElement.innerText = subSeq ? String(subSeq) : " - ";
                 app.events.addSubscriptionEvent(data);
+                // acknowledge event by sending a SyncRequest with SyncRequest.ack set to the last received seq
+                const syncRequest = { msg: "sync", database: data.db, tasks: [], info: "acknowledge event" };
+                this.sendWebSocketRequest(syncRequest);
             }
         };
         const error = await this.wsClient.connect(uri);

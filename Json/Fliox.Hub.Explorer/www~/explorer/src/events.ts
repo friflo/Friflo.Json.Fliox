@@ -302,11 +302,6 @@ export class Events
     }
 
     public addSubscriptionEvent(ev: EventMessage) : void {
-        const acknowledgeEvent = true;
-        if (acknowledgeEvent) {
-            const syncRequest: SyncRequest = { msg: "sync", database: ev.db, tasks: [], info: "acknowledge received event" };
-            app.playground.sendWebSocketRequest(syncRequest);
-        }
         this.eventCount++;
         eventCount.innerText = String(this.eventCount);
         const evStr     = Events.event2String (ev, prettifyEvents.checked);
@@ -318,6 +313,7 @@ export class Events
             return;
         if (!msg.filterSeqSrc(this.userFilter, this.seqStart, this.seqEnd))
             return;
+
         this.logCount++;
         logCount.innerText  = String(this.logCount);
         this.addLog(evStr);
