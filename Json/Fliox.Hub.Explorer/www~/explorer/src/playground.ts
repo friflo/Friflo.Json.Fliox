@@ -113,7 +113,7 @@ export class Playground
         if (!wsClient || !wsClient.isOpen()) {
             app.responseModel.setValue(`Request ${this.req} failed. WebSocket not connected`);
             responseState.innerHTML = "";
-            this.req++;
+            this.req++; // not necessary but makes error message in editor simpler to understand
             reqIdElement.innerText  =  String(this.req);
             return;
         }
@@ -143,18 +143,16 @@ export class Playground
 
     private async sendWsClientRequest (syncRequest: SyncRequest): Promise<WebSocketResponse> {
         // Add WebSocket specific members to request
-        syncRequest.req         = this.req;
+        syncRequest.req         = this.req++;
         syncRequest.ack         = this.lastEventSeq;
         if (this.clt) {
             syncRequest.clt     = this.clt;
         }
+        reqIdElement.innerText  =  String(this.req);
         const response          = await this.wsClient.syncRequest(syncRequest);
 
-        this.clt                = response.message.clt;
+        this.clt                = response.message.clt; // ProtocolResponse.clt is set by Host if not set in SynRequest
         cltElement.innerText    = this.clt ?? " - ";
-
-        this.req++;
-        reqIdElement.innerText  =  String(this.req);
         return response;
     }
 
