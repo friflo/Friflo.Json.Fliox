@@ -10,7 +10,7 @@ class WebSocketRequest {
 }
 export class WebSocketClient {
     constructor() {
-        this.requests = {};
+        this.requests = new Map();
         this.onClose = (e) => { console.log(`onClose. code ${e.code}`); };
         this.onEvent = (ev) => { console.log(`onEvent. ev: ${ev}`); };
         this.onRecvError = (error) => { console.log(`onRecvError. error: ${error}`); };
@@ -35,6 +35,7 @@ export class WebSocketClient {
                 reject(error);
             };
             connection.onmessage = (e) => {
+                const end = new Date().getTime();
                 const json = e.data;
                 const message = JSON.parse(json);
                 // console.log('server:', data);
@@ -46,12 +47,13 @@ export class WebSocketClient {
                             this.onRecvError(`missing field 'req'. was: ${json}`);
                             return;
                         }
-                        const request = this.requests[reqId];
+                        const request = this.requests.get(reqId);
                         if (!request) {
                             this.onRecvError(`request not found. req: ${reqId}`);
                             return;
                         }
-                        request.resolve({ json: json, message: message });
+                        this.requests.delete(reqId);
+                        request.resolve({ json: json, message: message, start: request.start, end: end });
                         break;
                     }
                     case "ev":
@@ -74,10 +76,11 @@ export class WebSocketClient {
         }
         const jsonRequest = JSON.stringify(request);
         const wsRequest = new WebSocketRequest();
-        if (this.requests[reqId]) {
+        if (this.requests.has(reqId)) {
             throw `req id already in use: ${reqId}`;
         }
-        this.requests[reqId] = wsRequest;
+        this.requests.set(reqId, wsRequest);
+        wsRequest.start = new Date().getTime();
         this.webSocket.send(jsonRequest);
         return wsRequest.promise;
     }

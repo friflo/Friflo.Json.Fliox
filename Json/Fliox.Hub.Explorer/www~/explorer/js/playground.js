@@ -16,10 +16,10 @@ const defaultToken = el("token");
 export class Playground {
     constructor() {
         this.websocketCount = 0;
-        this.req = 1;
-        this.clt = null;
-        this.subSeq = 0;
-        this.subCount = 0;
+        this.req = 1; // incrementing request id. Starts with 1 for every new wsClient
+        this.clt = null; // client id
+        this.lastEventSeq = 0; // last received event seq. Used to acknowledge received the event via SyncRequest.ack
+        this.eventCount = 0; // number of received events. Reset for every new wsClient
     }
     getClientId() { return this.clt; }
     connectWebsocket() {
@@ -56,8 +56,8 @@ export class Playground {
             responseState.innerText = "";
         };
         this.wsClient.onEvent = (data) => {
-            subscriptionCount.innerText = String(++this.subCount);
-            const subSeq = this.subSeq = data.seq;
+            subscriptionCount.innerText = String(++this.eventCount);
+            const subSeq = this.lastEventSeq = data.seq;
             // multiple clients can use the same WebSocket. Use the latest
             if (this.clt == data.clt) {
                 subscriptionSeq.innerText = subSeq ? String(subSeq) : " - ";
@@ -66,7 +66,7 @@ export class Playground {
             }
         };
         const error = await this.wsClient.connect(uri);
-        this.subCount = 0;
+        this.eventCount = 0;
         if (error) {
             socketStatus.innerText = "error";
             return error;
@@ -88,48 +88,54 @@ export class Playground {
         userToken = userToken.substring(1, userToken.length - 1);
         return `${before},${userToken}${after}`;
     }
-    sendSyncRequest() {
-        const jsonRequest = app.requestModel.getValue();
-        this.sendWebSocketRequest(jsonRequest);
-    }
-    async sendWebSocketRequest(jsonRequest) {
-        var _a;
+    async sendSyncRequest() {
         const wsClient = this.wsClient;
         if (!wsClient || !wsClient.isOpen()) {
             app.responseModel.setValue(`Request ${this.req} failed. WebSocket not connected`);
             responseState.innerHTML = "";
+            this.req++;
+            reqIdElement.innerText = String(this.req);
+            return;
         }
-        else {
-            jsonRequest = this.addUserToken(jsonRequest);
-            const request = JSON.parse(jsonRequest);
-            // Enable overrides of WebSocket specific members
-            if (request.req !== undefined) {
-                this.req = request.req;
-            }
-            if (request.ack !== undefined) {
-                this.subSeq = request.ack;
-            }
-            if (request.clt !== undefined) {
-                this.clt = request.clt;
-            }
-            // Add WebSocket specific members to request
-            request.req = this.req;
-            request.ack = this.subSeq;
-            if (this.clt) {
-                request.clt = this.clt;
-            }
-            responseState.innerHTML = '<span class="spinner"></span>';
-            this.requestStart = new Date().getTime();
-            const response = await wsClient.syncRequest(request);
-            const duration = new Date().getTime() - this.requestStart;
-            this.clt = response.message.clt;
-            cltElement.innerText = (_a = this.clt) !== null && _a !== void 0 ? _a : " - ";
-            const content = app.formatJson(app.config.formatResponses, response.json);
-            app.responseModel.setValue(content);
-            responseState.innerHTML = `· ${duration} ms`;
+        let jsonRequest = app.requestModel.getValue();
+        jsonRequest = this.addUserToken(jsonRequest);
+        const syncRequest = JSON.parse(jsonRequest);
+        // Enable overrides of WebSocket specific members
+        if (syncRequest.req !== undefined) {
+            this.req = syncRequest.req;
         }
+        if (syncRequest.ack !== undefined) {
+            this.lastEventSeq = syncRequest.ack;
+        }
+        if (syncRequest.clt !== undefined) {
+            this.clt = syncRequest.clt;
+        }
+        responseState.innerHTML = '<span class="spinner"></span>';
+        const response = await this.sendWsClientRequest(syncRequest);
+        const duration = response.end - response.start;
+        const content = app.formatJson(app.config.formatResponses, response.json);
+        app.responseModel.setValue(content);
+        responseState.innerHTML = `· ${duration} ms`;
+    }
+    async sendWebSocketRequest(syncRequest) {
+        syncRequest.user = defaultUser.value;
+        syncRequest.token = defaultToken.value;
+        return await this.sendWsClientRequest(syncRequest);
+    }
+    async sendWsClientRequest(syncRequest) {
+        var _a;
+        // Add WebSocket specific members to request
+        syncRequest.req = this.req;
+        syncRequest.ack = this.lastEventSeq;
+        if (this.clt) {
+            syncRequest.clt = this.clt;
+        }
+        const response = await this.wsClient.syncRequest(syncRequest);
+        this.clt = response.message.clt;
+        cltElement.innerText = (_a = this.clt) !== null && _a !== void 0 ? _a : " - ";
         this.req++;
         reqIdElement.innerText = String(this.req);
+        return response;
     }
     async postSyncRequest() {
         let jsonRequest = app.requestModel.getValue();

@@ -301,8 +301,7 @@ export class Events
         const acknowledgeEvent = true;
         if (acknowledgeEvent) {
             const syncRequest: SyncRequest = { msg: "sync", database: ev.db, tasks: [], info: "acknowledge received event" };
-            const request = JSON.stringify(syncRequest);
-            app.playground.sendWebSocketRequest(request);
+            app.playground.sendWebSocketRequest(syncRequest);
         }
         this.eventCount++;
         eventCount.innerText = String(this.eventCount);
@@ -409,11 +408,10 @@ export class Events
         }
         const subscribeChanges: SubscribeChanges = { task: "subscribeChanges", changes: changes, container: containerName };
         const syncRequest: SyncRequest = { msg: "sync", database: databaseName, tasks: [subscribeChanges] };
-        const request = JSON.stringify(syncRequest);
         const error = await app.playground.connect();
         if (error)
             throw error;
-        app.playground.sendWebSocketRequest(request);
+        app.playground.sendWebSocketRequest(syncRequest);
     }
 
     private uiContainerSubscribed(databaseName: string, containerName: string, enable: boolean) {
@@ -460,12 +458,11 @@ export class Events
             database:   databaseName,
             tasks:      [subscribeMessage]
         };
-        const request = JSON.stringify(syncRequest);
         const error = await app.playground.connect();
         if (error) {
             throw error;
         }
-        app.playground.sendWebSocketRequest(request);
+        app.playground.sendWebSocketRequest(syncRequest);
         return messageSub;
     }
 
@@ -484,8 +481,6 @@ export class Events
         }
         this.clusterTree.setMessageText(databaseName, messageName, text, trigger);
     }
-
-
 }
 
 // ----------------------------------- EventFilter -----------------------------------

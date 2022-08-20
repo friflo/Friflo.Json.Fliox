@@ -1,13 +1,16 @@
-import { EventMessage, ProtocolMessage_Union, ProtocolResponse_Union, SyncRequest, } from "../../../../../Json.Tests/assets~/Schema/Typescript/Protocol/Friflo.Json.Fliox.Hub.Protocol";
+import { EventMessage, ErrorResponse, SyncRequest, SyncResponse, ProtocolMessage_Union, } from "../../../../../Json.Tests/assets~/Schema/Typescript/Protocol/Friflo.Json.Fliox.Hub.Protocol";
 
 
 export class WebSocketResponse {
     json:       string;
-    message:    ProtocolResponse_Union;
+    message:    SyncResponse | ErrorResponse;
+    start:      number;
+    end:        number;
 }
 
 class WebSocketRequest {
     promise:    Promise<WebSocketResponse>;
+    start:      number;
     resolve:    (value: WebSocketResponse | PromiseLike<WebSocketResponse>) => void;
     reject:     (reason?: any)                                              => void;
 
@@ -22,7 +25,7 @@ class WebSocketRequest {
 export class WebSocketClient {
 
     private webSocket:  WebSocket;
-    private requests:   { [req: number] : WebSocketRequest } = {}
+    private requests    = new Map<number, WebSocketRequest>();
 
     public  onClose:        (e: CloseEvent)    => void = (e)        => { console.log(`onClose. code ${e.code}`); };
     public  onEvent:        (ev: EventMessage) => void = (ev)       => { console.log(`onEvent. ev: ${ev}`); };
@@ -51,6 +54,7 @@ export class WebSocketClient {
                 reject(error);
             };
             connection.onmessage = (e: MessageEvent) => {
+                const end       = new Date().getTime();
                 const json      = e.data;
                 const message   = JSON.parse(json) as ProtocolMessage_Union;
                 // console.log('server:', data);
@@ -62,12 +66,13 @@ export class WebSocketClient {
                             this.onRecvError(`missing field 'req'. was: ${json}`);
                             return;
                         }
-                        const request = this.requests[reqId];
+                        const request = this.requests.get(reqId);
                         if (!request) {
                             this.onRecvError(`request not found. req: ${reqId}`);
                             return;
-                        }                        
-                        request.resolve({json: json, message: message});
+                        }
+                        this.requests.delete(reqId);
+                        request.resolve({json: json, message: message, start: request.start, end: end});
                         break;
                     }
                     case "ev":
@@ -92,10 +97,11 @@ export class WebSocketClient {
         }
         const jsonRequest       = JSON.stringify(request);
         const wsRequest         = new WebSocketRequest ();
-        if (this.requests[reqId]) {
+        if (this.requests.has(reqId)) {
             throw `req id already in use: ${reqId}`;
         }
-        this.requests[reqId]    = wsRequest;
+        this.requests.set(reqId, wsRequest);
+        wsRequest.start         = new Date().getTime();
         this.webSocket.send(jsonRequest);
 
         return wsRequest.promise;

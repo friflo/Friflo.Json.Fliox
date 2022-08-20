@@ -255,8 +255,7 @@ export class Events {
         const acknowledgeEvent = true;
         if (acknowledgeEvent) {
             const syncRequest = { msg: "sync", database: ev.db, tasks: [], info: "acknowledge received event" };
-            const request = JSON.stringify(syncRequest);
-            app.playground.sendWebSocketRequest(request);
+            app.playground.sendWebSocketRequest(syncRequest);
         }
         this.eventCount++;
         eventCount.innerText = String(this.eventCount);
@@ -358,11 +357,10 @@ export class Events {
         }
         const subscribeChanges = { task: "subscribeChanges", changes: changes, container: containerName };
         const syncRequest = { msg: "sync", database: databaseName, tasks: [subscribeChanges] };
-        const request = JSON.stringify(syncRequest);
         const error = await app.playground.connect();
         if (error)
             throw error;
-        app.playground.sendWebSocketRequest(request);
+        app.playground.sendWebSocketRequest(syncRequest);
     }
     uiContainerSubscribed(databaseName, containerName, enable) {
         if (enable) {
@@ -407,12 +405,11 @@ export class Events {
             database: databaseName,
             tasks: [subscribeMessage]
         };
-        const request = JSON.stringify(syncRequest);
         const error = await app.playground.connect();
         if (error) {
             throw error;
         }
-        app.playground.sendWebSocketRequest(request);
+        app.playground.sendWebSocketRequest(syncRequest);
         return messageSub;
     }
     uiMessageSubscribed(databaseName, message, enable) {

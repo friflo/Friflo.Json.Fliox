@@ -1,6 +1,6 @@
 import { el, createEl }     from "./types.js";
 import { App, app }         from "./index.js";
-import { WebSocketClient } from "./websocket.js";
+import { WebSocketClient, WebSocketResponse } from "./websocket.js";
 import { SyncRequest } from "../../../../../Json.Tests/assets~/Schema/Typescript/Protocol/Friflo.Json.Fliox.Hub.Protocol.js";
 
 
@@ -24,11 +24,10 @@ export class Playground
     // --- WebSocket ---
     private wsClient:       WebSocketClient;
     private websocketCount  = 0;
-    private req             = 1;
-    private clt:            string | null  = null;
-    private requestStart:   number;
-    private subSeq          = 0;
-    private subCount        = 0;
+    private req             = 1;                    // incrementing request id. Starts with 1 for every new wsClient
+    private clt:            string | null  = null;  // client id
+    private lastEventSeq    = 0;                    // last received event seq. Used to acknowledge received the event via SyncRequest.ack
+    private eventCount      = 0;                    // number of received events. Reset for every new wsClient
 
     public getClientId() : string { return this.clt; }
 
@@ -69,8 +68,8 @@ export class Playground
             responseState.innerText = "";
         };
         this.wsClient.onEvent = (data) => {
-            subscriptionCount.innerText = String(++this.subCount);
-            const subSeq = this.subSeq = data.seq;
+            subscriptionCount.innerText = String(++this.eventCount);
+            const subSeq = this.lastEventSeq = data.seq;
             // multiple clients can use the same WebSocket. Use the latest
             if (this.clt == data.clt) {
                 subscriptionSeq.innerText   = subSeq ? String(subSeq) : " - ";
@@ -80,7 +79,7 @@ export class Playground
         };
         const error     = await this.wsClient.connect(uri);
 
-        this.subCount   = 0;
+        this.eventCount = 0;
         if (error) {
             socketStatus.innerText = "error";
             return error;
@@ -105,44 +104,54 @@ export class Playground
         return `${before},${userToken}${after}`;
     }
 
-    public sendSyncRequest (): void {
-        const jsonRequest = app.requestModel.getValue();
-        this.sendWebSocketRequest(jsonRequest);
-    }
-
-    public async sendWebSocketRequest (jsonRequest: string): Promise<void> {
+    public async sendSyncRequest (): Promise<void> {
         const wsClient = this.wsClient;
         if (!wsClient || !wsClient.isOpen()) {
             app.responseModel.setValue(`Request ${this.req} failed. WebSocket not connected`);
             responseState.innerHTML = "";
-        } else {
-            jsonRequest             = this.addUserToken(jsonRequest);
-            const request           = JSON.parse(jsonRequest) as SyncRequest;
-
-            // Enable overrides of WebSocket specific members
-            if (request.req !== undefined) { this.req      = request.req; }
-            if (request.ack !== undefined) { this.subSeq   = request.ack; }
-            if (request.clt !== undefined) { this.clt      = request.clt; }
-            
-            // Add WebSocket specific members to request
-            request.req     = this.req;
-            request.ack     = this.subSeq;
-            if (this.clt) {
-                request.clt     = this.clt;
-            }
-            responseState.innerHTML = '<span class="spinner"></span>';
-            this.requestStart       = new Date().getTime();
-            const response          = await wsClient.syncRequest(request);
-
-            const duration          = new Date().getTime() - this.requestStart;
-            this.clt                = response.message.clt;
-            cltElement.innerText    = this.clt ?? " - ";
-            const content           = app.formatJson(app.config.formatResponses, response.json);
-            app.responseModel.setValue(content);
-            responseState.innerHTML = `· ${duration} ms`;
+            this.req++;
+            reqIdElement.innerText  =  String(this.req);
+            return;
         }
+        let jsonRequest     = app.requestModel.getValue();
+        jsonRequest         = this.addUserToken(jsonRequest);
+        const syncRequest   = JSON.parse(jsonRequest) as SyncRequest;
+
+        // Enable overrides of WebSocket specific members
+        if (syncRequest.req !== undefined) { this.req           = syncRequest.req; }
+        if (syncRequest.ack !== undefined) { this.lastEventSeq  = syncRequest.ack; }
+        if (syncRequest.clt !== undefined) { this.clt           = syncRequest.clt; }
+
+        responseState.innerHTML = '<span class="spinner"></span>';
+        const response          = await this.sendWsClientRequest(syncRequest);
+
+        const duration          = response.end - response.start;
+        const content           = app.formatJson(app.config.formatResponses, response.json);
+        app.responseModel.setValue(content);
+        responseState.innerHTML = `· ${duration} ms`;
+    }
+
+    public async sendWebSocketRequest (syncRequest: SyncRequest): Promise<WebSocketResponse> {
+        syncRequest.user    = defaultUser.value;
+        syncRequest.token   = defaultToken.value;
+        return await this.sendWsClientRequest(syncRequest);
+    }
+
+    private async sendWsClientRequest (syncRequest: SyncRequest): Promise<WebSocketResponse> {
+        // Add WebSocket specific members to request
+        syncRequest.req         = this.req;
+        syncRequest.ack         = this.lastEventSeq;
+        if (this.clt) {
+            syncRequest.clt     = this.clt;
+        }
+        const response          = await this.wsClient.syncRequest(syncRequest);
+
+        this.clt                = response.message.clt;
+        cltElement.innerText    = this.clt ?? " - ";
+
         this.req++;
         reqIdElement.innerText  =  String(this.req);
+        return response;
     }
 
     public async postSyncRequest (): Promise<void> {
