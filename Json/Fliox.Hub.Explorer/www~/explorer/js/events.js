@@ -11,15 +11,22 @@ const eventSrcFilter = el("eventSrcFilter");
 const eventSeqStart = el("eventSeqStart");
 const eventSeqEnd = el("eventSeqEnd");
 export const eventsInfo = `
-
     info
 
-* subscribe to container changes and messages by clicking the 'sub' tag of a tree item
-    Try out by generating 'upsert' events
-    - select a container in the 'Explorer' tab
+* Subscribe to container changes and messages by clicking the 'sub' tag of a tree item
+    Try out by generating 'upsert' events in the 'Explorer' tab
+    - select a container
     - select an entity in the container and click 'Save'
 
-* show subscription events by clicking its tree entry`;
+* Show subscription events by clicking its tree entry in the 'Pub-Sub' tab
+
+A WebSocket is used to send push events to the client.
+In case of a WebSocket connection loss the host store events targeted to the client
+and send them after the client reconnects.
+    Try out a disconnect using the 'Playground' tab
+    - Click 'close'
+    - Click 'connect'
+    - Click 'send' - any request`;
 function KV(key, value) {
     if (value === undefined)
         return "";
