@@ -15,7 +15,11 @@ export const eventsInfo = `
     info
 
 - subscribe to container changes and messages by clicking the 'sub' tag of a tree item
-- show subscription event log by clicking its tree entry`;
+- show subscription events by clicking its tree entry
+
+Try out by generating 'upsert' events
+- select a container in the 'Explorer' tab
+- select an entity in the container and click 'Save'`;
 function KV(key, value) {
     if (value === undefined)
         return "";
