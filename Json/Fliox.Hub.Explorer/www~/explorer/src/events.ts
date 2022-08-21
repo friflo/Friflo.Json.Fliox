@@ -31,7 +31,8 @@ and send them after the client reconnects.
     Try out a disconnect using the 'Playground' tab
     - Click 'close'
     - Click 'connect'
-    - Click 'send' - any request`;
+    - Click 'send' - any request
+The events generated during the disconnect are now available in the 'Pub-Sub' tab.`;
 
 function KV(key: string, value: any) {
     if (value === undefined)
