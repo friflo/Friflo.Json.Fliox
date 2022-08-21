@@ -30,7 +30,8 @@ In case of a WebSocket connection loss the host store events targeted to the cli
 and send them after the client reconnects.
     Try out a disconnect using the 'Playground' tab
     - Click 'close'
-    - Click 'connect'
+    - Generate some 'upsert' as described above
+    - Click 'connect' in 'Playground' tab
     - Click 'send' - any request
 The events generated during the disconnect are now available in the 'Pub-Sub' tab.`;
 
