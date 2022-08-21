@@ -19,12 +19,12 @@ export const eventsInfo = `
 
     info
 
-- subscribe to container changes and messages by clicking the 'sub' tag of a tree item
-- show subscription events by clicking its tree entry
+* subscribe to container changes and messages by clicking the 'sub' tag of a tree item
+    Try out by generating 'upsert' events
+    - select a container in the 'Explorer' tab
+    - select an entity in the container and click 'Save'
 
-Try out by generating 'upsert' events
-- select a container in the 'Explorer' tab
-- select an entity in the container and click 'Save'`;
+* show subscription events by clicking its tree entry`;
 
 function KV(key: string, value: any) {
     if (value === undefined)
