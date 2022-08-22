@@ -350,6 +350,9 @@ export class Events {
         }
     }
     async sendSubscriptionRequest(syncRequest) {
+        const error = await app.playground.connect();
+        if (error)
+            return error;
         const response = await app.playground.sendWebSocketRequest(syncRequest);
         const message = response.message;
         if (message.msg == "error") {
@@ -380,9 +383,6 @@ export class Events {
         }
         const subscribeChanges = { task: "subscribeChanges", changes: changes, container: containerName };
         const syncRequest = { msg: "sync", database: databaseName, tasks: [subscribeChanges] };
-        const error = await app.playground.connect();
-        if (error)
-            throw error;
         const err = await this.sendSubscriptionRequest(syncRequest);
         if (err) {
             containerSub.error = err;
@@ -429,20 +429,8 @@ export class Events {
             this.uiMessageSubscribed(databaseName, messageName, false);
             this.uiMessageText(databaseName, messageName, messageSub, null);
         }
-        const subscribeMessage = {
-            task: "subscribeMessage",
-            remove: remove,
-            name: messageName
-        };
-        const syncRequest = {
-            msg: "sync",
-            database: databaseName,
-            tasks: [subscribeMessage]
-        };
-        const error = await app.playground.connect();
-        if (error) {
-            throw error;
-        }
+        const subscribeMessage = { task: "subscribeMessage", remove: remove, name: messageName };
+        const syncRequest = { msg: "sync", database: databaseName, tasks: [subscribeMessage] };
         const err = await this.sendSubscriptionRequest(syncRequest);
         if (err) {
             messageSub.error = err;

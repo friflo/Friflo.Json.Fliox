@@ -30,7 +30,8 @@ export class Playground {
         this.connect();
     }
     async connect() {
-        if (this.wsClient) {
+        var _a;
+        if ((_a = this.wsClient) === null || _a === void 0 ? void 0 : _a.isOpen()) {
             return null;
         }
         try {

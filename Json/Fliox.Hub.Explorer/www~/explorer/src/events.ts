@@ -405,6 +405,9 @@ export class Events
     }
 
     private async sendSubscriptionRequest(syncRequest: SyncRequest) : Promise<string>{
+        const error = await app.playground.connect();
+        if (error)
+            return error;
         const response = await app.playground.sendWebSocketRequest(syncRequest);
         const message   = response.message;
         if (message.msg == "error") {
@@ -434,10 +437,8 @@ export class Events
             this.uiContainerText(databaseName, containerName, containerSub, null);
         }
         const subscribeChanges: SubscribeChanges = { task: "subscribeChanges", changes: changes, container: containerName };
-        const syncRequest: SyncRequest = { msg: "sync", database: databaseName, tasks: [subscribeChanges] };
-        const error = await app.playground.connect();
-        if (error)
-            throw error;
+        const syncRequest:      SyncRequest      = { msg: "sync", database: databaseName, tasks: [subscribeChanges] };
+
         const err = await this.sendSubscriptionRequest(syncRequest);
         if (err) {
             containerSub.error = err;
@@ -486,20 +487,9 @@ export class Events
             this.uiMessageSubscribed(databaseName, messageName, false);
             this.uiMessageText(databaseName, messageName, messageSub, null);
         }
-        const subscribeMessage: SubscribeMessage = {
-            task:       "subscribeMessage",
-            remove:     remove,
-            name:       messageName
-        };
-        const syncRequest: SyncRequest = {
-            msg:        "sync",
-            database:   databaseName,
-            tasks:      [subscribeMessage]
-        };
-        const error = await app.playground.connect();
-        if (error) {
-            throw error;
-        }
+        const subscribeMessage: SubscribeMessage = { task: "subscribeMessage", remove: remove, name: messageName };
+        const syncRequest:      SyncRequest      = { msg: "sync", database: databaseName, tasks: [subscribeMessage] };
+
         const err = await this.sendSubscriptionRequest(syncRequest);
         if (err) {
             messageSub.error = err;

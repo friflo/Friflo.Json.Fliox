@@ -40,7 +40,7 @@ export class Playground
     }
 
     public async connect (): Promise<string> {
-        if (this.wsClient) {
+        if (this.wsClient?.isOpen()) {
             return null;
         }
         try {

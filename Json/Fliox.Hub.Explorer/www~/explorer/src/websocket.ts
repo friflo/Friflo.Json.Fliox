@@ -46,12 +46,16 @@ export class WebSocketClient {
                 resolve(null);
             };
             connection.onclose = (e) => {
-                console.log(`WebSocket closed. code: ${e.code}`);
+                const msg = `WebSocket closed. code: ${e.code}`;
+                console.log(msg);
                 this.onClose(e);
+                this.rejectPendingRequests(msg);
             };
-            connection.onerror = (error) => {
-                console.log('WebSocket error ' + error);
-                reject(error);
+            connection.onerror = () => {
+                const msg = `WebSocket error - readyState: ${connection.readyState}`;
+                console.log(msg);
+                reject(msg);
+                this.rejectPendingRequests(msg);
             };
             connection.onmessage = (e: MessageEvent) => {
                 const end       = performance.now();
@@ -83,7 +87,14 @@ export class WebSocketClient {
                 }
             };
         });
-    }    
+    }
+
+    private rejectPendingRequests(error: string) {
+        for (const requests of this.requests.values()) {
+            requests.reject(error);
+        }
+        this.requests.clear();
+    }
 
     public close() : void {
         this.webSocket.close();
