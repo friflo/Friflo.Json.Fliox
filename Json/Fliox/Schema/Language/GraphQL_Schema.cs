@@ -65,6 +65,9 @@ namespace Friflo.Json.Fliox.Schema.Language
                 var args        = GetArgs(field.args);
                 sb.AppendLF($"    {field.name}{indent}{args} : {fieldType}");
             }
+            if (type.fields.Count == 0) {
+                sb.AppendLF($"    _: Boolean"); // Workaround to support empty objects
+            }
             sb.AppendLF("}");
         }
         
@@ -96,6 +99,9 @@ namespace Friflo.Json.Fliox.Schema.Language
                 var fieldType   = GetType(field.type);
                 var indent      = Indent(maxFieldName, field.name);
                 sb.AppendLF($"    {field.name}{indent} : {fieldType}");
+            }
+            if (type.inputFields.Count == 0) {
+                sb.AppendLF($"    _: Boolean"); // Workaround to support empty objects
             }
             sb.AppendLF("}");
         }

@@ -181,15 +181,19 @@ enum EntityChange {
 }
 
 type ClearStats {
+    _: Boolean
 }
 
 input ClearStatsInput {
+    _: Boolean
 }
 
 type ClearStatsResult {
+    _: Boolean
 }
 
 input ClearStatsResultInput {
+    _: Boolean
 }
 
 type DbContainers {
@@ -297,9 +301,11 @@ input UserResultInput {
 }
 
 type ClientParam {
+    _: Boolean
 }
 
 input ClientParamInput {
+    _: Boolean
 }
 
 type ClientResult {

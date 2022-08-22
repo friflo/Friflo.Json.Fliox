@@ -178,9 +178,11 @@ input UserResultInput {
 }
 
 type ClientParam {
+    _: Boolean
 }
 
 input ClientParamInput {
+    _: Boolean
 }
 
 type ClientResult {

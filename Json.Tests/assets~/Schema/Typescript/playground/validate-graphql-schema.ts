@@ -42,7 +42,7 @@ function validateSchema(schemaPath: string) {
 
 export function validateGraphQLSchemas() {
     validateSchema("../GraphQL/ClusterStore/schema.graphql");
-//  validateSchema("../GraphQL/MonitorStore/schema.graphql"); todo
+    validateSchema("../GraphQL/MonitorStore/schema.graphql");
     validateSchema("../GraphQL/PocStore/schema.graphql");
     validateSchema("../GraphQL/UserStore/schema.graphql");
 }
