@@ -168,6 +168,18 @@ export class ClusterTree {
             ulMessages.append(liMessage);
         }
     }
+    setSpan(el, text, title, classList) {
+        el.innerText = '';
+        if (!title)
+            return;
+        const span = createEl('span');
+        for (const className of classList) {
+            span.classList.add(className);
+        }
+        span.innerText = text;
+        span.title = title;
+        el.append(span);
+    }
     // --- containerTags 
     addContainerClass(database, container, className) {
         const el = this.databaseTags[database].containerTags[container];
@@ -179,7 +191,7 @@ export class ClusterTree {
     }
     setContainerError(database, container, text) {
         const el = this.databaseTags[database].containerTags[container];
-        el.innerHTML = text ? `<span class='error' title='${text}'>error</span>` : "";
+        this.setSpan(el, "error", text, ["error"]);
     }
     setContainerText(database, container, texts, trigger) {
         const el = this.databaseTags[database].containerTags[container];
@@ -229,7 +241,7 @@ export class ClusterTree {
     }
     setMessageError(database, message, text) {
         const el = this.databaseTags[database].messageTags[message];
-        el.innerHTML = text ? `<span class='error' title='${text}'>error</span>` : "";
+        this.setSpan(el, "error", text, ["error"]);
     }
     setMessageText(database, message, text, trigger) {
         const el = this.databaseTags[database].messageTags[message];

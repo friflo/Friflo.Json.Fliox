@@ -192,6 +192,19 @@ export class ClusterTree {
         }
     }
 
+    private setSpan(el: HTMLElement, text: string, title: string, classList: string []) {
+        el.innerText = '';
+        if (!title)
+            return;
+        const span = createEl('span');
+        for (const className of classList) {
+            span.classList.add(className);
+        }
+        span.innerText  = text;
+        span.title      = title;
+        el.append(span);
+    }
+
     // --- containerTags 
     public addContainerClass (database: string, container: string, className: "subscribed") : void {
         const el = this.databaseTags[database].containerTags[container];
@@ -205,7 +218,7 @@ export class ClusterTree {
 
     public setContainerError (database: string, container: string, text: string) : void {
         const el = this.databaseTags[database].containerTags[container];
-        el.innerHTML = text ? `<span class='error' title='${text}'>error</span>` : "";
+        this.setSpan(el, "error", text, ["error"]);
     }
 
     public setContainerText (database: string, container: string, texts: string[], trigger: "event") : void {
@@ -257,7 +270,7 @@ export class ClusterTree {
 
     public setMessageError (database: string, message: string, text: string) : void {
         const el = this.databaseTags[database].messageTags[message];
-        el.innerHTML = text ? `<span class='error' title='${text}'>error</span>` : "";
+        this.setSpan(el, "error", text, ["error"]);
     }
 
     public setMessageText (database: string, message: string, text: string, trigger: "event") : void {
