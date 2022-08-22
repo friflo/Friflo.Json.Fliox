@@ -122,11 +122,8 @@
         "ClientParam": {
             "type": "object",
             "properties": {
-                "syncEvents": { "type": "boolean", "description": "if true the Hub resent all unacknowledged events" }
+
             },
-            "required": [
-                "syncEvents"
-            ],
             "additionalProperties": false
         },
         "ClientResult": {

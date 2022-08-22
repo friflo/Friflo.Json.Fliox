@@ -178,11 +178,9 @@ input UserResultInput {
 }
 
 type ClientParam {
-    syncEvents : Boolean!
 }
 
 input ClientParamInput {
-    syncEvents : Boolean!
 }
 
 type ClientResult {

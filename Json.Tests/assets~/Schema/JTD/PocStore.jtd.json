@@ -172,7 +172,7 @@
         },
         "ClientParam": {
             "properties": {
-                "syncEvents": { "type": "boolean" }
+
             }
         },
         "ClientResult": {

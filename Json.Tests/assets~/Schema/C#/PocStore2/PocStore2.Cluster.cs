@@ -76,7 +76,6 @@ public class UserResult {
 }
 
 public class ClientParam {
-    bool  syncEvents;
 }
 
 public class ClientResult {

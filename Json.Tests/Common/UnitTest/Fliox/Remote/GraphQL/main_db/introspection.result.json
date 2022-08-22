@@ -4511,19 +4511,6 @@
             "name": "ClientParam",
             "description": "",
             "fields": [
-                {
-                    "name": "syncEvents",
-                    "description": "    /** if true the Hub resent all unacknowledged events */\n",
-                    "args": [
-                    ],
-                    "type": {
-                        "kind":"NON_NULL",
-                        "ofType": {
-                            "kind":"SCALAR",
-                            "name": "Boolean"
-                        }
-                    }
-                }
             ],
             "interfaces": [
             ]
@@ -4533,19 +4520,6 @@
             "name": "ClientParamInput",
             "description": "",
             "inputFields": [
-                {
-                    "name": "syncEvents",
-                    "description": "    /** if true the Hub resent all unacknowledged events */\n",
-                    "args": [
-                    ],
-                    "type": {
-                        "kind":"NON_NULL",
-                        "ofType": {
-                            "kind":"SCALAR",
-                            "name": "Boolean"
-                        }
-                    }
-                }
             ]
         },
         {

@@ -319,9 +319,9 @@ namespace Friflo.Json.Fliox.Hub.Host
             int queuedEvents = 0;
             if (dispatcher != null && dispatcher.TryGetSubscriber(context.ClientId, out var client)) {
                 queuedEvents = client.QueuedEventsCount;
-                if (clientParam != null && clientParam.syncEvents) {
-                    // client.SendUnacknowledgedEvents(); see comment above
-                }
+                /* if (clientParam != null && clientParam.syncEvents) {
+                    client.SendUnacknowledgedEvents(); see comment above
+                } */
             }
             return new ClientResult { queuedEvents = queuedEvents };
         }
