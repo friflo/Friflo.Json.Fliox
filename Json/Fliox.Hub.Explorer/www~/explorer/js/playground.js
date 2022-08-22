@@ -42,13 +42,19 @@ export class Playground {
             return errMsg;
         }
     }
-    async connectWebSocket() {
+    // Single requirement to the WebSocket Uri: path have to start with the endpoint. e.g. /fliox/
+    getWebsocketUri() {
         const loc = window.location;
         const protocol = loc.protocol == "http:" ? "ws:" : "wss:";
-        const nr = ("" + (++this.websocketCount)).padStart(3, "0");
-        const path = loc.pathname.substring(0, loc.pathname.lastIndexOf("/") + 1);
-        const uri = `${protocol}//${loc.host}${path}ws-${nr}`;
-        // const uri  = `ws://google.com:8080/`; // test connection timeout
+        // add websocketCount to path to identify WebSocket in DevTools > Network.
+        const nr = `${++this.websocketCount}`.padStart(3, "0"); // ws-001
+        const endpoint = loc.pathname.substring(0, loc.pathname.lastIndexOf("/") + 1); // /fliox/    
+        const uri = `${protocol}//${loc.host}${endpoint}ws-${nr}`;
+        return uri;
+    }
+    async connectWebSocket() {
+        const uri = this.getWebsocketUri();
+        // const uri    = `ws://google.com:8080/`; // test connection timeout
         socketStatus.innerHTML = 'connecting <span class="spinner"></span>';
         this.wsClient = new WebSocketClient();
         this.wsClient.onClose = (e) => {
