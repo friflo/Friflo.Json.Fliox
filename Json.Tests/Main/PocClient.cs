@@ -9,9 +9,10 @@ namespace Friflo.Json.Tests.Main
 {
     public static class PocClient
     {
-        public static async Task ListenEvents() {
+        public static async Task ListenEvents(string clientId) {
+            clientId = clientId ?? "TestClient";
             var hub         = CreateHub("ws");
-            var client      = new PocStore(hub) { UserId = "admin", Token = "admin", ClientId="TestClient" };
+            var client      = new PocStore(hub) { UserId = "admin", Token = "admin", ClientId = clientId };
             client.SubscriptionEventHandler = async context => {
                 if (context.EventSeq % 10000 == 0) {
                     // todo - notify last event

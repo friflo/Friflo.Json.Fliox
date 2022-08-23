@@ -38,11 +38,12 @@ namespace Friflo.Json.Tests.Main
 
             var rootCommand = new RootCommand {
                 moduleOpt,
-                new Option<string>("--endpoint", () => "http://+:8010/",                    "endpoint the server listen at")
+                new Option<string>("--endpoint", () => "http://+:8010/",    "endpoint the server listen at"),
+                new Option<string>("--client",   () => null,                "client id")
             };
             rootCommand.Description = "small tests within Friflo.Json.Tests";
 
-            rootCommand.Handler = CommandHandler.Create<Module, string>(async (module, endpoint) =>
+            rootCommand.Handler = CommandHandler.Create<Module, string, string>(async (module, endpoint, client) =>
             {
                 Console.WriteLine($"module: {module}");
                 switch (module) {
@@ -53,7 +54,7 @@ namespace Friflo.Json.Tests.Main
                         FlioxServerAspNetCore(endpoint);
                         break;
                     case Module.ListenEvents:
-                        await PocClient.ListenEvents();
+                        await PocClient.ListenEvents(client);
                         break;
                     case Module.MemoryDbThroughput:
                         await Throughput.MemoryDbThroughput();
