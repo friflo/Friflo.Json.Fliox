@@ -54,7 +54,8 @@ export interface PocStore {
 
     // --- commands
     ["TestCommand"]                        (param: TestCommand | null) : boolean;
-    ["MultiRequests"]                      (param: int32) : int32;
+    /** Create the given number of sync requests each with an upsert to articles */
+    ["MultiRequests"]                      (param: int32 | null) : int32;
     ["SyncCommand"]                        (param: string | null) : string;
     ["AsyncCommand"]                       (param: string | null) : string;
     ["Command1"]                           () : string;

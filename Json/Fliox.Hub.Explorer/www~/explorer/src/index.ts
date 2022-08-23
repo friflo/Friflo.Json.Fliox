@@ -724,10 +724,22 @@ export class App {
             const schema = App.findSchema(monacoSchemas, "http://protocol/json-schema/Friflo.Json.Fliox.Hub.Protocol.ProtocolMessage.json");
             schema.fileMatch = [responseUri.toString()]; // associate with model
         } {
-            const uri = "http://protocol/json-schema/Friflo.Json.Fliox.Hub.Protocol.ProtocolEvent.json";
-            const schema = App.findSchema(monacoSchemas, uri);
-            if (!schema)
-                throw "ProtocolEvent schema not found";
+            const protocol          = "http://protocol/json-schema/Friflo.Json.Fliox.Hub.Protocol.json";
+            const protocolSchema    = App.findSchema(monacoSchemas, protocol);
+            if (!protocolSchema) {
+                throw "Friflo.Json.Fliox.Hub.Protocol.json schema not found";
+            }
+            const syncEventDef = (protocolSchema as any).schema.definitions["SyncEvent"];
+            if (!syncEventDef) {
+                throw "SyncEvent schema not found";
+            }
+            const uri = "http://protocol/json-schema/Friflo.Json.Fliox.Hub.Protocol.json#definitions/SyncEvent";
+                const syncEventSchema : MonacoSchema = {
+                schema:    syncEventDef,
+                uri:       uri,
+            };
+            monacoSchemas.push(syncEventSchema);
+    
             const eventsArray = { "type": "array", "items": { "$ref": uri } } as unknown as JSONSchema;
             const eventListSchema : MonacoSchema = {
                 schema:    eventsArray,

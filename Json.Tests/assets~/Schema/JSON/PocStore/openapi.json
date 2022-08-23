@@ -111,7 +111,7 @@
     },
     "/?command=MultiRequests": {
       "post": {
-        "summary":    "",
+        "summary":    "Create the given number of sync requests each with an upsert to articles",
         "tags":       ["commands"],
         "requestBody": {          
           "content": {

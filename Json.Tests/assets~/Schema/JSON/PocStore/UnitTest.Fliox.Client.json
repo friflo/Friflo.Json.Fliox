@@ -27,7 +27,8 @@
             "additionalProperties": false,
             "commands": {
                 "TestCommand":                    { "param": { "oneOf": [{ "$ref": "#/definitions/TestCommand" }, {"type": "null"}] }, "result": { "type": "boolean" } },
-                "MultiRequests":                  { "param": { "$ref": "./Standard.json#/definitions/int32" }, "result": { "$ref": "./Standard.json#/definitions/int32" } },
+                "MultiRequests":                  { "param": { "oneOf": [{ "$ref": "./Standard.json#/definitions/int32" }, {"type": "null"}] }, "result": { "$ref": "./Standard.json#/definitions/int32" },
+                    "description": "Create the given number of sync requests each with an upsert to articles" },
                 "SyncCommand":                    { "param": { "type": ["string", "null"] }, "result": { "type": "string" } },
                 "AsyncCommand":                   { "param": { "type": ["string", "null"] }, "result": { "type": "string" } },
                 "Command1":                       { "result": { "type": "string" } },

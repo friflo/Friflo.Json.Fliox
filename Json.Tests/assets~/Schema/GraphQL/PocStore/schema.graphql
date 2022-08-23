@@ -38,7 +38,7 @@ type Query {
     countEmployees                (filter: String) : Int
     countTypes                    (filter: String) : Int
     TestCommand                   (param: TestCommandInput) : Boolean!
-    MultiRequests                 (param: Int!) : Int!
+    MultiRequests                 (param: Int) : Int!
     SyncCommand                   (param: String) : String!
     AsyncCommand                  (param: String) : String!
     Command1                       : String!

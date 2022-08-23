@@ -37,15 +37,16 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             return true;
         }
         
-        private async Task<int> MultiRequests(Param<int> param, MessageContext command) {
-            param.Get(out int count, out var _);
+        private async Task<int> MultiRequests(Param<int?> param, MessageContext command) {
+            param.Get(out int? count, out var _);
+            if (count == null) count = 100;
             var store = new PocStore(command.Hub) { UserInfo = command.UserInfo };
             var article = new Article() { id = "1111", name = "MultiRequests"};
             for (int i = 0; i < count; i++) {
                 store.articles.Upsert(article);
                 await store.SyncTasks();
             }
-            return 0;
+            return count.Value;
         }
     }
     

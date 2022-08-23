@@ -761,16 +761,13 @@
                 },
                 {
                     "name": "MultiRequests",
-                    "description": "",
+                    "description": "/** Create the given number of sync requests each with an upsert to articles */\n",
                     "args": [
                         {
                             "name": "param",
                             "type": {
-                                "kind":"NON_NULL",
-                                "ofType": {
-                                    "kind":"SCALAR",
-                                    "name": "Int"
-                                }
+                                "kind":"SCALAR",
+                                "name": "Int"
                             }
                         }
                     ],

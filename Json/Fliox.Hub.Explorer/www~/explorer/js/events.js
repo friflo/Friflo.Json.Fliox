@@ -29,6 +29,11 @@ and send them after the client reconnects.
     - Click 'connect' in 'Playground' tab
     - Click 'send' - any request
 The events generated during the disconnect are now available in the 'Pub-Sub' tab.`;
+function firstKV(key, value) {
+    if (value === undefined)
+        return "";
+    return `"${key}":${JSON.stringify(value)}`;
+}
 function KV(key, value) {
     if (value === undefined)
         return "";
@@ -249,7 +254,7 @@ export class Events {
         }
         const tasks = tasksJson.join(",\n        ");
         return `{
-    "msg":"ev"${KV("seq", ev.seq)}${KV("src", ev.src)}${KV("db", ev.db)}${KV("isOrigin", ev.isOrigin)},
+    ${firstKV("seq", ev.seq)}${KV("src", ev.src)}${KV("db", ev.db)}${KV("isOrigin", ev.isOrigin)},
     "tasks": [
         ${tasks}
     ]
