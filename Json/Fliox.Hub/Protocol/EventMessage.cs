@@ -9,13 +9,25 @@ using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 namespace Friflo.Json.Fliox.Hub.Protocol
 {
     // ----------------------------------- event -----------------------------------
+    /// <summary>
+    /// Contains a set of <see cref="SyncEvent"/>'s. It is send as a push message to clients to deliver the events
+    /// subscribed by these clients.
+    /// </summary>
     public sealed class EventMessage : ProtocolEvent
     {
+        /// <summary>
+        /// Each <see cref="SyncEvent"/> corresponds to a <see cref="SyncRequest"/> and contains the subscribed
+        /// messages and container changes in its <see cref="SyncEvent.tasks"/> field
+        /// </summary>
         public                  SyncEvent[]         events;
         
         internal override       MessageType         MessageType => MessageType.ev;
     }
 
+    /// <summary>
+    /// A <see cref="SyncEvent"/> corresponds to a <see cref="SyncRequest"/> and contains the subscribed
+    /// messages and container changes in its <see cref="SyncEvent.tasks"/> field
+    /// </summary>
     public sealed class SyncEvent
     {
         // note for all fields

@@ -171,12 +171,24 @@ export abstract class ProtocolEvent extends ProtocolMessage {
     clt  : string;
 }
 
+/**
+ * Contains a set of **SyncEvent**'s. It is send as a push message to clients to deliver the events
+ * subscribed by these clients.
+ */
 export class EventMessage extends ProtocolEvent {
     /** message type */
     msg     : "ev";
+    /**
+     * Each **SyncEvent** corresponds to a **SyncRequest** and contains the subscribed
+     * messages and container changes in its **tasks** field
+     */
     events? : SyncEvent[] | null;
 }
 
+/**
+ * A **SyncEvent** corresponds to a **SyncRequest** and contains the subscribed
+ * messages and container changes in its **tasks** field
+ */
 export class SyncEvent {
     /**
      * Increasing event sequence number starting with 1 for a specific target client **dstClientId**.
