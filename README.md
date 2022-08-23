@@ -33,6 +33,7 @@ The **DemoHub** .NET project is available at
 | --------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
 | **RTT**           Request / Response roundtrip                              | **0.3 ms**                                                                                                  |
 | **Pub-Sub delay** send message ➞ subscriber event                          | **sub millisecond latency**                                                                                 |
+| **Pub-Sub throughput** three subscribers each using a WebSocket             | **50k messages / sec**                                                                                      |
 | **Query**         1M rows, each row 124 byte => response 125MB              | **1.3 sec**                                                                                                 |
 | **Throughput**    Request/Response WebSocket, 4 concurrent clients, 4 cores | **27k requests / sec**                                                                                      |
 | Hub integration in ASP.NET Core                                             | **4 LOC** [Startup.cs](https://github.com/friflo/Fliox.Examples/blob/main/Demo/Hub/StartupAsp6.cs#L38-L40)  |
