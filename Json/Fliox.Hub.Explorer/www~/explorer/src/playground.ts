@@ -91,7 +91,7 @@ export class Playground
             ackElement.innerText        = subSeq ? String(subSeq) : " - ";
 
             // acknowledge event by sending a SyncRequest with SyncRequest.ack set to the last received seq
-            const syncRequest: SyncRequest = { msg: "sync", database: lastEv.db, tasks: [], info: "acknowledge event" };
+            const syncRequest: SyncRequest = { msg: "sync", tasks: [], info: "acknowledge event" };
             this.sendWebSocketRequest(syncRequest);
         };
         const error     = await this.wsClient.connect(uri);
