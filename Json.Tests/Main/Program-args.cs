@@ -13,6 +13,7 @@ namespace Friflo.Json.Tests.Main
         {
             TestServer,
             FlioxServerAspNetCore,
+            ListenEvents,
             //
             MemoryDbThroughput,
             FileDbThroughput,
@@ -50,6 +51,9 @@ namespace Friflo.Json.Tests.Main
                         break;
                     case Module.FlioxServerAspNetCore:
                         FlioxServerAspNetCore(endpoint);
+                        break;
+                    case Module.ListenEvents:
+                        await PocClient.ListenEvents();
                         break;
                     case Module.MemoryDbThroughput:
                         await Throughput.MemoryDbThroughput();

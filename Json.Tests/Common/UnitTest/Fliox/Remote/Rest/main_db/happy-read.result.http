@@ -205,6 +205,7 @@ GET {{base}}/rest/main_db?command=std.Messages
     "id": "main_db",
     "commands": [
         "TestCommand",
+        "MultiRequests",
         "SyncCommand",
         "AsyncCommand",
         "Command1",

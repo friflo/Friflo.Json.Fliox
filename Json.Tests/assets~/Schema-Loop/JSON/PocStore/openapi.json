@@ -93,6 +93,33 @@
         }
       }
     },
+    "/?command=MultiRequests": {
+      "post": {
+        "summary":    "",
+        "tags":       ["commands"],
+        "requestBody": {          
+          "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "Standard.json#/definitions/int32"
+                }
+              }
+            }
+        },
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "Standard.json#/definitions/int32"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/?command=SyncCommand": {
       "post": {
         "summary":    "",

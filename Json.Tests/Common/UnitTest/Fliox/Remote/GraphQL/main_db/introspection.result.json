@@ -760,6 +760,29 @@
                     }
                 },
                 {
+                    "name": "MultiRequests",
+                    "description": "",
+                    "args": [
+                        {
+                            "name": "param",
+                            "type": {
+                                "kind":"NON_NULL",
+                                "ofType": {
+                                    "kind":"SCALAR",
+                                    "name": "Int"
+                                }
+                            }
+                        }
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "Int"
+                        }
+                    }
+                },
+                {
                     "name": "SyncCommand",
                     "description": "",
                     "args": [
