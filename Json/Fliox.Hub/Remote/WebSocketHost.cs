@@ -77,6 +77,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                         var sendMessage = await sendReader.ReadAsync().ConfigureAwait(false);
                         if (sendMessage == null)
                             return;
+                        // if (sendMessage.Count > 100000) Console.WriteLine($"SendLoop. size: {sendMessage.Count}");
                         await webSocket.SendAsync(sendMessage, WebSocketMessageType.Text, true, CancellationToken.None).ConfigureAwait(false);
                     }
                 } catch (Exception e) {

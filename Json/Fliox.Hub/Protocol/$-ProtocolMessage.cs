@@ -38,10 +38,10 @@ namespace Friflo.Json.Fliox.Hub.Protocol
     /// </para>
     /// </remarks>
     [Discriminator("msg", Description = "message type")] 
-    [PolymorphType(typeof(SyncRequest),    Discriminant = "sync")]
-    [PolymorphType(typeof(SyncResponse),   Discriminant = "resp")]
-    [PolymorphType(typeof(ErrorResponse),  Discriminant = "error")]
-    [PolymorphType(typeof(EventMessage),   Discriminant = "ev")]
+    [PolymorphType(typeof(SyncRequest),     Discriminant = "sync")]
+    [PolymorphType(typeof(SyncResponse),    Discriminant = "resp")]
+    [PolymorphType(typeof(ErrorResponse),   Discriminant = "error")]
+    [PolymorphType(typeof(EventMessage),    Discriminant = "ev")]
     public abstract class ProtocolMessage
     {
         internal abstract   MessageType     MessageType { get; }
@@ -71,7 +71,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol
         /// <summary>As a user can access a <see cref="FlioxHub"/> by multiple clients the <see cref="clientId"/>
         /// enables identifying each client individually. <br/>
         /// The <see cref="clientId"/> is used for <see cref="SubscribeMessage"/> and <see cref="SubscribeChanges"/>
-        /// to enable sending <see cref="EventMessage"/>'s to the desired subscriber.
+        /// to enable sending <see cref="SyncEvent"/>'s to the desired subscriber.
         /// </summary>
         [Serialize(Name =                  "clt")]
                         public  JsonKey     clientId    { get; set; }
@@ -101,7 +101,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol
         /// For tasks which require a <see cref="clientId"/> a client need to set <see cref="ProtocolRequest.clientId"/>
         /// to <see cref="clientId"/>. <br/>
         /// This enables tasks like <see cref="SubscribeMessage"/> or <see cref="SubscribeChanges"/> identifying the
-        /// <see cref="EventMessage"/> target. 
+        /// <see cref="SyncEvent"/> target. 
         /// </remarks>
         [Serialize(Name =                  "clt")]
                         public  JsonKey     clientId    { get; set; }
@@ -110,28 +110,13 @@ namespace Friflo.Json.Fliox.Hub.Protocol
     // ----------------------------------- event -----------------------------------
     [Discriminator("msg", Description = "event type")] 
     [PolymorphType(typeof(EventMessage),   Discriminant = "ev")]
-    public abstract class ProtocolEvent     : ProtocolMessage {
-        // note for all fields
-        // used { get; set; } to force properties on the top of JSON
-        
-        /// <summary>
-        /// Increasing event sequence number starting with 1 for a specific target client <see cref="dstClientId"/>.
-        /// Each target client (subscriber) has its own sequence.
-        /// </summary>
-                    public  int         seq         { get; set; }
-        /// <summary>
-        /// The user which caused the event. Specifically the user which made a database change or sent a message / command.
-        /// The user client is not preserved by en extra property as a use case for this is not obvious.
-        /// </summary>
-        [Serialize(Name =              "src")]
-        [Required]  public  JsonKey     srcUserId   { get; set; }
-        
+    public abstract class ProtocolEvent : ProtocolMessage {
         /// <summary>
         /// The target client the event is sent to. This enables sharing a single (WebSocket) connection by multiple clients.
         /// In many scenarios this property is redundant as every client uses a WebSocket exclusively.
         /// </summary>
-        [Serialize(Name =              "clt")]
-        [Required]  public  JsonKey     dstClientId { get; set; }
+        [Serialize(Name =                  "clt")]
+        [Required]      public  JsonKey     dstClientId { get; set; }
     }
     
     /// <summary>

@@ -9,7 +9,7 @@
             "properties": {
                 "msg":      { "enum": ["sync"] },
                 "req":      { "oneOf": [{ "$ref": "./Standard.json#/definitions/int32" }, {"type": "null"}], "description": "Used only for <b>RemoteClientHub</b> to enable:\n<p>\n1. Out of order response handling for their corresponding requests.\n</p><p>\n2. Multiplexing of requests and their responses for multiple clients e.g. <b>FlioxClient</b>\nusing the same connection.\nThis is not a common scenario but it enables using a single <b>WebSocketClientHub</b>\nused by multiple clients.\n</p>\nThe host itself only echos the <b>reqId</b> to <b>reqId</b> and\ndoes <b>not</b> utilize it internally." },
-                "clt":      { "type": ["string", "null"], "description": "As a user can access a <b>FlioxHub</b> by multiple clients the <b>clientId</b>\nenables identifying each client individually. <br/>\nThe <b>clientId</b> is used for <b>SubscribeMessage</b> and <b>SubscribeChanges</b>\nto enable sending <b>EventMessage</b>'s to the desired subscriber." },
+                "clt":      { "type": ["string", "null"], "description": "As a user can access a <b>FlioxHub</b> by multiple clients the <b>clientId</b>\nenables identifying each client individually. <br/>\nThe <b>clientId</b> is used for <b>SubscribeMessage</b> and <b>SubscribeChanges</b>\nto enable sending <b>SyncEvent</b>'s to the desired subscriber." },
                 "user":     { "type": ["string", "null"], "description": "Identify the user performing a sync request.\nIn case using of using <b>UserAuthenticator</b> the <b>userId</b> and <b>token</b>\nare use for user authentication." },
                 "token":    { "type": ["string", "null"] },
                 "ack":      { "oneOf": [{ "$ref": "./Standard.json#/definitions/int32" }, {"type": "null"}], "description": "<b>eventAck</b> is used to ensure (change) events are delivered reliable.\nA client set <b>eventAck</b> to the last received <b>seq</b> in case\nit has subscribed to database changes by a <b>SubscribeChanges</b> task.\nOtherwise <b>eventAck</b> is null." },
@@ -91,19 +91,28 @@
             "type": "object",
             "extends": { "$ref": "./Friflo.Json.Fliox.Hub.Protocol.ProtocolEvent.json#/definitions/ProtocolEvent" },
             "properties": {
-                "msg":      { "enum": ["ev"] },
-                "isOrigin": { "type": ["boolean", "null"], "description": "Is true if the receiving client is the origin of the event" },
+                "msg":    { "enum": ["ev"] },
+                "clt":    { "type": "string", "description": "The target client the event is sent to. This enables sharing a single (WebSocket) connection by multiple clients.\nIn many scenarios this property is redundant as every client uses a WebSocket exclusively." },
+                "events": { "type": ["array", "null"], "items": { "$ref": "#/definitions/SyncEvent" } }
+            },
+            "required": [
+                "msg",
+                "clt"
+            ],
+            "additionalProperties": false
+        },
+        "SyncEvent": {
+            "type": "object",
+            "properties": {
                 "seq":      { "$ref": "./Standard.json#/definitions/int32", "description": "Increasing event sequence number starting with 1 for a specific target client <b>dstClientId</b>.\nEach target client (subscriber) has its own sequence." },
                 "src":      { "type": "string", "description": "The user which caused the event. Specifically the user which made a database change or sent a message / command.\nThe user client is not preserved by en extra property as a use case for this is not obvious." },
-                "clt":      { "type": "string", "description": "The target client the event is sent to. This enables sharing a single (WebSocket) connection by multiple clients.\nIn many scenarios this property is redundant as every client uses a WebSocket exclusively." },
+                "isOrigin": { "type": ["boolean", "null"], "description": "Is true if the receiving client is the origin of the event" },
                 "db":       { "type": "string", "description": "The database the <b>tasks</b> refer to" },
                 "tasks":    { "type": ["array", "null"], "items": { "$ref": "./Friflo.Json.Fliox.Hub.Protocol.Tasks.json#/definitions/SyncRequestTask" }, "description": "Contains the events an application subscribed. These are:<br/><b>CreateEntities</b>, \n<b>UpsertEntities</b>, \n<b>DeleteEntities</b>, \n<b>PatchEntities</b>, \n<b>SendMessage</b>, \n<b>SendCommand</b>" }
             },
             "required": [
-                "msg",
                 "seq",
                 "src",
-                "clt",
                 "db"
             ],
             "additionalProperties": false

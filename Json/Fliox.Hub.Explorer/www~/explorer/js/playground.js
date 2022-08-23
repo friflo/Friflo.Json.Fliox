@@ -62,18 +62,21 @@ export class Playground {
             socketStatus.innerText = "closed (code: " + e.code + ")";
             responseState.innerText = "";
         };
-        this.wsClient.onEvent = (data) => {
-            subscriptionCount.innerText = String(++this.eventCount);
-            const subSeq = this.lastEventSeq = data.seq;
-            // multiple clients can use the same WebSocket. Use the latest
-            if (this.clt == data.clt) {
-                subscriptionSeq.innerText = subSeq ? String(subSeq) : " - ";
-                ackElement.innerText = subSeq ? String(subSeq) : " - ";
-                app.events.addSubscriptionEvent(data);
-                // acknowledge event by sending a SyncRequest with SyncRequest.ack set to the last received seq
-                const syncRequest = { msg: "sync", database: data.db, tasks: [], info: "acknowledge event" };
-                this.sendWebSocketRequest(syncRequest);
+        this.wsClient.onEvents = (eventMessages) => {
+            const events = eventMessages.events;
+            this.eventCount += events.length;
+            subscriptionCount.innerText = String(this.eventCount);
+            for (const ev of events) {
+                app.events.addSubscriptionEvent(ev);
             }
+            const lastEv = events[events.length - 1];
+            const subSeq = this.lastEventSeq = lastEv.seq;
+            // multiple clients can use the same WebSocket. Use the latest
+            subscriptionSeq.innerText = subSeq ? String(subSeq) : " - ";
+            ackElement.innerText = subSeq ? String(subSeq) : " - ";
+            // acknowledge event by sending a SyncRequest with SyncRequest.ack set to the last received seq
+            const syncRequest = { msg: "sync", database: lastEv.db, tasks: [], info: "acknowledge event" };
+            this.sendWebSocketRequest(syncRequest);
         };
         const error = await this.wsClient.connect(uri);
         this.eventCount = 0;

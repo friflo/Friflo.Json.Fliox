@@ -14,7 +14,7 @@ using Friflo.Json.Fliox.Mapper.Map;
 namespace Friflo.Json.Fliox.Hub.Client
 {
     /// <summary>
-    /// Used to process <see cref="EventMessage"/>'s received by a <see cref="FlioxClient"/>.  
+    /// Used to process <see cref="SyncEvent"/>'s received by a <see cref="FlioxClient"/>.  
     /// </summary>
     public sealed class SubscriptionProcessor : IDisposable
     {
@@ -37,12 +37,12 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
 
         /// <summary>
-        /// Process the <see cref="EventMessage.tasks"/> of the given <see cref="EventMessage"/>.
-        /// These <see cref="EventMessage.tasks"/> are "messages" resulting from subscriptions registered by
+        /// Process the <see cref="SyncEvent.tasks"/> of the given <see cref="SyncEvent"/>.
+        /// These <see cref="SyncEvent.tasks"/> are "messages" resulting from subscriptions registered by
         /// methods like <see cref="EntitySet{TKey,T}.SubscribeChanges"/>, <see cref="FlioxClient.SubscribeAllChanges"/> or
         /// <see cref="FlioxClient.SubscribeMessage"/>.
         /// </summary>
-        public void ProcessEvent(FlioxClient client, EventMessage ev) {
+        public void ProcessEvent(FlioxClient client, SyncEvent ev) {
             eventContext.Init(client, ev);
             if (client._intern.disposed)  // store may already be disposed
                 return;
@@ -59,7 +59,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             contextChanges.Clear();
             EventCount++;
             if (client.DatabaseName != ev.db) {
-                var msg = $"invalid EventMessage db: {ev.db}. expect: {client.DatabaseName}";
+                var msg = $"invalid SyncEvent db: {ev.db}. expect: {client.DatabaseName}";
                 eventContext.Logger.Log(HubLog.Error, msg);
                 return;
             }

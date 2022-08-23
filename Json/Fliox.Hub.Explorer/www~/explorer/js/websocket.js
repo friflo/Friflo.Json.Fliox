@@ -12,7 +12,7 @@ export class WebSocketClient {
     constructor() {
         this.requests = new Map();
         this.onClose = (e) => { console.log(`onClose. code ${e.code}`); };
-        this.onEvent = (ev) => { console.log(`onEvent. ev: ${ev}`); };
+        this.onEvents = (ev) => { console.log(`onEvent. ev: ${ev}`); };
         this.onRecvError = (error) => { console.log(`onRecvError. error: ${error}`); };
     }
     isOpen() {
@@ -61,7 +61,7 @@ export class WebSocketClient {
                         break;
                     }
                     case "ev":
-                        this.onEvent(message);
+                        this.onEvents(message);
                         break;
                     default:
                         this.onRecvError(`received invalid message: ${json}`);

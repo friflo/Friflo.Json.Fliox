@@ -73,7 +73,7 @@ namespace Friflo.Json.Tests.Main
             internal            string      UserDbPath  => rootPath + "./assets~/DB/user_db";
             internal            string      Www         => rootPath + "../Json/Fliox.Hub.Explorer/www~"; // HubExplorer.Path;
             internal readonly   string      cache       = null; // "max-age=600"; // HTTP Cache-Control
-            internal readonly   bool        useMemoryDb;
+            internal readonly   bool        useMemoryDb = true;
             internal readonly   MemoryType  memoryType  = MemoryType.Concurrent;
             
             internal Config() { }

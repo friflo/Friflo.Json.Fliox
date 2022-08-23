@@ -73,19 +73,24 @@ class ErrorResponseType:::cssEnum {
 ProtocolMessage <|-- ProtocolEvent
 class ProtocolEvent {
     <<abstract>>
-    seq  : int32
-    src  : string
     clt  : string
 }
 
 ProtocolEvent <|-- EventMessage
 class EventMessage {
-    msg       : "ev"
+    msg     : "ev"
+    events? : SyncEvent[]
+}
+EventMessage *-- "0..*" SyncEvent : events
+
+class SyncEvent {
+    seq       : int32
+    src       : string
     isOrigin? : boolean
     db        : string
     tasks?    : SyncRequestTask[]
 }
-EventMessage *-- "0..*" SyncRequestTask : tasks
+SyncEvent *-- "0..*" SyncRequestTask : tasks
 
 class References {
     selector    : string

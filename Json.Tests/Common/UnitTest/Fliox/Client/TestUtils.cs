@@ -249,7 +249,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
         [Test]
         public void TestSubscriptionProcessorMemory() {
             var sub     = new SubscriptionProcessor();
-            var ev      = new EventMessage { db = "dummy", tasks = Array.Empty<SyncRequestTask>() };
+            var ev      = new SyncEvent { db = "dummy", tasks = Array.Empty<SyncRequestTask>() };
             var db      = new MemoryDatabase("dummy");
             var hub     = new FlioxHub(db);
             var client  = new FlioxClient(hub);

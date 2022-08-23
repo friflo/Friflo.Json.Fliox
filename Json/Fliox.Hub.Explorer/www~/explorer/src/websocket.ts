@@ -1,4 +1,4 @@
-import { EventMessage, ErrorResponse, SyncRequest, SyncResponse, ProtocolMessage_Union, } from "../../../../../Json.Tests/assets~/Schema/Typescript/Protocol/Friflo.Json.Fliox.Hub.Protocol";
+import { ErrorResponse, SyncRequest, SyncResponse, ProtocolMessage_Union, EventMessage } from "../../../../../Json.Tests/assets~/Schema/Typescript/Protocol/Friflo.Json.Fliox.Hub.Protocol";
 
 
 export class WebSocketResponse {
@@ -27,9 +27,9 @@ export class WebSocketClient {
     private webSocket:  WebSocket;
     private requests    = new Map<number, WebSocketRequest>();
 
-    public  onClose:        (e: CloseEvent)    => void = (e)        => { console.log(`onClose. code ${e.code}`); };
-    public  onEvent:        (ev: EventMessage) => void = (ev)       => { console.log(`onEvent. ev: ${ev}`); };
-    public  onRecvError:    (error: string)    => void = (error)    => { console.log(`onRecvError. error: ${error}`); };
+    public  onClose:        (e: CloseEvent)     => void = (e)        => { console.log(`onClose. code ${e.code}`); };
+    public  onEvents:       (ev: EventMessage)  => void = (ev)       => { console.log(`onEvent. ev: ${ev}`); };
+    public  onRecvError:    (error: string)     => void = (error)    => { console.log(`onRecvError. error: ${error}`); };
 
 
     public isOpen() : boolean {
@@ -80,7 +80,7 @@ export class WebSocketClient {
                         break;
                     }
                     case "ev":
-                        this.onEvent(message);
+                        this.onEvents(message);
                         break;
                     default:
                         this.onRecvError(`received invalid message: ${json}`);

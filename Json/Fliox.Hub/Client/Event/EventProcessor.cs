@@ -19,7 +19,7 @@ namespace Friflo.Json.Fliox.Hub.Client
     /// </remarks>
     public interface IEventProcessor
     {
-        void EnqueueEvent(FlioxClient client, EventMessage ev);
+        void EnqueueEvent(FlioxClient client, SyncEvent ev);
     }
     
     /// <summary>
@@ -30,7 +30,7 @@ namespace Friflo.Json.Fliox.Hub.Client
     /// </remarks>
     public sealed class DirectEventProcessor : IEventProcessor
     {
-        public void EnqueueEvent(FlioxClient client, EventMessage ev) {
+        public void EnqueueEvent(FlioxClient client, SyncEvent ev) {
             var processor = client._intern.SubscriptionProcessor(); 
             processor.ProcessEvent(client, ev);
         }
@@ -77,7 +77,7 @@ namespace Friflo.Json.Fliox.Hub.Client
 This is typically the case in console applications or unit tests. 
 Consider running application / test withing SingleThreadSynchronizationContext.Run()";
         
-        public void EnqueueEvent(FlioxClient client, EventMessage ev) {
+        public void EnqueueEvent(FlioxClient client, SyncEvent ev) {
             synchronizationContext.Post(delegate {
                 var processor = client._intern.SubscriptionProcessor();
                 processor.ProcessEvent(client, ev);
@@ -100,7 +100,7 @@ Consider running application / test withing SingleThreadSynchronizationContext.R
 
         public QueuingEventProcessor() { }
         
-        public void EnqueueEvent(FlioxClient client, EventMessage ev) {
+        public void EnqueueEvent(FlioxClient client, SyncEvent ev) {
             eventQueue.Enqueue(new QueuedMessage(client, ev));
         }
         
@@ -118,9 +118,9 @@ Consider running application / test withing SingleThreadSynchronizationContext.R
         private readonly struct QueuedMessage
         {
             internal  readonly  FlioxClient     client;
-            internal  readonly  EventMessage    ev;
+            internal  readonly  SyncEvent       ev;
             
-            internal QueuedMessage(FlioxClient client, EventMessage  ev) {
+            internal QueuedMessage(FlioxClient client, SyncEvent  ev) {
                 this.client = client;
                 this.ev     = ev;
             }

@@ -51,7 +51,7 @@ export abstract class ProtocolRequest extends ProtocolMessage {
      * As a user can access a **FlioxHub** by multiple clients the **clientId**
      * enables identifying each client individually.   
      * The **clientId** is used for **SubscribeMessage** and **SubscribeChanges**
-     * to enable sending **EventMessage**'s to the desired subscriber.
+     * to enable sending **SyncEvent**'s to the desired subscriber.
      */
     clt? : string | null;
 }
@@ -165,16 +165,6 @@ export abstract class ProtocolEvent extends ProtocolMessage {
         | "ev"
     ;
     /**
-     * Increasing event sequence number starting with 1 for a specific target client **dstClientId**.
-     * Each target client (subscriber) has its own sequence.
-     */
-    seq  : int32;
-    /**
-     * The user which caused the event. Specifically the user which made a database change or sent a message / command.
-     * The user client is not preserved by en extra property as a use case for this is not obvious.
-     */
-    src  : string;
-    /**
      * The target client the event is sent to. This enables sharing a single (WebSocket) connection by multiple clients.
      * In many scenarios this property is redundant as every client uses a WebSocket exclusively.
      */
@@ -183,7 +173,21 @@ export abstract class ProtocolEvent extends ProtocolMessage {
 
 export class EventMessage extends ProtocolEvent {
     /** message type */
-    msg       : "ev";
+    msg     : "ev";
+    events? : SyncEvent[] | null;
+}
+
+export class SyncEvent {
+    /**
+     * Increasing event sequence number starting with 1 for a specific target client **dstClientId**.
+     * Each target client (subscriber) has its own sequence.
+     */
+    seq       : int32;
+    /**
+     * The user which caused the event. Specifically the user which made a database change or sent a message / command.
+     * The user client is not preserved by en extra property as a use case for this is not obvious.
+     */
+    src       : string;
     /** Is true if the receiving client is the origin of the event */
     isOrigin? : boolean | null;
     /** The database the **tasks** refer to */

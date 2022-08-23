@@ -1,6 +1,7 @@
 // Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using Friflo.Json.Fliox.Hub.Host.Event;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Utils;
@@ -10,13 +11,18 @@ namespace Friflo.Json.Fliox.Hub.Remote
 {
     internal class RemoteSubscriptionEvent
     {
-        /** map to <see cref="ProtocolEvent"/> Discriminator */ public  string      msg;
-        /** map to <see cref="ProtocolEvent.seq"/> */           public  int         seq; 
-        /** map to <see cref="ProtocolEvent.srcUserId"/> */     public  JsonKey     src;
-        /** map to <see cref="ProtocolEvent.dstClientId"/> */   public  JsonKey     clt;
-        /** map to <see cref="EventMessage.db"/> */             public  string      db;
-        /** map to <see cref="EventMessage.isOrigin"/> */       public  bool?       isOrigin;
-        /** map to <see cref="EventMessage.tasks"/> */          public  JsonValue[] tasks;
+        /** map to <see cref="ProtocolEvent"/> Discriminator */ public  string                      msg;
+        /** map to <see cref="ProtocolEvent.dstClientId"/> */   public  JsonKey                     clt;
+        /** map to <see cref="EventMessage.events"/> */         public  RemoteSubscriptionMessage[] events;
+    }
+    
+    internal class RemoteSubscriptionMessage
+    {
+        /** map to <see cref="SyncEvent.seq"/> */               public  int         seq; 
+        /** map to <see cref="SyncEvent.srcUserId"/> */         public  JsonKey     src;
+        /** map to <see cref="SyncEvent.db"/> */                public  string      db;
+        /** map to <see cref="SyncEvent.isOrigin"/> */          public  bool?       isOrigin;
+        /** map to <see cref="SyncEvent.tasks"/> */             public  JsonValue[] tasks;
     }
     
     public static class RemoteUtils
@@ -27,17 +33,23 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 ObjectMapper mapper = pooledMapper.instance;
                 mapper.Pretty = true;
                 mapper.WriteNullMembers = false;
-                if (message is EventMessage ev && ev.tasksJson != null) {
-                    var remoteEv = new RemoteSubscriptionEvent {
-                        msg         = "ev",
-                        seq         = ev.seq,
-                        src         = ev.srcUserId,
-                        clt         = ev.dstClientId,
-                        db          = ev.db,
-                        isOrigin    = ev.isOrigin,
-                        tasks       = ev.tasksJson,
-                    };
-                    return new JsonValue(mapper.WriteAsArray(remoteEv));
+                if (EventDispatcher.SerializeRemoteEvents && message is EventMessage eventMessage) {
+                    var remoteEventMessages = new RemoteSubscriptionEvent { msg = "ev", clt = eventMessage.dstClientId };
+                    var events                  = eventMessage.events;
+                    var remoteEvents            = new RemoteSubscriptionMessage[events.Length];
+                    remoteEventMessages.events  = remoteEvents;
+                    for (int n = 0; n < events.Length; n++) {
+                        var ev = events[n];
+                        var remoteEv = new RemoteSubscriptionMessage {
+                            seq         = ev.seq,
+                            src         = ev.srcUserId,
+                            db          = ev.db,
+                            isOrigin    = ev.isOrigin,
+                            tasks       = ev.tasksJson,
+                        };
+                        remoteEvents[n] = remoteEv;
+                    }
+                    return new JsonValue(mapper.WriteAsArray(remoteEventMessages));
                 }
                 return new JsonValue(mapper.WriteAsArray(message));
             }

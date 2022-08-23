@@ -1,5 +1,5 @@
 import { DbContainers, DbMessages } from "../../../../../Json.Tests/assets~/Schema/Typescript/ClusterStore/Friflo.Json.Fliox.Hub.DB.Cluster.js";
-import { EventMessage, SyncRequest } from "../../../../../Json.Tests/assets~/Schema/Typescript/Protocol/Friflo.Json.Fliox.Hub.Protocol.js";
+import { SyncEvent, SyncRequest } from "../../../../../Json.Tests/assets~/Schema/Typescript/Protocol/Friflo.Json.Fliox.Hub.Protocol.js";
 import { EntityChange, SubscribeChanges, SubscribeMessage } from "../../../../../Json.Tests/assets~/Schema/Typescript/Protocol/Friflo.Json.Fliox.Hub.Protocol.Tasks.js";
 import { ClusterTree }  from "./components.js";
 import { el }           from "./types.js";
@@ -100,7 +100,7 @@ class SubEvent {
         return name;
     }
 
-    constructor(msg: string, ev: EventMessage) {
+    constructor(msg: string, ev: SyncEvent) {
         this.msg                    = SubEvent.internName(msg);
         this.db                     = SubEvent.internName(ev.db);
         this.seq                    = ev.seq;
@@ -248,7 +248,7 @@ export class Events
         app.eventsEditor.setValue("");
     }
 
-    private static event2String (ev: EventMessage, format: boolean) : string {
+    private static event2String (ev: SyncEvent, format: boolean) : string {
         if (!format) {
             return JSON.stringify(ev, null, 4);
         }
@@ -294,7 +294,7 @@ export class Events
         }
         const tasks = tasksJson.join(",\n        ");
         return `{
-    "msg":"ev"${KV("seq", ev.seq)}${KV("src", ev.src)}${KV("clt", ev.clt)}${KV("db", ev.db)}${KV("isOrigin", ev.isOrigin)},
+    "msg":"ev"${KV("seq", ev.seq)}${KV("src", ev.src)}${KV("db", ev.db)}${KV("isOrigin", ev.isOrigin)},
     "tasks": [
         ${tasks}
     ]
@@ -314,7 +314,7 @@ export class Events
         editor.revealPositionNearTop(pos);
     }
 
-    public addSubscriptionEvent(ev: EventMessage) : void {
+    public addSubscriptionEvent(ev: SyncEvent) : void {
         this.eventCount++;
         eventCount.innerText = String(this.eventCount);
         const evStr     = Events.event2String (ev, prettifyEvents.checked);
@@ -366,7 +366,7 @@ export class Events
         editor.executeEdits("addSubscriptionEvent", [{ range: range, text: evStr, forceMoveMarkers: true }], callback);
     }
 
-    private updateUI(ev: EventMessage) {
+    private updateUI(ev: SyncEvent) {
         const databaseSub = this.databaseSubs[ev.db];
         for (const task of ev.tasks) {
             switch (task.task) {

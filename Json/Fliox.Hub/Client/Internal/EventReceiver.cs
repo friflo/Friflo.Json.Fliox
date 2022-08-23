@@ -20,20 +20,24 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         public bool     IsRemoteTarget ()   => false;
         public bool     IsOpen ()           => true;
 
-        public Task<bool> ProcessEvent(ProtocolEvent ev) {
-            if (!ev.dstClientId.IsEqual(client._intern.clientId))
+        public Task<bool> ProcessEvent(ProtocolEvent protocolEvent) {
+            if (!protocolEvent.dstClientId.IsEqual(client._intern.clientId))
                 throw new InvalidOperationException("Expect ProtocolEvent.dstId == FlioxClient.clientId");
             
-            // Skip already received events
-            if (client._intern.lastEventSeq >= ev.seq)
-                return Task.FromResult(true);
-            
-            client._intern.lastEventSeq = ev.seq;
-            var eventMessage = ev as EventMessage;
+
+            var eventMessage = protocolEvent as EventMessage;
             if (eventMessage == null)
                 return Task.FromResult(true);
 
-            client._intern.eventProcessor.EnqueueEvent(client, eventMessage);
+            // Console.WriteLine($"----- ProcessEvent. events: {eventMessages.events.Length}");
+            foreach (var ev in eventMessage.events) {
+                // Skip already received events
+                if (client._intern.lastEventSeq >= ev.seq)
+                    continue; // could also break as all subsequent events 
+            
+                client._intern.lastEventSeq = ev.seq;                
+                client._intern.eventProcessor.EnqueueEvent(client, ev);
+            }
 
             return Task.FromResult(true);
         }

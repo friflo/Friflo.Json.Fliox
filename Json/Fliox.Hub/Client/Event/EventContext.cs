@@ -67,13 +67,13 @@ namespace Friflo.Json.Fliox.Hub.Client
         
         [DebuggerBrowsable(Never)] public           IHubLogger              Logger => Client.Logger;
         [DebuggerBrowsable(Never)] private readonly SubscriptionProcessor   processor;
-        [DebuggerBrowsable(Never)] private          EventMessage            ev;
+        [DebuggerBrowsable(Never)] private          SyncEvent               ev;
 
         internal EventContext(SubscriptionProcessor processor) {
             this.processor  = processor;
         }
         
-        internal void Init(FlioxClient client, EventMessage ev) {
+        internal void Init(FlioxClient client, SyncEvent ev) {
             Client  = client;
             this.ev = ev;
         }

@@ -12,15 +12,22 @@ namespace Friflo.Json.Tests.Main
         public static async Task ListenEvents() {
             var hub         = CreateHub("ws");
             var client      = new PocStore(hub) { UserId = "admin", Token = "admin", ClientId="TestClient" };
-            client.SubscriptionEventHandler = context => {
-                Task.Run(() => client.SyncTasks()); // acknowledge received event to the Hub
+            client.SubscriptionEventHandler = async context => {
+                if (context.EventSeq % 10000 == 0) {
+                    // todo - notify last event
+                    await client.SyncTasks(); // acknowledge received event to the Hub
+                    // Task.Run(() => client.SyncTasks()); // acknowledge received event to the Hub
+                }
             };
             client.articles.SubscribeChanges(Change.All, (changes, context) => {
-                foreach (var entity in changes.Upserts) {
-                    if (context.EventSeq % 100 == 0) {
+                if (context.EventSeq % 1000 == 0) {
+                    Console.WriteLine($"EventSeq: {context.EventSeq}");
+                }
+                /* foreach (var entity in changes.Upserts) {
+                    if (context.EventSeq % 1000 == 0) {
                         Console.WriteLine($"EventSeq: {context.EventSeq} - upsert article: {entity.id}, name: {entity.name}");
                     }
-                }
+                }*/
                 foreach (var key in changes.Deletes) {
                     Console.WriteLine($"EventSeq: {context.EventSeq} - delete article: {key}");
                 }

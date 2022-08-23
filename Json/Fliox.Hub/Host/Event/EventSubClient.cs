@@ -7,7 +7,6 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Protocol;
-using Friflo.Json.Fliox.Hub.Remote;
 using Friflo.Json.Fliox.Hub.Threading;
 using static System.Diagnostics.DebuggerBrowsableState;
 
@@ -44,9 +43,9 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         /// lock (<see cref="unsentEventsQueue"/>) {
         private             int                                 eventCounter;
         /// contains all events not yet sent. Should be a Dqueue but C# doesn't contain this container type. 
-        private  readonly   LinkedList<ProtocolEvent>           unsentEventsQueue   = new LinkedList<ProtocolEvent>();
+        private  readonly   LinkedList<SyncEvent>               unsentEventsQueue   = new LinkedList<SyncEvent>();
         /// contains all events which are sent but not acknowledged
-        private  readonly   Queue<ProtocolEvent>                sentEventsQueue     = new Queue<ProtocolEvent>();
+        private  readonly   Queue<SyncEvent>                    sentEventsQueue     = new Queue<SyncEvent>();
         // }
         
         private  readonly   bool                                background;
@@ -91,7 +90,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             SendUnacknowledgedEvents();
         }
         
-        internal void EnqueueEvent(ProtocolEvent ev) {
+        internal void EnqueueEvent(SyncEvent ev) {
             lock (unsentEventsQueue) {
                 ev.seq = ++eventCounter;
                 unsentEventsQueue.AddLast(ev);
@@ -101,16 +100,21 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             }
         }
         
-        private bool DequeueEvent(out ProtocolEvent ev) {
+        private bool DequeueEvents(out SyncEvent[] events) {
             lock (unsentEventsQueue) {
-                var node = unsentEventsQueue.First;
-                if (node == null) {
-                    ev = null;
+                var count = unsentEventsQueue.Count;
+                if (count == 0) {
+                    events = null;
                     return false;
                 }
-                ev = node.Value;
-                unsentEventsQueue.RemoveFirst();
-                sentEventsQueue.Enqueue(ev);
+                if (count > 100) count = 100;
+                events = new SyncEvent[count];
+                for (int n = 0; n < count; n++) {
+                    var ev = unsentEventsQueue.First();
+                    unsentEventsQueue.RemoveFirst();
+                    events[n] = ev;
+                    sentEventsQueue.Enqueue(ev);
+                } 
                 return true;
             }
         }
@@ -137,7 +141,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         /// </summary>
         private void SendUnacknowledgedEvents() {
             lock (unsentEventsQueue) {
-                LinkedListNode<ProtocolEvent> head = null;
+                LinkedListNode<SyncEvent> head = null;
                 foreach (var ev in sentEventsQueue) {
                     if (head == null) {
                         head = unsentEventsQueue.AddFirst(ev);
@@ -159,14 +163,16 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             if (!eventReceiver.IsOpen())
                 return;
             // Trace.WriteLine("--- SendEvents");
-            while (DequeueEvent(out var ev)) {
+            while (DequeueEvents(out var events)) {
                 // var msg = $"DequeueEvent {ev.seq}";
                 // Trace.WriteLine(msg);
                 // Console.WriteLine(msg);
                 try {
+                    // Console.WriteLine($"--- SendEvents: {events.Length}");
                     // In case the event target is remote connection it is not guaranteed that the event arrives.
                     // The remote target may already be disconnected and this is still not know when sending the event.
-                    await eventReceiver.ProcessEvent(ev).ConfigureAwait(false);
+                    var eventMessage = new EventMessage { dstClientId = clientId, events = events };
+                    await eventReceiver.ProcessEvent(eventMessage).ConfigureAwait(false);
                 }
                 catch (Exception e) {
                     var message = "SendEvents failed";

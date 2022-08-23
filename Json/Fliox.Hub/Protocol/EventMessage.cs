@@ -5,11 +5,34 @@ using System.ComponentModel.DataAnnotations;
 using System.Text;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 
+// ReSharper disable InconsistentNaming
 namespace Friflo.Json.Fliox.Hub.Protocol
 {
     // ----------------------------------- event -----------------------------------
     public sealed class EventMessage : ProtocolEvent
     {
+        public                  SyncEvent[]         events;
+        
+        internal override       MessageType         MessageType => MessageType.ev;
+    }
+
+    public sealed class SyncEvent
+    {
+        // note for all fields
+        // used { get; set; } to force properties on the top of JSON
+        
+        /// <summary>
+        /// Increasing event sequence number starting with 1 for a specific target client <see cref="ProtocolEvent.dstClientId"/>.
+        /// Each target client (subscriber) has its own sequence.
+        /// </summary>
+                    public      int                 seq         { get; set; }
+        /// <summary>
+        /// The user which caused the event. Specifically the user which made a database change or sent a message / command.
+        /// The user client is not preserved by en extra property as a use case for this is not obvious.
+        /// </summary>
+        [Serialize(Name =                          "src")]
+        [Required]  public      JsonKey             srcUserId   { get; set; }
+        
         /// <summary>The database the <see cref="tasks"/> refer to</summary>
         [Required]  public      string              db;
         /// <summary>
@@ -30,7 +53,6 @@ namespace Friflo.Json.Fliox.Hub.Protocol
         /// Used for optimization. Either <see cref="tasks"/> or <see cref="tasksJson"/> is set
         [Ignore]    internal    JsonValue[]         tasksJson;
         
-        internal override       MessageType         MessageType => MessageType.ev;
         public   override       string              ToString()  => GetEventInfo().ToString();
         
         public EventInfo    GetEventInfo() {
@@ -66,7 +88,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol
 
     /// <summary>
     /// <see cref="EventInfo"/> is never de-/serialized.
-    /// It purpose is to get all aggregated information about a <see cref="EventMessage"/> by  by <see cref="EventMessage.GetEventInfo"/>.
+    /// It purpose is to get all aggregated information about a <see cref="SyncEvent"/> by  by <see cref="SyncEvent.GetEventInfo"/>.
     /// </summary>
     public struct EventInfo {
         public              ChangeInfo  changes;
@@ -85,7 +107,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol
     
     /// <summary>
     /// <see cref="ChangeInfo"/> is never de-/serialized.
-    /// It purpose is to get aggregated change information about a <see cref="EventMessage"/> by <see cref="EventMessage.GetEventInfo"/>.
+    /// It purpose is to get aggregated change information about a <see cref="SyncEvent"/> by <see cref="SyncEvent.GetEventInfo"/>.
     /// </summary>
     public struct ChangeInfo {
         public  int creates;

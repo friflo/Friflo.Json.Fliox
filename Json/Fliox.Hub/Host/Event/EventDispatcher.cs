@@ -254,30 +254,29 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                     // mark change events for (change) tasks which are sent by the client itself
                     bool? isOrigin = syncContext.clientId.IsEqual(subClient.clientId) ? true : (bool?)null;
 
-                    var eventMessage = new EventMessage {
+                    var syncEvent = new SyncEvent {
                         db          = database,
                         tasks       = eventTasks.ToArray(),
                         srcUserId   = syncRequest.userId,
-                        dstClientId = subClient.clientId,
                         isOrigin    = isOrigin
                     };
                     if (SerializeRemoteEvents && subClient.IsRemoteTarget) {
-                        SerializeRemoteEvent(eventMessage, eventTasks, writer);
+                        SerializeRemoteEvent(syncEvent, eventTasks, writer);
                     }
-                    subClient.EnqueueEvent(eventMessage);
+                    subClient.EnqueueEvent(syncEvent);
                 }
             }
         }
         
-        private static bool SerializeRemoteEvents = true; // set to false for development
+        internal static bool SerializeRemoteEvents = true; // set to false for development
 
-        /// Optimization: For remote connections the tasks are serialized to <see cref="EventMessage.tasksJson"/>.
+        /// Optimization: For remote connections the tasks are serialized to <see cref="SyncEvent.tasksJson"/>.
         /// Benefits of doing this:
         /// - serialize a task only once for multiple targets
         /// - storing only a single byte[] for a task instead of a complex SyncRequestTask which is not used anymore
-        private static void SerializeRemoteEvent(EventMessage eventMessage, List<SyncRequestTask> tasks, ObjectWriter writer) {
+        private static void SerializeRemoteEvent(SyncEvent syncEvent, List<SyncRequestTask> tasks, ObjectWriter writer) {
             var tasksJson = new JsonValue [tasks.Count];
-            eventMessage.tasksJson = tasksJson;
+            syncEvent.tasksJson = tasksJson;
             for (int n = 0; n < tasks.Count; n++) {
                 var task = tasks[n];
                 if (task.json == null) {
@@ -286,7 +285,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                 tasksJson[n] = task.json.Value;
             }
             tasks.Clear();
-            eventMessage.tasks = null;
+            syncEvent.tasks = null;
         }
     }
 }
