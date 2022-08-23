@@ -6,6 +6,7 @@ import { SyncRequest } from "../../../../../Json.Tests/assets~/Schema/Typescript
 
 const responseState     = el("response-state");
 const subscriptionCount = el("subscriptionCount");
+const eventCount        = el("eventCount")      as HTMLSpanElement;
 const subscriptionSeq   = el("subscriptionSeq");
 const socketStatus      = el("socketStatus");
 const reqIdElement      = el("req");
@@ -77,7 +78,9 @@ export class Playground
         this.wsClient.onEvents  = (eventMessages) => {
             const events        = eventMessages.events;
             this.eventCount    += events.length;
-            subscriptionCount.innerText = String(this.eventCount);
+            const countStr      = String(this.eventCount);
+            subscriptionCount.innerText = countStr;
+            eventCount.innerText        = countStr;
             for (const ev of events) {
                 app.events.addSubscriptionEvent(ev);
             }

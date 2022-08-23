@@ -9,7 +9,6 @@ const subscriptionTree  = el("subscriptionTree");
 const scrollToEnd       = el("scrollToEnd")     as HTMLInputElement;
 const prettifyEvents    = el("prettifyEvents")  as HTMLInputElement;
 const subFilter         = el("subFilter")       as HTMLSpanElement;
-const eventCount        = el("eventCount")      as HTMLSpanElement;
 const logCount          = el("logCount")        as HTMLSpanElement;
 const eventSrcFilter    = el("eventSrcFilter")  as HTMLInputElement;
 const eventSeqStart     = el("eventSeqStart")   as HTMLInputElement;
@@ -321,8 +320,6 @@ export class Events
     }
 
     public addSubscriptionEvent(ev: SyncEvent) : void {
-        this.eventCount++;
-        eventCount.innerText = String(this.eventCount);
         const evStr     = Events.event2String (ev, prettifyEvents.checked);
         const msg       = new SubEvent(evStr, ev);
         this.subEvents.push (msg);

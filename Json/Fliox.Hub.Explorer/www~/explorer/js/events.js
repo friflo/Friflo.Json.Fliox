@@ -5,7 +5,6 @@ const subscriptionTree = el("subscriptionTree");
 const scrollToEnd = el("scrollToEnd");
 const prettifyEvents = el("prettifyEvents");
 const subFilter = el("subFilter");
-const eventCount = el("eventCount");
 const logCount = el("logCount");
 const eventSrcFilter = el("eventSrcFilter");
 const eventSeqStart = el("eventSeqStart");
@@ -272,8 +271,6 @@ export class Events {
         editor.revealPositionNearTop(pos);
     }
     addSubscriptionEvent(ev) {
-        this.eventCount++;
-        eventCount.innerText = String(this.eventCount);
         const evStr = Events.event2String(ev, prettifyEvents.checked);
         const msg = new SubEvent(evStr, ev);
         this.subEvents.push(msg);
