@@ -149,7 +149,6 @@ export class Events
     private             userFilter:     string[] = null;
     private             seqStart    = 0;
     private             seqEnd      = Number.MAX_SAFE_INTEGER;
-    private             eventCount  = 0;
     private             logCount    = 0;
 
 

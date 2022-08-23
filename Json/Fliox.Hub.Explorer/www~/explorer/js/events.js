@@ -116,7 +116,6 @@ export class Events {
         this.userFilter = null;
         this.seqStart = 0;
         this.seqEnd = Number.MAX_SAFE_INTEGER;
-        this.eventCount = 0;
         this.logCount = 0;
         this.clusterTree = new ClusterTree();
     }
