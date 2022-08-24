@@ -10,10 +10,18 @@ class WebSocketRequest {
 }
 export class WebSocketClient {
     constructor() {
+        this.clt = null; // client id
+        this.req = 1; // incrementing request id. Starts with 1 for every new wsClient
         this.requests = new Map();
+        this.ackTimer = null;
+        this.ackTimePending = false;
+        this.lastEventSeq = 0; // last received event seq. Used to acknowledge received the event via SyncRequest.ack
         this.onClose = (e) => { console.log(`onClose. code ${e.code}`); };
         this.onEvents = (ev) => { console.log(`onEvent. ev: ${ev}`); };
         this.onRecvError = (error) => { console.log(`onRecvError. error: ${error}`); };
+    }
+    getReqId() {
+        return this.req;
     }
     isOpen() {
         var _a;
@@ -57,17 +65,34 @@ export class WebSocketClient {
                             return;
                         }
                         this.requests.delete(reqId);
+                        if (message.clt) {
+                            this.clt = message.clt; // ProtocolResponse.clt is set by Host if not set in SynRequest
+                        }
                         request.resolve({ json: json, message: message, start: request.start, end: end });
                         break;
                     }
-                    case "ev":
+                    case "ev": {
+                        const events = message.events;
+                        const lastEv = events[events.length - 1];
+                        this.lastEventSeq = lastEv.seq;
                         this.onEvents(message);
+                        if (!this.ackTimePending) {
+                            this.ackTimePending = true;
+                            this.ackTimer = setTimeout(() => this.acknowledgeEvents(), 1000);
+                        }
                         break;
+                    }
                     default:
                         this.onRecvError(`received invalid message: ${json}`);
                 }
             };
         });
+    }
+    acknowledgeEvents() {
+        // console.log(`acknowledgeEvents. ack: ${this.lastEventSeq}`);
+        // acknowledge event by sending a SyncRequest with SyncRequest.ack set to the last received seq
+        const syncRequest = { msg: "sync", tasks: [], info: "acknowledge event" };
+        this.syncRequest(syncRequest);
     }
     rejectPendingRequests(error) {
         for (const requests of this.requests.values()) {
@@ -80,9 +105,11 @@ export class WebSocketClient {
         this.webSocket = null;
     }
     async syncRequest(request) {
-        const reqId = request.req;
-        if (!reqId) {
-            throw `missing request property: 'req'`;
+        const reqId = this.req++;
+        request.req = reqId;
+        request.ack = this.lastEventSeq;
+        if (this.clt) {
+            request.clt = this.clt;
         }
         const jsonRequest = JSON.stringify(request);
         const wsRequest = new WebSocketRequest();
@@ -90,6 +117,11 @@ export class WebSocketClient {
             throw `req id already in use: ${reqId}`;
         }
         this.requests.set(reqId, wsRequest);
+        if (this.ackTimePending) {
+            this.ackTimePending = false;
+            clearTimeout(this.ackTimer);
+            this.ackTimer = null;
+        }
         wsRequest.start = performance.now();
         this.webSocket.send(jsonRequest);
         return wsRequest.promise;

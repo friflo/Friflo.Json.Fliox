@@ -25,12 +25,9 @@ export class Playground
     // --- WebSocket ---
     private wsClient:       WebSocketClient;
     private websocketCount  = 0;
-    private req             = 1;                    // incrementing request id. Starts with 1 for every new wsClient
-    private clt:            string | null  = null;  // client id
-    private lastEventSeq    = 0;                    // last received event seq. Used to acknowledge received the event via SyncRequest.ack
     private eventCount      = 0;                    // number of received events. Reset for every new wsClient
 
-    public getClientId() : string { return this.clt; }
+    public getClientId() : string { return this.wsClient.clt; }
 
     public connectWebsocket (): void {
         if (this.wsClient) {
@@ -85,14 +82,10 @@ export class Playground
                 app.events.addSubscriptionEvent(ev);
             }
             const lastEv                = events[events.length - 1];
-            const subSeq                = this.lastEventSeq = lastEv.seq;
+            const subSeq                = lastEv.seq;
             // multiple clients can use the same WebSocket. Use the latest
             subscriptionSeq.innerText   = subSeq ? String(subSeq) : " - ";
             ackElement.innerText        = subSeq ? String(subSeq) : " - ";
-
-            // acknowledge event by sending a SyncRequest with SyncRequest.ack set to the last received seq
-            const syncRequest: SyncRequest = { msg: "sync", tasks: [], info: "acknowledge event" };
-            this.sendWebSocketRequest(syncRequest);
         };
         const error     = await this.wsClient.connect(uri);
 
@@ -124,10 +117,8 @@ export class Playground
     public async sendSyncRequest (): Promise<void> {
         const wsClient = this.wsClient;
         if (!wsClient || !wsClient.isOpen()) {
-            app.responseModel.setValue(`Request ${this.req} failed. WebSocket not connected`);
+            app.responseModel.setValue(`Request failed. WebSocket not connected`);
             responseState.innerHTML = "";
-            this.req++; // not necessary but makes error message in editor simpler to understand
-            reqIdElement.innerText  =  String(this.req);
             return;
         }
         let jsonRequest     = app.requestModel.getValue();
@@ -135,9 +126,9 @@ export class Playground
         const syncRequest   = JSON.parse(jsonRequest) as SyncRequest;
 
         // Enable overrides of WebSocket specific members
-        if (syncRequest.req !== undefined) { this.req           = syncRequest.req; }
-        if (syncRequest.ack !== undefined) { this.lastEventSeq  = syncRequest.ack; }
-        if (syncRequest.clt !== undefined) { this.clt           = syncRequest.clt; }
+    //  if (syncRequest.req !== undefined) { this.req           = syncRequest.req; }
+    //  if (syncRequest.ack !== undefined) { this.lastEventSeq  = syncRequest.ack; }
+        if (syncRequest.clt !== undefined) { this.wsClient.clt  = syncRequest.clt; }
 
         responseState.innerHTML = '<span class="spinner"></span>';
         const response          = await this.sendWsClientRequest(syncRequest);
@@ -156,16 +147,10 @@ export class Playground
 
     private async sendWsClientRequest (syncRequest: SyncRequest): Promise<WebSocketResponse> {
         // Add WebSocket specific members to request
-        syncRequest.req         = this.req++;
-        syncRequest.ack         = this.lastEventSeq;
-        if (this.clt) {
-            syncRequest.clt     = this.clt;
-        }
-        reqIdElement.innerText  =  String(this.req);
         const response          = await this.wsClient.syncRequest(syncRequest);
 
-        this.clt                = response.message.clt; // ProtocolResponse.clt is set by Host if not set in SynRequest
-        cltElement.innerText    = this.clt ?? " - ";
+        reqIdElement.innerText  = String(this.wsClient.getReqId());
+        cltElement.innerText    = this.wsClient?.clt ?? " - ";
         return response;
     }
 
