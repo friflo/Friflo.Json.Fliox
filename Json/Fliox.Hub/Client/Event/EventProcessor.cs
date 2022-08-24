@@ -19,7 +19,7 @@ namespace Friflo.Json.Fliox.Hub.Client
     /// </remarks>
     public interface IEventProcessor
     {
-        void EnqueueEvent(FlioxClient client, SyncEvent ev);
+        void EnqueueEvent(FlioxClient client, EventMessage eventMessage);
     }
     
     /// <summary>
@@ -30,9 +30,8 @@ namespace Friflo.Json.Fliox.Hub.Client
     /// </remarks>
     public sealed class DirectEventProcessor : IEventProcessor
     {
-        public void EnqueueEvent(FlioxClient client, SyncEvent ev) {
-            var processor = client._intern.SubscriptionProcessor(); 
-            processor.ProcessEvent(client, ev);
+        public void EnqueueEvent(FlioxClient client, EventMessage eventMessage) {
+            client.ProcessEvents(eventMessage);
         }
     }
     
@@ -77,10 +76,9 @@ namespace Friflo.Json.Fliox.Hub.Client
 This is typically the case in console applications or unit tests. 
 Consider running application / test withing SingleThreadSynchronizationContext.Run()";
         
-        public void EnqueueEvent(FlioxClient client, SyncEvent ev) {
+        public void EnqueueEvent(FlioxClient client, EventMessage eventMessage) {
             synchronizationContext.Post(delegate {
-                var processor = client._intern.SubscriptionProcessor();
-                processor.ProcessEvent(client, ev);
+                client.ProcessEvents(eventMessage);
             }, null);
         }
     }
@@ -100,8 +98,8 @@ Consider running application / test withing SingleThreadSynchronizationContext.R
 
         public QueuingEventProcessor() { }
         
-        public void EnqueueEvent(FlioxClient client, SyncEvent ev) {
-            eventQueue.Enqueue(new QueuedMessage(client, ev));
+        public void EnqueueEvent(FlioxClient client, EventMessage eventMessage) {
+            eventQueue.Enqueue(new QueuedMessage(client, eventMessage));
         }
         
         /// <summary>
@@ -110,19 +108,18 @@ Consider running application / test withing SingleThreadSynchronizationContext.R
         public void ProcessEvents() {
             while (eventQueue.TryDequeue(out QueuedMessage queuedMessage)) {
                 var client      = queuedMessage.client;
-                var processor   = client._intern.SubscriptionProcessor();
-                processor.ProcessEvent(client, queuedMessage.ev);
+                client.ProcessEvents(queuedMessage.eventMessage);
             }
         }
 
         private readonly struct QueuedMessage
         {
             internal  readonly  FlioxClient     client;
-            internal  readonly  SyncEvent       ev;
+            internal  readonly  EventMessage    eventMessage;
             
-            internal QueuedMessage(FlioxClient client, SyncEvent  ev) {
-                this.client = client;
-                this.ev     = ev;
+            internal QueuedMessage(FlioxClient client, EventMessage eventMessage) {
+                this.client         = client;
+                this.eventMessage   = eventMessage;
             }
         }
     }

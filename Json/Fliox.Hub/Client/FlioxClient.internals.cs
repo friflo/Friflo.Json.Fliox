@@ -57,6 +57,20 @@ namespace Friflo.Json.Fliox.Hub.Client
             }
         }
         
+        internal void ProcessEvents(EventMessage eventMessage) {
+            var processor   = _intern.SubscriptionProcessor();
+            // Console.WriteLine($"----- ProcessEvent. events: {eventMessages.events.Length}");
+            foreach (var ev in eventMessage.events) {
+                // Skip already received events
+                if (_intern.lastEventSeq >= ev.seq)
+                    continue; // could also break as all subsequent events 
+            
+                _intern.lastEventSeq = ev.seq;                
+                processor.ProcessEvent(this, ev);
+            }
+            // if (eventMessage.events.Length > 10) { Console.WriteLine($"--- ProcessEvents {eventMessage.events.Length}"); }
+        }
+        
         private async Task<ExecuteSyncResult> ExecuteSync(SyncRequest syncRequest, SyncContext syncContext) {
             _intern.syncCount++;
             Task<ExecuteSyncResult> task = null;

@@ -28,16 +28,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             var eventMessage = protocolEvent as EventMessage;
             if (eventMessage == null)
                 return Task.FromResult(true);
-
-            // Console.WriteLine($"----- ProcessEvent. events: {eventMessages.events.Length}");
-            foreach (var ev in eventMessage.events) {
-                // Skip already received events
-                if (client._intern.lastEventSeq >= ev.seq)
-                    continue; // could also break as all subsequent events 
-            
-                client._intern.lastEventSeq = ev.seq;                
-                client._intern.eventProcessor.EnqueueEvent(client, ev);
-            }
+            client._intern.eventProcessor.EnqueueEvent(client, eventMessage);
 
             return Task.FromResult(true);
         }
