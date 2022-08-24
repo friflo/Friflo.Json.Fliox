@@ -124,11 +124,14 @@ export class WebSocketClient
     }
 
     public close() : void {
-        this.webSocket.close();
+        this.webSocket?.close();
         this.webSocket = null;
     }
 
     public async syncRequest(request: SyncRequest) : Promise<WebSocketResponse> {
+        if (!this.isOpen) {
+            throw "WebSocket not connect";
+        }
         const reqId         = this.req++;
         request.req         = reqId;
         request.ack         = this.lastEventSeq;

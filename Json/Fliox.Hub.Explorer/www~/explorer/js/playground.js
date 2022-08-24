@@ -16,20 +16,37 @@ const defaultToken = el("token");
 // ----------------------------------------------- Playground -----------------------------------------------
 export class Playground {
     constructor() {
+        // --- WebSocket ---
+        this.wsClient = new WebSocketClient();
         this.websocketCount = 0;
         this.eventCount = 0; // number of received events. Reset for every new wsClient
+        this.wsClient.onClose = (e) => {
+            socketStatus.innerText = "closed (code: " + e.code + ")";
+            responseState.innerText = "";
+        };
+        this.wsClient.onEvents = (eventMessages) => {
+            const events = eventMessages.events;
+            this.eventCount += events.length;
+            const countStr = String(this.eventCount);
+            subscriptionCount.innerText = countStr;
+            eventCount.innerText = countStr;
+            for (const ev of events) {
+                app.events.addSubscriptionEvent(ev);
+            }
+            const lastEv = events[events.length - 1];
+            const subSeq = lastEv.seq;
+            // multiple clients can use the same WebSocket. Use the latest
+            subscriptionSeq.innerText = subSeq ? String(subSeq) : " - ";
+            ackElement.innerText = subSeq ? String(subSeq) : " - ";
+        };
     }
     getClientId() { var _a; return (_a = this.wsClient) === null || _a === void 0 ? void 0 : _a.clt; }
     connectWebsocket() {
-        if (this.wsClient) {
-            this.wsClient.close();
-            this.wsClient = null;
-        }
+        this.wsClient.close();
         this.connect();
     }
     async connect() {
-        var _a;
-        if ((_a = this.wsClient) === null || _a === void 0 ? void 0 : _a.isOpen()) {
+        if (this.wsClient.isOpen()) {
             return null;
         }
         try {
@@ -55,26 +72,6 @@ export class Playground {
         const uri = this.getWebsocketUri();
         // const uri    = `ws://google.com:8080/`; // test connection timeout
         socketStatus.innerHTML = 'connecting <span class="spinner"></span>';
-        this.wsClient = new WebSocketClient();
-        this.wsClient.onClose = (e) => {
-            socketStatus.innerText = "closed (code: " + e.code + ")";
-            responseState.innerText = "";
-        };
-        this.wsClient.onEvents = (eventMessages) => {
-            const events = eventMessages.events;
-            this.eventCount += events.length;
-            const countStr = String(this.eventCount);
-            subscriptionCount.innerText = countStr;
-            eventCount.innerText = countStr;
-            for (const ev of events) {
-                app.events.addSubscriptionEvent(ev);
-            }
-            const lastEv = events[events.length - 1];
-            const subSeq = lastEv.seq;
-            // multiple clients can use the same WebSocket. Use the latest
-            subscriptionSeq.innerText = subSeq ? String(subSeq) : " - ";
-            ackElement.innerText = subSeq ? String(subSeq) : " - ";
-        };
         const error = await this.wsClient.connect(uri);
         this.eventCount = 0;
         if (error) {
@@ -86,7 +83,6 @@ export class Playground {
     }
     closeWebsocket() {
         this.wsClient.close();
-        this.wsClient = null;
     }
     addUserToken(jsonRequest) {
         const endBracket = jsonRequest.lastIndexOf("}");
@@ -100,7 +96,7 @@ export class Playground {
     }
     async sendSyncRequest() {
         const wsClient = this.wsClient;
-        if (!wsClient || !wsClient.isOpen()) {
+        if (!wsClient.isOpen()) {
             app.responseModel.setValue(`Request failed. WebSocket not connected`);
             responseState.innerHTML = "";
             return;
@@ -125,11 +121,11 @@ export class Playground {
         return await this.sendWsClientRequest(syncRequest);
     }
     async sendWsClientRequest(syncRequest) {
-        var _a, _b;
+        var _a;
         // Add WebSocket specific members to request
         const response = await this.wsClient.syncRequest(syncRequest);
         reqIdElement.innerText = String(this.wsClient.getReqId());
-        cltElement.innerText = (_b = (_a = this.wsClient) === null || _a === void 0 ? void 0 : _a.clt) !== null && _b !== void 0 ? _b : " - ";
+        cltElement.innerText = (_a = this.wsClient.clt) !== null && _a !== void 0 ? _a : " - ";
         return response;
     }
     async postSyncRequest() {

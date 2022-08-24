@@ -23,22 +23,41 @@ const defaultToken      = el("token")           as HTMLInputElement;
 export class Playground
 {
     // --- WebSocket ---
-    private wsClient:       WebSocketClient;
-    private websocketCount  = 0;
-    private eventCount      = 0;                    // number of received events. Reset for every new wsClient
+    private readonly    wsClient        = new WebSocketClient();
+    private             websocketCount  = 0;
+    private             eventCount      = 0;    // number of received events. Reset for every new wsClient
 
     public getClientId() : string { return this.wsClient?.clt; }
 
+    constructor() {
+        this.wsClient.onClose = (e) => {
+            socketStatus.innerText = "closed (code: " + e.code + ")";
+            responseState.innerText = "";
+        };
+        this.wsClient.onEvents  = (eventMessages) => {
+            const events        = eventMessages.events;
+            this.eventCount    += events.length;
+            const countStr      = String(this.eventCount);
+            subscriptionCount.innerText = countStr;
+            eventCount.innerText        = countStr;
+            for (const ev of events) {
+                app.events.addSubscriptionEvent(ev);
+            }
+            const lastEv                = events[events.length - 1];
+            const subSeq                = lastEv.seq;
+            // multiple clients can use the same WebSocket. Use the latest
+            subscriptionSeq.innerText   = subSeq ? String(subSeq) : " - ";
+            ackElement.innerText        = subSeq ? String(subSeq) : " - ";
+        };
+    }
+
     public connectWebsocket (): void {
-        if (this.wsClient) {
-            this.wsClient.close();
-            this.wsClient = null;
-        }
+        this.wsClient.close();
         this.connect();
     }
 
     public async connect (): Promise<string> {
-        if (this.wsClient?.isOpen()) {
+        if (this.wsClient.isOpen()) {
             return null;
         }
         try {
@@ -66,27 +85,7 @@ export class Playground
         // const uri    = `ws://google.com:8080/`; // test connection timeout
         socketStatus.innerHTML = 'connecting <span class="spinner"></span>';
 
-        this.wsClient = new WebSocketClient();
 
-        this.wsClient.onClose = (e) => {
-            socketStatus.innerText = "closed (code: " + e.code + ")";
-            responseState.innerText = "";
-        };
-        this.wsClient.onEvents  = (eventMessages) => {
-            const events        = eventMessages.events;
-            this.eventCount    += events.length;
-            const countStr      = String(this.eventCount);
-            subscriptionCount.innerText = countStr;
-            eventCount.innerText        = countStr;
-            for (const ev of events) {
-                app.events.addSubscriptionEvent(ev);
-            }
-            const lastEv                = events[events.length - 1];
-            const subSeq                = lastEv.seq;
-            // multiple clients can use the same WebSocket. Use the latest
-            subscriptionSeq.innerText   = subSeq ? String(subSeq) : " - ";
-            ackElement.innerText        = subSeq ? String(subSeq) : " - ";
-        };
         const error     = await this.wsClient.connect(uri);
 
         this.eventCount = 0;
@@ -100,7 +99,6 @@ export class Playground
 
     public closeWebsocket  () : void {
         this.wsClient.close();
-        this.wsClient = null;
     }
 
     private addUserToken (jsonRequest: string) {
@@ -116,7 +114,7 @@ export class Playground
 
     public async sendSyncRequest (): Promise<void> {
         const wsClient = this.wsClient;
-        if (!wsClient || !wsClient.isOpen()) {
+        if (!wsClient.isOpen()) {
             app.responseModel.setValue(`Request failed. WebSocket not connected`);
             responseState.innerHTML = "";
             return;
@@ -150,7 +148,7 @@ export class Playground
         const response          = await this.wsClient.syncRequest(syncRequest);
 
         reqIdElement.innerText  = String(this.wsClient.getReqId());
-        cltElement.innerText    = this.wsClient?.clt ?? " - ";
+        cltElement.innerText    = this.wsClient.clt ?? " - ";
         return response;
     }
 
