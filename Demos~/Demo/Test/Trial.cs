@@ -42,9 +42,6 @@ namespace DemoTest {
         {
             var hub         = CreateHub("ws");
             var client      = new DemoClient(hub) { UserId = "admin", Token = "admin", ClientId="TestSub" };
-            client.SubscriptionEventHandler = context => {
-                Task.Run(() => client.SyncTasks()); // acknowledge received event to the Hub
-            };
             client.articles.SubscribeChanges(Change.All, (changes, context) => {
                 foreach (var entity in changes.Upserts) {
                     Console.WriteLine($"EventSeq: {context.EventSeq} - upsert article: {entity.id}, name: {entity.name}");

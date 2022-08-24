@@ -13,13 +13,6 @@ namespace Friflo.Json.Tests.Main
             clientId = clientId ?? "TestClient";
             var hub         = CreateHub("ws");
             var client      = new PocStore(hub) { UserId = "admin", Token = "admin", ClientId = clientId };
-            client.SubscriptionEventHandler = async context => {
-                if (context.EventSeq % 10000 == 0) {
-                    // todo - notify last event
-                    await client.SyncTasks(); // acknowledge received event to the Hub
-                    // Task.Run(() => client.SyncTasks()); // acknowledge received event to the Hub
-                }
-            };
             client.articles.SubscribeChanges(Change.All, (changes, context) => {
                 if (context.EventSeq % 1000 == 0) {
                     Console.WriteLine($"EventSeq: {context.EventSeq}");

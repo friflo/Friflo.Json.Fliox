@@ -6,6 +6,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Client.Event;
 using Friflo.Json.Fliox.Hub.Client.Internal.Map;
@@ -55,6 +56,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         internal            bool                        disposed;
         internal            int                         lastEventSeq;
         internal            int                         syncCount;
+        internal            Timer                       ackTimer;
+        internal            bool                        ackTimerPending;
         internal            JsonKey                     userId;
         internal            JsonKey                     clientId;
         internal            string                      token;
@@ -116,6 +119,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             disposed                    = false;
             lastEventSeq                = 0;
             syncCount                   = 0;
+            ackTimer                    = null;
+            ackTimerPending             = false;
             userId                      = new JsonKey();
             clientId                    = new JsonKey();
             token                       = null;
@@ -125,6 +130,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         
         internal void Dispose() {
             // readonly - owned
+            ackTimer?.Dispose();
             idsBuf?.Clear();
             pendingSyncs.Clear();
             disposed = true;

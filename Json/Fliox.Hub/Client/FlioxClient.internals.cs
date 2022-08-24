@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Client.Internal;
 using Friflo.Json.Fliox.Hub.Host;
@@ -68,11 +69,29 @@ namespace Friflo.Json.Fliox.Hub.Client
                 _intern.lastEventSeq = ev.seq;                
                 processor.ProcessEvent(this, ev);
             }
+            if (_intern.ackTimer == null) {
+                _intern.ackTimer = new Timer(AcknowledgeEvents);
+            }
+            if (!_intern.ackTimerPending) {
+                _intern.ackTimer.Change(1000, Timeout.Infinite);
+                _intern.ackTimerPending = true;
+            }
             // if (eventMessage.events.Length > 10) { Console.WriteLine($"--- ProcessEvents {eventMessage.events.Length}"); }
         }
         
+        private async void AcknowledgeEvents(object state) {
+            _intern.ackTimer.Change(Timeout.Infinite, Timeout.Infinite);
+            _intern.ackTimerPending = false;
+            await TrySyncTasks().ConfigureAwait(Static.OriginalContext);
+            // Console.WriteLine($"--- AcknowledgeEvents");
+        } 
+        
         private async Task<ExecuteSyncResult> ExecuteSync(SyncRequest syncRequest, SyncContext syncContext) {
             _intern.syncCount++;
+            if (_intern.ackTimerPending) {
+                _intern.ackTimer?.Change(Timeout.Infinite, Timeout.Infinite);
+                _intern.ackTimerPending = false;
+            }
             Task<ExecuteSyncResult> task = null;
             try {
                 task = _intern.hub.ExecuteSync(syncRequest, syncContext);
