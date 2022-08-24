@@ -19,7 +19,7 @@ export class Playground {
         this.websocketCount = 0;
         this.eventCount = 0; // number of received events. Reset for every new wsClient
     }
-    getClientId() { return this.wsClient.clt; }
+    getClientId() { var _a; return (_a = this.wsClient) === null || _a === void 0 ? void 0 : _a.clt; }
     connectWebsocket() {
         if (this.wsClient) {
             this.wsClient.close();
@@ -111,9 +111,7 @@ export class Playground {
         // Enable overrides of WebSocket specific members
         //  if (syncRequest.req !== undefined) { this.req           = syncRequest.req; }
         //  if (syncRequest.ack !== undefined) { this.lastEventSeq  = syncRequest.ack; }
-        if (syncRequest.clt !== undefined) {
-            this.wsClient.clt = syncRequest.clt;
-        }
+        //  if (syncRequest.clt !== undefined) { this.wsClient.clt  = syncRequest.clt; }
         responseState.innerHTML = '<span class="spinner"></span>';
         const response = await this.sendWsClientRequest(syncRequest);
         const duration = response.end - response.start;

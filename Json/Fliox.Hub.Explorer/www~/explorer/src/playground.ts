@@ -27,7 +27,7 @@ export class Playground
     private websocketCount  = 0;
     private eventCount      = 0;                    // number of received events. Reset for every new wsClient
 
-    public getClientId() : string { return this.wsClient.clt; }
+    public getClientId() : string { return this.wsClient?.clt; }
 
     public connectWebsocket (): void {
         if (this.wsClient) {
@@ -128,7 +128,7 @@ export class Playground
         // Enable overrides of WebSocket specific members
     //  if (syncRequest.req !== undefined) { this.req           = syncRequest.req; }
     //  if (syncRequest.ack !== undefined) { this.lastEventSeq  = syncRequest.ack; }
-        if (syncRequest.clt !== undefined) { this.wsClient.clt  = syncRequest.clt; }
+    //  if (syncRequest.clt !== undefined) { this.wsClient.clt  = syncRequest.clt; }
 
         responseState.innerHTML = '<span class="spinner"></span>';
         const response          = await this.sendWsClientRequest(syncRequest);
