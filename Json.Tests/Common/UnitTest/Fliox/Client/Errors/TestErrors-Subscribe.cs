@@ -26,15 +26,5 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             });
             AreEqual("The FlioxHub used by the client don't support PushEvents. hub: HttpClientHub", e.Message);
         }
-        
-        [Test] public void TestSubscribeMissingClientId() {
-            var hub = new HttpClientHub("main_db", "http://localhost:8010/fliox/");
-            var store = new PocStore(hub) { UserId = "user", Token = "token"};
-            
-            var e = Throws<InvalidOperationException>(() => {
-                store.articles.SubscribeChanges(Change.All, (changes, context) => {});
-            });
-            AreEqual("subscriptions require a ClientId. database: main_db", e.Message);
-        }
     }
 }

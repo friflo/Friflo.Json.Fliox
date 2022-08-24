@@ -45,6 +45,7 @@ namespace Friflo.Json.Tests.Main
 
             rootCommand.Handler = CommandHandler.Create<Module, string, string>(async (module, endpoint, client) =>
             {
+                client = string.IsNullOrEmpty(client) ? null : client;
                 Console.WriteLine($"module: {module}");
                 switch (module) {
                     case Module.TestServer:

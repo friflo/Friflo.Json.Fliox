@@ -10,20 +10,12 @@ namespace Friflo.Json.Tests.Main
     public static class PocClient
     {
         public static async Task ListenEvents(string clientId) {
-            clientId = clientId ?? "TestClient";
             var hub         = CreateHub("ws");
             var client      = new PocStore(hub) { UserId = "admin", Token = "admin", ClientId = clientId };
             client.articles.SubscribeChanges(Change.All, (changes, context) => {
-                if (context.EventSeq % 1000 == 0) {
-                    Console.WriteLine($"EventSeq: {context.EventSeq}");
-                }
-                /* foreach (var entity in changes.Upserts) {
-                    if (context.EventSeq % 1000 == 0) {
-                        Console.WriteLine($"EventSeq: {context.EventSeq} - upsert article: {entity.id}, name: {entity.name}");
-                    }
-                }*/
-                foreach (var key in changes.Deletes) {
-                    Console.WriteLine($"EventSeq: {context.EventSeq} - delete article: {key}");
+                if (context.EventSeq <= 20 || context.EventSeq % 1000 == 0) {
+                    Console.WriteLine($"EventSeq: {context.EventSeq} - Upserts: {changes.Upserts.Count} Deletes: {changes.Deletes.Count}");
+                    if (context.EventSeq == 20) Console.WriteLine($"  from now: log only every 1000 event");
                 }
             });
             await client.SyncTasks();

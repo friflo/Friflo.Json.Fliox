@@ -41,7 +41,7 @@ namespace DemoTest {
         private static async Task SubscribeChanges()
         {
             var hub         = CreateHub("ws");
-            var client      = new DemoClient(hub) { UserId = "admin", Token = "admin", ClientId="TestSub" };
+            var client      = new DemoClient(hub) { UserId = "admin", Token = "admin" };
             client.articles.SubscribeChanges(Change.All, (changes, context) => {
                 foreach (var entity in changes.Upserts) {
                     Console.WriteLine($"EventSeq: {context.EventSeq} - upsert article: {entity.id}, name: {entity.name}");

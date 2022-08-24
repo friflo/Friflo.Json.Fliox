@@ -48,10 +48,6 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
         
         internal void AssertSubscription() {
-            if (_intern.clientId.IsNull()) {
-                var msg = $"subscriptions require a {nameof(ClientId)}. database: {DatabaseName}";
-                throw new InvalidOperationException(msg);
-            }
             if (_intern.eventReceiver == null) {
                 var msg = $"The FlioxHub used by the client don't support PushEvents. hub: {_intern.hub.GetType().Name}";
                 throw new InvalidOperationException(msg);
@@ -98,6 +94,11 @@ namespace Friflo.Json.Fliox.Hub.Client
 
                 _intern.pendingSyncs.TryAdd(task, syncContext);
                 var response = await task.ConfigureAwait(false);
+                
+                var success = response.success;
+                if (_intern.clientId.IsNull() && success != null && !success.clientId.IsNull()) {
+                    SetClientId(response.success.clientId);
+                }
                 _intern.pendingSyncs.TryRemove(task, out _);
                 return response;
             }
