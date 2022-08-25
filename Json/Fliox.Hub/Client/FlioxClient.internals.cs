@@ -95,9 +95,10 @@ namespace Friflo.Json.Fliox.Hub.Client
                 _intern.pendingSyncs.TryAdd(task, syncContext);
                 var response = await task.ConfigureAwait(false);
                 
+                // The Hub returns a client id if the client didn't provide one and one of its task require one. 
                 var success = response.success;
                 if (_intern.clientId.IsNull() && success != null && !success.clientId.IsNull()) {
-                    SetClientId(response.success.clientId);
+                    SetClientId(success.clientId);
                 }
                 _intern.pendingSyncs.TryRemove(task, out _);
                 return response;
