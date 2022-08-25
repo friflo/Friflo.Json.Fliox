@@ -70,6 +70,10 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
         public override     string              ToString() => $"{name} - count: {count}";
     }
     
+    public sealed class HostParam  {
+                    public bool?                gcCollect;
+    }
+    
     /// <summary>general information about a Hub</summary>
     public sealed class HostInfo {
         /// <summary>host version</summary>
@@ -91,7 +95,21 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
         /// </summary>
                     public  string              envColor;
         /// <summary>routes configures by <see cref="Remote.HttpHost"/> - commonly below <c>/fliox</c></summary>
-        [Required]  public  List<string>        routes; 
+        [Required]  public  List<string>        routes;
+        
+        [Required]  public  HostMemory          memory;
+    }
+    
+    /// <summary> <see cref="System.GCMemoryInfo"/> </summary>
+    public sealed class HostMemory {
+        public  long    highMemoryLoadThresholdBytes;
+        public  long    totalAvailableMemoryBytes;
+        public  long    memoryLoadBytes;
+        public  long    heapSizeBytes;
+        public  long    fragmentedBytes;
+        //
+        public  long    totalAllocatedBytes;
+        public  long    totalMemory;
     }
     
     /// <summary>All <see cref="databases"/> hosted by Hub</summary>

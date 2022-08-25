@@ -142,6 +142,11 @@
                 "count": { "type": "int64" }
             }
         },
+        "HostParam": {
+            "properties": {
+                "gcCollect": { "type": "boolean", "nullable": true }
+            }
+        },
         "HostInfo": {
             "properties": {
                 "hostVersion":    { "type": "string" },
@@ -151,7 +156,19 @@
                 "projectWebsite": { "type": "string", "nullable": true },
                 "envName":        { "type": "string", "nullable": true },
                 "envColor":       { "type": "string", "nullable": true },
-                "routes":         { "elements": { "type": "string" } }
+                "routes":         { "elements": { "type": "string" } },
+                "memory":         { "ref":  "HostMemory" }
+            }
+        },
+        "HostMemory": {
+            "properties": {
+                "highMemoryLoadThresholdBytes": { "type": "int64" },
+                "totalAvailableMemoryBytes":    { "type": "int64" },
+                "memoryLoadBytes":              { "type": "int64" },
+                "heapSizeBytes":                { "type": "int64" },
+                "fragmentedBytes":              { "type": "int64" },
+                "totalAllocatedBytes":          { "type": "int64" },
+                "totalMemory":                  { "type": "int64" }
             }
         },
         "HostCluster": {

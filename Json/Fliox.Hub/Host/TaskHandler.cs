@@ -68,7 +68,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             AddCommandHandler      <Empty,       DbSchema>      (Std.Schema,        Schema);
             AddCommandHandlerAsync <string,      DbStats>       (Std.Stats,         Stats);
             // --- host
-            AddCommandHandler      <Empty,       HostInfo>      (Std.HostInfo,      HostInfo);
+            AddCommandHandler      <HostParam,   HostInfo>      (Std.HostInfo,      HostInfo);
             AddCommandHandlerAsync <Empty,       HostCluster>   (Std.HostCluster,   HostCluster);
             // --- user
             AddCommandHandlerAsync <UserParam,   UserResult>    (Std.User,          User);
@@ -214,10 +214,17 @@ namespace Friflo.Json.Fliox.Hub.Host
             return param.RawParam;
         }
         
-        private static HostInfo HostInfo (Param<Empty> param, MessageContext context) {
+        private static HostInfo HostInfo (Param<HostParam> param, MessageContext context) {
+            if (!param.Get(out var hostParam, out var error)) {
+                return context.Error<HostInfo>(error);
+            }
+            if (hostParam?.gcCollect == true) {
+                GC.Collect();
+            }
+            var memory  = GetHostMemory();
             var hub     = context.Hub;
             var info    = hub.Info;
-            var routes  = new List<string>(hub.Routes);       
+            var routes  = new List<string>(hub.Routes);
             var result  = new HostInfo {
                 hostVersion     = hub.HostVersion,
                 flioxVersion    = FlioxHub.FlioxVersion,
@@ -226,9 +233,24 @@ namespace Friflo.Json.Fliox.Hub.Host
                 projectWebsite  = info?.projectWebsite,
                 envName         = info?.envName,
                 envColor        = info?.envColor,
-                routes          = routes
+                routes          = routes,
+                memory          = memory
             };
             return result;
+        }
+        
+        private static HostMemory GetHostMemory () {
+            GCMemoryInfo mi = GC.GetGCMemoryInfo();
+            return new HostMemory {
+                highMemoryLoadThresholdBytes    = mi.HighMemoryLoadThresholdBytes,
+                totalAvailableMemoryBytes       = mi.TotalAvailableMemoryBytes,
+                memoryLoadBytes                 = mi.MemoryLoadBytes,
+                heapSizeBytes                   = mi.HeapSizeBytes,
+                fragmentedBytes                 = mi.FragmentedBytes,
+                //
+                totalAllocatedBytes             = GC.GetTotalAllocatedBytes(true),
+                totalMemory                     = GC.GetTotalMemory(true),
+            };
         }
 
         private static async Task<DbContainers> Containers (Param<Empty> param, MessageContext context) {

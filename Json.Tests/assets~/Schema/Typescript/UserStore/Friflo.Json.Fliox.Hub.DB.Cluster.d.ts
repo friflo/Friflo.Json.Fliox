@@ -56,6 +56,10 @@ export class ContainerStats {
     count  : int64;
 }
 
+export class HostParam {
+    gcCollect? : boolean | null;
+}
+
 /** general information about a Hub */
 export class HostInfo {
     /** host version */
@@ -80,6 +84,18 @@ export class HostInfo {
     envColor?       : string | null;
     /** routes configures by **HttpHost** - commonly below /fliox */
     routes          : string[];
+    memory          : HostMemory;
+}
+
+/** **GCMemoryInfo** */
+export class HostMemory {
+    highMemoryLoadThresholdBytes  : int64;
+    totalAvailableMemoryBytes     : int64;
+    memoryLoadBytes               : int64;
+    heapSizeBytes                 : int64;
+    fragmentedBytes               : int64;
+    totalAllocatedBytes           : int64;
+    totalMemory                   : int64;
 }
 
 /** All **databases** hosted by Hub */

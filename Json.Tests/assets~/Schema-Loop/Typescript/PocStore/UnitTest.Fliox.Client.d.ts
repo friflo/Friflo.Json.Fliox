@@ -4,6 +4,7 @@ import { DbContainers } from "./Friflo.Json.Fliox.Hub.DB.Cluster";
 import { DbMessages }   from "./Friflo.Json.Fliox.Hub.DB.Cluster";
 import { DbSchema }     from "./Friflo.Json.Fliox.Hub.DB.Cluster";
 import { DbStats }      from "./Friflo.Json.Fliox.Hub.DB.Cluster";
+import { HostParam }    from "./Friflo.Json.Fliox.Hub.DB.Cluster";
 import { HostInfo }     from "./Friflo.Json.Fliox.Hub.DB.Cluster";
 import { HostCluster }  from "./Friflo.Json.Fliox.Hub.DB.Cluster";
 import { UserParam }    from "./Friflo.Json.Fliox.Hub.DB.Cluster";
@@ -75,7 +76,7 @@ export interface PocStore {
     /** return the number of entities of all containers (or the given container) of the database */
     ["std.Stats"]                          (param: string | null) : DbStats;
     /** returns general information about the Hub like version, host, project and environment name */
-    ["std.Host"]                           () : HostInfo;
+    ["std.Host"]                           (param: HostParam | null) : HostInfo;
     /** list all databases and their containers hosted by the Hub */
     ["std.Cluster"]                        () : HostCluster;
     /** return the groups of the current user. Optionally change the groups of the current user */

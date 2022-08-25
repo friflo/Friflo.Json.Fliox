@@ -39,6 +39,11 @@ data class ContainerStats (
 )
 
 @Serializable
+data class HostParam (
+              val gcCollect : Boolean? = null,
+)
+
+@Serializable
 data class HostInfo (
               val hostVersion    : String,
               val flioxVersion   : String,
@@ -48,6 +53,18 @@ data class HostInfo (
               val envName        : String? = null,
               val envColor       : String? = null,
               val routes         : List<String>,
+              val memory         : HostMemory,
+)
+
+@Serializable
+data class HostMemory (
+              val highMemoryLoadThresholdBytes : Long,
+              val totalAvailableMemoryBytes    : Long,
+              val memoryLoadBytes              : Long,
+              val heapSizeBytes                : Long,
+              val fragmentedBytes              : Long,
+              val totalAllocatedBytes          : Long,
+              val totalMemory                  : Long,
 )
 
 @Serializable

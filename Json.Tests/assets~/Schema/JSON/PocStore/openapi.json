@@ -428,6 +428,15 @@
       "post": {
         "summary":    "returns general information about the Hub like version, host, project and environment name",
         "tags":       ["commands"],
+        "requestBody": {          
+          "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/HostParam"
+                }
+              }
+            }
+        },
         "responses": {
           "200": {             
             "description": "OK",

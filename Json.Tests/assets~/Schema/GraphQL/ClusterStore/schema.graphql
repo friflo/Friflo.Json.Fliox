@@ -25,7 +25,7 @@ type Query {
     std_Messages    : DbMessages!
     std_Schema      : DbSchema!
     std_Stats      (param: String) : DbStats!
-    std_Host        : HostInfo!
+    std_Host       (param: HostParamInput) : HostInfo!
     std_Cluster     : HostCluster!
     std_User       (param: UserParamInput) : UserResult!
     std_Client     (param: ClientParamInput) : ClientResult!
@@ -129,6 +129,14 @@ input ContainerStatsInput {
     count : Int!
 }
 
+type HostParam {
+    gcCollect : Boolean
+}
+
+input HostParamInput {
+    gcCollect : Boolean
+}
+
 type HostInfo {
     hostVersion    : String!
     flioxVersion   : String!
@@ -138,6 +146,7 @@ type HostInfo {
     envName        : String
     envColor       : String
     routes         : [String!]!
+    memory         : HostMemory!
 }
 
 input HostInfoInput {
@@ -149,6 +158,27 @@ input HostInfoInput {
     envName        : String
     envColor       : String
     routes         : [String!]!
+    memory         : HostMemoryInput!
+}
+
+type HostMemory {
+    highMemoryLoadThresholdBytes : Int!
+    totalAvailableMemoryBytes    : Int!
+    memoryLoadBytes              : Int!
+    heapSizeBytes                : Int!
+    fragmentedBytes              : Int!
+    totalAllocatedBytes          : Int!
+    totalMemory                  : Int!
+}
+
+input HostMemoryInput {
+    highMemoryLoadThresholdBytes : Int!
+    totalAvailableMemoryBytes    : Int!
+    memoryLoadBytes              : Int!
+    heapSizeBytes                : Int!
+    fragmentedBytes              : Int!
+    totalAllocatedBytes          : Int!
+    totalMemory                  : Int!
 }
 
 type HostCluster {

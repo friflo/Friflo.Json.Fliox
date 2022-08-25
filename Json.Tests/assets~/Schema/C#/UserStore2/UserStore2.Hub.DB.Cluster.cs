@@ -46,6 +46,10 @@ public class ContainerStats {
     long    count;
 }
 
+public class HostParam {
+    bool? gcCollect;
+}
+
 public class HostInfo {
     [Required]
     string        hostVersion;
@@ -58,6 +62,18 @@ public class HostInfo {
     string        envColor;
     [Required]
     List<string>  routes;
+    [Required]
+    HostMemory    memory;
+}
+
+public class HostMemory {
+    long  highMemoryLoadThresholdBytes;
+    long  totalAvailableMemoryBytes;
+    long  memoryLoadBytes;
+    long  heapSizeBytes;
+    long  fragmentedBytes;
+    long  totalAllocatedBytes;
+    long  totalMemory;
 }
 
 public class HostCluster {

@@ -1000,6 +1000,13 @@
                     "name": "std_Host",
                     "description": "/** returns general information about the Hub like version, host, project and environment name */\n",
                     "args": [
+                        {
+                            "name": "param",
+                            "type": {
+                                "kind":"SCALAR",
+                                "name": "HostParamInput"
+                            }
+                        }
                     ],
                     "type": {
                         "kind":"NON_NULL",
@@ -4134,6 +4141,42 @@
         },
         {
             "kind":"OBJECT",
+            "name": "HostParam",
+            "description": "",
+            "fields": [
+                {
+                    "name": "gcCollect",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"SCALAR",
+                        "name": "Boolean"
+                    }
+                }
+            ],
+            "interfaces": [
+            ]
+        },
+        {
+            "kind":"INPUT_OBJECT",
+            "name": "HostParamInput",
+            "description": "",
+            "inputFields": [
+                {
+                    "name": "gcCollect",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"SCALAR",
+                        "name": "Boolean"
+                    }
+                }
+            ]
+        },
+        {
+            "kind":"OBJECT",
             "name": "HostInfo",
             "description": "/** general information about a Hub */\n",
             "fields": [
@@ -4229,6 +4272,19 @@
                                     "name": "String"
                                 }
                             }
+                        }
+                    }
+                },
+                {
+                    "name": "memory",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "HostMemory"
                         }
                     }
                 }
@@ -4333,6 +4389,217 @@
                                     "name": "String"
                                 }
                             }
+                        }
+                    }
+                },
+                {
+                    "name": "memory",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "HostMemoryInput"
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "kind":"OBJECT",
+            "name": "HostMemory",
+            "description": "/** **GCMemoryInfo** */\n",
+            "fields": [
+                {
+                    "name": "highMemoryLoadThresholdBytes",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "Int"
+                        }
+                    }
+                },
+                {
+                    "name": "totalAvailableMemoryBytes",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "Int"
+                        }
+                    }
+                },
+                {
+                    "name": "memoryLoadBytes",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "Int"
+                        }
+                    }
+                },
+                {
+                    "name": "heapSizeBytes",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "Int"
+                        }
+                    }
+                },
+                {
+                    "name": "fragmentedBytes",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "Int"
+                        }
+                    }
+                },
+                {
+                    "name": "totalAllocatedBytes",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "Int"
+                        }
+                    }
+                },
+                {
+                    "name": "totalMemory",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "Int"
+                        }
+                    }
+                }
+            ],
+            "interfaces": [
+            ]
+        },
+        {
+            "kind":"INPUT_OBJECT",
+            "name": "HostMemoryInput",
+            "description": "/** **GCMemoryInfo** */\n",
+            "inputFields": [
+                {
+                    "name": "highMemoryLoadThresholdBytes",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "Int"
+                        }
+                    }
+                },
+                {
+                    "name": "totalAvailableMemoryBytes",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "Int"
+                        }
+                    }
+                },
+                {
+                    "name": "memoryLoadBytes",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "Int"
+                        }
+                    }
+                },
+                {
+                    "name": "heapSizeBytes",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "Int"
+                        }
+                    }
+                },
+                {
+                    "name": "fragmentedBytes",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "Int"
+                        }
+                    }
+                },
+                {
+                    "name": "totalAllocatedBytes",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "Int"
+                        }
+                    }
+                },
+                {
+                    "name": "totalMemory",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "Int"
                         }
                     }
                 }

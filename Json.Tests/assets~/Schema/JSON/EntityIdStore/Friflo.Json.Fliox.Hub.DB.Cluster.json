@@ -70,6 +70,13 @@
             ],
             "additionalProperties": false
         },
+        "HostParam": {
+            "type": "object",
+            "properties": {
+                "gcCollect": { "type": ["boolean", "null"] }
+            },
+            "additionalProperties": false
+        },
         "HostInfo": {
             "type": "object",
             "description": "general information about a Hub",
@@ -81,12 +88,37 @@
                 "projectWebsite": { "type": ["string", "null"], "description": "link to a website describing project and Hub" },
                 "envName":        { "type": ["string", "null"], "description": "environment name. e.g. 'dev', 'test', 'staging', 'prod'" },
                 "envColor":       { "type": ["string", "null"], "description": "the color used to display the environment name in GUI's using CSS color format.<br/>\nE.g. using red for a production environment: '#ff0000' or 'rgb(255 0 0)'" },
-                "routes":         { "type": "array", "items": { "type": "string" }, "description": "routes configures by <b>HttpHost</b> - commonly below <c>/fliox</c>" }
+                "routes":         { "type": "array", "items": { "type": "string" }, "description": "routes configures by <b>HttpHost</b> - commonly below <c>/fliox</c>" },
+                "memory":         { "$ref": "#/definitions/HostMemory" }
             },
             "required": [
                 "hostVersion",
                 "flioxVersion",
-                "routes"
+                "routes",
+                "memory"
+            ],
+            "additionalProperties": false
+        },
+        "HostMemory": {
+            "type": "object",
+            "description": "<b>GCMemoryInfo</b>",
+            "properties": {
+                "highMemoryLoadThresholdBytes": { "$ref": "./Standard.json#/definitions/int64" },
+                "totalAvailableMemoryBytes":    { "$ref": "./Standard.json#/definitions/int64" },
+                "memoryLoadBytes":              { "$ref": "./Standard.json#/definitions/int64" },
+                "heapSizeBytes":                { "$ref": "./Standard.json#/definitions/int64" },
+                "fragmentedBytes":              { "$ref": "./Standard.json#/definitions/int64" },
+                "totalAllocatedBytes":          { "$ref": "./Standard.json#/definitions/int64" },
+                "totalMemory":                  { "$ref": "./Standard.json#/definitions/int64" }
+            },
+            "required": [
+                "highMemoryLoadThresholdBytes",
+                "totalAvailableMemoryBytes",
+                "memoryLoadBytes",
+                "heapSizeBytes",
+                "fragmentedBytes",
+                "totalAllocatedBytes",
+                "totalMemory"
             ],
             "additionalProperties": false
         },

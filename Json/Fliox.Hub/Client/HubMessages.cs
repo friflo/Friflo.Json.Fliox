@@ -81,7 +81,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         
         // --- commands: host
         /// <summary>returns general information about the Hub like version, host, project and environment name</summary>
-        public CommandTask<HostInfo>    Host()              => SendCommand<HostInfo>                (Std.HostInfo);
+        public CommandTask<HostInfo>    Host(HostParam param)=> SendCommand<HostParam, HostInfo>    (Std.HostInfo, param);
         /// <summary>list all databases and their containers hosted by the Hub</summary>
         public CommandTask<HostCluster> Cluster()           => SendCommand<HostCluster>             (Std.HostCluster);
         

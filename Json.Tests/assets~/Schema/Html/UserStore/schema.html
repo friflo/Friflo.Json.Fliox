@@ -305,7 +305,9 @@
             <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.DbSchema'><div><span>DbSchema</span><key>id</key></div></a></li>
             <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.DbStats'><div><span>DbStats</span></div></a></li>
             <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.ContainerStats'><div><span>ContainerStats</span></div></a></li>
+            <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.HostParam'><div><span>HostParam</span></div></a></li>
             <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.HostInfo'><div><span>HostInfo</span></div></a></li>
+            <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.HostMemory'><div><span>HostMemory</span></div></a></li>
             <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.HostCluster'><div><span>HostCluster</span></div></a></li>
             <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.UserParam'><div><span>UserParam</span></div></a></li>
             <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.UserResult'><div><span>UserResult</span></div></a></li>
@@ -434,7 +436,7 @@ Each <b>role</b> in container <b>roles</b> has a set of <b>rights</b> which gran
         </tr>
         <tr>
             <td><cmd>std.Host</cmd></td>
-            <td><sig>() : <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.HostInfo'>HostInfo</a></sig></td>
+            <td><sig>(<keyword>param</keyword>: <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.HostParam'>HostParam</a> | null) : <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.HostInfo'>HostInfo</a></sig></td>
             <td><oas><a href='../open-api.html#/commands/post__command_std_Host' target='_blank' title='open std.Host API as OpenAPI specification (OAS) in new tab'>OAS</a></oas></td>
             <td><docs>returns general information about the Hub like version, host, project and environment name</docs></td>
         </tr>
@@ -715,6 +717,18 @@ Each JSON Schema is identified by its unique path</docs></td>
     </table>
     </div>
     <div class='type'>
+    <h3 id='Friflo.Json.Fliox.Hub.DB.Cluster.HostParam'>
+        <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.HostParam'>HostParam</a>
+        <keyword>class</keyword>
+    </h3>
+    <table class='fields'>
+        <tr>
+            <td><field>gcCollect</field></td>
+            <td><type><predef>boolean</predef> | null</type></td>
+        </tr>
+    </table>
+    </div>
+    <div class='type'>
     <h3 id='Friflo.Json.Fliox.Hub.DB.Cluster.HostInfo'>
         <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.HostInfo'>HostInfo</a>
         <keyword>class</keyword>
@@ -763,6 +777,48 @@ E.g. using red for a production environment: "#ff0000" or "rgb(255 0 0)"</docs><
             <td><field>routes</field></td>
             <td><type><predef>string</predef>[]</type></td>
             <td><docs>routes configures by <b>HttpHost</b> - commonly below <c>/fliox</c></docs></td>
+        </tr>
+        <tr>
+            <td><field>memory</field></td>
+            <td><type><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.HostMemory'>HostMemory</a></type></td>
+        </tr>
+    </table>
+    </div>
+    <div class='type'>
+    <h3 id='Friflo.Json.Fliox.Hub.DB.Cluster.HostMemory'>
+        <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.HostMemory'>HostMemory</a>
+        <keyword>class</keyword>
+    </h3>
+    <desc><b>GCMemoryInfo</b>
+    </desc>
+    <table class='fields'>
+        <tr>
+            <td><field>highMemoryLoadThresholdBytes</field></td>
+            <td><type><a href='#Standard.int64'>int64</a></type></td>
+        </tr>
+        <tr>
+            <td><field>totalAvailableMemoryBytes</field></td>
+            <td><type><a href='#Standard.int64'>int64</a></type></td>
+        </tr>
+        <tr>
+            <td><field>memoryLoadBytes</field></td>
+            <td><type><a href='#Standard.int64'>int64</a></type></td>
+        </tr>
+        <tr>
+            <td><field>heapSizeBytes</field></td>
+            <td><type><a href='#Standard.int64'>int64</a></type></td>
+        </tr>
+        <tr>
+            <td><field>fragmentedBytes</field></td>
+            <td><type><a href='#Standard.int64'>int64</a></type></td>
+        </tr>
+        <tr>
+            <td><field>totalAllocatedBytes</field></td>
+            <td><type><a href='#Standard.int64'>int64</a></type></td>
+        </tr>
+        <tr>
+            <td><field>totalMemory</field></td>
+            <td><type><a href='#Standard.int64'>int64</a></type></td>
         </tr>
     </table>
     </div>
