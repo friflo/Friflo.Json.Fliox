@@ -41,11 +41,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             param.Get(out int? count, out var _);
             if (count == null) count = 100;
             var store = new PocStore(command.Hub) { UserInfo = command.UserInfo };
-            var article = new Article() { id = "1111", name = "MultiRequests"};
+            store.StartTime(DateTime.Now);
+            var article = new Article { id = "1111", name = "MultiRequests"};
             for (int i = 0; i < count; i++) {
                 store.articles.Upsert(article);
                 await store.SyncTasks();
             }
+            store.StopTime(DateTime.Now);
+            await store.SyncTasks();
             return count.Value;
         }
     }

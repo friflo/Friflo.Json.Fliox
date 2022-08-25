@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System;
 using System.Diagnostics;
 using Friflo.Json.Fliox;
 using Friflo.Json.Fliox.Hub.Client;
@@ -58,6 +59,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
         // --- messages
         public MessageTask              Message1    (string param)  => SendMessage  ("Message1",        param);
         public MessageTask              AsyncMessage(string param)  => SendMessage  ("AsyncMessage",    param);
+        public MessageTask              StartTime   (DateTime param)=> SendMessage  ("StartTime",       param);
+        public MessageTask              StopTime    (DateTime param)=> SendMessage  ("StopTime",        param);
     }
     
     
