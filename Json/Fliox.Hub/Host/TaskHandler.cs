@@ -240,6 +240,11 @@ namespace Friflo.Json.Fliox.Hub.Host
         }
         
         private static HostMemory GetHostMemory () {
+#if UNITY_5_3_OR_NEWER
+            return new HostMemory {
+                totalMemory                     = GC.GetTotalMemory(true),
+            };
+#else
             GCMemoryInfo mi = GC.GetGCMemoryInfo();
             return new HostMemory {
                 highMemoryLoadThresholdBytes    = mi.HighMemoryLoadThresholdBytes,
@@ -251,6 +256,7 @@ namespace Friflo.Json.Fliox.Hub.Host
                 totalAllocatedBytes             = GC.GetTotalAllocatedBytes(true),
                 totalMemory                     = GC.GetTotalMemory(true),
             };
+#endif
         }
 
         private static async Task<DbContainers> Containers (Param<Empty> param, MessageContext context) {
