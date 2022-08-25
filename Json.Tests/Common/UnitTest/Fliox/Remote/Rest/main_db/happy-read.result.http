@@ -227,6 +227,8 @@ GET {{base}}/rest/main_db?command=std.Messages
     "messages": [
         "Message1",
         "AsyncMessage",
+        "StartTime",
+        "StopTime",
         "test.Message2"
     ]
 }

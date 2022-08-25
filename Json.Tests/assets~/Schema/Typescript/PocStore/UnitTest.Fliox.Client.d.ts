@@ -70,6 +70,8 @@ export interface PocStore {
     // --- messages
     ["Message1"]          (param: string | null) : void;
     ["AsyncMessage"]      (param: string | null) : void;
+    ["StartTime"]         (param: DateTime) : void;
+    ["StopTime"]          (param: DateTime) : void;
     ["test.Message2"]     (param: string | null) : void;
 }
 

@@ -59,6 +59,8 @@
             "messages": {
                 "Message1":      { "param": { "type": ["string", "null"] } },
                 "AsyncMessage":  { "param": { "type": ["string", "null"] } },
+                "StartTime":     { "param": { "$ref": "./Standard.json#/definitions/DateTime" } },
+                "StopTime":      { "param": { "$ref": "./Standard.json#/definitions/DateTime" } },
                 "test.Message2": { "param": { "type": ["string", "null"] } }
             }
         },

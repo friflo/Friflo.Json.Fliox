@@ -577,6 +577,60 @@
         }
       }
     },
+    "/?message=StartTime": {
+      "post": {
+        "summary":    "",
+        "tags":       ["messages"],
+        "requestBody": {          
+          "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "Standard.json#/definitions/DateTime"
+                }
+              }
+            }
+        },
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/?message=StopTime": {
+      "post": {
+        "summary":    "",
+        "tags":       ["messages"],
+        "requestBody": {          
+          "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "Standard.json#/definitions/DateTime"
+                }
+              }
+            }
+        },
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/?message=test.Message2": {
       "post": {
         "summary":    "",

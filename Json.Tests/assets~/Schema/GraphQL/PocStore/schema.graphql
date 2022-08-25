@@ -58,6 +58,8 @@ type Query {
     std_Client                    (param: ClientParamInput) : ClientResult!
     Message1                      (param: String) : Any
     AsyncMessage                  (param: String) : Any
+    StartTime                     (param: String!) : Any
+    StopTime                      (param: String!) : Any
     test_Message2                 (param: String) : Any
 }
 

@@ -135,6 +135,8 @@
     "messages": [
         "Message1",
         "AsyncMessage",
+        "StartTime",
+        "StopTime",
         "test.Message2"
     ]
 },

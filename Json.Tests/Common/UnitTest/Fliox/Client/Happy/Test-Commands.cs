@@ -67,7 +67,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             
             var commandsResult = commands.Result;
             AreEqual(19,                commandsResult.commands.Length);
-            AreEqual(3,                 commandsResult.messages.Length);
+            AreEqual(5,                 commandsResult.messages.Length);
         }
         
         private static async Task AssertCommands(PocStore store, PocHandler handler) {
