@@ -9,14 +9,16 @@ using Friflo.Json.Fliox.Utils;
 // Note! - Must not have any dependency to System.Net or System.Net.Http (or other HTTP stuff)
 namespace Friflo.Json.Fliox.Hub.Remote
 {
-    internal class RemoteSubscriptionEvent
+    /// <summary> Reflect the shape of a <see cref="EventMessage"/> </summary>
+    internal class RemoteEventMessage
     {
-        /** map to <see cref="ProtocolEvent"/> Discriminator */ public  string                      msg;
-        /** map to <see cref="ProtocolEvent.dstClientId"/> */   public  JsonKey                     clt;
-        /** map to <see cref="EventMessage.events"/> */         public  RemoteSubscriptionMessage[] events;
+        /** map to <see cref="ProtocolEvent"/> discriminator */ public  string              msg;
+        /** map to <see cref="ProtocolEvent.dstClientId"/> */   public  JsonKey             clt;
+        /** map to <see cref="EventMessage.events"/> */         public  RemoteSyncEvent[]   events;
     }
     
-    internal class RemoteSubscriptionMessage
+    /// <summary> Reflect the shape of a <see cref="SyncEvent"/> </summary>
+    internal class RemoteSyncEvent
     {
         /** map to <see cref="SyncEvent.seq"/> */               public  int         seq; 
         /** map to <see cref="SyncEvent.srcUserId"/> */         public  JsonKey     src;
@@ -34,13 +36,13 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 mapper.Pretty = true;
                 mapper.WriteNullMembers = false;
                 if (EventDispatcher.SerializeRemoteEvents && message is EventMessage eventMessage) {
-                    var remoteEventMessages = new RemoteSubscriptionEvent { msg = "ev", clt = eventMessage.dstClientId };
+                    var remoteEventMessage      = new RemoteEventMessage { msg = "ev", clt = eventMessage.dstClientId };
                     var events                  = eventMessage.events;
-                    var remoteEvents            = new RemoteSubscriptionMessage[events.Length];
-                    remoteEventMessages.events  = remoteEvents;
+                    var remoteEvents            = new RemoteSyncEvent[events.Length];
+                    remoteEventMessage.events   = remoteEvents;
                     for (int n = 0; n < events.Length; n++) {
                         var ev = events[n];
-                        var remoteEv = new RemoteSubscriptionMessage {
+                        var remoteEv = new RemoteSyncEvent {
                             seq         = ev.seq,
                             src         = ev.srcUserId,
                             db          = ev.db,
@@ -49,7 +51,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                         };
                         remoteEvents[n] = remoteEv;
                     }
-                    return new JsonValue(mapper.WriteAsArray(remoteEventMessages));
+                    return new JsonValue(mapper.WriteAsArray(remoteEventMessage));
                 }
                 return new JsonValue(mapper.WriteAsArray(message));
             }
