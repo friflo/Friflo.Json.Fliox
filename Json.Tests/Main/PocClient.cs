@@ -18,6 +18,12 @@ namespace Friflo.Json.Tests.Main
                     if (context.EventSeq == 20) Console.WriteLine($"  from now: log only every 1000 event");
                 }
             });
+            client.SubscribeMessage("*", (name, handler) => {
+                if (handler.EventSeq <= 20 || handler.EventSeq % 1000 == 0) {
+                    Console.WriteLine($"EventSeq: {handler.EventSeq} - Messages: {handler.Messages.Count}");
+                    if (handler.EventSeq == 20) Console.WriteLine($"  from now: log only every 1000 event");
+                }
+            });
             await client.SyncTasks();
             
             Console.WriteLine("\n wait for events ... (exit with: CTRL + C) note: generate events by clicking 'Save' on an article in the Hub Explorer\n");
