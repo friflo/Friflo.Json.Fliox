@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Friflo.Json.Fliox.Hub.Client;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Remote;
 using Todo;
@@ -13,6 +14,7 @@ namespace TodoTest {
         internal static async Task Main(string[] args)
         {
             await QueryAll(args);
+            await SubscribeChangesAndMessages();
         }
         
         private static async Task  QueryAll(string[] args)
@@ -27,6 +29,29 @@ namespace TodoTest {
             foreach (var job in jobs.Result) {
                 Console.WriteLine($"id: {job.id}, title: {job.title}, completed: {job.completed}");
             }
+        }
+        
+        // after calling this method open: 'Hub Explorer > main_db > articles'
+        // changing records in 'articles' trigger the subscription handler in this method.  
+        private static async Task SubscribeChangesAndMessages()
+        {
+            var hub         = CreateHub("ws");
+            var client      = new TodoClient(hub) { UserId = "admin", Token = "admin" };
+            client.jobs.SubscribeChanges(Change.All, (changes, context) => {
+                foreach (var job in changes.Upserts) {
+                    Console.WriteLine($"EventSeq: {context.EventSeq} - upsert job: {job.id}, name: {job.title}");
+                }
+                foreach (var key in changes.Deletes) {
+                    Console.WriteLine($"EventSeq: {context.EventSeq} - delete job: {key}");
+                }
+            });
+            client.SubscribeMessage("*", (name, handler) => {
+                Console.WriteLine($"EventSeq: {handler.EventSeq} - message: {name}");
+            });
+            await client.SyncTasks();
+            
+            Console.WriteLine("\n wait for events ... (exit with: CTRL + C) note: generate events by clicking 'Save' on a record in the Hub Explorer\n");
+            await Task.Delay(3_600_000); // wait 1 hour
         }
             
         private static FlioxHub CreateHub(string option)
