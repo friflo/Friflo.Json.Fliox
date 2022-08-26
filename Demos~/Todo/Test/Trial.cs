@@ -45,8 +45,13 @@ namespace TodoTest {
                     Console.WriteLine($"EventSeq: {context.EventSeq} - delete job: {key}");
                 }
             });
-            client.SubscribeMessage("*", (name, handler) => {
-                Console.WriteLine($"EventSeq: {handler.EventSeq} - message: {name}");
+            // subscribe all messages
+            client.SubscribeMessage("*", (message, context) => {
+                Console.WriteLine($"EventSeq: {context.EventSeq} - message: {message}");
+            });
+            client.SubscribeMessage<string>("TestMessage", (message, context) => {
+                message.GetParam (out string param, out _);
+                Console.WriteLine($"EventSeq: {context.EventSeq} - TestMessage ('{param}')");
             });
             await client.SyncTasks();
             
