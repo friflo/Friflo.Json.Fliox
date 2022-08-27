@@ -52,6 +52,7 @@ data class HostInfo (
               val projectWebsite : String? = null,
               val envName        : String? = null,
               val envColor       : String? = null,
+              val pubSub         : Boolean,
               val routes         : List<String>,
               val memory         : HostMemory,
 )

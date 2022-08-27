@@ -60,6 +60,7 @@ public class HostInfo {
     string        projectWebsite;
     string        envName;
     string        envColor;
+    bool          pubSub;
     [Required]
     List<string>  routes;
     [Required]

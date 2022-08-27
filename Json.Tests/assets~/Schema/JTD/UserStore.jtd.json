@@ -198,6 +198,7 @@
                 "projectWebsite": { "type": "string", "nullable": true },
                 "envName":        { "type": "string", "nullable": true },
                 "envColor":       { "type": "string", "nullable": true },
+                "pubSub":         { "type": "boolean" },
                 "routes":         { "elements": { "type": "string" } },
                 "memory":         { "ref":  "HostMemory" }
             }

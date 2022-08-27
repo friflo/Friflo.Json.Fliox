@@ -94,6 +94,9 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
         /// E.g. using red for a production environment: "#ff0000" or "rgb(255 0 0)"
         /// </summary>
                     public  string              envColor;
+        /// <summary> is true if host support Pub-Sub.</summary>
+        /// <remarks> if true <see cref="Host.FlioxHub.EventDispatcher"/> is assigned </remarks>
+                    public  bool                pubSub;
         /// <summary>routes configures by <see cref="Remote.HttpHost"/> - commonly below <c>/fliox</c></summary>
         [Required]  public  List<string>        routes;
         

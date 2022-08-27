@@ -145,6 +145,7 @@ type HostInfo {
     projectWebsite : String
     envName        : String
     envColor       : String
+    pubSub         : Boolean!
     routes         : [String!]!
     memory         : HostMemory!
 }
@@ -157,6 +158,7 @@ input HostInfoInput {
     projectWebsite : String
     envName        : String
     envColor       : String
+    pubSub         : Boolean!
     routes         : [String!]!
     memory         : HostMemoryInput!
 }

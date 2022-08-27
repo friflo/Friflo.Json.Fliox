@@ -4297,6 +4297,19 @@
                     }
                 },
                 {
+                    "name": "pubSub",
+                    "description": "    /** is true if host support Pub-Sub. */\n",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "Boolean"
+                        }
+                    }
+                },
+                {
                     "name": "routes",
                     "description": "    /** routes configures by **HttpHost** - commonly below /fliox */\n",
                     "args": [
@@ -4411,6 +4424,19 @@
                     "type": {
                         "kind":"SCALAR",
                         "name": "String"
+                    }
+                },
+                {
+                    "name": "pubSub",
+                    "description": "    /** is true if host support Pub-Sub. */\n",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "Boolean"
+                        }
                     }
                 },
                 {
