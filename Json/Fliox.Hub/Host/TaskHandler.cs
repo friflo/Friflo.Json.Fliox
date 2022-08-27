@@ -246,15 +246,17 @@ namespace Friflo.Json.Fliox.Hub.Host
             };
 #else
             GCMemoryInfo mi = GC.GetGCMemoryInfo();
-            return new HostMemory {
+            var gcMemory = new HostGCMemory {
                 highMemoryLoadThresholdBytes    = mi.HighMemoryLoadThresholdBytes,
                 totalAvailableMemoryBytes       = mi.TotalAvailableMemoryBytes,
                 memoryLoadBytes                 = mi.MemoryLoadBytes,
                 heapSizeBytes                   = mi.HeapSizeBytes,
                 fragmentedBytes                 = mi.FragmentedBytes,
-                //
-                totalAllocatedBytes             = GC.GetTotalAllocatedBytes(true),
-                totalMemory                     = GC.GetTotalMemory(true),
+            };
+            return new HostMemory {
+                gc                  = gcMemory,
+                totalAllocatedBytes = GC.GetTotalAllocatedBytes(true),
+                totalMemory         = GC.GetTotalMemory(true),
             };
 #endif
         }

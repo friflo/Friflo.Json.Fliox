@@ -373,23 +373,31 @@ input HostInfoInput {
 }
 
 type HostMemory {
-    highMemoryLoadThresholdBytes : Int!
-    totalAvailableMemoryBytes    : Int!
-    memoryLoadBytes              : Int!
-    heapSizeBytes                : Int!
-    fragmentedBytes              : Int!
-    totalAllocatedBytes          : Int!
-    totalMemory                  : Int!
+    totalAllocatedBytes : Int!
+    totalMemory         : Int!
+    gc                  : HostGCMemory
 }
 
 input HostMemoryInput {
+    totalAllocatedBytes : Int!
+    totalMemory         : Int!
+    gc                  : HostGCMemoryInput
+}
+
+type HostGCMemory {
     highMemoryLoadThresholdBytes : Int!
     totalAvailableMemoryBytes    : Int!
     memoryLoadBytes              : Int!
     heapSizeBytes                : Int!
     fragmentedBytes              : Int!
-    totalAllocatedBytes          : Int!
-    totalMemory                  : Int!
+}
+
+input HostGCMemoryInput {
+    highMemoryLoadThresholdBytes : Int!
+    totalAvailableMemoryBytes    : Int!
+    memoryLoadBytes              : Int!
+    heapSizeBytes                : Int!
+    fragmentedBytes              : Int!
 }
 
 type HostCluster {

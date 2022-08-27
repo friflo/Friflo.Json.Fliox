@@ -100,16 +100,19 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
         [Required]  public  HostMemory          memory;
     }
     
-    /// <summary> <see cref="System.GCMemoryInfo"/> </summary>
     public sealed class HostMemory {
-        public  long    highMemoryLoadThresholdBytes;
-        public  long    totalAvailableMemoryBytes;
-        public  long    memoryLoadBytes;
-        public  long    heapSizeBytes;
-        public  long    fragmentedBytes;
-        //
-        public  long    totalAllocatedBytes;
-        public  long    totalMemory;
+        public  long            totalAllocatedBytes;
+        public  long            totalMemory;
+        public  HostGCMemory    gc;
+    }
+    
+    /// <summary> <see cref="System.GCMemoryInfo"/> </summary>
+    public sealed class HostGCMemory {
+        public  long            highMemoryLoadThresholdBytes;
+        public  long            totalAvailableMemoryBytes;
+        public  long            memoryLoadBytes;
+        public  long            heapSizeBytes;
+        public  long            fragmentedBytes;
     }
     
     /// <summary>All <see cref="databases"/> hosted by Hub</summary>

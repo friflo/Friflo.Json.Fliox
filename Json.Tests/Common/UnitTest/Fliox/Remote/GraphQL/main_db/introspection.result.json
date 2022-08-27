@@ -4450,6 +4450,94 @@
         {
             "kind":"OBJECT",
             "name": "HostMemory",
+            "description": "",
+            "fields": [
+                {
+                    "name": "totalAllocatedBytes",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "Int"
+                        }
+                    }
+                },
+                {
+                    "name": "totalMemory",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "Int"
+                        }
+                    }
+                },
+                {
+                    "name": "gc",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"SCALAR",
+                        "name": "HostGCMemory"
+                    }
+                }
+            ],
+            "interfaces": [
+            ]
+        },
+        {
+            "kind":"INPUT_OBJECT",
+            "name": "HostMemoryInput",
+            "description": "",
+            "inputFields": [
+                {
+                    "name": "totalAllocatedBytes",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "Int"
+                        }
+                    }
+                },
+                {
+                    "name": "totalMemory",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "Int"
+                        }
+                    }
+                },
+                {
+                    "name": "gc",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"SCALAR",
+                        "name": "HostGCMemoryInput"
+                    }
+                }
+            ]
+        },
+        {
+            "kind":"OBJECT",
+            "name": "HostGCMemory",
             "description": "/** **GCMemoryInfo** */\n",
             "fields": [
                 {
@@ -4516,32 +4604,6 @@
                             "name": "Int"
                         }
                     }
-                },
-                {
-                    "name": "totalAllocatedBytes",
-                    "description": "",
-                    "args": [
-                    ],
-                    "type": {
-                        "kind":"NON_NULL",
-                        "ofType": {
-                            "kind":"SCALAR",
-                            "name": "Int"
-                        }
-                    }
-                },
-                {
-                    "name": "totalMemory",
-                    "description": "",
-                    "args": [
-                    ],
-                    "type": {
-                        "kind":"NON_NULL",
-                        "ofType": {
-                            "kind":"SCALAR",
-                            "name": "Int"
-                        }
-                    }
                 }
             ],
             "interfaces": [
@@ -4549,7 +4611,7 @@
         },
         {
             "kind":"INPUT_OBJECT",
-            "name": "HostMemoryInput",
+            "name": "HostGCMemoryInput",
             "description": "/** **GCMemoryInfo** */\n",
             "inputFields": [
                 {
@@ -4606,32 +4668,6 @@
                 },
                 {
                     "name": "fragmentedBytes",
-                    "description": "",
-                    "args": [
-                    ],
-                    "type": {
-                        "kind":"NON_NULL",
-                        "ofType": {
-                            "kind":"SCALAR",
-                            "name": "Int"
-                        }
-                    }
-                },
-                {
-                    "name": "totalAllocatedBytes",
-                    "description": "",
-                    "args": [
-                    ],
-                    "type": {
-                        "kind":"NON_NULL",
-                        "ofType": {
-                            "kind":"SCALAR",
-                            "name": "Int"
-                        }
-                    }
-                },
-                {
-                    "name": "totalMemory",
                     "description": "",
                     "args": [
                     ],

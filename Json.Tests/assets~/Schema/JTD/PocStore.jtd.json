@@ -162,13 +162,18 @@
         },
         "HostMemory": {
             "properties": {
+                "totalAllocatedBytes": { "type": "int64" },
+                "totalMemory":         { "type": "int64" },
+                "gc":                  { "ref":  "HostGCMemory", "nullable": true }
+            }
+        },
+        "HostGCMemory": {
+            "properties": {
                 "highMemoryLoadThresholdBytes": { "type": "int64" },
                 "totalAvailableMemoryBytes":    { "type": "int64" },
                 "memoryLoadBytes":              { "type": "int64" },
                 "heapSizeBytes":                { "type": "int64" },
-                "fragmentedBytes":              { "type": "int64" },
-                "totalAllocatedBytes":          { "type": "int64" },
-                "totalMemory":                  { "type": "int64" }
+                "fragmentedBytes":              { "type": "int64" }
             }
         },
         "HostCluster": {

@@ -312,6 +312,7 @@
             <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.HostParam'><div><span>HostParam</span></div></a></li>
             <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.HostInfo'><div><span>HostInfo</span></div></a></li>
             <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.HostMemory'><div><span>HostMemory</span></div></a></li>
+            <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.HostGCMemory'><div><span>HostGCMemory</span></div></a></li>
             <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.HostCluster'><div><span>HostCluster</span></div></a></li>
             <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.UserParam'><div><span>UserParam</span></div></a></li>
             <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.UserResult'><div><span>UserResult</span></div></a></li>
@@ -1020,6 +1021,26 @@ E.g. using red for a production environment: "#ff0000" or "rgb(255 0 0)"</docs><
         <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.HostMemory'>HostMemory</a>
         <keyword>class</keyword>
     </h3>
+    <table class='fields'>
+        <tr>
+            <td><field>totalAllocatedBytes</field></td>
+            <td><type><a href='#Standard.int64'>int64</a></type></td>
+        </tr>
+        <tr>
+            <td><field>totalMemory</field></td>
+            <td><type><a href='#Standard.int64'>int64</a></type></td>
+        </tr>
+        <tr>
+            <td><field>gc</field></td>
+            <td><type><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.HostGCMemory'>HostGCMemory</a> | null</type></td>
+        </tr>
+    </table>
+    </div>
+    <div class='type'>
+    <h3 id='Friflo.Json.Fliox.Hub.DB.Cluster.HostGCMemory'>
+        <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.HostGCMemory'>HostGCMemory</a>
+        <keyword>class</keyword>
+    </h3>
     <desc><b>GCMemoryInfo</b>
     </desc>
     <table class='fields'>
@@ -1041,14 +1062,6 @@ E.g. using red for a production environment: "#ff0000" or "rgb(255 0 0)"</docs><
         </tr>
         <tr>
             <td><field>fragmentedBytes</field></td>
-            <td><type><a href='#Standard.int64'>int64</a></type></td>
-        </tr>
-        <tr>
-            <td><field>totalAllocatedBytes</field></td>
-            <td><type><a href='#Standard.int64'>int64</a></type></td>
-        </tr>
-        <tr>
-            <td><field>totalMemory</field></td>
             <td><type><a href='#Standard.int64'>int64</a></type></td>
         </tr>
     </table>

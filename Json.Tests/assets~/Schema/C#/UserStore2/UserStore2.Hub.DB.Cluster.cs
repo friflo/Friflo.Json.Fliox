@@ -67,13 +67,17 @@ public class HostInfo {
 }
 
 public class HostMemory {
+    long          totalAllocatedBytes;
+    long          totalMemory;
+    HostGCMemory  gc;
+}
+
+public class HostGCMemory {
     long  highMemoryLoadThresholdBytes;
     long  totalAvailableMemoryBytes;
     long  memoryLoadBytes;
     long  heapSizeBytes;
     long  fragmentedBytes;
-    long  totalAllocatedBytes;
-    long  totalMemory;
 }
 
 public class HostCluster {

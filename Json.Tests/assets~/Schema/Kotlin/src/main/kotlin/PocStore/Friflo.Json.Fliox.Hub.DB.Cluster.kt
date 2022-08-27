@@ -58,13 +58,18 @@ data class HostInfo (
 
 @Serializable
 data class HostMemory (
+              val totalAllocatedBytes : Long,
+              val totalMemory         : Long,
+              val gc                  : HostGCMemory? = null,
+)
+
+@Serializable
+data class HostGCMemory (
               val highMemoryLoadThresholdBytes : Long,
               val totalAvailableMemoryBytes    : Long,
               val memoryLoadBytes              : Long,
               val heapSizeBytes                : Long,
               val fragmentedBytes              : Long,
-              val totalAllocatedBytes          : Long,
-              val totalMemory                  : Long,
 )
 
 @Serializable

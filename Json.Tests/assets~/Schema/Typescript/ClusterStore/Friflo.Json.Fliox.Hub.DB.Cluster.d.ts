@@ -121,15 +121,19 @@ export class HostInfo {
     memory          : HostMemory;
 }
 
-/** **GCMemoryInfo** */
 export class HostMemory {
+    totalAllocatedBytes  : int64;
+    totalMemory          : int64;
+    gc?                  : HostGCMemory | null;
+}
+
+/** **GCMemoryInfo** */
+export class HostGCMemory {
     highMemoryLoadThresholdBytes  : int64;
     totalAvailableMemoryBytes     : int64;
     memoryLoadBytes               : int64;
     heapSizeBytes                 : int64;
     fragmentedBytes               : int64;
-    totalAllocatedBytes           : int64;
-    totalMemory                   : int64;
 }
 
 /** All **databases** hosted by Hub */

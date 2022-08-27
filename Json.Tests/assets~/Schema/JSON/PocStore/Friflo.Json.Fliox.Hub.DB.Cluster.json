@@ -101,24 +101,33 @@
         },
         "HostMemory": {
             "type": "object",
+            "properties": {
+                "totalAllocatedBytes": { "$ref": "./Standard.json#/definitions/int64" },
+                "totalMemory":         { "$ref": "./Standard.json#/definitions/int64" },
+                "gc":                  { "oneOf": [{ "$ref": "#/definitions/HostGCMemory" }, {"type": "null"}] }
+            },
+            "required": [
+                "totalAllocatedBytes",
+                "totalMemory"
+            ],
+            "additionalProperties": false
+        },
+        "HostGCMemory": {
+            "type": "object",
             "description": "<b>GCMemoryInfo</b>",
             "properties": {
                 "highMemoryLoadThresholdBytes": { "$ref": "./Standard.json#/definitions/int64" },
                 "totalAvailableMemoryBytes":    { "$ref": "./Standard.json#/definitions/int64" },
                 "memoryLoadBytes":              { "$ref": "./Standard.json#/definitions/int64" },
                 "heapSizeBytes":                { "$ref": "./Standard.json#/definitions/int64" },
-                "fragmentedBytes":              { "$ref": "./Standard.json#/definitions/int64" },
-                "totalAllocatedBytes":          { "$ref": "./Standard.json#/definitions/int64" },
-                "totalMemory":                  { "$ref": "./Standard.json#/definitions/int64" }
+                "fragmentedBytes":              { "$ref": "./Standard.json#/definitions/int64" }
             },
             "required": [
                 "highMemoryLoadThresholdBytes",
                 "totalAvailableMemoryBytes",
                 "memoryLoadBytes",
                 "heapSizeBytes",
-                "fragmentedBytes",
-                "totalAllocatedBytes",
-                "totalMemory"
+                "fragmentedBytes"
             ],
             "additionalProperties": false
         },
