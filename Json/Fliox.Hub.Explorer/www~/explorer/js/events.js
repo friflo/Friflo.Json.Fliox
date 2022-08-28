@@ -28,12 +28,6 @@ and send them after the client reconnects.
     - Click 'connect' in 'Playground' tab
     - Click 'send' - any request
 The events generated during the disconnect are now available in the 'Pub-Sub' tab.`;
-export const noPubSubInfo = `
-    info
-
-FlioxHub is not configured to support Pub-Sub.
-Pub-Sub requires assigning an EventDispatcher to FlioxHub.EventDispatcher.
-`;
 function firstKV(key, value) {
     if (value === undefined)
         return "";
