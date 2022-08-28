@@ -5,7 +5,7 @@ import { Schema, MonacoSchema }                                 from "./schema.j
 import { Explorer }                                             from "./explorer.js";
 import { EntityEditor }                                         from "./entity-editor.js";
 import { Playground }                                           from "./playground.js";
-import { Events, eventsInfo }                                               from "./events.js";
+import { Events, eventsInfo, noPubSubInfo }                                               from "./events.js";
 import { ClusterTree }                                          from "./components.js";
 
 import { FieldType, JSONSchema, JsonType }                      from "../../../../../Json.Tests/assets~/Schema/Typescript/JSONSchema/Friflo.Json.Fliox.Schema.JSON";
@@ -350,7 +350,6 @@ export class App {
 
     private             hostInfo:       HostInfo;
     public  readonly    clusterTree:    ClusterTree;
-
 
     private async loadCluster () {
         const tasks: SyncRequestTask_Union[] = [
@@ -805,7 +804,9 @@ export class App {
             this.eventsEditor   = monaco.editor.create(eventsContainer, { });
             const eventModel    = monaco.editor.createModel(null, "json", eventUri);
             this.eventsEditor.setModel (eventModel);
-            this.eventsEditor.setValue(eventsInfo);
+
+            const info = this.hostInfo.pubSub ? eventsInfo : noPubSubInfo;
+            this.eventsEditor.setValue(info);
         }
 
         // this.commandResponseModel = monaco.editor.createModel(null, "json");

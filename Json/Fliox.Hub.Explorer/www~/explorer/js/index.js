@@ -4,7 +4,7 @@ import { Schema } from "./schema.js";
 import { Explorer } from "./explorer.js";
 import { EntityEditor } from "./entity-editor.js";
 import { Playground } from "./playground.js";
-import { Events, eventsInfo } from "./events.js";
+import { Events, eventsInfo, noPubSubInfo } from "./events.js";
 import { ClusterTree } from "./components.js";
 const flioxVersionEl = el("flioxVersion");
 const projectName = el("projectName");
@@ -694,7 +694,8 @@ export class App {
             this.eventsEditor = monaco.editor.create(eventsContainer, {});
             const eventModel = monaco.editor.createModel(null, "json", eventUri);
             this.eventsEditor.setModel(eventModel);
-            this.eventsEditor.setValue(eventsInfo);
+            const info = this.hostInfo.pubSub ? eventsInfo : noPubSubInfo;
+            this.eventsEditor.setValue(info);
         }
         // this.commandResponseModel = monaco.editor.createModel(null, "json");
         this.setEditorOptions();
