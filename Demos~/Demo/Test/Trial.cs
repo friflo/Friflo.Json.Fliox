@@ -60,10 +60,7 @@ namespace DemoTest {
         {
             switch (option) {
                 case "http":    return new HttpClientHub("main_db", "http://localhost:8010/fliox/");
-                case "ws":  // todo simplify
-                    var wsHub = new WebSocketClientHub("main_db", "ws://localhost:8010/fliox/");
-                    wsHub.Connect().Wait();
-                    return wsHub;
+                case "ws":      return new WebSocketClientHub("main_db", "ws://localhost:8010/fliox/");
                 case "file":    return new FlioxHub(new FileDatabase("main_db", "./DB/main_db"));
                 case "memory":  return new FlioxHub(new MemoryDatabase("main_db"));
             }

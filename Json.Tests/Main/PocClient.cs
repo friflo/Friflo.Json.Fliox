@@ -46,7 +46,7 @@ namespace Friflo.Json.Tests.Main
         
         private static FlioxHub CreateHub() {
             var wsHub = new WebSocketClientHub("main_db", "ws://localhost:8010/fliox/");
-            wsHub.Connect().Wait();
+            // wsHub.Connect().Wait();
             return wsHub;
         }
     }

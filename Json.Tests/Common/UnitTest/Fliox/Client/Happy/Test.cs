@@ -128,6 +128,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             using (var server       = new HttpListenerHost("http://+:8080/", httpHost))
             using (var remoteHub    = new HttpClientHub(TestGlobals.DB, "http://localhost:8080/", TestGlobals.Shared)) {
                 await RunServer(server, async () => {
+                    
                     using (var createStore      = new PocStore(remoteHub) { UserId = "createStore", ClientId = "create-client"})
                     using (var useStore         = new PocStore(remoteHub) { UserId = "useStore",    ClientId = "use-client"}) {
                         await TestRelationPoC.CreateStore(createStore);
@@ -163,7 +164,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             using (var listenDb         = new PocStore(remoteHub) { UserId = "listenDb", ClientId = "listen-client"}) {
                 hub.EventDispatcher = eventDispatcher;
                 await RunServer(server, async () => {
-                    await remoteHub.Connect();
+                    // await remoteHub.Connect();
                     var listenSubscriber    = await CreatePocStoreSubscriber(listenDb, EventAssertion.Changes);
                     using (var createStore  = new PocStore(remoteHub) { UserId = "createStore", ClientId = "create-client"})
                     using (var useStore     = new PocStore(remoteHub) { UserId = "useStore",    ClientId = "use-client"}) {
@@ -200,7 +201,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 hostHub.fakeOpenClosedSockets = true;
                 hub.EventDispatcher = eventDispatcher;
                 await RunServer(server, async () => {
-                    await remoteHub.Connect();
+                    // await remoteHub.Connect();
                     var listenSubscriber    = await CreatePocStoreSubscriber(listenDb, EventAssertion.Changes);
                     using (var createStore  = new PocStore(hub) { UserId = "createStore", ClientId = "create-client"}) {
                         await remoteHub.Close();
@@ -211,8 +212,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                         // subscriber contains send events which are not acknowledged
                         IsTrue(eventDispatcher.QueuedEventsCount() > 0);
 
-                        await remoteHub.Connect();
-                        
+                        // await remoteHub.Connect();
+
                         AreEqual(0, listenDb.Tasks.Count);
                         await listenDb.SyncTasks();  // an empty SyncTasks() is sufficient initiate re-sending all not-received change events
 

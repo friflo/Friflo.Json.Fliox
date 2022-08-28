@@ -29,7 +29,7 @@ namespace Friflo.Json.Tests.Main
             using (var server       = new HttpListenerHost("http://+:8080/", httpHost))
             using (var remoteHub    = new WebSocketClientHub(TestDB, "ws://localhost:8080/")) {
                 await TestHappy.RunServer(server, async () => {
-                    await remoteHub.Connect();
+                    // await remoteHub.Connect();
                     await TestHappy.ConcurrentAccess(remoteHub, 4, 0, 1_000_000, false);
                 });
             }
