@@ -341,10 +341,12 @@ input ContainerStatsInput {
 }
 
 type HostParam {
+    memory    : Boolean
     gcCollect : Boolean
 }
 
 input HostParamInput {
+    memory    : Boolean
     gcCollect : Boolean
 }
 
@@ -358,7 +360,7 @@ type HostInfo {
     envColor       : String
     pubSub         : Boolean!
     routes         : [String!]!
-    memory         : HostMemory!
+    memory         : HostMemory
 }
 
 input HostInfoInput {
@@ -371,7 +373,7 @@ input HostInfoInput {
     envColor       : String
     pubSub         : Boolean!
     routes         : [String!]!
-    memory         : HostMemoryInput!
+    memory         : HostMemoryInput
 }
 
 type HostMemory {

@@ -71,6 +71,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
     }
     
     public sealed class HostParam  {
+                    public bool?                memory;
                     public bool?                gcCollect;
     }
     
@@ -100,7 +101,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
         /// <summary>routes configures by <see cref="Remote.HttpHost"/> - commonly below <c>/fliox</c></summary>
         [Required]  public  List<string>        routes;
         
-        [Required]  public  HostMemory          memory;
+                    public  HostMemory          memory;
     }
     
     public sealed class HostMemory {

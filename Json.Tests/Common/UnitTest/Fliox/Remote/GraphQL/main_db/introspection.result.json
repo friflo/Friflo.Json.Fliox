@@ -4185,6 +4185,16 @@
             "description": "",
             "fields": [
                 {
+                    "name": "memory",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"SCALAR",
+                        "name": "Boolean"
+                    }
+                },
+                {
                     "name": "gcCollect",
                     "description": "",
                     "args": [
@@ -4203,6 +4213,16 @@
             "name": "HostParamInput",
             "description": "",
             "inputFields": [
+                {
+                    "name": "memory",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"SCALAR",
+                        "name": "Boolean"
+                    }
+                },
                 {
                     "name": "gcCollect",
                     "description": "",
@@ -4334,11 +4354,8 @@
                     "args": [
                     ],
                     "type": {
-                        "kind":"NON_NULL",
-                        "ofType": {
-                            "kind":"SCALAR",
-                            "name": "HostMemory"
-                        }
+                        "kind":"SCALAR",
+                        "name": "HostMemory"
                     }
                 }
             ],
@@ -4464,11 +4481,8 @@
                     "args": [
                     ],
                     "type": {
-                        "kind":"NON_NULL",
-                        "ofType": {
-                            "kind":"SCALAR",
-                            "name": "HostMemoryInput"
-                        }
+                        "kind":"SCALAR",
+                        "name": "HostMemoryInput"
                     }
                 }
             ]

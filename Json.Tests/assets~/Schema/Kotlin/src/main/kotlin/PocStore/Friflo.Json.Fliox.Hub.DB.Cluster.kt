@@ -40,6 +40,7 @@ data class ContainerStats (
 
 @Serializable
 data class HostParam (
+              val memory    : Boolean? = null,
               val gcCollect : Boolean? = null,
 )
 
@@ -54,7 +55,7 @@ data class HostInfo (
               val envColor       : String? = null,
               val pubSub         : Boolean,
               val routes         : List<String>,
-              val memory         : HostMemory,
+              val memory         : HostMemory? = null,
 )
 
 @Serializable

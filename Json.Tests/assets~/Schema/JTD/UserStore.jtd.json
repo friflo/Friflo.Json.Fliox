@@ -186,6 +186,7 @@
         },
         "HostParam": {
             "properties": {
+                "memory":    { "type": "boolean", "nullable": true },
                 "gcCollect": { "type": "boolean", "nullable": true }
             }
         },
@@ -200,7 +201,7 @@
                 "envColor":       { "type": "string", "nullable": true },
                 "pubSub":         { "type": "boolean" },
                 "routes":         { "elements": { "type": "string" } },
-                "memory":         { "ref":  "HostMemory" }
+                "memory":         { "ref":  "HostMemory", "nullable": true }
             }
         },
         "HostMemory": {

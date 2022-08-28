@@ -91,6 +91,7 @@ export class ContainerStats {
 }
 
 export class HostParam {
+    memory?    : boolean | null;
     gcCollect? : boolean | null;
 }
 
@@ -120,7 +121,7 @@ export class HostInfo {
     pubSub          : boolean;
     /** routes configures by **HttpHost** - commonly below /fliox */
     routes          : string[];
-    memory          : HostMemory;
+    memory?         : HostMemory | null;
 }
 
 export class HostMemory {

@@ -221,8 +221,9 @@ namespace Friflo.Json.Fliox.Hub.Host
             if (hostParam?.gcCollect == true) {
                 GC.Collect();
             }
-            var memory  = GetHostMemory();
+            var memory  = hostParam?.memory == true ? GetHostMemory() : null;
             var hub     = context.Hub;
+            var pubSub  = hub.EventDispatcher != null;
             var info    = hub.Info;
             var routes  = new List<string>(hub.Routes);
             var result  = new HostInfo {
@@ -233,6 +234,7 @@ namespace Friflo.Json.Fliox.Hub.Host
                 projectWebsite  = info?.projectWebsite,
                 envName         = info?.envName,
                 envColor        = info?.envColor,
+                pubSub          = pubSub,
                 routes          = routes,
                 memory          = memory
             };

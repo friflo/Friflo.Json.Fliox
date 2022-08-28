@@ -47,6 +47,7 @@ public class ContainerStats {
 }
 
 public class HostParam {
+    bool? memory;
     bool? gcCollect;
 }
 
@@ -63,7 +64,6 @@ public class HostInfo {
     bool          pubSub;
     [Required]
     List<string>  routes;
-    [Required]
     HostMemory    memory;
 }
 
