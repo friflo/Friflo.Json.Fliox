@@ -39,10 +39,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         }
         
         private static async Task AutoConnect (FlioxHub hub) {
-            using (var remoteClient     = new PocStore(hub) { UserId = "AutoConnect", ClientId = "auto-client"}) {
-                var sync1 = remoteClient.SyncTasks();
-                var sync2 = remoteClient.SyncTasks();
-                var sync3 = remoteClient.SyncTasks();
+            using (var client = new PocStore(hub) { UserId = "AutoConnect", ClientId = "auto-client"}) {
+                var sync1 = client.SyncTasks();
+                var sync2 = client.SyncTasks();
+                var sync3 = client.SyncTasks();
                 await Task.WhenAll(sync1, sync2, sync3);
             }
         }
@@ -58,14 +58,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         }
         
         private static async Task AutoConnectError (FlioxHub hub) {
-            using (var remoteClient     = new PocStore(hub) { UserId = "AutoConnectError", ClientId = "error-client"}) {
-                var syncError = await remoteClient.TrySyncTasks();
+            using (var client = new PocStore(hub) { UserId = "AutoConnectError", ClientId = "error-client"}) {
+                var syncError = await client.TrySyncTasks();
                 NotNull(syncError.failed);
                 StringAssert.StartsWith("Internal WebSocketException: Unable to connect to the remote server", syncError.Message);
                 
-                var sync1 = remoteClient.SyncTasks();
-                var sync2 = remoteClient.SyncTasks();
-                var sync3 = remoteClient.SyncTasks();
+                var sync1 = client.SyncTasks();
+                var sync2 = client.SyncTasks();
+                var sync3 = client.SyncTasks();
                 try {
                     await Task.WhenAll(sync1, sync2, sync3);
                     Fail("expect exceptions");
