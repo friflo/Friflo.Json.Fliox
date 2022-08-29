@@ -27,9 +27,12 @@ namespace Friflo.Json.Fliox
         public   override   string  ToString()  => AsString();
         public              string  AsString()  => array == null ? "null" : Encoding.UTF8.GetString(array, 0, array.Length);
         
-        public  ArraySegment<byte>  AsArraySegment()        => new ArraySegment<byte>(Array, 0, Array.Length);
-        public  ByteArrayContent    AsByteArrayContent()    => new ByteArrayContent(Array); // todo hm. dependency System.Net.Http 
-        public  byte[]              AsByteArray()           => array.ToArray();
+        public  ArraySegment<byte>      AsArraySegment()        => new ArraySegment<byte>(Array, 0, Array.Length);
+#if !UNITY_5_3_OR_NEWER
+        public  ReadOnlyMemory<byte>    AsReadOnlyMemory()      => new ReadOnlyMemory<byte>(Array, 0, Array.Length);
+#endif
+        public  ByteArrayContent        AsByteArrayContent()    => new ByteArrayContent(Array); // todo hm. dependency System.Net.Http 
+        public  byte[]                  AsByteArray()           => array.ToArray();
         
         private static readonly byte[] Null =  {(byte)'n', (byte)'u', (byte)'l', (byte)'l'};
 

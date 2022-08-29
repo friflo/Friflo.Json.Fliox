@@ -205,9 +205,13 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 var wsRequest       = new WebsocketRequest(syncContext, cancellationToken);
                 wsConn.requests.TryAdd(sendReqId, wsRequest);
                 
-                var arraySegment    = jsonRequest.AsArraySegment();
+#if UNITY_5_3_OR_NEWER
+                var buffer    = jsonRequest.AsArraySegment();
+#else
+                var buffer    = jsonRequest.AsReadOnlyMemory();
+#endif
                 // --- Send message
-                await wsConn.websocket.SendAsync(arraySegment, WebSocketMessageType.Text, true, CancellationToken.None).ConfigureAwait(false);
+                await wsConn.websocket.SendAsync(buffer, WebSocketMessageType.Text, true, CancellationToken.None).ConfigureAwait(false);
                 
                 // --- Wait for response
                 var response = await wsRequest.response.Task.ConfigureAwait(false);
