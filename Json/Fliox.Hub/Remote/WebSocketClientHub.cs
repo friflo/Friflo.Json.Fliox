@@ -17,7 +17,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
     /// Each <see cref="WebSocketConnection"/> creates its own sequence of request ids to ensure reliable mapping of
     /// received <see cref="ProtocolResponse"/>'s to its related <see cref="SyncRequest"/>
     /// </summary>
-    internal class WebSocketConnection
+    internal sealed class WebSocketConnection
     {
         internal            int                                         reqId;
         internal  readonly  ClientWebSocket                             websocket;
@@ -228,7 +228,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         }
     }
     
-    internal sealed class WebsocketRequest
+    internal readonly struct WebsocketRequest
     {
         internal readonly   TaskCompletionSource<ProtocolResponse>  response;          
         
