@@ -7,10 +7,11 @@ using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.Event;
 using Friflo.Json.Fliox.Hub.Remote;
 using Friflo.Json.Fliox.Hub.Threading;
+using NUnit.Framework;
 using static NUnit.Framework.Assert;
 
 #if UNITY_5_3_OR_NEWER
-    using UnitTest.Dummy;
+
 #else
     using NUnit.Framework;
 #endif
@@ -19,6 +20,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
 {
     public partial class TestHappy
     {
+#if !UNITY_5_3_OR_NEWER
         [Test]      public void  WebSocketConnectSync()       { SingleThreadSynchronizationContext.Run(WebSocketConnect); }
         
         private static async Task WebSocketConnect() {
@@ -46,6 +48,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 await Task.WhenAll(sync1, sync2, sync3);
             }
         }
+#endif
         
         [Test]      public void  WebSocketConnectErrorSync()       { SingleThreadSynchronizationContext.Run(WebSocketConnectError); }
         private static async Task WebSocketConnectError() {
