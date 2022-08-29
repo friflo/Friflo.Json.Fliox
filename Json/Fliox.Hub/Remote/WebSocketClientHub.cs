@@ -14,12 +14,11 @@ using Friflo.Json.Fliox.Hub.Protocol;
 namespace Friflo.Json.Fliox.Hub.Remote
 {
     /// <summary>
-    /// Each <see cref="WebSocketConnection"/> creates its own sequence of request ids to ensure reliable mapping of
+    /// Each <see cref="WebSocketConnection"/> store its send <see cref="requests"/> to map a 
     /// received <see cref="ProtocolResponse"/>'s to its related <see cref="SyncRequest"/>
     /// </summary>
     internal sealed class WebSocketConnection
     {
-        internal            int                                         reqId;
         internal  readonly  ClientWebSocket                             websocket;
         internal  readonly  ConcurrentDictionary<int, WebsocketRequest> requests;
         
@@ -36,6 +35,9 @@ namespace Friflo.Json.Fliox.Hub.Remote
     {
         private  readonly   string                      endpoint;
         private  readonly   Uri                         endpointUri;
+        /// Incrementing requests id used to map a <see cref="ProtocolResponse"/>'s to its related <see cref="SyncRequest"/>.
+        private             int                         reqId;
+
 
         /// lock (<see cref="websocketLock"/>) {
         private readonly    object                      websocketLock = new object();
@@ -195,7 +197,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             if (wsConn == null) {
                 wsConn = await Connect().ConfigureAwait(false);
             }
-            int sendReqId       = Interlocked.Increment(ref wsConn.reqId);
+            int sendReqId       = Interlocked.Increment(ref reqId);
             syncRequest.reqId   = sendReqId;
             var jsonRequest     = RemoteUtils.CreateProtocolMessage(syncRequest, syncContext.ObjectMapper);
             try {
