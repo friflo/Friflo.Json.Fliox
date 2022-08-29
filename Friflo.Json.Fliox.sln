@@ -32,6 +32,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DemoTest", "Demos~\Demo\Tes
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TodoTest", "Demos~\Todo\Test\TodoTest.csproj", "{F43F873E-96B8-46A1-A0A9-416EFA010D43}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TodoWinForms", "Demos~\Todo\WinForms\TodoWinForms.csproj", "{0090CDBB-BA49-425D-84D8-305FD562F0EE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TodoWPF", "Demos~\Todo\WPF\TodoWPF.csproj", "{436460D3-0227-4874-8137-65EE5ADFEF95}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -102,5 +106,13 @@ Global
 		{F43F873E-96B8-46A1-A0A9-416EFA010D43}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F43F873E-96B8-46A1-A0A9-416EFA010D43}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F43F873E-96B8-46A1-A0A9-416EFA010D43}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0090CDBB-BA49-425D-84D8-305FD562F0EE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0090CDBB-BA49-425D-84D8-305FD562F0EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0090CDBB-BA49-425D-84D8-305FD562F0EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0090CDBB-BA49-425D-84D8-305FD562F0EE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{436460D3-0227-4874-8137-65EE5ADFEF95}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{436460D3-0227-4874-8137-65EE5ADFEF95}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{436460D3-0227-4874-8137-65EE5ADFEF95}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{436460D3-0227-4874-8137-65EE5ADFEF95}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
