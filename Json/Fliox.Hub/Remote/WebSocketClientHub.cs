@@ -87,7 +87,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         private async Task<WebSocketConnection> Connect() {
             var task = JoinConnects(out var tcs, out WebSocketConnection wsConn);
             if (tcs == null) {
-                wsConn = await task;
+                wsConn = await task.ConfigureAwait(false);
                 return wsConn;
             }
 
