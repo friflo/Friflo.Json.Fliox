@@ -7,7 +7,6 @@ using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.Event;
 using Friflo.Json.Fliox.Hub.Remote;
 using Friflo.Json.Fliox.Hub.Threading;
-using Microsoft.Azure.Cosmos.Linq;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
 
