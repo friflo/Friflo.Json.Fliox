@@ -29,7 +29,7 @@ namespace Friflo.Json.Fliox
         
         public  ArraySegment<byte>      AsArraySegment()        => new ArraySegment<byte>(Array, 0, Array.Length);
 #if !UNITY_5_3_OR_NEWER
-        public  ReadOnlyMemory<byte>    AsReadOnlyMemory()      => new ReadOnlyMemory<byte>(Array, 0, Array.Length);
+//      public  ReadOnlyMemory<byte>    AsReadOnlyMemory()      => new ReadOnlyMemory<byte>(Array, 0, Array.Length);
 #endif
         public  ByteArrayContent        AsByteArrayContent()    => new ByteArrayContent(Array); // todo hm. dependency System.Net.Http 
         public  byte[]                  AsByteArray()           => array.ToArray();
