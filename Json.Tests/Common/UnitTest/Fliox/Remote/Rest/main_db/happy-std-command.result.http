@@ -1,0 +1,47 @@
+@auth = fliox-user=admin; fliox-token=admin
+@base = http://localhost:8010/fliox
+
+###
+POST {{base}}/rest/main_db/?command=std.Echo
+# StatusCode:   200
+# Content-Type: application/json
+
+{ "hello": "world" }
+
+###
+GET {{base}}/rest/main_db?command=std.Messages
+# StatusCode:   200
+# Content-Type: application/json
+
+{
+    "id": "main_db",
+    "commands": [
+        "TestCommand",
+        "MultiRequests",
+        "SyncCommand",
+        "AsyncCommand",
+        "Command1",
+        "CommandInt",
+        "test.Command2",
+        "test.CommandHello",
+        "test.CommandExecutionError",
+        "test.CommandExecutionException",
+        "std.Echo",
+        "std.Containers",
+        "std.Messages",
+        "std.Schema",
+        "std.Stats",
+        "std.Host",
+        "std.Cluster",
+        "std.User",
+        "std.Client"
+    ],
+    "messages": [
+        "Message1",
+        "AsyncMessage",
+        "StartTime",
+        "StopTime",
+        "test.Message2"
+    ]
+}
+

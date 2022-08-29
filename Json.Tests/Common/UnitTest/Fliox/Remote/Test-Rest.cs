@@ -35,6 +35,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
         }
         
         [Test, Order(1)]
+        public static void Rest_main_db_happy_std_commands() {
+            ExecuteHttpFile("Rest/main_db/happy-std-command.http", "Rest/main_db/happy-std-command.result.http");
+        }
+        
+        [Test, Order(1)]
         public static void Rest_main_db_handler_errors() {
             ExecuteHttpFile("Rest/main_db/handler-errors.http", "Rest/main_db/handler-errors.result.http");
         }

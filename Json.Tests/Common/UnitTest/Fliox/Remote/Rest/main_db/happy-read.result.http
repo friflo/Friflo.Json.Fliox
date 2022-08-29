@@ -13,13 +13,6 @@ GET {{base}}/rest/main_db/articles/article-1
 }
 
 ###
-POST {{base}}/rest/main_db/?command=std.Echo
-# StatusCode:   200
-# Content-Type: application/json
-
-{ "hello": "world" }
-
-###
 POST {{base}}/rest/main_db/?message=Message1
 # StatusCode:   200
 # Content-Type: application/json
@@ -195,41 +188,4 @@ POST {{base}}/rest/main_db/articles/bulk-get
     "name": "Smartphone"
 }
 ]
-
-###
-GET {{base}}/rest/main_db?command=std.Messages
-# StatusCode:   200
-# Content-Type: application/json
-
-{
-    "id": "main_db",
-    "commands": [
-        "TestCommand",
-        "MultiRequests",
-        "SyncCommand",
-        "AsyncCommand",
-        "Command1",
-        "CommandInt",
-        "test.Command2",
-        "test.CommandHello",
-        "test.CommandExecutionError",
-        "test.CommandExecutionException",
-        "std.Echo",
-        "std.Containers",
-        "std.Messages",
-        "std.Schema",
-        "std.Stats",
-        "std.Host",
-        "std.Cluster",
-        "std.User",
-        "std.Client"
-    ],
-    "messages": [
-        "Message1",
-        "AsyncMessage",
-        "StartTime",
-        "StopTime",
-        "test.Message2"
-    ]
-}
 

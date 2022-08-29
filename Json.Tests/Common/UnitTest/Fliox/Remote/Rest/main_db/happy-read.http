@@ -7,12 +7,6 @@ GET {{base}}/rest/main_db/articles/article-1
 Cookie: {{auth}}
 
 ###
-POST {{base}}/rest/main_db/?command=std.Echo
-Cookie: {{auth}}
-
-{ "hello": "world" }
-
-###
 POST {{base}}/rest/main_db/?message=Message1
 Cookie: {{auth}}
 
@@ -47,7 +41,3 @@ POST {{base}}/rest/main_db/articles/bulk-get
 Cookie: {{auth}}
 
 ["article-1","article-2"]
-
-###
-GET {{base}}/rest/main_db?command=std.Messages
-Cookie: {{auth}}
