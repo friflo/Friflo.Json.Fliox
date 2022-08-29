@@ -9,6 +9,32 @@ POST {{base}}/rest/main_db/?command=std.Echo
 { "hello": "world" }
 
 ###
+GET {{base}}/rest/main_db/?command=std.Echo&param="hello"
+# StatusCode:   200
+# Content-Type: application/json
+
+"hello"
+
+###
+GET {{base}}/rest/main_db?command=std.Containers
+# StatusCode:   200
+# Content-Type: application/json
+
+{
+    "id": "main_db",
+    "storage": "in-memory",
+    "containers": [
+        "orders",
+        "customers",
+        "articles",
+        "articles2",
+        "producers",
+        "employees",
+        "types"
+    ]
+}
+
+###
 GET {{base}}/rest/main_db?command=std.Messages
 # StatusCode:   200
 # Content-Type: application/json
@@ -42,6 +68,41 @@ GET {{base}}/rest/main_db?command=std.Messages
         "StartTime",
         "StopTime",
         "test.Message2"
+    ]
+}
+
+###
+GET {{base}}/rest/main_db?command=std.Host
+# StatusCode:   200
+# Content-Type: application/json
+
+{
+    "hostVersion": "1.0.0",
+    "flioxVersion": "0.0.0",
+    "hostName": "host",
+    "projectName": "Test Hub",
+    "projectWebsite": "https://github.com/friflo/Friflo.Json.Fliox/tree/main/Json.Tests/Main",
+    "envName": "dev",
+    "envColor": "rgb(34 140 0)",
+    "pubSub": true,
+    "routes": [
+        "/rest",
+        "/schema",
+        "/graphql",
+        "/explorer",
+        "/graphiql",
+        "/monaco-editor",
+        "/swagger"
+    ]
+}
+
+###
+GET {{base}}/rest/main_db?command=std.User
+# StatusCode:   200
+# Content-Type: application/json
+
+{
+    "groups": [
     ]
 }
 
