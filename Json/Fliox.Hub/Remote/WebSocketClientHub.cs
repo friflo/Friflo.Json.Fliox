@@ -14,25 +14,38 @@ using Friflo.Json.Fliox.Hub.Protocol;
 namespace Friflo.Json.Fliox.Hub.Remote
 {
     /// <summary>
+    /// Each <see cref="WebSocketConnection"/> creates its own sequence of request ids to ensure reliable mapping of
+    /// received <see cref="ProtocolResponse"/>'s to its related <see cref="SyncRequest"/>
+    /// </summary>
+    internal class WebSocketConnection
+    {
+        internal            int                                         reqId;
+        internal  readonly  ClientWebSocket                             websocket;
+        internal  readonly  ConcurrentDictionary<int, WebsocketRequest> requests;
+        
+        internal WebSocketConnection() {
+            websocket   = new ClientWebSocket();
+            requests    = new ConcurrentDictionary<int, WebsocketRequest>();
+        }
+    }
+    
+    /// <summary>
     /// A <see cref="FlioxHub"/> accessed remotely  using a <see cref="WebSocket"/> connection
     /// </summary>
     public sealed class WebSocketClientHub : RemoteClientHub
     {
-        private             int                                         reqId;
-
-        private  readonly   string                                      endpoint;
-        private  readonly   Uri                                         endpointUri;
+        private  readonly   string                      endpoint;
+        private  readonly   Uri                         endpointUri;
 
         /// lock (<see cref="websocketLock"/>) {
-        private readonly    object                                      websocketLock = new object();
-        private             ClientWebSocket                             websocket;
-        private             Task<ClientWebSocket>                       connectTask;
+        private readonly    object                      websocketLock = new object();
+        private             WebSocketConnection         wsConnection;
+        private             Task<WebSocketConnection>   connectTask;
         // }
         
-        private  readonly   ConcurrentDictionary<int, WebsocketRequest> requests = new ConcurrentDictionary<int, WebsocketRequest>();
-        private  readonly   CancellationTokenSource                     cancellationToken = new CancellationTokenSource();
+        private  readonly   CancellationTokenSource     cancellationToken = new CancellationTokenSource();
         
-        public   override   string                                      ToString() => $"{database.name} - endpoint: {endpoint}";
+        public   override   string                      ToString() => $"{database.name} - endpoint: {endpoint}";
         
         public WebSocketClientHub(string dbName, string endpoint, SharedEnv env = null)
             : base(new RemoteDatabase(dbName), env)
@@ -46,71 +59,70 @@ namespace Friflo.Json.Fliox.Hub.Remote
             // websocket.CancelPendingRequests();
         } */
         
-        private ClientWebSocket GetWebsocket() {
+        private WebSocketConnection GetWebsocketConnection() {
             lock (websocketLock) {
-                var ws = websocket;
-                if (ws != null && ws.State == WebSocketState.Open)
-                    return ws;
+                var wsConn = wsConnection;
+                if (wsConn != null && wsConn.websocket.State == WebSocketState.Open)
+                    return wsConn;
                 return null;
             }
         }
         
-        private Task<ClientWebSocket> JoinConnects(out TaskCompletionSource<ClientWebSocket> tcs, out ClientWebSocket ws) {
+        private Task<WebSocketConnection> JoinConnects(out TaskCompletionSource<WebSocketConnection> tcs, out WebSocketConnection wsConn) {
             lock (websocketLock) {
                 if (connectTask != null) {
-                    ws  = null;
-                    tcs = null;
+                    wsConn  = null;
+                    tcs     = null;
                     return connectTask;
                 }
-                ws  = websocket = new ClientWebSocket();
-                tcs = new TaskCompletionSource<ClientWebSocket>();
+                wsConn  = wsConnection = new WebSocketConnection();
+                tcs     = new TaskCompletionSource<WebSocketConnection>();
                 connectTask = tcs.Task;
                 return connectTask;
             }
         }
         
-        private async Task<ClientWebSocket> Connect() {
-            var task = JoinConnects(out var tcs, out ClientWebSocket ws);
+        private async Task<WebSocketConnection> Connect() {
+            var task = JoinConnects(out var tcs, out WebSocketConnection wsConn);
             if (tcs == null) {
-                ws = await task;
-                return ws;
+                wsConn = await task;
+                return wsConn;
             }
-            // clear request queue is required for reconnects 
-            requests.Clear();
 
             // Console.WriteLine($"WebSocketClientHub.Connect() endpoint: {endpoint}");
             // ws.Options.SetBuffer(4096, 4096);
             try {
-                await ws.ConnectAsync(endpointUri, CancellationToken.None).ConfigureAwait(false);
+                await wsConn.websocket.ConnectAsync(endpointUri, CancellationToken.None).ConfigureAwait(false);
 
                 connectTask = null;
-                tcs.SetResult(ws);
+                tcs.SetResult(wsConn);
             } catch (Exception e) {
                 connectTask = null;
                 tcs.SetException(e);
                 throw;
             }
             try {
-                _ = ReceiveLoop(ws);
+                _ = ReceiveLoop(wsConn);
             } catch (Exception e) {
                 Debug.Fail("ReceiveLoop() failed", e.Message);
             }
-            return ws;
+            return wsConn;
         }
         
         public async Task Close() {
-            ClientWebSocket ws;
+            WebSocketConnection wsConn;
             lock (websocketLock) {
-                ws = websocket;
-                if (ws == null || ws.State == WebSocketState.Closed)
+                wsConn = wsConnection;
+                if (wsConn == null || wsConn.websocket.State == WebSocketState.Closed)
                     return;
-                websocket = null;
+                wsConnection = null;
             }
-            await ws.CloseAsync(WebSocketCloseStatus.NormalClosure, "", CancellationToken.None).ConfigureAwait(false);
+            await wsConn.websocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "", CancellationToken.None).ConfigureAwait(false);
         }
 
-        private async Task ReceiveLoop(ClientWebSocket ws) {
-            var        buffer       = new ArraySegment<byte>(new byte[8192]);
+        private async Task ReceiveLoop(WebSocketConnection wsConn) {
+            var buffer  = new ArraySegment<byte>(new byte[8192]);
+            var ws      = wsConn.websocket;
             using (var memoryStream = new MemoryStream()) {
                 while (true) {
                     memoryStream.Position = 0;
@@ -137,9 +149,9 @@ namespace Friflo.Json.Fliox.Hub.Remote
                             continue;
                         }
                         var requestContent  = new JsonValue(memoryStream.ToArray());
-                        OnReceive (requestContent);
+                        OnReceive (wsConn, requestContent);
                     } catch (Exception) {
-                        foreach (var pair in requests) {
+                        foreach (var pair in wsConn.requests) {
                             var request = pair.Value;
                             request.response.SetCanceled();
                         }
@@ -148,7 +160,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             }
         }
         
-        private void OnReceive(JsonValue messageJson) {
+        private void OnReceive(WebSocketConnection wsConn, JsonValue messageJson) {
             try {
                 var pooledMapper        = sharedEnv.Pool.ObjectMapper;
                 // if (messageJson.Length > 100000) Console.WriteLine($"OnReceive. size: {messageJson.Length}");
@@ -157,11 +169,11 @@ namespace Friflo.Json.Fliox.Hub.Remote
                     case null:
                         break; // errors are ignored. 
                     case ProtocolResponse resp:
-                        var requestId = resp.reqId;
-                        if (!requestId.HasValue)
+                        var responseReqId = resp.reqId;
+                        if (!responseReqId.HasValue)
                             throw new InvalidOperationException("WebSocketClientDatabase requires reqId in response");
-                        var id = requestId.Value;
-                        if (!requests.TryRemove(id, out WebsocketRequest request)) {
+                        var id = responseReqId.Value;
+                        if (!wsConn.requests.TryRemove(id, out WebsocketRequest request)) {
                             throw new InvalidOperationException($"Expect corresponding request to response. id: {id}");
                         }
                         request.response.SetResult(resp);
@@ -179,21 +191,21 @@ namespace Friflo.Json.Fliox.Hub.Remote
         }
         
         public override async Task<ExecuteSyncResult> ExecuteSync(SyncRequest syncRequest, SyncContext syncContext) {
-            var ws = GetWebsocket();
-            if (ws == null) {
-                ws = await Connect().ConfigureAwait(false);
+            var wsConn = GetWebsocketConnection();
+            if (wsConn == null) {
+                wsConn = await Connect().ConfigureAwait(false);
             }
-            int sendReqId       = Interlocked.Increment(ref reqId);
+            int sendReqId       = Interlocked.Increment(ref wsConn.reqId);
             syncRequest.reqId   = sendReqId;
             var jsonRequest     = RemoteUtils.CreateProtocolMessage(syncRequest, syncContext.ObjectMapper);
             try {
                 // request need to be queued _before_ sending it to be prepared for handling the response.
                 var wsRequest       = new WebsocketRequest(syncContext, cancellationToken);
-                requests.TryAdd(sendReqId, wsRequest);
+                wsConn.requests.TryAdd(sendReqId, wsRequest);
                 
                 var arraySegment    = jsonRequest.AsArraySegment();
                 // --- Send message
-                await ws.SendAsync(arraySegment, WebSocketMessageType.Text, true, CancellationToken.None).ConfigureAwait(false);
+                await wsConn.websocket.SendAsync(arraySegment, WebSocketMessageType.Text, true, CancellationToken.None).ConfigureAwait(false);
                 
                 // --- Wait for response
                 var response = await wsRequest.response.Task.ConfigureAwait(false);
