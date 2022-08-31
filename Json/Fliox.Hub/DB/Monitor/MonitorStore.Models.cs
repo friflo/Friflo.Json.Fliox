@@ -57,6 +57,8 @@ namespace Friflo.Json.Fliox.Hub.DB.Monitor
         public  int                             queued;
         /// <summary>true if client is instructed to queue events for reliable event delivery in case of reconnects</summary>
         public  bool                            queueEvents;
+        /// <summary>true if client is connected. Non remote client are always connected</summary>
+        public  bool                            connected;
         /// <summary>message / command subscriptions of a client</summary>
         public  List<string>                    messageSubs;
         /// <summary>change subscriptions of a client</summary>

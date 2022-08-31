@@ -30,6 +30,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         internal            bool                                queueEvents;
         private             IEventReceiver                      eventReceiver;
 
+        public              bool                                Connected => eventReceiver.IsOpen();
         [DebuggerBrowsable(Never)]
         public              IHubLogger                          Logger { get; }
         

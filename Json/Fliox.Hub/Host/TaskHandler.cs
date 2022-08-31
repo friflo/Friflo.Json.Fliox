@@ -364,7 +364,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         }
         
         private static string SetQueueEvents(ClientParam clientParam, MessageContext context) {
-            var queueEvents = clientParam.queueEvents;
+            var queueEvents = clientParam?.queueEvents;
             if (queueEvents == null)
                 return null;
             var hub         = context.Hub;

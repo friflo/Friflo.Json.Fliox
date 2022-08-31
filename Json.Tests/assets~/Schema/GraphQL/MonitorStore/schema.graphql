@@ -151,6 +151,7 @@ type EventDelivery {
     seq         : Int!
     queued      : Int!
     queueEvents : Boolean!
+    connected   : Boolean!
     messageSubs : [String!]
     changeSubs  : [ChangeSubscription!]
 }
@@ -159,6 +160,7 @@ input EventDeliveryInput {
     seq         : Int!
     queued      : Int!
     queueEvents : Boolean!
+    connected   : Boolean!
     messageSubs : [String!]
     changeSubs  : [ChangeSubscriptionInput!]
 }

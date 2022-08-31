@@ -61,6 +61,7 @@ class EventDelivery {
     seq          : int32
     queued       : int32
     queueEvents  : boolean
+    connected    : boolean
     messageSubs? : string[]
     changeSubs?  : ChangeSubscription[]
 }

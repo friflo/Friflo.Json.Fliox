@@ -104,6 +104,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Monitor
                 seq         = subscriber.Seq,
                 queued      = subscriber.QueuedEventsCount,
                 queueEvents = subscriber.queueEvents,
+                connected   = subscriber.Connected,
                 messageSubs = msgSubs,
                 changeSubs  = changeSubs
             };

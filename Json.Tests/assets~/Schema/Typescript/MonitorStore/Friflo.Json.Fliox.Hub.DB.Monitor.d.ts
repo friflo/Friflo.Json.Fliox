@@ -109,6 +109,8 @@ export class EventDelivery {
     queued       : int32;
     /** true if client is instructed to queue events for reliable event delivery in case of reconnects */
     queueEvents  : boolean;
+    /** true if client is connected. Non remote client are always connected */
+    connected    : boolean;
     /** message / command subscriptions of a client */
     messageSubs? : string[] | null;
     /** change subscriptions of a client */
