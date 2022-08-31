@@ -81,7 +81,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
                         await webSocket.SendAsync(sendMessage, WebSocketMessageType.Text, true, CancellationToken.None).ConfigureAwait(false);
                     }
                 } catch (Exception e) {
-                    Debug.Fail("SendLoop() failed", e.Message);
+                    var exception = e.InnerException ?? e;
+                    Logger.Log(HubLog.Error, $"WebSocketHost.SendLoop() {e.GetType().Name} - ", exception);
                 }
             });
             return loopTask;

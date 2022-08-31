@@ -92,6 +92,8 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         }
         
         internal void EnqueueEvent(SyncEvent ev) {
+            if (!queueEvents && !eventReceiver.IsOpen())
+                return;
             lock (unsentEventsQueue) {
                 ev.seq = ++eventCounter;
                 unsentEventsQueue.AddLast(ev);
@@ -163,8 +165,14 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         
         internal async Task SendEvents () {
             // early out in case the target is a remote connection which already closed.
-            if (!eventReceiver.IsOpen())
+            if (!eventReceiver.IsOpen()) {
+                if (queueEvents)
+                    return;
+                lock (unsentEventsQueue) {
+                    unsentEventsQueue.Clear();
+                }
                 return;
+            }
             // Trace.WriteLine("--- SendEvents");
             while (DequeueEvents(out var events)) {
                 // var msg = $"DequeueEvent {ev.seq}";
