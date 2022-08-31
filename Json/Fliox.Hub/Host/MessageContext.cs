@@ -4,7 +4,7 @@
 using System.Diagnostics;
 using Friflo.Json.Fliox.Hub.Client;
 using Friflo.Json.Fliox.Hub.Host.Auth;
-
+using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using static System.Diagnostics.DebuggerBrowsableState;
 
 namespace Friflo.Json.Fliox.Hub.Host
@@ -23,6 +23,7 @@ namespace Friflo.Json.Fliox.Hub.Host
     /// </remarks>
     public sealed class MessageContext { // : IMessage { // uncomment to check API consistency
         public              string          Name            { get; }
+        public              SyncRequestTask Task            { get; }
         public              FlioxHub        Hub             => syncContext.hub;
         public              string          DatabaseName    => syncContext.DatabaseName; // not null
         public              EntityDatabase  Database        => syncContext.Database;     // not null
@@ -46,7 +47,8 @@ namespace Friflo.Json.Fliox.Hub.Host
         public   override   string          ToString()      => Name;
 
 
-        internal MessageContext(string name, SyncContext syncContext) {
+        internal MessageContext(SyncRequestTask task, string name, SyncContext syncContext) {
+            Task                = task;
             Name                = name;
             this.syncContext = syncContext;
             WritePretty         = true;

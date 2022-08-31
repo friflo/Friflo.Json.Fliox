@@ -57,10 +57,10 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
                     error = null;
                     return true;
                 case ClientIdValidation.IsNull:
-                    error = null;
-                    var user                        = syncContext.User;
-                    syncContext.clientId            = clientController.NewClientIdFor(user);
-                    syncContext.clientIdValidation  = ClientIdValidation.Valid;
+                    error           = null;
+                    var user        = syncContext.User;
+                    var clientId    = clientController.NewClientIdFor(user);
+                    syncContext.SetClientId(clientId);
                     return true;
                 case ClientIdValidation.Invalid:
                     error = "invalid clientId";

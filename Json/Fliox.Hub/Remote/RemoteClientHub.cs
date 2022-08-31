@@ -38,7 +38,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 eventReceiver.ProcessEvent(ev);
                 return;
             }
-            var msg = $"received event for unknown client: {GetType().Name}({this}), id: {ev.dstClientId}";
+            var msg = $"received event for unknown client: {GetType().Name}({this}), client id: {ev.dstClientId}";
             Logger.Log(HubLog.Error, msg);
         }
     }

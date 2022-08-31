@@ -212,10 +212,10 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
                     error = $"invalid client id. 'clt': {syncContext.clientId}";
                     return false;
                 case ClientIdValidation.IsNull:
-                    var user                        = syncContext.User; 
-                    syncContext.clientId            = clientController.NewClientIdFor(user);
-                    syncContext.clientIdValidation  = ClientIdValidation.Valid;
-                    error = null;
+                    error           = null;
+                    var user        = syncContext.User; 
+                    var clientId    = clientController.NewClientIdFor(user);
+                    syncContext.SetClientId(clientId);
                     return true;
             }
             throw new InvalidOperationException ("unexpected clientIdValidation state");

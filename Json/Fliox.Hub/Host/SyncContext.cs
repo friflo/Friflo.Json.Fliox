@@ -25,8 +25,7 @@ namespace Friflo.Json.Fliox.Hub.Host
     {
         // --- public
         public              FlioxHub                    Hub             => hub;
-        public              JsonKey                     clientId;
-        public              ClientIdValidation          clientIdValidation;
+        public              JsonKey                     ClientId        => clientId;
         public              User                        User            => authState.user;
         public              bool                        Authenticated   => authState.authenticated;
         public              string                      DatabaseName    { get; internal set; }              // not null
@@ -39,15 +38,17 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// Note!  Keep <see cref="pool"/> internal
         /// Its <see cref="ObjectPool{T}"/> instances can be made public as properties if required
         /// </summary>
-        internal  readonly  Pool                pool;
+        internal  readonly  Pool                    pool;
         /// <summary>Is set for clients requests only. In other words - from the initiator of a <see cref="ProtocolRequest"/></summary>
-        internal  readonly  IEventReceiver      eventReceiver;
-        internal            AuthState           authState;
-        internal            Action              canceler = () => {};
-        internal            FlioxHub            hub;
-        internal  readonly  SharedCache         sharedCache;
+        internal  readonly  IEventReceiver          eventReceiver;
+        internal            AuthState               authState;
+        internal            Action                  canceler = () => {};
+        internal            FlioxHub                hub;
+        internal  readonly  SharedCache             sharedCache;
+        internal            JsonKey                 clientId;
+        internal            ClientIdValidation      clientIdValidation;
         
-        public override     string              ToString() => $"userId: {authState.user}, auth: {authState}";
+        public override     string                  ToString() => $"userId: {authState.user}, auth: {authState}";
 
         internal SyncContext (Pool pool, IEventReceiver eventReceiver, SharedCache sharedCache) {
             this.pool           = pool;
@@ -77,6 +78,11 @@ namespace Friflo.Json.Fliox.Hub.Host
             authState.authExecuted    = true;
             authState.authenticated   = true;
             authState.authorizer      = authorizer;
+        }
+        
+        public void SetClientId(in JsonKey clientId) {
+            this.clientId       = clientId;
+            clientIdValidation  = ClientIdValidation.Valid;
         }
         
         [Conditional("DEBUG")]

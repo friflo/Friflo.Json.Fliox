@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System.Threading.Tasks;
+using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 
 namespace Friflo.Json.Fliox.Hub.Host.Internal
 {
@@ -37,7 +38,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Internal
         public    override  string              ToString()  => name;
         
         // return type could be a ValueTask but Unity doesnt support this. 2021-10-25
-        internal  abstract  Task<InvokeResult>  InvokeDelegate(string messageName, JsonValue messageValue, SyncContext syncContext);
+        internal  abstract Task<InvokeResult> InvokeDelegate(SyncRequestTask task, string messageName, JsonValue messageValue, SyncContext syncContext);
         
         protected MessageDelegate (string name) {
             this.name   = name;
@@ -54,8 +55,8 @@ namespace Friflo.Json.Fliox.Hub.Host.Internal
             this.handler    = handler;
         }
         
-        internal override Task<InvokeResult> InvokeDelegate(string messageName, JsonValue messageValue, SyncContext syncContext) {
-            var cmd     = new MessageContext(messageName,  syncContext);
+        internal override Task<InvokeResult> InvokeDelegate(SyncRequestTask task, string messageName, JsonValue messageValue, SyncContext syncContext) {
+            var cmd     = new MessageContext(task, messageName,  syncContext);
             var param   = new Param<TValue> (messageValue, syncContext); 
             handler(param, cmd);
             
@@ -77,8 +78,8 @@ namespace Friflo.Json.Fliox.Hub.Host.Internal
             this.handler    = handler;
         }
         
-        internal override async Task<InvokeResult> InvokeDelegate(string messageName, JsonValue messageValue, SyncContext syncContext) {
-            var cmd     = new MessageContext(messageName,  syncContext);
+        internal override async Task<InvokeResult> InvokeDelegate(SyncRequestTask task, string messageName, JsonValue messageValue, SyncContext syncContext) {
+            var cmd     = new MessageContext(task, messageName,  syncContext);
             var param   = new Param<TParam> (messageValue, syncContext); 
             await handler(param, cmd).ConfigureAwait(false);
             
@@ -100,8 +101,8 @@ namespace Friflo.Json.Fliox.Hub.Host.Internal
             this.handler    = handler;
         }
         
-        internal override Task<InvokeResult> InvokeDelegate(string messageName, JsonValue messageValue, SyncContext syncContext) {
-            var cmd     = new MessageContext(messageName,  syncContext);
+        internal override Task<InvokeResult> InvokeDelegate(SyncRequestTask task, string messageName, JsonValue messageValue, SyncContext syncContext) {
+            var cmd     = new MessageContext(task, messageName,  syncContext);
             var param   = new Param<TValue> (messageValue, syncContext); 
             TResult result  = handler(param, cmd);
             
@@ -130,8 +131,8 @@ namespace Friflo.Json.Fliox.Hub.Host.Internal
             this.handler    = handler;
         }
         
-        internal override async Task<InvokeResult> InvokeDelegate(string messageName, JsonValue messageValue, SyncContext syncContext) {
-            var cmd     = new MessageContext(messageName,  syncContext);
+        internal override async Task<InvokeResult> InvokeDelegate(SyncRequestTask task, string messageName, JsonValue messageValue, SyncContext syncContext) {
+            var cmd     = new MessageContext(task, messageName,  syncContext);
             var param   = new Param<TParam> (messageValue, syncContext); 
             var result  = await handler(param, cmd).ConfigureAwait(false);
             

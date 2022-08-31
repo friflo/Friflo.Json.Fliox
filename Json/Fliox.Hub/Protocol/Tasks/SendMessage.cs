@@ -45,7 +45,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
             if (name == null)
                 return MissingField(nameof(name));
             if (database.handler.TryGetMessage(name, out var callback)) {
-                var result  = await callback.InvokeDelegate(name, param, syncContext).ConfigureAwait(false); // todo could be synchronous call
+                var result  = await callback.InvokeDelegate(this, name, param, syncContext).ConfigureAwait(false); // todo could be synchronous call
                 if (result.error != null) {
                     return new TaskErrorResult (TaskErrorResultType.CommandError, result.error);
                 }
