@@ -162,7 +162,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             }
         }
         
-        private EventSubClient GetOrCreateSubClient(User user, in JsonKey clientId, IEventReceiver eventReceiver) {
+        internal EventSubClient GetOrCreateSubClient(User user, in JsonKey clientId, IEventReceiver eventReceiver) {
             subClients.TryGetValue(clientId, out EventSubClient subClient);
             if (subClient != null)
                 return subClient;

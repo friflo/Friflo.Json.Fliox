@@ -196,7 +196,7 @@
         },
         "ClientParam": {
             "properties": {
-
+                "queueEvents": { "type": "boolean", "nullable": true }
             }
         },
         "ClientResult": {

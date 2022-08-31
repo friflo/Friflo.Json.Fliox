@@ -27,6 +27,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
     internal sealed class EventSubClient : ILogSource {
         internal readonly   JsonKey                             clientId;   // key field
         internal readonly   EventSubUser                        user;
+        internal            bool                                queueEvents;
         private             IEventReceiver                      eventReceiver;
 
         [DebuggerBrowsable(Never)]
@@ -113,7 +114,9 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                     var ev = unsentEventsQueue.First();
                     unsentEventsQueue.RemoveFirst();
                     events[n] = ev;
-                    sentEventsQueue.Enqueue(ev);
+                    if (queueEvents) {
+                        sentEventsQueue.Enqueue(ev);
+                    }
                 } 
                 return true;
             }

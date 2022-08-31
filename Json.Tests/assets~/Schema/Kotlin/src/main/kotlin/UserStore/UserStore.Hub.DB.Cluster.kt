@@ -91,7 +91,8 @@ data class UserResult (
 )
 
 @Serializable
-class ClientParam (
+data class ClientParam (
+              val queueEvents : Boolean? = null,
 )
 
 @Serializable

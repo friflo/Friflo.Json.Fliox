@@ -135,6 +135,12 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
     }
     
     public sealed class ClientParam {
+        /// <summary>
+        /// If false the hub send events to a client only once. Events send to a disconnected client will never
+        /// received by the client. <br/>
+        /// If true the hub will store all unacknowledged events for a client and send them on reconnects.  
+        /// </summary>
+                    public  bool?           queueEvents;
     }
     
     public sealed class ClientResult {

@@ -4914,6 +4914,16 @@
             "name": "ClientParam",
             "description": "",
             "fields": [
+                {
+                    "name": "queueEvents",
+                    "description": "    /**\n     * If false the hub send events to a client only once. Events send to a disconnected client will never\n     * received by the client.   \n     * If true the hub will store all unacknowledged events for a client and send them on reconnects.\n     */\n",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"SCALAR",
+                        "name": "Boolean"
+                    }
+                }
             ],
             "interfaces": [
             ]
@@ -4923,6 +4933,16 @@
             "name": "ClientParamInput",
             "description": "",
             "inputFields": [
+                {
+                    "name": "queueEvents",
+                    "description": "    /**\n     * If false the hub send events to a client only once. Events send to a disconnected client will never\n     * received by the client.   \n     * If true the hub will store all unacknowledged events for a client and send them on reconnects.\n     */\n",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"SCALAR",
+                        "name": "Boolean"
+                    }
+                }
             ]
         },
         {

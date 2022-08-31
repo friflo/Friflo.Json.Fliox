@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Client;
 using Friflo.Json.Fliox.Hub.DB.Cluster;
 using Friflo.Json.Fliox.Hub.Host.Auth;
+using Friflo.Json.Fliox.Hub.Host.Event;
 using Friflo.Json.Fliox.Hub.Host.Internal;
 using Friflo.Json.Fliox.Hub.Host.Utils;
 using Friflo.Json.Fliox.Hub.Protocol;
@@ -340,22 +341,51 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// An outdated <see cref="Event.EventSubClient.eventReceiver"/> may be used.
         /// </summary>
         private static ClientResult Client (Param<ClientParam> param, MessageContext context) {
-            if (context.ClientId.IsNull()) {
+            /* if (context.ClientId.IsNull()) {
                 return context.Error<ClientResult>("Missing client id (clt)");
-            }
+            } */
             if (!param.GetValidate(out var clientParam, out string error)) {
+                return context.Error<ClientResult>(error);
+            }
+            error = SetQueueEvents(clientParam, context);
+            if (error != null) {
                 return context.Error<ClientResult>(error);
             }
             var hub         = context.Hub;
             var dispatcher  = hub.EventDispatcher;
             int queuedEvents = 0;
-            if (dispatcher != null && dispatcher.TryGetSubscriber(context.ClientId, out var client)) {
+            if (dispatcher != null && !context.ClientId.IsNull() && dispatcher.TryGetSubscriber(context.ClientId, out var client)) {
                 queuedEvents = client.QueuedEventsCount;
                 /* if (clientParam != null && clientParam.syncEvents) {
                     client.SendUnacknowledgedEvents(); see comment above
                 } */
             }
             return new ClientResult { queuedEvents = queuedEvents };
+        }
+        
+        private static string SetQueueEvents(ClientParam clientParam, MessageContext context) {
+            var queueEvents = clientParam.queueEvents;
+            if (queueEvents == null)
+                return null;
+            var hub         = context.Hub;
+            var dispatcher  = hub.EventDispatcher;
+            if (dispatcher == null) {
+                return null;
+            }
+            EventSubClient client;
+            var syncContext = context.SyncContext;
+            if (queueEvents.Value) {
+                if (!hub.Authenticator.EnsureValidClientId(hub.ClientController, syncContext, out string error)) {
+                    return error;
+                }
+                client = dispatcher.GetOrCreateSubClient(syncContext.User, syncContext.clientId, syncContext.eventReceiver);
+                client.queueEvents = true;
+                return null;
+            }
+            if (dispatcher.TryGetSubscriber(context.ClientId, out client)) {
+                client.queueEvents = false;
+            }
+            return null;
         }
         
         // --- internal API ---

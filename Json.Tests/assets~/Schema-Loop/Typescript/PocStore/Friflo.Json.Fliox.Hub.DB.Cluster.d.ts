@@ -121,6 +121,12 @@ export class UserResult {
 }
 
 export class ClientParam {
+    /**
+     * If false the hub send events to a client only once. Events send to a disconnected client will never
+     * received by the client.   
+     * If true the hub will store all unacknowledged events for a client and send them on reconnects.
+     */
+    queueEvents? : boolean | null;
 }
 
 export class ClientResult {

@@ -1124,6 +1124,13 @@ E.g. using red for a production environment: "#ff0000" or "rgb(255 0 0)"</docs><
         <keyword>class</keyword>
     </h3>
     <table class='fields'>
+        <tr>
+            <td><field>queueEvents</field></td>
+            <td><type><predef>boolean</predef> | null</type></td>
+            <td><docs>If false the hub send events to a client only once. Events send to a disconnected client will never
+received by the client. <br/>
+If true the hub will store all unacknowledged events for a client and send them on reconnects.</docs></td>
+        </tr>
     </table>
     </div>
     <div class='type'>

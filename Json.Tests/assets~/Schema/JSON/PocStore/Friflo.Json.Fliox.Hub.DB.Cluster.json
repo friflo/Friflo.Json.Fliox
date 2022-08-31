@@ -165,7 +165,7 @@
         "ClientParam": {
             "type": "object",
             "properties": {
-
+                "queueEvents": { "type": ["boolean", "null"], "description": "If false the hub send events to a client only once. Events send to a disconnected client will never\nreceived by the client. <br/>\nIf true the hub will store all unacknowledged events for a client and send them on reconnects." }
             },
             "additionalProperties": false
         },

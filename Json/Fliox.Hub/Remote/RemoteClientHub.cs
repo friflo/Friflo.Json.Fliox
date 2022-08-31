@@ -34,8 +34,12 @@ namespace Friflo.Json.Fliox.Hub.Remote
         }
         
         protected void ProcessEvent(ProtocolEvent ev) {
-            var eventReceiver     = eventReceivers[ev.dstClientId];
-            eventReceiver.ProcessEvent(ev);
+            if (eventReceivers.TryGetValue(ev.dstClientId, out var eventReceiver)) {
+                eventReceiver.ProcessEvent(ev);
+                return;
+            }
+            var msg = $"received event for unknown client: {GetType().Name}({this}), id: {ev.dstClientId}";
+            Logger.Log(HubLog.Error, msg);
         }
     }
     

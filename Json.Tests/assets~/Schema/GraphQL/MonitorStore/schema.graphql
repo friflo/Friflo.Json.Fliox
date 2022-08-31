@@ -343,11 +343,11 @@ input UserResultInput {
 }
 
 type ClientParam {
-    _: Boolean
+    queueEvents : Boolean
 }
 
 input ClientParamInput {
-    _: Boolean
+    queueEvents : Boolean
 }
 
 type ClientResult {

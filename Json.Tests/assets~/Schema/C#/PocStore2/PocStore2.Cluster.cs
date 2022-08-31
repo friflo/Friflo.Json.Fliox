@@ -97,6 +97,7 @@ public class UserResult {
 }
 
 public class ClientParam {
+    bool? queueEvents;
 }
 
 public class ClientResult {

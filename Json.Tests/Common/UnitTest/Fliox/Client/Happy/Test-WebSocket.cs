@@ -3,6 +3,7 @@
 
 using System;
 using System.Threading.Tasks;
+using Friflo.Json.Fliox.Hub.DB.Cluster;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.Event;
 using Friflo.Json.Fliox.Hub.Remote;
@@ -41,6 +42,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         private static async Task AutoConnect (FlioxHub hub) {
             using (var client = new PocStore(hub) { UserId = "AutoConnect"}) {
                 IsNull(client.ClientId); // client don't assign a client id
+                client.std.Client(new ClientParam { queueEvents = true });
+                client.std.Echo("111");
+                client.std.Echo("222");
                 client.SubscribeMessage("*", (message, context) => { });
                 var sync1 = client.SyncTasks();
                 var sync2 = client.SyncTasks();

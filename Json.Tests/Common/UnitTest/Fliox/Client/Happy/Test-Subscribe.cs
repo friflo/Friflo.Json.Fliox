@@ -5,6 +5,7 @@ using System;
 using System.Collections;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Client;
+using Friflo.Json.Fliox.Hub.DB.Cluster;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.Event;
 using Friflo.Json.Fliox.Hub.Protocol;
@@ -59,7 +60,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             var subscriber = new PocStoreSubscriber(store, eventAssertion);
             store.SetEventProcessor(new SynchronizationContextProcessor());
             store.SubscriptionEventHandler += subscriber.OnEvent;
-            
+            store.std.Client(new ClientParam { queueEvents = true });
             var subscriptions   = store.SubscribeAllChanges(Change.All, context => {
                 AreEqual("createStore", context.SrcUserId.AsString());
                 foreach (var changes in context.Changes) {
