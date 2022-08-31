@@ -107,6 +107,8 @@ export class EventDelivery {
     seq          : int32;
     /** number of queued events not acknowledged by a client */
     queued       : int32;
+    /** true if client is instructed to queue events for reliable event delivery in case of reconnects */
+    queueEvents  : boolean;
     /** message / command subscriptions of a client */
     messageSubs? : string[] | null;
     /** change subscriptions of a client */

@@ -55,6 +55,8 @@ namespace Friflo.Json.Fliox.Hub.DB.Monitor
         public  int                             seq;
         /// <summary>number of queued events not acknowledged by a client</summary>
         public  int                             queued;
+        /// <summary>true if client is instructed to queue events for reliable event delivery in case of reconnects</summary>
+        public  bool                            queueEvents;
         /// <summary>message / command subscriptions of a client</summary>
         public  List<string>                    messageSubs;
         /// <summary>change subscriptions of a client</summary>

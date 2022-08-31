@@ -150,6 +150,7 @@ input RequestCountInput {
 type EventDelivery {
     seq         : Int!
     queued      : Int!
+    queueEvents : Boolean!
     messageSubs : [String!]
     changeSubs  : [ChangeSubscription!]
 }
@@ -157,6 +158,7 @@ type EventDelivery {
 input EventDeliveryInput {
     seq         : Int!
     queued      : Int!
+    queueEvents : Boolean!
     messageSubs : [String!]
     changeSubs  : [ChangeSubscriptionInput!]
 }
