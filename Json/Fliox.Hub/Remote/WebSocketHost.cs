@@ -81,8 +81,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
                         await webSocket.SendAsync(sendMessage, WebSocketMessageType.Text, true, CancellationToken.None).ConfigureAwait(false);
                     }
                 } catch (Exception e) {
-                    var exception = e.InnerException ?? e;
-                    Logger.Log(HubLog.Error, $"WebSocketHost.SendLoop() {e.GetType().Name} - ", exception);
+                    var msg = GetExceptionMessage("WebSocketHost.SendLoop()", remoteEndPoint, e);
+                    Logger.Log(HubLog.Info, msg);
                 }
             });
             return loopTask;
@@ -131,22 +131,30 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 target.sendWriter.Complete();
             }
             catch (WebSocketException e) {
-                if (e.InnerException is HttpListenerException listenerException) {
-                    // observed ErrorCode:
-                    // 995 The I/O operation has been aborted because of either a thread exit or an application request.
-                    var msg = $"HttpListenerException - ErrorCode: {listenerException.ErrorCode}, remote: {remoteEndPoint} ";
-                    remoteHost.Logger.Log(HubLog.Info, msg);
-                    return;
-                }
-                // e.g. WebSocketException - ErrorCode: 0, HResult: 0x80004005, WebSocketErrorCode: ConnectionClosedPrematurely, Message:The remote party closed the WebSocket connection without completing the close handshake., remote:[::1]:51809
-                var wsMsg = $"WebSocketException - ErrorCode: {e.ErrorCode}, HResult: 0x{e.HResult:X}, WebSocketErrorCode: {e.WebSocketErrorCode}, Message:{e.Message}, remote: {remoteEndPoint} ";
-                remoteHost.Logger.Log(HubLog.Info, wsMsg);
+                var msg = GetExceptionMessage("WebSocketHost.SendReceiveMessages()", remoteEndPoint, e);
+                remoteHost.Logger.Log(HubLog.Info, msg);
                 return;
             }
             catch (Exception e) {
-                Debug.Fail("AcceptWebSocket() - Exception", e.Message);
+                var msg = GetExceptionMessage("WebSocketHost.SendReceiveMessages()", remoteEndPoint, e);
+                remoteHost.Logger.Log(HubLog.Info, msg);
+                return;
             }
             await target.sendLoop.ConfigureAwait(false);
+        }
+        
+        private static string GetExceptionMessage(string location, IPEndPoint remoteEndPoint, Exception e) {
+            if (e.InnerException is HttpListenerException listenerException) {
+                e = listenerException;
+                // observed ErrorCode:
+                // 995 The I/O operation has been aborted because of either a thread exit or an application request.
+                return $"{location} {e.GetType().Name}: {e.Message} ErrorCode: {listenerException.ErrorCode}, remote: {remoteEndPoint} ";
+            }
+            if (e is WebSocketException wsException) {
+                // e.g. WebSocketException - ErrorCode: 0, HResult: 0x80004005, WebSocketErrorCode: ConnectionClosedPrematurely, Message:The remote party closed the WebSocket connection without completing the close handshake., remote:[::1]:51809
+                return $"{location} {e.GetType().Name} {e.Message} ErrorCode: {wsException.ErrorCode}, HResult: 0x{e.HResult:X}, WebSocketErrorCode: {wsException.WebSocketErrorCode}, remote: {remoteEndPoint}";
+            }
+            return $"{location} {e.GetType().Name}: {e.Message}, remote: {remoteEndPoint}";
         }
     }
 }
