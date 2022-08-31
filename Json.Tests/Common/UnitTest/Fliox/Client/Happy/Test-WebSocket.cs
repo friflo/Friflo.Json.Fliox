@@ -3,7 +3,9 @@
 
 using System;
 using System.Threading.Tasks;
+using Friflo.Json.Fliox;
 using Friflo.Json.Fliox.Hub.DB.Cluster;
+using Friflo.Json.Fliox.Hub.DB.Monitor;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.Event;
 using Friflo.Json.Fliox.Hub.Remote;
@@ -30,6 +32,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             using (var httpHost         = new HttpHost(hub, "/", TestGlobals.Shared))
             using (var server           = new HttpListenerHost("http://+:8080/", httpHost))
             using (var remoteHub        = new WebSocketClientHub(TestGlobals.DB, "ws://localhost:8080/", TestGlobals.Shared)) {
+                hub.AddExtensionDB (new MonitorDB("monitor", hub));
                 hub.EventDispatcher = eventDispatcher;
                 await RunServer(server, async () => {
                     await AutoConnect(remoteHub);
@@ -40,13 +43,27 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         }
         
         private static async Task AutoConnect (FlioxHub hub) {
-            using (var client = new PocStore(hub) { UserId = "AutoConnect"}) {
+            using (var client   = new PocStore(hub)                 { UserId = "AutoConnect"})
+            using (var monitor  = new MonitorStore(hub, "monitor")  { UserId = "AutoConnect"}){
                 IsNull(client.ClientId); // client don't assign a client id
-                client.std.Client(new ClientParam { queueEvents = true });
+                var clientResult = client.std.Client(new ClientParam { queueEvents = true });
                 var sync1 = client.SyncTasks();
                 var sync2 = client.SyncTasks();
                 var sync3 = client.SyncTasks();
                 await Task.WhenAll(sync1, sync2, sync3);
+                
+                AreEqual(0, clientResult.Result.queuedEvents);  // no events send right now
+                
+                var findClient1 = monitor.clients.Read().Find(new JsonKey("1"));
+                await monitor.SyncTasks();
+                
+                var client1 = findClient1.Result;
+                NotNull(client1.ev);
+                var eventDelivery = client1.ev.Value;
+                AreEqual(0, eventDelivery.seq);     // no events send right now
+                AreEqual(0, eventDelivery.queued);  // no events send right now
+                IsTrue(eventDelivery.queueEvents);  // is set by std.Client - queueEvents above
+                IsTrue(eventDelivery.connected);
                 
                 client.std.Echo("111");
                 client.std.Echo("222");
