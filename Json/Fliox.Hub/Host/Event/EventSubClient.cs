@@ -83,13 +83,14 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             triggerLoop         = TriggerLoop(triggerReader);
         }
         
-        internal void UpdateTarget(IEventReceiver eventReceiver) {
+        internal bool UpdateTarget(IEventReceiver eventReceiver) {
             if (this.eventReceiver == null) throw new ArgumentNullException(nameof(eventReceiver));
             if (this.eventReceiver == eventReceiver)
-                return;
+                return false;
             Logger.Log(HubLog.Info, $"EventSubscriber: eventReceiver changed. dstId: {clientId}");
             this.eventReceiver = eventReceiver;
             SendUnacknowledgedEvents();
+            return true;
         }
         
         internal void EnqueueEvent(SyncEvent ev) {

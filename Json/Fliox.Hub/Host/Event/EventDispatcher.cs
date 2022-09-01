@@ -39,6 +39,13 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         private  readonly   ConcurrentDictionary<JsonKey, EventSubClient>   subClients;
         // ReSharper disable once UnusedMember.Local - expose Dictionary as list in Debugger
         private             ICollection<EventSubClient>                     SubClients  => subClients.Values;
+        
+        /// <summary> Subset of <see cref="subClients"/> eligible for sending events. Either they
+        /// are <see cref="EventSubClient.Connected"/> or they <see cref="EventSubClient.queueEvents"/> </summary> 
+        [DebuggerBrowsable(Never)]
+        private  readonly   ConcurrentDictionary<JsonKey, EventSubClient>   sendClients;
+        // ReSharper disable once UnusedMember.Local - expose Dictionary as list in Debugger
+        private             ICollection<EventSubClient>                     SendClients  => subClients.Values;
         //
         [DebuggerBrowsable(Never)]
         private  readonly   ConcurrentDictionary<JsonKey, EventSubUser>     subUsers;
@@ -60,6 +67,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             sharedEnv       = env ?? SharedEnv.Default;
             jsonEvaluator   = new JsonEvaluator();
             subClients      = new ConcurrentDictionary<JsonKey, EventSubClient>(JsonKey.Equality);
+            sendClients     = new ConcurrentDictionary<JsonKey, EventSubClient>(JsonKey.Equality);
             subUsers        = new ConcurrentDictionary<JsonKey, EventSubUser>(JsonKey.Equality);
             this.background = background;
         }
@@ -171,7 +179,8 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                 subUsers.TryAdd(user.userId, subUser);
             }
             subClient = new EventSubClient(sharedEnv, subUser, clientId, eventReceiver, background);
-            subClients.TryAdd(clientId, subClient);
+            subClients. TryAdd(clientId, subClient);
+            sendClients.TryAdd(clientId, subClient);
             subUser.clients.Add(subClient);
             return subClient;
         }
@@ -220,12 +229,16 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                 return;
             var eventReceiver = syncContext.eventReceiver;
             if (eventReceiver != null && eventReceiver.IsRemoteTarget()) {
-                subClient.UpdateTarget (eventReceiver);
+                if (subClient.UpdateTarget (eventReceiver)) {
+                    // remote client is using a new connection (WebSocket) so add to queuingClients again
+                    sendClients.TryAdd(subClient.clientId, subClient);
+                }
             }
             
             var eventAck = syncRequest.eventAck;
             if (!eventAck.HasValue)
                 return;
+            // todo authorize acknowledge events
             int value =  eventAck.Value;
             subClient.AcknowledgeEvents(value);
         }
@@ -238,12 +251,13 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                 ObjectWriter writer     = pooled.instance.writer;
                 writer.Pretty           = false;    // write sub's as one liner
                 writer.WriteNullMembers = false;
-                foreach (var pair in subClients) {
+                foreach (var pair in sendClients) {
                     EventSubClient subClient = pair.Value;
-                    if (!subClient.queueEvents && !subClient.Connected)
+                    if (!subClient.queueEvents && !subClient.Connected) {
+                        sendClients.TryRemove(subClient.clientId, out _);
                         continue;
-                    
-                    if (!subClient.databaseSubs.TryGetValue(database, out var databaseSubs)) 
+                    }
+                    if (!subClient.databaseSubs.TryGetValue(database, out var databaseSubs))
                         continue;
                     
                     List<SyncRequestTask>  eventTasks = null;
