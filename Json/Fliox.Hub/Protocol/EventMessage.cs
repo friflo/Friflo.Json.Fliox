@@ -30,23 +30,26 @@ namespace Friflo.Json.Fliox.Hub.Protocol
     /// </summary>
     public sealed class SyncEvent
     {
-        // note for all fields
-        // used { get; set; } to force properties on the top of JSON
-        
         /// <summary>
         /// Increasing event sequence number starting with 1 for a specific target client <see cref="ProtocolEvent.dstClientId"/>.
         /// Each target client (subscriber) has its own sequence.
         /// </summary>
-                    public      int                 seq         { get; set; }
+                    public      int                 seq;
         /// <summary>
         /// The user which caused the event. Specifically the user which made a database change or sent a message / command.
         /// The user client is not preserved by en extra property as a use case for this is not obvious.
         /// </summary>
         [Serialize(Name =                          "src")]
-        [Required]  public      JsonKey             srcUserId   { get; set; }
+        [Required]  public      JsonKey             srcUserId;
+        
+        /// <summary>
+        /// Is true if the receiving client is the origin of the event
+        /// </summary>
+                    public      bool?               isOrigin;
         
         /// <summary>The database the <see cref="tasks"/> refer to</summary>
         [Required]  public      string              db;
+
         /// <summary>
         /// Contains the events an application subscribed. These are:<br/>
         /// <see cref="CreateEntities"/>, 
@@ -57,10 +60,6 @@ namespace Friflo.Json.Fliox.Hub.Protocol
         /// <see cref="SendCommand"/>
         /// </summary>
                     public      SyncRequestTask[]   tasks;
-        /// <summary>
-        /// Is true if the receiving client is the origin of the event
-        /// </summary>
-        public      bool?       isOrigin   { get; set; }
 
         /// Used for optimization. Either <see cref="tasks"/> or <see cref="tasksJson"/> is set
         [Ignore]    internal    JsonValue[]         tasksJson;
