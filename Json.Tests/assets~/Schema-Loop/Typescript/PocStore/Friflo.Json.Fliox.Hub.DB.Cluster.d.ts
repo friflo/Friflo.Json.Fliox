@@ -124,12 +124,16 @@ export class ClientParam {
     /**
      * If false the hub send events to a client only once. Events send to a disconnected client will never
      * received by the client.   
-     * If true the hub will store all unacknowledged events for a client and send them on reconnects.
+     * If true the hub will store all unacknowledged events for a client in a FIFO queue and send them on reconnects.
      */
     queueEvents? : boolean | null;
 }
 
 export class ClientResult {
+    /**
+     * return number of queued events not acknowledged by the client.
+     * Events are queued only if the client instruct the Hub to queue events by setting **queueEvents** = true
+     */
     queuedEvents  : int32;
 }
 

@@ -81,7 +81,7 @@ export interface PocStore {
     ["std.Cluster"]                        () : HostCluster;
     /** return the groups of the current user. Optionally change the groups of the current user */
     ["std.User"]                           (param: UserParam | null) : UserResult;
-    /** return client specific state stored in the Hub like number of queued events */
+    /** return client specific infos and adjust general client behavior like **queueEvents** */
     ["std.Client"]                         (param: ClientParam | null) : ClientResult;
 
     // --- messages

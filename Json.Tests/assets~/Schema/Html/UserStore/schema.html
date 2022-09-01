@@ -457,7 +457,7 @@ Each <b>role</b> in container <b>roles</b> has a set of <b>rights</b> which gran
             <td><cmd>std.Client</cmd></td>
             <td><sig>(<keyword>param</keyword>: <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.ClientParam'>ClientParam</a> | null) : <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.ClientResult'>ClientResult</a></sig></td>
             <td><oas><a href='../open-api.html#/commands/post__command_std_Client' target='_blank' title='open std.Client API as OpenAPI specification (OAS) in new tab'>OAS</a></oas></td>
-            <td><docs>return client specific state stored in the Hub like number of queued events</docs></td>
+            <td><docs>return client specific infos and adjust general client behavior like <b>queueEvents</b></docs></td>
         </tr>
     </table>
     </div>
@@ -898,7 +898,7 @@ E.g. using red for a production environment: "#ff0000" or "rgb(255 0 0)"</docs><
             <td><type><predef>boolean</predef> | null</type></td>
             <td><docs>If false the hub send events to a client only once. Events send to a disconnected client will never
 received by the client. <br/>
-If true the hub will store all unacknowledged events for a client and send them on reconnects.</docs></td>
+If true the hub will store all unacknowledged events for a client in a FIFO queue and send them on reconnects.</docs></td>
         </tr>
     </table>
     </div>
@@ -911,6 +911,8 @@ If true the hub will store all unacknowledged events for a client and send them 
         <tr>
             <td><field>queuedEvents</field></td>
             <td><type><a href='#Standard.int32'>int32</a></type></td>
+            <td><docs>return number of queued events not acknowledged by the client.
+Events are queued only if the client instruct the Hub to queue events by setting <b>queueEvents</b> = true</docs></td>
         </tr>
     </table>
     </div>

@@ -257,7 +257,8 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// Subscribe to database changes of all <see cref="EntityContainer"/>'s with the given <paramref name="change"/>.
         /// To unsubscribe from receiving change events set <paramref name="change"/> to <see cref="Change.None"/>.
         /// </summary>
-        /// <seealso cref="FlioxClient.SetEventProcessor"/>
+        /// <remarks>Note: To ensure remote clients with occasional disconnects get <b>all</b> events use <see cref="StdCommands.Client"/></remarks>
+        /// <seealso cref="SetEventProcessor"/>
         public List<SyncTask> SubscribeAllChanges(Change change, ChangeSubscriptionHandler handler) {
             AssertSubscription();
             var tasks = new List<SyncTask>();
@@ -273,6 +274,7 @@ namespace Friflo.Json.Fliox.Hub.Client
 
     #region - subscribe messages / commands
         /// <summary> Subscribe message / command with the given <paramref name="name"/> send to the database used by the client </summary>
+        /// <remarks>Note: To ensure remote clients with occasional disconnects get <b>all</b> events use <see cref="StdCommands.Client"/></remarks>
         /// <seealso cref="SetEventProcessor"/>
         public SubscribeMessageTask SubscribeMessage<TMessage>  (string name, MessageSubscriptionHandler<TMessage> handler) {
             AssertSubscription();
@@ -285,8 +287,9 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// <summary> Subscribe message / command with the given <paramref name="name"/> send to the database used by the client </summary>
         /// <remarks>
         /// Subscribe multiple messages by prefix. e.g. <paramref name="name"/> = <c>"std.*"</c> <br/>
-        /// Subscribe all messages with <paramref name="name"/> = <c>"*"</c>
+        /// Subscribe all messages with <paramref name="name"/> = <c>"*"</c> <br/>
         /// </remarks>
+        /// <remarks>Note: To ensure remote clients with occasional disconnects get <b>all</b> events use <see cref="StdCommands.Client"/></remarks>
         /// <seealso cref="SetEventProcessor"/>
         public SubscribeMessageTask SubscribeMessage            (string name, MessageSubscriptionHandler handler) {
             AssertSubscription();

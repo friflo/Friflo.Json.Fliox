@@ -1051,7 +1051,7 @@
                 },
                 {
                     "name": "std_Client",
-                    "description": "/** return client specific state stored in the Hub like number of queued events */\n",
+                    "description": "/** return client specific infos and adjust general client behavior like **queueEvents** */\n",
                     "args": [
                         {
                             "name": "param",
@@ -4916,7 +4916,7 @@
             "fields": [
                 {
                     "name": "queueEvents",
-                    "description": "    /**\n     * If false the hub send events to a client only once. Events send to a disconnected client will never\n     * received by the client.   \n     * If true the hub will store all unacknowledged events for a client and send them on reconnects.\n     */\n",
+                    "description": "    /**\n     * If false the hub send events to a client only once. Events send to a disconnected client will never\n     * received by the client.   \n     * If true the hub will store all unacknowledged events for a client in a FIFO queue and send them on reconnects.\n     */\n",
                     "args": [
                     ],
                     "type": {
@@ -4935,7 +4935,7 @@
             "inputFields": [
                 {
                     "name": "queueEvents",
-                    "description": "    /**\n     * If false the hub send events to a client only once. Events send to a disconnected client will never\n     * received by the client.   \n     * If true the hub will store all unacknowledged events for a client and send them on reconnects.\n     */\n",
+                    "description": "    /**\n     * If false the hub send events to a client only once. Events send to a disconnected client will never\n     * received by the client.   \n     * If true the hub will store all unacknowledged events for a client in a FIFO queue and send them on reconnects.\n     */\n",
                     "args": [
                     ],
                     "type": {
@@ -4952,7 +4952,7 @@
             "fields": [
                 {
                     "name": "queuedEvents",
-                    "description": "",
+                    "description": "    /**\n     * return number of queued events not acknowledged by the client.\n     * Events are queued only if the client instruct the Hub to queue events by setting **queueEvents** = true\n     */\n",
                     "args": [
                     ],
                     "type": {
@@ -4974,7 +4974,7 @@
             "inputFields": [
                 {
                     "name": "queuedEvents",
-                    "description": "",
+                    "description": "    /**\n     * return number of queued events not acknowledged by the client.\n     * Events are queued only if the client instruct the Hub to queue events by setting **queueEvents** = true\n     */\n",
                     "args": [
                     ],
                     "type": {

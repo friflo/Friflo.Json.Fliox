@@ -482,7 +482,7 @@
     },
     "/?command=std.Client": {
       "post": {
-        "summary":    "return client specific state stored in the Hub like number of queued events",
+        "summary":    "return client specific infos and adjust general client behavior like <b>queueEvents</b>",
         "tags":       ["commands"],
         "requestBody": {          
           "content": {

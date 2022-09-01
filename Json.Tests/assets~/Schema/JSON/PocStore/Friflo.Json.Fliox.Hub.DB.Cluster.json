@@ -165,14 +165,14 @@
         "ClientParam": {
             "type": "object",
             "properties": {
-                "queueEvents": { "type": ["boolean", "null"], "description": "If false the hub send events to a client only once. Events send to a disconnected client will never\nreceived by the client. <br/>\nIf true the hub will store all unacknowledged events for a client and send them on reconnects." }
+                "queueEvents": { "type": ["boolean", "null"], "description": "If false the hub send events to a client only once. Events send to a disconnected client will never\nreceived by the client. <br/>\nIf true the hub will store all unacknowledged events for a client in a FIFO queue and send them on reconnects." }
             },
             "additionalProperties": false
         },
         "ClientResult": {
             "type": "object",
             "properties": {
-                "queuedEvents": { "$ref": "./Standard.json#/definitions/int32" }
+                "queuedEvents": { "$ref": "./Standard.json#/definitions/int32", "description": "return number of queued events not acknowledged by the client.\nEvents are queued only if the client instruct the Hub to queue events by setting <b>queueEvents</b> = true" }
             },
             "required": [
                 "queuedEvents"

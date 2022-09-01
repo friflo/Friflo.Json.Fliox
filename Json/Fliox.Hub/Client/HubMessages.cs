@@ -90,7 +90,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         public CommandTask<UserResult>  User(UserParam param) => SendCommand<UserParam,UserResult>  (Std.User, param);
         
         // --- commands: client
-        /// <summary>return client specific state stored in the Hub like number of queued events</summary>
+        /// <summary>return client specific infos and adjust general client behavior like <see cref="ClientParam.queueEvents"/></summary>
         public CommandTask<ClientResult> Client(ClientParam param)=> SendCommand<ClientParam, ClientResult>(Std.Client, param);
 
     }

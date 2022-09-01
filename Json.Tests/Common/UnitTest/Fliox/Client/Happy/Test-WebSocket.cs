@@ -4,6 +4,7 @@
 using System;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox;
+using Friflo.Json.Fliox.Hub.Client;
 using Friflo.Json.Fliox.Hub.DB.Cluster;
 using Friflo.Json.Fliox.Hub.DB.Monitor;
 using Friflo.Json.Fliox.Hub.Host;
@@ -42,11 +43,16 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             }
         }
         
+        ///<summary>
+        /// Note-1:
+        /// test multiple concurrent <see cref="FlioxClient.SyncTasks"/> calls create/use the same <see cref="WebSocketConnection"/>
+        /// </summary> 
         private static async Task AutoConnect (FlioxHub hub) {
             using (var client   = new PocStore(hub)                 { UserId = "AutoConnect"})
             using (var monitor  = new MonitorStore(hub, "monitor")  { UserId = "AutoConnect"}){
                 IsNull(client.ClientId); // client don't assign a client id
                 var clientResult = client.std.Client(new ClientParam { queueEvents = true });
+                // Note-1
                 var sync1 = client.SyncTasks();
                 var sync2 = client.SyncTasks();
                 var sync3 = client.SyncTasks();
