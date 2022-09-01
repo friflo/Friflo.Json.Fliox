@@ -8,7 +8,7 @@ namespace Friflo.Json.Tests.Main
 {
     public static class Throughput
     {
-        private const string TestDB = "test_db"; 
+        private const string TestDB = "test_db";
         
         public static async Task MemoryDbThroughput() {
             var database    = new MemoryDatabase(TestDB);
