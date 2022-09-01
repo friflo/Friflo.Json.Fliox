@@ -93,8 +93,6 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         }
         
         internal void EnqueueEvent(SyncEvent ev) {
-            if (!queueEvents && !eventReceiver.IsOpen())
-                return;
             lock (unsentEventsQueue) {
                 ev.seq = ++eventCounter;
                 unsentEventsQueue.AddLast(ev);

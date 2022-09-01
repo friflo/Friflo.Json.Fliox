@@ -239,14 +239,14 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                 writer.Pretty           = false;    // write sub's as one liner
                 writer.WriteNullMembers = false;
                 foreach (var pair in subClients) {
-                    List<SyncRequestTask>  eventTasks = null;
-                    EventSubClient     subClient = pair.Value;
-                    // if (subClient.SubCount == 0)
-                    //    throw new InvalidOperationException("Expect SubscriptionCount > 0");
-                    
-                    if (!subClient.databaseSubs.TryGetValue(database, out var databaseSubs))
+                    EventSubClient subClient = pair.Value;
+                    if (!subClient.queueEvents && !subClient.Connected)
                         continue;
                     
+                    if (!subClient.databaseSubs.TryGetValue(database, out var databaseSubs)) 
+                        continue;
+                    
+                    List<SyncRequestTask>  eventTasks = null;
                     databaseSubs.AddEventTasks(syncRequest, subClient, ref eventTasks, jsonEvaluator);
 
                     if (eventTasks == null)
