@@ -23,13 +23,16 @@ const defaultToken      = el("token")           as HTMLInputElement;
 export class Playground
 {
     // --- WebSocket ---
-    private readonly    wsClient        = new WebSocketClient();
+    private readonly    wsClient:       WebSocketClient;
     private             websocketCount  = 0;
     private             eventCount      = 0;    // number of received events. Reset for every new wsClient
 
     public getClientId() : string { return this.wsClient?.clt; }
 
     constructor() {
+        this.wsClient = new WebSocketClient( () => {
+            return { user: defaultUser.value, token: defaultToken.value };
+        });
         this.wsClient.onClose = (e) => {
             socketStatus.innerText = "closed (code: " + e.code + ")";
             responseState.innerText = "";

@@ -8,8 +8,10 @@ class WebSocketRequest {
         });
     }
 }
+export class UserToken {
+}
 export class WebSocketClient {
-    constructor() {
+    constructor(getUserToken) {
         this.clt = null; // client id
         this.req = 1; // incrementing request id. Starts with 1 for every new wsClient
         this.requests = new Map();
@@ -19,6 +21,7 @@ export class WebSocketClient {
         this.onClose = (e) => { console.log(`onClose. code ${e.code}`); };
         this.onEvents = (ev) => { console.log(`onEvent. ev: ${ev}`); };
         this.onRecvError = (error) => { console.log(`onRecvError. error: ${error}`); };
+        this.getUserToken = getUserToken;
     }
     getReqId() {
         return this.req;
@@ -115,6 +118,11 @@ export class WebSocketClient {
         if (this.clt) {
             request.clt = this.clt;
         }
+        const userToken = this.getUserToken();
+        if (!request.user)
+            request.user = userToken.user;
+        if (!request.token)
+            request.token = userToken.token;
         const jsonRequest = JSON.stringify(request);
         const wsRequest = new WebSocketRequest();
         if (this.requests.has(reqId)) {

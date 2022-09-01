@@ -22,6 +22,11 @@ class WebSocketRequest {
     }
 }
 
+export class UserToken {
+    user:   string;
+    token:  string;
+}
+
 export class WebSocketClient
 {
     public  clt:            string | null  = null;  // client id
@@ -33,9 +38,14 @@ export class WebSocketClient
     private lastEventSeq    = 0;                    // last received event seq. Used to acknowledge received the event via SyncRequest.ack
 
 
-    public  onClose:        (e: CloseEvent)     => void = (e)        => { console.log(`onClose. code ${e.code}`); };
-    public  onEvents:       (ev: EventMessage)  => void = (ev)       => { console.log(`onEvent. ev: ${ev}`); };
-    public  onRecvError:    (error: string)     => void = (error)    => { console.log(`onRecvError. error: ${error}`); };
+    private readonly    getUserToken:   ()                  => UserToken;
+    public              onClose:        (e: CloseEvent)     => void = (e)        => { console.log(`onClose. code ${e.code}`); }
+    public              onEvents:       (ev: EventMessage)  => void = (ev)       => { console.log(`onEvent. ev: ${ev}`); }
+    public              onRecvError:    (error: string)     => void = (error)    => { console.log(`onRecvError. error: ${error}`); }
+
+    constructor(getUserToken: () => UserToken) {
+        this.getUserToken = getUserToken;
+    }
 
     public getReqId() : number {
         return this.req;
@@ -138,6 +148,10 @@ export class WebSocketClient
         if (this.clt) {
             request.clt         = this.clt;
         }
+        const userToken     = this.getUserToken();
+        if (!request.user)  request.user    = userToken.user;
+        if (!request.token) request.token   = userToken.token;
+
         const jsonRequest   = JSON.stringify(request);
         const wsRequest     = new WebSocketRequest ();
         if (this.requests.has(reqId)) {
