@@ -98,10 +98,10 @@
         },
         "DerivedClass": {
             "properties": {
-                "derivedVal": { "type": "int32" },
                 "article":    { "type": "string" },
                 "amount":     { "type": "int32" },
-                "name":       { "type": "string", "nullable": true }
+                "name":       { "type": "string", "nullable": true },
+                "derivedVal": { "type": "int32" }
             }
         },
         "TestCommand": {

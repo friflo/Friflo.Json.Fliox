@@ -156,7 +156,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
         
         private void TestDerivedClass(TypeAccess typeAccess) {
             using (var typeStore    = new TypeStore(new StoreConfig(typeAccess)))
-            using (var derivedJson  = new Bytes("{\"Int32\":20,\"derivedField\":21,\"baseField\":10}"))
+            using (var derivedJson  = new Bytes("{\"baseField\":10,\"Int32\":20,\"derivedField\":21}"))
             using (var reader       = new ObjectReader(typeStore) { ErrorHandler =  ObjectReader.NoThrow} )
             using (var writer       = new ObjectWriter(typeStore))
             {

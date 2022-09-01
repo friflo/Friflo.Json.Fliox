@@ -67,14 +67,14 @@ namespace Friflo.Json.Fliox.Hub.Protocol
         /// does <b>not</b> utilize it internally.
         /// </summary>
         [Serialize(Name =                  "req")]
-                        public  int?        reqId       { get; set; }
+                        public  int?        reqId;
         /// <summary>As a user can access a <see cref="FlioxHub"/> by multiple clients the <see cref="clientId"/>
         /// enables identifying each client individually. <br/>
         /// The <see cref="clientId"/> is used for <see cref="SubscribeMessage"/> and <see cref="SubscribeChanges"/>
         /// to enable sending <see cref="SyncEvent"/>'s to the desired subscriber.
         /// </summary>
         [Serialize(Name =                  "clt")]
-                        public  JsonKey     clientId    { get; set; }
+                        public  JsonKey     clientId;
     }
     
     // ----------------------------------- response -----------------------------------
@@ -90,7 +90,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol
     public abstract class ProtocolResponse : ProtocolMessage {
         /// <summary>Set to the value of the corresponding <see cref="ProtocolRequest.reqId"/> of a <see cref="ProtocolRequest"/></summary>
         [Serialize(Name =                  "req")]
-                        public  int?        reqId       { get; set; }
+                        public  int?        reqId;
         /// <summary>
         /// Set to <see cref="ProtocolRequest.clientId"/> of a <see cref="SyncRequest"/> in case the given
         /// <see cref="ProtocolRequest.clientId"/> was valid. Otherwise it is set to null.
@@ -104,7 +104,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol
         /// <see cref="SyncEvent"/> target. 
         /// </remarks>
         [Serialize(Name =                  "clt")]
-                        public  JsonKey     clientId    { get; set; }
+                        public  JsonKey     clientId;
     }
     
     // ----------------------------------- event -----------------------------------
@@ -116,7 +116,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol
         /// In many scenarios this property is redundant as every client uses a WebSocket exclusively.
         /// </summary>
         [Serialize(Name =                  "clt")]
-        [Required]      public  JsonKey     dstClientId { get; set; }
+        [Required]      public  JsonKey     dstClientId;
     }
     
     /// <summary>

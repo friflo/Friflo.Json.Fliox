@@ -294,17 +294,17 @@ input PocStructInput {
 }
 
 type DerivedClass {
-    derivedVal : Int!
     article    : String!
     amount     : Int!
     name       : String
+    derivedVal : Int!
 }
 
 input DerivedClassInput {
-    derivedVal : Int!
     article    : String!
     amount     : Int!
     name       : String
+    derivedVal : Int!
 }
 
 type TestCommand {

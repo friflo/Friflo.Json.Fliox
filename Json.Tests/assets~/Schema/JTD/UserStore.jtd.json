@@ -50,15 +50,15 @@
         },
         "AllowRight": {
             "properties": {
-                "database":    { "type": "string" },
-                "description": { "type": "string", "nullable": true }
+                "description": { "type": "string", "nullable": true },
+                "database":    { "type": "string" }
             }
         },
         "TaskRight": {
             "properties": {
+                "description": { "type": "string", "nullable": true },
                 "database":    { "type": "string" },
-                "types":       { "elements": { "ref":  "TaskType" } },
-                "description": { "type": "string", "nullable": true }
+                "types":       { "elements": { "ref":  "TaskType" } }
             }
         },
         "TaskType": {
@@ -81,23 +81,23 @@
         },
         "SendMessageRight": {
             "properties": {
+                "description": { "type": "string", "nullable": true },
                 "database":    { "type": "string" },
-                "names":       { "elements": { "type": "string" } },
-                "description": { "type": "string", "nullable": true }
+                "names":       { "elements": { "type": "string" } }
             }
         },
         "SubscribeMessageRight": {
             "properties": {
+                "description": { "type": "string", "nullable": true },
                 "database":    { "type": "string" },
-                "names":       { "elements": { "type": "string" } },
-                "description": { "type": "string", "nullable": true }
+                "names":       { "elements": { "type": "string" } }
             }
         },
         "OperationRight": {
             "properties": {
+                "description": { "type": "string", "nullable": true },
                 "database":    { "type": "string" },
-                "containers":  { "elements": { "ref":  "ContainerAccess" } },
-                "description": { "type": "string", "nullable": true }
+                "containers":  { "elements": { "ref":  "ContainerAccess" } }
             }
         },
         "ContainerAccess": {
@@ -131,8 +131,8 @@
         },
         "PredicateRight": {
             "properties": {
-                "names":       { "elements": { "type": "string" } },
-                "description": { "type": "string", "nullable": true }
+                "description": { "type": "string", "nullable": true },
+                "names":       { "elements": { "type": "string" } }
             }
         },
         "Credentials": {

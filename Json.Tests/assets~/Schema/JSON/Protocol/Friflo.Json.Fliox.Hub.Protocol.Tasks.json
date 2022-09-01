@@ -34,11 +34,11 @@
             "description": "Create the given <b>entities</b> in the specified <b>container</b>",
             "properties": {
                 "task":          { "enum": ["create"] },
+                "info":          {  },
                 "container":     { "type": "string", "description": "container name the <b>entities</b> are created" },
                 "reservedToken": { "oneOf": [{ "$ref": "./Standard.json#/definitions/Guid" }, {"type": "null"}] },
                 "keyName":       { "type": ["string", "null"], "description": "name of the primary key property in <b>entities</b>" },
-                "entities":      { "type": "array", "items": {  }, "description": "the <b>entities</b> which are created in the specified <b>container</b>" },
-                "info":          {  }
+                "entities":      { "type": "array", "items": {  }, "description": "the <b>entities</b> which are created in the specified <b>container</b>" }
             },
             "required": [
                 "task",
@@ -53,10 +53,10 @@
             "description": "Upsert the given <b>entities</b> in the specified <b>container</b>",
             "properties": {
                 "task":      { "enum": ["upsert"] },
+                "info":      {  },
                 "container": { "type": "string", "description": "container name the <b>entities</b> are upserted - created or updated" },
                 "keyName":   { "type": ["string", "null"], "description": "name of the primary key property in <b>entities</b>" },
-                "entities":  { "type": "array", "items": {  }, "description": "the <b>entities</b> which are upserted in the specified <b>container</b>" },
-                "info":      {  }
+                "entities":  { "type": "array", "items": {  }, "description": "the <b>entities</b> which are upserted in the specified <b>container</b>" }
             },
             "required": [
                 "task",
@@ -71,12 +71,12 @@
             "description": "Read entities by id from the specified <b>container</b> using given list of <b>ids</b><br/>\nTo return also entities referenced by entities listed in <b>ids</b> use <b>references</b>. <br/>\nThis mimic the functionality of a <b>LEFT JOIN</b> in <b>SQL</b>",
             "properties": {
                 "task":       { "enum": ["read"] },
+                "info":       {  },
                 "container":  { "type": "string", "description": "container name" },
                 "keyName":    { "type": ["string", "null"], "description": "name of the primary key property of the returned entities" },
                 "isIntKey":   { "type": ["boolean", "null"] },
                 "ids":        { "type": "array", "items": { "type": "string" }, "description": "list of requested entity <b>ids</b>" },
-                "references": { "type": ["array", "null"], "items": { "$ref": "./Friflo.Json.Fliox.Hub.Protocol.Models.json#/definitions/References" }, "description": "used to request the entities referenced by properties of a read task result" },
-                "info":       {  }
+                "references": { "type": ["array", "null"], "items": { "$ref": "./Friflo.Json.Fliox.Hub.Protocol.Models.json#/definitions/References" }, "description": "used to request the entities referenced by properties of a read task result" }
             },
             "required": [
                 "task",
@@ -91,6 +91,7 @@
             "description": "Query entities from the given <b>container</b> using a <b>filter</b><br/>\nTo return entities referenced by fields of the query result use <b>references</b>",
             "properties": {
                 "task":       { "enum": ["query"] },
+                "info":       {  },
                 "container":  { "type": "string", "description": "container name" },
                 "keyName":    { "type": ["string", "null"], "description": "name of the primary key property of the returned entities" },
                 "isIntKey":   { "type": ["boolean", "null"] },
@@ -99,8 +100,7 @@
                 "references": { "type": ["array", "null"], "items": { "$ref": "./Friflo.Json.Fliox.Hub.Protocol.Models.json#/definitions/References" }, "description": "used to request the entities referenced by properties of the query task result" },
                 "limit":      { "oneOf": [{ "$ref": "./Standard.json#/definitions/int32" }, {"type": "null"}], "description": "limit the result set to the given number" },
                 "maxCount":   { "oneOf": [{ "$ref": "./Standard.json#/definitions/int32" }, {"type": "null"}], "description": "execute a cursor request with the specified <b>maxCount</b> number of entities in the result." },
-                "cursor":     { "type": ["string", "null"], "description": "specify the <b>cursor</b> of a previous cursor request" },
-                "info":       {  }
+                "cursor":     { "type": ["string", "null"], "description": "specify the <b>cursor</b> of a previous cursor request" }
             },
             "required": [
                 "task",
@@ -114,11 +114,11 @@
             "description": "Aggregate - count - entities from the given <b>container</b> using a <b>filter</b><br/>",
             "properties": {
                 "task":       { "enum": ["aggregate"] },
+                "info":       {  },
                 "container":  { "type": "string", "description": "container name" },
                 "type":       { "$ref": "#/definitions/AggregateType", "description": "aggregation type - e.g. count" },
                 "filterTree": { "description": "aggregation filter as JSON tree. <br/>\nIs used in favour of <b>filter</b> as its serialization is more performant" },
-                "filter":     { "type": ["string", "null"], "description": "aggregation filter as a <a href='https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/operators/lambda-expressions'>Lambda expression</a> (infix notation)\nreturning a boolean value. E.g. <c>o.name == 'Smartphone'</c><br/>" },
-                "info":       {  }
+                "filter":     { "type": ["string", "null"], "description": "aggregation filter as a <a href='https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/operators/lambda-expressions'>Lambda expression</a> (infix notation)\nreturning a boolean value. E.g. <c>o.name == 'Smartphone'</c><br/>" }
             },
             "required": [
                 "task",
@@ -142,10 +142,10 @@
             "description": "Patch entities by id in the given <b>container</b><br/>\nEach <b>EntityPatch</b> in <b>patches</b> contains a set of <b>patches</b> for each entity.",
             "properties": {
                 "task":      { "enum": ["patch"] },
+                "info":      {  },
                 "container": { "type": "string", "description": "container name" },
                 "keyName":   { "type": ["string", "null"], "description": "name of the primary key property of the entity <b>patches</b>" },
-                "patches":   { "type": "array", "items": { "$ref": "#/definitions/EntityPatch" }, "description": "list of patches for each entity" },
-                "info":      {  }
+                "patches":   { "type": "array", "items": { "$ref": "#/definitions/EntityPatch" }, "description": "list of patches for each entity" }
             },
             "required": [
                 "task",
@@ -173,10 +173,10 @@
             "description": "Delete entities by id in the given <b>container</b><br/>\nThe entities which will be deleted are listed in <b>ids</b>",
             "properties": {
                 "task":      { "enum": ["delete"] },
+                "info":      {  },
                 "container": { "type": "string", "description": "container name" },
                 "ids":       { "type": ["array", "null"], "items": { "type": "string" }, "description": "list of <b>ids</b> requested for deletion" },
-                "all":       { "type": ["boolean", "null"], "description": "if true all entities in the specified <b>container</b> are deleted" },
-                "info":      {  }
+                "all":       { "type": ["boolean", "null"], "description": "if true all entities in the specified <b>container</b> are deleted" }
             },
             "required": [
                 "task",
@@ -190,12 +190,12 @@
             "description": "Send a database message with the given <b>param</b>. <br/>\nIn case <b>users</b> or <b>clients</b> is set the Hub forward\nthe message as an event only to the given <b>users</b> or <b>clients</b>.",
             "properties": {
                 "task":    { "enum": ["message"] },
+                "info":    {  },
                 "name":    { "type": "string", "description": "command / message name" },
                 "param":   { "description": "command / message parameter. Can be null or absent" },
                 "users":   { "type": ["array", "null"], "items": { "type": "string" }, "description": "if set the Hub forward the message as an event only to given <b>users</b>" },
                 "clients": { "type": ["array", "null"], "items": { "type": "string" }, "description": "if set the Hub forward the message as an event only to given <b>clients</b>" },
-                "groups":  { "type": ["array", "null"], "items": { "type": "string" }, "description": "if set the Hub forward the message as an event only to given <b>groups</b>" },
-                "info":    {  }
+                "groups":  { "type": ["array", "null"], "items": { "type": "string" }, "description": "if set the Hub forward the message as an event only to given <b>groups</b>" }
             },
             "required": [
                 "task",
@@ -209,12 +209,12 @@
             "isAbstract": true,
             "description": "Used as base type for <b>SendMessage</b> or <b>SendCommand</b> to specify the command / message\n<b>name</b> and <b>param</b>. <br/>\nIn case <b>users</b> or <b>clients</b> is set the Hub forward the message as an event only to the\ngiven <b>users</b> or <b>clients</b>.",
             "properties": {
+                "info":    {  },
                 "name":    { "type": "string", "description": "command / message name" },
                 "param":   { "description": "command / message parameter. Can be null or absent" },
                 "users":   { "type": ["array", "null"], "items": { "type": "string" }, "description": "if set the Hub forward the message as an event only to given <b>users</b>" },
                 "clients": { "type": ["array", "null"], "items": { "type": "string" }, "description": "if set the Hub forward the message as an event only to given <b>clients</b>" },
-                "groups":  { "type": ["array", "null"], "items": { "type": "string" }, "description": "if set the Hub forward the message as an event only to given <b>groups</b>" },
-                "info":    {  }
+                "groups":  { "type": ["array", "null"], "items": { "type": "string" }, "description": "if set the Hub forward the message as an event only to given <b>groups</b>" }
             },
             "required": [
                 "name"
@@ -227,12 +227,12 @@
             "description": "Send a database command with the given <b>param</b>. <br/>\nIn case <b>users</b> or <b>clients</b> is set the Hub forward\nthe message as an event only to the given <b>users</b> or <b>clients</b>.",
             "properties": {
                 "task":    { "enum": ["command"] },
+                "info":    {  },
                 "name":    { "type": "string", "description": "command / message name" },
                 "param":   { "description": "command / message parameter. Can be null or absent" },
                 "users":   { "type": ["array", "null"], "items": { "type": "string" }, "description": "if set the Hub forward the message as an event only to given <b>users</b>" },
                 "clients": { "type": ["array", "null"], "items": { "type": "string" }, "description": "if set the Hub forward the message as an event only to given <b>clients</b>" },
-                "groups":  { "type": ["array", "null"], "items": { "type": "string" }, "description": "if set the Hub forward the message as an event only to given <b>groups</b>" },
-                "info":    {  }
+                "groups":  { "type": ["array", "null"], "items": { "type": "string" }, "description": "if set the Hub forward the message as an event only to given <b>groups</b>" }
             },
             "required": [
                 "task",
@@ -246,9 +246,9 @@
             "description": "Close the <b>cursors</b> of the given <b>container</b>",
             "properties": {
                 "task":      { "enum": ["closeCursors"] },
+                "info":      {  },
                 "container": { "type": "string", "description": "container name" },
-                "cursors":   { "type": ["array", "null"], "items": { "type": "string" }, "description": "list of <b>cursors</b>" },
-                "info":      {  }
+                "cursors":   { "type": ["array", "null"], "items": { "type": "string" }, "description": "list of <b>cursors</b>" }
             },
             "required": [
                 "task",
@@ -262,10 +262,10 @@
             "description": "Subscribe to specific <b>changes</b> of the specified <b>container</b> using the given <b>filter</b>",
             "properties": {
                 "task":      { "enum": ["subscribeChanges"] },
+                "info":      {  },
                 "container": { "type": "string", "description": "container name" },
                 "changes":   { "type": "array", "items": { "$ref": "#/definitions/EntityChange" }, "description": "subscribe to entity <b>changes</b> of the given <b>container</b>" },
-                "filter":    { "description": "subscription filter as a <a href='https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/operators/lambda-expressions'>Lambda expression</a> (infix notation)\nreturning a boolean value. E.g. <c>o.name == 'Smartphone'</c>" },
-                "info":      {  }
+                "filter":    { "description": "subscription filter as a <a href='https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/operators/lambda-expressions'>Lambda expression</a> (infix notation)\nreturning a boolean value. E.g. <c>o.name == 'Smartphone'</c>" }
             },
             "required": [
                 "task",
@@ -295,9 +295,9 @@
             "description": "Subscribe to commands and messages sent to a database by their <b>name</b><br/>\nUnsubscribe by setting <b>remove</b> to true",
             "properties": {
                 "task":   { "enum": ["subscribeMessage"] },
+                "info":   {  },
                 "name":   { "type": "string", "description": "subscribe a specific message: 'std.Echo', multiple messages by prefix: 'std.*', all messages: '*'" },
-                "remove": { "type": ["boolean", "null"], "description": "if true a previous added subscription is removed. Otherwise added" },
-                "info":   {  }
+                "remove": { "type": ["boolean", "null"], "description": "if true a previous added subscription is removed. Otherwise added" }
             },
             "required": [
                 "task",
@@ -311,9 +311,9 @@
             "description": "WIP",
             "properties": {
                 "task":      { "enum": ["reserveKeys"] },
+                "info":      {  },
                 "container": { "type": "string" },
-                "count":     { "$ref": "./Standard.json#/definitions/int32" },
-                "info":      {  }
+                "count":     { "$ref": "./Standard.json#/definitions/int32" }
             },
             "required": [
                 "task",

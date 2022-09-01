@@ -142,25 +142,25 @@ union Right =
 scalar RightInput
 
 type AllowRight {
-    database    : String!
     description : String
+    database    : String!
 }
 
 input AllowRightInput {
-    database    : String!
     description : String
+    database    : String!
 }
 
 type TaskRight {
+    description : String
     database    : String!
     types       : [TaskType!]!
-    description : String
 }
 
 input TaskRightInput {
+    description : String
     database    : String!
     types       : [TaskType!]!
-    description : String
 }
 
 enum TaskType {
@@ -181,39 +181,39 @@ enum TaskType {
 }
 
 type SendMessageRight {
+    description : String
     database    : String!
     names       : [String!]!
-    description : String
 }
 
 input SendMessageRightInput {
+    description : String
     database    : String!
     names       : [String!]!
-    description : String
 }
 
 type SubscribeMessageRight {
+    description : String
     database    : String!
     names       : [String!]!
-    description : String
 }
 
 input SubscribeMessageRightInput {
+    description : String
     database    : String!
     names       : [String!]!
-    description : String
 }
 
 type OperationRight {
+    description : String
     database    : String!
     containers  : [ContainerAccess!]!
-    description : String
 }
 
 input OperationRightInput {
+    description : String
     database    : String!
     containers  : [ContainerAccessInput!]!
-    description : String
 }
 
 type ContainerAccess {
@@ -249,13 +249,13 @@ enum EntityChange {
 }
 
 type PredicateRight {
-    names       : [String!]!
     description : String
+    names       : [String!]!
 }
 
 input PredicateRightInput {
-    names       : [String!]!
     description : String
+    names       : [String!]!
 }
 
 type Credentials {

@@ -105,10 +105,10 @@ data class PocStruct (
 
 @Serializable
 data class DerivedClass (
-              val derivedVal : Int,
               val article    : String,
               val amount     : Int,
               val name       : String? = null,
+              val derivedVal : Int,
 )
 
 @Serializable

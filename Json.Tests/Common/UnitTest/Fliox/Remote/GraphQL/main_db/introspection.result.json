@@ -3581,19 +3581,6 @@
             "description": "",
             "fields": [
                 {
-                    "name": "derivedVal",
-                    "description": "",
-                    "args": [
-                    ],
-                    "type": {
-                        "kind":"NON_NULL",
-                        "ofType": {
-                            "kind":"SCALAR",
-                            "name": "Int"
-                        }
-                    }
-                },
-                {
                     "name": "article",
                     "description": "",
                     "args": [
@@ -3627,6 +3614,19 @@
                     "type": {
                         "kind":"SCALAR",
                         "name": "String"
+                    }
+                },
+                {
+                    "name": "derivedVal",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "Int"
+                        }
                     }
                 }
             ],
@@ -3639,19 +3639,6 @@
             "description": "",
             "inputFields": [
                 {
-                    "name": "derivedVal",
-                    "description": "",
-                    "args": [
-                    ],
-                    "type": {
-                        "kind":"NON_NULL",
-                        "ofType": {
-                            "kind":"SCALAR",
-                            "name": "Int"
-                        }
-                    }
-                },
-                {
                     "name": "article",
                     "description": "",
                     "args": [
@@ -3685,6 +3672,19 @@
                     "type": {
                         "kind":"SCALAR",
                         "name": "String"
+                    }
+                },
+                {
+                    "name": "derivedVal",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "Int"
+                        }
                     }
                 }
             ]

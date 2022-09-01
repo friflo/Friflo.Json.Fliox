@@ -58,29 +58,29 @@
         },
         "CreateEntities": {
             "properties": {
+                "info":          { "nullable": true },
                 "container":     { "type": "string" },
                 "reservedToken": { "ref":  "Guid", "nullable": true },
                 "keyName":       { "type": "string", "nullable": true },
-                "entities":      { "elements": {  } },
-                "info":          { "nullable": true }
+                "entities":      { "elements": {  } }
             }
         },
         "UpsertEntities": {
             "properties": {
+                "info":      { "nullable": true },
                 "container": { "type": "string" },
                 "keyName":   { "type": "string", "nullable": true },
-                "entities":  { "elements": {  } },
-                "info":      { "nullable": true }
+                "entities":  { "elements": {  } }
             }
         },
         "ReadEntities": {
             "properties": {
+                "info":       { "nullable": true },
                 "container":  { "type": "string" },
                 "keyName":    { "type": "string", "nullable": true },
                 "isIntKey":   { "type": "boolean", "nullable": true },
                 "ids":        { "elements": { "type": "string" } },
-                "references": { "elements": { "ref":  "References" }, "nullable": true },
-                "info":       { "nullable": true }
+                "references": { "elements": { "ref":  "References" }, "nullable": true }
             }
         },
         "References": {
@@ -94,6 +94,7 @@
         },
         "QueryEntities": {
             "properties": {
+                "info":       { "nullable": true },
                 "container":  { "type": "string" },
                 "keyName":    { "type": "string", "nullable": true },
                 "isIntKey":   { "type": "boolean", "nullable": true },
@@ -102,17 +103,16 @@
                 "references": { "elements": { "ref":  "References" }, "nullable": true },
                 "limit":      { "type": "int32", "nullable": true },
                 "maxCount":   { "type": "int32", "nullable": true },
-                "cursor":     { "type": "string", "nullable": true },
-                "info":       { "nullable": true }
+                "cursor":     { "type": "string", "nullable": true }
             }
         },
         "AggregateEntities": {
             "properties": {
+                "info":       { "nullable": true },
                 "container":  { "type": "string" },
                 "type":       { "ref":  "AggregateType" },
                 "filterTree": { "nullable": true },
-                "filter":     { "type": "string", "nullable": true },
-                "info":       { "nullable": true }
+                "filter":     { "type": "string", "nullable": true }
             }
         },
         "AggregateType": {
@@ -122,10 +122,10 @@
         },
         "PatchEntities": {
             "properties": {
+                "info":      { "nullable": true },
                 "container": { "type": "string" },
                 "keyName":   { "type": "string", "nullable": true },
-                "patches":   { "elements": { "ref":  "EntityPatch" } },
-                "info":      { "nullable": true }
+                "patches":   { "elements": { "ref":  "EntityPatch" } }
             }
         },
         "EntityPatch": {
@@ -185,55 +185,55 @@
         },
         "DeleteEntities": {
             "properties": {
+                "info":      { "nullable": true },
                 "container": { "type": "string" },
                 "ids":       { "elements": { "type": "string" }, "nullable": true },
-                "all":       { "type": "boolean", "nullable": true },
-                "info":      { "nullable": true }
+                "all":       { "type": "boolean", "nullable": true }
             }
         },
         "SendMessage": {
             "properties": {
+                "info":    { "nullable": true },
                 "name":    { "type": "string" },
                 "param":   { "nullable": true },
                 "users":   { "elements": { "type": "string" }, "nullable": true },
                 "clients": { "elements": { "type": "string" }, "nullable": true },
-                "groups":  { "elements": { "type": "string" }, "nullable": true },
-                "info":    { "nullable": true }
+                "groups":  { "elements": { "type": "string" }, "nullable": true }
             }
         },
         "SyncMessageTask": {
             "properties": {
+                "info":    { "nullable": true },
                 "name":    { "type": "string" },
                 "param":   { "nullable": true },
                 "users":   { "elements": { "type": "string" }, "nullable": true },
                 "clients": { "elements": { "type": "string" }, "nullable": true },
-                "groups":  { "elements": { "type": "string" }, "nullable": true },
-                "info":    { "nullable": true }
+                "groups":  { "elements": { "type": "string" }, "nullable": true }
             }
         },
         "SendCommand": {
             "properties": {
+                "info":    { "nullable": true },
                 "name":    { "type": "string" },
                 "param":   { "nullable": true },
                 "users":   { "elements": { "type": "string" }, "nullable": true },
                 "clients": { "elements": { "type": "string" }, "nullable": true },
-                "groups":  { "elements": { "type": "string" }, "nullable": true },
-                "info":    { "nullable": true }
+                "groups":  { "elements": { "type": "string" }, "nullable": true }
             }
         },
         "CloseCursors": {
             "properties": {
+                "info":      { "nullable": true },
                 "container": { "type": "string" },
-                "cursors":   { "elements": { "type": "string" }, "nullable": true },
-                "info":      { "nullable": true }
+                "cursors":   { "elements": { "type": "string" }, "nullable": true }
             }
         },
         "SubscribeChanges": {
             "properties": {
+                "info":      { "nullable": true },
                 "container": { "type": "string" },
                 "changes":   { "elements": { "ref":  "EntityChange" } },
-                "filter":    { "nullable": true },
-                "info":      { "nullable": true }
+                "filter":    { "nullable": true }
             }
         },
         "EntityChange": {
@@ -246,16 +246,16 @@
         },
         "SubscribeMessage": {
             "properties": {
+                "info":   { "nullable": true },
                 "name":   { "type": "string" },
-                "remove": { "type": "boolean", "nullable": true },
-                "info":   { "nullable": true }
+                "remove": { "type": "boolean", "nullable": true }
             }
         },
         "ReserveKeys": {
             "properties": {
+                "info":      { "nullable": true },
                 "container": { "type": "string" },
-                "count":     { "type": "int32" },
-                "info":      { "nullable": true }
+                "count":     { "type": "int32" }
             }
         },
         "SyncResponse": {

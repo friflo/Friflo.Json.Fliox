@@ -103,15 +103,15 @@
             "type": "object",
             "extends": { "$ref": "#/definitions/OrderItem" },
             "properties": {
-                "derivedVal": { "$ref": "./Standard.json#/definitions/int32" },
                 "article":    { "type": "string", "relation": "articles" },
                 "amount":     { "$ref": "./Standard.json#/definitions/int32" },
-                "name":       { "type": ["string", "null"] }
+                "name":       { "type": ["string", "null"] },
+                "derivedVal": { "$ref": "./Standard.json#/definitions/int32" }
             },
             "required": [
-                "derivedVal",
                 "article",
-                "amount"
+                "amount",
+                "derivedVal"
             ],
             "additionalProperties": false
         },
