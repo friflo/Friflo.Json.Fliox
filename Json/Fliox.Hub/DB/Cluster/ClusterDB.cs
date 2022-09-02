@@ -107,7 +107,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
         }
         
         internal static async Task<HostCluster> GetDbList (MessageContext context) {
-            var authorizedDatabases = Helper.CreateHashSet(4, AuthorizeDatabaseComparer.Instance);
+            var authorizedDatabases = Helper.CreateHashSet(4, DatabaseFilterComparer.Instance);
             var authorizer          = context.SyncContext.authState.authorizer;
             authorizer.AddAuthorizedDatabases(authorizedDatabases);
             var hub             = context.Hub;
@@ -115,7 +115,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
             var databaseList    = new List<DbContainers>(databases.Count);
             foreach (var pair in databases) {
                 var databaseName    = pair.Key;
-                if (!AuthorizeDatabase.IsAuthorizedDatabase(authorizedDatabases, databaseName))
+                if (!DatabaseFilter.IsAuthorizedDatabase(authorizedDatabases, databaseName))
                     continue;
                 var database        = pair.Value;
                 var dbContainers    = await database.GetDbContainers().ConfigureAwait(false);

@@ -8,7 +8,7 @@ using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 namespace Friflo.Json.Fliox.Hub.Host.Auth
 {
     public sealed class AuthorizeSubscribeChanges : Authorizer {
-        private  readonly   AuthorizeDatabase   authorizeDatabase;
+        private  readonly   DatabaseFilter      databaseFilter;
         private  readonly   string              container;
         
         private  readonly   bool                create;
@@ -16,12 +16,12 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
         private  readonly   bool                delete;
         private  readonly   bool                patch;
         
-        public   override   string  ToString() => $"database: {authorizeDatabase.dbLabel}, container: {container}";
+        public   override   string  ToString() => $"database: {databaseFilter.dbLabel}, container: {container}";
         
         public AuthorizeSubscribeChanges (string container, ICollection<EntityChange> changes, string database)
         {
-            authorizeDatabase   = new AuthorizeDatabase(database);
-            this.container      = container;
+            databaseFilter  = new DatabaseFilter(database);
+            this.container  = container;
             foreach (var change in changes) {
                 switch (change) {
                     case EntityChange.create: create = true; break;
@@ -32,10 +32,10 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
             }
         }
         
-        public override void AddAuthorizedDatabases(HashSet<AuthorizeDatabase> databases) => databases.Add(authorizeDatabase);
+        public override void AddAuthorizedDatabases(HashSet<DatabaseFilter> databaseFilters) => databaseFilters.Add(databaseFilter);
         
         public override bool Authorize(SyncRequestTask task, SyncContext syncContext) {
-            if (!authorizeDatabase.Authorize(syncContext))
+            if (!databaseFilter.Authorize(syncContext))
                 return false;
             if (!(task is SubscribeChanges subscribe))
                 return false;

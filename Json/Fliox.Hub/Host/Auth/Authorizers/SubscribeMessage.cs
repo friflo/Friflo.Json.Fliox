@@ -8,15 +8,15 @@ using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 namespace Friflo.Json.Fliox.Hub.Host.Auth
 {
     public sealed class AuthorizeSubscribeMessage : Authorizer {
-        private  readonly   AuthorizeDatabase   authorizeDatabase;
+        private  readonly   DatabaseFilter      databaseFilter;
         private  readonly   string              messageName;
         private  readonly   bool                prefix;
         private  readonly   string              messageLabel;
-        public   override   string              ToString() => $"database: {authorizeDatabase.dbLabel}, message: {messageLabel}";
+        public   override   string              ToString() => $"database: {databaseFilter.dbLabel}, message: {messageLabel}";
 
         public AuthorizeSubscribeMessage (string message, string database) {
-            authorizeDatabase   = new AuthorizeDatabase(database);
-            messageLabel        = message;
+            databaseFilter  = new DatabaseFilter(database);
+            messageLabel    = message;
             if (message.EndsWith("*")) {
                 prefix = true;
                 messageName = message.Substring(0, message.Length - 1);
@@ -25,10 +25,10 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
             messageName = message;
         }
         
-        public override void AddAuthorizedDatabases(HashSet<AuthorizeDatabase> databases) => databases.Add(authorizeDatabase);
+        public override void AddAuthorizedDatabases(HashSet<DatabaseFilter> databaseFilters) => databaseFilters.Add(databaseFilter);
         
         public override bool Authorize(SyncRequestTask task, SyncContext syncContext) {
-            if (!authorizeDatabase.Authorize(syncContext))
+            if (!databaseFilter.Authorize(syncContext))
                 return false;
             if (!(task is SubscribeMessage subscribe))
                 return false;

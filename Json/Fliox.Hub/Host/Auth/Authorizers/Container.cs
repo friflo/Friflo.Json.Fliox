@@ -10,26 +10,26 @@ using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 namespace Friflo.Json.Fliox.Hub.Host.Auth
 {
     public sealed class AuthorizeContainer : Authorizer {
-        private  readonly   AuthorizeDatabase authorizeDatabase;
+        private  readonly   DatabaseFilter  databaseFilter;
         
-        private  readonly   string  container;
+        private  readonly   string          container;
         
-        private  readonly   bool    create;
-        private  readonly   bool    upsert;
-        private  readonly   bool    delete;
-        private  readonly   bool    deleteAll;
-        private  readonly   bool    patch;
+        private  readonly   bool            create;
+        private  readonly   bool            upsert;
+        private  readonly   bool            delete;
+        private  readonly   bool            deleteAll;
+        private  readonly   bool            patch;
         //
-        private  readonly   bool    read;
-        private  readonly   bool    query;
-        private  readonly   bool    aggregate;
+        private  readonly   bool            read;
+        private  readonly   bool            query;
+        private  readonly   bool            aggregate;
 
-        public   override   string  ToString() => $"database: {authorizeDatabase.dbLabel}, container: {container}";
+        public   override   string  ToString() => $"database: {databaseFilter.dbLabel}, container: {container}";
         
         public AuthorizeContainer (string container, ICollection<OperationType> types, string database)
         {
-            authorizeDatabase   = new AuthorizeDatabase(database);
-            this.container      = container;
+            databaseFilter  = new DatabaseFilter(database);
+            this.container  = container;
             SetRoles(types, ref create, ref upsert, ref delete, ref deleteAll, ref patch, ref read, ref query, ref aggregate);
         }
         
@@ -61,10 +61,10 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
             }
         }
         
-        public override void AddAuthorizedDatabases(HashSet<AuthorizeDatabase> databases) => databases.Add(authorizeDatabase);
+        public override void AddAuthorizedDatabases(HashSet<DatabaseFilter> databaseFilters) => databaseFilters.Add(databaseFilter);
 
         public override bool Authorize(SyncRequestTask task, SyncContext syncContext) {
-            if (!authorizeDatabase.Authorize(syncContext))
+            if (!databaseFilter.Authorize(syncContext))
                 return false;
             switch (task.TaskType) {
                 case TaskType.create:       return create       && ((CreateEntities)    task).container == container;

@@ -20,7 +20,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth.Rights
         public  override                string      ToString() => "allow";
 
         public override Authorizer ToAuthorizer() {
-            return new AuthorizeAllow(database);
+            return new AuthorizeDatabase(database);
         }
         
         internal override void Validate(in RoleValidation validation) {

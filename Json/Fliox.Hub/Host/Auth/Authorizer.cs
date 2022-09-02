@@ -17,10 +17,10 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
     public abstract class Authorizer
     {
         /// <summary>
-        /// Create a set of <paramref name="databases"/> used to filter
+        /// Create a set of <paramref name="databaseFilters"/> used to filter
         /// <see cref="DB.Cluster.ClusterStore"/> read and query results available to a user.
         /// </summary>
-        public abstract void    AddAuthorizedDatabases  (HashSet<AuthorizeDatabase> databases);
+        public abstract void    AddAuthorizedDatabases  (HashSet<DatabaseFilter> databaseFilters);
         public abstract bool    Authorize               (SyncRequestTask task, SyncContext syncContext);
     }
 }

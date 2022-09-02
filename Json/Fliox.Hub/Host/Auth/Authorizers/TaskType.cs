@@ -8,20 +8,20 @@ using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 namespace Friflo.Json.Fliox.Hub.Host.Auth
 {
     public sealed class AuthorizeTaskType : Authorizer {
-        private  readonly   AuthorizeDatabase   authorizeDatabase;
-        private  readonly   TaskType            type;
+        private  readonly   DatabaseFilter  databaseFilter;
+        private  readonly   TaskType        type;
         
-        public   override   string      ToString() => $"database: {authorizeDatabase.dbLabel}, type: {type.ToString()}";
+        public   override   string      ToString() => $"database: {databaseFilter.dbLabel}, type: {type.ToString()}";
 
         public AuthorizeTaskType(TaskType type, string database) {
-            authorizeDatabase   = new AuthorizeDatabase(database);
-            this.type           = type;    
+            databaseFilter  = new DatabaseFilter(database);
+            this.type       = type;    
         }
         
-        public override void AddAuthorizedDatabases(HashSet<AuthorizeDatabase> databases) => databases.Add(authorizeDatabase);
+        public override void AddAuthorizedDatabases(HashSet<DatabaseFilter> databaseFilters) => databaseFilters.Add(databaseFilter);
         
         public override bool Authorize(SyncRequestTask task, SyncContext syncContext) {
-            if (!authorizeDatabase.Authorize(syncContext))
+            if (!databaseFilter.Authorize(syncContext))
                 return false;
             return task.TaskType == type;
         }

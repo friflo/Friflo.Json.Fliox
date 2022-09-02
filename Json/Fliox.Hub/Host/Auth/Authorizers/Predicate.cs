@@ -19,7 +19,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
             this.predicate  = predicate;    
         }
         
-        public override void AddAuthorizedDatabases(HashSet<AuthorizeDatabase> databases) { }
+        public override void AddAuthorizedDatabases(HashSet<DatabaseFilter> databaseFilters) { }
 
         public override bool Authorize(SyncRequestTask task, SyncContext syncContext) {
             return predicate(task, syncContext);
