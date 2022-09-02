@@ -11,11 +11,11 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth.Rights
     /// <summary>
     /// Allow full access to the given <see cref="database"/>.<br/>
     /// </summary>
-    public sealed class AllowRight : Right
+    public sealed class DbRight : Right
     {
         /// <summary>a specific database: 'test_db', multiple databases by prefix: 'test_*', all databases: '*'</summary>
         [Required]  public              string      database;
-                    public  override    RightType   RightType => RightType.allow;
+                    public  override    RightType   RightType => RightType.db;
 
         public  override                string      ToString() => "allow";
 

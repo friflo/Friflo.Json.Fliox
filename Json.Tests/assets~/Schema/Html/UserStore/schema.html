@@ -319,13 +319,13 @@
     <li><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights'>Friflo.Json.Fliox.Hub.Host.Auth.Rights</a>
         <ul>
             <li><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.Right'><div><span>Right</span><discUnion>type</discUnion></div></a></li>
-            <li><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.AllowRight'><div><span>AllowRight</span><disc>type</disc></div></a></li>
-            <li><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.TaskRight'><div><span>TaskRight</span><disc>type</disc></div></a></li>
-            <li><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.SendMessageRight'><div><span>SendMessageRight</span><disc>type</disc></div></a></li>
-            <li><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.SubscribeMessageRight'><div><span>SubscribeMessageRight</span><disc>type</disc></div></a></li>
-            <li><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.OperationRight'><div><span>OperationRight</span><disc>type</disc></div></a></li>
+            <li><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.DbRight'><div><span>DbRight</span><disc>type</disc></div></a></li>
+            <li><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.DbTaskRight'><div><span>DbTaskRight</span><disc>type</disc></div></a></li>
+            <li><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.DbContainerRight'><div><span>DbContainerRight</span><disc>type</disc></div></a></li>
             <li><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.ContainerAccess'><div><span>ContainerAccess</span></div></a></li>
             <li><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.OperationType'><div><span>OperationType</span><keyword>enum</keyword></div></a></li>
+            <li><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.SendMessageRight'><div><span>SendMessageRight</span><disc>type</disc></div></a></li>
+            <li><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.SubscribeMessageRight'><div><span>SubscribeMessageRight</span><disc>type</disc></div></a></li>
             <li><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.PredicateRight'><div><span>PredicateRight</span><disc>type</disc></div></a></li>
         </ul>
     </li>
@@ -939,12 +939,16 @@ grant access.
             <td><docs>right type</docs>
             <table>
             <tr>
-                <td><discriminant>"allow"</discriminant></td>
-                <td><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.AllowRight'>AllowRight</a></td>
+                <td><discriminant>"db"</discriminant></td>
+                <td><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.DbRight'>DbRight</a></td>
             </tr>
             <tr>
-                <td><discriminant>"task"</discriminant></td>
-                <td><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.TaskRight'>TaskRight</a></td>
+                <td><discriminant>"dbTask"</discriminant></td>
+                <td><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.DbTaskRight'>DbTaskRight</a></td>
+            </tr>
+            <tr>
+                <td><discriminant>"dbContainer"</discriminant></td>
+                <td><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.DbContainerRight'>DbContainerRight</a></td>
             </tr>
             <tr>
                 <td><discriminant>"sendMessage"</discriminant></td>
@@ -953,10 +957,6 @@ grant access.
             <tr>
                 <td><discriminant>"subscribeMessage"</discriminant></td>
                 <td><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.SubscribeMessageRight'>SubscribeMessageRight</a></td>
-            </tr>
-            <tr>
-                <td><discriminant>"operation"</discriminant></td>
-                <td><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.OperationRight'>OperationRight</a></td>
             </tr>
             <tr>
                 <td><discriminant>"predicate"</discriminant></td>
@@ -972,8 +972,8 @@ grant access.
     </table>
     </div>
     <div class='type'>
-    <h3 id='Friflo.Json.Fliox.Hub.Host.Auth.Rights.AllowRight'>
-        <a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.AllowRight'>AllowRight</a>
+    <h3 id='Friflo.Json.Fliox.Hub.Host.Auth.Rights.DbRight'>
+        <a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.DbRight'>DbRight</a>
         <keyword>class</keyword>
         <keyword>extends</keyword> <extends><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.Right'>Right</a></extends>
     </h3>
@@ -982,7 +982,7 @@ grant access.
     <table class='fields'>
         <tr>
             <td><disc>type</disc></td>
-            <td><discriminant>"allow"</discriminant></td><td><docs>right type</docs></td>
+            <td><discriminant>"db"</discriminant></td><td><docs>right type</docs></td>
         </tr>
         <tr>
             <td><field>database</field></td>
@@ -992,17 +992,17 @@ grant access.
     </table>
     </div>
     <div class='type'>
-    <h3 id='Friflo.Json.Fliox.Hub.Host.Auth.Rights.TaskRight'>
-        <a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.TaskRight'>TaskRight</a>
+    <h3 id='Friflo.Json.Fliox.Hub.Host.Auth.Rights.DbTaskRight'>
+        <a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.DbTaskRight'>DbTaskRight</a>
         <keyword>class</keyword>
         <keyword>extends</keyword> <extends><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.Right'>Right</a></extends>
     </h3>
-    <desc><b>TaskRight</b> grant <b>database</b> access by a set of task <b>types</b>. <br/>
+    <desc><b>DbTaskRight</b> grant <b>database</b> access by a set of task <b>types</b>. <br/>
     </desc>
     <table class='fields'>
         <tr>
             <td><disc>type</disc></td>
-            <td><discriminant>"task"</discriminant></td><td><docs>right type</docs></td>
+            <td><discriminant>"dbTask"</discriminant></td><td><docs>right type</docs></td>
         </tr>
         <tr>
             <td><field>database</field></td>
@@ -1017,64 +1017,12 @@ grant access.
     </table>
     </div>
     <div class='type'>
-    <h3 id='Friflo.Json.Fliox.Hub.Host.Auth.Rights.SendMessageRight'>
-        <a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.SendMessageRight'>SendMessageRight</a>
+    <h3 id='Friflo.Json.Fliox.Hub.Host.Auth.Rights.DbContainerRight'>
+        <a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.DbContainerRight'>DbContainerRight</a>
         <keyword>class</keyword>
         <keyword>extends</keyword> <extends><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.Right'>Right</a></extends>
     </h3>
-    <desc><b>SendMessageRight</b> allows sending messages to a <b>database</b> by a set of <b>names</b>.<br/><br/>
-Note: commands are messages - so permission of sending commands is same as for messages.
-    </desc>
-    <table class='fields'>
-        <tr>
-            <td><disc>type</disc></td>
-            <td><discriminant>"sendMessage"</discriminant></td><td><docs>right type</docs></td>
-        </tr>
-        <tr>
-            <td><field>database</field></td>
-            <td><type><predef>string</predef></type></td>
-            <td><docs>a specific database: 'test_db', multiple databases by prefix: 'test_*', all databases: '*'</docs></td>
-        </tr>
-        <tr>
-            <td><field>names</field></td>
-            <td><type><predef>string</predef>[]</type></td>
-            <td><docs>a specific message: 'std.Echo', multiple messages by prefix: 'std.*', all messages: '*'</docs></td>
-        </tr>
-    </table>
-    </div>
-    <div class='type'>
-    <h3 id='Friflo.Json.Fliox.Hub.Host.Auth.Rights.SubscribeMessageRight'>
-        <a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.SubscribeMessageRight'>SubscribeMessageRight</a>
-        <keyword>class</keyword>
-        <keyword>extends</keyword> <extends><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.Right'>Right</a></extends>
-    </h3>
-    <desc><b>SubscribeMessageRight</b> allows subscribing messages send to a <b>database</b>.<br/><br/>
-Note: commands are messages - so permission of subscribing commands is same as for messages.
-    </desc>
-    <table class='fields'>
-        <tr>
-            <td><disc>type</disc></td>
-            <td><discriminant>"subscribeMessage"</discriminant></td><td><docs>right type</docs></td>
-        </tr>
-        <tr>
-            <td><field>database</field></td>
-            <td><type><predef>string</predef></type></td>
-            <td><docs>a specific database: 'test_db', multiple databases by prefix: 'test_*', all databases: '*'</docs></td>
-        </tr>
-        <tr>
-            <td><field>names</field></td>
-            <td><type><predef>string</predef>[]</type></td>
-            <td><docs>a specific message: 'std.Echo', multiple messages by prefix: 'std.*', all messages: '*'</docs></td>
-        </tr>
-    </table>
-    </div>
-    <div class='type'>
-    <h3 id='Friflo.Json.Fliox.Hub.Host.Auth.Rights.OperationRight'>
-        <a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.OperationRight'>OperationRight</a>
-        <keyword>class</keyword>
-        <keyword>extends</keyword> <extends><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.Right'>Right</a></extends>
-    </h3>
-    <desc><b>OperationRight</b> grant <b>database</b> access for the given <b>containers</b>
+    <desc><b>DbContainerRight</b> grant <b>database</b> access for the given <b>containers</b>
 based on a set of <b>operations</b>. <br/>
 E.g. create, read, upsert, delete, query or aggregate (count)<br/>
 It also allows subscribing database changes by <b>subscribeChanges</b>
@@ -1082,7 +1030,7 @@ It also allows subscribing database changes by <b>subscribeChanges</b>
     <table class='fields'>
         <tr>
             <td><disc>type</disc></td>
-            <td><discriminant>"operation"</discriminant></td><td><docs>right type</docs></td>
+            <td><discriminant>"dbContainer"</discriminant></td><td><docs>right type</docs></td>
         </tr>
         <tr>
             <td><field>database</field></td>
@@ -1138,6 +1086,58 @@ It also allows subscribing database changes by <b>subscribeChanges</b>
         <tr><td>aggregate</td><td><docs>allow to aggregate - count - entities in a container</docs></td></tr>
         <tr><td>mutate</td><td><docs>allow to mutate - create, upsert, delete and patch - entities in a container</docs></td></tr>
         <tr><td>full</td><td><docs>allow all operation types in a container</docs></td></tr>
+    </table>
+    </div>
+    <div class='type'>
+    <h3 id='Friflo.Json.Fliox.Hub.Host.Auth.Rights.SendMessageRight'>
+        <a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.SendMessageRight'>SendMessageRight</a>
+        <keyword>class</keyword>
+        <keyword>extends</keyword> <extends><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.Right'>Right</a></extends>
+    </h3>
+    <desc><b>SendMessageRight</b> allows sending messages to a <b>database</b> by a set of <b>names</b>.<br/><br/>
+Note: commands are messages - so permission of sending commands is same as for messages.
+    </desc>
+    <table class='fields'>
+        <tr>
+            <td><disc>type</disc></td>
+            <td><discriminant>"sendMessage"</discriminant></td><td><docs>right type</docs></td>
+        </tr>
+        <tr>
+            <td><field>database</field></td>
+            <td><type><predef>string</predef></type></td>
+            <td><docs>a specific database: 'test_db', multiple databases by prefix: 'test_*', all databases: '*'</docs></td>
+        </tr>
+        <tr>
+            <td><field>names</field></td>
+            <td><type><predef>string</predef>[]</type></td>
+            <td><docs>a specific message: 'std.Echo', multiple messages by prefix: 'std.*', all messages: '*'</docs></td>
+        </tr>
+    </table>
+    </div>
+    <div class='type'>
+    <h3 id='Friflo.Json.Fliox.Hub.Host.Auth.Rights.SubscribeMessageRight'>
+        <a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.SubscribeMessageRight'>SubscribeMessageRight</a>
+        <keyword>class</keyword>
+        <keyword>extends</keyword> <extends><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.Right'>Right</a></extends>
+    </h3>
+    <desc><b>SubscribeMessageRight</b> allows subscribing messages send to a <b>database</b>.<br/><br/>
+Note: commands are messages - so permission of subscribing commands is same as for messages.
+    </desc>
+    <table class='fields'>
+        <tr>
+            <td><disc>type</disc></td>
+            <td><discriminant>"subscribeMessage"</discriminant></td><td><docs>right type</docs></td>
+        </tr>
+        <tr>
+            <td><field>database</field></td>
+            <td><type><predef>string</predef></type></td>
+            <td><docs>a specific database: 'test_db', multiple databases by prefix: 'test_*', all databases: '*'</docs></td>
+        </tr>
+        <tr>
+            <td><field>names</field></td>
+            <td><type><predef>string</predef>[]</type></td>
+            <td><docs>a specific message: 'std.Echo', multiple messages by prefix: 'std.*', all messages: '*'</docs></td>
+        </tr>
     </table>
     </div>
     <div class='type'>

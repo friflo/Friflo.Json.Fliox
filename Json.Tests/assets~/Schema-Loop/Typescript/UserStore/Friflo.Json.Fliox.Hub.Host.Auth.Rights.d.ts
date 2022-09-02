@@ -3,22 +3,22 @@ import { TaskType }     from "./Friflo.Json.Fliox.Hub.Protocol.Tasks";
 import { EntityChange } from "./Friflo.Json.Fliox.Hub.Protocol.Tasks";
 
 export type Right_Union =
-    | AllowRight
-    | TaskRight
+    | DbRight
+    | DbTaskRight
+    | DbContainerRight
     | SendMessageRight
     | SubscribeMessageRight
-    | OperationRight
     | PredicateRight
 ;
 
 export abstract class Right {
     /** right type */
     abstract type:
-        | "allow"
-        | "task"
+        | "db"
+        | "dbTask"
+        | "dbContainer"
         | "sendMessage"
         | "subscribeMessage"
-        | "operation"
         | "predicate"
     ;
     /** optional description explaining the Right */
@@ -26,17 +26,17 @@ export abstract class Right {
 }
 
 /** Allow full access to the given **database**.   */
-export class AllowRight extends Right {
+export class DbRight extends Right {
     /** right type */
-    type         : "allow";
+    type         : "db";
     /** a specific database: 'test_db', multiple databases by prefix: 'test_*', all databases: '*' */
     database     : string;
 }
 
-/** **TaskRight** grant **database** access by a set of task **types**.    */
-export class TaskRight extends Right {
+/** **DbTaskRight** grant **database** access by a set of task **types**.    */
+export class DbTaskRight extends Right {
     /** right type */
-    type         : "task";
+    type         : "dbTask";
     /** a specific database: 'test_db', multiple databases by prefix: 'test_*', all databases: '*' */
     database     : string;
     /** set fo task types like: create, read, upsert, delete, query, ... */
@@ -44,40 +44,14 @@ export class TaskRight extends Right {
 }
 
 /**
- * **SendMessageRight** allows sending messages to a **database** by a set of **names**.    
- * Note: commands are messages - so permission of sending commands is same as for messages.
- */
-export class SendMessageRight extends Right {
-    /** right type */
-    type         : "sendMessage";
-    /** a specific database: 'test_db', multiple databases by prefix: 'test_*', all databases: '*' */
-    database     : string;
-    /** a specific message: 'std.Echo', multiple messages by prefix: 'std.*', all messages: '*' */
-    names        : string[];
-}
-
-/**
- * **SubscribeMessageRight** allows subscribing messages send to a **database**.    
- * Note: commands are messages - so permission of subscribing commands is same as for messages.
- */
-export class SubscribeMessageRight extends Right {
-    /** right type */
-    type         : "subscribeMessage";
-    /** a specific database: 'test_db', multiple databases by prefix: 'test_*', all databases: '*' */
-    database     : string;
-    /** a specific message: 'std.Echo', multiple messages by prefix: 'std.*', all messages: '*' */
-    names        : string[];
-}
-
-/**
- * **OperationRight** grant **database** access for the given **containers**
+ * **DbContainerRight** grant **database** access for the given **containers**
  * based on a set of **operations**.   
  * E.g. create, read, upsert, delete, query or aggregate (count)  
  * It also allows subscribing database changes by **subscribeChanges**
  */
-export class OperationRight extends Right {
+export class DbContainerRight extends Right {
     /** right type */
-    type         : "operation";
+    type         : "dbContainer";
     /** a specific database: 'test_db', multiple databases by prefix: 'test_*', all databases: '*' */
     database     : string;
     /** grant execution of operations and subscriptions on listed **containers** */
@@ -106,6 +80,32 @@ export type OperationType =
     | "mutate"         /** allow to mutate - create, upsert, delete and patch - entities in a container */
     | "full"           /** allow all operation types in a container */
 ;
+
+/**
+ * **SendMessageRight** allows sending messages to a **database** by a set of **names**.    
+ * Note: commands are messages - so permission of sending commands is same as for messages.
+ */
+export class SendMessageRight extends Right {
+    /** right type */
+    type         : "sendMessage";
+    /** a specific database: 'test_db', multiple databases by prefix: 'test_*', all databases: '*' */
+    database     : string;
+    /** a specific message: 'std.Echo', multiple messages by prefix: 'std.*', all messages: '*' */
+    names        : string[];
+}
+
+/**
+ * **SubscribeMessageRight** allows subscribing messages send to a **database**.    
+ * Note: commands are messages - so permission of subscribing commands is same as for messages.
+ */
+export class SubscribeMessageRight extends Right {
+    /** right type */
+    type         : "subscribeMessage";
+    /** a specific database: 'test_db', multiple databases by prefix: 'test_*', all databases: '*' */
+    database     : string;
+    /** a specific message: 'std.Echo', multiple messages by prefix: 'std.*', all messages: '*' */
+    names        : string[];
+}
 
 export class PredicateRight extends Right {
     /** right type */

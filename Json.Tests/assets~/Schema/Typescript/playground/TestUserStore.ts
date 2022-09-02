@@ -6,23 +6,23 @@ var exampleRole: Role = {
     id: "some-id",
     rights: [
         {
-            type:           "allow",
-            database:       "db",
+            type:           "db",
+            database:       "db-name",
             description:    "allow description"
         },
         {
-            type:           "operation",
-            database:       "db",
+            type:           "dbContainer",
+            database:       "db-name",
             containers:     [ { name: "articles", operations:["read", "query", "upsert"], subscribeChanges: ["upsert"] }]
         },
         {
             type:           "sendMessage",
-            database:       "db",
+            database:       "db-name",
             names:          ["test-mess*"]
         },
         {
             type:           "subscribeMessage",
-            database:       "db",
+            database:       "db-name",
             names:          ["test-sub*"]
         },
         { 
@@ -30,8 +30,8 @@ var exampleRole: Role = {
             names:          ["TestPredicate"]
         },
         {
-            type:           "task",
-            database:       "db",
+            type:           "dbTask",
+            database:       "db-name",
             types:          ["read"]
         }
     ]
@@ -40,7 +40,7 @@ var exampleRole: Role = {
 // check using a Discriminated Union compiles successful
 function usePolymorphType (right: Right_Union) {
     switch (right.type) {
-        case "allow":
+        case "db":
             break;
         case "sendMessage":
             var names: string[] = right.names;

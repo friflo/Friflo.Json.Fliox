@@ -32,11 +32,11 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth.Rights
     
     // ReSharper disable InconsistentNaming
     public enum RightType {
-        allow,
-        task,
+        db,
+        dbTask,
+        dbContainer,
         message,
         subscribeMessage,
-        operation,
         predicate
     }
 }

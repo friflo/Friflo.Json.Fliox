@@ -6,10 +6,10 @@
       rights {
         # test: use inline fragments to access data on the underlying concrete types
         __typename
-        ... on AllowRight {
+        ... on DbRight {
           database
         }
-        ... on TaskRight {
+        ... on DbTaskRight {
           database
           types
         }
@@ -21,7 +21,7 @@
           database
           names
         }
-        ... on OperationRight {
+        ... on DbContainerRight {
           database
           containers  # is a map. So it is represented as a GraphQL scalar
         }

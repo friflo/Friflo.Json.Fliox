@@ -12,39 +12,23 @@ abstract class Right  {
 }
 
 @Serializable
-@SerialName("allow")
-data class AllowRight (
+@SerialName("db")
+data class DbRight (
     override  val description : String? = null,
               val database    : String,
 ) : Right()
 
 @Serializable
-@SerialName("task")
-data class TaskRight (
+@SerialName("dbTask")
+data class DbTaskRight (
     override  val description : String? = null,
               val database    : String,
               val types       : List<TaskType>,
 ) : Right()
 
 @Serializable
-@SerialName("sendMessage")
-data class SendMessageRight (
-    override  val description : String? = null,
-              val database    : String,
-              val names       : List<String>,
-) : Right()
-
-@Serializable
-@SerialName("subscribeMessage")
-data class SubscribeMessageRight (
-    override  val description : String? = null,
-              val database    : String,
-              val names       : List<String>,
-) : Right()
-
-@Serializable
-@SerialName("operation")
-data class OperationRight (
+@SerialName("dbContainer")
+data class DbContainerRight (
     override  val description : String? = null,
               val database    : String,
               val containers  : List<ContainerAccess>,
@@ -69,6 +53,22 @@ enum class OperationType {
     mutate,
     full,
 }
+
+@Serializable
+@SerialName("sendMessage")
+data class SendMessageRight (
+    override  val description : String? = null,
+              val database    : String,
+              val names       : List<String>,
+) : Right()
+
+@Serializable
+@SerialName("subscribeMessage")
+data class SubscribeMessageRight (
+    override  val description : String? = null,
+              val database    : String,
+              val names       : List<String>,
+) : Right()
 
 @Serializable
 @SerialName("predicate")

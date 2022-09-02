@@ -49,41 +49,27 @@ class Right {
     description? : string
 }
 
-Right <|-- AllowRight
-class AllowRight {
-    type         : "allow"
+Right <|-- DbRight
+class DbRight {
+    type         : "db"
     database     : string
 }
 
-Right <|-- TaskRight
-class TaskRight {
-    type         : "task"
+Right <|-- DbTaskRight
+class DbTaskRight {
+    type         : "dbTask"
     database     : string
     types        : TaskType[]
 }
-TaskRight *-- "0..*" TaskType : types
+DbTaskRight *-- "0..*" TaskType : types
 
-Right <|-- SendMessageRight
-class SendMessageRight {
-    type         : "sendMessage"
-    database     : string
-    names        : string[]
-}
-
-Right <|-- SubscribeMessageRight
-class SubscribeMessageRight {
-    type         : "subscribeMessage"
-    database     : string
-    names        : string[]
-}
-
-Right <|-- OperationRight
-class OperationRight {
-    type         : "operation"
+Right <|-- DbContainerRight
+class DbContainerRight {
+    type         : "dbContainer"
     database     : string
     containers   : ContainerAccess[]
 }
-OperationRight *-- "0..*" ContainerAccess : containers
+DbContainerRight *-- "0..*" ContainerAccess : containers
 
 class ContainerAccess {
     name              : string
@@ -107,6 +93,20 @@ class OperationType:::cssEnum {
     full
 }
 
+
+Right <|-- SendMessageRight
+class SendMessageRight {
+    type         : "sendMessage"
+    database     : string
+    names        : string[]
+}
+
+Right <|-- SubscribeMessageRight
+class SubscribeMessageRight {
+    type         : "subscribeMessage"
+    database     : string
+    names        : string[]
+}
 
 Right <|-- PredicateRight
 class PredicateRight {

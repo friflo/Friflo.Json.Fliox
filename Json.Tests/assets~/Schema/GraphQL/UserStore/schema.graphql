@@ -132,32 +132,32 @@ input UserTargetInput {
 }
 
 union Right =
-    | AllowRight
-    | TaskRight
+    | DbRight
+    | DbTaskRight
+    | DbContainerRight
     | SendMessageRight
     | SubscribeMessageRight
-    | OperationRight
     | PredicateRight
 
 scalar RightInput
 
-type AllowRight {
+type DbRight {
     description : String
     database    : String!
 }
 
-input AllowRightInput {
+input DbRightInput {
     description : String
     database    : String!
 }
 
-type TaskRight {
+type DbTaskRight {
     description : String
     database    : String!
     types       : [TaskType!]!
 }
 
-input TaskRightInput {
+input DbTaskRightInput {
     description : String
     database    : String!
     types       : [TaskType!]!
@@ -180,37 +180,13 @@ enum TaskType {
     error
 }
 
-type SendMessageRight {
-    description : String
-    database    : String!
-    names       : [String!]!
-}
-
-input SendMessageRightInput {
-    description : String
-    database    : String!
-    names       : [String!]!
-}
-
-type SubscribeMessageRight {
-    description : String
-    database    : String!
-    names       : [String!]!
-}
-
-input SubscribeMessageRightInput {
-    description : String
-    database    : String!
-    names       : [String!]!
-}
-
-type OperationRight {
+type DbContainerRight {
     description : String
     database    : String!
     containers  : [ContainerAccess!]!
 }
 
-input OperationRightInput {
+input DbContainerRightInput {
     description : String
     database    : String!
     containers  : [ContainerAccessInput!]!
@@ -246,6 +222,30 @@ enum EntityChange {
     upsert
     patch
     delete
+}
+
+type SendMessageRight {
+    description : String
+    database    : String!
+    names       : [String!]!
+}
+
+input SendMessageRightInput {
+    description : String
+    database    : String!
+    names       : [String!]!
+}
+
+type SubscribeMessageRight {
+    description : String
+    database    : String!
+    names       : [String!]!
+}
+
+input SubscribeMessageRightInput {
+    description : String
+    database    : String!
+    names       : [String!]!
 }
 
 type PredicateRight {

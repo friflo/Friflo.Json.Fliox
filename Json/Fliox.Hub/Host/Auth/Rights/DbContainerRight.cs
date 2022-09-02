@@ -13,18 +13,18 @@ using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 namespace Friflo.Json.Fliox.Hub.Host.Auth.Rights
 {
     /// <summary>
-    /// <see cref="OperationRight"/> grant <see cref="database"/> access for the given <see cref="containers"/>
+    /// <see cref="DbContainerRight"/> grant <see cref="database"/> access for the given <see cref="containers"/>
     /// based on a set of <see cref="ContainerAccess.operations"/>. <br/>
     /// E.g. create, read, upsert, delete, query or aggregate (count)<br/>
     /// It also allows subscribing database changes by <see cref="ContainerAccess.subscribeChanges"/>
     /// </summary>
-    public sealed class OperationRight : Right
+    public sealed class DbContainerRight : Right
     {
         /// <summary>a specific database: 'test_db', multiple databases by prefix: 'test_*', all databases: '*'</summary>
         [Required]  public              string                  database;
         /// <summary>grant execution of operations and subscriptions on listed <see cref="containers"/> </summary>
         [Required]  public              List<ContainerAccess>   containers;
-                    public  override    RightType               RightType => RightType.operation;
+                    public  override    RightType               RightType => RightType.dbContainer;
         
         public override Authorizer ToAuthorizer() {
             var databaseName = database;

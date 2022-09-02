@@ -12,11 +12,11 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth.Rights
     /// grant access.
     /// </summary>
     [Discriminator("type", Description = "right type")]
-    [PolymorphType(typeof(AllowRight),              Discriminant = "allow")]
-    [PolymorphType(typeof(TaskRight),               Discriminant = "task")]
+    [PolymorphType(typeof(DbRight),                 Discriminant = "db")]
+    [PolymorphType(typeof(DbTaskRight),             Discriminant = "dbTask")]
+    [PolymorphType(typeof(DbContainerRight),        Discriminant = "dbContainer")]
     [PolymorphType(typeof(SendMessageRight),        Discriminant = "sendMessage")]
     [PolymorphType(typeof(SubscribeMessageRight),   Discriminant = "subscribeMessage")]
-    [PolymorphType(typeof(OperationRight),          Discriminant = "operation")]
     [PolymorphType(typeof(PredicateRight),          Discriminant = "predicate")]
     public abstract class Right {
         /// <summary>optional description explaining the Right</summary>

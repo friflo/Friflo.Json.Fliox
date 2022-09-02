@@ -13,16 +13,16 @@ using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 namespace Friflo.Json.Fliox.Hub.Host.Auth.Rights
 {
     /// <summary>
-    /// <see cref="TaskRight"/> grant <see cref="database"/> access by a set of task <see cref="types"/>. <br/> 
+    /// <see cref="DbTaskRight"/> grant <see cref="database"/> access by a set of task <see cref="types"/>. <br/> 
     /// </summary>
-    public sealed class TaskRight : Right
+    public sealed class DbTaskRight : Right
     {
         /// <summary>a specific database: 'test_db', multiple databases by prefix: 'test_*', all databases: '*'</summary>
         [Required]  public      string          database;
         /// <summary>set fo task types like: create, read, upsert, delete, query, ...</summary>
         [Required]  public      List<TaskType>  types;
         
-        public  override        RightType       RightType => RightType.task;
+        public  override        RightType       RightType => RightType.dbTask;
         
         public override Authorizer ToAuthorizer() {
             var databaseName = database;

@@ -2,11 +2,11 @@
     "id": "invalid-role",
     "rights": [
         {
-            "type": "allow",
+            "type": "db",
             "database": "not_found_db"
         },
         {
-            "type": "allow"
+            "type": "db"
         }
 
     ]

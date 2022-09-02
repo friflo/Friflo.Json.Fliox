@@ -37,24 +37,24 @@
         "Right": {
             "discriminator": "type",
             "mapping": {
-                "allow":            { "ref":  "AllowRight" },
-                "task":             { "ref":  "TaskRight" },
+                "db":               { "ref":  "DbRight" },
+                "dbTask":           { "ref":  "DbTaskRight" },
+                "dbContainer":      { "ref":  "DbContainerRight" },
                 "sendMessage":      { "ref":  "SendMessageRight" },
                 "subscribeMessage": { "ref":  "SubscribeMessageRight" },
-                "operation":        { "ref":  "OperationRight" },
                 "predicate":        { "ref":  "PredicateRight" }
             },
             "properties": {
                 "description": { "type": "string", "nullable": true }
             }
         },
-        "AllowRight": {
+        "DbRight": {
             "properties": {
                 "description": { "type": "string", "nullable": true },
                 "database":    { "type": "string" }
             }
         },
-        "TaskRight": {
+        "DbTaskRight": {
             "properties": {
                 "description": { "type": "string", "nullable": true },
                 "database":    { "type": "string" },
@@ -79,21 +79,7 @@
                 "error"
             ]
         },
-        "SendMessageRight": {
-            "properties": {
-                "description": { "type": "string", "nullable": true },
-                "database":    { "type": "string" },
-                "names":       { "elements": { "type": "string" } }
-            }
-        },
-        "SubscribeMessageRight": {
-            "properties": {
-                "description": { "type": "string", "nullable": true },
-                "database":    { "type": "string" },
-                "names":       { "elements": { "type": "string" } }
-            }
-        },
-        "OperationRight": {
+        "DbContainerRight": {
             "properties": {
                 "description": { "type": "string", "nullable": true },
                 "database":    { "type": "string" },
@@ -128,6 +114,20 @@
                 "patch",
                 "delete"
             ]
+        },
+        "SendMessageRight": {
+            "properties": {
+                "description": { "type": "string", "nullable": true },
+                "database":    { "type": "string" },
+                "names":       { "elements": { "type": "string" } }
+            }
+        },
+        "SubscribeMessageRight": {
+            "properties": {
+                "description": { "type": "string", "nullable": true },
+                "database":    { "type": "string" },
+                "names":       { "elements": { "type": "string" } }
+            }
         },
         "PredicateRight": {
             "properties": {

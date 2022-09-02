@@ -9,43 +9,29 @@ using UserStore2.Hub.Protocol.Tasks;
 namespace UserStore2.Hub.Host.Auth.Rights {
 
 [Discriminator("type")]
-[PolymorphType(typeof(AllowRight),            Discriminant = "allow")]
-[PolymorphType(typeof(TaskRight),             Discriminant = "task")]
+[PolymorphType(typeof(DbRight),               Discriminant = "db")]
+[PolymorphType(typeof(DbTaskRight),           Discriminant = "dbTask")]
+[PolymorphType(typeof(DbContainerRight),      Discriminant = "dbContainer")]
 [PolymorphType(typeof(SendMessageRight),      Discriminant = "sendMessage")]
 [PolymorphType(typeof(SubscribeMessageRight), Discriminant = "subscribeMessage")]
-[PolymorphType(typeof(OperationRight),        Discriminant = "operation")]
 [PolymorphType(typeof(PredicateRight),        Discriminant = "predicate")]
 public abstract class Right {
     string  description;
 }
 
-public class AllowRight : Right {
+public class DbRight : Right {
     [Required]
     string  database;
 }
 
-public class TaskRight : Right {
+public class DbTaskRight : Right {
     [Required]
     string          database;
     [Required]
     List<TaskType>  types;
 }
 
-public class SendMessageRight : Right {
-    [Required]
-    string        database;
-    [Required]
-    List<string>  names;
-}
-
-public class SubscribeMessageRight : Right {
-    [Required]
-    string        database;
-    [Required]
-    List<string>  names;
-}
-
-public class OperationRight : Right {
+public class DbContainerRight : Right {
     [Required]
     string                 database;
     [Required]
@@ -70,6 +56,20 @@ public enum OperationType {
     aggregate,
     mutate,
     full,
+}
+
+public class SendMessageRight : Right {
+    [Required]
+    string        database;
+    [Required]
+    List<string>  names;
+}
+
+public class SubscribeMessageRight : Right {
+    [Required]
+    string        database;
+    [Required]
+    List<string>  names;
 }
 
 public class PredicateRight : Right {

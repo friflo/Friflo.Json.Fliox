@@ -83,7 +83,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema.Validation
             
             var json = AsJson(@"{'rights': [{ 'type': 'xxx' }] }");
             IsFalse(validator.ValidateObject(json,                  test.roleType, out error));
-            AreEqual("Invalid discriminant. was: 'xxx', expect: [allow, task, sendMessage, subscribeMessage, operation, predicate] at Right > rights[0].type, pos: 27", error);
+            AreEqual("Invalid discriminant. was: 'xxx', expect: [db, dbTask, dbContainer, sendMessage, subscribeMessage, predicate] at Right > rights[0].type, pos: 27", error);
             
             json = AsJson(@"{'rights': [{ }] }");
             IsFalse(validator.ValidateObject(json,                  test.roleType, out error));
@@ -109,71 +109,71 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema.Validation
             IsFalse(validator.ValidateObject(json,                  test.roleType, out error));
             AreEqual("unexpected character while reading value. Found: X at Role > rights[0], pos: 14", error);
             
-            json = AsJson(@"{'rights': [{ 'type': 'task', 'types': 'zzz' } ] }");
+            json = AsJson(@"{'rights': [{ 'type': 'dbTask', 'types': 'zzz' } ] }");
             IsFalse(validator.ValidateObject(json,                  test.roleType, out error));
-            AreEqual("Incorrect type. was: 'zzz', expect: TaskType[] at TaskRight > rights[0].types, pos: 44", error);
+            AreEqual("Incorrect type. was: 'zzz', expect: TaskType[] at DbTaskRight > rights[0].types, pos: 46", error);
             
-            json = AsJson(@"{'rights': [{ 'type': 'task', 'types': ['yyy'] } ] }");
+            json = AsJson(@"{'rights': [{ 'type': 'dbTask', 'types': ['yyy'] } ] }");
             IsFalse(validator.ValidateObject(json,                  test.roleType, out error));
-            AreEqual("Invalid enum value. was: 'yyy', expect: TaskType at TaskRight > rights[0].types[0], pos: 45", error);
+            AreEqual("Invalid enum value. was: 'yyy', expect: TaskType at DbTaskRight > rights[0].types[0], pos: 47", error);
             
-            json = AsJson(@"{'rights': [{ 'type': 'task', 'types': {} ] }");
+            json = AsJson(@"{'rights': [{ 'type': 'dbTask', 'types': {} ] }");
             IsFalse(validator.ValidateObject(json,                  test.roleType, out error));
-            AreEqual("Incorrect type. was: object, expect: TaskType[] at TaskRight > rights[0].types, pos: 40", error);
+            AreEqual("Incorrect type. was: object, expect: TaskType[] at DbTaskRight > rights[0].types, pos: 42", error);
             
-            json = AsJson(@"{'rights': [{ 'type': 'task', 'types': [ {} ] ] }");
+            json = AsJson(@"{'rights': [{ 'type': 'dbTask', 'types': [ {} ] ] }");
             IsFalse(validator.ValidateObject(json,                  test.roleType, out error));
-            AreEqual("Incorrect type. was: object, expect: TaskType at TaskRight > rights[0].types[0], pos: 42", error);
+            AreEqual("Incorrect type. was: object, expect: TaskType at DbTaskRight > rights[0].types[0], pos: 44", error);
             
-            json = AsJson(@"{'rights': [{ 'type': 'task', 'types': true ] }");
+            json = AsJson(@"{'rights': [{ 'type': 'dbTask', 'types': true ] }");
             IsFalse(validator.ValidateObject(json,                  test.roleType, out error));
-            AreEqual("Incorrect type. was: true, expect: TaskType[] at TaskRight > rights[0].types, pos: 43", error);
+            AreEqual("Incorrect type. was: true, expect: TaskType[] at DbTaskRight > rights[0].types, pos: 45", error);
             
-            json = AsJson(@"{'rights': [{ 'type': 'task', 'types': [ false ] ] }");
+            json = AsJson(@"{'rights': [{ 'type': 'dbTask', 'types': [ false ] ] }");
             IsFalse(validator.ValidateObject(json,                  test.roleType, out error));
-            AreEqual("Incorrect type. was: false, expect: TaskType at TaskRight > rights[0].types[0], pos: 46", error);
+            AreEqual("Incorrect type. was: false, expect: TaskType at DbTaskRight > rights[0].types[0], pos: 48", error);
             
-            json = AsJson(@"{'rights': [{ 'type': 'task', 'types': 123 ] }");
+            json = AsJson(@"{'rights': [{ 'type': 'dbTask', 'types': 123 ] }");
             IsFalse(validator.ValidateObject(json,                  test.roleType, out error));
-            AreEqual("Incorrect type. was: 123, expect: TaskType[] at TaskRight > rights[0].types, pos: 42", error);
+            AreEqual("Incorrect type. was: 123, expect: TaskType[] at DbTaskRight > rights[0].types, pos: 44", error);
             
-            json = AsJson(@"{'rights': [{ 'type': 'task', 'types': [ 456 ] ] }");
+            json = AsJson(@"{'rights': [{ 'type': 'dbTask', 'types': [ 456 ] ] }");
             IsFalse(validator.ValidateObject(json,                  test.roleType, out error));
-            AreEqual("Incorrect type. was: 456, expect: TaskType at TaskRight > rights[0].types[0], pos: 44", error);
+            AreEqual("Incorrect type. was: 456, expect: TaskType at DbTaskRight > rights[0].types[0], pos: 46", error);
             
-            json = AsJson(@"{'rights': [{ 'type': 'task', 'types': null ] }");
+            json = AsJson(@"{'rights': [{ 'type': 'dbTask', 'types': null ] }");
             IsFalse(validator.ValidateObject(json,                  test.roleType, out error));
-            AreEqual("Required property must not be null. at TaskRight > rights[0].types, pos: 43", error);
+            AreEqual("Required property must not be null. at DbTaskRight > rights[0].types, pos: 45", error);
             
-            json = AsJson(@"{'rights': [{ 'type': 'task', 'types': [ null ] ] }");
+            json = AsJson(@"{'rights': [{ 'type': 'dbTask', 'types': [ null ] ] }");
             IsFalse(validator.ValidateObject(json,                  test.roleType, out error));
-            AreEqual("Element must not be null. at TaskRight > rights[0].types[0], pos: 45", error);
+            AreEqual("Element must not be null. at DbTaskRight > rights[0].types[0], pos: 47", error);
             
             
             // ----------------------------- test array elements (values) -----------------------------
-            json = AsJson(@"{'rights': [ { 'type': 'operation', 'containers': true } ] }");
+            json = AsJson(@"{'rights': [ { 'type': 'dbContainer', 'containers': true } ] }");
             IsFalse(validator.ValidateObject(json,                  test.roleType, out error));
-            AreEqual("Incorrect type. was: true, expect: ContainerAccess[] at OperationRight > rights[0].containers, pos: 54", error);
+            AreEqual("Incorrect type. was: true, expect: ContainerAccess[] at DbContainerRight > rights[0].containers, pos: 56", error);
             
-            json = AsJson(@"{'rights': [ { 'type': 'operation', 'containers': { 'key': true } } ] }");
+            json = AsJson(@"{'rights': [ { 'type': 'dbContainer', 'containers': { 'key': true } } ] }");
             IsFalse(validator.ValidateObject(json,                  test.roleType, out error));
-            AreEqual("Incorrect type. was: object, expect: ContainerAccess[] at OperationRight > rights[0].containers, pos: 51", error);
+            AreEqual("Incorrect type. was: object, expect: ContainerAccess[] at DbContainerRight > rights[0].containers, pos: 53", error);
             
-            json = AsJson(@"{'rights': [ { 'type': 'operation', 'containers': 123 } ] }");
+            json = AsJson(@"{'rights': [ { 'type': 'dbContainer', 'containers': 123 } ] }");
             IsFalse(validator.ValidateObject(json,                  test.roleType, out error));
-            AreEqual("Incorrect type. was: 123, expect: ContainerAccess[] at OperationRight > rights[0].containers, pos: 53", error);
+            AreEqual("Incorrect type. was: 123, expect: ContainerAccess[] at DbContainerRight > rights[0].containers, pos: 55", error);
             
-            json = AsJson(@"{'rights': [ { 'type': 'operation', 'containers': { 'key': 456 } } ] }");
+            json = AsJson(@"{'rights': [ { 'type': 'dbContainer', 'containers': { 'key': 456 } } ] }");
             IsFalse(validator.ValidateObject(json,                  test.roleType, out error));
-            AreEqual("Incorrect type. was: object, expect: ContainerAccess[] at OperationRight > rights[0].containers, pos: 51", error);
+            AreEqual("Incorrect type. was: object, expect: ContainerAccess[] at DbContainerRight > rights[0].containers, pos: 53", error);
             
-            json = AsJson(@"{'rights': [ { 'type': 'operation', 'containers': [] } ] }");
+            json = AsJson(@"{'rights': [ { 'type': 'dbContainer', 'containers': [] } ] }");
             IsFalse(validator.ValidateObject(json,                  test.roleType, out error));
-            AreEqual("Missing required fields: [database] at OperationRight > rights[0], pos: 54", error);
+            AreEqual("Missing required fields: [database] at DbContainerRight > rights[0], pos: 56", error);
             
-            json = AsJson(@"{'rights': [ { 'type': 'operation', 'containers': { 'key': [] } } ] }");
+            json = AsJson(@"{'rights': [ { 'type': 'dbContainer', 'containers': { 'key': [] } } ] }");
             IsFalse(validator.ValidateObject(json,                  test.roleType, out error));
-            AreEqual("Incorrect type. was: object, expect: ContainerAccess[] at OperationRight > rights[0].containers, pos: 51", error); // todo
+            AreEqual("Incorrect type. was: object, expect: ContainerAccess[] at DbContainerRight > rights[0].containers, pos: 53", error); // todo
 
         }
         
@@ -187,7 +187,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema.Validation
             internal    readonly JsonValue   jsonObject;
             internal    readonly JsonValue   roleDatabase    = new JsonValue(AsJson(
 @"{'id': 'db-operation','description': 'test',
-    'rights': [ { 'type': 'operation', 'database':'main_db', 'containers': [{'name': 'articles', 'operations': ['read', 'upsert'], 'subscribeChanges': ['upsert']}]} ]
+    'rights': [ { 'type': 'dbContainer', 'database':'main_db', 'containers': [{'name': 'articles', 'operations': ['read', 'upsert'], 'subscribeChanges': ['upsert']}]} ]
 }"));
             
             internal TestTypes() {

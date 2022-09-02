@@ -3,7 +3,7 @@
     "description": "Allow unrestricted access to default database.",
     "rights": [
         {
-            "type": "allow",
+            "type": "db",
             "database": "main_db"
         }
     ]

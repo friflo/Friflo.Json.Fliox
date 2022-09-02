@@ -8,7 +8,7 @@
             "rights": [
                 {
                     "database": "*",
-                    "__typename": "AllowRight"
+                    "__typename": "DbRight"
                 }
             ]
         },
@@ -17,7 +17,7 @@
             "rights": [
                 {
                     "database": "cluster",
-                    "__typename": "AllowRight"
+                    "__typename": "DbRight"
                 }
             ]
         },
@@ -26,10 +26,10 @@
             "rights": [
                 {
                     "database": "not_found_db",
-                    "__typename": "AllowRight"
+                    "__typename": "DbRight"
                 },
                 {
-                    "__typename": "AllowRight"
+                    "__typename": "DbRight"
                 }
             ]
         },
@@ -38,7 +38,7 @@
             "rights": [
                 {
                     "database": "main_db",
-                    "__typename": "AllowRight"
+                    "__typename": "DbRight"
                 }
             ]
         },
@@ -83,7 +83,7 @@
                             ]
                         }
                     ],
-                    "__typename": "OperationRight"
+                    "__typename": "DbContainerRight"
                 }
             ]
         },
@@ -109,7 +109,7 @@
                         "subscribeChanges",
                         "subscribeMessage"
                     ],
-                    "__typename": "TaskRight"
+                    "__typename": "DbTaskRight"
                 },
                 {
                     "database": "main_db",
@@ -128,7 +128,7 @@
                     "types": [
                         "read"
                     ],
-                    "__typename": "TaskRight"
+                    "__typename": "DbTaskRight"
                 }
             ]
         },
@@ -137,7 +137,7 @@
             "rights": [
                 {
                     "database": "monitor",
-                    "__typename": "AllowRight"
+                    "__typename": "DbRight"
                 }
             ]
         },
@@ -160,7 +160,7 @@
                             ]
                         }
                     ],
-                    "__typename": "OperationRight"
+                    "__typename": "DbContainerRight"
                 },
                 {
                     "database": "user_db",
@@ -193,7 +193,7 @@
                             ]
                         }
                     ],
-                    "__typename": "OperationRight"
+                    "__typename": "DbContainerRight"
                 },
                 {
                     "database": "user_db",

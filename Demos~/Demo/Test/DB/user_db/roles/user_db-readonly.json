@@ -3,7 +3,7 @@
     "description": "Allow readonly access to user_db: permissions & roles",
     "rights": [
         {
-            "type": "operation",
+            "type": "dbContainer",
             "database": "user_db",
             "containers": [
                 { "name": "permissions", "operations": ["read", "query"] },

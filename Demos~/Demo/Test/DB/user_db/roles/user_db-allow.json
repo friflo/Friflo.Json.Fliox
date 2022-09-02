@@ -3,7 +3,7 @@
     "description": "Allow unrestricted access to user_db: permissions & roles. Allow execution of the given commands",
     "rights": [
         {
-            "type": "operation",
+            "type": "dbContainer",
             "database": "user_db",
             "containers": [
                 {
