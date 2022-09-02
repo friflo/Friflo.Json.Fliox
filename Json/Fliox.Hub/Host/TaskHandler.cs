@@ -433,8 +433,8 @@ namespace Friflo.Json.Fliox.Hub.Host
         }
 
         protected static bool AuthorizeTask(SyncRequestTask task, SyncContext syncContext, out SyncTaskResult error) {
-            var authorizer = syncContext.authState.authorizer;
-            if (authorizer.AuthorizeTask(task, syncContext)) {
+            var taskAuthorizer = syncContext.authState.taskAuthorizer;
+            if (taskAuthorizer.AuthorizeTask(task, syncContext)) {
                 error = null;
                 return true;
             }

@@ -55,7 +55,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
         {
             var deniedIds       = new HashSet<JsonKey>(JsonKey.Equality);
             var databaseFilters = Helper.CreateHashSet(4, DatabaseFilterComparer.Instance);
-            syncContext.authState.authorizer.AddAuthorizedDatabases(databaseFilters);
+            syncContext.authState.taskAuthorizer.AddAuthorizedDatabases(databaseFilters);
 
             var ids = new List<JsonKey>(read.ids.Count);
             foreach (var id in read.ids) {
@@ -73,7 +73,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
         private static void ApplyAuthorizedDatabaseFilter(QueryEntities query, SyncContext syncContext)
         {
             var authorizedDatabases = Helper.CreateHashSet(4, DatabaseFilterComparer.Instance);
-            syncContext.authState.authorizer.AddAuthorizedDatabases(authorizedDatabases);
+            syncContext.authState.taskAuthorizer.AddAuthorizedDatabases(authorizedDatabases);
             var sb = new StringBuilder();
             foreach (var authorizedDatabase in authorizedDatabases) {
                 if (sb.Length != 0)

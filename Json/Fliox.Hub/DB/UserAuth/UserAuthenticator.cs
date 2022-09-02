@@ -34,7 +34,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
     /// Performs user authentication by validating the "userId" and the "token" assigned to a <see cref="Client.FlioxClient"/>
     /// </summary>
     /// <remarks>
-    /// If authentication succeed it set the <see cref="AuthState.authorizer"/> derived from the roles assigned to the user. <br/>
+    /// If authentication succeed it set the <see cref="AuthState.taskAuthorizer"/> derived from the roles assigned to the user. <br/>
     /// If authentication fails the given default <see cref="Authorizer"/> is used for the user.
     /// <br/>
     /// <b>Note:</b> User permissions and roles are cached for successful authenticated users.<br/>
@@ -143,7 +143,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
                     syncContext.AuthenticationFailed(user, InvalidUserToken, anonymousAuthorizer);
                     return;
                 }
-                syncContext.AuthenticationSucceed(user, user.authorizer);
+                syncContext.AuthenticationSucceed(user, user.taskAuthorizer);
                 return;
             }
             var command = new Credentials { userId = userId, token = token };
@@ -174,7 +174,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
                     syncContext.AuthenticationFailed(anonymousUser, InvalidUserToken, anonymousAuthorizer);
                     return;
                 }
-                syncContext.AuthenticationSucceed(user, user.authorizer);
+                syncContext.AuthenticationSucceed(user, user.taskAuthorizer);
             }
         }
         

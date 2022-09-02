@@ -68,16 +68,16 @@ namespace Friflo.Json.Fliox.Hub.Host
             authState.user            = user;
             authState.authExecuted    = true;
             authState.authenticated   = false;
-            authState.authorizer      = authorizer;
+            authState.taskAuthorizer  = authorizer;
             authState.error           = error;
         }
         
-        public void AuthenticationSucceed (User user, Authorizer authorizer) {
-            AssertAuthenticationParams(user, authorizer);
+        public void AuthenticationSucceed (User user, Authorizer taskAuthorizer) {
+            AssertAuthenticationParams(user, taskAuthorizer);
             authState.user            = user;
             authState.authExecuted    = true;
             authState.authenticated   = true;
-            authState.authorizer      = authorizer;
+            authState.taskAuthorizer  = taskAuthorizer;
         }
         
         public void SetClientId(in JsonKey clientId) {
