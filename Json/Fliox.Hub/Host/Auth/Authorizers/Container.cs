@@ -63,7 +63,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
         
         public override void AddAuthorizedDatabases(HashSet<DatabaseFilter> databaseFilters) => databaseFilters.Add(databaseFilter);
 
-        public override bool Authorize(SyncRequestTask task, SyncContext syncContext) {
+        public override bool AuthorizeTask(SyncRequestTask task, SyncContext syncContext) {
             if (!databaseFilter.Authorize(syncContext))
                 return false;
             switch (task.TaskType) {

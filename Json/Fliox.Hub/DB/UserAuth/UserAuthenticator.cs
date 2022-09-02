@@ -46,7 +46,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
         internal  readonly  FlioxHub                                    userHub;
         private   readonly  IUserAuth                                   userAuth;
         private   readonly  Authorizer                                  anonymousAuthorizer;
-        internal  readonly  ConcurrentDictionary<string, Authorizer>    authorizerByRole = new ConcurrentDictionary <string, Authorizer>();
+        internal  readonly  ConcurrentDictionary<string, Authorizers>   authorizersByRole = new ConcurrentDictionary <string, Authorizers>();
 
         public UserAuthenticator (EntityDatabase userDatabase, SharedEnv env = null, IUserAuth userAuth = null, Authorizer anonymousAuthorizer = null)
             : base (anonymousAuthorizer)
@@ -59,7 +59,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
             userHub        	        = new FlioxHub(userDatabase, sharedEnv);
             userHub.Authenticator   = new UserDatabaseAuthenticator(userDatabase.name);  // authorize access to userDatabase
             this.userAuth           = userAuth;
-            this.anonymousAuthorizer= anonymousAuthorizer ?? new AuthorizeDeny();
+            this.anonymousAuthorizer= anonymousAuthorizer ?? AuthorizeDeny.Instance;
         }
         
         public void Dispose() {
@@ -165,7 +165,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
                         syncContext.AuthenticationFailed(anonymousUser, userAuthInfo.error, anonymousAuthorizer);
                         return;
                     }
-                    user        = new User (userId, authCred.token, userAuthInfo.value.authorizer);
+                    user        = new User (userId, authCred.token, userAuthInfo.value.authorizers);
                     user.SetGroups(userAuthInfo.value.groups);
                     users.TryAdd(userId, user);
                 }
@@ -245,7 +245,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
             UserPermission permission = readPermission.Result;
             var roles = permission.roles;
             if (roles == null || roles.Count == 0) {
-                return new UserAuthInfo(anonymousAuthorizer, targetGroups);
+                return new UserAuthInfo(new Authorizers(anonymousAuthorizer), targetGroups);
             }
             var error = await AddNewRoles(userStore, roles).ConfigureAwait(false);
             if (error != null)
@@ -254,19 +254,16 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
             var authorizers = new List<Authorizer>(roles.Count);
             foreach (var role in roles) {
                 // existence is checked already in AddNewRoles()
-                authorizerByRole.TryGetValue(role, out Authorizer authorizer);
-                authorizers.Add(authorizer);
+                authorizersByRole.TryGetValue(role, out Authorizers roleAuthorizers);
+                authorizers.AddRange(roleAuthorizers.list);
             }
-            if (authorizers.Count == 1)
-                return new UserAuthInfo(authorizers[0], targetGroups);
-            var any = new AuthorizeAny(authorizers);
-            return new UserAuthInfo(any, targetGroups);
+            return new UserAuthInfo(new Authorizers(authorizers), targetGroups);
         }
         
         private async Task<string> AddNewRoles(UserStore userStore, List<string> roles) {
             var newRoles = new List<string>();
             foreach (var role in roles) {
-                if (!authorizerByRole.TryGetValue(role, out _)) {
+                if (!authorizersByRole.TryGetValue(role, out _)) {
                     newRoles.Add(role);
                 }
             }
@@ -293,12 +290,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
                     }
                     authorizers.Add(authorizer);
                 }
-                if (authorizers.Count == 1) {
-                    authorizerByRole.TryAdd(role, authorizers[0]);
-                } else {
-                    var any = new AuthorizeAny(authorizers);
-                    authorizerByRole.TryAdd(role, any);
-                }
+                authorizersByRole.TryAdd(role, new Authorizers(authorizers));
             }
             return null;
         }
@@ -320,12 +312,12 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
     
     internal class UserAuthInfo
     {
-        internal readonly Authorizer    authorizer;
+        internal readonly Authorizers   authorizers;
         internal readonly List<string>  groups;
         
-        internal UserAuthInfo(Authorizer authorizer, List<string> groups) {
-            this.authorizer = authorizer;
-            this.groups     = groups;
+        internal UserAuthInfo(Authorizers authorizers, List<string> groups) {
+            this.authorizers    = authorizers;
+            this.groups         = groups;
         }
     }
 }

@@ -66,9 +66,9 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
             
             var affectedUsers = new List<JsonKey>();
             foreach (var changedRole in changedRoles) {
-                if(!userAuthenticator.authorizerByRole.TryRemove(changedRole, out var authorizer))
+                if(!userAuthenticator.authorizersByRole.TryRemove(changedRole, out var authorizers))
                     continue;
-                AddAffectedUsers(affectedUsers, authorizer);
+                AddAffectedUsers(affectedUsers, authorizers);
             }
             foreach (var user in affectedUsers) {
                 userAuthenticator.users.TryRemove(user, out _);
@@ -94,19 +94,19 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
         
         /// Iterate all authorized users and remove those having an <see cref="Authorizer"/> which was modified.
         /// Used iteration instead of an additional map (role -> users) to avoid long lived objects in heap.
-        private void AddAffectedUsers(List<JsonKey> affectedUsers, Authorizer search) {
+        private void AddAffectedUsers(List<JsonKey> affectedUsers, Authorizers search) {
             foreach (var pair in userAuthenticator.users) {
                 var user = pair.Value;
                 if (user.authorizer is AuthorizeAny any) {
                     foreach (var authorizer in any.list) {
-                        if (authorizer == search) {
+                        if (search.Contains(authorizer)) {
                             affectedUsers.Add(user.userId);
                             break;
                         }
                     }
                     continue;
                 }
-                if (user.authorizer == search) {
+                if (search.Contains(user.authorizer)) {
                     affectedUsers.Add(user.userId);                    
                 }
             }

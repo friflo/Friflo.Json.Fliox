@@ -9,9 +9,11 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
 {
     public sealed class AuthorizeDeny : Authorizer {
         
+        public static readonly AuthorizeDeny Instance = new AuthorizeDeny();
+        
         public override void AddAuthorizedDatabases(HashSet<DatabaseFilter> databaseFilters) { }
         
-        public override bool Authorize(SyncRequestTask task, SyncContext syncContext) {
+        public override bool AuthorizeTask(SyncRequestTask task, SyncContext syncContext) {
             return false;
         }
     }

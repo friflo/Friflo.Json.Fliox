@@ -27,7 +27,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
     public class UserDatabaseAuthenticator : Authenticator
     {
         private readonly        Dictionary<JsonKey, Authorizer> userRights;
-        private static readonly Authorizer                      UnknownRights    = new AuthorizeDeny();
+        private static readonly Authorizer                      UnknownRights    = AuthorizeDeny.Instance;
         
         public UserDatabaseAuthenticator(string userDbName) : base (null) {
             var changes         = new [] { EntityChange.create, EntityChange.upsert, EntityChange.delete, EntityChange.patch };
@@ -56,7 +56,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
                 user = anonymousUser;
             } else {
                 if (!users.TryGetValue(userId, out  user)) {
-                    user = new User(userId, null, null);
+                    user = new User(userId, null, default);
                     users.TryAdd(userId, user);
                 }
             }

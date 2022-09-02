@@ -51,7 +51,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
         private static bool ClearAuthCache (Param<JsonValue> param, MessageContext command) {
             var authenticator   = (UserAuthenticator)command.Hub.Authenticator;
             authenticator.users.Clear();
-            authenticator.authorizerByRole.Clear();
+            authenticator.authorizersByRole.Clear();
             return true;
         }
     }

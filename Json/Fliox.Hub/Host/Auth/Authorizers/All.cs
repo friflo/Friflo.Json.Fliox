@@ -2,16 +2,17 @@
 // See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
+using System.Linq;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.Host.Auth
 {
     public sealed class AuthorizeAll : Authorizer {
-        private readonly    ICollection<Authorizer>     list;
+        private readonly    Authorizer[]     list;
         
         public AuthorizeAll(ICollection<Authorizer> list) {
-            this.list = list;    
+            this.list = list.ToArray();    
         }
         
         public override void AddAuthorizedDatabases(HashSet<DatabaseFilter> databaseFilters) {
@@ -20,9 +21,9 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
             }
         }
         
-        public override bool Authorize(SyncRequestTask task, SyncContext syncContext) {
+        public override bool AuthorizeTask(SyncRequestTask task, SyncContext syncContext) {
             foreach (var item in list) {
-                if (!item.Authorize(task, syncContext))
+                if (!item.AuthorizeTask(task, syncContext))
                     return false;
             }
             return true;
