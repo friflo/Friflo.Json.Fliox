@@ -2,6 +2,6 @@
     "id": "monitor-allow",
     "description": "Allow unrestricted access to a database: monitor",
     "rights": [
-        { "type": "db", "database": "monitor" }
+        { "type": "dbFull", "database": "monitor" }
     ]
 }

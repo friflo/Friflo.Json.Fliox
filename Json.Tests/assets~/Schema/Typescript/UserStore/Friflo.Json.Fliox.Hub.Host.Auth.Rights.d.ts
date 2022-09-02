@@ -9,7 +9,7 @@ import { EntityChange } from "./Friflo.Json.Fliox.Hub.Protocol.Tasks";
  * grant access.
  */
 export type Right_Union =
-    | DbRight
+    | DbFullRight
     | DbTaskRight
     | DbContainerRight
     | SendMessageRight
@@ -20,7 +20,7 @@ export type Right_Union =
 export abstract class Right {
     /** right type */
     abstract type:
-        | "db"
+        | "dbFull"
         | "dbTask"
         | "dbContainer"
         | "sendMessage"
@@ -32,9 +32,9 @@ export abstract class Right {
 }
 
 /** Allow full access to the given **database**.   */
-export class DbRight extends Right {
+export class DbFullRight extends Right {
     /** right type */
-    type         : "db";
+    type         : "dbFull";
     /** a specific database: 'test_db', multiple databases by prefix: 'test_*', all databases: '*' */
     database     : string;
 }

@@ -2,6 +2,6 @@
     "id": "main_db-allow",
     "description": "Allow unrestricted access to default database.",
     "rights": [
-        { "type": "db", "database": "main_db" }
+        { "type": "dbFull", "database": "main_db" }
     ]
 }

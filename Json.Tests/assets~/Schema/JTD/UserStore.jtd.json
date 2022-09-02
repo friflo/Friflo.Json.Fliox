@@ -37,7 +37,7 @@
         "Right": {
             "discriminator": "type",
             "mapping": {
-                "db":               { "ref":  "DbRight" },
+                "dbFull":           { "ref":  "DbFullRight" },
                 "dbTask":           { "ref":  "DbTaskRight" },
                 "dbContainer":      { "ref":  "DbContainerRight" },
                 "sendMessage":      { "ref":  "SendMessageRight" },
@@ -48,7 +48,7 @@
                 "description": { "type": "string", "nullable": true }
             }
         },
-        "DbRight": {
+        "DbFullRight": {
             "properties": {
                 "description": { "type": "string", "nullable": true },
                 "database":    { "type": "string" }

@@ -83,7 +83,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema.Validation
             
             var json = AsJson(@"{'rights': [{ 'type': 'xxx' }] }");
             IsFalse(validator.ValidateObject(json,                  test.roleType, out error));
-            AreEqual("Invalid discriminant. was: 'xxx', expect: [db, dbTask, dbContainer, sendMessage, subscribeMessage, predicate] at Right > rights[0].type, pos: 27", error);
+            AreEqual("Invalid discriminant. was: 'xxx', expect: [dbFull, dbTask, dbContainer, sendMessage, subscribeMessage, predicate] at Right > rights[0].type, pos: 27", error);
             
             json = AsJson(@"{'rights': [{ }] }");
             IsFalse(validator.ValidateObject(json,                  test.roleType, out error));

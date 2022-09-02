@@ -132,7 +132,7 @@ input UserTargetInput {
 }
 
 union Right =
-    | DbRight
+    | DbFullRight
     | DbTaskRight
     | DbContainerRight
     | SendMessageRight
@@ -141,12 +141,12 @@ union Right =
 
 scalar RightInput
 
-type DbRight {
+type DbFullRight {
     description : String
     database    : String!
 }
 
-input DbRightInput {
+input DbFullRightInput {
     description : String
     database    : String!
 }

@@ -49,9 +49,9 @@ class Right {
     description? : string
 }
 
-Right <|-- DbRight
-class DbRight {
-    type         : "db"
+Right <|-- DbFullRight
+class DbFullRight {
+    type         : "dbFull"
     database     : string
 }
 

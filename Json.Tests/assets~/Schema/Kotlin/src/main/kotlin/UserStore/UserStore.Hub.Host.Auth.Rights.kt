@@ -12,8 +12,8 @@ abstract class Right  {
 }
 
 @Serializable
-@SerialName("db")
-data class DbRight (
+@SerialName("dbFull")
+data class DbFullRight (
     override  val description : String? = null,
               val database    : String,
 ) : Right()

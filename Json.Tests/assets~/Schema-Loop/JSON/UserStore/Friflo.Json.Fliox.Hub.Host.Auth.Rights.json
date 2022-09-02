@@ -5,7 +5,7 @@
         "Right": {
             "discriminator": "type",
             "oneOf": [
-                { "$ref": "#/definitions/DbRight" },
+                { "$ref": "#/definitions/DbFullRight" },
                 { "$ref": "#/definitions/DbTaskRight" },
                 { "$ref": "#/definitions/DbContainerRight" },
                 { "$ref": "#/definitions/SendMessageRight" },
@@ -13,7 +13,7 @@
                 { "$ref": "#/definitions/PredicateRight" }
             ],
             "properties": {
-                "type":        { "enum": ["db", "dbTask", "dbContainer", "sendMessage", "subscribeMessage", "predicate"], "description": "right type" },
+                "type":        { "enum": ["dbFull", "dbTask", "dbContainer", "sendMessage", "subscribeMessage", "predicate"], "description": "right type" },
                 "description": { "type": ["string", "null"], "description": "optional description explaining the Right" }
             },
             "required": [
@@ -21,12 +21,12 @@
             ],
             "additionalProperties": true
         },
-        "DbRight": {
+        "DbFullRight": {
             "type": "object",
             "extends": { "$ref": "#/definitions/Right" },
             "description": "Allow full access to the given <b>database</b>.<br/>",
             "properties": {
-                "type":        { "enum": ["db"] },
+                "type":        { "enum": ["dbFull"] },
                 "description": { "type": ["string", "null"], "description": "optional description explaining the Right" },
                 "database":    { "type": "string", "description": "a specific database: 'test_db', multiple databases by prefix: 'test_*', all databases: '*'" }
             },

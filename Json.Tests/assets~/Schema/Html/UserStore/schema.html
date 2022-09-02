@@ -319,7 +319,7 @@
     <li><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights'>Friflo.Json.Fliox.Hub.Host.Auth.Rights</a>
         <ul>
             <li><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.Right'><div><span>Right</span><discUnion>type</discUnion></div></a></li>
-            <li><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.DbRight'><div><span>DbRight</span><disc>type</disc></div></a></li>
+            <li><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.DbFullRight'><div><span>DbFullRight</span><disc>type</disc></div></a></li>
             <li><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.DbTaskRight'><div><span>DbTaskRight</span><disc>type</disc></div></a></li>
             <li><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.DbContainerRight'><div><span>DbContainerRight</span><disc>type</disc></div></a></li>
             <li><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.ContainerAccess'><div><span>ContainerAccess</span></div></a></li>
@@ -939,8 +939,8 @@ grant access.
             <td><docs>right type</docs>
             <table>
             <tr>
-                <td><discriminant>"db"</discriminant></td>
-                <td><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.DbRight'>DbRight</a></td>
+                <td><discriminant>"dbFull"</discriminant></td>
+                <td><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.DbFullRight'>DbFullRight</a></td>
             </tr>
             <tr>
                 <td><discriminant>"dbTask"</discriminant></td>
@@ -972,8 +972,8 @@ grant access.
     </table>
     </div>
     <div class='type'>
-    <h3 id='Friflo.Json.Fliox.Hub.Host.Auth.Rights.DbRight'>
-        <a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.DbRight'>DbRight</a>
+    <h3 id='Friflo.Json.Fliox.Hub.Host.Auth.Rights.DbFullRight'>
+        <a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.DbFullRight'>DbFullRight</a>
         <keyword>class</keyword>
         <keyword>extends</keyword> <extends><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.Right'>Right</a></extends>
     </h3>
@@ -982,7 +982,7 @@ grant access.
     <table class='fields'>
         <tr>
             <td><disc>type</disc></td>
-            <td><discriminant>"db"</discriminant></td><td><docs>right type</docs></td>
+            <td><discriminant>"dbFull"</discriminant></td><td><docs>right type</docs></td>
         </tr>
         <tr>
             <td><field>database</field></td>

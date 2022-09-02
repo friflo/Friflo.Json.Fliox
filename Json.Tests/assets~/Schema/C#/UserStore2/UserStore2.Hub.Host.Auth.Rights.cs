@@ -9,7 +9,7 @@ using UserStore2.Hub.Protocol.Tasks;
 namespace UserStore2.Hub.Host.Auth.Rights {
 
 [Discriminator("type")]
-[PolymorphType(typeof(DbRight),               Discriminant = "db")]
+[PolymorphType(typeof(DbFullRight),           Discriminant = "dbFull")]
 [PolymorphType(typeof(DbTaskRight),           Discriminant = "dbTask")]
 [PolymorphType(typeof(DbContainerRight),      Discriminant = "dbContainer")]
 [PolymorphType(typeof(SendMessageRight),      Discriminant = "sendMessage")]
@@ -19,7 +19,7 @@ public abstract class Right {
     string  description;
 }
 
-public class DbRight : Right {
+public class DbFullRight : Right {
     [Required]
     string  database;
 }

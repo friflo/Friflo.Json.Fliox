@@ -8,7 +8,7 @@
             "rights": [
                 {
                     "database": "*",
-                    "__typename": "DbRight"
+                    "__typename": "DbFullRight"
                 }
             ]
         },
@@ -17,7 +17,7 @@
             "rights": [
                 {
                     "database": "cluster",
-                    "__typename": "DbRight"
+                    "__typename": "DbFullRight"
                 }
             ]
         },
@@ -26,10 +26,10 @@
             "rights": [
                 {
                     "database": "not_found_db",
-                    "__typename": "DbRight"
+                    "__typename": "DbFullRight"
                 },
                 {
-                    "__typename": "DbRight"
+                    "__typename": "DbFullRight"
                 }
             ]
         },
@@ -38,7 +38,7 @@
             "rights": [
                 {
                     "database": "main_db",
-                    "__typename": "DbRight"
+                    "__typename": "DbFullRight"
                 }
             ]
         },
@@ -137,7 +137,7 @@
             "rights": [
                 {
                     "database": "monitor",
-                    "__typename": "DbRight"
+                    "__typename": "DbFullRight"
                 }
             ]
         },

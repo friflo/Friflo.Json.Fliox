@@ -6,7 +6,7 @@
       rights {
         # test: use inline fragments to access data on the underlying concrete types
         __typename
-        ... on DbRight {
+        ... on DbFullRight {
           database
         }
         ... on DbTaskRight {

@@ -2,6 +2,6 @@
     "id": "cluster-allow",
     "description": "Allow unrestricted access to cluster database",
     "rights": [        
-        { "type": "db", "database": "cluster" }        
+        { "type": "dbFull", "database": "cluster" }        
     ]
 }
