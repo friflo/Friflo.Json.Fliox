@@ -25,7 +25,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
                 user = anonymousUser;
             } else {
                 if (!users.TryGetValue(userId, out user)) {
-                    user = new User(userId, null, new Authorizers(anonymousAuthorizer));
+                    user = new User(userId, null, anonymousAuthorizer);
                     users.TryAdd(userId, user);
                 }
             }

@@ -1,38 +1,15 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Friflo.Json.Fliox.Hub.Host.Auth
 {
-    internal readonly struct Authorizers
+    internal static class AuthorizerUtils
     {
-        internal readonly IReadOnlyList<Authorizer> list;
-        
-        internal Authorizers(Authorizer authorizer) {
-            if (authorizer == null) {
-                list = null;
-                return;
-            }
-            list = new [] { authorizer };
-        }
-        
-        internal Authorizers(IReadOnlyList<Authorizer> authorizers) {
-            foreach (var authorizer in authorizers) {
-                if (authorizer == null) throw new NullReferenceException(nameof(authorizer));
-            }
-            list = authorizers.ToArray();
-        }
-        
-        internal bool Contains (Authorizer authorizer) {
-            return list.Contains(authorizer);
-        }
-        
-        internal Authorizer ToAuthorizer() {
-            if (list == null)
+        internal static Authorizer ToAuthorizer(IReadOnlyList<Authorizer> authorizers) {
+            if (authorizers == null)
                 return AuthorizeDeny.Instance;
-            if (list.Count == 0)
+            if (authorizers.Count == 0)
                 return AuthorizeDeny.Instance;
-            return TrimAny(list);
+            return TrimAny(authorizers);
         }
 
         private static Authorizer TrimAny(IReadOnlyList<Authorizer> list) {

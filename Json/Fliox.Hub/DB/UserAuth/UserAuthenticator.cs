@@ -46,7 +46,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
         internal  readonly  FlioxHub                                    userHub;
         private   readonly  IUserAuth                                   userAuth;
         private   readonly  Authorizer                                  anonymousAuthorizer;
-        internal  readonly  ConcurrentDictionary<string, Authorizers>   authorizersByRole = new ConcurrentDictionary <string, Authorizers>();
+        internal  readonly  ConcurrentDictionary<string, Authorizer[]>  authorizersByRole = new ConcurrentDictionary <string, Authorizer[]>();
 
         public UserAuthenticator (EntityDatabase userDatabase, SharedEnv env = null, IUserAuth userAuth = null, Authorizer anonymousAuthorizer = null)
             : base (anonymousAuthorizer)
@@ -165,7 +165,8 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
                         syncContext.AuthenticationFailed(anonymousUser, userAuthInfo.error, anonymousAuthorizer);
                         return;
                     }
-                    user        = new User (userId, authCred.token, userAuthInfo.value.authorizers);
+                    var taskAuthorizer  = userAuthInfo.value.taskAuthorizer;
+                    user                = new User (userId, authCred.token, taskAuthorizer);
                     user.SetGroups(userAuthInfo.value.groups);
                     users.TryAdd(userId, user);
                 }
@@ -245,7 +246,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
             UserPermission permission = readPermission.Result;
             var roles = permission.roles;
             if (roles == null || roles.Count == 0) {
-                return new UserAuthInfo(new Authorizers(anonymousAuthorizer), targetGroups);
+                return new UserAuthInfo(new [] { anonymousAuthorizer }, targetGroups);
             }
             var error = await AddNewRoles(userStore, roles).ConfigureAwait(false);
             if (error != null)
@@ -254,10 +255,11 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
             var authorizers = new List<Authorizer>(roles.Count);
             foreach (var role in roles) {
                 // existence is checked already in AddNewRoles()
-                authorizersByRole.TryGetValue(role, out Authorizers roleAuthorizers);
-                authorizers.AddRange(roleAuthorizers.list);
+                if (!authorizersByRole.TryGetValue(role, out var roleAuthorizers))
+                    throw new InvalidOperationException($"roleAuthorizers not found: {role}");
+                authorizers.AddRange(roleAuthorizers);
             }
-            return new UserAuthInfo(new Authorizers(authorizers), targetGroups);
+            return new UserAuthInfo(authorizers, targetGroups);
         }
         
         private async Task<string> AddNewRoles(UserStore userStore, List<string> roles) {
@@ -290,7 +292,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
                     }
                     authorizers.Add(authorizer);
                 }
-                authorizersByRole.TryAdd(role, new Authorizers(authorizers));
+                authorizersByRole.TryAdd(role, authorizers.ToArray());
             }
             return null;
         }
@@ -312,11 +314,30 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
     
     internal class UserAuthInfo
     {
-        internal readonly Authorizers   authorizers;
+        internal readonly Authorizer    taskAuthorizer;
         internal readonly List<string>  groups;
         
-        internal UserAuthInfo(Authorizers authorizers, List<string> groups) {
-            this.authorizers    = authorizers;
+        internal UserAuthInfo(IReadOnlyList<Authorizer> authorizers, List<string> groups) {
+            var taskAuthorizers = new List<Authorizer>();
+            foreach (var authorizer in authorizers) {
+                switch (authorizer) {
+                    case AuthorizeDatabase _:
+                    case AuthorizeTaskType _:
+                    case AuthorizeContainer _:
+                    case AuthorizeSendMessage _:
+                    case AuthorizeSubscribeMessage _:
+                    case AuthorizeSubscribeChanges _:
+                    case AuthorizePredicate _:
+                    case AuthorizeAny _:
+                        taskAuthorizers.Add(authorizer);
+                        break;
+                    case AuthorizeDeny _:
+                        break;
+                    default:
+                        throw new InvalidOperationException($"unexpected authorizer: {authorizer}");
+                }
+            }
+            this.taskAuthorizer = AuthorizerUtils.ToAuthorizer(taskAuthorizers);
             this.groups         = groups;
         }
     }

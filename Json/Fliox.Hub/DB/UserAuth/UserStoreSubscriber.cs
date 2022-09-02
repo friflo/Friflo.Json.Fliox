@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Client;
 using Friflo.Json.Fliox.Hub.Host.Auth;
@@ -94,7 +95,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
         
         /// Iterate all authorized users and remove those having an <see cref="Authorizer"/> which was modified.
         /// Used iteration instead of an additional map (role -> users) to avoid long lived objects in heap.
-        private void AddAffectedUsers(List<JsonKey> affectedUsers, Authorizers search) {
+        private void AddAffectedUsers(List<JsonKey> affectedUsers, Authorizer[] search) {
             foreach (var pair in userAuthenticator.users) {
                 var user = pair.Value;
                 if (user.taskAuthorizer is AuthorizeAny any) {

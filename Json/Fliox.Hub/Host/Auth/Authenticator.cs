@@ -33,7 +33,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
         protected Authenticator (Authorizer anonymousAuthorizer) {
             registeredPredicates    = new Dictionary<string, AuthorizePredicate>();
             users                   = new ConcurrentDictionary <JsonKey, User>(JsonKey.Equality);
-            anonymousUser           = new User(User.AnonymousId, null, new Authorizers (anonymousAuthorizer) ); 
+            anonymousUser           = new User(User.AnonymousId, null, anonymousAuthorizer); 
             users.TryAdd(User.AnonymousId, anonymousUser);
         }
         
