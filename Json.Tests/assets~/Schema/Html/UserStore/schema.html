@@ -327,6 +327,7 @@
             <li><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.SendMessageRight'><div><span>SendMessageRight</span><disc>type</disc></div></a></li>
             <li><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.SubscribeMessageRight'><div><span>SubscribeMessageRight</span><disc>type</disc></div></a></li>
             <li><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.PredicateRight'><div><span>PredicateRight</span><disc>type</disc></div></a></li>
+            <li><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.HubEventsRight'><div><span>HubEventsRight</span><disc>type</disc></div></a></li>
         </ul>
     </li>
     <li><a href='#Friflo.Json.Fliox.Hub.Protocol.Tasks'>Friflo.Json.Fliox.Hub.Protocol.Tasks</a>
@@ -962,6 +963,10 @@ grant access.
                 <td><discriminant>"predicate"</discriminant></td>
                 <td><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.PredicateRight'>PredicateRight</a></td>
             </tr>
+            <tr>
+                <td><discriminant>"hubEvents"</discriminant></td>
+                <td><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.HubEventsRight'>HubEventsRight</a></td>
+            </tr>
             </table></td>
         </tr>
         <tr>
@@ -1155,6 +1160,23 @@ Note: commands are messages - so permission of subscribing commands is same as f
             <td><field>names</field></td>
             <td><type><predef>string</predef>[]</type></td>
             <td><docs>a specific predicate: 'TestPredicate', multiple predicates by prefix: 'Test*', all predicates: '*'</docs></td>
+        </tr>
+    </table>
+    </div>
+    <div class='type'>
+    <h3 id='Friflo.Json.Fliox.Hub.Host.Auth.Rights.HubEventsRight'>
+        <a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.HubEventsRight'>HubEventsRight</a>
+        <keyword>class</keyword>
+        <keyword>extends</keyword> <extends><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.Right'>Right</a></extends>
+    </h3>
+    <table class='fields'>
+        <tr>
+            <td><disc>type</disc></td>
+            <td><discriminant>"hubEvents"</discriminant></td><td><docs>right type</docs></td>
+        </tr>
+        <tr>
+            <td><field>queueEvents</field></td>
+            <td><type><predef>boolean</predef></type></td>
         </tr>
     </table>
     </div>

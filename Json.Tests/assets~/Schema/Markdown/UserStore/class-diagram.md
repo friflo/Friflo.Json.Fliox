@@ -114,6 +114,12 @@ class PredicateRight {
     names        : string[]
 }
 
+Right <|-- HubEventsRight
+class HubEventsRight {
+    type         : "hubEvents"
+    queueEvents  : boolean
+}
+
 class TaskType:::cssEnum {
     <<enumeration>>
     read

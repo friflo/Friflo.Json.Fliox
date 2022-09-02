@@ -42,7 +42,8 @@
                 "dbContainer":      { "ref":  "DbContainerRight" },
                 "sendMessage":      { "ref":  "SendMessageRight" },
                 "subscribeMessage": { "ref":  "SubscribeMessageRight" },
-                "predicate":        { "ref":  "PredicateRight" }
+                "predicate":        { "ref":  "PredicateRight" },
+                "hubEvents":        { "ref":  "HubEventsRight" }
             },
             "properties": {
                 "description": { "type": "string", "nullable": true }
@@ -133,6 +134,12 @@
             "properties": {
                 "description": { "type": "string", "nullable": true },
                 "names":       { "elements": { "type": "string" } }
+            }
+        },
+        "HubEventsRight": {
+            "properties": {
+                "description": { "type": "string", "nullable": true },
+                "queueEvents": { "type": "boolean" }
             }
         },
         "Credentials": {

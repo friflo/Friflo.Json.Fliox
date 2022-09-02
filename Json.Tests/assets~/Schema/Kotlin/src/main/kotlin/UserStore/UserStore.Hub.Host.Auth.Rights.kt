@@ -77,3 +77,10 @@ data class PredicateRight (
               val names       : List<String>,
 ) : Right()
 
+@Serializable
+@SerialName("hubEvents")
+data class HubEventsRight (
+    override  val description : String? = null,
+              val queueEvents : Boolean,
+) : Right()
+

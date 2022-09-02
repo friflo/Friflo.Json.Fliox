@@ -18,6 +18,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth.Rights
     [PolymorphType(typeof(SendMessageRight),        Discriminant = "sendMessage")]
     [PolymorphType(typeof(SubscribeMessageRight),   Discriminant = "subscribeMessage")]
     [PolymorphType(typeof(PredicateRight),          Discriminant = "predicate")]
+    [PolymorphType(typeof(HubEventsRight),          Discriminant = "hubEvents")]
     public abstract class Right {
         /// <summary>optional description explaining the Right</summary>
         public              string      description;

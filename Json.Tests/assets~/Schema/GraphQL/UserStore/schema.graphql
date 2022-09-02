@@ -138,6 +138,7 @@ union Right =
     | SendMessageRight
     | SubscribeMessageRight
     | PredicateRight
+    | HubEventsRight
 
 scalar RightInput
 
@@ -256,6 +257,16 @@ type PredicateRight {
 input PredicateRightInput {
     description : String
     names       : [String!]!
+}
+
+type HubEventsRight {
+    description : String
+    queueEvents : Boolean!
+}
+
+input HubEventsRightInput {
+    description : String
+    queueEvents : Boolean!
 }
 
 type Credentials {
