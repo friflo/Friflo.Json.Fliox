@@ -238,9 +238,8 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             var eventAck = syncRequest.eventAck;
             if (!eventAck.HasValue)
                 return;
-            // todo authorize acknowledge events
-            // if (!syncContext.authState.hubPermission.queueEvents)
-            //     return;
+            if (!syncContext.authState.hubPermission.queueEvents)
+                 return;
             int value =  eventAck.Value;
             subClient.AcknowledgeEvents(value);
         }

@@ -28,7 +28,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
     {
         private readonly        Dictionary<JsonKey, TaskAuthorizer> userRights;
         private static readonly TaskAuthorizer                      UnknownRights   = AuthorizeDeny.Instance;
-        private static readonly HubPermission                       HubPermission   = new HubPermission();
+        private static readonly HubPermission                       HubPermission   = HubPermission.None;
         
         public UserDatabaseAuthenticator(string userDbName) : base (null, null) {
             var changes         = new [] { EntityChange.create, EntityChange.upsert, EntityChange.delete, EntityChange.patch };

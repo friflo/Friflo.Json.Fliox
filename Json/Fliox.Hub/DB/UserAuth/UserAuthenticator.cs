@@ -57,7 +57,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
         internal  readonly  FlioxHub                                    userHub;
         private   readonly  IUserAuth                                   userAuth;
         private   readonly  TaskAuthorizer                              anonymousAuthorizer;
-        private   readonly  HubPermission                               anonymousHubPermission = new HubPermission();
+        private   readonly  HubPermission                               anonymousHubPermission = HubPermission.None;
         internal  readonly  ConcurrentDictionary<string, RoleRights>    roleCache = new ConcurrentDictionary <string, RoleRights>();
 
         public UserAuthenticator (EntityDatabase userDatabase, SharedEnv env = null, IUserAuth userAuth = null, TaskAuthorizer anonymousAuthorizer = null)
@@ -306,7 +306,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
                     }
                     taskAuthorizers.Add(authorizer);
                 }
-                var hubPermission   = new HubPermission { queueEvents = newRole.hubRights?.queueEvents == true };
+                var hubPermission   = new HubPermission (newRole.hubRights?.queueEvents == true);
                 var roleRights      = new RoleRights { taskAuthorizers = taskAuthorizers.ToArray(), hubPermission = hubPermission };
                 roleCache.TryAdd(role, roleRights);
             }
@@ -357,12 +357,11 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
             this.taskAuthorizer = TaskAuthorizer.ToAuthorizer(taskAuthorizers);
             this.groups         = groups;
             
-            var mergedPermission = hubPermissions[0];
-            for (int n = 1; n < hubPermissions.Count; n++) {
-                var permission = hubPermissions[n];
-                mergedPermission.queueEvents |= permission.queueEvents;
+            bool queueEvents = false;
+            foreach (var permission in hubPermissions) {
+                queueEvents |= permission.queueEvents;
             }
-            this.hubPermission  = mergedPermission;
+            hubPermission  = new HubPermission(queueEvents);
         }
     }
 }

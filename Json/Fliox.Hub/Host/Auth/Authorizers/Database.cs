@@ -10,6 +10,8 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
     public sealed class AuthorizeDatabase : TaskAuthorizer {
         private  readonly DatabaseFilter  databaseFilter;
             
+        public static readonly AuthorizeDatabase Full = new AuthorizeDatabase ("*");
+        
         public override string ToString() => $"database: {databaseFilter.dbLabel}";
 
         public AuthorizeDatabase (string database) {

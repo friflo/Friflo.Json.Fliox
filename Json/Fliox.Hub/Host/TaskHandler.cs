@@ -373,7 +373,10 @@ namespace Friflo.Json.Fliox.Hub.Host
                 return null;
             }
             EventSubClient client;
-            var syncContext = context.SyncContext;
+            var syncContext = context.SyncContext; 
+            if (!syncContext.authState.hubPermission.queueEvents) {
+                return "std.Client queueEvents requires permission (Role.hubRights) queueEvents = true";
+            }
             if (queueEvents.Value) {
                 if (!hub.Authenticator.EnsureValidClientId(hub.ClientController, syncContext, out string error)) {
                     return error;

@@ -41,7 +41,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
             this.userId         = userId;
             this.token          = token;
             this.taskAuthorizer = taskAuthorizer;
-            this.hubPermission  = hubPermission ?? new HubPermission();
+            this.hubPermission  = hubPermission ?? HubPermission.None;
         }
         
         public  IReadOnlyCollection<string> GetGroups() {
