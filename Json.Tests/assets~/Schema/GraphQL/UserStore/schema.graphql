@@ -112,12 +112,14 @@ input UserPermissionInput {
 type Role {
     id          : String!
     rights      : [Right!]!
+    hubRights   : HubRights
     description : String
 }
 
 input RoleInput {
     id          : String!
     rights      : [RightInput!]!
+    hubRights   : HubRightsInput
     description : String
 }
 
@@ -138,7 +140,6 @@ union Right =
     | SendMessageRight
     | SubscribeMessageRight
     | PredicateRight
-    | HubEventsRight
 
 scalar RightInput
 
@@ -259,14 +260,12 @@ input PredicateRightInput {
     names       : [String!]!
 }
 
-type HubEventsRight {
-    description : String
-    queueEvents : Boolean!
+type HubRights {
+    queueEvents : Boolean
 }
 
-input HubEventsRightInput {
-    description : String
-    queueEvents : Boolean!
+input HubRightsInput {
+    queueEvents : Boolean
 }
 
 type Credentials {

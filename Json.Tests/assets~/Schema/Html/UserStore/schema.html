@@ -327,7 +327,7 @@
             <li><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.SendMessageRight'><div><span>SendMessageRight</span><disc>type</disc></div></a></li>
             <li><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.SubscribeMessageRight'><div><span>SubscribeMessageRight</span><disc>type</disc></div></a></li>
             <li><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.PredicateRight'><div><span>PredicateRight</span><disc>type</disc></div></a></li>
-            <li><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.HubEventsRight'><div><span>HubEventsRight</span><disc>type</disc></div></a></li>
+            <li><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.HubRights'><div><span>HubRights</span></div></a></li>
         </ul>
     </li>
     <li><a href='#Friflo.Json.Fliox.Hub.Protocol.Tasks'>Friflo.Json.Fliox.Hub.Protocol.Tasks</a>
@@ -519,6 +519,11 @@ Each <b>role</b> in container <b>roles</b> has a set of <b>rights</b> which gran
             <td><field>rights</field></td>
             <td><type><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.Right'>Right</a>[]</type></td>
             <td><docs>a set of <b>rights</b> used for task authorization</docs></td>
+        </tr>
+        <tr>
+            <td><field>hubRights</field></td>
+            <td><type><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.HubRights'>HubRights</a> | null</type></td>
+            <td><docs>general request / connection rights for Hub access</docs></td>
         </tr>
         <tr>
             <td><field>description</field></td>
@@ -963,10 +968,6 @@ grant access.
                 <td><discriminant>"predicate"</discriminant></td>
                 <td><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.PredicateRight'>PredicateRight</a></td>
             </tr>
-            <tr>
-                <td><discriminant>"hubEvents"</discriminant></td>
-                <td><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.HubEventsRight'>HubEventsRight</a></td>
-            </tr>
             </table></td>
         </tr>
         <tr>
@@ -1164,19 +1165,14 @@ Note: commands are messages - so permission of subscribing commands is same as f
     </table>
     </div>
     <div class='type'>
-    <h3 id='Friflo.Json.Fliox.Hub.Host.Auth.Rights.HubEventsRight'>
-        <a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.HubEventsRight'>HubEventsRight</a>
+    <h3 id='Friflo.Json.Fliox.Hub.Host.Auth.Rights.HubRights'>
+        <a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.HubRights'>HubRights</a>
         <keyword>class</keyword>
-        <keyword>extends</keyword> <extends><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.Right'>Right</a></extends>
     </h3>
     <table class='fields'>
         <tr>
-            <td><disc>type</disc></td>
-            <td><discriminant>"hubEvents"</discriminant></td><td><docs>right type</docs></td>
-        </tr>
-        <tr>
             <td><field>queueEvents</field></td>
-            <td><type><predef>boolean</predef></type></td>
+            <td><type><predef>boolean</predef> | null</type></td>
         </tr>
     </table>
     </div>

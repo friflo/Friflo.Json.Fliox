@@ -9,13 +9,15 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
 {
     public sealed class AuthenticateNone : Authenticator
     {
-        private readonly Authorizer anonymousAuthorizer;
+        private readonly    Authorizer      anonymousAuthorizer;
+        private readonly    HubPermission   anonymousHubPermission;
         
 
-        public AuthenticateNone(Authorizer anonymousAuthorizer)
-            : base (anonymousAuthorizer)
+        public AuthenticateNone(Authorizer anonymousAuthorizer, HubPermission anonymousHubPermission)
+            : base (anonymousAuthorizer, anonymousHubPermission)
         {
-            this.anonymousAuthorizer = anonymousAuthorizer ?? throw new ArgumentNullException(nameof(anonymousAuthorizer));
+            this.anonymousAuthorizer    = anonymousAuthorizer       ?? throw new ArgumentNullException(nameof(anonymousAuthorizer));
+            this.anonymousHubPermission = anonymousHubPermission    ?? throw new ArgumentNullException(nameof(anonymousHubPermission));
         }
         
         public override Task Authenticate(SyncRequest syncRequest, SyncContext syncContext) {
@@ -25,11 +27,11 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
                 user = anonymousUser;
             } else {
                 if (!users.TryGetValue(userId, out user)) {
-                    user = new User(userId, null, anonymousAuthorizer);
+                    user = new User(userId, null, anonymousAuthorizer, anonymousHubPermission);
                     users.TryAdd(userId, user);
                 }
             }
-            syncContext.AuthenticationFailed(user, "not authenticated", anonymousAuthorizer);
+            syncContext.AuthenticationFailed(user, "not authenticated", anonymousAuthorizer, anonymousHubPermission);
             return Task.CompletedTask;
         }
     }

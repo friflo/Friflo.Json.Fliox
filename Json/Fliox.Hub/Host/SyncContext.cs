@@ -63,21 +63,23 @@ namespace Friflo.Json.Fliox.Hub.Host
             this.sharedCache    = sharedCache;
         }
         
-        public void AuthenticationFailed(User user, string error, Authorizer authorizer) {
-            AssertAuthenticationParams(user, authorizer);
-            authState.user            = user;
-            authState.authExecuted    = true;
-            authState.authenticated   = false;
-            authState.taskAuthorizer  = authorizer;
-            authState.error           = error;
+        public void AuthenticationFailed(User user, string error, Authorizer authorizer, HubPermission hubPermission) {
+            AssertAuthenticationParams(user, authorizer, hubPermission);
+            authState.user              = user;
+            authState.authExecuted      = true;
+            authState.authenticated     = false;
+            authState.taskAuthorizer    = authorizer;
+            authState.hubPermission     = hubPermission;
+            authState.error             = error;
         }
         
-        public void AuthenticationSucceed (User user, Authorizer taskAuthorizer) {
-            AssertAuthenticationParams(user, taskAuthorizer);
-            authState.user            = user;
-            authState.authExecuted    = true;
-            authState.authenticated   = true;
-            authState.taskAuthorizer  = taskAuthorizer;
+        public void AuthenticationSucceed (User user, Authorizer taskAuthorizer, HubPermission hubPermission) {
+            AssertAuthenticationParams(user, taskAuthorizer, hubPermission);
+            authState.user              = user;
+            authState.authExecuted      = true;
+            authState.authenticated     = true;
+            authState.taskAuthorizer    = taskAuthorizer;
+            authState.hubPermission     = hubPermission;
         }
         
         public void SetClientId(in JsonKey clientId) {
@@ -86,10 +88,11 @@ namespace Friflo.Json.Fliox.Hub.Host
         }
         
         [Conditional("DEBUG")]
-        private void AssertAuthenticationParams(User user, Authorizer authorizer) {
+        private void AssertAuthenticationParams(User user, Authorizer authorizer, HubPermission hubPermission) {
             if (authState.authExecuted) throw new InvalidOperationException("Expect AuthExecuted == false");
             if (user == null)           throw new ArgumentNullException(nameof(user));
             if (authorizer == null)     throw new ArgumentNullException(nameof(authorizer));
+            if (hubPermission == null)  throw new ArgumentNullException(nameof(hubPermission));
         }
         
         internal void Cancel() {

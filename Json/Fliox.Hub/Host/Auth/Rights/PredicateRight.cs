@@ -37,7 +37,6 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth.Rights
         dbContainer,
         message,
         subscribeMessage,
-        predicate,
-        hubEvents
+        predicate
     }
 }

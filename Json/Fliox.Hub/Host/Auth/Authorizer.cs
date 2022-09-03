@@ -1,9 +1,8 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
-using System;
+
 using System.Collections.Generic;
-using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 
 namespace Friflo.Json.Fliox.Hub.Host.Auth
@@ -24,7 +23,5 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
         /// </summary>
         public abstract void    AddAuthorizedDatabases  (HashSet<DatabaseFilter> databaseFilters);
         public abstract bool    AuthorizeTask           (SyncRequestTask task, SyncContext syncContext);
-        
-        public virtual   bool   AuthorizeRequest        (SyncRequest task, SyncContext syncContext) => throw new InvalidOperationException();
     }
 }

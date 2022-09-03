@@ -9,14 +9,15 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
     /// The authentication is performed for every <see cref="FlioxHub.ExecuteSync"/> call. 
     /// </summary>
     internal struct AuthState {
-        internal            string      error;  
-        internal            bool        authenticated;
-        internal            Authorizer  taskAuthorizer;         // not null
+        internal            string          error;  
+        internal            bool            authenticated;
+        internal            Authorizer      taskAuthorizer;     // not null
+        internal            HubPermission   hubPermission;      // not null
         /// <summary><see cref="user"/> is never null after calling <see cref="SyncContext.AuthenticationFailed"/>
         /// or <see cref="SyncContext.AuthenticationSucceed"/></summary>
-        internal            User        user;               // not null
-        internal            bool        authExecuted;
+        internal            User            user;               // not null
+        internal            bool            authExecuted;
         
-        public  override    string      ToString() => authExecuted ? authenticated ? "success" : "failed" : "pending";
+        public  override    string          ToString() => authExecuted ? authenticated ? "success" : "failed" : "pending";
     }
 }

@@ -38,6 +38,8 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
         [Required]  public  string          id;
         /// <summary>a set of <see cref="rights"/> used for task authorization</summary>
         [Required]  public  List<Right>     rights;
+        /// <summary>general request / connection rights for Hub access</summary>
+                    public  HubRights       hubRights;
         /// <summary>optional <see cref="description"/> explaining a <see cref="Role"/></summary>
                     public  string          description;
                         

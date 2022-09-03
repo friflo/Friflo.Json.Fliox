@@ -9,6 +9,7 @@
             "properties": {
                 "id":          { "type": "string", "description": "<b>Role</b> name" },
                 "rights":      { "type": "array", "items": { "$ref": "./Friflo.Json.Fliox.Hub.Host.Auth.Rights.json#/definitions/Right" }, "description": "a set of <b>rights</b> used for task authorization" },
+                "hubRights":   { "oneOf": [{ "$ref": "./Friflo.Json.Fliox.Hub.Host.Auth.Rights.json#/definitions/HubRights" }, {"type": "null"}], "description": "general request / connection rights for Hub access" },
                 "description": { "type": ["string", "null"], "description": "optional <b>description</b> explaining a <b>Role</b>" }
             },
             "required": [

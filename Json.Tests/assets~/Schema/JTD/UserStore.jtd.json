@@ -25,6 +25,7 @@
             "properties": {
                 "id":          { "type": "string" },
                 "rights":      { "elements": { "ref":  "Right" } },
+                "hubRights":   { "ref":  "HubRights", "nullable": true },
                 "description": { "type": "string", "nullable": true }
             }
         },
@@ -42,8 +43,7 @@
                 "dbContainer":      { "ref":  "DbContainerRight" },
                 "sendMessage":      { "ref":  "SendMessageRight" },
                 "subscribeMessage": { "ref":  "SubscribeMessageRight" },
-                "predicate":        { "ref":  "PredicateRight" },
-                "hubEvents":        { "ref":  "HubEventsRight" }
+                "predicate":        { "ref":  "PredicateRight" }
             },
             "properties": {
                 "description": { "type": "string", "nullable": true }
@@ -136,10 +136,9 @@
                 "names":       { "elements": { "type": "string" } }
             }
         },
-        "HubEventsRight": {
+        "HubRights": {
             "properties": {
-                "description": { "type": "string", "nullable": true },
-                "queueEvents": { "type": "boolean" }
+                "queueEvents": { "type": "boolean", "nullable": true }
             }
         },
         "Credentials": {

@@ -67,9 +67,9 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
             
             var affectedUsers = new List<JsonKey>();
             foreach (var changedRole in changedRoles) {
-                if(!userAuthenticator.authorizersByRole.TryRemove(changedRole, out var authorizers))
+                if(!userAuthenticator.roleCache.TryRemove(changedRole, out var role))
                     continue;
-                AddAffectedUsers(affectedUsers, authorizers);
+                AddAffectedUsers(affectedUsers, role.taskAuthorizers);
             }
             foreach (var user in affectedUsers) {
                 userAuthenticator.users.TryRemove(user, out _);

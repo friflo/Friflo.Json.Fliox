@@ -36,6 +36,7 @@ public class Role {
     string       id;
     [Required]
     List<Right>  rights;
+    HubRights    hubRights;
     string       description;
 }
 

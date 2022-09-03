@@ -34,9 +34,11 @@ class Role:::cssEntity {
     <<Entity · id>>
     id           : string
     rights       : Right[]
+    hubRights?   : HubRights
     description? : string
 }
 Role *-- "0..*" Right : rights
+Role *-- "0..1" HubRights : hubRights
 
 class UserTarget:::cssEntity {
     <<Entity · id>>
@@ -114,10 +116,8 @@ class PredicateRight {
     names        : string[]
 }
 
-Right <|-- HubEventsRight
-class HubEventsRight {
-    type         : "hubEvents"
-    queueEvents  : boolean
+class HubRights {
+    queueEvents? : boolean
 }
 
 class TaskType:::cssEnum {

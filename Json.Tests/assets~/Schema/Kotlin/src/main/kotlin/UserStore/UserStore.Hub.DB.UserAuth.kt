@@ -29,6 +29,7 @@ data class UserPermission (
 data class Role (
               val id          : String,
               val rights      : List<Right>,
+              val hubRights   : HubRights? = null,
               val description : String? = null,
 )
 

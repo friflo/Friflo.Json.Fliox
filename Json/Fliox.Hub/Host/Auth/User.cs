@@ -23,6 +23,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
         public   readonly   JsonKey                     userId;
         public   readonly   string                      token;
         public   readonly   Authorizer                  taskAuthorizer;     // not null
+        public   readonly   HubPermission               hubPermission;      // not null
 
         public   override   string                      ToString() => userId.AsString();
         
@@ -34,12 +35,13 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
         public static readonly  JsonKey   AnonymousId = new JsonKey("anonymous");
 
 
-        internal User (in JsonKey userId, string token, Authorizer taskAuthorizer) {
+        internal User (in JsonKey userId, string token, Authorizer taskAuthorizer, HubPermission hubPermission) {
             clients             = new ConcurrentDictionary<JsonKey, Empty>(JsonKey.Equality);
             requestCounts       = new ConcurrentDictionary<string, RequestCount>();
             this.userId         = userId;
             this.token          = token;
             this.taskAuthorizer = taskAuthorizer;
+            this.hubPermission  = hubPermission ?? new HubPermission();
         }
         
         public  IReadOnlyCollection<string> GetGroups() {

@@ -27,9 +27,10 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
     public class UserDatabaseAuthenticator : Authenticator
     {
         private readonly        Dictionary<JsonKey, Authorizer> userRights;
-        private static readonly Authorizer                      UnknownRights    = AuthorizeDeny.Instance;
+        private static readonly Authorizer                      UnknownRights   = AuthorizeDeny.Instance;
+        private static readonly HubPermission                   HubPermission   = new HubPermission();
         
-        public UserDatabaseAuthenticator(string userDbName) : base (null) {
+        public UserDatabaseAuthenticator(string userDbName) : base (null, null) {
             var changes         = new [] { EntityChange.create, EntityChange.upsert, EntityChange.delete, EntityChange.patch };
             var authUserRights  = new AuthorizeAny(new Authorizer[] {
                 new AuthorizeSendMessage     (nameof(UserStore.AuthenticateUser), userDbName),
@@ -56,17 +57,17 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
                 user = anonymousUser;
             } else {
                 if (!users.TryGetValue(userId, out  user)) {
-                    user = new User(userId, null, default);
+                    user = new User(userId, null, null, null);
                     users.TryAdd(userId, user);
                 }
             }
 
             if (userRights.TryGetValue(userId, out Authorizer rights)) {
-                syncContext.AuthenticationSucceed(user, rights);
+                syncContext.AuthenticationSucceed(user, rights, HubPermission);
                 return Task.CompletedTask;
             }
             // AuthenticationFailed() is not called to avoid giving a hint for a valid userId (user)
-            syncContext.AuthenticationSucceed(user, UnknownRights);
+            syncContext.AuthenticationSucceed(user, UnknownRights, HubPermission);
             return Task.CompletedTask;
         }
     }

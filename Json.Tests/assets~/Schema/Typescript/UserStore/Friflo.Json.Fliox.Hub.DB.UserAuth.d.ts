@@ -12,6 +12,7 @@ import { ClientParam }  from "./Friflo.Json.Fliox.Hub.DB.Cluster";
 import { ClientResult } from "./Friflo.Json.Fliox.Hub.DB.Cluster";
 import { Right }        from "./Friflo.Json.Fliox.Hub.Host.Auth.Rights";
 import { Right_Union }  from "./Friflo.Json.Fliox.Hub.Host.Auth.Rights";
+import { HubRights }    from "./Friflo.Json.Fliox.Hub.Host.Auth.Rights";
 
 /**
  * Control individual user access to database containers and commands.   
@@ -73,6 +74,8 @@ export class Role {
     id           : string;
     /** a set of **rights** used for task authorization */
     rights       : Right_Union[];
+    /** general request / connection rights for Hub access */
+    hubRights?   : HubRights | null;
     /** optional **description** explaining a **Role** */
     description? : string | null;
 }

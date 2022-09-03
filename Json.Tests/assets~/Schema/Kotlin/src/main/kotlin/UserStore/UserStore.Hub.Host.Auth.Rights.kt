@@ -78,9 +78,7 @@ data class PredicateRight (
 ) : Right()
 
 @Serializable
-@SerialName("hubEvents")
-data class HubEventsRight (
-    override  val description : String? = null,
-              val queueEvents : Boolean,
-) : Right()
+data class HubRights (
+              val queueEvents : Boolean? = null,
+)
 

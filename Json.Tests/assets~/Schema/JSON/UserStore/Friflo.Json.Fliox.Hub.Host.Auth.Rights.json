@@ -10,11 +10,10 @@
                 { "$ref": "#/definitions/DbContainerRight" },
                 { "$ref": "#/definitions/SendMessageRight" },
                 { "$ref": "#/definitions/SubscribeMessageRight" },
-                { "$ref": "#/definitions/PredicateRight" },
-                { "$ref": "#/definitions/HubEventsRight" }
+                { "$ref": "#/definitions/PredicateRight" }
             ],
             "properties": {
-                "type":        { "enum": ["dbFull", "dbTask", "dbContainer", "sendMessage", "subscribeMessage", "predicate", "hubEvents"], "description": "right type" },
+                "type":        { "enum": ["dbFull", "dbTask", "dbContainer", "sendMessage", "subscribeMessage", "predicate"], "description": "right type" },
                 "description": { "type": ["string", "null"], "description": "optional description explaining the Right" }
             },
             "required": [
@@ -159,18 +158,11 @@
             ],
             "additionalProperties": false
         },
-        "HubEventsRight": {
+        "HubRights": {
             "type": "object",
-            "extends": { "$ref": "#/definitions/Right" },
             "properties": {
-                "type":        { "enum": ["hubEvents"] },
-                "description": { "type": ["string", "null"], "description": "optional description explaining the Right" },
-                "queueEvents": { "type": "boolean" }
+                "queueEvents": { "type": ["boolean", "null"] }
             },
-            "required": [
-                "type",
-                "queueEvents"
-            ],
             "additionalProperties": false
         }
     }

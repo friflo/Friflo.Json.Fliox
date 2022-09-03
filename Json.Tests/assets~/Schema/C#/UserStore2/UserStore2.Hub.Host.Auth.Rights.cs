@@ -15,7 +15,6 @@ namespace UserStore2.Hub.Host.Auth.Rights {
 [PolymorphType(typeof(SendMessageRight),      Discriminant = "sendMessage")]
 [PolymorphType(typeof(SubscribeMessageRight), Discriminant = "subscribeMessage")]
 [PolymorphType(typeof(PredicateRight),        Discriminant = "predicate")]
-[PolymorphType(typeof(HubEventsRight),        Discriminant = "hubEvents")]
 public abstract class Right {
     string  description;
 }
@@ -78,8 +77,8 @@ public class PredicateRight : Right {
     List<string>  names;
 }
 
-public class HubEventsRight : Right {
-    bool  queueEvents;
+public class HubRights {
+    bool? queueEvents;
 }
 
 }

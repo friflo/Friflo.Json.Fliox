@@ -9,7 +9,6 @@ export type Right_Union =
     | SendMessageRight
     | SubscribeMessageRight
     | PredicateRight
-    | HubEventsRight
 ;
 
 export abstract class Right {
@@ -21,7 +20,6 @@ export abstract class Right {
         | "sendMessage"
         | "subscribeMessage"
         | "predicate"
-        | "hubEvents"
     ;
     /** optional description explaining the Right */
     description? : string | null;
@@ -116,9 +114,7 @@ export class PredicateRight extends Right {
     names        : string[];
 }
 
-export class HubEventsRight extends Right {
-    /** right type */
-    type         : "hubEvents";
-    queueEvents  : boolean;
+export class HubRights {
+    queueEvents? : boolean | null;
 }
 
