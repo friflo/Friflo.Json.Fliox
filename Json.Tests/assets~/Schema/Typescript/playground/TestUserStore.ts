@@ -1,12 +1,12 @@
-import { Right_Union } from "../UserStore/Friflo.Json.Fliox.Hub.Host.Auth.Rights"
+import { TaskRight_Union } from "../UserStore/Friflo.Json.Fliox.Hub.Host.Auth.Rights"
 import { Role } from "../UserStore/Friflo.Json.Fliox.Hub.DB.UserAuth"
 
 // check assignment with using a type compiles successful
 var exampleRole: Role = {
     id: "some-id",
-    rights: [
+    taskRights: [
         {
-            type:           "db",
+            type:           "dbFull",
             database:       "db-name",
             description:    "allow description"
         },
@@ -38,9 +38,9 @@ var exampleRole: Role = {
 }
 
 // check using a Discriminated Union compiles successful
-function usePolymorphType (right: Right_Union) {
+function usePolymorphType (right: TaskRight_Union) {
     switch (right.type) {
-        case "db":
+        case "dbFull":
             break;
         case "sendMessage":
             var names: string[] = right.names;
