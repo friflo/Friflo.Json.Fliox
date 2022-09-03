@@ -28,9 +28,9 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
             this.role       = role;
         }
         
-        internal void ValidateDatabase(Right right, string database) {
+        internal void ValidateDatabase(TaskRight taskRight, string database) {
             if (database == null) {
-                var error = $"missing database in role: {role.id}, right: {right.RightType}";
+                var error = $"missing database in role: {role.id}, right: {taskRight.RightType}";
                 errors.Add(error);
                 return;
             }

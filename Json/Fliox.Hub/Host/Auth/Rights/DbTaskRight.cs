@@ -15,7 +15,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth.Rights
     /// <summary>
     /// <see cref="DbTaskRight"/> grant <see cref="database"/> access by a set of task <see cref="types"/>. <br/> 
     /// </summary>
-    public sealed class DbTaskRight : Right
+    public sealed class DbTaskRight : TaskRight
     {
         /// <summary>a specific database: 'test_db', multiple databases by prefix: 'test_*', all databases: '*'</summary>
         [Required]  public      string          database;
@@ -24,12 +24,12 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth.Rights
         
         public  override        RightType       RightType => RightType.dbTask;
         
-        public override Authorizer ToAuthorizer() {
+        public override TaskAuthorizer ToAuthorizer() {
             var databaseName = database;
             if (types.Count == 1) {
                 return GetAuthorizer(databaseName, types[0]);
             }
-            var list = new List<Authorizer>(types.Count);
+            var list = new List<TaskAuthorizer>(types.Count);
             foreach (var task in types) {
                 list.Add(GetAuthorizer(databaseName, task));
             }
@@ -41,7 +41,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth.Rights
         }
 
         
-        private static Authorizer GetAuthorizer(string database, TaskType taskType) {
+        private static TaskAuthorizer GetAuthorizer(string database, TaskType taskType) {
             switch (taskType) {
                 case TaskType.read:                return new AuthorizeTaskType(TaskType.read,              database);
                 case TaskType.query:               return new AuthorizeTaskType(TaskType.query,             database);

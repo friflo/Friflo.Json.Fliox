@@ -1,7 +1,7 @@
 {
     "id": "user_db-allow",
     "description": "Allow unrestricted access to user_db: permissions & roles. Allow execution of the given commands",
-    "rights": [
+    "taskRights": [
         {
             "type": "dbContainer",
             "database": "user_db",

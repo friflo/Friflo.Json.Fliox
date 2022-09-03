@@ -15,7 +15,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth.Rights
     /// <br/>
     /// Note: commands are messages - so permission of subscribing commands is same as for messages.  
     /// </summary>
-    public sealed class SubscribeMessageRight : Right
+    public sealed class SubscribeMessageRight : TaskRight
     {
         /// <summary>a specific database: 'test_db', multiple databases by prefix: 'test_*', all databases: '*'</summary>
         [Required]  public  string          database;
@@ -24,12 +24,12 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth.Rights
         
         public  override    RightType       RightType => RightType.subscribeMessage;
         
-        public override Authorizer ToAuthorizer() {
+        public override TaskAuthorizer ToAuthorizer() {
             var databaseName = database;
             if (names.Count == 1) {
                 return new AuthorizeSubscribeMessage(names[0], databaseName);
             }
-            var list = new List<Authorizer>(names.Count);
+            var list = new List<TaskAuthorizer>(names.Count);
             foreach (var message in names) {
                 list.Add(new AuthorizeSubscribeMessage(message, databaseName));
             }

@@ -26,13 +26,13 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
     /// </remarks>
     public class UserDatabaseAuthenticator : Authenticator
     {
-        private readonly        Dictionary<JsonKey, Authorizer> userRights;
-        private static readonly Authorizer                      UnknownRights   = AuthorizeDeny.Instance;
-        private static readonly HubPermission                   HubPermission   = new HubPermission();
+        private readonly        Dictionary<JsonKey, TaskAuthorizer> userRights;
+        private static readonly TaskAuthorizer                      UnknownRights   = AuthorizeDeny.Instance;
+        private static readonly HubPermission                       HubPermission   = new HubPermission();
         
         public UserDatabaseAuthenticator(string userDbName) : base (null, null) {
             var changes         = new [] { EntityChange.create, EntityChange.upsert, EntityChange.delete, EntityChange.patch };
-            var authUserRights  = new AuthorizeAny(new Authorizer[] {
+            var authUserRights  = new AuthorizeAny(new TaskAuthorizer[] {
                 new AuthorizeSendMessage     (nameof(UserStore.AuthenticateUser), userDbName),
                 new AuthorizeContainer       (nameof(UserStore.permissions), new []{ OperationType.read, OperationType.query },  userDbName),
                 new AuthorizeContainer       (nameof(UserStore.roles),       new []{ OperationType.read, OperationType.query },  userDbName),
@@ -41,10 +41,10 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
                 new AuthorizeSubscribeChanges(nameof(UserStore.roles),       changes, userDbName),
                 new AuthorizeSubscribeChanges(nameof(UserStore.targets),     changes, userDbName)
             });
-            var serverRights    = new AuthorizeAny(new Authorizer[] {
+            var serverRights    = new AuthorizeAny(new TaskAuthorizer[] {
                 new AuthorizeContainer       (nameof(UserStore.credentials), new []{ OperationType.read }, userDbName)
             });
-            userRights = new Dictionary<JsonKey, Authorizer> (JsonKey.Equality) {
+            userRights = new Dictionary<JsonKey, TaskAuthorizer> (JsonKey.Equality) {
                 { new JsonKey(UserStore.AuthenticationUser),    authUserRights },
                 { new JsonKey(UserStore.Server),                serverRights   },
             };
@@ -62,7 +62,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
                 }
             }
 
-            if (userRights.TryGetValue(userId, out Authorizer rights)) {
+            if (userRights.TryGetValue(userId, out TaskAuthorizer rights)) {
                 syncContext.AuthenticationSucceed(user, rights, HubPermission);
                 return Task.CompletedTask;
             }

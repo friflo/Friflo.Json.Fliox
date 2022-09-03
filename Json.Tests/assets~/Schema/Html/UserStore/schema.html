@@ -318,7 +318,7 @@
     </li>
     <li><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights'>Friflo.Json.Fliox.Hub.Host.Auth.Rights</a>
         <ul>
-            <li><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.Right'><div><span>Right</span><discUnion>type</discUnion></div></a></li>
+            <li><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.TaskRight'><div><span>TaskRight</span><discUnion>type</discUnion></div></a></li>
             <li><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.DbFullRight'><div><span>DbFullRight</span><disc>type</disc></div></a></li>
             <li><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.DbTaskRight'><div><span>DbTaskRight</span><disc>type</disc></div></a></li>
             <li><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.DbContainerRight'><div><span>DbContainerRight</span><disc>type</disc></div></a></li>
@@ -507,7 +507,7 @@ Each <b>role</b> in container <b>roles</b> has a set of <b>rights</b> which gran
         <a href='#Friflo.Json.Fliox.Hub.DB.UserAuth.Role'>Role</a>
         <keyword>class</keyword>
     </h3>
-    <desc>Contains a set of <b>rights</b> used for task authorization
+    <desc>Contains a set of <b>taskRights</b> used for task authorization
     </desc>
     <table class='fields'>
         <tr>
@@ -516,9 +516,9 @@ Each <b>role</b> in container <b>roles</b> has a set of <b>rights</b> which gran
             <td><docs><b>Role</b> name</docs></td>
         </tr>
         <tr>
-            <td><field>rights</field></td>
-            <td><type><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.Right'>Right</a>[]</type></td>
-            <td><docs>a set of <b>rights</b> used for task authorization</docs></td>
+            <td><field>taskRights</field></td>
+            <td><type><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.TaskRight'>TaskRight</a>[]</type></td>
+            <td><docs>a set of <b>taskRights</b> used for task authorization</docs></td>
         </tr>
         <tr>
             <td><field>hubRights</field></td>
@@ -929,13 +929,13 @@ Events are queued only if the client instruct the Hub to queue events by setting
         <a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights'>Friflo.Json.Fliox.Hub.Host.Auth.Rights</a> <keyword>namespace</keyword>
     </h2>
     <div class='type'>
-    <h3 id='Friflo.Json.Fliox.Hub.Host.Auth.Rights.Right'>
-        <a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.Right'>Right</a>
+    <h3 id='Friflo.Json.Fliox.Hub.Host.Auth.Rights.TaskRight'>
+        <a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.TaskRight'>TaskRight</a>
         <keyword>abstract class</keyword>
     </h3>
-    <desc>Each <b>Role</b> has a set of <b>rights</b>. <br/>
-Each <b>Right</b> is a rule used to grant or deny a specific database operation or command execution.<br/>
-The database operation or command execution is granted if any of it <b>rights</b>
+    <desc>Each <b>Role</b> has a set of <b>taskRights</b>. <br/>
+Each <b>TaskRight</b> is a rule used to grant or deny a specific database operation or command execution.<br/>
+The database operation or command execution is granted if any of it <b>taskRights</b>
 grant access.
     </desc>
     <table class='fields'>
@@ -981,7 +981,7 @@ grant access.
     <h3 id='Friflo.Json.Fliox.Hub.Host.Auth.Rights.DbFullRight'>
         <a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.DbFullRight'>DbFullRight</a>
         <keyword>class</keyword>
-        <keyword>extends</keyword> <extends><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.Right'>Right</a></extends>
+        <keyword>extends</keyword> <extends><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.TaskRight'>TaskRight</a></extends>
     </h3>
     <desc>Allow full access to the given <b>database</b>.<br/>
     </desc>
@@ -1001,7 +1001,7 @@ grant access.
     <h3 id='Friflo.Json.Fliox.Hub.Host.Auth.Rights.DbTaskRight'>
         <a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.DbTaskRight'>DbTaskRight</a>
         <keyword>class</keyword>
-        <keyword>extends</keyword> <extends><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.Right'>Right</a></extends>
+        <keyword>extends</keyword> <extends><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.TaskRight'>TaskRight</a></extends>
     </h3>
     <desc><b>DbTaskRight</b> grant <b>database</b> access by a set of task <b>types</b>. <br/>
     </desc>
@@ -1026,7 +1026,7 @@ grant access.
     <h3 id='Friflo.Json.Fliox.Hub.Host.Auth.Rights.DbContainerRight'>
         <a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.DbContainerRight'>DbContainerRight</a>
         <keyword>class</keyword>
-        <keyword>extends</keyword> <extends><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.Right'>Right</a></extends>
+        <keyword>extends</keyword> <extends><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.TaskRight'>TaskRight</a></extends>
     </h3>
     <desc><b>DbContainerRight</b> grant <b>database</b> access for the given <b>containers</b>
 based on a set of <b>operations</b>. <br/>
@@ -1098,7 +1098,7 @@ It also allows subscribing database changes by <b>subscribeChanges</b>
     <h3 id='Friflo.Json.Fliox.Hub.Host.Auth.Rights.SendMessageRight'>
         <a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.SendMessageRight'>SendMessageRight</a>
         <keyword>class</keyword>
-        <keyword>extends</keyword> <extends><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.Right'>Right</a></extends>
+        <keyword>extends</keyword> <extends><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.TaskRight'>TaskRight</a></extends>
     </h3>
     <desc><b>SendMessageRight</b> allows sending messages to a <b>database</b> by a set of <b>names</b>.<br/><br/>
 Note: commands are messages - so permission of sending commands is same as for messages.
@@ -1124,7 +1124,7 @@ Note: commands are messages - so permission of sending commands is same as for m
     <h3 id='Friflo.Json.Fliox.Hub.Host.Auth.Rights.SubscribeMessageRight'>
         <a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.SubscribeMessageRight'>SubscribeMessageRight</a>
         <keyword>class</keyword>
-        <keyword>extends</keyword> <extends><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.Right'>Right</a></extends>
+        <keyword>extends</keyword> <extends><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.TaskRight'>TaskRight</a></extends>
     </h3>
     <desc><b>SubscribeMessageRight</b> allows subscribing messages send to a <b>database</b>.<br/><br/>
 Note: commands are messages - so permission of subscribing commands is same as for messages.
@@ -1150,7 +1150,7 @@ Note: commands are messages - so permission of subscribing commands is same as f
     <h3 id='Friflo.Json.Fliox.Hub.Host.Auth.Rights.PredicateRight'>
         <a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.PredicateRight'>PredicateRight</a>
         <keyword>class</keyword>
-        <keyword>extends</keyword> <extends><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.Right'>Right</a></extends>
+        <keyword>extends</keyword> <extends><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.TaskRight'>TaskRight</a></extends>
     </h3>
     <table class='fields'>
         <tr>

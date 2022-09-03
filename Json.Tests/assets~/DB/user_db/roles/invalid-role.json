@@ -1,6 +1,6 @@
 {
     "id": "invalid-role",
-    "rights": [
+    "taskRights": [
         {
             "type": "dbFull",
             "database": "not_found_db"

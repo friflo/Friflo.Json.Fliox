@@ -7,7 +7,7 @@ import UserStore.Hub.Protocol.Tasks.*
 
 @Serializable
 // @JsonClassDiscriminator("type") https://github.com/Kotlin/kotlinx.serialization/issues/546
-abstract class Right  {
+abstract class TaskRight  {
     abstract  val description : String?
 }
 
@@ -16,7 +16,7 @@ abstract class Right  {
 data class DbFullRight (
     override  val description : String? = null,
               val database    : String,
-) : Right()
+) : TaskRight()
 
 @Serializable
 @SerialName("dbTask")
@@ -24,7 +24,7 @@ data class DbTaskRight (
     override  val description : String? = null,
               val database    : String,
               val types       : List<TaskType>,
-) : Right()
+) : TaskRight()
 
 @Serializable
 @SerialName("dbContainer")
@@ -32,7 +32,7 @@ data class DbContainerRight (
     override  val description : String? = null,
               val database    : String,
               val containers  : List<ContainerAccess>,
-) : Right()
+) : TaskRight()
 
 @Serializable
 data class ContainerAccess (
@@ -60,7 +60,7 @@ data class SendMessageRight (
     override  val description : String? = null,
               val database    : String,
               val names       : List<String>,
-) : Right()
+) : TaskRight()
 
 @Serializable
 @SerialName("subscribeMessage")
@@ -68,14 +68,14 @@ data class SubscribeMessageRight (
     override  val description : String? = null,
               val database    : String,
               val names       : List<String>,
-) : Right()
+) : TaskRight()
 
 @Serializable
 @SerialName("predicate")
 data class PredicateRight (
     override  val description : String? = null,
               val names       : List<String>,
-) : Right()
+) : TaskRight()
 
 @Serializable
 data class HubRights (

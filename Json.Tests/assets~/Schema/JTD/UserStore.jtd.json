@@ -24,7 +24,7 @@
         "Role": {
             "properties": {
                 "id":          { "type": "string" },
-                "rights":      { "elements": { "ref":  "Right" } },
+                "taskRights":  { "elements": { "ref":  "TaskRight" } },
                 "hubRights":   { "ref":  "HubRights", "nullable": true },
                 "description": { "type": "string", "nullable": true }
             }
@@ -35,7 +35,7 @@
                 "groups": { "elements": { "type": "string" } }
             }
         },
-        "Right": {
+        "TaskRight": {
             "discriminator": "type",
             "mapping": {
                 "dbFull":           { "ref":  "DbFullRight" },

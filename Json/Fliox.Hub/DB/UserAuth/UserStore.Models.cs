@@ -32,12 +32,12 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
         public override     string          ToString() => JsonSerializer.Serialize(this);
     }
     
-    /// <summary>Contains a set of <see cref="rights"/> used for task authorization</summary>
+    /// <summary>Contains a set of <see cref="taskRights"/> used for task authorization</summary>
     public sealed class Role {
         /// <summary><see cref="Role"/> name</summary>
         [Required]  public  string          id;
-        /// <summary>a set of <see cref="rights"/> used for task authorization</summary>
-        [Required]  public  List<Right>     rights;
+        /// <summary>a set of <see cref="taskRights"/> used for task authorization</summary>
+        [Required]  public  List<TaskRight> taskRights;
         /// <summary>general request / connection rights for Hub access</summary>
                     public  HubRights       hubRights;
         /// <summary>optional <see cref="description"/> explaining a <see cref="Role"/></summary>

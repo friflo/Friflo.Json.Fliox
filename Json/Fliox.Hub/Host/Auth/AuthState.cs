@@ -11,7 +11,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
     internal struct AuthState {
         internal            string          error;  
         internal            bool            authenticated;
-        internal            Authorizer      taskAuthorizer;     // not null
+        internal            TaskAuthorizer  taskAuthorizer;     // not null
         internal            HubPermission   hubPermission;      // not null
         /// <summary><see cref="user"/> is never null after calling <see cref="SyncContext.AuthenticationFailed"/>
         /// or <see cref="SyncContext.AuthenticationSucceed"/></summary>

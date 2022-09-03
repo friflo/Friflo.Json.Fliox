@@ -33,11 +33,11 @@ UserPermission o.. "0..*" Role : roles
 class Role:::cssEntity {
     <<Entity · id>>
     id           : string
-    rights       : Right[]
+    taskRights   : TaskRight[]
     hubRights?   : HubRights
     description? : string
 }
-Role *-- "0..*" Right : rights
+Role *-- "0..*" TaskRight : taskRights
 Role *-- "0..1" HubRights : hubRights
 
 class UserTarget:::cssEntity {
@@ -46,18 +46,18 @@ class UserTarget:::cssEntity {
     groups  : string[]
 }
 
-class Right {
+class TaskRight {
     <<abstract>>
     description? : string
 }
 
-Right <|-- DbFullRight
+TaskRight <|-- DbFullRight
 class DbFullRight {
     type         : "dbFull"
     database     : string
 }
 
-Right <|-- DbTaskRight
+TaskRight <|-- DbTaskRight
 class DbTaskRight {
     type         : "dbTask"
     database     : string
@@ -65,7 +65,7 @@ class DbTaskRight {
 }
 DbTaskRight *-- "0..*" TaskType : types
 
-Right <|-- DbContainerRight
+TaskRight <|-- DbContainerRight
 class DbContainerRight {
     type         : "dbContainer"
     database     : string
@@ -96,21 +96,21 @@ class OperationType:::cssEnum {
 }
 
 
-Right <|-- SendMessageRight
+TaskRight <|-- SendMessageRight
 class SendMessageRight {
     type         : "sendMessage"
     database     : string
     names        : string[]
 }
 
-Right <|-- SubscribeMessageRight
+TaskRight <|-- SubscribeMessageRight
 class SubscribeMessageRight {
     type         : "subscribeMessage"
     database     : string
     names        : string[]
 }
 
-Right <|-- PredicateRight
+TaskRight <|-- PredicateRight
 class PredicateRight {
     type         : "predicate"
     names        : string[]

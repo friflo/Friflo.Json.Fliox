@@ -111,14 +111,14 @@ input UserPermissionInput {
 
 type Role {
     id          : String!
-    rights      : [Right!]!
+    taskRights  : [TaskRight!]!
     hubRights   : HubRights
     description : String
 }
 
 input RoleInput {
     id          : String!
-    rights      : [RightInput!]!
+    taskRights  : [TaskRightInput!]!
     hubRights   : HubRightsInput
     description : String
 }
@@ -133,7 +133,7 @@ input UserTargetInput {
     groups : [String!]!
 }
 
-union Right =
+union TaskRight =
     | DbFullRight
     | DbTaskRight
     | DbContainerRight
@@ -141,7 +141,7 @@ union Right =
     | SubscribeMessageRight
     | PredicateRight
 
-scalar RightInput
+scalar TaskRightInput
 
 type DbFullRight {
     description : String

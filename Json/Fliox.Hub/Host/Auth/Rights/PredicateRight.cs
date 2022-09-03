@@ -11,13 +11,13 @@ using Friflo.Json.Fliox.Hub.DB.UserAuth;
 // ReSharper disable UnassignedField.Global
 namespace Friflo.Json.Fliox.Hub.Host.Auth.Rights
 {
-    public sealed class PredicateRight : Right
+    public sealed class PredicateRight : TaskRight
     {
         /// <summary>a specific predicate: 'TestPredicate', multiple predicates by prefix: 'Test*', all predicates: '*'</summary>
         [Required]  public              List<string>    names;
         
                     public  override    RightType       RightType => RightType.predicate;
-                    public  override    Authorizer      ToAuthorizer() => throw new NotImplementedException();
+                    public  override    TaskAuthorizer  ToAuthorizer() => throw new NotImplementedException();
                 
         internal override void Validate(in RoleValidation validation) {
             foreach (var predicateName in names) {

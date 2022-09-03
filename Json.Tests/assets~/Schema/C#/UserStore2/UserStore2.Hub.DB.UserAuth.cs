@@ -33,11 +33,11 @@ public class UserPermission {
 
 public class Role {
     [Required]
-    string       id;
+    string           id;
     [Required]
-    List<Right>  rights;
-    HubRights    hubRights;
-    string       description;
+    List<TaskRight>  taskRights;
+    HubRights        hubRights;
+    string           description;
 }
 
 public class UserTarget {

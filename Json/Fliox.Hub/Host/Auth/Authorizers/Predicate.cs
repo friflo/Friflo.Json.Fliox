@@ -9,7 +9,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
 {
     public delegate bool AuthPredicate (SyncRequestTask task, SyncContext syncContext);
     
-    public sealed class AuthorizePredicate : Authorizer {
+    public sealed class AuthorizePredicate : TaskAuthorizer {
         private readonly string         name;
         private readonly AuthPredicate  predicate;
         public  override string         ToString() => name;

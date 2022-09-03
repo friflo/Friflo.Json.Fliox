@@ -1,7 +1,7 @@
 {
     "id": "cluster-allow",
     "description": "Allow unrestricted access to cluster database",
-    "rights": [        
+    "taskRights": [        
         { "type": "dbFull", "database": "cluster" }        
     ]
 }

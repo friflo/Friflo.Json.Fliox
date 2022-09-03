@@ -93,9 +93,9 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
             }
         }
         
-        /// Iterate all authorized users and remove those having an <see cref="Authorizer"/> which was modified.
+        /// Iterate all authorized users and remove those having an <see cref="TaskAuthorizer"/> which was modified.
         /// Used iteration instead of an additional map (role -> users) to avoid long lived objects in heap.
-        private void AddAffectedUsers(List<JsonKey> affectedUsers, Authorizer[] search) {
+        private void AddAffectedUsers(List<JsonKey> affectedUsers, TaskAuthorizer[] search) {
             foreach (var pair in userAuthenticator.users) {
                 var user = pair.Value;
                 if (user.taskAuthorizer is AuthorizeAny any) {

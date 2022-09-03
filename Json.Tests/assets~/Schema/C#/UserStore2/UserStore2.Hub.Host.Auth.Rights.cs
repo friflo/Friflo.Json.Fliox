@@ -15,23 +15,23 @@ namespace UserStore2.Hub.Host.Auth.Rights {
 [PolymorphType(typeof(SendMessageRight),      Discriminant = "sendMessage")]
 [PolymorphType(typeof(SubscribeMessageRight), Discriminant = "subscribeMessage")]
 [PolymorphType(typeof(PredicateRight),        Discriminant = "predicate")]
-public abstract class Right {
+public abstract class TaskRight {
     string  description;
 }
 
-public class DbFullRight : Right {
+public class DbFullRight : TaskRight {
     [Required]
     string  database;
 }
 
-public class DbTaskRight : Right {
+public class DbTaskRight : TaskRight {
     [Required]
     string          database;
     [Required]
     List<TaskType>  types;
 }
 
-public class DbContainerRight : Right {
+public class DbContainerRight : TaskRight {
     [Required]
     string                 database;
     [Required]
@@ -58,21 +58,21 @@ public enum OperationType {
     full,
 }
 
-public class SendMessageRight : Right {
+public class SendMessageRight : TaskRight {
     [Required]
     string        database;
     [Required]
     List<string>  names;
 }
 
-public class SubscribeMessageRight : Right {
+public class SubscribeMessageRight : TaskRight {
     [Required]
     string        database;
     [Required]
     List<string>  names;
 }
 
-public class PredicateRight : Right {
+public class PredicateRight : TaskRight {
     [Required]
     List<string>  names;
 }

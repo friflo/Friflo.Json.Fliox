@@ -3,12 +3,12 @@ import { TaskType }     from "./Friflo.Json.Fliox.Hub.Protocol.Tasks";
 import { EntityChange } from "./Friflo.Json.Fliox.Hub.Protocol.Tasks";
 
 /**
- * Each **Role** has a set of **rights**.   
- * Each **Right** is a rule used to grant or deny a specific database operation or command execution.  
- * The database operation or command execution is granted if any of it **rights**
+ * Each **Role** has a set of **taskRights**.   
+ * Each **TaskRight** is a rule used to grant or deny a specific database operation or command execution.  
+ * The database operation or command execution is granted if any of it **taskRights**
  * grant access.
  */
-export type Right_Union =
+export type TaskRight_Union =
     | DbFullRight
     | DbTaskRight
     | DbContainerRight
@@ -17,7 +17,7 @@ export type Right_Union =
     | PredicateRight
 ;
 
-export abstract class Right {
+export abstract class TaskRight {
     /** right type */
     abstract type:
         | "dbFull"
@@ -32,7 +32,7 @@ export abstract class Right {
 }
 
 /** Allow full access to the given **database**.   */
-export class DbFullRight extends Right {
+export class DbFullRight extends TaskRight {
     /** right type */
     type         : "dbFull";
     /** a specific database: 'test_db', multiple databases by prefix: 'test_*', all databases: '*' */
@@ -40,7 +40,7 @@ export class DbFullRight extends Right {
 }
 
 /** **DbTaskRight** grant **database** access by a set of task **types**.    */
-export class DbTaskRight extends Right {
+export class DbTaskRight extends TaskRight {
     /** right type */
     type         : "dbTask";
     /** a specific database: 'test_db', multiple databases by prefix: 'test_*', all databases: '*' */
@@ -55,7 +55,7 @@ export class DbTaskRight extends Right {
  * E.g. create, read, upsert, delete, query or aggregate (count)  
  * It also allows subscribing database changes by **subscribeChanges**
  */
-export class DbContainerRight extends Right {
+export class DbContainerRight extends TaskRight {
     /** right type */
     type         : "dbContainer";
     /** a specific database: 'test_db', multiple databases by prefix: 'test_*', all databases: '*' */
@@ -92,7 +92,7 @@ export type OperationType =
  * **SendMessageRight** allows sending messages to a **database** by a set of **names**.    
  * Note: commands are messages - so permission of sending commands is same as for messages.
  */
-export class SendMessageRight extends Right {
+export class SendMessageRight extends TaskRight {
     /** right type */
     type         : "sendMessage";
     /** a specific database: 'test_db', multiple databases by prefix: 'test_*', all databases: '*' */
@@ -105,7 +105,7 @@ export class SendMessageRight extends Right {
  * **SubscribeMessageRight** allows subscribing messages send to a **database**.    
  * Note: commands are messages - so permission of subscribing commands is same as for messages.
  */
-export class SubscribeMessageRight extends Right {
+export class SubscribeMessageRight extends TaskRight {
     /** right type */
     type         : "subscribeMessage";
     /** a specific database: 'test_db', multiple databases by prefix: 'test_*', all databases: '*' */
@@ -114,7 +114,7 @@ export class SubscribeMessageRight extends Right {
     names        : string[];
 }
 
-export class PredicateRight extends Right {
+export class PredicateRight extends TaskRight {
     /** right type */
     type         : "predicate";
     /** a specific predicate: 'TestPredicate', multiple predicates by prefix: 'Test*', all predicates: '*' */

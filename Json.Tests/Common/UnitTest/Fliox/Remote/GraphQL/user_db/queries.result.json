@@ -5,7 +5,7 @@
     "items": [
         {
             "id": "all-allow",
-            "rights": [
+            "taskRights": [
                 {
                     "database": "*",
                     "__typename": "DbFullRight"
@@ -14,7 +14,7 @@
         },
         {
             "id": "cluster-allow",
-            "rights": [
+            "taskRights": [
                 {
                     "database": "cluster",
                     "__typename": "DbFullRight"
@@ -23,7 +23,7 @@
         },
         {
             "id": "invalid-role",
-            "rights": [
+            "taskRights": [
                 {
                     "database": "not_found_db",
                     "__typename": "DbFullRight"
@@ -35,7 +35,7 @@
         },
         {
             "id": "main_db-allow",
-            "rights": [
+            "taskRights": [
                 {
                     "database": "main_db",
                     "__typename": "DbFullRight"
@@ -44,12 +44,12 @@
         },
         {
             "id": "main_db-deny",
-            "rights": [
+            "taskRights": [
             ]
         },
         {
             "id": "main_db-message",
-            "rights": [
+            "taskRights": [
                 {
                     "database": "main_db",
                     "names": [
@@ -68,7 +68,7 @@
         },
         {
             "id": "main_db-operation",
-            "rights": [
+            "taskRights": [
                 {
                     "database": "main_db",
                     "containers": [
@@ -89,7 +89,7 @@
         },
         {
             "id": "main_db-predicate",
-            "rights": [
+            "taskRights": [
                 {
                     "names": [
                         "TestPredicate"
@@ -100,7 +100,7 @@
         },
         {
             "id": "main_db-readonly",
-            "rights": [
+            "taskRights": [
                 {
                     "database": "main_db",
                     "types": [
@@ -122,7 +122,7 @@
         },
         {
             "id": "main_db-task",
-            "rights": [
+            "taskRights": [
                 {
                     "database": "main_db",
                     "types": [
@@ -134,7 +134,7 @@
         },
         {
             "id": "monitor-allow",
-            "rights": [
+            "taskRights": [
                 {
                     "database": "monitor",
                     "__typename": "DbFullRight"
@@ -143,7 +143,7 @@
         },
         {
             "id": "user_db-allow",
-            "rights": [
+            "taskRights": [
                 {
                     "database": "user_db",
                     "containers": [
@@ -174,7 +174,7 @@
         },
         {
             "id": "user_db-readonly",
-            "rights": [
+            "taskRights": [
                 {
                     "database": "user_db",
                     "containers": [

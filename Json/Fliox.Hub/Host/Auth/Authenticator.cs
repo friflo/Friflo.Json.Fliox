@@ -30,7 +30,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
 
         public abstract Task    Authenticate    (SyncRequest syncRequest, SyncContext syncContext);
         
-        protected Authenticator (Authorizer anonymousAuthorizer, HubPermission anonymousHubPermission) {
+        protected Authenticator (TaskAuthorizer anonymousAuthorizer, HubPermission anonymousHubPermission) {
             registeredPredicates    = new Dictionary<string, AuthorizePredicate>();
             users                   = new ConcurrentDictionary <JsonKey, User>(JsonKey.Equality);
             anonymousUser           = new User(User.AnonymousId, null, anonymousAuthorizer, anonymousHubPermission); 
@@ -76,7 +76,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
 
         /// <summary>
         /// Register a predicate function by the given <paramref name="name"/> which enables custom authorization via code,
-        /// which cannot be expressed by one of the provided <see cref="Right"/> implementations.
+        /// which cannot be expressed by one of the provided <see cref="TaskRight"/> implementations.
         /// If called its parameters are intended to filter the aspired condition and return true if task execution is granted.
         /// To reject task execution it returns false.
         /// </summary>
@@ -87,7 +87,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
         
         /// <summary>
         /// Register a predicate function which enables custom authorization via code, which cannot be expressed by one of the
-        /// provided <see cref="Right"/> implementations.
+        /// provided <see cref="TaskRight"/> implementations.
         /// The <paramref name="predicate"/> is registered by its delegate name.
         /// If called its parameters are intended to filter the aspired condition and return true if task execution is granted.
         /// To reject task execution it returns false.

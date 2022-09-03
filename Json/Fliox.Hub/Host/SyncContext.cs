@@ -63,17 +63,17 @@ namespace Friflo.Json.Fliox.Hub.Host
             this.sharedCache    = sharedCache;
         }
         
-        public void AuthenticationFailed(User user, string error, Authorizer authorizer, HubPermission hubPermission) {
-            AssertAuthenticationParams(user, authorizer, hubPermission);
+        public void AuthenticationFailed(User user, string error, TaskAuthorizer taskAuthorizer, HubPermission hubPermission) {
+            AssertAuthenticationParams(user, taskAuthorizer, hubPermission);
             authState.user              = user;
             authState.authExecuted      = true;
             authState.authenticated     = false;
-            authState.taskAuthorizer    = authorizer;
+            authState.taskAuthorizer    = taskAuthorizer;
             authState.hubPermission     = hubPermission;
             authState.error             = error;
         }
         
-        public void AuthenticationSucceed (User user, Authorizer taskAuthorizer, HubPermission hubPermission) {
+        public void AuthenticationSucceed (User user, TaskAuthorizer taskAuthorizer, HubPermission hubPermission) {
             AssertAuthenticationParams(user, taskAuthorizer, hubPermission);
             authState.user              = user;
             authState.authExecuted      = true;
@@ -88,10 +88,10 @@ namespace Friflo.Json.Fliox.Hub.Host
         }
         
         [Conditional("DEBUG")]
-        private void AssertAuthenticationParams(User user, Authorizer authorizer, HubPermission hubPermission) {
+        private void AssertAuthenticationParams(User user, TaskAuthorizer taskAuthorizer, HubPermission hubPermission) {
             if (authState.authExecuted) throw new InvalidOperationException("Expect AuthExecuted == false");
             if (user == null)           throw new ArgumentNullException(nameof(user));
-            if (authorizer == null)     throw new ArgumentNullException(nameof(authorizer));
+            if (taskAuthorizer == null) throw new ArgumentNullException(nameof(taskAuthorizer));
             if (hubPermission == null)  throw new ArgumentNullException(nameof(hubPermission));
         }
         

@@ -18,7 +18,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth.Rights
     /// E.g. create, read, upsert, delete, query or aggregate (count)<br/>
     /// It also allows subscribing database changes by <see cref="ContainerAccess.subscribeChanges"/>
     /// </summary>
-    public sealed class DbContainerRight : Right
+    public sealed class DbContainerRight : TaskRight
     {
         /// <summary>a specific database: 'test_db', multiple databases by prefix: 'test_*', all databases: '*'</summary>
         [Required]  public              string                  database;
@@ -26,9 +26,9 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth.Rights
         [Required]  public              List<ContainerAccess>   containers;
                     public  override    RightType               RightType => RightType.dbContainer;
         
-        public override Authorizer ToAuthorizer() {
+        public override TaskAuthorizer ToAuthorizer() {
             var databaseName = database;
-            var list = new List<Authorizer>(containers.Count);
+            var list = new List<TaskAuthorizer>(containers.Count);
             foreach (var container in containers) {
                 var name        = container.name;
                 var access      = container.operations;

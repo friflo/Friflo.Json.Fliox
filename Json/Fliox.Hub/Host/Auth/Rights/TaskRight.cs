@@ -6,9 +6,9 @@ using Friflo.Json.Fliox.Hub.DB.UserAuth;
 namespace Friflo.Json.Fliox.Hub.Host.Auth.Rights
 {
     /// <summary>
-    /// Each <see cref="DB.UserAuth.Role"/> has a set of <see cref="DB.UserAuth.Role.rights"/>. <br/>
-    /// Each <see cref="Right"/> is a rule used to grant or deny a specific database operation or command execution.<br/>
-    /// The database operation or command execution is granted if any of it <see cref="DB.UserAuth.Role.rights"/>
+    /// Each <see cref="Role"/> has a set of <see cref="Role.taskRights"/>. <br/>
+    /// Each <see cref="TaskRight"/> is a rule used to grant or deny a specific database operation or command execution.<br/>
+    /// The database operation or command execution is granted if any of it <see cref="Role.taskRights"/>
     /// grant access.
     /// </summary>
     [Discriminator("type", Description = "right type")]
@@ -18,12 +18,12 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth.Rights
     [PolymorphType(typeof(SendMessageRight),        Discriminant = "sendMessage")]
     [PolymorphType(typeof(SubscribeMessageRight),   Discriminant = "subscribeMessage")]
     [PolymorphType(typeof(PredicateRight),          Discriminant = "predicate")]
-    public abstract class Right {
+    public abstract class TaskRight {
         /// <summary>optional description explaining the Right</summary>
         public              string      description;
         public    abstract  RightType   RightType { get; }
 
-        public    abstract  Authorizer  ToAuthorizer();
-        internal  abstract  void        Validate(in RoleValidation validation);
+        public    abstract  TaskAuthorizer  ToAuthorizer();
+        internal  abstract  void            Validate(in RoleValidation validation);
     }
 }

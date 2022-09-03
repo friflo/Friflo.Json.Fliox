@@ -3,7 +3,7 @@
     count
     items {
       id
-      rights {
+      taskRights {
         # test: use inline fragments to access data on the underlying concrete types
         __typename
         ... on DbFullRight {

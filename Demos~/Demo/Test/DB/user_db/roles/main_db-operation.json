@@ -1,7 +1,7 @@
 {
     "id": "main_db-operation",
     "description": "Allow the given database operations on the given containers and subscribing to change operations",
-    "rights": [
+    "taskRights": [
         {
             "type": "dbContainer",
             "database": "main_db",

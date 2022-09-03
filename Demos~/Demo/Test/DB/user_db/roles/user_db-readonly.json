@@ -1,7 +1,7 @@
 {
     "id": "user_db-readonly",
     "description": "Allow readonly access to user_db: permissions & roles",
-    "rights": [
+    "taskRights": [
         {
             "type": "dbContainer",
             "database": "user_db",

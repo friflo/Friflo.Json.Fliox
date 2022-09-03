@@ -28,7 +28,7 @@ data class UserPermission (
 @Serializable
 data class Role (
               val id          : String,
-              val rights      : List<Right>,
+              val taskRights  : List<TaskRight>,
               val hubRights   : HubRights? = null,
               val description : String? = null,
 )

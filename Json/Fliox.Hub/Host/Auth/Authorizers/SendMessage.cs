@@ -7,7 +7,7 @@ using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.Host.Auth
 {
-    public sealed class AuthorizeSendMessage : Authorizer {
+    public sealed class AuthorizeSendMessage : TaskAuthorizer {
         private  readonly   DatabaseFilter      databaseFilter;
         private  readonly   string              messageName;
         private  readonly   bool                prefix;

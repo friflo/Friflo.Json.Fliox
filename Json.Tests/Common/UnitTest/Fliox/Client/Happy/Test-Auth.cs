@@ -47,7 +47,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         
         /// <summary>
         /// A predicate function enables custom authorization via code, which cannot be expressed by one of the
-        /// provided <see cref="Right"/> implementations.
+        /// provided <see cref="TaskRight"/> implementations.
         /// If called its parameters are intended to filter the aspired condition and return true if task execution is granted.
         /// To reject task execution it returns false.
         /// </summary>

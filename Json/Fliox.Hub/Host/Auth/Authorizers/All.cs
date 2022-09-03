@@ -8,10 +8,10 @@ using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.Host.Auth
 {
-    public sealed class AuthorizeAll : Authorizer {
-        private readonly    Authorizer[]     list;
+    public sealed class AuthorizeAll : TaskAuthorizer {
+        private readonly    TaskAuthorizer[]     list;
         
-        public AuthorizeAll(ICollection<Authorizer> list) {
+        public AuthorizeAll(ICollection<TaskAuthorizer> list) {
             this.list = list.ToArray();    
         }
         
