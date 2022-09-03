@@ -71,7 +71,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
             userHub        	        = new FlioxHub(userDatabase, sharedEnv);
             userHub.Authenticator   = new UserDatabaseAuthenticator(userDatabase.name);  // authorize access to userDatabase
             this.userAuth           = userAuth;
-            this.anonymousAuthorizer= anonymousAuthorizer ?? AuthorizeDeny.Instance;
+            this.anonymousAuthorizer= anonymousAuthorizer ?? TaskAuthorizer.None;
         }
         
         public void Dispose() {

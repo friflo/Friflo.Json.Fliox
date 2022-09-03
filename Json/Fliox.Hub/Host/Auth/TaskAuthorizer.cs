@@ -17,6 +17,9 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
     /// </remarks> 
     public abstract class TaskAuthorizer
     {
+        public static readonly TaskAuthorizer Full = new AuthorizeDatabase ("*");
+        public static readonly TaskAuthorizer None = new AuthorizeDeny ();
+
         /// <summary>
         /// Create a set of <paramref name="databaseFilters"/> used to filter
         /// <see cref="DB.Cluster.ClusterStore"/> read and query results available to a user.
@@ -26,9 +29,9 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
         
         internal static TaskAuthorizer ToAuthorizer(IReadOnlyList<TaskAuthorizer> authorizers) {
             if (authorizers == null)
-                return AuthorizeDeny.Instance;
+                return None;
             if (authorizers.Count == 0)
-                return AuthorizeDeny.Instance;
+                return None;
             return TrimAny(authorizers);
         }
 

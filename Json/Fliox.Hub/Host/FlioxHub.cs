@@ -128,7 +128,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         [DebuggerBrowsable(Never)]  private ClientController    clientController    = new IncrementClientController();
         
         /// <see cref="Authenticator"/> is mutable => create new instance per Hub 
-        private static Authenticator CreateDefaultAuthenticator() => new AuthenticateNone(AuthorizeDatabase.Full, HubPermission.Full);
+        private static Authenticator CreateDefaultAuthenticator() => new AuthenticateNone(TaskAuthorizer.Full, HubPermission.Full);
         #endregion
         
     #region - initialize

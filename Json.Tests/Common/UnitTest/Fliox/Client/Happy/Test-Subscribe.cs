@@ -426,7 +426,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                     
                     IsTrue(sub.Success);
                 } {
-                    hub.Authenticator = new AuthenticateNone(AuthorizeDatabase.Full, HubPermission.None);
+                    hub.Authenticator = new AuthenticateNone(TaskAuthorizer.Full, HubPermission.None);
                     var sub = testQueueEvents.std.Client(new ClientParam { queueEvents = true });
                     await testQueueEvents.TrySyncTasks();
                     

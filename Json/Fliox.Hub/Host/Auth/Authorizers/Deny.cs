@@ -7,10 +7,8 @@ using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.Host.Auth
 {
-    public sealed class AuthorizeDeny : TaskAuthorizer {
-        
-        public static readonly AuthorizeDeny Instance = new AuthorizeDeny();
-        
+    public sealed class AuthorizeDeny : TaskAuthorizer
+    {
         public override void AddAuthorizedDatabases(HashSet<DatabaseFilter> databaseFilters) { }
         
         public override bool AuthorizeTask(SyncRequestTask task, SyncContext syncContext) {
