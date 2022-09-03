@@ -370,7 +370,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             var hub         = context.Hub;
             var dispatcher  = hub.EventDispatcher;
             if (dispatcher == null) {
-                return null;
+                return "std.Client queueEvents requires an EventDispatcher assigned to FlioxHub";
             }
             EventSubClient client;
             var syncContext = context.SyncContext; 

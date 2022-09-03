@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Client;
 using Friflo.Json.Fliox.Hub.DB.Cluster;
 using Friflo.Json.Fliox.Hub.Host;
+using Friflo.Json.Fliox.Hub.Host.Auth;
 using Friflo.Json.Fliox.Hub.Host.Event;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Threading;
@@ -398,6 +399,38 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
 
                     // assert no send events are pending which are not acknowledged
                     AreEqual(0, eventDispatcher.QueuedEventsCount());
+                }
+            }
+        }
+        
+        [Test]
+        public void TestQueueEvents() { SingleThreadSynchronizationContext.Run(AssertTestQueueEvents); }
+        
+        /// Ensure <see cref="HubPermission.queueEvents"/> is true if client ask for <see cref="ClientParam.queueEvents"/>
+        private static async Task AssertTestQueueEvents() {
+            using (var _                = SharedEnv.Default) // for LeakTestsFixture
+            using (var eventDispatcher  = new EventDispatcher(false))
+            using (var database         = new MemoryDatabase(TestGlobals.DB))
+            using (var hub              = new FlioxHub(database, TestGlobals.Shared))
+            using (var testQueueEvents  = new FlioxClient(hub) { UserId = "test-queue-events" }) {
+                // default hub.Authenticator uses HubPermission.Full
+                {
+                    var sub = testQueueEvents.std.Client(new ClientParam { queueEvents = true });
+                    await testQueueEvents.TrySyncTasks();
+                    
+                    AreEqual("CommandError ~ std.Client queueEvents requires an EventDispatcher assigned to FlioxHub", sub.Error.Message);
+                } {
+                    hub.EventDispatcher = eventDispatcher;
+                    var sub = testQueueEvents.std.Client(new ClientParam { queueEvents = true });
+                    await testQueueEvents.SyncTasks();
+                    
+                    IsTrue(sub.Success);
+                } {
+                    hub.Authenticator = new AuthenticateNone(AuthorizeDatabase.Full, HubPermission.None);
+                    var sub = testQueueEvents.std.Client(new ClientParam { queueEvents = true });
+                    await testQueueEvents.TrySyncTasks();
+                    
+                    AreEqual("CommandError ~ std.Client queueEvents requires permission (Role.hubRights) queueEvents = true", sub.Error.Message);
                 }
             }
         }
