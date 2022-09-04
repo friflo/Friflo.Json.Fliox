@@ -110,23 +110,32 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             JsonEvaluator               jsonEvaluator)
         {
             foreach (var task in tasks) {
-                foreach (var changesPair in changeSubs) {
-                    SubscribeChanges subscribeChanges = changesPair.Value;
-                    var taskResult = FilterUtils.FilterChanges(task, subscribeChanges, jsonEvaluator);
-                    if (taskResult == null)
-                        continue;
-                    AddTask(ref eventTasks, taskResult);
-                }
-                if (task is SyncMessageTask messageTask) {
-                    if (!IsEventTarget(subClient, messageTask))
-                        continue;
-                    if (!FilterMessage(messageTask.name))
-                        continue;
-                    // don't leak userId's & clientId's to subscribed clients
-                    messageTask.users   = null;
-                    messageTask.clients = null;
-                    messageTask.groups  = null;
-                    AddTask(ref eventTasks, messageTask);
+                switch (task.TaskType) {
+                    case TaskType.create:
+                    case TaskType.upsert:
+                    case TaskType.delete:
+                    case TaskType.patch:
+                        foreach (var pair in changeSubs) {
+                            SubscribeChanges subscribeChanges = pair.Value;
+                            var taskResult = FilterUtils.FilterChanges(task, subscribeChanges, jsonEvaluator);
+                            if (taskResult == null)
+                                continue;
+                            AddTask(ref eventTasks, taskResult);
+                        }
+                        break;
+                    case TaskType.message:
+                    case TaskType.command:
+                        var messageTask = (SyncMessageTask)task;
+                        if (!IsEventTarget(subClient, messageTask))
+                            continue;
+                        if (!FilterMessage(messageTask.name))
+                            continue;
+                        // don't leak userId's & clientId's to subscribed clients
+                        messageTask.users   = null;
+                        messageTask.clients = null;
+                        messageTask.groups  = null;
+                        AddTask(ref eventTasks, messageTask);
+                    break;
                 }
             }
         }
