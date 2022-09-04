@@ -244,12 +244,29 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             subClient.AcknowledgeEvents(value);
         }
         
+        private static bool HasSubscribableTask(List<SyncRequestTask> tasks) {
+            foreach (var task in tasks) {
+                switch (task.TaskType) {
+                    case TaskType.message:
+                    case TaskType.command:
+                    case TaskType.create:
+                    case TaskType.upsert:
+                    case TaskType.delete:
+                    case TaskType.patch:
+                        return true;
+                }
+            }
+            return false;
+        }
+        
         internal void EnqueueSyncTasks (SyncRequest syncRequest, SyncContext syncContext) {
-            var database        = syncContext.DatabaseName;
             ProcessSubscriber (syncRequest, syncContext);
-            
+            if (!HasSubscribableTask(syncRequest.tasks)) {
+                return; // early out
+            }
             using (var pooled = syncContext.ObjectMapper.Get()) {
                 ObjectWriter writer     = pooled.instance.writer;
+                var database            = syncContext.DatabaseName;
                 writer.Pretty           = false;    // write sub's as one liner
                 writer.WriteNullMembers = false;
                 foreach (var pair in sendClients) {
