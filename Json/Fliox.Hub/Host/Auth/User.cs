@@ -13,8 +13,8 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
     /// <summary>
     /// A <see cref="User"/> instance store credentials, <see cref="clients"/> and permissions of a user. <br/>
     /// Permissions: <br/>
-    /// <see cref="TaskAuthorizer"/> to authorize task execution.<br/>
-    /// <see cref="HubPermission"/> for general - non task specific - permissions.<br/>
+    /// <see cref="taskAuthorizer"/> to authorize task execution.<br/>
+    /// <see cref="hubPermission"/> for general - non task specific - permissions.<br/>
     /// </summary>
     /// <remarks>
     /// <b>Important:</b> <see cref="User"/> instances must be used only within the execution of a single <see cref="Protocol.SyncRequest"/>. <br/>
@@ -25,8 +25,8 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
         // --- public
         public   readonly   JsonKey         userId;
         public   readonly   string          token;
-        public              TaskAuthorizer  TaskAuthorizer  { get ; internal set; } = TaskAuthorizer.None;  // not null
-        public              HubPermission   HubPermission   { get ; internal set; } = HubPermission.None;   // not null
+        internal            TaskAuthorizer  taskAuthorizer  = TaskAuthorizer.None;  // not null
+        internal            HubPermission   hubPermission   = HubPermission.None;   // not null
 
         public   override   string          ToString() => userId.AsString();
         

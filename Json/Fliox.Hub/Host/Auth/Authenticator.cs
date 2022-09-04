@@ -31,13 +31,13 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
         
         // not null
         public  TaskAuthorizer  AnonymousTaskAuthorizer {
-            get => anonymousUser.TaskAuthorizer;
-            set => anonymousUser.TaskAuthorizer = value ?? throw new ArgumentNullException(nameof(AnonymousTaskAuthorizer));
+            get => anonymousUser.taskAuthorizer;
+            set => anonymousUser.taskAuthorizer = value ?? throw new ArgumentNullException(nameof(AnonymousTaskAuthorizer));
         }
         // not null
         public  HubPermission   AnonymousHubPermission {
-            get => anonymousUser.HubPermission;
-            set => anonymousUser.HubPermission = value ?? throw new ArgumentNullException(nameof(AnonymousHubPermission));
+            get => anonymousUser.hubPermission;
+            set => anonymousUser.hubPermission = value ?? throw new ArgumentNullException(nameof(AnonymousHubPermission));
         }
         
         public    override  string                                  ToString() => $"users: {users.Count}";

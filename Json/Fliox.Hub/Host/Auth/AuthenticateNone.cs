@@ -9,7 +9,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
     /// <summary>
     /// Used as default <see cref="Authenticator"/> in a <see cref="FlioxHub"/>.<br/>
     /// All users accessing a <see cref="FlioxHub"/> are not authenticated - <see cref="SyncContext.Authenticated"/> = false <br/>
-    /// Execution of all user tasks are authorized. The <see cref="User.TaskAuthorizer"/> and <see cref="User.HubPermission"/>
+    /// Execution of all user tasks are authorized. The <see cref="User.taskAuthorizer"/> and <see cref="User.hubPermission"/>
     /// of <see cref="SyncContext.User"/> grant full access.
     /// </summary>
     public sealed class AuthenticateNone : Authenticator
@@ -22,7 +22,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
             } else {
                 if (!users.TryGetValue(userId, out user)) {
                     user = new User(userId, null) {
-                        TaskAuthorizer = AnonymousTaskAuthorizer, HubPermission = AnonymousHubPermission
+                        taskAuthorizer = AnonymousTaskAuthorizer, hubPermission = AnonymousHubPermission
                     };
                     users.TryAdd(userId, user);
                 }

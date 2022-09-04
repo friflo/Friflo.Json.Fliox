@@ -151,7 +151,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
                     syncContext.AuthenticationFailed(user, InvalidUserToken, AnonymousTaskAuthorizer, AnonymousHubPermission);
                     return;
                 }
-                syncContext.AuthenticationSucceed(user, user.TaskAuthorizer, user.HubPermission);
+                syncContext.AuthenticationSucceed(user, user.taskAuthorizer, user.hubPermission);
                 return;
             }
             var command = new Credentials { userId = userId, token = token };
@@ -174,7 +174,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
                         return;
                     }
                     var ua  = userAuthInfo.value;
-                    user    = new User (userId, authCred.token) { TaskAuthorizer = ua.taskAuthorizer, HubPermission = ua.hubPermission };
+                    user    = new User (userId, authCred.token) { taskAuthorizer = ua.taskAuthorizer, hubPermission = ua.hubPermission };
                     user.SetGroups(userAuthInfo.value.groups);
                     users.TryAdd(userId, user);
                 }
@@ -183,7 +183,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
                     syncContext.AuthenticationFailed(anonymousUser, InvalidUserToken, AnonymousTaskAuthorizer, AnonymousHubPermission);
                     return;
                 }
-                syncContext.AuthenticationSucceed(user, user.TaskAuthorizer, user.HubPermission);
+                syncContext.AuthenticationSucceed(user, user.taskAuthorizer, user.hubPermission);
             }
         }
         

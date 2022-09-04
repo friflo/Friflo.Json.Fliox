@@ -98,7 +98,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
         private void AddAffectedUsers(List<JsonKey> affectedUsers, TaskAuthorizer[] search) {
             foreach (var pair in userAuthenticator.users) {
                 var user = pair.Value;
-                if (user.TaskAuthorizer is AuthorizeAny any) {
+                if (user.taskAuthorizer is AuthorizeAny any) {
                     foreach (var authorizer in any.list) {
                         if (search.Contains(authorizer)) {
                             affectedUsers.Add(user.userId);
@@ -107,7 +107,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
                     }
                     continue;
                 }
-                if (search.Contains(user.TaskAuthorizer)) {
+                if (search.Contains(user.taskAuthorizer)) {
                     affectedUsers.Add(user.userId);                    
                 }
             }
