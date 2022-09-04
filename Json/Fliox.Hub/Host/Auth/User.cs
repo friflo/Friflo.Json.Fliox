@@ -11,7 +11,10 @@ using Friflo.Json.Fliox.Hub.DB.Monitor;
 namespace Friflo.Json.Fliox.Hub.Host.Auth
 {
     /// <summary>
-    /// Prover access to data of an authenticated user 
+    /// A <see cref="User"/> instance store credentials, <see cref="clients"/> and permissions of a user. <br/>
+    /// Permissions: <br/>
+    /// <see cref="TaskAuthorizer"/> to authorize task execution.<br/>
+    /// <see cref="HubPermission"/> for general - non task specific - permissions.<br/>
     /// </summary>
     /// <remarks>
     /// <b>Important:</b> <see cref="User"/> instances must be used only within the execution of a single <see cref="Protocol.SyncRequest"/>. <br/>

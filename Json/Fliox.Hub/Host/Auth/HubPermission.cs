@@ -1,8 +1,18 @@
 
 namespace Friflo.Json.Fliox.Hub.Host.Auth
 {
+    /// <summary>
+    /// Define the general Hub permissions. For now this apply only to event processing. <see cref="queueEvents"/>  
+    /// </summary>
+    /// <remarks>
+    /// Task specific permissions are defined by <see cref="TaskAuthorizer"/>.
+    /// </remarks>
     public class HubPermission
     {
+        /// <summary>
+        /// If true events are stored for user client to resent unacknowledged events on reconnects.
+        /// <see cref="Event.EventSubClient.queueEvents"/>
+        /// </summary>
         public readonly bool queueEvents;
 
         public static readonly HubPermission Full = new HubPermission (true);
