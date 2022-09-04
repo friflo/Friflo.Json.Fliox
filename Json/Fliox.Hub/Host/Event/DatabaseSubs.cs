@@ -104,12 +104,12 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         }
 
         internal void AddEventTasks(
-            SyncRequest                 syncRequest,
+            List<SyncRequestTask>       tasks,
             EventSubClient              subClient,
             ref List<SyncRequestTask>   eventTasks,
             JsonEvaluator               jsonEvaluator)
         {
-            foreach (var task in syncRequest.tasks) {
+            foreach (var task in tasks) {
                 foreach (var changesPair in changeSubs) {
                     SubscribeChanges subscribeChanges = changesPair.Value;
                     var taskResult = FilterUtils.FilterChanges(task, subscribeChanges, jsonEvaluator);

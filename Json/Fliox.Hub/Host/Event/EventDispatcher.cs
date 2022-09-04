@@ -260,8 +260,10 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         }
         
         internal void EnqueueSyncTasks (SyncRequest syncRequest, SyncContext syncContext) {
+            var syncTasks = syncRequest.tasks;
             ProcessSubscriber (syncRequest, syncContext);
-            if (!HasSubscribableTask(syncRequest.tasks)) {
+
+            if (!HasSubscribableTask(syncTasks)) {
                 return; // early out
             }
             using (var pooled = syncContext.ObjectMapper.Get()) {
@@ -279,7 +281,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                         continue;
                     
                     List<SyncRequestTask>  eventTasks = null;
-                    databaseSubs.AddEventTasks(syncRequest, subClient, ref eventTasks, jsonEvaluator);
+                    databaseSubs.AddEventTasks(syncTasks, subClient, ref eventTasks, jsonEvaluator);
 
                     if (eventTasks == null)
                         continue;
