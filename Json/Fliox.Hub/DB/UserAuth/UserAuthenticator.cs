@@ -56,12 +56,9 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
         // --- private / internal
         internal  readonly  FlioxHub                                    userHub;
         private   readonly  IUserAuth                                   userAuth;
-        private   readonly  TaskAuthorizer                              anonymousAuthorizer;
-        private   readonly  HubPermission                               anonymousHubPermission = HubPermission.None;
         internal  readonly  ConcurrentDictionary<string, RoleRights>    roleCache = new ConcurrentDictionary <string, RoleRights>();
 
-        public UserAuthenticator (EntityDatabase userDatabase, SharedEnv env = null, IUserAuth userAuth = null, TaskAuthorizer anonymousAuthorizer = null)
-            : base (anonymousAuthorizer, null)
+        public UserAuthenticator (EntityDatabase userDatabase, SharedEnv env = null, IUserAuth userAuth = null)
         {
             if (!(userDatabase.handler is UserDBHandler))
                 throw new ArgumentException("userDatabase requires a handler of Type: " + nameof(UserDBHandler));
@@ -71,7 +68,6 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
             userHub        	        = new FlioxHub(userDatabase, sharedEnv);
             userHub.Authenticator   = new UserDatabaseAuthenticator(userDatabase.name);  // authorize access to userDatabase
             this.userAuth           = userAuth;
-            this.anonymousAuthorizer= anonymousAuthorizer ?? TaskAuthorizer.None;
         }
         
         public void Dispose() {
@@ -142,20 +138,20 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
         {
             var userId = syncRequest.userId;
             if (userId.IsNull()) {
-                syncContext.AuthenticationFailed(anonymousUser, "user authentication requires 'user' id", anonymousAuthorizer, anonymousHubPermission);
+                syncContext.AuthenticationFailed(anonymousUser, "user authentication requires 'user' id", AnonymousTaskAuthorizer, AnonymousHubPermission );
                 return;
             }
             var token = syncRequest.token;
             if (token == null) {
-                syncContext.AuthenticationFailed(anonymousUser, "user authentication requires 'token'", anonymousAuthorizer, anonymousHubPermission);
+                syncContext.AuthenticationFailed(anonymousUser, "user authentication requires 'token'", AnonymousTaskAuthorizer, AnonymousHubPermission);
                 return;
             }
             if (users.TryGetValue(userId, out User user)) {
                 if (user.token != token) {
-                    syncContext.AuthenticationFailed(user, InvalidUserToken, anonymousAuthorizer, anonymousHubPermission);
+                    syncContext.AuthenticationFailed(user, InvalidUserToken, AnonymousTaskAuthorizer, AnonymousHubPermission);
                     return;
                 }
-                syncContext.AuthenticationSucceed(user, user.taskAuthorizer, user.hubPermission);
+                syncContext.AuthenticationSucceed(user, user.TaskAuthorizer, user.HubPermission);
                 return;
             }
             var command = new Credentials { userId = userId, token = token };
@@ -174,20 +170,20 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
                     var authCred        = new AuthCred(token);
                     var userAuthInfo    = await GetUserAuthInfo(userStore, userId).ConfigureAwait(false);
                     if (!userAuthInfo.Success) {
-                        syncContext.AuthenticationFailed(anonymousUser, userAuthInfo.error, anonymousAuthorizer, anonymousHubPermission);
+                        syncContext.AuthenticationFailed(anonymousUser, userAuthInfo.error, AnonymousTaskAuthorizer, AnonymousHubPermission);
                         return;
                     }
                     var ua  = userAuthInfo.value;
-                    user    = new User (userId, authCred.token, ua.taskAuthorizer, ua.hubPermission);
+                    user    = new User (userId, authCred.token) { TaskAuthorizer = ua.taskAuthorizer, HubPermission = ua.hubPermission };
                     user.SetGroups(userAuthInfo.value.groups);
                     users.TryAdd(userId, user);
                 }
                 
                 if (user == null || token != user.token) {
-                    syncContext.AuthenticationFailed(anonymousUser, InvalidUserToken, anonymousAuthorizer, anonymousHubPermission);
+                    syncContext.AuthenticationFailed(anonymousUser, InvalidUserToken, AnonymousTaskAuthorizer, AnonymousHubPermission);
                     return;
                 }
-                syncContext.AuthenticationSucceed(user, user.taskAuthorizer, user.hubPermission);
+                syncContext.AuthenticationSucceed(user, user.TaskAuthorizer, user.HubPermission);
             }
         }
         
@@ -258,7 +254,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
             UserPermission permission = readPermission.Result;
             var roleNames = permission.roles;
             if (roleNames == null || roleNames.Count == 0) {
-                return new UserAuthInfo(new [] { anonymousAuthorizer }, new[] {anonymousHubPermission}, targetGroups);
+                return new UserAuthInfo(new [] { AnonymousTaskAuthorizer }, new[] { AnonymousHubPermission }, targetGroups);
             }
             var error = await AddNewRoles(userStore, roleNames).ConfigureAwait(false);
             if (error != null)

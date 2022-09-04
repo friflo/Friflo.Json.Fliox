@@ -29,14 +29,25 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
         private             ICollection<User>                       Users => users.Values;
         internal  readonly  User                                    anonymousUser;
         
+        // not null
+        public  TaskAuthorizer  AnonymousTaskAuthorizer {
+            get => anonymousUser.TaskAuthorizer;
+            set => anonymousUser.TaskAuthorizer = value ?? throw new ArgumentNullException(nameof(AnonymousTaskAuthorizer));
+        }
+        // not null
+        public  HubPermission   AnonymousHubPermission {
+            get => anonymousUser.HubPermission;
+            set => anonymousUser.HubPermission = value ?? throw new ArgumentNullException(nameof(AnonymousHubPermission));
+        }
+        
         public    override  string                                  ToString() => $"users: {users.Count}";
 
         public abstract Task    Authenticate    (SyncRequest syncRequest, SyncContext syncContext);
         
-        protected Authenticator (TaskAuthorizer anonymousAuthorizer, HubPermission anonymousHubPermission) {
+        protected Authenticator () {
             registeredPredicates    = new Dictionary<string, AuthorizePredicate>();
             users                   = new ConcurrentDictionary <JsonKey, User>(JsonKey.Equality);
-            anonymousUser           = new User(User.AnonymousId, null, anonymousAuthorizer, anonymousHubPermission); 
+            anonymousUser           = new User(User.AnonymousId, null);
             users.TryAdd(User.AnonymousId, anonymousUser);
         }
         
