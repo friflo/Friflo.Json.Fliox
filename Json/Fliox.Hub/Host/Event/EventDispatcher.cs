@@ -263,7 +263,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             var syncTasks = syncRequest.tasks;
             ProcessSubscriber (syncRequest, syncContext);
 
-            if (!HasSubscribableTask(syncTasks)) {
+            if (sendClients.IsEmpty || !HasSubscribableTask(syncTasks)) {
                 return; // early out
             }
             using (var pooled = syncContext.ObjectMapper.Get()) {
