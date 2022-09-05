@@ -82,20 +82,20 @@ namespace Friflo.Json.Fliox.Hub.DB.Monitor
                 }
                 clientHits.user     = client.userId;
                 RequestCount.CountsToList(clientHits.counts, client.requestCounts, monitorName);
-                clientHits.ev       = GetEventDelivery(hub, clientHits);
+                clientHits.subscriptionEvents       = GetSubscriptionEvents(hub, clientHits);
 
                 clients.Upsert(clientHits);
             }
         }
         
-        private static SubscriptionEvents? GetEventDelivery (FlioxHub hub, ClientHits clientHits) {
+        private static SubscriptionEvents? GetSubscriptionEvents (FlioxHub hub, ClientHits clientHits) {
             if (hub.EventDispatcher == null)
                 return null;
             if (!hub.EventDispatcher.TryGetSubscriber(clientHits.id, out var subscriber)) {
                 return null;
             }
-            var changeSubs  = clientHits.ev?.changeSubs;
-            var msgSubs     = clientHits.ev?.messageSubs;
+            var changeSubs  = clientHits.subscriptionEvents?.changeSubs;
+            var msgSubs     = clientHits.subscriptionEvents?.messageSubs;
             foreach (var pair in subscriber.databaseSubs) {
                 var databaseSubs = pair.Value;
                 msgSubs     = databaseSubs.GetMessageSubscriptions(msgSubs);

@@ -35,14 +35,14 @@ UserHits *-- "0..*" RequestCount : counts
 
 class ClientHits:::cssEntity {
     <<Entity · id>>
-    id      : string
-    user    : string
-    counts? : RequestCount[]
-    ev?     : SubscriptionEvents
+    id                  : string
+    user                : string
+    counts?             : RequestCount[]
+    subscriptionEvents? : SubscriptionEvents
 }
 ClientHits o.. "1" UserHits : user
 ClientHits *-- "0..*" RequestCount : counts
-ClientHits *-- "0..1" SubscriptionEvents : ev
+ClientHits *-- "0..1" SubscriptionEvents : subscriptionEvents
 
 class HistoryHits:::cssEntity {
     <<Entity · id>>

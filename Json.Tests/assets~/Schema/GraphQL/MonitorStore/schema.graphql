@@ -110,17 +110,17 @@ input UserHitsInput {
 }
 
 type ClientHits {
-    id     : String!
-    user   : String!
-    counts : [RequestCount!]
-    ev     : SubscriptionEvents
+    id                 : String!
+    user               : String!
+    counts             : [RequestCount!]
+    subscriptionEvents : SubscriptionEvents
 }
 
 input ClientHitsInput {
-    id     : String!
-    user   : String!
-    counts : [RequestCountInput!]
-    ev     : SubscriptionEventsInput
+    id                 : String!
+    user               : String!
+    counts             : [RequestCountInput!]
+    subscriptionEvents : SubscriptionEventsInput
 }
 
 type HistoryHits {

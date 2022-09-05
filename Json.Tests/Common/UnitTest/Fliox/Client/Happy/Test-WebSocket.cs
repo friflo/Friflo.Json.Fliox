@@ -64,8 +64,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 await monitor.SyncTasks();
                 
                 var client1 = findClient1.Result;
-                NotNull(client1.ev);
-                var eventDelivery = client1.ev.Value;
+                NotNull(client1.subscriptionEvents);
+                var eventDelivery = client1.subscriptionEvents.Value;
                 AreEqual(0, eventDelivery.seq);     // no events send right now
                 AreEqual(0, eventDelivery.queued);  // no events send right now
                 IsTrue(eventDelivery.queueEvents);  // is set by std.Client - queueEvents above

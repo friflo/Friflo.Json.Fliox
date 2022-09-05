@@ -72,13 +72,13 @@ export class UserHits {
 /** information about requests, tasks, events and subscriptions of a client */
 export class ClientHits {
     /** client id */
-    id      : string;
+    id                  : string;
     /** user owning the client */
-    user    : string;
+    user                : string;
     /** number executed requests and tasks per database */
-    counts? : RequestCount[] | null;
+    counts?             : RequestCount[] | null;
     /** number of sent or queued client events and its message and change subscriptions */
-    ev?     : SubscriptionEvents | null;
+    subscriptionEvents? : SubscriptionEvents | null;
 }
 
 /** aggregated counts of latest requests. Each record uses a specific aggregation interval. */

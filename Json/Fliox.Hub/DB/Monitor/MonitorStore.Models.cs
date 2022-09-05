@@ -44,7 +44,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Monitor
         /// <summary>number executed requests and tasks per database</summary>
                     public  List<RequestCount>  counts = new List<RequestCount>();
         /// <summary>number of sent or queued client events and its message and change subscriptions</summary>
-                    public  SubscriptionEvents? ev;
+                    public  SubscriptionEvents? subscriptionEvents;
                         
         public override     string              ToString() => JsonSerializer.Serialize(this).Replace("\"", "'");
     }
