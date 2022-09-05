@@ -104,6 +104,13 @@ export class Playground
         this.wsClient.close();
     }
 
+    public setClientId(clientId: string) : void {
+        if (!clientId)
+            return;
+        this.wsClient.clt       = clientId;
+        cltElement.innerText    = clientId;
+    }
+
     private addUserToken (jsonRequest: string) {
         const endBracket    = jsonRequest.lastIndexOf("}");
         if (endBracket == -1)

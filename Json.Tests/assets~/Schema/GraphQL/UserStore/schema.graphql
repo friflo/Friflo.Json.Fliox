@@ -441,18 +441,22 @@ input UserResultInput {
 }
 
 type ClientParam {
-    queueEvents : Boolean
+    ensureClientId : Boolean
+    queueEvents    : Boolean
 }
 
 input ClientParamInput {
-    queueEvents : Boolean
+    ensureClientId : Boolean
+    queueEvents    : Boolean
 }
 
 type ClientResult {
     queuedEvents : Int!
+    clientId     : String
 }
 
 input ClientResultInput {
     queuedEvents : Int!
+    clientId     : String
 }
 

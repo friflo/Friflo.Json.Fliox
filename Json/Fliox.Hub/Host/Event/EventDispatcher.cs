@@ -172,13 +172,19 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         
         internal EventSubClient GetOrCreateSubClient(User user, in JsonKey clientId, IEventReceiver eventReceiver) {
             subClients.TryGetValue(clientId, out EventSubClient subClient);
-            if (subClient != null)
+            if (subClient != null) {
+                // add to sendClients as the client could have been removed before caused by a disconnect
+                sendClients.TryAdd(clientId, subClient);
                 return subClient;
+            }
             if (!subUsers.TryGetValue(user.userId, out var subUser)) {
                 subUser = new EventSubUser (user.userId, user.GetGroups());
                 subUsers.TryAdd(user.userId, subUser);
             }
-            subClient = new EventSubClient(sharedEnv, subUser, clientId, eventReceiver, background);
+            subClient = new EventSubClient(sharedEnv, subUser, clientId, background);
+            if (eventReceiver != null) {
+                subClient.UpdateTarget(eventReceiver);
+            }
             subClients. TryAdd(clientId, subClient);
             sendClients.TryAdd(clientId, subClient);
             subUser.clients.Add(subClient);
@@ -290,7 +296,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                     var     tasks       = eventTasks.ToArray();
                     var syncEvent = new SyncEvent { db = database, tasks = tasks, srcUserId = syncRequest.userId, isOrigin = isOrigin };
                     
-                    if (SerializeRemoteEvents && subClient.IsRemoteTarget) {
+                    if (SerializeRemoteEvents && subClient.SerializeEvents) {
                         SerializeRemoteEvent(syncEvent, eventTasks, writer);
                     }
                     subClient.EnqueueEvent(syncEvent);

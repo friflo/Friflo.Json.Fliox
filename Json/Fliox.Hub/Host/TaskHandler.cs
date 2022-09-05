@@ -347,6 +347,10 @@ namespace Friflo.Json.Fliox.Hub.Host
             if (!param.GetValidate(out var clientParam, out string error)) {
                 return context.Error<ClientResult>(error);
             }
+            error = EnsureClientId(clientParam, context);
+            if (error != null) {
+                return context.Error<ClientResult>(error);
+            }
             error = SetQueueEvents(clientParam, context);
             if (error != null) {
                 return context.Error<ClientResult>(error);
@@ -360,7 +364,21 @@ namespace Friflo.Json.Fliox.Hub.Host
                     client.SendUnacknowledgedEvents(); see comment above
                 } */
             }
-            return new ClientResult { queuedEvents = queuedEvents };
+            return new ClientResult { queuedEvents = queuedEvents, clientId = context.ClientId };
+        }
+        
+        private static string EnsureClientId(ClientParam clientParam, MessageContext context) {
+            if (clientParam?.ensureClientId != true)
+                return null;
+            var hub         = context.Hub;
+            var dispatcher  = hub.EventDispatcher;
+            if (dispatcher == null) {
+                return "std.Client ensureClientId requires an EventDispatcher assigned to FlioxHub";
+            }
+            if (!hub.Authenticator.EnsureValidClientId(hub.ClientController, context.SyncContext, out var error)) {
+                return error;
+            }
+            return null;
         }
         
         private static string SetQueueEvents(ClientParam clientParam, MessageContext context) {

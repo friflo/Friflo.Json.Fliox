@@ -28,9 +28,9 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         internal readonly   JsonKey                             clientId;   // key field
         internal readonly   EventSubUser                        user;
         internal            bool                                queueEvents;
-        private             IEventReceiver                      eventReceiver;
+        private             IEventReceiver                      eventReceiver; // can be null if created by a REST request
 
-        public              bool                                Connected => eventReceiver.IsOpen();
+        public              bool                                Connected => eventReceiver?.IsOpen() ?? false;
         [DebuggerBrowsable(Never)]
         public              IHubLogger                          Logger { get; }
         
@@ -57,7 +57,11 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         internal            int                                 Seq                 => eventCounter;
         /// <summary> number of events stored for a client not yet acknowledged by the client </summary>
         internal            int                                 QueuedEventsCount   => unsentEventsQueue.Count + sentEventsQueue.Count;
-        internal            bool                                IsRemoteTarget      => eventReceiver.IsRemoteTarget();
+        /// <summary>
+        /// <b>true</b>  if eventReceiver is null or a remote target (WebSocket). <br/>
+        /// <b>false</b> if the eventReceiver is provided by a FlioxClient (in process) 
+        /// </summary>
+        internal            bool                                SerializeEvents     => eventReceiver?.IsRemoteTarget() ?? true;
         
         public   override   string                              ToString()          => $"client: '{clientId.AsString()}'";
         
@@ -66,13 +70,11 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             SharedEnv       env,
             EventSubUser    user,
             in JsonKey      clientId,
-            IEventReceiver  eventReceiver,
             bool            background)
         {
             Logger              = env.hubLogger;
             this.clientId       = clientId;
             this.user           = user;
-            this.eventReceiver  = eventReceiver;
             this.background     = background;
             if (!this.background)
                 return;
@@ -84,7 +86,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         }
         
         internal bool UpdateTarget(IEventReceiver eventReceiver) {
-            if (this.eventReceiver == null) throw new ArgumentNullException(nameof(eventReceiver));
+            if (eventReceiver == null) throw new ArgumentNullException(nameof(eventReceiver));
             if (this.eventReceiver == eventReceiver)
                 return false;
             Logger.Log(HubLog.Info, $"EventSubscriber: eventReceiver changed. dstId: {clientId}");
@@ -164,8 +166,9 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         }
         
         internal async Task SendEvents () {
+            var receiver = eventReceiver;
             // early out in case the target is a remote connection which already closed.
-            if (!eventReceiver.IsOpen()) {
+            if (receiver == null || !receiver.IsOpen()) {
                 if (queueEvents)
                     return;
                 lock (unsentEventsQueue) {
@@ -183,7 +186,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                     // In case the event target is remote connection it is not guaranteed that the event arrives.
                     // The remote target may already be disconnected and this is still not know when sending the event.
                     var eventMessage = new EventMessage { dstClientId = clientId, events = events };
-                    await eventReceiver.ProcessEvent(eventMessage).ConfigureAwait(false);
+                    await receiver.ProcessEvent(eventMessage).ConfigureAwait(false);
                 }
                 catch (Exception e) {
                     var message = "SendEvents failed";

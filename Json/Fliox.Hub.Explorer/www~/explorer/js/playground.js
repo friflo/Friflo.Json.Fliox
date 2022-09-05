@@ -85,6 +85,12 @@ export class Playground {
     closeWebsocket() {
         this.wsClient.close();
     }
+    setClientId(clientId) {
+        if (!clientId)
+            return;
+        this.wsClient.clt = clientId;
+        cltElement.innerText = clientId;
+    }
     addUserToken(jsonRequest) {
         const endBracket = jsonRequest.lastIndexOf("}");
         if (endBracket == -1)

@@ -135,10 +135,12 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
     }
     
     public sealed class ClientParam {
+        /// <summary>Return the client id set in <see cref="Protocol.SyncRequest"/> or creates a new one in case is was not set.</summary>
+                    public  bool?           ensureClientId;
         /// <summary>
-        /// If false the hub send events to a client only once. Events send to a disconnected client will never
-        /// received by the client. <br/>
-        /// If true the hub will store all unacknowledged events for a client in a FIFO queue and send them on reconnects.  
+        /// If <b>false</b> the hub try to send events to a client when the events are emitted.
+        /// Sending events to a disconnected client will never arrive. <br/>
+        /// If <b>true</b> the hub will store all unacknowledged events for a client in a FIFO queue and send them on reconnects.  
         /// </summary>
                     public  bool?           queueEvents;
     }
@@ -149,5 +151,9 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
         /// Events are queued only if the client instruct the Hub to queue events by setting <see cref="ClientParam.queueEvents"/> = true 
         /// </summary>
                     public  int             queuedEvents;
+        /// <summary>return the client id set in the <see cref="Protocol.SyncRequest"/>. Can be null.<br/>
+        /// A new client id is created in case any task requires a client id and the <see cref="Protocol.SyncRequest"/> did not set a client id.<br/>
+        /// E.g. <see cref="ClientParam.ensureClientId"/> = true or <see cref="ClientParam.queueEvents"/> = true </summary>
+                    public  JsonKey         clientId;
     }
 }

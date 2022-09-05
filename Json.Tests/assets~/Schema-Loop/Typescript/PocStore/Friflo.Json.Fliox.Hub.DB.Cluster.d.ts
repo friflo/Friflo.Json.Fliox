@@ -121,12 +121,14 @@ export class UserResult {
 }
 
 export class ClientParam {
+    /** Return the client id set in **SyncRequest** or creates a new one in case is was not set. */
+    ensureClientId? : boolean | null;
     /**
-     * If false the hub send events to a client only once. Events send to a disconnected client will never
-     * received by the client.   
-     * If true the hub will store all unacknowledged events for a client in a FIFO queue and send them on reconnects.
+     * If **false** the hub try to send events to a client when the events are emitted.
+     * Sending events to a disconnected client will never arrive.   
+     * If **true** the hub will store all unacknowledged events for a client in a FIFO queue and send them on reconnects.
      */
-    queueEvents? : boolean | null;
+    queueEvents?    : boolean | null;
 }
 
 export class ClientResult {
@@ -135,5 +137,11 @@ export class ClientResult {
      * Events are queued only if the client instruct the Hub to queue events by setting **queueEvents** = true
      */
     queuedEvents  : int32;
+    /**
+     * return the client id set in the **SyncRequest**. Can be null.  
+     * A new client id is created in case any task requires a client id and the **SyncRequest** did not set a client id.  
+     * E.g. **ensureClientId** = true or **queueEvents** = true
+     */
+    clientId?     : string | null;
 }
 

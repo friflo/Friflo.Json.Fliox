@@ -244,12 +244,14 @@
         },
         "ClientParam": {
             "properties": {
-                "queueEvents": { "type": "boolean", "nullable": true }
+                "ensureClientId": { "type": "boolean", "nullable": true },
+                "queueEvents":    { "type": "boolean", "nullable": true }
             }
         },
         "ClientResult": {
             "properties": {
-                "queuedEvents": { "type": "int32" }
+                "queuedEvents": { "type": "int32" },
+                "clientId":     { "type": "string", "nullable": true }
             }
         }
     }

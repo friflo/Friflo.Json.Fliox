@@ -228,7 +228,10 @@ export class App {
         const init = { method: method, headers: headers, body: body };
         try {
             // authenticate with cookies: "fliox-user" & "fliox-token"
-            return await fetch(path, init);
+            const response = await fetch(path, init);
+            const clientId = response.headers.get("fliox-client");
+            app.playground.setClientId(clientId);
+            return response;
         }
         catch (error) {
             const text = () => error.message;

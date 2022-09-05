@@ -4915,8 +4915,18 @@
             "description": "",
             "fields": [
                 {
+                    "name": "ensureClientId",
+                    "description": "    /** Return the client id set in **SyncRequest** or creates a new one in case is was not set. */\n",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"SCALAR",
+                        "name": "Boolean"
+                    }
+                },
+                {
                     "name": "queueEvents",
-                    "description": "    /**\n     * If false the hub send events to a client only once. Events send to a disconnected client will never\n     * received by the client.   \n     * If true the hub will store all unacknowledged events for a client in a FIFO queue and send them on reconnects.\n     */\n",
+                    "description": "    /**\n     * If **false** the hub try to send events to a client when the events are emitted.\n     * Sending events to a disconnected client will never arrive.   \n     * If **true** the hub will store all unacknowledged events for a client in a FIFO queue and send them on reconnects.\n     */\n",
                     "args": [
                     ],
                     "type": {
@@ -4934,8 +4944,18 @@
             "description": "",
             "inputFields": [
                 {
+                    "name": "ensureClientId",
+                    "description": "    /** Return the client id set in **SyncRequest** or creates a new one in case is was not set. */\n",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"SCALAR",
+                        "name": "Boolean"
+                    }
+                },
+                {
                     "name": "queueEvents",
-                    "description": "    /**\n     * If false the hub send events to a client only once. Events send to a disconnected client will never\n     * received by the client.   \n     * If true the hub will store all unacknowledged events for a client in a FIFO queue and send them on reconnects.\n     */\n",
+                    "description": "    /**\n     * If **false** the hub try to send events to a client when the events are emitted.\n     * Sending events to a disconnected client will never arrive.   \n     * If **true** the hub will store all unacknowledged events for a client in a FIFO queue and send them on reconnects.\n     */\n",
                     "args": [
                     ],
                     "type": {
@@ -4962,6 +4982,16 @@
                             "name": "Int"
                         }
                     }
+                },
+                {
+                    "name": "clientId",
+                    "description": "    /**\n     * return the client id set in the **SyncRequest**. Can be null.  \n     * A new client id is created in case any task requires a client id and the **SyncRequest** did not set a client id.  \n     * E.g. **ensureClientId** = true or **queueEvents** = true\n     */\n",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"SCALAR",
+                        "name": "String"
+                    }
                 }
             ],
             "interfaces": [
@@ -4983,6 +5013,16 @@
                             "kind":"SCALAR",
                             "name": "Int"
                         }
+                    }
+                },
+                {
+                    "name": "clientId",
+                    "description": "    /**\n     * return the client id set in the **SyncRequest**. Can be null.  \n     * A new client id is created in case any task requires a client id and the **SyncRequest** did not set a client id.  \n     * E.g. **ensureClientId** = true or **queueEvents** = true\n     */\n",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"SCALAR",
+                        "name": "String"
                     }
                 }
             ]

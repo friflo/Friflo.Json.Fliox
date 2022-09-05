@@ -92,11 +92,13 @@ data class UserResult (
 
 @Serializable
 data class ClientParam (
-              val queueEvents : Boolean? = null,
+              val ensureClientId : Boolean? = null,
+              val queueEvents    : Boolean? = null,
 )
 
 @Serializable
 data class ClientResult (
               val queuedEvents : Int,
+              val clientId     : String? = null,
 )
 

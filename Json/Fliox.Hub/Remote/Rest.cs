@@ -493,6 +493,9 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 context.WriteError(errorResult.type.ToString(), message, status);
                 return default;
             }
+            if (!syncResponse.clientId.IsNull()) {
+                context.AddHeader("fliox-client", syncResponse.clientId.AsString());
+            }
             return new RestResult (syncResponse, taskResult);
         }
     }

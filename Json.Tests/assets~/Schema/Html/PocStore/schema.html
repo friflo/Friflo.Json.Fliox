@@ -1125,11 +1125,16 @@ E.g. using red for a production environment: "#ff0000" or "rgb(255 0 0)"</docs><
     </h3>
     <table class='fields'>
         <tr>
+            <td><field>ensureClientId</field></td>
+            <td><type><predef>boolean</predef> | null</type></td>
+            <td><docs>Return the client id set in <b>SyncRequest</b> or creates a new one in case is was not set.</docs></td>
+        </tr>
+        <tr>
             <td><field>queueEvents</field></td>
             <td><type><predef>boolean</predef> | null</type></td>
-            <td><docs>If false the hub send events to a client only once. Events send to a disconnected client will never
-received by the client. <br/>
-If true the hub will store all unacknowledged events for a client in a FIFO queue and send them on reconnects.</docs></td>
+            <td><docs>If <b>false</b> the hub try to send events to a client when the events are emitted.
+Sending events to a disconnected client will never arrive. <br/>
+If <b>true</b> the hub will store all unacknowledged events for a client in a FIFO queue and send them on reconnects.</docs></td>
         </tr>
     </table>
     </div>
@@ -1144,6 +1149,13 @@ If true the hub will store all unacknowledged events for a client in a FIFO queu
             <td><type><a href='#Standard.int32'>int32</a></type></td>
             <td><docs>return number of queued events not acknowledged by the client.
 Events are queued only if the client instruct the Hub to queue events by setting <b>queueEvents</b> = true</docs></td>
+        </tr>
+        <tr>
+            <td><field>clientId</field></td>
+            <td><type><predef>string</predef> | null</type></td>
+            <td><docs>return the client id set in the <b>SyncRequest</b>. Can be null.<br/>
+A new client id is created in case any task requires a client id and the <b>SyncRequest</b> did not set a client id.<br/>
+E.g. <b>ensureClientId</b> = true or <b>queueEvents</b> = true</docs></td>
         </tr>
     </table>
     </div>

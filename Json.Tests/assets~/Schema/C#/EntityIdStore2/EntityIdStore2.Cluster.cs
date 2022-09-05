@@ -97,11 +97,13 @@ public class UserResult {
 }
 
 public class ClientParam {
+    bool? ensureClientId;
     bool? queueEvents;
 }
 
 public class ClientResult {
-    int  queuedEvents;
+    int     queuedEvents;
+    string  clientId;
 }
 
 }
