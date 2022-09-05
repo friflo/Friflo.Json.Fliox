@@ -173,7 +173,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         internal EventSubClient GetOrCreateSubClient(User user, in JsonKey clientId, IEventReceiver eventReceiver) {
             subClients.TryGetValue(clientId, out EventSubClient subClient);
             if (subClient != null) {
-                // add to sendClients as the client could have been removed before caused by a disconnect
+                // add to sendClients as the client could have been removed meanwhile caused by a disconnect
                 sendClients.TryAdd(clientId, subClient);
                 return subClient;
             }
@@ -236,7 +236,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             var eventReceiver = syncContext.eventReceiver;
             if (eventReceiver != null && eventReceiver.IsRemoteTarget()) {
                 if (subClient.UpdateTarget (eventReceiver)) {
-                    // remote client is using a new connection (WebSocket) so add to queuingClients again
+                    // remote client is using a new connection (WebSocket) so add to sendClients again
                     sendClients.TryAdd(subClient.clientId, subClient);
                 }
             }
