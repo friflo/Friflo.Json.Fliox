@@ -117,7 +117,8 @@ export class Playground
             return jsonRequest;
         const before        = jsonRequest.substring(0, endBracket);
         const after         = jsonRequest.substring(endBracket);
-        let   userToken     = JSON.stringify({ user: defaultUser.value, token: defaultToken.value});
+        const clt           = this.wsClient.clt ?? undefined;
+        let   userToken     = JSON.stringify({ user: defaultUser.value, token: defaultToken.value, clt: clt });
         userToken           = userToken.substring(1, userToken.length - 1);
         return `${before},${userToken}${after}`;
     }
