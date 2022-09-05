@@ -49,7 +49,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema
         [Test]
         public static void CS_CS () {
             var options     = new NativeTypeOptions(typeof(UserStore)) {
-                replacements    = new [] { new Replace("Friflo.Json.Fliox.", "UserStore2.") }
+                replacements    = new [] { new Replace("Friflo.Json.Fliox", "UserStore2") }
             };
             var generator = CSharpGenerator.Generate(options);
             generator.WriteFiles(CommonUtils.GetBasePath() + "assets~/Schema/C#/UserStore2");

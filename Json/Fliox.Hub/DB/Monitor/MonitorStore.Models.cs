@@ -3,6 +3,7 @@
 
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using Friflo.Json.Fliox.Hub.DB.Cluster;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 
 // ReSharper disable ClassNeverInstantiated.Global
@@ -43,38 +44,12 @@ namespace Friflo.Json.Fliox.Hub.DB.Monitor
         /// <summary>number executed requests and tasks per database</summary>
                     public  List<RequestCount>  counts = new List<RequestCount>();
         /// <summary>number of sent or queued client events and its message and change subscriptions</summary>
-        [Serialize (Name =                     "event")]
-                    public  EventDelivery?      ev;
+                    public  SubscriptionEvents? ev;
                         
         public override     string              ToString() => JsonSerializer.Serialize(this).Replace("\"", "'");
     }
     
-    /// <summary>number of sent or queued client events and its message and change subscriptions</summary>
-    public struct EventDelivery {
-        /// <summary>number of events sent to a client</summary>
-        public  int                             seq;
-        /// <summary>number of queued events not acknowledged by a client</summary>
-        public  int                             queued;
-        /// <summary>true if client is instructed to queue events for reliable event delivery in case of reconnects</summary>
-        public  bool                            queueEvents;
-        /// <summary>true if client is connected. Non remote client are always connected</summary>
-        public  bool                            connected;
-        /// <summary>message / command subscriptions of a client</summary>
-        public  List<string>                    messageSubs;
-        /// <summary>change subscriptions of a client</summary>
-        public  List<ChangeSubscription>        changeSubs;
-    }
-    
-    /// <summary>change subscription for a specific container</summary>
-    public sealed class ChangeSubscription
-    {
-        /// <summary>name of subscribed container</summary>
-        [Required]  public  string              container;
-        /// <summary>type of subscribed changes like create, upsert, delete and patch</summary>
-        [Required]  public  List<EntityChange>  changes;
-        /// <summary>filter to narrow the amount of change events</summary>
-                    public  string              filter;
-    }
+
     
     /// <summary>aggregated counts of latest requests. Each record uses a specific aggregation interval.</summary>
     public sealed class HistoryHits {

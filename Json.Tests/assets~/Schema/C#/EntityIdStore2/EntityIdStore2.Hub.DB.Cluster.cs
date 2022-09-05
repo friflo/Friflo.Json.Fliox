@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Friflo.Json.Fliox;
+using EntityIdStore2.Hub.Protocol.Tasks;
 
 #pragma warning disable 0169 // [CS0169] The field '...' is never used
 
-namespace EntityIdStore2.Cluster {
+namespace EntityIdStore2.Hub.DB.Cluster {
 
 public class DbContainers {
     [Required]
@@ -102,8 +103,26 @@ public class ClientParam {
 }
 
 public class ClientResult {
-    int     queuedEvents;
-    string  clientId;
+    int                 queuedEvents;
+    string              clientId;
+    SubscriptionEvents? subscriptionEvents;
+}
+
+public struct SubscriptionEvents {
+    int                       seq;
+    int                       queued;
+    bool                      queueEvents;
+    bool                      connected;
+    List<string>              messageSubs;
+    List<ChangeSubscription>  changeSubs;
+}
+
+public class ChangeSubscription {
+    [Required]
+    string              container;
+    [Required]
+    List<EntityChange>  changes;
+    string              filter;
 }
 
 }

@@ -44,8 +44,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema
         public static void CS_CS () {
             var options     = new NativeTypeOptions(typeof(EntityIdStore)) { // call constructor with two params
                 replacements = new [] {
-                    new Replace("Friflo.Json.Tests.Common.UnitTest.Fliox", "EntityIdStore2"),
-                    new Replace("Friflo.Json.Fliox.Hub.DB.Cluster",        "EntityIdStore2.Cluster")
+                    new Replace("Friflo.Json.Tests.Common.UnitTest.Fliox",  "EntityIdStore2"),
+                    new Replace("Friflo.Json.Fliox",                        "EntityIdStore2")
                 }
             };
             var generator = CSharpGenerator.Generate(options);

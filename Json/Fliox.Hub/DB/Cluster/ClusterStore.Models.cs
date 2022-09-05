@@ -3,6 +3,7 @@
 
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnassignedField.Global
@@ -150,10 +151,39 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
         /// return number of queued events not acknowledged by the client.
         /// Events are queued only if the client instruct the Hub to queue events by setting <see cref="ClientParam.queueEvents"/> = true 
         /// </summary>
-                    public  int             queuedEvents;
+                    public  int                 queuedEvents;
         /// <summary>return the client id set in the <see cref="Protocol.SyncRequest"/>. Can be null.<br/>
         /// A new client id is created in case any task requires a client id and the <see cref="Protocol.SyncRequest"/> did not set a client id.<br/>
         /// E.g. <see cref="ClientParam.ensureClientId"/> = true or <see cref="ClientParam.queueEvents"/> = true </summary>
-                    public  JsonKey         clientId;
+                    public  JsonKey             clientId;
+        /// <summary>number of sent or queued client events and its message and change subscriptions</summary>
+                    public  SubscriptionEvents? subscriptionEvents;
+    }
+    
+    /// <summary>number of sent or queued client events and its message and change subscriptions</summary>
+    public struct SubscriptionEvents {
+        /// <summary>number of events sent to a client</summary>
+        public  int                             seq;
+        /// <summary>number of queued events not acknowledged by a client</summary>
+        public  int                             queued;
+        /// <summary>true if client is instructed to queue events for reliable event delivery in case of reconnects</summary>
+        public  bool                            queueEvents;
+        /// <summary>true if client is connected. Non remote client are always connected</summary>
+        public  bool                            connected;
+        /// <summary>message / command subscriptions of a client</summary>
+        public  List<string>                    messageSubs;
+        /// <summary>change subscriptions of a client</summary>
+        public  List<ChangeSubscription>        changeSubs;
+    }
+    
+    /// <summary>change subscription for a specific container</summary>
+    public sealed class ChangeSubscription
+    {
+        /// <summary>name of subscribed container</summary>
+        [Required]  public  string              container;
+        /// <summary>type of subscribed changes like create, upsert, delete and patch</summary>
+        [Required]  public  List<EntityChange>  changes;
+        /// <summary>filter to narrow the amount of change events</summary>
+        public  string              filter;
     }
 }

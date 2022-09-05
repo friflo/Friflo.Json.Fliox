@@ -38,11 +38,11 @@ class ClientHits:::cssEntity {
     id      : string
     user    : string
     counts? : RequestCount[]
-    event?  : EventDelivery
+    ev?     : SubscriptionEvents
 }
 ClientHits o.. "1" UserHits : user
 ClientHits *-- "0..*" RequestCount : counts
-ClientHits *-- "0..1" EventDelivery : event
+ClientHits *-- "0..1" SubscriptionEvents : ev
 
 class HistoryHits:::cssEntity {
     <<Entity · id>>
@@ -57,7 +57,7 @@ class RequestCount {
     tasks     : int32
 }
 
-class EventDelivery {
+class SubscriptionEvents {
     seq          : int32
     queued       : int32
     queueEvents  : boolean
@@ -65,7 +65,7 @@ class EventDelivery {
     messageSubs? : string[]
     changeSubs?  : ChangeSubscription[]
 }
-EventDelivery *-- "0..*" ChangeSubscription : changeSubs
+SubscriptionEvents *-- "0..*" ChangeSubscription : changeSubs
 
 class ChangeSubscription {
     container  : string

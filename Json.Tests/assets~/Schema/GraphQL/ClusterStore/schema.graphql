@@ -230,12 +230,51 @@ input ClientParamInput {
 }
 
 type ClientResult {
-    queuedEvents : Int!
-    clientId     : String
+    queuedEvents       : Int!
+    clientId           : String
+    subscriptionEvents : SubscriptionEvents
 }
 
 input ClientResultInput {
-    queuedEvents : Int!
-    clientId     : String
+    queuedEvents       : Int!
+    clientId           : String
+    subscriptionEvents : SubscriptionEventsInput
+}
+
+type SubscriptionEvents {
+    seq         : Int!
+    queued      : Int!
+    queueEvents : Boolean!
+    connected   : Boolean!
+    messageSubs : [String!]
+    changeSubs  : [ChangeSubscription!]
+}
+
+input SubscriptionEventsInput {
+    seq         : Int!
+    queued      : Int!
+    queueEvents : Boolean!
+    connected   : Boolean!
+    messageSubs : [String!]
+    changeSubs  : [ChangeSubscriptionInput!]
+}
+
+type ChangeSubscription {
+    container : String!
+    changes   : [EntityChange!]!
+    filter    : String
+}
+
+input ChangeSubscriptionInput {
+    container : String!
+    changes   : [EntityChange!]!
+    filter    : String
+}
+
+enum EntityChange {
+    create
+    upsert
+    patch
+    delete
 }
 

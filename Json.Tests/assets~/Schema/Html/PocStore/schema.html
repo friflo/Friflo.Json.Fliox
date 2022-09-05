@@ -318,6 +318,13 @@
             <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.UserResult'><div><span>UserResult</span></div></a></li>
             <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.ClientParam'><div><span>ClientParam</span></div></a></li>
             <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.ClientResult'><div><span>ClientResult</span></div></a></li>
+            <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.SubscriptionEvents'><div><span>SubscriptionEvents</span></div></a></li>
+            <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.ChangeSubscription'><div><span>ChangeSubscription</span></div></a></li>
+        </ul>
+    </li>
+    <li><a href='#Friflo.Json.Fliox.Hub.Protocol.Tasks'>Friflo.Json.Fliox.Hub.Protocol.Tasks</a>
+        <ul>
+            <li><a href='#Friflo.Json.Fliox.Hub.Protocol.Tasks.EntityChange'><div><span>EntityChange</span><keyword>enum</keyword></div></a></li>
         </ul>
     </li>
     <li><a href='#Standard'>Standard</a>
@@ -1157,6 +1164,95 @@ Events are queued only if the client instruct the Hub to queue events by setting
 A new client id is created in case any task requires a client id and the <b>SyncRequest</b> did not set a client id.<br/>
 E.g. <b>ensureClientId</b> = true or <b>queueEvents</b> = true</docs></td>
         </tr>
+        <tr>
+            <td><field>subscriptionEvents</field></td>
+            <td><type><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.SubscriptionEvents'>SubscriptionEvents</a> | null</type></td>
+            <td><docs>number of sent or queued client events and its message and change subscriptions</docs></td>
+        </tr>
+    </table>
+    </div>
+    <div class='type'>
+    <h3 id='Friflo.Json.Fliox.Hub.DB.Cluster.SubscriptionEvents'>
+        <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.SubscriptionEvents'>SubscriptionEvents</a>
+        <keyword>class</keyword>
+    </h3>
+    <desc>number of sent or queued client events and its message and change subscriptions
+    </desc>
+    <table class='fields'>
+        <tr>
+            <td><field>seq</field></td>
+            <td><type><a href='#Standard.int32'>int32</a></type></td>
+            <td><docs>number of events sent to a client</docs></td>
+        </tr>
+        <tr>
+            <td><field>queued</field></td>
+            <td><type><a href='#Standard.int32'>int32</a></type></td>
+            <td><docs>number of queued events not acknowledged by a client</docs></td>
+        </tr>
+        <tr>
+            <td><field>queueEvents</field></td>
+            <td><type><predef>boolean</predef></type></td>
+            <td><docs>true if client is instructed to queue events for reliable event delivery in case of reconnects</docs></td>
+        </tr>
+        <tr>
+            <td><field>connected</field></td>
+            <td><type><predef>boolean</predef></type></td>
+            <td><docs>true if client is connected. Non remote client are always connected</docs></td>
+        </tr>
+        <tr>
+            <td><field>messageSubs</field></td>
+            <td><type><predef>string</predef>[] | null</type></td>
+            <td><docs>message / command subscriptions of a client</docs></td>
+        </tr>
+        <tr>
+            <td><field>changeSubs</field></td>
+            <td><type><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.ChangeSubscription'>ChangeSubscription</a>[] | null</type></td>
+            <td><docs>change subscriptions of a client</docs></td>
+        </tr>
+    </table>
+    </div>
+    <div class='type'>
+    <h3 id='Friflo.Json.Fliox.Hub.DB.Cluster.ChangeSubscription'>
+        <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.ChangeSubscription'>ChangeSubscription</a>
+        <keyword>class</keyword>
+    </h3>
+    <desc>change subscription for a specific container
+    </desc>
+    <table class='fields'>
+        <tr>
+            <td><field>container</field></td>
+            <td><type><predef>string</predef></type></td>
+            <td><docs>name of subscribed container</docs></td>
+        </tr>
+        <tr>
+            <td><field>changes</field></td>
+            <td><type><a href='#Friflo.Json.Fliox.Hub.Protocol.Tasks.EntityChange'>EntityChange</a>[]</type></td>
+            <td><docs>type of subscribed changes like create, upsert, delete and patch</docs></td>
+        </tr>
+        <tr>
+            <td><field>filter</field></td>
+            <td><type><predef>string</predef> | null</type></td>
+            <td><docs>filter to narrow the amount of change events</docs></td>
+        </tr>
+    </table>
+    </div>
+</div>
+
+<div class='namespace'>
+    <h2 id='Friflo.Json.Fliox.Hub.Protocol.Tasks'>
+        <a href='#Friflo.Json.Fliox.Hub.Protocol.Tasks'>Friflo.Json.Fliox.Hub.Protocol.Tasks</a> <keyword>namespace</keyword>
+    </h2>
+    <div class='type enum'>
+    <h3 id='Friflo.Json.Fliox.Hub.Protocol.Tasks.EntityChange'>
+        <a href='#Friflo.Json.Fliox.Hub.Protocol.Tasks.EntityChange'>EntityChange</a>
+        <keyword>enum</keyword>
+    </h3>
+    <desc>Filter type used to specify the type of an entity change</desc>
+    <table>
+        <tr><td>create</td><td><docs>filter change events of created entities.</docs></td></tr>
+        <tr><td>upsert</td><td><docs>filter change events of upserted entities.</docs></td></tr>
+        <tr><td>patch</td><td><docs>filter change events of entity patches.</docs></td></tr>
+        <tr><td>delete</td><td><docs>filter change events of deleted entities.</docs></td></tr>
     </table>
     </div>
 </div>

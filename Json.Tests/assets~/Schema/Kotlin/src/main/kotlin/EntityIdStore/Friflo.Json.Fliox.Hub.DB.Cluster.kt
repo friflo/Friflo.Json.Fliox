@@ -4,6 +4,7 @@ package Friflo.Json.Fliox.Hub.DB.Cluster
 import kotlinx.serialization.*
 import CustomSerializer.*
 import kotlinx.serialization.json.*
+import Friflo.Json.Fliox.Hub.Protocol.Tasks.*
 
 @Serializable
 data class DbContainers (
@@ -98,7 +99,25 @@ data class ClientParam (
 
 @Serializable
 data class ClientResult (
-              val queuedEvents : Int,
-              val clientId     : String? = null,
+              val queuedEvents       : Int,
+              val clientId           : String? = null,
+              val subscriptionEvents : SubscriptionEvents? = null,
+)
+
+@Serializable
+data class SubscriptionEvents (
+              val seq         : Int,
+              val queued      : Int,
+              val queueEvents : Boolean,
+              val connected   : Boolean,
+              val messageSubs : List<String>? = null,
+              val changeSubs  : List<ChangeSubscription>? = null,
+)
+
+@Serializable
+data class ChangeSubscription (
+              val container : String,
+              val changes   : List<EntityChange>,
+              val filter    : String? = null,
 )
 

@@ -173,11 +173,46 @@
         "ClientResult": {
             "type": "object",
             "properties": {
-                "queuedEvents": { "$ref": "./Standard.json#/definitions/int32", "description": "return number of queued events not acknowledged by the client.\nEvents are queued only if the client instruct the Hub to queue events by setting <b>queueEvents</b> = true" },
-                "clientId":     { "type": ["string", "null"], "description": "return the client id set in the <b>SyncRequest</b>. Can be null.<br/>\nA new client id is created in case any task requires a client id and the <b>SyncRequest</b> did not set a client id.<br/>\nE.g. <b>ensureClientId</b> = true or <b>queueEvents</b> = true" }
+                "queuedEvents":       { "$ref": "./Standard.json#/definitions/int32", "description": "return number of queued events not acknowledged by the client.\nEvents are queued only if the client instruct the Hub to queue events by setting <b>queueEvents</b> = true" },
+                "clientId":           { "type": ["string", "null"], "description": "return the client id set in the <b>SyncRequest</b>. Can be null.<br/>\nA new client id is created in case any task requires a client id and the <b>SyncRequest</b> did not set a client id.<br/>\nE.g. <b>ensureClientId</b> = true or <b>queueEvents</b> = true" },
+                "subscriptionEvents": { "oneOf": [{ "$ref": "#/definitions/SubscriptionEvents" }, {"type": "null"}], "description": "number of sent or queued client events and its message and change subscriptions" }
             },
             "required": [
                 "queuedEvents"
+            ],
+            "additionalProperties": false
+        },
+        "SubscriptionEvents": {
+            "type": "object",
+            "isStruct": true,
+            "description": "number of sent or queued client events and its message and change subscriptions",
+            "properties": {
+                "seq":         { "$ref": "./Standard.json#/definitions/int32", "description": "number of events sent to a client" },
+                "queued":      { "$ref": "./Standard.json#/definitions/int32", "description": "number of queued events not acknowledged by a client" },
+                "queueEvents": { "type": "boolean", "description": "true if client is instructed to queue events for reliable event delivery in case of reconnects" },
+                "connected":   { "type": "boolean", "description": "true if client is connected. Non remote client are always connected" },
+                "messageSubs": { "type": ["array", "null"], "items": { "type": "string" }, "description": "message / command subscriptions of a client" },
+                "changeSubs":  { "type": ["array", "null"], "items": { "$ref": "#/definitions/ChangeSubscription" }, "description": "change subscriptions of a client" }
+            },
+            "required": [
+                "seq",
+                "queued",
+                "queueEvents",
+                "connected"
+            ],
+            "additionalProperties": false
+        },
+        "ChangeSubscription": {
+            "type": "object",
+            "description": "change subscription for a specific container",
+            "properties": {
+                "container": { "type": "string", "description": "name of subscribed container" },
+                "changes":   { "type": "array", "items": { "$ref": "./Friflo.Json.Fliox.Hub.Protocol.Tasks.json#/definitions/EntityChange" }, "description": "type of subscribed changes like create, upsert, delete and patch" },
+                "filter":    { "type": ["string", "null"], "description": "filter to narrow the amount of change events" }
+            },
+            "required": [
+                "container",
+                "changes"
             ],
             "additionalProperties": false
         }

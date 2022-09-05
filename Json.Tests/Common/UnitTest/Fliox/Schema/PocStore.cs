@@ -60,7 +60,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema
             // their namespace / class names are equal to the original ones.
             var replacements = new [] {
                 new Replace("Friflo.Json.Tests.Common.UnitTest.Fliox",  "PocStore2"),
-                new Replace("Friflo.Json.Fliox.Hub.DB.Cluster",         "PocStore2.Cluster")
+                new Replace("Friflo.Json.Fliox",                        "PocStore2")
             };
             var options     = new NativeTypeOptions(typeof(PocStore)) { replacements = replacements };
             var generator = CSharpGenerator.Generate(options);

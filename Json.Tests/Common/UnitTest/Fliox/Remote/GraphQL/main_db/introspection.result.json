@@ -4992,6 +4992,16 @@
                         "kind":"SCALAR",
                         "name": "String"
                     }
+                },
+                {
+                    "name": "subscriptionEvents",
+                    "description": "    /** number of sent or queued client events and its message and change subscriptions */\n",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"SCALAR",
+                        "name": "SubscriptionEvents"
+                    }
                 }
             ],
             "interfaces": [
@@ -5024,6 +5034,323 @@
                         "kind":"SCALAR",
                         "name": "String"
                     }
+                },
+                {
+                    "name": "subscriptionEvents",
+                    "description": "    /** number of sent or queued client events and its message and change subscriptions */\n",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"SCALAR",
+                        "name": "SubscriptionEventsInput"
+                    }
+                }
+            ]
+        },
+        {
+            "kind":"OBJECT",
+            "name": "SubscriptionEvents",
+            "description": "/** number of sent or queued client events and its message and change subscriptions */\n",
+            "fields": [
+                {
+                    "name": "seq",
+                    "description": "    /** number of events sent to a client */\n",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "Int"
+                        }
+                    }
+                },
+                {
+                    "name": "queued",
+                    "description": "    /** number of queued events not acknowledged by a client */\n",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "Int"
+                        }
+                    }
+                },
+                {
+                    "name": "queueEvents",
+                    "description": "    /** true if client is instructed to queue events for reliable event delivery in case of reconnects */\n",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "Boolean"
+                        }
+                    }
+                },
+                {
+                    "name": "connected",
+                    "description": "    /** true if client is connected. Non remote client are always connected */\n",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "Boolean"
+                        }
+                    }
+                },
+                {
+                    "name": "messageSubs",
+                    "description": "    /** message / command subscriptions of a client */\n",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"LIST",
+                        "ofType": {
+                            "kind":"NON_NULL",
+                            "ofType": {
+                                "kind":"SCALAR",
+                                "name": "String"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "changeSubs",
+                    "description": "    /** change subscriptions of a client */\n",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"LIST",
+                        "ofType": {
+                            "kind":"NON_NULL",
+                            "ofType": {
+                                "kind":"SCALAR",
+                                "name": "ChangeSubscription"
+                            }
+                        }
+                    }
+                }
+            ],
+            "interfaces": [
+            ]
+        },
+        {
+            "kind":"INPUT_OBJECT",
+            "name": "SubscriptionEventsInput",
+            "description": "/** number of sent or queued client events and its message and change subscriptions */\n",
+            "inputFields": [
+                {
+                    "name": "seq",
+                    "description": "    /** number of events sent to a client */\n",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "Int"
+                        }
+                    }
+                },
+                {
+                    "name": "queued",
+                    "description": "    /** number of queued events not acknowledged by a client */\n",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "Int"
+                        }
+                    }
+                },
+                {
+                    "name": "queueEvents",
+                    "description": "    /** true if client is instructed to queue events for reliable event delivery in case of reconnects */\n",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "Boolean"
+                        }
+                    }
+                },
+                {
+                    "name": "connected",
+                    "description": "    /** true if client is connected. Non remote client are always connected */\n",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "Boolean"
+                        }
+                    }
+                },
+                {
+                    "name": "messageSubs",
+                    "description": "    /** message / command subscriptions of a client */\n",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"LIST",
+                        "ofType": {
+                            "kind":"NON_NULL",
+                            "ofType": {
+                                "kind":"SCALAR",
+                                "name": "String"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "changeSubs",
+                    "description": "    /** change subscriptions of a client */\n",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"LIST",
+                        "ofType": {
+                            "kind":"NON_NULL",
+                            "ofType": {
+                                "kind":"SCALAR",
+                                "name": "ChangeSubscriptionInput"
+                            }
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "kind":"OBJECT",
+            "name": "ChangeSubscription",
+            "description": "/** change subscription for a specific container */\n",
+            "fields": [
+                {
+                    "name": "container",
+                    "description": "    /** name of subscribed container */\n",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "String"
+                        }
+                    }
+                },
+                {
+                    "name": "changes",
+                    "description": "    /** type of subscribed changes like create, upsert, delete and patch */\n",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"LIST",
+                            "ofType": {
+                                "kind":"NON_NULL",
+                                "ofType": {
+                                    "kind":"SCALAR",
+                                    "name": "EntityChange"
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "filter",
+                    "description": "    /** filter to narrow the amount of change events */\n",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"SCALAR",
+                        "name": "String"
+                    }
+                }
+            ],
+            "interfaces": [
+            ]
+        },
+        {
+            "kind":"INPUT_OBJECT",
+            "name": "ChangeSubscriptionInput",
+            "description": "/** change subscription for a specific container */\n",
+            "inputFields": [
+                {
+                    "name": "container",
+                    "description": "    /** name of subscribed container */\n",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "String"
+                        }
+                    }
+                },
+                {
+                    "name": "changes",
+                    "description": "    /** type of subscribed changes like create, upsert, delete and patch */\n",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"LIST",
+                            "ofType": {
+                                "kind":"NON_NULL",
+                                "ofType": {
+                                    "kind":"SCALAR",
+                                    "name": "EntityChange"
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "filter",
+                    "description": "    /** filter to narrow the amount of change events */\n",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"SCALAR",
+                        "name": "String"
+                    }
+                }
+            ]
+        },
+        {
+            "kind":"ENUM",
+            "name": "EntityChange",
+            "description": "/** Filter type used to specify the type of an entity change */\n",
+            "enumValues": [
+                {
+                    "name": "create",
+                    "description": "/** filter change events of created entities. */\n"
+                },
+                {
+                    "name": "upsert",
+                    "description": "/** filter change events of upserted entities. */\n"
+                },
+                {
+                    "name": "patch",
+                    "description": "/** filter change events of entity patches. */\n"
+                },
+                {
+                    "name": "delete",
+                    "description": "/** filter change events of deleted entities. */\n"
                 }
             ]
         }

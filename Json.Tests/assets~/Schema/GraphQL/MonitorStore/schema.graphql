@@ -113,14 +113,14 @@ type ClientHits {
     id     : String!
     user   : String!
     counts : [RequestCount!]
-    event  : EventDelivery
+    ev     : SubscriptionEvents
 }
 
 input ClientHitsInput {
     id     : String!
     user   : String!
     counts : [RequestCountInput!]
-    event  : EventDeliveryInput
+    ev     : SubscriptionEventsInput
 }
 
 type HistoryHits {
@@ -147,7 +147,7 @@ input RequestCountInput {
     tasks    : Int!
 }
 
-type EventDelivery {
+type SubscriptionEvents {
     seq         : Int!
     queued      : Int!
     queueEvents : Boolean!
@@ -156,7 +156,7 @@ type EventDelivery {
     changeSubs  : [ChangeSubscription!]
 }
 
-input EventDeliveryInput {
+input SubscriptionEventsInput {
     seq         : Int!
     queued      : Int!
     queueEvents : Boolean!
@@ -357,12 +357,14 @@ input ClientParamInput {
 }
 
 type ClientResult {
-    queuedEvents : Int!
-    clientId     : String
+    queuedEvents       : Int!
+    clientId           : String
+    subscriptionEvents : SubscriptionEvents
 }
 
 input ClientResultInput {
-    queuedEvents : Int!
-    clientId     : String
+    queuedEvents       : Int!
+    clientId           : String
+    subscriptionEvents : SubscriptionEventsInput
 }
 

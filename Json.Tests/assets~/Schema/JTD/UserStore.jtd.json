@@ -250,8 +250,26 @@
         },
         "ClientResult": {
             "properties": {
-                "queuedEvents": { "type": "int32" },
-                "clientId":     { "type": "string", "nullable": true }
+                "queuedEvents":       { "type": "int32" },
+                "clientId":           { "type": "string", "nullable": true },
+                "subscriptionEvents": { "ref":  "SubscriptionEvents", "nullable": true }
+            }
+        },
+        "SubscriptionEvents": {
+            "properties": {
+                "seq":         { "type": "int32" },
+                "queued":      { "type": "int32" },
+                "queueEvents": { "type": "boolean" },
+                "connected":   { "type": "boolean" },
+                "messageSubs": { "elements": { "type": "string" }, "nullable": true },
+                "changeSubs":  { "elements": { "ref":  "ChangeSubscription" }, "nullable": true }
+            }
+        },
+        "ChangeSubscription": {
+            "properties": {
+                "container": { "type": "string" },
+                "changes":   { "elements": { "ref":  "EntityChange" } },
+                "filter":    { "type": "string", "nullable": true }
             }
         }
     }

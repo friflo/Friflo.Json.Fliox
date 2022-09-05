@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Friflo.Json.Fliox.Hub.DB.Cluster;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.Auth;
 using Friflo.Json.Fliox.Hub.Host.Stats;
@@ -87,7 +88,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Monitor
             }
         }
         
-        private static EventDelivery? GetEventDelivery (FlioxHub hub, ClientHits clientHits) {
+        private static SubscriptionEvents? GetEventDelivery (FlioxHub hub, ClientHits clientHits) {
             if (hub.EventDispatcher == null)
                 return null;
             if (!hub.EventDispatcher.TryGetSubscriber(clientHits.id, out var subscriber)) {
@@ -100,7 +101,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Monitor
                 msgSubs     = databaseSubs.GetMessageSubscriptions(msgSubs);
                 changeSubs  = databaseSubs.GetChangeSubscriptions (changeSubs);
             }
-            return new EventDelivery {
+            return new SubscriptionEvents {
                 seq         = subscriber.Seq,
                 queued      = subscriber.QueuedEventsCount,
                 queueEvents = subscriber.queueEvents,
