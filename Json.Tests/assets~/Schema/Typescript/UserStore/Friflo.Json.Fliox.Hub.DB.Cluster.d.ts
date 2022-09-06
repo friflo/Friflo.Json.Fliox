@@ -121,7 +121,7 @@ export class UserResult {
     groups   : string[];
     clients  : string[];
     /** number executed requests and tasks per database */
-    counts?  : RequestCount[] | null;
+    counts   : RequestCount[];
 }
 
 /** number of requests and tasks executed per database */

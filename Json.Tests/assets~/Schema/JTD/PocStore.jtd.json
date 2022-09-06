@@ -193,7 +193,7 @@
             "properties": {
                 "groups":  { "elements": { "type": "string" } },
                 "clients": { "elements": { "type": "string" } },
-                "counts":  { "elements": { "ref":  "RequestCount" }, "nullable": true }
+                "counts":  { "elements": { "ref":  "RequestCount" } }
             }
         },
         "RequestCount": {

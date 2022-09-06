@@ -104,7 +104,26 @@ GET {{base}}/rest/main_db?command=std.User
 {
     "groups": [
     ],
+    "clients": [
+        "1",
+        "2"
+    ],
     "counts": [
+        {
+            "db": "cluster",
+            "requests": 2,
+            "tasks": 2
+        },
+        {
+            "db": "main_db",
+            "requests": 21,
+            "tasks": 37
+        },
+        {
+            "db": "user_db",
+            "requests": 3,
+            "tasks": 3
+        }
     ]
 }
 

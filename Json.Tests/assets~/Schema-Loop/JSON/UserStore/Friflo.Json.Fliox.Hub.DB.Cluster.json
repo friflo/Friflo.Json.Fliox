@@ -157,11 +157,12 @@
             "properties": {
                 "groups":  { "type": "array", "items": { "type": "string" } },
                 "clients": { "type": "array", "items": { "type": "string" } },
-                "counts":  { "type": ["array", "null"], "items": { "$ref": "#/definitions/RequestCount" }, "description": "number executed requests and tasks per database" }
+                "counts":  { "type": "array", "items": { "$ref": "#/definitions/RequestCount" }, "description": "number executed requests and tasks per database" }
             },
             "required": [
                 "groups",
-                "clients"
+                "clients",
+                "counts"
             ],
             "additionalProperties": false
         },

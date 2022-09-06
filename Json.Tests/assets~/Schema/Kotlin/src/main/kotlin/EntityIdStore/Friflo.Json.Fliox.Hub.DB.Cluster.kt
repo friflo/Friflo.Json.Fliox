@@ -90,7 +90,7 @@ data class UserParam (
 data class UserResult (
               val groups  : List<String>,
               val clients : List<String>,
-              val counts  : List<RequestCount>? = null,
+              val counts  : List<RequestCount>,
 )
 
 @Serializable

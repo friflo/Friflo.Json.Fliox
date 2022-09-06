@@ -214,13 +214,13 @@ input UserParamInput {
 type UserResult {
     groups  : [String!]!
     clients : [String!]!
-    counts  : [RequestCount!]
+    counts  : [RequestCount!]!
 }
 
 input UserResultInput {
     groups  : [String!]!
     clients : [String!]!
-    counts  : [RequestCountInput!]
+    counts  : [RequestCountInput!]!
 }
 
 type RequestCount {

@@ -4904,12 +4904,15 @@
                     "args": [
                     ],
                     "type": {
-                        "kind":"LIST",
+                        "kind":"NON_NULL",
                         "ofType": {
-                            "kind":"NON_NULL",
+                            "kind":"LIST",
                             "ofType": {
-                                "kind":"SCALAR",
-                                "name": "RequestCount"
+                                "kind":"NON_NULL",
+                                "ofType": {
+                                    "kind":"SCALAR",
+                                    "name": "RequestCount"
+                                }
                             }
                         }
                     }
@@ -4967,12 +4970,15 @@
                     "args": [
                     ],
                     "type": {
-                        "kind":"LIST",
+                        "kind":"NON_NULL",
                         "ofType": {
-                            "kind":"NON_NULL",
+                            "kind":"LIST",
                             "ofType": {
-                                "kind":"SCALAR",
-                                "name": "RequestCountInput"
+                                "kind":"NON_NULL",
+                                "ofType": {
+                                    "kind":"SCALAR",
+                                    "name": "RequestCountInput"
+                                }
                             }
                         }
                     }

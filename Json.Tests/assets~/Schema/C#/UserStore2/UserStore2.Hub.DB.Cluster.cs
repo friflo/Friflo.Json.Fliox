@@ -97,6 +97,7 @@ public class UserResult {
     List<string>        groups;
     [Required]
     List<string>        clients;
+    [Required]
     List<RequestCount>  counts;
 }
 

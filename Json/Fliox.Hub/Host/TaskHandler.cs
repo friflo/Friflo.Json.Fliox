@@ -316,24 +316,31 @@ namespace Friflo.Json.Fliox.Hub.Host
         }
         
         private static async Task<UserResult> User (Param<UserParam> param, MessageContext context) {
-            var user = context.User;
-            if (param.RawParam.IsNull()) {
-                return new UserResult { groups = user.GetGroups().ToArray() };
-            }
             if (!param.GetValidate(out UserParam options, out var error)) {
                 return context.Error<UserResult>(error);
             }
-            var eventDispatcher  = context.Hub.EventDispatcher;
-            if (eventDispatcher == null) {
-                return context.Error<UserResult>("command requires a Hub with an EventDispatcher");
+            var user    = context.User;
+            var groups  = user.GetGroups();
+            
+            if (options?.addGroups != null || options?.removeGroups != null) {
+                var eventDispatcher  = context.Hub.EventDispatcher;
+                if (eventDispatcher == null) {
+                    return context.Error<UserResult>("command requires a Hub with an EventDispatcher");
+                }
+                var authenticator = context.Hub.Authenticator;
+                await authenticator.SetUserOptions(context.User, options);
+                
+                eventDispatcher.UpdateSubUserGroups(user.userId, groups);
             }
-            var authenticator = context.Hub.Authenticator;
-            await authenticator.SetUserOptions(context.User, options);
             
-            var groups = user.GetGroups();
-            eventDispatcher.UpdateSubUserGroups(user.userId, groups);
+            var counts = new List<RequestCount>();
+            ClusterUtils.CountsMapToList(counts, user.requestCounts, null);
             
-            return new UserResult { groups = groups.ToArray() };
+            var clients = new List<JsonKey>();
+            foreach (var clientPair in user.clients) {
+                clients.Add(clientPair.Key);
+            }
+            return new UserResult { groups = groups.ToArray(), counts = counts, clients = clients };
         }
         
         /// <summary>
