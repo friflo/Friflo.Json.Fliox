@@ -94,21 +94,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Monitor
             if (!hub.EventDispatcher.TryGetSubscriber(clientHits.id, out var subscriber)) {
                 return null;
             }
-            var changeSubs  = clientHits.subscriptionEvents?.changeSubs;
-            var msgSubs     = clientHits.subscriptionEvents?.messageSubs;
-            foreach (var pair in subscriber.databaseSubs) {
-                var databaseSubs = pair.Value;
-                msgSubs     = databaseSubs.GetMessageSubscriptions(msgSubs);
-                changeSubs  = databaseSubs.GetChangeSubscriptions (changeSubs);
-            }
-            return new SubscriptionEvents {
-                seq         = subscriber.Seq,
-                queued      = subscriber.QueuedEventsCount,
-                queueEvents = subscriber.queueEvents,
-                connected   = subscriber.Connected,
-                messageSubs = msgSubs,
-                changeSubs  = changeSubs
-            };
+            return ClusterUtils.GetSubscriptionEvents(subscriber, clientHits.subscriptionEvents);
         }
         
         internal void UpdateUsers(Authenticator authenticator, string monitorName) {

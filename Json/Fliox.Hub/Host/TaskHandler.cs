@@ -357,14 +357,15 @@ namespace Friflo.Json.Fliox.Hub.Host
             }
             var hub         = context.Hub;
             var dispatcher  = hub.EventDispatcher;
-            int queuedEvents = 0;
+            var result      = new ClientResult { clientId = context.ClientId };
             if (dispatcher != null && !context.ClientId.IsNull() && dispatcher.TryGetSubscriber(context.ClientId, out var client)) {
-                queuedEvents = client.QueuedEventsCount;
+                result.queuedEvents         = client.QueuedEventsCount;
+                result.subscriptionEvents   = ClusterUtils.GetSubscriptionEvents(client, default);
                 /* if (clientParam != null && clientParam.syncEvents) {
                     client.SendUnacknowledgedEvents(); see comment above
                 } */
             }
-            return new ClientResult { queuedEvents = queuedEvents, clientId = context.ClientId };
+            return result;
         }
         
         private static string EnsureClientId(ClientParam clientParam, MessageContext context) {
