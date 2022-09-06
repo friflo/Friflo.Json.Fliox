@@ -21,9 +21,10 @@ Install Grynwald.MdDocs .NET tool
 dotnet tool install --global Grynwald.MdDocs
 ```
 
-Generate Markdown
+Generate Markdown using config file `api-reference.json`  
+See default config file [defaultSettings.json](https://github.com/ap0llo/mddocs/blob/master/src/MdDocs.Common/Configuration/defaultSettings.json)
 ```
-mddocs apireference --assembly ./Json/Fliox.Hub/.bin/Debug/netcoreapp3.1/Friflo.Json.Fliox.Hub.dll --outdir ../../../../fliox-docs/api
+mddocs apireference --configurationFilePath scripts/api-reference.json
 ```
 
 
