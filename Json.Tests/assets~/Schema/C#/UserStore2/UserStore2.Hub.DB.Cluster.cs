@@ -94,7 +94,16 @@ public class UserParam {
 
 public class UserResult {
     [Required]
-    List<string>  groups;
+    List<string>        groups;
+    [Required]
+    List<string>        clients;
+    List<RequestCount>  counts;
+}
+
+public struct RequestCount {
+    string  db;
+    int     requests;
+    int     tasks;
 }
 
 public class ClientParam {

@@ -103,6 +103,8 @@ GET {{base}}/rest/main_db?command=std.User
 
 {
     "groups": [
+    ],
+    "counts": [
     ]
 }
 

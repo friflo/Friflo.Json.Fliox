@@ -154,7 +154,10 @@ export class UserParam {
 }
 
 export class UserResult {
-    groups  : string[];
+    groups   : string[];
+    clients  : string[];
+    /** number executed requests and tasks per database */
+    counts?  : RequestCount[] | null;
 }
 
 export class ClientParam {

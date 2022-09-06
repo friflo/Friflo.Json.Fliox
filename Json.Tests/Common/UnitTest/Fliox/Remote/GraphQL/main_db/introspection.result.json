@@ -4878,6 +4878,41 @@
                             }
                         }
                     }
+                },
+                {
+                    "name": "clients",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"LIST",
+                            "ofType": {
+                                "kind":"NON_NULL",
+                                "ofType": {
+                                    "kind":"SCALAR",
+                                    "name": "String"
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "counts",
+                    "description": "    /** number executed requests and tasks per database */\n",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"LIST",
+                        "ofType": {
+                            "kind":"NON_NULL",
+                            "ofType": {
+                                "kind":"SCALAR",
+                                "name": "RequestCount"
+                            }
+                        }
+                    }
                 }
             ],
             "interfaces": [
@@ -4904,6 +4939,129 @@
                                     "name": "String"
                                 }
                             }
+                        }
+                    }
+                },
+                {
+                    "name": "clients",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"LIST",
+                            "ofType": {
+                                "kind":"NON_NULL",
+                                "ofType": {
+                                    "kind":"SCALAR",
+                                    "name": "String"
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "counts",
+                    "description": "    /** number executed requests and tasks per database */\n",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"LIST",
+                        "ofType": {
+                            "kind":"NON_NULL",
+                            "ofType": {
+                                "kind":"SCALAR",
+                                "name": "RequestCountInput"
+                            }
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "kind":"OBJECT",
+            "name": "RequestCount",
+            "description": "/** number of requests and tasks executed per database */\n",
+            "fields": [
+                {
+                    "name": "db",
+                    "description": "    /** database name */\n",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"SCALAR",
+                        "name": "String"
+                    }
+                },
+                {
+                    "name": "requests",
+                    "description": "    /** number of executed requests */\n",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "Int"
+                        }
+                    }
+                },
+                {
+                    "name": "tasks",
+                    "description": "    /** number of executed tasks */\n",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "Int"
+                        }
+                    }
+                }
+            ],
+            "interfaces": [
+            ]
+        },
+        {
+            "kind":"INPUT_OBJECT",
+            "name": "RequestCountInput",
+            "description": "/** number of requests and tasks executed per database */\n",
+            "inputFields": [
+                {
+                    "name": "db",
+                    "description": "    /** database name */\n",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"SCALAR",
+                        "name": "String"
+                    }
+                },
+                {
+                    "name": "requests",
+                    "description": "    /** number of executed requests */\n",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "Int"
+                        }
+                    }
+                },
+                {
+                    "name": "tasks",
+                    "description": "    /** number of executed tasks */\n",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "Int"
                         }
                     }
                 }

@@ -312,6 +312,7 @@
             <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.HostCluster'><div><span>HostCluster</span></div></a></li>
             <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.UserParam'><div><span>UserParam</span></div></a></li>
             <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.UserResult'><div><span>UserResult</span></div></a></li>
+            <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.RequestCount'><div><span>RequestCount</span></div></a></li>
             <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.ClientParam'><div><span>ClientParam</span></div></a></li>
             <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.ClientResult'><div><span>ClientResult</span></div></a></li>
             <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.SubscriptionEvents'><div><span>SubscriptionEvents</span></div></a></li>
@@ -892,6 +893,40 @@ E.g. using red for a production environment: "#ff0000" or "rgb(255 0 0)"</docs><
         <tr>
             <td><field>groups</field></td>
             <td><type><predef>string</predef>[]</type></td>
+        </tr>
+        <tr>
+            <td><field>clients</field></td>
+            <td><type><predef>string</predef>[]</type></td>
+        </tr>
+        <tr>
+            <td><field>counts</field></td>
+            <td><type><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.RequestCount'>RequestCount</a>[] | null</type></td>
+            <td><docs>number executed requests and tasks per database</docs></td>
+        </tr>
+    </table>
+    </div>
+    <div class='type'>
+    <h3 id='Friflo.Json.Fliox.Hub.DB.Cluster.RequestCount'>
+        <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.RequestCount'>RequestCount</a>
+        <keyword>class</keyword>
+    </h3>
+    <desc>number of requests and tasks executed per database
+    </desc>
+    <table class='fields'>
+        <tr>
+            <td><field>db</field></td>
+            <td><type><predef>string</predef> | null</type></td>
+            <td><docs>database name</docs></td>
+        </tr>
+        <tr>
+            <td><field>requests</field></td>
+            <td><type><a href='#Standard.int32'>int32</a></type></td>
+            <td><docs>number of executed requests</docs></td>
+        </tr>
+        <tr>
+            <td><field>tasks</field></td>
+            <td><type><a href='#Standard.int32'>int32</a></type></td>
+            <td><docs>number of executed tasks</docs></td>
         </tr>
     </table>
     </div>

@@ -239,7 +239,16 @@
         },
         "UserResult": {
             "properties": {
-                "groups": { "elements": { "type": "string" } }
+                "groups":  { "elements": { "type": "string" } },
+                "clients": { "elements": { "type": "string" } },
+                "counts":  { "elements": { "ref":  "RequestCount" }, "nullable": true }
+            }
+        },
+        "RequestCount": {
+            "properties": {
+                "db":       { "type": "string", "nullable": true },
+                "requests": { "type": "int32" },
+                "tasks":    { "type": "int32" }
             }
         },
         "ClientParam": {

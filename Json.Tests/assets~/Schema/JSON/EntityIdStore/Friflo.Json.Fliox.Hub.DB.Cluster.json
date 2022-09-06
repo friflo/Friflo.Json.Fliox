@@ -155,10 +155,28 @@
         "UserResult": {
             "type": "object",
             "properties": {
-                "groups": { "type": "array", "items": { "type": "string" } }
+                "groups":  { "type": "array", "items": { "type": "string" } },
+                "clients": { "type": "array", "items": { "type": "string" } },
+                "counts":  { "type": ["array", "null"], "items": { "$ref": "#/definitions/RequestCount" }, "description": "number executed requests and tasks per database" }
             },
             "required": [
-                "groups"
+                "groups",
+                "clients"
+            ],
+            "additionalProperties": false
+        },
+        "RequestCount": {
+            "type": "object",
+            "isStruct": true,
+            "description": "number of requests and tasks executed per database",
+            "properties": {
+                "db":       { "type": ["string", "null"], "description": "database name" },
+                "requests": { "$ref": "./Standard.json#/definitions/int32", "description": "number of executed requests" },
+                "tasks":    { "$ref": "./Standard.json#/definitions/int32", "description": "number of executed tasks" }
+            },
+            "required": [
+                "requests",
+                "tasks"
             ],
             "additionalProperties": false
         },

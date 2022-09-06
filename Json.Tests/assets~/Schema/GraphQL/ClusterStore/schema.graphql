@@ -212,11 +212,27 @@ input UserParamInput {
 }
 
 type UserResult {
-    groups : [String!]!
+    groups  : [String!]!
+    clients : [String!]!
+    counts  : [RequestCount!]
 }
 
 input UserResultInput {
-    groups : [String!]!
+    groups  : [String!]!
+    clients : [String!]!
+    counts  : [RequestCountInput!]
+}
+
+type RequestCount {
+    db       : String
+    requests : Int!
+    tasks    : Int!
+}
+
+input RequestCountInput {
+    db       : String
+    requests : Int!
+    tasks    : Int!
 }
 
 type ClientParam {

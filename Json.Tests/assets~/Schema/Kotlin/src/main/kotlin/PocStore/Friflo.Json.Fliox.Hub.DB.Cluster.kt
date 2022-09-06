@@ -88,7 +88,16 @@ data class UserParam (
 
 @Serializable
 data class UserResult (
-              val groups : List<String>,
+              val groups  : List<String>,
+              val clients : List<String>,
+              val counts  : List<RequestCount>? = null,
+)
+
+@Serializable
+data class RequestCount (
+              val db       : String? = null,
+              val requests : Int,
+              val tasks    : Int,
 )
 
 @Serializable

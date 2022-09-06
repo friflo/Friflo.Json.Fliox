@@ -132,7 +132,10 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
     }
 
     public sealed class UserResult {
-        [Required]  public  string[]        groups;
+        [Required]  public  string[]            groups;
+        [Required]  public  List<JsonKey>       clients;
+        /// <summary>number executed requests and tasks per database</summary>
+                    public  List<RequestCount>  counts = new List<RequestCount>();
     }
     
     public sealed class ClientParam {

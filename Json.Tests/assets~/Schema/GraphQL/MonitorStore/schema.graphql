@@ -339,11 +339,15 @@ input UserParamInput {
 }
 
 type UserResult {
-    groups : [String!]!
+    groups  : [String!]!
+    clients : [String!]!
+    counts  : [RequestCount!]
 }
 
 input UserResultInput {
-    groups : [String!]!
+    groups  : [String!]!
+    clients : [String!]!
+    counts  : [RequestCountInput!]
 }
 
 type ClientParam {
