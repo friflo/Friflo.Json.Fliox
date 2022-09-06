@@ -3,6 +3,16 @@ import { int32 }        from "./Standard";
 import { EntityChange } from "./Friflo.Json.Fliox.Hub.Protocol.Tasks";
 import { int64 }        from "./Standard";
 
+/** number of requests and tasks executed per database */
+export class RequestCount {
+    /** database name */
+    db?       : string | null;
+    /** number of executed requests */
+    requests  : int32;
+    /** number of executed tasks */
+    tasks     : int32;
+}
+
 /** number of sent or queued client events and its message and change subscriptions */
 export class SubscriptionEvents {
     /** number of events sent to a client */

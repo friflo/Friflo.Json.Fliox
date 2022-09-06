@@ -10,6 +10,7 @@ import { UserParam }          from "./Friflo.Json.Fliox.Hub.DB.Cluster";
 import { UserResult }         from "./Friflo.Json.Fliox.Hub.DB.Cluster";
 import { ClientParam }        from "./Friflo.Json.Fliox.Hub.DB.Cluster";
 import { ClientResult }       from "./Friflo.Json.Fliox.Hub.DB.Cluster";
+import { RequestCount }       from "./Friflo.Json.Fliox.Hub.DB.Cluster";
 import { SubscriptionEvents } from "./Friflo.Json.Fliox.Hub.DB.Cluster";
 import { int32 }              from "./Standard";
 
@@ -89,16 +90,6 @@ export class HistoryHits {
     counters    : int32[];
     /** last update of the **HistoryHits** record */
     lastUpdate  : int32;
-}
-
-/** number of requests and tasks executed per database */
-export class RequestCount {
-    /** database name */
-    db?       : string | null;
-    /** number of executed requests */
-    requests  : int32;
-    /** number of executed tasks */
-    tasks     : int32;
 }
 
 export class ClearStats {

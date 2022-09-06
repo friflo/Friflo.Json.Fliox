@@ -1,7 +1,7 @@
 // Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
-using Friflo.Json.Fliox.Hub.DB.Monitor;
+using Friflo.Json.Fliox.Hub.DB.Cluster;
 using Friflo.Json.Fliox.Hub.Protocol;
 
 namespace Friflo.Json.Fliox.Hub.Host.Stats
@@ -15,7 +15,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Stats
 
         internal void Update(SyncRequest syncRequest) {
             requestHistories.Update();
-            RequestCountUtils.UpdateCounts(ref requestCount, syncRequest);
+            ClusterUtils.UpdateCounts(ref requestCount, syncRequest);
         }
 
         internal void ClearHostStats() {

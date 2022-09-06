@@ -2,7 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System.Collections.Concurrent;
-using Friflo.Json.Fliox.Hub.DB.Monitor;
+using Friflo.Json.Fliox.Hub.DB.Cluster;
 
 namespace Friflo.Json.Fliox.Hub.Host.Auth
 {

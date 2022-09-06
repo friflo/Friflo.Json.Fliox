@@ -81,7 +81,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Monitor
                     clientHits = new ClientHits { id = clientId };
                 }
                 clientHits.user     = client.userId;
-                RequestCountUtils.CountsMapToList(clientHits.counts, client.requestCounts, monitorName);
+                ClusterUtils.CountsMapToList(clientHits.counts, client.requestCounts, monitorName);
                 clientHits.subscriptionEvents       = GetSubscriptionEvents(hub, clientHits);
 
                 clients.Upsert(clientHits);
@@ -103,7 +103,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Monitor
                     userHits = new UserHits { id = pair.Key };
                 }
                 User user   = pair.Value;
-                RequestCountUtils.CountsMapToList(userHits.counts, user.requestCounts, monitorName);
+                ClusterUtils.CountsMapToList(userHits.counts, user.requestCounts, monitorName);
 
                 var userClients = user.clients;
                 if (userHits.clients == null) {

@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
 using System.Threading.Tasks;
+using Friflo.Json.Fliox.Hub.DB.Cluster;
 using Friflo.Json.Fliox.Hub.DB.Monitor;
 using Friflo.Json.Fliox.Hub.Host.Auth;
 using Friflo.Json.Fliox.Hub.Host.Event;
@@ -264,12 +265,12 @@ namespace Friflo.Json.Fliox.Hub.Host
         
         private void UpdateRequestStats(string database, SyncRequest syncRequest, SyncContext syncContext) {
             var user = syncContext.User;
-            RequestCountUtils.UpdateCountsMap(user.requestCounts, database, syncRequest);
+            ClusterUtils.UpdateCountsMap(user.requestCounts, database, syncRequest);
             ref var clientId = ref syncContext.clientId;
             if (clientId.IsNull())
                 return;
             if (clientController.clients.TryGetValue(clientId, out UserClient client)) {
-                RequestCountUtils.UpdateCountsMap(client.requestCounts, database, syncRequest);
+                ClusterUtils.UpdateCountsMap(client.requestCounts, database, syncRequest);
             }
         }
         #endregion
