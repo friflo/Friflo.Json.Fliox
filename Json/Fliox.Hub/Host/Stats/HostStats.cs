@@ -15,7 +15,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Stats
 
         internal void Update(SyncRequest syncRequest) {
             requestHistories.Update();
-            requestCount.Update(syncRequest);
+            RequestCountUtils.UpdateCounts(ref requestCount, syncRequest);
         }
 
         internal void ClearHostStats() {

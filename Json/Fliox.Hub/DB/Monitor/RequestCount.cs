@@ -19,8 +19,11 @@ namespace Friflo.Json.Fliox.Hub.DB.Monitor
         public              int     tasks;
 
         public override     string  ToString() => $"db: {db}, requests: {requests}, tasks: {tasks}";
+    }
+    
+    internal static class RequestCountUtils {
 
-        internal static void UpdateCounts (
+        internal static void UpdateCountsMap (
             IDictionary<string, RequestCount>   requestCounts, // key: database
             string                              database,
             SyncRequest                         syncRequest)
@@ -29,16 +32,16 @@ namespace Friflo.Json.Fliox.Hub.DB.Monitor
                 requestCount = new RequestCount { db = database };
                 requestCounts.TryAdd(database, requestCount);
             }
-            requestCount.Update(syncRequest);
+            UpdateCounts(ref requestCount, syncRequest);
             requestCounts[database] = requestCount;
         }
         
-        internal void Update(SyncRequest syncRequest) {
-            requests  ++;
-            tasks     += syncRequest.tasks.Count;
+        internal static void UpdateCounts(ref RequestCount counts, SyncRequest syncRequest) {
+            counts.requests  ++;
+            counts.tasks     += syncRequest.tasks.Count;
         }
         
-        internal static void CountsToList(
+        internal static void CountsMapToList(
             List<RequestCount>                  dst,
             IDictionary<string, RequestCount>   src,
             string                              exclude)

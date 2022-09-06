@@ -264,12 +264,12 @@ namespace Friflo.Json.Fliox.Hub.Host
         
         private void UpdateRequestStats(string database, SyncRequest syncRequest, SyncContext syncContext) {
             var user = syncContext.User;
-            RequestCount.UpdateCounts(user.requestCounts, database, syncRequest);
+            RequestCountUtils.UpdateCountsMap(user.requestCounts, database, syncRequest);
             ref var clientId = ref syncContext.clientId;
             if (clientId.IsNull())
                 return;
             if (clientController.clients.TryGetValue(clientId, out UserClient client)) {
-                RequestCount.UpdateCounts(client.requestCounts, database, syncRequest);
+                RequestCountUtils.UpdateCountsMap(client.requestCounts, database, syncRequest);
             }
         }
         #endregion
