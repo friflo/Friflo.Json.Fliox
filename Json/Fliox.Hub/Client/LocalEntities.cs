@@ -30,6 +30,7 @@ namespace Friflo.Json.Fliox.Hub.Client
     // - have to use blurry names: e.g. .Values instead of .Entities, .TryGetValue() instead of .TryGetEntity()
     // - "Find References" on .Keys, .Values, ... gets imprecise. E.g. "Find References" results include also non LocalEntities<,> hits
     {
+    #region - members
         /// <summary> return number of tracked entities </summary>
         [DebuggerBrowsable(Never)]
         public              int                 Count       => GetCount();
@@ -41,10 +42,13 @@ namespace Friflo.Json.Fliox.Hub.Client
         private  readonly   EntitySet<TKey, T>  entitySet;
         
         public   override   string              ToString() => $"{entitySet.name}: {GetCount()}";
+        #endregion
 
+    #region - initialize
         internal LocalEntities (EntitySet<TKey, T> entitySet) {
             this.entitySet  = entitySet;
         }
+        #endregion
     
     #region - methods
         /// <summary>
