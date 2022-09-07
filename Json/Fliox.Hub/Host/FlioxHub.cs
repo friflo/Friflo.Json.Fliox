@@ -108,7 +108,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         public   readonly   string                  hostName;
         
         /// <summary>host <see cref="HostVersion"/> - available via command <b>std.Host</b></summary>
-        public   readonly   string                  HostVersion     = "1.0.0";
+        public              string                  HostVersion    { get; set; } = "1.0.0";
         
         public   static     string                  FlioxVersion    => GetFlioxVersion();
         
@@ -307,8 +307,9 @@ namespace Friflo.Json.Fliox.Hub.Host
         }
 
         internal Dictionary<string, EntityDatabase> GetDatabases() {
-            var result = new Dictionary<string, EntityDatabase> (extensionDbs.Count + 1);
-            result.Add(database.name, database);
+            var result = new Dictionary<string, EntityDatabase> (extensionDbs.Count + 1) {
+                { database.name, database }
+            };
             foreach (var extensionDB in extensionDbs) {
                 result.Add(extensionDB.Key, extensionDB.Value);
             }
