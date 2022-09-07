@@ -13,7 +13,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
     internal sealed class EventSubUser
     {
         internal  readonly  JsonKey                                     userId;
-        /// A ConcurrentHashSet<> would be sufficient
+        // A ConcurrentHashSet<> would be sufficient
         internal  readonly  ConcurrentDictionary<EventSubClient, bool>  clients;
         internal  readonly  HashSet<string>                             groups; // never null
 

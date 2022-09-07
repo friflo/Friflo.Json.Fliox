@@ -13,6 +13,7 @@ namespace DemoTest {
         // custom entry point to run test snippets with: dotnet run
         internal static async Task Main(string[] args)
         {
+            // await Benchmark.PubSubLatency();
             await QueryRelations(args);
             await SubscribeChanges();
         }
@@ -56,7 +57,7 @@ namespace DemoTest {
             await Task.Delay(3_600_000); // wait 1 hour
         }
             
-        private static FlioxHub CreateHub(string option)
+        internal static FlioxHub CreateHub(string option)
         {
             switch (option) {
                 case "http":    return new HttpClientHub("main_db", "http://localhost:8010/fliox/");
