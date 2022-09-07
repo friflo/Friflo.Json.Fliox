@@ -187,7 +187,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             }
             subClients. TryAdd(clientId, subClient);
             sendClients.TryAdd(clientId, subClient);
-            subUser.clients.Add(subClient);
+            subUser.clients.TryAdd(subClient, true);
             return subClient;
         }
 
