@@ -16,7 +16,7 @@ Reasons:
 [ap0llo/mddocs](https://github.com/ap0llo/mddocs)
 
 
-Install Grynwald.MdDocs .NET tool
+Install .NET tool [Grynwald.MdDocs/0.4.179](https://www.nuget.org/packages/Grynwald.MdDocs/0.4.179)
 ```
 dotnet tool install --global Grynwald.MdDocs
 ```
