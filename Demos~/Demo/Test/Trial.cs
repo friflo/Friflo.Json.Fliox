@@ -57,7 +57,7 @@ namespace DemoTest {
             await Task.Delay(3_600_000); // wait 1 hour
         }
             
-        internal static FlioxHub CreateHub(string option)
+        private static FlioxHub CreateHub(string option)
         {
             switch (option) {
                 case "http":    return new HttpClientHub("main_db", "http://localhost:8010/fliox/");
