@@ -28,11 +28,11 @@ namespace Friflo.Json.Fliox.Mapper.Map.Obj
                 return null;
            
             ConstructorInfo constructor = ReflectUtils.GetDefaultConstructor(type);
-            bool notInstantiatable = type.IsInterface || type.IsAbstract;
-            if (type.IsClass || type.IsValueType || notInstantiatable) {
+            bool notInstantiable = type.IsInterface || type.IsAbstract;
+            if (type.IsClass || type.IsValueType || notInstantiable) {
                 var factory = InstanceFactory.GetInstanceFactory(type);
-                if (notInstantiatable && factory == null)
-                    throw new InvalidOperationException($"type requires instantiatable types by [InstanceType()] or [PolymorphType()] on: {type}");
+                if (notInstantiable && factory == null)
+                    throw new InvalidOperationException($"type requires concrete types by [InstanceType()] or [PolymorphType()] on: {type}");
                 
                 object[] constructorParams = {config, type, constructor, factory, type.IsValueType};
 #if !UNITY_5_3_OR_NEWER

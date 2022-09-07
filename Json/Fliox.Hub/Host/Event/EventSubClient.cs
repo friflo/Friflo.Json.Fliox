@@ -44,7 +44,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         
         /// lock (<see cref="unsentEventsQueue"/>) {
         private             int                                 eventCounter;
-        /// contains all events not yet sent. Should be a Dqueue but C# doesn't contain this container type. 
+        /// contains all events not yet sent. Should be a Deque but C# doesn't contain this container type. 
         private  readonly   LinkedList<SyncEvent>               unsentEventsQueue   = new LinkedList<SyncEvent>();
         /// contains all events which are sent but not acknowledged
         private  readonly   Queue<SyncEvent>                    sentEventsQueue     = new Queue<SyncEvent>();

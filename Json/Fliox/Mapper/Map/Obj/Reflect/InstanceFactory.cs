@@ -54,7 +54,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Obj.Reflect
 
         internal object CreateInstance(Type type) {
             if (isAbstract)
-                throw new InvalidOperationException($"type requires instantiatable types by [InstanceType()] or [PolymorphType()] on: {type.Name}");
+                throw new InvalidOperationException($"type requires concrete types by [InstanceType()] or [PolymorphType()] on: {type.Name}");
             return instanceMapper.CreateInstance();
         }
         

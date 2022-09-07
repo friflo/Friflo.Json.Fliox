@@ -56,10 +56,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
                 AreEqual(json, jsonResult);
                 
                 var e = Throws<InvalidOperationException>(() => reader.Read<IVehicle>("{}"));
-                AreEqual("type requires instantiatable types by [InstanceType()] or [PolymorphType()] on: IVehicle", e.Message);
+                AreEqual("type requires concrete types by [InstanceType()] or [PolymorphType()] on: IVehicle", e.Message);
                 
                 e = Throws<InvalidOperationException>(() => reader.Read<Abstract>("{}"));
-                AreEqual("type requires instantiatable types by [InstanceType()] or [PolymorphType()] on: Abstract", e.Message);
+                AreEqual("type requires concrete types by [InstanceType()] or [PolymorphType()] on: Abstract", e.Message);
                 
                 e = Throws<InvalidOperationException>(() => reader.Read<ITestIncompatibleInstance>("{}"));
                 AreEqual("[InstanceType(Book)] type must extend annotated type: ITestIncompatibleInstance", e.Message);
