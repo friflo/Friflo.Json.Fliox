@@ -14,25 +14,36 @@ namespace DemoTest {
         {
             var hub     = new WebSocketClientHub("main_db", "ws://localhost:8010/fliox/");
             var sender  = new DemoClient(hub) { UserId = "admin", Token = "admin" };
-            await PubSubLatencyCCU(sender, 1);
-            await PubSubLatencyCCU(sender, 5);
-            await PubSubLatencyCCU(sender, 10);
-            await PubSubLatencyCCU(sender, 50);
-            await PubSubLatencyCCU(sender, 100);
-            await PubSubLatencyCCU(sender, 200);
-            await PubSubLatencyCCU(sender, 300);
-            await PubSubLatencyCCU(sender, 400);
-            await PubSubLatencyCCU(sender, 500);
-            await PubSubLatencyCCU(sender, 1000);
-            await PubSubLatencyCCU(sender, 2000);
-            await PubSubLatencyCCU(sender, 3000);
-            await PubSubLatencyCCU(sender, 4000);
-            await PubSubLatencyCCU(sender, 5000);
-            await PubSubLatencyCCU(sender, 10000);
+            
+            var tickRate = 50;
+            Console.WriteLine($"tickRate: {tickRate}");
+            Console.WriteLine();
+            await PubSubLatencyCCU(sender, tickRate, 1);
+            await PubSubLatencyCCU(sender, tickRate, 1);
+            await PubSubLatencyCCU(sender, tickRate, 5);
+            await PubSubLatencyCCU(sender, tickRate, 10);
+            await PubSubLatencyCCU(sender, tickRate, 50);
+            Console.WriteLine();
+            await PubSubLatencyCCU(sender, tickRate, 100);
+            await PubSubLatencyCCU(sender, tickRate, 200);
+            await PubSubLatencyCCU(sender, tickRate, 300);
+            await PubSubLatencyCCU(sender, tickRate, 400);
+            await PubSubLatencyCCU(sender, tickRate, 500);
+            Console.WriteLine();
+            await PubSubLatencyCCU(sender, tickRate, 1000);
+            await PubSubLatencyCCU(sender, tickRate, 2000);
+            await PubSubLatencyCCU(sender, tickRate, 3000);
+            await PubSubLatencyCCU(sender, tickRate, 4000);
+            // await PubSubLatencyCCU(sender, 5000);
+            //await PubSubLatencyCCU(sender, 10000);
         }
         
-        private static async Task PubSubLatencyCCU(FlioxClient sender, int ccu)
+        private static async Task PubSubLatencyCCU(FlioxClient sender, int tickRate, int ccu)
         {
+            System.Globalization.CultureInfo customCulture = (System.Globalization.CultureInfo)System.Threading.Thread.CurrentThread.CurrentCulture.Clone();
+            customCulture.NumberFormat.NumberDecimalSeparator = ".";
+
+            System.Threading.Thread.CurrentThread.CurrentCulture = customCulture;
             var start = DateTime.Now.Ticks;
             var connectTasks = new List<Task<BenchmarkContext>>();
             for (int n = 0; n < ccu; n++) {
@@ -43,7 +54,7 @@ namespace DemoTest {
             
             var connected = DateTime.Now.Ticks;
             
-            Console.WriteLine($"{ccu} clients connected. {(connected - start) / 10000} ms");
+            Console.Write($"{ccu,4} clients connected in {((connected - start) / 10000),4} ms.   latency ms percentiles [10% - 100%] ");
             
             // warmup
             for (int n = 0; n < 20; n++) { 
@@ -52,25 +63,29 @@ namespace DemoTest {
                 await Task.Delay(10);
             }
             
-            for (int n = 0; n < 50; n++) { 
-                sender.SendMessage("test", DateTime.Now.Ticks);   // message is published to all clients
-                await sender.SyncTasks();
-                await Task.Delay(50);
-            }
 
-            var diffs = contexts.Select(c => c.accumulatedLatency / (10000 * c.events)).ToArray();
-            diffs = diffs.OrderBy(s => s).ToArray();
-            if (diffs.Length > 10) {
-                var diffSubset = new long[10];
-                for (int n = 0; n < 10; n++) {
-                    var index = (int)((diffs.Length - 1) * ((n + 1) / 10d));
-                    diffSubset[n] = diffs[index];
-                }
-                diffs = diffSubset;
+            var deltaTime = 1000 / tickRate;
+            
+            for (int n = 0; n < tickRate; n++) { 
+                sender.SendMessage("test", DateTime.Now.Ticks);   // message is published to all clients
+                sender.SyncTasks();
+                await Task.Delay(deltaTime);
             }
-            var diffStr = string.Join(' ', diffs);
+            await Task.Delay(100);
+
+            var diffs = new List<double>();
+            foreach (var c in contexts) {
+                diffs.AddRange(c.latencies);
+                if (c.latencies.Count != tickRate)
+                    throw new InvalidOperationException("missing events");
+            }
+            
+            
+            // var diffs = contexts.Select(c => c.accumulatedLatency / (10000d * c.events)).ToArray();
+            diffs = GetPercentiles(diffs, 10);
+            var diffsStr    = diffs.Select(d => $"{d,4:0.0}");
+            var diffStr     = string.Join(' ', diffsStr);
             Console.WriteLine(diffStr);
-            Console.WriteLine();
 
             var tasks = new List<Task>();
             foreach (var context in contexts) {
@@ -86,6 +101,21 @@ namespace DemoTest {
                 context.hub.Dispose();
             }
         }
+        private static List<double> GetPercentiles(List<double> values, int count) {
+            var sorted = values.OrderBy(s => s).ToList();
+            if (sorted.Count > count) {
+                var percentiles = new List<double>();
+                for (int n = 0; n < count; n++) {
+                    var index = (int)((sorted.Count - 1) * ((n + 1) / (double)count));
+                    percentiles.Add(sorted[index]);
+                }
+                // ReSharper disable once CompareOfFloatsByEqualityOperator
+                if (sorted[sorted.Count - 1] != percentiles[percentiles.Count - 1])
+                    throw new InvalidOperationException("invalid last element");
+                return percentiles;
+            }
+            return sorted;
+        }
         
         private static async Task<BenchmarkContext> ConnectClient()
         {
@@ -98,8 +128,7 @@ namespace DemoTest {
                 message.GetParam(out long start, out _);
                 if (start == 0)
                     return;
-                benchmarkContext.accumulatedLatency += DateTime.Now.Ticks - start;
-                benchmarkContext.events++;
+                benchmarkContext.latencies.Add((DateTime.Now.Ticks - start) / 10000d);
             });
             // client.SendMessage("xxx", 111);
             
@@ -113,7 +142,6 @@ namespace DemoTest {
     {
         internal    WebSocketClientHub          hub;
         internal    FlioxClient                 client;
-        internal    long                        accumulatedLatency;
-        internal    int                         events;   
+        internal    List<double>                latencies = new List<double>(); // ms
     }
 }
