@@ -16,7 +16,7 @@ namespace System.Collections.Generic
         }
         
         public static HashSet<T> CreateHashSet<T>(int capacity, IEqualityComparer<T> comparer) {
-#if UNITY_5_3_OR_NEWER
+#if NET_4_6 || NET_2_0
             return new HashSet<T>(comparer);
 #else
             return new HashSet<T>(capacity, comparer);
