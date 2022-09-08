@@ -17,9 +17,9 @@ namespace DemoTest {
             
             var tickRate = 50;
             Console.WriteLine($"tickRate: {tickRate}");
-            Console.WriteLine();
-            await PubSubLatencyCCU(sender, tickRate, 1);
-            await PubSubLatencyCCU(sender, tickRate, 1);
+            Console.WriteLine("      latency [ms] percentiles [%]    50    95    96    97    98    99   100");
+            await PubSubLatencyCCU(sender, tickRate, 2);
+            await PubSubLatencyCCU(sender, tickRate, 2);
             await PubSubLatencyCCU(sender, tickRate, 5);
             await PubSubLatencyCCU(sender, tickRate, 10);
             await PubSubLatencyCCU(sender, tickRate, 50);
@@ -54,7 +54,7 @@ namespace DemoTest {
             
             var connected = DateTime.Now.Ticks;
             
-            Console.Write($"{ccu,4} clients connected in {((connected - start) / 10000),4} ms.   latency ms percentiles [10% - 100%] ");
+            Console.Write($"{ccu,4} clients connected in {((connected - start) / 10000),4} ms  ");
             
             // warmup
             for (int n = 0; n < 20; n++) { 
@@ -73,18 +73,18 @@ namespace DemoTest {
             }
             await Task.Delay(100);
 
-            var diffs = new List<double>();
+            var latencies = new List<double>();
             foreach (var c in contexts) {
-                diffs.AddRange(c.latencies);
+                latencies.AddRange(c.latencies);
                 if (c.latencies.Count != tickRate)
                     throw new InvalidOperationException("missing events");
             }
             
             
             // var diffs = contexts.Select(c => c.accumulatedLatency / (10000d * c.events)).ToArray();
-            diffs = GetPercentiles(diffs, 10);
-            var diffsStr    = diffs.Select(d => $"{d,4:0.0}");
-            var diffStr     = string.Join(' ', diffsStr);
+            var p = GetPercentiles(latencies, 100);
+
+            var diffStr     = $"{p[50],5:0.0} {p[95],5:0.0} {p[96],5:0.0} {p[97],5:0.0} {p[98],5:0.0} {p[99],5:0.0} {p[100],5:0.0} ";
             Console.WriteLine(diffStr);
 
             var tasks = new List<Task>();
@@ -103,18 +103,17 @@ namespace DemoTest {
         }
         private static List<double> GetPercentiles(List<double> values, int count) {
             var sorted = values.OrderBy(s => s).ToList();
-            if (sorted.Count > count) {
-                var percentiles = new List<double>();
-                for (int n = 0; n < count; n++) {
-                    var index = (int)((sorted.Count - 1) * ((n + 1) / (double)count));
-                    percentiles.Add(sorted[index]);
-                }
-                // ReSharper disable once CompareOfFloatsByEqualityOperator
-                if (sorted[sorted.Count - 1] != percentiles[percentiles.Count - 1])
-                    throw new InvalidOperationException("invalid last element");
-                return percentiles;
+            if (sorted.Count < count) throw new InvalidOperationException("insufficient samples");
+            var percentiles = new List<double>();
+            percentiles.Add(0);
+            for (int n = 0; n < count; n++) {
+                var index = (int)((sorted.Count - 1) * ((n + 1) / (double)count));
+                percentiles.Add(sorted[index]);
             }
-            return sorted;
+            // ReSharper disable once CompareOfFloatsByEqualityOperator
+            if (sorted[sorted.Count - 1] != percentiles[count])
+                throw new InvalidOperationException("invalid last element");
+            return percentiles;
         }
         
         private static async Task<BenchmarkContext> ConnectClient()
