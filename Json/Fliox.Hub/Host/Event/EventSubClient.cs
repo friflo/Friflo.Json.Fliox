@@ -52,7 +52,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         
         private  readonly   bool                                background;
         internal readonly   Task                                triggerLoop;
-        private  readonly   DataChannelWriter<TriggerType>      triggerWriter;
+        private  readonly   IDataChannelWriter<TriggerType>     triggerWriter;
 
         internal            int                                 Seq                 => eventCounter;
         /// <summary> number of events stored for a client not yet acknowledged by the client </summary>
@@ -79,9 +79,9 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             if (!this.background)
                 return;
             // --- use trigger channel and loop
-            var channel         = DataChannel<TriggerType>.CreateUnbounded(true, true);
-            triggerWriter       = channel.writer;
-            var triggerReader   = channel.reader;
+            var channel         = DataChannelSlim<TriggerType>.CreateUnbounded(true, true);
+            triggerWriter       = channel.Writer;
+            var triggerReader   = channel.Reader;
             triggerLoop         = TriggerLoop(triggerReader);
         }
         
@@ -200,7 +200,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         }
         
         // ---------------------------- trigger channel and queue ----------------------------
-        private Task TriggerLoop(DataChannelReader<TriggerType> triggerReader) {
+        private Task TriggerLoop(IDataChannelReader<TriggerType> triggerReader) {
             var loopTask = Task.Run(async () => {
                 try {
                     while (true) {

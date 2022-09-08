@@ -10,17 +10,15 @@ using System.Threading.Tasks;
 
 namespace Friflo.Json.Fliox.Hub.Threading
 {
-    /// Added <see cref="DataChannel{T}"/> as a stub to enable compiling in Unity as there are no <see cref="Channel"/>'s
-    /// available as of 2021-06-21.
-    public sealed class DataChannel<T>
+    public sealed class DataChannel<T> : IDataChannel<T>
     {
-        public  readonly    DataChannelReader<T>    reader; 
-        public  readonly    DataChannelWriter<T>    writer; 
+        public   IDataChannelReader<T>   Reader { get; } 
+        public   IDataChannelWriter<T>   Writer { get; }
      // private readonly Channel<T>                 channel;
 
         private DataChannel(Channel<T, T> channel) {
-            reader = new DataChannelReader<T>(channel.Reader);
-            writer = new DataChannelWriter<T>(channel.Writer);
+            Reader = new DataChannelReader<T>(channel.Reader);
+            Writer = new DataChannelWriter<T>(channel.Writer);
         }
         
         public static DataChannel<T> CreateUnbounded(bool singleReader, bool singleWriter) {
@@ -34,7 +32,7 @@ namespace Friflo.Json.Fliox.Hub.Threading
         }
     }
     
-    public sealed class DataChannelReader<T> {
+    public sealed class DataChannelReader<T> : IDataChannelReader<T> {
         private readonly ChannelReader<T> reader;
         
         internal DataChannelReader(ChannelReader<T> reader) {
@@ -46,7 +44,7 @@ namespace Friflo.Json.Fliox.Hub.Threading
         }
     }
     
-    public sealed class DataChannelWriter<T> {
+    public sealed class DataChannelWriter<T> : IDataChannelWriter<T> {
         private readonly ChannelWriter<T> writer;
         
         internal DataChannelWriter(ChannelWriter<T> writer) {
@@ -62,4 +60,5 @@ namespace Friflo.Json.Fliox.Hub.Threading
         }
     }
 }
+
 #endif

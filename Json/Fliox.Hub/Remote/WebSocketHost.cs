@@ -22,7 +22,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         /// Only set to true for testing. It avoids an early out at <see cref="EventSubClient.SendEvents"/> 
         private  readonly   bool                                    fakeOpenClosedSocket;
 
-        private  readonly   DataChannelWriter<ArraySegment<byte>>   sendWriter;
+        private  readonly   IDataChannelWriter<ArraySegment<byte>>  sendWriter;
         private  readonly   Task                                    sendLoop;
         private  readonly   Pool                                    pool;
         private  readonly   SharedCache                             sharedCache;
@@ -40,9 +40,9 @@ namespace Friflo.Json.Fliox.Hub.Remote
             this.remoteEndPoint         = remoteEndPoint;
             this.fakeOpenClosedSocket   = fakeOpenClosedSocket;
             
-            var channel         = DataChannel<ArraySegment<byte>>.CreateUnbounded(true, false);
-            sendWriter          = channel.writer;
-            var sendReader      = channel.reader;
+            var channel         = DataChannelSlim<ArraySegment<byte>>.CreateUnbounded(true, false);
+            sendWriter          = channel.Writer;
+            var sendReader      = channel.Reader;
             sendLoop            = SendLoop(sendReader);
         }
         
@@ -70,7 +70,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         // Send queue (sendWriter / sendReader) is required  to prevent having more than one WebSocket.SendAsync() call outstanding.
         // Otherwise:
         // System.InvalidOperationException: There is already one outstanding 'SendAsync' call for this WebSocket instance. ReceiveAsync and SendAsync can be called simultaneously, but at most one outstanding operation for each of them is allowed at the same time. 
-        private Task SendLoop(DataChannelReader<ArraySegment<byte>> sendReader) {
+        private Task SendLoop(IDataChannelReader<ArraySegment<byte>> sendReader) {
             var loopTask = Task.Run(async () => {
                 try {
                     while (true) {

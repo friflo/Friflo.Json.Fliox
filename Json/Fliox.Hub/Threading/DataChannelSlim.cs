@@ -5,40 +5,37 @@
 // e.g.
 // [c# - awaitable Task based queue - Stack Overflow] https://stackoverflow.com/questions/7863573/awaitable-task-based-queue
 
-#if UNITY_5_3_OR_NEWER
-
 using System;
 using System.Collections.Concurrent;
 using System.Threading;
 using System.Threading.Tasks;
 
-// Note!!    Implementation untested
 namespace Friflo.Json.Fliox.Hub.Threading
 {
-    /// Added <see cref="DataChannel{T}"/> as a stub to enable compiling in Unity as there are no <see cref="Channel"/>'s
+    /// Added <see cref="DataChannelSlim{T}"/> as a stub to enable compiling in Unity as there are no <see cref="System.Threading.Channels.Channel"/>'s
     /// available as of 2021-06-21.
-    public sealed class DataChannel<T>
+    public sealed class DataChannelSlim<T> : IDataChannel<T>
     {
-        public   readonly DataChannelReader<T>   reader; 
-        public   readonly DataChannelWriter<T>   writer;
+        public   IDataChannelReader<T>   Reader { get; } 
+        public   IDataChannelWriter<T>   Writer { get; }
         
         internal readonly SemaphoreSlim          itemsAvailable = new SemaphoreSlim(0);
         internal readonly ConcurrentQueue<T>     queue          = new ConcurrentQueue<T>();
 
-        private DataChannel() {
-            reader = new DataChannelReader<T>(this);
-            writer = new DataChannelWriter<T>(this);
+        private DataChannelSlim() {
+            Reader = new DataChannelReaderSlim<T>(this);
+            Writer = new DataChannelWriterSlim<T>(this);
         }
         
-        public static DataChannel<T> CreateUnbounded(bool singleReader, bool singleWriter) {
-            return new DataChannel<T>();
+        public static DataChannelSlim<T> CreateUnbounded(bool singleReader, bool singleWriter) {
+            return new DataChannelSlim<T>();
         }
     }
     
-    public class DataChannelReader<T> {
-        private readonly DataChannel<T> channel;
+    public class DataChannelReaderSlim<T> : IDataChannelReader<T> {
+        private readonly DataChannelSlim<T> channel;
         
-        internal DataChannelReader(DataChannel<T> channel) {
+        internal DataChannelReaderSlim(DataChannelSlim<T> channel) {
             this.channel = channel;
         }
         
@@ -50,10 +47,10 @@ namespace Friflo.Json.Fliox.Hub.Threading
         }
     }
     
-    public class DataChannelWriter<T> {
-        private readonly DataChannel<T> channel;
+    public class DataChannelWriterSlim<T> : IDataChannelWriter<T> {
+        private readonly DataChannelSlim<T> channel;
         
-        internal DataChannelWriter(DataChannel<T> channel) {
+        internal DataChannelWriterSlim(DataChannelSlim<T> channel) {
             this.channel = channel;
         }
         
@@ -69,4 +66,3 @@ namespace Friflo.Json.Fliox.Hub.Threading
     }
 }
 
-#endif
