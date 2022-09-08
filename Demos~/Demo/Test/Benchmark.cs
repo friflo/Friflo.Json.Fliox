@@ -41,6 +41,8 @@ namespace DemoTest {
             //await PubSubLatencyCCU(sender, 10000);
         }
         
+        const string payload_100 = "_123456789_123456789_123456789_123456789_123456789_123456789_123456789_123456789_123456789_123456789";
+        
         private static async Task PubSubLatencyCCU(FlioxClient sender, int tickRate, int frames, int ccu)
         {
             System.Globalization.CultureInfo customCulture = (System.Globalization.CultureInfo)System.Threading.Thread.CurrentThread.CurrentCulture.Clone();
@@ -61,7 +63,7 @@ namespace DemoTest {
             
             // warmup
             for (int n = 0; n < 20; n++) { 
-                sender.SendMessage("test", 0);
+                sender.SendMessage<TestMessage>("test", null);
                 await sender.SyncTasks();
                 await Task.Delay(10);
             }
@@ -69,8 +71,10 @@ namespace DemoTest {
             int delayed = 0;
             
             start = DateTime.Now.Ticks;
+            var payload = payload_100;
             for (int n = 1; n <= frames; n++) {
-                sender.SendMessage("test", DateTime.Now.Ticks);   // message is published to all clients
+                var testMessage = new TestMessage { start = DateTime.Now.Ticks, payload = payload};
+                sender.SendMessage("test", testMessage);   // message is published to all clients
                 sender.SyncTasks();
                 var delay = n * deltaTime - (DateTime.Now.Ticks - start) / 10000;
                 if (delay > 0) {
@@ -84,6 +88,7 @@ namespace DemoTest {
             await Task.Delay(100);
 
             var latencies = new List<double>();
+            
             foreach (var c in contexts) {
                 latencies.AddRange(c.latencies);
                 if (c.latencies.Count != frames)
@@ -134,10 +139,10 @@ namespace DemoTest {
             var benchmarkContext    =  new BenchmarkContext { hub = hub, client = client };
             
             client.SubscribeMessage("*", (message, context) => {
-                message.GetParam(out long start, out _);
-                if (start == 0)
+                message.GetParam(out TestMessage test, out _);
+                if (test == null)
                     return;
-                benchmarkContext.latencies.Add((DateTime.Now.Ticks - start) / 10000d);
+                benchmarkContext.latencies.Add((DateTime.Now.Ticks - test.start) / 10000d);
             });
             // client.SendMessage("xxx", 111);
             
@@ -149,8 +154,13 @@ namespace DemoTest {
     
     internal class BenchmarkContext
     {
-        internal    WebSocketClientHub          hub;
-        internal    FlioxClient                 client;
-        internal    List<double>                latencies = new List<double>(); // ms
+        internal            WebSocketClientHub  hub;
+        internal            FlioxClient         client;
+        internal readonly   List<double>        latencies = new List<double>(); // ms
+    }
+    
+    internal class TestMessage {
+        public  long    start;
+        public  string  payload;
     }
 }
