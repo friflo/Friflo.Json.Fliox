@@ -8,7 +8,7 @@ namespace System.Collections.Generic
     public static class Helper
     {
         public static HashSet<T> CreateHashSet<T>(int capacity) {
-#if UNITY_5_3_OR_NEWER
+#if NET_4_6 || NET_2_0
             return new HashSet<T>();
 #else
             return new HashSet<T>(capacity);
@@ -49,7 +49,7 @@ namespace System.Text
     }
 }
 
-#if UNITY_5_3_OR_NEWER
+#if NET_4_6 || NET_2_0
 
 namespace System.Collections.Generic
 {
