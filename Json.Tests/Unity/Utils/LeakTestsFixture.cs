@@ -9,7 +9,8 @@ using NUnit.Framework;
 using NUnit.Framework.Interfaces;
 using static NUnit.Framework.Assert;
 
-#if UNITY_2020_1_OR_NEWER
+#if TEST_ECS
+
 using Unity.Collections;
 using Unity.Collections.LowLevel.Unsafe;
 

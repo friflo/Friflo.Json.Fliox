@@ -1,4 +1,4 @@
-#if UNITY_2020_1_OR_NEWER
+#if TEST_ECS
 
 #if !UNITY_DOTSRUNTIME
 #endif

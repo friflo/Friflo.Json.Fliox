@@ -1,4 +1,4 @@
-﻿#if UNITY_2020_1_OR_NEWER
+﻿#if TEST_ECS
 
 using Friflo.Json.Tests.Unity.Utils;
 using NUnit.Framework;
