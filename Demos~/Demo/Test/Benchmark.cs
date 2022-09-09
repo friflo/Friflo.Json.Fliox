@@ -18,8 +18,8 @@ namespace DemoTest {
             var tickRate = 50;
             var frames   = 200;
             Console.WriteLine($"tickRate: {tickRate} frames: {frames}");
-            Console.WriteLine("                              latency [ms] percentiles [%]");
-            Console.WriteLine("clients connected    average   50    90    95    96    97    98    99   100  duration delayed");
+            Console.WriteLine("                                latency [ms] percentiles [%]");
+            Console.WriteLine("clients connected    average    50    90    95    96    97    98    99   100  duration delayed");
             await PubSubLatencyCCU(sender, tickRate, frames, 2);
             await PubSubLatencyCCU(sender, tickRate, frames, 2);
             await PubSubLatencyCCU(sender, tickRate, frames, 5);
@@ -99,7 +99,7 @@ namespace DemoTest {
             var p   = GetPercentiles(latencies, 100);
             var avg = latencies.Average();
 
-            var diffStr     = $"{avg,5:0.0}  {p[50],5:0.0} {p[90],5:0.0} {p[95],5:0.0} {p[96],5:0.0} {p[97],5:0.0} {p[98],5:0.0} {p[99],5:0.0} {p[100],5:0.0} ";
+            var diffStr     = $" {avg,5:0.0}  {p[50],5:0.0} {p[90],5:0.0} {p[95],5:0.0} {p[96],5:0.0} {p[97],5:0.0} {p[98],5:0.0} {p[99],5:0.0} {p[100],5:0.0} ";
             Console.WriteLine($"{diffStr}    {duration,5}   {delayed,5}");
 
             var tasks = new List<Task>();
