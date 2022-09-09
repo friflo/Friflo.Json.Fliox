@@ -102,9 +102,10 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             lock (unsentEventsQueue) {
                 ev.seq = ++eventCounter;
                 unsentEventsQueue.AddLast(ev);
-                if (background) {
-                    EnqueueTrigger(TriggerType.Event);
-                }
+            }
+            // Signal new event. Need to be signaled after adding event to queue. No reason to execute this in the lock. 
+            if (background) {
+                EnqueueTrigger(TriggerType.Event);
             }
         }
         
