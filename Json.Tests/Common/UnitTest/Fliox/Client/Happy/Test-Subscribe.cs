@@ -435,6 +435,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             }
         }
         
+        [Test]
+        public static void TestModifySubscriptionInHandler() { SingleThreadSynchronizationContext.Run(AssertModifySubscriptionInHandler); }
+        
         /// <summary>
         /// Support changing subscriptions in subscription handlers.
         /// <br/>
@@ -443,8 +446,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         /// <see cref="Friflo.Json.Fliox.Hub.Client.Event.MessageSubscriber"/> callbackHandlers and
         /// <see cref="Friflo.Json.Fliox.Hub.Client.Internal.ClientIntern.subscriptionsPrefix"/>
         /// </summary>
-        [Test]
-        public async Task TestModifySubscriptionInHandler() {
+        private static async Task AssertModifySubscriptionInHandler() {
             using (var _                = SharedEnv.Default) // for LeakTestsFixture
             using (var eventDispatcher  = new EventDispatcher(false))
             using (var database         = new MemoryDatabase(TestGlobals.DB))
