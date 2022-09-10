@@ -17,9 +17,9 @@ namespace DemoTest {
             
             var tickRate = 50;
             var frames   = 200;
-            Console.WriteLine($"tickRate: {tickRate} frames: {frames}");
-            Console.WriteLine("                                latency [ms] percentiles [%]");
-            Console.WriteLine("clients connected    average    50    90    95    96    97    98    99   100  duration delayed");
+
+            Console.WriteLine("                                          latency [ms] percentiles [%]");
+            Console.WriteLine("clients rate frames connected  average    50    90    95    96    97    98    99   100  duration delayed");
             await PubSubLatencyCCU(sender, tickRate, frames, 2);
             await PubSubLatencyCCU(sender, tickRate, frames, 2);
             await PubSubLatencyCCU(sender, tickRate, frames, 5);
@@ -46,8 +46,8 @@ namespace DemoTest {
         {
             System.Globalization.CultureInfo customCulture = (System.Globalization.CultureInfo)System.Threading.Thread.CurrentThread.CurrentCulture.Clone();
             customCulture.NumberFormat.NumberDecimalSeparator = ".";
-
             System.Threading.Thread.CurrentThread.CurrentCulture = customCulture;
+            Console.Write($"{ccu,7} {tickRate,4} {frames,6} ");
             var start = DateTime.Now.Ticks;
             var connectTasks = new List<Task<BenchmarkContext>>();
             for (int n = 0; n < ccu; n++) {
@@ -58,7 +58,7 @@ namespace DemoTest {
             
             var connected = DateTime.Now.Ticks;
             
-            Console.Write($"{ccu,7} {((connected - start) / 10000),6} ms    ");
+            Console.Write($"{(connected - start) / 10000,6} ms  ");
             
             // warmup
             for (int n = 0; n < 20; n++) { 
