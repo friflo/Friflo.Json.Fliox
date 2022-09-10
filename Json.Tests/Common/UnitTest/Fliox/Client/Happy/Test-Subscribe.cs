@@ -440,8 +440,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         /// <br/>
         /// The handlers are stored in collections and are iterated. These collections are copied to temporary collections to avoid:
         /// InvalidOperationException : Collection was modified; enumeration operation may not execute.
-        /// <see cref="Friflo.Json.Fliox.Hub.Client.Event.MessageSubscriber.callbackHandlers"/> and
-        /// <see cref="Friflo.Json.Fliox.Hub.Client.Internal.ClientIntern.subscriptionsPrefix"/> and
+        /// <see cref="Friflo.Json.Fliox.Hub.Client.Event.MessageSubscriber"/> callbackHandlers and
+        /// <see cref="Friflo.Json.Fliox.Hub.Client.Internal.ClientIntern.subscriptionsPrefix"/>
         /// </summary>
         [Test]
         public async Task TestModifySubscriptionInHandler() {
