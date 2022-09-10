@@ -434,6 +434,35 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 }
             }
         }
+        
+        // [Test]
+        public async Task TestModifySubscriptionInHandler() {
+            using (var _                = SharedEnv.Default) // for LeakTestsFixture
+            using (var eventDispatcher  = new EventDispatcher(false))
+            using (var database         = new MemoryDatabase(TestGlobals.DB))
+            using (var hub              = new FlioxHub(database, TestGlobals.Shared))
+            using (var store            = new PocStore(hub) { UserId = "test-modify-handler" }) {
+                hub.EventDispatcher = eventDispatcher;
+                bool run = true;
+                store.SubscribeMessage("msg-1", (message, context) => {
+                    store.SubscribeMessage("msg-1", (m, c) => { });
+                });
+                store.SubscribeMessage("finish", (message, context) => {
+                    run = false;
+                });
+                await store.SyncTasks();
+                
+                store.SendMessage("msg-1", "hello");
+                await store.SyncTasks();
+                
+                store.SendMessage("finish", "");
+                await store.SyncTasks();
+
+                while (run) {
+                    await Task.Delay(1); // release thread to process message event handler
+                }
+            }
+        }
     }
 
 }
