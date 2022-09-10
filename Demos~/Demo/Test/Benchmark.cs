@@ -18,8 +18,9 @@ namespace DemoTest {
             var tickRate = 50;
             var frames   = 200;
 
-            Console.WriteLine("                                          latency [ms] percentiles [%]");
-            Console.WriteLine("clients rate frames connected  average    50    90    95    96    97    98    99   100  duration delayed");
+            Console.WriteLine("            Hz               ms       ms     latency ms percentiles                              ms");
+            Console.WriteLine("clients   rate frames connected  average     50    90    95    96    97    98    99   100  duration delayed");
+            
             await PubSubLatencyCCU(sender, tickRate, frames, 2);
             await PubSubLatencyCCU(sender, tickRate, frames, 2);
             await PubSubLatencyCCU(sender, tickRate, frames, 5);
@@ -34,10 +35,13 @@ namespace DemoTest {
             Console.WriteLine();
             await PubSubLatencyCCU(sender, tickRate, frames, 1000);
             await PubSubLatencyCCU(sender, tickRate, frames, 2000);
-            await PubSubLatencyCCU(sender, tickRate, frames, 3000);
+            // await PubSubLatencyCCU(sender, tickRate, frames, 3000);
             // await PubSubLatencyCCU(sender, tickRate, 4000);
             // await PubSubLatencyCCU(sender, 5000);
-            //await PubSubLatencyCCU(sender, 10000);
+            // await PubSubLatencyCCU(sender, 10000);
+            Console.WriteLine();
+            await PubSubLatencyCCU(sender, 10000, 10000, 2);
+            await PubSubLatencyCCU(sender, 20000, 20000, 2);
         }
         
         const string payload_100 = "_123456789_123456789_123456789_123456789_123456789_123456789_123456789_123456789_123456789_123456789";
@@ -47,18 +51,19 @@ namespace DemoTest {
             System.Globalization.CultureInfo customCulture = (System.Globalization.CultureInfo)System.Threading.Thread.CurrentThread.CurrentCulture.Clone();
             customCulture.NumberFormat.NumberDecimalSeparator = ".";
             System.Threading.Thread.CurrentThread.CurrentCulture = customCulture;
-            Console.Write($"{ccu,7} {tickRate,4} {frames,6} ");
+            Console.Write($"{ccu,7} {tickRate,6} {frames,6} ");
+            
             var start = DateTime.Now.Ticks;
             var connectTasks = new List<Task<BenchmarkContext>>();
             for (int n = 0; n < ccu; n++) {
-                var client = ConnectClient();
+                var client = ConnectClient(frames);
                 connectTasks.Add(client);
             }
             var contexts = await Task.WhenAll(connectTasks);
             
             var connected = DateTime.Now.Ticks;
             
-            Console.Write($"{(connected - start) / 10000,6} ms  ");
+            Console.Write($"   {(connected - start) / 10000,6}  ");
             
             // warmup
             for (int n = 0; n < 20; n++) { 
@@ -66,7 +71,7 @@ namespace DemoTest {
                 await sender.SyncTasks();
                 await Task.Delay(10);
             }
-            var deltaTime = 1000 / tickRate;
+            var deltaTime = 1000d / tickRate;
             int delayed = 0;
             
             start = DateTime.Now.Ticks;
@@ -75,7 +80,7 @@ namespace DemoTest {
                 var testMessage = new TestMessage { start = DateTime.Now.Ticks, payload = payload};
                 sender.SendMessage("test", testMessage);   // message is published to all clients
                 sender.SyncTasks();
-                var delay = n * deltaTime - (DateTime.Now.Ticks - start) / 10000;
+                var delay = n * deltaTime - (DateTime.Now.Ticks - start) / 10000d;
                 if (delay > 0) {
                     await Task.Delay((int)delay);
                 } else {
@@ -84,7 +89,8 @@ namespace DemoTest {
             }
             var duration = (DateTime.Now.Ticks - start) / 10000;
             
-            await Task.Delay(100);
+            var receiveAllTasks = contexts.Select(bc => bc.tcs.Task);
+            await Task.WhenAll(receiveAllTasks);
 
             var latencies = new List<double>();
             
@@ -99,7 +105,7 @@ namespace DemoTest {
             var p   = GetPercentiles(latencies, 100);
             var avg = latencies.Average();
 
-            var diffStr     = $" {avg,5:0.0}  {p[50],5:0.0} {p[90],5:0.0} {p[95],5:0.0} {p[96],5:0.0} {p[97],5:0.0} {p[98],5:0.0} {p[99],5:0.0} {p[100],5:0.0} ";
+            var diffStr     = $"  {avg,5:0.0}  {p[50],5:0.0} {p[90],5:0.0} {p[95],5:0.0} {p[96],5:0.0} {p[97],5:0.0} {p[98],5:0.0} {p[99],5:0.0} {p[100],5:0.0} ";
             Console.WriteLine($"{diffStr}    {duration,5}   {delayed,5}");
 
             var tasks = new List<Task>();
@@ -131,32 +137,36 @@ namespace DemoTest {
             return percentiles;
         }
         
-        private static async Task<BenchmarkContext> ConnectClient()
+        private static async Task<BenchmarkContext> ConnectClient(int frames)
         {
-            var hub                 = new WebSocketClientHub("main_db", "ws://localhost:8010/fliox/");
-            var client              = new DemoClient(hub) { UserId = "admin", Token = "admin" };
-            
-            var benchmarkContext    =  new BenchmarkContext { hub = hub, client = client };
+            var hub     = new WebSocketClientHub("main_db", "ws://localhost:8010/fliox/");
+            var client  = new DemoClient(hub) { UserId = "admin", Token = "admin" };
+            var bc      =  new BenchmarkContext { hub = hub, client = client, frames = frames };
             
             client.SubscribeMessage("*", (message, context) => {
                 message.GetParam(out TestMessage test, out _);
                 if (test == null)
                     return;
-                benchmarkContext.latencies.Add((DateTime.Now.Ticks - test.start) / 10000d);
+                bc.latencies.Add((DateTime.Now.Ticks - test.start) / 10000d);
+                if (bc.latencies.Count == bc.frames) {
+                    bc.tcs.SetResult();
+                }
             });
             // client.SendMessage("xxx", 111);
             
             await client.SyncTasks();
             
-            return benchmarkContext;
+            return bc;
         }
     }
     
     internal class BenchmarkContext
     {
-        internal            WebSocketClientHub  hub;
-        internal            FlioxClient         client;
-        internal readonly   List<double>        latencies = new List<double>(); // ms
+        internal            WebSocketClientHub      hub;
+        internal            FlioxClient             client;
+        internal readonly   List<double>            latencies = new List<double>(); // ms
+        internal readonly   TaskCompletionSource    tcs = new TaskCompletionSource();
+        internal            int                     frames;
     }
     
     internal class TestMessage {
