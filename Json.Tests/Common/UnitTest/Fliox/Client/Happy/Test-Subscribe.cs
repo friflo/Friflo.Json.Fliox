@@ -444,15 +444,19 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             using (var store            = new PocStore(hub) { UserId = "test-modify-handler" }) {
                 hub.EventDispatcher = eventDispatcher;
                 bool run = true;
-                store.SubscribeMessage("msg-1", (message, context) => {
-                    store.SubscribeMessage("msg-1", (m, c) => { });
+                store.SubscribeMessage("msg", (message, context) => {
+                    store.UnsubscribeMessage("msg", null);
+                });
+                store.SubscribeMessage("prefix*", (message, context) => {
+                    store.SubscribeMessage("prefix2*", null);
                 });
                 store.SubscribeMessage("finish", (message, context) => {
                     run = false;
                 });
                 await store.SyncTasks();
                 
-                store.SendMessage("msg-1", "hello");
+                store.SendMessage("msg", "hello");
+                store.SendMessage("prefix", "hello");
                 await store.SyncTasks();
                 
                 store.SendMessage("finish", "");
