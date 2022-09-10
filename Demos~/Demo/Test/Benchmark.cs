@@ -18,8 +18,8 @@ namespace DemoTest {
             var tickRate = 50;
             var frames   = 200;
 
-            Console.WriteLine("            Hz               ms       ms     latency ms percentiles                              ms");
-            Console.WriteLine("clients   rate frames connected  average     50    90    95    96    97    98    99   100  duration delayed");
+            Console.WriteLine("            Hz               ms       ms     latency ms percentiles                              ms   ms/s  kb/s");
+            Console.WriteLine("clients   rate frames connected  average     50    90    95    96    97    98    99   100  duration   main alloc");
             
             await PubSubLatencyCCU(sender, tickRate, frames, 2);
             await PubSubLatencyCCU(sender, tickRate, frames, 2);
@@ -72,22 +72,28 @@ namespace DemoTest {
                 await Task.Delay(10);
             }
             var deltaTime = 1000d / tickRate;
-            int delayed = 0;
             
+            long    sendTicks   = 0;
+            long    bytes       = 0;
             start = DateTime.Now.Ticks;
             var payload = payload_100;
             for (int n = 1; n <= frames; n++) {
+                var msgStart    = DateTime.Now.Ticks;
+                var bytesStart  = GC.GetAllocatedBytesForCurrentThread();
                 var testMessage = new TestMessage { start = DateTime.Now.Ticks, payload = payload};
                 sender.SendMessage("test", testMessage);   // message is published to all clients
                 sender.SyncTasks();
+                sendTicks  += DateTime.Now.Ticks - msgStart;
+                bytes      += GC.GetAllocatedBytesForCurrentThread() - bytesStart;
+                
                 var delay = n * deltaTime - (DateTime.Now.Ticks - start) / 10000d;
                 if (delay > 0) {
                     await Task.Delay((int)delay);
-                } else {
-                    delayed++;
                 }
             }
             var duration = (DateTime.Now.Ticks - start) / 10000;
+            var sendDuration    = tickRate * sendTicks / (frames * 10000d);
+            var kiloBytesPerSec = tickRate * bytes     / (frames * 1000);
             
             var receiveAllTasks = contexts.Select(bc => bc.tcs.Task);
             await Task.WhenAll(receiveAllTasks);
@@ -106,7 +112,7 @@ namespace DemoTest {
             var avg = latencies.Average();
 
             var diffStr     = $"  {avg,5:0.0}  {p[50],5:0.0} {p[90],5:0.0} {p[95],5:0.0} {p[96],5:0.0} {p[97],5:0.0} {p[98],5:0.0} {p[99],5:0.0} {p[100],5:0.0} ";
-            Console.WriteLine($"{diffStr}    {duration,5}   {delayed,5}");
+            Console.WriteLine($"{diffStr}    {duration,5} {sendDuration,6:0.0} {kiloBytesPerSec,5}");
 
             var tasks = new List<Task>();
             foreach (var context in contexts) {
