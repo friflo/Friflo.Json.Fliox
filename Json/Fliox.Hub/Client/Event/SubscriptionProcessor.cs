@@ -25,6 +25,8 @@ namespace Friflo.Json.Fliox.Hub.Client
         internal readonly   List<Message>               messages        = new List<Message>();
         private             ObjectMapper                objectMapper;
         internal            int                         EventCount { get; private set ; }
+        private  readonly   List<MessageCallback>       tempCallbackHandlers    = new List<MessageCallback>();
+        private  readonly   List<MessageSubscriber>     tempSubscriptionsPrefix = new List<MessageSubscriber>();
         
         public   override   string                      ToString()  => $"EventCount: {EventCount}";
         
@@ -98,7 +100,9 @@ namespace Friflo.Json.Fliox.Hub.Client
                 }
                 var subsPrefix = client._intern.subscriptionsPrefix;
                 if (subsPrefix != null) {
-                    foreach (var sub in subsPrefix) {
+                    tempSubscriptionsPrefix.Clear();
+                    tempSubscriptionsPrefix.AddRange(subsPrefix);
+                    foreach (var sub in tempSubscriptionsPrefix) {
                         if (name.StartsWith(sub.name)) {
                             sub.InvokeCallbacks(message.invokeContext, eventContext);
                         }
@@ -170,7 +174,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             // callbacks require their own reader as store._intern.jsonMapper.reader cannot be used.
             // This jsonMapper is used in various threads caused by .ConfigureAwait(false) continuations
             // and ProcessEvent() can be called concurrently from the 'main' thread.
-            var invokeContext   = new InvokeContext(name, task.param, objectMapper.reader);
+            var invokeContext   = new InvokeContext(name, task.param, objectMapper.reader, tempCallbackHandlers);
             var message         = new Message(invokeContext);
             messages.Add(message);
         }

@@ -35,7 +35,11 @@ namespace Friflo.Json.Fliox.Hub.Client.Event
         }
         
         internal void InvokeCallbacks(in InvokeContext invokeContext, EventContext context) {
-            foreach (var callbackHandler in callbackHandlers) {
+            var tempHandlers = invokeContext.tempCallbackHandlers;
+            tempHandlers.Clear();
+            tempHandlers.AddRange(callbackHandlers);
+            
+            foreach (var callbackHandler in tempHandlers) {
                 try {
                     callbackHandler.InvokeCallback(invokeContext, context);
                 }
@@ -51,16 +55,18 @@ namespace Friflo.Json.Fliox.Hub.Client.Event
     
     internal readonly struct InvokeContext
     {
-        internal  readonly  string          name;
-        internal  readonly  JsonValue       param;
-        internal  readonly  ObjectReader    reader;
+        internal  readonly  string                  name;
+        internal  readonly  JsonValue               param;
+        internal  readonly  ObjectReader            reader;
+        internal  readonly  List<MessageCallback>   tempCallbackHandlers;
         
         public    override  string          ToString() => $"{name}(param: {param.AsString()})";
 
-        internal InvokeContext(string name, in JsonValue param, ObjectReader reader) {
-            this.name       = name;
-            this.param      = param;
-            this.reader     = reader;
+        internal InvokeContext(string name, in JsonValue param, ObjectReader reader, List<MessageCallback> tempCallbackHandlers) {
+            this.name                   = name;
+            this.param                  = param;
+            this.reader                 = reader;
+            this.tempCallbackHandlers   = tempCallbackHandlers; 
         }
     }
     
@@ -68,7 +74,12 @@ namespace Friflo.Json.Fliox.Hub.Client.Event
         internal readonly   string  name;
         private  readonly   object  handlerObject;
         
-        internal            bool    HasHandler (object handler) => handler == handlerObject;
+        internal            bool    HasHandler (object handler) {
+            if (handler == handlerObject)
+                return true;
+            return false;
+        }
+
         public   override   string  ToString()                  => name;
 
         internal abstract void InvokeCallback(in InvokeContext invokeContext, EventContext context);
