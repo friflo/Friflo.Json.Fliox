@@ -51,7 +51,7 @@ namespace Friflo.Json.Fliox.Hub
     
 #if UNITY_5_3_OR_NEWER
     // -------------------------------- HubLoggerUnity --------------------------------
-    internal sealed class HubLoggerUnity : IHubLogger
+    public sealed class HubLoggerUnity : IHubLogger
     {
         public void Log(HubLog hubLog, string message, Exception exception) {
             var fullMessage     = exception == null ? message : $"{message}, exception: {exception}";
