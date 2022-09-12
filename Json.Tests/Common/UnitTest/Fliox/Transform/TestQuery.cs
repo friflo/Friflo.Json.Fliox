@@ -35,7 +35,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
     public class Address
     {
         public          Street          street;
-        [Serialize(Name =              "city")]
+        [Serialize                    ("city")]
         public          string          cityName;
     }
     

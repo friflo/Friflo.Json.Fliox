@@ -13,16 +13,8 @@ namespace Friflo.Json.Fliox.Mapper.Utils
             foreach (var attr in attributes) {
                 if (attr.AttributeType != typeof(SerializeAttribute))
                     continue;
-                if (attr.NamedArguments == null)
-                    continue;
-                foreach (var args in attr.NamedArguments) {
-                    switch (args.MemberName) {
-                        case nameof(SerializeAttribute.Name):
-                            if (args.TypedValue.Value != null)
-                                name = args.TypedValue.Value as string;
-                            break;
-                    }
-                }
+                var arguments   = attr.ConstructorArguments;
+                name = arguments.Count < 1 ? null : (string)arguments[0].Value;
             }
         }
         

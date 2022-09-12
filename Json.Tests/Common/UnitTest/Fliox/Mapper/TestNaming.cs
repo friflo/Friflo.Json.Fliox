@@ -25,10 +25,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
             public int      ignoredProperty { get; set; }
 
             // custom member names
-            [Serialize(Name = "field")]
+            [Serialize       ("field")]
             public int         namedField;
             
-            [Serialize(Name = "property")]
+            [Serialize       ("property")]
             public int         namedProperty { get; set; }
         }
         

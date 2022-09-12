@@ -54,7 +54,7 @@ namespace Friflo.Json.Fliox.Schema.JSON
     {
         /// <summary>reference to 'main' type definition in <see cref="definitions"/> to<br/>
         /// enable schema urls without fragment suffix like: <c>#/definitions/SomeType</c> </summary>
-        [Serialize(Name =                                      "$ref")]
+        [Serialize                                            ("$ref")]
                     public      string                          rootRef;
 
         /// <summary>map of type <see cref="definitions"/> contained by the JSON Schema.</summary>
@@ -110,7 +110,7 @@ namespace Friflo.Json.Fliox.Schema.JSON
         /// <summary>true if <see cref="additionalProperties"/> are allowed</summary>
                 public  bool                            additionalProperties;
         /// <summary>all values that can be used for an enumeration type</summary>
-        [Serialize(Name =                              "enum")]
+        [Serialize                                    ("enum")]
                 public  List<string>                    enums;
         /// <summary>map of optional <see cref="descriptions"/> for <b>enum</b> values - <i>JSON Schema extension</i></summary>
                 public  Dictionary<string,string>       descriptions;
@@ -127,7 +127,7 @@ namespace Friflo.Json.Fliox.Schema.JSON
     /// </summary>
     public sealed class TypeRef {
         /// <summary>reference to a type definition</summary>
-        [Serialize (Name =            "$ref")]
+        [Serialize                    ("$ref")]
         [Required]  public  string      reference;
         //      public  string          type;   // not used - was used for nullable array elements
 
@@ -143,7 +143,7 @@ namespace Friflo.Json.Fliox.Schema.JSON
         /// or an array of these types used to declare <b>nullable</b> properties when using a basic JSON Schema type</summary>
                 public  JsonValue       type;           // SchemaType or SchemaType[]
         /// <summary>discriminant of a specific polymorphic type. Always an array with one string element</summary>
-        [Serialize(Name =              "enum")]
+        [Serialize                    ("enum")]
                 public  List<string>    discriminant;   // contains exactly one element for a specific type or a list is inside an abstract type
         /// <summary>if set the property is an array - it declares the type of its <see cref="items"/></summary>
                 public  FieldType       items;
@@ -158,7 +158,7 @@ namespace Friflo.Json.Fliox.Schema.JSON
         /// <summary>set to <b>'date-time'</b> if the property is a timestamp formatted as RFC 3339 + milliseconds</summary>
                 public  string          format;  // "date-time"
         /// <summary>reference to type definition used as property type</summary>
-        [Serialize(Name =              "$ref")]
+        [Serialize                    ("$ref")]
                 public  string          reference;
         /// <summary>if set the property is a map (Dictionary) using the key type <b>string</b> and the value type
         /// specified by <see cref="additionalProperties"/></summary>

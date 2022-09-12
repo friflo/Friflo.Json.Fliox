@@ -67,7 +67,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
         [Key]       public  string          id { get; set; }
         [Required]  public  string          name;
         [Relation(nameof(PocStore.employees))]
-        [Serialize (Name =                 "employees")]
+        [Serialize                        ("employees")]
                     public  List<string>    employeeList;
                         
         public override     string          ToString() => JsonSerializer.Serialize(this);

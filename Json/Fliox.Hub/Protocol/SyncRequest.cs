@@ -22,7 +22,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol
         /// In case using of using <see cref="DB.UserAuth.UserAuthenticator"/> the <see cref="userId"/> and <see cref="token"/>
         /// are use for user authentication.
         /// </summary>
-        [Serialize(Name = "user")]      public  JsonKey                 userId;
+        [Serialize("user")]             public  JsonKey                 userId;
                                         public  string                  token;
         /// <summary>
         /// <see cref="eventAck"/> is used to ensure (change) events are delivered reliable.
@@ -30,7 +30,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol
         /// it has subscribed to database changes by a <see cref="SubscribeChanges"/> task.
         /// Otherwise <see cref="eventAck"/> is null.
         /// </summary>
-        [Serialize(Name =                          "ack")]
+        [Serialize                                ("ack")]
                     public  int?                    eventAck;
         /// <summary>list of tasks either container operations or database commands / messages</summary>
         [Required]  public  List<SyncRequestTask>   tasks;

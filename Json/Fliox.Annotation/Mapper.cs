@@ -41,7 +41,8 @@ namespace Friflo.Json.Fliox
     /// <summary> Serialize the annotated private / internal member as a JSON field </summary>
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
     public sealed class SerializeAttribute : Attribute {
-        public string       Name        { get; set; }
+        public SerializeAttribute (string name = null) { Name = name; }
+        public string       Name        { get; }
     }
     
     /// <summary> Ignore the annotated public member from JSON serialization </summary>

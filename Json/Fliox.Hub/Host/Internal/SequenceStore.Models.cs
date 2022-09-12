@@ -11,7 +11,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Internal
     public sealed class Sequence {
         [Key]       public  string  container;
         [Required]  public  long    autoId;
-        [Serialize(Name =         "_etag")]
+        [Serialize               ("_etag")]
                     public  string  etag;
     }
     

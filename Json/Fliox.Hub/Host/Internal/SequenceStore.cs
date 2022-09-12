@@ -10,9 +10,9 @@ namespace Friflo.Json.Fliox.Hub.Host.Internal
     public sealed class SequenceStore : FlioxClient
     {
         // --- containers
-        [Serialize(Name =                                "_sequence")]  
+        [Serialize                                      ("_sequence")]  
         public readonly EntitySet <string, Sequence>       sequence;
-        [Serialize(Name =                                "_sequenceKeys")]  
+        [Serialize                                      ("_sequenceKeys")]  
         public readonly EntitySet <Guid,   SequenceKeys>   sequenceKeys;
         
         public  SequenceStore(FlioxHub hub) : base(hub) { }

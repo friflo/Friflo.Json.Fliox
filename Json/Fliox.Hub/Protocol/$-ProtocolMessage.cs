@@ -66,14 +66,14 @@ namespace Friflo.Json.Fliox.Hub.Protocol
         /// The host itself only echos the <see cref="reqId"/> to <see cref="ProtocolResponse.reqId"/> and
         /// does <b>not</b> utilize it internally.
         /// </summary>
-        [Serialize(Name =                  "req")]
+        [Serialize                        ("req")]
                         public  int?        reqId;
         /// <summary>As a user can access a <see cref="FlioxHub"/> by multiple clients the <see cref="clientId"/>
         /// enables identifying each client individually. <br/>
         /// The <see cref="clientId"/> is used for <see cref="SubscribeMessage"/> and <see cref="SubscribeChanges"/>
         /// to enable sending <see cref="SyncEvent"/>'s to the desired subscriber.
         /// </summary>
-        [Serialize(Name =                  "clt")]
+        [Serialize                        ("clt")]
                         public  JsonKey     clientId;
     }
     
@@ -89,7 +89,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol
     [PolymorphType(typeof(ErrorResponse),       "error")]
     public abstract class ProtocolResponse : ProtocolMessage {
         /// <summary>Set to the value of the corresponding <see cref="ProtocolRequest.reqId"/> of a <see cref="ProtocolRequest"/></summary>
-        [Serialize(Name =                  "req")]
+        [Serialize                        ("req")]
                         public  int?        reqId;
         /// <summary>
         /// Set to <see cref="ProtocolRequest.clientId"/> of a <see cref="SyncRequest"/> in case the given
@@ -103,7 +103,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol
         /// This enables tasks like <see cref="SubscribeMessage"/> or <see cref="SubscribeChanges"/> identifying the
         /// <see cref="SyncEvent"/> target. 
         /// </remarks>
-        [Serialize(Name =                  "clt")]
+        [Serialize                        ("clt")]
                         public  JsonKey     clientId;
     }
     
@@ -115,7 +115,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol
         /// The target client the event is sent to. This enables sharing a single (WebSocket) connection by multiple clients.
         /// In many scenarios this property is redundant as every client uses a WebSocket exclusively.
         /// </summary>
-        [Serialize(Name =                  "clt")]
+        [Serialize                        ("clt")]
         [Required]      public  JsonKey     dstClientId;
     }
     
