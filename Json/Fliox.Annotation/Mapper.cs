@@ -55,7 +55,8 @@ namespace Friflo.Json.Fliox
     /// <summary> Use a custom name for the annotated enum value for JSON serialization </summary>
     [AttributeUsage(AttributeTargets.Field)]  // enum fields
     public sealed class EnumValueAttribute : Attribute {
-        public string       Name        { get; set; }
+        public EnumValueAttribute (string name = null) { Name = name; }
+        public string       Name        { get; }
     }
 }
 
