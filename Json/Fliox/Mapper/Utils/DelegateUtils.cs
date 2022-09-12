@@ -21,6 +21,9 @@ namespace Friflo.Json.Fliox.Mapper.Utils
         }
         
         public static Expression<Action<TInstance, TProperty>> CreateSetLambda<TInstance, TProperty> (PropertyInfo propInfo) {
+#if ENABLE_IL2CPP
+            return (instance, value) => propInfo.SetValue(instance, value);
+#else
             var declaringType   = propInfo.DeclaringType;
             var propertyType    = propInfo.PropertyType;
             var instanceExp     = Expression.Parameter(typeof(TInstance), "instance");
@@ -31,10 +34,14 @@ namespace Friflo.Json.Fliox.Mapper.Utils
             var assignExpr      = Expression.Assign (propertyExp, convValueExp);
             var lambda          = Expression.Lambda<Action<TInstance, TProperty>>(assignExpr, instanceExp, valueExp);
             return lambda;
+#endif
         }
         
         public static Action<TInstance, TField> CreateFieldSetter<TInstance,TField>(FieldInfo field)
         {
+#if ENABLE_IL2CPP
+            return (instance, value) => field.SetValue(instance, value);
+#else
             string methodName = "set_" + field.Name;
             DynamicMethod setterMethod = new DynamicMethod(methodName, null, new Type[]{typeof(TInstance),typeof(TField)},true);
             ILGenerator gen = setterMethod.GetILGenerator();
@@ -45,6 +52,7 @@ namespace Friflo.Json.Fliox.Mapper.Utils
 
             gen.Emit(OpCodes.Ret);
             return (Action<TInstance, TField>)setterMethod.CreateDelegate(typeof(Action<TInstance, TField>));
+#endif
         }
     }
 }
