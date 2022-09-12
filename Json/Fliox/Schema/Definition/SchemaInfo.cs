@@ -98,36 +98,26 @@ namespace Friflo.Json.Fliox.Schema.Definition
             }
             foreach (var attr in attributes) {
                 if (attr.AttributeType == typeof(OpenAPIAttribute)) {
-                    var namedArguments = attr.NamedArguments;
-                    if (namedArguments != null) {
-                        return GetOpenAPIAttributes(namedArguments, servers);
-                    }
+                    var arguments   = attr.ConstructorArguments;
+                    return GetOpenAPIAttributes(arguments, servers);
                 }
 
             }
             return null;
         }
         
-        private static SchemaInfo GetOpenAPIAttributes(IList<CustomAttributeNamedArgument> namedArguments, List<SchemaInfoServer> servers) {
-            string  version         = null;
-            string  termsOfService  = null;
-            string  licenseName     = null;
-            string  licenseUrl      = null;
-            string  contactName     = null;
-            string  contactUrl      = null;
-            string  contactEmail    = null;
-            foreach (var args in  namedArguments) {
-                var value = (string)args.TypedValue.Value;
-                switch (args.MemberName) {
-                    case nameof(OpenAPIAttribute.Version):       version       = value;    break;
-                    case nameof(OpenAPIAttribute.TermsOfService):termsOfService= value;    break;
-                    case nameof(OpenAPIAttribute.LicenseName):   licenseName   = value;    break;
-                    case nameof(OpenAPIAttribute.LicenseUrl):    licenseUrl    = value;    break;
-                    case nameof(OpenAPIAttribute.ContactName):   contactName   = value;    break;
-                    case nameof(OpenAPIAttribute.ContactUrl):    contactUrl    = value;    break;
-                    case nameof(OpenAPIAttribute.ContactEmail):  contactEmail  = value;    break;
-                }
-            }
+        private static string GetArg (IList<CustomAttributeTypedArgument> arguments, int index) {
+            return arguments.Count < index + 1 ? null : (string)arguments[index].Value;
+        }
+        
+        private static SchemaInfo GetOpenAPIAttributes(IList<CustomAttributeTypedArgument> arguments, List<SchemaInfoServer> servers) {
+            string  version         = GetArg(arguments, 0);
+            string  termsOfService  = GetArg(arguments, 1);
+            string  licenseName     = GetArg(arguments, 2);
+            string  licenseUrl      = GetArg(arguments, 3);
+            string  contactName     = GetArg(arguments, 4);
+            string  contactUrl      = GetArg(arguments, 5);
+            string  contactEmail    = GetArg(arguments, 6);
             return new SchemaInfo(version, termsOfService, contactName, contactUrl, contactEmail, licenseName, licenseUrl, servers);
         }
         

@@ -13,15 +13,33 @@ namespace Friflo.Json.Fliox
     /// </summary>
     [AttributeUsage(AttributeTargets.Class)]
     public sealed class OpenAPIAttribute : Attribute {
-        public  string  Version        { get; set; }
-        public  string  TermsOfService { get; set; }
+        public OpenAPIAttribute (
+            string version          = null,
+            string termsOfService   = null,
+            string licenseName      = null,
+            string licenseUrl       = null,
+            string contactName      = null,
+            string contactUrl       = null,
+            string contactEmail     = null)
+        {
+            Version         = version;
+            TermsOfService  = termsOfService;
+            LicenseName     = licenseName;
+            LicenseUrl      = licenseUrl;
+            ContactName     = contactName;
+            ContactUrl      = contactUrl;
+            ContactEmail    = contactEmail;
+            
+        }
+        public  string  Version        { get; }
+        public  string  TermsOfService { get; }
         
-        public  string  LicenseName    { get; set; }
-        public  string  LicenseUrl     { get; set; }
+        public  string  LicenseName    { get; }
+        public  string  LicenseUrl     { get; }
         
-        public  string  ContactName    { get; set; }
-        public  string  ContactUrl     { get; set; }
-        public  string  ContactEmail   { get; set; }
+        public  string  ContactName    { get; }
+        public  string  ContactUrl     { get; }
+        public  string  ContactEmail   { get; }
     }
     
     /// <summary>
