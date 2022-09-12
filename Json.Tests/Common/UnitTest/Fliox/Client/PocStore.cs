@@ -47,7 +47,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
         public readonly TestCommands    test;
         
         // --- commands
-        [DatabaseCommand(Name =        "TestCommand")]
+        [DatabaseCommand              ("TestCommand")]
         public CommandTask<bool>        Test (TestCommand param)    => SendCommand<TestCommand, bool>("TestCommand",param);
         /// <summary> Create the given number of sync requests each with an upsert to articles </summary>
         public CommandTask<int>         MultiRequests(int? param)   => SendCommand<int>             ("MultiRequests");

@@ -36,6 +36,7 @@ namespace Friflo.Json.Fliox
     /// <summary> Set a custom command name for the attributed method </summary>
     [AttributeUsage(AttributeTargets.Method)]
     public sealed class DatabaseCommandAttribute : Attribute {
-        public string       Name        { get; set; }
+        public DatabaseCommandAttribute (string name) { Name = name; }
+        public string       Name        { get; }
     }
 }
