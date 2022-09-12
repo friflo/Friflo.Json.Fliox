@@ -11,6 +11,9 @@ namespace Friflo.Json.Fliox.Mapper.Utils
     public static class DelegateUtils
     {
         public static Expression<Func<TInstance, TProperty>> CreateGetLambda<TInstance, TProperty> (PropertyInfo propInfo) {
+#if ENABLE_IL2CPP
+            return instance => (TProperty)propInfo.GetValue(instance);
+#else
             var declaringType   = propInfo.DeclaringType;
             var instanceExp     = Expression.Parameter(typeof(TInstance), "instance");
             var srcInstanceExp  = Expression.Convert(instanceExp, declaringType);
@@ -18,6 +21,7 @@ namespace Friflo.Json.Fliox.Mapper.Utils
             var resultExp       = Expression.Convert(propertyExp, typeof(TProperty));
             var lambda          = Expression.Lambda<Func<TInstance, TProperty>>(resultExp, instanceExp);
             return lambda;
+#endif
         }
         
         public static Expression<Action<TInstance, TProperty>> CreateSetLambda<TInstance, TProperty> (PropertyInfo propInfo) {
