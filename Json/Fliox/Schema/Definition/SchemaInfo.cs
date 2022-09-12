@@ -87,13 +87,11 @@ namespace Friflo.Json.Fliox.Schema.Definition
             List<SchemaInfoServer>  servers     = null;
             foreach (var attr in attributes) {
                 if (attr.AttributeType == typeof(OpenAPIServerAttribute)) {
-                    var namedArguments = attr.NamedArguments;
-                    if (namedArguments != null) {
-                        var server = GetOpenAPIServerAttributes(namedArguments);
-                        if (servers == null)
-                            servers = new List<SchemaInfoServer>();
-                        servers.Add(server);
-                    }
+                    var arguments   = attr.ConstructorArguments;
+                    var server      = GetOpenAPIServerAttributes(arguments);
+                    if (servers == null)
+                        servers = new List<SchemaInfoServer>();
+                    servers.Add(server);
                 }
             }
             foreach (var attr in attributes) {
@@ -121,16 +119,9 @@ namespace Friflo.Json.Fliox.Schema.Definition
             return new SchemaInfo(version, termsOfService, contactName, contactUrl, contactEmail, licenseName, licenseUrl, servers);
         }
         
-        private static SchemaInfoServer GetOpenAPIServerAttributes(IList<CustomAttributeNamedArgument> namedArguments) {
-            string description  = null;
-            string url          = null;
-            foreach (var args in namedArguments) {
-                var value = (string)args.TypedValue.Value;
-                switch (args.MemberName) {
-                    case nameof(OpenAPIServerAttribute.Description): description = value;    break;
-                    case nameof(OpenAPIServerAttribute.Url):         url         = value;    break;
-                }
-            }
+        private static SchemaInfoServer GetOpenAPIServerAttributes(IList<CustomAttributeTypedArgument> arguments) {
+            string url          = GetArg(arguments, 0);
+            string description  = GetArg(arguments, 1);
             return new SchemaInfoServer(url, description);
         }
     }

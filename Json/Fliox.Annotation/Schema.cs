@@ -3,6 +3,7 @@
 
 using System;
 
+// ReSharper disable UnusedAutoPropertyAccessor.Global
 namespace Friflo.Json.Fliox
 {
     // --- schema generation Attributes
@@ -47,7 +48,14 @@ namespace Friflo.Json.Fliox
     /// </summary>
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
     public sealed class OpenAPIServerAttribute : Attribute {
-        public  string  Url             { get; set; }
-        public  string  Description     { get; set; }
+        public OpenAPIServerAttribute (
+            string url          = null,
+            string description  = null)
+        {
+            Url         = url;
+            Description = description;
+        }
+        public  string  Url             { get; }
+        public  string  Description     { get; }
     }
 }
