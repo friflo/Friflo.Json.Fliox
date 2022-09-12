@@ -101,7 +101,7 @@ namespace Friflo.Json.Fliox.Schema.Language
                 foreach (var polyType in unionType.types) {
                     var polyTypeDef = polyType.typeDef;
                     var indent   = Indent(max, polyTypeDef.Name);
-                    sb.AppendLF($"[PolymorphType(typeof({polyTypeDef.Name}),{indent} Discriminant = \"{polyType.discriminant}\")]");
+                    sb.AppendLF($"[PolymorphType(typeof({polyTypeDef.Name}),{indent} \"{polyType.discriminant}\")]");
                     imports.Add(polyTypeDef);
                 }
                 sb.AppendLF($"public abstract class {type.Name} {extendsStr}{{");

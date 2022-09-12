@@ -37,11 +37,11 @@ namespace Friflo.Json.Fliox.Hub.Protocol
     ///     <see cref="Client.FlioxClient"/> even for remote clients like <see cref="RemoteClientHub"/>.
     /// </para>
     /// </remarks>
-    [Discriminator("msg", Description = "message type")] 
-    [PolymorphType(typeof(SyncRequest),     Discriminant = "sync")]
-    [PolymorphType(typeof(SyncResponse),    Discriminant = "resp")]
-    [PolymorphType(typeof(ErrorResponse),   Discriminant = "error")]
-    [PolymorphType(typeof(EventMessage),    Discriminant = "ev")]
+    [Discriminator("msg", "message type")] 
+    [PolymorphType(typeof(SyncRequest),     "sync")]
+    [PolymorphType(typeof(SyncResponse),    "resp")]
+    [PolymorphType(typeof(ErrorResponse),   "error")]
+    [PolymorphType(typeof(EventMessage),    "ev")]
     public abstract class ProtocolMessage
     {
         internal abstract   MessageType     MessageType { get; }
@@ -50,8 +50,8 @@ namespace Friflo.Json.Fliox.Hub.Protocol
     }
     
     // ----------------------------------- request -----------------------------------
-    [Discriminator("msg", Description = "request type")] 
-    [PolymorphType(typeof(SyncRequest),         Discriminant = "sync")]
+    [Discriminator("msg", "request type")] 
+    [PolymorphType(typeof(SyncRequest),         "sync")]
     public abstract class ProtocolRequest   : ProtocolMessage {
         /// <summary>Used only for <see cref="RemoteClientHub"/> to enable:
         /// <para>
@@ -84,9 +84,9 @@ namespace Friflo.Json.Fliox.Hub.Protocol
     /// <remarks>
     /// A response is either a <see cref="SyncResponse"/> or a <see cref="ErrorResponse"/> in case of a general error.
     /// </remarks> 
-    [Discriminator("msg", Description = "response type")] 
-    [PolymorphType(typeof(SyncResponse),        Discriminant = "resp")]
-    [PolymorphType(typeof(ErrorResponse),       Discriminant = "error")]
+    [Discriminator("msg", "response type")] 
+    [PolymorphType(typeof(SyncResponse),        "resp")]
+    [PolymorphType(typeof(ErrorResponse),       "error")]
     public abstract class ProtocolResponse : ProtocolMessage {
         /// <summary>Set to the value of the corresponding <see cref="ProtocolRequest.reqId"/> of a <see cref="ProtocolRequest"/></summary>
         [Serialize(Name =                  "req")]
@@ -108,8 +108,8 @@ namespace Friflo.Json.Fliox.Hub.Protocol
     }
     
     // ----------------------------------- event -----------------------------------
-    [Discriminator("msg", Description = "event type")] 
-    [PolymorphType(typeof(EventMessage),   Discriminant = "ev")]
+    [Discriminator("msg", "event type")] 
+    [PolymorphType(typeof(EventMessage),   "ev")]
     public abstract class ProtocolEvent : ProtocolMessage {
         /// <summary>
         /// The target client the event is sent to. This enables sharing a single (WebSocket) connection by multiple clients.

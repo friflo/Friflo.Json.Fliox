@@ -72,17 +72,9 @@ namespace Friflo.Json.Fliox.Mapper.Map.Obj.Reflect
             List<PolyType>  typeList        = new List<PolyType>();
             foreach (var attr in type.CustomAttributes) {
                 if (attr.AttributeType == typeof(PolymorphTypeAttribute)) {
-                    string name = null;
-                    if (attr.NamedArguments != null) {
-                        foreach (var args in attr.NamedArguments) {
-                            if (args.MemberName == nameof(PolymorphTypeAttribute.Discriminant)) {
-                                if (args.TypedValue.Value != null)
-                                    name = (string) args.TypedValue.Value;
-                            }
-                        }
-                    }
-                    var arg = attr.ConstructorArguments;
-                    var polyType = (Type) arg[0].Value;
+                    var     arg         = attr.ConstructorArguments;
+                    var     polyType    = (Type) arg[0].Value;
+                    string  name        = arg.Count < 2 ? null : (string)arg[1].Value;
                     if (polyType == null)
                         throw new InvalidOperationException($"[PolymorphType(null)] type must not be null on: {type.Name}");
                     if (!type.IsAssignableFrom(polyType))
@@ -96,16 +88,9 @@ namespace Friflo.Json.Fliox.Mapper.Map.Obj.Reflect
                     if (!type.IsAssignableFrom(instanceType))
                         throw new InvalidOperationException($"[InstanceType({instanceType.Name})] type must extend annotated type: {type.Name}");
                 } else if (attr.AttributeType == typeof(DiscriminatorAttribute)) {
-                    if (attr.NamedArguments != null) {
-                        var arg = attr.ConstructorArguments;
-                        discriminator = (string) arg[0].Value;
-                        foreach (var args in attr.NamedArguments) {
-                            if (args.MemberName == nameof(DiscriminatorAttribute.Description)) {
-                                if (args.TypedValue.Value != null)
-                                    discDescription = (string) args.TypedValue.Value;
-                            }
-                        }
-                    }
+                    var arguments   = attr.ConstructorArguments;
+                    discriminator   = (string) arguments[0].Value;
+                    discDescription = arguments.Count < 2 ? null : (string) arguments[1].Value;
                 }
             }
             if (discriminator != null && typeList.Count == 0)

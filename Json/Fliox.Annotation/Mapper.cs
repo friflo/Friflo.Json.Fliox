@@ -19,15 +19,15 @@ namespace Friflo.Json.Fliox
     /// <summary> Declare the field / property <b>name</b> acting as discriminator for a polymorph class or interface</summary>
     [AttributeUsage(AttributeTargets.Interface | AttributeTargets.Class)]
     public sealed class DiscriminatorAttribute : Attribute {
-        public DiscriminatorAttribute (string discriminator) {}
-        public string     Description    { get; set; }
+        public DiscriminatorAttribute (string discriminator, string description = null) { Description = description; }
+        public string     Description { get; }
     }
 
     /// <summary> Register a specific type for a polymorphic class identified with the given <see cref="Discriminant"/> </summary>
     [AttributeUsage(AttributeTargets.Interface | AttributeTargets.Class, AllowMultiple = true)]
     public sealed class PolymorphTypeAttribute : Attribute {
-        public string     Discriminant    { get; set; }
-        public PolymorphTypeAttribute (Type instance) {}
+        public PolymorphTypeAttribute (Type instance, string discriminant = null) { Discriminant = discriminant; }
+        public string     Discriminant { get; }
     }
 
     /// <summary> Register a specific type for the attributed interface </summary>

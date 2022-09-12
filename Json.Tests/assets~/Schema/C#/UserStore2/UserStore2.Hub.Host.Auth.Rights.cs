@@ -9,12 +9,12 @@ using UserStore2.Hub.Protocol.Tasks;
 namespace UserStore2.Hub.Host.Auth.Rights {
 
 [Discriminator("type")]
-[PolymorphType(typeof(DbFullRight),           Discriminant = "dbFull")]
-[PolymorphType(typeof(DbTaskRight),           Discriminant = "dbTask")]
-[PolymorphType(typeof(DbContainerRight),      Discriminant = "dbContainer")]
-[PolymorphType(typeof(SendMessageRight),      Discriminant = "sendMessage")]
-[PolymorphType(typeof(SubscribeMessageRight), Discriminant = "subscribeMessage")]
-[PolymorphType(typeof(PredicateRight),        Discriminant = "predicate")]
+[PolymorphType(typeof(DbFullRight),           "dbFull")]
+[PolymorphType(typeof(DbTaskRight),           "dbTask")]
+[PolymorphType(typeof(DbContainerRight),      "dbContainer")]
+[PolymorphType(typeof(SendMessageRight),      "sendMessage")]
+[PolymorphType(typeof(SubscribeMessageRight), "subscribeMessage")]
+[PolymorphType(typeof(PredicateRight),        "predicate")]
 public abstract class TaskRight {
     string  description;
 }

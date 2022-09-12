@@ -16,20 +16,20 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     /// <b>container operations</b> like: create, read, upsert, delete, query, ...<br/>
     /// <b>database operation</b> like sending commands or messages
     /// </summary>
-    [Discriminator("task", Description = "task type")]
-    [PolymorphType(typeof(CreateEntities),          Discriminant = "create")]
-    [PolymorphType(typeof(UpsertEntities),          Discriminant = "upsert")]
-    [PolymorphType(typeof(ReadEntities),            Discriminant = "read")]
-    [PolymorphType(typeof(QueryEntities),           Discriminant = "query")]
-    [PolymorphType(typeof(AggregateEntities),       Discriminant = "aggregate")]
-    [PolymorphType(typeof(PatchEntities),           Discriminant = "patch")]
-    [PolymorphType(typeof(DeleteEntities),          Discriminant = "delete")]
-    [PolymorphType(typeof(SendMessage),             Discriminant = "message")]
-    [PolymorphType(typeof(SendCommand),             Discriminant = "command")]
-    [PolymorphType(typeof(CloseCursors),            Discriminant = "closeCursors")]
-    [PolymorphType(typeof(SubscribeChanges),        Discriminant = "subscribeChanges")]
-    [PolymorphType(typeof(SubscribeMessage),        Discriminant = "subscribeMessage")]
-    [PolymorphType(typeof(ReserveKeys),             Discriminant = "reserveKeys")]
+    [Discriminator("task", "task type")]
+    [PolymorphType(typeof(CreateEntities),          "create")]
+    [PolymorphType(typeof(UpsertEntities),          "upsert")]
+    [PolymorphType(typeof(ReadEntities),            "read")]
+    [PolymorphType(typeof(QueryEntities),           "query")]
+    [PolymorphType(typeof(AggregateEntities),       "aggregate")]
+    [PolymorphType(typeof(PatchEntities),           "patch")]
+    [PolymorphType(typeof(DeleteEntities),          "delete")]
+    [PolymorphType(typeof(SendMessage),             "message")]
+    [PolymorphType(typeof(SendCommand),             "command")]
+    [PolymorphType(typeof(CloseCursors),            "closeCursors")]
+    [PolymorphType(typeof(SubscribeChanges),        "subscribeChanges")]
+    [PolymorphType(typeof(SubscribeMessage),        "subscribeMessage")]
+    [PolymorphType(typeof(ReserveKeys),             "reserveKeys")]
     public abstract class SyncRequestTask
     {
                     public     JsonValue    info;

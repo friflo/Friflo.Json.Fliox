@@ -109,7 +109,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
         
         // ReSharper disable once UnusedMember.Local
-        private static void SetEntityKey (T entity, TKey key) {
+        public static void SetEntityKey (T entity, TKey key) {
             Static.EntityKeyTMap.SetKey(entity, key);
         }
         
