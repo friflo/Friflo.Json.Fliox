@@ -121,12 +121,11 @@ namespace Friflo.Json.Fliox.Hub.Remote.Internal
             return false;
         }
         
-        private static WebSocketMessageType GetMessageType(Opcode opcode)
-        {
-            return opcode switch {
-                Opcode.TextFrame    => WebSocketMessageType.Text,
-                Opcode.BinaryFrame  => WebSocketMessageType.Binary,
-                _                   => WebSocketMessageType.Close
+        private static WebSocketMessageType GetMessageType(Opcode opcode) {
+            switch(opcode) {
+                case Opcode.TextFrame:      return WebSocketMessageType.Text;
+                case Opcode.BinaryFrame:    return WebSocketMessageType.Binary;
+                default:                    return WebSocketMessageType.Close;
             };
         }
     }

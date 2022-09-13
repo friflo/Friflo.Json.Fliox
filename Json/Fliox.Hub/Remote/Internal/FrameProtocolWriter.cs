@@ -20,7 +20,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.Internal
             bool                    endOfMessage,
             CancellationToken       cancellationToken)
         {
-            int bufferPos;
+            int bufferPos = 0;
             if (endOfMessage) {
                 byte opcode         = (byte)(messageType == WebSocketMessageType.Text ? Opcode.TextFrame : Opcode.BinaryFrame);
                 byte frameFlags     = (byte)((byte)FrameFlags.Fin | opcode);
@@ -29,12 +29,15 @@ namespace Friflo.Json.Fliox.Hub.Remote.Internal
                 var count           = dataBuffer.Count;
                 // no masking in buffer[1] for now
                 if (count < 126) {
+                    bufferPos += 1;
                     buffer [1] = (byte)count;
                 } else if (count <= 0xffff) {
+                    bufferPos += 2;
                     buffer [1] = 126;
                     buffer [2] = (byte)(count & 0xff);
                     buffer [3] = (byte)(count >> 8);
                 } else {
+                    bufferPos += 8;
                     buffer [1] = 127;
                     buffer [2] = (byte) (count        & 0xff);
                     buffer [3] = (byte)((count >> 8)  & 0xff);
@@ -45,9 +48,9 @@ namespace Friflo.Json.Fliox.Hub.Remote.Internal
                     buffer [8] = 0;
                     buffer [9] = 0;
                 }
-            } else {
-                bufferPos = -1;
             }
+            
+
             await stream.WriteAsync(buffer, 0, bufferPos, cancellationToken);
         }
     }
