@@ -43,14 +43,14 @@ namespace Friflo.Json.Fliox.Hub.Remote.Internal
             throw new NotImplementedException();
         }
 
-        public override async Task<WebSocketReceiveResult> ReceiveAsync(ArraySegment<byte> buffer, CancellationToken cancellationToken) {
-            await reader.ReadFrame(stream, buffer, cancellationToken);
+        public override async Task<WebSocketReceiveResult> ReceiveAsync(ArraySegment<byte> dataBuffer, CancellationToken cancellationToken) {
+            await reader.ReadFrame(stream, dataBuffer, cancellationToken);
 
             return new WebSocketReceiveResult(reader.ByteCount, reader.MessageType, reader.EndOfMessage);
         }
 
-        public override async Task SendAsync(ArraySegment<byte> buffer, WebSocketMessageType messageType, bool endOfMessage, CancellationToken cancellationToken) {
-            await writer.WriteAsync(buffer, messageType, endOfMessage, cancellationToken);
+        public override async Task SendAsync(ArraySegment<byte> dataBuffer, WebSocketMessageType messageType, bool endOfMessage, CancellationToken cancellationToken) {
+            await writer.WriteAsync(stream, dataBuffer, messageType, endOfMessage, cancellationToken);
         }
         // ---------------------------------------------------------------------------------------------
 

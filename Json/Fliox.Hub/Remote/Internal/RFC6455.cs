@@ -2,39 +2,31 @@
 // See LICENSE file in the project root for full license information.
 
 
+using System;
+
 namespace Friflo.Json.Fliox.Hub.Remote.Internal
 {
-    internal enum Fin {
-        More    = 0x00,
-        Final   = 0x01
-    }
-
-    internal enum Rsv1 {
-        Unset   = 0x00,
-        Set     = 0x01
-    }
-
-    internal enum Rsv2 {
-        Unset   = 0x00,
-        Set     = 0x01
-    }
-
-    internal enum Rsv3 {
-        Unset   = 0x00,
-        Set     = 0x01
+    [Flags]
+    internal enum FrameFlags : byte {
+        Fin                 = 0x80,
+        Rsv1                = 0x40,
+        Rsv2                = 0x20,
+        Rsv3                = 0x10,
+        //
+        Opcode              = 0x0f,
     }
     
-    internal enum Opcode {
-        ContinuationFrame   = 0x0,
-        TextFrame           = 0x1,
-        BinaryFrame         = 0x2,
-        ConnectionClose     = 0x8,
-        Ping                = 0x9,
-        Pong                = 0xa
+    internal enum Opcode : byte {
+        ContinuationFrame   = 0x00,
+        TextFrame           = 0x01,
+        BinaryFrame         = 0x02,
+        ConnectionClose     = 0x08,
+        Ping                = 0x09,
+        Pong                = 0x0a
     }
 
-    internal enum Mask {
-        Unset   = 0x00,
-        Set     = 0x01
+    [Flags]
+    internal enum LenFlags {
+        Mask                = 0x80
     }
 }

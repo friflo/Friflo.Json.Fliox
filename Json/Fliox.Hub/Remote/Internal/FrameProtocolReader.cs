@@ -31,12 +31,9 @@ namespace Friflo.Json.Fliox.Hub.Remote.Internal
         private             long                    payloadPos;
         private             long                    payloadLen;
         // --- Base Framing Protocol headers
-        private             Fin                     fin;
-        private             Rsv1                    rsv1;
-        private             Rsv2                    rsv2;
-        private             Rsv3                    rsv3;
+        private             FrameFlags              flags;
         private             Opcode                  opcode;
-        private             Mask                    mask;
+        private             LenFlags                lenFlags;
         private readonly    byte[]                  maskingKey = new byte[4];
 
         internal async Task ReadFrame(NetworkStream stream, ArraySegment<byte> dataBuffer, CancellationToken cancellationToken)
@@ -71,17 +68,14 @@ namespace Friflo.Json.Fliox.Hub.Remote.Internal
                 var b =  buf[bufferPos++];
                 switch (parseState) {
                     case Parse.Opcode:
-                        fin             = (Fin)     ((b >> 7) & 0x1);
-                        rsv1            = (Rsv1)    ((b >> 6) & 0x1);
-                        rsv2            = (Rsv2)    ((b >> 5) & 0x1);
-                        rsv3            = (Rsv3)    ((b >> 4) & 0x1);
-                        opcode          = (Opcode)   (b       & 0xf);
+                        flags           = (FrameFlags)b;
+                        opcode          = (Opcode)   (b & 0xf);
                         payloadLenPos   = 0;
                         parseState      = Parse.PayloadLen;
                         break;
                     case Parse.PayloadLen:
                         if (payloadLenPos == 0) {
-                            mask            = (Mask)((b >> 7) & 0x1);
+                            lenFlags        = (LenFlags)b;
                             payloadLen      = b & 0x7f;
                             payloadLenPos   = 1;
                             if (payloadLen == 126) {
@@ -101,7 +95,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.Internal
                         }
                         maskingKeyPos   = 0;
                         payloadPos      = 0;
-                        parseState      = mask == Mask.Set ? Parse.Masking : Parse.Payload;
+                        parseState      = (lenFlags & LenFlags.Mask) != 0 ? Parse.Masking : Parse.Payload;
                         break;
                     case Parse.Masking:
                         maskingKey[maskingKeyPos++] = b;
@@ -118,7 +112,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.Internal
                         if (++payloadPos < payloadLen) {
                             break;
                         }
-                        EndOfMessage    = fin == Fin.Final;
+                        EndOfMessage    = (flags & FrameFlags.Fin) != 0;
                         MessageType     = GetMessageType(opcode);
                         parseState      = Parse.Opcode;
                         return true;
