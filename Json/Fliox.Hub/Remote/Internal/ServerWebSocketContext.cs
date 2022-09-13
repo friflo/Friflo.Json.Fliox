@@ -35,11 +35,15 @@ namespace Friflo.Json.Fliox.Hub.Remote.Internal
     internal static class ServerWebSocketExtensions
     {
         internal static async Task<ServerWebSocketContext> AcceptWebSocket(this HttpListenerContext context) {
-            var websocket = new ServerWebSocket();
-            var wsContext = new ServerWebSocketContext (websocket);
+            var websocket   = new ServerWebSocket();
+            var wsContext   = new ServerWebSocketContext (websocket);
             var response    = context.Response;
-            await HttpListenerExtensions.WriteResponseString(response, "text/plain", (int)HttpStatusCode.NotImplemented, "N/I", null).ConfigureAwait(false);
-            response.Close();
+            
+            var headers     = new Dictionary<string, string> {
+                { "Upgrade",        "websocket" },
+                { "Connection",     "Upgrade"}
+            };
+            await HttpListenerExtensions.WriteResponseString(response, null, 101, "", headers).ConfigureAwait(false);
             return wsContext;
         }
     }

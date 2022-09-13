@@ -6,11 +6,22 @@ using System.Net.WebSockets;
 using System.Threading;
 using System.Threading.Tasks;
 
-// ReSharper disable UnassignedGetOnlyAutoProperty
+// ReSharper disable FieldCanBeMadeReadOnly.Local
+// ReSharper disable ConvertToAutoProperty
 namespace Friflo.Json.Fliox.Hub.Remote.Internal
 {
     internal sealed class ServerWebSocket : WebSocket
     {
+        private             WebSocketCloseStatus?   closeStatus = null;
+        private             string                  closeStatusDescription = null;
+        private             WebSocketState          state;
+        private             string                  subProtocol = null;
+
+        public  override    WebSocketCloseStatus?   CloseStatus             => closeStatus;
+        public  override    string                  CloseStatusDescription  => closeStatusDescription;
+        public  override    WebSocketState          State                   => state;
+        public  override    string                  SubProtocol             => subProtocol;
+        
         public override void Abort() {
             throw new NotImplementedException();
         }
@@ -27,21 +38,18 @@ namespace Friflo.Json.Fliox.Hub.Remote.Internal
             throw new NotImplementedException();
         }
 
-        public override Task<WebSocketReceiveResult> ReceiveAsync(ArraySegment<byte> buffer, CancellationToken cancellationToken) {
+        public override async Task<WebSocketReceiveResult> ReceiveAsync(ArraySegment<byte> buffer, CancellationToken cancellationToken) {
+            await Task.Delay(100000);
             throw new NotImplementedException();
         }
 
-        public override Task SendAsync(ArraySegment<byte> buffer, WebSocketMessageType messageType, bool endOfMessage,
-            CancellationToken cancellationToken) {
+        public override Task SendAsync(ArraySegment<byte> buffer, WebSocketMessageType messageType, bool endOfMessage, CancellationToken cancellationToken) {
             throw new NotImplementedException();
         }
-
-        public override WebSocketCloseStatus?   CloseStatus             { get; }
-        public override string                  CloseStatusDescription  { get; }
-        public override WebSocketState          State                   { get; }
-        public override string                  SubProtocol             { get; }
-        
         // ---------------------------------------------------------------------------------------------
 
+        internal ServerWebSocket() {
+            state = WebSocketState.Open;
+        }
     }
 }
