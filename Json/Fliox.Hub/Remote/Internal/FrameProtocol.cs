@@ -30,7 +30,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.RFC6455
         private             Opcode                  opcode;
         private             Mask                    mask;
         private             long                    payloadLen;
-        private             int                     maskingKey;
+        private readonly    byte[]                  maskingKey = new byte[4];
         private             long                    payloadPos;
 
         internal async Task ReadFrame(NetworkStream stream, ArraySegment<byte> dataBuffer, CancellationToken cancellationToken) {
@@ -40,7 +40,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.RFC6455
                 if (!Process(count, dataBuffer)) {
                     continue;
                 }
-                var debugStr = Encoding.UTF8.GetString(buffer, 0, dataPos);
+                var debugStr = Encoding.UTF8.GetString(dataBuffer.Array, 0, dataPos);
                 EndOfMessage = true;
                 return;
             }
@@ -80,15 +80,14 @@ namespace Friflo.Json.Fliox.Hub.Remote.RFC6455
                             if (++payloadLenPos <= payloadLenBytes)
                                 break;
                         }
-                        maskingKey      = 0;
                         maskingKeyPos   = 0;
                         dataPos         = 0;
                         payloadPos      = 0;
                         parseState      = mask == Mask.Set ? Parse.Masking : Parse.Payload;
                         break;
                     case Parse.Masking:
-                        maskingKey  = (maskingKey << 8) | b;
-                        if (++maskingKeyPos < 4) {
+                        maskingKey[maskingKeyPos++] = b;
+                        if (maskingKeyPos < 4) {
                             break;
                         }
                         dataPos         = 0;
@@ -96,13 +95,17 @@ namespace Friflo.Json.Fliox.Hub.Remote.RFC6455
                         parseState      = Parse.Payload;
                         break;
                     case Parse.Payload:
-                        if (dataPos == 71) {
-                            int i = 1;
-                        }
-                        dataBuffer[dataPos++] = b;
+                        // if (dataPos == 71) { int debug = 1; }
+                        var j = dataPos % 4;
+                        dataBuffer[dataPos++] = (byte)(b ^ maskingKey[j]);
                         if (++payloadPos < payloadLen) {
                             break;
                         }
+                        MessageType = opcode switch {
+                            Opcode.TextFrame    => WebSocketMessageType.Text,
+                            Opcode.BinaryFrame  => WebSocketMessageType.Binary,
+                            _                   => WebSocketMessageType.Close
+                        };
                         parseState = Parse.Opcode;
                         return true;
                 }
