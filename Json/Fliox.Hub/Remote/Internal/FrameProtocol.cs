@@ -4,7 +4,6 @@
 using System;
 using System.Net.Sockets;
 using System.Net.WebSockets;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -15,41 +14,61 @@ namespace Friflo.Json.Fliox.Hub.Remote.RFC6455
         public              bool                    EndOfMessage    { get; private set; }
         public              int                     ByteCount       => dataPos;
         public              WebSocketMessageType    MessageType     { get; private set; }
-        
+        /// <summary> store the bytes read from the socket.
+        /// <see cref="bufferPos"/> is its read position and <see cref="bufferLen"/> the count of bytes read from socket</summary>
         private  readonly   byte[]                  buffer = new byte[4096];
+        private             int                     bufferPos;
+        private             int                     bufferLen;
+        /// <summary> general <see cref="parseState"/> and its sub states <see cref="payloadLenPos"/> and <see cref="maskingKeyPos"/> </summary>
         private             Parse                   parseState;
         private             int                     payloadLenBytes;
         private             int                     payloadLenPos;
         private             int                     maskingKeyPos;
-        private             int                     dataPos;
-        // --- Base Framing Protocol
+        /// <summary>write position of given <see cref="dataBuffer"/> </summary>
+        private             int                     dataPos;        // position in given dataBuffer
+        private             ArraySegment<byte>      dataBuffer;
+        /// <summary> <see cref="payloadPos"/> read position payload. Increments up to <see cref="payloadLen"/> </summary>
+        private             long                    payloadPos;
+        private             long                    payloadLen;
+        // --- Base Framing Protocol headers
         private             Fin                     fin;
         private             Rsv1                    rsv1;
         private             Rsv2                    rsv2;
         private             Rsv3                    rsv3;
         private             Opcode                  opcode;
         private             Mask                    mask;
-        private             long                    payloadLen;
         private readonly    byte[]                  maskingKey = new byte[4];
-        private             long                    payloadPos;
 
-        internal async Task ReadFrame(NetworkStream stream, ArraySegment<byte> dataBuffer, CancellationToken cancellationToken) {
-            EndOfMessage = false;
+        internal async Task ReadFrame(NetworkStream stream, ArraySegment<byte> dataBuffer, CancellationToken cancellationToken)
+        {
+            dataPos         = 0;
+            this.dataBuffer = dataBuffer;
             while (true) {
-                int count   = await stream.ReadAsync(buffer, cancellationToken);
-                if (!Process(count, dataBuffer)) {
-                    continue;
+                // process unprocessed bytes in buffer from previous call
+                if (Process()) {
+                    // var debugStr = Encoding.UTF8.GetString(dataBuffer.Array, 0, dataPos);
+                    return;
                 }
-                var debugStr = Encoding.UTF8.GetString(dataBuffer.Array, 0, dataPos);
-                EndOfMessage = true;
-                return;
+                bufferLen = await stream.ReadAsync(buffer, cancellationToken);
             }
         }
+        
+        /// general state of state machine 
+        private enum Parse {
+            Opcode,
+            PayloadLen,
+            Masking,
+            Payload,
+        }
 
-        private bool Process (int count, ArraySegment<byte> dataBuffer) {
-            int pos = 0;
-            while (pos < count) {
-                var b =  buffer[pos++];
+        private bool Process ()
+        {
+            // performance: use locals enable CPU using their values from stack 
+            var buf = buffer;
+            var len = bufferLen;
+            
+            while (bufferPos < len) {
+                var b =  buf[bufferPos++];
                 switch (parseState) {
                     case Parse.Opcode:
                         fin             = (Fin)     ((b >> 7) & 0x1);
@@ -81,7 +100,6 @@ namespace Friflo.Json.Fliox.Hub.Remote.RFC6455
                                 break;
                         }
                         maskingKeyPos   = 0;
-                        dataPos         = 0;
                         payloadPos      = 0;
                         parseState      = mask == Mask.Set ? Parse.Masking : Parse.Payload;
                         break;
@@ -90,7 +108,6 @@ namespace Friflo.Json.Fliox.Hub.Remote.RFC6455
                         if (maskingKeyPos < 4) {
                             break;
                         }
-                        dataPos         = 0;
                         payloadPos      = 0;
                         parseState      = Parse.Payload;
                         break;
@@ -101,23 +118,22 @@ namespace Friflo.Json.Fliox.Hub.Remote.RFC6455
                         if (++payloadPos < payloadLen) {
                             break;
                         }
-                        MessageType = opcode switch {
-                            Opcode.TextFrame    => WebSocketMessageType.Text,
-                            Opcode.BinaryFrame  => WebSocketMessageType.Binary,
-                            _                   => WebSocketMessageType.Close
-                        };
-                        parseState = Parse.Opcode;
+                        EndOfMessage    = fin == Fin.Final;
+                        MessageType     = GetMessageType(opcode);
+                        parseState      = Parse.Opcode;
                         return true;
                 }
             }
             return false;
         }
-
-        private enum Parse {
-            Opcode,
-            PayloadLen,
-            Masking,
-            Payload,
+        
+        private static WebSocketMessageType GetMessageType(Opcode opcode)
+        {
+            return opcode switch {
+                Opcode.TextFrame    => WebSocketMessageType.Text,
+                Opcode.BinaryFrame  => WebSocketMessageType.Binary,
+                _                   => WebSocketMessageType.Close
+            };
         }
     }
 }
