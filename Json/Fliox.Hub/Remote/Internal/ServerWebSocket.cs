@@ -6,7 +6,6 @@ using System.Net.Sockets;
 using System.Net.WebSockets;
 using System.Threading;
 using System.Threading.Tasks;
-using Friflo.Json.Fliox.Hub.Remote.RFC6455;
 
 // ReSharper disable FieldCanBeMadeReadOnly.Local
 // ReSharper disable ConvertToAutoProperty
@@ -15,7 +14,8 @@ namespace Friflo.Json.Fliox.Hub.Remote.Internal
     internal sealed class ServerWebSocket : WebSocket
     {
         private readonly    NetworkStream           stream;
-        private readonly    FrameProtocol           protocol = new FrameProtocol();
+        private readonly    FrameProtocolReader     reader = new FrameProtocolReader();
+        private readonly    FrameProtocolWriter     writer = new FrameProtocolWriter();
         //
         private             WebSocketCloseStatus?   closeStatus = null;
         private             string                  closeStatusDescription = null;
@@ -44,13 +44,13 @@ namespace Friflo.Json.Fliox.Hub.Remote.Internal
         }
 
         public override async Task<WebSocketReceiveResult> ReceiveAsync(ArraySegment<byte> buffer, CancellationToken cancellationToken) {
-            await protocol.ReadFrame(stream, buffer, cancellationToken);
+            await reader.ReadFrame(stream, buffer, cancellationToken);
 
-            return new WebSocketReceiveResult(protocol.ByteCount, protocol.MessageType, protocol.EndOfMessage);
+            return new WebSocketReceiveResult(reader.ByteCount, reader.MessageType, reader.EndOfMessage);
         }
 
         public override async Task SendAsync(ArraySegment<byte> buffer, WebSocketMessageType messageType, bool endOfMessage, CancellationToken cancellationToken) {
-            await stream.WriteAsync(buffer, cancellationToken);
+            await writer.WriteAsync(buffer, messageType, endOfMessage, cancellationToken);
         }
         // ---------------------------------------------------------------------------------------------
 

@@ -1,9 +1,8 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
-using System;
 
-namespace Friflo.Json.Fliox.Hub.Remote.RFC6455
+namespace Friflo.Json.Fliox.Hub.Remote.Internal
 {
     internal enum Fin {
         More    = 0x00,
