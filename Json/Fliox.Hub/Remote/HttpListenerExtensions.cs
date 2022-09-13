@@ -6,6 +6,7 @@ using System.Collections.Specialized;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using Friflo.Json.Fliox.Hub.Remote.Internal;
 
 namespace Friflo.Json.Fliox.Hub.Remote
 {
@@ -25,6 +26,15 @@ namespace Friflo.Json.Fliox.Hub.Remote
             // (MIT License) [ninjasource/Ninja.WebSockets: A c# implementation of System.Net.WebSockets.WebSocket for .Net Standard 2.0] https://github.com/ninjasource/Ninja.WebSockets
             // (MIT License) [sta/websocket-sharp: A C# implementation of the WebSocket protocol client and server] https://github.com/sta/websocket-sharp
             HttpListenerRequest  req  = context.Request;
+#if SERVER_WEBSOCKET
+            if (req.Headers["Connection"] == "Upgrade" && req.Headers["Upgrade"] != null) {
+                var wsContext       = await context.AcceptWebSocket().ConfigureAwait(false);
+                var websocket       = wsContext.WebSocket;
+                var remoteEndPoint  = request.RemoteEndPoint;
+                await WebSocketHost.SendReceiveMessages (websocket, remoteEndPoint, httpHost).ConfigureAwait(false);
+                return null;
+            }
+#endif
 #if UNITY_5_3_OR_NEWER
             if (req.Headers["Connection"] == "Upgrade" && req.Headers["Upgrade"] != null) {
                 await HandleUnityServerWebSocket(context.Response).ConfigureAwait(false);
