@@ -16,7 +16,7 @@ using System.Threading.Tasks;
 // ReSharper disable UnassignedGetOnlyAutoProperty
 namespace Friflo.Json.Fliox.Hub.Remote.Internal
 {
-    internal class ServerWebSocketContext : WebSocketContext
+    internal sealed class ServerWebSocketContext : WebSocketContext
     {
         public  override    CookieCollection    CookieCollection        { get; }
         public  override    NameValueCollection Headers                 { get; }
