@@ -5,7 +5,9 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Net;
+using System.Net.Sockets;
 using System.Net.WebSockets;
+using System.Reflection;
 using System.Security.Cryptography;
 using System.Security.Principal;
 using System.Text;
@@ -37,7 +39,13 @@ namespace Friflo.Json.Fliox.Hub.Remote.Internal
     internal static class ServerWebSocketExtensions
     {
         internal static async Task<ServerWebSocketContext> AcceptWebSocket(this HttpListenerContext context) {
-            var websocket           = new ServerWebSocket();
+            var flags           = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
+            var connectionInfo  = typeof(HttpListenerContext).GetProperty("Connection", flags);
+            var connection      = connectionInfo.GetValue(context); // HttpConnection
+            var streamInfo      = connection.GetType().GetField("stream", flags);
+            var stream          = (NetworkStream)streamInfo.GetValue(connection);
+            
+            var websocket           = new ServerWebSocket(stream);
             var wsContext           = new ServerWebSocketContext (websocket);
             var headers             = context.Request.Headers;
             var secWebSocketKey     = headers["Sec-WebSocket-Key"];
@@ -45,19 +53,33 @@ namespace Friflo.Json.Fliox.Hub.Remote.Internal
             var secWebSocketVersion = headers["Sec-WebSocket-Version"];
             
             // --- create response
+            var secWebSocketAccept      = Sha1Hash(secWebSocketKey + "258EAFA5-E914-47DA-95CA-C5AB0DC85B11");
             // [WebSocket - Wikipedia] https://en.wikipedia.org/wiki/WebSocket
             // secWebSocketKey = "x3JJHMbDL1EzLkh9GBhXDw=="; // test from Wikipedia
-            var secWebSocketAccept      = Sha1Hash(secWebSocketKey + "258EAFA5-E914-47DA-95CA-C5AB0DC85B11");
+            var response = $@"HTTP/1.1 101 Switching Protocols
+Connection: Upgrade
+Upgrade: websocket
+Sec-WebSocket-Accept: {secWebSocketAccept}
+";          // Sec-WebSocket-Protocol: chat
+            response += "\n";
+            byte[]  responseBytes = Encoding.UTF8.GetBytes(response);
+            await stream.WriteAsync(responseBytes, 0, responseBytes.Length).ConfigureAwait(false);
+            await stream.FlushAsync().ConfigureAwait(false);
+            /* 
             var response                = context.Response;
             response.StatusCode         = 101;
             response.StatusDescription  = "Switching Protocols";
             var responseHeaders         = response.Headers;
-            responseHeaders["Upgrade"]                  = "websocket";
             responseHeaders["Connection"]               = "Upgrade";
+            responseHeaders["Upgrade"]                  = "websocket";
             responseHeaders["Sec-WebSocket-Accept"]     = secWebSocketAccept;
             
-            await response.OutputStream.FlushAsync();
+            await response.OutputStream.FlushAsync();*/
             return wsContext;
+        }
+        
+        private static void xxx() {
+            
         }
         
         private static string Sha1Hash(string input) {

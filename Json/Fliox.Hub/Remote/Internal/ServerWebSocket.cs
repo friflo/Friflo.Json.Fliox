@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
+using System.Net.Sockets;
 using System.Net.WebSockets;
 using System.Threading;
 using System.Threading.Tasks;
@@ -12,6 +13,8 @@ namespace Friflo.Json.Fliox.Hub.Remote.Internal
 {
     internal sealed class ServerWebSocket : WebSocket
     {
+        private             NetworkStream           stream;
+        //
         private             WebSocketCloseStatus?   closeStatus = null;
         private             string                  closeStatusDescription = null;
         private             WebSocketState          state;
@@ -48,8 +51,9 @@ namespace Friflo.Json.Fliox.Hub.Remote.Internal
         }
         // ---------------------------------------------------------------------------------------------
 
-        internal ServerWebSocket() {
-            state = WebSocketState.Open;
+        internal ServerWebSocket(NetworkStream stream) {
+            state       = WebSocketState.Open;
+            this.stream = stream;
         }
     }
 }
