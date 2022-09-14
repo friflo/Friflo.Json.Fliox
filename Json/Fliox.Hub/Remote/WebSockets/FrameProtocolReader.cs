@@ -49,7 +49,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
             while (true) {
                 // process unprocessed bytes in buffer from previous call
                 if (Process()) {
-                    // var debugStr = Encoding.UTF8.GetString(dataBuffer.Array, 0, dataPos);
+                    // var debugStr = Encoding.UTF8.GetString(dataBuffer.Array, 0, ByteCount);
                     return;
                 }
                 bufferPos = 0;
@@ -99,7 +99,8 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
                                 break;
                             }
                         } else {
-                            payloadLen += b << 8 * payloadLenPos;
+                            // payload length uses network byte order (big endian). E.g 0x0102 -> byte[] { 01, 02 } 
+                            payloadLen = (payloadLen << 8) | b;
                             if (++payloadLenPos < payloadLenBytes)
                                 break;
                         }

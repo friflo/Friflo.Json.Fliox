@@ -82,19 +82,19 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
             } else if (count <= 0xffff) {
                 bufferPos += 3;
                 buffer [1] = (byte)(126 | lenMask);
-                buffer [2] = (byte) (count & 0xff);
-                buffer [3] = (byte) (count >> 8);
+                buffer [2] = (byte) (count >> 8);
+                buffer [3] = (byte) (count & 0xff);
             } else {
                 bufferPos += 9;
                 buffer [1] = (byte)(127 | lenMask);
-                buffer [2] = (byte) (count        & 0xff);
-                buffer [3] = (byte)((count >>  8) & 0xff);
-                buffer [4] = (byte)((count >> 16) & 0xff);
-                buffer [5] = (byte)((count >> 24) & 0xff);
-                buffer [6] = 0;
-                buffer [7] = 0;
-                buffer [8] = 0;
-                buffer [9] = 0;
+                buffer [2] = 0;
+                buffer [3] = 0;
+                buffer [4] = 0;
+                buffer [5] = 0;
+                buffer [6] = (byte)((count >> 24) & 0xff);
+                buffer [7] = (byte)((count >> 16) & 0xff);
+                buffer [8] = (byte)((count >>  8) & 0xff);
+                buffer [9] = (byte) (count        & 0xff);
             }
             if (maskingKey != null) {
                 buffer [bufferPos]     = maskingKey[0];
