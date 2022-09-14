@@ -46,7 +46,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
                     // var debugStr = Encoding.UTF8.GetString(dataBuffer.Array, 0, dataPos);
                     return;
                 }
-                bufferLen = await stream.ReadAsync(buffer, cancellationToken);
+                bufferLen = await stream.ReadAsync(buffer, cancellationToken).ConfigureAwait(false);
             }
         }
         

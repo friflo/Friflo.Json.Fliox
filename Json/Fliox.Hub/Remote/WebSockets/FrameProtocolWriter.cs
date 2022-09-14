@@ -47,7 +47,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
                 remaining   -= writeCount;
                 dataPos     += writeCount;
 
-                await stream.WriteAsync(buffer, 0, bufferLen, cancellationToken);
+                await stream.WriteAsync(buffer, 0, bufferLen, cancellationToken).ConfigureAwait(false);
             }
         }
         
