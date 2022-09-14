@@ -15,7 +15,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
     {
         private readonly    NetworkStream           stream;
         private readonly    FrameProtocolReader     reader = new FrameProtocolReader();
-        private readonly    FrameProtocolWriter     writer = new FrameProtocolWriter();
+        private readonly    FrameProtocolWriter     writer = new FrameProtocolWriter(false); // server must not mask payloads
         //
         private             WebSocketCloseStatus?   closeStatus = null;
         private             string                  closeStatusDescription = null;

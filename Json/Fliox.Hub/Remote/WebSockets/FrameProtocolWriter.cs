@@ -16,7 +16,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
         private  readonly   bool    mask;
         private  const      int     MaxHeaderLength = 14; // opcode: 1 + payload length: 9 + mask: 4
         
-        public FrameProtocolWriter(bool mask = true, int bufferSize = 4096) {
+        public FrameProtocolWriter(bool mask, int bufferSize = 4096) {
             writeBuffer     = new byte[bufferSize + MaxHeaderLength];
             maxBufferSize   = bufferSize;
             this.mask       = mask;    
