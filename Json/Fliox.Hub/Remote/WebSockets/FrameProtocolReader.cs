@@ -19,6 +19,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
         private  readonly   byte[]                  buffer;
         private             int                     bufferPos;
         private             int                     bufferLen;
+        private             long                    streamReadByteCount;
         /// <summary> general <see cref="parseState"/> and its sub states <see cref="payloadLenPos"/> and <see cref="maskingKeyPos"/> </summary>
         private             Parse                   parseState;
         private             int                     payloadLenBytes;
@@ -50,7 +51,9 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
                     // var debugStr = Encoding.UTF8.GetString(dataBuffer.Array, 0, dataPos);
                     return;
                 }
+                bufferPos = 0;
                 bufferLen = await stream.ReadAsync(buffer, cancellationToken).ConfigureAwait(false);
+                if (bufferLen < 1) throw new InvalidOperationException("FrameProtocolReader expect ReadAsync() return len > 0");
             }
         }
         
@@ -65,8 +68,9 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
         private bool Process ()
         {
             // performance: use locals enable CPU using these values from stack
-            var buf = buffer;
-            var len = bufferLen;
+            var buf         = buffer;
+            var len         = bufferLen;
+            var startPos    = bufferPos;
             
             while (bufferPos < len) {
                 var b =  buf[bufferPos++];
@@ -120,12 +124,14 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
                         if (++payloadPos < payloadLen) {
                             break;
                         }
-                        EndOfMessage    = (flags & FrameFlags.Fin) != 0;
-                        MessageType     = GetMessageType(opcode);
-                        parseState      = Parse.Opcode;
+                        EndOfMessage         = (flags & FrameFlags.Fin) != 0;
+                        MessageType          = GetMessageType(opcode);
+                        parseState           = Parse.Opcode;
+                        streamReadByteCount += bufferPos - startPos;
                         return true;
                 }
             }
+            streamReadByteCount += bufferPos - startPos;
             return false;
         }
         

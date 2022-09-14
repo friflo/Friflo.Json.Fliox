@@ -47,7 +47,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.WebSockets
             }
         }
         
-        // [Test]      public void  TestWebSocketsWriteReadSingleByte()       { SingleThreadSynchronizationContext.Run(AssertWebSocketsWriteReadSingleByte); }
+        [Test]      public void  TestWebSocketsWriteReadSingleByte()       { SingleThreadSynchronizationContext.Run(AssertWebSocketsWriteReadSingleByte); }
         private static async Task AssertWebSocketsWriteReadSingleByte() {
             /* {
                 var len = await WriteRead (true, 0x100000, 1); // ensure no message fragmentation
