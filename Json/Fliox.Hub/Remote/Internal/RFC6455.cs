@@ -7,7 +7,7 @@ using System;
 namespace Friflo.Json.Fliox.Hub.Remote.Internal
 {
     [Flags]
-    internal enum FrameFlags : byte {
+    internal enum FrameFlags {
         Fin                 = 0x80,
         Rsv1                = 0x40,
         Rsv2                = 0x20,
@@ -16,7 +16,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.Internal
         Opcode              = 0x0f,
     }
     
-    internal enum Opcode : byte {
+    internal enum Opcode {
         ContinuationFrame   = 0x00,
         TextFrame           = 0x01,
         BinaryFrame         = 0x02,

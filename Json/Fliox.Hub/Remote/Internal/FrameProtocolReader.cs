@@ -69,7 +69,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.Internal
                 switch (parseState) {
                     case Parse.Opcode:
                         flags           = (FrameFlags)b;
-                        opcode          = (Opcode)   (b & 0xf);
+                        opcode          = (Opcode)   (b & (int)FrameFlags.Opcode);
                         payloadLenPos   = 0;
                         parseState      = Parse.PayloadLen;
                         break;
@@ -107,8 +107,12 @@ namespace Friflo.Json.Fliox.Hub.Remote.Internal
                         break;
                     case Parse.Payload:
                         // if (dataPos == 71) { int debug = 1; }
-                        var j = dataPos % 4;
-                        dataBuffer[dataPos++] = (byte)(b ^ maskingKey[j]);
+                        if ((flags & FrameFlags.Fin) != 0) {
+                            var j = dataPos % 4;
+                            dataBuffer[dataPos++] = (byte)(b ^ maskingKey[j]);
+                        } else {
+                            dataBuffer[dataPos++] = b;
+                        }
                         if (++payloadPos < payloadLen) {
                             break;
                         }
