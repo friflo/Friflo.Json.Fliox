@@ -11,13 +11,13 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
 {
     public sealed class FrameProtocolWriter
     {
-        private  readonly   byte[]  buffer;
+        private  readonly   byte[]  writeBuffer;
         private  readonly   int     maxBufferSize;
         private  readonly   bool    mask;
         private  const      int     MaxHeaderLength = 14; // opcode: 1 + payload length: 9 + mask: 4
         
         public FrameProtocolWriter(bool mask = true, int bufferSize = 4096) {
-            buffer          = new byte[bufferSize + MaxHeaderLength];
+            writeBuffer     = new byte[bufferSize + MaxHeaderLength];
             maxBufferSize   = bufferSize;
             this.mask       = mask;    
         }
@@ -29,6 +29,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
             bool                    endOfMessage,
             CancellationToken       cancellationToken)
         {
+            var buffer      = writeBuffer; // performance: use local enable CPU using these value from stack
             int dataCount   = dataBuffer.Count;
             var dataArray   = dataBuffer.Array;
             if (dataArray == null) throw new InvalidOperationException("expect dataBuffer array not null");
@@ -52,8 +53,8 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
                         buffer[bufferLen + n] = (byte)(b ^ maskingKey[j]);
                     }
                 } else {
-                    var writeBuffer = new ArraySegment<byte>(dataArray, dataPos, writeCount);
-                    writeBuffer.CopyTo(buffer, bufferLen);
+                    var dataSegment = new ArraySegment<byte>(dataArray, dataPos, writeCount);
+                    dataSegment.CopyTo(buffer, bufferLen);
                 }
                 bufferLen   += writeCount;
                 remaining   -= writeCount;

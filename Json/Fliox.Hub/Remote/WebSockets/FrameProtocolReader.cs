@@ -60,7 +60,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
 
         private bool Process ()
         {
-            // performance: use locals enable CPU using their values from stack 
+            // performance: use locals enable CPU using these values from stack
             var buf = buffer;
             var len = bufferLen;
             
