@@ -4,7 +4,7 @@
 
 using System;
 
-namespace Friflo.Json.Fliox.Hub.Remote.Internal
+namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
 {
     [Flags]
     internal enum FrameFlags {

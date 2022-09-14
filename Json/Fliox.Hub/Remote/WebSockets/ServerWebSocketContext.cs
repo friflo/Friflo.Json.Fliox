@@ -14,7 +14,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 // ReSharper disable UnassignedGetOnlyAutoProperty
-namespace Friflo.Json.Fliox.Hub.Remote.Internal
+namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
 {
     internal sealed class ServerWebSocketContext : WebSocketContext
     {

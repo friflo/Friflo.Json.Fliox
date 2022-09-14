@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 // ReSharper disable FieldCanBeMadeReadOnly.Local
 // ReSharper disable ConvertToAutoProperty
-namespace Friflo.Json.Fliox.Hub.Remote.Internal
+namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
 {
     internal sealed class ServerWebSocket : WebSocket
     {

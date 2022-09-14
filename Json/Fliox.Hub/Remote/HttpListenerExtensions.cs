@@ -6,7 +6,7 @@ using System.Collections.Specialized;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
-using Friflo.Json.Fliox.Hub.Remote.Internal;
+using Friflo.Json.Fliox.Hub.Remote.WebSockets;
 
 namespace Friflo.Json.Fliox.Hub.Remote
 {

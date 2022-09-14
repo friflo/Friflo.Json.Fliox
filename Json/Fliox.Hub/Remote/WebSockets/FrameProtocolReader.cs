@@ -7,7 +7,7 @@ using System.Net.WebSockets;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Friflo.Json.Fliox.Hub.Remote.Internal
+namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
 {
     public sealed class FrameProtocolReader
     {
