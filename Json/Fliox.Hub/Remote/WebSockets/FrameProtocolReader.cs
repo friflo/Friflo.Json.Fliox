@@ -33,10 +33,10 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
         // --- Base Framing Protocol headers
         private             FrameFlags              flags;
         private             Opcode                  opcode;
-        private             LenFlags                lenFlags;
+        private             bool                    mask;
         private readonly    byte[]                  maskingKey = new byte[4];
 
-        internal async Task ReadFrame(Stream stream, ArraySegment<byte> dataBuffer, CancellationToken cancellationToken)
+        public async Task ReadFrame(Stream stream, ArraySegment<byte> dataBuffer, CancellationToken cancellationToken)
         {
             dataPos         = 0;
             this.dataBuffer = dataBuffer;
@@ -75,7 +75,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
                         break;
                     case Parse.PayloadLen:
                         if (payloadLenPos == 0) {
-                            lenFlags        = (LenFlags)b;
+                            mask            = (b & (int)LenFlags.Mask) != 0; 
                             payloadLen      = b & 0x7f;
                             payloadLenPos   = 1;
                             if (payloadLen == 126) {
@@ -95,7 +95,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
                         }
                         maskingKeyPos   = 0;
                         payloadPos      = 0;
-                        parseState      = (lenFlags & LenFlags.Mask) != 0 ? Parse.Masking : Parse.Payload;
+                        parseState      = mask ? Parse.Masking : Parse.Payload;
                         break;
                     case Parse.Masking:
                         maskingKey[maskingKeyPos++] = b;
@@ -107,7 +107,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
                         break;
                     case Parse.Payload:
                         // if (dataPos == 71) { int debug = 1; }
-                        if ((flags & FrameFlags.Fin) != 0) {
+                        if (mask) {
                             var j = dataPos % 4;
                             dataBuffer[dataPos++] = (byte)(b ^ maskingKey[j]);
                         } else {
