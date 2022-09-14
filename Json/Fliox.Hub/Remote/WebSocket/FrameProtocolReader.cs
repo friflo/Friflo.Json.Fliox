@@ -130,7 +130,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.Internal
                 case Opcode.TextFrame:      return WebSocketMessageType.Text;
                 case Opcode.BinaryFrame:    return WebSocketMessageType.Binary;
                 default:                    return WebSocketMessageType.Close;
-            };
+            }
         }
     }
 }
