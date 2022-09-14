@@ -100,22 +100,24 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.WebSockets
             var str0x10000 = $"{new string('c', 0x10000)}";
             await Write (writer, stream, str0x10000);
 
+            var buffer          = new byte[bufferSize];
+            var messageBuffer   = new MemoryStream();
             var reader = new FrameProtocolReader(readerSize);
             stream.Position = 0;
-            
-            var result  = await Read(reader, stream, bufferSize);
+
+            var result  = await Read(reader, stream, buffer, messageBuffer);
             AreEqual("Test-1", result);
             
-            result      = await Read(reader, stream, bufferSize);
+            result      = await Read(reader, stream, buffer, messageBuffer);
             AreEqual("Test-2", result);
             
-            result      = await Read(reader, stream, bufferSize);
+            result      = await Read(reader, stream, buffer, messageBuffer);
             AreEqual(str126, result);
             
-            result      = await Read(reader, stream, bufferSize);
+            result      = await Read(reader, stream, buffer, messageBuffer);
             AreEqual(str0xffff, result);
             
-            result      = await Read(reader, stream, bufferSize);
+            result      = await Read(reader, stream, buffer, messageBuffer);
             AreEqual(str0x10000, result);
             
             AreEqual(stream.Length, stream.Position);
@@ -130,21 +132,20 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.WebSockets
             await writer.WriteAsync(stream, dataBuffer, WebSocketMessageType.Text, true, CancellationToken.None);
         }
         
-        private static async Task<string>   Read(FrameProtocolReader reader, Stream stream, int bufferSize)
+        private static async Task<string>   Read(FrameProtocolReader reader, Stream stream, byte[] buffer, MemoryStream messageBuffer)
         {
-            var buffer          = new byte[bufferSize];
-            var dataBuffer      = new ArraySegment<byte>(buffer);
-            var targetBuffer    = new MemoryStream();
+            messageBuffer.Position = 0;
+            var dataBuffer  = new ArraySegment<byte>(buffer);
             while (true) {
                 await reader.ReadFrame(stream, dataBuffer, CancellationToken.None);
                 
                 if (reader.MessageType != WebSocketMessageType.Text) throw new InvalidOperationException("expect text message");
                 var byteCount   = reader.ByteCount;
-                targetBuffer.Write(buffer, 0, byteCount);
+                messageBuffer.Write(buffer, 0, byteCount);
                 if (!reader.EndOfMessage)
                     continue;
-                var targetArray = targetBuffer.GetBuffer();
-                var targetLen   = (int)targetBuffer.Length;
+                var targetArray = messageBuffer.GetBuffer();
+                var targetLen   = (int)messageBuffer.Length;
                 return Encoding.UTF8.GetString(targetArray, 0, targetLen);
             }
         }
