@@ -16,7 +16,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
         public              WebSocketMessageType    MessageType     { get; private set; }
         /// <summary> store the bytes read from the socket.
         /// <see cref="bufferPos"/> is its read position and <see cref="bufferLen"/> the count of bytes read from socket</summary>
-        private  readonly   byte[]                  buffer = new byte[4096];
+        private  readonly   byte[]                  buffer;
         private             int                     bufferPos;
         private             int                     bufferLen;
         /// <summary> general <see cref="parseState"/> and its sub states <see cref="payloadLenPos"/> and <see cref="maskingKeyPos"/> </summary>
@@ -35,6 +35,10 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
         private             Opcode                  opcode;
         private             bool                    mask;
         private readonly    byte[]                  maskingKey = new byte[4];
+        
+        public FrameProtocolReader(int bufferSize = 4096) {
+            buffer = new byte[bufferSize];
+        }
 
         public async Task ReadFrame(Stream stream, ArraySegment<byte> dataBuffer, CancellationToken cancellationToken)
         {

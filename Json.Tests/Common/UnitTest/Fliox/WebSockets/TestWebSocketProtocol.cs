@@ -17,25 +17,55 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.WebSockets
     {
         [Test]      public void  TestWebSocketsWriteRead()       { SingleThreadSynchronizationContext.Run(AssertWebSocketsWriteRead); }
         private static async Task AssertWebSocketsWriteRead() {
-            // await WriteRead (false, 0x100000); // ensure no message fragmentation
-            // await WriteRead (false, 4096);
+            /* {
+                var len = await WriteRead (false, 0x100000, 4096); // ensure no message fragmentation
+                AreEqual(146, len);
+            } */
+            /* {
+                var len = await WriteRead (false, 4096, 4096);
+                AreEqual(146, len);
+            } */
             {
-                var len = await WriteRead (false, 80);
+                var len = await WriteRead (false, 80, 4096);
                 AreEqual(146, len);
             }
         }
         
         [Test]      public void  TestWebSocketsWriteReadMask()       { SingleThreadSynchronizationContext.Run(AssertWebSocketsWriteReadMask); }
         private static async Task AssertWebSocketsWriteReadMask() {
+            /* {
+                var len = await WriteRead (true, 0x100000, 4096); // ensure no message fragmentation
+                AreEqual(146, len);
+            } */
+            /* {
+                var len = await WriteRead (true, 4096, 4096);
+                AreEqual(146, len);
+            } */
             {
-                var len = await WriteRead (true, 80);
+                var len = await WriteRead (true, 80, 4096);
+                AreEqual(162, len);
+            }
+        }
+        
+        // [Test]      public void  TestWebSocketsWriteReadSingleByte()       { SingleThreadSynchronizationContext.Run(AssertWebSocketsWriteReadSingleByte); }
+        private static async Task AssertWebSocketsWriteReadSingleByte() {
+            /* {
+                var len = await WriteRead (true, 0x100000, 1); // ensure no message fragmentation
+                AreEqual(146, len);
+            } */
+            /* {
+                var len = await WriteRead (true, 4096, 1);
+                AreEqual(146, len);
+            } */
+            {
+                var len = await WriteRead (true, 80, 1);
                 AreEqual(162, len);
             }
         }
 
-        private static async Task<long> WriteRead(bool mask, int bufferSize)
+        private static async Task<long> WriteRead(bool mask, int writerSize, int readerSize)
         {
-            var writer = new FrameProtocolWriter(mask, bufferSize);
+            var writer = new FrameProtocolWriter(mask, writerSize);
             
             var stream = new MemoryStream();
             await Write (writer, stream, "Test-1");
@@ -50,7 +80,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.WebSockets
             var str0x10000 = $"{new string('c', 0x10000)}";
             await Write (writer, stream, str0x10000); */
 
-            var reader = new FrameProtocolReader();
+            var reader = new FrameProtocolReader(readerSize);
             stream.Position = 0;
             
             var result =  await Read(reader, stream);

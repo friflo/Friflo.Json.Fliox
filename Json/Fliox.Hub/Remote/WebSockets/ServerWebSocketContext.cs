@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Net.WebSockets;
@@ -46,6 +47,8 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
             var secWebSocketKey     = headers["Sec-WebSocket-Key"];
             var secWebSocketProtocol= headers["Sec-WebSocket-Protocol"];
             var secWebSocketVersion = headers["Sec-WebSocket-Version"];
+            
+            var items = headers.AllKeys.SelectMany(headers.GetValues, (k, v) => new {key = k, value = v});
             
             // --- create response
             var secWebSocketAccept      = Sha1Hash(secWebSocketKey + "258EAFA5-E914-47DA-95CA-C5AB0DC85B11");
