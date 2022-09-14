@@ -17,14 +17,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.WebSockets
     {
         [Test]      public void  TestWebSocketsWriteRead()       { SingleThreadSynchronizationContext.Run(AssertWebSocketsWriteRead); }
         private static async Task AssertWebSocketsWriteRead() {
-            /* {
+            {
                 var len = await WriteRead (false, 0x100000, 4096); // ensure no message fragmentation
                 AreEqual(146, len);
-            } */
-            /* {
+            }
+            {
                 var len = await WriteRead (false, 4096, 4096);
                 AreEqual(146, len);
-            } */
+            }
             {
                 var len = await WriteRead (false, 80, 4096);
                 AreEqual(146, len);
@@ -33,14 +33,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.WebSockets
         
         [Test]      public void  TestWebSocketsWriteReadMask()       { SingleThreadSynchronizationContext.Run(AssertWebSocketsWriteReadMask); }
         private static async Task AssertWebSocketsWriteReadMask() {
-            /* {
+            {
                 var len = await WriteRead (true, 0x100000, 4096); // ensure no message fragmentation
-                AreEqual(146, len);
-            } */
-            /* {
+                AreEqual(158, len);
+            }
+            {
                 var len = await WriteRead (true, 4096, 4096);
-                AreEqual(146, len);
-            } */
+                AreEqual(158, len);
+            }
             {
                 var len = await WriteRead (true, 80, 4096);
                 AreEqual(162, len);
@@ -49,14 +49,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.WebSockets
         
         [Test]      public void  TestWebSocketsWriteReadSingleByte()       { SingleThreadSynchronizationContext.Run(AssertWebSocketsWriteReadSingleByte); }
         private static async Task AssertWebSocketsWriteReadSingleByte() {
-            /* {
+            {
                 var len = await WriteRead (true, 0x100000, 1); // ensure no message fragmentation
-                AreEqual(146, len);
-            } */
-            /* {
+                AreEqual(158, len);
+            }
+            {
                 var len = await WriteRead (true, 4096, 1);
-                AreEqual(146, len);
-            } */
+                AreEqual(158, len);
+            }
             {
                 var len = await WriteRead (true, 80, 1);
                 AreEqual(162, len);

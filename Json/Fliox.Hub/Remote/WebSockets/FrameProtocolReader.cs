@@ -78,14 +78,14 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
                     case Parse.Opcode:
                         flags           = (FrameFlags)b;
                         opcode          = (Opcode)   (b & (int)FrameFlags.Opcode);
-                        payloadLenPos   = 0;
+                        payloadLenPos   = -1;
                         parseState      = Parse.PayloadLen;
                         break;
                     case Parse.PayloadLen:
-                        if (payloadLenPos == 0) {
+                        if (payloadLenPos == -1) {
                             mask            = (b & (int)LenFlags.Mask) != 0; 
                             payloadLen      = b & 0x7f;
-                            payloadLenPos   = 1;
+                            payloadLenPos   = 0;
                             if (payloadLen == 126) {
                                 payloadLen      = 0;
                                 payloadLenBytes = 2;
@@ -97,8 +97,8 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
                                 break;
                             }
                         } else {
-                            payloadLen = (payloadLen << 8) | b;
-                            if (++payloadLenPos <= payloadLenBytes)
+                            payloadLen += b << 8 * payloadLenPos;
+                            if (++payloadLenPos < payloadLenBytes)
                                 break;
                         }
                         maskingKeyPos   = 0;
