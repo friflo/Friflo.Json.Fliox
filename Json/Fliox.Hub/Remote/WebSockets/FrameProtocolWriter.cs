@@ -73,18 +73,19 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
             var opcode      = (byte)(messageType == WebSocketMessageType.Text ? Opcode.TextFrame : Opcode.BinaryFrame);
             var fin         = (byte)(endOfMessage ? FrameFlags.Fin : 0);
             buffer[0]       = (byte)(fin | opcode);
+            var lenMask     = maskingKey == null ? 0 : (int)LenFlags.Mask;
             int  bufferPos  = 1;
             if (count < 126) {
                 bufferPos += 1;
-                buffer [1] = (byte)count;
+                buffer [1] = (byte)(count | lenMask);
             } else if (count <= 0xffff) {
                 bufferPos += 3;
-                buffer [1] = 126;
+                buffer [1] = (byte)(126 | lenMask);
                 buffer [2] = (byte) (count & 0xff);
                 buffer [3] = (byte) (count >> 8);
             } else {
                 bufferPos += 9;
-                buffer [1] = 127;
+                buffer [1] = (byte)(127 | lenMask);
                 buffer [2] = (byte) (count        & 0xff);
                 buffer [3] = (byte)((count >>  8) & 0xff);
                 buffer [4] = (byte)((count >> 16) & 0xff);
