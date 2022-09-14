@@ -7,42 +7,70 @@ using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Remote.WebSockets;
 using Friflo.Json.Fliox.Hub.Threading;
 using NUnit.Framework;
+using static NUnit.Framework.Assert;
 
+// ReSharper disable IdentifierTypo
+// ReSharper disable InconsistentNaming
 namespace Friflo.Json.Tests.Common.UnitTest.Fliox.WebSockets
 {
     public class TestWebSocketProtocol
     {
         [Test]      public void  TestWebSocketsWriteRead()       { SingleThreadSynchronizationContext.Run(AssertWebSocketsWriteRead); }
         private static async Task AssertWebSocketsWriteRead() {
-            await WriteRead (false, 80);
+            // await WriteRead (false, 0x100000); // ensure no message fragmentation
+            // await WriteRead (false, 4096);
+            {
+                var len = await WriteRead (false, 80);
+                AreEqual(146, len);
+            }
         }
         
         [Test]      public void  TestWebSocketsWriteReadMask()       { SingleThreadSynchronizationContext.Run(AssertWebSocketsWriteReadMask); }
         private static async Task AssertWebSocketsWriteReadMask() {
-            await WriteRead (true, 80);
+            {
+                var len = await WriteRead (true, 80);
+                AreEqual(162, len);
+            }
         }
 
-        private static async Task WriteRead(bool mask, int bufferSize)
+        private static async Task<long> WriteRead(bool mask, int bufferSize)
         {
             var writer = new FrameProtocolWriter(mask, bufferSize);
             
             var stream = new MemoryStream();
             await Write (writer, stream, "Test-1");
             await Write (writer, stream, "Test-2");
-            var str126 = $"B{new string('x', 124)}E";
+            
+            var str126 = new string('a', 126);
             await Write (writer, stream, str126);
             
+            /* var str0xffff = $"{new string('b', 0xffff)}";
+            await Write (writer, stream, str0xffff);
+            
+            var str0x10000 = $"{new string('c', 0x10000)}";
+            await Write (writer, stream, str0x10000); */
+
             var reader = new FrameProtocolReader();
             stream.Position = 0;
             
             var result =  await Read(reader, stream);
-            Assert.AreEqual("Test-1", result);
+            AreEqual("Test-1", result);
             
             result =  await Read(reader, stream);
-            Assert.AreEqual("Test-2", result);
+            AreEqual("Test-2", result);
             
             result =  await Read(reader, stream);
-            Assert.AreEqual(str126, result);
+            AreEqual(str126, result);
+            
+            /* result =  await Read(reader, stream);
+            AreEqual(str0xffff, result);
+            
+            result =  await Read(reader, stream);
+            AreEqual(str0x10000, result); */
+            
+            AreEqual(stream.Length, stream.Position);
+            
+            return stream.Position;
         }
         
         private static async Task           Write(FrameProtocolWriter writer, Stream stream, string message)
