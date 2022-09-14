@@ -12,28 +12,27 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
     public sealed class FrameProtocolReader
     {
         public              bool                    EndOfMessage    { get; private set; }
-        public              int                     ByteCount       => dataPos;
+        public              int                     ByteCount       => dataBufferPos;
         public              WebSocketMessageType    MessageType     { get; private set; }
         /// <summary> store the bytes read from the socket.
         /// <see cref="bufferPos"/> is its read position and <see cref="bufferLen"/> the count of bytes read from socket</summary>
         private  readonly   byte[]                  buffer;
         private             int                     bufferPos;
         private             int                     bufferLen;
-        private             long                    streamReadByteCount;
+        private             long                    processedByteCount;
         /// <summary> general <see cref="parseState"/> and its sub states <see cref="payloadLenPos"/> and <see cref="maskingKeyPos"/> </summary>
         private             Parse                   parseState;
         private             int                     payloadLenBytes;
         private             int                     payloadLenPos;
         private             int                     maskingKeyPos;
         /// <summary>write position of given <see cref="dataBuffer"/> </summary>
-        private             int                     dataPos;        // position in given dataBuffer
+        private             int                     dataBufferPos;  // position in given dataBuffer
         private             ArraySegment<byte>      dataBuffer;
+        private             int                     dataBufferLen;
         /// <summary> <see cref="payloadPos"/> read position payload. Increments up to <see cref="payloadLen"/> </summary>
         private             long                    payloadPos;
         private             long                    payloadLen;
         // --- Base Framing Protocol headers
-        private             FrameFlags              flags;
-        private             Opcode                  opcode;
         private             bool                    mask;
         private readonly    byte[]                  maskingKey = new byte[4];
         
@@ -43,8 +42,9 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
 
         public async Task ReadFrame(Stream stream, ArraySegment<byte> dataBuffer, CancellationToken cancellationToken)
         {
-            dataPos         = 0;
+            dataBufferLen   = dataBuffer.Count;
             this.dataBuffer = dataBuffer;
+            dataBufferPos   = 0;
             while (true) {
                 // process unprocessed bytes in buffer from previous call
                 if (Process()) {
@@ -76,8 +76,10 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
                 var b =  buf[bufferPos++];
                 switch (parseState) {
                     case Parse.Opcode:
-                        flags           = (FrameFlags)b;
-                        opcode          = (Opcode)   (b & (int)FrameFlags.Opcode);
+                        var flags       = (FrameFlags)b;
+                        var opcode      = (Opcode)   (b & (int)FrameFlags.Opcode);
+                        MessageType     = GetMessageType(opcode);
+                        EndOfMessage    = (flags & FrameFlags.Fin) != 0;
                         payloadLenPos   = -1;
                         parseState      = Parse.PayloadLen;
                         break;
@@ -116,22 +118,20 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
                     case Parse.Payload:
                         // if (dataPos == 71) { int debug = 1; }
                         if (mask) {
-                            var j = dataPos % 4;
-                            dataBuffer[dataPos++] = (byte)(b ^ maskingKey[j]);
+                            var j = dataBufferPos % 4;
+                            dataBuffer[dataBufferPos++] = (byte)(b ^ maskingKey[j]);
                         } else {
-                            dataBuffer[dataPos++] = b;
+                            dataBuffer[dataBufferPos++] = b;
                         }
                         if (++payloadPos < payloadLen) {
                             break;
                         }
-                        EndOfMessage         = (flags & FrameFlags.Fin) != 0;
-                        MessageType          = GetMessageType(opcode);
-                        parseState           = Parse.Opcode;
-                        streamReadByteCount += bufferPos - startPos;
+                        parseState          = Parse.Opcode;
+                        processedByteCount += bufferPos - startPos;
                         return true;
                 }
             }
-            streamReadByteCount += bufferPos - startPos;
+            processedByteCount += bufferPos - startPos;
             return false;
         }
         
