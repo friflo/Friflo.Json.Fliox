@@ -21,10 +21,6 @@ namespace Friflo.Json.Fliox.Hub.Remote
             }
             // accepting WebSockets in Unity fails at IsWebSocketRequest. See: 
             // [Help Wanted - Websocket Server in Standalone build - Unity Forum] https://forum.unity.com/threads/websocket-server-in-standalone-build.1072526/
-            //
-            // Possible solutions may be like:
-            // (MIT License) [ninjasource/Ninja.WebSockets: A c# implementation of System.Net.WebSockets.WebSocket for .Net Standard 2.0] https://github.com/ninjasource/Ninja.WebSockets
-            // (MIT License) [sta/websocket-sharp: A C# implementation of the WebSocket protocol client and server] https://github.com/sta/websocket-sharp
             HttpListenerRequest  req  = context.Request;
 #if SERVER_WEBSOCKET
             if (req.Headers["Connection"] == "Upgrade" && req.Headers["Upgrade"] != null) {
