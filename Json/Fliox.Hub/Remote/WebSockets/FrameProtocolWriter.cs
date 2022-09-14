@@ -13,11 +13,13 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
     {
         private  readonly   byte[]  buffer;
         private  readonly   int     maxBufferSize;
+        private  readonly   bool    mask;
         private  const      int     MaxHeaderLength = 14; // opcode: 1 + payload length: 9 + mask: 4
         
-        public FrameProtocolWriter(int bufferSize = 4096) {
+        public FrameProtocolWriter(bool mask = true, int bufferSize = 4096) {
             buffer          = new byte[bufferSize + MaxHeaderLength];
             maxBufferSize   = bufferSize;
+            this.mask       = mask;    
         }
         
         public async Task WriteAsync(
@@ -36,13 +38,23 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
             while (remaining > 0) {
                 // if message > max buffer size write multiple fragments
                 var isLast      = remaining <= maxBufferSize;
-                var writeCount  = isLast ? remaining : maxBufferSize; 
+                var writeCount  = isLast ? remaining : maxBufferSize;
+                var maskingKey  = mask ? new byte [] { 1, 2, 3, 4 } : null;
                 
-                int bufferLen   = WriteHeader(writeCount, messageType, isLast, buffer);
+                int bufferLen   = WriteHeader(writeCount, messageType, isLast, buffer, maskingKey);
                 
-                var writeBuffer = new ArraySegment<byte>(dataArray, dataPos, writeCount);
-                writeBuffer.CopyTo(buffer, bufferLen);
-                
+                // append writeCount bytes from message to buffer
+                if (maskingKey != null) {
+                    for (int n = 0; n < writeCount; n++) {
+                        var dataIndex = dataPos + n;
+                        var j = dataIndex % 4;
+                        var b = dataArray[dataIndex];
+                        buffer[bufferLen + n] = (byte)(b ^ maskingKey[j]);
+                    }
+                } else {
+                    var writeBuffer = new ArraySegment<byte>(dataArray, dataPos, writeCount);
+                    writeBuffer.CopyTo(buffer, bufferLen);
+                }
                 bufferLen   += writeCount;
                 remaining   -= writeCount;
                 dataPos     += writeCount;
@@ -51,13 +63,17 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
             }
         }
         
-        private static int WriteHeader(int count, WebSocketMessageType messageType, bool endOfMessage, byte[] buffer)
+        private static int WriteHeader(
+            int                     count,
+            WebSocketMessageType    messageType,
+            bool                    endOfMessage,
+            byte[]                  buffer,
+            byte[]                  maskingKey)
         {
             var opcode      = (byte)(messageType == WebSocketMessageType.Text ? Opcode.TextFrame : Opcode.BinaryFrame);
             var fin         = (byte)(endOfMessage ? FrameFlags.Fin : 0);
             buffer[0]       = (byte)(fin | opcode);
             int  bufferPos  = 1;
-            // no masking in buffer[1] for now
             if (count < 126) {
                 bufferPos += 1;
                 buffer [1] = (byte)count;
@@ -77,6 +93,13 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
                 buffer [7] = 0;
                 buffer [8] = 0;
                 buffer [9] = 0;
+            }
+            if (maskingKey != null) {
+                buffer [bufferPos]     = maskingKey[0];
+                buffer [bufferPos + 1] = maskingKey[1];
+                buffer [bufferPos + 2] = maskingKey[2];
+                buffer [bufferPos + 3] = maskingKey[3];
+                bufferPos += 4;
             }
             return bufferPos;
         }

@@ -13,9 +13,18 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.WebSockets
     public class TestWebSocketProtocol
     {
         [Test]      public void  TestWebSocketsWriteRead()       { SingleThreadSynchronizationContext.Run(AssertWebSocketsWriteRead); }
-        private static async Task AssertWebSocketsWriteRead()
+        private static async Task AssertWebSocketsWriteRead() {
+            await WriteRead (false, 80);
+        }
+        
+        // [Test]      public void  TestWebSocketsWriteReadMask()       { SingleThreadSynchronizationContext.Run(AssertWebSocketsWriteReadMask); }
+        private static async Task AssertWebSocketsWriteReadMask() {
+            await WriteRead (true, 80);
+        }
+
+        private static async Task WriteRead(bool mask, int bufferSize)
         {
-            var writer = new FrameProtocolWriter(80);
+            var writer = new FrameProtocolWriter(mask, bufferSize);
             
             var stream = new MemoryStream();
             await Write (writer, stream, "Test-1");
