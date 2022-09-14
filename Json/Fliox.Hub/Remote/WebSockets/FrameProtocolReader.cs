@@ -22,6 +22,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
         private             long                    processedByteCount;
         /// <summary> general <see cref="parseState"/> and its sub states <see cref="payloadLenPos"/> and <see cref="maskingKeyPos"/> </summary>
         private             Parse                   parseState;
+        private             FrameFlags              flags;
         private             int                     payloadLenBytes;
         private             int                     payloadLenPos;
         private             int                     maskingKeyPos;
@@ -76,10 +77,9 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
                 var b =  buf[bufferPos++];
                 switch (parseState) {
                     case Parse.Opcode:
-                        var flags       = (FrameFlags)b;
+                        flags           = (FrameFlags)b;
                         var opcode      = (Opcode)   (b & (int)FrameFlags.Opcode);
                         MessageType     = GetMessageType(opcode);
-                        EndOfMessage    = (flags & FrameFlags.Fin) != 0;
                         payloadLenPos   = -1;
                         parseState      = Parse.PayloadLen;
                         break;
@@ -118,15 +118,20 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
                     case Parse.Payload:
                         // if (dataPos == 71) { int debug = 1; }
                         if (mask) {
-                            var j = dataBufferPos % 4;
+                            var j = payloadPos % 4;
                             dataBuffer[dataBufferPos++] = (byte)(b ^ maskingKey[j]);
                         } else {
                             dataBuffer[dataBufferPos++] = b;
                         }
                         if (++payloadPos < payloadLen) {
-                            break;
+                            if (dataBufferPos < dataBufferLen)
+                                break;
+                            EndOfMessage        = false;
+                            processedByteCount += bufferPos - startPos;
+                            return true;
                         }
                         parseState          = Parse.Opcode;
+                        EndOfMessage        = (flags & FrameFlags.Fin) != 0;
                         processedByteCount += bufferPos - startPos;
                         return true;
                 }
