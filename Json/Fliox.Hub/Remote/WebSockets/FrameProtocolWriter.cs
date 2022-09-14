@@ -11,7 +11,14 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
 {
     public sealed class FrameProtocolWriter
     {
-        private  readonly   byte[]  buffer = new byte[80];
+        private  readonly   byte[]  buffer;
+        private  readonly   int     maxBufferSize;
+        private  const      int     MaxHeaderLength = 14; // opcode: 1 + payload length: 9 + mask: 4
+        
+        public FrameProtocolWriter(int bufferSize = 4096) {
+            buffer          = new byte[bufferSize + MaxHeaderLength];
+            maxBufferSize   = bufferSize;
+        }
         
         public async Task WriteAsync(
             Stream                  stream,
@@ -20,16 +27,31 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
             bool                    endOfMessage,
             CancellationToken       cancellationToken)
         {
-            int count       = dataBuffer.Count;
-            int bufferPos   = WriteHeader(count, messageType, endOfMessage, buffer);
+            int dataCount   = dataBuffer.Count;
+            var dataArray   = dataBuffer.Array;
+            if (dataArray == null) throw new InvalidOperationException("expect dataBuffer array not null");
+            int remaining   = dataCount;
+            int dataPos     = 0;
             
-            dataBuffer.CopyTo(buffer, bufferPos);
-            bufferPos += dataBuffer.Count;
+            while (remaining > 0) {
+                // if message > max buffer size write multiple fragments
+                var isLast      = remaining <= maxBufferSize;
+                var writeCount  = isLast ? remaining : maxBufferSize; 
+                
+                int bufferLen   = WriteHeader(writeCount, messageType, isLast, buffer);
+                
+                var writeBuffer = new ArraySegment<byte>(dataArray, dataPos, writeCount);
+                writeBuffer.CopyTo(buffer, bufferLen);
+                
+                bufferLen   += writeCount;
+                remaining   -= writeCount;
+                dataPos     += writeCount;
 
-            await stream.WriteAsync(buffer, 0, bufferPos, cancellationToken);
+                await stream.WriteAsync(buffer, 0, bufferLen, cancellationToken);
+            }
         }
         
-        private static int WriteHeader(int count, WebSocketMessageType  messageType, bool endOfMessage, byte[] buffer)
+        private static int WriteHeader(int count, WebSocketMessageType messageType, bool endOfMessage, byte[] buffer)
         {
             var opcode      = (byte)(messageType == WebSocketMessageType.Text ? Opcode.TextFrame : Opcode.BinaryFrame);
             var fin         = (byte)(endOfMessage ? FrameFlags.Fin : 0);

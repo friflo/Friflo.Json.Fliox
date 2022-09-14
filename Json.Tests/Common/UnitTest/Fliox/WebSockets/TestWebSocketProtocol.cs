@@ -15,11 +15,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.WebSockets
         [Test]      public void  TestWebSocketsWriteRead()       { SingleThreadSynchronizationContext.Run(AssertWebSocketsWriteRead); }
         private static async Task AssertWebSocketsWriteRead()
         {
-            var writer = new FrameProtocolWriter();
+            var writer = new FrameProtocolWriter(80);
             
             var stream = new MemoryStream();
             await Write (writer, stream, "Test-1");
             await Write (writer, stream, "Test-2");
+            var str126 = $"B{new string('x', 124)}E";
+            await Write (writer, stream, str126);
             
             var reader = new FrameProtocolReader();
             stream.Position = 0;
@@ -29,6 +31,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.WebSockets
             
             result =  await Read(reader, stream);
             Assert.AreEqual("Test-2", result);
+            
+            result =  await Read(reader, stream);
+            Assert.AreEqual(str126, result);
         }
         
         private static async Task           Write(FrameProtocolWriter writer, Stream stream, string message)
