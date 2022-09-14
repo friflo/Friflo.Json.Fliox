@@ -2,7 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
-using System.Net.Sockets;
+using System.IO;
 using System.Net.WebSockets;
 using System.Threading;
 using System.Threading.Tasks;
@@ -14,7 +14,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
         private  readonly   byte[]  buffer = new byte[80];
         
         public async Task WriteAsync(
-            NetworkStream           stream,
+            Stream                  stream,
             ArraySegment<byte>      dataBuffer,
             WebSocketMessageType    messageType,
             bool                    endOfMessage,
