@@ -71,11 +71,14 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
             byte[]                  buffer,
             byte[]                  maskingKey)
         {
+            // --- write Fin & Opcode
             var opcode      = (byte)(messageType == WebSocketMessageType.Text ? Opcode.TextFrame : Opcode.BinaryFrame);
             var fin         = (byte)(endOfMessage ? FrameFlags.Fin : 0);
             buffer[0]       = (byte)(fin | opcode);
             var lenMask     = maskingKey == null ? 0 : (int)LenFlags.Mask;
             int  bufferPos  = 1;
+            
+            // --- write payload length. It uses network byte order (big endian). E.g 0x0102 -> byte[] { 01, 02 }
             if (count < 126) {
                 bufferPos += 1;
                 buffer [1] = (byte)(count | lenMask);
@@ -96,6 +99,8 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
                 buffer [8] = (byte)((count >>  8) & 0xff);
                 buffer [9] = (byte) (count        & 0xff);
             }
+            
+            // --- write masking key
             if (maskingKey != null) {
                 buffer [bufferPos]     = maskingKey[0];
                 buffer [bufferPos + 1] = maskingKey[1];

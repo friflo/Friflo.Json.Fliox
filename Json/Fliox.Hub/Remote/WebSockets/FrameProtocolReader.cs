@@ -99,7 +99,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
                                 break;
                             }
                         } else {
-                            // payload length uses network byte order (big endian). E.g 0x0102 -> byte[] { 01, 02 } 
+                            // payload length uses network byte order (big endian). E.g 0x0102 -> byte[] { 01, 02 }
                             payloadLen = (payloadLen << 8) | b;
                             if (++payloadLenPos < payloadLenBytes)
                                 break;
