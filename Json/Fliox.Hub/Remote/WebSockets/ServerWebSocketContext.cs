@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Net.WebSockets;
@@ -83,7 +84,14 @@ Sec-WebSocket-Accept: {secWebSocketAccept}
         }
 
         internal static bool IsWebSocketRequest(HttpListenerRequest req) {
-            return req.Headers["Connection"] == "Upgrade" && req.Headers["Upgrade"] != null;
+            if (req.Headers["Upgrade"] != "websocket")
+                return false;
+            var connection = req.Headers["Connection"];
+            // Chrome:  Connection: Upgrade
+            // Firefox: Connection: keep-alive, Upgrade
+            if (!connection.Contains("Upgrade"))
+                return false;
+            return true;
         }
     }
 }
