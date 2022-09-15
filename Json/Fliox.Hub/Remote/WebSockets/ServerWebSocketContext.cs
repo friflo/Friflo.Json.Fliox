@@ -40,8 +40,8 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
     internal static class ServerWebSocketExtensions
     {
         internal static async Task<ServerWebSocketContext> AcceptWebSocket(HttpListenerContext context) {
-            var stream              = GetNetworkStream(context);
-            var websocket           = new ServerWebSocket(stream);
+            var (stream, socket)    = GetNetworkStream(context);
+            var websocket           = new ServerWebSocket(stream, socket);
             var wsContext           = new ServerWebSocketContext (websocket);
             var headers             = context.Request.Headers;
             var secWebSocketKey     = headers["Sec-WebSocket-Key"];
@@ -68,12 +68,16 @@ Sec-WebSocket-Accept: {secWebSocketAccept}
             return wsContext;
         }
         
-        private static NetworkStream GetNetworkStream(HttpListenerContext context) {
+        private static (NetworkStream, Socket) GetNetworkStream(HttpListenerContext context) {
             var flags           = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
             var connectionInfo  = typeof(HttpListenerContext).GetProperty("Connection", flags);
             var connection      = connectionInfo.GetValue(context); // HttpConnection
             var streamInfo      = connection.GetType().GetField("stream", flags);
-            return(NetworkStream) streamInfo.GetValue(connection);
+            var stream          = (NetworkStream) streamInfo.GetValue(connection);
+            var socketInfo      = typeof(NetworkStream).GetProperty("Socket", flags);
+            var socket          = (Socket)socketInfo.GetValue(stream); // HttpConnection
+            
+            return (stream, socket);
         }
         
         private static string Sha1Hash(string input) {

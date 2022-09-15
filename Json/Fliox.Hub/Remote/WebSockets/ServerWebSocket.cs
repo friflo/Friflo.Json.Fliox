@@ -15,6 +15,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
     internal sealed class ServerWebSocket : WebSocket
     {
         private readonly    NetworkStream           stream;
+        private readonly    Socket                  socket;
         private readonly    FrameProtocolReader     reader      = new FrameProtocolReader();
         private readonly    FrameProtocolWriter     writer      = new FrameProtocolWriter(false); // server must not mask payloads
         private readonly    SemaphoreSlim           sendLock    = new SemaphoreSlim(1);
@@ -72,18 +73,20 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
         }
         // ---------------------------------------------------------------------------------------------
 
-        internal ServerWebSocket(NetworkStream stream) {
+        internal ServerWebSocket(NetworkStream stream, Socket socket) {
             state       = WebSocketState.Open;
             this.stream = stream;
+            this.socket = socket;
+            // dont block when closing socket by pending data in outgoing network buffer
+            socket.LingerState = new LingerOption(false, 0);
+            socket.NoDelay  = true;
         }
         
         private void Close() {
+            // - stream does not close underlying socket => close it explicit
+            // - Close(0) close socket instantaneously without blocking
+            socket.Close(0);
             stream.Close();
-            // stream does not close underlying socket => close it explicit
-            var flags       = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
-            var socketInfo  = typeof(NetworkStream).GetProperty("Socket", flags);
-            var socket      = (Socket)socketInfo.GetValue(stream); // HttpConnection
-            socket.Close();
         }
     }
 }
