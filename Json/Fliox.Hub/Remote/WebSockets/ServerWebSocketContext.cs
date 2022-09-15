@@ -39,7 +39,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
     
     internal static class ServerWebSocketExtensions
     {
-        internal static async Task<ServerWebSocketContext> AcceptWebSocket(this HttpListenerContext context) {
+        internal static async Task<ServerWebSocketContext> AcceptWebSocket(HttpListenerContext context) {
             var stream              = GetNetworkStream(context);
             var websocket           = new ServerWebSocket(stream);
             var wsContext           = new ServerWebSocketContext (websocket);
@@ -62,17 +62,9 @@ Sec-WebSocket-Accept: {secWebSocketAccept}
             response += "\n";
             byte[]  responseBytes = Encoding.UTF8.GetBytes(response);
             await stream.WriteAsync(responseBytes, 0, responseBytes.Length).ConfigureAwait(false);
-            await stream.FlushAsync().ConfigureAwait(false);
-            /* 
-            var response                = context.Response;
-            response.StatusCode         = 101;
-            response.StatusDescription  = "Switching Protocols";
-            var responseHeaders         = response.Headers;
-            responseHeaders["Connection"]               = "Upgrade";
-            responseHeaders["Upgrade"]                  = "websocket";
-            responseHeaders["Sec-WebSocket-Accept"]     = secWebSocketAccept;
             
-            await response.OutputStream.FlushAsync();*/
+            await stream.FlushAsync().ConfigureAwait(false); // todo required?
+
             return wsContext;
         }
         
@@ -89,6 +81,10 @@ Sec-WebSocket-Accept: {secWebSocketAccept}
                 var hash = sha1.ComputeHash(Encoding.UTF8.GetBytes(input));
                 return Convert.ToBase64String(hash);
             }
+        }
+
+        internal static bool IsWebSocketRequest(HttpListenerRequest req) {
+            return req.Headers["Connection"] == "Upgrade" && req.Headers["Upgrade"] != null;
         }
     }
 }

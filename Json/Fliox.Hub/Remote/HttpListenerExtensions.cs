@@ -19,21 +19,15 @@ namespace Friflo.Json.Fliox.Hub.Remote
             if (!httpHost.GetRoute(path, out string route)) {
                 return httpHost.GetRequestContext(path, request.HttpMethod);
             }
-            // accepting WebSockets in Unity fails at IsWebSocketRequest. See: 
-            // [Help Wanted - Websocket Server in Standalone build - Unity Forum] https://forum.unity.com/threads/websocket-server-in-standalone-build.1072526/
             HttpListenerRequest  req  = context.Request;
-#if SERVER_WEBSOCKET
-            if (req.Headers["Connection"] == "Upgrade" && req.Headers["Upgrade"] != null) {
-                var wsContext       = await context.AcceptWebSocket().ConfigureAwait(false);
+#if UNITY_5_3_OR_NEWER
+            // Unity <= 2021.3 has currently no support for Server WebSockets  =>  add functionality using ServerWebSocketExtensions
+            // see: [Help Wanted - Websocket Server in Standalone build - Unity Forum] https://forum.unity.com/threads/websocket-server-in-standalone-build.1072526/
+            if (ServerWebSocketExtensions.IsWebSocketRequest(req)) {
+                var wsContext       = await ServerWebSocketExtensions.AcceptWebSocket(context).ConfigureAwait(false);
                 var websocket       = wsContext.WebSocket;
                 var remoteEndPoint  = request.RemoteEndPoint;
                 await WebSocketHost.SendReceiveMessages (websocket, remoteEndPoint, httpHost).ConfigureAwait(false);
-                return null;
-            }
-#endif
-#if UNITY_5_3_OR_NEWER
-            if (req.Headers["Connection"] == "Upgrade" && req.Headers["Upgrade"] != null) {
-                await HandleUnityServerWebSocket(context.Response).ConfigureAwait(false);
                 return null;
             }
 #endif
@@ -81,13 +75,6 @@ namespace Friflo.Json.Fliox.Hub.Remote
                     response.Headers[header.Key] = header.Value;
                 }
             }
-        }
-        
-        // ReSharper disable once UnusedMember.Local
-        private static async Task HandleUnityServerWebSocket (HttpListenerResponse response) {
-            const string error = "Unity HttpListener doesnt support server WebSockets";
-            await WriteResponseString(response, "text/plain", (int)HttpStatusCode.NotImplemented, error, null).ConfigureAwait(false);
-            response.Close();
         }
     }
     
