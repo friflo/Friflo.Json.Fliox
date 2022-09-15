@@ -4,6 +4,7 @@
 using System;
 using System.IO;
 using System.Net.WebSockets;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -19,7 +20,18 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
         public FrameProtocolWriter(bool mask, int bufferSize = 4096) {
             writeBuffer     = new byte[bufferSize + MaxHeaderLength];
             maxBufferSize   = bufferSize;
-            this.mask       = mask;    
+            this.mask       = mask;
+        }
+        
+        /// [RFC 6455: The WebSocket Protocol - Close] https://www.rfc-editor.org/rfc/rfc6455#section-5.5.1
+        public async Task CloseAsync(Stream stream, WebSocketCloseStatus closeStatus, string statusDescription, CancellationToken cancellationToken) {
+            var description = Encoding.UTF8.GetBytes(statusDescription);
+            var response    = new byte[2 + description.Length];
+            response[0]     = (byte)((int)closeStatus >> 8);
+            response[1]     = (byte)((int)closeStatus & 0xff);
+            Array.Copy(description, 0, response, 2, description.Length);            
+            var dataBuffer  = new ArraySegment<byte> (response);
+            await WriteAsync(stream, dataBuffer, WebSocketMessageType.Close, true, cancellationToken).ConfigureAwait(false);
         }
         
         public async Task WriteAsync(
@@ -36,7 +48,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
             int remaining   = dataCount;
             int dataPos     = 0;
             
-            while (remaining > 0) {
+            while (true) {
                 // if message > max buffer size write multiple fragments
                 var isLast      = remaining <= maxBufferSize;
                 var writeCount  = isLast ? remaining : maxBufferSize;
@@ -61,6 +73,9 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
                 dataPos     += writeCount;
 
                 await stream.WriteAsync(buffer, 0, bufferLen, cancellationToken).ConfigureAwait(false);
+                
+                if (remaining <= 0)
+                    break;
             }
         }
         
@@ -72,7 +87,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
             byte[]                  maskingKey)
         {
             // --- write Fin & Opcode
-            var opcode      = (byte)(messageType == WebSocketMessageType.Text ? Opcode.TextFrame : Opcode.BinaryFrame);
+            var opcode      = (byte)GetOpcode(messageType);
             var fin         = (byte)(endOfMessage ? FrameFlags.Fin : 0);
             buffer[0]       = (byte)(fin | opcode);
             var lenMask     = maskingKey == null ? 0 : (int)LenFlags.Mask;
@@ -109,6 +124,15 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
                 bufferPos += 4;
             }
             return bufferPos;
+        }
+        
+        private static Opcode GetOpcode(WebSocketMessageType messageType) {
+            switch(messageType) {
+                case WebSocketMessageType.Text:     return Opcode.TextFrame;
+                case WebSocketMessageType.Binary:   return Opcode.BinaryFrame;
+                case WebSocketMessageType.Close: 
+                default:                            return Opcode.ConnectionClose;
+            }
         }
     }
 }

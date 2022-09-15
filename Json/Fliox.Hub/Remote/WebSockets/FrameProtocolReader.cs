@@ -14,6 +14,9 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
         public              bool                    EndOfMessage    { get; private set; }
         public              int                     ByteCount       => dataBufferPos;
         public              WebSocketMessageType    MessageType     { get; private set; }
+        public              WebSocketCloseStatus?   CloseStatus     { get; private set; }
+        public              WebSocketState          SocketState     { get; private set; }
+        public              string                  CloseStatusDescription;
         /// <summary> store the bytes read from the socket.
         /// <see cref="bufferPos"/> is its read position and <see cref="bufferLen"/> the count of bytes read from socket</summary>
         private  readonly   byte[]                  buffer;
@@ -41,7 +44,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
             buffer = new byte[bufferSize];
         }
 
-        public async Task ReadFrame(Stream stream, ArraySegment<byte> dataBuffer, CancellationToken cancellationToken)
+        public async Task<bool> ReadFrame(Stream stream, ArraySegment<byte> dataBuffer, CancellationToken cancellationToken)
         {
             dataBufferLen   = dataBuffer.Count;
             this.dataBuffer = dataBuffer;
@@ -50,11 +53,24 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
                 // process unprocessed bytes in buffer from previous call
                 if (Process()) {
                     // var debugStr = Encoding.UTF8.GetString(dataBuffer.Array, 0, ByteCount);
-                    return;
+                    return true;
+                }
+                if (MessageType == WebSocketMessageType.Close) {
+                    SocketState             = WebSocketState.CloseReceived;
+                    CloseStatus             = WebSocketCloseStatus.NormalClosure;
+                    CloseStatusDescription  = "WebSocket close received";
+                    EndOfMessage            = true;
+                    return false;
                 }
                 bufferPos = 0;
                 bufferLen = await stream.ReadAsync(buffer, cancellationToken).ConfigureAwait(false);
-                if (bufferLen < 1) throw new InvalidOperationException("FrameProtocolReader expect ReadAsync() return len > 0");
+                if (bufferLen < 1) {
+                    SocketState             = WebSocketState.Closed;
+                    CloseStatus             = WebSocketCloseStatus.EndpointUnavailable;
+                    CloseStatusDescription  = "WebSocket connection closed";
+                    EndOfMessage            = true;
+                    return false;
+                }
             }
         }
         
