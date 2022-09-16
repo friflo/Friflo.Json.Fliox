@@ -128,13 +128,6 @@ namespace System
         /// - enable access to array index operator this[]
         public static void CopyTo<T>(this ArraySegment<T> segment, T[] destination, int destinationIndex) {
             throw new InvalidOperationException("don't use this method. Use T[] from ArraySegment<T>.Array directly");
-            var segmentArray = segment.Array;
-            if (segmentArray == null)
-                return;
-            var segmentLen = segment.Count;
-            for (int n = 0; n < segmentLen; n++) {
-                destination[n + destinationIndex] = segmentArray[n];
-            }
         }
     }
 }
