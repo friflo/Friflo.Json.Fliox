@@ -187,8 +187,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.WebSockets
         }
         
         /// <summary> Test closing a reader by control frame <see cref="Opcode.ConnectionClose"/> </summary>
-        [Test]      public void  TestWebSocketsClose()       { SingleThreadSynchronizationContext.Run(AssertWebSocketsClose); }
-        private static async Task AssertWebSocketsClose() {
+        [Test]      public void  TestWebSocketsCloseConnection()       { SingleThreadSynchronizationContext.Run(AssertWebSocketsTestCloseConnection); }
+        private static async Task AssertWebSocketsTestCloseConnection() {
             var writer = new FrameProtocolWriter(true);
             var stream = new MemoryStream();
             
