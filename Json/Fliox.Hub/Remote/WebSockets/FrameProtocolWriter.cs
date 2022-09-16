@@ -31,10 +31,10 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
             response[1]     = (byte)((int)closeStatus & 0xff);
             Buffer.BlockCopy(description, 0, response, 2, description.Length);
 
-            await WriteAsync(stream, response, WebSocketMessageType.Close, true, cancellationToken).ConfigureAwait(false);
+            await WriteFrame(stream, response, WebSocketMessageType.Close, true, cancellationToken).ConfigureAwait(false);
         }
         
-        public async Task WriteAsync(
+        public async Task WriteFrame(
             Stream                  stream,
             byte[]                  dataBuffer,
             WebSocketMessageType    messageType,

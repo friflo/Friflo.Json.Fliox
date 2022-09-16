@@ -132,7 +132,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.WebSockets
         private static async Task           Write(FrameProtocolWriter writer, Stream stream, string message)
         {
             var bytes = Encoding.UTF8.GetBytes(message);
-            await writer.WriteAsync(stream, bytes, WebSocketMessageType.Text, true, CancellationToken.None);
+            await writer.WriteFrame(stream, bytes, WebSocketMessageType.Text, true, CancellationToken.None);
         }
         
         private static async Task<string>   Read(FrameProtocolReader reader, Stream stream, byte[] buffer, MemoryStream messageBuffer)
