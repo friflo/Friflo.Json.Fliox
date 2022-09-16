@@ -54,7 +54,8 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
         }
 
         public override async Task<WebSocketReceiveResult> ReceiveAsync(ArraySegment<byte> dataBuffer, CancellationToken cancellationToken) {
-            if (await reader.ReadFrame(stream, dataBuffer, cancellationToken).ConfigureAwait(false)) {
+            var buffer = dataBuffer.Array;
+            if (await reader.ReadFrame(stream, buffer, cancellationToken).ConfigureAwait(false)) {
                 return new WebSocketReceiveResult(reader.ByteCount, reader.MessageType, reader.EndOfMessage);
             }
             state                   = reader.SocketState;
@@ -66,7 +67,8 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
 
         public override async Task SendAsync(ArraySegment<byte> dataBuffer, WebSocketMessageType messageType, bool endOfMessage, CancellationToken cancellationToken) {
             await sendLock.WaitAsync(cancellationToken).ConfigureAwait(false);
-            await writer.WriteAsync(stream, dataBuffer, messageType, endOfMessage, cancellationToken).ConfigureAwait(false);
+            var buffer = dataBuffer.Array;
+            await writer.WriteAsync(stream, buffer, messageType, endOfMessage, cancellationToken).ConfigureAwait(false);
             await stream.FlushAsync(cancellationToken).ConfigureAwait(false); // todo required?
             
             sendLock.Release();

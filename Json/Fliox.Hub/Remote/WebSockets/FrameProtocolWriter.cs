@@ -29,22 +29,21 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
             var response    = new byte[2 + description.Length];
             response[0]     = (byte)((int)closeStatus >> 8);
             response[1]     = (byte)((int)closeStatus & 0xff);
-            Array.Copy(description, 0, response, 2, description.Length);            
-            var dataBuffer  = new ArraySegment<byte> (response);
-            await WriteAsync(stream, dataBuffer, WebSocketMessageType.Close, true, cancellationToken).ConfigureAwait(false);
+            Buffer.BlockCopy(description, 0, response, 2, description.Length);
+
+            await WriteAsync(stream, response, WebSocketMessageType.Close, true, cancellationToken).ConfigureAwait(false);
         }
         
         public async Task WriteAsync(
             Stream                  stream,
-            ArraySegment<byte>      dataBuffer,
+            byte[]                  dataBuffer,
             WebSocketMessageType    messageType,
             bool                    endOfMessage,
             CancellationToken       cancellationToken)
         {
             var buffer      = writeBuffer; // performance: use local enable CPU using these value from stack
-            int dataCount   = dataBuffer.Count;
-            var dataArray   = dataBuffer.Array;
-            if (dataArray == null) throw new InvalidOperationException("expect dataBuffer array not null");
+            if (dataBuffer == null) throw new InvalidOperationException("expect dataBuffer array not null");
+            int dataCount   = dataBuffer.Length;
             int remaining   = dataCount;
             int dataPos     = 0;
             
@@ -61,12 +60,11 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
                     for (int n = 0; n < writeCount; n++) {
                         var dataIndex = dataPos + n;
                         var j = dataIndex % 4;
-                        var b = dataArray[dataIndex];
+                        var b = dataBuffer[dataIndex];
                         buffer[bufferLen + n] = (byte)(b ^ maskingKey[j]);
                     }
                 } else {
-                    var dataSegment = new ArraySegment<byte>(dataArray, dataPos, writeCount);
-                    dataSegment.CopyTo(buffer, bufferLen);
+                    Buffer.BlockCopy(dataBuffer, dataPos, buffer, bufferLen, writeCount);
                 }
                 bufferLen   += writeCount;
                 remaining   -= writeCount;

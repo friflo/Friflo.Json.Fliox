@@ -33,7 +33,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
         private             int                     maskingKeyPos;
         /// <summary>write position of given <see cref="dataBuffer"/> </summary>
         private             int                     dataBufferPos;
-        private             ArraySegment<byte>      dataBuffer;
+        private             byte[]                  dataBuffer;
         private             int                     dataBufferLen;
         /// <summary>[RFC 6455: The WebSocket Protocol - Control Frames] https://www.rfc-editor.org/rfc/rfc6455#section-5.5.1 </summary>
         private readonly    byte[]                  controlFrameBuffer;
@@ -68,10 +68,10 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
             return true;
         }
 
-        public async Task<bool> ReadFrame(Stream stream, ArraySegment<byte> dataBuffer, CancellationToken cancellationToken)
+        public async Task<bool> ReadFrame(Stream stream, byte[] dataBuffer, CancellationToken cancellationToken)
         {
             if (SocketState != WebSocketState.Open) throw new InvalidOperationException("reader already closed");
-            dataBufferLen   = dataBuffer.Count;
+            dataBufferLen   = dataBuffer.Length;
             this.dataBuffer = dataBuffer;
             dataBufferPos   = 0;
             while (true) {
@@ -81,16 +81,15 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
                 processedByteCount += bufferPos - startPos;
                 
                 if (opcode == Opcode.ConnectionClose) {
-                    for (int n = 0; n < dataBufferPos; n++) {
-                        controlFrameBuffer[controlFrameBufferPos++] = this.dataBuffer[n];
-                    }
+                    Buffer.BlockCopy(dataBuffer, 0, controlFrameBuffer, 0, dataBufferPos);
+                    controlFrameBufferPos += dataBufferPos;
                 }
                 if (frameEnd) {
                     // var debugStr = Encoding.UTF8.GetString(dataBuffer.Array, 0, ByteCount);
                     return ProcessFrameEnd();
                 }
                 bufferPos = 0;
-                bufferLen = await stream.ReadAsync(buffer, 0, bufferLen, cancellationToken).ConfigureAwait(false);
+                bufferLen = await stream.ReadAsync(buffer, 0, buffer.Length, cancellationToken).ConfigureAwait(false);
                 if (bufferLen < 1) {
                     SocketState             = WebSocketState.Closed;
                     CloseStatus             = WebSocketCloseStatus.EndpointUnavailable;

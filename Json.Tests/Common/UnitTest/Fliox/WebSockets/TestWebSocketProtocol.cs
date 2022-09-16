@@ -128,18 +128,16 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.WebSockets
         
         private static async Task           Write(FrameProtocolWriter writer, Stream stream, string message)
         {
-            var bytes       = Encoding.UTF8.GetBytes(message);
-            var dataBuffer  = new ArraySegment<byte>(bytes); 
-            await writer.WriteAsync(stream, dataBuffer, WebSocketMessageType.Text, true, CancellationToken.None);
+            var bytes = Encoding.UTF8.GetBytes(message);
+            await writer.WriteAsync(stream, bytes, WebSocketMessageType.Text, true, CancellationToken.None);
         }
         
         private static async Task<string>   Read(FrameProtocolReader reader, Stream stream, byte[] buffer, MemoryStream messageBuffer)
         {
             messageBuffer.Position = 0;
             messageBuffer.SetLength(0);
-            var dataBuffer  = new ArraySegment<byte>(buffer);
             while (true) {
-                await reader.ReadFrame(stream, dataBuffer, CancellationToken.None);
+                await reader.ReadFrame(stream, buffer, CancellationToken.None);
                 
                 if (reader.MessageType != WebSocketMessageType.Text) throw new InvalidOperationException("expect text message");
                 var byteCount   = reader.ByteCount;
@@ -165,7 +163,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.WebSockets
                 stream.Position = 0;
                 
                 var reader      = new FrameProtocolReader();
-                var dataBuffer  = new ArraySegment<byte>(new byte[4094]);
+                var dataBuffer  = new byte[4096];
                 AreEqual(WebSocketState.Open,                       reader.SocketState);
                 
                 bool success    = await reader.ReadFrame(stream, dataBuffer, CancellationToken.None);
@@ -198,7 +196,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.WebSockets
 
             stream.Position = 0;
             var reader      = new FrameProtocolReader();
-            var dataBuffer  = new ArraySegment<byte>(new byte[4094]);
+            var dataBuffer  = new byte[4096];
             
             bool success    = await reader.ReadFrame(stream, dataBuffer, CancellationToken.None);
             
