@@ -90,7 +90,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
                     return ProcessFrameEnd();
                 }
                 bufferPos = 0;
-                bufferLen = await stream.ReadAsync(buffer, cancellationToken).ConfigureAwait(false);
+                bufferLen = await stream.ReadAsync(buffer, 0, bufferLen, cancellationToken).ConfigureAwait(false);
                 if (bufferLen < 1) {
                     SocketState             = WebSocketState.Closed;
                     CloseStatus             = WebSocketCloseStatus.EndpointUnavailable;

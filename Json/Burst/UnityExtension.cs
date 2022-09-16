@@ -118,4 +118,20 @@ namespace System.Linq
         }
     }
 }
+
+namespace System
+{
+    public static class SystemExtensions
+    {
+        public static void CopyTo<T>(this ArraySegment<T> segment, T[] destination, int destinationIndex) {
+            var segmentArray = segment.Array;
+            if (segmentArray == null)
+                return;
+            var segmentLen = segment.Count;
+            for (int n = 0; n < segmentLen; n++) {
+                destination[n + destinationIndex] = segmentArray[n];
+            }
+        }
+    }
+}
 #endif
