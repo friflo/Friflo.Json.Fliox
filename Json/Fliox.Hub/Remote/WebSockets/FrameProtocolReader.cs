@@ -80,7 +80,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
                 processedByteCount += bufferPos - startPos;
                 
                 if (opcode == Opcode.ConnectionClose) {
-                    Buffer.BlockCopy(dataBuffer, 0, controlFrameBuffer, 0, dataBufferPos);
+                    Buffer.BlockCopy(dataBuffer, 0, controlFrameBuffer, controlFrameBufferPos, dataBufferPos);
                     controlFrameBufferPos += dataBufferPos;
                 }
                 if (frameEnd) {
@@ -180,12 +180,13 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
         
         private bool TransitionPayload() {
             if (payloadLen > 0) {
-                payloadPos      = 0;
-                parseState      = Parse.Payload;
+                payloadPos              = 0;
+                parseState              = Parse.Payload;
+                controlFrameBufferPos   = 0;
                 return true;
             }
-            parseState          = Parse.Opcode;
-            EndOfMessage        = fin;
+            parseState      = Parse.Opcode;
+            EndOfMessage    = fin;
             return false;
         }
         
