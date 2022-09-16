@@ -4,6 +4,7 @@
 using System;
 using System.IO;
 using System.Net.WebSockets;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -11,12 +12,12 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
 {
     public sealed class FrameProtocolReader
     {
-        public              bool                    EndOfMessage    { get; private set; }
-        public              int                     ByteCount       => dataBufferPos;
-        public              WebSocketMessageType    MessageType     { get; private set; }
-        public              WebSocketCloseStatus?   CloseStatus     { get; private set; }
-        public              WebSocketState          SocketState     { get; private set; }
-        public              string                  CloseStatusDescription;
+        public              bool                    EndOfMessage            { get; private set; }
+        public              int                     ByteCount               => dataBufferPos;
+        public              WebSocketMessageType    MessageType             { get; private set; }
+        public              WebSocketCloseStatus?   CloseStatus             { get; private set; }
+        public              WebSocketState          SocketState             { get; private set; }
+        public              string                  CloseStatusDescription  { get; private set; }
         /// <summary> store the bytes read from the socket.
         /// <see cref="bufferPos"/> is its read position and <see cref="bufferLen"/> the count of bytes read from socket</summary>
         private  readonly   byte[]                  buffer;
@@ -25,14 +26,18 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
         private             long                    processedByteCount;
         /// <summary> general <see cref="parseState"/> and its sub states <see cref="payloadLenPos"/> and <see cref="maskingKeyPos"/> </summary>
         private             Parse                   parseState;
-        private             FrameFlags              flags;
+        private             bool                    fin;
+        private             Opcode                  opcode;
         private             int                     payloadLenBytes;
         private             int                     payloadLenPos;
         private             int                     maskingKeyPos;
         /// <summary>write position of given <see cref="dataBuffer"/> </summary>
-        private             int                     dataBufferPos;  // position in given dataBuffer
+        private             int                     dataBufferPos;
         private             ArraySegment<byte>      dataBuffer;
         private             int                     dataBufferLen;
+        /// <summary>[RFC 6455: The WebSocket Protocol - Control Frames] https://www.rfc-editor.org/rfc/rfc6455#section-5.5.1 </summary>
+        private readonly    byte[]                  controlFrameBuffer;
+        private             int                     controlFrameBufferPos;
         /// <summary> <see cref="payloadPos"/> read position payload. Increments up to <see cref="payloadLen"/> </summary>
         private             long                    payloadPos;
         private             long                    payloadLen;
@@ -41,8 +46,26 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
         private readonly    byte[]                  maskingKey = new byte[4];
         
         public FrameProtocolReader(int bufferSize = 4096) {
-            buffer      = new byte[bufferSize];
-            SocketState = WebSocketState.Open;
+            buffer              = new byte[bufferSize];
+            SocketState         = WebSocketState.Open;
+            controlFrameBuffer  = new byte[125];
+        }
+        
+        private bool ProcessFrameEnd () {
+            if (opcode == Opcode.ConnectionClose) {
+                // [RFC 6455: The WebSocket Protocol - Close] https://www.rfc-editor.org/rfc/rfc6455#section-5.5.1
+                SocketState             = WebSocketState.CloseReceived;
+                if (controlFrameBufferPos >= 2) {
+                    CloseStatus             = (WebSocketCloseStatus)(controlFrameBuffer[0] << 8 | controlFrameBuffer[1]);
+                    CloseStatusDescription  = Encoding.UTF8.GetString(controlFrameBuffer, 2, controlFrameBufferPos - 2);
+                } else {
+                    CloseStatus             = null;
+                    CloseStatusDescription  = "";
+                }
+                EndOfMessage = true;
+                return false;
+            }
+            return true;
         }
 
         public async Task<bool> ReadFrame(Stream stream, ArraySegment<byte> dataBuffer, CancellationToken cancellationToken)
@@ -53,15 +76,15 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
             dataBufferPos   = 0;
             while (true) {
                 // process unprocessed bytes in buffer from previous call
-                if (Process()) {
+                bool frameEnd = ProcessFrame();
+                if (opcode == Opcode.ConnectionClose) {
+                    for (int n = 0; n < dataBufferPos; n++) {
+                        controlFrameBuffer[controlFrameBufferPos++] = this.dataBuffer[n];
+                    }
+                }
+                if (frameEnd) {
                     // var debugStr = Encoding.UTF8.GetString(dataBuffer.Array, 0, ByteCount);
-                    if (MessageType != WebSocketMessageType.Close)
-                        return true;
-                    SocketState             = WebSocketState.CloseReceived;
-                    CloseStatus             = WebSocketCloseStatus.NormalClosure;
-                    CloseStatusDescription  = "WebSocket close received";
-                    EndOfMessage            = true;
-                    return false;
+                    return ProcessFrameEnd();
                 }
                 bufferPos = 0;
                 bufferLen = await stream.ReadAsync(buffer, cancellationToken).ConfigureAwait(false);
@@ -84,7 +107,8 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
             Payload,
         }
 
-        private bool Process ()
+        /// <summary> returns true if reading payload is complete or the given <see cref="dataBuffer"/> is filled </summary>
+        private bool ProcessFrame ()
         {
             // performance: use locals enable CPU using these values from stack
             var buf         = buffer;
@@ -95,8 +119,8 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
                 var b =  buf[bufferPos++];
                 switch (parseState) {
                     case Parse.Opcode:
-                        flags           = (FrameFlags)b;
-                        var opcode      = (Opcode)   (b & (int)FrameFlags.Opcode);
+                        fin             =          (b & (int)FrameFlags.Fin) != 0;
+                        opcode          = (Opcode) (b & (int)FrameFlags.Opcode);
                         MessageType     = GetMessageType(opcode);
                         payloadLenPos   = -1;
                         parseState      = Parse.PayloadLen;
@@ -136,12 +160,13 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
                         break;
                     case Parse.Payload:
                         // if (dataPos == 71) { int debug = 1; }
+                        byte dataByte;
                         if (mask) {
-                            var j = payloadPos % 4;
-                            dataBuffer[dataBufferPos++] = (byte)(b ^ maskingKey[j]);
+                            dataByte = (byte)(b ^ maskingKey[payloadPos % 4]);
                         } else {
-                            dataBuffer[dataBufferPos++] = b;
+                            dataByte = b;
                         }
+                        dataBuffer[dataBufferPos++] = dataByte;
                         if (++payloadPos < payloadLen) {
                             if (dataBufferPos < dataBufferLen)
                                 break;
@@ -150,7 +175,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
                             return true;
                         }
                         parseState          = Parse.Opcode;
-                        EndOfMessage        = (flags & FrameFlags.Fin) != 0;
+                        EndOfMessage        = fin;
                         processedByteCount += bufferPos - startPos;
                         return true;
                 }

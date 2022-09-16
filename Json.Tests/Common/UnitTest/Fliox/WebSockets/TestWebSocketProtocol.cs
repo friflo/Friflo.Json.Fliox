@@ -192,10 +192,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.WebSockets
             var writer = new FrameProtocolWriter(true);
             var stream = new MemoryStream();
             
-            var closeStatus = 1000;
-            var bytes       = new byte[] { (byte)(closeStatus >> 8), (byte)(closeStatus & 0xff)}; 
-            var writeBuffer = new ArraySegment<byte>(bytes); 
-            await writer.WriteAsync(stream, writeBuffer, WebSocketMessageType.Close, true, CancellationToken.None);
+            await writer.CloseAsync(stream, WebSocketCloseStatus.NormalClosure, "test connection close", CancellationToken.None);
 
             stream.Position = 0;
             var reader      = new FrameProtocolReader();
@@ -208,6 +205,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.WebSockets
             AreEqual(WebSocketState.CloseReceived,          reader.SocketState);
             AreEqual(WebSocketCloseStatus.NormalClosure,    reader.CloseStatus);
             AreEqual(WebSocketMessageType.Close,            reader.MessageType);
+            AreEqual("test connection close",               reader.CloseStatusDescription);
         }
     }
 }
