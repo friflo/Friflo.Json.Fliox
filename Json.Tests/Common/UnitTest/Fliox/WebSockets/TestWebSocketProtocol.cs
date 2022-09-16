@@ -151,6 +151,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.WebSockets
             }
         }
 
+        /// <summary> Test closing a reader from a closed stream </summary>
         [Test]      public void  TestWebSocketsCloseStream()       { SingleThreadSynchronizationContext.Run(AssertWebSocketsCloseStream); }
         private static async Task AssertWebSocketsCloseStream() {
             var writer = new FrameProtocolWriter(true);
@@ -159,7 +160,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.WebSockets
             await Write (writer, stream, "hi");
             
             for (var n = stream.Length - 1; n >= 0; n--) {
-                stream.SetLength(n);
+                stream.SetLength(n); // test a closed stream with various lengths
                 stream.Position = 0;
                 
                 var reader      = new FrameProtocolReader();
@@ -168,11 +169,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.WebSockets
                 
                 bool success    = await reader.ReadFrame(stream, dataBuffer, CancellationToken.None);
                 
+                IsFalse (success);
+                IsTrue  (reader.EndOfMessage);
                 AreEqual(WebSocketState.Closed,                     reader.SocketState);
                 AreEqual(WebSocketCloseStatus.EndpointUnavailable,  reader.CloseStatus);
                 AreEqual(WebSocketMessageType.Close,                reader.MessageType);
-                IsFalse (success);
-                IsTrue  (reader.EndOfMessage);
                 
                 try {
                     // read from closed reader
@@ -185,6 +186,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.WebSockets
             }
         }
         
+        /// <summary> Test closing a reader by control frame <see cref="Opcode.ConnectionClose"/> </summary>
         [Test]      public void  TestWebSocketsClose()       { SingleThreadSynchronizationContext.Run(AssertWebSocketsClose); }
         private static async Task AssertWebSocketsClose() {
             var writer = new FrameProtocolWriter(true);
@@ -203,9 +205,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.WebSockets
             
             IsFalse (success);
             IsTrue  (reader.EndOfMessage);
+            AreEqual(WebSocketState.CloseReceived,          reader.SocketState);
             AreEqual(WebSocketCloseStatus.NormalClosure,    reader.CloseStatus);
             AreEqual(WebSocketMessageType.Close,            reader.MessageType);
-            AreEqual(WebSocketState.CloseReceived,          reader.SocketState);
         }
     }
 }
