@@ -147,17 +147,23 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
                                 break;
                         }
                         maskingKeyPos   = 0;
-                        payloadPos      = 0;
-                        parseState      = mask ? Parse.Masking : Parse.Payload;
-                        break;
+                        if (mask) {
+                            parseState  = Parse.Masking;
+                            break;
+                        }
+                        if (TransitionPayload())
+                            break;
+                        processedByteCount += bufferPos - startPos;
+                        return true;
                     case Parse.Masking:
                         maskingKey[maskingKeyPos++] = b;
                         if (maskingKeyPos < 4) {
                             break;
                         }
-                        payloadPos      = 0;
-                        parseState      = Parse.Payload;
-                        break;
+                        if (TransitionPayload())
+                            break;
+                        processedByteCount += bufferPos - startPos;
+                        return true;
                     case Parse.Payload:
                         // if (dataPos == 71) { int debug = 1; }
                         byte dataByte;
@@ -181,6 +187,17 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
                 }
             }
             processedByteCount += bufferPos - startPos;
+            return false;
+        }
+        
+        private bool TransitionPayload() {
+            if (payloadLen > 0) {
+                payloadPos      = 0;
+                parseState      = Parse.Payload;
+                return true;
+            }
+            parseState          = Parse.Opcode;
+            EndOfMessage        = fin;
             return false;
         }
         

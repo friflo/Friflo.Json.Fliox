@@ -21,15 +21,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.WebSockets
         private static async Task AssertWebSocketsNoMasking() {
             {
                 var len = await WriteRead (false, 0x100000, 4096); // ensure writer create no message fragmentation
-                AreEqual(131231, len);
+                AreEqual(131225, len);
             }
             {
                 var len = await WriteRead (false, 4096, 4096);
-                AreEqual(131345, len);
+                AreEqual(131339, len);
             }
             {
                 var len = await WriteRead (false, 80, 4096);
-                AreEqual(134497, len);
+                AreEqual(134491, len);
             }
         }
         
@@ -38,15 +38,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.WebSockets
         private static async Task AssertWebSocketsMasking() {
             {
                 var len = await WriteRead (true, 0x100000, 4096); // ensure writer create no message fragmentation
-                AreEqual(131251, len);
+                AreEqual(131245, len);
             }
             {
                 var len = await WriteRead (true, 4096, 4096);
-                AreEqual(131485, len);
+                AreEqual(131479, len);
             }
             {
                 var len = await WriteRead (true, 80, 4096);
-                AreEqual(141073, len);
+                AreEqual(141067, len);
             }
         }
         
@@ -55,15 +55,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.WebSockets
         private static async Task AssertWebSocketsReadSingleByte() {
             {
                 var len = await WriteRead (true, 0x100000, 1); // ensure writer create no message fragmentation
-                AreEqual(131251, len);
+                AreEqual(131245, len);
             }
             {
                 var len = await WriteRead (true, 4096, 1);
-                AreEqual(131485, len);
+                AreEqual(131479, len);
             }
             {
                 var len = await WriteRead (true, 80, 1);
-                AreEqual(141073, len);
+                AreEqual(141067, len);
             }
         }
         
@@ -72,15 +72,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.WebSockets
         private static async Task AssertWebSocketsSmallBuffer() {
             {
                 var len = await WriteRead (true, 0x100000, 4096, 1); // ensure writer create no message fragmentation
-                AreEqual(131251, len);
+                AreEqual(131245, len);
             }
             {
                 var len = await WriteRead (true, 4096, 4096, 1);
-                AreEqual(131485, len);
+                AreEqual(131479, len);
             }
             {
                 var len = await WriteRead (true, 80, 4096, 1);
-                AreEqual(141073, len);
+                AreEqual(141067, len);
             }
         }
 
@@ -90,7 +90,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.WebSockets
             
             var stream = new MemoryStream();
             await Write (writer, stream, "Test-1");
-            await Write (writer, stream, "Test-2");
+            await Write (writer, stream, "");
             
             var str126 = new string('a', 126);
             await Write (writer, stream, str126);
@@ -110,7 +110,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.WebSockets
             AreEqual("Test-1", result);
             
             result      = await Read(reader, stream, buffer, messageBuffer);
-            AreEqual("Test-2", result);
+            AreEqual("", result);
             
             result      = await Read(reader, stream, buffer, messageBuffer);
             AreEqual(str126, result);
@@ -136,6 +136,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.WebSockets
         private static async Task<string>   Read(FrameProtocolReader reader, Stream stream, byte[] buffer, MemoryStream messageBuffer)
         {
             messageBuffer.Position = 0;
+            messageBuffer.SetLength(0);
             var dataBuffer  = new ArraySegment<byte>(buffer);
             while (true) {
                 await reader.ReadFrame(stream, dataBuffer, CancellationToken.None);
