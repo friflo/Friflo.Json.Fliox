@@ -75,9 +75,12 @@ Sec-WebSocket-Accept: {secWebSocketAccept}
         static ServerWebSocketExtensions() {
             const BindingFlags flags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
             ConnectionInfo      = typeof(HttpListenerContext).GetProperty("Connection", flags);
-            var connectionType  = ConnectionInfo!.PropertyType;  // HttpConnection
+            if (ConnectionInfo == null) throw new NullReferenceException (nameof(ConnectionInfo));
+            var connectionType  = ConnectionInfo.PropertyType;  // HttpConnection
             StreamInfo          = connectionType.GetField("stream", flags);
+            if (StreamInfo == null) throw new NullReferenceException (nameof(StreamInfo));
             SocketInfo          = typeof(NetworkStream).GetProperty("Socket", flags);
+            if (SocketInfo == null) throw new NullReferenceException (nameof(SocketInfo));
         }
         
         private static (NetworkStream, Socket) GetNetworkStream(HttpListenerContext context) {
