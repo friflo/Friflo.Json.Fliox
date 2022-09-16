@@ -55,7 +55,8 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
 
         public override async Task<WebSocketReceiveResult> ReceiveAsync(ArraySegment<byte> dataBuffer, CancellationToken cancellationToken) {
             var buffer = dataBuffer.Array;
-            if (await reader.ReadFrame(stream, buffer, cancellationToken).ConfigureAwait(false)) {
+            var socketState = await reader.ReadFrame(stream, buffer, cancellationToken).ConfigureAwait(false);
+            if (socketState == WebSocketState.Open) {
                 return new WebSocketReceiveResult(reader.ByteCount, reader.MessageType, reader.EndOfMessage);
             }
             state                   = reader.SocketState;

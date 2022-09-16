@@ -50,25 +50,8 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
             SocketState         = WebSocketState.Open;
             controlFrameBuffer  = new byte[125];
         }
-        
-        private bool ProcessFrameEnd () {
-            if (opcode == Opcode.ConnectionClose) {
-                // [RFC 6455: The WebSocket Protocol - Close] https://www.rfc-editor.org/rfc/rfc6455#section-5.5.1
-                SocketState             = WebSocketState.CloseReceived;
-                if (controlFrameBufferPos >= 2) {
-                    CloseStatus             = (WebSocketCloseStatus)(controlFrameBuffer[0] << 8 | controlFrameBuffer[1]);
-                    CloseStatusDescription  = Encoding.UTF8.GetString(controlFrameBuffer, 2, controlFrameBufferPos - 2);
-                } else {
-                    CloseStatus             = null;
-                    CloseStatusDescription  = "";
-                }
-                EndOfMessage = true;
-                return false;
-            }
-            return true;
-        }
 
-        public async Task<bool> ReadFrame(Stream stream, byte[] dataBuffer, CancellationToken cancellationToken)
+        public async Task<WebSocketState> ReadFrame(Stream stream, byte[] dataBuffer, CancellationToken cancellationToken)
         {
             if (SocketState != WebSocketState.Open) throw new InvalidOperationException("reader already closed");
             this.dataBuffer = dataBuffer;
@@ -79,13 +62,9 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
                 bool frameEnd       = ProcessFrame();
                 processedByteCount += bufferPos - startPos;
                 
-                if (opcode == Opcode.ConnectionClose) {
-                    Buffer.BlockCopy(dataBuffer, 0, controlFrameBuffer, controlFrameBufferPos, dataBufferPos);
-                    controlFrameBufferPos += dataBufferPos;
-                }
                 if (frameEnd) {
                     // var debugStr = Encoding.UTF8.GetString(dataBuffer.Array, 0, ByteCount);
-                    return ProcessFrameEnd();
+                    return SocketState;
                 }
                 bufferPos = 0;
                 bufferLen = await stream.ReadAsync(buffer, 0, buffer.Length, cancellationToken).ConfigureAwait(false);
@@ -95,7 +74,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
                     CloseStatusDescription  = "stream closed";
                     MessageType             = WebSocketMessageType.Close;
                     EndOfMessage            = true;
-                    return false;
+                    return SocketState;
                 }
             }
         }
@@ -172,7 +151,13 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
                         return true; // empty payload
                     
                     case Parse.Payload:
-                        return ReadPayload(buf, len);
+                        var dataBufferStart = dataBufferPos;
+                        var payloadResult   = ReadPayload(buf, len);
+
+                        if (opcode == Opcode.ConnectionClose) {
+                            UpdateControlFrameBuffer(dataBufferStart);
+                        }
+                        return payloadResult;
                 }
             }
             return false;
@@ -224,6 +209,23 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
                 return true;
             }
             return false;
+        }
+        
+        private void UpdateControlFrameBuffer(int dataBufferStart) {
+            var bytesAdded = dataBufferPos - dataBufferStart;
+            Buffer.BlockCopy(dataBuffer, dataBufferStart, controlFrameBuffer, controlFrameBufferPos, bytesAdded);
+            controlFrameBufferPos += bytesAdded;
+            if (!EndOfMessage)
+                return;
+            // [RFC 6455: The WebSocket Protocol - Close] https://www.rfc-editor.org/rfc/rfc6455#section-5.5.1
+            SocketState             = WebSocketState.CloseReceived;
+            if (controlFrameBufferPos >= 2) {
+                CloseStatus             = (WebSocketCloseStatus)(controlFrameBuffer[0] << 8 | controlFrameBuffer[1]);
+                CloseStatusDescription  = Encoding.UTF8.GetString(controlFrameBuffer, 2, controlFrameBufferPos - 2);
+            } else {
+                CloseStatus             = null;
+                CloseStatusDescription  = "";
+            }
         }
         
         private static WebSocketMessageType GetMessageType(Opcode opcode) {

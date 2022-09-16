@@ -22,15 +22,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.WebSockets
             var readBuffer = new byte[1000];
             {
                 var len = await WriteRead (false, 0x100000, 4096, readBuffer); // ensure writer create no message fragmentation
-                AreEqual(131225, len);
+                AreEqual(131242, len);
             }
             {
                 var len = await WriteRead (false, 4096, 4096, readBuffer);
-                AreEqual(131339, len);
+                AreEqual(131356, len);
             }
             {
                 var len = await WriteRead (false, 80, 4096, readBuffer);
-                AreEqual(134491, len);
+                AreEqual(134508, len);
             }
         }
         
@@ -40,15 +40,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.WebSockets
             var readBuffer = new byte[1000];
             {
                 var len = await WriteRead (true, 0x100000, 4096, readBuffer); // ensure writer create no message fragmentation
-                AreEqual(131245, len);
+                AreEqual(131266, len);
             }
             {
                 var len = await WriteRead (true, 4096, 4096, readBuffer);
-                AreEqual(131479, len);
+                AreEqual(131500, len);
             }
             {
                 var len = await WriteRead (true, 80, 4096, readBuffer);
-                AreEqual(141067, len);
+                AreEqual(141088, len);
             }
         }
         
@@ -58,15 +58,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.WebSockets
             var readBuffer = new byte[1000];
             {
                 var len = await WriteRead (true, 0x100000, 1, readBuffer); // ensure writer create no message fragmentation
-                AreEqual(131245, len);
+                AreEqual(131266, len);
             }
             {
                 var len = await WriteRead (true, 4096, 1, readBuffer);
-                AreEqual(131479, len);
+                AreEqual(131500, len);
             }
             {
                 var len = await WriteRead (true, 80, 1, readBuffer);
-                AreEqual(141067, len);
+                AreEqual(141088, len);
             }
         }
         
@@ -76,15 +76,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.WebSockets
             var readBuffer = new byte[1];
             {
                 var len = await WriteRead (true, 0x100000, 4096, readBuffer); // ensure writer create no message fragmentation
-                AreEqual(131245, len);
+                AreEqual(131266, len);
             }
             {
                 var len = await WriteRead (true, 4096, 4096, readBuffer);
-                AreEqual(131479, len);
+                AreEqual(131500, len);
             }
             {
                 var len = await WriteRead (true, 80, 4096, readBuffer);
-                AreEqual(141067, len);
+                AreEqual(141088, len);
             }
         }
 
@@ -104,6 +104,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.WebSockets
             
             var str0x10000 = $"{new string('c', 0x10000)}";
             await Write (writer, stream, str0x10000);
+            
+            await writer.CloseAsync(stream, WebSocketCloseStatus.NormalClosure, "test finished", CancellationToken.None);
 
             var messageBuffer   = new MemoryStream();
             var reader          = new FrameProtocolReader(readerSize);
@@ -124,6 +126,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.WebSockets
             result      = await Read(reader, stream, readBuffer, messageBuffer);
             AreEqual(str0x10000, result);
             
+            await Read(reader, stream, readBuffer, messageBuffer);
+            AreEqual(WebSocketState.CloseReceived,          reader.SocketState);
+            AreEqual(WebSocketMessageType.Close,            reader.MessageType);
+            AreEqual(WebSocketCloseStatus.NormalClosure,    reader.CloseStatus);
+            AreEqual("test finished",                       reader.CloseStatusDescription);
+            
             AreEqual(stream.Length, stream.Position);
             
             return stream.Position;
@@ -142,7 +150,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.WebSockets
             while (true) {
                 await reader.ReadFrame(stream, buffer, CancellationToken.None);
                 
-                if (reader.MessageType != WebSocketMessageType.Text) throw new InvalidOperationException("expect text message");
+                // if (reader.MessageType != WebSocketMessageType.Text) throw new InvalidOperationException("expect text message");
                 var byteCount   = reader.ByteCount;
                 messageBuffer.Write(buffer, 0, byteCount);
                 if (!reader.EndOfMessage)
@@ -169,13 +177,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.WebSockets
                 var dataBuffer  = new byte[4096];
                 AreEqual(WebSocketState.Open,                       reader.SocketState);
                 
-                bool success    = await reader.ReadFrame(stream, dataBuffer, CancellationToken.None);
+                var socketState = await reader.ReadFrame(stream, dataBuffer, CancellationToken.None);
                 
-                IsFalse (success);
                 IsTrue  (reader.EndOfMessage);
+                AreEqual(WebSocketState.Closed,                     socketState);
                 AreEqual(WebSocketState.Closed,                     reader.SocketState);
-                AreEqual(WebSocketCloseStatus.EndpointUnavailable,  reader.CloseStatus);
                 AreEqual(WebSocketMessageType.Close,                reader.MessageType);
+                AreEqual(WebSocketCloseStatus.EndpointUnavailable,  reader.CloseStatus);
                 AreEqual("stream closed",                           reader.CloseStatusDescription);
                 
                 try {
@@ -201,10 +209,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.WebSockets
             var reader      = new FrameProtocolReader();
             var dataBuffer  = new byte[4096];
             
-            bool success    = await reader.ReadFrame(stream, dataBuffer, CancellationToken.None);
+            var socketState = await reader.ReadFrame(stream, dataBuffer, CancellationToken.None);
             
-            IsFalse (success);
             IsTrue  (reader.EndOfMessage);
+            AreEqual(WebSocketState.CloseReceived,          socketState);
             AreEqual(WebSocketState.CloseReceived,          reader.SocketState);
             AreEqual(WebSocketCloseStatus.NormalClosure,    reader.CloseStatus);
             AreEqual(WebSocketMessageType.Close,            reader.MessageType);
