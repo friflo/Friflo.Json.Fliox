@@ -68,15 +68,22 @@ Sec-WebSocket-Accept: {secWebSocketAccept}
             return wsContext;
         }
         
+        private static readonly PropertyInfo ConnectionInfo;
+        private static readonly FieldInfo    StreamInfo;
+        private static readonly PropertyInfo SocketInfo;
+
+        static ServerWebSocketExtensions() {
+            const BindingFlags flags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
+            ConnectionInfo      = typeof(HttpListenerContext).GetProperty("Connection", flags);
+            var connectionType  = ConnectionInfo!.PropertyType;  // HttpConnection
+            StreamInfo          = connectionType.GetField("stream", flags);
+            SocketInfo          = typeof(NetworkStream).GetProperty("Socket", flags);
+        }
+        
         private static (NetworkStream, Socket) GetNetworkStream(HttpListenerContext context) {
-            var flags           = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
-            var connectionInfo  = typeof(HttpListenerContext).GetProperty("Connection", flags);
-            var connection      = connectionInfo.GetValue(context); // HttpConnection
-            var streamInfo      = connection.GetType().GetField("stream", flags);
-            var stream          = (NetworkStream) streamInfo.GetValue(connection);
-            var socketInfo      = typeof(NetworkStream).GetProperty("Socket", flags);
-            var socket          = (Socket)socketInfo.GetValue(stream); // HttpConnection
-            
+            var connection  = ConnectionInfo.GetValue(context);
+            var stream      = (NetworkStream) StreamInfo.GetValue(connection);
+            var socket      = (Socket)SocketInfo.GetValue(stream);
             return (stream, socket);
         }
         
