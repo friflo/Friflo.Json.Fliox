@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Net.WebSockets;
 using System.Text;
@@ -148,6 +149,63 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.WebSockets
                 var targetLen   = (int)messageBuffer.Length;
                 return Encoding.UTF8.GetString(targetArray, 0, targetLen);
             }
+        }
+
+        [Test]      public void  TestWebSocketsCloseStream()       { SingleThreadSynchronizationContext.Run(AssertWebSocketsCloseStream); }
+        private static async Task AssertWebSocketsCloseStream() {
+            var writer = new FrameProtocolWriter(true);
+            var stream = new MemoryStream();
+            
+            await Write (writer, stream, "hi");
+            
+            for (var n = stream.Length - 1; n >= 0; n--) {
+                stream.SetLength(n);
+                stream.Position = 0;
+                
+                var reader      = new FrameProtocolReader();
+                var dataBuffer  = new ArraySegment<byte>(new byte[4094]);
+                AreEqual(WebSocketState.Open,                       reader.SocketState);
+                
+                bool success    = await reader.ReadFrame(stream, dataBuffer, CancellationToken.None);
+                
+                AreEqual(WebSocketState.Closed,                     reader.SocketState);
+                AreEqual(WebSocketCloseStatus.EndpointUnavailable,  reader.CloseStatus);
+                AreEqual(WebSocketMessageType.Close,                reader.MessageType);
+                IsFalse (success);
+                IsTrue  (reader.EndOfMessage);
+                
+                try {
+                    // read from closed reader
+                    await reader.ReadFrame(stream, dataBuffer, CancellationToken.None);
+                    
+                    Debug.Fail("expect exception");
+                } catch (Exception e) {
+                    AreEqual("reader already closed", e.Message);
+                }
+            }
+        }
+        
+        [Test]      public void  TestWebSocketsClose()       { SingleThreadSynchronizationContext.Run(AssertWebSocketsClose); }
+        private static async Task AssertWebSocketsClose() {
+            var writer = new FrameProtocolWriter(true);
+            var stream = new MemoryStream();
+            
+            var closeStatus = 1000;
+            var bytes       = new byte[] { (byte)(closeStatus >> 8), (byte)(closeStatus & 0xff)}; 
+            var writeBuffer = new ArraySegment<byte>(bytes); 
+            await writer.WriteAsync(stream, writeBuffer, WebSocketMessageType.Close, true, CancellationToken.None);
+
+            stream.Position = 0;
+            var reader      = new FrameProtocolReader();
+            var dataBuffer  = new ArraySegment<byte>(new byte[4094]);
+            
+            bool success    = await reader.ReadFrame(stream, dataBuffer, CancellationToken.None);
+            
+            IsFalse (success);
+            IsTrue  (reader.EndOfMessage);
+            AreEqual(WebSocketCloseStatus.NormalClosure,    reader.CloseStatus);
+            AreEqual(WebSocketMessageType.Close,            reader.MessageType);
+            AreEqual(WebSocketState.CloseReceived,          reader.SocketState);
         }
     }
 }

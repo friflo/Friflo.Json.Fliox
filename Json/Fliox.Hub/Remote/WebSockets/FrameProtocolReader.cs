@@ -41,11 +41,13 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
         private readonly    byte[]                  maskingKey = new byte[4];
         
         public FrameProtocolReader(int bufferSize = 4096) {
-            buffer = new byte[bufferSize];
+            buffer      = new byte[bufferSize];
+            SocketState = WebSocketState.Open;
         }
 
         public async Task<bool> ReadFrame(Stream stream, ArraySegment<byte> dataBuffer, CancellationToken cancellationToken)
         {
+            if (SocketState != WebSocketState.Open) throw new InvalidOperationException("reader already closed");
             dataBufferLen   = dataBuffer.Count;
             this.dataBuffer = dataBuffer;
             dataBufferPos   = 0;
@@ -53,9 +55,8 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
                 // process unprocessed bytes in buffer from previous call
                 if (Process()) {
                     // var debugStr = Encoding.UTF8.GetString(dataBuffer.Array, 0, ByteCount);
-                    return true;
-                }
-                if (MessageType == WebSocketMessageType.Close) {
+                    if (MessageType != WebSocketMessageType.Close)
+                        return true;
                     SocketState             = WebSocketState.CloseReceived;
                     CloseStatus             = WebSocketCloseStatus.NormalClosure;
                     CloseStatusDescription  = "WebSocket close received";
@@ -68,6 +69,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
                     SocketState             = WebSocketState.Closed;
                     CloseStatus             = WebSocketCloseStatus.EndpointUnavailable;
                     CloseStatusDescription  = "WebSocket connection closed";
+                    MessageType             = WebSocketMessageType.Close;
                     EndOfMessage            = true;
                     return false;
                 }
