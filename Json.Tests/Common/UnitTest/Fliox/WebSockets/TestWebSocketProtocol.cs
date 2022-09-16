@@ -19,16 +19,17 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.WebSockets
         /// <summary> Test frame writer and reader - masking <b>disabled</b> </summary>
         [Test]      public void  TestWebSocketsNoMasking()       { SingleThreadSynchronizationContext.Run(AssertWebSocketsNoMasking); }
         private static async Task AssertWebSocketsNoMasking() {
+            var readBuffer = new byte[1000];
             {
-                var len = await WriteRead (false, 0x100000, 4096); // ensure writer create no message fragmentation
+                var len = await WriteRead (false, 0x100000, 4096, readBuffer); // ensure writer create no message fragmentation
                 AreEqual(131225, len);
             }
             {
-                var len = await WriteRead (false, 4096, 4096);
+                var len = await WriteRead (false, 4096, 4096, readBuffer);
                 AreEqual(131339, len);
             }
             {
-                var len = await WriteRead (false, 80, 4096);
+                var len = await WriteRead (false, 80, 4096, readBuffer);
                 AreEqual(134491, len);
             }
         }
@@ -36,16 +37,17 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.WebSockets
         /// <summary> Test frame writer and reader - masking <b>enabled</b> </summary>
         [Test]      public void  TestWebSocketsMasking()       { SingleThreadSynchronizationContext.Run(AssertWebSocketsMasking); }
         private static async Task AssertWebSocketsMasking() {
+            var readBuffer = new byte[1000];
             {
-                var len = await WriteRead (true, 0x100000, 4096); // ensure writer create no message fragmentation
+                var len = await WriteRead (true, 0x100000, 4096, readBuffer); // ensure writer create no message fragmentation
                 AreEqual(131245, len);
             }
             {
-                var len = await WriteRead (true, 4096, 4096);
+                var len = await WriteRead (true, 4096, 4096, readBuffer);
                 AreEqual(131479, len);
             }
             {
-                var len = await WriteRead (true, 80, 4096);
+                var len = await WriteRead (true, 80, 4096, readBuffer);
                 AreEqual(141067, len);
             }
         }
@@ -53,16 +55,17 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.WebSockets
         /// <summary> Test reader getting always only a single byte from stream - masking <b>enabled</b> </summary>
         [Test]      public void  TestWebSocketsReadSingleByte()       { SingleThreadSynchronizationContext.Run(AssertWebSocketsReadSingleByte); }
         private static async Task AssertWebSocketsReadSingleByte() {
+            var readBuffer = new byte[1000];
             {
-                var len = await WriteRead (true, 0x100000, 1); // ensure writer create no message fragmentation
+                var len = await WriteRead (true, 0x100000, 1, readBuffer); // ensure writer create no message fragmentation
                 AreEqual(131245, len);
             }
             {
-                var len = await WriteRead (true, 4096, 1);
+                var len = await WriteRead (true, 4096, 1, readBuffer);
                 AreEqual(131479, len);
             }
             {
-                var len = await WriteRead (true, 80, 1);
+                var len = await WriteRead (true, 80, 1, readBuffer);
                 AreEqual(141067, len);
             }
         }
@@ -70,21 +73,22 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.WebSockets
         /// <summary> Use a dataBuffer with one element in <see cref="FrameProtocolReader.ReadFrame"/> - masking <b>enabled</b> </summary>
         [Test]      public void  TestWebSocketsSmallBuffer()       { SingleThreadSynchronizationContext.Run(AssertWebSocketsSmallBuffer); }
         private static async Task AssertWebSocketsSmallBuffer() {
+            var readBuffer = new byte[1];
             {
-                var len = await WriteRead (true, 0x100000, 4096, 1); // ensure writer create no message fragmentation
+                var len = await WriteRead (true, 0x100000, 4096, readBuffer); // ensure writer create no message fragmentation
                 AreEqual(131245, len);
             }
             {
-                var len = await WriteRead (true, 4096, 4096, 1);
+                var len = await WriteRead (true, 4096, 4096, readBuffer);
                 AreEqual(131479, len);
             }
             {
-                var len = await WriteRead (true, 80, 4096, 1);
+                var len = await WriteRead (true, 80, 4096, readBuffer);
                 AreEqual(141067, len);
             }
         }
 
-        private static async Task<long> WriteRead(bool mask, int writerSize, int readerSize, int bufferSize = 1000)
+        private static async Task<long> WriteRead(bool mask, int writerSize, int readerSize, byte[] readBuffer)
         {
             var writer = new FrameProtocolWriter(mask, writerSize);
             
@@ -101,24 +105,23 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.WebSockets
             var str0x10000 = $"{new string('c', 0x10000)}";
             await Write (writer, stream, str0x10000);
 
-            var buffer          = new byte[bufferSize];
             var messageBuffer   = new MemoryStream();
             var reader          = new FrameProtocolReader(readerSize);
             stream.Position     = 0;
 
-            var result  = await Read(reader, stream, buffer, messageBuffer);
+            var result  = await Read(reader, stream, readBuffer, messageBuffer);
             AreEqual("Test-1", result);
             
-            result      = await Read(reader, stream, buffer, messageBuffer);
+            result      = await Read(reader, stream, readBuffer, messageBuffer);
             AreEqual("", result);
             
-            result      = await Read(reader, stream, buffer, messageBuffer);
+            result      = await Read(reader, stream, readBuffer, messageBuffer);
             AreEqual(str126, result);
             
-            result      = await Read(reader, stream, buffer, messageBuffer);
+            result      = await Read(reader, stream, readBuffer, messageBuffer);
             AreEqual(str0xffff, result);
             
-            result      = await Read(reader, stream, buffer, messageBuffer);
+            result      = await Read(reader, stream, readBuffer, messageBuffer);
             AreEqual(str0x10000, result);
             
             AreEqual(stream.Length, stream.Position);
