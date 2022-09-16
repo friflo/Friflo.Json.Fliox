@@ -91,7 +91,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
                 if (bufferLen < 1) {
                     SocketState             = WebSocketState.Closed;
                     CloseStatus             = WebSocketCloseStatus.EndpointUnavailable;
-                    CloseStatusDescription  = "WebSocket connection closed";
+                    CloseStatusDescription  = "stream closed";
                     MessageType             = WebSocketMessageType.Close;
                     EndOfMessage            = true;
                     return false;
