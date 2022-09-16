@@ -76,7 +76,10 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
             dataBufferPos   = 0;
             while (true) {
                 // process unprocessed bytes in buffer from previous call
-                bool frameEnd = ProcessFrame();
+                var  startPos       = bufferPos;
+                bool frameEnd       = ProcessFrame();
+                processedByteCount += bufferPos - startPos;
+                
                 if (opcode == Opcode.ConnectionClose) {
                     for (int n = 0; n < dataBufferPos; n++) {
                         controlFrameBuffer[controlFrameBufferPos++] = this.dataBuffer[n];
@@ -111,9 +114,8 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
         private bool ProcessFrame ()
         {
             // performance: use locals enable CPU using these values from stack
-            var buf         = buffer;
-            var len         = bufferLen;
-            var startPos    = bufferPos;
+            var buf = buffer;
+            var len = bufferLen;
             
             while (bufferPos < len) {
                 var b =  buf[bufferPos++];
@@ -125,6 +127,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
                         payloadLenPos   = -1;
                         parseState      = Parse.PayloadLen;
                         break;
+                    
                     case Parse.PayloadLen:
                         if (payloadLenPos == -1) {
                             mask            = (b & (int)LenFlags.Mask) != 0; 
@@ -153,8 +156,8 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
                         }
                         if (TransitionPayload())
                             break;
-                        processedByteCount += bufferPos - startPos;
-                        return true;
+                        return true; // empty payload
+                    
                     case Parse.Masking:
                         maskingKey[maskingKeyPos++] = b;
                         if (maskingKeyPos < 4) {
@@ -162,10 +165,9 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
                         }
                         if (TransitionPayload())
                             break;
-                        processedByteCount += bufferPos - startPos;
-                        return true;
+                        return true; // empty payload
+                    
                     case Parse.Payload:
-                        // if (dataPos == 71) { int debug = 1; }
                         byte dataByte;
                         if (mask) {
                             dataByte = (byte)(b ^ maskingKey[payloadPos % 4]);
@@ -176,17 +178,14 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
                         if (++payloadPos < payloadLen) {
                             if (dataBufferPos < dataBufferLen)
                                 break;
-                            EndOfMessage        = false;
-                            processedByteCount += bufferPos - startPos;
+                            EndOfMessage    = false;
                             return true;
                         }
-                        parseState          = Parse.Opcode;
-                        EndOfMessage        = fin;
-                        processedByteCount += bufferPos - startPos;
+                        parseState      = Parse.Opcode;
+                        EndOfMessage    = fin;
                         return true;
                 }
             }
-            processedByteCount += bufferPos - startPos;
             return false;
         }
         

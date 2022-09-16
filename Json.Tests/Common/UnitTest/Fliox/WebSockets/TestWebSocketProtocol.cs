@@ -103,8 +103,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.WebSockets
 
             var buffer          = new byte[bufferSize];
             var messageBuffer   = new MemoryStream();
-            var reader = new FrameProtocolReader(readerSize);
-            stream.Position = 0;
+            var reader          = new FrameProtocolReader(readerSize);
+            stream.Position     = 0;
 
             var result  = await Read(reader, stream, buffer, messageBuffer);
             AreEqual("Test-1", result);
