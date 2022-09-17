@@ -9,6 +9,11 @@
 
 namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
 {
+    /// <summary>
+    /// UNITY_BURST requires <br/>
+    /// - adding entry "Unity.Burst" in Friflo.Json.asmdef > "references" <br/>
+    /// - installing package 'Burst' in Package Explorer <br/>
+    /// </summary>
     public static class VectorUtils
     {
 #if UNITY_BURST || NETCOREAPP3_0_OR_GREATER

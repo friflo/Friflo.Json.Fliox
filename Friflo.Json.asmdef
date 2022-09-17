@@ -1,7 +1,8 @@
 {
     "name": "Friflo.Json",
     "references": [
-        "Unity.Collections"
+        "Unity.Collections",
+        "Unity.Burst"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
