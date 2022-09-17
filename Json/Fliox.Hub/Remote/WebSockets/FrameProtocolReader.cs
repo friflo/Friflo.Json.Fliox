@@ -43,7 +43,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
         private             long                    payloadLen;
         // --- Base Framing Protocol headers
         private             bool                    mask;
-        private readonly    byte[]                  maskingKey = new byte[16];
+        private readonly    byte[]                  maskingKey = new byte[20];
         
         public FrameProtocolReader(int bufferSize = 4096) {
             buffer              = new byte[bufferSize];

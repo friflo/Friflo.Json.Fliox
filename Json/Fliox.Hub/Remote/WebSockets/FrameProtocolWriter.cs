@@ -20,7 +20,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
         public FrameProtocolWriter(bool mask, int bufferSize = 4096) {
             writeBuffer     = new byte[bufferSize + MaxHeaderLength];
             maxBufferSize   = bufferSize;
-            maskingKey      = mask ? new byte[16] : null;
+            maskingKey      = mask ? new byte[20] : null;
             if (mask) { maskingKey[0] = 1; maskingKey[1] = 2; maskingKey[2] = 3; maskingKey[3] = 4; }
             VectorUtils.Populate(maskingKey);
         }
@@ -45,8 +45,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
         {
             var buffer      = writeBuffer; // performance: use local enable CPU using these value from stack
             if (dataBuffer == null) throw new InvalidOperationException("expect dataBuffer array not null");
-            int dataCount   = dataBuffer.Length;
-            int remaining   = dataCount;
+            int remaining   = dataBuffer.Length;
             int dataPos     = 0;
             
             while (true) {

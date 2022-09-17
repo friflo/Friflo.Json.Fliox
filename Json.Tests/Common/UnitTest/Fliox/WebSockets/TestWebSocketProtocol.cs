@@ -225,8 +225,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.WebSockets
             var reader          = new FrameProtocolReader(4094);
             var readBuffer      = new byte[4094];
             var stream          = new MemoryStream();
-            var payloadSize     = 200;
+            var payloadSize     = 208;
             var payload         = Encoding.UTF8.GetBytes(new string('x', payloadSize));
+            // payload          = Encoding.UTF8.GetBytes("0123456789abcdef");
             
             var count = 10; // 1_000_000;
             for (int n = 0; n < count; n++) {
@@ -235,7 +236,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.WebSockets
                 
                 stream.Position = 0;
                 await reader.ReadFrame(stream, readBuffer, CancellationToken.None);
-                if (reader.ByteCount != payloadSize) throw new InvalidOperationException("unexpected");
+                if (reader.ByteCount != payload.Length) throw new InvalidOperationException($"expect {payload.Length}, was: {reader.ByteCount}");
             }
         }
     }

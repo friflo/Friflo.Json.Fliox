@@ -15,15 +15,15 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
             if (UseSse) {
                 unsafe {
                     const int vectorSize = 16; // 128 bit
+                    fixed (byte* destPointer  = dest)
                     fixed (byte* srcPointer   = src)
                     fixed (byte* maskPointer  = mask)
-                    fixed (byte* destPointer  = dest)
                     {
                         for (int n = 0; n < length; n += vectorSize) {
                             var bufferVector        = Sse2.LoadVector128(srcPointer   + srcPos + n);
                             var maskingKeyVector    = Sse2.LoadVector128(maskPointer  + (maskPos + n) % 4);
                             var xor                 = Sse2.Xor(bufferVector, maskingKeyVector);
-                            Sse2.Store(destPointer + n, xor);
+                            Sse2.Store(destPointer + destPos + n, xor);
                         }
                     }
                 }
@@ -38,10 +38,10 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
         internal static void Populate(byte[] arr) {
             if (!UseSse)
                 return;
-            arr[4] = arr [8] = arr[12] = arr[0];
-            arr[5] = arr [9] = arr[13] = arr[1];
-            arr[6] = arr[10] = arr[14] = arr[2];
-            arr[7] = arr[11] = arr[15] = arr[3];
+            arr[4] = arr [8] = arr[12] = arr[16] = arr[0];
+            arr[5] = arr [9] = arr[13] = arr[17] = arr[1];
+            arr[6] = arr[10] = arr[14] = arr[18] = arr[2];
+            arr[7] = arr[11] = arr[15] = arr[19] = arr[3];
         }
     }
 }
