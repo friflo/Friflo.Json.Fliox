@@ -20,7 +20,9 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
         public FrameProtocolWriter(bool mask, int bufferSize = 4096) {
             writeBuffer     = new byte[bufferSize + MaxHeaderLength];
             maxBufferSize   = bufferSize;
-            maskingKey      = mask ? new byte[4] { 1, 2, 3, 4 } : null;
+            maskingKey      = mask ? new byte[16] : null;
+            if (mask) { maskingKey[0] = 1; maskingKey[1] = 2; maskingKey[2] = 3; maskingKey[3] = 4; }
+            VectorUtils.Populate(maskingKey);
         }
         
         /// [RFC 6455: The WebSocket Protocol - Close] https://www.rfc-editor.org/rfc/rfc6455#section-5.5.1
@@ -56,12 +58,13 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
                 
                 // append writeCount bytes from message to buffer
                 if (maskingKey != null) {
-                    for (int n = 0; n < writeCount; n++) {
+                    VectorUtils.MaskPayload(buffer, bufferLen, dataBuffer, dataPos, maskingKey, dataPos, writeCount);
+                    /* for (int n = 0; n < writeCount; n++) {
                         var dataIndex = dataPos + n;
                         var j = dataIndex % 4;
                         var b = dataBuffer[dataIndex];
                         buffer[bufferLen + n] = (byte)(b ^ maskingKey[j]);
-                    }
+                    } */
                 } else {
                     Buffer.BlockCopy(dataBuffer, dataPos, buffer, bufferLen, writeCount);
                 }
