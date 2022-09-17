@@ -92,15 +92,15 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
             while (bufferPos < len) {
                 byte b;
                 switch (frameState) {
-                    case FrameState.Opcode:          // --------- 1 byte
+                    case FrameState.Opcode: {           // --------- 1 byte
                         b               =  buf[bufferPos++];
                         fin             =          (b & (int)FrameFlags.Fin) != 0;
                         opcode          = (Opcode) (b & (int)FrameFlags.Opcode);
                         MessageType     = GetMessageType(opcode);
                         frameState      = FrameState.PayloadLenStart;
                         break;
-                    
-                    case FrameState.PayloadLenStart: // --------- 1 byte
+                    }
+                    case FrameState.PayloadLenStart: {  // --------- 1 byte
                         b               = buf[bufferPos++];
                         mask            = (b & (int)LenFlags.Mask) != 0; 
                         var length      = b & 0x7f;
@@ -120,8 +120,8 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
                         // payloadLen == 127
                         payloadLenBytes = 8;
                         break;
-
-                    case FrameState.PayloadLen:      // --------- 2 or 8 bytes
+                    }
+                    case FrameState.PayloadLen: {       // --------- 2 or 8 bytes
                         var bufferDif       = bufferLen       - bufferPos;
                         var payloadLenDif   = payloadLenBytes - payloadLenPos;
                         var minIterations   = payloadLenDif <= bufferDif ? payloadLenDif : bufferDif;
@@ -137,8 +137,8 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
                         if (TransitionMask())
                             return true;
                         break;
-                    
-                    case FrameState.Masking:         // --------- 4 bytes
+                    }
+                    case FrameState.Masking: {          // --------- 4 bytes
                         b =  buf[bufferPos++];
                         maskingKey[maskingKeyPos++] = b;
                         if (maskingKeyPos < 4) {
@@ -148,8 +148,8 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
                         if (TransitionPayload())
                             break;
                         return true; // empty payload
-                    
-                    case FrameState.Payload:         // --------- payloadLen bytes
+                    }
+                    case FrameState.Payload: {          // --------- payloadLen bytes
                         var dataBufferStart = dataBufferPos;
                         var payloadResult   = ReadPayload();
 
@@ -157,6 +157,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
                             UpdateControlFrameBuffer(dataBufferStart);
                         }
                         return payloadResult;
+                    }
                 }
             }
             return false;
