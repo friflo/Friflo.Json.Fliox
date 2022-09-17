@@ -226,7 +226,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.WebSockets
             var readBuffer      = new byte[4094];
             var stream          = new MemoryStream();
             var payloadSize     = 200;
-            var payload         = Encoding.UTF8.GetBytes(new string(',', payloadSize));
+            var payload         = Encoding.UTF8.GetBytes(new string('x', payloadSize));
             
             var count = 10; // 1_000_000;
             for (int n = 0; n < count; n++) {

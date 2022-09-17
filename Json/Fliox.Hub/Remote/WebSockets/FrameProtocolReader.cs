@@ -4,6 +4,7 @@
 using System;
 using System.IO;
 using System.Net.WebSockets;
+using System.Runtime.Intrinsics.X86;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -43,7 +44,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
         private             long                    payloadLen;
         // --- Base Framing Protocol headers
         private             bool                    mask;
-        private readonly    byte[]                  maskingKey = new byte[4];
+        private readonly    byte[]                  maskingKey = new byte[256];
         
         public FrameProtocolReader(int bufferSize = 4096) {
             buffer              = new byte[bufferSize];
@@ -152,7 +153,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
                     
                     case Parse.Payload:
                         var dataBufferStart = dataBufferPos;
-                        var payloadResult   = ReadPayload(buf, len);
+                        var payloadResult   = ReadPayload();
 
                         if (opcode == Opcode.ConnectionClose) {
                             UpdateControlFrameBuffer(dataBufferStart);
@@ -179,31 +180,21 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
         /// return true:  if reading payload is complete or the given <see cref="dataBuffer"/> is filled.
         /// return false: if more payload bytes need to be read
         /// </summary>
-        private bool ReadPayload(byte[] buf, int len)
+        private bool ReadPayload()
         {
-            // performance: use locals enable CPU using these values from stack
-            var localDataBuffer = dataBuffer;
-            var localPayloadPos = payloadPos;
             var dataBufferLen   = dataBuffer.Length;
             
             var payloadDif      = payloadLen    - payloadPos; 
             var dataBufferDif   = dataBufferLen - dataBufferPos;
-            var bufferDif       = len           - bufferPos;
+            var bufferDif       = bufferLen     - bufferPos;
             
             var minIterations   = (int)(payloadDif    <= dataBufferDif ? payloadDif    : dataBufferDif);
             minIterations       =       minIterations <= bufferDif     ? minIterations : bufferDif;
             
-            var pos     = bufferPos;
-            var dataPos = dataBufferPos;
-            
             if (mask) {
-                var localMaskingKey = maskingKey;
-                for (int n = 0; n < minIterations; n++) {
-                    var b = buf[pos + n];
-                    localDataBuffer[dataPos + n] = (byte)(b ^ localMaskingKey[(localPayloadPos + n) % 4]);
-                }
+                MaskPayload(minIterations);
             } else {
-                Buffer.BlockCopy(buf, pos, localDataBuffer, dataPos, minIterations);
+                Buffer.BlockCopy(buffer, bufferPos, dataBuffer, dataBufferPos, minIterations);
             }
             // --- update states ---
             bufferPos       += minIterations;
@@ -220,6 +211,40 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
                 return true;
             }
             return false;
+        }
+        
+        private static readonly bool UseSse = false;
+
+        private void MaskPayload(int minIterations) {
+            // performance: use locals enable CPU using these values from stack
+            var localPayloadPos = payloadPos;
+            var localMaskingKey = maskingKey;
+            var localDataBuffer = dataBuffer;
+            var buf             = buffer;
+            var pos             = bufferPos;
+            var dataPos         = dataBufferPos;
+
+            if (UseSse) {
+                unsafe {
+                    const int vectorSize = 16; // 128 bit
+                    fixed (byte* bufferPointer      = buf)
+                    fixed (byte* maskingKeyPointer  = localMaskingKey)
+                    fixed (byte* dataBufferPointer  = localDataBuffer)
+                    {
+                        for (int n = 0; n < minIterations; n += vectorSize) {
+                            var bufferVector        = Sse2.LoadVector128(bufferPointer      + pos + n);
+                            var maskingKeyVector    = Sse2.LoadVector128(maskingKeyPointer  + (localPayloadPos + n) % 4);
+                            var xor                 = Sse2.Xor(bufferVector, maskingKeyVector);
+                            Sse2.Store(dataBufferPointer + n, xor);
+                        }
+                    }
+                }
+            } else {
+                for (int n = 0; n < minIterations; n++) {
+                    var b = buf[pos + n];
+                    localDataBuffer[dataPos + n] = (byte)(b ^ localMaskingKey[(localPayloadPos + n) % 4]);
+                }
+            }
         }
         
         private void UpdateControlFrameBuffer(int dataBufferStart) {
