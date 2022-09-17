@@ -82,6 +82,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
         /// general state of state machine 
         private enum Parse {
             Opcode,
+            PayloadLenStart,
             PayloadLen,
             Masking,
             Payload,
@@ -105,40 +106,39 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
                         fin             =          (b & (int)FrameFlags.Fin) != 0;
                         opcode          = (Opcode) (b & (int)FrameFlags.Opcode);
                         MessageType     = GetMessageType(opcode);
-                        payloadLenPos   = -1;
-                        parseState      = Parse.PayloadLen;
+                        parseState      = Parse.PayloadLenStart;
                         break;
                     
+                    case Parse.PayloadLenStart:
+                        b               = buf[bufferPos++];
+                        mask            = (b & (int)LenFlags.Mask) != 0; 
+                        payloadLen      = b & 0x7f;
+                        if (payloadLen < 126) {
+                            if (TransitionMask())
+                                return true;
+                            break;
+                        }
+                        payloadLenPos   = 0;
+                        parseState      = Parse.PayloadLen;
+                        if (payloadLen == 126) {
+                            payloadLen      = 0;
+                            payloadLenBytes = 2;
+                            break;
+                        }
+                        // payloadLen == 127
+                        payloadLen      = 0;
+                        payloadLenBytes = 8;
+                        break;
+
                     case Parse.PayloadLen:
-                        b               =  buf[bufferPos++];
-                        if (payloadLenPos == -1) {
-                            mask            = (b & (int)LenFlags.Mask) != 0; 
-                            payloadLen      = b & 0x7f;
-                            payloadLenPos   = 0;
-                            if (payloadLen == 126) {
-                                payloadLen      = 0;
-                                payloadLenBytes = 2;
-                                break;
-                            }
-                            if (payloadLen == 127) {
-                                payloadLen      = 0;
-                                payloadLenBytes = 8;
-                                break;
-                            }
-                        } else {
-                            // payload length uses network byte order (big endian). E.g 0x0102 -> byte[] { 01, 02 }
-                            payloadLen = (payloadLen << 8) | b;
-                            if (++payloadLenPos < payloadLenBytes)
-                                break;
-                        }
-                        maskingKeyPos   = 0;
-                        if (mask) {
-                            parseState  = Parse.Masking;
+                        b = buf[bufferPos++];
+                        // payload length uses network byte order (big endian). E.g 0x0102 -> byte[] { 01, 02 }
+                        payloadLen = (payloadLen << 8) | b;
+                        if (++payloadLenPos < payloadLenBytes)
                             break;
-                        }
-                        if (TransitionPayload())
-                            break;
-                        return true; // empty payload
+                        if (TransitionMask())
+                            return true;
+                        break;
                     
                     case Parse.Masking:
                         b =  buf[bufferPos++];
@@ -162,6 +162,17 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
                 }
             }
             return false;
+        }
+        
+        private bool TransitionMask() {
+            maskingKeyPos   = 0;
+            if (mask) {
+                parseState  = Parse.Masking;
+                return false;
+            }
+            if (TransitionPayload())
+                return false;
+            return true; // empty payload
         }
         
         private bool TransitionPayload() {
