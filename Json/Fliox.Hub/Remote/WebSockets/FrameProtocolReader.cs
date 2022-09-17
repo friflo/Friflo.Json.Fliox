@@ -171,8 +171,12 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
                 controlFrameBufferPos   = 0;
                 return true;
             }
+            // payloadLen == 0
             parseState      = Parse.Opcode;
             EndOfMessage    = fin;
+            if (opcode == Opcode.ConnectionClose) {
+                UpdateControlFrameBuffer(controlFrameBufferPos);
+            }
             return false;
         }
         
@@ -226,7 +230,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
                 CloseStatus             = (WebSocketCloseStatus)(controlFrameBuffer[0] << 8 | controlFrameBuffer[1]);
                 CloseStatusDescription  = Encoding.UTF8.GetString(controlFrameBuffer, 2, controlFrameBufferPos - 2);
             } else {
-                CloseStatus             = null;
+                CloseStatus             = WebSocketCloseStatus.NormalClosure;
                 CloseStatusDescription  = "";
             }
         }

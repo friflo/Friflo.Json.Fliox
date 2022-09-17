@@ -26,12 +26,15 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
         }
         
         /// [RFC 6455: The WebSocket Protocol - Close] https://www.rfc-editor.org/rfc/rfc6455#section-5.5.1
-        public async Task CloseAsync(Stream stream, WebSocketCloseStatus closeStatus, string statusDescription, CancellationToken cancellationToken) {
+        public async Task CloseAsync(Stream stream, WebSocketCloseStatus? closeStatus, string statusDescription, CancellationToken cancellationToken) {
             var description = Encoding.UTF8.GetBytes(statusDescription);
-            var response    = new byte[2 + description.Length];
-            response[0]     = (byte)((int)closeStatus >> 8);
-            response[1]     = (byte)((int)closeStatus & 0xff);
-            Buffer.BlockCopy(description, 0, response, 2, description.Length);
+            var closeStatusLen = closeStatus.HasValue ? 2 : 0;
+            var response    = new byte[closeStatusLen + description.Length];
+            if (closeStatus.HasValue) {
+                response[0]     = (byte)((int)closeStatus >> 8);
+                response[1]     = (byte)((int)closeStatus & 0xff);
+            }
+            Buffer.BlockCopy(description, 0, response, closeStatusLen, description.Length);
 
             await WriteFrame(stream, response, WebSocketMessageType.Close, true, cancellationToken).ConfigureAwait(false);
         }

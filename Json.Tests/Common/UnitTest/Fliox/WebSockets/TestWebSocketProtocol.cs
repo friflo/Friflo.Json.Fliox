@@ -219,6 +219,28 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.WebSockets
             AreEqual("test connection close",               reader.CloseStatusDescription);
         }
         
+        /// <summary> Test closing a reader by control frame <see cref="Opcode.ConnectionClose"/> without close status (e.g. 1000)</summary>
+        [Test]      public void  TestWebSocketsCloseConnectionNoStatus()       { SingleThreadSynchronizationContext.Run(AssertWebSocketsTestCloseConnectionNoStatus); }
+        private static async Task AssertWebSocketsTestCloseConnectionNoStatus() {
+            var writer = new FrameProtocolWriter(true);
+            var stream = new MemoryStream();
+            
+            await writer.CloseAsync(stream, null, "", CancellationToken.None);
+
+            stream.Position = 0;
+            var reader      = new FrameProtocolReader();
+            var dataBuffer  = new byte[4096];
+            
+            var socketState = await reader.ReadFrame(stream, dataBuffer, CancellationToken.None);
+            
+            IsTrue  (reader.EndOfMessage);
+            AreEqual(WebSocketState.CloseReceived,          socketState);
+            AreEqual(WebSocketState.CloseReceived,          reader.SocketState);
+            AreEqual(WebSocketCloseStatus.NormalClosure,    reader.CloseStatus);
+            AreEqual(WebSocketMessageType.Close,            reader.MessageType);
+            AreEqual("",                                    reader.CloseStatusDescription);
+        }
+        
         [Test]      public void  TestWebSocketsPerf()       { SingleThreadSynchronizationContext.Run(AssertWebSocketsPerf); }
         private static async Task AssertWebSocketsPerf() {
             var writer          = new FrameProtocolWriter(true, 4094); // mask == false  =>  4 x faster by Buffer.BlockCopy() in reader
