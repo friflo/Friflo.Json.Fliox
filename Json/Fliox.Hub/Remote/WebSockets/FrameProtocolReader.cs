@@ -183,30 +183,39 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
         {
             // performance: use locals enable CPU using these values from stack
             var localDataBuffer = dataBuffer;
+            var localPayloadPos = payloadPos;
             var dataBufferLen   = dataBuffer.Length;
-            var localMask       = mask;
-            var localMaskingKey = maskingKey;
-            var localPayloadLen = payloadLen;
             
-            while (bufferPos < len) {
-                var b = buf[bufferPos++];
-                byte dataByte;
-                if (localMask) {
-                    dataByte = (byte)(b ^ localMaskingKey[payloadPos % 4]);
-                } else {
-                    dataByte = b;
+            var payloadDif      = payloadLen    - payloadPos; 
+            var dataBufferDif   = dataBufferLen - dataBufferPos;
+            var bufferDif       = len           - bufferPos;
+            
+            var minIterations   = (int)(payloadDif    <= dataBufferDif ? payloadDif    : dataBufferDif);
+            minIterations       =       minIterations <= bufferDif     ? minIterations : bufferDif;
+            
+            var pos     = bufferPos;
+            var dataPos = dataBufferPos;
+            
+            if (mask) {
+                var localMaskingKey = maskingKey;
+                for (int n = 0; n < minIterations; n++) {
+                    var b = buf[pos + n];
+                    localDataBuffer[dataPos + n] = (byte)(b ^ localMaskingKey[(localPayloadPos + n) % 4]);
                 }
-                localDataBuffer[dataBufferPos++] = dataByte;
-                
-                // These two conditions and the while could be condensed to a single condition. Don't think it makes a difference
-                if (++payloadPos < localPayloadLen) {
-                    if (dataBufferPos < dataBufferLen)
-                        continue;
-                    EndOfMessage    = false;
-                    return true;
-                }
+            } else {
+                Buffer.BlockCopy(buf, pos, localDataBuffer, dataPos, minIterations);
+            }
+            bufferPos       += minIterations;
+            dataBufferPos   += minIterations;
+            payloadPos      += minIterations;
+
+            if (payloadPos == payloadLen) {
                 parseState      = Parse.Opcode;
                 EndOfMessage    = fin;
+                return true;
+            }
+            if (dataBufferPos == dataBufferLen) {
+                EndOfMessage    = false;
                 return true;
             }
             return false;

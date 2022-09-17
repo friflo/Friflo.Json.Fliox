@@ -221,14 +221,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.WebSockets
         
         [Test]      public void  TestWebSocketsPerf()       { SingleThreadSynchronizationContext.Run(AssertWebSocketsPerf); }
         private static async Task AssertWebSocketsPerf() {
-            var writer          = new FrameProtocolWriter(true, 4094);
+            var writer          = new FrameProtocolWriter(true, 4094); // mask == false  =>  4 x faster by Buffer.BlockCopy() in reader
             var reader          = new FrameProtocolReader(4094);
             var readBuffer      = new byte[4094];
             var stream          = new MemoryStream();
             var payloadSize     = 200;
             var payload         = Encoding.UTF8.GetBytes(new string(',', payloadSize));
             
-            var count = 10; // 1_000_000
+            var count = 10; // 1_000_000;
             for (int n = 0; n < count; n++) {
                 stream.Position = 0;
                 await writer.WriteFrame(stream, payload, WebSocketMessageType.Text, true, CancellationToken.None);
