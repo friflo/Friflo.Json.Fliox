@@ -14,13 +14,13 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
     {
         private  readonly   byte[]  writeBuffer;
         private  readonly   int     maxBufferSize;
-        private  readonly   bool    mask;
+        private  readonly   byte[]  maskingKey;
         private  const      int     MaxHeaderLength = 14; // opcode: 1 + payload length: 9 + mask: 4
         
         public FrameProtocolWriter(bool mask, int bufferSize = 4096) {
             writeBuffer     = new byte[bufferSize + MaxHeaderLength];
             maxBufferSize   = bufferSize;
-            this.mask       = mask;
+            maskingKey      = mask ? new byte[4] { 1, 2, 3, 4 } : null;
         }
         
         /// [RFC 6455: The WebSocket Protocol - Close] https://www.rfc-editor.org/rfc/rfc6455#section-5.5.1
@@ -51,8 +51,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
                 // if message > max buffer size write multiple fragments
                 var isLast      = remaining <= maxBufferSize;
                 var writeCount  = isLast ? remaining : maxBufferSize;
-                var maskingKey  = mask ? new byte [] { 1, 2, 3, 4 } : null;
-                
+
                 int bufferLen   = WriteHeader(writeCount, messageType, isLast, buffer, maskingKey);
                 
                 // append writeCount bytes from message to buffer
@@ -115,6 +114,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
             
             // --- write masking key
             if (maskingKey != null) {
+                GenerateMaskingKey(maskingKey);
                 buffer [bufferPos]     = maskingKey[0];
                 buffer [bufferPos + 1] = maskingKey[1];
                 buffer [bufferPos + 2] = maskingKey[2];
@@ -123,6 +123,8 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
             }
             return bufferPos;
         }
+        
+        private static void GenerateMaskingKey(byte[] maskingKey) { } // todo implement
         
         private static Opcode GetOpcode(WebSocketMessageType messageType) {
             switch(messageType) {
