@@ -198,6 +198,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
                 }
                 localDataBuffer[dataBufferPos++] = dataByte;
                 
+                // Two conditions could be condensed to a single condition. Don't think it makes a difference
                 if (++payloadPos < localPayloadLen) {
                     if (dataBufferPos < dataBufferLen)
                         continue;
