@@ -131,11 +131,18 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
                         break;
 
                     case Parse.PayloadLen:      // --------- 2 or 8 bytes
-                        b = buf[bufferPos++];
-                        // payload length uses network byte order (big endian). E.g 0x0102 -> byte[] { 01, 02 }
-                        payloadLen = (payloadLen << 8) | b;
-                        if (++payloadLenPos < payloadLenBytes)
-                            break;
+                        var bufferDif       = bufferLen       - bufferPos;
+                        var payloadLenDif   = payloadLenBytes - payloadLenPos;
+                        var minIterations   = payloadLenDif <= bufferDif ? payloadLenDif : bufferDif;
+                        for (int n = 0; n < minIterations; n++) {
+                            b = buf[bufferPos + n];
+                            // payload length uses network byte order (big endian). E.g 0x0102 -> byte[] { 01, 02 }
+                            payloadLen = (payloadLen << 8) | b;
+                        }
+                        bufferPos       += minIterations;
+                        payloadLenPos   += minIterations;
+                        if (payloadLenPos < payloadLenBytes)
+                            return false;
                         if (TransitionMask())
                             return true;
                         break;
