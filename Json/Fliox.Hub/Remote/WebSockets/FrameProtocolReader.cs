@@ -205,6 +205,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
             } else {
                 Buffer.BlockCopy(buf, pos, localDataBuffer, dataPos, minIterations);
             }
+            // --- update states ---
             bufferPos       += minIterations;
             dataBufferPos   += minIterations;
             payloadPos      += minIterations;
