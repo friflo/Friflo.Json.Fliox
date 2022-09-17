@@ -165,17 +165,17 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
         }
         
         private bool TransitionPayload() {
+            controlFrameBufferPos   = 0;
             if (payloadLen > 0) {
-                payloadPos              = 0;
-                parseState              = Parse.Payload;
-                controlFrameBufferPos   = 0;
+                payloadPos  = 0;
+                parseState  = Parse.Payload;
                 return true;
             }
             // payloadLen == 0
             parseState      = Parse.Opcode;
             EndOfMessage    = fin;
             if (opcode == Opcode.ConnectionClose) {
-                UpdateControlFrameBuffer(controlFrameBufferPos);
+                UpdateControlFrameBuffer(dataBufferPos);
             }
             return false;
         }
