@@ -101,7 +101,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
             while (bufferPos < len) {
                 byte b;
                 switch (parseState) {
-                    case Parse.Opcode:
+                    case Parse.Opcode:          // --------- 1 byte
                         b               =  buf[bufferPos++];
                         fin             =          (b & (int)FrameFlags.Fin) != 0;
                         opcode          = (Opcode) (b & (int)FrameFlags.Opcode);
@@ -109,28 +109,28 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
                         parseState      = Parse.PayloadLenStart;
                         break;
                     
-                    case Parse.PayloadLenStart:
+                    case Parse.PayloadLenStart: // --------- 1 byte
                         b               = buf[bufferPos++];
                         mask            = (b & (int)LenFlags.Mask) != 0; 
-                        payloadLen      = b & 0x7f;
-                        if (payloadLen < 126) {
+                        var length      = b & 0x7f;
+                        if (length < 126) {
+                            payloadLen = length;
                             if (TransitionMask())
                                 return true;
                             break;
                         }
+                        payloadLen      = 0;
                         payloadLenPos   = 0;
                         parseState      = Parse.PayloadLen;
-                        if (payloadLen == 126) {
-                            payloadLen      = 0;
+                        if (length == 126) {
                             payloadLenBytes = 2;
                             break;
                         }
                         // payloadLen == 127
-                        payloadLen      = 0;
                         payloadLenBytes = 8;
                         break;
 
-                    case Parse.PayloadLen:
+                    case Parse.PayloadLen:      // --------- 2 or 8 bytes
                         b = buf[bufferPos++];
                         // payload length uses network byte order (big endian). E.g 0x0102 -> byte[] { 01, 02 }
                         payloadLen = (payloadLen << 8) | b;
@@ -140,7 +140,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
                             return true;
                         break;
                     
-                    case Parse.Masking:
+                    case Parse.Masking:         // --------- 4 bytes
                         b =  buf[bufferPos++];
                         maskingKey[maskingKeyPos++] = b;
                         if (maskingKeyPos < 4) {
@@ -151,7 +151,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
                             break;
                         return true; // empty payload
                     
-                    case Parse.Payload:
+                    case Parse.Payload:         // --------- payloadLen bytes
                         var dataBufferStart = dataBufferPos;
                         var payloadResult   = ReadPayload();
 
