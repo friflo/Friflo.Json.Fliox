@@ -9,8 +9,10 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
 {
     public static class VectorUtils
     {
+#if !UNITY_5_3_OR_NEWER
         private static readonly bool UseSse = false;
-        
+#endif
+
         internal static void MaskPayload(
             byte[] dest,    int destPos,
             byte[] src,     int srcPos,
