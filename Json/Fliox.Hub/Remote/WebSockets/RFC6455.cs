@@ -35,4 +35,13 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
     internal enum LenFlags {
         Mask                = 0x80
     }
+    
+    /// Basic frame states used in state machine of <see cref="FrameProtocolReader"/>  
+    internal enum FrameState {
+        Opcode,
+        PayloadLenStart,
+        PayloadLen,
+        Masking,
+        Payload,
+    }
 }
