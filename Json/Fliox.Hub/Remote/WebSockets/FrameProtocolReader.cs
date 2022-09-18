@@ -124,14 +124,14 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
                     case FrameState.PayloadLen: {       // --- 2 or 8 payloadLenBytes bytes
                         var bufferRest      = bufferLen       - bufferPos;
                         var payloadLenRest  = payloadLenBytes - payloadLenPos;
-                        var minIterations   = payloadLenRest <= bufferRest ? payloadLenRest : bufferRest;
-                        for (int n = 0; n < minIterations; n++) {
+                        var minRest         = payloadLenRest <= bufferRest ? payloadLenRest : bufferRest;
+                        for (int n = 0; n < minRest; n++) {
                             b = buf[bufferPos + n];
                             // payload length uses network byte order (big endian). E.g 0x0102 -> byte[] { 01, 02 }
                             payloadLen = (payloadLen << 8) | b;
                         }
-                        bufferPos       += minIterations;
-                        payloadLenPos   += minIterations;
+                        bufferPos       += minRest;
+                        payloadLenPos   += minRest;
                         if (payloadLenPos < payloadLenBytes)
                             return false;
                         if (TransitionMask())
@@ -141,13 +141,13 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
                     case FrameState.Masking: {          // --- 4 bytes
                         var bufferRest      = bufferLen - bufferPos;
                         var maskingKeyRest  = 4 - maskingKeyPos;
-                        var minIterations   = maskingKeyRest <= bufferRest ? maskingKeyRest : bufferRest;
-                        for (int n = 0; n < minIterations; n++) {
+                        var minRest         = maskingKeyRest <= bufferRest ? maskingKeyRest : bufferRest;
+                        for (int n = 0; n < minRest; n++) {
                             b = buf[bufferPos + n];
                             maskingKey[maskingKeyPos + n] = b;
                         }
-                        bufferPos       += minIterations;
-                        maskingKeyPos   += minIterations;
+                        bufferPos       += minRest;
+                        maskingKeyPos   += minRest;
                         if (maskingKeyPos < 4) {
                             break;
                         }
@@ -209,18 +209,18 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
             var payloadRest     = payloadLen    - payloadPos; 
             var dataBufferRest  = dataBufferLen - dataBufferPos;
             
-            var minIterations   = (int)(payloadRest    <= dataBufferRest ? payloadRest    : dataBufferRest);
-            minIterations       =       minIterations <= bufferRest     ? minIterations : bufferRest;
+            var minRest = (int)(payloadRest <= dataBufferRest ? payloadRest    : dataBufferRest);
+            minRest     =       minRest     <= bufferRest     ? minRest : bufferRest;
             
             if (mask) {
-                VectorUtils.MaskPayload(dataBuffer, dataBufferPos, buffer, bufferPos, maskingKey, (int)payloadPos, minIterations);
+                VectorUtils.MaskPayload(dataBuffer, dataBufferPos, buffer, bufferPos, maskingKey, (int)payloadPos, minRest);
             } else {
-                Buffer.BlockCopy(buffer, bufferPos, dataBuffer, dataBufferPos, minIterations);
+                Buffer.BlockCopy(buffer, bufferPos, dataBuffer, dataBufferPos, minRest);
             }
             // --- update states ---
-            bufferPos       += minIterations;
-            dataBufferPos   += minIterations;
-            payloadPos      += minIterations;
+            bufferPos       += minRest;
+            dataBufferPos   += minRest;
+            payloadPos      += minRest;
 
             if (payloadPos == payloadLen) {
                 frameState      = FrameState.Opcode;
