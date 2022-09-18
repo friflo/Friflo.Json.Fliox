@@ -118,7 +118,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
                             payloadLenBytes = 2;
                             break;
                         }
-                        // payloadLen == 127
+                        // length == 127
                         payloadLenBytes = 8;
                         break;
                     }
