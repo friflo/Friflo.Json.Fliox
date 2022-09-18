@@ -7,6 +7,7 @@ using System.Net.WebSockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Friflo.Json.Burst.Vector;
 
 namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
 {
@@ -30,7 +31,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
             maxBufferSize   = bufferSize;
             maskingKey      = mask ? new byte[20] : null;
             if (mask) { maskingKey[0] = 1; maskingKey[1] = 2; maskingKey[2] = 3; maskingKey[3] = 4; }
-            VectorUtils.Populate(maskingKey);
+            VectorOps.Instance.Populate(maskingKey);
         }
         
         /// [RFC 6455: The WebSocket Protocol - Close] https://www.rfc-editor.org/rfc/rfc6455#section-5.5.1
@@ -68,7 +69,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
                 
                 // append writeCount bytes from message to buffer
                 if (maskingKey != null) {
-                    VectorUtils.MaskPayload(buffer, bufferLen, dataBuffer, dataPos, maskingKey, dataPos, writeCount);
+                    VectorOps.Instance.MaskPayload(buffer, bufferLen, dataBuffer, dataPos, maskingKey, dataPos, writeCount);
                     /* for (int n = 0; n < writeCount; n++) {
                         var dataIndex = dataPos + n;
                         var j = dataIndex % 4;

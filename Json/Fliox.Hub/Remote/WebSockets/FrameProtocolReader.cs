@@ -7,6 +7,7 @@ using System.Net.WebSockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Friflo.Json.Burst.Vector;
 
 // ReSharper disable SuggestBaseTypeForParameter
 namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
@@ -157,7 +158,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
                         if (maskingKeyPos < 4) {
                             break;
                         }
-                        VectorUtils.Populate(maskingKey);
+                        VectorOps.Instance.Populate(maskingKey);
                         if (PayloadTransition())
                             break;
                         return true; // empty payload
@@ -217,7 +218,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
             var minRest = Math.Min((int)payloadRest, dataBufferRest);
             minRest     = Math.Min(minRest,BufferRest);
             if (mask) {
-                VectorUtils.MaskPayload(dataBuffer, dataBufferPos, buffer, bufferPos, maskingKey, (int)payloadPos, minRest);
+                VectorOps.Instance.MaskPayload(dataBuffer, dataBufferPos, buffer, bufferPos, maskingKey, (int)payloadPos, minRest);
             } else {
                 Buffer.BlockCopy(buffer, bufferPos, dataBuffer, dataBufferPos, minRest);
             }
