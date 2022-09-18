@@ -260,6 +260,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.WebSockets
                 await reader.ReadFrame(stream, readBuffer, CancellationToken.None);
                 if (reader.ByteCount != payload.Length) throw new InvalidOperationException($"expect {payload.Length}, was: {reader.ByteCount}");
             }
+            Console.WriteLine($"ProcessedByteCount: {reader.ProcessedByteCount}");
         }
     }
 }
