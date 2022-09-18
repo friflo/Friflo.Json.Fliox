@@ -121,7 +121,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
                     case FrameState.PayloadLenStart: {  // --- 1 byte
                         b               = buf[bufferPos++];
                         mask            = (b & (int)LenFlags.Mask) != 0; 
-                        var length      = b & 0x7f;
+                        var length      = b & (int)LenFlags.PayloadLength;
                         if (length < 126) {
                             payloadLen = length;
                             if (MaskOrPayloadTransition())
