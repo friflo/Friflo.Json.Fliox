@@ -13,7 +13,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
 {
     /// <summary>
     /// WebSocket stream parser implemented using a final state machine. <br/>
-    /// Parses a WebSocket stream with 2.5 GB/sec on a Intel(R) Core(TM) i7-4790K CPU 4.00GHz <br/>
+    /// Parses a WebSocket (without masking) stream with 2.5 GB/sec on a Intel(R) Core(TM) i7-4790K CPU 4.00GHz <br/>
     /// </summary>
     /// <remarks>
     /// Made heap allocations only for<br/>

@@ -12,7 +12,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
 {
     /// <summary>
     /// WebSocket stream writer <br/>
-    /// Write a WebSocket stream with 3.5 GB/sec on a Intel(R) Core(TM) i7-4790K CPU 4.00GHz <br/>
+    /// Write a WebSocket stream (without masking) with 3.5 GB/sec on a Intel(R) Core(TM) i7-4790K CPU 4.00GHz <br/>
     /// </summary>
     /// <remarks>
     /// Made heap allocations only for <br/>
