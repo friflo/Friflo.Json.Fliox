@@ -30,8 +30,10 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
             writeBuffer     = new byte[bufferSize + MaxHeaderLength];
             maxBufferSize   = bufferSize;
             maskingKey      = mask ? new byte[20] : null;
-            if (mask) { maskingKey[0] = 1; maskingKey[1] = 2; maskingKey[2] = 3; maskingKey[3] = 4; }
-            VectorOps.Instance.Populate(maskingKey);
+            if (mask) {
+                maskingKey[0] = 1; maskingKey[1] = 2; maskingKey[2] = 3; maskingKey[3] = 4;
+                VectorOps.Instance.Populate(maskingKey);
+            }
         }
         
         /// [RFC 6455: The WebSocket Protocol - Close] https://www.rfc-editor.org/rfc/rfc6455#section-5.5.1
