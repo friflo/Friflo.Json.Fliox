@@ -218,7 +218,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
             var minRest = Math.Min((int)payloadRest, dataBufferRest);
             minRest     = Math.Min(minRest,BufferRest);
             if (mask) {
-                VectorOps.Instance.MaskPayload(dataBuffer, dataBufferPos, buffer, bufferPos, maskingKey, (int)payloadPos, minRest);
+                VectorOps.Instance.Xor(dataBuffer, dataBufferPos, buffer, bufferPos, maskingKey, (int)payloadPos, minRest);
             } else {
                 Buffer.BlockCopy(buffer, bufferPos, dataBuffer, dataBufferPos, minRest);
             }

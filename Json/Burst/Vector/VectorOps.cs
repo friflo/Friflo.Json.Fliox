@@ -13,7 +13,7 @@ namespace Friflo.Json.Burst.Vector
         public static readonly VectorOps Instance = new VectorOps();
 #endif
 
-        public virtual void MaskPayload(
+        public virtual void Xor(
             byte[] dest,    int destPos,
             byte[] src,     int srcPos,
             byte[] mask,    int maskPos,

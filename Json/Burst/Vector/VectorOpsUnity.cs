@@ -15,7 +15,7 @@ namespace Friflo.Json.Burst.Vector
     /// </summary>
     public class VectorOpsUnity : VectorOps
     {
-        public override unsafe void MaskPayload(
+        public override unsafe void Xor(
             byte[] dest,    int destPos,
             byte[] src,     int srcPos,
             byte[] mask,    int maskPos,
