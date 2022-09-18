@@ -10,6 +10,14 @@ using System.Threading.Tasks;
 
 namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
 {
+    /// <summary>
+    /// WebSocket stream writer <br/>
+    /// Write a WebSocket stream with 3.5 GB/sec on a Intel(R) Core(TM) i7-4790K CPU 4.00GHz <br/>
+    /// </summary>
+    /// <remarks>
+    /// Made heap allocations only for <br/>
+    /// - the Task when calling <see cref="WriteFrame"/><br/>
+    /// </remarks>
     public sealed class FrameProtocolWriter
     {
         private  readonly   byte[]  writeBuffer;

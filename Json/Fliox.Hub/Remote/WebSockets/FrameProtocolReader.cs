@@ -11,6 +11,15 @@ using System.Threading.Tasks;
 // ReSharper disable SuggestBaseTypeForParameter
 namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
 {
+    /// <summary>
+    /// WebSocket stream parser implemented using a final state machine. <br/>
+    /// Parses a WebSocket stream with 2.5 GB/sec on a Intel(R) Core(TM) i7-4790K CPU 4.00GHz <br/>
+    /// </summary>
+    /// <remarks>
+    /// Made heap allocations only for<br/>
+    /// - the Task when calling <see cref="ReadFrame"/><br/>
+    /// - the Task when calling <see cref="Stream.ReadAsync(byte[],int,int)"/> no more bytes left ro read in <see cref="buffer"/><br/>
+    /// </remarks> 
     public sealed class FrameProtocolReader
     {
         public              bool                    EndOfMessage            { get; private set; }
@@ -19,13 +28,13 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
         public              WebSocketCloseStatus?   CloseStatus             { get; private set; }
         public              WebSocketState          SocketState             { get; private set; }
         public              string                  CloseStatusDescription  { get; private set; }
+        public              long                    ProcessedByteCount      { get; private set; }
         /// <summary> store the bytes read from the socket.
         /// <see cref="bufferPos"/> is its read position and <see cref="bufferLen"/> the count of bytes read from socket</summary>
         private  readonly   byte[]                  buffer;
         private             int                     bufferPos;
         private             int                     bufferLen;
         private             int                     BufferRest              => bufferLen - bufferPos;
-        private             long                    processedByteCount;
         /// <summary> general <see cref="frameState"/> and its sub states <see cref="payloadLenPos"/> and <see cref="maskingKeyPos"/> </summary>
         private             FrameState              frameState;
         private             bool                    fin;
@@ -61,7 +70,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
                 // process unprocessed bytes in buffer from previous call
                 var  startPos       = bufferPos;
                 bool frameEnd       = ProcessFrame();
-                processedByteCount += bufferPos - startPos;
+                ProcessedByteCount += bufferPos - startPos;
                 
                 if (frameEnd) {
                     // var debugStr = Encoding.UTF8.GetString(dataBuffer.Array, 0, ByteCount);
