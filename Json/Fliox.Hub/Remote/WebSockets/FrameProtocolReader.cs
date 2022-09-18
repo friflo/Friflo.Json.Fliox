@@ -24,6 +24,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
         private  readonly   byte[]                  buffer;
         private             int                     bufferPos;
         private             int                     bufferLen;
+        private             int                     BufferRest              => bufferLen - bufferPos;
         private             long                    processedByteCount;
         /// <summary> general <see cref="frameState"/> and its sub states <see cref="payloadLenPos"/> and <see cref="maskingKeyPos"/> </summary>
         private             FrameState              frameState;
@@ -122,9 +123,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
                         break;
                     }
                     case FrameState.PayloadLen: {       // --- 2 or 8 payloadLenBytes bytes
-                        var bufferRest      = bufferLen       - bufferPos;
-                        var payloadLenRest  = payloadLenBytes - payloadLenPos;
-                        var minRest         = payloadLenRest <= bufferRest ? payloadLenRest : bufferRest;
+                        var minRest = Math.Min(payloadLenBytes - payloadLenPos, BufferRest);
                         for (int n = 0; n < minRest; n++) {
                             b = buf[bufferPos + n];
                             // payload length uses network byte order (big endian). E.g 0x0102 -> byte[] { 01, 02 }
@@ -139,9 +138,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
                         break;
                     }
                     case FrameState.Masking: {          // --- 4 bytes
-                        var bufferRest      = bufferLen - bufferPos;
-                        var maskingKeyRest  = 4 - maskingKeyPos;
-                        var minRest         = maskingKeyRest <= bufferRest ? maskingKeyRest : bufferRest;
+                        var minRest = Math.Min(4 - maskingKeyPos, BufferRest);
                         for (int n = 0; n < minRest; n++) {
                             b = buf[bufferPos + n];
                             maskingKey[maskingKeyPos + n] = b;
@@ -205,13 +202,11 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
         {
             var dataBufferLen   = dataBuffer.Length;
             
-            var bufferRest      = bufferLen     - bufferPos;
             var payloadRest     = payloadLen    - payloadPos; 
             var dataBufferRest  = dataBufferLen - dataBufferPos;
             
-            var minRest = (int)(payloadRest <= dataBufferRest ? payloadRest    : dataBufferRest);
-            minRest     =       minRest     <= bufferRest     ? minRest : bufferRest;
-            
+            var minRest = Math.Min((int)payloadRest, dataBufferRest);
+            minRest     = Math.Min(minRest,BufferRest);
             if (mask) {
                 VectorUtils.MaskPayload(dataBuffer, dataBufferPos, buffer, bufferPos, maskingKey, (int)payloadPos, minRest);
             } else {
