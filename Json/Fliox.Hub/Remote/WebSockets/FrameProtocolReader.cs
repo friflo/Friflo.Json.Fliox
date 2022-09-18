@@ -14,12 +14,19 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
 {
     /// <summary>
     /// WebSocket stream parser implemented using a final state machine. <br/>
-    /// Parses a WebSocket (without masking) stream with 2.5 GB/sec on a Intel(R) Core(TM) i7-4790K CPU 4.00GHz <br/>
+    /// Parses a WebSocket (without masking, message with length 208 bytes) stream with 2.5 GB/sec on a Intel(R) Core(TM) i7-4790K CPU 4.00GHz <br/>
     /// </summary>
     /// <remarks>
-    /// Made heap allocations only for<br/>
-    /// - the Task when calling <see cref="ReadFrame"/><br/>
-    /// - the Task when calling <see cref="Stream.ReadAsync(byte[],int,int)"/> no more bytes left ro read in <see cref="buffer"/><br/>
+    /// Objectives of implementation:<br/>
+    /// - Support <see cref="Stream.ReadAsync(byte[],int,int)"/> returning only a single byte at all states<br/>
+    /// - Maximize memory locality by using a fixed size <see cref="buffer"/><br/>
+    /// - Minimize calls to <see cref="Stream.ReadAsync(byte[],int,int)"/> <br/>
+    /// - Minimize conditions. Especially in hot loops e.g. when reading the payload <see cref="ReadPayload"/><br/>
+    /// - Minimize heap allocations. The only allocations are
+    /// <list type="bullet">
+    ///   <item>the Task when calling <see cref="ReadFrame"/></item>
+    ///   <item>the Task when calling <see cref="Stream.ReadAsync(byte[],int,int)"/> no more bytes left ro read in <see cref="buffer"/></item>
+    /// </list>
     /// </remarks> 
     public sealed class FrameProtocolReader
     {
