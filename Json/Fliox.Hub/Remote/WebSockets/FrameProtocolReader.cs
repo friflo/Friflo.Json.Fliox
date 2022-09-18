@@ -107,7 +107,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
                         var length      = b & 0x7f;
                         if (length < 126) {
                             payloadLen = length;
-                            if (TransitionMask())
+                            if (MaskOrPayloadTransition())
                                 return true;
                             break;
                         }
@@ -133,7 +133,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
                         payloadLenPos   += minRest;
                         if (payloadLenPos < payloadLenBytes)
                             return false;
-                        if (TransitionMask())
+                        if (MaskOrPayloadTransition())
                             return true;
                         break;
                     }
@@ -149,7 +149,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
                             break;
                         }
                         VectorUtils.Populate(maskingKey);
-                        if (TransitionPayload())
+                        if (PayloadTransition())
                             break;
                         return true; // empty payload
                     }
@@ -167,18 +167,18 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
             return false;
         }
         
-        private bool TransitionMask() {
+        private bool MaskOrPayloadTransition() {
             maskingKeyPos   = 0;
             if (mask) {
                 frameState  = FrameState.Masking;
                 return false;
             }
-            if (TransitionPayload())
+            if (PayloadTransition())
                 return false;
             return true; // empty payload
         }
         
-        private bool TransitionPayload() {
+        private bool PayloadTransition() {
             controlFrameBufferPos   = 0;
             if (payloadLen > 0) {
                 payloadPos  = 0;
