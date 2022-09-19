@@ -23,7 +23,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         private  readonly   bool                                    fakeOpenClosedSocket;
 
         private  readonly   IDataChannelWriter<ArraySegment<byte>>  sendWriter;
-        private  readonly   Task                                    sendLoop;
+        private  readonly   IDataChannelReader<ArraySegment<byte>>  sendReader;
         private  readonly   Pool                                    pool;
         private  readonly   SharedCache                             sharedCache;
         private  readonly   IPEndPoint                              remoteEndPoint;
@@ -42,8 +42,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             
             var channel         = DataChannelSlim<ArraySegment<byte>>.CreateUnbounded(true, false);
             sendWriter          = channel.Writer;
-            var sendReader      = channel.Reader;
-            sendLoop            = SendLoop(sendReader);
+            sendReader          = channel.Reader;
         }
         
         // --- IEventReceiver
@@ -70,7 +69,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         // Send queue (sendWriter / sendReader) is required  to prevent having more than one WebSocket.SendAsync() call outstanding.
         // Otherwise:
         // System.InvalidOperationException: There is already one outstanding 'SendAsync' call for this WebSocket instance. ReceiveAsync and SendAsync can be called simultaneously, but at most one outstanding operation for each of them is allowed at the same time. 
-        private Task SendLoop(IDataChannelReader<ArraySegment<byte>> sendReader) {
+        private Task RunSendLoop() {
             var loopTask = Task.Run(async () => {
                 try {
                     while (true) {
@@ -88,7 +87,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             return loopTask;
         }
         
-        private async Task ReceiveLoop(MemoryStream memoryStream, RemoteHost remoteHost) {
+        private async Task RunReceiveLoop(MemoryStream memoryStream, RemoteHost remoteHost) {
             var         buffer      = new ArraySegment<byte>(new byte[8192]);
             while (true) {
                 var state = webSocket.State;
@@ -123,10 +122,11 @@ namespace Friflo.Json.Fliox.Hub.Remote
         }
         
         public static async Task SendReceiveMessages(WebSocket websocket, IPEndPoint remoteEndPoint, RemoteHost remoteHost) {
-            var target = new WebSocketHost(remoteHost.sharedEnv, websocket, remoteEndPoint, remoteHost.fakeOpenClosedSockets);
+            var target   = new WebSocketHost(remoteHost.sharedEnv, websocket, remoteEndPoint, remoteHost.fakeOpenClosedSockets);
+            var sendLoop = target.RunSendLoop();
             try {
                 using (var memoryStream = new MemoryStream()) {
-                    await target.ReceiveLoop(memoryStream, remoteHost).ConfigureAwait(false);
+                    await target.RunReceiveLoop(memoryStream, remoteHost).ConfigureAwait(false);
                 }
                 target.sendWriter.TryWrite(default);
                 target.sendWriter.Complete();
@@ -141,7 +141,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 remoteHost.Logger.Log(HubLog.Info, msg);
                 return;
             }
-            await target.sendLoop.ConfigureAwait(false);
+            await sendLoop.ConfigureAwait(false);
         }
         
         private static string GetExceptionMessage(string location, IPEndPoint remoteEndPoint, Exception e) {
