@@ -54,11 +54,6 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
             throw new NotImplementedException();
         }
 
-        public override void Dispose() {
-            sendLock.Dispose();
-            stream.Dispose();
-        }
-
         public override async Task<WebSocketReceiveResult> ReceiveAsync(ArraySegment<byte> dataBuffer, CancellationToken cancellationToken) {
             var buffer = dataBuffer.Array;
             var socketState = await reader.ReadFrame(stream, buffer, cancellationToken).ConfigureAwait(false);
@@ -93,6 +88,12 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
             socket.LingerState = new LingerOption(false, 0);
             // disable Nagle algorithm
             socket.NoDelay  = true;
+        }
+        
+        public override void Dispose() {
+            sendLock.Dispose();
+            socket.Dispose();
+            stream.Dispose();
         }
         
         private void Close() {
