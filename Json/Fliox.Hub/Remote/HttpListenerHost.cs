@@ -39,6 +39,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
         private             int                 requestCount;
         private  readonly   HttpHost            httpHost;
         
+        public   override   string              ToString() => $"endpoint: {httpHost.endpoint}";
+        
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         public              IHubLogger          Logger { get; }
         
@@ -105,6 +107,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                                 var location = endpoint;
                                 var headers = new Dictionary<string, string> { { "Location", location }};
                                 await HttpListenerExtensions.WriteResponseString(context.Response, "text/plain", 302, $"redirect -> {location}", headers).ConfigureAwait(false);
+                                context.Response.OutputStream.Close(); // required by HttpListener in Unity for redirect. CLR does this automatically.
                                 return;
                             }
                             await HttpListenerExtensions.WriteResponseString(context.Response, "text/plain", 404, $"{path} not found", null).ConfigureAwait(false);

@@ -51,7 +51,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
         private  readonly   List<string>            hubRoutes;
         
         public   const      string                  DefaultCacheControl = "max-age=600";
-        
+
+        public   override   string                  ToString() => $"endpoint: {endpoint}";
 
         private static  bool    _titleDisplayed;
         private const   string  JsonFlioxBanner =
@@ -124,18 +125,15 @@ namespace Friflo.Json.Fliox.Hub.Remote
             return false;
         }
         
-        public RequestContext GetRequestContext(string path, string method) {
-            if (path == endpointRoot && method == "GET") {
-                var context     = new RequestContext(this, "GET", "/", null, null, null, null);
-                var location    = endpoint;
-                context.AddHeader("Location", location);
-                context.WriteString($"redirect -> {location}", "text/plain", 302);
-                context.handled = true;
-                return context;
-            }
-            var message = $"Expect context path matching HttpHost.endpoint: {endpoint}, path: {path}";
+        /// <summary>
+        /// Error method is called when trying to execute a HTTP request with a path not matching to <see cref="endpoint"/>
+        /// </summary>
+        public RequestContext InternalRequestError(string path, string method) {
+            var context = new RequestContext(this, method, path, null, null, null, null) { handled = true };
+            var message = $"Expect path matching HttpHost.endpoint: {endpoint}, path: {path}";
+            context.WriteError("invalid request", message, 500);
             Logger.Log(HubLog.Error, message);
-            return null;
+            return context;
         }
 
         public string CacheControl {

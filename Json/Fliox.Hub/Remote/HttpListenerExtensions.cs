@@ -16,8 +16,9 @@ namespace Friflo.Json.Fliox.Hub.Remote
             var request = context.Request;
             var url     = request.Url;
             var path    = url.LocalPath;
+            var method  = request.HttpMethod;
             if (!httpHost.GetRoute(path, out string route)) {
-                return httpHost.GetRequestContext(path, request.HttpMethod);
+                return httpHost.InternalRequestError(path, method);
             }
             HttpListenerRequest  req  = context.Request;
 #if UNITY_5_3_OR_NEWER
@@ -40,7 +41,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             }
             var headers         = new HttpListenerHeaders(request.Headers);
             var cookies         = new HttpListenerCookies(request.Cookies);
-            var requestContext  = new RequestContext(httpHost, request.HttpMethod, route, url.Query, req.InputStream, headers, cookies);
+            var requestContext  = new RequestContext(httpHost, method, route, url.Query, req.InputStream, headers, cookies);
             await httpHost.ExecuteHttpRequest(requestContext).ConfigureAwait(false);
             return requestContext;
         }
