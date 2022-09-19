@@ -16,12 +16,13 @@ using Friflo.Json.Fliox.Hub.Threading;
 namespace Friflo.Json.Fliox.Hub.Remote
 {
     // [Things I Wish Someone Told Me About ASP.NET Core WebSockets | codetinkerer.com] https://www.codetinkerer.com/2018/06/05/aspnet-core-websockets.html
-    public sealed class WebSocketHost : IEventReceiver, ILogSource
+    public sealed class WebSocketHost : IDisposable, IEventReceiver, ILogSource
     {
         private  readonly   WebSocket                               webSocket;
         /// Only set to true for testing. It avoids an early out at <see cref="EventSubClient.SendEvents"/> 
         private  readonly   bool                                    fakeOpenClosedSocket;
 
+        private  readonly   DataChannelSlim<ArraySegment<byte>>     channel;
         private  readonly   IDataChannelWriter<ArraySegment<byte>>  sendWriter;
         private  readonly   IDataChannelReader<ArraySegment<byte>>  sendReader;
         private  readonly   Pool                                    pool;
@@ -40,11 +41,15 @@ namespace Friflo.Json.Fliox.Hub.Remote
             this.remoteEndPoint         = remoteEndPoint;
             this.fakeOpenClosedSocket   = fakeOpenClosedSocket;
             
-            var channel         = DataChannelSlim<ArraySegment<byte>>.CreateUnbounded(true, false);
-            sendWriter          = channel.Writer;
-            sendReader          = channel.Reader;
+            channel     = DataChannelSlim<ArraySegment<byte>>.CreateUnbounded(true, false);
+            sendWriter  = channel.Writer;
+            sendReader  = channel.Reader;
         }
-        
+
+        public void Dispose() {
+            channel.Dispose();
+        }
+
         // --- IEventReceiver
         public bool IsRemoteTarget ()   => true;
         public bool IsOpen () {
@@ -142,6 +147,9 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 return;
             }
             await sendLoop.ConfigureAwait(false);
+            
+            target.Dispose();
+            websocket.Dispose();
         }
         
         private static string GetExceptionMessage(string location, IPEndPoint remoteEndPoint, Exception e) {

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Friflo.Json.Fliox.Hub.Threading
 {
-    public interface IDataChannel<T>
+    public interface IDataChannel<T> : IDisposable
     {
         IDataChannelReader<T>   Reader { get; } 
         IDataChannelWriter<T>   Writer { get; }

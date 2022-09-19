@@ -26,7 +26,11 @@ namespace Friflo.Json.Fliox.Hub.Threading
             Reader = new DataChannelReaderSlim<T>(this);
             Writer = new DataChannelWriterSlim<T>(this);
         }
-        
+
+        public void Dispose() {
+            itemsAvailable.Dispose();
+        }
+
         public static DataChannelSlim<T> CreateUnbounded(bool singleReader, bool singleWriter) {
             return new DataChannelSlim<T>();
         }

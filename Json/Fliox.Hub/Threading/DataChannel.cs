@@ -20,7 +20,9 @@ namespace Friflo.Json.Fliox.Hub.Threading
             Reader = new DataChannelReader<T>(channel.Reader);
             Writer = new DataChannelWriter<T>(channel.Writer);
         }
-        
+
+        public void Dispose() { }
+
         public static DataChannel<T> CreateUnbounded(bool singleReader, bool singleWriter) {
             var opt = new UnboundedChannelOptions {
                 SingleReader = singleReader,
