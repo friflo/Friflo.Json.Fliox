@@ -84,7 +84,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
             state       = WebSocketState.Open;
             this.stream = stream;
             this.socket = socket;
-            // dont block when closing socket by pending data in outgoing network buffer
+            // don't block when closing socket by pending data in outgoing network buffer
             socket.LingerState = new LingerOption(false, 0);
             // disable Nagle algorithm
             socket.NoDelay  = true;

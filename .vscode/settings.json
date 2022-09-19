@@ -51,6 +51,7 @@
         "kotlinx",
         "Linq",
         "mdast",
+        "Nagle",
         "Netcode",
         "NETCOREAPP",
         "NETFX",

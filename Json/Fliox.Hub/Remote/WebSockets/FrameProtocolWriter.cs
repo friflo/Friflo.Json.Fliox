@@ -72,12 +72,6 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
                 // append writeCount bytes from message to buffer
                 if (maskingKey != null) {
                     VectorOps.Instance.Xor(buffer, bufferLen, dataBuffer, dataPos, maskingKey, dataPos, writeCount);
-                    /* for (int n = 0; n < writeCount; n++) {
-                        var dataIndex = dataPos + n;
-                        var j = dataIndex % 4;
-                        var b = dataBuffer[dataIndex];
-                        buffer[bufferLen + n] = (byte)(b ^ maskingKey[j]);
-                    } */
                 } else {
                     Buffer.BlockCopy(dataBuffer, dataPos, buffer, bufferLen, writeCount);
                 }
