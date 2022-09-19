@@ -5,13 +5,18 @@ namespace Friflo.Json.Burst.Vector
 {
     public class VectorOps
     {
+        public static readonly VectorOps Instance = GetInstance();
+
+        private static VectorOps GetInstance () {
 #if   UNITY_BURST
-        public static readonly VectorOps Instance = new VectorOpsUnity();
-#elif XXX_NETCOREAPP3_0_OR_GREATER
-        public static readonly VectorOps Instance = new VectorOpsCLR();
+        return Unity.Burst.Intrinsics.X86.Sse2.IsSse2Supported  ? new VectorOpsUnity()  : new VectorOps();
+#elif NETCOREAPP3_0 || NETCOREAPP3_0_OR_GREATER
+        return System.Runtime.Intrinsics.X86.Sse2.IsSupported   ? new VectorOpsCLR()    : new VectorOps();
 #else
-        public static readonly VectorOps Instance = new VectorOps();
+        return new VectorOps();
 #endif
+        } 
+        
 
         public virtual void Xor(
             byte[] dest,    int destPos,

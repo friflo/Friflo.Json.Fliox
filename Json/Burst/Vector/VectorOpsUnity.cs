@@ -21,18 +21,22 @@ namespace Friflo.Json.Burst.Vector
             byte[] mask,    int maskPos,
             int length)
         {
-            const int vectorSize = 16; // 128 bit
+            int     n = 0;
+            const   int vectorSize = 16; // 128 bit
             fixed (byte* destPointer  = dest)
             fixed (byte* srcPointer   = src)
             fixed (byte* maskPointer  = mask)
             {
-                for (int n = 0; n < length; n += vectorSize) {
+                var end = length - vectorSize;
+                for (; n <= end; n += vectorSize) {
                     var bufferVector        = X86.Sse2.load_si128(srcPointer   + srcPos + n);
                     var maskingKeyVector    = X86.Sse2.load_si128(maskPointer  + (maskPos + n) % 4);
                     var xor                 = X86.Sse2.xor_si128(bufferVector, maskingKeyVector);
                     X86.Sse2.store_si128(destPointer + destPos + n, xor);
                 }
             }
+            // remaining bytes
+            base.Xor(dest, destPos + n, src, srcPos + n, mask, maskPos + n, length - n);
         }
 
         public override void Populate(byte[] arr) {
