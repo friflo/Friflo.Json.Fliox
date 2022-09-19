@@ -9,9 +9,6 @@ namespace Friflo.Json.Burst.Vector
 {
     /// <summary>
     /// Vector (SIMD) operations for Microsoft CLR
-    /// UNITY_BURST requires <br/>
-    /// - adding entry "Unity.Burst" in Friflo.Json.asmdef > "references" <br/>
-    /// - installing package 'Burst' in Package Explorer <br/>
     /// </summary>
     public class VectorOpsCLR : VectorOps
     {
