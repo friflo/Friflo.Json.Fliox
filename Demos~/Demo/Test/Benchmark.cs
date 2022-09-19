@@ -6,6 +6,7 @@ using Demo;
 using Friflo.Json.Fliox.Hub.Client;
 using Friflo.Json.Fliox.Hub.Remote;
 
+// ReSharper disable UnusedVariable
 namespace DemoTest {
 
     internal static class Benchmark
@@ -82,7 +83,7 @@ namespace DemoTest {
                 var bytesStart  = GC.GetAllocatedBytesForCurrentThread();
                 var testMessage = new TestMessage { start = DateTime.Now.Ticks, payload = payload};
                 sender.SendMessage("test", testMessage);   // message is published to all clients
-                sender.SyncTasks();
+                var noAwait = sender.SyncTasks();
                 sendTicks  += DateTime.Now.Ticks - msgStart;
                 bytes      += GC.GetAllocatedBytesForCurrentThread() - bytesStart;
                 
