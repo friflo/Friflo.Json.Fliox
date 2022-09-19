@@ -115,7 +115,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 }
                 Logger.Log(HubLog.Info, $"ReceiveLoop() returns. WebSocket state: {state}, remote: {remoteEndPoint}");
                 if (state == WebSocketState.CloseReceived) {
-                    await webSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "", CancellationToken.None).ConfigureAwait(false);    
+                    var description = webSocket.CloseStatusDescription;
+                    await webSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, description, CancellationToken.None).ConfigureAwait(false);    
                 }
                 return;
             }

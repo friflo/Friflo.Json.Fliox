@@ -85,12 +85,19 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
                     return SocketState;
                 }
                 bufferPos = 0;
-                bufferLen = await stream.ReadAsync(buffer, 0, buffer.Length, cancellationToken).ConfigureAwait(false);
-                if (bufferLen > 0)
-                    continue;
+                try {
+                    bufferLen = await stream.ReadAsync(buffer, 0, buffer.Length, cancellationToken).ConfigureAwait(false);
+                    // ReadAsync() return 0 if end of the stream has been reached
+                    CloseStatusDescription  = "reached end of stream";
+                    if (bufferLen > 0)
+                        continue;
+                }
+                catch (IOException e) {
+                    var innerException = e.InnerException;
+                    CloseStatusDescription = innerException != null ? innerException.Message : e.Message;
+                }
                 SocketState             = WebSocketState.Closed;
                 CloseStatus             = WebSocketCloseStatus.EndpointUnavailable;
-                CloseStatusDescription  = "stream closed";
                 MessageType             = WebSocketMessageType.Close;
                 EndOfMessage            = true;
                 return SocketState;

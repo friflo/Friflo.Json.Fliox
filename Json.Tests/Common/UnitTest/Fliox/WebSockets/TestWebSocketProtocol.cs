@@ -184,7 +184,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.WebSockets
                 AreEqual(WebSocketState.Closed,                     reader.SocketState);
                 AreEqual(WebSocketMessageType.Close,                reader.MessageType);
                 AreEqual(WebSocketCloseStatus.EndpointUnavailable,  reader.CloseStatus);
-                AreEqual("stream closed",                           reader.CloseStatusDescription);
+                AreEqual("reached end of stream",                   reader.CloseStatusDescription);
                 
                 try {
                     // read from closed reader

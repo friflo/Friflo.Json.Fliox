@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
+using System.IO;
 using System.Net.Sockets;
 using System.Net.WebSockets;
 using System.Reflection;
@@ -36,12 +37,17 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
 
         public override async Task CloseAsync(WebSocketCloseStatus closeStatus, string statusDescription, CancellationToken cancellationToken) {
             await sendLock.WaitAsync(cancellationToken).ConfigureAwait(false);
-            await writer.CloseAsync (stream, closeStatus, "client closed connection", cancellationToken).ConfigureAwait(false);
-            await stream.FlushAsync(cancellationToken).ConfigureAwait(false);
-                
-            sendLock.Release();
-
-            Close();
+            try {
+                // Socket may already be closed by writer exception
+                if (socket.Connected) {
+                    await writer.CloseAsync (stream, closeStatus, statusDescription, cancellationToken).ConfigureAwait(false);
+                    await stream.FlushAsync(cancellationToken).ConfigureAwait(false);
+                }
+            }
+            finally {
+                sendLock.Release();
+                Close();
+            }
         }
 
         public override Task CloseOutputAsync(WebSocketCloseStatus closeStatus, string statusDescription, CancellationToken cancellationToken) {
@@ -69,10 +75,13 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
         public override async Task SendAsync(ArraySegment<byte> dataBuffer, WebSocketMessageType messageType, bool endOfMessage, CancellationToken cancellationToken) {
             await sendLock.WaitAsync(cancellationToken).ConfigureAwait(false);
             var buffer = dataBuffer.Array;
-            await writer.WriteFrame(stream, buffer, messageType, endOfMessage, cancellationToken).ConfigureAwait(false);
-            await stream.FlushAsync(cancellationToken).ConfigureAwait(false); // todo required?
-            
-            sendLock.Release();
+            try {
+                await writer.WriteFrame(stream, buffer, messageType, endOfMessage, cancellationToken).ConfigureAwait(false);
+                await stream.FlushAsync(cancellationToken).ConfigureAwait(false); // todo required?
+            }
+            finally{
+                sendLock.Release();
+            }
         }
         // ---------------------------------------------------------------------------------------------
 
