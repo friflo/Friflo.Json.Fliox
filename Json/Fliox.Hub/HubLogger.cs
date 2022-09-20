@@ -35,9 +35,11 @@ namespace Friflo.Json.Fliox.Hub
     internal sealed class HubLoggerConsole : IHubLogger
     {
         public void Log(HubLog hubLog, string message, Exception exception) {
-            var prefix          = GetLogPrefix(hubLog);
-            var exceptionStr    = exception == null ? "" : exception.ToString(); 
-            Console.WriteLine($"{prefix}{message}{exceptionStr}");
+            var prefix  = GetLogPrefix(hubLog);
+            var msg     = exception == null ?
+                $"{prefix}{message}" :
+                $"{prefix}{message} {exception}";
+            Console.WriteLine(msg);
         }
         
         private static string GetLogPrefix(HubLog hubLog) {

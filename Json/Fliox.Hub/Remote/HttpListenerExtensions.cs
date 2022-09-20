@@ -1,10 +1,13 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Net;
+using System.Net.WebSockets;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Remote.WebSockets;
 
@@ -20,23 +23,32 @@ namespace Friflo.Json.Fliox.Hub.Remote
             if (!httpHost.GetRoute(path, out string route)) {
                 return httpHost.InternalRequestError(path, method);
             }
-            HttpListenerRequest  req  = context.Request;
+            HttpListenerRequest req  = context.Request;
+            WebSocket           websocket = null;
 #if UNITY_5_3_OR_NEWER
             // Unity <= 2021.3 has currently no support for Server WebSockets  =>  add functionality using ServerWebSocketExtensions
             // see: [Help Wanted - Websocket Server in Standalone build - Unity Forum] https://forum.unity.com/threads/websocket-server-in-standalone-build.1072526/
             if (ServerWebSocketExtensions.IsWebSocketRequest(req)) {
-                var wsContext       = await ServerWebSocketExtensions.AcceptWebSocket(context).ConfigureAwait(false);
-                var websocket       = wsContext.WebSocket;
-                var remoteEndPoint  = request.RemoteEndPoint;
-                await WebSocketHost.SendReceiveMessages (websocket, remoteEndPoint, httpHost).ConfigureAwait(false);
-                return null;
+                var wsContext   = await ServerWebSocketExtensions.AcceptWebSocket(context).ConfigureAwait(false);
+                websocket       = wsContext.WebSocket;
+            }
+#else
+            if (req.IsWebSocketRequest) {
+                var wsContext   = await context.AcceptWebSocketAsync(null).ConfigureAwait(false);
+                websocket       = wsContext.WebSocket;
             }
 #endif
-            if (req.IsWebSocketRequest) {
-                var wsContext       = await context.AcceptWebSocketAsync(null).ConfigureAwait(false);
-                var websocket       = wsContext.WebSocket;
+            if (websocket != null) {
                 var remoteEndPoint  = request.RemoteEndPoint;
-                await WebSocketHost.SendReceiveMessages (websocket, remoteEndPoint, httpHost).ConfigureAwait(false);
+                try {
+                    await WebSocketHost.SendReceiveMessages (websocket, remoteEndPoint, httpHost).ConfigureAwait(false);
+                }
+                catch (Exception e) {
+                    var message = e.Message;
+                    var error   = $"WebSocket error - {message}";
+                    httpHost.Logger.Log(HubLog.Error, error, e);
+                    await websocket.CloseAsync(WebSocketCloseStatus.InternalServerError, message, CancellationToken.None).ConfigureAwait(false);
+                }
                 return null;
             }
             var headers         = new HttpListenerHeaders(request.Headers);

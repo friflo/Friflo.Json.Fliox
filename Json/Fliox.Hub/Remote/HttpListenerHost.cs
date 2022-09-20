@@ -87,7 +87,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
 
             while (runServer) {
                 try {
-                    await HandleRequest();
+                    await HandleRequest().ConfigureAwait(false);
                 }
 #if UNITY_5_3_OR_NEWER
                 catch (ObjectDisposedException  e) {
@@ -112,25 +112,36 @@ namespace Friflo.Json.Fliox.Hub.Remote
         private async Task HandleRequest() {
             // Will wait here until we hear from a connection
             HttpListenerContext context = await listener.GetContextAsync().ConfigureAwait(false);
-            // await HandleListenerContext(context);            // handle incoming requests serial
+
             _ = Task.Run(async () => {
-                try {
-                    HttpListenerRequest  req  = context.Request;
-                    if (requestCount++ == 0 || requestCount % 10000 == 0) {
-                        string reqMsg = $@"request {requestCount} {req.Url} {req.HttpMethod}"; // {req.UserAgent} {req.UserHostName} 
-                        LogInfo(reqMsg);
+                HttpListenerRequest  req  = context.Request;
+                if (requestCount++ == 0 || requestCount % 10000 == 0) {
+                    string reqMsg = $@"request {requestCount} {req.Url} {req.HttpMethod}"; // {req.UserAgent} {req.UserHostName} 
+                    LogInfo(reqMsg);
+                }
+                var path = context.Request.Url.LocalPath;
+                if (httpHost.IsMatch(path)) {
+                    RequestContext response;
+                    try {
+                        response = await context.ExecuteFlioxRequest(httpHost).ConfigureAwait(false); // handle incoming requests parallel
                     }
-                    var path = context.Request.Url.LocalPath;
-                    if (httpHost.IsMatch(path)) {
-                        var response = await context.ExecuteFlioxRequest(httpHost).ConfigureAwait(false); // handle incoming requests parallel
-                        
-                        await context.WriteFlioxResponse(response).ConfigureAwait(false);
+                    catch (Exception e) {
+                        var resp    = context.Response;
+                        var message = $"fliox request failed - {e.GetType().Name}: {e.Message}";
+                        LogException(message, e);
+                        await HttpListenerExtensions.WriteResponseString(resp, "text/plain", 500, message, null).ConfigureAwait(false);
+                        resp.Close();
                         return;
                     }
-                    await customRequestHandler(context);
+                    await context.WriteFlioxResponse(response).ConfigureAwait(false);
+                    return;
+                }
+                try {
+                    await customRequestHandler(context).ConfigureAwait(false);
                 }
                 catch (Exception e) {
-                    await HandleContextException(context, e).ConfigureAwait(false);
+                    var message = $"custom request failed - {e.GetType().Name}: {e.Message}";
+                    LogException(message, e);
                 }
             });
         }
@@ -148,15 +159,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             await HttpListenerExtensions.WriteResponseString(response, "text/plain", 404, $"{path} not found", null).ConfigureAwait(false);
         }
         
-        private async Task HandleContextException(HttpListenerContext context, Exception e) {
-            var message = $"request failed - {e.GetType().Name}: {e.Message}";
-            LogException(message, e);
-            var resp    = context.Response;
-            if (!resp.OutputStream.CanWrite)
-                return;
-            await HttpListenerExtensions.WriteResponseString(resp, "text/plain", (int)HttpStatusCode.BadRequest, message, null).ConfigureAwait(false);
-            resp.Close();
-        }
+
         
         // Http server requires setting permission to run an http server.
         // Otherwise exception is thrown on startup: System.Net.HttpListenerException: permission denied.
