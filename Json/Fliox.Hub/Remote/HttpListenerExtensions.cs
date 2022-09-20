@@ -62,8 +62,11 @@ namespace Friflo.Json.Fliox.Hub.Remote
             if (requestContext == null)
                 return; // request was WebSocket
             HttpListenerResponse resp = context.Response;
-            if (!requestContext.Handled)
+            if (!requestContext.Handled) {
+                var body = $"{context.Request.Url} not found";
+                await WriteResponseString(resp, "text/plain", 404, body, null).ConfigureAwait(false);
                 return;
+            }
             var responseBody = requestContext.Response;
             SetResponseHeader(resp, requestContext.ResponseContentType, requestContext.StatusCode, responseBody.Length, requestContext.ResponseHeaders);
             await resp.OutputStream.WriteAsync(responseBody, 0, responseBody.Length).ConfigureAwait(false);

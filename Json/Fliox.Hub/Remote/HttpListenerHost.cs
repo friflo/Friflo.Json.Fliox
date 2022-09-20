@@ -123,6 +123,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 if (httpHost.IsMatch(path)) {
                     RequestContext response;
                     try {
+                        // handle only request - does not write any response - except for accepting a websocket
                         response = await context.ExecuteFlioxRequest(httpHost).ConfigureAwait(false); // handle incoming requests parallel
                     }
                     catch (Exception e) {
@@ -133,6 +134,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                         resp.Close();
                         return;
                     }
+                    // write the response returned by ExecuteFlioxRequest()
                     await context.WriteFlioxResponse(response).ConfigureAwait(false);
                     return;
                 }
@@ -156,7 +158,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 response.OutputStream.Close(); // required by HttpListener in Unity for redirect. CLR does this automatically.
                 return;
             }
-            await HttpListenerExtensions.WriteResponseString(response, "text/plain", 404, $"{path} not found", null).ConfigureAwait(false);
+            var body = $"{context.Request.Url} not found";
+            await HttpListenerExtensions.WriteResponseString(response, "text/plain", 404, body, null).ConfigureAwait(false);
         }
         
 
