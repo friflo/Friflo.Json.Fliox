@@ -92,8 +92,9 @@ namespace Friflo.Json.Fliox.Hub.Remote
             return loopTask;
         }
         
-        private async Task RunReceiveLoop(MemoryStream memoryStream, RemoteHost remoteHost) {
-            var         buffer      = new ArraySegment<byte>(new byte[8192]);
+        private async Task RunReceiveLoop(RemoteHost remoteHost) {
+            var memoryStream    = new MemoryStream();
+            var buffer          = new ArraySegment<byte>(new byte[8192]);
             while (true) {
                 var state = webSocket.State;
                 if (state == WebSocketState.Open) {
@@ -137,9 +138,9 @@ namespace Friflo.Json.Fliox.Hub.Remote
             Task sendLoop   = null;
             try {
                 sendLoop = target.RunSendLoop();
-                using (var memoryStream = new MemoryStream()) {
-                    await target.RunReceiveLoop(memoryStream, remoteHost).ConfigureAwait(false);
-                }
+
+                await target.RunReceiveLoop(remoteHost).ConfigureAwait(false);
+
                 target.sendWriter.TryWrite(default);
                 target.sendWriter.Complete();
             }
