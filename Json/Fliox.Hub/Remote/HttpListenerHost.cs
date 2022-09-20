@@ -11,6 +11,8 @@ using System.Threading.Tasks;
 // ReSharper disable MemberCanBePrivate.Global
 namespace Friflo.Json.Fliox.Hub.Remote
 {
+    public delegate Task CustomRequestHandler (HttpListenerContext context);
+    
     // [A Simple HTTP server in C#] https://gist.github.com/define-private-public/d05bc52dd0bed1c4699d49e2737e80e7
     //
     // Note:
@@ -34,10 +36,11 @@ namespace Friflo.Json.Fliox.Hub.Remote
     /// </remarks>
     public sealed class HttpListenerHost : IDisposable, ILogSource
     {
-        private  readonly   HttpListener        listener;
-        private             bool                runServer;
-        private             int                 requestCount;
-        private  readonly   HttpHost            httpHost;
+        private  readonly   HttpListener            listener;
+        private             bool                    runServer;
+        private             int                     requestCount;
+        private  readonly   HttpHost                httpHost;
+        public              CustomRequestHandler    customRequestHandler;
         
         public   override   string              ToString() => $"endpoint: {httpHost.endpoint}";
         
@@ -45,9 +48,10 @@ namespace Friflo.Json.Fliox.Hub.Remote
         public              IHubLogger          Logger { get; }
         
         public HttpListenerHost(HttpListener httpListener, HttpHost httpHost) {
-            this.httpHost   = httpHost;
-            listener        = httpListener;
-            Logger          = httpHost.sharedEnv.hubLogger;
+            this.httpHost           = httpHost;
+            listener                = httpListener;
+            Logger                  = httpHost.sharedEnv.hubLogger;
+            customRequestHandler    = ExecuteRequest;
         }
         
         public HttpListenerHost(string endpoint, HttpHost httpHost)
@@ -82,40 +86,10 @@ namespace Friflo.Json.Fliox.Hub.Remote
         private async Task HandleIncomingConnections()
         {
             runServer       = true;
-            var endpoint    = httpHost.endpoint;
 
             while (runServer) {
                 try {
-                    // Will wait here until we hear from a connection
-                    HttpListenerContext context = await listener.GetContextAsync().ConfigureAwait(false);
-                    // await HandleListenerContext(context);            // handle incoming requests serial
-                    _ = Task.Run(async () => {
-                        try {
-                            HttpListenerRequest  req  = context.Request;
-                            if (requestCount++ == 0 || requestCount % 10000 == 0) {
-                                string reqMsg = $@"request {requestCount} {req.Url} {req.HttpMethod}"; // {req.UserAgent} {req.UserHostName} 
-                                LogInfo(reqMsg);
-                            }
-                            var path = context.Request.Url.LocalPath;
-                            if (httpHost.IsMatch(path)) {
-                                var response = await context.ExecuteFlioxRequest(httpHost).ConfigureAwait(false); // handle incoming requests parallel
-                                
-                                await context.WriteFlioxResponse(response).ConfigureAwait(false);
-                                return;
-                            }
-                            if (path == "/" && endpoint != "/") {
-                                var location = endpoint;
-                                var headers = new Dictionary<string, string> { { "Location", location }};
-                                await HttpListenerExtensions.WriteResponseString(context.Response, "text/plain", 302, $"redirect -> {location}", headers).ConfigureAwait(false);
-                                context.Response.OutputStream.Close(); // required by HttpListener in Unity for redirect. CLR does this automatically.
-                                return;
-                            }
-                            await HttpListenerExtensions.WriteResponseString(context.Response, "text/plain", 404, $"{path} not found", null).ConfigureAwait(false);
-                        }
-                        catch (Exception e) {
-                            await HandleContextException(context, e).ConfigureAwait(false);
-                        }
-                    });
+                    await HandleRequest();
                 }
 #if UNITY_5_3_OR_NEWER
                 catch (ObjectDisposedException  e) {
@@ -135,6 +109,45 @@ namespace Friflo.Json.Fliox.Hub.Remote
                      return;
                 }
             }
+        }
+        
+        private async Task HandleRequest() {
+            // Will wait here until we hear from a connection
+            HttpListenerContext context = await listener.GetContextAsync().ConfigureAwait(false);
+            // await HandleListenerContext(context);            // handle incoming requests serial
+            _ = Task.Run(async () => {
+                try {
+                    HttpListenerRequest  req  = context.Request;
+                    if (requestCount++ == 0 || requestCount % 10000 == 0) {
+                        string reqMsg = $@"request {requestCount} {req.Url} {req.HttpMethod}"; // {req.UserAgent} {req.UserHostName} 
+                        LogInfo(reqMsg);
+                    }
+                    var path = context.Request.Url.LocalPath;
+                    if (httpHost.IsMatch(path)) {
+                        var response = await context.ExecuteFlioxRequest(httpHost).ConfigureAwait(false); // handle incoming requests parallel
+                        
+                        await context.WriteFlioxResponse(response).ConfigureAwait(false);
+                        return;
+                    }
+                    await customRequestHandler(context);
+                }
+                catch (Exception e) {
+                    await HandleContextException(context, e).ConfigureAwait(false);
+                }
+            });
+        }
+        
+        private async Task ExecuteRequest(HttpListenerContext context) {
+            var path        = context.Request.Url.LocalPath;
+            var response    = context.Response;
+            if (path == "/" && httpHost.endpoint != "/") {
+                var location = httpHost.endpoint;
+                var headers = new Dictionary<string, string> { { "Location", location }};
+                await HttpListenerExtensions.WriteResponseString(response, "text/plain", 302, $"redirect -> {location}", headers).ConfigureAwait(false);
+                response.OutputStream.Close(); // required by HttpListener in Unity for redirect. CLR does this automatically.
+                return;
+            }
+            await HttpListenerExtensions.WriteResponseString(response, "text/plain", 404, $"{path} not found", null).ConfigureAwait(false);
         }
         
         private async Task HandleContextException(HttpListenerContext context, Exception e) {
