@@ -37,7 +37,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
         {
             if (!requestCounts.TryGetValue(database, out RequestCount requestCount)) {
                 requestCount = new RequestCount { db = database };
-                requestCounts.TryAdd(database, requestCount);
+                requestCounts[database] = requestCount;
             }
             UpdateCounts(ref requestCount, syncRequest);
             requestCounts[database] = requestCount;

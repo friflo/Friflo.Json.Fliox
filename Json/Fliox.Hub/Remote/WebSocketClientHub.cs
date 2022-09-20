@@ -173,7 +173,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                     case ProtocolResponse resp:
                         var responseReqId = resp.reqId;
                         if (!responseReqId.HasValue)
-                            throw new InvalidOperationException("WebSocketClientDatabase requires reqId in response");
+                            throw new InvalidOperationException($"WebSocketClientDatabase requires reqId in response:\n{messageJson}");
                         var id = responseReqId.Value;
                         if (!wsConn.requests.TryRemove(id, out WebsocketRequest request)) {
                             throw new InvalidOperationException($"Expect corresponding request to response. id: {id}");
