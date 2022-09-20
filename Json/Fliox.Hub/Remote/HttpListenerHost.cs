@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 // ReSharper disable MemberCanBePrivate.Global
 namespace Friflo.Json.Fliox.Hub.Remote
 {
-    public delegate Task CustomRequestHandler (HttpListenerContext context);
+    public delegate Task HttpListenerRequestHandler (HttpListenerContext context);
     
     // [A Simple HTTP server in C#] https://gist.github.com/define-private-public/d05bc52dd0bed1c4699d49e2737e80e7
     //
@@ -36,16 +36,16 @@ namespace Friflo.Json.Fliox.Hub.Remote
     /// </remarks>
     public sealed class HttpListenerHost : IDisposable, ILogSource
     {
-        private  readonly   HttpListener            listener;
-        private             bool                    runServer;
-        private             int                     requestCount;
-        private  readonly   HttpHost                httpHost;
-        public              CustomRequestHandler    customRequestHandler;
+        private  readonly   HttpListener                listener;
+        private             bool                        runServer;
+        private             int                         requestCount;
+        private  readonly   HttpHost                    httpHost;
+        public              HttpListenerRequestHandler  customRequestHandler;
         
-        public   override   string              ToString() => $"endpoint: {httpHost.endpoint}";
+        public   override   string                      ToString() => $"endpoint: {httpHost.endpoint}";
         
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public              IHubLogger          Logger { get; }
+        public              IHubLogger                  Logger { get; }
         
         public HttpListenerHost(HttpListener httpListener, HttpHost httpHost) {
             this.httpHost           = httpHost;
