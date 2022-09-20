@@ -1,13 +1,11 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
-using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Net;
 using System.Net.WebSockets;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Remote.WebSockets;
 
@@ -15,13 +13,17 @@ namespace Friflo.Json.Fliox.Hub.Remote
 {
     public static class HttpListenerExtensions
     {
+        /// <summary>
+        /// Execute the request return a RequestContext containing the execution result.
+        /// To return a HTTP response <see cref="WriteFlioxResponse"/> need to be called. 
+        /// </summary>
         public static async Task<RequestContext> ExecuteFlioxRequest (this HttpListenerContext context, HttpHost httpHost) {
             var request = context.Request;
             var url     = request.Url;
             var path    = url.LocalPath;
             var method  = request.HttpMethod;
-            if (!httpHost.GetRoute(path, out string route)) {
-                return httpHost.ExecuteUnknownPath(path, method);
+            if (!HttpHostUtils.GetFlioxRoute(httpHost, path, out string route)) {
+                return HttpHostUtils.ExecuteUnknownPath(httpHost, path, method);
             }
             HttpListenerRequest req  = context.Request;
             WebSocket           websocket = null;
@@ -40,15 +42,9 @@ namespace Friflo.Json.Fliox.Hub.Remote
 #endif
             if (websocket != null) {
                 var remoteEndPoint  = request.RemoteEndPoint;
-                try {
-                    await WebSocketHost.SendReceiveMessages (websocket, remoteEndPoint, httpHost).ConfigureAwait(false);
-                }
-                catch (Exception e) {
-                    var message = e.Message;
-                    var error   = $"WebSocket error - {message}";
-                    httpHost.Logger.Log(HubLog.Error, error, e);
-                    await websocket.CloseAsync(WebSocketCloseStatus.InternalServerError, message, CancellationToken.None).ConfigureAwait(false);
-                }
+                // awaits until thew websocket is closed or disconnected
+                await WebSocketHost.SendReceiveMessages (websocket, remoteEndPoint, httpHost).ConfigureAwait(false);
+                
                 return null;
             }
             var headers         = new HttpListenerHeaders(request.Headers);
@@ -58,6 +54,9 @@ namespace Friflo.Json.Fliox.Hub.Remote
             return requestContext;
         }
         
+        /// <summary>
+        /// Write the result of <see cref="ExecuteFlioxRequest"/> to the given <paramref name="context"/>
+        /// </summary>
         public static async Task WriteFlioxResponse(this HttpListenerContext context, RequestContext requestContext) {
             if (requestContext == null)
                 return; // request was WebSocket

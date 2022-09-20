@@ -109,7 +109,15 @@ namespace Friflo.Json.Fliox.Hub.Remote
             }
         }
         
-        private async Task HandleRequest() {
+        private bool IsFlioxRequest (string path) {
+            if (path.StartsWith(httpHost.endpoint)) {
+                return true;
+            }
+            return path == httpHost.endpointRoot;
+        }
+        
+        private async Task HandleRequest()
+        {
             // Will wait here until we hear from a connection
             HttpListenerContext context = await listener.GetContextAsync().ConfigureAwait(false);
 
@@ -120,7 +128,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                     LogInfo(reqMsg);
                 }
                 var path = context.Request.Url.LocalPath;
-                if (httpHost.IsMatch(path)) {
+                if (IsFlioxRequest(path)) {
                     RequestContext response;
                     try {
                         // handle only request - does not write any response - except for accepting a websocket
@@ -216,7 +224,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 if (prefix.Contains("+")) {
                     var url     = prefix.Replace("+", "localhost");
                     var trimEnd = url.EndsWith("/") ? 1 : 0;
-                    return url.Substring(0, url.Length - trimEnd) + httpHost.endpoint; ;
+                    return url.Substring(0, url.Length - trimEnd) + httpHost.endpoint;
                 }
             }
             foreach (var prefix in listener.Prefixes) {

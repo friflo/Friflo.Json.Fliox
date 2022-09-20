@@ -126,10 +126,17 @@ namespace Friflo.Json.Fliox.Hub.Remote
             }
         }
         
-        public static async Task SendReceiveMessages(WebSocket websocket, IPEndPoint remoteEndPoint, RemoteHost remoteHost) {
-            var target   = new WebSocketHost(remoteHost.sharedEnv, websocket, remoteEndPoint, remoteHost.fakeOpenClosedSockets);
-            var sendLoop = target.RunSendLoop();
+        /// <summary>
+        /// Create a send and receive queue and run a send and a receive loop. <br/>
+        /// The loops are executed until the WebSocket is closed or disconnected. <br/>
+        /// The method <b>don't</b> throw exception. WebSocket exceptions are catched and written to <see cref="Logger"/> <br/>
+        /// </summary>
+        public static async Task SendReceiveMessages(WebSocket websocket, IPEndPoint remoteEndPoint, RemoteHost remoteHost)
+        {
+            var  target     = new WebSocketHost(remoteHost.sharedEnv, websocket, remoteEndPoint, remoteHost.fakeOpenClosedSockets);
+            Task sendLoop   = null;
             try {
+                sendLoop = target.RunSendLoop();
                 using (var memoryStream = new MemoryStream()) {
                     await target.RunReceiveLoop(memoryStream, remoteHost).ConfigureAwait(false);
                 }
@@ -139,17 +146,18 @@ namespace Friflo.Json.Fliox.Hub.Remote
             catch (WebSocketException e) {
                 var msg = GetExceptionMessage("WebSocketHost.SendReceiveMessages()", remoteEndPoint, e);
                 remoteHost.Logger.Log(HubLog.Info, msg);
-                return;
             }
             catch (Exception e) {
                 var msg = GetExceptionMessage("WebSocketHost.SendReceiveMessages()", remoteEndPoint, e);
                 remoteHost.Logger.Log(HubLog.Info, msg);
-                return;
             }
-            await sendLoop.ConfigureAwait(false);
-            
-            target.Dispose();
-            websocket.Dispose();
+            finally {
+                if (sendLoop != null) {
+                    await sendLoop.ConfigureAwait(false);
+                }
+                target.Dispose();
+                websocket.Dispose();
+            }
         }
         
         private static string GetExceptionMessage(string location, IPEndPoint remoteEndPoint, Exception e) {

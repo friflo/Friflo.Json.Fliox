@@ -44,7 +44,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
     {
         /// <summary>never null, ends with '/'</summary>
         public   readonly   string                  endpoint; 
-        private  readonly   string                  endpointRoot;
+        internal readonly   string                  endpointRoot;
         private  readonly   SchemaHandler           schemaHandler   = new SchemaHandler();
         private  readonly   Rest.RestHandler        restHandler     = new Rest.RestHandler();
         private  readonly   List<IRequestHandler>   customHandlers  = new List<IRequestHandler>();
@@ -109,43 +109,6 @@ namespace Friflo.Json.Fliox.Hub.Remote
             schemaHandler.AddSchema ("json-schema", jsonSchema, jsonSchemaRoot);
         }
         
-        public bool IsMatch (string path) {
-            if (path.StartsWith(endpoint)) {
-                return true;
-            }
-            return path == endpointRoot;
-        }
-        
-        public bool GetRoute(string path, out string route) {
-            if (path.StartsWith(endpoint)) {
-                route = path.Substring(endpoint.Length - 1);
-                return true;
-            }
-            route = null;
-            return false;
-        }
-        
-        /// <summary>
-        /// Perform a redirect from /fliox -> /fliox/ <br/>
-        /// Otherwise return a path mapping error. <br/>
-        /// E.g. in case ASP.NET maps "/foo/{*path}" to a <see cref="HttpHost"/> using <see cref="endpoint"/> "/fliox/" 
-        /// </summary>
-        public RequestContext ExecuteUnknownPath(string path, string method) {
-            if (path == endpointRoot && method == "GET") {
-                var context = new RequestContext(this, "GET", path, null, null, null, null);
-                context.AddHeader("Location", endpoint);
-                context.WriteString($"redirect -> {endpoint}", "text/plain", 302);
-                context.handled = true;
-                return context;
-            } else {
-                var context = new RequestContext(this, method, path, null, null, null, null);
-                var message = $"Expect path matching HttpHost.endpoint: {endpoint}, path: {path}";
-                context.WriteError("internal path mapping error", message, 500);
-                context.handled = true;
-                return context;
-            }
-        }
-
         public string CacheControl {
             get => schemaHandler.CacheControl;
             set => schemaHandler.CacheControl = value;

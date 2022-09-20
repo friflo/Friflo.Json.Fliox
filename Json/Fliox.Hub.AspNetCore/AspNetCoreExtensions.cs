@@ -4,7 +4,6 @@
 
 using System.Collections.Generic;
 using System.Net;
-using System.Net.WebSockets;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Remote;
 using Microsoft.AspNetCore.Http;
@@ -41,24 +40,26 @@ namespace Friflo.Json.Fliox.Hub.AspNetCore
         public static async Task<RequestContext> ExecuteFlioxRequest(this HttpContext context, HttpHost httpHost) {
             var httpRequest = context.Request;
             var path        = httpRequest.Path.Value;
-            if (!httpHost.GetRoute(path, out string route)) {
-                return httpHost.ExecuteUnknownPath(path, httpRequest.Method);
+            if (!HttpHostUtils.GetFlioxRoute(httpHost, path, out string route)) {
+                return HttpHostUtils.ExecuteUnknownPath(httpHost, path, httpRequest.Method);
             }
             var isWebSocket = context.WebSockets.IsWebSocketRequest;
             if (isWebSocket) {
-                WebSocket ws        = await context.WebSockets.AcceptWebSocketAsync().ConfigureAwait(false);
+                var websocket       = await context.WebSockets.AcceptWebSocketAsync().ConfigureAwait(false);
                 var httpConnection  = context.Features.Get<IHttpConnectionFeature>();
                 var remoteEndPoint  = new IPEndPoint(httpConnection.RemoteIpAddress, httpConnection.RemotePort);
-                await WebSocketHost.SendReceiveMessages(ws, remoteEndPoint, httpHost).ConfigureAwait(false);
+                // awaits until thew websocket is closed or disconnected
+                await WebSocketHost.SendReceiveMessages(websocket, remoteEndPoint, httpHost).ConfigureAwait(false);
+                
                 return null;
             }
-            var headers     = new HttpContextHeaders(httpRequest.Headers);
-            var cookies     = new HttpContextCookies(httpRequest.Cookies);
-            var reqCtx      = new RequestContext(httpHost, httpRequest.Method, route, httpRequest.QueryString.Value, httpRequest.Body, headers, cookies);
+            var headers         = new HttpContextHeaders(httpRequest.Headers);
+            var cookies         = new HttpContextCookies(httpRequest.Cookies);
+            var requestContext  = new RequestContext(httpHost, httpRequest.Method, route, httpRequest.QueryString.Value, httpRequest.Body, headers, cookies);
 
-            await httpHost.ExecuteHttpRequest(reqCtx).ConfigureAwait(false);
+            await httpHost.ExecuteHttpRequest(requestContext).ConfigureAwait(false);
                     
-            return reqCtx;
+            return requestContext;
         }
         
         /// <summary>
