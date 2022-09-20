@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Numerics;
 using Friflo.Json.Fliox.Mapper;
@@ -11,15 +12,15 @@ namespace Friflo.Json.Fliox.Schema.Validation
 {
     public sealed class NativeValidationSet : IDisposable
     {
-        private  readonly   HashSet<Type>                       clientTypes;
-        private  readonly   Dictionary<Type, ValidationType>    validationTypes;
-        private  readonly   Dictionary<Type, ValidationTypeDef> validationTypeDefs;
-        private  readonly   TypeStore                           typeStore;
+        private  readonly   HashSet<Type>                                   clientTypes;
+        private  readonly   ConcurrentDictionary<Type, ValidationType>      validationTypes;
+        private  readonly   ConcurrentDictionary<Type, ValidationTypeDef>   validationTypeDefs;
+        private  readonly   TypeStore                                       typeStore;
         
         public NativeValidationSet() {
             clientTypes         = new HashSet<Type>();
-            validationTypes     = new Dictionary<Type, ValidationType>();
-            validationTypeDefs  = new Dictionary<Type, ValidationTypeDef>();
+            validationTypes     = new ConcurrentDictionary<Type, ValidationType>();
+            validationTypeDefs  = new ConcurrentDictionary<Type, ValidationTypeDef>();
             typeStore           = new TypeStore();
             AddRootType(typeof(StandardTypes));
         }
@@ -34,11 +35,11 @@ namespace Friflo.Json.Fliox.Schema.Validation
             }
             if (validationTypeDefs.TryGetValue(type, out var typeDef)) {
                 validationType = typeDef.validationType;
-                validationTypes.Add(type, validationType);
+                validationTypes.TryAdd(type, validationType);
                 return validationType;
             }
             validationType = GetValidationTypeInternal(type);
-            validationTypes.Add(type, validationType);
+            validationTypes.TryAdd(type, validationType);
             return validationType;
         }
         

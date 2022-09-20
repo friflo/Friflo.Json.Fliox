@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using Friflo.Json.Fliox.Hub.Host.Utils;
 using Friflo.Json.Fliox.Mapper;
@@ -21,7 +22,7 @@ namespace Friflo.Json.Fliox.Hub.Host
     internal sealed class Pool
     {
         // Note: Pool does not expose sharedEnv.TypeStore by intention to avoid side effects by unexpected usage. 
-        private   readonly  Dictionary<Type, IDisposable>   poolMap = new Dictionary<Type, IDisposable>(); // object = SharedPool<T>
+        private   readonly  ConcurrentDictionary<Type, IDisposable>   poolMap = new ConcurrentDictionary<Type, IDisposable>(); // object = SharedPool<T>
 
         internal    ObjectPool<JsonPatcher>     JsonPatcher     { get; }
         internal    ObjectPool<ScalarSelector>  ScalarSelector  { get; }
