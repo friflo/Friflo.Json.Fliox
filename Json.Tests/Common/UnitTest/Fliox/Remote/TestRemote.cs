@@ -121,12 +121,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
     }
     
     internal class TestHttpHeaders : IHttpHeaders {
-        public              string                      this[string key] => null;
+        public              string              Header(string key) => null;
     }
     
     internal class TestHttpCookies : IHttpCookies {
         public  readonly    Dictionary<string, string>  cookies = new Dictionary<string, string>();
         
-        public              string                      this[string key] => cookies.TryGetValue(key, out var value) ? value : null;
+        public              string                      Cookie(string key) => cookies.TryGetValue(key, out var value) ? value : null;
     }
 }

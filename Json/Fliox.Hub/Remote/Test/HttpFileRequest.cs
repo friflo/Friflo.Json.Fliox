@@ -118,7 +118,8 @@ namespace Friflo.Json.Fliox.Hub.Remote.Test
     
     public sealed class HttpFileHeaders : IHttpHeaders {
         private  readonly   Dictionary<string, string>  headers;
-        public              string                      this[string key] => headers.TryGetValue(key, out var value) ? value : null;
+        
+        public              string                      Header(string key) => headers.TryGetValue(key, out var value) ? value : null;
         
         public  HttpFileHeaders(Dictionary<string, string> headers) {
             this.headers = headers;
@@ -128,6 +129,6 @@ namespace Friflo.Json.Fliox.Hub.Remote.Test
     public sealed class HttpFileCookies : IHttpCookies {
         public  readonly    Dictionary<string, string>  cookies = new Dictionary<string, string>();
         
-        public              string                      this[string key] => cookies.TryGetValue(key, out var value) ? value : null;
+        public              string                      Cookie(string key) => cookies.TryGetValue(key, out var value) ? value : null;
     }
 }

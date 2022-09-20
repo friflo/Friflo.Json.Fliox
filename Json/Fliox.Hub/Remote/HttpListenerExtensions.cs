@@ -96,7 +96,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
     internal class HttpListenerHeaders : IHttpHeaders {
         private  readonly   NameValueCollection headers;
         
-        public              string              this[string key] => headers[key];
+        public              string              Header(string key) => headers[key];
         
         internal HttpListenerHeaders(NameValueCollection headers) {
             this.headers = headers;    
@@ -106,7 +106,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
     internal class HttpListenerCookies : IHttpCookies {
         private  readonly   CookieCollection    cookies;
         
-        public              string              this[string key] => cookies[key]?.Value;
+        public              string              Cookie(string key) => cookies[key]?.Value;
         
         internal HttpListenerCookies(CookieCollection cookies) {
             this.cookies = cookies;    

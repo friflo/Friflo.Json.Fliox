@@ -103,7 +103,7 @@ namespace Friflo.Json.Fliox.Hub.AspNetCore
     internal class HttpContextHeaders : IHttpHeaders {
         private readonly    IHeaderDictionary   headers;
         
-        public              string              this[string key] => headers[key];
+        public              string              Header(string key) => headers[key];
         
         internal HttpContextHeaders(IHeaderDictionary headers) {
             this.headers = headers;    
@@ -113,7 +113,7 @@ namespace Friflo.Json.Fliox.Hub.AspNetCore
     internal class HttpContextCookies : IHttpCookies {
         private readonly    IRequestCookieCollection    cookies;
         
-        public              string              this[string key] => cookies[key];
+        public              string              Cookie(string key) => cookies[key];
         
         internal HttpContextCookies(IRequestCookieCollection headers) {
             this.cookies = headers;    

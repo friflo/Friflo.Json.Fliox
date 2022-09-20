@@ -109,10 +109,10 @@ namespace Friflo.Json.Fliox.Hub.Remote
     }
     
     public interface IHttpHeaders {
-        string this[string key] { get; }
+        string  Header(string key);
     }
     
     public interface IHttpCookies {
-        string this[string key] { get; }
+        string  Cookie(string key);
     }
 }
