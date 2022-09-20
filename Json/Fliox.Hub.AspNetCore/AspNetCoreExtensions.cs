@@ -53,9 +53,8 @@ namespace Friflo.Json.Fliox.Hub.AspNetCore
                 
                 return null;
             }
-            var headers         = new HttpContextHeaders(httpRequest.Headers);
-            var cookies         = new HttpContextCookies(httpRequest.Cookies);
-            var requestContext  = new RequestContext(httpHost, httpRequest.Method, route, httpRequest.QueryString.Value, httpRequest.Body, headers, cookies);
+            var keyValues       = new HttpContextKeyValues(httpRequest.Headers, httpRequest.Cookies);
+            var requestContext  = new RequestContext(httpHost, httpRequest.Method, route, httpRequest.QueryString.Value, httpRequest.Body, keyValues);
 
             await httpHost.ExecuteHttpRequest(requestContext).ConfigureAwait(false);
                     
@@ -100,23 +99,16 @@ namespace Friflo.Json.Fliox.Hub.AspNetCore
         }
     }
     
-    internal class HttpContextHeaders : IHttpHeaders {
-        private readonly    IHeaderDictionary   headers;
-        
-        public              string              Header(string key) => headers[key];
-        
-        internal HttpContextHeaders(IHeaderDictionary headers) {
-            this.headers = headers;    
-        }
-    }
-    
-    internal class HttpContextCookies : IHttpCookies {
+    internal class HttpContextKeyValues : IHttpKeyValues {
+        private readonly    IHeaderDictionary           headers;
         private readonly    IRequestCookieCollection    cookies;
         
+        public              string              Header(string key) => headers[key];
         public              string              Cookie(string key) => cookies[key];
         
-        internal HttpContextCookies(IRequestCookieCollection headers) {
-            this.cookies = headers;    
+        internal HttpContextKeyValues(IHeaderDictionary headers, IRequestCookieCollection cookies) {
+            this.headers = headers;
+            this.cookies = cookies;
         }
     }
 }

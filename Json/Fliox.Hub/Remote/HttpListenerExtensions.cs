@@ -47,9 +47,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 
                 return null;
             }
-            var headers         = new HttpListenerHeaders(request.Headers);
-            var cookies         = new HttpListenerCookies(request.Cookies);
-            var requestContext  = new RequestContext(httpHost, method, route, url.Query, req.InputStream, headers, cookies);
+            var keyValues       = new HttpListenerKeyValues(request.Headers, request.Cookies);
+            var requestContext  = new RequestContext(httpHost, method, route, url.Query, req.InputStream, keyValues);
             await httpHost.ExecuteHttpRequest(requestContext).ConfigureAwait(false);
             return requestContext;
         }
@@ -93,23 +92,17 @@ namespace Friflo.Json.Fliox.Hub.Remote
         }
     }
     
-    internal class HttpListenerHeaders : IHttpHeaders {
+    internal class HttpListenerKeyValues : IHttpKeyValues {
         private  readonly   NameValueCollection headers;
+        private  readonly   CookieCollection    cookies;
         
         public              string              Header(string key) => headers[key];
+        public              string              Cookie(string key) => cookies[key]?.Value;
         
-        internal HttpListenerHeaders(NameValueCollection headers) {
-            this.headers = headers;    
+        internal HttpListenerKeyValues(NameValueCollection headers, CookieCollection cookies) {
+            this.headers = headers;
+            this.cookies = cookies;
         }
     }
     
-    internal class HttpListenerCookies : IHttpCookies {
-        private  readonly   CookieCollection    cookies;
-        
-        public              string              Cookie(string key) => cookies[key]?.Value;
-        
-        internal HttpListenerCookies(CookieCollection cookies) {
-            this.cookies = cookies;    
-        }
-    }
 }

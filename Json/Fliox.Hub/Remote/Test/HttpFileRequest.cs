@@ -16,8 +16,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.Test
         public  readonly    string              path;
         public  readonly    string              query;
         public  readonly    string              body;
-        public  readonly    HttpFileHeaders     headers;
-        public  readonly    HttpFileCookies     cookies;
+        public  readonly    HttpFileKeyValues   keyValues;
         
         public              Stream              BodyStream => StringToStream(body);
 
@@ -49,9 +48,9 @@ namespace Friflo.Json.Fliox.Hub.Remote.Test
             path            = path.Substring(BaseVariable.Length);
             query           = queryPos == -1 ? "" : urlPath.Substring(queryPos + 1);
             var sb          = new StringBuilder();
-            var headerMap   = ReadHeaders(lines, sb, httpFile);
-            headers         = new HttpFileHeaders(headerMap); 
-            cookies         = CreateCookies(headerMap);
+            var headers     = ReadHeaders(lines, sb, httpFile);
+            var cookies     = CreateCookies(headers);
+            keyValues       = new HttpFileKeyValues(headers, cookies); 
         }
         
         private static Dictionary<string, string> ReadHeaders(string[] lines, StringBuilder sb, HttpFile httpFile) {
@@ -90,18 +89,18 @@ namespace Friflo.Json.Fliox.Hub.Remote.Test
             return sb.ToString();
         }
         
-        private static HttpFileCookies CreateCookies(Dictionary<string, string>  headers) {
-            var result = new HttpFileCookies ();
+        private static Dictionary<string, string> CreateCookies(Dictionary<string, string>  headers) {
+            var result = new Dictionary<string, string> ();
             if (!headers.TryGetValue("Cookie", out var value))
                 return result;
             var cookies = value.Split(new [] {";"}, StringSplitOptions.None);
-            result.cookies.EnsureCapacity(cookies.Length);
+            result.EnsureCapacity(cookies.Length);
             
             foreach (var cookie in cookies) {
                 var assignPos   = cookie.IndexOf("=", StringComparison.InvariantCulture);
                 var cookieName  = cookie.Substring(0, assignPos).Trim();
                 var cookieValue = cookie.Substring(assignPos + 1).Trim();
-                result.cookies.Add(cookieName, cookieValue);
+                result.Add(cookieName, cookieValue);
             }
             return result;
         }
@@ -116,19 +115,16 @@ namespace Friflo.Json.Fliox.Hub.Remote.Test
         }
     }
     
-    public sealed class HttpFileHeaders : IHttpHeaders {
+    public sealed class HttpFileKeyValues : IHttpKeyValues {
         private  readonly   Dictionary<string, string>  headers;
+        public  readonly    Dictionary<string, string>  cookies;
         
         public              string                      Header(string key) => headers.TryGetValue(key, out var value) ? value : null;
-        
-        public  HttpFileHeaders(Dictionary<string, string> headers) {
-            this.headers = headers;
-        }
-    }
-    
-    public sealed class HttpFileCookies : IHttpCookies {
-        public  readonly    Dictionary<string, string>  cookies = new Dictionary<string, string>();
-        
         public              string                      Cookie(string key) => cookies.TryGetValue(key, out var value) ? value : null;
+        
+        public  HttpFileKeyValues(Dictionary<string, string> headers, Dictionary<string, string> cookies) {
+            this.headers = headers;
+            this.cookies = cookies;
+        }
     }
 }
