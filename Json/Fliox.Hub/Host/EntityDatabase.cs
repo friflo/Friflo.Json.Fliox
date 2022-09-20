@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
@@ -55,9 +56,9 @@ namespace Friflo.Json.Fliox.Hub.Host
         
         /// <summary> map of of containers identified by their container name </summary>
         [DebuggerBrowsable(Never)]
-        private  readonly   Dictionary<string, EntityContainer>     containers;
+        private  readonly   ConcurrentDictionary<string, EntityContainer>   containers;
         // ReSharper disable once UnusedMember.Local - expose Dictionary as list in Debugger
-        private             IReadOnlyCollection<EntityContainer>    Containers => containers.Values;
+        private             ICollection<EntityContainer>                    Containers => containers.Values;
         
         /// <summary>
         /// An optional <see cref="DatabaseSchema"/> used to validate the JSON payloads in all write operations
@@ -88,7 +89,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// pass null by implementations.
         /// </summary>
         protected EntityDatabase(string dbName, TaskHandler handler, DbOpt opt){
-            containers          = new Dictionary<string, EntityContainer>();
+            containers          = new ConcurrentDictionary<string, EntityContainer>();
             this.name           = dbName ?? throw new ArgumentNullException(nameof(dbName));
             customContainerName = (opt ?? DbOpt.Default).customContainerName;
             this.handler        = handler ?? new TaskHandler();
@@ -110,7 +111,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         }
 
         internal void AddContainer(EntityContainer container) {
-            containers.Add(container.name, container);
+            containers.TryAdd(container.name, container);
         }
         
         protected bool TryGetContainer(string name, out EntityContainer container) {
