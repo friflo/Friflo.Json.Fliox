@@ -42,7 +42,7 @@ namespace Friflo.Json.Fliox.Hub.AspNetCore
             var httpRequest = context.Request;
             var path        = httpRequest.Path.Value;
             if (!httpHost.GetRoute(path, out string route)) {
-                return httpHost.InternalRequestError(path, httpRequest.Method);
+                return httpHost.ExecuteUnknownPath(path, httpRequest.Method);
             }
             var isWebSocket = context.WebSockets.IsWebSocketRequest;
             if (isWebSocket) {

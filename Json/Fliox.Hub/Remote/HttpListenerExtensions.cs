@@ -21,7 +21,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             var path    = url.LocalPath;
             var method  = request.HttpMethod;
             if (!httpHost.GetRoute(path, out string route)) {
-                return httpHost.InternalRequestError(path, method);
+                return httpHost.ExecuteUnknownPath(path, method);
             }
             HttpListenerRequest req  = context.Request;
             WebSocket           websocket = null;

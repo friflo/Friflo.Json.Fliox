@@ -126,14 +126,24 @@ namespace Friflo.Json.Fliox.Hub.Remote
         }
         
         /// <summary>
-        /// Error method is called when trying to execute a HTTP request with a path not matching to <see cref="endpoint"/>
+        /// Perform a redirect from /fliox -> /fliox/ <br/>
+        /// Otherwise return a path mapping error. <br/>
+        /// E.g. in case ASP.NET maps "/foo/{*path}" to a <see cref="HttpHost"/> using <see cref="endpoint"/> "/fliox/" 
         /// </summary>
-        public RequestContext InternalRequestError(string path, string method) {
-            var context = new RequestContext(this, method, path, null, null, null, null) { handled = true };
-            var message = $"Expect path matching HttpHost.endpoint: {endpoint}, path: {path}";
-            context.WriteError("invalid request", message, 500);
-            Logger.Log(HubLog.Error, message);
-            return context;
+        public RequestContext ExecuteUnknownPath(string path, string method) {
+            if (path == endpointRoot && method == "GET") {
+                var context = new RequestContext(this, "GET", path, null, null, null, null);
+                context.AddHeader("Location", endpoint);
+                context.WriteString($"redirect -> {endpoint}", "text/plain", 302);
+                context.handled = true;
+                return context;
+            } else {
+                var context = new RequestContext(this, method, path, null, null, null, null);
+                var message = $"Expect path matching HttpHost.endpoint: {endpoint}, path: {path}";
+                context.WriteError("internal path mapping error", message, 500);
+                context.handled = true;
+                return context;
+            }
         }
 
         public string CacheControl {
