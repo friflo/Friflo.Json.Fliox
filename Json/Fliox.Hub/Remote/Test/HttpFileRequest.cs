@@ -16,7 +16,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.Test
         public  readonly    string              path;
         public  readonly    string              query;
         public  readonly    string              body;
-        public  readonly    HttpFileKeyValues   keyValues;
+        public  readonly    IHttpKeyValues      keyValues;
         
         public              Stream              BodyStream => StringToStream(body);
 
@@ -29,8 +29,8 @@ namespace Friflo.Json.Fliox.Hub.Remote.Test
         private const           string  BaseVariable    = "{{base}}";
         private static readonly Regex   RegExVariables  = new Regex(@"\{{([^}]+)\}}", RegexOptions.Compiled);
         
-        public HttpFileRequest (string request, HttpFile httpFile) {
-            var parts       = request.Split(new [] { "\r\n\r\n", "\n\n" }, StringSplitOptions.None);
+        public HttpFileRequest (string requestText, HttpFile httpFile) {
+            var parts       = requestText.Split(new [] { "\r\n\r\n", "\n\n" }, StringSplitOptions.None);
             var head        = parts[0];
             body            = parts.Length > 1 ? parts[1] : null;
             var lines       = head.Split(new [] {"\r\n", "\n"}, StringSplitOptions.None);
@@ -115,7 +115,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.Test
         }
     }
     
-    public sealed class HttpFileKeyValues : IHttpKeyValues {
+    internal sealed class HttpFileKeyValues : IHttpKeyValues {
         private  readonly   Dictionary<string, string>  headers;
         public  readonly    Dictionary<string, string>  cookies;
         
