@@ -31,7 +31,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         public    readonly  string                      route;
         public    readonly  string                      query;
         public    readonly  Stream                      body;
-        public    readonly  IHttpKeyValues              keyValues;
+        public    readonly  IHttpHeaders                headers;
         private             Dictionary<string, string>  responseHeaders;
         internal            bool                        handled;
         // --- public properties
@@ -48,13 +48,13 @@ namespace Friflo.Json.Fliox.Hub.Remote
 
         public    override  string                      ToString()          => $"{method} {route}{query}";
 
-        public RequestContext (RemoteHost remoteHost, string method, string route, string query, Stream body, IHttpKeyValues keyValues) {
+        public RequestContext (RemoteHost remoteHost, string method, string route, string query, Stream body, IHttpHeaders headers) {
             this.hub        = remoteHost.LocalHub;
             this.method     = method;
             this.route      = route;
             this.query      = query;
             this.body       = body;
-            this.keyValues  = keyValues;
+            this.headers    = headers;
         }
         
         public void Write (JsonValue value, int offset, string contentType, int statusCode) {
@@ -106,7 +106,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         }
     }
     
-    public interface IHttpKeyValues {
+    public interface IHttpHeaders {
         string  Header(string key);
         string  Cookie(string key);
     }

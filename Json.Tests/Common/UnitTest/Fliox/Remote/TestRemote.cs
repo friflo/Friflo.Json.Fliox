@@ -43,8 +43,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
         {
             var body            = QueryToStream(query, operationName, vars);
             var cookies         = CreateDefaultCookies();
-            var keyValue        = new TestHttpKeyValues(null, cookies);
-            var requestContext  = new RequestContext(_httpHost, "POST", route, "", body, keyValue);
+            var headers         = new TestHttpHeaders(null, cookies);
+            var requestContext  = new RequestContext(_httpHost, "POST", route, "", body, headers);
             // execute synchronous to enable tests running in Unity Test Runner
             _httpHost.ExecuteHttpRequest(requestContext).Wait();
             
@@ -72,7 +72,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
             var sb              = new StringBuilder();
             restFile.AppendFileHeader(sb);
             foreach (var req in restFile.requests) {
-                var context     = new RequestContext(_httpHost, req.method, req.path, req.query, req.BodyStream, req.keyValues);
+                var context     = new RequestContext(_httpHost, req.method, req.path, req.query, req.BodyStream, req.headers);
                 // execute synchronous to enable tests running in Unity Test Runner
                 _httpHost.ExecuteHttpRequest(context).Wait();
                 
@@ -87,8 +87,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
         {
             var bodyStream      = HttpFileRequest.StringToStream(jsonBody);
             var cookies         = CreateDefaultCookies();
-            var keyValue        = new TestHttpKeyValues(null, cookies);
-            var requestContext  = new RequestContext(_httpHost, method, route, query, bodyStream, keyValue);
+            var headers         = new TestHttpHeaders(null, cookies);
+            var requestContext  = new RequestContext(_httpHost, method, route, query, bodyStream, headers);
             // execute synchronous to enable tests running in Unity Test Runner
             _httpHost.ExecuteHttpRequest(requestContext).Wait();
             
@@ -120,14 +120,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
         public  Dictionary<string, JsonValue>   variables;
     }
     
-    internal class TestHttpKeyValues : IHttpKeyValues {
+    internal class TestHttpHeaders : IHttpHeaders {
         private readonly    Dictionary<string, string>  headers;
         private readonly    Dictionary<string, string>  cookies;
         
         public              string                      Header(string key) => headers.TryGetValue(key, out var value) ? value : null;
         public              string                      Cookie(string key) => cookies.TryGetValue(key, out var value) ? value : null;
         
-        internal TestHttpKeyValues (Dictionary<string, string> headers, Dictionary<string, string> cookies) {
+        internal TestHttpHeaders (Dictionary<string, string> headers, Dictionary<string, string> cookies) {
             this.headers = headers ?? new Dictionary<string, string>();
             this.cookies = cookies;
         }

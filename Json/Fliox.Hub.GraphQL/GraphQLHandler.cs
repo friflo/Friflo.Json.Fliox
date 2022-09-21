@@ -81,9 +81,9 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                     // --------------    POST           /graphql/{database}     case: any other "operationName"
                     var request         = schema.requestHandler.CreateRequest(mapper, gqlRequest, query, doc);
                     var syncRequest     = request.syncRequest; 
-                    var keyValues       = context.keyValues;
-                    syncRequest.userId  = new JsonKey(keyValues.Cookie("fliox-user")); 
-                    syncRequest.token   = keyValues.Cookie("fliox-token");
+                    var headers         = context.headers;
+                    syncRequest.userId  = new JsonKey(headers.Cookie("fliox-user")); 
+                    syncRequest.token   = headers.Cookie("fliox-token");
                     var syncContext     = context.CreateSyncContext(null);
                     var syncResult      = await context.hub.ExecuteSync(syncRequest, syncContext).ConfigureAwait(false);
 

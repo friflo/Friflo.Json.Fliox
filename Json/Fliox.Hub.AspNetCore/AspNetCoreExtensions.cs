@@ -53,8 +53,8 @@ namespace Friflo.Json.Fliox.Hub.AspNetCore
                 
                 return null;
             }
-            var keyValues       = new HttpContextKeyValues(httpRequest.Headers, httpRequest.Cookies);
-            var requestContext  = new RequestContext(httpHost, httpRequest.Method, route, httpRequest.QueryString.Value, httpRequest.Body, keyValues);
+            var headers         = new HttpContextHeaders(httpRequest.Headers, httpRequest.Cookies);
+            var requestContext  = new RequestContext(httpHost, httpRequest.Method, route, httpRequest.QueryString.Value, httpRequest.Body, headers);
 
             await httpHost.ExecuteHttpRequest(requestContext).ConfigureAwait(false);
                     
@@ -99,14 +99,14 @@ namespace Friflo.Json.Fliox.Hub.AspNetCore
         }
     }
     
-    internal class HttpContextKeyValues : IHttpKeyValues {
+    internal class HttpContextHeaders : IHttpHeaders {
         private readonly    IHeaderDictionary           headers;
         private readonly    IRequestCookieCollection    cookies;
         
         public              string              Header(string key) => headers[key];
         public              string              Cookie(string key) => cookies[key];
         
-        internal HttpContextKeyValues(IHeaderDictionary headers, IRequestCookieCollection cookies) {
+        internal HttpContextHeaders(IHeaderDictionary headers, IRequestCookieCollection cookies) {
             this.headers = headers;
             this.cookies = cookies;
         }

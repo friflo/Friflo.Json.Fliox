@@ -16,7 +16,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.Test
         public  readonly    string              path;
         public  readonly    string              query;
         public  readonly    string              body;
-        public  readonly    IHttpKeyValues      keyValues;
+        public  readonly    IHttpHeaders        headers;
         
         public              Stream              BodyStream => StringToStream(body);
 
@@ -50,7 +50,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.Test
             var sb          = new StringBuilder();
             var headers     = ReadHeaders(lines, sb, httpFile);
             var cookies     = CreateCookies(headers);
-            keyValues       = new HttpFileKeyValues(headers, cookies); 
+            this.headers    = new HttpFileHeaders(headers, cookies); 
         }
         
         private static Dictionary<string, string> ReadHeaders(string[] lines, StringBuilder sb, HttpFile httpFile) {
@@ -115,14 +115,14 @@ namespace Friflo.Json.Fliox.Hub.Remote.Test
         }
     }
     
-    internal sealed class HttpFileKeyValues : IHttpKeyValues {
+    internal sealed class HttpFileHeaders : IHttpHeaders {
         private  readonly   Dictionary<string, string>  headers;
         public  readonly    Dictionary<string, string>  cookies;
         
         public              string                      Header(string key) => headers.TryGetValue(key, out var value) ? value : null;
         public              string                      Cookie(string key) => cookies.TryGetValue(key, out var value) ? value : null;
         
-        public  HttpFileKeyValues(Dictionary<string, string> headers, Dictionary<string, string> cookies) {
+        public  HttpFileHeaders(Dictionary<string, string> headers, Dictionary<string, string> cookies) {
             this.headers = headers;
             this.cookies = cookies;
         }
