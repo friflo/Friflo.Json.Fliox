@@ -5,7 +5,7 @@
 // ReSharper disable UnassignedField.Global
 namespace Friflo.Json.Fliox.Hub.Host.Auth.Rights
 {
-    public class HubRights
+    public sealed class HubRights
     {
         public bool? queueEvents;
     }

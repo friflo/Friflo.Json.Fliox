@@ -9,7 +9,7 @@ using Friflo.Json.Fliox.Hub.Remote;
 
 namespace Friflo.Json.Fliox.Hub.GraphQL
 {
-    public class GraphQLHandler: IRequestHandler
+    public sealed class GraphQLHandler: IRequestHandler
     {
         public string[] Routes                                  => new [] { "/graphql" };
         public bool     IsMatch       (RequestContext context)  => false;

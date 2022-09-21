@@ -24,7 +24,7 @@ namespace Friflo.Json.Fliox.Hub.Client
     /// </remarks>
     /// <typeparam name="TKey">Entity key type</typeparam>
     /// <typeparam name="T">Entity type</typeparam>
-    public class LocalEntities<TKey, T> : IEnumerable<KeyValuePair<TKey, T>> where T : class
+    public sealed class LocalEntities<TKey, T> : IEnumerable<KeyValuePair<TKey, T>> where T : class
     // Note:
     // could implement IReadOnlyDictionary<TKey, T> - but disadvantages predominate. reasons:
     // - have to use blurry names: e.g. .Values instead of .Entities, .TryGetValue() instead of .TryGetEntity()

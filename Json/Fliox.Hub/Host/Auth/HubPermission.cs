@@ -9,7 +9,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
     /// <remarks>
     /// Task specific permissions are defined by <see cref="TaskAuthorizer"/>.
     /// </remarks>
-    public class HubPermission
+    public sealed class HubPermission
     {
         /// <summary>
         /// If true events are stored for user client to resent unacknowledged events on reconnects.

@@ -24,7 +24,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
     /// A <see cref="UserStore.AuthenticationUser"/> user is only able to <see cref="Authenticate"/> itself.
     /// A <see cref="UserStore.Server"/> user is able to read credentials and roles stored in a user database.
     /// </remarks>
-    public class UserDatabaseAuthenticator : Authenticator
+    public sealed class UserDatabaseAuthenticator : Authenticator
     {
         private readonly        Dictionary<JsonKey, TaskAuthorizer> userRights;
         

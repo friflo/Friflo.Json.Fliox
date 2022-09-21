@@ -51,7 +51,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
     /// <b>Note:</b> User permissions and roles are cached for successful authenticated users.<br/>
     /// This enables instant task authorization and reduces the number of reads to the <b>user_db</b> significant.
     /// </remarks> 
-    public class UserAuthenticator : Authenticator, IDisposable
+    public sealed class UserAuthenticator : Authenticator, IDisposable
     {
         // --- private / internal
         internal  readonly  FlioxHub                                    userHub;

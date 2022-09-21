@@ -40,7 +40,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.Test
     /// The expectation is that after running the tests the output files are <b>unmodified</b> in version control (Git). <br/>
     /// In case an output file is <b>modified</b> its new version have to be added to version control if the modifications meets expectation.
     /// </remarks> 
-    public class HttpFile
+    public sealed class HttpFile
     {
         private  readonly   string                      path;
         public   readonly   List <HttpFileRequest>      requests;

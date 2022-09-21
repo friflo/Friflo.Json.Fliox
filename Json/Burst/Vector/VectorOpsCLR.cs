@@ -10,7 +10,7 @@ namespace Friflo.Json.Burst.Vector
     /// <summary>
     /// Vector (SIMD) operations for Microsoft CLR
     /// </summary>
-    public class VectorOpsCLR : VectorOps
+    public sealed class VectorOpsCLR : VectorOps
     {
         public override unsafe void Xor(
             byte[] dest,    int destPos,

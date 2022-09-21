@@ -13,7 +13,7 @@ namespace Friflo.Json.Burst.Vector
     /// - adding entry "Unity.Burst" in Friflo.Json.asmdef > "references" <br/>
     /// - installing package 'Burst' in Package Explorer <br/>
     /// </summary>
-    public class VectorOpsUnity : VectorOps
+    public sealed class VectorOpsUnity : VectorOps
     {
         public override unsafe void Xor(
             byte[] dest,    int destPos,

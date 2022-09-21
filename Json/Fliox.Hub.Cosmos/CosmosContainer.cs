@@ -14,7 +14,7 @@ using Microsoft.Azure.Cosmos;
 
 namespace Friflo.Json.Fliox.Hub.Cosmos
 {
-    public class CosmosDatabase : EntityDatabase
+    public sealed class CosmosDatabase : EntityDatabase
     {
         private  readonly   bool        pretty;
         private  readonly   Database    cosmosDatabase;
@@ -46,7 +46,7 @@ namespace Friflo.Json.Fliox.Hub.Cosmos
         }
     }
     
-    public class CosmosContainer : EntityContainer
+    public sealed class CosmosContainer : EntityContainer
     {
         private  readonly   ContainerOptions    options;
         private             Container           cosmosContainer;
