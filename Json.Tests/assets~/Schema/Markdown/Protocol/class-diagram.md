@@ -247,7 +247,7 @@ class SubscribeChanges {
     task       : "subscribeChanges"
     container  : string
     changes    : EntityChange[]
-    filter?    : any
+    filter?    : string
 }
 SubscribeChanges *-- "0..*" EntityChange : changes
 

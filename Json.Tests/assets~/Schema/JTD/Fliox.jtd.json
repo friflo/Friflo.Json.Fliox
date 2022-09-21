@@ -233,7 +233,7 @@
                 "info":      { "nullable": true },
                 "container": { "type": "string" },
                 "changes":   { "elements": { "ref":  "EntityChange" } },
-                "filter":    { "nullable": true }
+                "filter":    { "type": "string", "nullable": true }
             }
         },
         "EntityChange": {

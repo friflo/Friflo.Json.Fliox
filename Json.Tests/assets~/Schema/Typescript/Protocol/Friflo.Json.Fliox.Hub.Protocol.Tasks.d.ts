@@ -249,7 +249,7 @@ export class SubscribeChanges extends SyncRequestTask {
      * subscription filter as a [Lambda expression](https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/operators/lambda-expressions) (infix notation)
      * returning a boolean value. E.g. o.name == 'Smartphone'
      */
-    filter?    : any | null;
+    filter?    : string | null;
 }
 
 /** Filter type used to specify the type of an entity change */

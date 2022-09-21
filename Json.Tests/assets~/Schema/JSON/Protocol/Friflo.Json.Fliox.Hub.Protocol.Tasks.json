@@ -265,7 +265,7 @@
                 "info":      {  },
                 "container": { "type": "string", "description": "container name" },
                 "changes":   { "type": "array", "items": { "$ref": "#/definitions/EntityChange" }, "description": "subscribe to entity <b>changes</b> of the given <b>container</b>" },
-                "filter":    { "description": "subscription filter as a <a href='https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/operators/lambda-expressions'>Lambda expression</a> (infix notation)\nreturning a boolean value. E.g. <c>o.name == 'Smartphone'</c>" }
+                "filter":    { "type": ["string", "null"], "description": "subscription filter as a <a href='https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/operators/lambda-expressions'>Lambda expression</a> (infix notation)\nreturning a boolean value. E.g. <c>o.name == 'Smartphone'</c>" }
             },
             "required": [
                 "task",

@@ -144,7 +144,7 @@ data class SubscribeChanges (
     override  val info      : JsonElement? = null,
               val container : String,
               val changes   : List<EntityChange>,
-              val filter    : JsonElement? = null,
+              val filter    : String? = null,
 ) : SyncRequestTask()
 
 enum class EntityChange {
