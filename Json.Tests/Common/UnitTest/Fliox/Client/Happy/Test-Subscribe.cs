@@ -486,25 +486,31 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 store.articles.SubscribeChangesFilter(Change.upsert, a => a.name == "Name1", (changes, context) => {
                     var upserts = changes.Upserts; 
                     AreEqual(1, upserts.Count);
-                    AreEqual("1", upserts[0].id);
+                    AreEqual("a-1", upserts[0].id);
                     foundArticle1 = true;
+                });
+                store.customers.SubscribeChangesFilter(Change.create, c => c.name == "Json", (changes, context) => {
+                    Fail("unexpected change event");
                 });
                 await store.SyncTasks();
                 
-                // --- generate change event with a single entity
+                // --- generate change events with a single entity
                 var upsertArticles = new [] {
-                    new Article{ id = "1", name = "Name1"},
-                    new Article{ id = "2", name = "Name2"}
-                };
-                // --- following changes generate no events
-                var createArticles = new [] {
-                    new Article{ id = "3", name = "Name1"},
-                    new Article{ id = "4", name = "Name1"}
+                    new Article{ id = "a-1", name = "Name1"},
+                    new Article{ id = "a-2", name = "Name2"}
                 };
                 store.articles.UpsertRange(upsertArticles);
+                
+                // --- following changes generate no events
+                var createArticles = new [] {
+                    new Article{ id = "a-3", name = "Name1"},
+                    new Article{ id = "a-4", name = "Name1"}
+                };
                 store.articles.CreateRange(createArticles);
-                store.articles.Delete("5");
+                store.articles.Delete("a-5");
                 store.articles.Patch(selection => selection.Add(a => a.name));
+                
+                store.customers.Upsert(new Customer{ id = "c-1", name = "Name1"});
                 
                 await store.SyncTasks();
                 
