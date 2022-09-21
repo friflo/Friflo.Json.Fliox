@@ -45,7 +45,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
                     public  string              cursor;
                         
         [Ignore]    private FilterOperation     filterLambda;
-        [Ignore]    public  OperationContext    filterContext;
+        [Ignore]    internal OperationContext   filterContext;
                         
         internal override   TaskType            TaskType => TaskType.query;
         public   override   string              TaskName => $"container: '{container}', filter: {filter}";

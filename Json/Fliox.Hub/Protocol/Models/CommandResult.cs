@@ -17,8 +17,8 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Models
     /// </summary>
     public sealed class CommandError
     {
-        [Ignore]    public      TaskErrorResultType type;
-        [Ignore]    public      string              message;
+        [Ignore]    internal    TaskErrorResultType type;
+        [Ignore]    internal    string              message;
 
         public      override    string              ToString() => message;
         

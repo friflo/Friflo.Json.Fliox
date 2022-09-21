@@ -30,7 +30,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
                     public      string              filter;
                         
         [Ignore]    private     FilterOperation     filterLambda;
-        [Ignore]    public      OperationContext    filterContext;
+        [Ignore]    internal    OperationContext    filterContext;
                         
         internal override       TaskType            TaskType => TaskType.aggregate;
         public   override       string              TaskName => $"container: '{container}',type: {type}, filter: {filter}";

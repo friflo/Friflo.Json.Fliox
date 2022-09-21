@@ -33,7 +33,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     public abstract class SyncRequestTask
     {
                     public     JsonValue    info;
-        [Ignore]    public     int          index;
+        [Ignore]    internal   int          index;
         [Ignore]    internal   JsonValue?   json;
         [Ignore]    internal   SyncTask     syncTask;
         
