@@ -103,7 +103,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             var         filter      = subscribe.filter;
             JsonFilter  jsonFilter  = null;
             if (filter != null) {
-                var operation = Operation.Parse("o=>" + filter, out var parseError);
+                var operation = Operation.Parse(filter, out var parseError);
                 if (operation == null)
                     throw new InvalidOperationException($"invalid filter {filter} - {parseError}");
                 if (!(operation is FilterOperation filterOperation))

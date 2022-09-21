@@ -41,7 +41,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
                 return Task.FromResult<SyncTaskResult>(InvalidTask(error));
 
             if (filter != null) {
-                var operation = Operation.Parse("o=>" + filter, out var parseError);
+                var operation = Operation.Parse(filter, out var parseError);
                 if (operation == null)
                     return Task.FromResult<SyncTaskResult>(InvalidTask($"filter error: {parseError}"));
                 if (!(operation is FilterOperation))

@@ -477,6 +477,35 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 }
             }
         }
+        
+        [Test]
+        public static void TestSubscribeChangesFilter() { SingleThreadSynchronizationContext.Run(AssertSubscribeChangesFilter); }
+        private static async Task AssertSubscribeChangesFilter() {
+            using (var _                = SharedEnv.Default) // for LeakTestsFixture
+            using (var eventDispatcher  = new EventDispatcher(false))
+            using (var database         = new MemoryDatabase(TestGlobals.DB))
+            using (var hub              = new FlioxHub(database, TestGlobals.Shared))
+            using (var store            = new PocStore(hub) { UserId = "test-modify-handler" }) {
+                hub.EventDispatcher = eventDispatcher;
+                bool foundArticle1  = false;
+                store.articles.SubscribeChangesFilter(Change.All, a => a.name == "Article 1", (changes, context) => {
+                    var upserts = changes.Upserts; 
+                    AreEqual(1, upserts.Count);
+                    AreEqual("1", upserts[0].id);
+                    foundArticle1 = true;
+                });
+                await store.SyncTasks();
+                
+                var articles = new [] {
+                    new Article{ id = "1", name = "Article 1"},
+                    new Article{ id = "2", name = "Article 2"}
+                };
+                store.articles.UpsertRange(articles);
+                await store.SyncTasks();
+                
+                IsTrue(foundArticle1);
+            }
+        }
     }
 
 }
