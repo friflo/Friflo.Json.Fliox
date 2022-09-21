@@ -424,11 +424,11 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         }
 
         internal override SubscribeChanges SubscribeChanges(SubscribeChangesTask<T> sub, in CreateTaskContext context) {
-            var filterJson = FilterToJson(sub.filter, context.mapper);
+            var filter = sub.filter.Linq;
             return new SubscribeChanges {
                 container   = set.name,
-                filter      = filterJson,
-                changes     = sub.changes,
+                filter      = filter,
+                changes     = sub.changes.ToArray(),
                 syncTask    = sub 
             };
         }

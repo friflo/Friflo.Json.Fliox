@@ -151,7 +151,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             }
             error = null;
             EventSubClient subClient;
-            if (subscribe.changes.Count == 0) {
+            if (subscribe.changes.Length == 0) {
                 if (!subClients.TryGetValue(clientId, out subClient))
                     return true;
                 if (!subClient.databaseSubs.TryGetValue(database, out var databaseSubs))

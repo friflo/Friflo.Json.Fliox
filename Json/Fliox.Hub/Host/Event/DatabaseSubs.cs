@@ -1,6 +1,7 @@
 // Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using Friflo.Json.Fliox.Hub.DB.Cluster;
@@ -16,19 +17,19 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
     /// </summary>
     internal sealed class DatabaseSubs
     {
-        private  readonly   string                                  database;
+        private  readonly   string                          database;
 
-        public   override   string                                  ToString()          => $"database: {database}";
+        public   override   string                          ToString()          => $"database: {database}";
 
-        private  readonly   HashSet<string>                         messageSubs         = new HashSet<string>();
-        private  readonly   HashSet<string>                         messagePrefixSubs   = new HashSet<string>();
+        private  readonly   HashSet<string>                 messageSubs         = new HashSet<string>();
+        private  readonly   HashSet<string>                 messagePrefixSubs   = new HashSet<string>();
         /// key: <see cref="SubscribeChanges.container"/>
         [DebuggerBrowsable(Never)] 
-        private  readonly   Dictionary<string, SubscribeChanges>    changeSubs          = new Dictionary<string, SubscribeChanges>();
+        private  readonly   Dictionary<string, ChangeSub>   changeSubs          = new Dictionary<string, ChangeSub>();
         // ReSharper disable once UnusedMember.Local - expose Dictionary as list in Debugger
-        private             IReadOnlyCollection<SubscribeChanges>   ChangeSubs          => changeSubs.Values;
+        private             IReadOnlyCollection<ChangeSub>  ChangeSubs          => changeSubs.Values;
 
-        internal            int                                     SubCount => changeSubs.Count + messageSubs.Count + messagePrefixSubs.Count; 
+        internal            int                             SubCount => changeSubs.Count + messageSubs.Count + messagePrefixSubs.Count; 
 
         
         internal DatabaseSubs (string database) {
@@ -65,7 +66,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             subs.Clear();
             subs.Capacity = changeSubs.Count;
             foreach (var pair in changeSubs) {
-                SubscribeChanges sub = pair.Value;
+                ChangeSub sub = pair.Value;
                 var changeSubscription = new ChangeSubscription {
                     container   = sub.container,
                     changes     = sub.changes,
@@ -99,7 +100,18 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         }
 
         internal void AddChangeSubscription(SubscribeChanges subscribe) {
-            changeSubs[subscribe.container] = subscribe;
+            var         filter      = subscribe.filter;
+            JsonFilter  jsonFilter  = null;
+            if (filter != null) {
+                var operation = Operation.Parse("o=>" + filter, out var parseError);
+                if (operation == null)
+                    throw new InvalidOperationException($"invalid filter {filter} - {parseError}");
+                if (!(operation is FilterOperation filterOperation))
+                    throw new InvalidOperationException($"filter {filter} is not a FilterOperation");
+                jsonFilter      = filterOperation.IsTrue ? null : new JsonFilter(filterOperation);
+            }
+            var changeSub       = new ChangeSub(subscribe.container, subscribe.changes, jsonFilter);
+            changeSubs[subscribe.container] = changeSub;
         }
 
         internal void AddEventTasks(
@@ -115,8 +127,8 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                     case TaskType.delete:
                     case TaskType.patch:
                         foreach (var pair in changeSubs) {
-                            SubscribeChanges subscribeChanges = pair.Value;
-                            var taskResult = FilterUtils.FilterChanges(task, subscribeChanges, jsonEvaluator);
+                            ChangeSub changeSub = pair.Value;
+                            var taskResult = FilterUtils.FilterChanges(task, changeSub, jsonEvaluator);
                             if (taskResult == null)
                                 continue;
                             AddTask(ref eventTasks, taskResult);
@@ -179,6 +191,18 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                 isEventTarget = false;
             }
             return isEventTarget;
+        }
+    }
+    
+    internal readonly struct ChangeSub {
+        internal    readonly    string          container;
+        internal    readonly    EntityChange[]  changes;
+        internal    readonly    JsonFilter      jsonFilter;
+        
+        internal ChangeSub(string container, EntityChange[] changes, JsonFilter jsonFilter) {
+            this.container  = container;
+            this.changes    = changes;
+            this.jsonFilter = jsonFilter;
         }
     }
 }
