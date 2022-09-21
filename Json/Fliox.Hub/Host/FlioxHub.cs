@@ -199,6 +199,14 @@ namespace Friflo.Json.Fliox.Hub.Host
             if (requestTasks == null) {
                 return new ExecuteSyncResult ("missing field: tasks (array)", ErrorResponseType.BadRequest);
             }
+            for (int index = 0; index < requestTasks.Count; index++) {
+                var task = requestTasks[index];
+                if (task != null) {
+                    task.index = index;
+                    continue;
+                }
+                return new ExecuteSyncResult($"tasks[{index}] == null", ErrorResponseType.BadRequest);
+            }
             EntityDatabase db = database;
             if (dbName != hubDbName) {
                 if (!extensionDbs.TryGetValue(dbName, out db))
@@ -213,11 +221,6 @@ namespace Friflo.Json.Fliox.Hub.Host
             // ------------------------ loop through all given tasks and execute them ------------------------
             for (int index = 0; index < requestTasks.Count; index++) {
                 var task = requestTasks[index];
-                if (task == null) {
-                    tasks.Add(SyncRequestTask.InvalidTask($"element must not be null. tasks[{index}]"));
-                    continue;
-                }
-                task.index = index;
                 try {
                     var result = await taskHandler.ExecuteTask(task, db, response, syncContext).ConfigureAwait(false);
                     tasks.Add(result);

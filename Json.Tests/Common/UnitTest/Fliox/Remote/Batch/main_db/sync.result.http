@@ -94,3 +94,25 @@ POST {{base}}/
     ]
 }
 
+###
+POST {{base}}/
+# StatusCode:   400
+# Content-Type: application/json
+
+{
+    "msg":"error",
+    "message": "missing field: tasks (array)",
+    "type": "BadRequest"
+}
+
+###
+POST {{base}}/
+# StatusCode:   400
+# Content-Type: application/json
+
+{
+    "msg":"error",
+    "message": "tasks[0] == null",
+    "type": "BadRequest"
+}
+

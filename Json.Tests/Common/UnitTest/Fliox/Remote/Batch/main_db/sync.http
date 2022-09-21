@@ -84,3 +84,22 @@ POST {{base}}/
   "user":  "admin",
   "token": "authFails"
 }
+
+###
+POST {{base}}/
+
+{
+  "msg": "sync",
+  "user":  "admin",
+  "token": "admin"
+}
+
+###
+POST {{base}}/
+
+{
+  "msg": "sync",
+  "tasks": [null],
+  "user":  "admin",
+  "token": "admin"
+}
