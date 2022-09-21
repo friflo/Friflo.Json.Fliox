@@ -453,16 +453,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             using (var hub              = new FlioxHub(database, TestGlobals.Shared))
             using (var store            = new PocStore(hub) { UserId = "test-modify-handler" }) {
                 hub.EventDispatcher = eventDispatcher;
-                bool run = true;
+                // bool run = true;
                 store.SubscribeMessage("msg", (message, context) => {
                     store.UnsubscribeMessage("msg", null);
                 });
                 store.SubscribeMessage("prefix*", (message, context) => {
                     store.SubscribeMessage("prefix2*", null);
                 });
-                store.SubscribeMessage("finish", (message, context) => {
-                    run = false;
-                });
+                // store.SubscribeMessage("finish", (message, context) => { run = false; });
                 await store.SyncTasks();
                 
                 store.SendMessage("msg", "hello");
@@ -471,10 +469,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 
                 store.SendMessage("finish", "");
                 await store.SyncTasks();
-
-                while (run) {
-                    await Task.Delay(1); // release thread to process message event handler
-                }
             }
         }
         
@@ -488,7 +482,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             using (var store            = new PocStore(hub) { UserId = "test-modify-handler" }) {
                 hub.EventDispatcher = eventDispatcher;
                 bool foundArticle1  = false;
-                store.articles.SubscribeChangesFilter(Change.All, a => a.name == "Article 1", (changes, context) => {
+                
+                store.articles.SubscribeChangesFilter(Change.upsert, a => a.name == "Name1", (changes, context) => {
                     var upserts = changes.Upserts; 
                     AreEqual(1, upserts.Count);
                     AreEqual("1", upserts[0].id);
@@ -496,11 +491,21 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 });
                 await store.SyncTasks();
                 
-                var articles = new [] {
-                    new Article{ id = "1", name = "Article 1"},
-                    new Article{ id = "2", name = "Article 2"}
+                // --- generate change event with a single entity
+                var upsertArticles = new [] {
+                    new Article{ id = "1", name = "Name1"},
+                    new Article{ id = "2", name = "Name2"}
                 };
-                store.articles.UpsertRange(articles);
+                // --- following changes generate no events
+                var createArticles = new [] {
+                    new Article{ id = "3", name = "Name1"},
+                    new Article{ id = "4", name = "Name1"}
+                };
+                store.articles.UpsertRange(upsertArticles);
+                store.articles.CreateRange(createArticles);
+                store.articles.Delete("5");
+                store.articles.Patch(selection => selection.Add(a => a.name));
+                
                 await store.SyncTasks();
                 
                 IsTrue(foundArticle1);
