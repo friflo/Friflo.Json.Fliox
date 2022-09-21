@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
@@ -18,7 +19,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         /// <summary>container name</summary>
         [Required]  public      string              container;
         /// <summary>subscribe to entity <see cref="changes"/> of the given <see cref="container"/></summary>
-        [Required]  public      EntityChange[]      changes;
+        [Required]  public      List<EntityChange>  changes;
         /// <summary>subscription filter as a <a href="https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/operators/lambda-expressions">Lambda expression</a> (infix notation)
         /// returning a boolean value. E.g. <c>o.name == 'Smartphone'</c></summary>
                     public      string              filter;

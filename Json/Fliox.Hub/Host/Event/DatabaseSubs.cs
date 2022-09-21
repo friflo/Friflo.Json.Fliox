@@ -110,7 +110,8 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                     throw new InvalidOperationException($"filter {filter} is not a FilterOperation");
                 jsonFilter      = filterOperation.IsTrue ? null : new JsonFilter(filterOperation);
             }
-            var changeSub       = new ChangeSub(subscribe.container, subscribe.changes, jsonFilter);
+            var changes     = subscribe.changes.ToArray();
+            var changeSub   = new ChangeSub(subscribe.container, changes, jsonFilter);
             changeSubs[subscribe.container] = changeSub;
         }
 

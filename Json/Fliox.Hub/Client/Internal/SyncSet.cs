@@ -428,7 +428,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             return new SubscribeChanges {
                 container   = set.name,
                 filter      = filter,
-                changes     = sub.changes.ToArray(),
+                changes     = sub.changes,
                 syncTask    = sub 
             };
         }

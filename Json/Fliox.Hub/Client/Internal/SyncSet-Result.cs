@@ -405,7 +405,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 subscribeChanges.state.SetError(new TaskErrorInfo(taskError));
                 return;
             }
-            set.intern.subscription = task.changes.Length > 0 ? task : null;
+            set.intern.subscription = task.changes.Count > 0 ? task : null;
             subscribeChanges.state.Executed = true;
         }
     }
