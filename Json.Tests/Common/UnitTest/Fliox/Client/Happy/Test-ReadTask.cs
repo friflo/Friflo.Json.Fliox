@@ -58,7 +58,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             var articleRefsTask     = readOrders.ReadRelations(articles, itemsArticle);
             var articleRefsTask2    = readOrders.ReadRelations(articles, itemsArticle);
             AreSame(articleRefsTask, articleRefsTask2);
-            
+            readOrders.onSync = error => { };
+
             var articleRefsTask3 = readOrders.ReadRelations(articles, o => o.items.Select(a => a.article));
             AreSame(articleRefsTask, articleRefsTask3);
             AreEqual("readOrders -> .items[*].article", articleRefsTask.Details);

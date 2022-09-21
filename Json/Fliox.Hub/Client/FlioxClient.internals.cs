@@ -317,6 +317,20 @@ namespace Friflo.Json.Fliox.Hub.Client
                     var functions   = syncStore.functions;
                     var failed      = GetFailedFunctions(functions);
                     syncResult      = new SyncResult(functions, failed, response.error);
+                    
+                    foreach (var function in functions) {
+                        var onSync  = function.onSync;
+                        if (onSync == null)
+                            continue;
+                        var taskError = function.State.Error.TaskError;
+                        try {
+                            onSync(taskError);
+                        }
+                        catch (Exception e) {
+                            var error = $"onSync exception in {function.GetLabel()}";
+                            Logger.Log(HubLog.Error, error, e);
+                        }
+                    }
                 }
                 return syncResult;
             }

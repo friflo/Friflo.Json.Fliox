@@ -12,12 +12,13 @@ namespace Friflo.Json.Fliox.Hub.Client
 {
     public abstract class SyncFunction
     {
-                                    internal            string      taskName;
-                                    internal            string      GetLabel() => taskName ?? Details;
-        [DebuggerBrowsable(Never)]  public    abstract  string      Details { get; }
-        [DebuggerBrowsable(Never)]  internal  abstract  TaskState   State   { get; }
+                                    internal            string              taskName;
+                                    internal            string              GetLabel() => taskName ?? Details;
+        [DebuggerBrowsable(Never)]  public    abstract  string              Details { get; }
+        [DebuggerBrowsable(Never)]  internal  abstract  TaskState           State   { get; }
+        [DebuggerBrowsable(Never)]  public              Action<TaskError>   onSync;
         
-        public   override   string      ToString()  => GetLabel();
+                                    public    override  string              ToString()  => GetLabel();
 
         /// <summary>
         /// Is true in case task execution was successful. Otherwise false. If false <see cref="Error"/> property is set. 
