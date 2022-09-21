@@ -24,7 +24,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                         return null;
                     var createResult = new CreateEntities {
                         container   = create.container,
-                        entities    = FilterEntities(subscribe.filterOp, create.entities, jsonEvaluator),
+                        entities    = FilterEntities(subscribe.jsonFilter, create.entities, jsonEvaluator),
                         keyName     = create.keyName   
                     };
                     return createResult;
@@ -37,7 +37,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                         return null;
                     var upsertResult = new UpsertEntities {
                         container   = upsert.container,
-                        entities    = FilterEntities(subscribe.filterOp, upsert.entities, jsonEvaluator),
+                        entities    = FilterEntities(subscribe.jsonFilter, upsert.entities, jsonEvaluator),
                         keyName     = upsert.keyName
                     };
                     return upsertResult;
@@ -66,13 +66,12 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         }
         
         private static List<JsonValue> FilterEntities (
-            FilterOperation     filter,
+            JsonFilter          jsonFilter,
             List<JsonValue>     entities,
             JsonEvaluator       jsonEvaluator)    
         {
-            if (filter == null)
+            if (jsonFilter == null)
                 return entities;
-            var jsonFilter      = new JsonFilter(filter); // filter can be reused
             var result          = new List<JsonValue>();
 
             for (int n = 0; n < entities.Count; n++) {

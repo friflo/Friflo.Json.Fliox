@@ -69,7 +69,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                 var changeSubscription = new ChangeSubscription {
                     container   = sub.container,
                     changes     = sub.changes,
-                    filter      = sub.filterOp?.Linq
+                    filter      = sub.jsonFilter?.Linq
                 };
                 subs.Add(changeSubscription);
             }

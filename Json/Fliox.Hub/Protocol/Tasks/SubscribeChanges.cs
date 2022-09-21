@@ -23,8 +23,9 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         /// <summary>subscription filter as a <a href="https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/operators/lambda-expressions">Lambda expression</a> (infix notation)
         /// returning a boolean value. E.g. <c>o.name == 'Smartphone'</c></summary>
                     public      JsonValue           filter;
-                        
-        [Ignore]    internal    FilterOperation     filterOp;
+        
+        // [Ignore] internal    FilterOperation     filterOp;
+        [Ignore]    internal    JsonFilter          jsonFilter;
         
         internal override       TaskType            TaskType  => TaskType.subscribeChanges;
         public   override       string              TaskName  => $"container: '{container}'";
@@ -43,8 +44,9 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
                 return Task.FromResult<SyncTaskResult>(InvalidTask(error));
 
             using (var pooled = syncContext.ObjectMapper.Get()) {
-                var reader  = pooled.instance.reader;
-                filterOp    = reader.Read<FilterOperation>(filter);
+                var reader          = pooled.instance.reader;
+                var filterOperation = reader.Read<FilterOperation>(filter);
+                jsonFilter          = filterOperation != null ? new JsonFilter(filterOperation) : null;
                 if (reader.Error.ErrSet) {
                     return Task.FromResult<SyncTaskResult>(InvalidTask($"filterTree error: {reader.Error.msg.ToString()}"));
                 }
