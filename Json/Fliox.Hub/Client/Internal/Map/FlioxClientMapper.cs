@@ -65,7 +65,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal.Map
     /// <summary>
     /// Ignore all fields / properties in a <see cref="FlioxClient"/> which are not of Type <see cref="EntitySet{TKey,T}"/>
     /// </summary>
-    internal class ClientFieldFilter : FieldFilter
+    internal sealed class ClientFieldFilter : FieldFilter
     {
         internal static readonly ClientFieldFilter Instance = new ClientFieldFilter();
 

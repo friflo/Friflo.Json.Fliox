@@ -14,7 +14,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
     /// - a user permission changes
     /// - a role assigned to a user changes
     /// </summary>
-    internal class UserStoreSubscriber
+    internal sealed class UserStoreSubscriber
     {
         private readonly UserAuthenticator userAuthenticator;
         

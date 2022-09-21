@@ -280,7 +280,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         }
     }
     
-    internal class FileQueryEnumerator : QueryEnumerator
+    internal sealed class FileQueryEnumerator : QueryEnumerator
     {
         // ReSharper disable once NotAccessedField.Local
         private readonly    string              folder; // keep there for debugging

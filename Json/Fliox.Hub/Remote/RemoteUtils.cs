@@ -10,7 +10,7 @@ using Friflo.Json.Fliox.Utils;
 namespace Friflo.Json.Fliox.Hub.Remote
 {
     /// <summary> Reflect the shape of a <see cref="EventMessage"/> </summary>
-    internal class RemoteEventMessage
+    internal sealed class RemoteEventMessage
     {
         /** map to <see cref="ProtocolEvent"/> discriminator */ public  string              msg;
         /** map to <see cref="ProtocolEvent.dstClientId"/> */   public  JsonKey             clt;
@@ -18,7 +18,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
     }
     
     /// <summary> Reflect the shape of a <see cref="SyncEvent"/> </summary>
-    internal class RemoteSyncEvent
+    internal sealed class RemoteSyncEvent
     {
         /** map to <see cref="SyncEvent.seq"/> */               public  int         seq; 
         /** map to <see cref="SyncEvent.srcUserId"/> */         public  JsonKey     src;

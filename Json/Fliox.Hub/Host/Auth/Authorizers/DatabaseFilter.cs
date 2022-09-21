@@ -47,7 +47,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
         }
     }
     
-    internal class DatabaseFilterComparer : IEqualityComparer<DatabaseFilter>
+    internal sealed class DatabaseFilterComparer : IEqualityComparer<DatabaseFilter>
     {
         internal static readonly DatabaseFilterComparer Instance  = new DatabaseFilterComparer();
         

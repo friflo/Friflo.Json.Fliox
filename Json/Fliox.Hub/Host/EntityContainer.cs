@@ -384,7 +384,7 @@ namespace Friflo.Json.Fliox.Hub.Host
 
     /// <see cref="ReadReferencesResult"/> is never serialized within a <see cref="SyncResponse"/> only its
     /// fields <see cref="references"/>.
-    internal class ReadReferencesResult
+    internal sealed class ReadReferencesResult
     {
         internal List<ReferencesResult> references;
     } 

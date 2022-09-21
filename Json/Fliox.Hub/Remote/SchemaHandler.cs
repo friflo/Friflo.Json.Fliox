@@ -111,7 +111,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         }
     }
     
-    internal class ModelResource {
+    internal sealed class ModelResource {
         internal  readonly  SchemaModel     schemaModel;
         internal  readonly  string          zipNameSuffix;  // .csharp.zip, json-schema.zip, ...
         private             byte[]          zipArchive;

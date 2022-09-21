@@ -18,7 +18,7 @@ using Friflo.Json.Fliox.Schema.Native;
 // ReSharper disable UseObjectOrCollectionInitializer
 namespace Friflo.Json.Fliox.Hub.DB.UserAuth
 {
-    internal class AuthCred {
+    internal sealed class AuthCred {
         internal readonly   string          token;
         
         internal AuthCred (string token) {
@@ -29,11 +29,11 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
     public interface IUserAuth {
         Task<AuthResult> Authenticate(Credentials value);
     }
-    
+
     /// <summary>
     /// Used to store the rights given by <see cref="Role.taskRights"/> and <see cref="Role.hubRights"/>
     /// </summary>
-    internal class RoleRights
+    internal sealed class RoleRights
     {
         /// <summary> assigned by <see cref="Role.taskRights"/> </summary>
         internal TaskAuthorizer[]   taskAuthorizers;
@@ -323,8 +323,8 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
             return new AuthorizeAny(authorizers);
         }
     }
-    
-    internal class UserAuthInfo
+
+    internal sealed class UserAuthInfo
     {
         internal readonly   TaskAuthorizer  taskAuthorizer;
         internal readonly   HubPermission   hubPermission;

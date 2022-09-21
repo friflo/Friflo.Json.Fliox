@@ -363,7 +363,7 @@ namespace Friflo.Json.Fliox.Schema.Language
         }
     }
     
-    internal class Parameter {
+    internal sealed class Parameter {
         private     readonly    string  paramType;
         private     readonly    string  name;
         private     readonly    string  type;
@@ -396,7 +396,7 @@ namespace Friflo.Json.Fliox.Schema.Language
         internal abstract string Get(); 
     }
     
-    internal class ContentText : Content {
+    internal sealed class ContentText : Content {
       
         internal override string Get() {
             return @"{
@@ -405,7 +405,7 @@ namespace Friflo.Json.Fliox.Schema.Language
         } 
     }
 
-    internal class ContentRef : Content {
+    internal sealed class ContentRef : Content {
         private    readonly    string   type;
         private    readonly    bool     isArray;
         private    readonly    string   example;

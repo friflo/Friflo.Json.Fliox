@@ -13,7 +13,7 @@ namespace Friflo.Json.Fliox.Hub.Utils
         string[]        BaseFolders { get; }
     }
     
-    internal class  FileHandler : IFileHandler {
+    internal sealed class  FileHandler : IFileHandler {
         private     readonly    string      rootFolder;
         public                  string[]    BaseFolders { get; }
 

@@ -19,7 +19,7 @@ namespace Friflo.Json.Fliox.Hub.Cosmos
         public  List<JsonValue> Documents;
     }
 
-    internal class ReusedMemoryStream : MemoryStream {
+    internal sealed class ReusedMemoryStream : MemoryStream {
         protected override void Dispose(bool disposing) { }
     }
     

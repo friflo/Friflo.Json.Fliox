@@ -12,7 +12,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
 {
     internal static partial class Rest {
         
-        internal class RestHandler : IRequestHandler
+        internal sealed class RestHandler : IRequestHandler
         {
             private const   string      RestBase = "/rest";
             

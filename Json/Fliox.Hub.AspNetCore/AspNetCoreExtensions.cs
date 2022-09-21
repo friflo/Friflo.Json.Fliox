@@ -99,7 +99,7 @@ namespace Friflo.Json.Fliox.Hub.AspNetCore
         }
     }
     
-    internal class HttpContextHeaders : IHttpHeaders {
+    internal sealed class HttpContextHeaders : IHttpHeaders {
         private readonly    IHeaderDictionary           headers;
         private readonly    IRequestCookieCollection    cookies;
         

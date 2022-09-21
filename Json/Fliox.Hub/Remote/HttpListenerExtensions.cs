@@ -92,7 +92,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         }
     }
     
-    internal class HttpListenerHeaders : IHttpHeaders {
+    internal sealed class HttpListenerHeaders : IHttpHeaders {
         private  readonly   NameValueCollection headers;
         private  readonly   CookieCollection    cookies;
         

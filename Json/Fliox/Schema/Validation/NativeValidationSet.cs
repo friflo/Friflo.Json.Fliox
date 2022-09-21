@@ -88,7 +88,7 @@ namespace Friflo.Json.Fliox.Schema.Validation
     }
     
 #pragma warning disable CS0649
-    internal class StandardTypes
+    internal sealed class StandardTypes
     {
         public  bool        stdBool;
         public  byte        stdByte;

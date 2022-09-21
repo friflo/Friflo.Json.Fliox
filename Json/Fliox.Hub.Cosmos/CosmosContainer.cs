@@ -36,7 +36,7 @@ namespace Friflo.Json.Fliox.Hub.Cosmos
         }
     }
     
-    internal class ContainerOptions {
+    internal sealed class ContainerOptions {
         internal readonly   Database    database;
         internal readonly   int?        throughput;
         

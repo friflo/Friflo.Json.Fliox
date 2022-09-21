@@ -164,7 +164,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         }
     }
     
-    internal class MemoryQueryEnumerator : QueryEnumerator
+    internal sealed class MemoryQueryEnumerator : QueryEnumerator
     {
         private readonly IEnumerator<KeyValuePair<JsonKey, JsonValue>>  enumerator;
         

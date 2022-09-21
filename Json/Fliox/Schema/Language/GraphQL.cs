@@ -12,7 +12,7 @@ using Friflo.Json.Fliox.Schema.Utils;
 // Allowed namespaces: .Schema.Definition, .Schema.Doc, .Schema.Utils, .Schema.GraphQL
 namespace Friflo.Json.Fliox.Schema.Language
 {
-    internal class EmitTypeGql : EmitType {
+    internal sealed class EmitTypeGql : EmitType {
         internal readonly   GqlType graphQLType;
         
         public EmitTypeGql(

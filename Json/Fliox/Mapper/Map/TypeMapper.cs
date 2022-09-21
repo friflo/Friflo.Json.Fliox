@@ -174,7 +174,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
         }
     }
     
-    internal class ConcreteTypeMatcher : ITypeMatcher
+    internal sealed class ConcreteTypeMatcher : ITypeMatcher
     {
         private readonly TypeMapper mapper;
 

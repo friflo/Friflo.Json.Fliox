@@ -101,7 +101,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         string GetName(bool isArrayField, string path);
     }
     
-    internal class LambdaArg : ISelector
+    internal sealed class LambdaArg : ISelector
     {
         internal static readonly LambdaArg Instance = new LambdaArg();
         

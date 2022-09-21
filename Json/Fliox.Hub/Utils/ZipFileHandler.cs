@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Friflo.Json.Fliox.Hub.Utils
 {
-    internal class  ZipFileHandler : IFileHandler {
+    internal sealed class  ZipFileHandler : IFileHandler {
         private readonly    Dictionary<string, byte[]>          files   = new Dictionary<string, byte[]>();
         private readonly    Dictionary<string, List<string>>    folders = new Dictionary<string, List<string>>();
         

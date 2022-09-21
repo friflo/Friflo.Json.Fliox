@@ -15,7 +15,7 @@ using Friflo.Json.Fliox.Transform.Select;
 
 namespace Friflo.Json.Fliox.Mapper.Map.Obj
 {
-    internal class ClassMatcher : ITypeMatcher {
+    internal sealed class ClassMatcher : ITypeMatcher {
         public static readonly ClassMatcher Instance = new ClassMatcher();
         
         public TypeMapper MatchTypeMapper(Type type, StoreConfig config) {

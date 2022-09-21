@@ -17,7 +17,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
         }
     }
     
-    internal class Context
+    internal sealed class Context
     {
         private  readonly   string          lambdaParam;
         private  readonly   List<Variable>  variables;
