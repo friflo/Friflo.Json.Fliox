@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -22,18 +23,18 @@ namespace Friflo.Json.Fliox.Hub.Remote
     /// </remarks> 
     public sealed class StaticFileHandler : IRequestHandler
     {
-        private  readonly   IFileHandler                    fileHandler;
+        private  readonly   IFileHandler                                fileHandler;
         [DebuggerBrowsable(Never)]
-        private  readonly   Dictionary<string, CacheEntry>  cache;
+        private  readonly   ConcurrentDictionary<string, CacheEntry>    cache; // concurrent access allowed
         // ReSharper disable once UnusedMember.Local - expose Dictionary as list in Debugger
-        private             IReadOnlyCollection<CacheEntry> Cache       => cache.Values;
-        private             string                          cacheControl;
-        private  readonly   List<FileExt>                   fileExtensions;
+        private             ICollection<CacheEntry>                     Cache       => cache.Values;
+        private             string                                      cacheControl;
+        private  readonly   List<FileExt>                               fileExtensions;
 
-        public   override   string                          ToString()  => $"cached files: {cache.Count}";
+        public   override   string                                      ToString()  => $"cached files: {cache.Count}";
 
         private StaticFileHandler() {
-            cache           = new Dictionary<string, CacheEntry>();
+            cache           = new ConcurrentDictionary<string, CacheEntry>();
             cacheControl    = HttpHost.DefaultCacheControl;
             fileExtensions  = DefaultFileExtensions();
         }
@@ -99,7 +100,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                     return;
                 var path = context.route;
                 entry = new CacheEntry(path, context);
-                cache.Add(path, entry);
+                cache[path] = entry;
             }
             catch (Exception e) {
                 var response = $"method: {context.method}, url: {context.route}\n{e.Message}";
