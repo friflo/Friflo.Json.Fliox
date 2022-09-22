@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 
 namespace Friflo.Json.Burst
@@ -63,6 +64,7 @@ namespace Friflo.Json.Burst
         Bytes
     }
 
+    [ExcludeFromCodeCoverage]
     public static class DebugUtils
     {
         public  static readonly Dictionary<Allocation, Allocation>  Allocations = new Dictionary<Allocation, Allocation>();

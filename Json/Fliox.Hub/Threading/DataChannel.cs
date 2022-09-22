@@ -4,12 +4,14 @@
 #if !UNITY_5_3_OR_NEWER
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using System.Threading.Channels;
 using System.Threading.Tasks;
 
 namespace Friflo.Json.Fliox.Hub.Threading
 {
+    [ExcludeFromCodeCoverage]
     internal sealed class DataChannel<T> : IDataChannel<T>
     {
         public   IDataChannelReader<T>   Reader { get; } 
@@ -34,6 +36,7 @@ namespace Friflo.Json.Fliox.Hub.Threading
         }
     }
     
+    [ExcludeFromCodeCoverage]
     internal sealed class DataChannelReader<T> : IDataChannelReader<T> {
         private readonly ChannelReader<T> reader;
         
@@ -46,6 +49,7 @@ namespace Friflo.Json.Fliox.Hub.Threading
         }
     }
     
+    [ExcludeFromCodeCoverage]
     internal sealed class DataChannelWriter<T> : IDataChannelWriter<T> {
         private readonly ChannelWriter<T> writer;
         

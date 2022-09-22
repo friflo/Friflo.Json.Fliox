@@ -58,7 +58,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             var articleRefsTask     = readOrders.ReadRelations(articles, itemsArticle);
             var articleRefsTask2    = readOrders.ReadRelations(articles, itemsArticle);
             AreSame(articleRefsTask, articleRefsTask2);
-            readOrders.OnSync = error => { };
+            readOrders.OnSync += error => { };
+            readOrders.OnSync += error => throw new InvalidOperationException("test exception in OnSync");
 
             var articleRefsTask3 = readOrders.ReadRelations(articles, o => o.items.Select(a => a.article));
             AreSame(articleRefsTask, articleRefsTask3);

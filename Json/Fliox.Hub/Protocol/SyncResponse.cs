@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Hub.Remote;
@@ -50,6 +51,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol
         }
         
         [Conditional("DEBUG")]
+        [ExcludeFromCodeCoverage]
         public void AssertResponse(SyncRequest request) {
             var expect = request.tasks.Count;
             var actual = tasks.Count;
