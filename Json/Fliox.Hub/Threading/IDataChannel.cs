@@ -7,18 +7,18 @@ using System.Threading.Tasks;
 
 namespace Friflo.Json.Fliox.Hub.Threading
 {
-    public interface IDataChannel<T> : IDisposable
+    internal interface IDataChannel<T> : IDisposable
     {
         IDataChannelReader<T>   Reader { get; } 
         IDataChannelWriter<T>   Writer { get; }
     }
     
-    public interface IDataChannelReader<T>
+    internal interface IDataChannelReader<T>
     {
         Task<T> ReadAsync (CancellationToken cancellationToken = default);
     }
     
-    public interface IDataChannelWriter<in T>
+    internal interface IDataChannelWriter<in T>
     {
         bool TryWrite(T data);
         void Complete(Exception error = null);

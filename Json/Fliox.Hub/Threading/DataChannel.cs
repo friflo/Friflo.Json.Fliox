@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Friflo.Json.Fliox.Hub.Threading
 {
-    public sealed class DataChannel<T> : IDataChannel<T>
+    internal sealed class DataChannel<T> : IDataChannel<T>
     {
         public   IDataChannelReader<T>   Reader { get; } 
         public   IDataChannelWriter<T>   Writer { get; }
@@ -23,7 +23,7 @@ namespace Friflo.Json.Fliox.Hub.Threading
 
         public void Dispose() { }
 
-        public static DataChannel<T> CreateUnbounded(bool singleReader, bool singleWriter) {
+        internal static DataChannel<T> CreateUnbounded(bool singleReader, bool singleWriter) {
             var opt = new UnboundedChannelOptions {
                 SingleReader = singleReader,
                 SingleWriter = singleWriter
@@ -34,7 +34,7 @@ namespace Friflo.Json.Fliox.Hub.Threading
         }
     }
     
-    public sealed class DataChannelReader<T> : IDataChannelReader<T> {
+    internal sealed class DataChannelReader<T> : IDataChannelReader<T> {
         private readonly ChannelReader<T> reader;
         
         internal DataChannelReader(ChannelReader<T> reader) {
@@ -46,7 +46,7 @@ namespace Friflo.Json.Fliox.Hub.Threading
         }
     }
     
-    public sealed class DataChannelWriter<T> : IDataChannelWriter<T> {
+    internal sealed class DataChannelWriter<T> : IDataChannelWriter<T> {
         private readonly ChannelWriter<T> writer;
         
         internal DataChannelWriter(ChannelWriter<T> writer) {

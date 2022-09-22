@@ -14,7 +14,7 @@ namespace Friflo.Json.Fliox.Hub.Threading
 {
     /// Added <see cref="DataChannelSlim{T}"/> as a stub to enable compiling in Unity as there are no <see cref="System.Threading.Channels.Channel"/>'s
     /// available as of 2021-06-21.
-    public sealed class DataChannelSlim<T> : IDataChannel<T>
+    internal sealed class DataChannelSlim<T> : IDataChannel<T>
     {
         public   IDataChannelReader<T>   Reader { get; } 
         public   IDataChannelWriter<T>   Writer { get; }
@@ -36,7 +36,7 @@ namespace Friflo.Json.Fliox.Hub.Threading
         }
     }
     
-    public sealed class DataChannelReaderSlim<T> : IDataChannelReader<T> {
+    internal sealed class DataChannelReaderSlim<T> : IDataChannelReader<T> {
         private readonly DataChannelSlim<T> channel;
         
         internal DataChannelReaderSlim(DataChannelSlim<T> channel) {
@@ -51,7 +51,7 @@ namespace Friflo.Json.Fliox.Hub.Threading
         }
     }
     
-    public sealed class DataChannelWriterSlim<T> : IDataChannelWriter<T> {
+    internal sealed class DataChannelWriterSlim<T> : IDataChannelWriter<T> {
         private readonly DataChannelSlim<T> channel;
         
         internal DataChannelWriterSlim(DataChannelSlim<T> channel) {
