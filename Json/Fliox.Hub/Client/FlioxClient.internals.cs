@@ -319,7 +319,7 @@ namespace Friflo.Json.Fliox.Hub.Client
                     syncResult      = new SyncResult(functions, failed, response.error);
                     
                     foreach (var function in functions) {
-                        var onSync  = function.onSync;
+                        var onSync  = function.OnSync;
                         if (onSync == null)
                             continue;
                         var taskError = function.State.Error.TaskError;
@@ -327,7 +327,7 @@ namespace Friflo.Json.Fliox.Hub.Client
                             onSync(taskError);
                         }
                         catch (Exception e) {
-                            var error = $"onSync exception in {function.GetLabel()}";
+                            var error = $"OnSync Exception in {function.GetLabel()}";
                             Logger.Log(HubLog.Error, error, e);
                         }
                     }

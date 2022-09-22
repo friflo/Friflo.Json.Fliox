@@ -16,7 +16,8 @@ namespace Friflo.Json.Fliox.Hub.Client
                                     internal            string              GetLabel() => taskName ?? Details;
         [DebuggerBrowsable(Never)]  public    abstract  string              Details { get; }
         [DebuggerBrowsable(Never)]  internal  abstract  TaskState           State   { get; }
-        [DebuggerBrowsable(Never)]  public              Action<TaskError>   onSync;
+        // ReSharper disable once InconsistentNaming
+        [DebuggerBrowsable(Never)]  public              Action<TaskError>   OnSync;
         
                                     public    override  string              ToString()  => GetLabel();
 
