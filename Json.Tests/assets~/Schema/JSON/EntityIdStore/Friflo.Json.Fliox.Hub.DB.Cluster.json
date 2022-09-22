@@ -192,11 +192,13 @@
         "ClientResult": {
             "type": "object",
             "properties": {
+                "queueEvents":        { "type": "boolean", "description": "returns true if the host queue events for the client in case of disconnects" },
                 "queuedEvents":       { "$ref": "./Standard.json#/definitions/int32", "description": "return number of queued events not acknowledged by the client.\nEvents are queued only if the client instruct the Hub to queue events by setting <b>queueEvents</b> = true" },
                 "clientId":           { "type": ["string", "null"], "description": "return the client id set in the <b>SyncRequest</b>. Can be null.<br/>\nA new client id is created in case any task requires a client id and the <b>SyncRequest</b> did not set a client id.<br/>\nE.g. <b>ensureClientId</b> = true or <b>queueEvents</b> = true" },
                 "subscriptionEvents": { "oneOf": [{ "$ref": "#/definitions/SubscriptionEvents" }, {"type": "null"}], "description": "number of sent or queued client events and its message and change subscriptions" }
             },
             "required": [
+                "queueEvents",
                 "queuedEvents"
             ],
             "additionalProperties": false

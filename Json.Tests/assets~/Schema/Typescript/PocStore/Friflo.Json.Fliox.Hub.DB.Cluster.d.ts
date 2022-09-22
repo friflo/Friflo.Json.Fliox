@@ -146,6 +146,8 @@ export class ClientParam {
 }
 
 export class ClientResult {
+    /** returns true if the host queue events for the client in case of disconnects */
+    queueEvents         : boolean;
     /**
      * return number of queued events not acknowledged by the client.
      * Events are queued only if the client instruct the Hub to queue events by setting **queueEvents** = true

@@ -957,6 +957,11 @@ If <b>true</b> the hub will store all unacknowledged events for a client in a FI
     </h3>
     <table class='fields'>
         <tr>
+            <td><field>queueEvents</field></td>
+            <td><type><predef>boolean</predef></type></td>
+            <td><docs>returns true if the host queue events for the client in case of disconnects</docs></td>
+        </tr>
+        <tr>
             <td><field>queuedEvents</field></td>
             <td><type><a href='#Standard.int32'>int32</a></type></td>
             <td><docs>return number of queued events not acknowledged by the client.

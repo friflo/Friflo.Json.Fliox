@@ -211,6 +211,7 @@
         },
         "ClientResult": {
             "properties": {
+                "queueEvents":        { "type": "boolean" },
                 "queuedEvents":       { "type": "int32" },
                 "clientId":           { "type": "string", "nullable": true },
                 "subscriptionEvents": { "ref":  "SubscriptionEvents", "nullable": true }

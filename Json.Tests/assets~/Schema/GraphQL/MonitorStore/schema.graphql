@@ -361,12 +361,14 @@ input ClientParamInput {
 }
 
 type ClientResult {
+    queueEvents        : Boolean!
     queuedEvents       : Int!
     clientId           : String
     subscriptionEvents : SubscriptionEvents
 }
 
 input ClientResultInput {
+    queueEvents        : Boolean!
     queuedEvents       : Int!
     clientId           : String
     subscriptionEvents : SubscriptionEventsInput

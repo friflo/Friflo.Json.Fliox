@@ -113,6 +113,7 @@ public class ClientParam {
 }
 
 public class ClientResult {
+    bool                queueEvents;
     int                 queuedEvents;
     string              clientId;
     SubscriptionEvents? subscriptionEvents;

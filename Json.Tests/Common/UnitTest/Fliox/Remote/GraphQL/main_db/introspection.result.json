@@ -5135,6 +5135,19 @@
             "description": "",
             "fields": [
                 {
+                    "name": "queueEvents",
+                    "description": "    /** returns true if the host queue events for the client in case of disconnects */\n",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "Boolean"
+                        }
+                    }
+                },
+                {
                     "name": "queuedEvents",
                     "description": "    /**\n     * return number of queued events not acknowledged by the client.\n     * Events are queued only if the client instruct the Hub to queue events by setting **queueEvents** = true\n     */\n",
                     "args": [
@@ -5176,6 +5189,19 @@
             "name": "ClientResultInput",
             "description": "",
             "inputFields": [
+                {
+                    "name": "queueEvents",
+                    "description": "    /** returns true if the host queue events for the client in case of disconnects */\n",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "Boolean"
+                        }
+                    }
+                },
                 {
                     "name": "queuedEvents",
                     "description": "    /**\n     * return number of queued events not acknowledged by the client.\n     * Events are queued only if the client instruct the Hub to queue events by setting **queueEvents** = true\n     */\n",

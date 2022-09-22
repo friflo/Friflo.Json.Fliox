@@ -108,6 +108,7 @@ data class ClientParam (
 
 @Serializable
 data class ClientResult (
+              val queueEvents        : Boolean,
               val queuedEvents       : Int,
               val clientId           : String? = null,
               val subscriptionEvents : SubscriptionEvents? = null,

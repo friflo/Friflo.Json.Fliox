@@ -3,6 +3,7 @@
 
 using System;
 using System.Threading.Tasks;
+using Friflo.Json.Fliox.Hub.DB.Cluster;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Schema.Native;
 using static NUnit.Framework.Assert;
@@ -84,6 +85,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             var commands        = store.std.Messages();
             var schema          = store.std.Schema();
             var dbList          = store.std.Cluster();
+            var stdHost         = store.std.Host(new HostParam { memory = true });
             
             await store.SyncTasks();
             
@@ -113,6 +115,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             var commandsResult = commands.Result;
             AreEqual(19,                commandsResult.commands.Length);
             AreEqual(3,                 commandsResult.messages.Length);
+            //
+            var hostResult = stdHost.Result;
+            AreEqual("0.0.0",           hostResult.flioxVersion);
+            AreEqual("1.0.0",           hostResult.hostVersion);
+            AreEqual("host",            hostResult.hostName);
+            NotNull(hostResult.memory);
+            NotNull(hostResult.routes);
         }
     }
 }

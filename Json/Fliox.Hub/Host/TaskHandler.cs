@@ -10,7 +10,6 @@ using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Client;
 using Friflo.Json.Fliox.Hub.DB.Cluster;
 using Friflo.Json.Fliox.Hub.Host.Auth;
-using Friflo.Json.Fliox.Hub.Host.Event;
 using Friflo.Json.Fliox.Hub.Host.Internal;
 using Friflo.Json.Fliox.Hub.Host.Utils;
 using Friflo.Json.Fliox.Hub.Protocol;
@@ -366,6 +365,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             var dispatcher  = hub.EventDispatcher;
             var result      = new ClientResult { clientId = context.ClientId };
             if (dispatcher != null && !context.ClientId.IsNull() && dispatcher.TryGetSubscriber(context.ClientId, out var client)) {
+                result.queueEvents          = client.queueEvents;
                 result.queuedEvents         = client.QueuedEventsCount;
                 result.subscriptionEvents   = ClusterUtils.GetSubscriptionEvents(client, default);
                 /* if (clientParam != null && clientParam.syncEvents) {
@@ -398,21 +398,22 @@ namespace Friflo.Json.Fliox.Hub.Host
             if (dispatcher == null) {
                 return "std.Client queueEvents requires an EventDispatcher assigned to FlioxHub";
             }
-            EventSubClient client;
-            var syncContext = context.SyncContext; 
-            if (!syncContext.authState.hubPermission.queueEvents) {
-                return "std.Client queueEvents requires permission (Role.hubRights) queueEvents = true";
-            }
+
             if (queueEvents.Value) {
+                var syncContext = context.SyncContext; 
+                if (!syncContext.authState.hubPermission.queueEvents) {
+                    return "std.Client queueEvents requires permission (Role.hubRights) queueEvents = true";
+                }
                 if (!hub.Authenticator.EnsureValidClientId(hub.ClientController, syncContext, out string error)) {
                     return error;
                 }
-                client = dispatcher.GetOrCreateSubClient(syncContext.User, syncContext.clientId, syncContext.eventReceiver);
+                var client = dispatcher.GetOrCreateSubClient(syncContext.User, syncContext.clientId, syncContext.eventReceiver);
                 client.queueEvents = true;
                 return null;
-            }
-            if (dispatcher.TryGetSubscriber(context.ClientId, out client)) {
-                client.queueEvents = false;
+            } else {
+                if (dispatcher.TryGetSubscriber(context.ClientId, out var client)) {
+                    client.queueEvents = false;
+                }
             }
             return null;
         }

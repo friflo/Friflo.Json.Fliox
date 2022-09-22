@@ -421,17 +421,25 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                     AreEqual("CommandError ~ std.Client queueEvents requires an EventDispatcher assigned to FlioxHub", sub.Error.Message);
                 } {
                     hub.EventDispatcher = eventDispatcher;
-                    var sub = testQueueEvents.std.Client(new ClientParam { queueEvents = true });
+                    var clientTask = testQueueEvents.std.Client(new ClientParam { queueEvents = true });
                     await testQueueEvents.SyncTasks();
                     
-                    IsTrue(sub.Success);
+                    IsTrue(clientTask.Success);
+                    IsTrue(clientTask.Result.queueEvents);
                 } {
                     hub.Authenticator.AnonymousHubPermission = HubPermission.None;
-                    var sub = testQueueEvents.std.Client(new ClientParam { queueEvents = true });
+                    var clientTask = testQueueEvents.std.Client(new ClientParam { queueEvents = true });
                     await testQueueEvents.TrySyncTasks();
                     
-                    AreEqual("CommandError ~ std.Client queueEvents requires permission (Role.hubRights) queueEvents = true", sub.Error.Message);
-                }
+                    AreEqual("CommandError ~ std.Client queueEvents requires permission (Role.hubRights) queueEvents = true", clientTask.Error.Message);
+                } {
+                    // clearing queueEvents require no specific authorization
+                    var clientTask = testQueueEvents.std.Client(new ClientParam { queueEvents = false });
+                    await testQueueEvents.SyncTasks();
+                    
+                    IsTrue (clientTask.Success);
+                    IsFalse(clientTask.Result.queueEvents);
+                } 
             }
         }
         
