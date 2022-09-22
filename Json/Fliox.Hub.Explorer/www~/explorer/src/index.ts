@@ -570,15 +570,8 @@ export class App {
 
     private saveFilter(database: string, container: string, filter: string) {
         const filters = this.config.filters;
-        if (filter.trim() == "") {
-            const filterDatabase = filters[database];
-            if (filterDatabase) {
-                delete filterDatabase[container];
-            }
-        } else {
-            if (!filters[database]) filters[database] = {};     
-            filters[database][container] = [filter];
-        }
+        if (!filters[database]) filters[database] = {};     
+        filters[database][container] = [filter];
         this.setConfig("filters", filters);
     }
 

@@ -194,7 +194,7 @@ export class Explorer
 
     public async loadContainer (p: Resource, query: string)  : Promise<void> {
         const storedFilter  = this.config.filters[p.database]?.[p.container];
-        const filter        = storedFilter && storedFilter[0] ? storedFilter[0] : "";        
+        const filter        = storedFilter && storedFilter[0] != undefined ? storedFilter[0] : 'o => o.id=="abc"';
         entityFilter.value  = filter;
 
         const removeFilterVisibility = query ? "" : "hidden";

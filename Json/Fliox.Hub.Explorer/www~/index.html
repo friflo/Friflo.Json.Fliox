@@ -646,8 +646,10 @@
       </div>
     </div>
     <div style="grid-area: ex-filter-input; display: flex;">
-      <input id="entityFilter" style="visibility: hidden; width: 100%;" title="entity filter" class="input" type="text" spellcheck="false"
-             placeholder='lambda expression predicate ⊂ LINQ where ≈ SQL WHERE. e.g.  o=>o.id=="article-1"' onkeydown="app.filterOnKeyDown(event)" onchange="app.updateFilterLink()">     
+      <input id="entityFilter" style="visibility: hidden; width: 100%;" class="input" type="text" spellcheck="false"
+            title       = 'lambda expression predicate ⊂ LINQ where ≈ SQL WHERE&#013;e.g.  o => o.id=="abc"'
+            placeholder = 'lambda expression predicate ⊂ LINQ where ≈ SQL WHERE      e.g.  o => o.id=="abc"'
+            onkeydown="app.filterOnKeyDown(event)" onchange="app.updateFilterLink()">     
     </div>
 
     <!-- ------- schema link, entity command/type ------- -->

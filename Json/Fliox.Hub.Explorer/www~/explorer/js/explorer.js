@@ -122,7 +122,7 @@ export class Explorer {
     async loadContainer(p, query) {
         var _a;
         const storedFilter = (_a = this.config.filters[p.database]) === null || _a === void 0 ? void 0 : _a[p.container];
-        const filter = storedFilter && storedFilter[0] ? storedFilter[0] : "";
+        const filter = storedFilter && storedFilter[0] != undefined ? storedFilter[0] : 'o => o.id=="abc"';
         entityFilter.value = filter;
         const removeFilterVisibility = query ? "" : "hidden";
         el("removeFilter").style.visibility = removeFilterVisibility;
