@@ -304,11 +304,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         }
 
         internal override AggregateEntities AggregateEntities(AggregateTask aggregate, in CreateTaskContext context) {
-            var aggregateFilter = aggregate.filter;
-            if (aggregate.filter is Filter filter) {
-                aggregateFilter = filter.body;
-            }
-            var filterTree  = FilterToJson(aggregateFilter, context.mapper);
+            var filterTree  = FilterToJson(aggregate.filter, context.mapper);
             return new AggregateEntities {
                 container   = set.name,
                 type        = aggregate.Type,
