@@ -17,6 +17,25 @@ namespace Friflo.Json.Fliox.Hub.Client
         [DebuggerBrowsable(Never)]  public    abstract  string              Details { get; }
         [DebuggerBrowsable(Never)]  internal  abstract  TaskState           State   { get; }
         // ReSharper disable once InconsistentNaming
+        /// <summary>
+        /// A handler method assigned to <see cref="OnSync"/> is called after executing a <see cref="SyncTask"/> with
+        /// <see cref="FlioxClient.SyncTasks"/>. <br/>
+        /// This is an alternative way to process a <see cref="SyncTask"/> result to the common task processing shown below.
+        /// </summary>
+        /// <remarks>
+        /// It is intended to be used in scenarios where a set of tasks are not created in a single function block
+        /// like in the example below. <br/>
+        /// This is typical for game applications where <see cref="FlioxClient.SyncTasks"/> is called by the game loop
+        /// for every frame to batch multiple <see cref="SyncTask"/>'s created on various places. <br/>
+        /// <code>
+        /// // Common task processing
+        /// var articles = client.articles.QueryAll();
+        /// var orders   = client.orders.QueryAll();
+        /// await client.SyncTasks(); 
+        /// foreach (var article in articles) { ... }
+        /// foreach (var order in orders) { ... }
+        /// </code>
+        /// </remarks>
         [DebuggerBrowsable(Never)]  public              Action<TaskError>   OnSync;
         
                                     public    override  string              ToString()  => GetLabel();
