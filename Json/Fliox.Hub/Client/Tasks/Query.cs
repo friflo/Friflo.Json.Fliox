@@ -107,7 +107,9 @@ namespace Friflo.Json.Fliox.Hub.Client
     
     public sealed class EntityFilter<T>
     {
-        internal readonly FilterOperation op;
+        internal readonly   FilterOperation op;
+
+        public   override   string          ToString() => op.ToString();
 
         public EntityFilter(Expression<Func<T, bool>> filter) {
             op = Operation.FromFilter(filter, ClientStatic.RefQueryPath);
