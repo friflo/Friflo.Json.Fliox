@@ -17,14 +17,14 @@ using Browse = System.Diagnostics.DebuggerBrowsableAttribute;
 namespace Friflo.Json.Fliox.Hub.Client
 {
     /// <summary>
-    /// Application classes extending <see cref="FlioxClient"/> offer two main functionalities:
-    /// <b>1.</b> Define a <b>database schema</b> by declaring its containers, commands and messages
+    /// Application classes extending <see cref="FlioxClient"/> offer two main functionalities: <br/>
+    /// <b>1.</b> Define a <b>database schema</b> by declaring its containers, commands and messages <br/>
     /// <b>2.</b> Its instances are <b>database clients</b> providing type-safe access to database containers, commands and messages
     /// </summary>
     /// <remarks>
-    /// Its containers are fields or properties of type <see cref="EntitySet{TKey,T}"/>.
-    /// Its commands are methods returning a <see cref="CommandTask{TResult}"/>.
-    /// Its messages are methods returning a <see cref="MessageTask"/>.
+    /// Its containers are fields or properties of type <see cref="EntitySet{TKey,T}"/>.<br/>
+    /// Its commands are methods returning a <see cref="CommandTask{TResult}"/>.<br/>
+    /// Its messages are methods returning a <see cref="MessageTask"/>.<br/>
     /// <see cref="FlioxClient"/> instances can be used in server and client code.<br/>
     /// The <see cref="FlioxClient"/> features and utilization available at
     /// <a href="https://github.com/friflo/Friflo.Json.Fliox/blob/main/Json/Fliox.Hub/Client/README.md">Client README.md</a>
