@@ -482,6 +482,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             using (var store            = new PocStore(hub) { UserId = "test-modify-handler" }) {
                 hub.EventDispatcher = eventDispatcher;
                 bool foundArticle1  = false;
+                bool foundPaul      = false;
                 
                 store.articles.SubscribeChangesFilter(Change.upsert, a => a.name == "Name1", (changes, context) => {
                     var upserts = changes.Upserts; 
@@ -492,6 +493,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 store.customers.SubscribeChangesFilter(Change.create, c => c.name == "Json", (changes, context) => {
                     Fail("unexpected change event");
                 });
+                
+                var filterJohn = new EntityFilter<Employee>(e => e.firstName == "Paul");
+                store.employees.SubscribeChangesByFilter(Change.upsert, filterJohn, (changes, context) => {
+                    var upserts = changes.Upserts;
+                    AreEqual(1, upserts.Count);
+                    AreEqual("e-2", upserts[0].id);
+                    foundPaul = true;
+                });
                 await store.SyncTasks();
                 
                 // --- generate change events with a single entity
@@ -500,6 +509,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                     new Article{ id = "a-2", name = "Name2"}
                 };
                 store.articles.UpsertRange(upsertArticles);
+                
+                var upsertEmployees = new [] {
+                    new Employee{ id = "e-1", firstName = "Peter"},
+                    new Employee{ id = "e-2", firstName = "Paul"}
+                };
+                store.employees.UpsertRange(upsertEmployees);
                 
                 // --- following changes generate no events
                 var createArticles = new [] {
@@ -515,6 +530,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 await store.SyncTasks();
                 
                 IsTrue(foundArticle1);
+                IsTrue(foundPaul);
             }
         }
     }
