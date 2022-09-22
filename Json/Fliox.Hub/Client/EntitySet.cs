@@ -7,6 +7,7 @@ using Friflo.Json.Fliox.Hub.Client.Internal;
 using Friflo.Json.Fliox.Hub.Client.Internal.Key;
 using Friflo.Json.Fliox.Hub.Client.Internal.KeyEntity;
 using Friflo.Json.Fliox.Hub.Client.Internal.Map;
+using Friflo.Json.Fliox.Hub.DB.Cluster;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Transform;
 using static System.Diagnostics.DebuggerBrowsableState;
@@ -190,13 +191,20 @@ namespace Friflo.Json.Fliox.Hub.Client
         
     #region - SubscribeChanges
         /// <summary>
-        /// Subscribe to database changes of the related <see cref="EntityContainer"/> with the given <paramref name="change"/>.
-        /// To unsubscribe from receiving change events set <paramref name="change"/> to <see cref="Change.None"/>.
+        /// Subscribe to database changes of the related <see cref="EntityContainer"/> with the given <paramref name="change"/>.<br/>
+        /// To unsubscribe from receiving change events set <paramref name="change"/> to <see cref="Change.None"/>.<br/>
         /// </summary>
-        /// <remarks> The <see cref="Changes{TKey,T}"/> of a subscription event can be applied to an <see cref="EntitySet{TKey,T}"/>
-        /// with <see cref="Changes{TKey,T}.ApplyChangesTo"/>. <br/>
-        /// To execute the task call <see cref="FlioxClient.SyncTasks"/> <br/></remarks>
-        /// <remarks><br/>Note: To ensure remote clients with occasional disconnects get <b>all</b> events use <see cref="StdCommands.Client"/></remarks>
+        /// <remarks>
+        /// To execute the task call <see cref="FlioxClient.SyncTasks"/> <br/>
+        /// The <see cref="Changes{TKey,T}"/> of a subscription event can be applied to an <see cref="EntitySet{TKey,T}"/>
+        /// with <see cref="Changes{TKey,T}.ApplyChangesTo"/>.
+        /// <br/>
+        /// <b>Note:</b> In case using the same <paramref name="filter"/> in multiple queries use <see cref="SubscribeChangesByFilter"/>
+        /// to avoid the overhead to convert the <paramref name="filter"/> expression.
+        /// <br/>
+        /// <b>Note:</b> To ensure remote clients with occasional disconnects get <b>all</b> events set
+        /// <see cref="ClientParam.queueEvents"/> in <see cref="StdCommands.Client"/> to true. 
+        /// </remarks>
         /// <seealso cref="FlioxClient.SetEventProcessor"/>
         public SubscribeChangesTask<T> SubscribeChangesFilter(Change change, Expression<Func<T, bool>> filter, ChangeSubscriptionHandler<TKey, T> handler) {
             if (handler == null) throw new ArgumentNullException(nameof(handler));
@@ -210,13 +218,16 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
         
         /// <summary>
-        /// Subscribe to database changes of the related <see cref="EntityContainer"/> with the <paramref name="change"/>.
-        /// To unsubscribe from receiving change events set <paramref name="change"/> to <see cref="Change.None"/>.
+        /// Subscribe to database changes of the related <see cref="EntityContainer"/> with the given <paramref name="change"/>. <br/>
+        /// To unsubscribe from receiving change events set <paramref name="change"/> to <see cref="Change.None"/>. <br/>
         /// </summary>
-        /// <remarks> The <see cref="Changes{TKey,T}"/> of a subscription event can be applied to an <see cref="EntitySet{TKey,T}"/>
+        /// <remarks>
+        /// To execute the task call <see cref="FlioxClient.SyncTasks"/> <br/>
+        /// The <see cref="Changes{TKey,T}"/> of a subscription event can be applied to an <see cref="EntitySet{TKey,T}"/>
         /// with <see cref="Changes{TKey,T}.ApplyChangesTo"/>. <br/>
-        /// To execute the task call <see cref="FlioxClient.SyncTasks"/> <br/></remarks>
-        /// <remarks><br/>Note: To ensure remote clients with occasional disconnects get <b>all</b> events use <see cref="StdCommands.Client"/></remarks>
+        /// <b>Note:</b> In case using the same <paramref name="filter"/> in multiple queries use <see cref="SubscribeChangesByFilter"/>
+        /// to avoid the overhead to convert the <paramref name="filter"/> expression.
+        /// </remarks> 
         /// <seealso cref="FlioxClient.SetEventProcessor"/>
         public SubscribeChangesTask<T> SubscribeChangesByFilter(Change change, EntityFilter<T> filter, ChangeSubscriptionHandler<TKey, T> handler) {
             if (handler == null) throw new ArgumentNullException(nameof(handler));
