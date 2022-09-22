@@ -96,7 +96,7 @@
                 "keyName":    { "type": ["string", "null"], "description": "name of the primary key property of the returned entities" },
                 "isIntKey":   { "type": ["boolean", "null"] },
                 "filterTree": { "description": "query filter as JSON tree. <br/>\nIs used in favour of <b>filter</b> as its serialization is more performant" },
-                "filter":     { "type": ["string", "null"], "description": "query filter as a <a href='https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/operators/lambda-expressions'>Lambda expression</a> (infix notation)\nreturning a boolean value. E.g. <c>o.name == 'Smartphone'</c><br/>\nif <b>filterTree</b> is assigned it has priority" },
+                "filter":     { "type": ["string", "null"], "description": "query filter as a <a href='https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/operators/lambda-expressions'>Lambda expression</a>\nreturning a boolean value. E.g.<br/><code>o => o.name == 'Smartphone'</code>\nif <b>filterTree</b> is assigned it has priority" },
                 "references": { "type": ["array", "null"], "items": { "$ref": "./Friflo.Json.Fliox.Hub.Protocol.Models.json#/definitions/References" }, "description": "used to request the entities referenced by properties of the query task result" },
                 "limit":      { "oneOf": [{ "$ref": "./Standard.json#/definitions/int32" }, {"type": "null"}], "description": "limit the result set to the given number" },
                 "maxCount":   { "oneOf": [{ "$ref": "./Standard.json#/definitions/int32" }, {"type": "null"}], "description": "execute a cursor request with the specified <b>maxCount</b> number of entities in the result." },
@@ -118,7 +118,7 @@
                 "container":  { "type": "string", "description": "container name" },
                 "type":       { "$ref": "#/definitions/AggregateType", "description": "aggregation type - e.g. count" },
                 "filterTree": { "description": "aggregation filter as JSON tree. <br/>\nIs used in favour of <b>filter</b> as its serialization is more performant" },
-                "filter":     { "type": ["string", "null"], "description": "aggregation filter as a <a href='https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/operators/lambda-expressions'>Lambda expression</a> (infix notation)\nreturning a boolean value. E.g. <c>o.name == 'Smartphone'</c><br/>" }
+                "filter":     { "type": ["string", "null"], "description": "aggregation filter as a <a href='https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/operators/lambda-expressions'>Lambda expression</a>\nreturning a boolean value. E.g.<br/><code>o => o.name == 'Smartphone'</code>" }
             },
             "required": [
                 "task",

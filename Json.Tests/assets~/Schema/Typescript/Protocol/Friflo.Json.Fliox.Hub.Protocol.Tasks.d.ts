@@ -111,8 +111,8 @@ export class QueryEntities extends SyncRequestTask {
      */
     filterTree? : any | null;
     /**
-     * query filter as a [Lambda expression](https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/operators/lambda-expressions) (infix notation)
-     * returning a boolean value. E.g. o.name == 'Smartphone'  
+     * query filter as a [Lambda expression](https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/operators/lambda-expressions)
+     * returning a boolean value. E.g.  `o => o.name == 'Smartphone'`
      * if **filterTree** is assigned it has priority
      */
     filter?     : string | null;
@@ -140,8 +140,8 @@ export class AggregateEntities extends SyncRequestTask {
      */
     filterTree? : any | null;
     /**
-     * aggregation filter as a [Lambda expression](https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/operators/lambda-expressions) (infix notation)
-     * returning a boolean value. E.g. o.name == 'Smartphone'  
+     * aggregation filter as a [Lambda expression](https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/operators/lambda-expressions)
+     * returning a boolean value. E.g.  `o => o.name == 'Smartphone'`
      */
     filter?     : string | null;
 }

@@ -30,8 +30,9 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         /// </summary>
                     public  JsonValue           filterTree;
         /// <summary>
-        /// query filter as a <a href="https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/operators/lambda-expressions">Lambda expression</a> (infix notation)
-        /// returning a boolean value. E.g. <c>o.name == 'Smartphone'</c><br/>
+        /// query filter as a <a href="https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/operators/lambda-expressions">Lambda expression</a>
+        /// returning a boolean value. E.g.<br/>
+        /// <code>o => o.name == 'Smartphone'</code>
         /// if <see cref="filterTree"/> is assigned it has priority
         /// </summary>
                     public  string              filter;
