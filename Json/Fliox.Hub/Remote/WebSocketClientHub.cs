@@ -133,7 +133,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                         WebSocketReceiveResult wsResult;
                         do {
                             if (ws.State != WebSocketState.Open) {
-                                Logger.Log(HubLog.Info, $"Pre-ReceiveAsync. State: {ws.State}");
+                                // Logger.Log(HubLog.Info, $"Pre-ReceiveAsync. State: {ws.State}");
                                 return;
                             }
                             wsResult = await ws.ReceiveAsync(buffer, cancellationToken.Token).ConfigureAwait(false);
@@ -142,7 +142,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                         while(!wsResult.EndOfMessage);
 
                         if (ws.State != WebSocketState.Open) {
-                            Logger.Log(HubLog.Info, $"Post-ReceiveAsync. State: {ws.State}");
+                            // Logger.Log(HubLog.Info, $"Post-ReceiveAsync. State: {ws.State}");
                             return;
                         }
                         var messageType = wsResult.MessageType;
