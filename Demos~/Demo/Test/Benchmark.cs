@@ -16,38 +16,39 @@ namespace DemoTest {
             var hub     = new WebSocketClientHub("main_db", "ws://localhost:8010/fliox/");
             var sender  = new DemoClient(hub) { UserId = "admin", Token = "admin" };
             
-            var tickRate = 50;
-            var frames   = 200;
+            var rate    = 50; // tick rate
+            var frames  = 150;
 
             Console.WriteLine("            Hz               ms       ms     latency ms percentiles                              ms   ms/s  kb/s");
             Console.WriteLine("clients   rate frames connected  average     50    90    95    96    97    98    99   100  duration   main alloc");
             
-            await PubSubLatencyCCU(sender, tickRate, frames, 2);
-            await PubSubLatencyCCU(sender, tickRate, frames, 2);
-            await PubSubLatencyCCU(sender, tickRate, frames, 5);
-            await PubSubLatencyCCU(sender, tickRate, frames, 10);
-            await PubSubLatencyCCU(sender, tickRate, frames, 50);
+            await PubSubLatencyCCU(sender,     2,   rate, frames);
+            await PubSubLatencyCCU(sender,     2,   rate, frames);
+            await PubSubLatencyCCU(sender,     5,   rate, frames);
+            await PubSubLatencyCCU(sender,    10,   rate, frames);
+            await PubSubLatencyCCU(sender,    50,   rate, frames);
             Console.WriteLine();
-            await PubSubLatencyCCU(sender, tickRate, frames, 100);
-            await PubSubLatencyCCU(sender, tickRate, frames, 200);
-            await PubSubLatencyCCU(sender, tickRate, frames, 300);
-            await PubSubLatencyCCU(sender, tickRate, frames, 400);
-            await PubSubLatencyCCU(sender, tickRate, frames, 500);
+            await PubSubLatencyCCU(sender,   100,   rate, frames);
+            await PubSubLatencyCCU(sender,   200,   rate, frames);
+            await PubSubLatencyCCU(sender,   300,   rate, frames);
+            await PubSubLatencyCCU(sender,   400,   rate, frames);
+            await PubSubLatencyCCU(sender,   500,   rate, frames);
             Console.WriteLine();
-            await PubSubLatencyCCU(sender, tickRate, frames, 1000);
-            await PubSubLatencyCCU(sender, tickRate, frames, 2000);
-            // await PubSubLatencyCCU(sender, tickRate, frames, 3000);
-            // await PubSubLatencyCCU(sender, tickRate, 4000);
-            // await PubSubLatencyCCU(sender, 5000);
-            // await PubSubLatencyCCU(sender, 10000);
+            await PubSubLatencyCCU(sender,  1000,   rate, frames);
+            await PubSubLatencyCCU(sender,  2000,   rate, frames);
             Console.WriteLine();
-            await PubSubLatencyCCU(sender, 10000, 10000, 2);
-            await PubSubLatencyCCU(sender, 20000, 20000, 2);
+            await PubSubLatencyCCU(sender,  3000,     10,     30);
+            await PubSubLatencyCCU(sender,  5000,      5,     15);
+            await PubSubLatencyCCU(sender, 10000,      2,      6);
+            await PubSubLatencyCCU(sender, 15000,      2,      6);
+            Console.WriteLine();
+            await PubSubLatencyCCU(sender,     2,  10000,  10000);
+            await PubSubLatencyCCU(sender,     2,  20000,  20000);
         }
         
         const string payload_100 = "_123456789_123456789_123456789_123456789_123456789_123456789_123456789_123456789_123456789_123456789";
         
-        private static async Task PubSubLatencyCCU(FlioxClient sender, int tickRate, int frames, int ccu)
+        private static async Task PubSubLatencyCCU(FlioxClient sender, int ccu, int tickRate, int frames)
         {
             System.Globalization.CultureInfo customCulture = (System.Globalization.CultureInfo)System.Threading.Thread.CurrentThread.CurrentCulture.Clone();
             customCulture.NumberFormat.NumberDecimalSeparator = ".";
@@ -63,7 +64,6 @@ namespace DemoTest {
             var contexts = await Task.WhenAll(connectTasks);
             
             var connected = DateTime.Now.Ticks;
-            
             Console.Write($"   {(connected - start) / 10000,6}  ");
             
             // warmup
@@ -92,7 +92,7 @@ namespace DemoTest {
                     await Task.Delay((int)delay);
                 }
             }
-            var duration = (DateTime.Now.Ticks - start) / 10000;
+            var duration        = (DateTime.Now.Ticks - start) / 10000;
             var sendDuration    = tickRate * sendTicks / (frames * 10000d);
             var kiloBytesPerSec = tickRate * bytes     / (frames * 1000);
             
@@ -106,8 +106,7 @@ namespace DemoTest {
                 if (c.latencies.Count != frames)
                     throw new InvalidOperationException("missing events");
             }
-            
-            
+
             // var diffs = contexts.Select(c => c.accumulatedLatency / (10000d * c.events)).ToArray();
             var p   = GetPercentiles(latencies, 100);
             var avg = latencies.Average();
@@ -129,6 +128,7 @@ namespace DemoTest {
                 context.hub.Dispose();
             }
         }
+        
         private static List<double> GetPercentiles(List<double> values, int count) {
             var sorted = values.OrderBy(s => s).ToList();
             if (sorted.Count < count) throw new InvalidOperationException("insufficient samples");
@@ -148,7 +148,7 @@ namespace DemoTest {
         {
             var hub     = new WebSocketClientHub("main_db", "ws://localhost:8010/fliox/");
             var client  = new DemoClient(hub) { UserId = "admin", Token = "admin" };
-            var bc      =  new BenchmarkContext { hub = hub, client = client, frames = frames };
+            var bc      = new BenchmarkContext { hub = hub, client = client, frames = frames };
             
             client.SubscribeMessage("*", (message, context) => {
                 message.GetParam(out TestMessage test, out _);
@@ -159,8 +159,6 @@ namespace DemoTest {
                     bc.tcs.SetResult();
                 }
             });
-            // client.SendMessage("xxx", 111);
-            
             await client.SyncTasks();
             
             return bc;
