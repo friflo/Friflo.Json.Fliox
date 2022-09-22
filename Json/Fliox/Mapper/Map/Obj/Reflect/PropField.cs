@@ -86,16 +86,14 @@ namespace Friflo.Json.Fliox.Mapper.Map.Obj.Reflect
             nameBytes.Dispose(Untracked.Bytes);
         }
         
-        private static readonly bool useDirect = false; // Unity: System.NotImplementedException : GetValueDirect
+        // private static readonly bool useDirect = false; // Unity: System.NotImplementedException : GetValueDirect
         
         /// <paramref name="setMethodParams"/> need to be of Length 1
         public void SetField (object obj, object value, object[] setMethodParams)
         {
             if (field != null) {
-                if (useDirect)
-                    field.SetValueDirect(__makeref(obj), value);
-                else
-                    field.SetValue(obj, value); // todo use Expression
+                // if (useDirect) { field.SetValueDirect(__makeref(obj), value); return; }
+                field.SetValue(obj, value); // todo use Expression - but not for Unity 
             } else {
                 if (setLambda != null) {
                     setLambda(obj, value);
@@ -110,9 +108,8 @@ namespace Friflo.Json.Fliox.Mapper.Map.Obj.Reflect
         public object GetField (object obj)
         {
             if (field != null) {
-                if (useDirect)
-                    return field.GetValueDirect(__makeref(obj));
-                return field.GetValue (obj); // todo use Expression
+                // if (useDirect) return field.GetValueDirect(__makeref(obj));
+                return field.GetValue (obj); // todo use Expression - but not for Unity
             }
             if (getLambda != null) {
                 return getLambda(obj);
