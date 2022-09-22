@@ -642,12 +642,12 @@
       --><a id="filterLink" title="open filter in new tab" style="opacity: 0.7;" href="#" target="_blank" onclick="app.updateFilterLink()"><!--
         --><small>filter</small>
          </a>
-         <small style="margin-left: 5px; opacity: 0.5;" title="parameter o used for lambda expression body">o&nbsp;=></small>
+         <small style="margin-left: 5px; opacity: 0.5;" title="parameter o used for lambda expression body"></small>
       </div>
     </div>
     <div style="grid-area: ex-filter-input; display: flex;">
       <input id="entityFilter" style="visibility: hidden; width: 100%;" title="entity filter" class="input" type="text" spellcheck="false"
-             placeholder="lambda expression predicate ⊂ LINQ where ≈ SQL WHERE" onkeydown="app.filterOnKeyDown(event)" onchange="app.updateFilterLink()">     
+             placeholder='lambda expression predicate ⊂ LINQ where ≈ SQL WHERE. e.g.  o=>o.id=="article-1"' onkeydown="app.filterOnKeyDown(event)" onchange="app.updateFilterLink()">     
     </div>
 
     <!-- ------- schema link, entity command/type ------- -->

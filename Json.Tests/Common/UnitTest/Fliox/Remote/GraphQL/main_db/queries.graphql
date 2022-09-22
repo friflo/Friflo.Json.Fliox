@@ -1,6 +1,6 @@
 query Test ($testLimit: Int, $countFilter: String, $allFields: Boolean, $ids: [String!]!) {
   # --- container queries
-  countArticles(filter: "o.name == 'Smartphone'")
+  countArticles(filter: "o=>o.name == 'Smartphone'")
   countArticleWithVariable: countArticles(filter: $countFilter)
   readAll: readArticles(ids: ["xxx", "article-1"], selectAll: true) {
     __typename

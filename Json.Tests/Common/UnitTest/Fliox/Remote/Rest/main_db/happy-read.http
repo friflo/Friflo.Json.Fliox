@@ -29,7 +29,7 @@ GET {{base}}/rest/main_db/articles/article-1
 Cookie: {{auth}}
 
 ###
-GET {{base}}/rest/main_db/articles?filter=o.producer=='producer-samsung'
+GET {{base}}/rest/main_db/articles?filter=o=>o.producer=='producer-samsung'
 Cookie: {{auth}}
 
 ###

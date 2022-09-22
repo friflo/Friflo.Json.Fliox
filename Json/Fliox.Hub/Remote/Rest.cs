@@ -168,7 +168,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         }
         
         /// enforce "o" as lambda argument
-        private const string DefaultParam   = "o";
+        // private const string DefaultParam   = "o";
         private const string InvalidFilter  = "invalid filter";
         
         private static JsonValue CreateFilterTree(RequestContext context, NameValueCollection queryParams) {
@@ -188,8 +188,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
             // --- handle filter expression
             var filter = queryParams["filter"];
             if (filter != null) {
-                var env   = new QueryEnv(DefaultParam); 
-                var op    = Operation.Parse(filter, out string error, env);
+                // var env   = new QueryEnv(DefaultParam); 
+                var op    = Operation.Parse(filter, out string error);
                 if (error != null) {
                     context.WriteError(InvalidFilter, error, 400);
                     return null;

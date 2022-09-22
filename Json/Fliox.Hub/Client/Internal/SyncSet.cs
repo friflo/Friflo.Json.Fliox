@@ -288,11 +288,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 references = new List<References>(subRelations.Count);
                 AddReferences(references, subRelations);
             }
-            var queryFilter = query.filter;
-            if (query.filter is Filter filter) {
-                queryFilter = filter.body;
-            }
-            var filterTree  = FilterToJson(queryFilter, context.mapper);
+            var filterTree  = FilterToJson(query.filter, context.mapper);
             return new QueryEntities {
                 container   = set.name,
                 keyName     = SyncKeyName(set.GetKeyName()),

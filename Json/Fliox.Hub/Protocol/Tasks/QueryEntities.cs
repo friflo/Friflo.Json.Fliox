@@ -81,13 +81,13 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
                         error = InvalidTaskError($"filterTree error: {reader.Error.msg.ToString()}");
                         return false;
                     }
-                    filterLambda    = new Filter("o", filterOp);
+                    filterLambda = filterOp;
                     return true;
                 }
             }
             if (filter == null)
                 return true;
-            var operation = Operation.Parse("o=>" + filter, out var parseError);
+            var operation = Operation.Parse(filter, out var parseError);
             if (operation == null) {
                 error = InvalidTaskError(parseError);
                 return false;
@@ -96,7 +96,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
                 filterLambda = filterOperation;
                 return true;
             }
-            error = InvalidTaskError("filter must be boolean operation");
+            error = InvalidTaskError("filter must be boolean operation (a predicate)");
             return false;
         }
         

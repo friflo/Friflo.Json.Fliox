@@ -138,7 +138,7 @@ GET {{base}}/rest/main_db/articles/article-1
 }
 
 ###
-GET {{base}}/rest/main_db/articles?filter=o.producer=='producer-samsung'
+GET {{base}}/rest/main_db/articles?filter=o=>o.producer=='producer-samsung'
 # StatusCode:   200
 # Content-Type: application/json
 

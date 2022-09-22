@@ -13,7 +13,8 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
 {
     internal static class RequestArgs
     {
-        private const string DefaultParam   = "o";
+        /// enforce "o" as lambda argument
+        // private const string DefaultParam   = "o";
         
         internal static bool TryGetFilter(in QueryContext cx, string name, out string value, out QueryError? error)
         {
@@ -21,8 +22,8 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                 return false;
             if (value == null)
                 return true;
-            var env   = new QueryEnv(DefaultParam); 
-            var op    = Operation.Parse(value, out var filterError, env);
+            // var env   = new QueryEnv(DefaultParam); 
+            var op    = Operation.Parse(value, out var filterError);
             if (filterError != null) {
                 error = new QueryError(name, filterError);
                 return false;

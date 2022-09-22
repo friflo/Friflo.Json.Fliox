@@ -1,6 +1,6 @@
 {
     "testLimit":    3,
-    "countFilter":  "o.producer == 'producer-samsung'",
+    "countFilter":  "o=>o.producer == 'producer-samsung'",
     "allFields":    true,
     "ids":          ["article-galaxy"]
 }

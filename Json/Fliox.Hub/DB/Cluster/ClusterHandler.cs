@@ -76,7 +76,9 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
             syncContext.authState.taskAuthorizer.AddAuthorizedDatabases(authorizedDatabases);
             var sb = new StringBuilder();
             foreach (var authorizedDatabase in authorizedDatabases) {
-                if (sb.Length != 0)
+                if (sb.Length == 0)
+                    sb.Append("o => ");
+                else
                     sb.Append(" || ");
                 if (authorizedDatabase.isPrefix)
                     sb.Append($"(o.id.StartsWith('{authorizedDatabase.database}'))");
