@@ -109,5 +109,16 @@ cd Assets
 git clone https://github.com/friflo/Friflo.Json.Fliox.git
 ```
 
+## Build Settings
+Tested with: Unit Menu > Edit > Project Settings ... > Player > Other Settings
+
+|  Unity version  |  Scripting Backend  |  API Compatibility Level  |
+| --------------- | ------------------- | ------------------------- |
+|  2020.1.15f1    |  Mono               | .NET 4.x                  |
+|                 |  IL2CPP             | .NET 4.x                  |
+|  2021.3.9f1     |  Mono               | .NET Standard 2.1         |
+|                 |  IL2CPP             | .NET Standard 2.1         |
+
+
 Run the unit tests in the **Test Runner** in the [Unity Editor](https://unity.com/)
 (Window > General > Test Runner) as **EditMode** tests.

@@ -18,7 +18,8 @@ namespace DemoTest {
             
             var rate    = 50; // tick rate
             var frames  = 150;
-
+            Console.WriteLine("clients = CCU - Concurrently Connected Users, rate = tick rate, frames = number of messages send / received events");
+            Console.WriteLine();
             Console.WriteLine("            Hz               ms       ms     latency ms percentiles                              ms   ms/s  kb/s");
             Console.WriteLine("clients   rate frames connected  average     50    90    95    96    97    98    99   100  duration   main alloc");
             
