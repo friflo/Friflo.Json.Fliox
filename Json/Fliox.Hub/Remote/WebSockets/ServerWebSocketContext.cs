@@ -54,13 +54,14 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
             var secWebSocketAccept      = Sha1Hash(secWebSocketKey + "258EAFA5-E914-47DA-95CA-C5AB0DC85B11");
             // [WebSocket - Wikipedia] https://en.wikipedia.org/wiki/WebSocket
             // secWebSocketKey = "x3JJHMbDL1EzLkh9GBhXDw=="; // test from Wikipedia
-            var response = $@"HTTP/1.1 101 Switching Protocols
-Connection: Upgrade
-Upgrade: websocket
-Sec-WebSocket-Accept: {secWebSocketAccept}
-";          // Sec-WebSocket-Protocol: chat
-            response += "\n";
-            byte[]  responseBytes = Encoding.UTF8.GetBytes(response);
+            var sb = new StringBuilder();
+            sb.Append("HTTP/1.1 101 Switching Protocols\r\n");
+            sb.Append("Connection: Upgrade\r\n");
+            sb.Append("Upgrade: websocket\r\n");
+            sb.Append($"Sec-WebSocket-Accept: {secWebSocketAccept}\r\n");
+            sb.Append("\r\n");
+            var     response        = sb.ToString();
+            byte[]  responseBytes   = Encoding.UTF8.GetBytes(response);
             await stream.WriteAsync(responseBytes, 0, responseBytes.Length).ConfigureAwait(false);
             
             await stream.FlushAsync().ConfigureAwait(false); // todo required?
