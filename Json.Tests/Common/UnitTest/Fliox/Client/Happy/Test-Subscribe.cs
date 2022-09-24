@@ -541,6 +541,54 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 IsTrue(foundPaul);
             }
         }
+        
+        [Test]
+        public static void TestSubscribeApplyChanges() { SingleThreadSynchronizationContext.Run(AssertSubscribeApplyChanges); }
+        private static async Task AssertSubscribeApplyChanges() {
+            using (var _                = SharedEnv.Default) // for LeakTestsFixture
+            using (var eventDispatcher  = new EventDispatcher(false))
+            using (var database         = new MemoryDatabase(TestGlobals.DB))
+            using (var hub              = new FlioxHub(database, TestGlobals.Shared))
+            using (var store            = new PocStore(hub) { UserId = "store" })
+            using (var listen           = new PocStore(hub) { UserId = "listen" }) {
+                hub.EventDispatcher = eventDispatcher;
+                var eventCount      = 0;
+                
+                listen.articles.SubscribeChanges(Change.upsert, (changes, context) => {
+                    var applyResult = changes.ApplyChangesTo(listen.articles);
+                    var applyInfos  = applyResult.applyInfos;
+                    switch (eventCount++) {
+                        case 0:
+                            AreEqual(1,                     applyInfos.Count);
+                            AreEqual(ApplyType.NewUpsert,   applyInfos[0].type);
+                            AreEqual("a-1",                 applyInfos[0].key.AsString());
+                            IsFalse (                       applyInfos[0].value.IsNull());
+                            break;                            
+                        case 1:
+                            // "a-1" is already applied. Only "a-2" is a new entity
+                            AreEqual(1,                     applyInfos.Count);
+                            AreEqual(ApplyType.NewUpsert,   applyInfos[0].type);
+                            AreEqual("a-2",                 applyInfos[0].key.AsString());
+                            IsFalse (                       applyInfos[0].value.IsNull());
+                            break;
+                    }
+                });
+                await listen.SyncTasks();
+                
+                // --- upsert the old and a new one
+                
+                var a1 = new Article{ id = "a-1", name = "Name1" };
+                var a2 = new Article{ id = "a-2", name = "Name2" };
+                store.articles.Upsert(a1);
+                await store.SyncTasks();
+
+                var upsertArticles = new [] { a1, a2 };
+                store.articles.UpsertRange(upsertArticles);
+                await store.SyncTasks();
+                
+                AreEqual(2, eventCount);
+            }
+        }
     }
 
 }

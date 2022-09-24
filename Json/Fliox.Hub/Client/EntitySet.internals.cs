@@ -32,7 +32,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         internal  abstract  void                Init                    (FlioxClient store);
         internal  abstract  void                Reset                   ();
         internal  abstract  void                DetectSetPatchesInternal(DetectAllPatches task, ObjectMapper mapper);
-        internal  abstract  void                SyncPeerEntities        (Dictionary<JsonKey, EntityValue> entities, ObjectMapper mapper);
+        internal  abstract  void                SyncPeerEntities        (Dictionary<JsonKey, EntityValue> entities, ObjectMapper mapper, List<ApplyInfo> applyInfos);
         
         internal  abstract  void                ResetSync               ();
         internal  abstract  SyncTask            SubscribeChangesInternal(Change change);
@@ -198,7 +198,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
         
         // --- EntitySet
-        internal override void SyncPeerEntities(Dictionary<JsonKey, EntityValue> entities, ObjectMapper mapper) {
+        internal override void SyncPeerEntities(Dictionary<JsonKey, EntityValue> entities, ObjectMapper mapper, List<ApplyInfo> applyInfos) {
             var reader = mapper.reader;
 
             foreach (var entityPair in entities) {
@@ -215,14 +215,15 @@ namespace Friflo.Json.Fliox.Hub.Client
                     continue;
                 }
 
-                peer.error = null;
-                var json = value.Json;
+                peer.error  = null;
+                var json    = value.Json;
                 if (json.IsNull()) {
                     peer.SetPatchSourceNull();
                     continue;    
                 }
                 var entity = peer.NullableEntity;
                 if (entity == null) {
+                    applyInfos?.Add(new ApplyInfo(ApplyType.NewUpsert, id, json));
                     entity = (T)intern.GetMapper().CreateInstance();
                     SetEntityId(entity, id);
                     peer.SetEntity(entity);

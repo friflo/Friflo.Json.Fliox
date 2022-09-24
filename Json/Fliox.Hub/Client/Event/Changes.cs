@@ -48,12 +48,20 @@ namespace Friflo.Json.Fliox.Hub.Client
         [DebuggerBrowsable(Never)]  internal            ChangeInfo      changeInfo;
         [DebuggerBrowsable(Never)]  internal  readonly  List<JsonValue> rawCreates  = new List<JsonValue>();
         [DebuggerBrowsable(Never)]  internal  readonly  List<JsonValue> rawUpserts  = new List<JsonValue>();
+        [DebuggerBrowsable(Never)]  internal  readonly  List<ApplyInfo> applyInfos  = new List<ApplyInfo>();
 
-        internal  abstract  Type    GetEntityType();
-        internal  abstract  void    Clear       ();
-        internal  abstract  void    AddDeletes  (List<JsonKey> ids);
-        internal  abstract  void    AddPatches  (List<EntityPatch> patches);
-        internal  abstract  void    ApplyChangesToInternal  (EntitySet entitySet);
+        internal  abstract  Type        GetEntityType();
+        internal  abstract  void        Clear       ();
+        internal  abstract  void        AddDeletes  (List<JsonKey> ids);
+        internal  abstract  void        AddPatches  (List<EntityPatch> patches);
+        internal  abstract  ApplyResult ApplyChangesToInternal  (EntitySet entitySet);
+        
+        public ApplyResult ApplyChangesToContainer(FlioxClient client, string container) {
+            var set = client.GetEntitySet(container);
+            if (!client._intern.TryGetSetByName(container, out var entitySet))
+                return new ApplyResult();
+            return ApplyChangesToInternal(set);
+        }
     }
     
     /// <summary>
@@ -87,6 +95,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         [DebuggerBrowsable(Never)] private          List<T>         creates;
         [DebuggerBrowsable(Never)] private          List<T>         upserts;
         [DebuggerBrowsable(Never)] private readonly ObjectMapper    objectMapper;
+
         
         private static readonly KeyConverter<TKey>  KeyConvert = KeyConverter.GetConverter<TKey>();
 
@@ -161,25 +170,26 @@ namespace Friflo.Json.Fliox.Hub.Client
             changeInfo.patches += entityPatches.Count;
         }
         
-        internal override void ApplyChangesToInternal  (EntitySet entitySet) {
+        internal override ApplyResult ApplyChangesToInternal  (EntitySet entitySet) {
             var set = (EntitySet<TKey, T>)entitySet;
-            ApplyChangesTo(set);
+            return ApplyChangesTo(set);
         }
         
         /// <summary> Apply the container changes to the given <paramref name="entitySet"/> </summary>
-        public void ApplyChangesTo(EntitySet<TKey, T> entitySet, Change change = Change.All) {
+        public ApplyResult ApplyChangesTo(EntitySet<TKey, T> entitySet, Change change = Change.All) {
+            applyInfos.Clear();
             if (Count == 0)
-                return;
+                return new ApplyResult(applyInfos);
             var client = entitySet.intern.store;
             var localCreates    = rawCreates;
             if ((change & Change.create) != 0 && localCreates.Count > 0) {
                 var entityKeys = GetKeysFromEntities (client, entitySet.GetKeyName(), localCreates);
-                SyncPeerEntities(entitySet, entityKeys, localCreates, objectMapper);
+                SyncPeerEntities(entitySet, entityKeys, localCreates, objectMapper, null);
             }
             var localUpserts    = rawUpserts;
             if ((change & Change.upsert) != 0 && localUpserts.Count > 0) {
                 var entityKeys = GetKeysFromEntities (client, entitySet.GetKeyName(), localUpserts);
-                SyncPeerEntities(entitySet, entityKeys, localUpserts, objectMapper);
+                SyncPeerEntities(entitySet, entityKeys, localUpserts, objectMapper, applyInfos);
             }
             if ((change & Change.patch) != 0) {
                 entitySet.PatchPeerEntities(Patches, objectMapper);
@@ -187,6 +197,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             if ((change & Change.delete) != 0) {
                 entitySet.DeletePeerEntities(Deletes);
             }
+            return new ApplyResult(applyInfos);
         }
         
         private static List<JsonKey> GetKeysFromEntities(FlioxClient client, string keyName, List<JsonValue> entities) {
@@ -200,18 +211,24 @@ namespace Friflo.Json.Fliox.Hub.Client
             return keys;
         }
         
-        private static void SyncPeerEntities (EntitySet set, List<JsonKey> keys, List<JsonValue> entities, ObjectMapper mapper) {
+        private static void SyncPeerEntities (
+            EntitySet           set,
+            List<JsonKey>       keys,
+            List<JsonValue>     entities,
+            ObjectMapper        mapper,
+            List<ApplyInfo>     applyInfos)
+        {
             if (keys.Count != entities.Count)
                 throw new InvalidOperationException("Expect equal counts");
             var syncEntities = new Dictionary<JsonKey, EntityValue>(entities.Count, JsonKey.Equality);
             for (int n = 0; n < entities.Count; n++) {
                 var entity  = entities[n];
                 var key     = keys[n];
-                var value = new EntityValue(entity);
+                var value   = new EntityValue(entity);
                 syncEntities.Add(key, value);
             }
             // todo simplify - creating a Dictionary<,> is overkill
-            set.SyncPeerEntities(syncEntities, mapper);
+            set.SyncPeerEntities(syncEntities, mapper, applyInfos);
         }
     }
     
@@ -245,6 +262,30 @@ namespace Friflo.Json.Fliox.Hub.Client
         internal override void InvokeCallback(Changes entityChanges, EventContext context) {
             var changes = (Changes<TKey,T>)entityChanges;
             handler(changes, context);
+        }
+    }
+    
+    public enum ApplyType {
+        NewUpsert
+    }
+    
+    public readonly struct ApplyInfo {
+        public readonly ApplyType   type;
+        public readonly JsonKey     key;
+        public readonly JsonValue   value;
+        
+        internal ApplyInfo(ApplyType type, in JsonKey key, in JsonValue value) {
+            this.type   = type;
+            this.key    = key;
+            this.value = value;
+        }
+    }
+
+    public readonly struct ApplyResult {
+        public readonly IReadOnlyList<ApplyInfo> applyInfos;
+        
+        internal ApplyResult(IReadOnlyList<ApplyInfo> applyInfos) {
+            this.applyInfos = applyInfos;
         }
     }
 }
