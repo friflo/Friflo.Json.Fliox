@@ -49,7 +49,6 @@ namespace Friflo.Json.Fliox.Hub.Client
         [DebuggerBrowsable(Never)]  internal  readonly  List<JsonValue> rawUpserts  = new List<JsonValue>();
         [DebuggerBrowsable(Never)]  internal  readonly  List<ApplyInfo> applyInfos  = new List<ApplyInfo>();
 
-        internal  abstract  Type        GetEntityType();
         internal  abstract  void        Clear       ();
         internal  abstract  void        AddDeletes  (List<JsonKey> ids);
         internal  abstract  void        AddPatches  (List<EntityPatch> patches);
@@ -89,19 +88,20 @@ namespace Friflo.Json.Fliox.Hub.Client
         public              List<Patch<TKey>>   Patches { get; } = new List<Patch<TKey>>();
         public    override  string              ToString()      => FormatToString();       
         public    override  string              Container       { get; }
-        internal  override  Type                GetEntityType() => typeof(T);
         
         [DebuggerBrowsable(Never)] private          List<T>         creates;
         [DebuggerBrowsable(Never)] private          List<T>         upserts;
         [DebuggerBrowsable(Never)] private readonly ObjectMapper    objectMapper;
+        [DebuggerBrowsable(Never)] private readonly List<JsonKey>   keyBuffer;
 
         
         private static readonly KeyConverter<TKey>  KeyConvert = KeyConverter.GetConverter<TKey>();
 
         /// <summary> called via <see cref="SubscriptionProcessor.GetChanges"/> </summary>
-        internal Changes(EntitySet<TKey, T> entitySet, ObjectMapper mapper) {
+        internal Changes(EntitySet<TKey, T> entitySet, ObjectMapper mapper, List<JsonKey> keyBuffer) {
             Container       = entitySet.name;
             objectMapper    = mapper;
+            this.keyBuffer  = keyBuffer;
         }
         
         private string FormatToString() {
@@ -182,13 +182,13 @@ namespace Friflo.Json.Fliox.Hub.Client
             var client = entitySet.intern.store;
             var localCreates    = rawCreates;
             if ((change & Change.create) != 0 && localCreates.Count > 0) {
-                var entityKeys = GetKeysFromEntities (client, entitySet.GetKeyName(), localCreates);
-                entitySet.SyncPeerEntities(entityKeys, localCreates, objectMapper, applyInfos);
+                GetKeysFromEntities (keyBuffer, client, entitySet.GetKeyName(), localCreates);
+                entitySet.SyncPeerEntities(keyBuffer, localCreates, objectMapper, applyInfos);
             }
             var localUpserts    = rawUpserts;
             if ((change & Change.upsert) != 0 && localUpserts.Count > 0) {
-                var entityKeys = GetKeysFromEntities (client, entitySet.GetKeyName(), localUpserts);
-                entitySet.SyncPeerEntities(entityKeys, localUpserts, objectMapper, applyInfos);
+                GetKeysFromEntities (keyBuffer, client, entitySet.GetKeyName(), localUpserts);
+                entitySet.SyncPeerEntities(keyBuffer, localUpserts, objectMapper, applyInfos);
             }
             if ((change & Change.patch) != 0) {
                 entitySet.PatchPeerEntities(Patches, objectMapper);
@@ -199,15 +199,14 @@ namespace Friflo.Json.Fliox.Hub.Client
             return new ApplyResult(applyInfos);
         }
         
-        private static List<JsonKey> GetKeysFromEntities(FlioxClient client, string keyName, List<JsonValue> entities) {
+        private static void GetKeysFromEntities(List<JsonKey> keys, FlioxClient client, string keyName, List<JsonValue> entities) {
+            keys.Clear();
             var processor   = client._intern.EntityProcessor();
-            var keys        = new List<JsonKey>(entities.Count);
             foreach (var entity in entities) {
                 if (!processor.GetEntityKey(entity, keyName, out JsonKey key, out string error))
                     throw new InvalidOperationException($"CreateEntityKeys() error: {error}");
                 keys.Add(key);
             }
-            return keys;
         }
     }
     

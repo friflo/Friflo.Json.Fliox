@@ -24,6 +24,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         internal readonly   List<Changes>               contextChanges  = new List<Changes>();
         internal readonly   List<Message>               messages        = new List<Message>();
         private             ObjectMapper                objectMapper;
+        private             List<JsonKey>               keyBuffer       = new List<JsonKey>(); 
         internal            int                         EventCount { get; private set ; }
         private  readonly   List<MessageCallback>       tempCallbackHandlers    = new List<MessageCallback>();
         private  readonly   List<MessageSubscriber>     tempSubscriptionsPrefix = new List<MessageSubscriber>();
@@ -189,7 +190,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         internal Changes GetChanges (EntitySet entitySet) {
             if (changes.TryGetValue(entitySet.name, out var change))
                 return change;
-            object[] constructorParams = { entitySet, objectMapper };
+            object[] constructorParams = { entitySet, objectMapper, keyBuffer };
             var keyType     = entitySet.KeyType;
             var entityType  = entitySet.EntityType;
             var genericArgs = new[] { keyType, entityType };
