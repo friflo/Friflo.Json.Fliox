@@ -255,7 +255,9 @@ namespace Friflo.Json.Fliox.Hub.Client
         public readonly ApplyInfoType   type;
         public readonly JsonKey         key;
         public readonly JsonValue       value;
-        
+
+        public override string          ToString() => $"{type} key: {key}"; 
+
         internal ApplyInfo(ApplyInfoType type, in JsonKey key, in JsonValue value) {
             this.type   = type;
             this.key    = key;
@@ -265,6 +267,8 @@ namespace Friflo.Json.Fliox.Hub.Client
 
     public readonly struct ApplyResult {
         public readonly IReadOnlyList<ApplyInfo> applyInfos;
+        
+        public override string                   ToString() => applyInfos != null ? $"Count: {applyInfos.Count}" : "error";
         
         internal ApplyResult(IReadOnlyList<ApplyInfo> applyInfos) {
             this.applyInfos = applyInfos;
