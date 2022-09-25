@@ -384,7 +384,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             foreach (var containerResult in containerResults) {
                 ContainerEntities containerEntities = containerResult.Value;
                 EntitySet set = _intern.GetSetByName(containerResult.Key);
-                set.SyncPeerEntities(containerEntities.entityMap, mapper, null);
+                set.SyncPeerEntityMap(containerEntities.entityMap, mapper);
             }
             var responseTasks = syncResponse.tasks;
             // Ensure every response task result type matches its task

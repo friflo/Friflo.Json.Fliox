@@ -32,7 +32,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         internal  abstract  void                Init                    (FlioxClient store);
         internal  abstract  void                Reset                   ();
         internal  abstract  void                DetectSetPatchesInternal(DetectAllPatches task, ObjectMapper mapper);
-        internal  abstract  void                SyncPeerEntities        (Dictionary<JsonKey, EntityValue> entities, ObjectMapper mapper, List<ApplyInfo> applyInfos);
+        internal  abstract  void                SyncPeerEntityMap       (Dictionary<JsonKey, EntityValue> entityMap, ObjectMapper mapper);
         
         internal  abstract  void                ResetSync               ();
         internal  abstract  SyncTask            SubscribeChangesInternal(Change change);
@@ -198,10 +198,10 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
         
         // --- EntitySet
-        internal override void SyncPeerEntities(Dictionary<JsonKey, EntityValue> entities, ObjectMapper mapper, List<ApplyInfo> applyInfos) {
+        internal override void SyncPeerEntityMap(Dictionary<JsonKey, EntityValue> entityMap, ObjectMapper mapper) {
             var reader = mapper.reader;
 
-            foreach (var entityPair in entities) {
+            foreach (var entityPair in entityMap) {
                 var id      = entityPair.Key;
                 var value   = entityPair.Value;
                 var error   = value.Error;
@@ -214,17 +214,15 @@ namespace Friflo.Json.Fliox.Hub.Client
                     peer.error      = error;
                     continue;
                 }
-
                 peer.error  = null;
                 var json    = value.Json;
                 if (json.IsNull()) {
                     peer.SetPatchSourceNull();
                     continue;    
                 }
-                var entity = peer.NullableEntity;
+                var entity  = peer.NullableEntity;
                 if (entity == null) {
-                    applyInfos?.Add(new ApplyInfo(ApplyType.NewUpsert, id, json));
-                    entity = (T)intern.GetMapper().CreateInstance();
+                    entity  = (T)intern.GetMapper().CreateInstance();
                     SetEntityId(entity, id);
                     peer.SetEntity(entity);
                 }
@@ -233,8 +231,40 @@ namespace Friflo.Json.Fliox.Hub.Client
                     peer.SetPatchSource(reader.Read<T>(json));
                 } else {
                     var entityError = new EntityError(EntityErrorType.ParseError, name, id, reader.Error.msg.ToString());
-                    entities[id].SetError(entityError);
+                    entityMap[id].SetError(entityError);
                 }
+            }
+        }
+        
+        /// Similar to <see cref="SyncPeerEntityMap"/> but operates on a key and value list.
+        internal void SyncPeerEntities(List<JsonKey> keys, List<JsonValue> values, ObjectMapper mapper, List<ApplyInfo> applyInfos)
+        {
+            if (keys.Count != values.Count) throw new InvalidOperationException("expect keys.Count == values.Count");
+            var reader  = mapper.reader;
+            var count   = keys.Count;
+            for (int n = 0; n < count; n++) {
+                var id      = keys[n];
+                var json    = values[n];
+                var peer    = GetPeerById(id);
+
+                peer.error  = null;
+                var entity  = peer.NullableEntity;
+                ApplyInfoType applyType;
+                if (entity == null) {
+                    applyType   = ApplyInfoType.EntityCreate;
+                    entity      = (T)intern.GetMapper().CreateInstance();
+                    SetEntityId(entity, id);
+                    peer.SetEntity(entity);
+                } else {
+                    applyType   = ApplyInfoType.EntityUpdate;
+                }
+                reader.ReadTo(json, entity);
+                if (reader.Success) {
+                    peer.SetPatchSource(reader.Read<T>(json));
+                } else {
+                    applyType |= ApplyInfoType.ParseError;
+                }
+                applyInfos.Add(new ApplyInfo(applyType, id, json));
             }
         }
         

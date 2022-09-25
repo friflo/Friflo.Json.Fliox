@@ -8,7 +8,6 @@ using System.Text;
 using Friflo.Json.Fliox.Hub.Client.Internal;
 using Friflo.Json.Fliox.Hub.Client.Internal.Key;
 using Friflo.Json.Fliox.Hub.Protocol;
-using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Transform;
@@ -58,7 +57,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         
         public ApplyResult ApplyChangesToContainer(FlioxClient client, string container) {
             var set = client.GetEntitySet(container);
-            if (!client._intern.TryGetSetByName(container, out var entitySet))
+            if (!client._intern.TryGetSetByName(container, out _))
                 return new ApplyResult();
             return ApplyChangesToInternal(set);
         }
@@ -184,12 +183,12 @@ namespace Friflo.Json.Fliox.Hub.Client
             var localCreates    = rawCreates;
             if ((change & Change.create) != 0 && localCreates.Count > 0) {
                 var entityKeys = GetKeysFromEntities (client, entitySet.GetKeyName(), localCreates);
-                SyncPeerEntities(entitySet, entityKeys, localCreates, objectMapper, null);
+                entitySet.SyncPeerEntities(entityKeys, localCreates, objectMapper, applyInfos);
             }
             var localUpserts    = rawUpserts;
             if ((change & Change.upsert) != 0 && localUpserts.Count > 0) {
                 var entityKeys = GetKeysFromEntities (client, entitySet.GetKeyName(), localUpserts);
-                SyncPeerEntities(entitySet, entityKeys, localUpserts, objectMapper, applyInfos);
+                entitySet.SyncPeerEntities(entityKeys, localUpserts, objectMapper, applyInfos);
             }
             if ((change & Change.patch) != 0) {
                 entitySet.PatchPeerEntities(Patches, objectMapper);
@@ -209,26 +208,6 @@ namespace Friflo.Json.Fliox.Hub.Client
                 keys.Add(key);
             }
             return keys;
-        }
-        
-        private static void SyncPeerEntities (
-            EntitySet           set,
-            List<JsonKey>       keys,
-            List<JsonValue>     entities,
-            ObjectMapper        mapper,
-            List<ApplyInfo>     applyInfos)
-        {
-            if (keys.Count != entities.Count)
-                throw new InvalidOperationException("Expect equal counts");
-            var syncEntities = new Dictionary<JsonKey, EntityValue>(entities.Count, JsonKey.Equality);
-            for (int n = 0; n < entities.Count; n++) {
-                var entity  = entities[n];
-                var key     = keys[n];
-                var value   = new EntityValue(entity);
-                syncEntities.Add(key, value);
-            }
-            // todo simplify - creating a Dictionary<,> is overkill
-            set.SyncPeerEntities(syncEntities, mapper, applyInfos);
         }
     }
     
@@ -265,19 +244,22 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
     }
     
-    public enum ApplyType {
-        NewUpsert
+    [Flags]
+    public enum ApplyInfoType {
+        EntityCreate,
+        EntityUpdate,
+        ParseError
     }
     
     public readonly struct ApplyInfo {
-        public readonly ApplyType   type;
-        public readonly JsonKey     key;
-        public readonly JsonValue   value;
+        public readonly ApplyInfoType   type;
+        public readonly JsonKey         key;
+        public readonly JsonValue       value;
         
-        internal ApplyInfo(ApplyType type, in JsonKey key, in JsonValue value) {
+        internal ApplyInfo(ApplyInfoType type, in JsonKey key, in JsonValue value) {
             this.type   = type;
             this.key    = key;
-            this.value = value;
+            this.value  = value;
         }
     }
 
