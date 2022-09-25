@@ -245,10 +245,10 @@ namespace Friflo.Json.Fliox.Hub.Client
     
     [Flags]
     public enum ApplyInfoType {
-        EntityCreated,
-        EntityUpdated,
-        EntityDeleted,
-        ParseError
+        EntityCreated   = 0x01,
+        EntityUpdated   = 0x02,
+        EntityDeleted   = 0x04,
+        ParseError      = 0x80,
     }
     
     public readonly struct ApplyInfo {
