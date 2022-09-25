@@ -251,12 +251,12 @@ namespace Friflo.Json.Fliox.Hub.Client
                 var entity  = peer.NullableEntity;
                 ApplyInfoType applyType;
                 if (entity == null) {
-                    applyType   = ApplyInfoType.EntityCreate;
+                    applyType   = ApplyInfoType.EntityCreated;
                     entity      = (T)intern.GetMapper().CreateInstance();
                     SetEntityId(entity, id);
                     peer.SetEntity(entity);
                 } else {
-                    applyType   = ApplyInfoType.EntityUpdate;
+                    applyType   = ApplyInfoType.EntityUpdated;
                 }
                 reader.ReadTo(json, entity);
                 if (reader.Success) {
@@ -268,10 +268,13 @@ namespace Friflo.Json.Fliox.Hub.Client
             }
         }
         
-        internal void DeletePeerEntities (ICollection<TKey> keys) {
+        internal void DeletePeerEntities (ICollection<TKey> keys, List<ApplyInfo> applyInfos) {
             var peers = PeerMap();
             foreach (var key in keys) {
-                peers.Remove(key);
+                var found   = peers.Remove(key);
+                var id      = Static.KeyConvert.KeyToId(key);
+                var type    = found ? ApplyInfoType.EntityDeleted : default;
+                applyInfos.Add(new ApplyInfo(type, id, default));
             }
         }
         

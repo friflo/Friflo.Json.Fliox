@@ -24,7 +24,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         internal readonly   List<Changes>               contextChanges  = new List<Changes>();
         internal readonly   List<Message>               messages        = new List<Message>();
         private             ObjectMapper                objectMapper;
-        private             List<JsonKey>               keyBuffer       = new List<JsonKey>(); 
+        private  readonly   List<JsonKey>               keyBuffer       = new List<JsonKey>(); 
         internal            int                         EventCount { get; private set ; }
         private  readonly   List<MessageCallback>       tempCallbackHandlers    = new List<MessageCallback>();
         private  readonly   List<MessageSubscriber>     tempSubscriptionsPrefix = new List<MessageSubscriber>();

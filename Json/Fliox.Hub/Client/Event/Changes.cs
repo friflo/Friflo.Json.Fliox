@@ -194,7 +194,7 @@ namespace Friflo.Json.Fliox.Hub.Client
                 entitySet.PatchPeerEntities(Patches, objectMapper);
             }
             if ((change & Change.delete) != 0) {
-                entitySet.DeletePeerEntities(Deletes);
+                entitySet.DeletePeerEntities(Deletes, applyInfos);
             }
             return new ApplyResult(applyInfos);
         }
@@ -245,8 +245,9 @@ namespace Friflo.Json.Fliox.Hub.Client
     
     [Flags]
     public enum ApplyInfoType {
-        EntityCreate,
-        EntityUpdate,
+        EntityCreated,
+        EntityUpdated,
+        EntityDeleted,
         ParseError
     }
     
