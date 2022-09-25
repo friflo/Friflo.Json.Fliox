@@ -35,10 +35,12 @@ namespace Friflo.Json.Fliox.Hub.Remote
     public sealed class HttpListenerHost : IDisposable, ILogSource
     {
         private  readonly   HttpListener                    listener;
-        private             bool                            runServer;
+        private             bool                            running;
         private             int                             requestCount;
         private  readonly   HttpHost                        httpHost;
+        
         public              Func<HttpListenerContext, Task> customRequestHandler;
+        public              bool                            IsRunning => running;
         
         public   override   string                          ToString() => $"endpoint: {httpHost.endpoint}";
         
@@ -83,21 +85,21 @@ namespace Friflo.Json.Fliox.Hub.Remote
 
         private async Task HandleIncomingConnections()
         {
-            runServer       = true;
+            running       = true;
 
-            while (runServer) {
+            while (running) {
                 try {
                     await HandleRequest().ConfigureAwait(false);
                 }
 #if UNITY_5_3_OR_NEWER
                 catch (ObjectDisposedException  e) {
-                    if (runServer)
+                    if (running)
                         LogException("HttpListenerHost - ObjectDisposedException", e);
                     return;
                 }
 #endif
                 catch (HttpListenerException  e) {
-                    bool serverStopped = e.ErrorCode == 995 && runServer == false;
+                    bool serverStopped = e.ErrorCode == 995 && running == false;
                     if (!serverStopped) 
                         LogException("HttpListenerHost - HttpListenerException", e);
                     return;
@@ -207,7 +209,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         
         public async Task Stop() {
             await Task.Delay(1).ConfigureAwait(false);
-            runServer = false;
+            running = false;
             listener.Stop();
         }
 

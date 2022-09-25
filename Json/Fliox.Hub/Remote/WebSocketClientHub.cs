@@ -37,7 +37,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         private  readonly   Uri                         endpointUri;
         /// Incrementing requests id used to map a <see cref="ProtocolResponse"/>'s to its related <see cref="SyncRequest"/>.
         private             int                         reqId;
-        public   override   bool                        IsConnected => wsConnection?.websocket.State == WebSocketState.Open;
+        public              bool                        IsConnected => wsConnection?.websocket.State == WebSocketState.Open;
 
         /// lock (<see cref="websocketLock"/>) {
         private readonly    object                      websocketLock = new object();
