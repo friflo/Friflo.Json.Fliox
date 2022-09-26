@@ -8,6 +8,7 @@ using Friflo.Json.Fliox.Hub.Client.Event;
 using Friflo.Json.Fliox.Hub.Client.Internal;
 using Friflo.Json.Fliox.Hub.Client.Internal.Map;
 using Friflo.Json.Fliox.Hub.Host;
+using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Utils;
 using static System.Diagnostics.DebuggerBrowsableState;
@@ -139,6 +140,18 @@ namespace Friflo.Json.Fliox.Hub.Client
             var syncContext = new SyncContext(_intern.pool, _intern.eventReceiver, _intern.sharedCache, _intern.clientId);
             var response    = await ExecuteSync(syncRequest, syncContext).ConfigureAwait(Static.OriginalContext);
 
+            var result = HandleSyncResponse(syncRequest, response, syncStore);
+            syncContext.Release();
+            return result;
+        }
+        
+        /// <summary> Specific characteristic: Method can run in parallel on any thread </summary>
+        private async Task<SyncResult> TrySyncAcknowledgeEvents() {
+            var syncRequest = CreateSyncRequestInstance(new List<SyncRequestTask>());
+            var syncContext = new SyncContext(_intern.pool, _intern.eventReceiver, _intern.sharedCache, _intern.clientId);
+            var response    = await ExecuteSync(syncRequest, syncContext).ConfigureAwait(false);
+
+            var syncStore   = new SyncStore();  // create default (empty) SyncStore
             var result = HandleSyncResponse(syncRequest, response, syncStore);
             syncContext.Release();
             return result;

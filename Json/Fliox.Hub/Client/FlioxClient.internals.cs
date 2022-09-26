@@ -75,10 +75,11 @@ namespace Friflo.Json.Fliox.Hub.Client
             // if (eventMessage.events.Length > 10) { Console.WriteLine($"--- ProcessEvents {eventMessage.events.Length}"); }
         }
         
-        private async void AcknowledgeEvents(object state) {
+        /// <summary> Specific characteristic: Method can run in parallel on any thread </summary>
+        private void AcknowledgeEvents(object state) {
             _intern.ackTimer.Change(Timeout.Infinite, Timeout.Infinite);
             _intern.ackTimerPending = false;
-            await TrySyncTasks().ConfigureAwait(Static.OriginalContext);
+            var noAwait = TrySyncAcknowledgeEvents();
             // Console.WriteLine($"--- AcknowledgeEvents");
         } 
         
@@ -159,18 +160,12 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// </summary>
         private SyncRequest CreateSyncRequest(out SyncStore syncStore, ObjectMapper mapper) {
             syncStore = _intern.syncStore;
+            _intern.syncStore = new SyncStore();
+            
             syncStore.SetSyncSets(this);
             
             var functions   = syncStore.functions;
             var tasks       = new List<SyncRequestTask>(functions.Count);
-            var syncRequest = new SyncRequest {
-                database    = _intern.database,
-                tasks       = tasks,
-                userId      = _intern.userId,
-                clientId    = _intern.clientId, 
-                token       = _intern.token,
-                eventAck    = _intern.lastEventSeq
-            };
             var context = new CreateTaskContext (mapper);
             foreach (var function in functions) {
                 if (function is SyncTask task) {
@@ -182,8 +177,18 @@ namespace Friflo.Json.Fliox.Hub.Client
             foreach (var set in _intern.entitySets) {
                 set.ResetSync();
             }
-            _intern.syncStore = new SyncStore();
-            return syncRequest;
+            return CreateSyncRequestInstance(tasks);
+        }
+        
+        private SyncRequest CreateSyncRequestInstance(List<SyncRequestTask> tasks) {
+            return new SyncRequest {
+                database    = _intern.database,
+                tasks       = tasks,
+                userId      = _intern.userId,
+                clientId    = _intern.clientId, 
+                token       = _intern.token,
+                eventAck    = _intern.lastEventSeq
+            };
         }
 
         private static void CopyEntityErrorsToMap(List<EntityError> errors, string container, ref IDictionary<JsonKey, EntityError> errorMap) {
