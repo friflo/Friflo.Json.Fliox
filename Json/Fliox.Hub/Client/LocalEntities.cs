@@ -6,6 +6,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using Friflo.Json.Fliox.Hub.Client.Internal;
+using Friflo.Json.Fliox.Hub.Client.Internal.Key;
 using static System.Diagnostics.DebuggerBrowsableState;
 
 namespace Friflo.Json.Fliox.Hub.Client
@@ -42,6 +43,9 @@ namespace Friflo.Json.Fliox.Hub.Client
         private  readonly   EntitySet<TKey, T>  entitySet;
         
         public   override   string              ToString() => $"{entitySet.name}: {GetCount()}";
+        
+        private static readonly KeyConverter<TKey>  KeyConvert = KeyConverter.GetConverter<TKey>();
+
         #endregion
 
     #region - initialize
@@ -68,8 +72,8 @@ namespace Friflo.Json.Fliox.Hub.Client
         public bool TryGetEntity(TKey key, out T entity) {
             var peers = entitySet.GetPeers();
             if (peers != null && peers.TryGetValue(key, out Peer<T> peer)) {
-                    entity = peer.NullableEntity;
-                    return true;
+                entity = peer.NullableEntity;
+                return true;
             }
             entity = null;
             return false;
@@ -86,8 +90,29 @@ namespace Friflo.Json.Fliox.Hub.Client
             var msg = $"key '{key}' not found in {entitySet.name}.Local";
             throw new KeyNotFoundException(msg);
         } }
-
         
+        
+        public T GetByKey(in JsonKey key) {
+            var peers   = entitySet.GetPeers();
+            var id      = KeyConvert.IdToKey(key);
+            if (peers != null && peers.TryGetValue(id, out Peer<T> peer)) {
+                return peer.NullableEntity;
+            }
+            var msg = $"key '{key}' not found in {entitySet.name}.Local";
+            throw new KeyNotFoundException(msg);
+        }
+        
+        public bool TryGetEntityByKey(in JsonKey key, out T entity) {
+            var peers   = entitySet.GetPeers();
+            var id      = KeyConvert.IdToKey(key);
+            if (peers != null && peers.TryGetValue(id, out Peer<T> peer)) {
+                entity = peer.NullableEntity;
+                return true;
+            }
+            entity = null;
+            return false;
+        }
+
         private int GetCount() {
             var peers   = entitySet.GetPeers();
             if (peers == null)
