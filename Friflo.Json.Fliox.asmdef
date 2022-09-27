@@ -1,5 +1,5 @@
 {
-    "name": "Friflo.Json",
+    "name": "Friflo.Json.Fliox",
     "references": [
         "Unity.Collections",
         "Unity.Burst"

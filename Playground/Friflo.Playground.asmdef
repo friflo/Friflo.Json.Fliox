@@ -6,7 +6,7 @@
         "Unity.Entities",
         "Unity.Burst",
         "Unity.Collections",
-        "Friflo.Json",
+        "Friflo.Json.Fliox",
 		"Friflo.Json.Tests"
     ],
     "includePlatforms": [
