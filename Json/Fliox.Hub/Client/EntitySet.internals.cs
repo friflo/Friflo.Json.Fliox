@@ -102,7 +102,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         
         // ReSharper disable once UnusedMember.Local -> used by Unity extension
         public  static TKey      IdToKey(in JsonKey id)  => Static.KeyConvert.IdToKey(id);
-        
+        // ReSharper disable once UnusedMember.Local -> currently not required
         private static JsonKey   KeyToId(TKey key)       => Static.KeyConvert.KeyToId(key);
 
         private static void SetEntityId (T entity, in JsonKey id) {
