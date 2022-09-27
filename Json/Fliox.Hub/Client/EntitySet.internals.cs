@@ -101,26 +101,17 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
         
         // ReSharper disable once UnusedMember.Local -> used by Unity extension
-        public  static TKey      IdToKey(in JsonKey id)  => Static.KeyConvert.IdToKey(id);
+        public  static      TKey    IdToKey     (in JsonKey id)  => Static.KeyConvert.IdToKey(id);
         // ReSharper disable once UnusedMember.Local -> currently not required
-        private static JsonKey   KeyToId(TKey key)       => Static.KeyConvert.KeyToId(key);
+        private static      JsonKey KeyToId     (TKey key)       => Static.KeyConvert.KeyToId(key);
 
-        private static void SetEntityId (T entity, in JsonKey id) {
-            Static.EntityKeyTMap.SetId(entity, id);
-        }
-        
-        internal override JsonKey GetEntityId (T entity) {
-            return Static.EntityKeyTMap.GetId(entity);
-        }
-        
+        private  static     void    SetEntityId (T entity, in JsonKey id)   => Static.EntityKeyTMap.SetId(entity, id);
+        internal override   JsonKey GetEntityId (T entity)                  => Static.EntityKeyTMap.GetId(entity);
+
         // ReSharper disable once UnusedMember.Local -> used by Unity extension
-        public static void SetEntityKey (T entity, TKey key) {
-            Static.EntityKeyTMap.SetKey(entity, key);
-        }
+        public  static      void    SetEntityKey(T entity, TKey key)        => Static.EntityKeyTMap.SetKey(entity, key);
+        private static      TKey    GetEntityKey(T entity)                  => Static.EntityKeyTMap.GetKey(entity);
         
-        private static TKey GetEntityKey (T entity) {
-            return Static.EntityKeyTMap.GetKey(entity);
-        }
 
         internal override void DetectSetPatchesInternal(DetectAllPatches allPatches, ObjectMapper mapper) {
             var set     = GetSyncSet();
