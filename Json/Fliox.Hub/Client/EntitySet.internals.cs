@@ -19,7 +19,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
     // --------------------------------------- EntitySet ---------------------------------------
     public abstract class EntitySet
     {
-        [DebuggerBrowsable(Never)] internal readonly  string          name;
+        [DebuggerBrowsable(Never)] public   readonly  string          name;
         [DebuggerBrowsable(Never)] internal           ChangeCallback  changeCallback;
 
         internal  abstract  SyncSet     SyncSet     { get; }
@@ -100,7 +100,8 @@ namespace Friflo.Json.Fliox.Hub.Client
             syncSet             = null;
         }
         
-        private static void SetEntityId (T entity, in JsonKey id) {
+        // todo is public really necessary?
+        public static void SetEntityId (T entity, in JsonKey id) {
             Static.EntityKeyTMap.SetId(entity, id);
         }
         
@@ -108,6 +109,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             return Static.EntityKeyTMap.GetId(entity);
         }
         
+        // todo is public really necessary?
         // ReSharper disable once UnusedMember.Local
         public static void SetEntityKey (T entity, TKey key) {
             Static.EntityKeyTMap.SetKey(entity, key);
@@ -237,7 +239,11 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
         
         /// Similar to <see cref="SyncPeerEntityMap"/> but operates on a key and value list.
-        internal void SyncPeerEntities(List<JsonKey> keys, List<JsonValue> values, ObjectMapper mapper, List<ApplyInfo> applyInfos)
+        internal void SyncPeerEntities(
+            List<JsonKey>           keys,
+            List<JsonValue>         values,
+            ObjectMapper            mapper,
+            List<ApplyInfo<TKey,T>> applyInfos)
         {
             if (keys.Count != values.Count) throw new InvalidOperationException("expect keys.Count == values.Count");
             var reader  = mapper.reader;
@@ -264,17 +270,17 @@ namespace Friflo.Json.Fliox.Hub.Client
                 } else {
                     applyType |= ApplyInfoType.ParseError;
                 }
-                applyInfos.Add(new ApplyInfo(applyType, id, json));
+                var key = Static.KeyConvert.IdToKey(id);
+                applyInfos.Add(new ApplyInfo<TKey,T>(applyType, key, entity));
             }
         }
         
-        internal void DeletePeerEntities (ICollection<TKey> keys, List<ApplyInfo> applyInfos) {
+        internal void DeletePeerEntities (ICollection<TKey> keys, List<ApplyInfo<TKey,T>> applyInfos) {
             var peers = PeerMap();
             foreach (var key in keys) {
                 var found   = peers.Remove(key);
-                var id      = Static.KeyConvert.KeyToId(key);
                 var type    = found ? ApplyInfoType.EntityDeleted : default;
-                applyInfos.Add(new ApplyInfo(type, id, default));
+                applyInfos.Add(new ApplyInfo<TKey,T>(type, key, default));
             }
         }
         

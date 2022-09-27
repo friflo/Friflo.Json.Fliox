@@ -561,16 +561,16 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                         case 0:
                             AreEqual(1,                             applyInfos.Count);
                             AreEqual(ApplyInfoType.EntityCreated,   applyInfos[0].type);
-                            AreEqual("a-1",                         applyInfos[0].key.AsString());
-                            IsFalse (                               applyInfos[0].value.IsNull());
+                            AreEqual("a-1",                         applyInfos[0].key);
+                            NotNull (                               applyInfos[0].entity);
                             break;                            
                         case 1:
                             // "a-1" is already applied. Only "a-2" is a new entity
                             AreEqual(2,                             applyInfos.Count);
                             AreEqual(ApplyInfoType.EntityUpdated,   applyInfos[0].type);
-                            AreEqual("a-1",                         applyInfos[0].key.AsString());
+                            AreEqual("a-1",                         applyInfos[0].key);
                             AreEqual(ApplyInfoType.EntityCreated,   applyInfos[1].type);
-                            AreEqual("a-2",                         applyInfos[1].key.AsString());
+                            AreEqual("a-2",                         applyInfos[1].key);
                             break;
                     }
                 });

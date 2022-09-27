@@ -47,19 +47,11 @@ namespace Friflo.Json.Fliox.Hub.Client
         [DebuggerBrowsable(Never)]  internal            ChangeInfo      changeInfo;
         [DebuggerBrowsable(Never)]  internal  readonly  List<JsonValue> rawCreates  = new List<JsonValue>();
         [DebuggerBrowsable(Never)]  internal  readonly  List<JsonValue> rawUpserts  = new List<JsonValue>();
-        [DebuggerBrowsable(Never)]  internal  readonly  List<ApplyInfo> applyInfos  = new List<ApplyInfo>();
 
         internal  abstract  void        Clear       ();
         internal  abstract  void        AddDeletes  (List<JsonKey> ids);
         internal  abstract  void        AddPatches  (List<EntityPatch> patches);
-        internal  abstract  ApplyResult ApplyChangesToInternal  (EntitySet entitySet);
-        
-        public ApplyResult ApplyChangesToContainer(FlioxClient client, string container) {
-            var set = client.GetEntitySet(container);
-            if (!client._intern.TryGetSetByName(container, out _))
-                return new ApplyResult();
-            return ApplyChangesToInternal(set);
-        }
+        internal  abstract  void        ApplyChangesToInternal  (EntitySet entitySet);
     }
     
     /// <summary>
@@ -86,6 +78,9 @@ namespace Friflo.Json.Fliox.Hub.Client
         public              List<TKey>          Deletes { get; } = new List<TKey>();
         /// <summary> return patches applied to container entities </summary>
         public              List<Patch<TKey>>   Patches { get; } = new List<Patch<TKey>>();
+        
+        internal  readonly  List<ApplyInfo<TKey,T>> applyInfos  = new List<ApplyInfo<TKey,T>>();
+
         public    override  string              ToString()      => FormatToString();       
         public    override  string              Container       { get; }
         
@@ -169,16 +164,16 @@ namespace Friflo.Json.Fliox.Hub.Client
             changeInfo.patches += entityPatches.Count;
         }
         
-        internal override ApplyResult ApplyChangesToInternal  (EntitySet entitySet) {
+        internal override void ApplyChangesToInternal  (EntitySet entitySet) {
             var set = (EntitySet<TKey, T>)entitySet;
-            return ApplyChangesTo(set);
+            ApplyChangesTo(set);
         }
         
         /// <summary> Apply the container changes to the given <paramref name="entitySet"/> </summary>
-        public ApplyResult ApplyChangesTo(EntitySet<TKey, T> entitySet, Change change = Change.All) {
+        public ApplyResult<TKey,T> ApplyChangesTo(EntitySet<TKey, T> entitySet, Change change = Change.All) {
             applyInfos.Clear();
             if (Count == 0)
-                return new ApplyResult(applyInfos);
+                return new ApplyResult<TKey,T>(applyInfos);
             var client = entitySet.intern.store;
             var localCreates    = rawCreates;
             if ((change & Change.create) != 0 && localCreates.Count > 0) {
@@ -196,7 +191,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             if ((change & Change.delete) != 0) {
                 entitySet.DeletePeerEntities(Deletes, applyInfos);
             }
-            return new ApplyResult(applyInfos);
+            return new ApplyResult<TKey,T>(applyInfos);
         }
         
         private static void GetKeysFromEntities(List<JsonKey> keys, FlioxClient client, string keyName, List<JsonValue> entities) {
@@ -251,26 +246,26 @@ namespace Friflo.Json.Fliox.Hub.Client
         ParseError      = 0x80,
     }
     
-    public readonly struct ApplyInfo {
+    public readonly struct ApplyInfo<TKey, T> where T : class {
         public readonly ApplyInfoType   type;
-        public readonly JsonKey         key;
-        public readonly JsonValue       value;
+        public readonly TKey            key;
+        public readonly T               entity;
 
         public override string          ToString() => $"{type} key: {key}"; 
 
-        internal ApplyInfo(ApplyInfoType type, in JsonKey key, in JsonValue value) {
+        internal ApplyInfo(ApplyInfoType type, TKey key, T entity) {
             this.type   = type;
             this.key    = key;
-            this.value  = value;
+            this.entity = entity;
         }
     }
 
-    public readonly struct ApplyResult {
-        public readonly IReadOnlyList<ApplyInfo> applyInfos;
+    public readonly struct ApplyResult<TKey, T> where T : class {
+        public readonly IReadOnlyList<ApplyInfo<TKey,T>> applyInfos;
         
-        public override string                   ToString() => applyInfos != null ? $"Count: {applyInfos.Count}" : "error";
+        public override string  ToString() => applyInfos != null ? $"Count: {applyInfos.Count}" : "error";
         
-        internal ApplyResult(IReadOnlyList<ApplyInfo> applyInfos) {
+        internal ApplyResult(IReadOnlyList<ApplyInfo<TKey,T>> applyInfos) {
             this.applyInfos = applyInfos;
         }
     }
