@@ -224,7 +224,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         private string GetStartPage() {
             foreach (var prefix in listener.Prefixes) {
                 if (prefix.Contains("+")) {
-                    var url     = prefix.Replace("+", "localhost");
+                    var url     = prefix.Replace("+", "127.0.0.1");
                     var trimEnd = url.EndsWith("/") ? 1 : 0;
                     return url.Substring(0, url.Length - trimEnd) + httpHost.endpoint;
                 }
@@ -232,7 +232,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             foreach (var prefix in listener.Prefixes) {
                 return prefix;
             }
-            return "http://localhost";
+            return "http://127.0.0.1";
         }
     }
 }
