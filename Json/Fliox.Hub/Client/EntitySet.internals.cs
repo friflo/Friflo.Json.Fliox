@@ -39,6 +39,9 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         internal  abstract  SubscribeChanges    GetSubscription();
         internal  abstract  string              GetKeyName();
         internal  abstract  bool                IsIntKey();
+        protected abstract  void                GetRawEntities(List<object> result);
+        
+        public static       void                GetRawEntities(EntitySet entitySet, List<object> result) => entitySet.GetRawEntities(result);
 
         protected EntitySet(string name) {
             this.name = name;
@@ -310,6 +313,13 @@ namespace Friflo.Json.Fliox.Hub.Client
         
         internal override bool IsIntKey() {
             return Static.EntityKeyTMap.IsIntKey();
+        }
+        
+        protected override  void GetRawEntities(List<object> result) {
+            result.Clear();
+            foreach (var pair in Local) {
+                result.Add(pair.Value);
+            }
         }
     }
 }

@@ -15,7 +15,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema
 {
     public static class PocStoreGen
     {
-        private static readonly Type[]      PocStoreTypes   = FlioxClient.GetEntityTypes<PocStore>();
+        private static readonly Type[]      PocStoreTypes   = FlioxClient.GetEntityTypes(typeof(PocStore));
         private static readonly Replace[]   Replacements    =  {
             new Replace("Friflo.Json.Tests.Common.")
         };

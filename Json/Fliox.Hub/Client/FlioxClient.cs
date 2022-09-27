@@ -76,7 +76,8 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// <summary>
         /// Return the <see cref="Type"/>'s used by the <see cref="EntitySet{TKey,T}"/> members of a <see cref="FlioxClient"/> as entity Type. 
         /// </summary>
-        public static Type[] GetEntityTypes<TFlioxClient> () where TFlioxClient : FlioxClient => ClientEntityUtils.GetEntityTypes<TFlioxClient>();
+        public static Type[]        GetEntityTypes(Type clientType) => ClientEntityUtils.GetEntityTypes(clientType);
+        public static EntitySet[]   GetEntitySets (FlioxClient client) => client.GetEntitySets();
         #endregion
 
     // ----------------------------------------- public methods -----------------------------------------

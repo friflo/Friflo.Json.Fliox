@@ -15,7 +15,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema
 {
     public static class EntityIdStoreGen
     {
-        private static readonly Type[] EntityIdStoreTypes      = FlioxClient.GetEntityTypes<EntityIdStore>();
+        private static readonly Type[] EntityIdStoreTypes      = FlioxClient.GetEntityTypes(typeof(EntityIdStore));
 
         // -------------------------------------- input: C# --------------------------------------
         /// C# -> Typescript

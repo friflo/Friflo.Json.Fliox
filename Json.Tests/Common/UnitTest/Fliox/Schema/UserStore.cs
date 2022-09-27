@@ -15,7 +15,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema
 {
     public static class UserStoreGen
     {
-        private static readonly Type[] UserStoreTypes      = FlioxClient.GetEntityTypes<UserStore>();
+        private static readonly Type[] UserStoreTypes      = FlioxClient.GetEntityTypes(typeof(UserStore));
 
         // -------------------------------------- input: C# --------------------------------------
         

@@ -490,5 +490,14 @@ namespace Friflo.Json.Fliox.Hub.Client
                     break;
             }
         }
+        
+        private EntitySet[] GetEntitySets() {
+            var entitySets  = new EntitySet[_intern.entitySets.Length];
+            int n           = 0;
+            foreach (var entitySet in _intern.entitySets) {
+                entitySets[n++] = entitySet;
+            }
+            return entitySets;
+        }
     }
 }
