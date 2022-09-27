@@ -100,8 +100,12 @@ namespace Friflo.Json.Fliox.Hub.Client
             syncSet             = null;
         }
         
-        // todo is public really necessary?
-        public static void SetEntityId (T entity, in JsonKey id) {
+        // ReSharper disable once UnusedMember.Local -> used by Unity extension
+        public  static TKey      IdToKey(in JsonKey id)  => Static.KeyConvert.IdToKey(id);
+        
+        private static JsonKey   KeyToId(TKey key)       => Static.KeyConvert.KeyToId(key);
+
+        private static void SetEntityId (T entity, in JsonKey id) {
             Static.EntityKeyTMap.SetId(entity, id);
         }
         
@@ -109,8 +113,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             return Static.EntityKeyTMap.GetId(entity);
         }
         
-        // todo is public really necessary?
-        // ReSharper disable once UnusedMember.Local
+        // ReSharper disable once UnusedMember.Local -> used by Unity extension
         public static void SetEntityKey (T entity, TKey key) {
             Static.EntityKeyTMap.SetKey(entity, key);
         }
