@@ -113,7 +113,7 @@ namespace Friflo.Json.Fliox.Hub.Client
 
         // ReSharper disable once UnusedMember.Local -> used by Unity extension
         public  static      void    SetEntityKey(T entity, TKey key)        => Static.EntityKeyTMap.SetKey(entity, key);
-        private static      TKey    GetEntityKey(T entity)                  => Static.EntityKeyTMap.GetKey(entity);
+        public  static      TKey    GetEntityKey(T entity)                  => Static.EntityKeyTMap.GetKey(entity);
         
 
         internal override void DetectSetPatchesInternal(DetectAllPatches allPatches, ObjectMapper mapper) {
