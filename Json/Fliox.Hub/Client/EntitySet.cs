@@ -104,10 +104,10 @@ namespace Friflo.Json.Fliox.Hub.Client
 
     #region - Query
         /// <summary>
-        /// Create a <see cref="QueryTask{T}"/> with the given LINQ query <paramref name="filter"/>
+        /// Create a <see cref="QueryTask{TKey, T}"/> with the given LINQ query <paramref name="filter"/>
         /// </summary>
         /// <remarks> To execute the task call <see cref="FlioxClient.SyncTasks"/> </remarks>
-        public QueryTask<T> Query(Expression<Func<T, bool>> filter) {
+        public QueryTask<TKey, T> Query(Expression<Func<T, bool>> filter) {
             if (filter == null)
                 throw new ArgumentException($"EntitySet.Query() filter must not be null. EntitySet: {name}");
             var op = Operation.FromFilter(filter, ClientStatic.RefQueryPath);
@@ -117,10 +117,10 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
         
         /// <summary>
-        /// Create a <see cref="QueryTask{T}"/> with the given <see cref="EntityFilter{T}"/>
+        /// Create a <see cref="QueryTask{TKey, T}"/> with the given <see cref="EntityFilter{T}"/>
         /// </summary>
         /// <remarks> To execute the task call <see cref="FlioxClient.SyncTasks"/> </remarks>
-        public QueryTask<T> QueryByFilter(EntityFilter<T> filter) {
+        public QueryTask<TKey, T> QueryByFilter(EntityFilter<T> filter) {
             if (filter == null)
                 throw new ArgumentException($"EntitySet.QueryByFilter() filter must not be null. EntitySet: {name}");
             var task = GetSyncSet().QueryFilter(filter.op);
@@ -129,10 +129,10 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
         
         /// <summary>
-        /// Create a <see cref="QueryTask{T}"/> to query all entities of an container
+        /// Create a <see cref="QueryTask{TKey, T}"/> to query all entities of an container
         /// </summary>
         /// <remarks> To execute the task call <see cref="FlioxClient.SyncTasks"/> </remarks>
-        public QueryTask<T> QueryAll() {
+        public QueryTask<TKey, T> QueryAll() {
             var all = Operation.FilterTrue;
             var task = GetSyncSet().QueryFilter(all);
             intern.store.AddTask(task);
@@ -140,7 +140,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
         
         /// <summary>
-        /// Close the <paramref name="cursors"/> returned by <see cref="QueryTask{T}.ResultCursor"/> of a <see cref="QueryTask{T}"/>
+        /// Close the <paramref name="cursors"/> returned by <see cref="QueryTask{TKey, T}.ResultCursor"/> of a <see cref="QueryTask{TKey, T}"/>
         /// </summary>
         /// <remarks> To execute the task call <see cref="FlioxClient.SyncTasks"/> </remarks>
         public CloseCursorsTask CloseCursors(IEnumerable<string> cursors) {

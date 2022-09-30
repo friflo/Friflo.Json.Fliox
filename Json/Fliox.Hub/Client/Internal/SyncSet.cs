@@ -21,7 +21,6 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
     {
         internal abstract void AddEntityPatches(PatchTask<T> patchTask, ICollection<T> entities);
         
-        internal abstract QueryEntities     QueryEntities   (QueryTask<T>               query,  in CreateTaskContext context);
         internal abstract SubscribeChanges  SubscribeChanges(SubscribeChangesTask<T>    sub,    in CreateTaskContext context);
         internal abstract CreateEntities    CreateEntities  (CreateTask<T>              create, in CreateTaskContext context);
         internal abstract UpsertEntities    UpsertEntities  (UpsertTask<T>              upsert, in CreateTaskContext context);
@@ -55,8 +54,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         }
 
         // --- Query
-        internal QueryTask<T> QueryFilter(FilterOperation filter) {
-            var query = new QueryTask<T>(filter, set.intern.store, this);
+        internal QueryTask<TKey, T> QueryFilter(FilterOperation filter) {
+            var query = new QueryTask<TKey, T>(filter, set.intern.store, this);
             tasks.Add(query);
             return query;
         }
@@ -281,7 +280,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             };
         }
 
-        internal override QueryEntities QueryEntities(QueryTask<T> query, in CreateTaskContext context) {
+        internal QueryEntities QueryEntities(QueryTask<TKey, T> query, in CreateTaskContext context) {
             var subRelations = query.relations.subRelations;
             List<References> references = null;
             if (subRelations.Count > 0) {
