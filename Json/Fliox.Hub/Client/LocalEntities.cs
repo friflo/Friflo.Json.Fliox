@@ -112,6 +112,10 @@ namespace Friflo.Json.Fliox.Hub.Client
             entity = null;
             return false;
         }
+        
+        public void Add(T entity) {
+            entitySet.CreatePeer(entity);
+        }
 
         private int GetCount() {
             var peers   = entitySet.GetPeers();
@@ -146,6 +150,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             }
             return result;
         }
+        
         #endregion
         
     #region - IEnumerable<>
