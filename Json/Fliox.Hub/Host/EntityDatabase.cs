@@ -75,10 +75,10 @@ namespace Friflo.Json.Fliox.Hub.Host
         public   readonly   CustomContainerName customContainerName;
         
         /// <summary>
-        /// The <see cref="handler"/> execute all <see cref="SyncRequest.tasks"/> send by a client.
+        /// The <see cref="service"/> execute all <see cref="SyncRequest.tasks"/> send by a client.
         /// An <see cref="EntityDatabase"/> implementation can assign as custom handler by its constructor
         /// </summary>
-        internal readonly   TaskHandler         handler;    // never null
+        internal readonly   DatabaseService     service;    // never null
         /// <summary>name of the storage type. E.g. <c>in-memory, file-system, remote, Cosmos, ...</c></summary>
         public   abstract   string              StorageType  { get; }
         #endregion
@@ -88,11 +88,11 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// constructor parameters are mandatory to force implementations having them in their constructors also or
         /// pass null by implementations.
         /// </summary>
-        protected EntityDatabase(string dbName, TaskHandler handler, DbOpt opt){
+        protected EntityDatabase(string dbName, DatabaseService service, DbOpt opt){
             containers          = new ConcurrentDictionary<string, EntityContainer>();
             this.name           = dbName ?? throw new ArgumentNullException(nameof(dbName));
             customContainerName = (opt ?? DbOpt.Default).customContainerName;
-            this.handler        = handler ?? new TaskHandler();
+            this.service        = service ?? new DatabaseService();
         }
         
         public virtual void Dispose() {
@@ -164,8 +164,8 @@ namespace Friflo.Json.Fliox.Hub.Host
                 commands = schema.GetCommands();
                 messages = schema.GetMessages();
             } else {
-                commands = handler.GetCommands();
-                messages = handler.GetMessages();
+                commands = service.GetCommands();
+                messages = service.GetMessages();
             }
             return new DbMessages { commands = commands, messages = messages };
         }

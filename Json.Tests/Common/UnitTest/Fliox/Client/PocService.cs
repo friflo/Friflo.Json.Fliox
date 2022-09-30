@@ -10,12 +10,12 @@ using static NUnit.Framework.Assert;
 // ReSharper disable UnusedMember.Local
 namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
 {
-    public class PocHandler : TaskHandler {
+    public class PocService : DatabaseService {
         private   readonly  TestHandlerScan        test    = new TestHandlerScan();
         internal  readonly  TestHandlerManual      manual  = new TestHandlerManual();
         private   readonly  EmptyHandler           empty   = new EmptyHandler();
         
-        public PocHandler() {
+        public PocService() {
             // add all command handlers of the passed handler classes
             AddMessageHandlers(this,    "");
             AddMessageHandlers(test,    "test.");
@@ -54,7 +54,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
     }
     
     /// <summary>
-    /// Uses to show adding all its command handlers by <see cref="TaskHandler.AddMessageHandlers{TClass}"/>
+    /// Uses to show adding all its command handlers by <see cref="DatabaseService.AddMessageHandlers{TClass}"/>
     /// </summary>
     public class TestHandlerScan {
         private string message2 = "nothing received";
@@ -83,8 +83,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
     }
     
     /// <summary>
-    /// Uses to show adding its command handlers manual by <see cref="TaskHandler.AddCommandHandler{TParam,TResult}"/>
-    /// or <see cref="TaskHandler.AddCommandHandlerAsync{TParam,TResult}"/>
+    /// Uses to show adding its command handlers manual by <see cref="DatabaseService.AddCommandHandler{TParam,TResult}"/>
+    /// or <see cref="DatabaseService.AddCommandHandlerAsync{TParam,TResult}"/>
     /// </summary>
     public class TestHandlerManual {
         private     string  message1Param     = "nothing received";

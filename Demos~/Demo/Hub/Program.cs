@@ -42,7 +42,7 @@ namespace DemoHub
         {
             var typeSchema          = NativeTypeSchema.Create(typeof(DemoClient)); // optional - create TypeSchema from Type
             var databaseSchema      = new DatabaseSchema(typeSchema);
-            var database            = CreateDatabase(databaseSchema, new MessageHandler());
+            var database            = CreateDatabase(databaseSchema, new DemoService());
 
             var hub                 = new FlioxHub(database);
             hub.Info.projectName    = "DemoHub";                                        // optional
@@ -52,7 +52,7 @@ namespace DemoHub
             hub.AddExtensionDB (new MonitorDB("monitor", hub));     // optional - expose monitor stats as extension database
             hub.EventDispatcher     = new EventDispatcher(true);    // optional - enables Pub-Sub (sending events for subscriptions)
             
-            var userDB              = new FileDatabase("user_db", "../Test/DB/user_db", new UserDBHandler(), null, false);
+            var userDB              = new FileDatabase("user_db", "../Test/DB/user_db", new UserDBService(), null, false);
             hub.Authenticator       = new UserAuthenticator(userDB) // optional - otherwise all tasks are authorized
                 .SubscribeUserDbChanges(hub.EventDispatcher);       // optional - apply user_db changes instantaneously
             hub.AddExtensionDB(userDB);                             // optional - expose user_db as extension database
@@ -65,15 +65,15 @@ namespace DemoHub
         
         private static readonly bool UseMemoryDbClone = true;
         
-        private static EntityDatabase CreateDatabase(DatabaseSchema schema, TaskHandler handler)
+        private static EntityDatabase CreateDatabase(DatabaseSchema schema, DatabaseService service)
         {
-            var fileDb = new FileDatabase("main_db", "../Test/DB/main_db", handler);
+            var fileDb = new FileDatabase("main_db", "../Test/DB/main_db", service);
             fileDb.Schema = schema;
             if (!UseMemoryDbClone)
                 return fileDb;
             // As the DemoHub is also deployed as a demo service in the internet it uses a memory database
             // to minimize operation cost and prevent abuse as a free persistent database.   
-            var memoryDB = new MemoryDatabase("main_db", handler);
+            var memoryDB = new MemoryDatabase("main_db", service);
             memoryDB.Schema = schema;
             memoryDB.SeedDatabase(fileDb).Wait();
             return memoryDB;

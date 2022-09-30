@@ -51,7 +51,7 @@ namespace Friflo.Json.Fliox.Hub.Host
     /// <br/>
     /// The <see cref="SyncRequest.tasks"/> contains all database operations like create, read, upsert, delete
     /// and all messages / commands send by a client. <br/>
-    /// The <see cref="FlioxHub"/> execute these tasks by the <see cref="EntityDatabase.handler"/> of the
+    /// The <see cref="FlioxHub"/> execute these tasks by the <see cref="EntityDatabase.service"/> of the
     /// specified <see cref="database"/>.<br/>
     /// <br/>
     /// Instances of <see cref="FlioxHub"/> are <b>thread-safe</b> enabling multiple clients e.g. <see cref="Client.FlioxClient"/>
@@ -90,7 +90,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// <summary>
         /// An <see cref="Auth.Authenticator"/> performs authentication and authorization for all
         /// <see cref="SyncRequest.tasks"/> in a <see cref="SyncRequest"/> sent by a client.
-        /// All successful authorized <see cref="SyncRequest.tasks"/> are executed by the <see cref="EntityDatabase.handler"/>.
+        /// All successful authorized <see cref="SyncRequest.tasks"/> are executed by the <see cref="EntityDatabase.service"/>.
         /// </summary>
         public              Authenticator       Authenticator   { get => authenticator; set => authenticator = value ?? throw new ArgumentNullException(nameof(Authenticator)); }
         
@@ -216,13 +216,13 @@ namespace Friflo.Json.Fliox.Hub.Host
             var tasks       = new List<SyncTaskResult>(requestTasks.Count);
             var resultMap   = new Dictionary<string, ContainerEntities>();
             var response    = new SyncResponse { tasks = tasks, resultMap = resultMap, database = syncDbName };
-            var taskHandler = db.handler;
+            var service     = db.service;
             
             // ------------------------ loop through all given tasks and execute them ------------------------
             for (int index = 0; index < requestTasks.Count; index++) {
                 var task = requestTasks[index];
                 try {
-                    var result = await taskHandler.ExecuteTask(task, db, response, syncContext).ConfigureAwait(false);
+                    var result = await service.ExecuteTask(task, db, response, syncContext).ConfigureAwait(false);
                     tasks.Add(result);
                 } catch (Exception e) {
                     tasks.Add(TaskExceptionError(e)); // Note!  Should not happen - see documentation of this method.

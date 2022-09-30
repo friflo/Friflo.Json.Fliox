@@ -19,7 +19,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         [Test]
         public static void TestEventTargets() {
             using (var _                = SharedEnv.Default) // for LeakTestsFixture
-            using (var database         = new MemoryDatabase("test", new PocHandler()))
+            using (var database         = new MemoryDatabase("test", new PocService()))
             using (var hub              = new FlioxHub(database))
             using (var client1          = new PocStore(hub))
             using (var client2          = new PocStore(hub))

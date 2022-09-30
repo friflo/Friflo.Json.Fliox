@@ -12,7 +12,7 @@ using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 
 namespace Friflo.Json.Fliox.Hub.DB.Cluster
 {
-    internal sealed class ClusterHandler : TaskHandler
+    internal sealed class ClusterService : DatabaseService
     {
         public override async Task<SyncTaskResult> ExecuteTask (SyncRequestTask task, EntityDatabase database, SyncResponse response, SyncContext syncContext)
         {

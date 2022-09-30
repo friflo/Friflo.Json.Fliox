@@ -54,7 +54,7 @@ namespace Friflo.Json.Tests.Main
             var typeSchema          = NativeTypeSchema.Create(typeof(PocStore)); // optional - create TypeSchema from Type 
         //  var typeSchema          = CreateTypeSchema();               // alternatively create TypeSchema from JSON Schema
             var databaseSchema      = new DatabaseSchema(typeSchema);
-            var database            = CreateDatabase(c, databaseSchema, new PocHandler());
+            var database            = CreateDatabase(c, databaseSchema, new PocService());
             
             var hub                 = new FlioxHub(database, c.env);
             hub.Info.projectName    = "Test Hub";                                                               // optional
@@ -64,7 +64,7 @@ namespace Friflo.Json.Tests.Main
             hub.AddExtensionDB (new MonitorDB("monitor", hub));         // optional - expose monitor stats as extension database
             hub.EventDispatcher     = new EventDispatcher(true, c.env); // optional - enables Pub-Sub (sending events for subscriptions)
             
-            var userDB              = new FileDatabase("user_db", c.UserDbPath, new UserDBHandler(), null, false);
+            var userDB              = new FileDatabase("user_db", c.UserDbPath, new UserDBService(), null, false);
             hub.Authenticator       = new UserAuthenticator(userDB, c.env)  // optional - otherwise all request tasks are authorized
                 .SubscribeUserDbChanges(hub.EventDispatcher);               // optional - apply user_db changes instantaneously
             hub.AddExtensionDB(userDB);                                     // optional - expose userStore as extension database
@@ -95,19 +95,19 @@ namespace Friflo.Json.Tests.Main
         private static HttpHost CreateMiniHost() {
             var c                   = new Config();
             // Run a minimal Fliox server without monitoring, messaging, Pub-Sub, user authentication / authorization & entity validation
-            var database            = CreateDatabase(c, null, new PocHandler());
+            var database            = CreateDatabase(c, null, new PocService());
             var hub          	    = new FlioxHub(database);
             var httpHost            = new HttpHost(hub, "/fliox/");
             httpHost.AddHandler      (new StaticFileHandler(c.Www, c.cache));   // optional - serve static web files of Hub Explorer
             return httpHost;
         }
         
-        private static EntityDatabase CreateDatabase(Config c, DatabaseSchema schema, TaskHandler handler) {
-            var fileDb = new FileDatabase("main_db", c.MainDbPath, handler, null, false);
+        private static EntityDatabase CreateDatabase(Config c, DatabaseSchema schema, DatabaseService service) {
+            var fileDb = new FileDatabase("main_db", c.MainDbPath, service, null, false);
             fileDb.Schema = schema;
             if (!c.useMemoryDb)
                 return fileDb;
-            var memoryDB = new MemoryDatabase("main_db", handler, c.memoryType);
+            var memoryDB = new MemoryDatabase("main_db", service, c.memoryType);
             memoryDB.Schema = schema;
             memoryDB.SeedDatabase(fileDb).Wait();
             return memoryDB;

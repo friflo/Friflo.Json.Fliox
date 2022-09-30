@@ -23,25 +23,25 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         [Test] public async Task TestCommandsSchema()   { await InitDatabaseSchema  (async (store, handler) => await AssertCommandsSchema (store)); }
         [Test] public async Task TestCommands()         { await InitDatabase        (async (store, handler) => await AssertCommands       (store, handler)); }
         
-        private static async Task InitDatabaseSchema(Func<SubPocStore, SubPocHandler, Task> test) {
-            var messageHandler      = new SubPocHandler();
+        private static async Task InitDatabaseSchema(Func<SubPocStore, SubPocService, Task> test) {
+            var service             = new SubPocService();
             using (var _            = SharedEnv.Default) // for LeakTestsFixture
-            using (var database     = new MemoryDatabase(TestGlobals.DB, messageHandler))
+            using (var database     = new MemoryDatabase(TestGlobals.DB, service))
             using (var hub          = new FlioxHub(database, TestGlobals.Shared))
             using (var store        = new SubPocStore(hub) { UserId = "createStore"}) {
-                var nativeSchema = NativeTypeSchema.Create(typeof(SubPocStore));
-                database.Schema  = new DatabaseSchema(nativeSchema); 
-                await test(store, messageHandler);
+                var nativeSchema    = NativeTypeSchema.Create(typeof(SubPocStore));
+                database.Schema     = new DatabaseSchema(nativeSchema); 
+                await test(store, service);
             }
         }
         
-        private static async Task InitDatabase(Func<SubPocStore, SubPocHandler, Task> test) {
-            var messageHandler      = new SubPocHandler();
-            using (var _            = SharedEnv.Default) // for LeakTestsFixture
-            using (var database     = new MemoryDatabase(TestGlobals.DB, messageHandler))
-            using (var hub          = new FlioxHub(database, TestGlobals.Shared))
-            using (var store        = new SubPocStore(hub) { UserId = "createStore"}) {
-                await test(store, messageHandler);
+        private static async Task InitDatabase(Func<SubPocStore, SubPocService, Task> test) {
+            var service         = new SubPocService();
+            using (var _        = SharedEnv.Default) // for LeakTestsFixture
+            using (var database = new MemoryDatabase(TestGlobals.DB, service))
+            using (var hub      = new FlioxHub(database, TestGlobals.Shared))
+            using (var store    = new SubPocStore(hub) { UserId = "createStore"}) {
+                await test(store, service);
             }
         }
         
@@ -72,7 +72,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             AreEqual(5,                 commandsResult.messages.Length);
         }
         
-        private static async Task AssertCommands(SubPocStore store, SubPocHandler handler) {
+        private static async Task AssertCommands(SubPocStore store, SubPocService service) {
             store.articles.Create(new Article { id = "test"});
             await store.SyncTasks();
             var message1        = store.Message1("test message1");
@@ -95,7 +95,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             IsTrue(message1.Success);
             IsTrue(message2.Success);
             IsTrue(messageAsync.Success);
-            AreEqual("async message param", handler.manual.AsyncMessageParam);
+            AreEqual("async message param", service.manual.AsyncMessageParam);
             
             AreEqual("test message1",   command1.Result);
             AreEqual("test message2",   command2.Result);
@@ -149,9 +149,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         public CommandTask<string>      Command4 ()                 => SendCommand<string>          ("sub.Command4");
     }
     
-    public class SubPocHandler : PocHandler {
+    public class SubPocService : PocService {
         
-        public SubPocHandler() {
+        public SubPocService() {
             AddMessageHandlers(this, "sub.");
         }
         

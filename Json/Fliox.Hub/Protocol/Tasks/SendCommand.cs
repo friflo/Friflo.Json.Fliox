@@ -20,7 +20,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
             if (name == null) {
                 return MissingField(nameof(name));
             }
-            if (database.handler.TryGetMessage(name, out var callback)) {
+            if (database.service.TryGetMessage(name, out var callback)) {
                 var result  = await callback.InvokeDelegate(this, name, param, syncContext).ConfigureAwait(false);
                 if (result.error == null)
                     return new SendCommandResult { result = result.value };

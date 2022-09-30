@@ -26,9 +26,9 @@ namespace Friflo.Json.Tests.Common.Examples.Hub
         public  string      name;
     }
     
-    public class MessageHandler : TaskHandler
+    public class ShopService : DatabaseService
     {
-        internal MessageHandler() {
+        internal ShopService() {
             AddMessageHandlers(this, null);
         }
         
@@ -49,7 +49,7 @@ namespace Friflo.Json.Tests.Common.Examples.Hub
         /// </summary>
         [Test]
         public static async Task AccessDatabase() {
-            var database    = new FileDatabase("shop_db", "shop", new MessageHandler());
+            var database    = new FileDatabase("shop_db", "shop", new ShopService());
             // or other database implementations like: MemoryDatabase, SQLite, Postgres, ...
             var hub         = new FlioxHub(database);
             var store       = new ShopStore(hub);

@@ -77,9 +77,9 @@ In detail:
   The `param` can be any JSON type like: `string`, `number`, `boolean`, `object` or `array`.  
   The difference between command and message is:
   - a **command** return a **result** - a command is primarily used to execute a domain specific operation on the Hub.  
-    Therefore a command requires a **message handler** in the `TaskHandler` assigned to a database.
+    Therefore a command requires a **message handler** in the `DatabaseService` assigned to a database.
   - a **message** return **void**     - messages are used to send notifications to the Hub and to other clients connected to the Hub.  
-    Adding a **message handler** for a message in the `TaskHandler` is optional.
+    Adding a **message handler** for a message in the `DatabaseService` is optional.
 
 - **Subscribe** messages / commands send to a Hub by passing their name and a handler method or lambda.  
   - The Hub forward message / command events **only** to clients which have subscribed.  

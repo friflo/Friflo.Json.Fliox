@@ -60,8 +60,8 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
 
         public UserAuthenticator (EntityDatabase userDatabase, SharedEnv env = null, IUserAuth userAuth = null)
         {
-            if (!(userDatabase.handler is UserDBHandler))
-                throw new ArgumentException("userDatabase requires a handler of Type: " + nameof(UserDBHandler));
+            if (!(userDatabase.service is UserDBService))
+                throw new ArgumentException("userDatabase requires a handler of Type: " + nameof(UserDBService));
             var sharedEnv           = env  ?? SharedEnv.Default;
             var typeSchema          = NativeTypeSchema.Create(typeof(UserStore));
             userDatabase.Schema     = new DatabaseSchema(typeSchema);

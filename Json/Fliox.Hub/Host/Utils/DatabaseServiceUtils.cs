@@ -9,7 +9,7 @@ using Friflo.Json.Fliox.Mapper.Utils;
 
 namespace Friflo.Json.Fliox.Hub.Host.Utils
 {
-    internal static class TaskHandlerUtils
+    internal static class DatabaseServiceUtils
     {
         private static readonly Dictionary<Type, HandlerInfo[]> HandlerInfoCache = new Dictionary<Type, HandlerInfo[]>();
 

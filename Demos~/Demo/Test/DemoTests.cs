@@ -20,7 +20,7 @@ namespace DemoTest {
         /// <summary>create a <see cref="MemoryDatabase"/> clone for every client to avoid side effects by DB mutations</summary>
         private static FlioxHub CreateDemoHub()
         {
-            var cloneDB = CreateMemoryDatabaseClone("main_db", DbPath, new MessageHandler());
+            var cloneDB = CreateMemoryDatabaseClone("main_db", DbPath, new DemoService());
             return new FlioxHub(cloneDB);
         }
         
@@ -30,10 +30,10 @@ namespace DemoTest {
             return Path.GetFullPath(baseDir);
         }
     
-        private static MemoryDatabase CreateMemoryDatabaseClone(string dbName, string srcDatabasePath, TaskHandler taskHandler = null)
+        private static MemoryDatabase CreateMemoryDatabaseClone(string dbName, string srcDatabasePath, DatabaseService service = null)
         {
             var referenceDB = new FileDatabase("source_db", srcDatabasePath);
-            var cloneDB     = new MemoryDatabase(dbName, taskHandler);
+            var cloneDB     = new MemoryDatabase(dbName, service);
             cloneDB.SeedDatabase(referenceDB).Wait();
             return cloneDB;
         }
@@ -61,7 +61,7 @@ namespace DemoTest {
         [Test]
         public static async Task CreateEntities()
         {
-            var database    = new MemoryDatabase("test", new MessageHandler());
+            var database    = new MemoryDatabase("test", new DemoService());
             var hub         = new FlioxHub(database);
             var client      = new DemoClient(hub);
             client.articles.Create (new Article { id = 111, name = "Article-1" });
@@ -114,7 +114,7 @@ namespace DemoTest {
         [Test]
         public static async Task CreateFakeRecords()
         {
-            var database    = new MemoryDatabase("test", new MessageHandler());
+            var database    = new MemoryDatabase("test", new DemoService());
             var hub         = new FlioxHub(database);
             var client      = new DemoClient(hub);
             var fake        = new Fake { articles = 1, customers = 2, employees = 3, orders = 4, producers = 5};
@@ -142,7 +142,7 @@ namespace DemoTest {
         [Test]
         public static async Task SubscribeChanges()
         {
-            var database        = new MemoryDatabase("test", new MessageHandler());
+            var database        = new MemoryDatabase("test", new DemoService());
             var hub             = new FlioxHub(database);
             hub.EventDispatcher = new EventDispatcher(false); // dispatch events synchronous to simplify test
             
@@ -172,7 +172,7 @@ namespace DemoTest {
         [Test]
         public static async Task SubscribeMessage()
         {
-            var database        = new MemoryDatabase("test", new MessageHandler());
+            var database        = new MemoryDatabase("test", new DemoService());
             var hub             = new FlioxHub(database);
             hub.EventDispatcher = new EventDispatcher(false); // dispatch events synchronous to simplify test
             

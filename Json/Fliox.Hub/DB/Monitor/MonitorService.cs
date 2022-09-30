@@ -9,11 +9,11 @@ using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 
 namespace Friflo.Json.Fliox.Hub.DB.Monitor
 {
-    internal sealed class MonitorHandler : TaskHandler
+    internal sealed class MonitorService : DatabaseService
     {
         private readonly   FlioxHub            hub;
         
-        internal MonitorHandler (FlioxHub hub) {
+        internal MonitorService (FlioxHub hub) {
             this.hub = hub;
             AddCommandHandler<ClearStats, ClearStatsResult> (nameof(ClearStats), ClearStats);
         }

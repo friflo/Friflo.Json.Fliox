@@ -27,7 +27,7 @@ namespace Friflo.Json.Fliox.Hub.Host
     public  delegate  TResult HostCommandHandler<TParam, out TResult> (Param<TParam> param, MessageContext context);
 
     /// <summary>
-    /// A <see cref="TaskHandler"/> is attached to every <see cref="EntityDatabase"/> to handle all
+    /// A <see cref="DatabaseService"/> is attached to every <see cref="EntityDatabase"/> to handle all
     /// <see cref="SyncRequest.tasks"/> of a <see cref="SyncRequest"/>.
     /// </summary>
     /// <remarks>
@@ -51,14 +51,14 @@ namespace Friflo.Json.Fliox.Hub.Host
     ///   </item>
     /// </list>
     /// </remarks>
-    public class TaskHandler
+    public class DatabaseService
     {
         [DebuggerBrowsable(Never)]
         private readonly  Dictionary<string, MessageDelegate>   handlers = new Dictionary<string, MessageDelegate>();
         // ReSharper disable once UnusedMember.Local - expose Dictionary as list in Debugger
         private           IReadOnlyCollection<MessageDelegate>  Handlers => handlers.Values;
         
-        public TaskHandler () {
+        public DatabaseService () {
             // AddUsingCommandHandler();
             // add each command handler individually
             // --- database
@@ -137,12 +137,12 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// - synchronous or asynchronous - using <see cref="Task{TResult}"/> as return type.
         /// </summary>
         /// <param name="instance">the instance of class containing message handler methods.
-        ///     Commonly the instance of a <see cref="TaskHandler"/></param>
+        ///     Commonly the instance of a <see cref="DatabaseService"/></param>
         /// <param name="messagePrefix">the prefix of a message/command - e.g. "test."; null or "" to add messages without prefix</param>
         protected void AddMessageHandlers<TClass>(TClass instance, string messagePrefix) where TClass : class
         {
             var type                = typeof(TClass);
-            var handlerInfos        = TaskHandlerUtils.GetHandlers(type);
+            var handlerInfos        = DatabaseServiceUtils.GetHandlers(type);
             if (handlerInfos == null)
                 return;
 

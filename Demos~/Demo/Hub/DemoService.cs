@@ -7,24 +7,24 @@ using Friflo.Json.Fliox.Hub.Host;
 namespace DemoHub
 {
     /// <summary>
-    /// <see cref="MessageHandler"/> extends <see cref="TaskHandler"/> to implement the <see cref="DemoClient"/> API (database commands).
+    /// <see cref="DemoService"/> extends <see cref="DatabaseService"/> to implement the <see cref="DemoClient"/> API (database commands).
     /// <br/>
     /// Database commands are executed at the host and declared by the <see cref="DemoClient"/>. <br/>
     /// Therefore it create <see cref="DemoClient"/> clients in its handler methods to perform database operations
     /// like query, count and upsert.<br/>
     /// <br/>
-    /// A <see cref="TaskHandler"/> instance need to be passed when instantiating an <see cref="EntityDatabase"/>. <br/>
+    /// A <see cref="DatabaseService"/> instance need to be passed when instantiating an <see cref="EntityDatabase"/>. <br/>
     /// E.g. a <see cref="MemoryDatabase"/>, a <see cref="FileDatabase"/>, ... <br/>
     /// <br/>
-    /// By calling <see cref="TaskHandler.AddMessageHandlers{TClass}"/> every method with the signature <br/>
+    /// By calling <see cref="DatabaseService.AddMessageHandlers{TClass}"/> every method with the signature <br/>
     /// (<see cref="Param{TParam}"/> param, <see cref="MessageContext"/> context) is added as a command handler. <br/>
     /// Their method names need to match the command methods declared in the <see cref="DemoClient"/>.
     /// </summary>
-    public class MessageHandler : TaskHandler
+    public class DemoService : DatabaseService
     {
         private static readonly FakeUtils FakeUtils = new FakeUtils();
         
-        public MessageHandler()
+        public DemoService()
         {
             AddMessageHandlers(this, "demo.");
         }

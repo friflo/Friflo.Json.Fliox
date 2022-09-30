@@ -29,7 +29,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
         public   override   string              StorageType => stateDB.StorageType;
 
         public ClusterDB (string dbName, FlioxHub hub, DbOpt opt = null)
-            : base (dbName, new ClusterHandler(), opt)
+            : base (dbName, new ClusterService(), opt)
         {
             this.hub        = hub  ?? throw new ArgumentNullException(nameof(hub));
             var typeSchema  = NativeTypeSchema.Create(typeof(ClusterStore));

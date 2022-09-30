@@ -35,15 +35,15 @@ When instantiating a `FlioxHub` an `EntityDatabase` need to be assigned used to 
 **database operations**, **commands** and **messages** send by a client targeting this database.
 
 Domain specific commands and messages can be added to an `EntityDatabase` by creating a class
-that **extends** `TaskHandler`. By convention this class should be called `MessageHandler`.
+that **extends** `DatabaseService`. By convention this class should be named `<application name>Service`. E.g. `DemoService`
 
-Domain specific commands and messages can be added to the `MessageHandler` as methods.
-An instance of the `MessageHandler` need to be passed when instantiating an `EntityDatabase`.
+Domain specific commands and messages can be added to the `DemoService` as methods.
+An instance of the `DemoService` need to be passed when instantiating an `EntityDatabase`.
 
 The ownership of this setup looks like this:
 
 ```
-    FlioxHub -> EntityDatabase -> TaskHandler
+    FlioxHub -> EntityDatabase -> DatabaseService
 ```
 
 
