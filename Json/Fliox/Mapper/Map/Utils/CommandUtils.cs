@@ -41,7 +41,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Utils
                 return result;
             }
             var messageInfos    = new List<MessageInfo>();
-            var flags           = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly;
+            var flags           = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
             MethodInfo[] methods = type.GetMethods(flags);
             for (int n = 0; n < methods.Length; n++) {
                 var  method         = methods[n];
@@ -77,8 +77,11 @@ namespace Friflo.Json.Fliox.Mapper.Map.Utils
                 resultType = null;
             }
             var name = AttributeUtils.CommandName(methodInfo.CustomAttributes);
-            if (name == null)
+            if (name == null) {
                 name = methodInfo.Name;
+                if (name == "SendMessage")
+                    return false;
+            }
             var parameters  = methodInfo.GetParameters();
             var paramLen    = parameters.Length; 
             if (paramLen > 1)

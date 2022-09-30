@@ -141,7 +141,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// <param name="messagePrefix">the prefix of a message/command - e.g. "test."; null or "" to add messages without prefix</param>
         protected void AddMessageHandlers<TClass>(TClass instance, string messagePrefix) where TClass : class
         {
-            var type                = instance.GetType();
+            var type                = typeof(TClass);
             var handlerInfos        = TaskHandlerUtils.GetHandlers(type);
             if (handlerInfos == null)
                 return;
