@@ -39,9 +39,9 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     /// </summary>
     public sealed class SendMessage : SyncMessageTask
     {
-        internal override       TaskType        TaskType => TaskType.message;
+        public   override       TaskType        TaskType => TaskType.message;
 
-        internal override async Task<SyncTaskResult> Execute(EntityDatabase database, SyncResponse response, SyncContext syncContext) {
+        public override async Task<SyncTaskResult> Execute(EntityDatabase database, SyncResponse response, SyncContext syncContext) {
             if (name == null)
                 return MissingField(nameof(name));
             if (database.service.TryGetMessage(name, out var callback)) {

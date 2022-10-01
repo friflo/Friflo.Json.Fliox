@@ -24,10 +24,10 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         /// <summary>list of patches for each entity</summary>
         [Required]  public  List<EntityPatch>   patches = new List<EntityPatch>();
         
-        internal override   TaskType            TaskType => TaskType.patch;
+        public   override   TaskType            TaskType => TaskType.patch;
         public   override   string              TaskName =>  $"container: '{container}'";
         
-        internal override async Task<SyncTaskResult> Execute(EntityDatabase database, SyncResponse response, SyncContext syncContext) {
+        public override async Task<SyncTaskResult> Execute(EntityDatabase database, SyncResponse response, SyncContext syncContext) {
             if (container == null)
                 return MissingContainer();
             if (patches == null)

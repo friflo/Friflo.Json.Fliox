@@ -23,7 +23,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         /// <summary>if true all entities in the specified <see cref="container"/> are deleted</summary>
                     public  bool?               all;
         
-        internal override   TaskType            TaskType => TaskType.delete;
+        public   override   TaskType            TaskType => TaskType.delete;
         public   override   string              TaskName => $"container: '{container}'";
         
         internal bool Authorize (string container, bool delete, bool deleteAll) {
@@ -35,7 +35,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
             return false;
         }
 
-        internal override async Task<SyncTaskResult> Execute(EntityDatabase database, SyncResponse response, SyncContext syncContext) {
+        public override async Task<SyncTaskResult> Execute(EntityDatabase database, SyncResponse response, SyncContext syncContext) {
             if (container == null)
                 return MissingContainer();
             if (ids == null && all == null)

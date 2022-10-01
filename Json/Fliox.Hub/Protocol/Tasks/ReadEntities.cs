@@ -28,10 +28,10 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         /// <summary> used to request the entities referenced by properties of a read task result </summary>
                     public  List<References>        references;
         
-        internal override   TaskType                TaskType => TaskType.read;
+        public   override   TaskType                TaskType => TaskType.read;
         public   override   string                  TaskName =>  $"container: '{container}'";
 
-        internal override async Task<SyncTaskResult> Execute(EntityDatabase database, SyncResponse response, SyncContext syncContext) {
+        public override async Task<SyncTaskResult> Execute(EntityDatabase database, SyncResponse response, SyncContext syncContext) {
             if (container == null)
                 return MissingContainer();
 

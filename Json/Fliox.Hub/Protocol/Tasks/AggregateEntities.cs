@@ -33,7 +33,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         [Ignore]    private     FilterOperation     filterLambda;
         [Ignore]    internal    OperationContext    filterContext;
                         
-        internal override       TaskType            TaskType => TaskType.aggregate;
+        public   override       TaskType            TaskType => TaskType.aggregate;
         public   override       string              TaskName => $"container: '{container}',type: {type}, filter: {filter}";
         
         public FilterOperation GetFilter() {
@@ -42,7 +42,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
             return Operation.FilterTrue;
         }
 
-        internal override async Task<SyncTaskResult> Execute(EntityDatabase database, SyncResponse response, SyncContext syncContext) {
+        public override async Task<SyncTaskResult> Execute(EntityDatabase database, SyncResponse response, SyncContext syncContext) {
             if (container == null)
                 return MissingContainer();
             if (!QueryEntities.ValidateFilter (filterTree, filter, syncContext, ref filterLambda, out var error))

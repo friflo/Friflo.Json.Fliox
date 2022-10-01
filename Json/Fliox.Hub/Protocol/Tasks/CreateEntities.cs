@@ -28,10 +28,10 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
                         
         [Ignore]    public  List<JsonKey>   entityKeys;
         
-        internal override   TaskType        TaskType => TaskType.create;
+        public   override   TaskType        TaskType => TaskType.create;
         public   override   string          TaskName => $"container: '{container}'";
         
-        internal override async Task<SyncTaskResult> Execute(EntityDatabase database, SyncResponse response, SyncContext syncContext) {
+        public override async Task<SyncTaskResult> Execute(EntityDatabase database, SyncResponse response, SyncContext syncContext) {
             if (container == null)
                 return MissingContainer();
             if (entities == null)

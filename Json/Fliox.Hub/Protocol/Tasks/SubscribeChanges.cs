@@ -24,10 +24,10 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         /// returning a boolean value. E.g. <c>o.name == 'Smartphone'</c></summary>
                     public      string              filter;
         
-        internal override       TaskType            TaskType  => TaskType.subscribeChanges;
+        public   override       TaskType            TaskType  => TaskType.subscribeChanges;
         public   override       string              TaskName  => $"container: '{container}'";
 
-        internal override Task<SyncTaskResult> Execute(EntityDatabase database, SyncResponse response, SyncContext syncContext) {
+        public override Task<SyncTaskResult> Execute(EntityDatabase database, SyncResponse response, SyncContext syncContext) {
             var hub             = syncContext.Hub;
             var eventDispatcher = hub.EventDispatcher;
             if (eventDispatcher == null)

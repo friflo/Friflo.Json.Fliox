@@ -19,10 +19,10 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         /// <summary>if true a previous added subscription is removed. Otherwise added</summary>
                     public  bool?       remove;
         
-        internal override   TaskType    TaskType    => TaskType.subscribeMessage;
+        public   override   TaskType    TaskType    => TaskType.subscribeMessage;
         public   override   string      TaskName    => $"name: '{name}'";
 
-        internal override Task<SyncTaskResult> Execute(EntityDatabase database, SyncResponse response, SyncContext syncContext) {
+        public override Task<SyncTaskResult> Execute(EntityDatabase database, SyncResponse response, SyncContext syncContext) {
             var hub             = syncContext.Hub;
             var eventDispatcher = hub.EventDispatcher;
             if (eventDispatcher == null)

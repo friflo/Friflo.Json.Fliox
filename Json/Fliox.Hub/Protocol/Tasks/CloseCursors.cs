@@ -19,11 +19,11 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         [Required]  public  string          container;
         /// <summary>list of <see cref="cursors"/></summary>
                     public  List<string>    cursors;
-        internal override   TaskType        TaskType => TaskType.closeCursors;
+        public   override   TaskType        TaskType => TaskType.closeCursors;
         
         public   override   string          TaskName => $"container: '{container}', cursor: {cursors}";
 
-        internal override Task<SyncTaskResult> Execute(EntityDatabase database, SyncResponse response, SyncContext syncContext) {
+        public override Task<SyncTaskResult> Execute(EntityDatabase database, SyncResponse response, SyncContext syncContext) {
             if (container == null)
                 return Task.FromResult<SyncTaskResult>(MissingContainer());
             
