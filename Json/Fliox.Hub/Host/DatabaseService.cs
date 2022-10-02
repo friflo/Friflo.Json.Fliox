@@ -487,11 +487,10 @@ namespace Friflo.Json.Fliox.Hub.Host
         }
         
         public virtual async Task<SyncTaskResult> ExecuteTask (SyncRequestTask task, EntityDatabase database, SyncResponse response, SyncContext syncContext) {
-            if (AuthorizeTask(task, syncContext, out var error)) {
-                var result = await task.Execute(database, response, syncContext).ConfigureAwait(false);
-                return result;
-            }
-            return error;
+            if (!AuthorizeTask(task, syncContext, out var error))
+                return error;
+            var result = await task.Execute(database, response, syncContext).ConfigureAwait(false);
+            return result;
         }
     }
 }
