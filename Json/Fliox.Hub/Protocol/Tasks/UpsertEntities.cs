@@ -58,6 +58,8 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
                     }
                 }
             }
+            await database.service.CustomizeUpsert(this, syncContext).ConfigureAwait(false);
+            
             var result = await entityContainer.UpsertEntities(this, syncContext).ConfigureAwait(false);
             if (result.Error != null) {
                 return TaskError(result.Error);

@@ -14,6 +14,19 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
 {
     internal sealed class ClusterService : DatabaseService
     {
+        internal ClusterDB clusterDB;
+
+        protected internal override async Task PreExecuteTasks(SyncRequest syncRequest, SyncContext syncContext) {
+            var pool = syncContext.pool;
+            using (var pooled  = pool.Type(() => new ClusterStore(clusterDB.clusterHub)).Get()) {
+                var cluster = pooled.instance;
+                var tasks = syncRequest.tasks;
+                await cluster.UpdateClusterDB  (clusterDB.hub, tasks).ConfigureAwait(false);
+                
+                await cluster.SyncTasks().ConfigureAwait(false);
+            }
+        }
+        
         public override async Task<SyncTaskResult> ExecuteTask (SyncRequestTask task, EntityDatabase database, SyncResponse response, SyncContext syncContext)
         {
             // Note: Keep deprecated comment - may change behavior in future
@@ -22,7 +35,6 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
             if (!AuthorizeTask(task, syncContext, out var error)) {
                 return error;
             }
-            var clusterDB = (ClusterDB)database;
             switch (task.TaskType) {
                 case TaskType.command:
                     return await task.Execute(database, response, syncContext).ConfigureAwait(false);

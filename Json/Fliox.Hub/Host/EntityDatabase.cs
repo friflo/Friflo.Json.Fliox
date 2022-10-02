@@ -106,10 +106,6 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// <summary>Create a container with the given <paramref name="name"/> in the database</summary>
         public abstract EntityContainer CreateContainer     (string name, EntityDatabase database);
         
-        public virtual Task ExecuteSyncPrepare (SyncRequest syncRequest, SyncContext syncContext) {
-            return Task.CompletedTask;
-        }
-
         internal void AddContainer(EntityContainer container) {
             containers.TryAdd(container.name, container);
         }

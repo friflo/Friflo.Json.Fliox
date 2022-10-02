@@ -11,11 +11,27 @@ namespace Friflo.Json.Fliox.Hub.DB.Monitor
 {
     internal sealed class MonitorService : DatabaseService
     {
-        private readonly   FlioxHub            hub;
+        internal            MonitorDB   monitorDB;
+        private  readonly   FlioxHub    hub;
         
         internal MonitorService (FlioxHub hub) {
             this.hub = hub;
             AddCommandHandler<ClearStats, ClearStatsResult> (nameof(ClearStats), ClearStats);
+        }
+        
+        protected internal override async Task PreExecuteTasks(SyncRequest syncRequest, SyncContext syncContext) {
+            var pool = syncContext.pool;
+            using (var pooled  = pool.Type(() => new MonitorStore(monitorDB.monitorHub)).Get()) {
+                var monitor = pooled.instance;
+                monitor.hostName = hub.hostName;
+                var tasks = syncRequest.tasks;
+                if (MonitorDB.FindTask(nameof(MonitorStore.clients),  tasks)) monitor.UpdateClients  (hub, monitorDB.name);
+                if (MonitorDB.FindTask(nameof(MonitorStore.users),    tasks)) monitor.UpdateUsers    (hub.Authenticator, monitorDB.name);
+                if (MonitorDB.FindTask(nameof(MonitorStore.histories),tasks)) monitor.UpdateHistories(hub.hostStats.requestHistories);
+                if (MonitorDB.FindTask(nameof(MonitorStore.hosts),    tasks)) monitor.UpdateHost     (hub.hostStats);
+                
+                await monitor.TrySyncTasks().ConfigureAwait(false);
+            }
         }
         
         internal ClearStatsResult ClearStats(Param<ClearStats> param, MessageContext command) {
@@ -30,7 +46,6 @@ namespace Friflo.Json.Fliox.Hub.DB.Monitor
             if (!AuthorizeTask(task, syncContext, out var error)) {
                 return Task.FromResult(error);
             }
-            var monitorDB = (MonitorDB)database;
             switch (task.TaskType) {
                 case TaskType.command:
                     return base.ExecuteTask(task, database, response, syncContext);

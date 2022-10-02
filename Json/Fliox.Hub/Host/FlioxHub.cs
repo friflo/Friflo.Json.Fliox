@@ -195,6 +195,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             await authenticator.Authenticate(syncRequest, syncContext).ConfigureAwait(false);
             syncContext.clientIdValidation = authenticator.ValidateClientId(clientController, syncContext);
             
+            // todo check extracting validation to ValidateTasks()
             var requestTasks = syncRequest.tasks;
             if (requestTasks == null) {
                 return new ExecuteSyncResult ("missing field: tasks (array)", ErrorResponseType.BadRequest);
@@ -211,12 +212,13 @@ namespace Friflo.Json.Fliox.Hub.Host
             if (dbName != hubDbName) {
                 if (!extensionDbs.TryGetValue(dbName, out db))
                     return new ExecuteSyncResult($"database not found: '{syncRequest.database}'", ErrorResponseType.BadRequest);
-                await db.ExecuteSyncPrepare(syncRequest, syncContext).ConfigureAwait(false);
             }
+            var   service = db.service;
+            await service.PreExecuteTasks(syncRequest, syncContext).ConfigureAwait(false);
+
             var tasks       = new List<SyncTaskResult>(requestTasks.Count);
             var resultMap   = new Dictionary<string, ContainerEntities>();
             var response    = new SyncResponse { tasks = tasks, resultMap = resultMap, database = syncDbName };
-            var service     = db.service;
             
             // ------------------------ loop through all given tasks and execute them ------------------------
             for (int index = 0; index < requestTasks.Count; index++) {
@@ -239,6 +241,8 @@ namespace Friflo.Json.Fliox.Hub.Host
             response.clientId = syncContext.clientIdValidation == ClientIdValidation.Invalid ? new JsonKey() : syncContext.clientId;
             
             response.AssertResponse(syncRequest);
+            
+            await service.PostExecuteTasks(syncRequest, syncContext).ConfigureAwait(false);
             
             var dispatcher = EventDispatcher;
             if (dispatcher != null) {

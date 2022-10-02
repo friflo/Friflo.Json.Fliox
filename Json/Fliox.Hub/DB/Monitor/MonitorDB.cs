@@ -25,7 +25,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Monitor
     {
         // --- private / internal
         internal readonly   EntityDatabase      stateDB;
-        private  readonly   FlioxHub            monitorHub;
+        internal readonly   FlioxHub            monitorHub;
         private  readonly   FlioxHub            hub;
 
         public   override   string              StorageType => stateDB.StorageType;
@@ -33,6 +33,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Monitor
         public MonitorDB (string dbName, FlioxHub hub, DbOpt opt = null)
             : base (dbName, new MonitorService(hub), opt)
         {
+            ((MonitorService)service).monitorDB = this;
             this.hub        = hub  ?? throw new ArgumentNullException(nameof(hub));
             var typeSchema  = NativeTypeSchema.Create(typeof(MonitorStore));
             Schema          = new DatabaseSchema(typeSchema);
@@ -44,22 +45,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Monitor
             return stateDB.CreateContainer(name, database);
         }
 
-        public override async Task ExecuteSyncPrepare(SyncRequest syncRequest, SyncContext syncContext) {
-            var pool = syncContext.pool;
-            using (var pooled  = pool.Type(() => new MonitorStore(monitorHub)).Get()) {
-                var monitor = pooled.instance;
-                monitor.hostName = hub.hostName;
-                var tasks = syncRequest.tasks;
-                if (FindTask(nameof(MonitorStore.clients),  tasks)) monitor.UpdateClients  (hub, name);
-                if (FindTask(nameof(MonitorStore.users),    tasks)) monitor.UpdateUsers    (hub.Authenticator, name);
-                if (FindTask(nameof(MonitorStore.histories),tasks)) monitor.UpdateHistories(hub.hostStats.requestHistories);
-                if (FindTask(nameof(MonitorStore.hosts),    tasks)) monitor.UpdateHost     (hub.hostStats);
-                
-                await monitor.TrySyncTasks().ConfigureAwait(false);
-            }
-        }
-        
-        private static bool FindTask(string container, List<SyncRequestTask> tasks) {
+        internal static bool FindTask(string container, List<SyncRequestTask> tasks) {
             foreach (var task in tasks) {
                 if (task is ReadEntities read && read.container == container)
                     return true;

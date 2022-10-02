@@ -23,14 +23,15 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
     {
         // --- private / internal
         internal readonly   EntityDatabase      stateDB;
-        private  readonly   FlioxHub            clusterHub;
-        private  readonly   FlioxHub            hub;
+        internal readonly   FlioxHub            clusterHub;
+        internal readonly   FlioxHub            hub;
 
         public   override   string              StorageType => stateDB.StorageType;
 
         public ClusterDB (string dbName, FlioxHub hub, DbOpt opt = null)
             : base (dbName, new ClusterService(), opt)
         {
+            ((ClusterService)service).clusterDB = this;
             this.hub        = hub  ?? throw new ArgumentNullException(nameof(hub));
             var typeSchema  = NativeTypeSchema.Create(typeof(ClusterStore));
             Schema          = new DatabaseSchema(typeSchema);
@@ -42,17 +43,6 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
             return stateDB.CreateContainer(name, database);
         }
 
-        public override async Task ExecuteSyncPrepare(SyncRequest syncRequest, SyncContext syncContext) {
-            var pool = syncContext.pool;
-            using (var pooled  = pool.Type(() => new ClusterStore(clusterHub)).Get()) {
-                var cluster = pooled.instance;
-                var tasks = syncRequest.tasks;
-                await cluster.UpdateClusterDB  (hub, tasks).ConfigureAwait(false);
-                
-                await cluster.SyncTasks().ConfigureAwait(false);
-            }
-        }
-        
         internal static bool FindTask(string container, JsonKey dbKey, List<SyncRequestTask> tasks) {
             foreach (var task in tasks) {
                 if (task is ReadEntities read && read.container == container) {

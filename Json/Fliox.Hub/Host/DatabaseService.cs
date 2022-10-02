@@ -25,6 +25,7 @@ namespace Friflo.Json.Fliox.Hub.Host
     public  delegate  void    HostMessageHandler<TParam>              (Param<TParam> param, MessageContext context);
     public  delegate  Task    HostMessageHandlerAsync<TParam>         (Param<TParam> param, MessageContext context);
     public  delegate  TResult HostCommandHandler<TParam, out TResult> (Param<TParam> param, MessageContext context);
+    
 
     /// <summary>
     /// A <see cref="DatabaseService"/> is attached to every <see cref="EntityDatabase"/> to handle all
@@ -54,9 +55,9 @@ namespace Friflo.Json.Fliox.Hub.Host
     public class DatabaseService
     {
         [DebuggerBrowsable(Never)]
-        private readonly  Dictionary<string, MessageDelegate>   handlers = new Dictionary<string, MessageDelegate>();
+        private readonly    Dictionary<string, MessageDelegate>     handlers = new Dictionary<string, MessageDelegate>();
         // ReSharper disable once UnusedMember.Local - expose Dictionary as list in Debugger
-        private           IReadOnlyCollection<MessageDelegate>  Handlers => handlers.Values;
+        private             IReadOnlyCollection<MessageDelegate>    Handlers => handlers.Values;
         
         public DatabaseService () {
             // AddUsingCommandHandler();
@@ -75,6 +76,11 @@ namespace Friflo.Json.Fliox.Hub.Host
             // --- client
             AddCommandHandler      <ClientParam, ClientResult>  (Std.Client,        Client);
         }
+        
+        protected internal virtual Task PreExecuteTasks (SyncRequest syncRequest, SyncContext syncContext)  => Task.CompletedTask;
+        protected internal virtual Task PostExecuteTasks(SyncRequest syncRequest, SyncContext syncContext)  => Task.CompletedTask;
+        
+        protected internal virtual Task CustomizeUpsert (UpsertEntities task, SyncContext syncContext)      => Task.CompletedTask;
         
         /// <summary>
         /// Add a synchronous message handler method with a method signature like:
