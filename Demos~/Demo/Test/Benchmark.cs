@@ -122,7 +122,8 @@ frames  = number of messages send / received events
                 var bytesStart  = GC.GetAllocatedBytesForCurrentThread();
                 var testMessage = new TestMessage { start = DateTime.Now.Ticks, payload = payload};
                 sender.SendMessage("test", testMessage);   // message is published to all clients
-                var noAwait = sender.SyncTasks();
+                await sender.SyncTasks();
+                
                 sendTicks  += DateTime.Now.Ticks - msgStart;
                 bytes      += GC.GetAllocatedBytesForCurrentThread() - bytesStart;
                 

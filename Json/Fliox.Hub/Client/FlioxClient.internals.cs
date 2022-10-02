@@ -79,7 +79,10 @@ namespace Friflo.Json.Fliox.Hub.Client
         private void AcknowledgeEvents(object state) {
             _intern.ackTimer.Change(Timeout.Infinite, Timeout.Infinite);
             _intern.ackTimerPending = false;
-            var noAwait = TrySyncAcknowledgeEvents();
+            
+            TrySyncAcknowledgeEvents().ContinueWith(task => {
+                Logger.Log(HubLog.Error, "AcknowledgeEvents() error", task.Exception);
+            }, TaskContinuationOptions.OnlyOnFaulted);
             // Console.WriteLine($"--- AcknowledgeEvents");
         } 
         
