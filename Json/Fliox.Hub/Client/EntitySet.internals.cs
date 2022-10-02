@@ -102,19 +102,11 @@ namespace Friflo.Json.Fliox.Hub.Client
             intern.writeNull    = ClientStatic.DefaultWriteNull;
             syncSet             = null;
         }
-        
-        // ReSharper disable once UnusedMember.Local -> used by Unity extension
-        public   TKey    ConvertIdToKey     (in JsonKey id)  => Static.KeyConvert.IdToKey(id);
-        // ReSharper disable once UnusedMember.Local -> currently not required
-        public   JsonKey ConvertKeyToId     (TKey key)       => Static.KeyConvert.KeyToId(key);
 
+        // --- internal generic entity utility methods - there public counterparts are at EntityUtils<TKey,T>
         private  static     void    SetEntityId (T entity, in JsonKey id)   => Static.EntityKeyTMap.SetId(entity, id);
         internal override   JsonKey GetEntityId (T entity)                  => Static.EntityKeyTMap.GetId(entity);
-
-        // ReSharper disable once UnusedMember.Local -> used by Unity extension
-        public   static     void    SetEntityKey(T entity, TKey key)        => Static.EntityKeyTMap.SetKey(entity, key);
         internal static     TKey    GetEntityKey(T entity)                  => Static.EntityKeyTMap.GetKey(entity);
-        
 
         internal override void DetectSetPatchesInternal(DetectAllPatches allPatches, ObjectMapper mapper) {
             var set     = GetSyncSet();
