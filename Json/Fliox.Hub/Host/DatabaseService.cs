@@ -78,6 +78,39 @@ namespace Friflo.Json.Fliox.Hub.Host
         
         protected internal virtual Task CustomizeUpsert (UpsertEntities task, SyncContext syncContext)      => Task.CompletedTask;
         
+        public virtual async Task<SyncTaskResult> ExecuteTask (SyncRequestTask task, EntityDatabase database, SyncResponse response, SyncContext syncContext) {
+            if (!AuthorizeTask(task, syncContext, out var error))
+                return error;
+            var result = await task.Execute(database, response, syncContext).ConfigureAwait(false);
+            return result;
+        }
+        
+        protected static bool AuthorizeTask(SyncRequestTask task, SyncContext syncContext, out SyncTaskResult error) {
+            var taskAuthorizer = syncContext.authState.taskAuthorizer;
+            if (taskAuthorizer.AuthorizeTask(task, syncContext)) {
+                error = null;
+                return true;
+            }
+            var sb = new StringBuilder(); // todo StringBuilder could be pooled
+            sb.Append("not authorized");
+            var authError = syncContext.authState.error; 
+            if (authError != null) {
+                sb.Append(". ");
+                sb.Append(authError);
+            }
+            var anonymous = syncContext.hub.Authenticator.anonymousUser;
+            var user = syncContext.User;
+            if (user != anonymous) {
+                sb.Append(". user: ");
+                sb.Append(user.userId);
+            }
+            var message = sb.ToString();
+            error = SyncRequestTask.PermissionDenied(message);
+            return false;
+        }
+        
+        
+        // ------------------- API to add instance / static and synchronous / async methods -------------------
         /// <summary>
         /// Add a synchronous message handler method with a method signature like:
         /// <code>
@@ -253,37 +286,5 @@ namespace Friflo.Json.Fliox.Hub.Host
                 if (name.StartsWith("std.") == standard)
                     commands[n++] = name;
             }
-        }
-
-        protected static bool AuthorizeTask(SyncRequestTask task, SyncContext syncContext, out SyncTaskResult error) {
-            var taskAuthorizer = syncContext.authState.taskAuthorizer;
-            if (taskAuthorizer.AuthorizeTask(task, syncContext)) {
-                error = null;
-                return true;
-            }
-            var sb = new StringBuilder(); // todo StringBuilder could be pooled
-            sb.Append("not authorized");
-            var authError = syncContext.authState.error; 
-            if (authError != null) {
-                sb.Append(". ");
-                sb.Append(authError);
-            }
-            var anonymous = syncContext.hub.Authenticator.anonymousUser;
-            var user = syncContext.User;
-            if (user != anonymous) {
-                sb.Append(". user: ");
-                sb.Append(user.userId);
-            }
-            var message = sb.ToString();
-            error = SyncRequestTask.PermissionDenied(message);
-            return false;
-        }
-        
-        public virtual async Task<SyncTaskResult> ExecuteTask (SyncRequestTask task, EntityDatabase database, SyncResponse response, SyncContext syncContext) {
-            if (!AuthorizeTask(task, syncContext, out var error))
-                return error;
-            var result = await task.Execute(database, response, syncContext).ConfigureAwait(false);
-            return result;
-        }
-    }
+        } }
 }
