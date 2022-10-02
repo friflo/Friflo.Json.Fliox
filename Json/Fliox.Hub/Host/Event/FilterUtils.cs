@@ -11,6 +11,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
     internal static class FilterUtils
     {
         internal static SyncRequestTask FilterChanges (
+            EventSubClient  subClient, 
             SyncRequestTask task,
             in ChangeSub    subscribe,
             JsonEvaluator   jsonEvaluator)
@@ -36,6 +37,8 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                         return null;
                     var upsert = (UpsertEntities) task;
                     if (upsert.container != subscribe.container)
+                        return null;
+                    if (!IsEventTarget(subClient, upsert.users))
                         return null;
                     entities = FilterEntities(subscribe.jsonFilter, upsert.entities, jsonEvaluator);
                     var upsertResult = new UpsertEntities {
@@ -66,6 +69,17 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                 default:
                     return null;
             }
+        }
+        
+        private static bool IsEventTarget (EventSubClient subClient, List<JsonKey> targetUsers) {
+            if (targetUsers == null)
+                return true;
+            var subUser = subClient.user;
+            foreach (var targetUser in targetUsers) {
+                if (subUser.userId.IsEqual(targetUser))
+                    return true;
+            }
+            return false;
         }
         
         private static List<JsonValue> FilterEntities (

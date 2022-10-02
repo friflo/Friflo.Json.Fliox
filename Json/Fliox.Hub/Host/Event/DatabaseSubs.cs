@@ -129,7 +129,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                     case TaskType.patch:
                         foreach (var pair in changeSubs) {
                             ChangeSub changeSub = pair.Value;
-                            var taskResult = FilterUtils.FilterChanges(task, changeSub, jsonEvaluator);
+                            var taskResult = FilterUtils.FilterChanges(subClient, task, changeSub, jsonEvaluator);
                             if (taskResult == null)
                                 continue;
                             AddTask(ref eventTasks, taskResult);
