@@ -13,6 +13,7 @@ using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Mapper.Map;
 using static System.Diagnostics.DebuggerBrowsableState;
 
+// ReSharper disable ForeachCanBeConvertedToQueryUsingAnotherGetEnumerator
 // ReSharper disable ForeachCanBePartlyConvertedToQueryUsingAnotherGetEnumerator
 // ReSharper disable UseDeconstruction
 namespace Friflo.Json.Fliox.Hub.Host
@@ -235,9 +236,9 @@ namespace Friflo.Json.Fliox.Hub.Host
         }
         
         internal string[] GetMessages() {
-            var count = CountMessageTypes(MsgType.Message);
-            var result = new string[count];
-            int n = 0;
+            var count   = CountMessageTypes(MsgType.Message);
+            var result  = new string[count];
+            int         n = 0;
             foreach (var pair in handlers) {
                 if (pair.Value.MsgType == MsgType.Message)
                     result[n++] = pair.Key;
@@ -246,9 +247,9 @@ namespace Friflo.Json.Fliox.Hub.Host
         }
         
         internal string[] GetCommands() {
-            var count = CountMessageTypes(MsgType.Command);
-            var result = new string[count];
-            int n = 0;
+            var count   = CountMessageTypes(MsgType.Command);
+            var result  = new string[count];
+            int n       = 0;
             // add std. commands on the bottom
             AddCommands(result, ref n, false, handlers);
             AddCommands(result, ref n, true,  handlers);
