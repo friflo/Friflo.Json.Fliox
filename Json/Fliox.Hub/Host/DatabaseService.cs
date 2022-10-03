@@ -6,9 +6,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
 using System.Threading.Tasks;
-using Friflo.Json.Fliox.Hub.Client;
-using Friflo.Json.Fliox.Hub.DB.Cluster;
-using Friflo.Json.Fliox.Hub.Host.Auth;
 using Friflo.Json.Fliox.Hub.Host.Internal;
 using Friflo.Json.Fliox.Hub.Host.Utils;
 using Friflo.Json.Fliox.Hub.Protocol;
@@ -16,6 +13,8 @@ using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Mapper.Map;
 using static System.Diagnostics.DebuggerBrowsableState;
 
+// ReSharper disable ForeachCanBePartlyConvertedToQueryUsingAnotherGetEnumerator
+// ReSharper disable UseDeconstruction
 namespace Friflo.Json.Fliox.Hub.Host
 {
     public  delegate  void    HostMessageHandler<TParam>              (Param<TParam> param, MessageContext context);
@@ -56,21 +55,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         private             IReadOnlyCollection<MessageDelegate>    Handlers => handlers.Values;
         
         public DatabaseService () {
-            // AddUsingCommandHandler();
-            // add each command handler individually
-            // --- database
-            AddCommandHandler      <JsonValue,   JsonValue>     (Std.Echo,          Echo);
-            AddCommandHandlerAsync <Empty,       DbContainers>  (Std.Containers,    Containers);
-            AddCommandHandler      <Empty,       DbMessages>    (Std.Messages,      Messages);
-            AddCommandHandler      <Empty,       DbSchema>      (Std.Schema,        Schema);
-            AddCommandHandlerAsync <string,      DbStats>       (Std.Stats,         Stats);
-            // --- host
-            AddCommandHandler      <HostParam,   HostInfo>      (Std.HostInfo,      HostInfo);
-            AddCommandHandlerAsync <Empty,       HostCluster>   (Std.HostCluster,   HostCluster);
-            // --- user
-            AddCommandHandlerAsync <UserParam,   UserResult>    (Std.User,          User);
-            // --- client
-            AddCommandHandler      <ClientParam, ClientResult>  (Std.Client,        Client);
+            AddStdCommandHandlers();
         }
         
         protected internal virtual Task PreExecuteTasks (SyncRequest syncRequest, SyncContext syncContext)  => Task.CompletedTask;
@@ -286,5 +271,6 @@ namespace Friflo.Json.Fliox.Hub.Host
                 if (name.StartsWith("std.") == standard)
                     commands[n++] = name;
             }
-        } }
+        }
+    }
 }

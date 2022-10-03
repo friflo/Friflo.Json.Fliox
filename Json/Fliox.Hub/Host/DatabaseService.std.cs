@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Friflo.Json.Fliox.Hub.Client;
 using Friflo.Json.Fliox.Hub.DB.Cluster;
 using Friflo.Json.Fliox.Hub.Host.Auth;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
@@ -14,6 +15,23 @@ namespace Friflo.Json.Fliox.Hub.Host
     public partial class DatabaseService
     {
         // ------------------------------ std command handler methods ------------------------------
+        private void AddStdCommandHandlers() {
+            // add each command handler individually
+            // --- database
+            AddCommandHandler      <JsonValue,   JsonValue>     (Std.Echo,          Echo);
+            AddCommandHandlerAsync <Empty,       DbContainers>  (Std.Containers,    Containers);
+            AddCommandHandler      <Empty,       DbMessages>    (Std.Messages,      Messages);
+            AddCommandHandler      <Empty,       DbSchema>      (Std.Schema,        Schema);
+            AddCommandHandlerAsync <string,      DbStats>       (Std.Stats,         Stats);
+            // --- host
+            AddCommandHandler      <HostParam,   HostInfo>      (Std.HostInfo,      HostInfo);
+            AddCommandHandlerAsync <Empty,       HostCluster>   (Std.HostCluster,   HostCluster);
+            // --- user
+            AddCommandHandlerAsync <UserParam,   UserResult>    (Std.User,          User);
+            // --- client
+            AddCommandHandler      <ClientParam, ClientResult>  (Std.Client,        Client);
+        }
+        
         private static JsonValue Echo (Param<JsonValue> param, MessageContext context) {
             return param.RawParam;
         }
