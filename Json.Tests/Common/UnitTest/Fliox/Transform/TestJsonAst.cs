@@ -1,12 +1,13 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System;
 using Friflo.Json.Fliox;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Transform.Tree;
 using Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper;
 using NUnit.Framework;
-
+using static NUnit.Framework.Assert;
 
 namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
 {
@@ -19,12 +20,16 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             writer.Pretty   = true;
             var jsonArray   = writer.WriteAsArray(sample);
             var json        = new JsonValue(jsonArray);
+            var astParser   = new JsonAstSerializer();
+
+            astParser.CreateAst(json); // allocate buffers
             
-            var jsonAstParser   = new JsonAstSerializer();
-            
+            var start = GC.GetAllocatedBytesForCurrentThread();
             for (int n = 0; n < 1; n++) {
-                var jsonAst         = jsonAstParser.CreateAst(json);
+                var jsonAst = astParser.CreateAst(json);
             }
+            var dif = GC.GetAllocatedBytesForCurrentThread() - start;
+            AreEqual(0, dif);
         }
     }
 }

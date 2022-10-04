@@ -118,11 +118,11 @@ namespace Friflo.Json.Burst
 
         // ReSharper disable once EmptyConstructor - find all instantiations
         public Utf8Buffer() {
+            buf = new byte[32];
             Clear();
         }
 
         public void Clear() {
-            buf = new byte[32];
             pos = 0;
             strings.Clear();
         }

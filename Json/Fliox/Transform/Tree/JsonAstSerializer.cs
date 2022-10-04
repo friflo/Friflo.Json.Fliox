@@ -26,6 +26,7 @@ namespace Friflo.Json.Fliox.Transform.Tree
             @null   = null;
             @true   = null;
             @false  = null;
+            buffer.Clear();
             json.Clear();
             json.AppendArray(value);
             parser.InitParser(json);
