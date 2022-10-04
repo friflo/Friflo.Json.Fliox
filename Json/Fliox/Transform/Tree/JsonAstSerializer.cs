@@ -17,15 +17,18 @@ namespace Friflo.Json.Fliox.Transform.Tree
         private  readonly   List<JsonAstNode>   nodes   = new List<JsonAstNode>();
         private  readonly   Utf8Buffer          buffer  = new Utf8Buffer();
         
-        private             Utf8String?         @null;
-        private             Utf8String?         @true;
-        private             Utf8String?         @false;
-
+        private static readonly Utf8String      Null;
+        private static readonly Utf8String      True;
+        private static readonly Utf8String      False;
+        
+        static JsonAstSerializer() {
+            var buf = new Utf8Buffer();
+            Null    = buf.Add("null");
+            True    = buf.Add("true");
+            False   = buf.Add("false");
+        }
 
         public JsonAst CreateAst(in JsonValue value) {
-            @null   = null;
-            @true   = null;
-            @false  = null;
             buffer.Clear();
             json.Clear();
             json.AppendArray(value);
@@ -63,19 +66,16 @@ namespace Friflo.Json.Fliox.Transform.Tree
                         return;
                     case JsonEvent.ValueNull: {
                         nodes.Add(default); // add placeholder
-                        if (!@null.HasValue)        @null = buffer.Add(parser.value, false);
-                        value = @null.Value;
+                        value = Null;
                         break;
                     }
                     case JsonEvent.ValueBool:
                         nodes.Add(default); // add placeholder
                         if (parser.boolValue) {
-                            if (!@true.HasValue)    @true = buffer.Add(parser.value, false);
-                            value = @true.Value;
+                            value = True;
                             break;
                         }
-                        if (!@false.HasValue)       @false = buffer.Add(parser.value, false);
-                        value = @false.Value;
+                        value = False;
                         break;
                     case JsonEvent.ValueString:
                     case JsonEvent.ValueNumber: {
