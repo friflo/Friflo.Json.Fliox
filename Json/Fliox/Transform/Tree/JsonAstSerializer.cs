@@ -47,13 +47,13 @@ namespace Friflo.Json.Fliox.Transform.Tree
             Utf8String  value       = default;
             bool        isFirst     = true;
             while (true) {
-                var index = nodes.Count;
-                parser.NextEvent();
-                if (!isFirst) {
-                    nodes[lastIndex] = new JsonAstNode(lastEvent, key, value, index);    
+                var index   = nodes.Count;
+                if (isFirst) {
+                    isFirst = false;
+                } else {
+                    nodes[lastIndex] = new JsonAstNode(lastEvent, key, value, index); 
                 }
-                isFirst = false;
-                var ev  = parser.Event;
+                var ev      = parser.NextEvent();
                 key     = isObject ? buffer.Add(parser.key, false) : default;
                 switch (ev) {
                     case JsonEvent.ObjectStart:

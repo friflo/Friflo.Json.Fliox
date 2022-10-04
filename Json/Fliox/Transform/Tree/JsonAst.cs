@@ -52,7 +52,7 @@ namespace Friflo.Json.Fliox.Transform.Tree
                 }
             }
             if (next == -1) {
-                sb.Append("    last");    
+                // sb.Append("    last");    
             } else {
                 sb.Append("    next: ");
                 sb.Append(next);
