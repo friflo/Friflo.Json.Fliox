@@ -51,7 +51,7 @@ namespace Friflo.Json.Fliox.Transform.Tree
                 }
                 isFirst = false;
                 var ev  = parser.Event;
-                key     = isObject ? buffer.Add(parser.key) : default;
+                key     = isObject ? buffer.Add(parser.key, false) : default;
                 switch (ev) {
                     case JsonEvent.ObjectStart:
                         nodes.Add(default); // add placeholder
@@ -63,24 +63,24 @@ namespace Friflo.Json.Fliox.Transform.Tree
                         return;
                     case JsonEvent.ValueNull: {
                         nodes.Add(default); // add placeholder
-                        if (!@null.HasValue)        @null = buffer.Add(parser.value);
+                        if (!@null.HasValue)        @null = buffer.Add(parser.value, false);
                         value = @null.Value;
                         break;
                     }
                     case JsonEvent.ValueBool:
                         nodes.Add(default); // add placeholder
                         if (parser.boolValue) {
-                            if (!@true.HasValue)    @true = buffer.Add(parser.value);
+                            if (!@true.HasValue)    @true = buffer.Add(parser.value, false);
                             value = @true.Value;
                             break;
                         }
-                        if (!@false.HasValue)       @false = buffer.Add(parser.value);
+                        if (!@false.HasValue)       @false = buffer.Add(parser.value, false);
                         value = @false.Value;
                         break;
                     case JsonEvent.ValueString:
                     case JsonEvent.ValueNumber: {
                         nodes.Add(default); // add placeholder
-                        value = buffer.Add(parser.value);
+                        value = buffer.Add(parser.value, false);
                         break;
                     }
                     case JsonEvent.ArrayStart:

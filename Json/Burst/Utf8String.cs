@@ -172,11 +172,14 @@ namespace Friflo.Json.Burst
         }
 #endif
         
-        public Utf8String Add (Bytes bytes) {
+        public Utf8String Add (Bytes bytes, bool reusable) {
             var len     = bytes.Len;
             int destPos = Reserve(len);
             Buffer.BlockCopy(bytes.buffer.array, bytes.start, buf, destPos, len);
             var utf8    = new Utf8String(this, destPos, len);
+            if (!reusable) {
+                return utf8;
+            }
             strings.Add(utf8);
             return utf8;
         }
