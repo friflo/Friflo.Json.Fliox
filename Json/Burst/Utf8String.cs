@@ -14,8 +14,8 @@ namespace Friflo.Json.Burst
         // todo - may add 64 bit alignment (multiple of 8) for start
         // start is currently not a multiple of 8. So equality checks with another byte[] starting at 0 is not CPU optimal.
         // Consider: in case of many string entries using alignment will degrade memory locality
-        internal  readonly  int         start;
-        internal  readonly  int         len;
+        public    readonly  int         start;
+        public    readonly  int         len;
 
         public    override  string      ToString()  => AsString();
         public              bool        IsNull      => buffer?.Buf == null;
@@ -171,6 +171,15 @@ namespace Friflo.Json.Burst
             return utf8;
         }
 #endif
+        
+        public Utf8String Add (Bytes bytes) {
+            var len     = bytes.Len;
+            int destPos = Reserve(len);
+            Buffer.BlockCopy(bytes.buffer.array, bytes.start, buf, destPos, len);
+            var utf8    = new Utf8String(this, destPos, len);
+            strings.Add(utf8);
+            return utf8;
+        }
         
         private int Reserve (int len) {
             int curPos  = pos;
