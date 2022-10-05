@@ -2,8 +2,10 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
+using System.Reflection;
 using Friflo.Json.Fliox;
 using Friflo.Json.Fliox.Mapper;
+using Friflo.Json.Fliox.Mapper.Map;
 using Friflo.Json.Fliox.Transform.Tree;
 using Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper;
 using NUnit.Framework;
@@ -26,10 +28,19 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             
             var start = GC.GetAllocatedBytesForCurrentThread();
             for (int n = 0; n < 1; n++) {
-                var jsonAst = astParser.CreateAst(json);
+                astParser.CreateAst(json);
             }
             var dif = GC.GetAllocatedBytesForCurrentThread() - start;
             AreEqual(0, dif);
+            
+
+            /* for (int n = 0; n < 100_000; n++) {
+                astParser.Test(json);
+                // astParser.CreateAst(json);
+            } */
+
+            var value = astParser.CreateAst(new JsonValue("true"));
+            
         }
     }
 }

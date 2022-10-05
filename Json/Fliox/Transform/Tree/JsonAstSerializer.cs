@@ -33,11 +33,41 @@ namespace Friflo.Json.Fliox.Transform.Tree
             json.Clear();
             json.AppendArray(value);
             parser.InitParser(json);
-            parser.NextEvent();
-            
             nodes.Clear();
-            Traverse(true);
+            
+            Start();
             return new JsonAst(nodes);
+        }
+        
+        public JsonAst Test(in JsonValue value) {
+            json.Clear();
+            json.AppendArray(value);
+            parser.InitParser(json);
+            parser.SkipTree();
+            
+            return default;
+        }
+        
+        private void Start() {
+            var ev = parser.NextEvent();
+            switch (ev) {
+                case JsonEvent.ValueString:
+                case JsonEvent.ValueNumber:
+                case JsonEvent.ValueBool:
+                case JsonEvent.ValueNull:
+                    Traverse(false);
+                    break;
+                case JsonEvent.ArrayStart:
+                    parser.NextEvent();
+                    Traverse(false);
+                    break;
+                case JsonEvent.ObjectStart:
+                    parser.NextEvent();
+                    Traverse(true);
+                    break;
+                default:
+                    throw new InvalidOperationException($"unexpected state: {ev}");
+            }
         }
         
         private void Traverse(bool isObject) {
@@ -53,7 +83,8 @@ namespace Friflo.Json.Fliox.Transform.Tree
                 } else {
                     nodes[lastIndex] = new JsonAstNode(lastEvent, key, value, index); 
                 }
-                var ev      = parser.NextEvent();
+                var ev  = parser.Event;
+                parser.NextEvent();
                 key     = isObject ? buffer.Add(parser.key, false) : default;
                 switch (ev) {
                     case JsonEvent.ObjectStart:
@@ -90,6 +121,8 @@ namespace Friflo.Json.Fliox.Transform.Tree
                         break;
                     case JsonEvent.ArrayEnd:
                         nodes[lastIndex] = new JsonAstNode(lastEvent, key, value, -1);  // last array item
+                        return;
+                    case JsonEvent.EOF:
                         return;
                     default:
                         throw new InvalidOperationException($"unexpected state: {ev}");
