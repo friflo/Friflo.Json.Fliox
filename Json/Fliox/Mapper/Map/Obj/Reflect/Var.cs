@@ -2,7 +2,6 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
-using System.Globalization;
 
 namespace Friflo.Json.Fliox.Mapper.Map.Obj.Reflect
 {
@@ -26,6 +25,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Obj.Reflect
         public static bool operator == (in Var val1, in Var val2) =>  val1.type.AreEqual(val1, val2);
         public static bool operator != (in Var val1, in Var val2) => !val1.type.AreEqual(val1, val2);
         
+        // --- object ---
         internal Var (object value) {
             type    = VarTypeObject.Instance;
             obj     = value;
@@ -33,97 +33,48 @@ namespace Friflo.Json.Fliox.Mapper.Map.Obj.Reflect
             dbl     = 0;
         }
         
+        internal Var (string value) {
+            type    = VarTypeString.Instance;
+            obj     = value;
+            lng     = 0;
+            dbl     = 0;
+        }
+        
+        // --- long (int64) ---
         internal Var (long value) {
             type    = VarTypeLong.Instance;
-            obj     = NotNullTag;
+            obj     = HasValue;
             lng     = value;
             dbl     = 0;
         }
 
         internal Var (long? value) {
             type    = VarTypeNullableLong.Instance;
-            obj     = value.HasValue ? NotNullTag : null;
+            obj     = value.HasValue ? HasValue : null;
             lng     = value ?? 0L;
             dbl     = 0;
         }
         
+        // --- double (64 bit) ---
         internal Var (double value) {
-            type    = VarTypeLong.Instance;
-            obj     = NotNullTag;
+            type    = VarTypeDbl.Instance;
+            obj     = HasValue;
             lng     = 0;
             dbl     = value;
         }
 
         internal Var (double? value) {
-            type    = VarTypeNullableLong.Instance;
-            obj     = value.HasValue ? NotNullTag : null;
+            type    = VarTypeNullableDbl.Instance;
+            obj     = value.HasValue ? HasValue : null;
             lng     = 0;
             dbl     = value ?? 0L;
         }
         
-        private static readonly object NotNullTag = "not null";
+        private static readonly object HasValue = "HasValue";
     }
     
-    internal abstract class VarType
-    {
-        internal abstract bool      IsNull   (in Var value);
-        internal abstract bool      AreEqual (in Var val1, in Var val2);
-        internal abstract string    AsString (in Var value);
-    }
     
-    internal class VarTypeObject : VarType
-    {
-        internal static readonly    VarTypeObject Instance = new VarTypeObject();
-        
-        internal  override  bool    AreEqual (in Var val1, in Var val2) => val1.obj == val2.obj;
-        internal  override  bool    IsNull   (in Var value)             => value.obj == null;
-        internal  override  string  AsString (in Var value)             => value.ToString();
-    }
-    
-    internal class VarTypeString : VarType
-    {
-        internal static readonly    VarTypeString Instance = new VarTypeString();
-        
-        internal  override  bool    AreEqual (in Var val1, in Var val2) => (string)val1.obj == (string)val2.obj;
-        internal  override  bool    IsNull   (in Var value)             => value.obj == null;
-        internal  override  string  AsString (in Var value)             => value.obj.ToString();
-    }
-    
-    internal class VarTypeLong : VarType
-    {
-        internal static readonly    VarTypeLong Instance = new VarTypeLong();
-        
-        internal  override  bool    AreEqual (in Var val1, in Var val2) => val1.lng == val2.lng;
-        internal  override  bool    IsNull   (in Var value)             => false;
-        internal  override  string  AsString (in Var value)             => value.lng.ToString();
-    }
-    
-    internal class VarTypeNullableLong : VarType
-    {
-        internal static readonly    VarTypeNullableLong Instance = new VarTypeNullableLong();
-        
-        internal  override  bool    AreEqual (in Var val1, in Var val2) => val1.lng == val2.lng && val1.obj == val2.obj;
-        internal  override  bool    IsNull   (in Var value)             => value.obj == null;
-        internal  override  string  AsString (in Var value)             => value.obj == null ? null : value.lng.ToString();
-    }
-    
-    internal class VarTypeDbl : VarType
-    {
-        internal static readonly    VarTypeDbl Instance = new VarTypeDbl();
-        // ReSharper disable once CompareOfFloatsByEqualityOperator
-        internal  override  bool    AreEqual (in Var val1, in Var val2) => val1.dbl == val2.dbl;
-        internal  override  bool    IsNull   (in Var value)             => false;
-        internal  override  string  AsString (in Var value)             => value.dbl.ToString(CultureInfo.InvariantCulture);
-    }
-    
-    internal class VarTypeNullableDbl : VarType
-    {
-        internal static readonly    VarTypeNullableDbl Instance = new VarTypeNullableDbl();
-        // ReSharper disable once CompareOfFloatsByEqualityOperator
-        internal  override  bool    AreEqual (in Var val1, in Var val2) => val1.dbl == val2.dbl && val1.obj == val2.obj;
-        internal  override  bool    IsNull   (in Var value)             => value.obj == null;
-        internal  override  string  AsString (in Var value)             => value.obj == null ? null : value.dbl.ToString(CultureInfo.InvariantCulture);
-    }
+
 
     
     
