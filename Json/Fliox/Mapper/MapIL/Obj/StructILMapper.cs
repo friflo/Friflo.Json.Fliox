@@ -23,11 +23,11 @@ namespace Friflo.Json.Fliox.Mapper.MapIL.Obj
             layout = new ClassLayout<T>(this, typeStore.config);
         }
         
-        public override bool IsValueNullIL(ClassMirror mirror, int primPos, int objPos) {
+        internal override bool IsValueNullIL(ClassMirror mirror, int primPos, int objPos) {
             return isNullable && !mirror.LoadPrimitiveHasValue(primPos);
         }
         
-        public override void WriteValueIL(ref Writer writer, ClassMirror mirror, int primPos, int objPos) {
+        internal override void WriteValueIL(ref Writer writer, ClassMirror mirror, int primPos, int objPos) {
 #if DEBUG
             if (isNullable && !mirror.LoadPrimitiveHasValue(primPos))
                 throw new InvalidOperationException("Expect non null struct. Type: " + typeof(T));
@@ -54,7 +54,7 @@ namespace Friflo.Json.Fliox.Mapper.MapIL.Obj
             writer.DecLevel(startLevel);
         }
         
-        public override bool ReadValueIL(ref Reader reader, ClassMirror mirror, int primPos, int objPos) {
+        internal override bool ReadValueIL(ref Reader reader, ClassMirror mirror, int primPos, int objPos) {
             if (reader.parser.Event == JsonEvent.ValueNull) {
                 if (!isNullable)
                     return false;

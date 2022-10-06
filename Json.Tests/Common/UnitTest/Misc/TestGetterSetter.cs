@@ -16,7 +16,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc
     
     public static class SampleGen
     {
-        public static object    TestClass_objValue_get(TestClass obj)            => obj.objValue;
+        public static object    TestClass_objValue_get(TestClass obj)               => obj.objValue;
+        public static void      TestClass_objValue_set(TestClass obj, object value) => obj.objValue = value;
+
         public static int       TestClass_intValue_get(TestClass obj)            => obj.intValue;
         public static void      TestClass_intValue_set(TestClass obj, int value) => obj.intValue = value;
     }
@@ -89,6 +91,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc
             
             var getObjMethod    = typeof(SampleGen).GetMethod(nameof(SampleGen.TestClass_objValue_get));
             var getObjDelegate  = DelegateUtils.CreateGetDelegate<TestClass, object>(getObjMethod);
+            
+            var setObjMethod    = typeof(SampleGen).GetMethod(nameof(SampleGen.TestClass_objValue_set));
+            var setObjDelegate  = DelegateUtils.CreateSetDelegate<TestClass, object>(setObjMethod);
             
             var intAccess       = new ObjectMemberAccessInt<TestClass>       { get = getIntDelegate, set = setIntDelegate };
             var objAccess       = new ObjectMemberAccessObject<TestClass>    { get = getObjDelegate };

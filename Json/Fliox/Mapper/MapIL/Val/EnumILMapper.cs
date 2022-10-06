@@ -105,11 +105,11 @@ namespace Friflo.Json.Fliox.Mapper.MapIL.Val
 
         // ------------------------------------- WriteValueIL / ReadValueIL ------------------------------------- 
         
-        public override bool IsValueNullIL(ClassMirror mirror, int primPos, int objPos) {
+        internal override bool IsValueNullIL(ClassMirror mirror, int primPos, int objPos) {
             return mirror.LoadLongNull(primPos) == null;
         }
 
-        public override void WriteValueIL(ref Writer writer, ClassMirror mirror, int primPos, int objPos) {
+        internal override void WriteValueIL(ref Writer writer, ClassMirror mirror, int primPos, int objPos) {
             long? integralValue = mirror.LoadLongNull(primPos);
 #if DEBUG
             if (integralValue == null)
@@ -122,7 +122,7 @@ namespace Friflo.Json.Fliox.Mapper.MapIL.Val
             writer.bytes.AppendChar('\"');
         }
 
-        public override bool ReadValueIL(ref Reader reader, ClassMirror mirror, int primPos, int objPos) {
+        internal override bool ReadValueIL(ref Reader reader, ClassMirror mirror, int primPos, int objPos) {
             bool success;
             var ev = reader.parser.Event;
             if (reader.parser.Event == JsonEvent.ValueString) {

@@ -24,11 +24,11 @@ namespace Friflo.Json.Fliox.Mapper.MapIL.Obj
             layout = new ClassLayout<T>(this, typeStore.config);
         }
         
-        public override bool IsValueNullIL(ClassMirror mirror, int primPos, int objPos) {
+        internal override bool IsValueNullIL(ClassMirror mirror, int primPos, int objPos) {
             return mirror.LoadObj(objPos) == null;
         }
         
-        public override void WriteValueIL(ref Writer writer, ClassMirror mirror, int primPos, int objPos) {
+        internal override void WriteValueIL(ref Writer writer, ClassMirror mirror, int primPos, int objPos) {
             object obj = mirror.LoadObj(objPos);
 #if DEBUG
             if (obj == null)
@@ -37,7 +37,7 @@ namespace Friflo.Json.Fliox.Mapper.MapIL.Obj
             Write(ref writer, (T) obj);
         }
 
-        public override bool ReadValueIL(ref Reader reader, ClassMirror mirror, int primPos, int objPos) {
+        internal override bool ReadValueIL(ref Reader reader, ClassMirror mirror, int primPos, int objPos) {
             T src = (T) mirror.LoadObj(objPos);
             T value = Read(ref reader, src, out bool success);
             mirror.StoreObj(objPos, value);

@@ -19,7 +19,7 @@ namespace Friflo.Json.Fliox.Mapper.MapIL.Obj
     ///  
     /// This class contains IL specific state/data which is used by JsonReader and JsonWriter. So its not thread safe. 
     /// </summary>
-    public sealed class ClassMirror : IDisposable
+    internal sealed class ClassMirror : IDisposable
     {
 
         // payload size changes, depending on which class is used at the current classLevel
