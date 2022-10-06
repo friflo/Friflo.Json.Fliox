@@ -11,7 +11,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
     public abstract class PropertyFields {
         public   readonly   PropField []                    fields;
         public   readonly   Bytes32 []                      names32;
-        public   readonly   int                             Count;
+        public   readonly   int                             count;
         public   readonly   int                             primCount;
         public   readonly   int                             objCount;
         // ReSharper disable once NotAccessedField.Local
@@ -23,9 +23,9 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
             typeName        = query.type. ToString();
             primCount       = query.primCount;
             objCount        = query.objCount;
-            Count           = query.fields.Count;
+            count           = query.fields.Count;
             fields          = query.fields.ToArray();
-            names32         = new Bytes32[Count];
+            names32         = new Bytes32[count];
         }
     }
     
@@ -51,9 +51,9 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
             removedKey      = new Bytes("__REMOVED", Untracked.Bytes);
             fieldMap        = new HashMapOpen<Bytes, PropField<T>>(11, removedKey);
             
-            typedFields     = new PropField<T> [Count];
+            typedFields     = new PropField<T> [count];
             
-            for (int n = 0; n < Count; n++) {
+            for (int n = 0; n < count; n++) {
                 typedFields[n]  = fieldList[n];
                 var field       = typedFields[n];
                 if (strMap.ContainsKey(field.name))
