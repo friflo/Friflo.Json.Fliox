@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Reflection;
 using Friflo.Json.Fliox.Hub.Client.Internal.Key;
-using Friflo.Json.Fliox.Mapper.Map.Obj.Reflect;
+using Friflo.Json.Fliox.Mapper.Utils;
 
 namespace Friflo.Json.Fliox.Hub.Client.Internal.KeyEntity
 {
@@ -43,13 +43,13 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal.KeyEntity
             var properties = type.GetProperties(Flags);
             foreach (var p in properties) {
                 var customAttributes = p.CustomAttributes;
-                if (FieldQuery.IsKey(customAttributes))
+                if (AttributeUtils.IsKey(customAttributes))
                     return p;
             }
             var fields = type.GetFields(Flags);
             foreach (var f in fields) {
                 var customAttributes = f.CustomAttributes;
-                if (FieldQuery.IsKey(customAttributes))
+                if (AttributeUtils.IsKey(customAttributes))
                     return f;
             }
             var property = FindMember(properties);
@@ -86,7 +86,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal.KeyEntity
                 var msg2 = $"entity id property must have get & set: {property.Name}, type: {propType.Name}, entity: {type.Name}";
                 throw new InvalidOperationException(msg2);
             }
-            bool auto = FieldQuery.IsAutoIncrement(property.CustomAttributes);
+            bool auto = AttributeUtils.IsAutoIncrement(property.CustomAttributes);
             if (propType == typeof(string)) return new EntityKeyStringProperty<T>   (property, idGetMethod, idSetMethod);
             if (propType == typeof(Guid))   return new EntityKeyGuidProperty<T>     (property, idGetMethod, idSetMethod);
             if (propType == typeof(int))    return new EntityKeyIntProperty<T>      (property, idGetMethod, idSetMethod);
@@ -101,7 +101,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal.KeyEntity
         private static EntityKey<T> CreateEntityKeyField<T> (FieldInfo field)  where T : class {
             var type        = typeof (T);
             var fieldType   = field.FieldType;
-            bool auto = FieldQuery.IsAutoIncrement(fieldType.CustomAttributes);
+            bool auto = AttributeUtils.IsAutoIncrement(fieldType.CustomAttributes);
             if (fieldType == typeof(string))    return new EntityKeyStringField<T>  (field);
             if (fieldType == typeof(Guid))      return new EntityKeyGuidField<T>    (field);
             if (fieldType == typeof(int))       return new EntityKeyIntField<T>     (field);
@@ -154,7 +154,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal.KeyEntity
         internal abstract   void        SetKey      (T entity, TKey id);
         
         internal EntityKeyT (MemberInfo member) {
-            autoIncrement   = FieldQuery.IsAutoIncrement(member.CustomAttributes);
+            autoIncrement   = AttributeUtils.IsAutoIncrement(member.CustomAttributes);
         }
 
         /// <summary> prefer using <see cref="GetKey"/>. Use only if <typeparamref name="TKey"/> is not utilized </summary>

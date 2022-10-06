@@ -5,8 +5,8 @@ using System;
 using System.Collections.Generic;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Mapper.Map;
-using Friflo.Json.Fliox.Mapper.Map.Obj.Reflect;
 using Friflo.Json.Fliox.Mapper.Map.Utils;
+using Friflo.Json.Fliox.Mapper.Utils;
 using Friflo.Json.Fliox.Schema.Definition;
 
 namespace Friflo.Json.Fliox.Schema.Native
@@ -129,7 +129,7 @@ namespace Friflo.Json.Fliox.Schema.Native
                             if (isKey) {
                                 typeDef.keyField = propField.jsonName;
                             }
-                            bool isAutoIncrement = FieldQuery.IsAutoIncrement(propField.Member.CustomAttributes);
+                            bool isAutoIncrement = AttributeUtils.IsAutoIncrement(propField.Member.CustomAttributes);
 
                             var fieldDef = new FieldDef (propField.jsonName, required, isKey, isAutoIncrement, type,
                                 isArray, isDictionary, isNullableElement, typeDef, relation, propField.docs, Utf8Buffer);

@@ -7,6 +7,7 @@ using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Mapper.Map;
 using Friflo.Json.Fliox.Mapper.Map.Obj.Reflect;
 using Friflo.Json.Fliox.Mapper.Map.Utils;
+using Friflo.Json.Fliox.Mapper.Utils;
 
 namespace Friflo.Json.Fliox.Hub.Client.Internal.Map
 {
@@ -75,12 +76,12 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal.Map
                     return false;
                 // has public or non-public setter
                 bool hasSetter = property.GetSetMethod(true) != null;
-                return hasSetter || FieldQuery.Property(property.CustomAttributes);
+                return hasSetter || AttributeUtils.Property(property.CustomAttributes);
             }
             if (memberInfo is FieldInfo field) {
                 if (!ClientEntityUtils.IsEntitySet(field.FieldType))
                     return false;
-                return field.IsPublic || FieldQuery.Property(field.CustomAttributes);
+                return field.IsPublic || AttributeUtils.Property(field.CustomAttributes);
             }
             return false;
         }

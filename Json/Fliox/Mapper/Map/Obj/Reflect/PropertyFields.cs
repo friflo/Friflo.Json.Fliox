@@ -27,10 +27,11 @@ namespace Friflo.Json.Fliox.Mapper.Map.Obj.Reflect
         private  readonly   HashMapOpen<Bytes,  PropField>  fieldMap;
         
         private  readonly   Bytes                           removedKey;
+        
 
         public PropertyFields (Type type, TypeStore typeStore, FieldFilter memberFilter = null)
         {
-            memberFilter    = memberFilter ?? FieldQuery.DefaultMemberFilter;
+            memberFilter    = memberFilter ?? FieldFilter.DefaultMemberFilter;
             typeName        = type. ToString();
             var query       = new FieldQuery(typeStore, type, memberFilter);
             primCount       = query.primCount;

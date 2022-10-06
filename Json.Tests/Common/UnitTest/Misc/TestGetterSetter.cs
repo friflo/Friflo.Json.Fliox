@@ -96,7 +96,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc
             var setObjDelegate  = DelegateUtils.CreateSetDelegate<TestClass, object>(setObjMethod);
             
             var intAccess       = new ObjectMemberAccessInt<TestClass>       { get = getIntDelegate, set = setIntDelegate };
-            var objAccess       = new ObjectMemberAccessObject<TestClass>    { get = getObjDelegate };
+            var objAccess       = new ObjectMemberAccessObject<TestClass>    { get = getObjDelegate, set = setObjDelegate };
 
             
             var intField = typeof(TestClass).GetField("intValue");

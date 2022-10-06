@@ -63,9 +63,9 @@ namespace Friflo.Json.Fliox.Mapper.Map.Obj.Reflect
                 var setLambdaExp    = DelegateUtils.CreateSetLambda<object,object>(property);
                 getLambda           = getLambdaExp.Compile();
                 setLambda           = setLambdaExp.Compile();
-                isKey = FieldQuery.IsKey(customAttributes);
+                isKey = AttributeUtils.IsKey(customAttributes);
             } else {
-                isKey = FieldQuery.IsKey(customAttributes);
+                isKey = AttributeUtils.IsKey(customAttributes);
             }
             this.primIndex  = primIndex;
             this.objIndex   = objIndex;

@@ -58,7 +58,7 @@ Compatible to .NET Core &amp; Unity</Description>
     <ItemGroup>
       <ProjectReference Include="..\Burst\Friflo.Json.Burst.csproj" />
       <ProjectReference Include="..\Fliox.Annotation\Friflo.Json.Fliox.Annotation.csproj" />
-      <None Include="..\package-icon.png" Pack="true" PackagePath=""/>
+      <None Include="..\package-icon.png" Pack="true" PackagePath="" />
     </ItemGroup>
 	
 </Project>
