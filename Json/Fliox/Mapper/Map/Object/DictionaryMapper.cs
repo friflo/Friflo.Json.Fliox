@@ -8,7 +8,7 @@ using Friflo.Json.Fliox.Mapper.Diff;
 using Friflo.Json.Fliox.Mapper.Map.Utils;
 using Friflo.Json.Fliox.Mapper.Utils;
 
-namespace Friflo.Json.Fliox.Mapper.Map.Obj
+namespace Friflo.Json.Fliox.Mapper.Map.Object
 {
     internal sealed class DictionaryMatcher : ITypeMatcher {
         public static readonly DictionaryMatcher Instance = new DictionaryMatcher();

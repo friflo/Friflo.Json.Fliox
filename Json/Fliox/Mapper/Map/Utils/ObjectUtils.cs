@@ -1,7 +1,7 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 using Friflo.Json.Burst;
-using Friflo.Json.Fliox.Mapper.Map.Obj.Reflect;
+using Friflo.Json.Fliox.Mapper.Map.Object.Reflect;
 using Friflo.Json.Fliox.Mapper.MapIL.Obj;
 
 // ReSharper disable once CheckNamespace

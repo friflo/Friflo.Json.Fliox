@@ -3,7 +3,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Friflo.Json.Fliox.Mapper.Map.Obj.Reflect
+namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
 {
     public sealed class PolyType
     {

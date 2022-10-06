@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Reflection;
 using Friflo.Json.Fliox.Mapper.Map;
-using Friflo.Json.Fliox.Mapper.Map.Obj.Reflect;
+using Friflo.Json.Fliox.Mapper.Map.Object.Reflect;
 using Friflo.Json.Fliox.Mapper.Map.Utils;
 using Friflo.Json.Fliox.Mapper.MapIL.Obj;
 using Exp = System.Linq.Expressions.Expression;

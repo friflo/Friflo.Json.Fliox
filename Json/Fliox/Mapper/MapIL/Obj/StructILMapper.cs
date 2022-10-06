@@ -4,7 +4,7 @@ using System;
 using System.Reflection;
 using Friflo.Json.Burst;
 using Friflo.Json.Fliox.Mapper.Map;
-using Friflo.Json.Fliox.Mapper.Map.Obj.Reflect;
+using Friflo.Json.Fliox.Mapper.Map.Object.Reflect;
 
 #if !UNITY_5_3_OR_NEWER
 

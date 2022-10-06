@@ -6,7 +6,7 @@ using System.Reflection;
 using Friflo.Json.Fliox.Mapper.Map.Utils;
 using Friflo.Json.Fliox.Mapper.Utils;
 
-namespace Friflo.Json.Fliox.Mapper.Map.Obj.Reflect
+namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
 {
     public abstract class FieldQuery
     {

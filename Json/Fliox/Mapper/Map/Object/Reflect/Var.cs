@@ -3,7 +3,7 @@
 
 using System;
 
-namespace Friflo.Json.Fliox.Mapper.Map.Obj.Reflect
+namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
 {
     internal readonly struct Var
     {

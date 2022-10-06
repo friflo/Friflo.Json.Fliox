@@ -6,14 +6,14 @@ using System.Reflection;
 using Friflo.Json.Burst;
 using Friflo.Json.Fliox.Mapper.Access;
 using Friflo.Json.Fliox.Mapper.Diff;
-using Friflo.Json.Fliox.Mapper.Map.Obj.Reflect;
+using Friflo.Json.Fliox.Mapper.Map.Object.Reflect;
 using Friflo.Json.Fliox.Mapper.Map.Utils;
 using Friflo.Json.Fliox.Mapper.Map.Val;
 using Friflo.Json.Fliox.Mapper.MapIL.Obj;
 using Friflo.Json.Fliox.Mapper.Utils;
 using Friflo.Json.Fliox.Transform.Select;
 
-namespace Friflo.Json.Fliox.Mapper.Map.Obj
+namespace Friflo.Json.Fliox.Mapper.Map.Object
 {
     internal sealed class ClassMatcher : ITypeMatcher {
         public static readonly ClassMatcher Instance = new ClassMatcher();

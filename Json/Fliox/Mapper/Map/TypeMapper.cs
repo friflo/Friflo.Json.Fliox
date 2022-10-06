@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using Friflo.Json.Fliox.Mapper.Access;
 using Friflo.Json.Fliox.Mapper.Diff;
-using Friflo.Json.Fliox.Mapper.Map.Obj.Reflect;
+using Friflo.Json.Fliox.Mapper.Map.Object.Reflect;
 using Friflo.Json.Fliox.Mapper.Map.Utils;
 using Friflo.Json.Fliox.Mapper.MapIL.Obj;
 using Friflo.Json.Fliox.Transform.Select;

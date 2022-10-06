@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using Friflo.Json.Burst;
 using Friflo.Json.Burst.Utils;
-using Friflo.Json.Fliox.Mapper.Map.Obj.Reflect;
+using Friflo.Json.Fliox.Mapper.Map.Object.Reflect;
 using Friflo.Json.Fliox.Mapper.MapIL.Obj;
 using Friflo.Json.Fliox.Mapper.Utils;
 

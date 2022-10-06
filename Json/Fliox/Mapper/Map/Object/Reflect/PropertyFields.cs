@@ -6,7 +6,7 @@ using Friflo.Json.Burst;
 using Friflo.Json.Burst.Utils;
 using Friflo.Json.Fliox.Mapper.Utils;
 
-namespace Friflo.Json.Fliox.Mapper.Map.Obj.Reflect
+namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
 {
     public abstract class PropertyFields {
         public   readonly   PropField []                    fields;

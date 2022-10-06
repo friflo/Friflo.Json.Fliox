@@ -3,7 +3,7 @@
 using System;
 using System.Collections.Generic;
 using Friflo.Json.Fliox.Mapper.Map.Arr;
-using Friflo.Json.Fliox.Mapper.Map.Obj;
+using Friflo.Json.Fliox.Mapper.Map.Object;
 using Friflo.Json.Fliox.Mapper.Map.Val;
 
 // ReSharper disable InlineOutVariableDeclaration
