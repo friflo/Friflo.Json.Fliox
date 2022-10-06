@@ -100,7 +100,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc
             var start = GC.GetAllocatedBytesForCurrentThread();
             
             var intValue = new BuildInValue(1,BuildInType.Int32);
-            for (int n = 0; n < 50_000_000; n++) {
+            for (int n = 0; n < 50; n++) {
                 // var value = testClass.intValue;                      // 50_000_000    12 ms, memory             0 bytes
                 BuildInValue value = intAccess.GetValue(testClass);     // 50_000_000   110 ms, memory             0 bytes
                 // intAccess.SetValue(testClass, intValue);             // 50_000_000   110 ms, memory             0 bytes
