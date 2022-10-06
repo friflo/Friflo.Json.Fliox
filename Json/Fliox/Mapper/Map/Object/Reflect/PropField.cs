@@ -97,7 +97,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
         // private static readonly bool useDirect = false; // Unity: System.NotImplementedException : GetValueDirect
         
         /// <paramref name="setMethodParams"/> need to be of Length 1
-        public void SetField (object obj, object value, object[] setMethodParams)
+        public void SetVar (object obj, object value, object[] setMethodParams)
         {
             if (field != null) {
                 // if (useDirect) { field.SetValueDirect(__makeref(obj), value); return; }
@@ -113,7 +113,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
         }
         
         // ReSharper disable PossibleNullReferenceException
-        public object GetField (object obj)
+        public object GetVar (object obj)
         {
             if (field != null) {
                 // if (useDirect) return field.GetValueDirect(__makeref(obj));
