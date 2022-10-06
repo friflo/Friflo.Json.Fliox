@@ -8,10 +8,18 @@ using Friflo.Json.Fliox.Mapper.Utils;
 
 namespace Friflo.Json.Fliox.Mapper.Map.Obj.Reflect
 {
+    public sealed class PropField<T> : PropField
+    {
+        public PropField(string name, string jsonName, TypeMapper fieldType, FieldInfo field, PropertyInfo property,
+            int primIndex, int objIndex, bool required, string docs)
+            : base(name, jsonName, fieldType, field, property, primIndex, objIndex, required, docs) {
+        }
+    }
+    
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
-    public sealed class PropField : IDisposable
+    public abstract class PropField : IDisposable
     {
         public   readonly   string          name;
         public   readonly   JsonKey         key;

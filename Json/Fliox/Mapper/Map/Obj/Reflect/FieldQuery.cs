@@ -8,18 +8,33 @@ using Friflo.Json.Fliox.Mapper.Utils;
 
 namespace Friflo.Json.Fliox.Mapper.Map.Obj.Reflect
 {
-    public sealed class  FieldQuery
+    public abstract class FieldQuery
     {
-        internal readonly   List<PropField>     fieldList = new List <PropField>();
+        internal  readonly  List<PropField>     fields = new List <PropField>();
         internal            int                 primCount;
         internal            int                 objCount;
-        private  readonly   TypeStore           typeStore;
-        private  readonly   FieldFilter         fieldFilter;
-
+        protected readonly  TypeStore           typeStore;
+        protected readonly  FieldFilter         fieldFilter;
+        internal  readonly  Type                type;
+        
         internal FieldQuery(TypeStore typeStore, Type type, FieldFilter fieldFilter) {
             this.typeStore      = typeStore;
             this.fieldFilter    = fieldFilter;
+            this.type           = type;
+        }
+    } 
+    
+    public sealed class  FieldQuery<T> : FieldQuery
+    {
+        internal readonly   List<PropField<T>>  fieldList = new List <PropField<T>>();
+
+        public FieldQuery(TypeStore typeStore, Type type, FieldFilter fieldFilter = null)
+            : base(typeStore, type, fieldFilter ?? FieldFilter.DefaultMemberFilter)
+        {
             TraverseMembers(type, true);
+            foreach (var field in fieldList) {
+                fields.Add(field);
+            }
         }
 
         private void CreatePropField (Type type, string fieldName, PropertyInfo property, FieldInfo field, bool addMembers) {
@@ -71,14 +86,14 @@ namespace Friflo.Json.Fliox.Mapper.Map.Obj.Reflect
                         var signature  = $"{docPrefix}{declaringType.FullName}.{fieldName}";
                         docs           = assemblyDocs.GetDocs(declaringType.Assembly, signature);
                     }
-                    PropField pf;
+                    PropField<T> pf;
                     if (memberType.IsEnum || memberType.IsPrimitive || isNullablePrimitive || isNullableEnum) {
-                        pf =     new PropField(fieldName, jsonName, mapper, field, property, primCount,    -9999, required, docs); // force index exception in case of buggy impl.
+                        pf =     new PropField<T>(fieldName, jsonName, mapper, field, property, primCount,    -9999, required, docs); // force index exception in case of buggy impl.
                     } else {
                         if (mapper.isValueType)
-                            pf = new PropField(fieldName, jsonName, mapper, field, property, primCount, objCount, required, docs);
+                            pf = new PropField<T>(fieldName, jsonName, mapper, field, property, primCount, objCount, required, docs);
                         else
-                            pf = new PropField(fieldName, jsonName, mapper, field, property, -9999,     objCount, required, docs); // force index exception in case of buggy impl.
+                            pf = new PropField<T>(fieldName, jsonName, mapper, field, property, -9999,     objCount, required, docs); // force index exception in case of buggy impl.
                     }
 
                     fieldList.Add(pf);

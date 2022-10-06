@@ -53,11 +53,15 @@ namespace Friflo.Json.Fliox.Mapper.Map.Obj
     }
     
     internal class ClassMapper<T> : TypeMapper<T> {
-        private readonly    ConstructorInfo constructor;
-        private readonly    Func<T>         createInstance;
+        private readonly    ConstructorInfo     constructor;
+        private readonly    Func<T>             createInstance;
 
-        public  override    string          DataTypeName() { return $"class {typeof(T).Name}"; }
-        public  override    bool            IsComplex       => true;
+        public  override    string              DataTypeName() { return $"class {typeof(T).Name}"; }
+        public  override    bool                IsComplex       => true;
+        // ReSharper disable once UnassignedReadonlyField - field ist set via reflection below to use make field readonly
+        public  readonly    PropertyFields<T>   propFields;
+        
+        public  override    PropertyFields      PropFields => propFields;
 
         protected ClassMapper (StoreConfig config, Type type, ConstructorInfo constructor, InstanceFactory instanceFactory, bool isValueType) :
             base (config, type, TypeUtils.IsNullable(type), isValueType)
@@ -98,8 +102,9 @@ namespace Friflo.Json.Fliox.Mapper.Map.Obj
         
         public override void InitTypeMapper(TypeStore typeStore) {
             instanceFactory?.InitFactory(typeStore);
-            var fields = new PropertyFields(type, typeStore);
-            FieldInfo fieldInfo = typeof(TypeMapper).GetField(nameof(propFields), BindingFlags.Public | BindingFlags.Instance);
+            var query   = new FieldQuery<T>(typeStore, type);
+            var fields  = new PropertyFields<T>(query);
+            FieldInfo fieldInfo = mapperType.GetField(nameof(propFields), BindingFlags.Public | BindingFlags.Instance);
             // ReSharper disable once PossibleNullReferenceException
             fieldInfo.SetValue(this, fields);
         }
@@ -123,8 +128,6 @@ namespace Friflo.Json.Fliox.Mapper.Map.Obj
         // ----------------------------------- Write / Read -----------------------------------
         
         public override DiffNode Diff(Differ differ, T left, T right) {
-            object leftObj = left; // box in case of a struct. This enables FieldInfo.GetValue() / SetValue() operating on struct also.
-            object rightObj = right;
             TypeMapper classMapper = this;
 
             if (!isValueType) {
@@ -134,16 +137,22 @@ namespace Friflo.Json.Fliox.Mapper.Map.Obj
                 Type rightType = right.GetType();
                 if (leftType != rightType)
                     return differ.AddNotEqual(left, right);
+                return classMapper.DiffTyped(differ, left, right);
             }
-
+            return DiffTyped(differ, left, right);
+        }
+        
+        internal override DiffNode DiffTyped(Differ differ, object left, object right)
+        {
+            // boxing left & right support modifying a struct. This enables FieldInfo.GetValue() / SetValue() operating on struct also.
             differ.PushParent(left, right);
-            PropField[] fields = classMapper.propFields.fields;
+            var fields = propFields.typedFields;
             for (int n = 0; n < fields.Length; n++) {
-                PropField field = fields[n];
+                var field = fields[n];
                 differ.PushMember(field);
 
-                object leftField = field.GetField(leftObj);
-                object rightField = field.GetField(rightObj);
+                object leftField    = field.GetField(left);
+                object rightField   = field.GetField(right);
                 if (leftField != null || rightField != null) {
                     if (leftField != null && rightField != null) {
                         field.fieldType.DiffObject(differ, leftField, rightField);
@@ -163,12 +172,12 @@ namespace Friflo.Json.Fliox.Mapper.Map.Obj
             if (type != objType)
                 classMapper = patcher.TypeCache.GetTypeMapper(objType);
             
-            PropField[] fields = classMapper.propFields.fields;
+            var fields = classMapper.PropFields.fields; // todo use PropertyFields<>.typedFields to utilize PropField<>
             for (int n = 0; n < fields.Length; n++) {
-                PropField field = fields[n];
+                var field = fields[n];
                 if (patcher.IsMember(field.key)) {
-                    var value = field.GetField(obj); 
-                    var action = patcher.DescendMember(field.fieldType, value, out object newValue);
+                    var value   = field.GetField(obj); 
+                    var action  = patcher.DescendMember(field.fieldType, value, out object newValue);
                     if  (action == NodeAction.Assign)
                         field.SetField(obj, newValue, patcher.setMethodParams);
                     else
@@ -184,11 +193,11 @@ namespace Friflo.Json.Fliox.Mapper.Map.Obj
             if (type != objType)
                 classMapper = accessor.TypeCache.GetTypeMapper(objType);
 
-            PropertyFields fields = classMapper.propFields;
+            var fields = classMapper.PropFields; // todo use PropertyFields<>.typedFields to utilize PropField<>
             var children = node.GetChildren();
             foreach (var child in children) {
                 if (child.IsMember()) {
-                    var field = fields.GetField(child.GetName());
+                    var field = fields.GetPropField(child.GetName());
                     if (field == null)
                         continue;
                     object elemVar = field.GetField(obj);
@@ -203,7 +212,6 @@ namespace Friflo.Json.Fliox.Mapper.Map.Obj
         public override void Write(ref Writer writer, T slot) {
             int startLevel = writer.IncLevel();
 
-            object objRef = slot; // box in case of a struct. This enables FieldInfo.GetValue() / SetValue() operating on struct also.
             TypeMapper classMapper = this;
             bool firstMember = true;
 
@@ -214,10 +222,18 @@ namespace Friflo.Json.Fliox.Mapper.Map.Obj
                     writer.WriteDiscriminator(this, classMapper, ref firstMember);
                 }
             }
+            classMapper.WriteObjectTyped(ref writer, slot, ref firstMember);
 
-            PropField[] fields = classMapper.propFields.fields;
+            writer.WriteObjectEnd(firstMember);
+            writer.DecLevel(startLevel);
+        }
+        
+        internal override void WriteObjectTyped(ref Writer writer, object slot, ref bool firstMember)
+        {
+            object objRef = slot; // box in case of a struct. This enables FieldInfo.GetValue() / SetValue() operating on struct also.
+            var fields = propFields.typedFields;
             for (int n = 0; n < fields.Length; n++) {
-                PropField field = fields[n];
+                var field = fields[n];
                 
                 object elemVar  = field.GetField(objRef);
                 var fieldType   = field.fieldType;
@@ -233,8 +249,6 @@ namespace Friflo.Json.Fliox.Mapper.Map.Obj
                     writer.FlushFilledBuffer();
                 }
             }
-            writer.WriteObjectEnd(firstMember);
-            writer.DecLevel(startLevel);
         }
 
 
@@ -248,40 +262,48 @@ namespace Friflo.Json.Fliox.Mapper.Map.Obj
                 if (discriminator == null) {
                     obj = (T) factory.CreateInstance(typeof(T));
                     if (classType.IsNull(ref obj))
-                        return reader.ErrorMsg<TypeMapper>($"No instance created in InstanceFactory: ", factory.GetType().Name, out success);
+                        return reader.ErrorMsg<TypeMapper<T>>($"No instance created in InstanceFactory: ", factory.GetType().Name, out success);
                     classType = reader.typeCache.GetTypeMapper(obj.GetType());
                 } else {
                     if (ev == JsonEvent.ValueString && reader.parser.key.IsEqualString(discriminator)) {
                         string discriminant = reader.parser.value.AsString();
                         obj = (T) factory.CreatePolymorph(discriminant);
                         if (classType.IsNull(ref obj))
-                            return reader.ErrorMsg<TypeMapper>($"No [PolymorphType] type declared for discriminant: '{discriminant}' on type: ", classType.type.Name, out success);
+                            return reader.ErrorMsg<TypeMapper<T>>($"No [PolymorphType] type declared for discriminant: '{discriminant}' on type: ", classType.type.Name, out success);
                         classType = reader.typeCache.GetTypeMapper(obj.GetType());
                         parser.NextEvent();
                     } else
-                        return reader.ErrorMsg<TypeMapper>($"Expect discriminator '{discriminator}': '...' as first JSON member for type: ", classType.type.Name, out success);
+                        return reader.ErrorMsg<TypeMapper<T>>($"Expect discriminator '{discriminator}': '...' as first JSON member for type: ", classType.type.Name, out success);
                 }
-            } else {
-                if (classType.IsNull(ref obj))
-                    obj = (T) classType.CreateInstance();
+                success = true;
+                return classType;
             }
+            if (classType.IsNull(ref obj))
+                obj = (T) classType.CreateInstance();
             success = true;
-            return classType;
+            return null;
         }
 
         public override T Read(ref Reader reader, T slot, out bool success) {
             // Ensure preconditions are fulfilled
             if (!reader.StartObject(this, out success))
                 return default;
-                
-            TypeMapper classType = this;
-            classType = GetPolymorphType(ref reader, classType, ref slot, out success);
+
+            var subType = GetPolymorphType(ref reader, this, ref slot, out success);
             if (!success)
                 return default;
+            if (subType != null) {
+                return (T)subType.ReadObjectTyped(ref reader, slot, out success);
+            }
+            return (T)ReadObjectTyped(ref reader, slot, out success);
+        }
+        
+        internal override object ReadObjectTyped(ref Reader reader, object slot, out bool success)
+        {
             object objRef = slot; // box in case of a struct. This enables FieldInfo.GetValue() / SetValue() operating on struct also.
             
             JsonEvent ev = reader.parser.Event;
-            var fields = classType.propFields;
+            var fields = propFields;
 
             while (true) {
                 switch (ev) {
@@ -291,8 +313,8 @@ namespace Friflo.Json.Fliox.Mapper.Map.Obj
                     case JsonEvent.ArrayStart:
                     case JsonEvent.ObjectStart:
                     case JsonEvent.ValueNull:
-                        PropField field;
-                        if ((field = reader.GetField32(fields)) == null)
+                        PropField<T> field;
+                        if ((field = reader.GetField(fields)) == null)
                             break;
                         TypeMapper fieldType = field.fieldType;
                         object fieldVal = field.GetField(objRef);

@@ -68,7 +68,7 @@ namespace Friflo.Json.Fliox.Mapper.MapIL.Obj
         }
         
         private DbgEntry[] GetDebugView() {
-            var fields = classTypeDbg.propFields.fields;
+            var fields = classTypeDbg.PropFields.fields;
             DbgEntry[] entries = new DbgEntry[fields.Length];
             for (int n = 0; n < fields.Length; n++) {
                 var field = fields[n];

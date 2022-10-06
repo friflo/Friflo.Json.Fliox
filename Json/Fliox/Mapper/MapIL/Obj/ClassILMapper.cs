@@ -56,7 +56,7 @@ namespace Friflo.Json.Fliox.Mapper.MapIL.Obj
             if (this != classMapper)
                 writer.WriteDiscriminator(this, classMapper, ref firstMember);
             
-            PropField[] fields = classMapper.propFields.fields;
+            PropField[] fields = classMapper.PropFields.fields;
             for (int n = 0; n < fields.Length; n++) {
                 PropField field = fields[n];
                 var fieldType   = field.fieldType;
@@ -97,22 +97,32 @@ namespace Friflo.Json.Fliox.Mapper.MapIL.Obj
             if (!reader.StartObject(this, out success))
                 return default;
 
-            T obj = slot;
-            TypeMapper classType = this;
-            classType = GetPolymorphType(ref reader, classType, ref obj, out success);
+            var subType = GetPolymorphType(ref reader, this, ref slot, out success);
             if (!success)
                 return default;
+            if (subType != null) {
+                return (T)subType.ReadObjectTyped(ref reader, slot, out success);
+            }
+            return (T)ReadObjectTyped(ref reader, slot, out success);
+        }
             
-            ClassMirror mirror = reader.InstanceLoad(this, ref classType, ref obj);
-            if (!ReadClassMirror(ref reader, mirror, classType, 0, 0))
+        internal override object ReadObjectTyped(ref Reader reader, object slot, out bool success)
+        {
+            var objRef = (T)slot;
+            TypeMapper classType = this;
+            ClassMirror mirror = reader.InstanceLoad(this, ref classType, ref objRef);
+            if (!ReadClassMirror(ref reader, mirror, classType, 0, 0)) {
+                success = false;
                 return default;
-            reader.InstanceStore(mirror, ref obj);
-            return obj;
+            }
+            reader.InstanceStore(mirror, ref objRef);
+            success = true;
+            return objRef;
         }
 
         internal static bool ReadClassMirror(ref Reader reader, ClassMirror mirror, TypeMapper classType, int primPos, int objPos) {
-            JsonEvent ev = reader.parser.Event;
-            var propFields = classType.propFields;
+            JsonEvent ev    = reader.parser.Event;
+            var propFields  = classType.PropFields;
 
             while (true) {
                 bool success;

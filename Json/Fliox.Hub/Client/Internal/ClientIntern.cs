@@ -195,7 +195,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             foreach (var mapper in mappers) {
                 var typeMapper      = (TypeMapper)mapper;
                 var entityMapper    = typeMapper.GetElementMapper();
-                var fields          = entityMapper.propFields.fields;
+                var fields          = entityMapper.PropFields.fields;
                 foreach (var field in fields) {
                     var relation = field.relation;
                     if (relation == null)

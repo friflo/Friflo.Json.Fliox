@@ -18,6 +18,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
     public abstract class TypeMapper : IDisposable
     {
         public  readonly    Type            type;
+        public  readonly    Type            mapperType;
         public  readonly    bool            isNullable;
         public  readonly    bool            isValueType;
         public  readonly    Type            nullableUnderlyingType;
@@ -34,13 +35,13 @@ namespace Friflo.Json.Fliox.Mapper.Map
         public virtual      int             Count(object array) => throw new InvalidOperationException("Count not applicable");
 
 
-        // ReSharper disable once UnassignedReadonlyField - field ist set via reflection below to use make field readonly
-        public  readonly    PropertyFields  propFields;
+        public virtual      PropertyFields  PropFields => null;
         public              ClassLayout     layout;  // todo make readonly
 
 
         protected TypeMapper(StoreConfig config, Type type, bool isNullable, bool isValueType) {
             this.type                   = type;
+            this.mapperType             = GetType();
             this.isNullable             = isNullable;
             this.isValueType            = isValueType;
             this.nullableUnderlyingType = Nullable.GetUnderlyingType(type);
@@ -72,8 +73,12 @@ namespace Friflo.Json.Fliox.Mapper.Map
             throw new InvalidOperationException("MemberObject() is intended only for classes");
         }
 
-        public abstract void            WriteObject(ref Writer writer, object slot);
-        public abstract object          ReadObject(ref Reader reader, object slot, out bool success);
+        public   abstract void          WriteObject(ref Writer writer, object slot);
+        public   abstract object        ReadObject(ref Reader reader, object slot, out bool success);
+        
+        internal virtual  object        ReadObjectTyped(ref Reader reader, object slot, out bool success)       => throw new InvalidOperationException("not implemented");
+        internal virtual  void          WriteObjectTyped(ref Writer writer, object slot, ref bool firstMember)  => throw new InvalidOperationException("not implemented");
+        internal virtual  DiffNode      DiffTyped(Differ differ, object left, object right)                     => throw new InvalidOperationException("not implemented");
         
         internal abstract bool          IsValueNullIL(ClassMirror mirror, int primPos, int objPos);
         internal abstract void          WriteValueIL(ref Writer writer, ClassMirror mirror, int primPos, int objPos);

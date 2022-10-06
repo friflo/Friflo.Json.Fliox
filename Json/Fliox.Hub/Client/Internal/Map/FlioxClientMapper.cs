@@ -25,6 +25,10 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal.Map
     internal sealed class FlioxClientMapper<T> : TypeMapper<T>
     {
         public  override    bool    IsComplex => true;
+        // ReSharper disable once UnassignedReadonlyField - field ist set via reflection below to use make field readonly
+        private readonly    PropertyFields<T>   propFields;
+        
+        public  override    PropertyFields      PropFields => propFields;
         
         public FlioxClientMapper (StoreConfig config, Type type) :
             base (config, type, true, false)
@@ -33,8 +37,9 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal.Map
         }
         
         public override void InitTypeMapper(TypeStore typeStore) {
-            using (var fields = new PropertyFields(type, typeStore, ClientFieldFilter.Instance)) {
-                FieldInfo fieldInfo = typeof(TypeMapper).GetField(nameof(propFields), BindingFlags.Public | BindingFlags.Instance);
+            var query = new FieldQuery<T>(typeStore, type, ClientFieldFilter.Instance);
+            using (var fields = new PropertyFields<T>(query)) {
+                FieldInfo fieldInfo = mapperType.GetField(nameof(propFields), BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
                 // ReSharper disable once PossibleNullReferenceException
                 fieldInfo.SetValue(this, fields);
             }

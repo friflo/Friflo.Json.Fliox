@@ -51,8 +51,8 @@ namespace Friflo.Json.Fliox.Mapper.Map
             return default;
         }
       
-        public PropField GetField(PropertyFields propFields) {
-            PropField field = propFields.GetField(ref this.parser.key);
+        public PropField<T> GetField<T>(PropertyFields<T> propFields) {
+            PropField<T> field = propFields.GetField(ref this.parser.key);
             if (field != null)
                 return field;
             parser.SkipEvent();
@@ -61,7 +61,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
         
         public PropField GetField32(PropertyFields propFields) {
             searchKey.FromBytes(ref parser.key);
-            for (int n = 0; n < propFields.num; n++) {
+            for (int n = 0; n < propFields.Count; n++) {
                 if (searchKey.IsEqual(ref propFields.names32[n]))
                     return propFields.fields[n];
             }

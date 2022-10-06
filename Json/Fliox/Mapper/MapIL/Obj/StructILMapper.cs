@@ -34,11 +34,11 @@ namespace Friflo.Json.Fliox.Mapper.MapIL.Obj
 #endif
             int startLevel = writer.IncLevel();
             
-            PropField[] fields = propFields.fields;
+            var fields = propFields.typedFields;
             bool firstMember = true;
 
             for (int n = 0; n < fields.Length; n++) {
-                PropField field = fields[n];
+                var field = fields[n];
                 if (field.fieldType.IsValueNullIL(mirror, primPos + field.primIndex, objPos + field.objIndex)) {
                     if (writer.writeNullMembers) {
                         writer.WriteFieldKey(field, ref firstMember);

@@ -8,45 +8,54 @@ using Friflo.Json.Fliox.Mapper.Utils;
 
 namespace Friflo.Json.Fliox.Mapper.Map.Obj.Reflect
 {
+    public abstract class PropertyFields {
+        public   readonly   PropField []                    fields;
+        public   readonly   Bytes32 []                      names32;
+        public   readonly   int                             Count;
+        public   readonly   int                             primCount;
+        public   readonly   int                             objCount;
+        // ReSharper disable once NotAccessedField.Local
+        private  readonly   string                          typeName;
+        
+        public   abstract   PropField                       GetPropField (string fieldName);
+        
+        protected PropertyFields(FieldQuery query) {
+            typeName        = query.type. ToString();
+            primCount       = query.primCount;
+            objCount        = query.objCount;
+            Count           = query.fields.Count;
+            fields          = query.fields.ToArray();
+            names32         = new Bytes32[Count];
+        }
+    }
+    
     // PropertyFields
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
-    public sealed class PropertyFields : IDisposable
+    public sealed class PropertyFields<T> : PropertyFields, IDisposable
     {
-        public   readonly   PropField []                    fields;
-        public   readonly   Bytes32 []                      names32;
-        public   readonly   int                             num;
-        public   readonly   int                             primCount;
-        public   readonly   int                             objCount;
-
-        // ReSharper disable once NotAccessedField.Local
-        private  readonly   string                          typeName;
+        public   readonly   PropField<T> []                     typedFields;
+        private  readonly   Dictionary <string, PropField<T>>   strMap      = new Dictionary <string, PropField<T>>(13);
+        private  readonly   HashMapOpen<Bytes,  PropField<T>>   fieldMap;
         
-        private  readonly   Dictionary <string, PropField>  strMap      = new Dictionary <string, PropField>(13);
-        private  readonly   HashMapOpen<Bytes,  PropField>  fieldMap;
+        private  readonly   Bytes                               removedKey;
         
-        private  readonly   Bytes                           removedKey;
+        public   override   PropField                           GetPropField (string fieldName) => GetField(fieldName);
         
-
-        public PropertyFields (Type type, TypeStore typeStore, FieldFilter memberFilter = null)
+        public PropertyFields (FieldQuery<T> query)
+            : base (query)
         {
-            memberFilter    = memberFilter ?? FieldFilter.DefaultMemberFilter;
-            typeName        = type. ToString();
-            var query       = new FieldQuery(typeStore, type, memberFilter);
-            primCount       = query.primCount;
-            objCount        = query.objCount;
+
             var fieldList   = query.fieldList;
-            num             = fieldList. Count;
             removedKey      = new Bytes("__REMOVED", Untracked.Bytes);
-            fieldMap        = new HashMapOpen<Bytes, PropField>(11, removedKey);
+            fieldMap        = new HashMapOpen<Bytes, PropField<T>>(11, removedKey);
             
-            fields          = new PropField [num];
-            names32         = new Bytes32[num];
+            typedFields     = new PropField<T> [Count];
             
-            for (int n = 0; n < num; n++) {
-                fields[n] = fieldList[n];
-                var field = fields[n];
+            for (int n = 0; n < Count; n++) {
+                typedFields[n]  = fieldList[n];
+                var field       = typedFields[n];
                 if (strMap.ContainsKey(field.name))
                     throw new InvalidOperationException("assert field is accessible via string lookup");
                 strMap.Add(field.name, field);
@@ -60,21 +69,21 @@ namespace Friflo.Json.Fliox.Mapper.Map.Obj.Reflect
             return strMap.ContainsKey(fieldName);
         }
         
-        public PropField GetField (ref Bytes fieldName) {
+        public PropField<T> GetField (ref Bytes fieldName) {
             // Note: its likely that hashcode ist not set properly. So calculate anyway
             fieldName.UpdateHashCode();
-            PropField pf = fieldMap.Get(ref fieldName);
+            PropField<T> pf = fieldMap.Get(ref fieldName);
             return pf;
         }
         
-        public PropField GetField (string fieldName) {
-            strMap.TryGetValue(fieldName, out PropField field);
+        public PropField<T> GetField (string fieldName) {
+            strMap.TryGetValue(fieldName, out PropField<T> field);
             return field;
         }
         
         public void Dispose() {
-            for (int i = 0; i < fields.Length; i++)
-                fields[i].Dispose();
+            for (int i = 0; i < typedFields.Length; i++)
+                typedFields[i].Dispose();
             removedKey.Dispose(Untracked.Bytes);
         }
     }
