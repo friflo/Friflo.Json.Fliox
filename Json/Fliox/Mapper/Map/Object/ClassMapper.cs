@@ -151,13 +151,13 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object
                 var field = fields[n];
                 differ.PushMember(field);
 
-                object leftField    = field.GetVar(left);
-                object rightField   = field.GetVar(right);
-                if (leftField != null || rightField != null) {
-                    if (leftField != null && rightField != null) {
-                        field.fieldType.DiffObject(differ, leftField, rightField);
+                Var leftField    = field.GetVar(left);
+                Var rightField   = field.GetVar(right);
+                if (leftField.NotNull || rightField.NotNull) {
+                    if (leftField.NotNull && rightField.NotNull) {
+                        field.fieldType.DiffObject(differ, leftField.obj, rightField.obj);
                     } else {
-                        differ.AddNotEqual(leftField, rightField);
+                        differ.AddNotEqual(leftField.obj, rightField.obj);
                     }
                 } // else: both null
 
@@ -176,10 +176,10 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object
             for (int n = 0; n < fields.Length; n++) {
                 var field = fields[n];
                 if (patcher.IsMember(field.key)) {
-                    var value   = field.GetVar(obj); 
-                    var action  = patcher.DescendMember(field.fieldType, value, out object newValue);
+                    Var value   = field.GetVar(obj); 
+                    var action  = patcher.DescendMember(field.fieldType, value.obj, out object newValue);
                     if  (action == NodeAction.Assign)
-                        field.SetVar(obj, newValue, patcher.setMethodParams);
+                        field.SetVar(obj, new Var(newValue), patcher.setMethodParams);
                     else
                         throw new InvalidOperationException($"NodeAction not applicable: {action}");
                     return;
@@ -200,11 +200,11 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object
                     var field = fields.GetPropField(child.GetName());
                     if (field == null)
                         continue;
-                    object elemVar = field.GetVar(obj);
-                    accessor.HandleResult(child, elemVar);
+                    Var elemVar = field.GetVar(obj);
+                    accessor.HandleResult(child, elemVar.obj);
                     var fieldType = field.fieldType;
-                    if (fieldType.IsComplex && elemVar != null)
-                        fieldType.MemberObject(accessor, elemVar, child);
+                    if (fieldType.IsComplex && elemVar.NotNull)
+                        fieldType.MemberObject(accessor, elemVar.obj, child);
                 }
             }
         }
@@ -235,9 +235,9 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object
             for (int n = 0; n < fields.Length; n++) {
                 var field = fields[n];
                 
-                object elemVar  = field.GetVar(objRef);
+                var elemVar     = field.GetVar(objRef);
                 var fieldType   = field.fieldType;
-                bool isNull     = fieldType.IsNullObject(elemVar);
+                bool isNull     = fieldType.IsNullObject(elemVar.obj);
                 if (isNull) {
                     if (writer.writeNullMembers) {
                         writer.WriteFieldKey(field, ref firstMember);
@@ -245,7 +245,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object
                     }
                 } else {
                     writer.WriteFieldKey(field, ref firstMember); 
-                    fieldType.WriteObject(ref writer, elemVar);
+                    fieldType.WriteObject(ref writer, elemVar.obj);
                     writer.FlushFilledBuffer();
                 }
             }
@@ -317,13 +317,13 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object
                         if ((field = reader.GetField(fields)) == null)
                             break;
                         TypeMapper fieldType = field.fieldType;
-                        object fieldVal = field.GetVar(objRef);
-                        object curFieldVal = fieldVal;
-                        fieldVal = fieldType.ReadObject(ref reader, fieldVal, out success);
+                        Var fieldVal    = field.GetVar(objRef);
+                        Var curFieldVal = fieldVal;
+                        fieldVal        = new Var(fieldType.ReadObject(ref reader, fieldVal.obj, out success));
                         if (!success)
                             return default;
                         //
-                        if (!fieldType.isNullable && fieldVal == null)
+                        if (!fieldType.isNullable && fieldVal.IsNull)
                             return reader.ErrorIncompatible<T>(this, field, out success);
                         
                         if (curFieldVal != fieldVal)

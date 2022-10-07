@@ -97,32 +97,32 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
         // private static readonly bool useDirect = false; // Unity: System.NotImplementedException : GetValueDirect
         
         /// <paramref name="setMethodParams"/> need to be of Length 1
-        public void SetVar (object obj, object value, object[] setMethodParams)
+        public void SetVar (object obj, in Var value, object[] setMethodParams)
         {
             if (field != null) {
                 // if (useDirect) { field.SetValueDirect(__makeref(obj), value); return; }
-                field.SetValue(obj, value); // todo use Expression - but not for Unity 
+                field.SetValue(obj, value.obj); // todo use Expression - but not for Unity 
             } else {
                 if (setLambda != null) {
-                    setLambda(obj, value);
+                    setLambda(obj, value.obj);
                 } else {
-                    setMethodParams[0] = value;
+                    setMethodParams[0] = value.obj;
                     setMethod.Invoke(obj, setMethodParams);
                 }
             }
         }
         
         // ReSharper disable PossibleNullReferenceException
-        public object GetVar (object obj)
+        public Var GetVar (object obj)
         {
             if (field != null) {
                 // if (useDirect) return field.GetValueDirect(__makeref(obj));
-                return field.GetValue (obj); // todo use Expression - but not for Unity
+                return new Var(field.GetValue (obj)); // todo use Expression - but not for Unity
             }
             if (getLambda != null) {
-                return getLambda(obj);
+                return new Var(getLambda(obj));
             }
-            return getMethod.Invoke(obj, null);
+            return new Var(getMethod.Invoke(obj, null));
         }
 
         public override string ToString() {
