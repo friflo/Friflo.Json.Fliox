@@ -100,10 +100,10 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
         {
             if (field != null) {
                 // if (useDirect) { field.SetValueDirect(__makeref(obj), value); return; }
-                field.SetValue(obj, value.obj); // todo use Expression - but not for Unity
+                field.SetValue(obj, value.Object); // todo use Expression - but not for Unity
                 return;
             }
-            setLambda(obj, value.obj);
+            setLambda(obj, value.Object);
         }
         
         public Var GetVar (object obj)

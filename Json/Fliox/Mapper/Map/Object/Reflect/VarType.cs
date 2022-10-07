@@ -3,6 +3,7 @@
 
 using System;
 using System.Globalization;
+using static Friflo.Json.Fliox.Mapper.Map.Object.Reflect.Var;
 
 namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
 {
@@ -49,6 +50,10 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
         }
     }
     
+//  ------------------------------------- VarType implementations -------------------------------------
+/// Nest concrete VarType classes in Var to make all <see cref="Var"/> fields private
+public partial struct Var {
+        
     // --- object ---
     internal sealed class VarTypeObject : VarType
     {
@@ -277,4 +282,5 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
         public    override  Var     DefaultValue                           => new Var((char?)null);
         public    override  Var     FromObject  (object obj)               => new Var((char?)obj);
     }
+}
 }

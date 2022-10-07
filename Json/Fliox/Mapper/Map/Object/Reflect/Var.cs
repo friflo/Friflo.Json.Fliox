@@ -8,15 +8,16 @@ using Browse = System.Diagnostics.DebuggerBrowsableAttribute;
 
 namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
 {
-    public readonly struct Var
+    public readonly partial struct Var
     {
         public override bool    Equals(object obj)  => throw new InvalidOperationException("not implemented intentionally");
         public override int     GetHashCode()       => throw new InvalidOperationException("not implemented intentionally");
 
+        // --- Note! All fields must be private to ensure using only the type checked properties 
         [Browse(Never)] private   readonly  VarType type;
-                        internal  readonly  object  obj;
-                        internal  readonly  long    lng;
-                        internal  readonly  double  dbl;   // can merge with lng using BitConverter.DoubleToInt64Bits()
+                        private   readonly  object  obj;
+                        private   readonly  long    lng;
+                        private   readonly  double  dbl;   // can merge with lng using BitConverter.DoubleToInt64Bits()
         
                         public  bool    IsNull      =>  type.IsNull(this);
         [Browse(Never)] public  bool    NotNull     => !type.IsNull(this);
