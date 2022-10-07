@@ -18,9 +18,8 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
         public              bool    IsEqual(in Var other)   =>  type.AreEqual(this, other);
         public              bool    IsNull                  =>  type.IsNull(this);
         public              bool    NotNull                 => !type.IsNull(this);
-        public              string  AsString()              =>  type.AsString(this);
         
-        public    override  string  ToString()              =>  AsString();
+        public    override  string  ToString()              =>  type.AsString(this);
 
         public static bool operator == (in Var val1, in Var val2) =>  val1.type.AreEqual(val1, val2);
         public static bool operator != (in Var val1, in Var val2) => !val1.type.AreEqual(val1, val2);

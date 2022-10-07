@@ -1,7 +1,6 @@
 // Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
-using System;
 using Friflo.Json.Fliox.Mapper.Map.Object.Reflect;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
@@ -56,6 +55,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
             var long1B      = new Var(1);
             var long2       = new Var(2);
             var longNull    = new Var((long?)null);
+            var longNull2   = new Var((long?)null);
             
             IsFalse (long0.IsNull);
             IsTrue (longNull.IsNull);
@@ -64,6 +64,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
             IsTrue  (long1A == long1B);
             IsTrue  (long1A != long2);
             IsFalse (long1A == longNull);
+            IsTrue  (longNull == longNull2);
         }
     }
 }

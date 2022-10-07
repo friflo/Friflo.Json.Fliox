@@ -17,7 +17,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
     {
         internal static readonly    VarTypeObject Instance = new VarTypeObject();
         
-        internal  override  bool    AreEqual (in Var val1, in Var val2) => ReferenceEquals(val1.obj, val2.obj);
+        internal  override  bool    AreEqual (in Var val1, in Var val2) => val1.obj == val2.obj;
         internal  override  bool    IsNull   (in Var value)             => value.obj == null;
         internal  override  string  AsString (in Var value)             => value.obj != null ? value.obj.ToString() : "null";
     }
