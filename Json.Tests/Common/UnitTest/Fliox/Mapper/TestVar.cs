@@ -8,20 +8,27 @@ using static NUnit.Framework.Assert;
 
 namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
 {
-    internal class TestVarObject { }
+    internal class TestVarObject {
+        public string name;
+        public override string ToString() => name;
+    }
+    
     
     public class TestVar
     {
         [Test] public void  TestVarGetAndSet()
         {
             // --- object
-            var testObj1 = new TestVarObject();
-            var testObj2 = new TestVarObject();
+            var testObj1 = new TestVarObject{ name = "testObj1"};
+            var testObj2 = new TestVarObject{ name = "testObj2"};
             
             var obj1A   = new Var(testObj1);
             var obj1B   = new Var(testObj1);
             var obj2    = new Var(testObj2);
             var objNull = new Var((object)null);
+            
+            var str = objNull.ToString();
+            
             
             IsFalse (obj2.IsNull);
             IsTrue  (objNull.IsNull);

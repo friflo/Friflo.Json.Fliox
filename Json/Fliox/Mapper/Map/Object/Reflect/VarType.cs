@@ -19,7 +19,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
         
         internal  override  bool    AreEqual (in Var val1, in Var val2) => ReferenceEquals(val1.obj, val2.obj);
         internal  override  bool    IsNull   (in Var value)             => value.obj == null;
-        internal  override  string  AsString (in Var value)             => value.obj.ToString();
+        internal  override  string  AsString (in Var value)             => value.obj != null ? value.obj.ToString() : "null";
     }
     
     internal class VarTypeString : VarType
@@ -28,7 +28,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
         
         internal  override  bool    AreEqual (in Var val1, in Var val2) => (string)val1.obj == (string)val2.obj;
         internal  override  bool    IsNull   (in Var value)             => value.obj == null;
-        internal  override  string  AsString (in Var value)             => value.obj.ToString();
+        internal  override  string  AsString (in Var value)             => value.obj != null ? $"\"{(string)value.obj}\"" : "null";
     }
     
     // --- long (int64) ---
@@ -47,7 +47,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
         
         internal  override  bool    AreEqual (in Var val1, in Var val2) => val1.lng == val2.lng && val1.obj == val2.obj;
         internal  override  bool    IsNull   (in Var value)             => value.obj == null;
-        internal  override  string  AsString (in Var value)             => value.obj == null ? null : value.lng.ToString();
+        internal  override  string  AsString (in Var value)             => value.obj == null ? "null" : value.lng.ToString();
     }
     
     // --- double (64 bit) ---
@@ -66,6 +66,6 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
         // ReSharper disable once CompareOfFloatsByEqualityOperator
         internal  override  bool    AreEqual (in Var val1, in Var val2) => val1.dbl == val2.dbl && val1.obj == val2.obj;
         internal  override  bool    IsNull   (in Var value)             => value.obj == null;
-        internal  override  string  AsString (in Var value)             => value.obj == null ? null : value.dbl.ToString(CultureInfo.InvariantCulture);
+        internal  override  string  AsString (in Var value)             => value.obj == null ? "null" : value.dbl.ToString(CultureInfo.InvariantCulture);
     }
 }
