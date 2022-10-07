@@ -180,7 +180,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object
                     Var value   = field.GetVar(obj); 
                     var action  = patcher.DescendMember(field.fieldType, value.obj, out object newValue);
                     if  (action == NodeAction.Assign)
-                        field.SetVar(obj, new Var(newValue), patcher.setMethodParams);
+                        field.SetVar(obj, new Var(newValue));
                     else
                         throw new InvalidOperationException($"NodeAction not applicable: {action}");
                     return;
@@ -328,7 +328,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object
                             return reader.ErrorIncompatible<T>(this, field, out success);
                         
                         if (curFieldVal != fieldVal)
-                            field.SetVar(objRef, fieldVal, reader.setMethodParams);
+                            field.SetVar(objRef, fieldVal);
                         break;
 
                     case JsonEvent.ObjectEnd:

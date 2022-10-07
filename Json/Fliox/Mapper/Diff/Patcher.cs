@@ -19,7 +19,6 @@ namespace Friflo.Json.Fliox.Mapper.Diff
         private             int             pathPos;
         private readonly    List<JsonKey>   pathNodes = new List<JsonKey>();
         private             string          path;
-        internal readonly   object[]        setMethodParams = new object[1];
         
         public              TypeCache       TypeCache => typeCache;
         

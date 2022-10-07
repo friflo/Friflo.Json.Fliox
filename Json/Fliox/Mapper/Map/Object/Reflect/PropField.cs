@@ -41,10 +41,10 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
         internal readonly   FieldInfo                           field;
         internal readonly   PropertyInfo                        property;
         private  readonly   IEnumerable<CustomAttributeData>    customAttributes;
-        private  readonly   MethodInfo                          getMethod;
+    //  private  readonly   MethodInfo                          getMethod;
         private  readonly   Func<object, object>                getLambda;
-        // private  readonly   Delegate                         getDelegate;
-        private  readonly   MethodInfo                          setMethod;
+    //  private  readonly   Delegate                            getDelegate;
+    //  private  readonly   MethodInfo                          setMethod;
         private  readonly   Action<object, object>              setLambda;
 
         internal PropField (string name, string jsonName, TypeMapper fieldType, FieldInfo field, PropertyInfo property,
@@ -61,8 +61,8 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
             this.field      = field;
             this.property   = property;
             customAttributes= field != null ? field.CustomAttributes : property.CustomAttributes;
-            this.getMethod  = property != null ? property.GetGetMethod(true) : null;
-            this.setMethod  = property != null ? property.GetSetMethod(true) : null;
+            // this.getMethod  = property != null ? property.GetGetMethod(true) : null;
+            // this.setMethod  = property != null ? property.GetSetMethod(true) : null;
             if (property != null) {
                 // var typeArray    = new [] {  property.DeclaringType, property.PropertyType  };
                 // var delegateType = Expression.GetDelegateType(typeArray);
@@ -96,33 +96,23 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
         
         // private static readonly bool useDirect = false; // Unity: System.NotImplementedException : GetValueDirect
         
-        /// <paramref name="setMethodParams"/> need to be of Length 1
-        public void SetVar (object obj, in Var value, object[] setMethodParams)
+        public void SetVar (object obj, in Var value)
         {
             if (field != null) {
                 // if (useDirect) { field.SetValueDirect(__makeref(obj), value); return; }
-                field.SetValue(obj, value.obj); // todo use Expression - but not for Unity 
-            } else {
-                if (setLambda != null) {
-                    setLambda(obj, value.obj);
-                } else {
-                    setMethodParams[0] = value.obj;
-                    setMethod.Invoke(obj, setMethodParams);
-                }
+                field.SetValue(obj, value.obj); // todo use Expression - but not for Unity
+                return;
             }
+            setLambda(obj, value.obj);
         }
         
-        // ReSharper disable PossibleNullReferenceException
         public Var GetVar (object obj)
         {
             if (field != null) {
                 // if (useDirect) return field.GetValueDirect(__makeref(obj));
                 return new Var(field.GetValue (obj)); // todo use Expression - but not for Unity
             }
-            if (getLambda != null) {
-                return new Var(getLambda(obj));
-            }
-            return new Var(getMethod.Invoke(obj, null));
+            return new Var(getLambda(obj)); // return new Var(getMethod.Invoke(obj, null));
         }
 
         public override string ToString() {
