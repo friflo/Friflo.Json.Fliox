@@ -19,6 +19,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
     {
         public  readonly    Type            type;
         public  readonly    Type            mapperType;
+        public  readonly    VarType         varType;
         public  readonly    bool            isNullable;
         public  readonly    bool            isValueType;
         public  readonly    Type            nullableUnderlyingType;
@@ -42,6 +43,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
         protected TypeMapper(StoreConfig config, Type type, bool isNullable, bool isValueType) {
             this.type                   = type;
             this.mapperType             = GetType();
+            this.varType                = VarType.FromType(type);
             this.isNullable             = isNullable;
             this.isValueType            = isValueType;
             this.nullableUnderlyingType = Nullable.GetUnderlyingType(type);

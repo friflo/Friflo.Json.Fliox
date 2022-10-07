@@ -13,9 +13,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
     }
     
     
-    public class TestVar
+    public static class TestVar
     {
-        [Test] public void  TestVarGetAndSet()
+        [Test]
+        public static void TestVarGetAndSet()
         {
             // --- object
             var testObj1 = new TestVarObject{ name = "testObj1"};
@@ -63,8 +64,56 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
             
             IsTrue  (long1A == long1B);
             IsTrue  (long1A != long2);
-            IsFalse (long1A == longNull);
             IsTrue  (longNull == longNull2);
+            
+            // --- bool
+            var boolTrue    = new Var(true);
+            var boolFalse   = new Var(false);
+            var boolNull    = new Var((bool?)null);
+            
+            IsFalse (boolTrue.IsNull);
+            IsTrue  (boolNull.IsNull);
+            IsFalse (boolFalse.IsNull);
+            
+            IsTrue  (boolTrue  == new Var(true));
+            IsTrue  (boolNull  == new Var((bool?)null));
+            IsFalse (boolTrue  == boolFalse);
+            
+            // --- char
+            var charA       = new Var('a');
+            var charB       = new Var('b');
+            var charNull    = new Var((char?)null);
+            
+            IsFalse (charA.IsNull);
+            IsTrue  (charNull.IsNull);
+            
+            IsFalse (charA  == charB);
+            IsTrue  (charNull  == new Var((char?)null));
         }
+        
+        [Test]
+        public static void  TestVarFromType() {
+            var testObj = new TestVarObject{ name = "testObj1"};
+            
+            AreEqual("long",    VarFromValue(1).Name);
+            AreEqual("double",  VarFromValue(1.1).Name);
+            AreEqual("char",    VarFromValue('a').Name);
+            AreEqual("bool",    VarFromValue(true).Name);
+            
+            AreEqual("long?",   VarFromValue((int?)1).Name);
+            AreEqual("double?", VarFromValue((float?)1.1).Name);
+            AreEqual("char?",   VarFromValue((char?)'a').Name);
+            AreEqual("bool?",   VarFromValue((bool?)true).Name);
+            
+            AreEqual("string",  VarFromValue("test").Name);
+            AreEqual("object",  VarFromValue(testObj).Name);
+        }
+        
+        private static VarType  VarFromValue<T>(T val) {
+            var type    = VarType.FromType(typeof(T));
+            return type;
+        }
+        
+        
     }
 }
