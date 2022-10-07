@@ -5,6 +5,7 @@ using Friflo.Json.Fliox.Mapper.Map.Object.Reflect;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
 
+// ReSharper disable CompareOfFloatsByEqualityOperator
 namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
 {
     internal class TestVarObject {
@@ -32,6 +33,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
             
             IsTrue  (obj1A == obj1B);
             IsTrue  (obj1A != obj2);
+            AreEqual(testObj1, obj1A.Object);
             
             // --- string
             var abc1 = new string("abc");
@@ -114,6 +116,34 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
             return type;
         }
         
-        
+        [Test]
+        public static void  TestVarGet() {
+            var testObj = new TestVarObject{ name = "testObj1"};
+            IsTrue(testObj          == new Var(testObj).Object);
+            IsTrue("Test"           == new Var("Test").String);
+            
+            IsTrue('a'              == new Var('a').Char);
+            IsTrue(true             == new Var(true).Bool);
+
+            IsTrue(255              == new Var(255).Int8);
+            IsTrue(short.MaxValue   == new Var(short.MaxValue).Int16);
+            IsTrue(int.MaxValue     == new Var(int.MaxValue).Int32);
+            IsTrue(long.MaxValue    == new Var(long.MaxValue).Int64);
+            
+            IsTrue(float.MaxValue   == new Var(float.MaxValue).Flt32);
+            IsTrue(double.MaxValue  == new Var(double.MaxValue).Flt64);
+            
+            // --- nullable
+            IsTrue('a'              == new Var((char?)'a').CharNull);
+            IsTrue(true             == new Var((bool?)true).BoolNull);
+
+            IsTrue(255              == new Var((byte?)255).Int8Null);
+            IsTrue(short.MaxValue   == new Var((short?)short.MaxValue).Int16Null);
+            IsTrue(int.MaxValue     == new Var((int?)int.MaxValue).Int32Null);
+            IsTrue(long.MaxValue    == new Var((long?)long.MaxValue).Int64Null);
+            
+            IsTrue(float.MaxValue   == new Var((float?)float.MaxValue).Flt32Null);
+            IsTrue(double.MaxValue  == new Var((double?)double.MaxValue).Flt64Null);
+        }
     }
 }
