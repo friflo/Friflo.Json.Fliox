@@ -18,36 +18,39 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
                         private   readonly  object  obj;
                         private   readonly  long    lng;
                         private   readonly  double  dbl;   // can merge with lng using BitConverter.DoubleToInt64Bits()
+                        
+                        
+        [Browse(Never)] public  object  ToObjectDbg =>  type.ToObject(this); // todo - remove after refactor                
         
                         public  bool    IsNull      =>  type.IsNull(this);
         [Browse(Never)] public  bool    NotNull     => !type.IsNull(this);
         // --- reference
-        [Browse(Never)] public  object  Object      { get { AssertType(VarTypeObject.Instance); return obj;           } } 
-        [Browse(Never)] public  string  String      { get { AssertType(VarTypeString.Instance); return (string)obj;   } }
+        [Browse(Never)] public  object  Object      { get { AssertType(TypeObject.Instance); return obj;           } } 
+        [Browse(Never)] public  string  String      { get { AssertType(TypeString.Instance); return (string)obj;   } }
         
         // --- primitives
-        [Browse(Never)] public  bool    Bool        { get { AssertType(VarTypeBool.Instance);   return lng != 0;        } }
-        [Browse(Never)] public  char    Char        { get { AssertType(VarTypeChar.Instance);   return (char) lng;      } }
+        [Browse(Never)] public  bool    Bool        { get { AssertType(TypeBool.Instance);   return lng != 0;        } }
+        [Browse(Never)] public  char    Char        { get { AssertType(TypeChar.Instance);   return (char) lng;      } }
 
-        [Browse(Never)] public  byte    Int8        { get { AssertType(VarTypeInt8.Instance);   return (byte) lng;      } }
-        [Browse(Never)] public  short   Int16       { get { AssertType(VarTypeInt16.Instance);  return (short)lng;      } }
-        [Browse(Never)] public  int     Int32       { get { AssertType(VarTypeInt32.Instance);  return (int)  lng;      } }
-        [Browse(Never)] public  long    Int64       { get { AssertType(VarTypeInt64.Instance);  return        lng;      } }
+        [Browse(Never)] public  byte    Int8        { get { AssertType(TypeInt8.Instance);   return (byte) lng;      } }
+        [Browse(Never)] public  short   Int16       { get { AssertType(TypeInt16.Instance);  return (short)lng;      } }
+        [Browse(Never)] public  int     Int32       { get { AssertType(TypeInt32.Instance);  return (int)  lng;      } }
+        [Browse(Never)] public  long    Int64       { get { AssertType(TypeInt64.Instance);  return        lng;      } }
         
-        [Browse(Never)] public  float   Flt32       { get { AssertType(VarTypeFlt.Instance);    return (float)dbl;      } }
-        [Browse(Never)] public  double  Flt64       { get { AssertType(VarTypeDbl.Instance);    return        dbl;      } }
+        [Browse(Never)] public  float   Flt32       { get { AssertType(TypeFlt.Instance);    return (float)dbl;      } }
+        [Browse(Never)] public  double  Flt64       { get { AssertType(TypeDbl.Instance);    return        dbl;      } }
         
         // --- nullable
-        [Browse(Never)] public  bool?   BoolNull    { get { AssertType(VarTypeNullableBool.Instance);  return obj != null ? lng != 0 : (bool?)null; } }
-        [Browse(Never)] public  char?   CharNull    { get { AssertType(VarTypeNullableChar.Instance);  return obj != null ? (char?)  lng : null; } }
+        [Browse(Never)] public  bool?   BoolNull    { get { AssertType(TypeNullableBool.Instance);  return obj != null ? lng != 0 : (bool?)null; } }
+        [Browse(Never)] public  char?   CharNull    { get { AssertType(TypeNullableChar.Instance);  return obj != null ? (char?)  lng : null; } }
 
-        [Browse(Never)] public  byte?   Int8Null    { get { AssertType(VarTypeNullableInt8.Instance);  return obj != null ? (byte?)  lng : null; } }
-        [Browse(Never)] public  short?  Int16Null   { get { AssertType(VarTypeNullableInt16.Instance); return obj != null ? (short?) lng : null; } }
-        [Browse(Never)] public  int?    Int32Null   { get { AssertType(VarTypeNullableInt32.Instance); return obj != null ? (int?)   lng : null; } }
-        [Browse(Never)] public  long?   Int64Null   { get { AssertType(VarTypeNullableInt64.Instance); return obj != null ? (long?)  lng : null; } }
+        [Browse(Never)] public  byte?   Int8Null    { get { AssertType(TypeNullableInt8.Instance);  return obj != null ? (byte?)  lng : null; } }
+        [Browse(Never)] public  short?  Int16Null   { get { AssertType(TypeNullableInt16.Instance); return obj != null ? (short?) lng : null; } }
+        [Browse(Never)] public  int?    Int32Null   { get { AssertType(TypeNullableInt32.Instance); return obj != null ? (int?)   lng : null; } }
+        [Browse(Never)] public  long?   Int64Null   { get { AssertType(TypeNullableInt64.Instance); return obj != null ? (long?)  lng : null; } }
         
-        [Browse(Never)] public  float?  Flt32Null   { get { AssertType(VarTypeNullableFlt.Instance);   return obj != null ? (float?) dbl : null; } }
-        [Browse(Never)] public  double? Flt64Null   { get { AssertType(VarTypeNullableDbl.Instance);   return obj != null ? (double?)dbl : null; } }
+        [Browse(Never)] public  float?  Flt32Null   { get { AssertType(TypeNullableFlt.Instance);   return obj != null ? (float?) dbl : null; } }
+        [Browse(Never)] public  double? Flt64Null   { get { AssertType(TypeNullableDbl.Instance);   return obj != null ? (double?)dbl : null; } }
 
         
         public  override  string  ToString() =>  $"{{{type}}} {type.AsString(this)}";
@@ -82,47 +85,47 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
         }
         
         // --- object ---
-        public Var (object value)  { type = VarTypeObject.Instance; obj = value; lng = 0; dbl = 0; }
-        public Var (string value)  { type = VarTypeString.Instance; obj = value; lng = 0; dbl = 0; }
+        public Var (object value)  { type = TypeObject.Instance; obj = value; lng = 0; dbl = 0; }
+        public Var (string value)  { type = TypeString.Instance; obj = value; lng = 0; dbl = 0; }
         
         // --- primitives
-        public Var (char    value) { type = VarTypeChar.Instance;   obj = HasValue; lng = value; dbl = 0; }
+        public Var (char    value) { type = TypeChar.Instance;   obj = HasValue; lng = value; dbl = 0; }
         
-        public Var (byte    value) { type = VarTypeInt8.Instance;   obj = HasValue; lng = value; dbl = 0; }
-        public Var (short   value) { type = VarTypeInt16.Instance;  obj = HasValue; lng = value; dbl = 0; }
-        public Var (int     value) { type = VarTypeInt32.Instance;  obj = HasValue; lng = value; dbl = 0; }
-        public Var (long    value) { type = VarTypeInt64.Instance;  obj = HasValue; lng = value; dbl = 0; }
+        public Var (byte    value) { type = TypeInt8.Instance;   obj = HasValue; lng = value; dbl = 0; }
+        public Var (short   value) { type = TypeInt16.Instance;  obj = HasValue; lng = value; dbl = 0; }
+        public Var (int     value) { type = TypeInt32.Instance;  obj = HasValue; lng = value; dbl = 0; }
+        public Var (long    value) { type = TypeInt64.Instance;  obj = HasValue; lng = value; dbl = 0; }
 
-        public Var (float   value) { type = VarTypeFlt.Instance;    obj = HasValue; lng = 0; dbl = value; }
-        public Var (double  value) { type = VarTypeDbl.Instance;    obj = HasValue; lng = 0; dbl = value; }
+        public Var (float   value) { type = TypeFlt.Instance;    obj = HasValue; lng = 0; dbl = value; }
+        public Var (double  value) { type = TypeDbl.Instance;    obj = HasValue; lng = 0; dbl = value; }
 
         // --- nullable primitives
-        public Var (char? value)   { type = VarTypeNullableChar.Instance;  obj = value.HasValue ? HasValue : null; lng = value ?? 0; dbl = 0; }
+        public Var (char? value)   { type = TypeNullableChar.Instance;  obj = value.HasValue ? HasValue : null; lng = value ?? 0; dbl = 0; }
         
-        public Var (byte?   value) { type = VarTypeNullableInt8.Instance;  obj = value.HasValue ? HasValue : null; lng = value ?? 0; dbl = 0; }
-        public Var (short?  value) { type = VarTypeNullableInt16.Instance; obj = value.HasValue ? HasValue : null; lng = value ?? 0; dbl = 0; }
-        public Var (int?    value) { type = VarTypeNullableInt32.Instance; obj = value.HasValue ? HasValue : null; lng = value ?? 0; dbl = 0; }
-        public Var (long?   value) { type = VarTypeNullableInt64.Instance; obj = value.HasValue ? HasValue : null; lng = value ?? 0; dbl = 0; }
+        public Var (byte?   value) { type = TypeNullableInt8.Instance;  obj = value.HasValue ? HasValue : null; lng = value ?? 0; dbl = 0; }
+        public Var (short?  value) { type = TypeNullableInt16.Instance; obj = value.HasValue ? HasValue : null; lng = value ?? 0; dbl = 0; }
+        public Var (int?    value) { type = TypeNullableInt32.Instance; obj = value.HasValue ? HasValue : null; lng = value ?? 0; dbl = 0; }
+        public Var (long?   value) { type = TypeNullableInt64.Instance; obj = value.HasValue ? HasValue : null; lng = value ?? 0; dbl = 0; }
 
-        public Var (float?  value) { type = VarTypeNullableFlt.Instance;   obj = value.HasValue ? HasValue : null; lng = 0; dbl = value ?? 0; }
-        public Var (double? value) { type = VarTypeNullableDbl.Instance;   obj = value.HasValue ? HasValue : null; lng = 0; dbl = value ?? 0; }
+        public Var (float?  value) { type = TypeNullableFlt.Instance;   obj = value.HasValue ? HasValue : null; lng = 0; dbl = value ?? 0; }
+        public Var (double? value) { type = TypeNullableDbl.Instance;   obj = value.HasValue ? HasValue : null; lng = 0; dbl = value ?? 0; }
         
 
         // --- bool ---
         public Var (bool value) {
-            type    = VarTypeBool.Instance;
+            type    = TypeBool.Instance;
             obj     = HasValue;
             lng     = value ? 1 : 0;
             dbl     = 0;
         }
 
         public Var (bool? value) {
-            type    = VarTypeNullableBool.Instance;
+            type    = TypeNullableBool.Instance;
             obj     = value.HasValue ? HasValue : null;
             lng     = value.HasValue ? value.Value ? 1 : 0 : 0;
             dbl     = 0;
         }
-
+        
         private static readonly object HasValue = "HasValue";
     }
 }

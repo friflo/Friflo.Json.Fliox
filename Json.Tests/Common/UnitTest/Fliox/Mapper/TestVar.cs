@@ -97,18 +97,18 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
         public static void  TestVarFromType() {
             var testObj = new TestVarObject{ name = "testObj1"};
             
-            AreEqual("int",     VarFromValue(1).Name);
-            AreEqual("double",  VarFromValue(1.1).Name);
-            AreEqual("char",    VarFromValue('a').Name);
-            AreEqual("bool",    VarFromValue(true).Name);
+            AreEqual("int",     VarFromValue(1)             .Name);
+            AreEqual("double",  VarFromValue(1.1)           .Name);
+            AreEqual("char",    VarFromValue('a')           .Name);
+            AreEqual("bool",    VarFromValue(true)          .Name);
             
-            AreEqual("int?",    VarFromValue((int?)1).Name);
-            AreEqual("float?",  VarFromValue((float?)1.1).Name);
-            AreEqual("char?",   VarFromValue((char?)'a').Name);
-            AreEqual("bool?",   VarFromValue((bool?)true).Name);
+            AreEqual("int?",    VarFromValue((int?)1)       .Name);
+            AreEqual("float?",  VarFromValue((float?)1.1)   .Name);
+            AreEqual("char?",   VarFromValue((char?)'a')    .Name);
+            AreEqual("bool?",   VarFromValue((bool?)true)   .Name);
             
-            AreEqual("string",  VarFromValue("test").Name);
-            AreEqual("object",  VarFromValue(testObj).Name);
+            AreEqual("string",  VarFromValue("test")        .Name);
+            AreEqual("object",  VarFromValue(testObj)       .Name);
         }
         
         private static VarType  VarFromValue<T>(T val) {
@@ -121,29 +121,29 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
             var testObj = new TestVarObject{ name = "testObj1"};
             
             IsTrue(testObj          == new Var(testObj).Object);
-            IsTrue("Test"           == new Var("Test").String);
+            IsTrue("Test"           == new Var("Test")          .String);
             
-            IsTrue('a'              == new Var('a').Char);
-            IsTrue(true             == new Var(true).Bool);
+            IsTrue('a'              == new Var('a')             .Char);
+            IsTrue(true             == new Var(true)            .Bool);
 
-            IsTrue(255              == new Var((byte)255).Int8);
-            IsTrue(short.MaxValue   == new Var(short.MaxValue).Int16);
-            IsTrue(int.MaxValue     == new Var(int.MaxValue).Int32);
-            IsTrue(long.MaxValue    == new Var(long.MaxValue).Int64);
+            IsTrue(255              == new Var((byte)255)       .Int8);
+            IsTrue(short.MaxValue   == new Var(short.MaxValue)  .Int16);
+            IsTrue(int.MaxValue     == new Var(int.MaxValue)    .Int32);
+            IsTrue(long.MaxValue    == new Var(long.MaxValue)   .Int64);
             
-            IsTrue(float.MaxValue   == new Var(float.MaxValue).Flt32);
-            IsTrue(double.MaxValue  == new Var(double.MaxValue).Flt64);
+            IsTrue(float.MaxValue   == new Var(float.MaxValue)  .Flt32);
+            IsTrue(double.MaxValue  == new Var(double.MaxValue) .Flt64);
             
             // --- nullable
-            IsTrue('a'              == new Var((char?)'a').CharNull);
-            IsTrue(true             == new Var((bool?)true).BoolNull);
+            IsTrue('a'              == new Var((char?)  'a')            .CharNull);
+            IsTrue(true             == new Var((bool?)  true)           .BoolNull);
 
-            IsTrue(255              == new Var((byte?)255).Int8Null);
-            IsTrue(short.MaxValue   == new Var((short?)short.MaxValue).Int16Null);
-            IsTrue(int.MaxValue     == new Var((int?)int.MaxValue).Int32Null);
-            IsTrue(long.MaxValue    == new Var((long?)long.MaxValue).Int64Null);
+            IsTrue(255              == new Var((byte?)  255)            .Int8Null);
+            IsTrue(short.MaxValue   == new Var((short?) short.MaxValue) .Int16Null);
+            IsTrue(int.MaxValue     == new Var((int?)   int.MaxValue)   .Int32Null);
+            IsTrue(long.MaxValue    == new Var((long?)  long.MaxValue)  .Int64Null);
             
-            IsTrue(float.MaxValue   == new Var((float?)float.MaxValue).Flt32Null);
+            IsTrue(float.MaxValue   == new Var((float?) float.MaxValue) .Flt32Null);
             IsTrue(double.MaxValue  == new Var((double?)double.MaxValue).Flt64Null);
         }
         
@@ -156,35 +156,56 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
             
             // --- primitives
             IsTrue(FromObject(true).Bool);
-            IsTrue('a'  ==  FromObject('a')     .Char);
+            IsTrue('a'  ==  FromObject(    'a').Char);
             
-            IsTrue(1.1f == FromObject(1.1f)     .Flt32);
-            IsTrue(2.2  == FromObject(2.2)      .Flt64);
+            IsTrue(1.1f == FromObject(    1.1f).Flt32);
+            IsTrue(2.2  == FromObject(     2.2).Flt64);
             
-            IsTrue(1    == FromObject((byte)1)  .Int8);
-            IsTrue(2    == FromObject((short)2) .Int16);
-            IsTrue(3    == FromObject(3)        .Int32);
-            IsTrue(4    == FromObject(4L)       .Int64);
+            IsTrue(1    == FromObject((byte) 1).Int8);
+            IsTrue(2    == FromObject((short)2).Int16);
+            IsTrue(3    == FromObject(       3).Int32);
+            IsTrue(4    == FromObject(      4L).Int64);
             
             // --- nullable primitives
-            IsTrue(FromObject((bool?)true)          .BoolNull);
-            IsTrue('a'  ==  FromObject((char?)'a')  .CharNull);
+            IsTrue(FromObject((bool?)          true).BoolNull);
+            IsTrue('a'  ==  FromObject((char?)  'a').CharNull);
             
-            IsTrue(1.1f == FromObject((float?)1.1f) .Flt32Null);
-            IsTrue(2.2  == FromObject((double?)2.2) .Flt64Null);
+            IsTrue(1.1f == FromObject((float?) 1.1f).Flt32Null);
+            IsTrue(2.2  == FromObject((double?) 2.2).Flt64Null);
             
-            IsTrue(1    == FromObject((byte?)1)     .Int8Null);
-            IsTrue(2    == FromObject((short?)2)    .Int16Null);
-            IsTrue(3    == FromObject((int?)3)      .Int32Null);
-            IsTrue(4    == FromObject((long?)4L)    .Int64Null);
+            IsTrue(1    == FromObject((byte?)     1).Int8Null);
+            IsTrue(2    == FromObject((short?)    2).Int16Null);
+            IsTrue(3    == FromObject((int?)      3).Int32Null);
+            IsTrue(4    == FromObject((long?)    4L).Int64Null);
+            
+            // --- nullable primitives - using null
+            IsNull(FromObject((bool?)   null).BoolNull);
+            IsNull(FromObject((char?)   null).CharNull);
+            
+            IsNull(FromObject((float?)  null).Flt32Null);
+            IsNull(FromObject((double?) null).Flt64Null);
+            
+            IsNull(FromObject((byte?)   null).Int8Null);
+            IsNull(FromObject((short?)  null).Int16Null);
+            IsNull(FromObject((int?)    null).Int32Null);
+            IsNull(FromObject((long?)   null).Int64Null);
         }
         
         private static Var FromObject<T>(T value) {
             var varType = VarType.FromType(typeof(T));
             object obj  = value;
-            return varType.FromObject(obj);
+            Var var     = varType.FromObject(obj);
+            object obj2 = varType.ToObject(var);
+            
+            if (obj == null) {
+                IsNull(obj2);
+            } else {
+                IsTrue(obj.GetType() == obj2.GetType());
+                IsTrue(obj.Equals(obj2));
+            }
+            return var;
         }
-        
+
         [Test]
         public static void  TestVarDefaultValue() {
             // --- references

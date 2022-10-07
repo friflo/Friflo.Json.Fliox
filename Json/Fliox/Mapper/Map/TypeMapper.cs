@@ -19,7 +19,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
     {
         public  readonly    Type            type;
         public  readonly    Type            mapperType;
-        public  readonly    VarType         varType;
+        public  readonly    VarType         varType;    // never null
         public  readonly    bool            isNullable;
         public  readonly    bool            isValueType;
         public  readonly    Type            nullableUnderlyingType;
