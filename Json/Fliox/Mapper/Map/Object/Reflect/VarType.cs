@@ -12,6 +12,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
         internal abstract bool      IsNull      (in Var value);
         internal abstract bool      AreEqual    (in Var val1, in Var val2);
         internal abstract string    AsString    (in Var value);
+        public   abstract Var       DefaultValue{ get; }
         public   abstract Var       FromObject  (object obj);
 
         public   override string    ToString() => Name;
@@ -53,10 +54,11 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
     {
         internal static readonly    VarTypeObject Instance = new VarTypeObject();
         
-        public    override  string      Name     => "object";
+        public    override  string  Name     => "object";
         internal  override  bool    AreEqual    (in Var val1, in Var val2) => val1.obj == val2.obj;
         internal  override  bool    IsNull      (in Var value)             => value.obj == null;
         internal  override  string  AsString    (in Var value)             => value.obj != null ? value.obj.ToString() : "null";
+        public    override  Var     DefaultValue                           => new Var((object)null);
         public    override  Var     FromObject  (object obj)               => new Var(obj);
     }
     
@@ -68,6 +70,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
         internal  override  bool    AreEqual    (in Var val1, in Var val2) => (string)val1.obj == (string)val2.obj;
         internal  override  bool    IsNull      (in Var value)             => value.obj == null;
         internal  override  string  AsString    (in Var value)             => value.obj != null ? $"\"{(string)value.obj}\"" : "null";
+        public    override  Var     DefaultValue                           => new Var((string)null);
         public    override  Var     FromObject  (object obj)               => new Var((string)obj);
     }
     
@@ -86,6 +89,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
         internal static readonly    VarTypeInt8 Instance = new VarTypeInt8();
         
         public    override  string  Name        => "byte";
+        public    override  Var     DefaultValue                           => new Var((byte)default);
         public    override  Var     FromObject  (object obj)               => new Var((byte)obj);
     }
     
@@ -95,6 +99,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
         internal static readonly    VarTypeInt16 Instance = new VarTypeInt16();
         
         public    override  string  Name        => "short";
+        public    override  Var     DefaultValue                           => new Var((short)default);
         public    override  Var     FromObject  (object obj)               => new Var((short)obj);
     }
     
@@ -104,6 +109,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
         internal static readonly    VarTypeInt32 Instance = new VarTypeInt32();
         
         public    override  string  Name        => "int";
+        public    override  Var     DefaultValue                           => new Var((int)default);
         public    override  Var     FromObject  (object obj)               => new Var((int)obj);
     }
     
@@ -113,6 +119,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
         internal static readonly    VarTypeInt64 Instance = new VarTypeInt64();
         
         public    override  string  Name        => "long";
+        public    override  Var     DefaultValue                           => new Var((long)default);
         public    override  Var     FromObject  (object obj)               => new Var((long)obj);
     }
     
@@ -131,6 +138,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
         internal static readonly    VarTypeNullableInt8 Instance = new VarTypeNullableInt8();
         
         public    override  string  Name        => "byte?";
+        public    override  Var     DefaultValue                           => new Var((byte?)null);
         public    override  Var     FromObject  (object obj)               => new Var((byte?)obj);
     }
     
@@ -139,6 +147,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
         internal static readonly    VarTypeNullableInt16 Instance = new VarTypeNullableInt16();
         
         public    override  string  Name        => "short?";
+        public    override  Var     DefaultValue                           => new Var((short?)null);
         public    override  Var     FromObject  (object obj)               => new Var((short?)obj);
     }
     
@@ -147,6 +156,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
         internal static readonly    VarTypeNullableInt32 Instance = new VarTypeNullableInt32();
         
         public    override  string  Name        => "int?";
+        public    override  Var     DefaultValue                           => new Var((int?)null);
         public    override  Var     FromObject  (object obj)               => new Var((int?)obj);
     }
     
@@ -155,6 +165,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
         internal static readonly    VarTypeNullableInt64 Instance = new VarTypeNullableInt64();
         
         public    override  string  Name        => "long?";
+        public    override  Var     DefaultValue                           => new Var((long?)null);
         public    override  Var     FromObject  (object obj)               => new Var((long?)obj);
     }
     
@@ -168,6 +179,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
         internal  override  bool    AreEqual    (in Var val1, in Var val2) => val1.dbl == val2.dbl;
         internal  override  bool    IsNull      (in Var value)             => false;
         internal  override  string  AsString    (in Var value)             => value.dbl.ToString(CultureInfo.InvariantCulture);
+        public    override  Var     DefaultValue                           => new Var((float)default);
         public    override  Var     FromObject  (object obj)               => new Var((float)obj);
     }
     
@@ -180,6 +192,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
         internal  override  bool    AreEqual    (in Var val1, in Var val2) => val1.dbl == val2.dbl && val1.obj == val2.obj;
         internal  override  bool    IsNull      (in Var value)             => value.obj == null;
         internal  override  string  AsString    (in Var value)             => value.obj == null ? "null" : value.dbl.ToString(CultureInfo.InvariantCulture);
+        public    override  Var     DefaultValue                           => new Var((float?)null);
         public    override  Var     FromObject  (object obj)               => new Var((float?)obj);
     }
     
@@ -193,6 +206,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
         internal  override  bool    AreEqual    (in Var val1, in Var val2) => val1.dbl == val2.dbl;
         internal  override  bool    IsNull      (in Var value)             => false;
         internal  override  string  AsString    (in Var value)             => value.dbl.ToString(CultureInfo.InvariantCulture);
+        public    override  Var     DefaultValue                           => new Var((double)default);
         public    override  Var     FromObject  (object obj)               => new Var((double)obj);
     }
     
@@ -205,6 +219,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
         internal  override  bool    AreEqual    (in Var val1, in Var val2) => val1.dbl == val2.dbl && val1.obj == val2.obj;
         internal  override  bool    IsNull      (in Var value)             => value.obj == null;
         internal  override  string  AsString    (in Var value)             => value.obj == null ? "null" : value.dbl.ToString(CultureInfo.InvariantCulture);
+        public    override  Var     DefaultValue                           => new Var((double?)null);
         public    override  Var     FromObject  (object obj)               => new Var((double?)obj);
     }
     
@@ -218,6 +233,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
         internal  override  bool    AreEqual    (in Var val1, in Var val2) => val1.lng == val2.lng;
         internal  override  bool    IsNull      (in Var value)             => false;
         internal  override  string  AsString    (in Var value)             => value.lng != 0 ? "true" : "false";
+        public    override  Var     DefaultValue                           => new Var((bool)default);
         public    override  Var     FromObject  (object obj)               => new Var((bool)obj);
     }
     
@@ -230,6 +246,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
         internal  override  bool    AreEqual    (in Var val1, in Var val2) => val1.lng == val2.lng && val1.obj == val2.obj;
         internal  override  bool    IsNull      (in Var value)             => value.obj == null;
         internal  override  string  AsString    (in Var value)             => value.obj == null ? "null" : value.lng != 0 ? "true" : "false";
+        public    override  Var     DefaultValue                           => new Var((bool?)null);
         public    override  Var     FromObject  (object obj)               => new Var((bool?)obj);
     }
     
@@ -244,6 +261,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
         internal  override  bool    AreEqual    (in Var val1, in Var val2) => val1.lng == val2.lng;
         internal  override  bool    IsNull      (in Var value)             => false;
         internal  override  string  AsString    (in Var value)             => $"'{(char)value.lng}'";
+        public    override  Var     DefaultValue                           => new Var((char)default);
         public    override  Var     FromObject  (object obj)               => new Var((char)obj);
     }
     
@@ -256,6 +274,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
         internal  override  bool    AreEqual    (in Var val1, in Var val2) => val1.lng == val2.lng && val1.obj == val2.obj;
         internal  override  bool    IsNull      (in Var value)             => value.obj == null;
         internal  override  string  AsString    (in Var value)             => value.obj == null ? "null" : $"'{(char)value.lng}'";
+        public    override  Var     DefaultValue                           => new Var((char?)null);
         public    override  Var     FromObject  (object obj)               => new Var((char?)obj);
     }
 }

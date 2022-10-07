@@ -37,16 +37,16 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
         [Browse(Never)] public  double  Flt64       { get { AssertType(VarTypeDbl.Instance);    return        dbl;      } }
         
         // --- nullable
-        [Browse(Never)] public  bool?   BoolNull    { get { AssertType(VarTypeNullableBool.Instance);  return obj != null ? lng != 0     : default; } }
-        [Browse(Never)] public  char?   CharNull    { get { AssertType(VarTypeNullableChar.Instance);  return obj != null ? (char?)  lng : default; } }
+        [Browse(Never)] public  bool?   BoolNull    { get { AssertType(VarTypeNullableBool.Instance);  return obj != null ? lng != 0 : (bool?)null; } }
+        [Browse(Never)] public  char?   CharNull    { get { AssertType(VarTypeNullableChar.Instance);  return obj != null ? (char?)  lng : null; } }
 
-        [Browse(Never)] public  byte?   Int8Null    { get { AssertType(VarTypeNullableInt8.Instance);  return obj != null ? (byte?)  lng : default; } }
-        [Browse(Never)] public  short?  Int16Null   { get { AssertType(VarTypeNullableInt16.Instance); return obj != null ? (short?) lng : default; } }
-        [Browse(Never)] public  int?    Int32Null   { get { AssertType(VarTypeNullableInt32.Instance); return obj != null ? (int?)   lng : default; } }
-        [Browse(Never)] public  long?   Int64Null   { get { AssertType(VarTypeNullableInt64.Instance); return obj != null ? (long?)  lng : default; } }
+        [Browse(Never)] public  byte?   Int8Null    { get { AssertType(VarTypeNullableInt8.Instance);  return obj != null ? (byte?)  lng : null; } }
+        [Browse(Never)] public  short?  Int16Null   { get { AssertType(VarTypeNullableInt16.Instance); return obj != null ? (short?) lng : null; } }
+        [Browse(Never)] public  int?    Int32Null   { get { AssertType(VarTypeNullableInt32.Instance); return obj != null ? (int?)   lng : null; } }
+        [Browse(Never)] public  long?   Int64Null   { get { AssertType(VarTypeNullableInt64.Instance); return obj != null ? (long?)  lng : null; } }
         
-        [Browse(Never)] public  float?  Flt32Null   { get { AssertType(VarTypeNullableFlt.Instance);   return obj != null ? (float?) dbl : default; } }
-        [Browse(Never)] public  double? Flt64Null   { get { AssertType(VarTypeNullableDbl.Instance);   return obj != null ? (double?)dbl : default; } }
+        [Browse(Never)] public  float?  Flt32Null   { get { AssertType(VarTypeNullableFlt.Instance);   return obj != null ? (float?) dbl : null; } }
+        [Browse(Never)] public  double? Flt64Null   { get { AssertType(VarTypeNullableDbl.Instance);   return obj != null ? (double?)dbl : null; } }
 
         
         public  override  string  ToString() =>  $"{{{type}}} {type.AsString(this)}";

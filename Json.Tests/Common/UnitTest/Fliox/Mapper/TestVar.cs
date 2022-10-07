@@ -184,6 +184,42 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
             object obj  = value;
             return varType.FromObject(obj);
         }
+        
+        [Test]
+        public static void  TestVarDefaultValue() {
+            // --- references
+            IsTrue(null     == DefaultValue<object>().  Object);
+            IsTrue(null     == DefaultValue<string>().  String);
+            
+            // --- primitives
+            IsTrue(false    == DefaultValue<bool>().    Bool);
+            IsTrue(0        == DefaultValue<char>().    Char);
+            
+            IsTrue(0        == DefaultValue<float>().   Flt32);
+            IsTrue(0        == DefaultValue<double>().  Flt64);
+            
+            IsTrue(0        == DefaultValue<byte>().    Int8);
+            IsTrue(0        == DefaultValue<short>().   Int16);
+            IsTrue(0        == DefaultValue<int>().     Int32);
+            IsTrue(0        == DefaultValue<long>().    Int64);
+            
+            // --- nullable primitives
+            IsTrue(null     == DefaultValue<bool?>().   BoolNull);
+            IsTrue(null     == DefaultValue<char?>().   CharNull);
+            
+            IsTrue(null     == DefaultValue<float?>().  Flt32Null);
+            IsTrue(null     == DefaultValue<double?>(). Flt64Null);
+            
+            IsTrue(null     == DefaultValue<byte?>().   Int8Null);
+            IsTrue(null     == DefaultValue<short?>().  Int16Null);
+            IsTrue(null     == DefaultValue<int?>().    Int32Null);
+            IsTrue(null     == DefaultValue<long?>().   Int64Null);
+        }
+        
+        private static Var DefaultValue<T>() {
+            var varType = VarType.FromType(typeof(T));
+            return varType.DefaultValue;
+        }
 
     }
 }
