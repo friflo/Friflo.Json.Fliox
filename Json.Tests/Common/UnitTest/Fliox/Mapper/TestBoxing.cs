@@ -55,6 +55,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
         }
 
         private static void TestNoBoxing<TKey>(TKey left, TKey right) {
+            IsTrue(EqualityComparer<TKey>.Default.Equals(left, right)); // force caching of default TKey 
+            
             var start   = GC.GetAllocatedBytesForCurrentThread();
             var equal   = false;   
             for (int n = 0; n < 100; n++) {
