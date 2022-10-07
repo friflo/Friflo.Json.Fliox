@@ -70,8 +70,9 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object
             if (instanceFactory != null)
                 return;
             this.constructor = constructor;
-            var lambda = CreateInstanceExpression();
-            createInstance = lambda.Compile();
+            var lambda      = CreateInstanceExpression();
+            createInstance  = lambda.Compile();
+            propFields      = null; // suppress [CS0649] Field '...' is never assigned to, and will always have its default value null
         }
         
         public override void Dispose() {

@@ -34,6 +34,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal.Map
             base (config, type, true, false)
         {
             instanceFactory = new InstanceFactory(); // abstract type
+            propFields      = null; // suppress [CS0649] Field '...' is never assigned to, and will always have its default value null
         }
         
         public override void InitTypeMapper(TypeStore typeStore) {
