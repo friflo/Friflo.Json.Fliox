@@ -16,6 +16,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
 
         public   override string    ToString() => Name;
 
+        /// <summary> Method has many conditions. Cache returned VarType in case using frequently </summary>
         public static VarType FromType(Type type) {
             if (type == typeof(bool))   return VarTypeBool.Instance;
             if (type == typeof(char))   return VarTypeChar.Instance;
@@ -48,7 +49,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
     }
     
     // --- object ---
-    internal class VarTypeObject : VarType
+    internal sealed class VarTypeObject : VarType
     {
         internal static readonly    VarTypeObject Instance = new VarTypeObject();
         
@@ -59,7 +60,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
         public    override  Var     FromObject  (object obj)               => new Var(obj);
     }
     
-    internal class VarTypeString : VarType
+    internal sealed class VarTypeString : VarType
     {
         internal static readonly    VarTypeString Instance = new VarTypeString();
         
@@ -158,7 +159,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
     }
     
     // --- float (32 bit) ---
-    internal class VarTypeFlt : VarType
+    internal sealed class VarTypeFlt : VarType
     {
         internal static readonly    VarTypeFlt Instance = new VarTypeFlt();
         
@@ -170,7 +171,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
         public    override  Var     FromObject  (object obj)               => new Var((float)obj);
     }
     
-    internal class VarTypeNullableFlt : VarType
+    internal sealed class VarTypeNullableFlt : VarType
     {
         internal static readonly    VarTypeNullableFlt Instance = new VarTypeNullableFlt();
         
@@ -183,7 +184,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
     }
     
     // --- double (64 bit) ---
-    internal class VarTypeDbl : VarType
+    internal sealed class VarTypeDbl : VarType
     {
         internal static readonly    VarTypeDbl Instance = new VarTypeDbl();
         
@@ -195,7 +196,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
         public    override  Var     FromObject  (object obj)               => new Var((double)obj);
     }
     
-    internal class VarTypeNullableDbl : VarType
+    internal sealed class VarTypeNullableDbl : VarType
     {
         internal static readonly    VarTypeNullableDbl Instance = new VarTypeNullableDbl();
         
@@ -208,7 +209,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
     }
     
     // --- bool ---
-    internal class VarTypeBool : VarType
+    internal sealed class VarTypeBool : VarType
     {
         internal static readonly    VarTypeBool Instance = new VarTypeBool();
         
@@ -220,7 +221,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
         public    override  Var     FromObject  (object obj)               => new Var((bool)obj);
     }
     
-    internal class VarTypeNullableBool : VarType
+    internal sealed class VarTypeNullableBool : VarType
     {
         internal static readonly    VarTypeNullableBool Instance = new VarTypeNullableBool();
         
@@ -234,7 +235,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
     
     
     // --- char ---
-    internal class VarTypeChar : VarType
+    internal sealed class VarTypeChar : VarType
     {
         internal static readonly    VarTypeChar Instance = new VarTypeChar();
         
@@ -246,7 +247,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
         public    override  Var     FromObject  (object obj)               => new Var((char)obj);
     }
     
-    internal class VarTypeNullableChar : VarType
+    internal sealed class VarTypeNullableChar : VarType
     {
         internal static readonly    VarTypeNullableChar Instance = new VarTypeNullableChar();
         

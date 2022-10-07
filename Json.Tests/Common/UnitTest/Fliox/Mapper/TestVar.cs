@@ -119,6 +119,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
         [Test]
         public static void  TestVarGet() {
             var testObj = new TestVarObject{ name = "testObj1"};
+            
             IsTrue(testObj          == new Var(testObj).Object);
             IsTrue("Test"           == new Var("Test").String);
             
@@ -148,7 +149,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
         
         [Test]
         public static void  TestVarFromObject() {
+            // --- references
+            var testObj = new TestVarObject{ name = "testObj"};
+            IsTrue(testObj  ==  FromObject(testObj) .Object);
+            IsTrue("abc"    ==  FromObject("abc")   .String);
             
+            // --- primitives
             IsTrue(FromObject(true).Bool);
             IsTrue('a'  ==  FromObject('a')     .Char);
             
@@ -160,7 +166,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
             IsTrue(3    == FromObject(3)        .Int32);
             IsTrue(4    == FromObject(4L)       .Int64);
             
-            // --- nullable
+            // --- nullable primitives
             IsTrue(FromObject((bool?)true)          .BoolNull);
             IsTrue('a'  ==  FromObject((char?)'a')  .CharNull);
             
