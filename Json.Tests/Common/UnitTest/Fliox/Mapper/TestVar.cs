@@ -27,9 +27,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
             var obj2    = new Var(testObj2);
             var objNull = new Var((object)null);
             
-            var str = objNull.ToString();
-            
-            
             IsFalse (obj2.IsNull);
             IsTrue  (objNull.IsNull);
             
