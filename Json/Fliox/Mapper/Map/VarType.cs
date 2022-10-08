@@ -195,12 +195,12 @@ public partial struct Var {
         
         public    override  string  Name        => "float";
         // ReSharper disable once CompareOfFloatsByEqualityOperator
-        internal  override  bool    AreEqual    (in Var val1, in Var val2) => val1.dbl == val2.dbl;
+        internal  override  bool    AreEqual    (in Var val1, in Var val2) => val1.Dbl == val2.Dbl;
         internal  override  bool    IsNull      (in Var value)             => false;
-        internal  override  string  AsString    (in Var value)             => value.dbl.ToString(CultureInfo.InvariantCulture);
+        internal  override  string  AsString    (in Var value)             => value.Dbl.ToString(CultureInfo.InvariantCulture);
         public    override  Var     DefaultValue                           => new Var((float)default);
         public    override  Var     FromObject  (object obj)               => new Var((float)obj);
-        public    override  object  ToObject    (in Var value)             => (float)value.dbl;
+        public    override  object  ToObject    (in Var value)             => (float)value.Dbl;
     }
     
     internal sealed class TypeNullableFlt : VarType
@@ -209,12 +209,12 @@ public partial struct Var {
         
         public    override  string  Name        => "float?";
         // ReSharper disable once CompareOfFloatsByEqualityOperator
-        internal  override  bool    AreEqual    (in Var val1, in Var val2) => val1.dbl == val2.dbl && val1.obj == val2.obj;
+        internal  override  bool    AreEqual    (in Var val1, in Var val2) => val1.Dbl == val2.Dbl && val1.obj == val2.obj;
         internal  override  bool    IsNull      (in Var value)             => value.obj == null;
-        internal  override  string  AsString    (in Var value)             => value.obj == null ? "null" : value.dbl.ToString(CultureInfo.InvariantCulture);
+        internal  override  string  AsString    (in Var value)             => value.obj == null ? "null" : value.Dbl.ToString(CultureInfo.InvariantCulture);
         public    override  Var     DefaultValue                           => new Var((float?)null);
         public    override  Var     FromObject  (object obj)               => new Var((float?)obj);
-        public    override  object  ToObject    (in Var value)             => value.obj != null ? (float?)value.dbl : null;
+        public    override  object  ToObject    (in Var value)             => value.obj != null ? (float?)value.Dbl : null;
     }
     
     // --- double (64 bit) ---
@@ -224,12 +224,12 @@ public partial struct Var {
         
         public    override  string  Name        => "double";
         // ReSharper disable once CompareOfFloatsByEqualityOperator
-        internal  override  bool    AreEqual    (in Var val1, in Var val2) => val1.dbl == val2.dbl;
+        internal  override  bool    AreEqual    (in Var val1, in Var val2) => val1.Dbl == val2.Dbl;
         internal  override  bool    IsNull      (in Var value)             => false;
-        internal  override  string  AsString    (in Var value)             => value.dbl.ToString(CultureInfo.InvariantCulture);
+        internal  override  string  AsString    (in Var value)             => value.Dbl.ToString(CultureInfo.InvariantCulture);
         public    override  Var     DefaultValue                           => new Var((double)default);
         public    override  Var     FromObject  (object obj)               => new Var((double)obj);
-        public    override  object  ToObject    (in Var value)             => value.dbl;
+        public    override  object  ToObject    (in Var value)             => value.Dbl;
     }
     
     internal sealed class TypeNullableDbl : VarType
@@ -238,12 +238,12 @@ public partial struct Var {
         
         public    override  string  Name        => "double?";
         // ReSharper disable once CompareOfFloatsByEqualityOperator
-        internal  override  bool    AreEqual    (in Var val1, in Var val2) => val1.dbl == val2.dbl && val1.obj == val2.obj;
+        internal  override  bool    AreEqual    (in Var val1, in Var val2) => val1.Dbl == val2.Dbl && val1.obj == val2.obj;
         internal  override  bool    IsNull      (in Var value)             => value.obj == null;
-        internal  override  string  AsString    (in Var value)             => value.obj == null ? "null" : value.dbl.ToString(CultureInfo.InvariantCulture);
+        internal  override  string  AsString    (in Var value)             => value.obj == null ? "null" : value.Dbl.ToString(CultureInfo.InvariantCulture);
         public    override  Var     DefaultValue                           => new Var((double?)null);
         public    override  Var     FromObject  (object obj)               => new Var((double?)obj);
-        public    override  object  ToObject    (in Var value)             => value.obj != null ? (double?) value.dbl : null;
+        public    override  object  ToObject    (in Var value)             => value.obj != null ? (double?) value.Dbl : null;
     }
     
     // --- bool ---
