@@ -148,11 +148,12 @@ namespace Friflo.Json.Fliox.Mapper.Map
         }
 
         public override void WriteVar(ref Writer writer, in Var value) {
+            var objectValue = value.TryGetObject();
 #if DEBUG
-            if (value == null)
+            if (objectValue == null)
                 throw new InvalidOperationException("WriteObject() value must not be null");
 #endif
-            Write(ref writer, (TVal) value.TryGetObject());
+            Write(ref writer, (TVal) objectValue);
         }
 
         public override Var ReadVar(ref Reader reader, in Var value, out bool success) {
