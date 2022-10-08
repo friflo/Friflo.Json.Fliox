@@ -75,8 +75,8 @@ namespace Friflo.Json.Fliox.Mapper.Map
             throw new InvalidOperationException("MemberObject() is intended only for classes");
         }
 
-        public   abstract void          WriteObject(ref Writer writer, object slot);
-        public   abstract Var           ReadVar(ref Reader reader, in Var slot, out bool success);
+        public   abstract void          WriteVar(ref Writer writer, in Var slot);
+        public   abstract Var           ReadVar (ref Reader reader, in Var slot, out bool success);
         
         internal virtual  object        ReadObjectTyped(ref Reader reader, object slot, out bool success)       => throw new InvalidOperationException("not implemented");
         internal virtual  void          WriteObjectTyped(ref Writer writer, object slot, ref bool firstMember)  => throw new InvalidOperationException("not implemented");
@@ -147,12 +147,12 @@ namespace Friflo.Json.Fliox.Mapper.Map
             throw new InvalidOperationException("ReadValueIL() not applicable");
         }
 
-        public override void WriteObject(ref Writer writer, object value) {
+        public override void WriteVar(ref Writer writer, in Var value) {
 #if DEBUG
             if (value == null)
                 throw new InvalidOperationException("WriteObject() value must not be null");
 #endif
-            Write(ref writer, (TVal) value);
+            Write(ref writer, (TVal) value.TryGetObject());
         }
 
         public override Var ReadVar(ref Reader reader, in Var value, out bool success) {

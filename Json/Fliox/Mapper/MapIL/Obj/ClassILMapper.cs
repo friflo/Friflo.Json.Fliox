@@ -81,7 +81,8 @@ namespace Friflo.Json.Fliox.Mapper.MapIL.Obj
                         }
                     } else {
                         writer.WriteFieldKey(field, ref firstMember);
-                        fieldType.WriteObject(ref writer, fieldObj);
+                        var objectVar = new Var (fieldObj);
+                        fieldType.WriteVar(ref writer, objectVar);
                     }
                     writer.FlushFilledBuffer();
                 }

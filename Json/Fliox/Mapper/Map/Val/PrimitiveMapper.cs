@@ -27,6 +27,9 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
         public override void Write(ref Writer writer, string slot) {
             writer.WriteString(slot);
         }
+        public override void WriteVar(ref Writer writer, in Var value) {
+            Write(ref writer, value.String);
+        }
         public override DiffNode    DiffObject  (Differ differ, in Var left, in Var right) {
             return Diff(differ, left.String, right.String);
         }
@@ -63,7 +66,9 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
         public override void Write(ref Writer writer, double slot) {
             writer.format.AppendDbl(ref writer.bytes, slot);
         }
-        
+        public override void WriteVar(ref Writer writer, in Var value) {
+            Write(ref writer, value.Flt64);
+        }
         public override DiffNode    DiffObject  (Differ differ, in Var left, in Var right) {
             return Diff(differ, left.Flt64, right.Flt64);
         }
@@ -83,6 +88,9 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
 
         public override void Write(ref Writer writer, double? slot) {
             writer.format.AppendDbl(ref writer.bytes, (double)slot);
+        }
+        public override void WriteVar(ref Writer writer, in Var value) {
+            Write(ref writer, value.Flt64Null);
         }
         public override DiffNode    DiffObject  (Differ differ, in Var left, in Var right) {
             return Diff(differ, left.Flt64Null, right.Flt64Null);
@@ -118,6 +126,9 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
         public override void Write(ref Writer writer, float slot) {
             writer.format.AppendFlt(ref writer.bytes, slot);
         }
+        public override void WriteVar(ref Writer writer, in Var value) {
+            Write(ref writer, value.Flt32);
+        }
         public override DiffNode    DiffObject  (Differ differ, in Var left, in Var right) {
             return Diff(differ, left.Flt32, right.Flt32);
         }
@@ -137,6 +148,9 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
         
         public override void Write(ref Writer writer, float? slot) {
             writer.format.AppendFlt(ref writer.bytes, (float)slot);
+        }
+        public override void WriteVar(ref Writer writer, in Var value) {
+            Write(ref writer, value.Flt32Null);
         }
         public override DiffNode    DiffObject  (Differ differ, in Var left, in Var right) {
             return Diff(differ, left.Flt32Null, right.Flt32Null);
@@ -171,6 +185,9 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
         public override void Write(ref Writer writer, long slot) {
             writer.format.AppendLong(ref writer.bytes, slot);
         }
+        public override void WriteVar(ref Writer writer, in Var value) {
+            Write(ref writer, value.Int64);
+        }
         public override DiffNode    DiffObject  (Differ differ, in Var left, in Var right) {
             return Diff(differ, left.Int64, right.Int64);
         }
@@ -190,6 +207,9 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
         
         public override void Write(ref Writer writer, long? slot) {
             writer.format.AppendLong(ref writer.bytes, (long)slot);
+        }
+        public override void WriteVar(ref Writer writer, in Var value) {
+            Write(ref writer, value.Int64Null);
         }
         public override DiffNode    DiffObject  (Differ differ, in Var left, in Var right) {
             return Diff(differ, left.Int64Null, right.Int64Null);
@@ -224,6 +244,9 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
         public override void Write(ref Writer writer, int slot) {
             writer.format.AppendInt(ref writer.bytes, slot);
         }
+        public override void WriteVar(ref Writer writer, in Var value) {
+            Write(ref writer, value.Int32);
+        }
         public override DiffNode    DiffObject  (Differ differ, in Var left, in Var right) {
             return Diff(differ, left.Int32, right.Int32);
         }
@@ -243,6 +266,9 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
         
         public override void Write(ref Writer writer, int? slot) {
             writer.format.AppendInt(ref writer.bytes, (int)slot);
+        }
+        public override void WriteVar(ref Writer writer, in Var value) {
+            Write(ref writer, value.Int32Null);
         }
         public override DiffNode    DiffObject  (Differ differ, in Var left, in Var right) {
             return Diff(differ, left.Int32Null, right.Int32Null);
@@ -277,6 +303,9 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
         public override void Write(ref Writer writer, short slot) {
             writer.format.AppendInt(ref writer.bytes, slot);
         }
+        public override void WriteVar(ref Writer writer, in Var value) {
+            Write(ref writer, value.Int16);
+        }
         public override DiffNode    DiffObject  (Differ differ, in Var left, in Var right) {
             return Diff(differ, left.Int16, right.Int16);
         }
@@ -296,6 +325,9 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
 
         public override void Write(ref Writer writer, short? slot) {
             writer.format.AppendInt(ref writer.bytes, (short)slot);
+        }
+        public override void WriteVar(ref Writer writer, in Var value) {
+            Write(ref writer, value.Int16Null);
         }
         public override DiffNode    DiffObject  (Differ differ, in Var left, in Var right) {
             return Diff(differ, left.Int16Null, right.Int16Null);
@@ -331,6 +363,9 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
         public override void Write(ref Writer writer, byte slot) {
             writer.format.AppendInt(ref writer.bytes, slot);
         }
+        public override void WriteVar(ref Writer writer, in Var value) {
+            Write(ref writer, value.Int8);
+        }
         public override DiffNode    DiffObject  (Differ differ, in Var left, in Var right) {
             return Diff(differ, left.Int8, right.Int8);
         }
@@ -350,6 +385,9 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
         
         public override void Write(ref Writer writer, byte? slot) {
             writer.format.AppendInt(ref writer.bytes, (byte)slot);
+        }
+        public override void WriteVar(ref Writer writer, in Var value) {
+            Write(ref writer, value.Int8Null);
         }
         public override DiffNode    DiffObject  (Differ differ, in Var left, in Var right) {
             return Diff(differ, left.Int8Null, right.Int8Null);
@@ -385,6 +423,9 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
         public override void Write(ref Writer writer, bool slot) {
             writer.format.AppendBool(ref writer.bytes, slot);
         }
+        public override void WriteVar(ref Writer writer, in Var value) {
+            Write(ref writer, value.Bool);
+        }
         public override DiffNode    DiffObject  (Differ differ, in Var left, in Var right) {
             return Diff(differ, left.Bool, right.Bool);
         }
@@ -404,6 +445,9 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
 
         public override void Write(ref Writer writer, bool? slot) {
             writer.format.AppendBool(ref writer.bytes, (bool)slot);
+        }
+        public override void WriteVar(ref Writer writer, in Var value) {
+            Write(ref writer, value.BoolNull);
         }
         public override DiffNode    DiffObject  (Differ differ, in Var left, in Var right) {
             return Diff(differ, left.BoolNull, right.BoolNull);

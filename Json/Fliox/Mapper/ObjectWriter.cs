@@ -153,7 +153,8 @@ namespace Friflo.Json.Fliox.Mapper
             }
             TypeMapper mapper = intern.typeCache.GetTypeMapper(value.GetType());
             try {
-                mapper.WriteObject(ref intern, value);
+                var objectVar = mapper.varType.FromObject(value);
+                mapper.WriteVar(ref intern, objectVar);
             }
             finally { intern.ClearMirrorStack(); }
 

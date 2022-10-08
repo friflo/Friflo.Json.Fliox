@@ -247,7 +247,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object
                     }
                 } else {
                     writer.WriteFieldKey(field, ref firstMember); 
-                    fieldType.WriteObject(ref writer, elemValue);
+                    fieldType.WriteVar(ref writer, elemVar);
                     writer.FlushFilledBuffer();
                 }
             }
