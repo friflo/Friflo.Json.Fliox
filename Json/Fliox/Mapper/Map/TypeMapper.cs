@@ -126,9 +126,12 @@ namespace Friflo.Json.Fliox.Mapper.Map
             return differ.AddNotEqual(left, right);
         }
         
-        public override DiffNode    DiffObject  (Differ differ, in Var left, in Var right) =>
-            Diff(differ, (TVal)left.TryGetObject(), (TVal)right.TryGetObject());
-        
+        public override DiffNode    DiffObject  (Differ differ, in Var left, in Var right) {
+            var leftObject  = (TVal)left. TryGetObject();
+            var rightObject = (TVal)right.TryGetObject();
+            return Diff(differ, leftObject, rightObject);
+        }
+
         internal override bool IsValueNullIL(ClassMirror mirror, int primPos, int objPos)                    => throw new Invalid("IsValueNullIL() not applicable");
         internal override void WriteValueIL (ref Writer writer, ClassMirror mirror, int primPos, int objPos) => throw new Invalid("WriteValueIL() not applicable");
         internal override bool ReadValueIL  (ref Reader reader, ClassMirror mirror, int primPos, int objPos) => throw new Invalid("ReadValueIL() not applicable");
