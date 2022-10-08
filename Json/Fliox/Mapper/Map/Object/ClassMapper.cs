@@ -178,9 +178,9 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object
                 var field = fields[n];
                 if (patcher.IsMember(field.key)) {
                     Var value   = field.GetVar(obj); 
-                    var action  = patcher.DescendMember(field.fieldType, value.Object, out object newValue);
+                    var action  = patcher.DescendMember(field.fieldType, value, out Var newValue);
                     if  (action == NodeAction.Assign)
-                        field.SetVar(obj, new Var(newValue));
+                        field.SetVar(obj, newValue);
                     else
                         throw new InvalidOperationException($"NodeAction not applicable: {action}");
                     return;
@@ -320,7 +320,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object
                         TypeMapper fieldType = field.fieldType;
                         Var fieldVal    = field.GetVar(objRef);
                         Var curFieldVal = fieldVal;
-                        fieldVal        = new Var(fieldType.ReadObject(ref reader, fieldVal.Object, out success));
+                        fieldVal        = fieldType.ReadVar(ref reader, fieldVal, out success);
                         if (!success)
                             return default;
                         //

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using Friflo.Json.Burst;
 using Friflo.Json.Fliox.Mapper.Diff;
+using Friflo.Json.Fliox.Mapper.Map.Object.Reflect;
 using Friflo.Json.Fliox.Mapper.Map.Utils;
 using Friflo.Json.Fliox.Mapper.Utils;
 
@@ -84,10 +85,11 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object
             var jsonKey = patcher.GetMemberKey();
             var key = keyMapper.ToKey(jsonKey); 
             map.TryGetValue(key, out TElm value);
-            var action = patcher.DescendMember(elementType, value, out object newValue);
+            Var valueVar = new Var(value);
+            var action   = patcher.DescendMember(elementType, valueVar, out Var newValue);
             switch (action) {
                 case NodeAction.Assign:
-                    map[key] = (TElm) newValue;
+                    map[key] = (TElm) newValue.Object;
                     break;
                 case NodeAction.Remove:
                     map.Remove(key);

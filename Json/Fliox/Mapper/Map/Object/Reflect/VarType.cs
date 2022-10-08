@@ -16,6 +16,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
         public   abstract Var       DefaultValue{ get; }
         public   abstract Var       FromObject  (object obj);
         public   abstract object    ToObject    (in Var value);
+        internal virtual  object    TryGetObject(in Var value) => null;
 
         public   override string    ToString() => Name;
         
@@ -67,6 +68,7 @@ public partial struct Var {
         public    override  Var     DefaultValue                           => new Var((object)null);
         public    override  Var     FromObject  (object obj)               => new Var(obj);
         public    override  object  ToObject    (in Var value)             => value.obj;
+        internal  override  object  TryGetObject(in Var value)             => value.obj;
     }
     
     internal sealed class TypeString : VarType

@@ -6,6 +6,7 @@ using System.IO;
 using Friflo.Json.Burst;
 using Friflo.Json.Burst.Utils;
 using Friflo.Json.Fliox.Mapper.Map;
+using Friflo.Json.Fliox.Mapper.Map.Object.Reflect;
 using Friflo.Json.Fliox.Mapper.Utils;
 
 namespace Friflo.Json.Fliox.Mapper
@@ -132,9 +133,9 @@ namespace Friflo.Json.Fliox.Mapper
         
         public object ReadObject(Bytes utf8Bytes, Type type) {
             InitJsonReaderBytes(ref utf8Bytes.buffer, utf8Bytes.StartPos, utf8Bytes.Len);
-            object result = ReadStart(type, null);
+            Var result = ReadStart(type);
             JsonBurstError();
-            return result;
+            return result.ToObject();
         }
 
         // --- ReadTo()
@@ -163,9 +164,9 @@ namespace Friflo.Json.Fliox.Mapper
         
         public object ReadObject(Stream utf8Stream, Type type) {
             InitJsonReaderStream(utf8Stream);
-            object result = ReadStart(type, null);
+            Var result = ReadStart(type);
             JsonBurstError();
-            return result;
+            return result.ToObject();
         }
 
         // --- ReadTo()
@@ -194,9 +195,9 @@ namespace Friflo.Json.Fliox.Mapper
         
         public object ReadObject(string json, Type type) {
             InitJsonReaderString(json);
-            object result = ReadStart(type, null);
+            Var result = ReadStart(type);
             JsonBurstError();
-            return result;
+            return result.ToObject();
         }
 
         // --- ReadTo()
@@ -226,7 +227,14 @@ namespace Friflo.Json.Fliox.Mapper
         
         public object ReadObject(JsonValue utf8Array, Type type) {
             InitJsonReaderArray(utf8Array);
-            object result = ReadStart(type, null);
+            Var result = ReadStart(type);
+            JsonBurstError();
+            return result.ToObject();
+        }
+        
+        internal Var ReadObjectVar(JsonValue utf8Array, Type type) {
+            InitJsonReaderArray(utf8Array);
+            Var result = ReadStart(type);
             JsonBurstError();
             return result;
         }
@@ -249,8 +257,9 @@ namespace Friflo.Json.Fliox.Mapper
 
         
         // --------------------------------------- private --------------------------------------- 
-        private object ReadStart(Type type, object value) {
+        private Var ReadStart(Type type) {
             TypeMapper  mapper  = intern.typeCache.GetTypeMapper(type);
+            Var defaultValue    = mapper.varType.DefaultValue;
 
             while (true) {
                 JsonEvent ev = intern.parser.NextEvent();
@@ -261,22 +270,24 @@ namespace Friflo.Json.Fliox.Mapper
                     case JsonEvent.ValueNumber:
                     case JsonEvent.ValueBool:
                         try {
-                            object result = mapper.ReadObject(ref intern, value, out bool success);
+                            Var result = mapper.ReadVar(ref intern, defaultValue, out bool success);
                             if (success)
                                 intern.parser.NextEvent(); // EOF
                             return result;
                         }
                         finally { intern.ClearMirrorStack(); }
                     case JsonEvent.ValueNull:
-                        if (!mapper.isNullable)
-                            return intern.ErrorIncompatible<object>(mapper.DataTypeName(), mapper, out bool _);
-                        
+                        if (!mapper.isNullable) {
+                            intern.ErrorIncompatible<bool>(mapper.DataTypeName(), mapper, out bool _);
+                            return defaultValue;
+                        }
                         intern.parser.NextEvent(); // EOF
-                        return default;
+                        return defaultValue;
                     case JsonEvent.Error:
-                        return default;
+                        return defaultValue;
                     default:
-                        return intern.ErrorMsg<object>("unexpected state in Read() : ", ev, out bool _);
+                        intern.ErrorMsg<bool>("unexpected state in Read() : ", ev, out bool _);
+                        return defaultValue;
                 }
             }
         }
@@ -342,16 +353,18 @@ namespace Friflo.Json.Fliox.Mapper
                     case JsonEvent.ObjectStart:
                     case JsonEvent.ArrayStart:
                         try {
-                            object result = mapper.ReadObject(ref intern, value, out bool success);
+                            Var valueVar = mapper.varType.FromObject(value);
+                            Var result   = mapper.ReadVar(ref intern, valueVar, out bool success);
                             if (success)
                                 intern.parser.NextEvent(); // EOF
-                            return result;
+                            return result.ToObject();
                         }
                         finally { intern.ClearMirrorStack(); }
                     case JsonEvent.Error:
-                        return default;
+                        return mapper.varType.DefaultValue;
                     default:
-                        return intern.ErrorMsg<object>("ReadTo() can only used on an JSON object or array. Found: ", ev, out _);
+                        intern.ErrorMsg<bool>("ReadTo() can only used on an JSON object or array. Found: ", ev, out _);
+                        return mapper.varType.DefaultValue;
                 }
             }
         }

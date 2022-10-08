@@ -1,5 +1,7 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
+
+using System;
 using System.IO;
 using Friflo.Json.Burst;
 using Friflo.Json.Fliox.Mapper;
@@ -85,6 +87,33 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
                 IsFalse(read.Success);
                 AreEqual("JsonParser/JSON error: unexpected character while reading value. Found: i path: '(root)' at position: 1", read.Error.msg.AsString());
                 AreEqual(1, read.Error.Pos);
+            }
+        }
+        
+        [Test]
+        public void ReadPrimitives() {
+            using (var typeStore    = new TypeStore())
+            using (var read         = new ObjectReader(typeStore) { ErrorHandler =  ObjectReader.NoThrow} )
+            {
+                read.ReadObject("1", typeof(int));
+                {
+                    var start = GC.GetAllocatedBytesForCurrentThread();
+                    var result = read.ReadObject("1", typeof(int));
+                    var dif = GC.GetAllocatedBytesForCurrentThread() - start;
+                    // todo - add assert when dif is 0 
+                    IsTrue(read.Success);
+                    AreEqual(1, result);
+                } {
+                    var result = read.ReadObject("true", typeof(int));
+                    AreEqual(0, result);
+                    IsFalse(read.Success);
+                    AreEqual("JsonReader/error: Cannot assign bool to int. got: true path: '(root)' at position: 4", read.Error.msg.AsString());
+                } {
+                    var result = read.ReadObject("null", typeof(int));
+                    AreEqual(0, result);
+                    IsFalse(read.Success);
+                    AreEqual("JsonReader/error: Cannot assign null to int. got: null path: '(root)' at position: 4", read.Error.msg.AsString());
+                }
             }
         }
         

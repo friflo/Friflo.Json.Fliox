@@ -8,22 +8,27 @@ using Browse = System.Diagnostics.DebuggerBrowsableAttribute;
 
 namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
 {
+    /// <summary>
+    /// <see cref="Var"/> is used to prevent boxing of primitives types when: <br/>
+    /// - serializing primitive JSON values like: 123, "abc", true or false <br/>
+    /// - accessing primitive class fields or properties like: bool, byte, short, int, long, char, float and double. <br/> 
+    /// </summary>
     public readonly partial struct Var
     {
         public override bool    Equals(object obj)  => throw new InvalidOperationException("not implemented intentionally");
         public override int     GetHashCode()       => throw new InvalidOperationException("not implemented intentionally");
 
         // --- Note! All fields must be private to ensure using only the type checked properties 
-        [Browse(Never)] private   readonly  VarType type;
+                        private   readonly  VarType type;
                         private   readonly  object  obj;
                         private   readonly  long    lng;
                         private   readonly  double  dbl;   // can merge with lng using BitConverter.DoubleToInt64Bits()
                         
-                        
-        [Browse(Never)] public  object  ToObjectDbg =>  type.ToObject(this); // todo - remove after refactor                
+        internal                object  TryGetObject()  =>  type.TryGetObject(this);
+        internal                object  ToObject()      =>  type.ToObject(this);
         
-                        public  bool    IsNull      =>  type.IsNull(this);
-        [Browse(Never)] public  bool    NotNull     => !type.IsNull(this);
+                        public  bool    IsNull          =>  type.IsNull(this);
+        [Browse(Never)] public  bool    NotNull         => !type.IsNull(this);
         // --- reference
         [Browse(Never)] public  object  Object      { get { AssertType(TypeObject.Instance); return obj;           } } 
         [Browse(Never)] public  string  String      { get { AssertType(TypeString.Instance); return (string)obj;   } }

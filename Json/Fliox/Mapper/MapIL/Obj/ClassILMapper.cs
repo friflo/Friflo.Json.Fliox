@@ -142,9 +142,11 @@ namespace Friflo.Json.Fliox.Mapper.MapIL.Obj
                                 return default;
                         } else {
                             object fieldVal = mirror.LoadObj(objPos + field.objIndex);
-                            fieldVal = fieldType.ReadObject(ref reader, fieldVal, out success);
+                            Var fieldVar = new Var(fieldVal);
+                            fieldVar = fieldType.ReadVar(ref reader, fieldVar, out success);
                             if (!success)
                                 return false;
+                            fieldVal = fieldVar.Object;
                             mirror.StoreObj(objPos + field.objIndex, fieldVal);
                             if (!fieldType.isNullable && fieldVal == null)
                                 return reader.ErrorIncompatible<bool>(classType, field, out success);

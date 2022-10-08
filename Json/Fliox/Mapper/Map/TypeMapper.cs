@@ -76,7 +76,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
         }
 
         public   abstract void          WriteObject(ref Writer writer, object slot);
-        public   abstract object        ReadObject(ref Reader reader, object slot, out bool success);
+        public   abstract Var           ReadVar(ref Reader reader, in Var slot, out bool success);
         
         internal virtual  object        ReadObjectTyped(ref Reader reader, object slot, out bool success)       => throw new InvalidOperationException("not implemented");
         internal virtual  void          WriteObjectTyped(ref Writer writer, object slot, ref bool firstMember)  => throw new InvalidOperationException("not implemented");
@@ -155,10 +155,12 @@ namespace Friflo.Json.Fliox.Mapper.Map
             Write(ref writer, (TVal) value);
         }
 
-        public override object ReadObject(ref Reader reader, object slot, out bool success) {
-            if (slot != null)
-                return Read(ref reader, (TVal) slot, out success);
-            return Read(ref reader, default, out success);
+        public override Var ReadVar(ref Reader reader, in Var value, out bool success) {
+            var valueObject = value.TryGetObject();
+            if (valueObject != null) {
+                return new Var(Read(ref reader, (TVal) valueObject, out success));
+            }
+            return new Var(Read(ref reader, default, out success));
         }
 
         public override      void    Dispose() { }
