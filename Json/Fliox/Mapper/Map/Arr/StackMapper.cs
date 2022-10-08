@@ -63,9 +63,9 @@ namespace Friflo.Json.Fliox.Mapper.Map.Arr
             var count = copy.Length;
             int index = patcher.GetElementIndex(count);
             var element = copy[index];
-            var action = patcher.DescendElement<TElm>(elementType, element, out TElm value);
+            var action = patcher.DescendElement(elementType, element, out TElm value);
             if (action == NodeAction.Assign) {
-                copy[index] = (TElm) value;
+                copy[index] = value;
                 for (int n = count - 1; n >= 0; n--)
                     list.Push(copy[n]);
             }

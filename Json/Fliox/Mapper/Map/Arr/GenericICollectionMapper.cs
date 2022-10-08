@@ -80,9 +80,9 @@ namespace Friflo.Json.Fliox.Mapper.Map.Arr
             list.Clear();
             int index = patcher.GetElementIndex(copy.Length);
             var element = copy[index];
-            var action = patcher.DescendElement<TElm>(elementType, element, out TElm value);
+            var action = patcher.DescendElement(elementType, element, out TElm value);
             if (action == NodeAction.Assign) {
-                copy[index] = (TElm) value;
+                copy[index] = value;
                 for (int n = 0; n < copy.Length; n++)
                     list.Add(copy[n]);
             }

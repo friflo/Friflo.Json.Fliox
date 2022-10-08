@@ -60,9 +60,9 @@ namespace Friflo.Json.Fliox.Mapper.Map.Arr
             var list = (TCol)obj;
             int index = patcher.GetElementIndex(list.Count);
             var element = list[index];
-            var action = patcher.DescendElement<TElm>(elementType, element, out TElm value);
+            var action = patcher.DescendElement(elementType, element, out TElm value);
             if (action == NodeAction.Assign) {
-                list[index] = (TElm) value;
+                list[index] = value;
             }
         }
 
