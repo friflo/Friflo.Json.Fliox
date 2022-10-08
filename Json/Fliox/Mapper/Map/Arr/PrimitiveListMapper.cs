@@ -106,7 +106,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Arr
             var list = (List<T>)obj;
             int index = patcher.GetElementIndex(list.Count);
             var element = list[index];
-            var action = patcher.DescendElement(elementType, element, out object value);
+            var action = patcher.DescendElement<T>(elementType, element, out T value);
             if (action == NodeAction.Assign) {
                 list[index] = (T) value;
             }

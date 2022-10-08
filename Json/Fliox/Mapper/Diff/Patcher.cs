@@ -83,9 +83,9 @@ namespace Friflo.Json.Fliox.Mapper.Diff
             return key;
         }
         
-        public NodeAction DescendElement(TypeMapper elementType, object element, out object value) {
+        public NodeAction DescendElement<T>(TypeMapper elementType, T element, out T value) {
             if (++pathPos >= pathNodes.Count) {
-                value = jsonReader.ReadObject(json, elementType.type);
+                value = jsonReader.Read<T>(json);
                 return NodeAction.Assign;
             }
             elementType.PatchObject(this, element);
