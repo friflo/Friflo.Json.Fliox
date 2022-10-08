@@ -3,9 +3,9 @@
 
 using System;
 using System.Globalization;
-using static Friflo.Json.Fliox.Mapper.Map.Object.Reflect.Var;
+using static Friflo.Json.Fliox.Mapper.Map.Var;
 
-namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
+namespace Friflo.Json.Fliox.Mapper.Map
 {
     public abstract class VarType
     {

@@ -6,7 +6,7 @@ using System.Diagnostics;
 using static System.Diagnostics.DebuggerBrowsableState;
 using Browse = System.Diagnostics.DebuggerBrowsableAttribute;
 
-namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
+namespace Friflo.Json.Fliox.Mapper.Map
 {
     /// <summary>
     /// <see cref="Var"/> is used to prevent boxing of primitives types when: <br/>
