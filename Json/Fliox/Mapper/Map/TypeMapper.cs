@@ -10,6 +10,8 @@ using Friflo.Json.Fliox.Mapper.Map.Utils;
 using Friflo.Json.Fliox.Mapper.MapIL.Obj;
 using Friflo.Json.Fliox.Transform.Select;
 
+using Invalid = System.InvalidOperationException;
+
 namespace Friflo.Json.Fliox.Mapper.Map
 {
 #if !UNITY_5_3_OR_NEWER
@@ -27,15 +29,13 @@ namespace Friflo.Json.Fliox.Mapper.Map
         public  readonly    string          docs;
         public              InstanceFactory instanceFactory;
         internal            string          discriminant;
-
-        public              string          Discriminant    => discriminant;
-        public virtual      bool            IsComplex       => false;
-        public virtual      bool            IsArray         => false;
-        public virtual      bool            IsDictionary    => false;
-        public virtual      Type            BaseType        => null;
-        public virtual      int             Count(object array) => throw new InvalidOperationException("Count not applicable");
-
-
+        public              string          Discriminant        => discriminant;
+        public virtual      bool            IsComplex           => false;
+        public virtual      bool            IsArray             => false;
+        public virtual      bool            IsDictionary        => false;
+        public virtual      Type            BaseType            => null;
+        public virtual      int             Count(object array) => throw new Invalid("Count not applicable");
+        public virtual      string          DataTypeName()      => type.Name;
         public virtual      PropertyFields  PropFields => null;
         public              ClassLayout     layout;  // todo make readonly
 
@@ -50,7 +50,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
             if (type != typeof(JsonKey)) { // todo more elegant
                 bool isNull = nullableUnderlyingType != null || !type.IsValueType;
                 if (isNull != isNullable)
-                    throw new InvalidOperationException("invalid parameter: isNullable");
+                    throw new Invalid("invalid parameter: isNullable");
             }
             this.useIL                  = config != null && config.useIL && isValueType && !type.IsPrimitive;
             
@@ -62,35 +62,30 @@ namespace Friflo.Json.Fliox.Mapper.Map
             }
         }
 
-        public abstract void            Dispose();
+        public   abstract void      Dispose();
 
-        public virtual string           DataTypeName() { return type.Name; }
+        public   abstract void      InitTypeMapper  (TypeStore typeStore);
 
-        public abstract void            InitTypeMapper(TypeStore typeStore);
+        public   abstract DiffNode  DiffObject      (Differ differ, in Var left, in Var right);
+        public   virtual  void      PatchObject     (Patcher patcher, object value) { }
 
-        public abstract DiffNode        DiffObject(Differ differ, in Var left, in Var right);
-        public virtual  void            PatchObject(Patcher patcher, object value) { }
-
-        public virtual  void            MemberObject(Accessor accessor, object value, PathNode<MemberValue> node) {
-            throw new InvalidOperationException("MemberObject() is intended only for classes");
-        }
-
-        public   abstract void          WriteVar(ref Writer writer, in Var slot);
-        public   abstract Var           ReadVar (ref Reader reader, in Var slot, out bool success);
+        public   virtual  void      MemberObject    (Accessor accessor, object value, PathNode<MemberValue> node) => throw new Invalid("MemberObject() is intended only for classes");
         
-        internal virtual  object        ReadObjectTyped(ref Reader reader, object slot, out bool success)       => throw new InvalidOperationException("not implemented");
-        internal virtual  void          WriteObjectTyped(ref Writer writer, object slot, ref bool firstMember)  => throw new InvalidOperationException("not implemented");
-        internal virtual  DiffNode      DiffTyped(Differ differ, object left, object right)                     => throw new InvalidOperationException("not implemented");
+        public   abstract void      WriteVar        (ref Writer writer, in Var slot);
+        public   abstract Var       ReadVar         (ref Reader reader, in Var slot, out bool success);
         
-        internal abstract bool          IsValueNullIL(ClassMirror mirror, int primPos, int objPos);
-        internal abstract void          WriteValueIL(ref Writer writer, ClassMirror mirror, int primPos, int objPos);
-        internal abstract bool          ReadValueIL(ref Reader reader, ClassMirror mirror, int primPos, int objPos);
+        internal virtual  object    ReadObjectTyped (ref Reader reader, object slot, out bool success)      => throw new Invalid("not implemented");
+        internal virtual  void      WriteObjectTyped(ref Writer writer, object slot, ref bool firstMember)  => throw new Invalid("not implemented");
+        internal virtual  DiffNode  DiffTyped       (Differ differ, object left, object right)              => throw new Invalid("not implemented");
         
-        public abstract object CreateInstance();
+        internal abstract bool      IsValueNullIL   (ClassMirror mirror, int primPos, int objPos);
+        internal abstract void      WriteValueIL    (ref Writer writer, ClassMirror mirror, int primPos, int objPos);
+        internal abstract bool      ReadValueIL     (ref Reader reader, ClassMirror mirror, int primPos, int objPos);
+        
+        public   abstract object    CreateInstance();
 
-        public virtual bool IsNullObject(object value) {
-            return value == null;
-        }
+        public   virtual  bool      IsNullObject(object value) => value == null;
+        
 
         public bool IsNull<T>(ref T value) {
             if (isValueType) {
@@ -131,27 +126,18 @@ namespace Friflo.Json.Fliox.Mapper.Map
             return differ.AddNotEqual(left, right);
         }
         
-        public override DiffNode    DiffObject  (Differ differ, in Var left, in Var right) {
-            return Diff(differ, (TVal)left.TryGetObject(), (TVal)right.TryGetObject());
-        }
-
-        internal override bool IsValueNullIL(ClassMirror mirror, int primPos, int objPos) {
-            throw new InvalidOperationException("IsValueNullIL() not applicable");
-        }
+        public override DiffNode    DiffObject  (Differ differ, in Var left, in Var right) =>
+            Diff(differ, (TVal)left.TryGetObject(), (TVal)right.TryGetObject());
         
-        internal override void WriteValueIL(ref Writer writer, ClassMirror mirror, int primPos, int objPos) {
-            throw new InvalidOperationException("WriteValueIL() not applicable");
-        }
-
-        internal override bool ReadValueIL(ref Reader reader, ClassMirror mirror, int primPos, int objPos) {
-            throw new InvalidOperationException("ReadValueIL() not applicable");
-        }
+        internal override bool IsValueNullIL(ClassMirror mirror, int primPos, int objPos)                    => throw new Invalid("IsValueNullIL() not applicable");
+        internal override void WriteValueIL (ref Writer writer, ClassMirror mirror, int primPos, int objPos) => throw new Invalid("WriteValueIL() not applicable");
+        internal override bool ReadValueIL  (ref Reader reader, ClassMirror mirror, int primPos, int objPos) => throw new Invalid("ReadValueIL() not applicable");
 
         public override void WriteVar(ref Writer writer, in Var value) {
             var objectValue = value.TryGetObject();
 #if DEBUG
             if (objectValue == null)
-                throw new InvalidOperationException("WriteObject() value must not be null");
+                throw new Invalid("WriteObject() value must not be null");
 #endif
             Write(ref writer, (TVal) objectValue);
         }
@@ -179,9 +165,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
         /// </summary>
         public override      void    InitTypeMapper(TypeStore typeStore) { }
 
-        public override      object  CreateInstance() {
-            return null;
-        }
+        public override      object  CreateInstance() =>  null;
     }
     
     internal sealed class ConcreteTypeMatcher : ITypeMatcher
@@ -212,11 +196,9 @@ namespace Friflo.Json.Fliox.Mapper.Map
     {
         private const BindingFlags Flags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
         
-        public static object CreateGenericInstance(Type genericType, Type[] genericArgs, object[] constructorParams)
-        {
+        public static object CreateGenericInstance(Type genericType, Type[] genericArgs, object[] constructorParams) {
             var concreteType = genericType.MakeGenericType(genericArgs);
             return Activator.CreateInstance(concreteType, Flags, null, constructorParams, null);
         } 
     }
-
 }
