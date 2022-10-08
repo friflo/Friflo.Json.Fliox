@@ -152,10 +152,12 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object
                 var field = fields[n];
                 differ.PushMember(field);
 
-                Var leftField    = field.GetVar(left);
-                Var rightField   = field.GetVar(right);
-                if (leftField.NotNull || rightField.NotNull) {
-                    if (leftField.NotNull && rightField.NotNull) {
+                Var leftField   = field.GetVar(left);
+                Var rightField  = field.GetVar(right);
+                var leftNull    = leftField.NotNull;
+                var rightNull   = rightField.NotNull;
+                if (leftNull || rightNull) {
+                    if (leftNull && rightNull) {
                         field.fieldType.DiffObject(differ, leftField, rightField);
                     } else {
                         differ.AddNotEqual(leftField.ToObject(), rightField.ToObject());
