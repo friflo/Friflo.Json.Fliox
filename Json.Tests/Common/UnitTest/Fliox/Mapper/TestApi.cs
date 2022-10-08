@@ -95,14 +95,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
             using (var typeStore    = new TypeStore())
             using (var read         = new ObjectReader(typeStore) { ErrorHandler =  ObjectReader.NoThrow} )
             {
-                read.ReadObject("1", typeof(int));
+                read.ReadObject("1", typeof(int));  // initiate one time allocations
                 {
-                    var start = GC.GetAllocatedBytesForCurrentThread();
-                    var result = read.ReadObject("1", typeof(int));
-                    var dif = GC.GetAllocatedBytesForCurrentThread() - start;
-                    // todo - add assert when dif is 0 
+                    var start   = GC.GetAllocatedBytesForCurrentThread();
+                    var result  = read.ReadObject("1", typeof(int));
+                    var dif     = GC.GetAllocatedBytesForCurrentThread() - start;
                     IsTrue(read.Success);
                     AreEqual(1, result);
+                    AreEqual(24, dif); // 24 bytes for boxing an int in the returned object
                 } {
                     var result = read.ReadObject("true", typeof(int));
                     AreEqual(0, result);
