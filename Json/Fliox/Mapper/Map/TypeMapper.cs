@@ -68,7 +68,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
 
         public abstract void            InitTypeMapper(TypeStore typeStore);
 
-        public abstract DiffNode        DiffObject(Differ differ, object left, object right);
+        public abstract DiffNode        DiffObject(Differ differ, in Var left, in Var right);
         public virtual  void            PatchObject(Patcher patcher, object value) { }
 
         public virtual  void            MemberObject(Accessor accessor, object value, PathNode<MemberValue> node) {
@@ -131,8 +131,8 @@ namespace Friflo.Json.Fliox.Mapper.Map
             return differ.AddNotEqual(left, right);
         }
         
-        public override DiffNode    DiffObject  (Differ differ, object left, object right) {
-            return Diff(differ, (TVal)left, (TVal)right);
+        public override DiffNode    DiffObject  (Differ differ, in Var left, in Var right) {
+            return Diff(differ, (TVal)left.TryGetObject(), (TVal)right.TryGetObject());
         }
 
         internal override bool IsValueNullIL(ClassMirror mirror, int primPos, int objPos) {

@@ -156,9 +156,9 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object
                 Var rightField   = field.GetVar(right);
                 if (leftField.NotNull || rightField.NotNull) {
                     if (leftField.NotNull && rightField.NotNull) {
-                        field.fieldType.DiffObject(differ, leftField.Object, rightField.Object);
+                        field.fieldType.DiffObject(differ, leftField, rightField);
                     } else {
-                        differ.AddNotEqual(leftField.Object, rightField.Object);
+                        differ.AddNotEqual(leftField.ToObject(), rightField.ToObject());
                     }
                 } // else: both null
 
@@ -202,7 +202,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object
                     if (field == null)
                         continue;
                     Var elemVar = field.GetVar(obj);
-                    accessor.HandleResult(child, elemVar.Object);
+                    accessor.HandleResult(child, elemVar.ToObject());
                     var fieldType = field.fieldType;
                     if (fieldType.IsComplex && elemVar.NotNull)
                         fieldType.MemberObject(accessor, elemVar.Object, child);
@@ -238,7 +238,8 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object
                 
                 var elemVar     = field.GetVar(objRef);
                 var fieldType   = field.fieldType;
-                bool isNull     = fieldType.IsNullObject(elemVar.Object);
+                var elemValue   = elemVar.ToObject();   // todo move ToObject() inside IsNullObject() to avoid boxing
+                bool isNull     = fieldType.IsNullObject(elemValue);
                 if (isNull) {
                     if (writer.writeNullMembers) {
                         writer.WriteFieldKey(field, ref firstMember);
@@ -246,7 +247,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object
                     }
                 } else {
                     writer.WriteFieldKey(field, ref firstMember); 
-                    fieldType.WriteObject(ref writer, elemVar.Object);
+                    fieldType.WriteObject(ref writer, elemValue);
                     writer.FlushFilledBuffer();
                 }
             }

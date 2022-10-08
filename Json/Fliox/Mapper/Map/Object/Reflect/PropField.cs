@@ -28,6 +28,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
         // ReSharper disable once UnassignedReadonlyField
         // field ist set via reflection to enable using a readonly field
         public   readonly   TypeMapper      fieldType;          // never null
+        public   readonly   VarType         varType;            // never null
         public   readonly   int             primIndex;
         public   readonly   int             objIndex;
         public   readonly   bool            required;
@@ -54,6 +55,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
             this.key        = new JsonKey(name);
             this.jsonName   = jsonName;
             this.fieldType  = fieldType;
+            this.varType    = VarType.FromType(fieldType.type);
             this.nameBytes  = new Bytes(jsonName,                   Untracked.Bytes);
             firstMember     = new Bytes($"{'{'}\"{jsonName}\":",    Untracked.Bytes);
             subSeqMember    = new Bytes($",\"{jsonName}\":",        Untracked.Bytes);
@@ -99,20 +101,25 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
         public void SetVar (object obj, in Var value)
         {
             if (field != null) {
+                var valueObject = varType.ToObject(value);
                 // if (useDirect) { field.SetValueDirect(__makeref(obj), value); return; }
-                field.SetValue(obj, value.Object); // todo use Expression - but not for Unity
-                return;
+                field.SetValue(obj, valueObject); // todo use Expression - but not for Unity
+            } else {
+                var valueObject = varType.ToObject(value);
+                setLambda(obj, valueObject);
             }
-            setLambda(obj, value.Object);
         }
         
         public Var GetVar (object obj)
         {
             if (field != null) {
                 // if (useDirect) return field.GetValueDirect(__makeref(obj));
-                return new Var(field.GetValue (obj)); // todo use Expression - but not for Unity
+                var value = field.GetValue(obj); // todo use Expression - but not for Unity
+                return varType.FromObject(value);
+            } else {
+                var value = getLambda(obj); // return new Var(getMethod.Invoke(obj, null));
+                return varType.FromObject(value);
             }
-            return new Var(getLambda(obj)); // return new Var(getMethod.Invoke(obj, null));
         }
 
         public override string ToString() {

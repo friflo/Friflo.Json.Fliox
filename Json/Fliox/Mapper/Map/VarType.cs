@@ -82,6 +82,7 @@ public partial struct Var {
         public    override  Var     DefaultValue                           => new Var((string)null);
         public    override  Var     FromObject  (object obj)               => new Var((string)obj);
         public    override  object  ToObject    (in Var value)             => value.obj;
+        internal  override  object  TryGetObject(in Var value)             => value.obj;
     }
     
     

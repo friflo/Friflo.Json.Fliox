@@ -54,13 +54,16 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object
         
         public override DiffNode Diff(Differ differ, TMap left, TMap right) {
             differ.PushParent(left, right);
+            var elementVarType = elementType.varType;
             foreach (var leftPair in left) {
                 var leftKey   = leftPair.Key;
                 var leftValue = leftPair.Value;
-                var leftJson = keyMapper.ToJsonKey(leftKey);
+                var leftJson  = keyMapper.ToJsonKey(leftKey);
                 differ.PushKey(elementType, leftJson);
+                var leftVar   = elementVarType.FromObject(leftValue);
                 if (right.TryGetValue(leftKey, out TElm rightValue)) {
-                    elementType.DiffObject(differ, leftValue, rightValue);
+                    var rightVar = elementVarType.FromObject(rightValue);
+                    elementType.DiffObject(differ, leftVar, rightVar);
                 } else {
                     differ.AddOnlyLeft(leftValue);
                 }
@@ -88,7 +91,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object
             var action   = patcher.DescendMember(elementType, valueVar, out Var newValue);
             switch (action) {
                 case NodeAction.Assign:
-                    map[key] = (TElm) newValue.Object;
+                    map[key] = (TElm) newValue.ToObject();
                     break;
                 case NodeAction.Remove:
                     map.Remove(key);
