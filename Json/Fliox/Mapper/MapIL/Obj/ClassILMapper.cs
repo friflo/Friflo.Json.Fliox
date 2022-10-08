@@ -102,12 +102,12 @@ namespace Friflo.Json.Fliox.Mapper.MapIL.Obj
             if (!success)
                 return default;
             if (subType != null) {
-                return (T)subType.ReadObjectTyped(ref reader, slot, out success);
+                return (T)subType.ReadObject(ref reader, slot, out success);
             }
-            return (T)ReadObjectTyped(ref reader, slot, out success);
+            return (T)ReadObject(ref reader, slot, out success);
         }
             
-        internal override object ReadObjectTyped(ref Reader reader, object slot, out bool success)
+        internal override object ReadObject(ref Reader reader, object slot, out bool success)
         {
             var objRef = (T)slot;
             TypeMapper classType = this;

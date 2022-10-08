@@ -26,7 +26,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
 
         public override void        Write   (ref Writer writer, string slot)                    => writer.WriteString(slot);
         public override void        WriteVar(ref Writer writer, in Var value)                   => Write(ref writer, value.String);
-        public override DiffNode    DiffObject(Differ differ, in Var left, in Var right)        => Diff(differ, left.String, right.String);
+        public override DiffNode    DiffVar (Differ differ, in Var left, in Var right)          => Diff(differ, left.String, right.String);
         public override Var         ReadVar (ref Reader reader, in Var value, out bool success) => new Var(Read(ref reader, value.String, out success));
         
         public override string Read(ref Reader reader, string slot, out bool success) {
@@ -58,8 +58,8 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
 
         public override void        Write   (ref Writer writer, double slot)                    => writer.format.AppendDbl(ref writer.bytes, slot);
         public override void        WriteVar(ref Writer writer, in Var value)                   => Write(ref writer, value.Flt64);
-        public override DiffNode    DiffObject  (Differ differ, in Var left, in Var right)      => Diff(differ, left.Flt64, right.Flt64);
-        public override Var         ReadVar(ref Reader reader, in Var value, out bool success)  => new Var(Read(ref reader, value.Flt64, out success));
+        public override DiffNode    DiffVar (Differ differ, in Var left, in Var right)          => Diff(differ, left.Flt64, right.Flt64);
+        public override Var         ReadVar (ref Reader reader, in Var value, out bool success) => new Var(Read(ref reader, value.Flt64, out success));
         
         public override double Read(ref Reader reader, double slot, out bool success) {
             if (reader.parser.Event != JsonEvent.ValueNumber)
@@ -74,8 +74,8 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
 
         public override void        Write   (ref Writer writer, double? slot)                   => writer.format.AppendDbl(ref writer.bytes, (double)slot);
         public override void        WriteVar(ref Writer writer, in Var value)                   => Write(ref writer, value.Flt64Null);
-        public override DiffNode    DiffObject  (Differ differ, in Var left, in Var right)      => Diff(differ, left.Flt64Null, right.Flt64Null);
-        public override Var         ReadVar(ref Reader reader, in Var value, out bool success)  => new Var(Read(ref reader, value.Flt64Null, out success));
+        public override DiffNode    DiffVar (Differ differ, in Var left, in Var right)          => Diff(differ, left.Flt64Null, right.Flt64Null);
+        public override Var         ReadVar (ref Reader reader, in Var value, out bool success) => new Var(Read(ref reader, value.Flt64Null, out success));
 
         public override double? Read(ref Reader reader, double? slot, out bool success) {
             if (reader.parser.Event != JsonEvent.ValueNumber)
@@ -103,8 +103,8 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
         
         public override void        Write   (ref Writer writer, float slot)                     => writer.format.AppendFlt(ref writer.bytes, slot);
         public override void        WriteVar(ref Writer writer, in Var value)                   => Write(ref writer, value.Flt32);
-        public override DiffNode    DiffObject  (Differ differ, in Var left, in Var right)      => Diff(differ, left.Flt32, right.Flt32);
-        public override Var         ReadVar(ref Reader reader, in Var value, out bool success)  => new Var(Read(ref reader, value.Flt32, out success));
+        public override DiffNode    DiffVar (Differ differ, in Var left, in Var right)          => Diff(differ, left.Flt32, right.Flt32);
+        public override Var         ReadVar (ref Reader reader, in Var value, out bool success) => new Var(Read(ref reader, value.Flt32, out success));
         
         public override float Read(ref Reader reader, float slot, out bool success) {
             if (reader.parser.Event != JsonEvent.ValueNumber)
@@ -119,8 +119,8 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
         
         public override void        Write   (ref Writer writer, float? slot)                    => writer.format.AppendFlt(ref writer.bytes, (float)slot);
         public override void        WriteVar(ref Writer writer, in Var value)                   => Write(ref writer, value.Flt32Null);
-        public override DiffNode    DiffObject  (Differ differ, in Var left, in Var right)      => Diff(differ, left.Flt32Null, right.Flt32Null);
-        public override Var         ReadVar(ref Reader reader, in Var value, out bool success)  => new Var(Read(ref reader, value.Flt32Null, out success));
+        public override DiffNode    DiffVar (Differ differ, in Var left, in Var right)          => Diff(differ, left.Flt32Null, right.Flt32Null);
+        public override Var         ReadVar (ref Reader reader, in Var value, out bool success) => new Var(Read(ref reader, value.Flt32Null, out success));
         
         public override float? Read(ref Reader reader, float? slot, out bool success) {
             if (reader.parser.Event != JsonEvent.ValueNumber)
@@ -148,8 +148,8 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
         
         public override void        Write   (ref Writer writer, long slot)                      => writer.format.AppendLong(ref writer.bytes, slot);
         public override void        WriteVar(ref Writer writer, in Var value)                   => Write(ref writer, value.Int64);
-        public override DiffNode    DiffObject  (Differ differ, in Var left, in Var right)      => Diff(differ, left.Int64, right.Int64);
-        public override Var         ReadVar(ref Reader reader, in Var value, out bool success)  => new Var(Read(ref reader, value.Int64, out success));
+        public override DiffNode    DiffVar (Differ differ, in Var left, in Var right)          => Diff(differ, left.Int64, right.Int64);
+        public override Var         ReadVar (ref Reader reader, in Var value, out bool success) => new Var(Read(ref reader, value.Int64, out success));
         
         public override long Read(ref Reader reader, long slot, out bool success) {
             if (reader.parser.Event != JsonEvent.ValueNumber)
@@ -164,8 +164,8 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
         
         public override void        Write   (ref Writer writer, long? slot)                     => writer.format.AppendLong(ref writer.bytes, (long)slot);
         public override void        WriteVar(ref Writer writer, in Var value)                   => Write(ref writer, value.Int64Null);
-        public override DiffNode    DiffObject  (Differ differ, in Var left, in Var right)      => Diff(differ, left.Int64Null, right.Int64Null);
-        public override Var         ReadVar(ref Reader reader, in Var value, out bool success)  => new Var(Read(ref reader, value.Int64Null, out success));
+        public override DiffNode    DiffVar (Differ differ, in Var left, in Var right)          => Diff(differ, left.Int64Null, right.Int64Null);
+        public override Var         ReadVar (ref Reader reader, in Var value, out bool success) => new Var(Read(ref reader, value.Int64Null, out success));
         
         public override long? Read(ref Reader reader, long? slot, out bool success) {
             if (reader.parser.Event != JsonEvent.ValueNumber)
@@ -193,8 +193,8 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
         
         public override void        Write   (ref Writer writer, int slot)                       => writer.format.AppendInt(ref writer.bytes, slot);
         public override void        WriteVar(ref Writer writer, in Var value)                   => Write(ref writer, value.Int32);
-        public override DiffNode    DiffObject  (Differ differ, in Var left, in Var right)      => Diff(differ, left.Int32, right.Int32);
-        public override Var         ReadVar(ref Reader reader, in Var value, out bool success)  => new Var(Read(ref reader, value.Int32, out success));
+        public override DiffNode    DiffVar (Differ differ, in Var left, in Var right)          => Diff(differ, left.Int32, right.Int32);
+        public override Var         ReadVar (ref Reader reader, in Var value, out bool success) => new Var(Read(ref reader, value.Int32, out success));
         
         public override int Read(ref Reader reader, int slot, out bool success) {
             if (reader.parser.Event != JsonEvent.ValueNumber)
@@ -209,8 +209,8 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
         
         public override void        Write   (ref Writer writer, int? slot)                      => writer.format.AppendInt(ref writer.bytes, (int)slot);
         public override void        WriteVar(ref Writer writer, in Var value)                   => Write(ref writer, value.Int32Null);
-        public override DiffNode    DiffObject  (Differ differ, in Var left, in Var right)      => Diff(differ, left.Int32Null, right.Int32Null);
-        public override Var         ReadVar(ref Reader reader, in Var value, out bool success)  => new Var(Read(ref reader, value.Int32Null, out success));
+        public override DiffNode    DiffVar (Differ differ, in Var left, in Var right)          => Diff(differ, left.Int32Null, right.Int32Null);
+        public override Var         ReadVar (ref Reader reader, in Var value, out bool success) => new Var(Read(ref reader, value.Int32Null, out success));
         
         public override int? Read(ref Reader reader, int? slot, out bool success) {
             if (reader.parser.Event != JsonEvent.ValueNumber)
@@ -238,8 +238,8 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
 
         public override void        Write   (ref Writer writer, short slot)                     => writer.format.AppendInt(ref writer.bytes, slot);
         public override void        WriteVar(ref Writer writer, in Var value)                   => Write(ref writer, value.Int16);
-        public override DiffNode    DiffObject  (Differ differ, in Var left, in Var right)      => Diff(differ, left.Int16, right.Int16);
-        public override Var         ReadVar(ref Reader reader, in Var value, out bool success)  => new Var(Read(ref reader, value.Int16, out success));
+        public override DiffNode    DiffVar (Differ differ, in Var left, in Var right)          => Diff(differ, left.Int16, right.Int16);
+        public override Var         ReadVar (ref Reader reader, in Var value, out bool success) => new Var(Read(ref reader, value.Int16, out success));
         
         public override short Read(ref Reader reader, short slot, out bool success) {
             if (reader.parser.Event != JsonEvent.ValueNumber)
@@ -254,8 +254,8 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
 
         public override void        Write   (ref Writer writer, short? slot)                    => writer.format.AppendInt(ref writer.bytes, (short)slot);
         public override void        WriteVar(ref Writer writer, in Var value)                   => Write(ref writer, value.Int16Null);
-        public override DiffNode    DiffObject  (Differ differ, in Var left, in Var right)      => Diff(differ, left.Int16Null, right.Int16Null);
-        public override Var         ReadVar(ref Reader reader, in Var value, out bool success)  => new Var(Read(ref reader, value.Int16Null, out success));
+        public override DiffNode    DiffVar (Differ differ, in Var left, in Var right)          => Diff(differ, left.Int16Null, right.Int16Null);
+        public override Var         ReadVar (ref Reader reader, in Var value, out bool success) => new Var(Read(ref reader, value.Int16Null, out success));
         
         public override short? Read(ref Reader reader, short? slot, out bool success) {
             if (reader.parser.Event != JsonEvent.ValueNumber)
@@ -284,8 +284,8 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
         
         public override void        Write   (ref Writer writer, byte slot)                      => writer.format.AppendInt(ref writer.bytes, slot);
         public override void        WriteVar(ref Writer writer, in Var value)                   => Write(ref writer, value.Int8);
-        public override DiffNode    DiffObject  (Differ differ, in Var left, in Var right)      => Diff(differ, left.Int8, right.Int8);
-        public override Var         ReadVar(ref Reader reader, in Var value, out bool success)  => new Var(Read(ref reader, value.Int8, out success));
+        public override DiffNode    DiffVar (Differ differ, in Var left, in Var right)          => Diff(differ, left.Int8, right.Int8);
+        public override Var         ReadVar (ref Reader reader, in Var value, out bool success) => new Var(Read(ref reader, value.Int8, out success));
         
         public override byte Read(ref Reader reader, byte slot, out bool success) {
             if (reader.parser.Event != JsonEvent.ValueNumber)
@@ -300,8 +300,8 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
         
         public override void        Write   (ref Writer writer, byte? slot)                     => writer.format.AppendInt(ref writer.bytes, (byte)slot);
         public override void        WriteVar(ref Writer writer, in Var value)                   => Write(ref writer, value.Int8Null);
-        public override DiffNode    DiffObject  (Differ differ, in Var left, in Var right)      => Diff(differ, left.Int8Null, right.Int8Null);
-        public override Var         ReadVar(ref Reader reader, in Var value, out bool success)  => new Var(Read(ref reader, value.Int8Null, out success));
+        public override DiffNode    DiffVar (Differ differ, in Var left, in Var right)          => Diff(differ, left.Int8Null, right.Int8Null);
+        public override Var         ReadVar (ref Reader reader, in Var value, out bool success) => new Var(Read(ref reader, value.Int8Null, out success));
         
         public override byte? Read(ref Reader reader, byte? slot, out bool success) {
             if (reader.parser.Event != JsonEvent.ValueNumber)
@@ -330,8 +330,8 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
 
         public override void        Write   (ref Writer writer, bool slot)                      => writer.format.AppendBool(ref writer.bytes, slot);
         public override void        WriteVar(ref Writer writer, in Var value)                   => Write(ref writer, value.Bool);
-        public override DiffNode    DiffObject(Differ differ, in Var left, in Var right)        => Diff(differ, left.Bool, right.Bool);
-        public override Var         ReadVar(ref Reader reader, in Var value, out bool success)  => new Var(Read(ref reader, value.Bool, out success));
+        public override DiffNode    DiffVar (Differ differ, in Var left, in Var right)          => Diff(differ, left.Bool, right.Bool);
+        public override Var         ReadVar (ref Reader reader, in Var value, out bool success) => new Var(Read(ref reader, value.Bool, out success));
         
         public override bool Read(ref Reader reader, bool slot, out bool success) {
             if (reader.parser.Event != JsonEvent.ValueBool)
@@ -346,8 +346,8 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
 
         public override void        Write   (ref Writer writer, bool? slot)                     => writer.format.AppendBool(ref writer.bytes, (bool)slot);
         public override void        WriteVar(ref Writer writer, in Var value)                   => Write(ref writer, value.BoolNull);
-        public override DiffNode    DiffObject  (Differ differ, in Var left, in Var right)      => Diff(differ, left.BoolNull, right.BoolNull);
-        public override Var         ReadVar(ref Reader reader, in Var value, out bool success)  => new Var(Read(ref reader, value.BoolNull, out success));
+        public override DiffNode    DiffVar (Differ differ, in Var left, in Var right)          => Diff(differ, left.BoolNull, right.BoolNull);
+        public override Var         ReadVar (ref Reader reader, in Var value, out bool success) => new Var(Read(ref reader, value.BoolNull, out success));
         
         public override bool? Read(ref Reader reader, bool? slot, out bool success) {
             if (reader.parser.Event != JsonEvent.ValueBool)

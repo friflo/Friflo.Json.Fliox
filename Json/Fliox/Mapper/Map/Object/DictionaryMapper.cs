@@ -63,7 +63,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object
                 var leftVar   = elementVarType.FromObject(leftValue);
                 if (right.TryGetValue(leftKey, out TElm rightValue)) {
                     var rightVar = elementVarType.FromObject(rightValue);
-                    elementType.DiffObject(differ, leftVar, rightVar);
+                    elementType.DiffVar(differ, leftVar, rightVar);
                 } else {
                     differ.AddOnlyLeft(leftValue);
                 }

@@ -138,12 +138,12 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object
                 Type rightType = right.GetType();
                 if (leftType != rightType)
                     return differ.AddNotEqual(left, right);
-                return classMapper.DiffTyped(differ, left, right);
+                return classMapper.DiffObject(differ, left, right);
             }
-            return DiffTyped(differ, left, right);
+            return DiffObject(differ, left, right);
         }
         
-        internal override DiffNode DiffTyped(Differ differ, object left, object right)
+        internal override DiffNode DiffObject(Differ differ, object left, object right)
         {
             // boxing left & right support modifying a struct. This enables FieldInfo.GetValue() / SetValue() operating on struct also.
             differ.PushParent(left, right);
@@ -158,7 +158,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object
                 var rightNull   = rightField.NotNull;
                 if (leftNull || rightNull) {
                     if (leftNull && rightNull) {
-                        field.fieldType.DiffObject(differ, leftField, rightField);
+                        field.fieldType.DiffVar(differ, leftField, rightField);
                     } else {
                         differ.AddNotEqual(leftField.ToObject(), rightField.ToObject());
                     }
@@ -225,13 +225,13 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object
                     writer.WriteDiscriminator(this, classMapper, ref firstMember);
                 }
             }
-            classMapper.WriteObjectTyped(ref writer, slot, ref firstMember);
+            classMapper.WriteObject(ref writer, slot, ref firstMember);
 
             writer.WriteObjectEnd(firstMember);
             writer.DecLevel(startLevel);
         }
         
-        internal override void WriteObjectTyped(ref Writer writer, object slot, ref bool firstMember)
+        internal override void WriteObject(ref Writer writer, object slot, ref bool firstMember)
         {
             object objRef = slot; // box in case of a struct. This enables FieldInfo.GetValue() / SetValue() operating on struct also.
             var fields = propFields.typedFields;
@@ -297,12 +297,12 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object
             if (!success)
                 return default;
             if (subType != null) {
-                return (T)subType.ReadObjectTyped(ref reader, slot, out success);
+                return (T)subType.ReadObject(ref reader, slot, out success);
             }
-            return (T)ReadObjectTyped(ref reader, slot, out success);
+            return (T)ReadObject(ref reader, slot, out success);
         }
         
-        internal override object ReadObjectTyped(ref Reader reader, object slot, out bool success)
+        internal override object ReadObject(ref Reader reader, object slot, out bool success)
         {
             object objRef = slot; // box in case of a struct. This enables FieldInfo.GetValue() / SetValue() operating on struct also.
             
