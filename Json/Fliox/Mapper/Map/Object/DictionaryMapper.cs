@@ -60,12 +60,12 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object
                 var leftValue = leftPair.Value;
                 var leftJson  = keyMapper.ToJsonKey(leftKey);
                 differ.PushKey(elementType, leftJson);
-                var leftVar   = elementVarType.FromObject(leftValue);
+                var leftVar   = elementType.ToVar(leftValue);
                 if (right.TryGetValue(leftKey, out TElm rightValue)) {
-                    var rightVar = elementVarType.FromObject(rightValue);
+                    var rightVar = elementType.ToVar(rightValue);
                     elementType.DiffVar(differ, leftVar, rightVar);
                 } else {
-                    differ.AddOnlyLeft(leftValue);
+                    differ.AddOnlyLeft(leftVar);
                 }
                 differ.Pop();
             }
@@ -75,7 +75,8 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object
                 var rightJson   = keyMapper.ToJsonKey(rightKey);
                 differ.PushKey(elementType, rightJson);
                 if (!left.TryGetValue(rightKey, out TElm _)) {
-                    differ.AddOnlyRight(rightValue);
+                    var rightVar   = elementType.ToVar(rightValue);
+                    differ.AddOnlyRight(rightVar);
                 }
                 differ.Pop();
             }

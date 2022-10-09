@@ -44,7 +44,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Arr
         
         public override DiffType Diff(Differ differ, TElm[] left, TElm[] right) {
             if (left.Length != right.Length)
-                return differ.AddNotEqual(left, right);
+                return differ.AddNotEqualObject(left, right);
             
             differ.PushParent(left, right);
             for (int n = 0; n < left.Length; n++) {

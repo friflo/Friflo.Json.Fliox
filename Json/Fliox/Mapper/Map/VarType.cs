@@ -64,7 +64,7 @@ public partial struct Var {
         public    override  string  Name     => "object";
         internal  override  bool    AreEqual    (in Var val1, in Var val2) => val1.obj == val2.obj;
         internal  override  bool    IsNull      (in Var value)             => value.obj == null;
-        internal  override  string  AsString    (in Var value)             => value.obj != null ? value.obj.ToString() : "null";
+        internal  override  string  AsString    (in Var value)             => value.obj != null ? $"'{value.obj}'" : "null";
         public    override  Var     DefaultValue                           => new Var((object)null);
         public    override  Var     FromObject  (object obj)               => new Var(obj);
         public    override  object  ToObject    (in Var value)             => value.obj;

@@ -119,11 +119,15 @@ namespace Friflo.Json.Fliox.Mapper.Map
         public abstract void        Write       (ref Writer writer, TVal slot);
         public abstract TVal        Read        (ref Reader reader, TVal slot, out bool success);
 
+        public virtual Var ToVar(TVal value) {
+            return new Var(value);
+        }
+
         public virtual DiffType Diff(Differ differ, TVal left, TVal right) {
             bool areEqual = EqualityComparer<TVal>.Default.Equals(left, right);
             if (areEqual)
                 return DiffType.Equal;
-            return differ.AddNotEqual(left, right);
+            return differ.AddNotEqualObject(left, right);
         }
         
         public override DiffType DiffVar(Differ differ, in Var left, in Var right) {

@@ -21,12 +21,12 @@ namespace Friflo.Json.Fliox.Mapper.Diff
         public  readonly    DiffType        diffType;
         public  readonly    DiffNode        parent; 
         public  readonly    TypeNode        pathNode;
-        public  readonly    object          left;
-        public  readonly    object          right;
+        public  readonly    Var             left;
+        public  readonly    Var             right;
         public  readonly    List<DiffNode>  children;
         private readonly    ObjectWriter    jsonWriter;
         
-        public DiffNode(DiffType diffType, ObjectWriter jsonWriter, DiffNode parent, TypeNode pathNode, object left, object right, List<DiffNode> children) {
+        public DiffNode(DiffType diffType, ObjectWriter jsonWriter, DiffNode parent, TypeNode pathNode, in Var left, in Var right, List<DiffNode> children) {
             this.diffType   = diffType;
             this.parent     = parent;
             this.pathNode   = pathNode;
@@ -89,14 +89,14 @@ namespace Friflo.Json.Fliox.Mapper.Diff
                 case DiffType.None:
                     var isComplex = mapper.IsComplex;
                     if (isComplex) {
-                        AppendObject(sb, left);
+                        AppendObject(sb, left.ToObject());
                         sb.Append(" != ");
-                        AppendObject(sb, right);
+                        AppendObject(sb, right.ToObject());
                         return;
                     }
                     if (mapper.IsArray) {
-                        var leftCount = mapper.Count(left);
-                        var rightCount = mapper.Count(right);
+                        var leftCount  = mapper.Count(left. ToObject());
+                        var rightCount = mapper.Count(right.ToObject());
                         sb.Append('[');
                         AppendValue(sb, leftCount);
                         sb.Append("] != [");
@@ -104,17 +104,17 @@ namespace Friflo.Json.Fliox.Mapper.Diff
                         sb.Append(']');
                         return;
                     }
-                    AppendValue(sb, left);
+                    AppendValue(sb, left.ToObject());
                     sb.Append(" != ");
-                    AppendValue(sb, right);
+                    AppendValue(sb, right.ToObject());
                     break;
                 case DiffType.OnlyLeft:
-                    AppendValue(sb, left);
+                    AppendValue(sb, left.ToObject());
                     sb.Append(" != (missing)");
                     break;
                 case DiffType.OnlyRight:
                     sb.Append("(missing) != ");
-                    AppendValue(sb, right);
+                    AppendValue(sb, right.ToObject());
                     break;
             }
         }
