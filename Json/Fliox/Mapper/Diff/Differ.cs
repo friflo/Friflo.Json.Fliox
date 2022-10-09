@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using Friflo.Json.Fliox.Mapper.Map;
 using Friflo.Json.Fliox.Mapper.Map.Object.Reflect;
 using Friflo.Json.Fliox.Mapper.Utils;
@@ -24,20 +25,34 @@ namespace Friflo.Json.Fliox.Mapper.Diff
 
         public DiffNode GetDiff<T>(T left, T right, ObjectWriter jsonWriter) {
             this.jsonWriter = jsonWriter;
-            typeCache = jsonWriter.TypeCache;
+            typeCache       = jsonWriter.TypeCache;
+            // --- init parentStack
             parentStack.Clear();
+            var rootParent  = new Parent(left, right);
+            parentStack.Add(rootParent);
+            // --- init path
             path.Clear();
-            var mapper = (TypeMapper<T>) typeCache.GetTypeMapper(typeof(T));
-            var item = new TypeNode(NodeType.Root, new JsonKey(), -1, mapper);
-            path.Add(item);
-            var diff = mapper.Diff(this, left, right);
-            Pop();
+            var mapper      = (TypeMapper<T>) typeCache.GetTypeMapper(typeof(T));
+            var rootNode    = new TypeNode(NodeType.Root, new JsonKey(), -1, mapper);
+            path.Add(rootNode);
+            
+            mapper.Diff(this, left, right);
+            
             this.jsonWriter = null;
-            if (parentStack.Count != 0)
+            if (parentStack.Count != 1)
                 throw new InvalidOperationException($"Expect objectStack.Count == 0. Was: {parentStack.Count}");
+            Pop();
             if (path.Count != 0)
                 throw new InvalidOperationException($"Expect path.Count == 0. Was: {path.Count}");
-            return diff;
+            var diff = rootParent.diff;
+            if (diff == null)
+                return null;
+            var children = diff.children; 
+            if (diff.children.Count == 0)
+                return null;
+            // GenericICollectionMapper<> adds the whole collection as DiffType.NotEqual additional to DiffNode
+            // containing the diffs of the elements. This diff is the last one => return the last child in children.
+            return children[children.Count - 1];
         }
 
         private DiffNode GetParent(int parentIndex) {
@@ -50,7 +65,7 @@ namespace Friflo.Json.Fliox.Mapper.Diff
             if (parentOfParentIndex >= 0) {
                 DiffNode parentOfParent = GetParent(parentOfParentIndex);
                 parentDiff = parent.diff = new DiffNode(DiffType.None, jsonWriter, parentOfParent,
-                    path[parentOfParentIndex + 1], parent.left, parent.right, new List<DiffNode>());
+                    path[parentOfParentIndex], parent.left, parent.right, new List<DiffNode>());
                 parentOfParent.children.Add(parentDiff);
                 return parentDiff;
             }
@@ -60,51 +75,36 @@ namespace Friflo.Json.Fliox.Mapper.Diff
         }
 
         public DiffNode AddNotEqual(object left, object right) {
-            if (path.Count != parentStack.Count + 1)
-                throw new InvalidOperationException("Expect path.Count != parentStack.Count + 1");
-
-            DiffNode itemDiff; 
+            AssertPathCount();
             int parentIndex = parentStack.Count - 1;
-            if (parentIndex >= 0) {
-                var parent = GetParent(parentIndex);
-                itemDiff = new DiffNode(DiffType.NotEqual, jsonWriter, parent, path[parentIndex + 1], left, right, null);
-                parent.children.Add(itemDiff);
-            } else {
-                itemDiff = new DiffNode(DiffType.NotEqual, jsonWriter, null, path[0], left, right, null);
-            }
+            var parent      = GetParent(parentIndex);
+            var itemDiff    = new DiffNode(DiffType.NotEqual, jsonWriter, parent, path[parentIndex], left, right, null);
+            parent.children.Add(itemDiff);
             return itemDiff;
         }
         
         public DiffNode AddOnlyLeft(object left) {
-            if (path.Count != parentStack.Count + 1)
-                throw new InvalidOperationException("Expect path.Count != parentStack.Count + 1");
-
-            DiffNode itemDiff; 
+            AssertPathCount();
             int parentIndex = parentStack.Count - 1;
-            if (parentIndex >= 0) {
-                var parent = GetParent(parentIndex);
-                itemDiff = new DiffNode(DiffType.OnlyLeft, jsonWriter, parent, path[parentIndex + 1], left, null, null);
-                parent.children.Add(itemDiff);
-            } else {
-                itemDiff = new DiffNode(DiffType.OnlyLeft, jsonWriter, null, path[0], left, null, null);
-            }
+            var parent      = GetParent(parentIndex);
+            var itemDiff    = new DiffNode(DiffType.OnlyLeft, jsonWriter, parent, path[parentIndex], left, null, null);
+            parent.children.Add(itemDiff);
             return itemDiff;
         }
         
         public DiffNode AddOnlyRight(object right) {
-            if (path.Count != parentStack.Count + 1)
-                throw new InvalidOperationException("Expect path.Count != parentStack.Count + 1");
-
-            DiffNode itemDiff; 
+            AssertPathCount();
             int parentIndex = parentStack.Count - 1;
-            if (parentIndex >= 0) {
-                var parent = GetParent(parentIndex);
-                itemDiff = new DiffNode(DiffType.OnlyRight, jsonWriter, parent, path[parentIndex + 1], null, right, null);
-                parent.children.Add(itemDiff);
-            } else {
-                itemDiff = new DiffNode(DiffType.OnlyRight, jsonWriter, null, path[0], null, right, null);
-            }
+            var parent      = GetParent(parentIndex);
+            var itemDiff    = new DiffNode(DiffType.OnlyRight, jsonWriter, parent, path[parentIndex], null, right, null);
+            parent.children.Add(itemDiff);
             return itemDiff;
+        }
+        
+        [Conditional("DEBUG")]
+        private void AssertPathCount() {
+            if (path.Count != parentStack.Count)
+                throw new InvalidOperationException("Expect path.Count != parentStack.Count + 1");
         }
 
         public void PushMember(PropField field) {
