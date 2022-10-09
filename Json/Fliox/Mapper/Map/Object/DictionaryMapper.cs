@@ -52,7 +52,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object
             keyMapper       = (KeyMapper<TKey>)config.keyMappers[typeof(TKey)];
         }
         
-        public override DiffNode Diff(Differ differ, TMap left, TMap right) {
+        public override DiffType Diff(Differ differ, TMap left, TMap right) {
             differ.PushParent(left, right);
             var elementVarType = elementType.varType;
             foreach (var leftPair in left) {

@@ -42,7 +42,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Arr
             base(config, type, elementType, 1, typeof(string), constructor) {
         }
         
-        public override DiffNode Diff(Differ differ, TElm[] left, TElm[] right) {
+        public override DiffType Diff(Differ differ, TElm[] left, TElm[] right) {
             if (left.Length != right.Length)
                 return differ.AddNotEqual(left, right);
             

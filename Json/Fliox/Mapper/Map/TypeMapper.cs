@@ -66,7 +66,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
 
         public   abstract void      InitTypeMapper  (TypeStore typeStore);
 
-        public   abstract DiffNode  DiffVar         (Differ differ, in Var left, in Var right);
+        public   abstract DiffType  DiffVar         (Differ differ, in Var left, in Var right);
         public   virtual  void      PatchObject     (Patcher patcher, object value) { }
 
         public   virtual  void      MemberObject    (Accessor accessor, object value, PathNode<MemberValue> node) => throw new Invalid("MemberObject() is intended only for classes");
@@ -76,7 +76,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
         
         internal virtual  object    ReadObject      (ref Reader reader, object slot, out bool success)      => throw new Invalid("not implemented");
         internal virtual  void      WriteObject     (ref Writer writer, object slot, ref bool firstMember)  => throw new Invalid("not implemented");
-        internal virtual  DiffNode  DiffObject      (Differ differ, object left, object right)              => throw new Invalid("not implemented");
+        internal virtual  DiffType  DiffObject      (Differ differ, object left, object right)              => throw new Invalid("not implemented");
         
         internal abstract bool      IsValueNullIL   (ClassMirror mirror, int primPos, int objPos);
         internal abstract void      WriteValueIL    (ref Writer writer, ClassMirror mirror, int primPos, int objPos);
@@ -119,14 +119,14 @@ namespace Friflo.Json.Fliox.Mapper.Map
         public abstract void        Write       (ref Writer writer, TVal slot);
         public abstract TVal        Read        (ref Reader reader, TVal slot, out bool success);
 
-        public virtual  DiffNode    Diff        (Differ differ, TVal left, TVal right) {
+        public virtual DiffType Diff(Differ differ, TVal left, TVal right) {
             bool areEqual = EqualityComparer<TVal>.Default.Equals(left, right);
             if (areEqual)
-                return null;
+                return DiffType.Equal;
             return differ.AddNotEqual(left, right);
         }
         
-        public override DiffNode DiffVar  (Differ differ, in Var left, in Var right) {
+        public override DiffType DiffVar(Differ differ, in Var left, in Var right) {
             var leftObject  = (TVal)left. TryGetObject();
             var rightObject = (TVal)right.TryGetObject();
             return Diff(differ, leftObject, rightObject);

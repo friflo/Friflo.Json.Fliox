@@ -128,7 +128,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object
         
         // ----------------------------------- Write / Read -----------------------------------
         
-        public override DiffNode Diff(Differ differ, T left, T right) {
+        public override DiffType Diff(Differ differ, T left, T right) {
             TypeMapper classMapper = this;
 
             if (!isValueType) {
@@ -143,7 +143,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object
             return DiffObject(differ, left, right);
         }
         
-        internal override DiffNode DiffObject(Differ differ, object left, object right)
+        internal override DiffType DiffObject(Differ differ, object left, object right)
         {
             // boxing left & right support modifying a struct. This enables FieldInfo.GetValue() / SetValue() operating on struct also.
             differ.PushParent(left, right);

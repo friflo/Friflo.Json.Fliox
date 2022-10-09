@@ -55,7 +55,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Arr
             diffElements = !isSet;
         }
         
-        public override DiffNode Diff(Differ differ, TCol left, TCol right) {
+        public override DiffType Diff(Differ differ, TCol left, TCol right) {
             if (left.Count != right.Count)
                 return differ.AddNotEqual(left, right);
             
@@ -69,7 +69,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Arr
                 }
             }
             var parent = differ.PopParent();
-            if (parent != null && !diffElements)
+            if (parent == DiffType.NotEqual && !diffElements)
                 return differ.AddNotEqual(left, right);
             return parent;
         }

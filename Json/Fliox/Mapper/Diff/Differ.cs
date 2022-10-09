@@ -74,13 +74,13 @@ namespace Friflo.Json.Fliox.Mapper.Diff
             return parentDiff;
         }
 
-        public DiffNode AddNotEqual(object left, object right) {
+        public DiffType AddNotEqual(object left, object right) {
             AssertPathCount();
             int parentIndex = parentStack.Count - 1;
             var parent      = GetParent(parentIndex);
             var itemDiff    = new DiffNode(DiffType.NotEqual, jsonWriter, parent, path[parentIndex], left, right, null);
             parent.children.Add(itemDiff);
-            return itemDiff;
+            return DiffType.NotEqual;
         }
         
         public DiffNode AddOnlyLeft(object left) {
@@ -147,11 +147,11 @@ namespace Friflo.Json.Fliox.Mapper.Diff
             parentStack.Add(new Parent(left, right));
         }
         
-        public DiffNode PopParent() {
+        public DiffType PopParent() {
             var lastIndex = parentStack.Count - 1;
             var last = parentStack[lastIndex];
             parentStack.RemoveAt(lastIndex);
-            return last.diff;
+            return last.diff == null ? DiffType.Equal : DiffType.NotEqual;
         }
     }
 

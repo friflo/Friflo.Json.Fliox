@@ -10,6 +10,7 @@ namespace Friflo.Json.Fliox.Mapper.Diff
     public enum DiffType
     {
         None,
+        Equal,
         NotEqual,
         OnlyLeft,
         OnlyRight,
