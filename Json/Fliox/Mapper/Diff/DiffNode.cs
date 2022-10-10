@@ -89,14 +89,14 @@ namespace Friflo.Json.Fliox.Mapper.Diff
                 case DiffType.None:
                     var isComplex = mapper.IsComplex;
                     if (isComplex) {
-                        AppendObject(sb, left.ToObject());
+                        AppendObject(sb, left.TryGetObject());
                         sb.Append(" != ");
-                        AppendObject(sb, right.ToObject());
+                        AppendObject(sb, right.TryGetObject());
                         return;
                     }
                     if (mapper.IsArray) {
-                        var leftCount  = mapper.Count(left. ToObject());
-                        var rightCount = mapper.Count(right.ToObject());
+                        var leftCount  = mapper.Count(left. TryGetObject());
+                        var rightCount = mapper.Count(right.TryGetObject());
                         sb.Append('[');
                         AppendValue(sb, leftCount);
                         sb.Append("] != [");

@@ -154,8 +154,8 @@ namespace Friflo.Json.Fliox.Mapper.Diff
         public              DiffNode    diff;
 
         public Parent(object left, object right) {
-            this.left = left;
-            this.right = right;
+            this.left  = left  ?? throw new ArgumentNullException(nameof(left));
+            this.right = right ?? throw new ArgumentNullException(nameof(right));
             diff = null;
         }
     }
