@@ -7,6 +7,7 @@ using System.Diagnostics;
 using Friflo.Json.Fliox.Mapper.Map;
 using Friflo.Json.Fliox.Mapper.Map.Object.Reflect;
 using Friflo.Json.Fliox.Mapper.Utils;
+using static Friflo.Json.Fliox.Mapper.Diff.DiffType;
 
 namespace Friflo.Json.Fliox.Mapper.Diff
 {
@@ -83,43 +84,43 @@ namespace Friflo.Json.Fliox.Mapper.Diff
             if (parentOfParentIndex >= 0) {
                 DiffNode parentOfParent = GetParent(parentOfParentIndex);
                 parentDiff = CreateDiffNode();
-                parentDiff.Init(DiffType.None, parentOfParent, path[parentOfParentIndex], new Var(parent.left), new Var(parent.right));
+                parentDiff.Init(None, parentOfParent, path[parentOfParentIndex], new Var(parent.left), new Var(parent.right));
                 parentStack[parentIndex].diff = parentDiff;  // parent is a struct => update field in array
                 parentOfParent.children.Add(parentDiff);
                 return parentDiff;
             }
             parentDiff = CreateDiffNode();
-            parentDiff.Init(DiffType.None, null, path[0], new Var(parent.left), new Var(parent.right));
+            parentDiff.Init(None, null, path[0], new Var(parent.left), new Var(parent.right));
             parentStack[parentIndex].diff = parentDiff;  // parent is a struct => update field in array
             return parentDiff;
         }
 
-        public DiffType AddNotEqualObject<T>(T left, T right) {
+        internal DiffType AddNotEqualObject<T>(T left, T right) {
             return AddNotEqual(new Var(left), new Var(right));
         }
             
-        public DiffType AddNotEqual(in Var left, in Var right) {
+        internal DiffType AddNotEqual(in Var left, in Var right) {
             AssertPathCount();
             var parent      = GetParent(parentStackIndex);
             var itemDiff    = CreateDiffNode(); 
-            itemDiff.Init(DiffType.NotEqual, parent, path[parentStackIndex], left, right);
+            itemDiff.Init(NotEqual, parent, path[parentStackIndex], left, right);
             parent.children.Add(itemDiff);
-            return DiffType.NotEqual;
+            return NotEqual;
         }
         
-        public void AddOnlyLeft(in Var left) {
+        internal void AddOnlyLeft(in Var left) {
             AssertPathCount();
             var parent      = GetParent(parentStackIndex);
             var itemDiff    = CreateDiffNode(); 
-            itemDiff.Init(DiffType.OnlyLeft, parent, path[parentStackIndex], left, default);
+            itemDiff.Init(OnlyLeft, parent, path[parentStackIndex], left, default);
             parent.children.Add(itemDiff);
         }
         
-        public void AddOnlyRight(in Var right) {
+        internal void AddOnlyRight(in Var right) {
             AssertPathCount();
             var parent      = GetParent(parentStackIndex);
             var itemDiff    = CreateDiffNode(); 
-            itemDiff.Init(DiffType.OnlyRight, parent, path[parentStackIndex], default, right);
+            itemDiff.Init(OnlyRight, parent, path[parentStackIndex], default, right);
             parent.children.Add(itemDiff);
         }
         
@@ -163,7 +164,7 @@ namespace Friflo.Json.Fliox.Mapper.Diff
         public DiffType PopParent() {
             var headDiff    = parentStack[parentStackIndex].diff;
             parentStack[parentStackIndex--] = default; // clear references
-            return headDiff == null ? DiffType.Equal : DiffType.NotEqual;
+            return headDiff == null ? Equal : NotEqual;
         }
     }
 
