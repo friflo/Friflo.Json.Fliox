@@ -10,6 +10,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
     public abstract class VarType
     {
         public   abstract string    Name        { get; }
+        internal abstract Type      GetType     (in Var value);    
         internal abstract bool      IsNull      (in Var value);
         internal abstract bool      AreEqual    (in Var val1, in Var val2);
         internal abstract string    AsString    (in Var value);
@@ -61,7 +62,8 @@ public partial struct Var {
     {
         internal static readonly    TypeObject Instance = new TypeObject();
         
-        public    override  string  Name     => "object";
+        public    override  string  Name                                   => "object";
+        internal  override  Type    GetType     (in Var value)             => value.obj.GetType();
         internal  override  bool    AreEqual    (in Var val1, in Var val2) => val1.obj == val2.obj;
         internal  override  bool    IsNull      (in Var value)             => value.obj == null;
         internal  override  string  AsString    (in Var value)             => value.obj != null ? $"'{value.obj}'" : "null";
@@ -75,7 +77,8 @@ public partial struct Var {
     {
         internal static readonly    TypeString Instance = new TypeString();
         
-        public    override  string  Name     => "string";
+        public    override  string  Name                                   => "string";
+        internal  override  Type    GetType     (in Var value)             => typeof(string);
         internal  override  bool    AreEqual    (in Var val1, in Var val2) => (string)val1.obj == (string)val2.obj;
         internal  override  bool    IsNull      (in Var value)             => value.obj == null;
         internal  override  string  AsString    (in Var value)             => value.obj != null ? $"\"{(string)value.obj}\"" : "null";
@@ -99,7 +102,8 @@ public partial struct Var {
         private TypeInt8() { }
         internal static readonly    TypeInt8 Instance = new TypeInt8();
         
-        public    override  string  Name        => "byte";
+        public    override  string  Name                                   => "byte";
+        internal  override  Type    GetType     (in Var value)             => typeof(byte);
         public    override  Var     DefaultValue                           => new Var((byte)default);
         public    override  Var     FromObject  (object obj)               => new Var((byte)obj);
         public    override  object  ToObject    (in Var value)             => (byte)value.lng;
@@ -110,7 +114,8 @@ public partial struct Var {
         private TypeInt16() { }
         internal static readonly    TypeInt16 Instance = new TypeInt16();
         
-        public    override  string  Name        => "short";
+        public    override  string  Name                                   => "short";
+        internal  override  Type    GetType     (in Var value)             => typeof(short);
         public    override  Var     DefaultValue                           => new Var((short)default);
         public    override  Var     FromObject  (object obj)               => new Var((short)obj);
         public    override  object  ToObject    (in Var value)             => (short)value.lng;
@@ -121,7 +126,8 @@ public partial struct Var {
         private TypeInt32() { }
         internal static readonly    TypeInt32 Instance = new TypeInt32();
         
-        public    override  string  Name        => "int";
+        public    override  string  Name                                   => "int";
+        internal  override  Type    GetType     (in Var value)             => typeof(int);
         public    override  Var     DefaultValue                           => new Var((int)default);
         public    override  Var     FromObject  (object obj)               => new Var((int)obj);
         public    override  object  ToObject    (in Var value)             => (int)value.lng;
@@ -132,7 +138,8 @@ public partial struct Var {
         private TypeInt64() { }
         internal static readonly    TypeInt64 Instance = new TypeInt64();
         
-        public    override  string  Name        => "long";
+        public    override  string  Name                                   => "long";
+        internal  override  Type    GetType     (in Var value)             => typeof(long);
         public    override  Var     DefaultValue                           => new Var((long)default);
         public    override  Var     FromObject  (object obj)               => new Var((long)obj);
         public    override  object  ToObject    (in Var value)             => value.lng;
@@ -152,7 +159,8 @@ public partial struct Var {
     {
         internal static readonly    TypeNullableInt8 Instance = new TypeNullableInt8();
         
-        public    override  string  Name        => "byte?";
+        public    override  string  Name                                   => "byte?";
+        internal  override  Type    GetType     (in Var value)             => typeof(byte?);
         public    override  Var     DefaultValue                           => new Var((byte?)null);
         public    override  Var     FromObject  (object obj)               => new Var((byte?)obj);
         public    override  object  ToObject    (in Var value)             => value.obj != null ? (byte?)value.lng : null;
@@ -162,7 +170,8 @@ public partial struct Var {
     {
         internal static readonly    TypeNullableInt16 Instance = new TypeNullableInt16();
         
-        public    override  string  Name        => "short?";
+        public    override  string  Name                                   => "short?";
+        internal  override  Type    GetType     (in Var value)             => typeof(short?);
         public    override  Var     DefaultValue                           => new Var((short?)null);
         public    override  Var     FromObject  (object obj)               => new Var((short?)obj);
         public    override  object  ToObject    (in Var value)             => value.obj != null ? (short?)value.lng : null;
@@ -172,7 +181,8 @@ public partial struct Var {
     {
         internal static readonly    TypeNullableInt32 Instance = new TypeNullableInt32();
         
-        public    override  string  Name        => "int?";
+        public    override  string  Name                                   => "int?";
+        internal  override  Type    GetType     (in Var value)             => typeof(int?);
         public    override  Var     DefaultValue                           => new Var((int?)null);
         public    override  Var     FromObject  (object obj)               => new Var((int?)obj);
         public    override  object  ToObject    (in Var value)             => value.obj != null ? (int?)value.lng : null;
@@ -182,7 +192,8 @@ public partial struct Var {
     {
         internal static readonly    TypeNullableInt64 Instance = new TypeNullableInt64();
         
-        public    override  string  Name        => "long?";
+        public    override  string  Name                                   => "long?";
+        internal  override  Type    GetType     (in Var value)             => typeof(long?);
         public    override  Var     DefaultValue                           => new Var((long?)null);
         public    override  Var     FromObject  (object obj)               => new Var((long?)obj);
         public    override  object  ToObject    (in Var value)             => value.obj != null ? (long?) value.lng : null;
@@ -193,7 +204,8 @@ public partial struct Var {
     {
         internal static readonly    TypeFlt Instance = new TypeFlt();
         
-        public    override  string  Name        => "float";
+        public    override  string  Name                                   => "float";
+        internal  override  Type    GetType     (in Var value)             => typeof(float);
         // ReSharper disable once CompareOfFloatsByEqualityOperator
         internal  override  bool    AreEqual    (in Var val1, in Var val2) => val1.Dbl == val2.Dbl;
         internal  override  bool    IsNull      (in Var value)             => false;
@@ -207,7 +219,8 @@ public partial struct Var {
     {
         internal static readonly    TypeNullableFlt Instance = new TypeNullableFlt();
         
-        public    override  string  Name        => "float?";
+        public    override  string  Name                                   => "float?";
+        internal  override  Type    GetType     (in Var value)             => typeof(float?);
         // ReSharper disable once CompareOfFloatsByEqualityOperator
         internal  override  bool    AreEqual    (in Var val1, in Var val2) => val1.Dbl == val2.Dbl && val1.obj == val2.obj;
         internal  override  bool    IsNull      (in Var value)             => value.obj == null;
@@ -222,7 +235,8 @@ public partial struct Var {
     {
         internal static readonly    TypeDbl Instance = new TypeDbl();
         
-        public    override  string  Name        => "double";
+        public    override  string  Name                                   => "double";
+        internal  override  Type    GetType     (in Var value)             => typeof(double);
         // ReSharper disable once CompareOfFloatsByEqualityOperator
         internal  override  bool    AreEqual    (in Var val1, in Var val2) => val1.Dbl == val2.Dbl;
         internal  override  bool    IsNull      (in Var value)             => false;
@@ -236,7 +250,8 @@ public partial struct Var {
     {
         internal static readonly    TypeNullableDbl Instance = new TypeNullableDbl();
         
-        public    override  string  Name        => "double?";
+        public    override  string  Name                                   => "double?";
+        internal  override  Type    GetType     (in Var value)             => typeof(double?);
         // ReSharper disable once CompareOfFloatsByEqualityOperator
         internal  override  bool    AreEqual    (in Var val1, in Var val2) => val1.Dbl == val2.Dbl && val1.obj == val2.obj;
         internal  override  bool    IsNull      (in Var value)             => value.obj == null;
@@ -251,7 +266,8 @@ public partial struct Var {
     {
         internal static readonly    TypeBool Instance = new TypeBool();
         
-        public    override  string  Name        => "bool";
+        public    override  string  Name                                   => "bool";
+        internal  override  Type    GetType     (in Var value)             => typeof(bool);
         // ReSharper disable once CompareOfFloatsByEqualityOperator
         internal  override  bool    AreEqual    (in Var val1, in Var val2) => val1.lng == val2.lng;
         internal  override  bool    IsNull      (in Var value)             => false;
@@ -265,7 +281,8 @@ public partial struct Var {
     {
         internal static readonly    TypeNullableBool Instance = new TypeNullableBool();
         
-        public    override  string  Name        => "bool?";
+        public    override  string  Name                                   => "bool?";
+        internal  override  Type    GetType     (in Var value)             => typeof(bool?);
         // ReSharper disable once CompareOfFloatsByEqualityOperator
         internal  override  bool    AreEqual    (in Var val1, in Var val2) => val1.lng == val2.lng && val1.obj == val2.obj;
         internal  override  bool    IsNull      (in Var value)             => value.obj == null;
@@ -281,7 +298,8 @@ public partial struct Var {
     {
         internal static readonly    TypeChar Instance = new TypeChar();
         
-        public    override  string  Name        => "char";
+        public    override  string  Name                                   => "char";
+        internal  override  Type    GetType     (in Var value)             => typeof(char);
         // ReSharper disable once CompareOfFloatsByEqualityOperator
         internal  override  bool    AreEqual    (in Var val1, in Var val2) => val1.lng == val2.lng;
         internal  override  bool    IsNull      (in Var value)             => false;
@@ -295,7 +313,8 @@ public partial struct Var {
     {
         internal static readonly    TypeNullableChar Instance = new TypeNullableChar();
         
-        public    override  string  Name        => "char?";
+        public    override  string  Name                                   => "char?";
+        internal  override  Type    GetType     (in Var value)             => typeof(char?);
         // ReSharper disable once CompareOfFloatsByEqualityOperator
         internal  override  bool    AreEqual    (in Var val1, in Var val2) => val1.lng == val2.lng && val1.obj == val2.obj;
         internal  override  bool    IsNull      (in Var value)             => value.obj == null;

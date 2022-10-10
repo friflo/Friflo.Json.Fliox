@@ -109,15 +109,15 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object
             int n = 0;
 
             foreach (var entry in map) {
-                var elemVar = entry.Value;
-                if (EqualityComparer<TElm>.Default.Equals(elemVar, default)) {
+                var value = entry.Value;
+                if (EqualityComparer<TElm>.Default.Equals(value, default)) {
                     if (writer.writeNullMembers) {
                         writer.WriteKey(keyMapper, entry.Key, n++);
                         writer.AppendNull();
                     }
                 } else {
                     writer.WriteKey(keyMapper, entry.Key, n++);
-                    elementType.Write(ref writer, elemVar);
+                    elementType.Write(ref writer, value);
                     writer.FlushFilledBuffer();
                 }
             }

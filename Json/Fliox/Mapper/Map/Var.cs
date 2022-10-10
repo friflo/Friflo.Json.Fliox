@@ -28,6 +28,8 @@ namespace Friflo.Json.Fliox.Mapper.Map
         internal                object  TryGetObject()  =>  type.TryGetObject(this);
         internal                object  ToObject()      =>  type.ToObject(this);
         
+        internal  new           Type    GetType()       =>  type.GetType(this);
+        
                         public  bool    IsNull          =>  type.IsNull(this);
         [Browse(Never)] public  bool    NotNull         => !type.IsNull(this);
         // --- reference

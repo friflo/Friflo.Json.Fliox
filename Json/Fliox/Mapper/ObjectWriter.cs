@@ -144,6 +144,12 @@ namespace Friflo.Json.Fliox.Mapper
             WriteStart(value);
             return intern.bytes.AsArray();
         }
+        
+        internal byte[] WriteVarAsArray(in Var value) {
+            InitJsonWriterString();
+            WriteStart(value);
+            return intern.bytes.AsArray();
+        }
 
         // --------------------------------------- private --------------------------------------- 
         private void WriteStart(object value) {
@@ -171,7 +177,21 @@ namespace Friflo.Json.Fliox.Mapper
                     mapper.Write(ref intern, value);
             }
             finally { intern.ClearMirrorStack(); }
-            
+
+            if (intern.level != 0)
+                throw new InvalidOperationException($"Unexpected level after JsonWriter.Write(). Expect 0, Found: {intern.level}");
+        }
+        
+        private void WriteStart(in Var value) {
+            if (value.IsNull) {
+                intern.AppendNull();
+                return;
+            }
+            TypeMapper mapper = intern.typeCache.GetTypeMapper(value.GetType());
+            try {
+                mapper.WriteVar(ref intern, value);
+            }
+            finally { intern.ClearMirrorStack(); }
 
             if (intern.level != 0)
                 throw new InvalidOperationException($"Unexpected level after JsonWriter.Write(). Expect 0, Found: {intern.level}");
