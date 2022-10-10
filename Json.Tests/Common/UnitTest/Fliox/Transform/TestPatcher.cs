@@ -327,7 +327,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
         private static void PatchCollection<T>(ObjectPatcher objectPatcher, T left, T right, ObjectMapper mapper) {
             var diff = objectPatcher.differ.GetDiff(left, right, mapper.writer);
             IsNotNull(diff);
-            IsNull(diff.Children);
+            IsEmpty(diff.Children);
             AreEqual("[3] != [3]", diff.ToString());
             PatchObject(objectPatcher, left, right, mapper);
         }

@@ -63,11 +63,11 @@ namespace Friflo.Json.Fliox.Mapper
         }
 
         private void TraceDiff(DiffNode diff, List<JsonPatch> patches) {
-            switch (diff.diffType) {
+            switch (diff.DiffType) {
                 case DiffType.NotEqual:
                     sb.Clear();
                     diff.AddPath(sb);
-                    var json = mapper.writer.WriteVarAsArray(diff.right);
+                    var json = mapper.writer.WriteVarAsArray(diff.Right);
                     JsonPatch patch = new PatchReplace {
                         path = sb.ToString(),
                         value = new JsonValue(json)
@@ -85,7 +85,7 @@ namespace Friflo.Json.Fliox.Mapper
                 case DiffType.OnlyRight:
                     sb.Clear();
                     diff.AddPath(sb);
-                    json = mapper.writer.WriteVarAsArray(diff.right);
+                    json = mapper.writer.WriteVarAsArray(diff.Right);
                     patch = new PatchAdd {
                         path = sb.ToString(),
                         value = new JsonValue(json)
@@ -93,8 +93,8 @@ namespace Friflo.Json.Fliox.Mapper
                     patches.Add(patch);
                     break;
             }
-            var children = diff.children;
-            if (children != null) {
+            if (diff.DiffType == DiffType.None) {
+                var children = diff.children;
                 for (int n = 0; n < children.Count; n++) {
                     var child = children[n];
                     TraceDiff(child, patches);

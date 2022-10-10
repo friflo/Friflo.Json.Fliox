@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 using System.Text;
 using Friflo.Json.Fliox.Mapper.Map;
@@ -21,24 +22,31 @@ namespace Friflo.Json.Fliox.Mapper.Diff
 
     public sealed class DiffNode
     {
-                        public  IReadOnlyList<DiffNode>     Children => children;
-        
-                        internal  readonly  DiffType        diffType;
-                        private   readonly  DiffNode        parent; 
-                        private   readonly  TypeNode        pathNode;
-                        private   readonly  Var             left;
-                        internal  readonly  Var             right;
-        [Browse(Never)] internal  readonly  List<DiffNode>  children;
+                        public   IReadOnlyList<DiffNode>    Children    => children;
+                        internal            DiffType        DiffType    => diffType;
+                        // ReSharper disable once UnusedMember.Global
+                        internal            Var             Left        => left;
+                        internal            Var             Right       => right;
+        // --- following private fields behave as readonly. They are mutable to enable pooling DiffNode's
+        [Browse(Never)] private             DiffType        diffType;
+                        private             DiffNode        parent; 
+                        private             TypeNode        pathNode;
+        [Browse(Never)] private             Var             left;
+        [Browse(Never)] private             Var             right;
+        [Browse(Never)] internal  readonly  List<DiffNode>  children    = new List<DiffNode>();
         [Browse(Never)] private   readonly  ObjectWriter    jsonWriter;
         
-        internal DiffNode(DiffType diffType, ObjectWriter jsonWriter, DiffNode parent, TypeNode pathNode, in Var left, in Var right, List<DiffNode> children) {
+        internal DiffNode(ObjectWriter jsonWriter) {
+            this.jsonWriter = jsonWriter;
+        }
+        
+        internal void Init(DiffType diffType, DiffNode parent, TypeNode pathNode, in Var left, in Var right) {
             this.diffType   = diffType;
             this.parent     = parent;
             this.pathNode   = pathNode;
             this.left       = left;
             this.right      = right;
-            this.children   = children;
-            this.jsonWriter = jsonWriter;
+            children.Clear();
         }
 
         public override string ToString() {
@@ -151,7 +159,8 @@ namespace Friflo.Json.Fliox.Mapper.Diff
         public string AsString(int indent) {
             var sb = new StringBuilder();
             sb.Append((object)null);
-            if (children != null) {
+
+            if (diffType == DiffType.None) {
                 foreach (var child in children) {
                     child.CreatePath(sb, true, sb.Length, indent);
                     sb.Append('\n');
@@ -175,11 +184,22 @@ namespace Friflo.Json.Fliox.Mapper.Diff
                         public   readonly   int         index;
         [Browse(Never)] public   readonly   TypeMapper  typeMapper;
 
+                        public   override   string      ToString() => GetString();
+
         internal TypeNode(NodeType nodeType, in JsonKey name, int index, TypeMapper typeMapper) {
             this.nodeType   = nodeType;
             this.name       = name;
             this.index      = index;
             this.typeMapper = typeMapper;
+        }
+        
+        private string GetString() {
+            switch (nodeType) {
+                case NodeType.Root:     return "(Root)";
+                case NodeType.Member:   return name.AsString();
+                case NodeType.Element:  return $"[{index}]";
+                default:    throw new InvalidOperationException("unexpected case");
+            }
         }
     }
 }
