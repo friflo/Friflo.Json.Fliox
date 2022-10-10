@@ -84,7 +84,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
         
         public   abstract object    CreateInstance();
 
-        public   virtual  bool      IsNullObject(object value) => value == null;
+        public   virtual  bool      IsNullVar       (in Var value) => value.IsNull;
         
 
         public bool IsNull<T>(ref T value) {

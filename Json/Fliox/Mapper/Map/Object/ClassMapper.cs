@@ -240,8 +240,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object
                 
                 var elemVar     = field.GetVar(objRef);
                 var fieldType   = field.fieldType;
-                var elemValue   = elemVar.ToObject();   // todo move ToObject() inside IsNullObject() to avoid boxing
-                bool isNull     = fieldType.IsNullObject(elemValue);
+                bool isNull     = fieldType.IsNullVar(elemVar);
                 if (isNull) {
                     if (writer.writeNullMembers) {
                         writer.WriteFieldKey(field, ref firstMember);

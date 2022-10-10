@@ -73,7 +73,7 @@ namespace Friflo.Json.Fliox.Mapper.MapIL.Obj
                     }
                 } else {
                     object fieldObj = mirror.LoadObj(field.objIndex);
-                    bool isNull     = fieldType.IsNullObject(fieldObj);
+                    bool isNull     = fieldType.IsNullVar(new Var(fieldObj));
                     if (isNull) {
                         if (writer.writeNullMembers) {
                             writer.WriteFieldKey(field, ref firstMember);

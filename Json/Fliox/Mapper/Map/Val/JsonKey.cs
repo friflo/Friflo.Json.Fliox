@@ -22,8 +22,8 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
 
         public JsonKeyMapper(StoreConfig config, Type type) : base (config, type, true, false) { }
         
-        public override bool IsNullObject(object value) {
-            var key = (JsonKey)value;
+        public override bool IsNullVar(in Var value) {
+            var key = (JsonKey)value.TryGetObject();
             return key.IsNull();
         }
 
