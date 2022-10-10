@@ -119,13 +119,9 @@ namespace Friflo.Json.Fliox.Mapper.Diff
             }
         }
         
-        private void AppendObject(StringBuilder sb, object value) {
+        private static void AppendObject(StringBuilder sb, object value) {
             if (value == null) {
                 sb.Append("null");
-                return;
-            }
-            if (pathNode.typeMapper.type == typeof(string)) {
-                sb.Append(value);
                 return;
             }
             sb.Append("(object)");
