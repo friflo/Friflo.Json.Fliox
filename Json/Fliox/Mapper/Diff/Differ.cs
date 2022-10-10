@@ -170,8 +170,8 @@ namespace Friflo.Json.Fliox.Mapper.Diff
 
     internal struct Parent
     {
-        internal  readonly  object      left;
-        internal  readonly  object      right;
+        internal  readonly  object      left;   // not required but very handy for debugging
+        internal  readonly  object      right;  // not required but very handy for debugging
         internal            DiffNode    diff;
 
         public    override  string      ToString() => diff?.ToString();
