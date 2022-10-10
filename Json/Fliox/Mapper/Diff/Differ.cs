@@ -23,7 +23,7 @@ namespace Friflo.Json.Fliox.Mapper.Diff
         private             int             diffNodePoolIndex;
         public              TypeCache       TypeCache => typeCache;
 
-        internal Differ(int maxDepth = 32) {
+        public Differ(int maxDepth = 32) {
             parentStackMaxDepth = maxDepth;
             parentStack         = new Parent[maxDepth]; // JSON with with depth of 32 seems sufficient
         }
