@@ -4,6 +4,9 @@
 using System.Collections.Generic;
 using System.Text;
 using Friflo.Json.Fliox.Mapper.Map;
+using static System.Diagnostics.DebuggerBrowsableState;
+using Browse = System.Diagnostics.DebuggerBrowsableAttribute;
+
 
 namespace Friflo.Json.Fliox.Mapper.Diff
 {
@@ -18,13 +21,13 @@ namespace Friflo.Json.Fliox.Mapper.Diff
 
     public sealed class DiffNode
     {
-        public  readonly    DiffType        diffType;
-        public  readonly    DiffNode        parent; 
-        public  readonly    TypeNode        pathNode;
-        public  readonly    Var             left;
-        public  readonly    Var             right;
-        public  readonly    List<DiffNode>  children;
-        private readonly    ObjectWriter    jsonWriter;
+                        public  readonly    DiffType        diffType;
+                        public  readonly    DiffNode        parent; 
+                        public  readonly    TypeNode        pathNode;
+                        public  readonly    Var             left;
+                        public  readonly    Var             right;
+                        public  readonly    List<DiffNode>  children;
+        [Browse(Never)] private readonly    ObjectWriter    jsonWriter;
         
         public DiffNode(DiffType diffType, ObjectWriter jsonWriter, DiffNode parent, TypeNode pathNode, in Var left, in Var right, List<DiffNode> children) {
             this.diffType   = diffType;
@@ -165,10 +168,10 @@ namespace Friflo.Json.Fliox.Mapper.Diff
 
     public readonly struct TypeNode
     {
-        public   readonly   NodeType    nodeType;
-        public   readonly   JsonKey     name;
-        public   readonly   int         index;
-        public   readonly   TypeMapper  typeMapper;
+                        public   readonly   NodeType    nodeType;
+                        public   readonly   JsonKey     name;
+                        public   readonly   int         index;
+        [Browse(Never)] public   readonly   TypeMapper  typeMapper;
 
         internal TypeNode(NodeType nodeType, in JsonKey name, int index, TypeMapper typeMapper) {
             this.nodeType   = nodeType;

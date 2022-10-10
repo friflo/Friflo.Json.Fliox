@@ -44,7 +44,8 @@ namespace Friflo.Json.Fliox.Mapper.Diff
             Pop();
             if (path.Count != 0)
                 throw new InvalidOperationException($"Expect path.Count == 0. Was: {path.Count}");
-            var diff = rootParent.diff;
+            rootParent  = parentStack[0]; // parent is a struct => list entry is replaced subsequently
+            var diff    = rootParent.diff;
             if (diff == null)
                 return null;
             var children = diff.children; 
@@ -66,11 +67,13 @@ namespace Friflo.Json.Fliox.Mapper.Diff
                 DiffNode parentOfParent = GetParent(parentOfParentIndex);
                 parentDiff = parent.diff = new DiffNode(DiffType.None, jsonWriter, parentOfParent,
                     path[parentOfParentIndex], new Var(parent.left), new Var(parent.right), new List<DiffNode>());
+                parentStack[parentIndex] = parent;  // parent is a struct => need to replace list entry to store diff
                 parentOfParent.children.Add(parentDiff);
                 return parentDiff;
             }
             parentDiff = parent.diff = new DiffNode(DiffType.None, jsonWriter, null,
                 path[0], new Var(parent.left), new Var(parent.right), new List<DiffNode>());
+            parentStack[parentIndex] = parent;  // parent is a struct => need to replace list entry to store diff
             return parentDiff;
         }
 
@@ -147,16 +150,16 @@ namespace Friflo.Json.Fliox.Mapper.Diff
         }
     }
 
-    internal sealed class Parent
+    internal struct Parent
     {
-        public readonly     object      left;
-        public readonly     object      right;
-        public              DiffNode    diff;
+        internal  readonly  object      left;
+        internal  readonly  object      right;
+        internal            DiffNode    diff;
 
         public Parent(object left, object right) {
-            this.left  = left  ?? throw new ArgumentNullException(nameof(left));
-            this.right = right ?? throw new ArgumentNullException(nameof(right));
-            diff = null;
+            this.left   = left  ?? throw new ArgumentNullException(nameof(left));
+            this.right  = right ?? throw new ArgumentNullException(nameof(right));
+            diff        = null;
         }
     }
 }
