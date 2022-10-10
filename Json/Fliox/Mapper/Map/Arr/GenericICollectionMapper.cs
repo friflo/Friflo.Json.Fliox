@@ -65,7 +65,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Arr
                 foreach (var leftItem in left) {
                     rightIter.MoveNext();
                     var rightItem = rightIter.Current;
-                    differ.CompareElement(elementType, n++, leftItem, rightItem);
+                    differ.DiffElement(elementType, n++, leftItem, rightItem);
                 }
             }
             var parent = differ.PopParent();

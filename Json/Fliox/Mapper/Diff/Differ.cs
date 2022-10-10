@@ -87,22 +87,20 @@ namespace Friflo.Json.Fliox.Mapper.Diff
             return DiffType.NotEqual;
         }
         
-        public DiffNode AddOnlyLeft(in Var left) {
+        public void AddOnlyLeft(in Var left) {
             AssertPathCount();
             int parentIndex = parentStack.Count - 1;
             var parent      = GetParent(parentIndex);
             var itemDiff    = new DiffNode(DiffType.OnlyLeft, jsonWriter, parent, path[parentIndex], left, default, null);
             parent.children.Add(itemDiff);
-            return itemDiff;
         }
         
-        public DiffNode AddOnlyRight(in Var right) {
+        public void AddOnlyRight(in Var right) {
             AssertPathCount();
             int parentIndex = parentStack.Count - 1;
             var parent      = GetParent(parentIndex);
             var itemDiff    = new DiffNode(DiffType.OnlyRight, jsonWriter, parent, path[parentIndex], default, right, null);
             parent.children.Add(itemDiff);
-            return itemDiff;
         }
         
         [Conditional("DEBUG")]
@@ -131,19 +129,9 @@ namespace Friflo.Json.Fliox.Mapper.Diff
             path.RemoveAt(last);
         }
 
-
-        public void CompareElement<T> (TypeMapper<T> elementType, int index, T leftItem, T rightItem)
-        {
+        public void DiffElement<T> (TypeMapper<T> elementType, int index, T leftItem, T rightItem) {
             PushElement(index, elementType);
-            bool leftNull  = elementType.IsNull(ref leftItem);
-            bool rightNull = elementType.IsNull(ref rightItem);
-            if (!leftNull || !rightNull) {
-                if (!leftNull && !rightNull) {
-                    elementType.Diff(this, leftItem, rightItem);
-                } else {
-                    AddNotEqualObject(leftItem, rightItem);
-                }
-            }
+            elementType.Diff(this, leftItem, rightItem);
             Pop();
         }
 
