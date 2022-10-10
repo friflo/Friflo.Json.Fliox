@@ -15,12 +15,16 @@ namespace Friflo.Json.Fliox.Mapper.Diff
         private             TypeCache       typeCache;
         private             ObjectWriter    jsonWriter;
         private readonly    List<TypeNode>  path        = new List<TypeNode>();
-        private readonly    Parent[]        parentStack = new Parent[100];
+        private readonly    Parent[]        parentStack; 
         private             int             parentStackIndex;
+        private readonly    int             parentStackMaxDepth;
 
         public              TypeCache       TypeCache => typeCache;
 
-        internal Differ() { }
+        internal Differ(int maxDepth = 32) {
+            parentStackMaxDepth = maxDepth;
+            parentStack         = new Parent[maxDepth]; // JSON with with depth of 32 seems sufficient
+        }
 
         public void Dispose() { }
 
@@ -30,7 +34,7 @@ namespace Friflo.Json.Fliox.Mapper.Diff
             // --- init parentStack
             var rootParent  = new Parent(left, right);
             parentStack[0]  = rootParent;
-            parentStackIndex = 1;
+            parentStackIndex= 0;
             // --- init path
             path.Clear();
             var mapper      = (TypeMapper<T>) typeCache.GetTypeMapper(typeof(T));
@@ -40,16 +44,16 @@ namespace Friflo.Json.Fliox.Mapper.Diff
             mapper.Diff(this, left, right);
             
             this.jsonWriter = null;
-            if (parentStackIndex != 1)
-                throw new InvalidOperationException($"Expect objectStack.Count == 0. Was: {parentStackIndex}");
+            if (parentStackIndex != 0)
+                throw new InvalidOperationException($"Expect parentStackIndex == 0. Was: {parentStackIndex}");
             Pop();
             if (path.Count != 0)
                 throw new InvalidOperationException($"Expect path.Count == 0. Was: {path.Count}");
-            rootParent  = parentStack[0]; // parent is a struct => list entry is replaced subsequently
-            var diff    = rootParent.diff;
+            var diff        = parentStack[0].diff; // parent is a struct => list entry is replaced subsequently
+            parentStack[0]  = default; // clear references
             if (diff == null)
                 return null;
-            var children = diff.children; 
+            var children    = diff.children; 
             if (diff.children.Count == 0)
                 return null;
             // GenericICollectionMapper<> adds the whole collection as DiffType.NotEqual additional to DiffNode
@@ -84,32 +88,29 @@ namespace Friflo.Json.Fliox.Mapper.Diff
             
         public DiffType AddNotEqual(in Var left, in Var right) {
             AssertPathCount();
-            int parentIndex = parentStackIndex - 1;
-            var parent      = GetParent(parentIndex);
-            var itemDiff    = new DiffNode(DiffType.NotEqual, jsonWriter, parent, path[parentIndex], left, right, null);
+            var parent      = GetParent(parentStackIndex);
+            var itemDiff    = new DiffNode(DiffType.NotEqual, jsonWriter, parent, path[parentStackIndex], left, right, null);
             parent.children.Add(itemDiff);
             return DiffType.NotEqual;
         }
         
         public void AddOnlyLeft(in Var left) {
             AssertPathCount();
-            int parentIndex = parentStackIndex - 1;
-            var parent      = GetParent(parentIndex);
-            var itemDiff    = new DiffNode(DiffType.OnlyLeft, jsonWriter, parent, path[parentIndex], left, default, null);
+            var parent      = GetParent(parentStackIndex);
+            var itemDiff    = new DiffNode(DiffType.OnlyLeft, jsonWriter, parent, path[parentStackIndex], left, default, null);
             parent.children.Add(itemDiff);
         }
         
         public void AddOnlyRight(in Var right) {
             AssertPathCount();
-            int parentIndex = parentStackIndex - 1;
-            var parent      = GetParent(parentIndex);
-            var itemDiff    = new DiffNode(DiffType.OnlyRight, jsonWriter, parent, path[parentIndex], default, right, null);
+            var parent      = GetParent(parentStackIndex);
+            var itemDiff    = new DiffNode(DiffType.OnlyRight, jsonWriter, parent, path[parentStackIndex], default, right, null);
             parent.children.Add(itemDiff);
         }
         
         [Conditional("DEBUG")]
         private void AssertPathCount() {
-            if (path.Count != parentStackIndex)
+            if (path.Count != parentStackIndex - 1)
                 throw new InvalidOperationException("Expect path.Count != parentStack.Count + 1");
         }
 
@@ -140,11 +141,13 @@ namespace Friflo.Json.Fliox.Mapper.Diff
         }
 
         public void PushParent<T>(T left, T right) {
-            parentStack[parentStackIndex++] = new Parent(left, right);
+            if (parentStackIndex++ >= parentStackMaxDepth) throw new InvalidOperationException("Exceed max depth while diffing");
+            parentStack[parentStackIndex] = new Parent(left, right);
         }
 
         public DiffType PopParent() {
-            var headDiff    = parentStack[--parentStackIndex].diff;
+            var headDiff    = parentStack[parentStackIndex].diff;
+            parentStack[parentStackIndex--] = default; // clear references
             return headDiff == null ? DiffType.Equal : DiffType.NotEqual;
         }
     }
@@ -154,6 +157,8 @@ namespace Friflo.Json.Fliox.Mapper.Diff
         internal  readonly  object      left;
         internal  readonly  object      right;
         internal            DiffNode    diff;
+
+        public    override  string      ToString() => diff?.ToString();
 
         public Parent(object left, object right) {
             this.left   = left  ?? throw new ArgumentNullException(nameof(left));
