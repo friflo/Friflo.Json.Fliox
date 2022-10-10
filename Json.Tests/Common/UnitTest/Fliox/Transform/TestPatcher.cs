@@ -51,9 +51,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                     }};
 
                     var diff = differ.GetDiff(left, right, writer);
-                    AreEqual(1, diff.children.Count);
+                    AreEqual(1, diff.Children.Count);
 
-                    var childrenDiff = diff.children[0].AsString(20);
+                    var childrenDiff = diff.Children[0].AsString(20);
                     var expect =
 @"/child/childVal     1 != 2
 /child/bigInt       '111' != '222'
@@ -100,7 +100,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
 
                     var diff = differ.GetDiff(left, right, writer);
                     IsNotNull(diff);
-                    AreEqual(29, diff.children.Count);
+                    AreEqual(29, diff.Children.Count);
                     var childrenDiff = diff.AsString(20);
                     var expect =
 @"/enumIL1            'three' != 'one'
@@ -314,7 +314,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
         private static void PatchElements<T>(ObjectPatcher objectPatcher, T left, T right, ObjectMapper mapper) {
             var diff = objectPatcher.differ.GetDiff(left, right, mapper.writer);
             IsNotNull(diff);
-            AreEqual(2, diff.children.Count);
+            AreEqual(2, diff.Children.Count);
             var childrenDiff = diff.AsString(10);
             var expect =
 @"/1        2 != 12
@@ -327,7 +327,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
         private static void PatchCollection<T>(ObjectPatcher objectPatcher, T left, T right, ObjectMapper mapper) {
             var diff = objectPatcher.differ.GetDiff(left, right, mapper.writer);
             IsNotNull(diff);
-            IsNull(diff.children);
+            IsNull(diff.Children);
             AreEqual("[3] != [3]", diff.ToString());
             PatchObject(objectPatcher, left, right, mapper);
         }
@@ -335,7 +335,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
         private static void PatchKeyValues<T>(ObjectPatcher objectPatcher, T left, T right, ObjectMapper mapper) {
             var diff = objectPatcher.differ.GetDiff(left, right, mapper.writer);
             IsNotNull(diff);
-            AreEqual(3, diff.children.Count);
+            AreEqual(3, diff.Children.Count);
             var childrenDiff = diff.AsString(10);
             var expect =
                 @"/A        1 != 2

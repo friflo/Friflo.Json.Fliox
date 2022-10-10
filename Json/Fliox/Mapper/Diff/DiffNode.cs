@@ -21,15 +21,17 @@ namespace Friflo.Json.Fliox.Mapper.Diff
 
     public sealed class DiffNode
     {
-                        public  readonly    DiffType        diffType;
-                        public  readonly    DiffNode        parent; 
-                        public  readonly    TypeNode        pathNode;
-                        public  readonly    Var             left;
-                        public  readonly    Var             right;
-                        public  readonly    List<DiffNode>  children;
-        [Browse(Never)] private readonly    ObjectWriter    jsonWriter;
+                        public  IReadOnlyList<DiffNode>     Children => children;
         
-        public DiffNode(DiffType diffType, ObjectWriter jsonWriter, DiffNode parent, TypeNode pathNode, in Var left, in Var right, List<DiffNode> children) {
+                        internal  readonly  DiffType        diffType;
+                        private   readonly  DiffNode        parent; 
+                        private   readonly  TypeNode        pathNode;
+                        private   readonly  Var             left;
+                        internal  readonly  Var             right;
+        [Browse(Never)] internal  readonly  List<DiffNode>  children;
+        [Browse(Never)] private   readonly  ObjectWriter    jsonWriter;
+        
+        internal DiffNode(DiffType diffType, ObjectWriter jsonWriter, DiffNode parent, TypeNode pathNode, in Var left, in Var right, List<DiffNode> children) {
             this.diffType   = diffType;
             this.parent     = parent;
             this.pathNode   = pathNode;
@@ -159,14 +161,14 @@ namespace Friflo.Json.Fliox.Mapper.Diff
         }
     }
     
-    public enum NodeType
+    internal enum NodeType
     {
         Root,
         Element,
         Member,
     }
 
-    public readonly struct TypeNode
+    internal readonly struct TypeNode
     {
                         public   readonly   NodeType    nodeType;
                         public   readonly   JsonKey     name;
