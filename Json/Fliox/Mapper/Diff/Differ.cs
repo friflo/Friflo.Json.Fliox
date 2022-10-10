@@ -15,8 +15,9 @@ namespace Friflo.Json.Fliox.Mapper.Diff
         private             TypeCache       typeCache;
         private             ObjectWriter    jsonWriter;
         private readonly    List<TypeNode>  path        = new List<TypeNode>();
-        private readonly    List<Parent>    parentStack = new List<Parent>();
-        
+        private readonly    Parent[]        parentStack = new Parent[100];
+        private             int             parentStackIndex;
+
         public              TypeCache       TypeCache => typeCache;
 
         internal Differ() { }
@@ -27,9 +28,9 @@ namespace Friflo.Json.Fliox.Mapper.Diff
             this.jsonWriter = jsonWriter;
             typeCache       = jsonWriter.TypeCache;
             // --- init parentStack
-            parentStack.Clear();
             var rootParent  = new Parent(left, right);
-            parentStack.Add(rootParent);
+            parentStack[0]  = rootParent;
+            parentStackIndex = 1;
             // --- init path
             path.Clear();
             var mapper      = (TypeMapper<T>) typeCache.GetTypeMapper(typeof(T));
@@ -39,8 +40,8 @@ namespace Friflo.Json.Fliox.Mapper.Diff
             mapper.Diff(this, left, right);
             
             this.jsonWriter = null;
-            if (parentStack.Count != 1)
-                throw new InvalidOperationException($"Expect objectStack.Count == 0. Was: {parentStack.Count}");
+            if (parentStackIndex != 1)
+                throw new InvalidOperationException($"Expect objectStack.Count == 0. Was: {parentStackIndex}");
             Pop();
             if (path.Count != 0)
                 throw new InvalidOperationException($"Expect path.Count == 0. Was: {path.Count}");
@@ -83,7 +84,7 @@ namespace Friflo.Json.Fliox.Mapper.Diff
             
         public DiffType AddNotEqual(in Var left, in Var right) {
             AssertPathCount();
-            int parentIndex = parentStack.Count - 1;
+            int parentIndex = parentStackIndex - 1;
             var parent      = GetParent(parentIndex);
             var itemDiff    = new DiffNode(DiffType.NotEqual, jsonWriter, parent, path[parentIndex], left, right, null);
             parent.children.Add(itemDiff);
@@ -92,7 +93,7 @@ namespace Friflo.Json.Fliox.Mapper.Diff
         
         public void AddOnlyLeft(in Var left) {
             AssertPathCount();
-            int parentIndex = parentStack.Count - 1;
+            int parentIndex = parentStackIndex - 1;
             var parent      = GetParent(parentIndex);
             var itemDiff    = new DiffNode(DiffType.OnlyLeft, jsonWriter, parent, path[parentIndex], left, default, null);
             parent.children.Add(itemDiff);
@@ -100,7 +101,7 @@ namespace Friflo.Json.Fliox.Mapper.Diff
         
         public void AddOnlyRight(in Var right) {
             AssertPathCount();
-            int parentIndex = parentStack.Count - 1;
+            int parentIndex = parentStackIndex - 1;
             var parent      = GetParent(parentIndex);
             var itemDiff    = new DiffNode(DiffType.OnlyRight, jsonWriter, parent, path[parentIndex], default, right, null);
             parent.children.Add(itemDiff);
@@ -108,7 +109,7 @@ namespace Friflo.Json.Fliox.Mapper.Diff
         
         [Conditional("DEBUG")]
         private void AssertPathCount() {
-            if (path.Count != parentStack.Count)
+            if (path.Count != parentStackIndex)
                 throw new InvalidOperationException("Expect path.Count != parentStack.Count + 1");
         }
 
@@ -139,14 +140,12 @@ namespace Friflo.Json.Fliox.Mapper.Diff
         }
 
         public void PushParent<T>(T left, T right) {
-            parentStack.Add(new Parent(left, right));
+            parentStack[parentStackIndex++] = new Parent(left, right);
         }
-        
+
         public DiffType PopParent() {
-            var lastIndex = parentStack.Count - 1;
-            var last = parentStack[lastIndex];
-            parentStack.RemoveAt(lastIndex);
-            return last.diff == null ? DiffType.Equal : DiffType.NotEqual;
+            var headDiff    = parentStack[--parentStackIndex].diff;
+            return headDiff == null ? DiffType.Equal : DiffType.NotEqual;
         }
     }
 
