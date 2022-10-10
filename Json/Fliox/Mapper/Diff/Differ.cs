@@ -70,15 +70,15 @@ namespace Friflo.Json.Fliox.Mapper.Diff
             var parentOfParentIndex = parentIndex - 1;
             if (parentOfParentIndex >= 0) {
                 DiffNode parentOfParent = GetParent(parentOfParentIndex);
-                parentDiff = parent.diff = new DiffNode(DiffType.None, jsonWriter, parentOfParent,
+                parentDiff = new DiffNode(DiffType.None, jsonWriter, parentOfParent,
                     path[parentOfParentIndex], new Var(parent.left), new Var(parent.right), new List<DiffNode>());
-                parentStack[parentIndex] = parent;  // parent is a struct => need to replace list entry to store diff
+                parentStack[parentIndex].diff = parentDiff;  // parent is a struct => update field in array
                 parentOfParent.children.Add(parentDiff);
                 return parentDiff;
             }
-            parentDiff = parent.diff = new DiffNode(DiffType.None, jsonWriter, null,
+            parentDiff = new DiffNode(DiffType.None, jsonWriter, null,
                 path[0], new Var(parent.left), new Var(parent.right), new List<DiffNode>());
-            parentStack[parentIndex] = parent;  // parent is a struct => need to replace list entry to store diff
+            parentStack[parentIndex].diff = parentDiff;  // parent is a struct => update field in array
             return parentDiff;
         }
 
@@ -110,8 +110,8 @@ namespace Friflo.Json.Fliox.Mapper.Diff
         
         [Conditional("DEBUG")]
         private void AssertPathCount() {
-            if (path.Count != parentStackIndex - 1)
-                throw new InvalidOperationException("Expect path.Count != parentStack.Count + 1");
+            if (path.Count != parentStackIndex + 1)
+                throw new InvalidOperationException("Expect path.Count != parentStackIndex + 1");
         }
 
         public void PushMember(PropField field) {
