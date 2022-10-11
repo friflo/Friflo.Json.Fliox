@@ -12,13 +12,18 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
     {
         public PropField(string name, string jsonName, TypeMapper fieldType, FieldInfo field, PropertyInfo property,
             int primIndex, int objIndex, bool required, string docs)
-            : base(name, jsonName, fieldType, field, property, primIndex, objIndex, required, docs)
+            : base(name, jsonName, fieldType, field, property, CreateMember<T>(fieldType, field, property), primIndex, objIndex, required, docs)
         {
-            if (property != null) {
-                varMember = fieldType.varType.CreateMember<T>(property);
+        }
+        
+        private static Var.Member CreateMember<T> (TypeMapper fieldType, FieldInfo field, PropertyInfo property) {
+            if (field != null) {
+                return new MemberField(fieldType.varType, field);
             }
+            return new MemberProperty(fieldType.varType, property);
         }
     }
+
     
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
@@ -47,14 +52,14 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
         internal readonly   PropertyInfo                        property;
         private  readonly   IEnumerable<CustomAttributeData>    customAttributes;
     //  private  readonly   MethodInfo                          getMethod;
-        private  readonly   Func<object, object>                getLambda;
+    //  private  readonly   Func<object, object>                getLambda;
     //  private  readonly   Delegate                            getDelegate;
     //  private  readonly   MethodInfo                          setMethod;
-        private  readonly   Action<object, object>              setLambda;
-        internal            Var.Member                          varMember;
+    //  private  readonly   Action<object, object>              setLambda;
+        private  readonly   Var.Member                          member;
 
 
-        internal PropField (string name, string jsonName, TypeMapper fieldType, FieldInfo field, PropertyInfo property,
+        internal PropField (string name, string jsonName, TypeMapper fieldType, FieldInfo field, PropertyInfo property, Var.Member member,
             int primIndex, int objIndex, bool required, string docs)
         {
             this.name       = name;
@@ -71,7 +76,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
             customAttributes= field != null ? field.CustomAttributes : property.CustomAttributes;
             // this.getMethod  = property != null ? property.GetGetMethod(true) : null;
             // this.setMethod  = property != null ? property.GetSetMethod(true) : null;
-            if (property != null) {
+            /* if (property != null) {
                 // var typeArray    = new [] {  property.DeclaringType, property.PropertyType  };
                 // var delegateType = Expression.GetDelegateType(typeArray);
                 // getDelegate      =  Delegate.CreateDelegate(delegateType, getMethod);
@@ -79,10 +84,9 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
                 var setLambdaExp    = DelegateUtils.CreateSetLambda<object,object>(property);
                 getLambda           = getLambdaExp.Compile();
                 setLambda           = setLambdaExp.Compile();
-                isKey = AttributeUtils.IsKey(customAttributes);
-            } else {
-                isKey = AttributeUtils.IsKey(customAttributes);
-            }
+            } */
+            this.member     = member;
+            isKey           = AttributeUtils.IsKey(customAttributes);
             this.primIndex  = primIndex;
             this.objIndex   = objIndex;
             this.required   = required;
@@ -104,30 +108,12 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
         
         // private static readonly bool useDirect = false; // Unity: System.NotImplementedException : GetValueDirect
         
-        public void SetVar (object obj, in Var value)
-        {
-            if (field != null) {
-                var valueObject = varType.ToObject(value);
-                // if (useDirect) { field.SetValueDirect(__makeref(obj), value); return; }
-                field.SetValue(obj, valueObject); // todo use Expression - but not for Unity
-            } else {
-                // varMember.SetVar(obj, value);
-                var valueObject = varType.ToObject(value);
-                setLambda(obj, valueObject);
-            }
+        public void SetVar (object obj, in Var value) {
+            member.SetVar(obj, value);
         }
 
-        public Var GetVar (object obj)
-        {
-            if (field != null) {
-                // if (useDirect) return field.GetValueDirect(__makeref(obj));
-                var value = field.GetValue(obj); // todo use Expression - but not for Unity
-                return varType.FromObject(value);
-            } else {
-                // return varMember.GetVar(obj);
-                var value = getLambda(obj); // return new Var(getMethod.Invoke(obj, null));
-                return varType.FromObject(value);
-            }
+        public Var GetVar (object obj) {
+            return member.GetVar(obj);
         }
 
         public override string ToString() {
