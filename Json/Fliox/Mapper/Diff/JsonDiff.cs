@@ -4,6 +4,7 @@
 using System;
 using Friflo.Json.Fliox.Mapper.Map;
 using Friflo.Json.Fliox.Mapper.Map.Object.Reflect;
+using static Friflo.Json.Fliox.Mapper.Diff.DiffType;
 
 namespace Friflo.Json.Fliox.Mapper.Diff
 {
@@ -47,18 +48,18 @@ namespace Friflo.Json.Fliox.Mapper.Diff
                 var diffType    = child.DiffType;
                 if (key is PropField field) {
                     switch (diffType) {
-                        case DiffType.OnlyRight:
-                        case DiffType.NotEqual:
+                        case OnlyRight:
+                        case NotEqual:
                             writer.WriteFieldKey (field, ref firstMember);
-                            var mapper      = child.NodeMapper;
                             ref var right   = ref child.ValueRight;
                             if (right.IsNull) {
                                 writer.AppendNull();
                             } else {
+                                var mapper      = child.NodeMapper;
                                 mapper.WriteVar(ref writer, right);
                             }
                             break;
-                        case DiffType.None:
+                        case None:
                             writer.WriteFieldKey (field, ref firstMember);
                             Traverse(ref writer, child);
                             break;
