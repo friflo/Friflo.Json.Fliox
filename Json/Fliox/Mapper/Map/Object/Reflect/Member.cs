@@ -12,6 +12,9 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
         private  readonly   VarType     varType;
         private  readonly   FieldInfo   field;
         
+        // private static readonly bool useDirect = false; // Unity: System.NotImplementedException : GetValueDirect
+
+        
         internal MemberField(VarType varType, FieldInfo field) {
             this.varType    = varType;
             this.field      = field;

@@ -60,7 +60,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
     //  private  readonly   Delegate                            getDelegate;
     //  private  readonly   MethodInfo                          setMethod;
     //  private  readonly   Action<object, object>              setLambda;
-        private  readonly   Var.Member                          member;
+        internal readonly   Var.Member                          member;
 
 
         internal PropField (string name, string jsonName, TypeMapper fieldType, FieldInfo field, PropertyInfo property, Var.Member member,
@@ -110,16 +110,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
             nameBytes.Dispose(Untracked.Bytes);
         }
         
-        // private static readonly bool useDirect = false; // Unity: System.NotImplementedException : GetValueDirect
         
-        public void SetVar (object obj, in Var value) {
-            member.SetVar(obj, value);
-        }
-
-        public Var GetVar (object obj) {
-            return member.GetVar(obj);
-        }
-
         public override string ToString() {
             return name;
         }

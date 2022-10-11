@@ -152,8 +152,8 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object
                 var field = fields[n];
                 differ.PushMember(field);
 
-                Var leftField   = field.GetVar(left);
-                Var rightField  = field.GetVar(right);
+                Var leftField   = field.member.GetVar(left);
+                Var rightField  = field.member.GetVar(right);
                 field.fieldType.DiffVar(differ, leftField, rightField);
 
                 differ.Pop();
@@ -171,10 +171,10 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object
             for (int n = 0; n < fields.Length; n++) {
                 var field = fields[n];
                 if (patcher.IsMember(field.key)) {
-                    Var value   = field.GetVar(obj); 
+                    Var value   = field.member.GetVar(obj); 
                     var action  = patcher.DescendMember(field.fieldType, value, out Var newValue);
                     if  (action == NodeAction.Assign)
-                        field.SetVar(obj, newValue);
+                        field.member.SetVar(obj, newValue);
                     else
                         throw new InvalidOperationException($"NodeAction not applicable: {action}");
                     return;
@@ -195,7 +195,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object
                     var field = fields.GetPropField(child.GetName());
                     if (field == null)
                         continue;
-                    Var elemVar = field.GetVar(obj);
+                    Var elemVar = field.member.GetVar(obj);
                     accessor.HandleResult(child, elemVar.ToObject());
                     var fieldType = field.fieldType;
                     if (fieldType.IsComplex && elemVar.NotNull)
@@ -230,7 +230,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object
             for (int n = 0; n < fields.Length; n++) {
                 var field = fields[n];
                 
-                var elemVar     = field.GetVar(objRef);
+                var elemVar     = field.member.GetVar(objRef);
                 var fieldType   = field.fieldType;
                 bool isNull     = fieldType.IsNullVar(elemVar);
                 if (isNull) {
@@ -312,7 +312,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object
                         if ((field = reader.GetField(fields)) == null)
                             break;
                         TypeMapper fieldType = field.fieldType;
-                        Var fieldVal    = field.GetVar(objRef);
+                        Var fieldVal    = field.member.GetVar(objRef);
                         Var curFieldVal = fieldVal;
                         fieldVal        = fieldType.ReadVar(ref reader, fieldVal, out success);
                         if (!success)
@@ -322,7 +322,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object
                             return reader.ErrorIncompatible<T>(this, field, out success);
                         
                         if (curFieldVal != fieldVal)
-                            field.SetVar(objRef, fieldVal);
+                            field.member.SetVar(objRef, fieldVal);
                         break;
 
                     case JsonEvent.ObjectEnd:
