@@ -4,6 +4,7 @@
 using System;
 using Friflo.Json.Fliox;
 using Friflo.Json.Fliox.Mapper;
+using Friflo.Json.Fliox.Mapper.Diff;
 using Friflo.Json.Tests.Unity.Utils;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
@@ -36,29 +37,32 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             using (var typeStore        = new TypeStore()) 
             using (var mapper           = new ObjectMapper(typeStore))
             using (var differ           = new ObjectDiffer())
+            using (var jsonDiff         = new JsonDiff(typeStore))
             {
                 var writer = mapper.writer;
                 mapper.Pretty = true;
 
-                var left  = new DiffBase {
+                var left  = new DiffBase();
+                var right = new DiffBase {
                     intVal1 = 1, intVal2 = 1, intVal3 = 1, intVal4 = 1,
                     intVal5 = 1, intVal6 = 1, intVal7 = 1, intVal8 = 1,
                 };
-                var right = new DiffBase ();
                
                 var diff = differ.GetDiff(left, right, writer);
+                
+                var json        = jsonDiff.CreateJsonDiff(diff);
                 
                 AreEqual(8, diff.Children.Count);
                 var childrenDiff = diff.AsString(20);
                 var expect =
-@"/intVal1            1 != 0
-/intVal2            1 != 0
-/intVal3            1 != 0
-/intVal4            1 != 0
-/intVal5            1 != 0
-/intVal6            1 != 0
-/intVal7            1 != 0
-/intVal8            1 != 0
+@"/intVal1            0 != 1
+/intVal2            0 != 1
+/intVal3            0 != 1
+/intVal4            0 != 1
+/intVal5            0 != 1
+/intVal6            0 != 1
+/intVal7            0 != 1
+/intVal8            0 != 1
 "; 
                 AreEqual(expect, childrenDiff);
                 
