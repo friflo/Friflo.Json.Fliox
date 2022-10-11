@@ -12,7 +12,11 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
     {
         public PropField(string name, string jsonName, TypeMapper fieldType, FieldInfo field, PropertyInfo property,
             int primIndex, int objIndex, bool required, string docs)
-            : base(name, jsonName, fieldType, field, property, primIndex, objIndex, required, docs) {
+            : base(name, jsonName, fieldType, field, property, primIndex, objIndex, required, docs)
+        {
+            if (property != null) {
+                varMember = fieldType.varType.CreateMember<T>(property);
+            }
         }
     }
     
@@ -47,6 +51,8 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
     //  private  readonly   Delegate                            getDelegate;
     //  private  readonly   MethodInfo                          setMethod;
         private  readonly   Action<object, object>              setLambda;
+        internal            Var.Member                          varMember;
+
 
         internal PropField (string name, string jsonName, TypeMapper fieldType, FieldInfo field, PropertyInfo property,
             int primIndex, int objIndex, bool required, string docs)
@@ -105,11 +111,12 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
                 // if (useDirect) { field.SetValueDirect(__makeref(obj), value); return; }
                 field.SetValue(obj, valueObject); // todo use Expression - but not for Unity
             } else {
+                // varMember.SetVar(obj, value);
                 var valueObject = varType.ToObject(value);
                 setLambda(obj, valueObject);
             }
         }
-        
+
         public Var GetVar (object obj)
         {
             if (field != null) {
@@ -117,6 +124,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
                 var value = field.GetValue(obj); // todo use Expression - but not for Unity
                 return varType.FromObject(value);
             } else {
+                // return varMember.GetVar(obj);
                 var value = getLambda(obj); // return new Var(getMethod.Invoke(obj, null));
                 return varType.FromObject(value);
             }
