@@ -137,7 +137,7 @@ namespace Friflo.Json.Fliox.Mapper.Diff
         }
 
         public void PushMember  (PropField field) {
-            path[pathIndex++] = new TypeNode(field.name, -1, field.fieldType);
+            path[pathIndex++] = new TypeNode(field, -1, field.fieldType);
         }
         
         public void PushKey     (TypeMapper mapper, object key) {

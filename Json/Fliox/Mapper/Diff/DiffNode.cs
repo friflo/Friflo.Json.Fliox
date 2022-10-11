@@ -4,6 +4,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Friflo.Json.Fliox.Mapper.Map;
+using Friflo.Json.Fliox.Mapper.Map.Object.Reflect;
 using static System.Diagnostics.DebuggerBrowsableState;
 using Browse = System.Diagnostics.DebuggerBrowsableAttribute;
 
@@ -23,13 +24,20 @@ namespace Friflo.Json.Fliox.Mapper.Diff
     {
                         public   IReadOnlyList<DiffNode>    Children    => children;
                         internal            DiffType        DiffType    => diffType;
+                        // --- pathNode fields
+                        public              int             NodeIndex   => pathNode.index;
+                        /// <summary>Either a <see cref="PropField"/> or the key of a <see cref="Dictionary{TKey,TValue}"/></summary>
+                        public              object          NodeKey     => pathNode.key;
+                        internal            NodeType        NodeType    => pathNode.NodeType;
+        [Browse(Never)] public              TypeMapper      NodeMapper  => pathNode.mapper;
+                        // --- left and right value
                         // ReSharper disable once UnusedMember.Global
-                        internal            Var             Left        => left;
-                        internal            Var             Right       => right;
+                        internal            Var             ValueLeft   => left;
+                        internal            Var             ValueRight  => right;
         // --- following private fields behave as readonly. They are mutable to enable pooling DiffNode's
         [Browse(Never)] private             DiffType        diffType;
                         private             DiffNode        parent; 
-                        private             TypeNode        pathNode;
+        [Browse(Never)] private             TypeNode        pathNode;
         [Browse(Never)] private             Var             left;
         [Browse(Never)] private             Var             right;
         [Browse(Never)] internal  readonly  List<DiffNode>  children    = new List<DiffNode>();
@@ -64,13 +72,18 @@ namespace Friflo.Json.Fliox.Mapper.Diff
             switch (pathNode.NodeType) {
                 case NodeType.Key:
                     sb.Append('/');
-                    sb.Append(pathNode.key);
+                    var key = pathNode.key;
+                    if (key is PropField field) {
+                        sb.Append(field.name);
+                    } else {
+                        sb.Append(key);
+                    }
                     // sb.Append(pathNode.name.AsString());
                     if (!addValue)
                         return;
                     Indent(sb, startPos, indent);
                     sb.Append(' ');
-                    AddValue(sb, pathNode.typeMapper);
+                    AddValue(sb, pathNode.mapper);
                     break;
                 case NodeType.Element:
                     sb.Append('/');
@@ -79,12 +92,12 @@ namespace Friflo.Json.Fliox.Mapper.Diff
                         return;
                     Indent(sb, startPos, indent);
                     sb.Append(' ');
-                    AddValue(sb, pathNode.typeMapper);
+                    AddValue(sb, pathNode.mapper);
                     break;
                 case NodeType.Root:
                     if (!addValue)
                         return;
-                    AddValue(sb, pathNode.typeMapper);
+                    AddValue(sb, pathNode.mapper);
                     break;
             }
         }
