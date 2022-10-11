@@ -133,7 +133,15 @@ namespace Friflo.Json.Fliox.Mapper.Map
         public override DiffType DiffVar(Differ differ, in Var left, in Var right) {
             var leftObject  = (TVal)left. TryGetObject();
             var rightObject = (TVal)right.TryGetObject();
-            return Diff(differ, leftObject, rightObject);
+            var leftSet     = leftObject  != null;
+            var rightSet    = rightObject != null;
+            if (leftSet || rightSet) {
+                if (leftSet && rightSet) {
+                    return Diff(differ, leftObject, rightObject);
+                }
+                return differ.AddNotEqualObject(leftObject, rightObject);
+            } // else: both null => equal
+            return DiffType.Equal;
         }
 
         internal override bool IsValueNullIL(ClassMirror mirror, int primPos, int objPos)                    => throw new Invalid("IsValueNullIL() not applicable");

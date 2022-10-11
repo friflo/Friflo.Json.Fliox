@@ -154,15 +154,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object
 
                 Var leftField   = field.GetVar(left);
                 Var rightField  = field.GetVar(right);
-                var leftNull    = leftField.NotNull;
-                var rightNull   = rightField.NotNull;
-                if (leftNull || rightNull) {
-                    if (leftNull && rightNull) {
-                        field.fieldType.DiffVar(differ, leftField, rightField);
-                    } else {
-                        differ.AddNotEqual(leftField, rightField);
-                    }
-                } // else: both null
+                field.fieldType.DiffVar(differ, leftField, rightField);
 
                 differ.Pop();
             }
