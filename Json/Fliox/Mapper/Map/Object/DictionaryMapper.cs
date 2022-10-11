@@ -54,13 +54,11 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object
         
         public override DiffType Diff(Differ differ, TMap left, TMap right) {
             differ.PushParent(left, right);
-            var elementVarType = elementType.varType;
             foreach (var leftPair in left) {
                 var leftKey   = leftPair.Key;
                 var leftValue = leftPair.Value;
-                var leftJson  = keyMapper.ToJsonKey(leftKey);
-                differ.PushKey(elementType, leftJson);
                 var leftVar   = elementType.ToVar(leftValue);
+                differ.PushKey(elementType, leftKey);
                 if (right.TryGetValue(leftKey, out TElm rightValue)) {
                     var rightVar = elementType.ToVar(rightValue);
                     elementType.DiffVar(differ, leftVar, rightVar);
@@ -72,12 +70,11 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object
             foreach (var rightPair in right) {
                 var rightKey    = rightPair.Key;
                 var rightValue  = rightPair.Value;
-                var rightJson   = keyMapper.ToJsonKey(rightKey);
-                differ.PushKey(elementType, rightJson);
-                if (!left.TryGetValue(rightKey, out TElm _)) {
-                    var rightVar   = elementType.ToVar(rightValue);
-                    differ.AddOnlyRight(rightVar);
-                }
+                if (left.TryGetValue(rightKey, out TElm _))
+                    continue;
+                var rightVar    = elementType.ToVar(rightValue);
+                differ.PushKey(elementType, rightKey);
+                differ.AddOnlyRight(rightVar);
                 differ.Pop();
             }
             return differ.PopParent();

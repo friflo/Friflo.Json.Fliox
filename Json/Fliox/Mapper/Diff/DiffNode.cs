@@ -40,7 +40,7 @@ namespace Friflo.Json.Fliox.Mapper.Diff
             this.jsonWriter = jsonWriter;
         }
         
-        internal void Init(DiffType diffType, DiffNode parent, TypeNode pathNode, in Var left, in Var right) {
+        internal void Init(DiffType diffType, DiffNode parent, in TypeNode pathNode, in Var left, in Var right) {
             this.diffType   = diffType;
             this.parent     = parent;
             this.pathNode   = pathNode;
@@ -65,7 +65,7 @@ namespace Friflo.Json.Fliox.Mapper.Diff
             switch (pathNode.nodeType) {
                 case NodeType.Member:
                     sb.Append('/');
-                    pathNode.name.AppendTo(sb);
+                    sb.Append(pathNode.key);
                     // sb.Append(pathNode.name.AsString());
                     if (!addValue)
                         return;
@@ -180,15 +180,16 @@ namespace Friflo.Json.Fliox.Mapper.Diff
     internal readonly struct TypeNode
     {
                         public   readonly   NodeType    nodeType;
-                        public   readonly   JsonKey     name;
+        /// <summary>Commonly the a property or field name (string). In case of a dictionary a dictionary key</summary>
+                        public   readonly   object      key;
                         public   readonly   int         index;
         [Browse(Never)] public   readonly   TypeMapper  typeMapper;
 
                         public   override   string      ToString() => GetString();
 
-        internal TypeNode(NodeType nodeType, in JsonKey name, int index, TypeMapper typeMapper) {
+        internal TypeNode(NodeType nodeType, object key, int index, TypeMapper typeMapper) {
             this.nodeType   = nodeType;
-            this.name       = name;
+            this.key        = key;
             this.index      = index;
             this.typeMapper = typeMapper;
         }
@@ -196,7 +197,7 @@ namespace Friflo.Json.Fliox.Mapper.Diff
         private string GetString() {
             switch (nodeType) {
                 case NodeType.Root:     return "(Root)";
-                case NodeType.Member:   return name.AsString();
+                case NodeType.Member:   return key.ToString();
                 case NodeType.Element:  return $"[{index}]";
                 default:    throw new InvalidOperationException("unexpected case");
             }
