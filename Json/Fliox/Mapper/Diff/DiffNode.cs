@@ -32,8 +32,8 @@ namespace Friflo.Json.Fliox.Mapper.Diff
         [Browse(Never)] public              TypeMapper      NodeMapper  => pathNode.mapper;
                         // --- left and right value
                         // ReSharper disable once UnusedMember.Global
-                        internal            Var             ValueLeft   => left;
-                        internal            Var             ValueRight  => right;
+                        internal  ref       Var             ValueLeft   => ref left;
+                        internal  ref       Var             ValueRight  => ref right;
         // --- following private fields behave as readonly. They are mutable to enable pooling DiffNode's
         [Browse(Never)] private             DiffType        diffType;
                         private             DiffNode        parent; 

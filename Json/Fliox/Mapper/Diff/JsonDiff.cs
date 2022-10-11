@@ -13,8 +13,10 @@ namespace Friflo.Json.Fliox.Mapper.Diff
     /// </summary>
     public class JsonDiff : IDisposable
     {
-        private     Writer writer;
-        
+        public      bool    Pretty { get => writer.pretty; set => writer.pretty = value; }
+
+        private     Writer  writer;
+
         public JsonDiff(TypeStore typeStore) {
             writer = new Writer(typeStore);
         }
@@ -41,10 +43,26 @@ namespace Friflo.Json.Fliox.Mapper.Diff
             bool firstMember = true;
             foreach (var child in diffNode.children) {
                 // Traverse(ref writer, child);
-                var key = child.NodeKey; 
+                var key         = child.NodeKey;
+                var diffType    = child.DiffType;
                 if (key is PropField field) {
-                    writer.WriteFieldKey (field, ref firstMember);
-                    child.NodeMapper.WriteVar(ref writer, child.ValueRight);
+                    switch (diffType) {
+                        case DiffType.OnlyRight:
+                        case DiffType.NotEqual:
+                            writer.WriteFieldKey (field, ref firstMember);
+                            var mapper      = child.NodeMapper;
+                            ref var right   = ref child.ValueRight;
+                            if (right.IsNull) {
+                                writer.AppendNull();
+                            } else {
+                                mapper.WriteVar(ref writer, right);
+                            }
+                            break;
+                        case DiffType.None:
+                            writer.WriteFieldKey (field, ref firstMember);
+                            Traverse(ref writer, child);
+                            break;
+                    }
                 }
             }
             writer.WriteObjectEnd(firstMember);
