@@ -180,8 +180,8 @@ public partial struct Var
     }
     
     private class MemberBoolNull<T> : Member {
-        private     readonly    Func  <T, bool?>  getter;
-        private     readonly    Action<T, bool?>  setter;
+        private     readonly    Func  <T, bool?>    getter;
+        private     readonly    Action<T, bool?>    setter;
         internal    override    Var                 GetVar (object obj)                 => new Var(getter((T)obj));
         internal    override    void                SetVar (object obj, in Var value)   => setter((T)obj, value.BoolNull);
     
@@ -205,8 +205,8 @@ public partial struct Var
     }
     
     private class MemberCharNull<T> : Member {
-        private     readonly    Func  <T, char?>  getter;
-        private     readonly    Action<T, char?>  setter;
+        private     readonly    Func  <T, char?>    getter;
+        private     readonly    Action<T, char?>    setter;
         internal    override    Var                 GetVar (object obj)                 => new Var(getter((T)obj));
         internal    override    void                SetVar (object obj, in Var value)   => setter((T)obj, value.CharNull);
     
