@@ -12,14 +12,18 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
     {
         public PropField(string name, string jsonName, TypeMapper fieldType, FieldInfo field, PropertyInfo property,
             int primIndex, int objIndex, bool required, string docs)
-            : base(name, jsonName, fieldType, field, property, CreateMember<T>(fieldType, field, property), primIndex, objIndex, required, docs)
+            : base(name, jsonName, fieldType, field, property, CreateMember(fieldType, field, property), primIndex, objIndex, required, docs)
         {
         }
         
-        private static Var.Member CreateMember<T> (TypeMapper fieldType, FieldInfo field, PropertyInfo property) {
+        private static Var.Member CreateMember (TypeMapper fieldType, FieldInfo field, PropertyInfo property) {
             if (field != null) {
                 return new MemberField(fieldType.varType, field);
             }
+            var member = fieldType.varType.CreateMember<T>(property);
+            if (member != null)
+                return member;
+            // object (string, structs, classes) are using a generic MemberProperty  
             return new MemberProperty(fieldType.varType, property);
         }
     }

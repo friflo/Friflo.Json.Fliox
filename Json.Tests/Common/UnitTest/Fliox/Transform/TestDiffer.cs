@@ -67,7 +67,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                     differ.GetDiff(left, right, writer);
                 }
                 var diffAlloc =  GC.GetAllocatedBytesForCurrentThread() - start;
-                // AreEqual(0, diffAlloc);
+                AreEqual(0, diffAlloc);
                 Console.WriteLine($"Diff allocations: {diffAlloc}");
             }
         }

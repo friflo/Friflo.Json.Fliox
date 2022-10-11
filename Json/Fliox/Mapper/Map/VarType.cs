@@ -19,7 +19,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
         public   abstract Var       FromObject      (object obj);
         public   abstract object    ToObject        (in Var value);
         internal virtual  object    TryGetObject    (in Var value) => null;
-        internal virtual  Member    CreateMember<T> (PropertyInfo pi) => null;
+        internal abstract Member    CreateMember<T> (PropertyInfo pi);
 
         public   override string    ToString() => Name;
         
@@ -73,6 +73,7 @@ public partial struct Var {
         public    override  Var     FromObject  (object obj)               => new Var(obj);
         public    override  object  ToObject    (in Var value)             => value.obj;
         internal  override  object  TryGetObject(in Var value)             => value.obj;
+        internal  override  Member  CreateMember<T>(PropertyInfo pi)       => null;
     }
     
     internal sealed class TypeString : VarType
@@ -88,6 +89,7 @@ public partial struct Var {
         public    override  Var     FromObject  (object obj)               => new Var((string)obj);
         public    override  object  ToObject    (in Var value)             => value.obj;
         internal  override  object  TryGetObject(in Var value)             => value.obj;
+        internal  override  Member  CreateMember<T>(PropertyInfo pi)       => null;
     }
     
     
@@ -109,6 +111,7 @@ public partial struct Var {
         public    override  Var     DefaultValue                           => new Var((byte)default);
         public    override  Var     FromObject  (object obj)               => new Var((byte)obj);
         public    override  object  ToObject    (in Var value)             => (byte)value.lng;
+        internal  override  Member  CreateMember<T>(PropertyInfo pi)       => new MemberInt8<T>(pi);
     }
     
     internal sealed class TypeInt16 : TypeLong
@@ -121,6 +124,7 @@ public partial struct Var {
         public    override  Var     DefaultValue                           => new Var((short)default);
         public    override  Var     FromObject  (object obj)               => new Var((short)obj);
         public    override  object  ToObject    (in Var value)             => (short)value.lng;
+        internal  override  Member  CreateMember<T>(PropertyInfo pi)       => new MemberInt16<T>(pi);
     }
     
     internal sealed class TypeInt32 : TypeLong
@@ -168,6 +172,7 @@ public partial struct Var {
         public    override  Var     DefaultValue                           => new Var((byte?)null);
         public    override  Var     FromObject  (object obj)               => new Var((byte?)obj);
         public    override  object  ToObject    (in Var value)             => value.obj != null ? (byte?)value.lng : null;
+        internal  override  Member  CreateMember<T>(PropertyInfo pi)       => new MemberInt8Null<T>(pi);
     }
     
     internal sealed class TypeNullableInt16 : TypeNullableLong
@@ -179,6 +184,7 @@ public partial struct Var {
         public    override  Var     DefaultValue                           => new Var((short?)null);
         public    override  Var     FromObject  (object obj)               => new Var((short?)obj);
         public    override  object  ToObject    (in Var value)             => value.obj != null ? (short?)value.lng : null;
+        internal  override  Member  CreateMember<T>(PropertyInfo pi)       => new MemberInt16Null<T>(pi);
     }
     
     internal sealed class TypeNullableInt32 : TypeNullableLong
@@ -190,6 +196,7 @@ public partial struct Var {
         public    override  Var     DefaultValue                           => new Var((int?)null);
         public    override  Var     FromObject  (object obj)               => new Var((int?)obj);
         public    override  object  ToObject    (in Var value)             => value.obj != null ? (int?)value.lng : null;
+        internal  override  Member  CreateMember<T>(PropertyInfo pi)       => new MemberInt32Null<T>(pi);
     }
     
     internal sealed class TypeNullableInt64 : TypeNullableLong
@@ -201,6 +208,7 @@ public partial struct Var {
         public    override  Var     DefaultValue                           => new Var((long?)null);
         public    override  Var     FromObject  (object obj)               => new Var((long?)obj);
         public    override  object  ToObject    (in Var value)             => value.obj != null ? (long?) value.lng : null;
+        internal  override  Member  CreateMember<T>(PropertyInfo pi)       => new MemberInt64Null<T>(pi);
     }
     
     // --- float (32 bit) ---
@@ -217,6 +225,7 @@ public partial struct Var {
         public    override  Var     DefaultValue                           => new Var((float)default);
         public    override  Var     FromObject  (object obj)               => new Var((float)obj);
         public    override  object  ToObject    (in Var value)             => (float)value.Dbl;
+        internal  override  Member  CreateMember<T>(PropertyInfo pi)       => new MemberFlt<T>(pi);
     }
     
     internal sealed class TypeNullableFlt : VarType
@@ -232,6 +241,7 @@ public partial struct Var {
         public    override  Var     DefaultValue                           => new Var((float?)null);
         public    override  Var     FromObject  (object obj)               => new Var((float?)obj);
         public    override  object  ToObject    (in Var value)             => value.obj != null ? (float?)value.Dbl : null;
+        internal  override  Member  CreateMember<T>(PropertyInfo pi)       => new MemberFltNull<T>(pi);
     }
     
     // --- double (64 bit) ---
@@ -248,6 +258,7 @@ public partial struct Var {
         public    override  Var     DefaultValue                           => new Var((double)default);
         public    override  Var     FromObject  (object obj)               => new Var((double)obj);
         public    override  object  ToObject    (in Var value)             => value.Dbl;
+        internal  override  Member  CreateMember<T>(PropertyInfo pi)       => new MemberDbl<T>(pi);
     }
     
     internal sealed class TypeNullableDbl : VarType
@@ -263,6 +274,7 @@ public partial struct Var {
         public    override  Var     DefaultValue                           => new Var((double?)null);
         public    override  Var     FromObject  (object obj)               => new Var((double?)obj);
         public    override  object  ToObject    (in Var value)             => value.obj != null ? (double?) value.Dbl : null;
+        internal  override  Member  CreateMember<T>(PropertyInfo pi)       => new MemberDblNull<T>(pi);
     }
     
     // --- bool ---
@@ -279,6 +291,7 @@ public partial struct Var {
         public    override  Var     DefaultValue                           => new Var((bool)default);
         public    override  Var     FromObject  (object obj)               => new Var((bool)obj);
         public    override  object  ToObject    (in Var value)             => value.lng != 0;
+        internal  override  Member  CreateMember<T>(PropertyInfo pi)       => new MemberBool<T>(pi);
     }
     
     internal sealed class TypeNullableBool : VarType
@@ -294,6 +307,7 @@ public partial struct Var {
         public    override  Var     DefaultValue                           => new Var((bool?)null);
         public    override  Var     FromObject  (object obj)               => new Var((bool?)obj);
         public    override  object  ToObject    (in Var value)             => value.obj != null ? (bool?)(value.lng != 0) : null;
+        internal  override  Member  CreateMember<T>(PropertyInfo pi)       => new MemberBoolNull<T>(pi);
     }
     
     
@@ -311,6 +325,7 @@ public partial struct Var {
         public    override  Var     DefaultValue                           => new Var((char)default);
         public    override  Var     FromObject  (object obj)               => new Var((char)obj);
         public    override  object  ToObject    (in Var value)             => (char)value.lng;
+        internal  override  Member  CreateMember<T>(PropertyInfo pi)       => new MemberChar<T>(pi);
     }
     
     internal sealed class TypeNullableChar : VarType
@@ -326,6 +341,7 @@ public partial struct Var {
         public    override  Var     DefaultValue                           => new Var((char?)null);
         public    override  Var     FromObject  (object obj)               => new Var((char?)obj);
         public    override  object  ToObject    (in Var value)             => value.obj != null ? (char?)value.lng : null;
+        internal  override  Member  CreateMember<T>(PropertyInfo pi)       => new MemberCharNull<T>(pi);
     }
 }
 }
