@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
-using System;
 using System.Collections.Generic;
 using System.Text;
 using Friflo.Json.Fliox.Mapper.Map;
@@ -62,15 +61,15 @@ namespace Friflo.Json.Fliox.Mapper.Diff
         private void CreatePath(StringBuilder sb, bool addValue, int startPos, int indent) {
             if (parent != null)
                 parent.CreatePath(sb, false, startPos, indent);
-            switch (pathNode.nodeType) {
-                case NodeType.Member:
+            switch (pathNode.NodeType) {
+                case NodeType.Key:
                     sb.Append('/');
                     sb.Append(pathNode.key);
                     // sb.Append(pathNode.name.AsString());
                     if (!addValue)
                         return;
                     Indent(sb, startPos, indent);
-                    sb.Append(" ");
+                    sb.Append(' ');
                     AddValue(sb, pathNode.typeMapper);
                     break;
                 case NodeType.Element:
@@ -167,40 +166,6 @@ namespace Friflo.Json.Fliox.Mapper.Diff
                 }
             }
             return sb.ToString();
-        }
-    }
-    
-    internal enum NodeType
-    {
-        Root,
-        Element,
-        Member,
-    }
-
-    internal readonly struct TypeNode
-    {
-                        public   readonly   NodeType    nodeType;
-        /// <summary>Commonly the a property or field name (string). In case of a dictionary a dictionary key</summary>
-                        public   readonly   object      key;
-                        public   readonly   int         index;
-        [Browse(Never)] public   readonly   TypeMapper  typeMapper;
-
-                        public   override   string      ToString() => GetString();
-
-        internal TypeNode(NodeType nodeType, object key, int index, TypeMapper typeMapper) {
-            this.nodeType   = nodeType;
-            this.key        = key;
-            this.index      = index;
-            this.typeMapper = typeMapper;
-        }
-        
-        private string GetString() {
-            switch (nodeType) {
-                case NodeType.Root:     return "(Root)";
-                case NodeType.Member:   return key.ToString();
-                case NodeType.Element:  return $"[{index}]";
-                default:    throw new InvalidOperationException("unexpected case");
-            }
         }
     }
 }

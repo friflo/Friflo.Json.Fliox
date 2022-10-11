@@ -41,7 +41,7 @@ namespace Friflo.Json.Fliox.Mapper.Diff
             // --- init path
             path.Clear();
             var mapper      = (TypeMapper<T>) typeCache.GetTypeMapper(typeof(T));
-            var rootNode    = new TypeNode(NodeType.Root, null, -1, mapper);
+            var rootNode    = new TypeNode(TypeNode.RootTag, -1, mapper);
             path.Add(rootNode);
             
             mapper.Diff(this, left, right);
@@ -131,17 +131,17 @@ namespace Friflo.Json.Fliox.Mapper.Diff
         }
 
         public void PushMember(PropField field) {
-            var item = new TypeNode(NodeType.Member, field.name, -1, field.fieldType);
+            var item = new TypeNode(field.name, -1, field.fieldType);
             path.Add(item);
         }
         
         public void PushKey(TypeMapper mapper, object key) {
-            var item = new TypeNode(NodeType.Member, key, -1, mapper);
+            var item = new TypeNode(key, -1, mapper);
             path.Add(item);
         }
         
         public void PushElement(int index, TypeMapper elementType) {
-            var item = new TypeNode(NodeType.Element, null, index, elementType);
+            var item = new TypeNode(null, index, elementType);
             path.Add(item);
         }
 
@@ -165,21 +165,6 @@ namespace Friflo.Json.Fliox.Mapper.Diff
             var headDiff    = parentStack[parentStackIndex].diff;
             parentStack[parentStackIndex--] = default; // clear references
             return headDiff == null ? Equal : NotEqual;
-        }
-    }
-
-    internal struct Parent
-    {
-        internal  readonly  object      left;   // not required but very handy for debugging
-        internal  readonly  object      right;  // not required but very handy for debugging
-        internal            DiffNode    diff;
-
-        public    override  string      ToString() => diff?.ToString();
-
-        public Parent(object left, object right) {
-            this.left   = left  ?? throw new ArgumentNullException(nameof(left));
-            this.right  = right ?? throw new ArgumentNullException(nameof(right));
-            diff        = null;
         }
     }
 }
