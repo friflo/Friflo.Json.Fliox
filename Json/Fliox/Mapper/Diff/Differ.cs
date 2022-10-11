@@ -136,15 +136,15 @@ namespace Friflo.Json.Fliox.Mapper.Diff
                 throw new InvalidOperationException("Expect path.Count != parentStackIndex + 1");
         }
 
-        public void PushMember(PropField field) {
+        public void PushMember  (PropField field) {
             path[pathIndex++] = new TypeNode(field.name, -1, field.fieldType);
         }
         
-        public void PushKey(TypeMapper mapper, object key) {
+        public void PushKey     (TypeMapper mapper, object key) {
             path[pathIndex++] = new TypeNode(key, -1, mapper);
         }
         
-        public void PushElement(int index, TypeMapper elementType) {
+        public void PushElement (TypeMapper elementType, int index) {
             path[pathIndex++] = new TypeNode(null, index, elementType);
         }
 
@@ -153,7 +153,7 @@ namespace Friflo.Json.Fliox.Mapper.Diff
         }
 
         public void DiffElement<T> (TypeMapper<T> elementType, int index, T leftItem, T rightItem) {
-            PushElement(index, elementType);
+            PushElement(elementType, index);
             elementType.Diff(this, leftItem, rightItem);
             Pop();
         }
