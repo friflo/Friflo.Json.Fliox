@@ -15,17 +15,23 @@ namespace Friflo.Json.Fliox.Mapper.Diff
     {
         private             TypeCache       typeCache;
         private             ObjectWriter    jsonWriter;
-        private readonly    List<TypeNode>  path        = new List<TypeNode>();
+        //
+        private readonly    TypeNode[]      path;
+        private             int             pathIndex;
+        //
         private readonly    Parent[]        parentStack; 
         private             int             parentStackIndex;
-        private readonly    int             parentStackMaxDepth;
+        //
+        private readonly    int             maxDepth;
         private readonly    List<DiffNode>  diffNodePool = new List<DiffNode>();
         private             int             diffNodePoolIndex;
         public              TypeCache       TypeCache => typeCache;
 
+        // JSON with with depth of 32 seems sufficient
         public Differ(int maxDepth = 32) {
-            parentStackMaxDepth = maxDepth;
-            parentStack         = new Parent[maxDepth]; // JSON with with depth of 32 seems sufficient
+            this.maxDepth   = maxDepth;
+            path            = new TypeNode  [maxDepth];
+            parentStack     = new Parent    [maxDepth];
         }
 
         public void Dispose() { }
@@ -39,10 +45,9 @@ namespace Friflo.Json.Fliox.Mapper.Diff
             parentStack[0]      = rootParent;
             parentStackIndex    = 0;
             // --- init path
-            path.Clear();
-            var mapper      = (TypeMapper<T>) typeCache.GetTypeMapper(typeof(T));
-            var rootNode    = new TypeNode(TypeNode.RootTag, -1, mapper);
-            path.Add(rootNode);
+            var mapper          = (TypeMapper<T>) typeCache.GetTypeMapper(typeof(T));
+            path[0]             = new TypeNode(TypeNode.RootTag, -1, mapper);
+            pathIndex           = 1;
             
             mapper.Diff(this, left, right);
             
@@ -50,8 +55,9 @@ namespace Friflo.Json.Fliox.Mapper.Diff
             if (parentStackIndex != 0)
                 throw new InvalidOperationException($"Expect parentStackIndex == 0. Was: {parentStackIndex}");
             Pop();
-            if (path.Count != 0)
-                throw new InvalidOperationException($"Expect path.Count == 0. Was: {path.Count}");
+            path[0]         = default; // clear references
+            if (pathIndex != 0)
+                throw new InvalidOperationException($"Expect path.Count == 0. Was: {pathIndex}");
             var diff        = parentStack[0].diff; // parent is a struct => list entry is replaced subsequently
             parentStack[0]  = default; // clear references
             if (diff == null)
@@ -126,28 +132,24 @@ namespace Friflo.Json.Fliox.Mapper.Diff
         
         [Conditional("DEBUG")]
         private void AssertPathCount() {
-            if (path.Count != parentStackIndex + 1)
+            if (pathIndex != parentStackIndex + 1)
                 throw new InvalidOperationException("Expect path.Count != parentStackIndex + 1");
         }
 
         public void PushMember(PropField field) {
-            var item = new TypeNode(field.name, -1, field.fieldType);
-            path.Add(item);
+            path[pathIndex++] = new TypeNode(field.name, -1, field.fieldType);
         }
         
         public void PushKey(TypeMapper mapper, object key) {
-            var item = new TypeNode(key, -1, mapper);
-            path.Add(item);
+            path[pathIndex++] = new TypeNode(key, -1, mapper);
         }
         
         public void PushElement(int index, TypeMapper elementType) {
-            var item = new TypeNode(null, index, elementType);
-            path.Add(item);
+            path[pathIndex++] = new TypeNode(null, index, elementType);
         }
 
         public void Pop() {
-            int last = path.Count - 1;
-            path.RemoveAt(last);
+            path[--pathIndex] = default; // clear references
         }
 
         public void DiffElement<T> (TypeMapper<T> elementType, int index, T leftItem, T rightItem) {
@@ -157,7 +159,7 @@ namespace Friflo.Json.Fliox.Mapper.Diff
         }
 
         public void PushParent<T>(T left, T right) {
-            if (parentStackIndex++ >= parentStackMaxDepth) throw new InvalidOperationException("Exceed max depth while diffing");
+            if (parentStackIndex++ >= maxDepth) throw new InvalidOperationException("Exceed max depth while diffing");
             parentStack[parentStackIndex] = new Parent(left, right);
         }
 
