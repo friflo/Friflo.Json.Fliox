@@ -101,10 +101,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
             childStructNull1 = new ChildStructIL {val2 = 68};
             childStructNull2 = new ChildStructIL {val2 = 69};
             
-            nulDouble       = 70;
-            nulDoubleNull   = 71;
-            nulFloat        = 72;
-            nulFloatNull    = 73;
+            nulDouble       = 70.5;
+            nulDoubleNull   = 71.5;
+            nulFloat        = 72.5f;
+            nulFloatNull    = 73.5f;
             nulLong         = 74;
             nulLongNull     = 75;
             nulInt          = 76;
@@ -121,8 +121,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
             childStruct2.val2 = 91;
             child =     null;
             childNull = new ChildIL { val = 93 };
-            dbl   = 94;
-            flt   = 95;
+            dbl   = 94.5;
+            flt   = 95.5f;
             
             int64 = 96;
             int32 = 97;
@@ -138,10 +138,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
             childStructNull1 = null;
             childStructNull2 = new ChildStructIL {val2 = 19};
 
-            nulDouble       = 20;
+            nulDouble       = 20.5;
             nulDoubleNull   = null;
             
-            nulFloat        = 21;
+            nulFloat        = 21.5f;
             nulFloatNull    = null;
 
             nulLong         = 22;

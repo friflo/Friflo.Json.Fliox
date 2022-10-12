@@ -103,9 +103,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
     ""childStructNull2"" : {{
         ""val2"": 19
     }},
-    ""nulDouble""       : 20.0,
+    ""nulDouble""       : 20.5,
     ""nulDoubleNull""   : null,
-    ""nulFloat""        : 21.0,
+    ""nulFloat""        : 21.5,
     ""nulFloatNull""    : null,
     ""nulLong""         : 22,
     ""nulLongNull""     : null,
@@ -147,9 +147,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
             AreEqual(19,    sample.childStructNull2.Value.val2);
             
 
-            AreEqual(20d,   sample.nulDouble.Value);
+            AreEqual(20.5d, sample.nulDouble.Value);
             AreEqual(null,  sample.nulDoubleNull);
-            AreEqual(21f,   sample.nulFloat.Value);
+            AreEqual(21.5f, sample.nulFloat.Value);
             AreEqual(null,  sample.nulFloatNull);
             AreEqual(22L,   sample.nulLong.Value);
             AreEqual(null,  sample.nulLongNull);

@@ -56,8 +56,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                     var childrenDiff = diff.Children[0].AsString(20);
                     var expect =
 @"/child/childVal     1 != 2
-/child/bigInt       '111' != '222'
-/child/dateTime     '2021-03-18T16:30:00.000Z' != '2021-03-18T16:40:00.000Z'
+/child/bigInt       111 != 222
+/child/dateTime     2021-03-18T16:30:00.000Z != 2021-03-18T16:40:00.000Z
 "; 
                     AreEqual(expect, childrenDiff);
                     
@@ -103,14 +103,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                     AreEqual(29, diff.Children.Count);
                     var childrenDiff = diff.AsString(20);
                     var expect =
-@"/enumIL1            'three' != 'one'
-/enumIL2            null != 'two'
+@"/enumIL1            three != one
+/enumIL2            null != two
 /childStructNull1   null != (object)
 /childStructNull2   (object) != (object)
-/nulDouble          20.0 != 70.0
-/nulDoubleNull      null != 71.0
-/nulFloat           21.0 != 72.0
-/nulFloatNull       null != 73.0
+/nulDouble          20.5 != 70.5
+/nulDoubleNull      null != 71.5
+/nulFloat           21.5 != 72.5
+/nulFloatNull       null != 73.5
 /nulLong            22 != 74
 /nulLongNull        null != 75
 /nulInt             23 != 76
@@ -126,8 +126,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
 /child              (object) != null
 /childNull          null != (object)
 /structIL           (object) != (object)
-/dbl                22.5 != 94.0
-/flt                33.5 != 95.0
+/dbl                22.5 != 94.5
+/flt                33.5 != 95.5
 /int64              10 != 96
 /int32              11 != 97
 /int16              12 != 98

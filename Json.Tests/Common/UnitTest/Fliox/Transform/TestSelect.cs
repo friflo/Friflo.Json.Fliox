@@ -39,7 +39,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 
                 AreEqual(new object[] {"(object)"}, scalarResults[0].AsObjects());
                 AreEqual(new object[] {69},         scalarResults[1].AsObjects());
-                AreEqual(new object[] {94},         scalarResults[2].AsObjects());
+                AreEqual(new object[] {94.5},       scalarResults[2].AsObjects());
                 AreEqual(new object[] {true},       scalarResults[3].AsObjects());
                 AreEqual(new object[] {"one"},      scalarResults[4].AsObjects());
                 AreEqual(new object[] {null},       scalarResults[5].AsObjects());
@@ -50,7 +50,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 
                 AreEqual(new[] {@"{""val2"":68}"},  jsonResults[0].values);
                 AreEqual(new[] {"69"},              jsonResults[1].values);
-                AreEqual(new[] {"94.0"},            jsonResults[2].values);
+                AreEqual(new[] {"94.5"},            jsonResults[2].values);
                 AreEqual(new[] {"true"},            jsonResults[3].values);
                 AreEqual(new[] {"one"},             jsonResults[4].values);
                 AreEqual(new[] {"null"},            jsonResults[5].values);
@@ -60,7 +60,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 var objectResults = objectSelector.GetValues(sample, objectSelect);
                 AreEqual(@"{""val2"":68}",          objectResults[0].Json.AsString());
                 AreEqual("69",                      objectResults[1].Json.AsString());
-                AreEqual("94.0",                    objectResults[2].Json.AsString());
+                AreEqual("94.5",                    objectResults[2].Json.AsString());
                 AreEqual("true",                    objectResults[3].Json.AsString());
                 AreEqual(@"""one""",                objectResults[4].Json.AsString());
                 AreEqual("null",                    objectResults[5].Json.AsString());

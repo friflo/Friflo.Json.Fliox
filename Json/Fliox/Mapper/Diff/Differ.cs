@@ -14,7 +14,6 @@ namespace Friflo.Json.Fliox.Mapper.Diff
     public sealed class Differ : IDisposable
     {
         private             TypeCache       typeCache;
-        private             ObjectWriter    jsonWriter;
         //
         private readonly    TypeNode[]      path;
         private             int             pathIndex;
@@ -37,7 +36,6 @@ namespace Friflo.Json.Fliox.Mapper.Diff
         public void Dispose() { }
 
         public DiffNode GetDiff<T>(T left, T right, ObjectWriter jsonWriter) {
-            this.jsonWriter     = jsonWriter;
             typeCache           = jsonWriter.TypeCache;
             diffNodePoolIndex   = 0;
             // --- init parentStack
@@ -51,7 +49,6 @@ namespace Friflo.Json.Fliox.Mapper.Diff
             
             mapper.Diff(this, left, right);
             
-            this.jsonWriter = null;
             if (parentStackIndex != 0)
                 throw new InvalidOperationException($"Expect parentStackIndex == 0. Was: {parentStackIndex}");
             Pop();
@@ -75,7 +72,7 @@ namespace Friflo.Json.Fliox.Mapper.Diff
                 return diffNodePool[diffNodePoolIndex++];
             }
             diffNodePoolIndex++;
-            var node = new DiffNode(jsonWriter);
+            var node = new DiffNode();
             diffNodePool.Add(node);
             return node;
         }

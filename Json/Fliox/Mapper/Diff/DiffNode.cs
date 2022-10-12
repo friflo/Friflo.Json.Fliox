@@ -1,10 +1,13 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Text;
 using Friflo.Json.Fliox.Mapper.Map;
 using Friflo.Json.Fliox.Mapper.Map.Object.Reflect;
+using Friflo.Json.Fliox.Mapper.Map.Val;
 using static System.Diagnostics.DebuggerBrowsableState;
 using Browse = System.Diagnostics.DebuggerBrowsableAttribute;
 
@@ -41,11 +44,9 @@ namespace Friflo.Json.Fliox.Mapper.Diff
         [Browse(Never)] private             Var             left;
         [Browse(Never)] private             Var             right;
         [Browse(Never)] internal  readonly  List<DiffNode>  children    = new List<DiffNode>();
-        [Browse(Never)] private   readonly  ObjectWriter    jsonWriter;
+
         
-        internal DiffNode(ObjectWriter jsonWriter) {
-            this.jsonWriter = jsonWriter;
-        }
+        internal DiffNode() { }
         
         internal void Init(DiffType diffType, DiffNode parent, in TypeNode pathNode, in Var left, in Var right) {
             this.diffType   = diffType;
@@ -152,22 +153,21 @@ namespace Friflo.Json.Fliox.Mapper.Diff
             sb.Append("(object)");
         }
 
-        private void AppendValue(StringBuilder sb, object value) {
-            if (value == null) {
-                sb.Append("null");
-                return;
+        private static StringBuilder AppendValue(StringBuilder sb, object value) {
+            switch (value) {
+                case null:                  return sb.Append("null");
+                case string     str:        sb.Append('\''); sb.Append(str); sb.Append('\'');   return sb;
+                case DateTime   dateTime:   return sb.Append(DateTimeMapper.ToRFC_3339(dateTime));
+                case bool       b:          return sb.Append(b ? "true" : "false");
+                case char       c:          sb.Append('\''); sb.Append(c); sb.Append('\'');     return sb;
             }
-            var str = jsonWriter.WriteObject(value);
-            var len = str.Length;
-            if (len >= 2 && str[0] == '"' && str[len - 1] == '"') {
-                sb.Append('\'');
-                sb.Append(str, 1, len - 2);
-                sb.Append('\'');
-            } else {
-                sb.Append(str);
-            }
+            var type = value.GetType();
+            if (type == typeof(bool?))          return sb.Append(((bool?)value).Value ? "true" : "false");
+            if (type == typeof(char?))          { sb.Append('\''); sb.Append(((char?)value).Value); sb.Append('\''); return sb; }
+
+            return sb.AppendFormat(CultureInfo.InvariantCulture, "{0}", value);
         }
-        
+
         public string AsString(int indent) {
             var sb = new StringBuilder();
             sb.Append((object)null);
