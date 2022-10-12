@@ -64,7 +64,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
 
         // --- create expensive / infrequently used objects on demand. Used method to avoid creation by debugger
         internal EntityProcessor        EntityProcessor()       => processor             ?? (processor             = new EntityProcessor());
-        internal ObjectPatcher          ObjectPatcher()         => objectPatcher         ?? (objectPatcher         = new ObjectPatcher());
+        internal ObjectPatcher          ObjectPatcher()         => objectPatcher         ?? (objectPatcher         = new ObjectPatcher(typeStore));
         internal SubscriptionProcessor  SubscriptionProcessor() => subscriptionProcessor ?? (subscriptionProcessor = new SubscriptionProcessor());
         internal List<JsonKey>          IdsBuf()                => idsBuf                ?? (idsBuf                = new List<JsonKey>());
 

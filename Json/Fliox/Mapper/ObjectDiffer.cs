@@ -3,6 +3,7 @@
 
 using System;
 using Friflo.Json.Fliox.Mapper.Diff;
+using Friflo.Json.Fliox.Mapper.Utils;
 
 namespace Friflo.Json.Fliox.Mapper
 {
@@ -13,16 +14,17 @@ namespace Friflo.Json.Fliox.Mapper
     {
         private readonly Differ differ;
         
-        public ObjectDiffer() {
-            differ = new Differ();
+        public ObjectDiffer(TypeStore typeStore) {
+            var typeCache = new TypeCache(typeStore);
+            differ = new Differ(typeCache);
         }
         
         public void Dispose() {
             differ.Dispose();
         }
 
-        public DiffNode GetDiff<T>(T left, T right, ObjectWriter writer) {
-            return differ.GetDiff(left, right, writer);
+        public DiffNode GetDiff<T>(T left, T right) {
+            return differ.GetDiff(left, right);
         }
     }
 }

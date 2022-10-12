@@ -35,10 +35,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
         public void TestDiff() {
             using (var typeStore        = new TypeStore()) 
             using (var mapper           = new ObjectMapper(typeStore))
-            using (var differ           = new ObjectDiffer())
+            using (var differ           = new ObjectDiffer(typeStore))
             using (var jsonDiff         = new JsonDiff(typeStore))
             {
-                var writer = mapper.writer;
                 mapper.Pretty = true;
 
                 var left  = new DiffBase {
@@ -58,7 +57,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                     child6 = new DiffChild()
                 };
                
-                var diff    = differ.GetDiff(left, right, writer);
+                var diff    = differ.GetDiff(left, right);
                 
                 AreEqual(4, diff.Children.Count);
                 var childrenDiff = diff.AsString(20);
@@ -77,7 +76,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 
                 var start = GC.GetAllocatedBytesForCurrentThread();
                 for (int n = 0; n < 10; n++) {
-                    differ.GetDiff(left, right, writer);
+                    differ.GetDiff(left, right);
                 }
                 var diffAlloc =  GC.GetAllocatedBytesForCurrentThread() - start;
                 AreEqual(0, diffAlloc);

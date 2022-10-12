@@ -24,9 +24,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
             }
         }
         
-        private void AssertCompare<T>(TypeStore typeStore, T left, T right, ObjectWriter writer) {
-            using (var differ = new ObjectDiffer()) {
-                var diff = differ.GetDiff(left, right, writer);
+        private void AssertCompare<T>(TypeStore typeStore, T left, T right) {
+            using (var differ = new ObjectDiffer(typeStore)) {
+                var diff = differ.GetDiff(left, right);
                 IsNull(diff);
             }
         }
@@ -44,7 +44,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
                     writer.Write(collection, ref dst.bytes);
                     var result = reader.Read<Collection<int>>(dst.bytes);
                     AreEqual(collection, result);
-                    AssertCompare(typeStore, collection, result, writer);
+                    AssertCompare(typeStore, collection, result);
                     
                     AssertNull<Collection<int>>(reader, writer);
                 } {
@@ -52,7 +52,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
                     writer.Write(collection, ref dst.bytes);
                     var result = reader.Read<IList<int>>(dst.bytes);
                     AreEqual(collection, result);
-                    AssertCompare(typeStore, collection, result, writer);
+                    AssertCompare(typeStore, collection, result);
                     
                     AssertNull<IList<int>>(reader, writer);
                 }
@@ -78,7 +78,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
                     writer.Write(collection, ref dst.bytes);
                     var result = reader.Read<ICollection<int>>(dst.bytes);
                     AreEqual(collection, result);
-                    AssertCompare(typeStore, collection, result, writer);
+                    AssertCompare(typeStore, collection, result);
                     
                     AssertNull<ICollection<int>>(reader, writer);
                 } {
@@ -86,7 +86,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
                     writer.Write(linkedList, ref dst.bytes);
                     var result = reader.Read<LinkedList<int>>(dst.bytes);
                     AreEqual(linkedList, result);
-                    AssertCompare(typeStore, linkedList, result, writer);
+                    AssertCompare(typeStore, linkedList, result);
                     
                     AssertNull<LinkedList<int>>(reader, writer);
                 } {
@@ -94,7 +94,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
                     writer.Write(linkedList, ref dst.bytes);
                     var result = reader.Read<HashSet<int>>(dst.bytes);
                     AreEqual(linkedList, result);
-                    AssertCompare(typeStore, linkedList, result, writer);
+                    AssertCompare(typeStore, linkedList, result);
                     
                     AssertNull<HashSet<int>>(reader, writer);
                 } {
@@ -102,7 +102,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
                     writer.Write(sortedSet, ref dst.bytes);
                     var result = reader.Read<SortedSet<int>>(dst.bytes);
                     AreEqual(sortedSet, result);
-                    AssertCompare(typeStore, sortedSet, result, writer);
+                    AssertCompare(typeStore, sortedSet, result);
                     
                     AssertNull<SortedSet<int>>(reader, writer);
                 }
@@ -138,7 +138,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
                     writer.Write(queue, ref dst.bytes);
                     var result = reader.Read<ConcurrentQueue<int>>(dst.bytes);
                     AreEqual(queue, result);
-                    AssertCompare(typeStore, queue, result, writer);
+                    AssertCompare(typeStore, queue, result);
                     
                     AssertNull<ConcurrentQueue<int>>(reader, writer);
                 } {
@@ -147,7 +147,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
                     var result = reader.Read<ConcurrentStack<int>>(dst.bytes);
                     var reverse = stack.Reverse();
                     AreEqual(reverse, result);
-                    AssertCompare(typeStore, reverse, result, writer);
+                    AssertCompare(typeStore, reverse, result);
                     
                     AssertNull<ConcurrentStack<int>>(reader, writer);
                 } {
@@ -156,7 +156,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
                     var result = reader.Read<ConcurrentBag<int>>(dst.bytes);
                     var reverse = stack.Reverse();
                     AreEqual(reverse, result);
-                    AssertCompare(typeStore, reverse, result, writer);
+                    AssertCompare(typeStore, reverse, result);
                     
                     AssertNull<ConcurrentBag<int>>(reader, writer);
                 }
@@ -175,7 +175,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
                 var result = reader.Read<Stack<int>>(dst.bytes);
                 var reverse = stack.Reverse();
                 AreEqual(reverse, result);
-                AssertCompare(typeStore, reverse, result, writer);
+                AssertCompare(typeStore, reverse, result);
                 
                 AssertNull<Stack<int>>(reader, writer);
             }
@@ -192,7 +192,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
                 writer.Write(stack, ref dst.bytes);
                 var result = reader.Read<Queue<int>>(dst.bytes);
                 AreEqual(stack, result);
-                AssertCompare(typeStore, stack, result, writer);
+                AssertCompare(typeStore, stack, result);
                 
                 AssertNull<Queue<int>>(reader, writer);
             }

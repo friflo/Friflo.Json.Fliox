@@ -7,6 +7,7 @@ using System.Text;
 using Friflo.Json.Fliox.Transform;
 using Friflo.Json.Fliox.Mapper.Diff;
 using Friflo.Json.Fliox.Mapper.Map;
+using Friflo.Json.Fliox.Mapper.Utils;
 
 namespace Friflo.Json.Fliox.Mapper
 {
@@ -22,9 +23,10 @@ namespace Friflo.Json.Fliox.Mapper
         private readonly    Patcher         patcher;
 
       
-        public ObjectPatcher() {
-            patcher     = new Patcher();
-            differ      = new Differ();
+        public ObjectPatcher(TypeStore typeStore) {
+            patcher         = new Patcher();
+            var typeCache   = new TypeCache(typeStore);
+            differ          = new Differ(typeCache);
         }
 
         public void Dispose() {
@@ -42,7 +44,7 @@ namespace Friflo.Json.Fliox.Mapper
         }
         
         public List<JsonPatch> GetPatches<T>(T left, T right, ObjectMapper mapper) {
-            var diff = differ.GetDiff(left, right, mapper.writer);
+            var diff    = differ.GetDiff(left, right);
             var patches = CreatePatches(diff, mapper);
             return patches;
         }

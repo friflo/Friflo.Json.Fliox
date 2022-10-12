@@ -33,10 +33,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             using (var jsonPatcher      = new JsonPatcher())
             using (var typeStore        = new TypeStore()) 
             using (var mapper           = new ObjectMapper(typeStore))
-            using (var objectPatcher    = new ObjectPatcher())
-            using (var differ           = new ObjectDiffer())
+            using (var objectPatcher    = new ObjectPatcher(typeStore))
+            using (var differ           = new ObjectDiffer(typeStore))
             {
-                var writer = mapper.writer;
                 mapper.Pretty = true;
                 {
                     var left  = new DiffBase {child = new DiffChild {
@@ -50,7 +49,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                         dateTime = DateTime.Parse("2021-03-18T16:40:00.000Z")
                     }};
 
-                    var diff = differ.GetDiff(left, right, writer);
+                    var diff = differ.GetDiff(left, right);
                     AreEqual(1, diff.Children.Count);
 
                     var childrenDiff = diff.Children[0].AsString(20);
@@ -69,17 +68,17 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                     AssertUtils.Equivalent(left, right);
                 }
 
-                IsNull(differ.GetDiff(1, 1, writer));
+                IsNull(differ.GetDiff(1, 1));
                 {
-                    var diff = differ.GetDiff(1, 2, writer);
+                    var diff = differ.GetDiff(1, 2);
                     IsNotNull(diff);
                     AreEqual("1 != 2", diff.ToString());
                     var e = Throws<JsonReaderException>(() => { objectPatcher.ApplyDiff(1, diff, mapper); });
                     StringAssert.Contains("ReadTo() can only used on an JSON object or array. Found: ValueNumber path: '(root)'", e.Message);
                 }
-                IsNull(differ.GetDiff("A", "A", writer));
+                IsNull(differ.GetDiff("A", "A"));
                 {
-                    var diff = differ.GetDiff("A", "B", writer);
+                    var diff = differ.GetDiff("A", "B");
                     IsNotNull(diff);
                     AreEqual("'A' != 'B'", diff.ToString());
                     var e = Throws<JsonReaderException>(() => { objectPatcher.ApplyDiff("A", diff, mapper); });
@@ -88,17 +87,17 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 {
                     var left = new SampleIL();
                     left.Init();
-                    IsNull(differ.GetDiff(left, left, writer));
+                    IsNull(differ.GetDiff(left, left));
 
                     var right = new SampleIL();
-                    IsNull(differ.GetDiff(right, right, writer));
+                    IsNull(differ.GetDiff(right, right));
                     
                     var rightJson = mapper.Write(right);
                     var leftPatched = PatchJson(jsonPatcher, objectPatcher, left, right, mapper);
                     AreEqual(rightJson, leftPatched);
 
 
-                    var diff = differ.GetDiff(left, right, writer);
+                    var diff = differ.GetDiff(left, right);
                     IsNotNull(diff);
                     AreEqual(29, diff.Children.Count);
                     var childrenDiff = diff.AsString(20);
@@ -143,11 +142,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
         [Test]
         public void TestContainerDiffCount() {
             using (var typeStore    = new TypeStore())
-            using (var writer       = new ObjectWriter(typeStore))
-            using (var differ       = new ObjectDiffer()) {
+            using (var differ       = new ObjectDiffer(typeStore)) {
                 var left  = new List<int> { 1,  2,  3 };
                 var right = new List<int> { 1,  2 };
-                var diff = differ.GetDiff(left, right, writer);
+                var diff = differ.GetDiff(left, right);
                 IsNotNull(diff);
                 AreEqual("[3] != [2]", diff.ToString());
             }
@@ -158,7 +156,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             using (var jsonPatcher      = new JsonPatcher())
             using (var typeStore        = new TypeStore())
             using (var mapper           = new ObjectMapper(typeStore))
-            using (var objectPatcher    = new ObjectPatcher()) {
+            using (var objectPatcher    = new ObjectPatcher(typeStore)) {
                 mapper.Pretty = true;
                 // --- []
                 {
@@ -265,7 +263,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             using (var jsonPatcher      = new JsonPatcher())
             using (var typeStore        = new TypeStore())
             using (var mapper           = new ObjectMapper(typeStore))
-            using (var objectPatcher    = new ObjectPatcher()) {
+            using (var objectPatcher    = new ObjectPatcher(typeStore)) {
                 mapper.Pretty = true;
                 {
                     var left  = new Dictionary<string, int> {{"A", 1}, {"C",  3}};
@@ -312,7 +310,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
         }
 
         private static void PatchElements<T>(ObjectPatcher objectPatcher, T left, T right, ObjectMapper mapper) {
-            var diff = objectPatcher.differ.GetDiff(left, right, mapper.writer);
+            var diff = objectPatcher.differ.GetDiff(left, right);
             IsNotNull(diff);
             AreEqual(2, diff.Children.Count);
             var childrenDiff = diff.AsString(10);
@@ -325,7 +323,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
         }
         
         private static void PatchCollection<T>(ObjectPatcher objectPatcher, T left, T right, ObjectMapper mapper) {
-            var diff = objectPatcher.differ.GetDiff(left, right, mapper.writer);
+            var diff = objectPatcher.differ.GetDiff(left, right);
             IsNotNull(diff);
             IsEmpty(diff.Children);
             AreEqual("[3] != [3]", diff.ToString());
@@ -333,7 +331,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
         }
         
         private static void PatchKeyValues<T>(ObjectPatcher objectPatcher, T left, T right, ObjectMapper mapper) {
-            var diff = objectPatcher.differ.GetDiff(left, right, mapper.writer);
+            var diff = objectPatcher.differ.GetDiff(left, right);
             IsNotNull(diff);
             AreEqual(3, diff.Children.Count);
             var childrenDiff = diff.AsString(10);

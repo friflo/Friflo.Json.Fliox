@@ -13,7 +13,7 @@ namespace Friflo.Json.Fliox.Mapper.Diff
 {
     public sealed class Differ : IDisposable
     {
-        private             TypeCache       typeCache;
+        private readonly    TypeCache       typeCache;
         //
         private readonly    TypeNode[]      path;
         private             int             pathIndex;
@@ -27,7 +27,8 @@ namespace Friflo.Json.Fliox.Mapper.Diff
         public              TypeCache       TypeCache => typeCache;
 
         // JSON with with depth of 32 seems sufficient
-        public Differ(int maxDepth = 32) {
+        public Differ(TypeCache typeCache, int maxDepth = 32) {
+            this.typeCache  = typeCache;
             this.maxDepth   = maxDepth;
             path            = new TypeNode  [maxDepth];
             parentStack     = new Parent    [maxDepth];
@@ -35,8 +36,7 @@ namespace Friflo.Json.Fliox.Mapper.Diff
 
         public void Dispose() { }
 
-        public DiffNode GetDiff<T>(T left, T right, ObjectWriter jsonWriter) {
-            typeCache           = jsonWriter.TypeCache;
+        public DiffNode GetDiff<T>(T left, T right) {
             diffNodePoolIndex   = 0;
             // --- init parentStack
             var rootParent      = new Parent(left, right);
