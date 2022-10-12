@@ -12,23 +12,24 @@ namespace Friflo.Json.Fliox.Mapper.Diff
 {
     public sealed class Patcher : IDisposable
     {
-        private             TypeCache       typeCache;
-        private             ObjectReader    jsonReader;
+        private  readonly   TypeCache       typeCache;
+        private  readonly   ObjectReader    jsonReader;
         private             PatchType       patchType;
         private             JsonValue       json;
         private             int             pathPos;
-        private readonly    List<JsonKey>   pathNodes = new List<JsonKey>();
+        private  readonly   List<JsonKey>   pathNodes = new List<JsonKey>();
         private             string          path;
         
         public              TypeCache       TypeCache => typeCache;
         
-        public Patcher() { }
+        public Patcher(ObjectReader jsonReader) {
+            this.jsonReader = jsonReader;
+            typeCache       = jsonReader.TypeCache;
+        }
 
         public void Dispose() { }
 
-        public void Patch<T>(TypeMapper<T> mapper, T root, JsonPatch patch, ObjectReader jsonReader) {
-            this.jsonReader = jsonReader;
-            typeCache = jsonReader.TypeCache;
+        internal void Patch<T>(TypeMapper<T> mapper, T root, JsonPatch patch) {
             pathPos = 0;
             patchType = patch.PatchType;
             switch (patchType) {
@@ -54,7 +55,6 @@ namespace Friflo.Json.Fliox.Mapper.Diff
                     throw new NotImplementedException($"Patch type not supported. Type: {patch.GetType()}");
             }
             mapper.PatchObject(this, root);
-            this.jsonReader = null;
         }
 
         public bool IsMember(in JsonKey key) {

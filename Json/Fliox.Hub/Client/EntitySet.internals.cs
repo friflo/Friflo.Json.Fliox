@@ -273,14 +273,13 @@ namespace Friflo.Json.Fliox.Hub.Client
             }
         }
         
-        internal void PatchPeerEntities (List<Patch<TKey>> patches, ObjectMapper mapper) {
+        internal void PatchPeerEntities (List<Patch<TKey>> patches) {
             var objectPatcher   = intern.store._intern.ObjectPatcher();
-            var reader          = mapper.reader;
             foreach (var patch in patches) {
                 var id      = patch.id;
                 var peer    = GetPeerById(id);
                 var entity  = peer.Entity;
-                objectPatcher.ApplyPatches(entity, patch.patches, reader);
+                objectPatcher.ApplyPatches(entity, patch.patches);
             }
         }
 

@@ -186,7 +186,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             if (diff == null)
                 return;
             var patches     = detectPatchesTask.entityPatches;
-            var patchList   = patcher.CreatePatches(diff, mapper);
+            var patchList   = patcher.CreatePatches(diff);
             var id          = peer.id;
             SetNextPatchSource(peer, mapper); // todo next patch source need to be set on Synchronize()
             if (patches.TryGetValue(id, out var entityPatch)) {
