@@ -39,8 +39,6 @@ namespace Friflo.Json.Fliox.Mapper.Diff
         public DiffNode GetDiff<T>(T left, T right) {
             diffNodePoolIndex   = 0;
             // --- init parentStack
-            var rootParent      = new Parent(left, right);
-            parentStack[0]      = rootParent;
             parentStackIndex    = 0;
             // --- init path
             var mapper          = (TypeMapper<T>) typeCache.GetTypeMapper(typeof(T));

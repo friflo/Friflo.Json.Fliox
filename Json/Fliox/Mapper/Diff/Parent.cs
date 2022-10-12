@@ -13,7 +13,7 @@ namespace Friflo.Json.Fliox.Mapper.Diff
 
         public    override  string      ToString() => diff?.ToString();
 
-        public Parent(object left, object right) {
+        internal Parent(object left, object right) {
             this.left   = left  ?? throw new ArgumentNullException(nameof(left));
             this.right  = right ?? throw new ArgumentNullException(nameof(right));
             diff        = null;

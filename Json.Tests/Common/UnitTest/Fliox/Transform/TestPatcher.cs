@@ -6,6 +6,7 @@ using System.Numerics;
 using Friflo.Json.Fliox;
 using Friflo.Json.Fliox.Transform;
 using Friflo.Json.Fliox.Mapper;
+using Friflo.Json.Fliox.Mapper.Diff;
 using Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper;
 using Friflo.Json.Tests.Common.Utils;
 using Friflo.Json.Tests.Unity.Utils;
@@ -146,6 +147,18 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
         }
         
         [Test]
+        public void TestContainerArrayCount() {
+            using (var typeStore    = new TypeStore())
+            using (var differ       = new ObjectDiffer(typeStore)) {
+                var left  = new [] { 1,  2,  3 };
+                var right = new [] { 1,  2 };
+                var diff = differ.GetDiff(left, right);
+                IsNotNull(diff);
+                AreEqual("Int32[](count: 3) != Int32[](count: 2)", diff.ToString());
+            }
+        }
+        
+        [Test]
         public void TestContainerDiffCount() {
             using (var typeStore    = new TypeStore())
             using (var differ       = new ObjectDiffer(typeStore)) {
@@ -153,7 +166,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 var right = new List<int> { 1,  2 };
                 var diff = differ.GetDiff(left, right);
                 IsNotNull(diff);
-                AreEqual("[3] != [2]", diff.ToString());
+                AreEqual("List<Int32>(count: 3) != List<Int32>(count: 2)", diff.ToString());
             }
         }
         
@@ -223,7 +236,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                     var leftPatched = PatchJson(jsonPatcher, objectPatcher, left, right, mapper);
                     AreEqual(rightJson, leftPatched);
                     
-                    PatchCollection(objectPatcher, left, right, mapper);
+                    var diff = PatchCollection(objectPatcher, left, right, mapper);
+                    AreEqual("HashSet<Int32>(count: 3) != HashSet<Int32>(count: 3)", diff.ToString());
+
                     AssertUtils.Equivalent(left, right);
                 } {
                     var left  = new SortedSet<int>(new[] {1,  2,  3});
@@ -234,7 +249,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                     var leftPatched = PatchJson(jsonPatcher, objectPatcher, left, right, mapper);
                     AreEqual(rightJson, leftPatched);
                     
-                    PatchCollection(objectPatcher, left, right, mapper);
+                    var diff = PatchCollection(objectPatcher, left, right, mapper);
+                    AreEqual("SortedSet<Int32>(count: 3) != SortedSet<Int32>(count: 3)", diff.ToString());
                     AssertUtils.Equivalent(left, right);
                 }
                 // --- Stack<>
@@ -328,12 +344,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             PatchObject(objectPatcher, left, right, mapper);
         }
         
-        private static void PatchCollection<T>(ObjectPatcher objectPatcher, T left, T right, ObjectMapper mapper) {
+        private static DiffNode PatchCollection<T>(ObjectPatcher objectPatcher, T left, T right, ObjectMapper mapper) {
             var diff = objectPatcher.differ.GetDiff(left, right);
             IsNotNull(diff);
             IsEmpty(diff.Children);
-            AreEqual("[3] != [3]", diff.ToString());
             PatchObject(objectPatcher, left, right, mapper);
+            return diff;
         }
         
         private static void PatchKeyValues<T>(ObjectPatcher objectPatcher, T left, T right) {

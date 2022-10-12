@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Text;
 using Friflo.Json.Fliox.Mapper.Map;
 using Friflo.Json.Fliox.Mapper.Map.Object.Reflect;
@@ -121,13 +122,20 @@ namespace Friflo.Json.Fliox.Mapper.Diff
                         return;
                     }
                     if (mapper.IsArray) {
-                        var leftCount  = mapper.Count(left. TryGetObject());
-                        var rightCount = mapper.Count(right.TryGetObject());
-                        sb.Append('[');
-                        AppendValue(sb, leftCount);
-                        sb.Append("] != [");
-                        AppendValue(sb, rightCount);
-                        sb.Append(']');
+                        var leftArray   = left. TryGetObject();
+                        var rightArray  = right.TryGetObject();
+                        var leftCount   = mapper.Count(leftArray);
+                        var rightCount  = mapper.Count(rightArray);
+                        sb.Append(GetTypeName(leftArray.GetType()));
+                        sb.Append("(count: ");
+                        sb.Append(leftCount);
+                        sb.Append(')');
+                        sb.Append(" != ");
+                        
+                        sb.Append(GetTypeName(rightArray.GetType()));
+                        sb.Append("(count: ");
+                        sb.Append(rightCount);
+                        sb.Append(')');
                         return;
                     }
                     AppendValue(sb, left.ToObject());
@@ -186,6 +194,20 @@ namespace Friflo.Json.Fliox.Mapper.Diff
                     child.AppendNode(sb, indent);
                 }
             }
+        }
+        
+        private static string GetTypeName(Type type) {
+            if (type.IsGenericType) {
+                var genericArgs = type.GetGenericArguments().Select(GetTypeName);
+                var idx         = type.Name.IndexOf('`');
+                var typename    = (idx > 0) ? type.Name.Substring(0, idx) : type.Name;
+                var args        = string.Join(", ", genericArgs);
+                return $"{typename}<{args}>";
+            }
+            if (type.IsArray) {
+                return GetTypeName(type.GetElementType()) + "[]";
+            }
+            return type.Name;
         }
     }
 }
