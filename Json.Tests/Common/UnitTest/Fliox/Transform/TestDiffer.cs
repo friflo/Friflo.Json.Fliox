@@ -62,10 +62,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 AreEqual(4, diff.Children.Count);
                 var childrenDiff = diff.AsString(20);
                 var expectedDiff =
-@"/child1             (object) != (object)
-/child2             (object) != (object)
-/child5             (object) != null
-/child6             null != (object)
+@"/child1             {DiffChild} != {DiffChild}
+/child1/intVal1     0 != 1
+/child2             {DiffChild} != {DiffChild}
+/child2/intVal2     0 != 2
+/child5             {DiffChild} != null
+/child6             null != {DiffChild}
 "; 
                 AreEqual(expectedDiff, childrenDiff);
                 

@@ -150,7 +150,10 @@ namespace Friflo.Json.Fliox.Mapper.Diff
                 sb.Append("null");
                 return;
             }
-            sb.Append("(object)");
+            var type = value.GetType();
+            sb.Append('{');
+            sb.Append(type.Name);
+            sb.Append('}');
         }
 
         private static StringBuilder AppendValue(StringBuilder sb, object value) {
@@ -171,15 +174,18 @@ namespace Friflo.Json.Fliox.Mapper.Diff
 
         public string AsString(int indent) {
             var sb = new StringBuilder();
-            sb.Append((object)null);
-
+            AppendNode(sb, indent);
+            return sb.ToString();
+        }
+        
+        private void AppendNode(StringBuilder sb, int indent) {
             if (diffType == DiffType.None) {
                 foreach (var child in children) {
                     child.CreatePath(sb, true, sb.Length, indent);
                     sb.Append('\n');
+                    child.AppendNode(sb, indent);
                 }
             }
-            return sb.ToString();
         }
     }
 }
