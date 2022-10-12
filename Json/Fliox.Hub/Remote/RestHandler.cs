@@ -212,8 +212,13 @@ namespace Friflo.Json.Fliox.Hub.Remote
 
         internal  readonly  int     length;
         internal  readonly  string  error;
+        
+        private   readonly  string  path;
+
+        public    override  string  ToString() => error == null ? path : $"{path} error: {error}";
 
         internal Resource (string resourcePath) {
+            path            = resourcePath; 
             var resources   = resourcePath.Split('/');
             length          = resources.Length;
             if (resources[length - 1] == "")
