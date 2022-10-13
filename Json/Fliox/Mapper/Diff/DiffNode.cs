@@ -117,18 +117,9 @@ namespace Friflo.Json.Fliox.Mapper.Diff
                     if (mapper.IsArray) {
                         var leftArray   = valueLeft. TryGetObject();
                         var rightArray  = valueRight.TryGetObject();
-                        var leftCount   = mapper.Count(leftArray);
-                        var rightCount  = mapper.Count(rightArray);
-                        sb.Append(VarType.GetTypeName(leftArray.GetType()));
-                        sb.Append("(count: ");
-                        sb.Append(leftCount);
-                        sb.Append(')');
+                        AppendArray(sb, mapper, leftArray);
                         sb.Append(" != ");
-                        
-                        sb.Append(VarType.GetTypeName(rightArray.GetType()));
-                        sb.Append("(count: ");
-                        sb.Append(rightCount);
-                        sb.Append(')');
+                        AppendArray(sb, mapper, rightArray);
                         return;
                     }
                     AppendValue(sb, valueLeft);
@@ -144,6 +135,18 @@ namespace Friflo.Json.Fliox.Mapper.Diff
                     AppendValue(sb, valueRight);
                     break;
             }
+        }
+        
+        private static void AppendArray(StringBuilder sb, TypeMapper mapper, object array) {
+            if (array == null) {
+                sb.Append("null");
+                return;
+            }
+            var count = mapper.Count(array);
+            sb.Append(VarType.GetTypeName(array.GetType()));
+            sb.Append("(count: ");
+            sb.Append(count);
+            sb.Append(')');
         }
         
         private static void AppendObject(StringBuilder sb, object value) {
