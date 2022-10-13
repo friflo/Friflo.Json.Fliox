@@ -179,15 +179,23 @@ namespace Friflo.Json.Fliox.Mapper.Diff
             // return sb.AppendFormat(CultureInfo.InvariantCulture, "{0}", value); */
         }
 
+        
         public string AsString(int indent) {
             var sb = new StringBuilder();
+            sb.Append('\n');
+            if (NodeType == NodeType.Root) {
+                sb.Append('/');
+                var sbLen = sb.Length;
+                Indent(sb, sbLen, indent);
+            }
             AppendNode(sb, indent);
             return sb.ToString();
         }
         
         private void AppendNode(StringBuilder sb, int indent) {
+            var sbLen = sb.Length;
+            CreatePath(sb, true, sbLen, indent);
             sb.Append('\n');
-            CreatePath(sb, true, sb.Length, indent);
             foreach (var child in children) {
                 child.AppendNode(sb, indent);
             }

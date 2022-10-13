@@ -48,7 +48,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                     child4 = null,              // equal null
                     child5 = new DiffChild(),   // only left
                     child6 = null,              // only right
-                    array = new [] {1 ,2 }
+                    array = new [] {1, 2}
                 };
                 var right = new DiffBase {
                     child1 = new DiffChild { intVal1 = 1 },
@@ -57,7 +57,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                     child4 = null,
                     child5 = null,
                     child6 = new DiffChild(),
-                    array = new [] {1 , 3 }
+                    array = new [] {1, 3}
                 };
                
                 var diff    = differ.GetDiff(left, right, DiffKind.DiffArrays);
@@ -65,7 +65,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 AreEqual(5, diff.Children.Count);
                 var childrenDiff = diff.AsString(20);
                 var expectedDiff = @"
-{DiffBase} != {DiffBase}
+/                   {DiffBase} != {DiffBase}
 /child1             {DiffChild} != {DiffChild}
 /child1/intVal1     0 != 1
 /child2             {DiffChild} != {DiffChild}
@@ -73,7 +73,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
 /child5             {DiffChild} != null
 /child6             null != {DiffChild}
 /array              Int32[](count: 2) != Int32[](count: 2)
-/array/1            2 != 3"; 
+/array/1            2 != 3
+"; 
                 AreEqual(expectedDiff, childrenDiff);
                 
                 var json    = jsonDiff.CreateJsonDiff(diff);

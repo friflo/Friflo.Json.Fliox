@@ -58,7 +58,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
 /child              {DiffChild} != {DiffChild}
 /child/childVal     1 != 2
 /child/bigInt       111 != 222
-/child/dateTime     2021-03-18T16:30:00.000Z != 2021-03-18T16:40:00.000Z"; 
+/child/dateTime     2021-03-18T16:30:00.000Z != 2021-03-18T16:40:00.000Z
+"; 
                     AreEqual(expect, childrenDiff);
                     
                     var rightJson = mapper.Write(right);
@@ -101,44 +102,45 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                     var diff = differ.GetDiff(left, right, DiffElements);
                     IsNotNull(diff);
                     AreEqual(29, diff.Children.Count);
-                    var childrenDiff = diff.AsString(23);
+                    var childrenDiff = diff.AsString(24);
                     var expect = @"
-{SampleIL} != {SampleIL}
-/enumIL1               three != one
-/enumIL2               null != two
-/childStructNull1      null != {ChildStructIL}
-/childStructNull2      {ChildStructIL} != {ChildStructIL}
-/childStructNull2/val2 19 != 69
-/nulDouble             20.5 != 70.5
-/nulDoubleNull         null != 71.5
-/nulFloat              21.5 != 72.5
-/nulFloatNull          null != 73.5
-/nulLong               22 != 74
-/nulLongNull           null != 75
-/nulInt                23 != 76
-/nulIntNull            null != 77
-/nulShort              24 != 78
-/nulShortNull          null != 79
-/nulByte               25 != 80
-/nulByteNull           null != 81
-/nulBool               true != false
-/nulBoolNull           null != true
-/childStruct1          {ChildStructIL} != {ChildStructIL}
-/childStruct1/val2     111 != 90
-/childStruct2          {ChildStructIL} != {ChildStructIL}
-/childStruct2/val2     112 != 91
-/child                 {ChildIL} != null
-/childNull             null != {ChildIL}
-/structIL              {StructIL} != {StructIL}
-/structIL/structInt    200 != 0
-/structIL/child1       {ChildStructIL} != null
-/structIL/childClass2  {ChildIL} != null
-/dbl                   22.5 != 94.5
-/flt                   33.5 != 95.5
-/int64                 10 != 96
-/int32                 11 != 97
-/int16                 12 != 98
-/int8                  13 != 99";
+/                       {SampleIL} != {SampleIL}
+/enumIL1                three != one
+/enumIL2                null != two
+/childStructNull1       null != {ChildStructIL}
+/childStructNull2       {ChildStructIL} != {ChildStructIL}
+/childStructNull2/val2  19 != 69
+/nulDouble              20.5 != 70.5
+/nulDoubleNull          null != 71.5
+/nulFloat               21.5 != 72.5
+/nulFloatNull           null != 73.5
+/nulLong                22 != 74
+/nulLongNull            null != 75
+/nulInt                 23 != 76
+/nulIntNull             null != 77
+/nulShort               24 != 78
+/nulShortNull           null != 79
+/nulByte                25 != 80
+/nulByteNull            null != 81
+/nulBool                true != false
+/nulBoolNull            null != true
+/childStruct1           {ChildStructIL} != {ChildStructIL}
+/childStruct1/val2      111 != 90
+/childStruct2           {ChildStructIL} != {ChildStructIL}
+/childStruct2/val2      112 != 91
+/child                  {ChildIL} != null
+/childNull              null != {ChildIL}
+/structIL               {StructIL} != {StructIL}
+/structIL/structInt     200 != 0
+/structIL/child1        {ChildStructIL} != null
+/structIL/childClass2   {ChildIL} != null
+/dbl                    22.5 != 94.5
+/flt                    33.5 != 95.5
+/int64                  10 != 96
+/int32                  11 != 97
+/int16                  12 != 98
+/int8                   13 != 99
+";
                     AreEqual(expect, childrenDiff);
                     PatchObject(objectPatcher, left, right, mapper);
                     AssertUtils.Equivalent(left, right);
@@ -187,11 +189,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                     AreEqual(rightJson, leftPatched);
                     
                     var diff = PatchElements(objectPatcher, left, right, mapper);
-                    var childrenDiff = diff.AsString(10);
+                    var childrenDiff = diff.AsString(8);
                     var expect = @"
-Int32[](count: 3) != Int32[](count: 3)
-/1        2 != 12
-/2        3 != 13";
+/       Int32[](count: 3) != Int32[](count: 3)
+/1      2 != 12
+/2      3 != 13
+";
                     AreEqual(expect, childrenDiff);
                     AssertUtils.Equivalent(left, right);
                 }
@@ -205,11 +208,12 @@ Int32[](count: 3) != Int32[](count: 3)
                     AreEqual(rightJson, leftPatched);
                     
                     var diff = PatchElements(objectPatcher, left, right, mapper);
-                    var childrenDiff = diff.AsString(10);
+                    var childrenDiff = diff.AsString(8);
                     var expect = @"
-List<Int32>(count: 3) != List<Int32>(count: 3)
-/1        2 != 12
-/2        3 != 13";
+/       List<Int32>(count: 3) != List<Int32>(count: 3)
+/1      2 != 12
+/2      3 != 13
+";
                     AreEqual(expect, childrenDiff);
                     AssertUtils.Equivalent(left, right);
                 }
@@ -223,11 +227,12 @@ List<Int32>(count: 3) != List<Int32>(count: 3)
                     AreEqual(rightJson, leftPatched);
                     
                     var diff = PatchElements<IList<int>>(objectPatcher, left, right, mapper);
-                    var childrenDiff = diff.AsString(10);
+                    var childrenDiff = diff.AsString(8);
                     var expect = @"
-List<Int32>(count: 3) != List<Int32>(count: 3)
-/1        2 != 12
-/2        3 != 13";
+/       List<Int32>(count: 3) != List<Int32>(count: 3)
+/1      2 != 12
+/2      3 != 13
+";
                     AreEqual(expect, childrenDiff);
                     AssertUtils.Equivalent(left, right);
                 } {
@@ -244,11 +249,12 @@ List<Int32>(count: 3) != List<Int32>(count: 3)
                     AreEqual(rightJson, leftPatched);
 
                     var diff = PatchElements(objectPatcher, left, right, mapper);
-                    var childrenDiff = diff.AsString(10);
+                    var childrenDiff = diff.AsString(8);
                     var expect = @"
-LinkedList<Int32>(count: 3) != LinkedList<Int32>(count: 3)
-/1        2 != 12
-/2        3 != 13";
+/       LinkedList<Int32>(count: 3) != LinkedList<Int32>(count: 3)
+/1      2 != 12
+/2      3 != 13
+";
                     AreEqual(expect, childrenDiff);
                     AssertUtils.Equivalent(left, right);
                 } {
@@ -287,11 +293,12 @@ LinkedList<Int32>(count: 3) != LinkedList<Int32>(count: 3)
                     AreEqual(rightJson, leftPatched);
 
                     var diff = PatchElements(objectPatcher, left, right, mapper);
-                    var childrenDiff = diff.AsString(10);
+                    var childrenDiff = diff.AsString(8);
                     var expect = @"
-Stack<Int32>(count: 3) != Stack<Int32>(count: 3)
-/1        2 != 12
-/2        3 != 13";
+/       Stack<Int32>(count: 3) != Stack<Int32>(count: 3)
+/1      2 != 12
+/2      3 != 13
+";
                     AreEqual(expect, childrenDiff);
                     AssertUtils.Equivalent(left, right);
                 }
@@ -305,11 +312,12 @@ Stack<Int32>(count: 3) != Stack<Int32>(count: 3)
                     AreEqual(rightJson, leftPatched);
 
                     var diff = PatchElements(objectPatcher, left, right, mapper);
-                    var childrenDiff = diff.AsString(10);
+                    var childrenDiff = diff.AsString(8);
                     var expect = @"
-Queue<Int32>(count: 3) != Queue<Int32>(count: 3)
-/1        2 != 12
-/2        3 != 13";
+/       Queue<Int32>(count: 3) != Queue<Int32>(count: 3)
+/1      2 != 12
+/2      3 != 13
+";
                     AreEqual(expect, childrenDiff);
                     AssertUtils.Equivalent(left, right);
                 }
@@ -332,13 +340,14 @@ Queue<Int32>(count: 3) != Queue<Int32>(count: 3)
                     AreEqual(rightJson, leftPatched);
                     
                     var diff = PatchKeyValues(objectPatcher, left, right);
-                    var childrenDiff = diff.AsString(10);
+                    var childrenDiff = diff.AsString(8);
                     var expect =
                         @"
-Dictionary<String, Int32> != Dictionary<String, Int32>
-/A        1 != 2
-/C        3 != (missing)
-/B        (missing) != 12";
+/       Dictionary<String, Int32> != Dictionary<String, Int32>
+/A      1 != 2
+/C      3 != (missing)
+/B      (missing) != 12
+";
                     AreEqual(expect, childrenDiff);
                     AssertUtils.Equivalent(left, right);
                 } {
@@ -350,13 +359,14 @@ Dictionary<String, Int32> != Dictionary<String, Int32>
                     AreEqual(rightJson, leftPatched);
                     
                     var diff = PatchKeyValues<IDictionary<string, int>>(objectPatcher, left, right);
-                    var childrenDiff = diff.AsString(10);
+                    var childrenDiff = diff.AsString(8);
                     var expect =
                         @"
-Dictionary<String, Int32> != Dictionary<String, Int32>
-/A        1 != 2
-/C        3 != (missing)
-/B        (missing) != 12";
+/       Dictionary<String, Int32> != Dictionary<String, Int32>
+/A      1 != 2
+/C      3 != (missing)
+/B      (missing) != 12
+";
                     AreEqual(expect, childrenDiff);
                     AssertUtils.Equivalent(left, right);
                 } {
@@ -368,13 +378,14 @@ Dictionary<String, Int32> != Dictionary<String, Int32>
                     AreEqual(rightJson, leftPatched);
                     
                     var diff = PatchKeyValues(objectPatcher, left, right);
-                    var childrenDiff = diff.AsString(10);
+                    var childrenDiff = diff.AsString(8);
                     var expect =
                         @"
-SortedDictionary<String, Int32> != SortedDictionary<String, Int32>
-/A        1 != 2
-/C        3 != (missing)
-/B        (missing) != 12";
+/       SortedDictionary<String, Int32> != SortedDictionary<String, Int32>
+/A      1 != 2
+/C      3 != (missing)
+/B      (missing) != 12
+";
                     AreEqual(expect, childrenDiff);
                     AssertUtils.Equivalent(left, right);
                 } {
@@ -386,13 +397,14 @@ SortedDictionary<String, Int32> != SortedDictionary<String, Int32>
                     AreEqual(rightJson, leftPatched);
                     
                     var diff = PatchKeyValues(objectPatcher, left, right);
-                    var childrenDiff = diff.AsString(10);
+                    var childrenDiff = diff.AsString(8);
                     var expect =
                         @"
-SortedList<String, Int32> != SortedList<String, Int32>
-/A        1 != 2
-/C        3 != (missing)
-/B        (missing) != 12";
+/       SortedList<String, Int32> != SortedList<String, Int32>
+/A      1 != 2
+/C      3 != (missing)
+/B      (missing) != 12
+";
                     AreEqual(expect, childrenDiff);
                     AssertUtils.Equivalent(left, right);
                 }
