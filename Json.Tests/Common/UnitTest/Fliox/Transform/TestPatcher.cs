@@ -53,7 +53,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                     var diff = differ.GetDiff(left, right, DiffElements);
                     AreEqual(1, diff.Children.Count);
 
-                    var childrenDiff = diff.Children[0].AsString(20);
+                    var childrenDiff = diff.Children[0].TextIndent(20);
                     var expect = @"
 /child              {DiffChild} != {DiffChild}
 /child/childVal     1 != 2
@@ -102,7 +102,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                     var diff = differ.GetDiff(left, right, DiffElements);
                     IsNotNull(diff);
                     AreEqual(29, diff.Children.Count);
-                    var childrenDiff = diff.AsString(24);
+                    var childrenDiff = diff.TextIndent(24);
                     var expect = @"
 /                       {SampleIL} != {SampleIL}
 /enumIL1                three != one
@@ -189,7 +189,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                     AreEqual(rightJson, leftPatched);
                     
                     var diff = PatchElements(objectPatcher, left, right, mapper);
-                    var childrenDiff = diff.AsString(8);
+                    var childrenDiff = diff.TextIndent(8);
                     var expect = @"
 /       Int32[](count: 3) != Int32[](count: 3)
 /1      2 != 12
@@ -208,7 +208,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                     AreEqual(rightJson, leftPatched);
                     
                     var diff = PatchElements(objectPatcher, left, right, mapper);
-                    var childrenDiff = diff.AsString(8);
+                    var childrenDiff = diff.TextIndent(8);
                     var expect = @"
 /       List<Int32>(count: 3) != List<Int32>(count: 3)
 /1      2 != 12
@@ -227,7 +227,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                     AreEqual(rightJson, leftPatched);
                     
                     var diff = PatchElements<IList<int>>(objectPatcher, left, right, mapper);
-                    var childrenDiff = diff.AsString(8);
+                    var childrenDiff = diff.TextIndent(8);
                     var expect = @"
 /       List<Int32>(count: 3) != List<Int32>(count: 3)
 /1      2 != 12
@@ -249,7 +249,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                     AreEqual(rightJson, leftPatched);
 
                     var diff = PatchElements(objectPatcher, left, right, mapper);
-                    var childrenDiff = diff.AsString(8);
+                    var childrenDiff = diff.TextIndent(8);
                     var expect = @"
 /       LinkedList<Int32>(count: 3) != LinkedList<Int32>(count: 3)
 /1      2 != 12
@@ -293,7 +293,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                     AreEqual(rightJson, leftPatched);
 
                     var diff = PatchElements(objectPatcher, left, right, mapper);
-                    var childrenDiff = diff.AsString(8);
+                    var childrenDiff = diff.TextIndent(8);
                     var expect = @"
 /       Stack<Int32>(count: 3) != Stack<Int32>(count: 3)
 /1      2 != 12
@@ -312,7 +312,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                     AreEqual(rightJson, leftPatched);
 
                     var diff = PatchElements(objectPatcher, left, right, mapper);
-                    var childrenDiff = diff.AsString(8);
+                    var childrenDiff = diff.TextIndent(8);
                     var expect = @"
 /       Queue<Int32>(count: 3) != Queue<Int32>(count: 3)
 /1      2 != 12
@@ -340,7 +340,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                     AreEqual(rightJson, leftPatched);
                     
                     var diff = PatchKeyValues(objectPatcher, left, right);
-                    var childrenDiff = diff.AsString(8);
+                    var childrenDiff = diff.TextIndent(8);
                     var expect =
                         @"
 /       Dictionary<String, Int32> != Dictionary<String, Int32>
@@ -359,7 +359,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                     AreEqual(rightJson, leftPatched);
                     
                     var diff = PatchKeyValues<IDictionary<string, int>>(objectPatcher, left, right);
-                    var childrenDiff = diff.AsString(8);
+                    var childrenDiff = diff.TextIndent(8);
                     var expect =
                         @"
 /       Dictionary<String, Int32> != Dictionary<String, Int32>
@@ -378,7 +378,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                     AreEqual(rightJson, leftPatched);
                     
                     var diff = PatchKeyValues(objectPatcher, left, right);
-                    var childrenDiff = diff.AsString(8);
+                    var childrenDiff = diff.TextIndent(8);
                     var expect =
                         @"
 /       SortedDictionary<String, Int32> != SortedDictionary<String, Int32>
@@ -397,7 +397,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                     AreEqual(rightJson, leftPatched);
                     
                     var diff = PatchKeyValues(objectPatcher, left, right);
-                    var childrenDiff = diff.AsString(8);
+                    var childrenDiff = diff.TextIndent(8);
                     var expect =
                         @"
 /       SortedList<String, Int32> != SortedList<String, Int32>

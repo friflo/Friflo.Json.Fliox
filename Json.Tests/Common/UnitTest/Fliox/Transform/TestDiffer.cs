@@ -63,7 +63,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 var diff    = differ.GetDiff(left, right, DiffKind.DiffArrays);
                 
                 AreEqual(5, diff.Children.Count);
-                var childrenDiff = diff.AsString(20);
+                var childrenDiff = diff.TextIndent(20);
                 var expectedDiff = @"
 /                   {DiffBase} != {DiffBase}
 /child1             {DiffChild} != {DiffChild}

@@ -179,8 +179,9 @@ namespace Friflo.Json.Fliox.Mapper.Diff
             // return sb.AppendFormat(CultureInfo.InvariantCulture, "{0}", value); */
         }
 
+        public string Text => TextIndent(20);
         
-        public string AsString(int indent) {
+        public string TextIndent(int indent) {
             var sb = new StringBuilder();
             sb.Append('\n');
             if (NodeType == NodeType.Root) {
