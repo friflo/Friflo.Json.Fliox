@@ -113,6 +113,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
         class DiffDict
         {
             public Dictionary<string, string>   dict1   { get; set; }
+            public Dictionary<string, string>   dict2   { get; set; }
+            public Dictionary<string, string>   dict3   { get; set; }
+            public Dictionary<string, string>   dict4   { get; set; }
+            public Dictionary<string, string>   dict5   { get; set; }
         }
         
         [Test]
@@ -123,10 +127,18 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             using (var jsonDiff         = new JsonDiff(typeStore))
             {
                 var left  = new DiffDict {
-                    dict1 = new Dictionary<string, string>{{"key1", "A"}}
+                    dict1 = new Dictionary<string, string>{{"key1", "A"}},  // not equal
+                    dict2 = new Dictionary<string, string>{{"key2", "C"}},  // equal
+                    dict3 = null,                                           // equal - both null
+                    dict4 = new Dictionary<string, string>{{"key4", "D"}},  // only left
+                    dict5 = null                                            // only right
                 };
                 var right = new DiffDict {
-                    dict1 = new Dictionary<string, string>{{"key1", "B"}}
+                    dict1 = new Dictionary<string, string>{{"key1", "B"}},
+                    dict2 = new Dictionary<string, string>{{"key2", "C"}},
+                    dict3 = null,
+                    dict4 = null,
+                    dict5 = new Dictionary<string, string>{{"key5", "E"}},
                 };
                 
                 var diff            = MergeDiff(left, right, differ, mapper, jsonDiff);
@@ -135,8 +147,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
 /                   {DiffDict} != {DiffDict}
 /dict1              Dictionary<String, String> != Dictionary<String, String>
 /dict1/key1         'A' != 'B'
+/dict4              Dictionary<String, String> != null
+/dict5              null != Dictionary<String, String>
 ";
                 AreEqual(expectedDiff, diffText);
+                
+                var patch   = jsonDiff.CreateJsonDiff(diff);
+                var expected= "{'dict1':{'key1':'B'},'dict4':null,'dict5':{'key5':'E'}}".Replace('\'', '\"');
+                AreEqual(expected, patch.ToString());
             }
         }
         
