@@ -6,6 +6,8 @@ using System.Diagnostics;
 using static System.Diagnostics.DebuggerBrowsableState;
 using static System.BitConverter;
 using Browse = System.Diagnostics.DebuggerBrowsableAttribute;
+using static Friflo.Json.Fliox.Mapper.Map.Var.Static;
+
 namespace Friflo.Json.Fliox.Mapper.Map
 {
     /// <summary>
@@ -132,6 +134,9 @@ namespace Friflo.Json.Fliox.Mapper.Map
             lng     = value.HasValue ? value.Value ? 1 : 0 : 0;
         }
         
-        private static readonly object HasValue = "HasValue";
+        /// <summary> using a static class prevents noise in form of 'Static members' for class instances in Debugger </summary>
+        internal static class Static  {
+            internal static readonly object HasValue = "HasValue";
+        }
     }
 }
