@@ -105,7 +105,6 @@ public partial struct Var {
             if (type == typeof(DateTime?))      return DateTimeMapper.ToRFC_3339(((DateTime?)obj).Value);
 
             return GetTypeName(type);
-            
         }
     }
     
