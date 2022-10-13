@@ -12,7 +12,7 @@ namespace Friflo.Json.Fliox.Mapper.Diff
     /// Create the a JSON value by the given <see cref="DiffNode"/>. <br/>
     /// The JSON result is intended to be merged (assigned) into a given object by using <see cref="ObjectReader.ReadTo{T}(JsonValue,T)"/>
     /// </summary>
-    public class JsonDiff : IDisposable
+    public sealed class JsonDiff : IDisposable
     {
         public      bool    Pretty { get => writer.pretty; set => writer.pretty = value; }
 

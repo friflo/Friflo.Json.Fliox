@@ -13,11 +13,12 @@ namespace Friflo.Json.Fliox.Mapper.Diff
 {
     public enum DiffType
     {
-        None,
-        Equal,
-        NotEqual,
-        OnlyLeft,
-        OnlyRight,
+        // Use continuous ids 0, 1, 2 for None, NotEqual, OnlyRight to avoid jump tables in common switch / case statements 
+        None        = 0,
+        Equal       = 3,
+        NotEqual    = 1,
+        OnlyLeft    = 4,
+        OnlyRight   = 2,
     }
 
     public sealed class DiffNode
@@ -187,7 +188,5 @@ namespace Friflo.Json.Fliox.Mapper.Diff
                 child.AppendNode(sb, indent);
             }
         }
-        
-
     }
 }
