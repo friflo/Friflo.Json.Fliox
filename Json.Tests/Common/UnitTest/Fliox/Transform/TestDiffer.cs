@@ -93,15 +93,17 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
         }
         
         private static DiffNode MergeDiff<T>(T left, T right, ObjectDiffer differ, ObjectMapper mapper, JsonDiff jsonDiff) {
+            // create JSON diff from DiffNode
             var diff            = differ.GetDiff(left, right, DiffKind.DiffArrays);
             var patch           = jsonDiff.CreateJsonDiff(diff);
-            
-            var leftJson        = mapper.Write(left);
-            var leftCopy        = mapper.Read<T>(leftJson);
-            
+            // create a copy of left to leave original instance unchanged
+            var leftJson        = mapper.Write(left);       // for testing only 
+            var leftCopy        = mapper.Read<T>(leftJson); // for testing only
+            // merge the JSON diff to the left copy
             var merge           = mapper.ReadTo(patch, leftCopy);
-            var mergeJson       = mapper.Write(merge);
-            var expectedJson    = mapper.Write(right);
+            // create JSON of merge and expected result to assert equality
+            var mergeJson       = mapper.Write(merge);      // for testing only
+            var expectedJson    = mapper.Write(right);      // for testing only
             
             AreEqual(expectedJson, mergeJson);
             return diff;
