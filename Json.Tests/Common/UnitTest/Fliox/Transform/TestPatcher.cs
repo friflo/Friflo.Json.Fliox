@@ -334,6 +334,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
         private static void PatchElements<T>(ObjectPatcher objectPatcher, T left, T right, ObjectMapper mapper) {
             var diff = objectPatcher.differ.GetDiff(left, right);
             IsNotNull(diff);
+            AreEqual(DiffType.None, diff.DiffType); // DiffType.None -> replace container elements
             AreEqual(2, diff.Children.Count);
             var childrenDiff = diff.AsString(10);
             var expect =
@@ -347,7 +348,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
         private static DiffNode PatchCollection<T>(ObjectPatcher objectPatcher, T left, T right, ObjectMapper mapper) {
             var diff = objectPatcher.differ.GetDiff(left, right);
             IsNotNull(diff);
-            IsEmpty(diff.Children);
+            AreEqual(DiffType.NotEqual, diff.DiffType); // DiffType.NotEqual -> replace whole collection
+            AreEqual(1, diff.Children.Count);           // skipped comparing elements after first difference
             PatchObject(objectPatcher, left, right, mapper);
             return diff;
         }

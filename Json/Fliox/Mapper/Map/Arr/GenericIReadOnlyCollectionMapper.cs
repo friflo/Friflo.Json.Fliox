@@ -52,7 +52,11 @@ namespace Friflo.Json.Fliox.Mapper.Map.Arr
                 foreach (var leftItem in left) {
                     rightIter.MoveNext();
                     var rightItem = rightIter.Current;
-                    differ.DiffElement(elementType, n++, leftItem, rightItem);
+                    if (differ.DiffElement(elementType, n++, leftItem, rightItem) == DiffType.Equal)
+                        continue;
+                    if (differ.DiffElements)
+                        continue;
+                    return differ.PopParentNotEqual();
                 }
             }
             return differ.PopParent();

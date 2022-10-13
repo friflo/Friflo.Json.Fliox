@@ -51,7 +51,7 @@ namespace Friflo.Json.Fliox.Mapper.Diff
                         case OnlyRight:
                         case NotEqual:
                             writer.WriteFieldKey (field, ref firstMember);
-                            ref var right   = ref child.ValueRight;
+                            ref var right   = ref child.valueRight;
                             if (right.IsNull) {
                                 writer.AppendNull();
                             } else {

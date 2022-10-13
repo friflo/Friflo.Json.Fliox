@@ -97,7 +97,11 @@ namespace Friflo.Json.Fliox.Mapper.Map.Arr
             for (int n = 0; n < left.Count; n++) {
                 T leftItem  = left [n];
                 T rightItem = right[n];
-                differ.DiffElement(elementType, n, leftItem, rightItem);
+                if (differ.DiffElement(elementType, n, leftItem, rightItem) == DiffType.Equal)
+                    continue;
+                if (differ.DiffElements)
+                    continue;
+                return differ.PopParentNotEqual();
             }
             return differ.PopParent();
         }

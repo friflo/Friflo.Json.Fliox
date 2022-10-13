@@ -58,11 +58,8 @@ namespace Friflo.Json.Fliox.Mapper.Diff
             if (diff == null)
                 return null;
             var children    = diff.children; 
-            if (diff.children.Count == 0)
-                return null;
-            // GenericICollectionMapper<> adds the whole collection as DiffType.NotEqual additional to DiffNode
-            // containing the diffs of the elements. This diff is the last one => return the last child in children.
-            return children[children.Count - 1];
+            if (children.Count != 1)    throw new InvalidOperationException($"Expect children containing 1 element. was {children.Count}");
+            return children[0];
         }
         
         private DiffNode CreateDiffNode() {
@@ -94,6 +91,17 @@ namespace Friflo.Json.Fliox.Mapper.Diff
             parentDiff.Init(None, null, path[0], new Var(parent.left), new Var(parent.right));
             parentStack[parentIndex].diff = parentDiff;  // parent is a struct => update field in array
             return parentDiff;
+        }
+        
+        internal bool DiffElements => true;
+        
+        internal DiffType PopParentNotEqual() {
+            PopParent();
+            AssertPathCount();
+            var children = parentStack[parentStackIndex].diff.children;
+            if (children.Count != 1) throw new InvalidOperationException("Expect 1 element in children");
+            children[0].diffType = NotEqual;
+            return NotEqual;
         }
 
         internal DiffType AddNotEqualObject<T>(T left, T right) {
@@ -147,10 +155,11 @@ namespace Friflo.Json.Fliox.Mapper.Diff
             path[--pathIndex] = default; // clear references
         }
 
-        public void DiffElement<T> (TypeMapper<T> elementType, int index, T leftItem, T rightItem) {
+        public DiffType DiffElement<T> (TypeMapper<T> elementType, int index, T leftItem, T rightItem) {
             PushElement(elementType, index);
-            elementType.Diff(this, leftItem, rightItem);
+            var result = elementType.Diff(this, leftItem, rightItem);
             Pop();
+            return result;
         }
 
         public void PushParent<T>(T left, T right) {

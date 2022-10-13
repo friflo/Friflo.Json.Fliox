@@ -65,13 +65,14 @@ namespace Friflo.Json.Fliox.Mapper.Map.Arr
                 foreach (var leftItem in left) {
                     rightIter.MoveNext();
                     var rightItem = rightIter.Current;
-                    differ.DiffElement(elementType, n++, leftItem, rightItem);
+                    if (differ.DiffElement(elementType, n++, leftItem, rightItem) == DiffType.Equal)
+                        continue;
+                    if (diffElements && differ.DiffElements)
+                        continue;
+                    return differ.PopParentNotEqual();
                 }
             }
-            var parent = differ.PopParent();
-            if (parent == DiffType.NotEqual && !diffElements)
-                return differ.AddNotEqualObject(left, right);
-            return parent;
+            return differ.PopParent();
         }
         
         public override void PatchObject(Patcher patcher, object obj) {

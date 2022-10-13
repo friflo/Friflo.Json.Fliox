@@ -27,7 +27,7 @@ namespace Friflo.Json.Fliox.Mapper.Diff
     public sealed class DiffNode
     {
                         public   IReadOnlyList<DiffNode>    Children    => children;
-                        internal            DiffType        DiffType    => diffType;
+                        public              DiffType        DiffType    => diffType;
                         // --- pathNode fields
                         public              int             NodeIndex   => pathNode.index;
                         /// <summary>Either a <see cref="PropField"/> or the key of a <see cref="Dictionary{TKey,TValue}"/></summary>
@@ -35,15 +35,12 @@ namespace Friflo.Json.Fliox.Mapper.Diff
                         internal            NodeType        NodeType    => pathNode.NodeType;
         [Browse(Never)] public              TypeMapper      NodeMapper  => pathNode.mapper;
                         // --- left and right value
-                        // ReSharper disable once UnusedMember.Global
-                        internal  ref       Var             ValueLeft   => ref left;
-                        internal  ref       Var             ValueRight  => ref right;
+                        internal            Var             valueLeft;
+                        internal            Var             valueRight;
+        [Browse(Never)] internal            DiffType        diffType;
         // --- following private fields behave as readonly. They are mutable to enable pooling DiffNode's
-        [Browse(Never)] private             DiffType        diffType;
                         private             DiffNode        parent; 
         [Browse(Never)] private             TypeNode        pathNode;
-        [Browse(Never)] private             Var             left;
-        [Browse(Never)] private             Var             right;
         [Browse(Never)] internal  readonly  List<DiffNode>  children    = new List<DiffNode>();
 
         
@@ -53,8 +50,8 @@ namespace Friflo.Json.Fliox.Mapper.Diff
             this.diffType   = diffType;
             this.parent     = parent;
             this.pathNode   = pathNode;
-            this.left       = left;
-            this.right      = right;
+            this.valueLeft  = left;
+            this.valueRight = right;
             children.Clear();
         }
 
@@ -116,14 +113,14 @@ namespace Friflo.Json.Fliox.Mapper.Diff
                 case DiffType.None:
                     var isComplex = mapper.IsComplex;
                     if (isComplex) {
-                        AppendObject(sb, left.TryGetObject());
+                        AppendObject(sb, valueLeft.TryGetObject());
                         sb.Append(" != ");
-                        AppendObject(sb, right.TryGetObject());
+                        AppendObject(sb, valueRight.TryGetObject());
                         return;
                     }
                     if (mapper.IsArray) {
-                        var leftArray   = left. TryGetObject();
-                        var rightArray  = right.TryGetObject();
+                        var leftArray   = valueLeft. TryGetObject();
+                        var rightArray  = valueRight.TryGetObject();
                         var leftCount   = mapper.Count(leftArray);
                         var rightCount  = mapper.Count(rightArray);
                         sb.Append(GetTypeName(leftArray.GetType()));
@@ -138,17 +135,17 @@ namespace Friflo.Json.Fliox.Mapper.Diff
                         sb.Append(')');
                         return;
                     }
-                    AppendValue(sb, left.ToObject());
+                    AppendValue(sb, valueLeft.ToObject());
                     sb.Append(" != ");
-                    AppendValue(sb, right.ToObject());
+                    AppendValue(sb, valueRight.ToObject());
                     break;
                 case DiffType.OnlyLeft:
-                    AppendValue(sb, left.ToObject());
+                    AppendValue(sb, valueLeft.ToObject());
                     sb.Append(" != (missing)");
                     break;
                 case DiffType.OnlyRight:
                     sb.Append("(missing) != ");
-                    AppendValue(sb, right.ToObject());
+                    AppendValue(sb, valueRight.ToObject());
                     break;
             }
         }
