@@ -99,10 +99,13 @@ public partial struct Var {
                 case BigInteger bigInteger:     return bigInteger.ToString();
                 case DateTime   dateTime:       return DateTimeMapper.ToRFC_3339(dateTime);
                 case Enum       enumObj:        return enumObj.ToString();
-                default:
-                    var type = obj.GetType();
-                    return GetTypeName(type);
             }
+            var type = obj.GetType();
+            if (type == typeof(BigInteger?))    return ((BigInteger?)obj).Value.ToString();
+            if (type == typeof(DateTime?))      return DateTimeMapper.ToRFC_3339(((DateTime?)obj).Value);
+
+            return GetTypeName(type);
+            
         }
     }
     

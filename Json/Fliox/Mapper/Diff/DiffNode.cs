@@ -157,26 +157,9 @@ namespace Friflo.Json.Fliox.Mapper.Diff
             sb.Append('}');
         }
 
-        private static StringBuilder AppendValue(StringBuilder sb, in Var varValue) {
+        private static void AppendValue(StringBuilder sb, in Var varValue) {
             var valueString = varValue.AsString();
             sb.Append(valueString);
-            return sb;
-            /*
-            var value = varValue.ToObject();
-            switch (value) {
-                case null:                  return sb.Append("null");
-                case string     str:        sb.Append('\''); sb.Append(str); sb.Append('\'');   return sb;
-                case DateTime   dateTime:   return sb.Append(DateTimeMapper.ToRFC_3339(dateTime));
-                case bool       b:          return sb.Append(b ? "true" : "false");
-                case char       c:          sb.Append('\''); sb.Append(c); sb.Append('\'');     return sb;
-            }
-            var type = value.GetType();
-            if (type == typeof(DateTime?))  return sb.Append(DateTimeMapper.ToRFC_3339(((DateTime?)value).Value));
-            if (type == typeof(bool?))      return sb.Append(((bool?)value).Value ? "true" : "false");
-            if (type == typeof(char?))      { sb.Append('\''); sb.Append(((char?)value).Value); sb.Append('\''); return sb; }
-
-
-            // return sb.AppendFormat(CultureInfo.InvariantCulture, "{0}", value); */
         }
 
         public string Text => TextIndent(20);
