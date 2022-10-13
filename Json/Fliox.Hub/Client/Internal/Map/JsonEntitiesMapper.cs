@@ -40,7 +40,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal.Map
             int n = 0;
             foreach (var entity in value.entities) {
                 JsonKey     key     = entity.Key;
-                JsonValue    json    = entity.Value.Json;
+                JsonValue   json    = entity.Value.Json;
                 writer.WriteKey(keyMapper, key, n++);
                 if (!json.IsNull())
                     writer.bytes.AppendArray(json);

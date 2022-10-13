@@ -58,7 +58,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object
                 var leftKey   = leftPair.Key;
                 var leftValue = leftPair.Value;
                 var leftVar   = elementType.ToVar(leftValue);
-                differ.PushKey(elementType, leftKey);
+                differ.PushKey(this, leftKey);
                 if (right.TryGetValue(leftKey, out TElm rightValue)) {
                     var rightVar = elementType.ToVar(rightValue);
                     elementType.DiffVar(differ, leftVar, rightVar);
@@ -73,7 +73,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object
                 if (left.TryGetValue(rightKey, out TElm _))
                     continue;
                 var rightVar    = elementType.ToVar(rightValue);
-                differ.PushKey(elementType, rightKey);
+                differ.PushKey(this, rightKey);
                 differ.AddOnlyRight(rightVar);
                 differ.Pop();
             }
@@ -97,6 +97,10 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object
                 default:
                     throw new InvalidOperationException($"NodeAction not applicable: {action}");
             }
+        }
+        
+        internal override void WriteKey(ref Writer writer, object key, int pos) {
+            writer.WriteKey(keyMapper, (TKey)key, pos);
         }
 
         public override void Write(ref Writer writer, TMap map) {

@@ -77,6 +77,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
         internal virtual  object    ReadObject      (ref Reader reader, object slot, out bool success)      => throw new Invalid("not implemented");
         internal virtual  void      WriteObject     (ref Writer writer, object slot, ref bool firstMember)  => throw new Invalid("not implemented");
         internal virtual  DiffType  DiffObject      (Differ differ, object left, object right)              => throw new Invalid("not implemented");
+        internal virtual  void      WriteKey        (ref Writer writer, object key, int pos)                => throw new Invalid("not implemented");
         
         internal abstract bool      IsValueNullIL   (ClassMirror mirror, int primPos, int objPos);
         internal abstract void      WriteValueIL    (ref Writer writer, ClassMirror mirror, int primPos, int objPos);

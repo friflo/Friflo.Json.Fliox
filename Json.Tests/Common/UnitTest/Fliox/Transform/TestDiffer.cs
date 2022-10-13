@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 using Friflo.Json.Fliox;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Mapper.Diff;
@@ -109,6 +110,36 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             }
         }
         
+        class DiffDict
+        {
+            public Dictionary<string, string>   dict1   { get; set; }
+        }
+        
+        [Test]
+        public void TestDiffDictionary() {
+            using (var typeStore        = new TypeStore()) 
+            using (var mapper           = new ObjectMapper(typeStore))
+            using (var differ           = new ObjectDiffer(typeStore))
+            using (var jsonDiff         = new JsonDiff(typeStore))
+            {
+                var left  = new DiffDict {
+                    dict1 = new Dictionary<string, string>{{"key1", "A"}}
+                };
+                var right = new DiffDict {
+                    dict1 = new Dictionary<string, string>{{"key1", "B"}}
+                };
+                
+                var diff        = MergeDiff(left, right, differ, mapper, jsonDiff);
+                var diffText    = diff.TextIndent(20);
+                var expectedDiff= @"
+/                   {DiffDict} != {DiffDict}
+/dict1              Dictionary<String, String> != Dictionary<String, String>
+/dict1/key1         'A' != 'B'
+";
+                AreEqual(expectedDiff, diffText);
+            }
+        }
+        
         private static DiffNode MergeDiff<T>(T left, T right, ObjectDiffer differ, ObjectMapper mapper, JsonDiff jsonDiff) {
             // create JSON diff from DiffNode
             var diff            = differ.GetDiff(left, right, DiffKind.DiffArrays);
@@ -148,7 +179,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 mapper.ReadTo(json, result);
                 var start = GC.GetAllocatedBytesForCurrentThread();
                 for (int n = 0; n < 10; n++) {
-                    mapper.ReadTo<DiffBase>(json, result);
+                    mapper.ReadTo(json, result);
                 }
                 var diffAlloc =  GC.GetAllocatedBytesForCurrentThread() - start;
                 // AreEqual(0, diffAlloc);

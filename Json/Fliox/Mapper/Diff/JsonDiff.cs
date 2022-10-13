@@ -41,15 +41,16 @@ namespace Friflo.Json.Fliox.Mapper.Diff
         }
         
         private static void Traverse(ref Writer writer, DiffNode diffNode) {
-            bool firstMember = true;
+            bool    firstMember = true;
+            int     pairCount   = 0;
             foreach (var child in diffNode.children) {
-                // Traverse(ref writer, child);
                 var key         = child.NodeKey;
-                var diffType    = child.DiffType;
                 if (key is PropField field) {
+                    var diffType    = child.DiffType;
                     switch (diffType) {
                         case OnlyRight:
                         case NotEqual:
+                            pairCount++;
                             writer.WriteFieldKey (field, ref firstMember);
                             ref var right   = ref child.valueRight;
                             if (right.IsNull) {
@@ -58,15 +59,52 @@ namespace Friflo.Json.Fliox.Mapper.Diff
                                 var mapper      = child.NodeMapper;
                                 mapper.WriteVar(ref writer, right);
                             }
-                            break;
+                            continue;
                         case None:
+                            pairCount++;
                             writer.WriteFieldKey (field, ref firstMember);
                             Traverse(ref writer, child);
-                            break;
+                            continue;
                     }
+                    continue;
                 }
+                // --- is Dictionary
+                WriteDictionaryKeyValue(ref writer, child, ref firstMember, ref pairCount);
             }
             writer.WriteObjectEnd(firstMember);
         }
+        
+        private static void WriteDictionaryKeyValue(
+            ref Writer      writer,
+                DiffNode    child,
+            ref bool        firstMember,
+            ref int         pairCount)
+        {
+            var diffType    = child.DiffType;
+            var key         = child.NodeKey;
+            switch (diffType) {
+                case OnlyRight:
+                case NotEqual:
+                    writer.bytes.AppendChar('{');
+                    firstMember     = false;
+                    var mapper      = child.NodeMapper;
+                    mapper.WriteKey (ref writer, key, pairCount++);
+                    ref var right   = ref child.valueRight;
+                    if (right.IsNull) {
+                        writer.AppendNull();
+                    } else {
+                        var valueMapper = mapper.GetElementMapper();
+                        valueMapper.WriteVar(ref writer, right);
+                    }
+                    return;
+                case None:
+                    writer.bytes.AppendChar('{');
+                    firstMember     = false;
+                    mapper          = child.NodeMapper;
+                    mapper.WriteKey (ref writer, key, pairCount++);
+                    Traverse(ref writer, child);
+                    return;
+            }
+        } 
     }
 }
