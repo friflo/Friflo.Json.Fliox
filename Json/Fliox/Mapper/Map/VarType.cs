@@ -3,7 +3,10 @@
 
 using System;
 using System.Globalization;
+using System.Linq;
+using System.Numerics;
 using System.Reflection;
+using Friflo.Json.Fliox.Mapper.Map.Val;
 using static Friflo.Json.Fliox.Mapper.Map.Var;
 
 namespace Friflo.Json.Fliox.Mapper.Map
@@ -53,6 +56,20 @@ namespace Friflo.Json.Fliox.Mapper.Map
 
             return TypeObject.Instance;
         }
+        
+        internal static string GetTypeName(Type type) {
+            if (type.IsGenericType) {
+                var genericArgs = type.GetGenericArguments().Select(GetTypeName);
+                var idx         = type.Name.IndexOf('`');
+                var typename    = (idx > 0) ? type.Name.Substring(0, idx) : type.Name;
+                var args        = string.Join(", ", genericArgs);
+                return $"{typename}<{args}>";
+            }
+            if (type.IsArray) {
+                return GetTypeName(type.GetElementType()) + "[]";
+            }
+            return type.Name;
+        }
     }
     
 //  ------------------------------------- VarType implementations -------------------------------------
@@ -68,12 +85,25 @@ public partial struct Var {
         internal  override  Type    GetType     (in Var value)             => value.obj.GetType();
         internal  override  bool    AreEqual    (in Var val1, in Var val2) => val1.obj == val2.obj;
         internal  override  bool    IsNull      (in Var value)             => value.obj == null;
-        internal  override  string  AsString    (in Var value)             => value.obj != null ? $"'{value.obj}'" : "null";
+        internal  override  string  AsString    (in Var value)             => GetString(value);
         public    override  Var     DefaultValue                           => new Var((object)null);
         public    override  Var     FromObject  (object obj)               => new Var(obj);
         public    override  object  ToObject    (in Var value)             => value.obj;
         internal  override  object  TryGetObject(in Var value)             => value.obj;
         internal  override  Member  CreateMember<T>(PropertyInfo pi)       => null;
+        
+        private static string GetString(in Var value) {
+            var obj = value.obj;
+            switch (obj) {
+                case null:                      return "null";
+                case BigInteger bigInteger:     return bigInteger.ToString();
+                case DateTime   dateTime:       return DateTimeMapper.ToRFC_3339(dateTime);
+                case Enum       enumObj:        return enumObj.ToString();
+                default:
+                    var type = obj.GetType();
+                    return GetTypeName(type);
+            }
+        }
     }
     
     internal sealed class TypeString : VarType
@@ -84,7 +114,7 @@ public partial struct Var {
         internal  override  Type    GetType     (in Var value)             => typeof(string);
         internal  override  bool    AreEqual    (in Var val1, in Var val2) => (string)val1.obj == (string)val2.obj;
         internal  override  bool    IsNull      (in Var value)             => value.obj == null;
-        internal  override  string  AsString    (in Var value)             => value.obj != null ? $"\"{(string)value.obj}\"" : "null";
+        internal  override  string  AsString    (in Var value)             => value.obj != null ? $"\'{(string)value.obj}\'" : "null";
         public    override  Var     DefaultValue                           => new Var((string)null);
         public    override  Var     FromObject  (object obj)               => new Var((string)obj);
         public    override  object  ToObject    (in Var value)             => value.obj;

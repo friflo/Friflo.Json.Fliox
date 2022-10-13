@@ -97,11 +97,8 @@ namespace Friflo.Json.Fliox.Mapper.Diff
         }
         
         internal DiffType PopParentNotEqual() {
+            parentStack[parentStackIndex].diff.diffType = NotEqual;
             PopParent();
-            AssertPathCount();
-            var children = parentStack[parentStackIndex].diff.children;
-            if (children.Count != 1) throw new InvalidOperationException("Expect 1 element in children");
-            children[0].diffType = NotEqual;
             return NotEqual;
         }
 

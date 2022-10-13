@@ -60,8 +60,8 @@ namespace Friflo.Json.Fliox.Mapper.Map
         [Browse(Never)] public  float?  Flt32Null   { get { AssertType(TypeNullableFlt.Instance);   return obj != null ? (float?) Dbl : null; } }
         [Browse(Never)] public  double? Flt64Null   { get { AssertType(TypeNullableDbl.Instance);   return obj != null ? (double?)Dbl : null; } }
 
-        
-        public  override  string  ToString() =>  $"{{{type}}} {type.AsString(this)}";
+        public              string  AsString() =>  type.AsString(this);
+        public  override    string  ToString() =>  $"{{{type}}} {type.AsString(this)}";
 
         public              bool    IsEqual(in Var other) {
             AssertSameType(this, other);

@@ -1,14 +1,10 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
-using System;
 using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
 using System.Text;
 using Friflo.Json.Fliox.Mapper.Map;
 using Friflo.Json.Fliox.Mapper.Map.Object.Reflect;
-using Friflo.Json.Fliox.Mapper.Map.Val;
 using static System.Diagnostics.DebuggerBrowsableState;
 using Browse = System.Diagnostics.DebuggerBrowsableAttribute;
 
@@ -123,29 +119,29 @@ namespace Friflo.Json.Fliox.Mapper.Diff
                         var rightArray  = valueRight.TryGetObject();
                         var leftCount   = mapper.Count(leftArray);
                         var rightCount  = mapper.Count(rightArray);
-                        sb.Append(GetTypeName(leftArray.GetType()));
+                        sb.Append(VarType.GetTypeName(leftArray.GetType()));
                         sb.Append("(count: ");
                         sb.Append(leftCount);
                         sb.Append(')');
                         sb.Append(" != ");
                         
-                        sb.Append(GetTypeName(rightArray.GetType()));
+                        sb.Append(VarType.GetTypeName(rightArray.GetType()));
                         sb.Append("(count: ");
                         sb.Append(rightCount);
                         sb.Append(')');
                         return;
                     }
-                    AppendValue(sb, valueLeft.ToObject());
+                    AppendValue(sb, valueLeft);
                     sb.Append(" != ");
-                    AppendValue(sb, valueRight.ToObject());
+                    AppendValue(sb, valueRight);
                     break;
                 case DiffType.OnlyLeft:
-                    AppendValue(sb, valueLeft.ToObject());
+                    AppendValue(sb, valueLeft);
                     sb.Append(" != (missing)");
                     break;
                 case DiffType.OnlyRight:
                     sb.Append("(missing) != ");
-                    AppendValue(sb, valueRight.ToObject());
+                    AppendValue(sb, valueRight);
                     break;
             }
         }
@@ -161,7 +157,12 @@ namespace Friflo.Json.Fliox.Mapper.Diff
             sb.Append('}');
         }
 
-        private static StringBuilder AppendValue(StringBuilder sb, object value) {
+        private static StringBuilder AppendValue(StringBuilder sb, in Var varValue) {
+            var valueString = varValue.AsString();
+            sb.Append(valueString);
+            return sb;
+            /*
+            var value = varValue.ToObject();
             switch (value) {
                 case null:                  return sb.Append("null");
                 case string     str:        sb.Append('\''); sb.Append(str); sb.Append('\'');   return sb;
@@ -174,7 +175,8 @@ namespace Friflo.Json.Fliox.Mapper.Diff
             if (type == typeof(bool?))      return sb.Append(((bool?)value).Value ? "true" : "false");
             if (type == typeof(char?))      { sb.Append('\''); sb.Append(((char?)value).Value); sb.Append('\''); return sb; }
 
-            return sb.AppendFormat(CultureInfo.InvariantCulture, "{0}", value);
+
+            // return sb.AppendFormat(CultureInfo.InvariantCulture, "{0}", value); */
         }
 
         public string AsString(int indent) {
@@ -184,27 +186,13 @@ namespace Friflo.Json.Fliox.Mapper.Diff
         }
         
         private void AppendNode(StringBuilder sb, int indent) {
-            if (diffType == DiffType.None) {
-                foreach (var child in children) {
-                    child.CreatePath(sb, true, sb.Length, indent);
-                    sb.Append('\n');
-                    child.AppendNode(sb, indent);
-                }
+            sb.Append('\n');
+            CreatePath(sb, true, sb.Length, indent);
+            foreach (var child in children) {
+                child.AppendNode(sb, indent);
             }
         }
         
-        private static string GetTypeName(Type type) {
-            if (type.IsGenericType) {
-                var genericArgs = type.GetGenericArguments().Select(GetTypeName);
-                var idx         = type.Name.IndexOf('`');
-                var typename    = (idx > 0) ? type.Name.Substring(0, idx) : type.Name;
-                var args        = string.Join(", ", genericArgs);
-                return $"{typename}<{args}>";
-            }
-            if (type.IsArray) {
-                return GetTypeName(type.GetElementType()) + "[]";
-            }
-            return type.Name;
-        }
+
     }
 }

@@ -54,11 +54,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                     AreEqual(1, diff.Children.Count);
 
                     var childrenDiff = diff.Children[0].AsString(20);
-                    var expect =
-@"/child/childVal     1 != 2
+                    var expect = @"
+/child              {DiffChild} != {DiffChild}
+/child/childVal     1 != 2
 /child/bigInt       111 != 222
-/child/dateTime     2021-03-18T16:30:00.000Z != 2021-03-18T16:40:00.000Z
-"; 
+/child/dateTime     2021-03-18T16:30:00.000Z != 2021-03-18T16:40:00.000Z"; 
                     AreEqual(expect, childrenDiff);
                     
                     var rightJson = mapper.Write(right);
@@ -102,8 +102,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                     IsNotNull(diff);
                     AreEqual(29, diff.Children.Count);
                     var childrenDiff = diff.AsString(23);
-                    var expect =
-@"/enumIL1               three != one
+                    var expect = @"
+{SampleIL} != {SampleIL}
+/enumIL1               three != one
 /enumIL2               null != two
 /childStructNull1      null != {ChildStructIL}
 /childStructNull2      {ChildStructIL} != {ChildStructIL}
@@ -137,8 +138,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
 /int64                 10 != 96
 /int32                 11 != 97
 /int16                 12 != 98
-/int8                  13 != 99
-";
+/int8                  13 != 99";
                     AreEqual(expect, childrenDiff);
                     PatchObject(objectPatcher, left, right, mapper);
                     AssertUtils.Equivalent(left, right);
@@ -186,7 +186,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                     var leftPatched = PatchJson(jsonPatcher, objectPatcher, left, right, mapper);
                     AreEqual(rightJson, leftPatched);
                     
-                    PatchElements(objectPatcher, left, right, mapper);
+                    var diff = PatchElements(objectPatcher, left, right, mapper);
+                    var childrenDiff = diff.AsString(10);
+                    var expect = @"
+Int32[](count: 3) != Int32[](count: 3)
+/1        2 != 12
+/2        3 != 13";
+                    AreEqual(expect, childrenDiff);
                     AssertUtils.Equivalent(left, right);
                 }
                 // --- List<>
@@ -198,7 +204,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                     var leftPatched = PatchJson(jsonPatcher, objectPatcher, left, right, mapper);
                     AreEqual(rightJson, leftPatched);
                     
-                    PatchElements(objectPatcher, left, right, mapper);
+                    var diff = PatchElements(objectPatcher, left, right, mapper);
+                    var childrenDiff = diff.AsString(10);
+                    var expect = @"
+List<Int32>(count: 3) != List<Int32>(count: 3)
+/1        2 != 12
+/2        3 != 13";
+                    AreEqual(expect, childrenDiff);
                     AssertUtils.Equivalent(left, right);
                 }
                 // --- IList<>
@@ -210,7 +222,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                     var leftPatched = PatchJson(jsonPatcher, objectPatcher, left, right, mapper);
                     AreEqual(rightJson, leftPatched);
                     
-                    PatchElements<IList<int>>(objectPatcher, left, right, mapper);
+                    var diff = PatchElements<IList<int>>(objectPatcher, left, right, mapper);
+                    var childrenDiff = diff.AsString(10);
+                    var expect = @"
+List<Int32>(count: 3) != List<Int32>(count: 3)
+/1        2 != 12
+/2        3 != 13";
+                    AreEqual(expect, childrenDiff);
                     AssertUtils.Equivalent(left, right);
                 } {
                     // var left  = new Collection<int>(new[] {1,  2,  3});
@@ -225,7 +243,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                     var leftPatched = PatchJson(jsonPatcher, objectPatcher, left, right, mapper);
                     AreEqual(rightJson, leftPatched);
 
-                    PatchElements(objectPatcher, left, right, mapper);
+                    var diff = PatchElements(objectPatcher, left, right, mapper);
+                    var childrenDiff = diff.AsString(10);
+                    var expect = @"
+LinkedList<Int32>(count: 3) != LinkedList<Int32>(count: 3)
+/1        2 != 12
+/2        3 != 13";
+                    AreEqual(expect, childrenDiff);
                     AssertUtils.Equivalent(left, right);
                 } {
                     var left  = new HashSet<int>(new[] {1,  2,  3});
@@ -262,7 +286,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                     var leftPatched = PatchJson(jsonPatcher, objectPatcher, left, right, mapper);
                     AreEqual(rightJson, leftPatched);
 
-                    PatchElements(objectPatcher, left, right, mapper);
+                    var diff = PatchElements(objectPatcher, left, right, mapper);
+                    var childrenDiff = diff.AsString(10);
+                    var expect = @"
+Stack<Int32>(count: 3) != Stack<Int32>(count: 3)
+/1        2 != 12
+/2        3 != 13";
+                    AreEqual(expect, childrenDiff);
                     AssertUtils.Equivalent(left, right);
                 }
                 // --- Queue<>
@@ -274,7 +304,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                     var leftPatched = PatchJson(jsonPatcher, objectPatcher, left, right, mapper);
                     AreEqual(rightJson, leftPatched);
 
-                    PatchElements(objectPatcher, left, right, mapper);
+                    var diff = PatchElements(objectPatcher, left, right, mapper);
+                    var childrenDiff = diff.AsString(10);
+                    var expect = @"
+Queue<Int32>(count: 3) != Queue<Int32>(count: 3)
+/1        2 != 12
+/2        3 != 13";
+                    AreEqual(expect, childrenDiff);
                     AssertUtils.Equivalent(left, right);
                 }
             }
@@ -295,7 +331,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                     var leftPatched = PatchJson(jsonPatcher, objectPatcher, left, right, mapper);
                     AreEqual(rightJson, leftPatched);
                     
-                    PatchKeyValues(objectPatcher, left, right);
+                    var diff = PatchKeyValues(objectPatcher, left, right);
+                    var childrenDiff = diff.AsString(10);
+                    var expect =
+                        @"
+Dictionary<String, Int32> != Dictionary<String, Int32>
+/A        1 != 2
+/C        3 != (missing)
+/B        (missing) != 12";
+                    AreEqual(expect, childrenDiff);
                     AssertUtils.Equivalent(left, right);
                 } {
                     var left  = new Dictionary<string, int> {{"A", 1}, {"C",  3}};
@@ -305,7 +349,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                     var leftPatched = PatchJson(jsonPatcher, objectPatcher, left, right, mapper);
                     AreEqual(rightJson, leftPatched);
                     
-                    PatchKeyValues<IDictionary<string, int>>(objectPatcher, left, right);
+                    var diff = PatchKeyValues<IDictionary<string, int>>(objectPatcher, left, right);
+                    var childrenDiff = diff.AsString(10);
+                    var expect =
+                        @"
+Dictionary<String, Int32> != Dictionary<String, Int32>
+/A        1 != 2
+/C        3 != (missing)
+/B        (missing) != 12";
+                    AreEqual(expect, childrenDiff);
                     AssertUtils.Equivalent(left, right);
                 } {
                     var left  = new SortedDictionary<string, int> {{"A", 1}, {"C",  3}};
@@ -315,7 +367,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                     var leftPatched = PatchJson(jsonPatcher, objectPatcher, left, right, mapper);
                     AreEqual(rightJson, leftPatched);
                     
-                    PatchKeyValues(objectPatcher, left, right);
+                    var diff = PatchKeyValues(objectPatcher, left, right);
+                    var childrenDiff = diff.AsString(10);
+                    var expect =
+                        @"
+SortedDictionary<String, Int32> != SortedDictionary<String, Int32>
+/A        1 != 2
+/C        3 != (missing)
+/B        (missing) != 12";
+                    AreEqual(expect, childrenDiff);
                     AssertUtils.Equivalent(left, right);
                 } {
                     var left  = new SortedList<string, int> {{"A", 1}, {"C",  3}};
@@ -325,24 +385,27 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                     var leftPatched = PatchJson(jsonPatcher, objectPatcher, left, right, mapper);
                     AreEqual(rightJson, leftPatched);
                     
-                    PatchKeyValues(objectPatcher, left, right);
+                    var diff = PatchKeyValues(objectPatcher, left, right);
+                    var childrenDiff = diff.AsString(10);
+                    var expect =
+                        @"
+SortedList<String, Int32> != SortedList<String, Int32>
+/A        1 != 2
+/C        3 != (missing)
+/B        (missing) != 12";
+                    AreEqual(expect, childrenDiff);
                     AssertUtils.Equivalent(left, right);
                 }
             }
         }
 
-        private static void PatchElements<T>(ObjectPatcher objectPatcher, T left, T right, ObjectMapper mapper) {
+        private static DiffNode PatchElements<T>(ObjectPatcher objectPatcher, T left, T right, ObjectMapper mapper) {
             var diff = objectPatcher.differ.GetDiff(left, right, DiffElements);
             IsNotNull(diff);
             AreEqual(DiffType.None, diff.DiffType); // DiffType.None -> replace container elements
             AreEqual(2, diff.Children.Count);
-            var childrenDiff = diff.AsString(10);
-            var expect =
-@"/1        2 != 12
-/2        3 != 13
-";
-            AreEqual(expect, childrenDiff);
             PatchObject(objectPatcher, left, right, mapper);
+            return diff;
         }
         
         private static DiffNode PatchCollection<T>(ObjectPatcher objectPatcher, T left, T right, ObjectMapper mapper) {
@@ -354,19 +417,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             return diff;
         }
         
-        private static void PatchKeyValues<T>(ObjectPatcher objectPatcher, T left, T right) {
+        private static DiffNode PatchKeyValues<T>(ObjectPatcher objectPatcher, T left, T right) {
             var diff = objectPatcher.differ.GetDiff(left, right, DiffElements);
             IsNotNull(diff);
             AreEqual(3, diff.Children.Count);
-            var childrenDiff = diff.AsString(10);
-            var expect =
-                @"/A        1 != 2
-/C        3 != (missing)
-/B        (missing) != 12
-";
-            AreEqual(expect, childrenDiff);
+
             var patches = objectPatcher.CreatePatches(diff);
             objectPatcher.ApplyPatches(left, patches);
+            return diff;
         }
         
         private static void PatchObject<T>(ObjectPatcher objectPatcher, T left, T right, ObjectMapper mapper)

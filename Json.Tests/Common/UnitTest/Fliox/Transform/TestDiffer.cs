@@ -29,6 +29,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             public DiffChild    child4   { get; set; }
             public DiffChild    child5   { get; set; }
             public DiffChild    child6   { get; set; }
+            public int[]        array    { get; set; }
         }
         
         [Test]
@@ -47,6 +48,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                     child4 = null,              // equal null
                     child5 = new DiffChild(),   // only left
                     child6 = null,              // only right
+                    array = new [] {1 ,2 }
                 };
                 var right = new DiffBase {
                     child1 = new DiffChild { intVal1 = 1 },
@@ -54,26 +56,29 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                     child3 = new DiffChild(),
                     child4 = null,
                     child5 = null,
-                    child6 = new DiffChild()
+                    child6 = new DiffChild(),
+                    array = new [] {1 , 3 }
                 };
                
                 var diff    = differ.GetDiff(left, right, DiffKind.DiffArrays);
                 
-                AreEqual(4, diff.Children.Count);
+                AreEqual(5, diff.Children.Count);
                 var childrenDiff = diff.AsString(20);
-                var expectedDiff =
-@"/child1             {DiffChild} != {DiffChild}
+                var expectedDiff = @"
+{DiffBase} != {DiffBase}
+/child1             {DiffChild} != {DiffChild}
 /child1/intVal1     0 != 1
 /child2             {DiffChild} != {DiffChild}
 /child2/intVal2     0 != 2
 /child5             {DiffChild} != null
 /child6             null != {DiffChild}
-"; 
+/array              Int32[](count: 2) != Int32[](count: 2)
+/array/1            2 != 3"; 
                 AreEqual(expectedDiff, childrenDiff);
                 
                 var json    = jsonDiff.CreateJsonDiff(diff);
                 var expectedJson =
-                "{'child1':{'intVal1':1},'child2':{'intVal2':2},'child5':null,'child6':{'intVal1':0,'intVal2':0}}".Replace('\'', '\"'); 
+                "{'child1':{'intVal1':1},'child2':{'intVal2':2},'child5':null,'child6':{'intVal1':0,'intVal2':0},'array':[1,3]}".Replace('\'', '\"'); 
                 AreEqual(expectedJson, json.AsString());
                 
                 var start = GC.GetAllocatedBytesForCurrentThread();
