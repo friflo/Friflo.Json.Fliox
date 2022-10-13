@@ -77,7 +77,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 var diff    = differ.GetDiff(left, right, DiffKind.DiffArrays);
                 
                 AreEqual(7, diff.Children.Count);
-                var childrenDiff = diff.TextIndent(20);
+                var diffText    = diff.TextIndent(20);
                 var expectedDiff = @"
 /                   {DiffBase} != {DiffBase}
 /child1             {DiffChild} != {DiffChild}
@@ -91,7 +91,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
 /array4             Int32[](count: 1) != null
 /array5             null != Int32[](count: 1)
 "; 
-                AreEqual(expectedDiff, childrenDiff);
+                AreEqual(expectedDiff, diffText);
                 
                 var json    = jsonDiff.CreateJsonDiff(diff);
                 var expectedJson =
@@ -129,9 +129,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                     dict1 = new Dictionary<string, string>{{"key1", "B"}}
                 };
                 
-                var diff        = MergeDiff(left, right, differ, mapper, jsonDiff);
-                var diffText    = diff.TextIndent(20);
-                var expectedDiff= @"
+                var diff            = MergeDiff(left, right, differ, mapper, jsonDiff);
+                var diffText        = diff.TextIndent(20);
+                var expectedDiff    = @"
 /                   {DiffDict} != {DiffDict}
 /dict1              Dictionary<String, String> != Dictionary<String, String>
 /dict1/key1         'A' != 'B'
