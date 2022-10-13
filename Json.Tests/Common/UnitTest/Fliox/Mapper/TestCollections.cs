@@ -26,7 +26,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
         
         private void AssertCompare<T>(TypeStore typeStore, T left, T right) {
             using (var differ = new ObjectDiffer(typeStore)) {
-                var diff = differ.GetDiff(left, right);
+                var diff = differ.GetDiff(left, right, DiffKind.DiffElements);
                 IsNull(diff);
             }
         }

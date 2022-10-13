@@ -57,7 +57,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                     child6 = new DiffChild()
                 };
                
-                var diff    = differ.GetDiff(left, right);
+                var diff    = differ.GetDiff(left, right, DiffKind.DiffArrays);
                 
                 AreEqual(4, diff.Children.Count);
                 var childrenDiff = diff.AsString(20);
@@ -78,7 +78,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 
                 var start = GC.GetAllocatedBytesForCurrentThread();
                 for (int n = 0; n < 10; n++) {
-                    differ.GetDiff(left, right);
+                    differ.GetDiff(left, right, DiffKind.DiffArrays);
                 }
                 var diffAlloc =  GC.GetAllocatedBytesForCurrentThread() - start;
                 AreEqual(0, diffAlloc);

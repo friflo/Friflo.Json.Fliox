@@ -43,7 +43,7 @@ namespace Friflo.Json.Fliox.Mapper
         }
         
         public List<JsonPatch> GetPatches<T>(T left, T right) {
-            var diff    = differ.GetDiff(left, right);
+            var diff    = differ.GetDiff(left, right, DiffKind.DiffElements);
             var patches = CreatePatches(diff);
             return patches;
         }
