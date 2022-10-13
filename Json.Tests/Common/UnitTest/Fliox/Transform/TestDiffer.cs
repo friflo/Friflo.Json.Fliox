@@ -10,6 +10,7 @@ using Friflo.Json.Tests.Unity.Utils;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
 
+// ReSharper disable ConvertToConstant.Local
 // ReSharper disable InconsistentNaming
 // ReSharper disable UnusedAutoPropertyAccessor.Local
 namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
@@ -30,16 +31,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             public DiffChild    child4   { get; set; }
             public DiffChild    child5   { get; set; }
             public DiffChild    child6   { get; set; }
-            
-            public int[]        array1   { get; set; }
-            public int[]        array2   { get; set; }
-            public int[]        array3   { get; set; }
-            public int[]        array4   { get; set; }
-            public int[]        array5   { get; set; }
         }
         
         [Test]
-        public void TestDiff() {
+        public void TestDiffClass() {
             using (var typeStore        = new TypeStore()) 
             using (var mapper           = new ObjectMapper(typeStore))
             using (var differ           = new ObjectDiffer(typeStore))
@@ -52,12 +47,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                     child4 = null,              // equal null
                     child5 = new DiffChild(),   // only left
                     child6 = null,              // only right
-                    
-                    array1 = new [] {1,   2},   // not equal
-                    array2 = new [] {11, 12},   // equal
-                    array3 = null,              // equal - both null
-                    array4 = new [] {22},       // left only
-                    array5 = null               // right only
                 };
                 var right = new DiffBase {
                     child1 = new DiffChild { intVal1 = 1 },
@@ -66,17 +55,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                     child4 = null,
                     child5 = null,
                     child6 = new DiffChild(),
-                    
-                    array1 = new [] {1,   3},
-                    array2 = new [] {11, 12},
-                    array3 = null,
-                    array4 = null,
-                    array5 = new [] {33}
                 };
                
                 var diff    = differ.GetDiff(left, right, DiffKind.DiffArrays);
                 
-                AreEqual(7, diff.Children.Count);
+                AreEqual(4, diff.Children.Count);
                 var diffText    = diff.TextIndent(20);
                 var expectedDiff = @"
 /                   {DiffBase} != {DiffBase}
@@ -86,16 +69,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
 /child2/intVal2     0 != 2
 /child5             {DiffChild} != null
 /child6             null != {DiffChild}
-/array1             Int32[](count: 2) != Int32[](count: 2)
-/array1/1           2 != 3
-/array4             Int32[](count: 1) != null
-/array5             null != Int32[](count: 1)
 "; 
                 AreEqual(expectedDiff, diffText);
                 
                 var json    = jsonDiff.CreateJsonDiff(diff);
                 var expectedJson =
-                "{'child1':{'intVal1':1},'child2':{'intVal2':2},'child5':null,'child6':{'intVal1':0,'intVal2':0},'array1':[1,3],'array4':null,'array5':[33]}".Replace('\'', '\"'); 
+                "{'child1':{'intVal1':1},'child2':{'intVal2':2},'child5':null,'child6':{'intVal1':0,'intVal2':0}}".Replace('\'', '\"'); 
                 AreEqual(expectedJson, json.AsString());
                 
                 MergeDiff(left, right, differ, mapper, jsonDiff);
@@ -110,7 +89,55 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             }
         }
         
-        class DiffDict
+        class DiffArray
+        {
+            public int[]        array1   { get; set; }
+            public int[]        array2   { get; set; }
+            public int[]        array3   { get; set; }
+            public int[]        array4   { get; set; }
+            public int[]        array5   { get; set; }
+        }
+        
+        [Test]
+        public void TestDiffArray() {
+            using (var typeStore        = new TypeStore()) 
+            using (var mapper           = new ObjectMapper(typeStore))
+            using (var differ           = new ObjectDiffer(typeStore))
+            using (var jsonDiff         = new JsonDiff(typeStore))
+            {
+                var left  = new DiffArray {
+                    array1 = new [] {1,   2},   // not equal
+                    array2 = new [] {11, 12},   // equal
+                    array3 = null,              // equal - both null
+                    array4 = new [] {22},       // left only
+                    array5 = null               // right only
+                };
+                var right = new DiffArray {
+                    array1 = new [] {1,   3},
+                    array2 = new [] {11, 12},
+                    array3 = null,
+                    array4 = null,
+                    array5 = new [] {33}
+                };
+                
+                var diff            = MergeDiff(left, right, differ, mapper, jsonDiff);
+                var diffText        = diff.TextIndent(20);
+                var expectedDiff    = @"
+/                   {DiffArray} != {DiffArray}
+/array1             Int32[](count: 2) != Int32[](count: 2)
+/array1/1           2 != 3
+/array4             Int32[](count: 1) != null
+/array5             null != Int32[](count: 1)
+";
+                AreEqual(expectedDiff, diffText);
+                
+                var patch   = jsonDiff.CreateJsonDiff(diff);
+                var expected= "{'array1':[1,3],'array4':null,'array5':[33]}".Replace('\'', '\"');
+                AreEqual(expected, patch.ToString());
+            }
+        }
+        
+        class DiffDictionary
         {
             public Dictionary<string, string>   dict1   { get; set; }
             public Dictionary<string, string>   dict2   { get; set; }
@@ -126,14 +153,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             using (var differ           = new ObjectDiffer(typeStore))
             using (var jsonDiff         = new JsonDiff(typeStore))
             {
-                var left  = new DiffDict {
+                var left  = new DiffDictionary {
                     dict1 = new Dictionary<string, string>{{"key1", "A"}},  // not equal
                     dict2 = new Dictionary<string, string>{{"key2", "C"}},  // equal
                     dict3 = null,                                           // equal - both null
                     dict4 = new Dictionary<string, string>{{"key4", "D"}},  // only left
                     dict5 = null                                            // only right
                 };
-                var right = new DiffDict {
+                var right = new DiffDictionary {
                     dict1 = new Dictionary<string, string>{{"key1", "B"}},
                     dict2 = new Dictionary<string, string>{{"key2", "C"}},
                     dict3 = null,
@@ -144,7 +171,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 var diff            = MergeDiff(left, right, differ, mapper, jsonDiff);
                 var diffText        = diff.TextIndent(20);
                 var expectedDiff    = @"
-/                   {DiffDict} != {DiffDict}
+/                   {DiffDictionary} != {DiffDictionary}
 /dict1              Dictionary<String, String> != Dictionary<String, String>
 /dict1/key1         'A' != 'B'
 /dict4              Dictionary<String, String> != null
