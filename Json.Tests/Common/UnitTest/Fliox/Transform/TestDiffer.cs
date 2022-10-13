@@ -39,8 +39,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             using (var differ           = new ObjectDiffer(typeStore))
             using (var jsonDiff         = new JsonDiff(typeStore))
             {
-                mapper.Pretty = true;
-
                 var left  = new DiffBase {
                     child1 = new DiffChild(),
                     child2 = new DiffChild(),
@@ -82,6 +80,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 "{'child1':{'intVal1':1},'child2':{'intVal2':2},'child5':null,'child6':{'intVal1':0,'intVal2':0},'array':[1,3]}".Replace('\'', '\"'); 
                 AreEqual(expectedJson, json.AsString());
                 
+                MergeDiff(left, right, differ, mapper, jsonDiff);
+                
                 var start = GC.GetAllocatedBytesForCurrentThread();
                 for (int n = 0; n < 10; n++) {
                     differ.GetDiff(left, right, DiffKind.DiffArrays);
@@ -90,6 +90,21 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 AreEqual(0, diffAlloc);
                 Console.WriteLine($"Diff allocations: {diffAlloc}");
             }
+        }
+        
+        private static DiffNode MergeDiff<T>(T left, T right, ObjectDiffer differ, ObjectMapper mapper, JsonDiff jsonDiff) {
+            var diff            = differ.GetDiff(left, right, DiffKind.DiffArrays);
+            var patch           = jsonDiff.CreateJsonDiff(diff);
+            
+            var leftJson        = mapper.Write(left);
+            var leftCopy        = mapper.Read<T>(leftJson);
+            
+            var merge           = mapper.ReadTo(patch, leftCopy);
+            var mergeJson       = mapper.Write(merge);
+            var expectedJson    = mapper.Write(right);
+            
+            AreEqual(expectedJson, mergeJson);
+            return diff;
         }
         
         [Test]
