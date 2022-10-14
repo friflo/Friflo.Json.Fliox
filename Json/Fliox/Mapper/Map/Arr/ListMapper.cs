@@ -142,23 +142,27 @@ namespace Friflo.Json.Fliox.Mapper.Map.Arr
         }
         
         public override void Copy(List<TElm> src, ref List<TElm> dst) {
-            int startLen = 0;
+            int dstCount = 0;
             if (dst == null) {
                 dst = new List<TElm>(src.Count);
             } else {
-                startLen = dst.Count;
+                dstCount = dst.Count;
             }
-            int n = 0;
+            int dstIndex = 0;
             foreach (var srcElement in src) {
-                if (n < startLen) {
-                    var dstElement = dst[n];
+                if (dstIndex < dstCount) {
+                    var dstElement = dst[dstIndex];
                     elementType.Copy(srcElement, ref dstElement);
-                    dst[n++] = dstElement;
+                    dst[dstIndex++] = dstElement;
                 } else {
                     var toElement = (TElm)elementType.CreateInstance();
                     elementType.Copy(srcElement, ref toElement);
                     dst.Add(toElement);   
                 }
+            }
+            // list.RemoveRange(index, startLen - index);
+            for (int n = dstCount - 1; n >= dstIndex; n--) {
+                dst.RemoveAt(n); // todo check O(n)
             }
         }
     }

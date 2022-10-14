@@ -16,10 +16,12 @@ namespace Friflo.Json.Fliox.Mapper
         }
         
         public void DeepCopy<T>(T from, ref T target) {
-            if (target == null) throw new ArgumentNullException(nameof(target));
             if (from == null) {
                 target = default;
                 return;
+            }
+            if (target == null) {
+                target = default;
             }
             var mapper = (TypeMapper<T>) typeCache.GetTypeMapper(typeof(T));
             mapper.Copy(from, ref target);

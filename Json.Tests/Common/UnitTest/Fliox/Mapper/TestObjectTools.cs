@@ -81,8 +81,60 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
                     var dst = new List<int> ();
                     DeepCopy(src , ref dst, Same, mapper, tools);
                 } {
+                    var src = new List<int> { 2 };
+                    var dst = new List<int> { 10, 11 };
+                    DeepCopy(src , ref dst, Same, mapper, tools);
+                } {
                     var src = new List<ToolsClass> { new ToolsClass() };
                     var dst = new List<ToolsClass> ();
+                    DeepCopy(src , ref dst, Same, mapper, tools);
+                } {
+                    var src = new List<ToolsClass> { new ToolsClass() };
+                    var dst = new List<ToolsClass> { new ToolsClass(), new ToolsClass() };
+                    DeepCopy(src , ref dst, Same, mapper, tools);
+                }
+                // --- ICollection<>
+                {
+                    ICollection<int> src    = new List<int> { 2 };
+                    ICollection<int> dst    = new List<int> ();
+                    DeepCopy(src , ref dst, Same, mapper, tools);
+                } {
+                    ICollection<int> src    = new List<int> { 2 };
+                    ICollection<int> dst    = new List<int> { 10, 11 };
+                    DeepCopy(src , ref dst, Same, mapper, tools);
+                } {
+                    ICollection<int> src    = new List<int> { 2 };
+                    ICollection<int> dst    = null;
+                    DeepCopy(src , ref dst, NotSame, mapper, tools);
+                } {
+                    ICollection<ToolsClass> src = new List<ToolsClass> { new ToolsClass() };
+                    ICollection<ToolsClass> dst = null;
+                    DeepCopy(src , ref dst, NotSame, mapper, tools);
+                } {
+                    ICollection<ToolsClass> src = new List<ToolsClass> { new ToolsClass(), new ToolsClass() };
+                    ICollection<ToolsClass> dst = null;
+                    DeepCopy(src , ref dst, NotSame, mapper, tools);
+                }
+                // --- IList<>
+                {
+                    IList<int> src  = new List<int> { 2 };
+                    IList<int> dst  = new List<int> ();
+                    DeepCopy(src , ref dst, Same, mapper, tools);
+                } {
+                    IList<int> src  = new List<int> { 2 };
+                    IList<int> dst  = new List<int> { 10, 11 };
+                    DeepCopy(src , ref dst, Same, mapper, tools);
+                } {
+                    IList<int> src  = new List<int> { 2 };
+                    IList<int> dst  = null;
+                    DeepCopy(src , ref dst, NotSame, mapper, tools);
+                } {
+                    IList<ToolsClass> src   = new List<ToolsClass> { new ToolsClass() };
+                    IList<ToolsClass> dst   = null;
+                    DeepCopy(src , ref dst, NotSame, mapper, tools);
+                } {
+                    IList<ToolsClass> src   = new List<ToolsClass> { new ToolsClass() };
+                    IList<ToolsClass> dst   = new List<ToolsClass> { new ToolsClass(), new ToolsClass() };
                     DeepCopy(src , ref dst, Same, mapper, tools);
                 }
             }
