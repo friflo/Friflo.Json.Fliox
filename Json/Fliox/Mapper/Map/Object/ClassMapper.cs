@@ -337,5 +337,29 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object
                 ev = reader.parser.NextEvent();
             }
         }
+        
+        public override void Copy (T from, ref T to) {
+            var fields = propFields.typedFields;
+            for (int n = 0; n < fields.Length; n++) {
+                var field           = fields[n];
+                var member          = field.member;
+                var fromMemberVar   = member.GetVar(from);
+                if (fromMemberVar.IsNull) {
+                    member.SetVar(to, field.varType.DefaultValue);
+                    continue;
+                }
+                var fieldType   = field.fieldType;
+                Var toMemberVar = new Var();
+                if (!fieldType.isValueType) {
+                    toMemberVar = member.GetVar(to);
+                    if (toMemberVar.IsNull) {
+                        var newInstance = fieldType.CreateInstance(); 
+                        toMemberVar = new Var(newInstance);
+                    }
+                }
+                fieldType.CopyVar(fromMemberVar, ref toMemberVar);
+                member.SetVar(to, toMemberVar);
+            }
+        }
     }
 }

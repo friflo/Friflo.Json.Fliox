@@ -83,6 +83,8 @@ namespace Friflo.Json.Fliox.Mapper.Map
         internal abstract void      WriteValueIL    (ref Writer writer, ClassMirror mirror, int primPos, int objPos);
         internal abstract bool      ReadValueIL     (ref Reader reader, ClassMirror mirror, int primPos, int objPos);
         
+        public   abstract void       CopyVar         (in Var from, ref Var to);
+        
         public   abstract object    CreateInstance();
 
         public   virtual  bool      IsNullVar       (in Var value) => value.IsNull;
@@ -119,9 +121,12 @@ namespace Friflo.Json.Fliox.Mapper.Map
 
         public abstract void        Write       (ref Writer writer, TVal slot);
         public abstract TVal        Read        (ref Reader reader, TVal slot, out bool success);
-
+        
         public virtual Var ToVar(TVal value) {
             return new Var(value);
+        }
+        public virtual TVal FromVar(in Var value) {
+            return (TVal)value.TryGetObject();
         }
 
         public virtual DiffType Diff(Differ differ, TVal left, TVal right) {
@@ -165,6 +170,17 @@ namespace Friflo.Json.Fliox.Mapper.Map
             }
             return new Var(Read(ref reader, default, out success));
         }
+        
+        public override void CopyVar (in Var from, ref Var to) {
+            var fromObject  = (TVal)from.TryGetObject();
+            var toObject    = (TVal)to.TryGetObject();
+            Copy(fromObject, ref toObject);
+        }
+        
+        public virtual void Copy (TVal from, ref TVal to) {
+            
+        }
+
 
         public override      void    Dispose() { }
         
