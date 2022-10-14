@@ -139,17 +139,13 @@ namespace Friflo.Json.Fliox.Mapper.Diff
         public void PushKey     (TypeMapper mapper, object key) {
             path[pathIndex++] = new TypeNode(key, -1, mapper);
         }
-        
-        public void PushElement (TypeMapper elementType, int index) {
-            path[pathIndex++] = new TypeNode(null, index, elementType);
-        }
 
         public void Pop() {
             path[--pathIndex] = default; // clear references
         }
 
         public DiffType DiffElement<T> (TypeMapper<T> elementType, int index, T leftItem, T rightItem) {
-            PushElement(elementType, index);
+            path[pathIndex++] = new TypeNode(null, index, elementType);
             var result = elementType.Diff(this, leftItem, rightItem);
             Pop();
             return result;
