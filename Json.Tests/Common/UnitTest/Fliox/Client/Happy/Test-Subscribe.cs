@@ -559,10 +559,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                     var applyInfos  = applyResult.applyInfos;
                     switch (eventCount++) {
                         case 0:
-                            AreEqual(1,                             applyInfos.Count);
-                            AreEqual(ApplyInfoType.EntityCreated,   applyInfos[0].type);
-                            AreEqual("a-1",                         applyInfos[0].key);
-                            NotNull (                               applyInfos[0].entity);
+                            AreEqual(1,                                     applyInfos.Count);
+                            var info = applyInfos[0];
+                            AreEqual(ApplyInfoType.EntityCreated,           info.type);
+                            AreEqual("a-1",                                 info.key);
+                        
+                            NotNull (                                       info.entity);
+                            AreEqual("{\"id\":\"a-1\",\"name\":\"Name1\"}", info.rawEntity.AsString());
                             break;                            
                         case 1:
                             // "a-1" is already applied. Only "a-2" is a new entity

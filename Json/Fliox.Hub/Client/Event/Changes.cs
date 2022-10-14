@@ -250,13 +250,15 @@ namespace Friflo.Json.Fliox.Hub.Client
         public readonly ApplyInfoType   type;
         public readonly TKey            key;
         public readonly T               entity;
+        public readonly JsonValue       rawEntity;
 
         public override string          ToString() => $"{type} key: {key}"; 
 
-        internal ApplyInfo(ApplyInfoType type, TKey key, T entity) {
-            this.type   = type;
-            this.key    = key;
-            this.entity = entity;
+        internal ApplyInfo(ApplyInfoType type, TKey key, T entity, in JsonValue rawEntity) {
+            this.type       = type;
+            this.key        = key;
+            this.entity     = entity;
+            this.rawEntity  = rawEntity;
         }
     }
 

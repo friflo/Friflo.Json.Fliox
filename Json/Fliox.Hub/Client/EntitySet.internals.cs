@@ -260,7 +260,7 @@ namespace Friflo.Json.Fliox.Hub.Client
                     applyType |= ApplyInfoType.ParseError;
                 }
                 var key = Static.KeyConvert.IdToKey(id);
-                applyInfos.Add(new ApplyInfo<TKey,T>(applyType, key, entity));
+                applyInfos.Add(new ApplyInfo<TKey,T>(applyType, key, entity, json));
             }
         }
         
@@ -269,7 +269,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             foreach (var key in keys) {
                 var found   = peers.Remove(key);
                 var type    = found ? ApplyInfoType.EntityDeleted : default;
-                applyInfos.Add(new ApplyInfo<TKey,T>(type, key, default));
+                applyInfos.Add(new ApplyInfo<TKey,T>(type, key, default, default));
             }
         }
         
