@@ -15,11 +15,18 @@ namespace Friflo.Json.Fliox.Mapper
         }
         
         public void DeepCopy<T>(T from, ref T target) {
+            if (from == null) {
+                target = default;
+                return;
+            }
             var mapper = (TypeMapper<T>) typeCache.GetTypeMapper(typeof(T));
             mapper.Copy(from, ref target);
         }
         
         public T Clone<T>(T value) where T : new() {
+            if (value == null) {
+                return default;
+            }
             var mapper  = (TypeMapper<T>) typeCache.GetTypeMapper(typeof(T));
             var clone   = new T();
             mapper.Copy(value, ref clone);
