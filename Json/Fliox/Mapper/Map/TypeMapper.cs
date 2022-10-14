@@ -178,9 +178,11 @@ namespace Friflo.Json.Fliox.Mapper.Map
         }
         
         public virtual void Copy (TVal from, ref TVal to) {
-            
+            var fromVar = ToVar(from);
+            var toVar   = ToVar(to);
+            CopyVar(fromVar, ref toVar);
+            to          = FromVar(toVar);
         }
-
 
         public override      void    Dispose() { }
         

@@ -52,14 +52,18 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
             }
         }
         
-        // [Test]
+        [Test]
         public void TestToolsCopyArray() {
             using (var typeStore        = new TypeStore()) 
             using (var mapper           = new ObjectMapper(typeStore)) {
                 var  tools = new ObjectTools(typeStore);
                 {
-                    var from    = new ToolsClass { child = new ToolsChild() };
-                    var target  = new ToolsClass { child = null };
+                    var from    = new int [] { 1 };
+                    var target  = new int [] {};
+                    DeepCopy(from, ref target, mapper, tools);
+                } {
+                    var from    = new [] { 2 };
+                    var target  = new [] { 3 };
                     DeepCopy(from, ref target, mapper, tools);
                 }
             }
@@ -95,7 +99,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
                 var  tools = new ObjectTools(typeStore);
                 {
                     int target = 0;
-                    DeepCopy<int>(1, ref target, mapper, tools);
+                    DeepCopy(1, ref target, mapper, tools);
                 }
             }
         }

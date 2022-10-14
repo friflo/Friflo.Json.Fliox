@@ -1,6 +1,7 @@
 // Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System;
 using Friflo.Json.Fliox.Mapper.Map;
 using Friflo.Json.Fliox.Mapper.Utils;
 
@@ -15,6 +16,7 @@ namespace Friflo.Json.Fliox.Mapper
         }
         
         public void DeepCopy<T>(T from, ref T target) {
+            if (target == null) throw new ArgumentNullException(nameof(target));
             if (from == null) {
                 target = default;
                 return;
