@@ -83,7 +83,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
         internal abstract void      WriteValueIL    (ref Writer writer, ClassMirror mirror, int primPos, int objPos);
         internal abstract bool      ReadValueIL     (ref Reader reader, ClassMirror mirror, int primPos, int objPos);
         
-        public   abstract void       CopyVar         (in Var from, ref Var to);
+        public   abstract void      CopyVar         (in Var src, ref Var dst);
         
         public   abstract object    CreateInstance();
 
@@ -171,17 +171,17 @@ namespace Friflo.Json.Fliox.Mapper.Map
             return new Var(Read(ref reader, default, out success));
         }
         
-        public override void CopyVar (in Var from, ref Var to) {
-            var fromObject  = (TVal)from.TryGetObject();
-            var toObject    = (TVal)to.TryGetObject();
-            Copy(fromObject, ref toObject);
+        public override void CopyVar(in Var src, ref Var dst) {
+            var srcObject   = (TVal)src.TryGetObject();
+            var dstObject   = (TVal)dst.TryGetObject();
+            Copy(srcObject, ref dstObject);
         }
         
-        public virtual void Copy (TVal from, ref TVal to) {
-            var fromVar = ToVar(from);
-            var toVar   = ToVar(to);
-            CopyVar(fromVar, ref toVar);
-            to          = FromVar(toVar);
+        public virtual void Copy(TVal src, ref TVal dst) {
+            var srcVar  = ToVar(src);
+            var dstVar  = ToVar(dst);
+            CopyVar(srcVar, ref dstVar);
+            dst         = FromVar(dstVar);
         }
 
         public override      void    Dispose() { }

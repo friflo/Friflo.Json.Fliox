@@ -146,5 +146,26 @@ namespace Friflo.Json.Fliox.Mapper.Map.Arr
                 }
             }
         }
+        
+        public override void Copy(TCol src, ref TCol dst) {
+            int startLen = 0;
+            if (dst == null) {
+                dst = (TCol) CreateInstance();
+            } else {
+                startLen = dst.Count;
+            }
+            int n = 0;
+            foreach (var srcElement in src) {
+                if (n < startLen) {
+                    var dstElement = dst[n];
+                    elementType.Copy(srcElement, ref dstElement);
+                    dst[n++] = dstElement;
+                } else {
+                    TElm toElement = (TElm)elementType.CreateInstance();
+                    elementType.Copy(srcElement, ref toElement);
+                    dst.Add(toElement);   
+                }
+            }
+        }
     }
 }

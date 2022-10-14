@@ -146,5 +146,15 @@ namespace Friflo.Json.Fliox.Mapper.Map.Arr
                 }
             }
         }
+        
+        public override void Copy(TElm[] src, ref TElm[] dst) {
+            int len = src.Length; 
+            if (len != dst.Length) {
+                dst = new TElm[len];
+            }
+            for (int n = 0; n  < len; n++) {
+                elementType.Copy(src[n], ref dst[n]);
+            }
+        }
     }
 }

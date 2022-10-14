@@ -34,7 +34,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
         public override Var         ToVar   (string value)                              => new Var(value);
         public override string      FromVar (in Var value)                              => value.String;
         public override Var         ReadVar (ref Reader reader, in Var value, out bool success) => new Var(Read(ref reader, value.String, out success));
-        public override void        CopyVar (in Var from, ref Var to)                   => to = new Var(from.String);
+        public override void        CopyVar (in Var src, ref Var dst)                   => dst = new Var(src.String);
         
         public override string Read(ref Reader reader, string slot, out bool success) {
             if (reader.parser.Event != JsonEvent.ValueString)
@@ -70,7 +70,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
         public override Var         ToVar   (double value)                              => new Var(value);
         public override double      FromVar (in Var value)                              => value.Flt64;
         public override Var         ReadVar (ref Reader reader, in Var value, out bool success) => new Var(Read(ref reader, value.Flt64, out success));
-        public override void        CopyVar (in Var from, ref Var to)                   => to = new Var(from.Flt64);
+        public override void        CopyVar (in Var src, ref Var dst)                   => dst = new Var(src.Flt64);
 
         public override double Read(ref Reader reader, double slot, out bool success) {
             if (reader.parser.Event != JsonEvent.ValueNumber)
@@ -90,7 +90,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
         public override Var         ToVar   (double? value)                             => new Var(value);
         public override double?     FromVar (in Var value)                              => value.Flt64Null;
         public override Var         ReadVar (ref Reader reader, in Var value, out bool success) => new Var(Read(ref reader, value.Flt64Null, out success));
-        public override void        CopyVar (in Var from, ref Var to)                   => to = new Var(from.Flt64Null);
+        public override void        CopyVar (in Var src, ref Var dst)                   => dst = new Var(src.Flt64Null);
 
         public override double? Read(ref Reader reader, double? slot, out bool success) {
             if (reader.parser.Event != JsonEvent.ValueNumber)
@@ -123,7 +123,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
         public override Var         ToVar   (float value)                               => new Var(value);
         public override float       FromVar (in Var value)                              => value.Flt32;
         public override Var         ReadVar (ref Reader reader, in Var value, out bool success) => new Var(Read(ref reader, value.Flt32, out success));
-        public override void        CopyVar (in Var from, ref Var to)                   => to = new Var(from.Flt32);
+        public override void        CopyVar (in Var src, ref Var dst)                   => dst = new Var(src.Flt32);
         
         public override float Read(ref Reader reader, float slot, out bool success) {
             if (reader.parser.Event != JsonEvent.ValueNumber)
@@ -143,7 +143,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
         public override Var         ToVar   (float? value)                              => new Var(value);
         public override float?      FromVar (in Var value)                              => value.Flt32Null;
         public override Var         ReadVar (ref Reader reader, in Var value, out bool success) => new Var(Read(ref reader, value.Flt32Null, out success));
-        public override void        CopyVar (in Var from, ref Var to)                   => to = new Var(from.Flt32Null);
+        public override void        CopyVar (in Var src, ref Var dst)                   => dst = new Var(src.Flt32Null);
         
         public override float? Read(ref Reader reader, float? slot, out bool success) {
             if (reader.parser.Event != JsonEvent.ValueNumber)
@@ -176,7 +176,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
         public override Var         ToVar   (long value)                                => new Var(value);
         public override long        FromVar (in Var value)                              => value.Int64;
         public override Var         ReadVar (ref Reader reader, in Var value, out bool success) => new Var(Read(ref reader, value.Int64, out success));
-        public override void        CopyVar (in Var from, ref Var to)                   => to = new Var(from.Int64);
+        public override void        CopyVar (in Var src, ref Var dst)                   => dst = new Var(src.Int64);
         
         public override long Read(ref Reader reader, long slot, out bool success) {
             if (reader.parser.Event != JsonEvent.ValueNumber)
@@ -196,7 +196,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
         public override Var         ToVar   (long? value)                               => new Var(value);
         public override long?       FromVar (in Var value)                              => value.Int64Null;
         public override Var         ReadVar (ref Reader reader, in Var value, out bool success) => new Var(Read(ref reader, value.Int64Null, out success));
-        public override void        CopyVar (in Var from, ref Var to)                   => to = new Var(from.Int64Null);
+        public override void        CopyVar (in Var src, ref Var dst)                   => dst = new Var(src.Int64Null);
         
         public override long? Read(ref Reader reader, long? slot, out bool success) {
             if (reader.parser.Event != JsonEvent.ValueNumber)
@@ -229,7 +229,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
         public override Var         ToVar   (int value)                                 => new Var(value);
         public override int         FromVar (in Var value)                              => value.Int32;
         public override Var         ReadVar (ref Reader reader, in Var value, out bool success) => new Var(Read(ref reader, value.Int32, out success));
-        public override void        CopyVar (in Var from, ref Var to)                   => to = new Var(from.Int32);
+        public override void        CopyVar (in Var src, ref Var dst)                   => dst = new Var(src.Int32);
         
         public override int Read(ref Reader reader, int slot, out bool success) {
             if (reader.parser.Event != JsonEvent.ValueNumber)
@@ -249,7 +249,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
         public override Var         ToVar   (int? value)                                => new Var(value);
         public override int?        FromVar (in Var value)                              => value.Int32Null;
         public override Var         ReadVar (ref Reader reader, in Var value, out bool success) => new Var(Read(ref reader, value.Int32Null, out success));
-        public override void        CopyVar (in Var from, ref Var to)                   => to = new Var(from.Int32Null);
+        public override void        CopyVar (in Var src, ref Var dst)                   => dst = new Var(src.Int32Null);
         
         public override int? Read(ref Reader reader, int? slot, out bool success) {
             if (reader.parser.Event != JsonEvent.ValueNumber)
@@ -282,7 +282,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
         public override Var         ToVar   (short value)                               => new Var(value);
         public override short       FromVar (in Var value)                              => value.Int16;
         public override Var         ReadVar (ref Reader reader, in Var value, out bool success) => new Var(Read(ref reader, value.Int16, out success));
-        public override void        CopyVar (in Var from, ref Var to)                   => to = new Var(from.Int16);
+        public override void        CopyVar (in Var src, ref Var dst)                   => dst = new Var(src.Int16);
         
         public override short Read(ref Reader reader, short slot, out bool success) {
             if (reader.parser.Event != JsonEvent.ValueNumber)
@@ -302,7 +302,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
         public override Var         ToVar   (short? value)                              => new Var(value);
         public override short?      FromVar (in Var value)                              => value.Int16Null;
         public override Var         ReadVar (ref Reader reader, in Var value, out bool success) => new Var(Read(ref reader, value.Int16Null, out success));
-        public override void        CopyVar (in Var from, ref Var to)                   => to = new Var(from.Int16Null);
+        public override void        CopyVar (in Var src, ref Var dst)                   => dst = new Var(src.Int16Null);
         
         public override short? Read(ref Reader reader, short? slot, out bool success) {
             if (reader.parser.Event != JsonEvent.ValueNumber)
@@ -336,7 +336,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
         public override Var         ToVar   (byte value)                                => new Var(value);
         public override byte        FromVar (in Var value)                              => value.Int8;
         public override Var         ReadVar (ref Reader reader, in Var value, out bool success) => new Var(Read(ref reader, value.Int8, out success));
-        public override void        CopyVar (in Var from, ref Var to)                   => to = new Var(from.Int8);
+        public override void        CopyVar (in Var src, ref Var dst)                   => dst = new Var(src.Int8);
         
         public override byte Read(ref Reader reader, byte slot, out bool success) {
             if (reader.parser.Event != JsonEvent.ValueNumber)
@@ -356,7 +356,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
         public override Var         ToVar   (byte? value)                               => new Var(value);
         public override byte?       FromVar (in Var value)                              => value.Int8Null;
         public override Var         ReadVar (ref Reader reader, in Var value, out bool success) => new Var(Read(ref reader, value.Int8Null, out success));
-        public override void        CopyVar (in Var from, ref Var to)                   => to = new Var(from.Int8Null);
+        public override void        CopyVar (in Var src, ref Var dst)                   => dst = new Var(src.Int8Null);
         
         public override byte? Read(ref Reader reader, byte? slot, out bool success) {
             if (reader.parser.Event != JsonEvent.ValueNumber)
@@ -390,7 +390,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
         public override Var         ToVar   (bool value)                                => new Var(value);
         public override bool        FromVar (in Var value)                              => value.Bool;
         public override Var         ReadVar (ref Reader reader, in Var value, out bool success) => new Var(Read(ref reader, value.Bool, out success));
-        public override void        CopyVar (in Var from, ref Var to)                   => to = new Var(from.Bool);
+        public override void CopyVar(in Var src, ref Var dst)                   => dst = new Var(src.Bool);
         
         public override bool Read(ref Reader reader, bool slot, out bool success) {
             if (reader.parser.Event != JsonEvent.ValueBool)
@@ -410,7 +410,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
         public override Var         ToVar   (bool? value)                               => new Var(value);
         public override bool?       FromVar (in Var value)                              => value.BoolNull;
         public override Var         ReadVar (ref Reader reader, in Var value, out bool success) => new Var(Read(ref reader, value.BoolNull, out success));
-        public override void        CopyVar (in Var from, ref Var to)                   => to = new Var(from.BoolNull);
+        public override void        CopyVar (in Var src, ref Var dst)                   => dst = new Var(src.BoolNull);
         
         public override bool? Read(ref Reader reader, bool? slot, out bool success) {
             if (reader.parser.Event != JsonEvent.ValueBool)

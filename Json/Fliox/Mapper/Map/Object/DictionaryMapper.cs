@@ -167,28 +167,28 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object
             }
         }
         
-        public override void Copy (TMap from, ref TMap to) {
-            foreach (var fromEntry in from) {
-                var fromKey     = fromEntry.Key;
-                if (!to.TryGetValue(fromKey, out TElm toValue)) {
+        public override void Copy(TMap src, ref TMap dst) {
+            foreach (var srcEntry in src) {
+                var srcKey      = srcEntry.Key;
+                if (!dst.TryGetValue(srcKey, out TElm toValue)) {
                     toValue     = (TElm)elementType.CreateInstance();
                 }
-                var fromVar     = elementType.ToVar(fromEntry.Value);
-                var toVar       = elementType.ToVar(toValue);
-                elementType.CopyVar(fromVar, ref toVar);
+                var srcVar      = elementType.ToVar(srcEntry.Value);
+                var dstVar      = elementType.ToVar(toValue);
+                elementType.CopyVar(srcVar, ref dstVar);
                 
-                to[fromKey]     = elementType.FromVar(toVar);
+                dst[srcKey]     = elementType.FromVar(dstVar);
             }
             // --- remove keys not in from map
-            var removeKeys = new List<TKey>(to.Count);
-            foreach (var toEntry in to) {
-                var toKey     = toEntry.Key;
-                if (from.ContainsKey(toKey))
+            var removeKeys = new List<TKey>(dst.Count);
+            foreach (var dstEntry in dst) {
+                var dstKey      = dstEntry.Key;
+                if (src.ContainsKey(dstKey))
                     continue;
-                removeKeys.Add(toKey);
+                removeKeys.Add(dstKey);
             }
             foreach (var key in removeKeys) {
-                to.Remove(key);
+                dst.Remove(key);
             }
         }
     }

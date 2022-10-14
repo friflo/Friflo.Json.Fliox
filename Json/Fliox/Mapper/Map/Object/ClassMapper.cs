@@ -338,27 +338,30 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object
             }
         }
         
-        public override void Copy (T from, ref T to) {
+        public override void Copy(T src, ref T dst) {
+            if (dst == null) {
+                dst = (T)CreateInstance();
+            }
             var fields = propFields.typedFields;
             for (int n = 0; n < fields.Length; n++) {
                 var field           = fields[n];
                 var member          = field.member;
-                var fromMemberVar   = member.GetVar(from);
-                if (fromMemberVar.IsNull) {
-                    member.SetVar(to, field.varType.DefaultValue);
+                var srcMemberVar    = member.GetVar(src);
+                if (srcMemberVar.IsNull) {
+                    member.SetVar(dst, field.varType.DefaultValue);
                     continue;
                 }
-                var fieldType   = field.fieldType;
-                Var toMemberVar = new Var();
+                var fieldType       = field.fieldType;
+                Var dstMemberVar    = new Var();
                 if (!fieldType.isValueType) {
-                    toMemberVar = member.GetVar(to);
-                    if (toMemberVar.IsNull) {
+                    dstMemberVar    = member.GetVar(dst);
+                    if (dstMemberVar.IsNull) {
                         var newInstance = fieldType.CreateInstance(); 
-                        toMemberVar = new Var(newInstance);
+                        dstMemberVar = new Var(newInstance);
                     }
                 }
-                fieldType.CopyVar(fromMemberVar, ref toMemberVar);
-                member.SetVar(to, toMemberVar);
+                fieldType.CopyVar(srcMemberVar, ref dstMemberVar);
+                member.SetVar(dst, dstMemberVar);
             }
         }
     }

@@ -154,13 +154,13 @@ namespace Friflo.Json.Fliox.Mapper.Map.Arr
             }
         }
         
-        public override void Copy (T[] from, ref T[] to) {
-            int len = from.Length; 
-            if (len != to.Length) {
-                to = new T[len];
+        public override void Copy(T[] src, ref T[] dst) {
+            int len = src.Length; 
+            if (len != dst.Length) {
+                dst = new T[len];
             }
             for (int n = 0; n  < len; n++) {
-                to[n] = from[n];   
+                dst[n] = src[n];   
             }
         }
     }

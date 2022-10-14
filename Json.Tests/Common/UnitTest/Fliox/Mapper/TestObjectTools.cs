@@ -6,12 +6,17 @@ using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Tests.Unity.Utils;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
+using static Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper.Reference;
 
 // ReSharper disable UnusedMember.Local
 // ReSharper disable InconsistentNaming
 // ReSharper disable UnusedAutoPropertyAccessor.Local
 namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
 {
+    enum Reference {
+        Same,
+        NotSame
+    }
     public class TestObjectTools : LeakTestsFixture
     {
         class ToolsChild
@@ -30,24 +35,24 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
             using (var mapper           = new ObjectMapper(typeStore)) {
                 var  tools = new ObjectTools(typeStore);
                 {
-                    var from    = new ToolsClass { child = new ToolsChild() };
-                    var target  = new ToolsClass { child = null };
-                    DeepCopy(from, ref target, mapper, tools);
+                    var src = new ToolsClass { child = new ToolsChild() };
+                    var dst = new ToolsClass { child = null };
+                    DeepCopy(src , ref dst, Same, mapper, tools);
                 } {
-                    var from    = new ToolsClass { child = null };
-                    var target  = new ToolsClass { child = new ToolsChild() };
-                    DeepCopy(from, ref target, mapper, tools);
+                    var src = new ToolsClass { child = null };
+                    var dst = new ToolsClass { child = new ToolsChild() };
+                    DeepCopy(src , ref dst, Same, mapper, tools);
                 } {
-                    var from    = new ToolsClass { child = null };
-                    var target  = new ToolsClass { child = null };
-                    DeepCopy(from, ref target, mapper, tools);
+                    var src = new ToolsClass { child = null };
+                    var dst = new ToolsClass { child = null };
+                    DeepCopy(src , ref dst, Same, mapper, tools);
                 } {
-                    var from    = new ToolsClass { child = new ToolsChild { inVal = 1 } };
-                    var target  = new ToolsClass { child = new ToolsChild { inVal = 2 } };
-                    DeepCopy(from, ref target, mapper, tools);
+                    var src = new ToolsClass { child = new ToolsChild { inVal = 1 } };
+                    var dst = new ToolsClass { child = new ToolsChild { inVal = 2 } };
+                    DeepCopy(src , ref dst, Same, mapper, tools);
                 } {
-                    var target  = new ToolsClass { child = null };
-                    DeepCopy (null, ref target, mapper, tools);
+                    var dst = new ToolsClass { child = null };
+                    DeepCopy (null, ref dst, NotSame, mapper, tools);
                 }
             }
         }
@@ -58,13 +63,27 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
             using (var mapper           = new ObjectMapper(typeStore)) {
                 var  tools = new ObjectTools(typeStore);
                 {
-                    var from    = new int [] { 1 };
-                    var target  = new int [] {};
-                    DeepCopy(from, ref target, mapper, tools);
+                    var src = new int [] { 1 };
+                    var dst = new int [] {};
+                    DeepCopy(src , ref dst, NotSame, mapper, tools);
                 } {
-                    var from    = new [] { 2 };
-                    var target  = new [] { 3 };
-                    DeepCopy(from, ref target, mapper, tools);
+                    var src = new [] { 2 };
+                    var dst = new [] { 3 };
+                    DeepCopy(src , ref dst, Same, mapper, tools);
+                } {
+                    var src = new ToolsClass [] { new ToolsClass() };
+                    var dst = new ToolsClass [] { };
+                    DeepCopy(src , ref dst, NotSame, mapper, tools);
+                }
+                // --- List<>
+                {
+                    var src = new List<int> { 2 };
+                    var dst = new List<int> ();
+                    DeepCopy(src , ref dst, Same, mapper, tools);
+                } {
+                    var src = new List<ToolsClass> { new ToolsClass() };
+                    var dst = new List<ToolsClass> ();
+                    DeepCopy(src , ref dst, Same, mapper, tools);
                 }
             }
         }
@@ -76,17 +95,17 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
             {
                 var  tools = new ObjectTools(typeStore);
                 {
-                    var from    = new Dictionary<string, string>();
-                    var target  = new Dictionary<string, string>();
-                    DeepCopy(from, ref target, mapper, tools);
+                    var src = new Dictionary<string, string>();
+                    var dst = new Dictionary<string, string>();
+                    DeepCopy(src , ref dst, Same, mapper, tools);
                 } {
-                    var from    = new Dictionary<string, string> {{ "A", "B" }};
-                    var target  = new Dictionary<string, string>();
-                    DeepCopy(from, ref target, mapper, tools);
+                    var src = new Dictionary<string, string> {{ "A", "B" }};
+                    var dst = new Dictionary<string, string>();
+                    DeepCopy(src , ref dst, Same, mapper, tools);
                 } {
-                    var from    = new Dictionary<string, string>();
-                    var target  = new Dictionary<string, string>{{ "C", "D" }};
-                    DeepCopy(from, ref target, mapper, tools);
+                    var src = new Dictionary<string, string>();
+                    var dst = new Dictionary<string, string>{{ "C", "D" }};
+                    DeepCopy(src , ref dst, Same, mapper, tools);
                 }
             }
         }
@@ -98,20 +117,26 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
             {
                 var  tools = new ObjectTools(typeStore);
                 {
-                    int target = 0;
-                    DeepCopy(1, ref target, mapper, tools);
+                    int dst    = 0;
+                    DeepCopy(1, ref dst, NotSame, mapper, tools);
                 }
             }
         }
         
-        private static void DeepCopy<T>(T from, ref T target, ObjectMapper mapper, ObjectTools tools)
+        private static void DeepCopy<T>(T src , ref T dst, Reference reference, ObjectMapper mapper, ObjectTools tools)
         {
-            tools.DeepCopy(from, ref target);
+            var passedDst = dst; 
+            tools.DeepCopy(src , ref dst);
             
-            var leftJson        = mapper.Write(from);
-            var toJson          = mapper.Write(target);
+            var srcJson = mapper.Write(src);
+            var dstJson = mapper.Write(dst);
 
-            AreEqual(leftJson, toJson);
+            AreEqual(srcJson, dstJson);
+            if (reference == Same) {
+                AreSame(passedDst, dst);
+            } else {
+                AreNotEqual(passedDst, dst);
+            }
         }
     }
 }

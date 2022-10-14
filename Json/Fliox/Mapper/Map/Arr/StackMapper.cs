@@ -134,5 +134,9 @@ namespace Friflo.Json.Fliox.Mapper.Map.Arr
                 }
             }
         }
+        
+        public override void Copy(TCol src, ref TCol dst) {
+            throw new NotImplementedException();
+        }
     }
 }

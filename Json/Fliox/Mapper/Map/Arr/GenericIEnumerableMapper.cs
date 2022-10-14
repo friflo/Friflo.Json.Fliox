@@ -86,5 +86,9 @@ namespace Friflo.Json.Fliox.Mapper.Map.Arr
         public override TCol Read(ref Reader reader, TCol slot, out bool success) {
             throw new InvalidOperationException("IEnumerable<> cannot be used for Read(). type: " + type);
         }
+        
+        public override void Copy(TCol src, ref TCol dst) {
+            throw new InvalidOperationException("IEnumerable<> cannot be used for Copy(). type: " + type);
+        }
     }
 }
