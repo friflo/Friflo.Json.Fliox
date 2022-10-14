@@ -96,17 +96,18 @@ namespace Friflo.Json.Fliox.Mapper.Diff
             return parentDiff;
         }
         
-        internal DiffType PopParentNotEqual() {
-            parentStack[parentStackIndex].diff.diffType = NotEqual;
-            PopParent();
-            return NotEqual;
+        [Conditional("DEBUG")]
+        private void AssertPathCount() {
+            if (pathIndex != parentStackIndex + 1)
+                throw new InvalidOperationException("Expect path.Count != parentStackIndex + 1");
         }
-
-        internal DiffType AddNotEqualObject<T>(T left, T right) {
+        
+        // ---------------------------------- public API ----------------------------------
+        public DiffType AddNotEqualObject<T>(T left, T right) {
             return AddNotEqual(new Var(left), new Var(right));
         }
             
-        internal DiffType AddNotEqual(in Var left, in Var right) {
+        public DiffType AddNotEqual(in Var left, in Var right) {
             AssertPathCount();
             var parent      = GetParent(parentStackIndex);
             var itemDiff    = CreateDiffNode(); 
@@ -115,7 +116,7 @@ namespace Friflo.Json.Fliox.Mapper.Diff
             return NotEqual;
         }
         
-        internal void AddOnlyLeft(in Var left) {
+        public void AddOnlyLeft(in Var left) {
             AssertPathCount();
             var parent      = GetParent(parentStackIndex);
             var itemDiff    = CreateDiffNode(); 
@@ -123,7 +124,7 @@ namespace Friflo.Json.Fliox.Mapper.Diff
             parent.children.Add(itemDiff);
         }
         
-        internal void AddOnlyRight(in Var right) {
+        public void AddOnlyRight(in Var right) {
             AssertPathCount();
             var parent      = GetParent(parentStackIndex);
             var itemDiff    = CreateDiffNode(); 
@@ -131,12 +132,6 @@ namespace Friflo.Json.Fliox.Mapper.Diff
             parent.children.Add(itemDiff);
         }
         
-        [Conditional("DEBUG")]
-        private void AssertPathCount() {
-            if (pathIndex != parentStackIndex + 1)
-                throw new InvalidOperationException("Expect path.Count != parentStackIndex + 1");
-        }
-
         public void PushMember  (PropField field) {
             path[pathIndex++] = new TypeNode(field, -1, field.fieldType);
         }
@@ -169,6 +164,12 @@ namespace Friflo.Json.Fliox.Mapper.Diff
             var headDiff    = parentStack[parentStackIndex].diff;
             parentStack[parentStackIndex--] = default; // clear references
             return headDiff == null ? Equal : NotEqual;
+        }
+        
+        public DiffType PopParentNotEqual() {
+            parentStack[parentStackIndex].diff.diffType = NotEqual;
+            PopParent();
+            return NotEqual;
         }
     }
 }
