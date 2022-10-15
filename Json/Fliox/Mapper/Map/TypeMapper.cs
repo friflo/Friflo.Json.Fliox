@@ -177,12 +177,10 @@ namespace Friflo.Json.Fliox.Mapper.Map
             Copy(srcObject, ref dstObject);
         }
         
-        public virtual void Copy(TVal src, ref TVal dst) {
-            var srcVar  = ToVar(src);
-            var dstVar  = ToVar(dst);
-            CopyVar(srcVar, ref dstVar);
-            dst         = FromVar(dstVar);
-        }
+        /// <summary>derived <see cref="TypeMapper{TVal}"/>'s where TVal is a reference type must override this method.</summary>
+        // Use commented abstract method to find TypeMapper's without an override
+        // public abstract void Copy(TVal src, ref TVal dst);
+        public virtual void Copy(TVal src, ref TVal dst) { dst = src; }
 
         public override      void    Dispose() { }
         
