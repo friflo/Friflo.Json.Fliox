@@ -155,9 +155,9 @@ namespace Friflo.Json.Fliox.Mapper.Map.Arr
                     elementType.Copy(srcElement, ref dstElement);
                     dst[dstIndex++] = dstElement;
                 } else {
-                    var toElement = (TElm)elementType.CreateInstance();
-                    elementType.Copy(srcElement, ref toElement);
-                    dst.Add(toElement);   
+                    TElm dstElement = default;
+                    elementType.Copy(srcElement, ref dstElement);
+                    dst.Add(dstElement);   
                 }
             }
             // list.RemoveRange(index, startLen - index);

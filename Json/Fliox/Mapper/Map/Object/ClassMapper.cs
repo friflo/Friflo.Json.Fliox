@@ -338,9 +338,33 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object
             }
         }
         
+        private void SetDstInstance (T src, ref T dst) {
+            var srcType = src.GetType();
+            if (dst == null || srcType != dst.GetType()) {
+                var factory = instanceFactory;
+                if (factory == null) {
+                    dst = (T)CreateInstance();
+                } else {
+                    dst = (T)factory.CreatePolymorph(srcType);
+                }
+            }
+        }
+        
+        public override void CopyVar(in Var src, ref Var dst) {
+            var srcObject   = (T)src.TryGetObject();
+            T   dstObject;
+            if (isValueType) {
+                dstObject   = default;
+            } else {
+                dstObject   = (T)dst.TryGetObject();
+            }
+            Copy(srcObject, ref dstObject);
+            dst             = new Var(dstObject);
+        }
+        
         public override void Copy(T src, ref T dst) {
-            if (dst == null) {
-                dst = (T)CreateInstance();
+            if (!isValueType) {
+                SetDstInstance(src, ref dst);
             }
             var fields = propFields.typedFields;
             for (int n = 0; n < fields.Length; n++) {
@@ -355,10 +379,6 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object
                 Var dstMemberVar    = new Var();
                 if (!fieldType.isValueType) {
                     dstMemberVar    = member.GetVar(dst);
-                    if (dstMemberVar.IsNull) {
-                        var newInstance = fieldType.CreateInstance(); 
-                        dstMemberVar = new Var(newInstance);
-                    }
                 }
                 fieldType.CopyVar(srcMemberVar, ref dstMemberVar);
                 member.SetVar(dst, dstMemberVar);

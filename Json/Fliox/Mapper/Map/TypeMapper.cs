@@ -169,9 +169,10 @@ namespace Friflo.Json.Fliox.Mapper.Map
         }
         
         public override void CopyVar(in Var src, ref Var dst) {
-            var srcObject   = (TVal)src.TryGetObject();
-            var dstObject   = (TVal)dst.TryGetObject();
-            Copy(srcObject, ref dstObject);
+            throw new NotImplementedException("derived TypeMapper<> must implement");
+            /* var srcObject   = (TVal)src.TryGetObject();
+            var dstObject   = (TVal)dst.TryGetObject(); 
+            Copy(srcObject, ref dstObject); */
         }
         
         /// <summary>

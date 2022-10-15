@@ -25,7 +25,8 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
         private  readonly   Type                            instanceType;
         public   readonly   PolyType[]                      polyTypes;
         private             TypeMapper                      instanceMapper;
-        private  readonly   Dictionary<string, TypeMapper>  polymorphMapper = new Dictionary<string, TypeMapper>();
+        private  readonly   Dictionary<string, TypeMapper>  mapperByDiscriminator = new Dictionary<string, TypeMapper>();
+        private  readonly   Dictionary<Type,   TypeMapper>  mapperByType          = new Dictionary<Type,   TypeMapper>();
         public   readonly   bool                            isAbstract;
 
         private InstanceFactory(string discriminator, string description, Type instanceType, PolyType[] polyTypes) {
@@ -48,7 +49,8 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
             foreach (var polyType in polyTypes) {
                 var mapper = typeStore.GetTypeMapper(polyType.type);
                 mapper.discriminant = polyType.name;
-                polymorphMapper.Add(polyType.name, mapper);
+                mapperByDiscriminator.Add(polyType.name, mapper);
+                mapperByType         .Add(polyType.type, mapper);
             }
         }
 
@@ -59,7 +61,13 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
         }
         
         internal object CreatePolymorph(string name) {
-            if (!polymorphMapper.TryGetValue(name, out TypeMapper mapper))
+            if (!mapperByDiscriminator.TryGetValue(name, out TypeMapper mapper))
+                return null;
+            return mapper.CreateInstance();
+        }
+        
+        internal object CreatePolymorph(Type type) {
+            if (!mapperByType.TryGetValue(type, out TypeMapper mapper))
                 return null;
             return mapper.CreateInstance();
         }
