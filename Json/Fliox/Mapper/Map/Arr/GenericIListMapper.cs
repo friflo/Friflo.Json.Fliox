@@ -150,10 +150,9 @@ namespace Friflo.Json.Fliox.Mapper.Map.Arr
         public override void Copy(TCol src, ref TCol dst) {
             int dstCount = 0;
             if (dst == null) {
-                dst = (TCol) CreateInstance();
-            } else {
-                dstCount = dst.Count;
+                dst = (TCol)(object)new List<TElm>(src.Count);
             }
+            dstCount = dst.Count;
             int dstIndex = 0;
             foreach (var srcElement in src) {
                 if (dstIndex < dstCount) {
