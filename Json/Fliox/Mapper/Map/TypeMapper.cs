@@ -125,9 +125,6 @@ namespace Friflo.Json.Fliox.Mapper.Map
         public virtual Var ToVar(TVal value) {
             return new Var(value);
         }
-        public virtual TVal FromVar(in Var value) {
-            return (TVal)value.TryGetObject();
-        }
 
         public virtual DiffType Diff(Differ differ, TVal left, TVal right) {
             bool areEqual = EqualityComparer<TVal>.Default.Equals(left, right);
