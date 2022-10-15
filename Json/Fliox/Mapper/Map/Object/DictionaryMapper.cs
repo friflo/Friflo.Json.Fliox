@@ -168,6 +168,21 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object
         }
         
         public override void Copy(TMap src, ref TMap dst) {
+            // --- remove keys not in from map
+            List<TKey> removeKeys = null;
+            foreach (var dstEntry in dst) {
+                var dstKey      = dstEntry.Key;
+                if (src.ContainsKey(dstKey))
+                    continue;
+                if (removeKeys == null) removeKeys = new List<TKey>(dst.Count);
+                removeKeys.Add(dstKey);
+            }
+            if (removeKeys != null) {
+                foreach (var key in removeKeys) {
+                    dst.Remove(key);
+                }
+            }
+            // add pairs from src to dst
             foreach (var srcPair in src) {
                 var srcKey      = srcPair.Key;
                 // return either the the value associated to the key or default if key not found
@@ -175,17 +190,6 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object
                 var srcValue    = srcPair.Value;
                 elementType.Copy(srcValue, ref dstValue);
                 dst[srcKey]     = dstValue;
-            }
-            // --- remove keys not in from map
-            var removeKeys = new List<TKey>(dst.Count);
-            foreach (var dstEntry in dst) {
-                var dstKey      = dstEntry.Key;
-                if (src.ContainsKey(dstKey))
-                    continue;
-                removeKeys.Add(dstKey);
-            }
-            foreach (var key in removeKeys) {
-                dst.Remove(key);
             }
         }
     }

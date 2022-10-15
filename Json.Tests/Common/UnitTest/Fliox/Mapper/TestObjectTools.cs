@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 using Friflo.Json.Fliox;
 using Friflo.Json.Fliox.Mapper;
@@ -48,21 +49,36 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
                     var src = new ToolsClass { child = new ToolsChild(),    pet = new Dog()};
                     var dst = new ToolsClass { child = null };
                     DeepCopy(src , ref dst, Same, mapper, tools);
+                    AssertDeepCopyAllocation(src, ref dst, tools);
                 } {
                     var src = new ToolsClass { child = null,                pet = new Dog() };
                     var dst = new ToolsClass { child = new ToolsChild(),    pet = new Cat()};
                     DeepCopy(src , ref dst, Same, mapper, tools);
+                    AssertDeepCopyAllocation(src, ref dst, tools);
                 } {
                     var src = new ToolsClass { child = null };
                     var dst = new ToolsClass { child = null };
                     DeepCopy(src , ref dst, Same, mapper, tools);
+                    AssertDeepCopyAllocation(src, ref dst, tools);
                 } {
                     var src = new ToolsClass { child = new ToolsChild { inVal = 1 } };
                     var dst = new ToolsClass { child = new ToolsChild { inVal = 2 } };
                     DeepCopy(src , ref dst, Same, mapper, tools);
+                    AssertDeepCopyAllocation(src, ref dst, tools);
                 } {
                     var dst = new ToolsClass { child = null };
                     DeepCopy (null, ref dst, NotSame, mapper, tools);
+                }
+                // --- Performance
+                {
+                    var src = new ToolsClass { child = new ToolsChild { inVal = 1 } };
+                    var dst = new ToolsClass { child = new ToolsChild { inVal = 2 } };
+                    var start = GC.GetAllocatedBytesForCurrentThread();
+                    for (int n = 0; n < 1; n++) {
+                        tools.DeepCopy(src, ref dst);
+                    }
+                    var diff =  GC.GetAllocatedBytesForCurrentThread() - start;
+                    AreEqual(0, diff);
                 }
             }
         }
@@ -76,32 +92,39 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
                     var src = new int [] { 1 };
                     var dst = new int [] {};
                     DeepCopy(src , ref dst, NotSame, mapper, tools);
+                    AssertDeepCopyAllocation(src, ref dst, tools);
                 } {
                     var src = new [] { 2 };
                     var dst = new [] { 3 };
                     DeepCopy(src , ref dst, Same, mapper, tools);
+                    AssertDeepCopyAllocation(src, ref dst, tools);
                 } {
                     var src = new ToolsClass [] { new ToolsClass() };
                     var dst = new ToolsClass [] { };
                     DeepCopy(src , ref dst, NotSame, mapper, tools);
+                    AssertDeepCopyAllocation(src, ref dst, tools);
                 }
                 // --- List<>
                 {
                     var src = new List<int> { 2 };
                     var dst = new List<int> ();
                     DeepCopy(src , ref dst, Same, mapper, tools);
+                    AssertDeepCopyAllocation(src, ref dst, tools);
                 } {
                     var src = new List<int> { 2 };
                     var dst = new List<int> { 10, 11 };
                     DeepCopy(src , ref dst, Same, mapper, tools);
+                    AssertDeepCopyAllocation(src, ref dst, tools);
                 } {
                     var src = new List<ToolsClass> { new ToolsClass() };
                     var dst = new List<ToolsClass> ();
                     DeepCopy(src , ref dst, Same, mapper, tools);
+                    AssertDeepCopyAllocation(src, ref dst, tools);
                 } {
                     var src = new List<ToolsClass> { new ToolsClass() };
                     var dst = new List<ToolsClass> { new ToolsClass(), new ToolsClass() };
                     DeepCopy(src , ref dst, Same, mapper, tools);
+                    AssertDeepCopyAllocation(src, ref dst, tools);
                 }
                 // --- ICollection<>
                 {
@@ -160,6 +183,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
                     var src = new Dictionary<string, string>();
                     var dst = new Dictionary<string, string>();
                     DeepCopy(src , ref dst, Same, mapper, tools);
+                    // Dictionary.GetEnumerator() is allocated on heap because DictionaryMapper<,,> extends IDictionary<,>.
+                    // no allocation when extending IDictionary<,>.
+                    // AssertDeepCopyAllocation(src, ref dst, tools);
                 } {
                     var src = new Dictionary<string, string> {{ "A", "B" }};
                     var dst = new Dictionary<string, string>();
@@ -199,6 +225,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
             } else {
                 AreNotEqual(passedDst, dst);
             }
+        }
+        
+        private static void AssertDeepCopyAllocation<T>(T src, ref T dst, ObjectTools tools) {
+            var start = GC.GetAllocatedBytesForCurrentThread();
+            tools.DeepCopy(src , ref dst);
+            var diff = GC.GetAllocatedBytesForCurrentThread() - start;
+            AreEqual(0, diff);
         }
     }
 }
