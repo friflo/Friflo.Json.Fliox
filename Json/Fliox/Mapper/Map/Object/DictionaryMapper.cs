@@ -54,7 +54,9 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object
         
         public override DiffType Diff(Differ differ, TMap left, TMap right) {
             differ.PushParent(left, right);
-            foreach (var leftPair in left) {
+            var leftIter = new DictionaryEnumerator<TKey,TElm>(left);
+            while (leftIter.MoveNext()) {
+                var leftPair  = leftIter.Current;
                 var leftKey   = leftPair.Key;
                 var leftValue = leftPair.Value;
                 var leftVar   = elementType.ToVar(leftValue);
@@ -67,7 +69,9 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object
                 }
                 differ.Pop();
             }
-            foreach (var rightPair in right) {
+            var rightIter = new DictionaryEnumerator<TKey,TElm>(right);
+            while (rightIter.MoveNext()) {
+                var rightPair   = rightIter.Current;
                 var rightKey    = rightPair.Key;
                 var rightValue  = rightPair.Value;
                 if (left.TryGetValue(rightKey, out TElm _))
@@ -109,7 +113,9 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object
             writer.bytes.AppendChar('{');
             int n = 0;
 
-            foreach (var entry in map) {
+            var iter = new DictionaryEnumerator<TKey,TElm>(map);
+            while (iter.MoveNext()) {
+                var entry = iter.Current;
                 var value = entry.Value;
                 if (EqualityComparer<TElm>.Default.Equals(value, default)) {
                     if (writer.writeNullMembers) {
@@ -170,7 +176,9 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object
         public override void Copy(TMap src, ref TMap dst) {
             // --- remove keys not in from map
             List<TKey> removeKeys = null;
-            foreach (var dstEntry in dst) {
+            var dstIter = new DictionaryEnumerator<TKey,TElm>(dst);
+            while (dstIter.MoveNext()) {
+                var dstEntry    = dstIter.Current;
                 var dstKey      = dstEntry.Key;
                 if (src.ContainsKey(dstKey))
                     continue;
@@ -183,7 +191,9 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object
                 }
             }
             // add pairs from src to dst
-            foreach (var srcPair in src) {
+            var srcIter = new DictionaryEnumerator<TKey,TElm>(src);
+            while (srcIter.MoveNext()) {
+                var srcPair     = srcIter.Current; 
                 var srcKey      = srcPair.Key;
                 // return either the the value associated to the key or default if key not found
                 dst.TryGetValue(srcKey, out TElm dstValue);

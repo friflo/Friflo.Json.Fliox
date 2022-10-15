@@ -183,17 +183,19 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
                     var src = new Dictionary<string, string>();
                     var dst = new Dictionary<string, string>();
                     DeepCopy(src , ref dst, Same, mapper, tools);
-                    // Dictionary.GetEnumerator() is allocated on heap because DictionaryMapper<,,> extends IDictionary<,>.
-                    // no allocation when extending IDictionary<,>.
-                    // AssertDeepCopyAllocation(src, ref dst, tools);
+                    AssertDeepCopyAllocation(src, ref dst, tools);
                 } {
                     var src = new Dictionary<string, string> {{ "A", "B" }};
                     var dst = new Dictionary<string, string>();
                     DeepCopy(src , ref dst, Same, mapper, tools);
+                    // addition call required to prevent allocation in subsequent assertion - no clue why
+                    DeepCopy(src , ref dst, Same, mapper, tools);
+                    AssertDeepCopyAllocation(src, ref dst, tools);
                 } {
                     var src = new Dictionary<string, string>();
                     var dst = new Dictionary<string, string>{{ "C", "D" }};
                     DeepCopy(src , ref dst, Same, mapper, tools);
+                    AssertDeepCopyAllocation(src, ref dst, tools);
                 }
             }
         }
