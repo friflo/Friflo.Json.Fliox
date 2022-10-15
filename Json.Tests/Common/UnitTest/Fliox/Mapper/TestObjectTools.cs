@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
+using Friflo.Json.Fliox;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Tests.Unity.Utils;
 using NUnit.Framework;
@@ -23,10 +24,19 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
         {
             public  int         inVal { get; set; }
         }
+        
+        [Discriminator("type")]
+        [PolymorphType(typeof(Dog),    "dog")]
+        [PolymorphType(typeof(Cat),    "cat")]
+        abstract class Animal { }
+        
+        class Dog : Animal { public string name  {get; set;} }
+        class Cat : Animal { public string color {get; set;} }
 
         class ToolsClass
         {
-            public  ToolsChild   child   { get; set; }
+            public  ToolsChild  child   { get; set; }
+            public  Animal      pet     { get; set; }
         }
         
         [Test]
@@ -35,12 +45,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
             using (var mapper           = new ObjectMapper(typeStore)) {
                 var  tools = new ObjectTools(typeStore);
                 {
-                    var src = new ToolsClass { child = new ToolsChild() };
+                    var src = new ToolsClass { child = new ToolsChild(),    pet = new Dog()};
                     var dst = new ToolsClass { child = null };
                     DeepCopy(src , ref dst, Same, mapper, tools);
                 } {
-                    var src = new ToolsClass { child = null };
-                    var dst = new ToolsClass { child = new ToolsChild() };
+                    var src = new ToolsClass { child = null,                pet = new Dog() };
+                    var dst = new ToolsClass { child = new ToolsChild(),    pet = new Cat()};
                     DeepCopy(src , ref dst, Same, mapper, tools);
                 } {
                     var src = new ToolsClass { child = null };
