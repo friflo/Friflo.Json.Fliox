@@ -168,16 +168,13 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object
         }
         
         public override void Copy(TMap src, ref TMap dst) {
-            foreach (var srcEntry in src) {
-                var srcKey      = srcEntry.Key;
-                if (!dst.TryGetValue(srcKey, out TElm toValue)) {
-                    toValue     = (TElm)elementType.CreateInstance();
-                }
-                var srcVar      = elementType.ToVar(srcEntry.Value);
-                var dstVar      = elementType.ToVar(toValue);
-                elementType.CopyVar(srcVar, ref dstVar);
-                
-                dst[srcKey]     = elementType.FromVar(dstVar);
+            foreach (var srcPair in src) {
+                var srcKey      = srcPair.Key;
+                // return either the the value associated to the key or default if key not found
+                dst.TryGetValue(srcKey, out TElm dstValue);
+                var srcValue    = srcPair.Value;
+                elementType.Copy(srcValue, ref dstValue);
+                dst[srcKey]     = dstValue;
             }
             // --- remove keys not in from map
             var removeKeys = new List<TKey>(dst.Count);
