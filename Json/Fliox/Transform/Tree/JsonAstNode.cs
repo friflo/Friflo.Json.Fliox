@@ -8,16 +8,16 @@ using Friflo.Json.Burst;
 namespace Friflo.Json.Fliox.Transform.Tree
 {
     internal readonly struct JsonAstNode {
-        internal  readonly  JsonEvent   type;
-        internal  readonly  int         next;
         internal  readonly  JsonAstSpan key;
         internal  readonly  JsonAstSpan value;
+        internal  readonly  JsonEvent   type;
+        internal  readonly  int         next;
 
         internal JsonAstNode (JsonEvent type, in JsonAstSpan key, in JsonAstSpan value, int next) {
-            this.type   = type;
-            this.next   = next;
             this.key    = key;
             this.value  = value;
+            this.type   = type;
+            this.next   = next;
         }
     }
     
@@ -28,8 +28,10 @@ namespace Friflo.Json.Fliox.Transform.Tree
         
         private string      Key     => node.key.start   == 0 ? null : Encoding.UTF8.GetString(buf, node.key.start,   node.key.len);
         private string      Value   => node.value.start == 0 ? null : Encoding.UTF8.GetString(buf, node.value.start, node.value.len);
-        private int         Next    => node.next;
-        private JsonEvent   Type    => node.type;
+        // ReSharper disable once InconsistentNaming - want listing at bottom in debugger 
+        private int         _Next   => node.next;
+        // ReSharper disable once InconsistentNaming - want listing at bottom in debugger 
+        private JsonEvent   _Type   => node.type;
 
         internal JsonAstNodeDebug (in JsonAstNode node, byte[] buf) {
             this.node   = node;
@@ -40,6 +42,7 @@ namespace Friflo.Json.Fliox.Transform.Tree
         
         private string GetTypeLabel() {
             switch (node.type) {
+                case JsonEvent.None:        return "None";
                 case JsonEvent.ArrayStart:  return "[";
                 case JsonEvent.ArrayEnd:    return "]";
                 case JsonEvent.ObjectStart: return "{";
@@ -49,7 +52,7 @@ namespace Friflo.Json.Fliox.Transform.Tree
         }
         
         private string GetString() {
-            if (node.key.start == 0)
+            if (node.type == JsonEvent.None)
                 return "reserved";
             var typeStr = GetTypeLabel();
             var sb = new StringBuilder();

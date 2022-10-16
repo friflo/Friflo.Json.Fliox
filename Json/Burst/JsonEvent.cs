@@ -13,6 +13,7 @@ namespace Friflo.Json.Burst
 #endif
     public enum JsonEvent
     {
+        None = 0,
         /// <summary>
         /// Found an object member { "name": "John" } with a string value in case the previous event was <see cref="ObjectStart"/>
         /// or an array element ["John"] in case the previous event was <see cref="ArrayStart"/>.<br/>
@@ -88,6 +89,7 @@ namespace Friflo.Json.Burst
     {
         public static void AppendEvent(JsonEvent ev, ref Bytes bytes) {
             switch (ev) {
+                case JsonEvent.None:        bytes.AppendStr32 ("None");          break;
                 case JsonEvent.ValueString: bytes.AppendStr32 ("ValueString");   break;
                 case JsonEvent.ValueNumber: bytes.AppendStr32 ("ValueNumber");   break;
                 case JsonEvent.ValueBool:   bytes.AppendStr32 ("ValueBool");     break;

@@ -15,6 +15,7 @@ namespace Friflo.Json.Fliox.Transform.Tree
     {
         private             Utf8JsonParser      parser;
         private             Bytes               json    = new Bytes(128);
+        /// for debugging use <see cref="JsonAst.DebugNodes"/>
         private  readonly   List<JsonAstNode>   nodes   = new List<JsonAstNode>();
         private             JsonAst             ast;
         
@@ -87,8 +88,8 @@ namespace Friflo.Json.Fliox.Transform.Tree
         private void Traverse(bool isObject) {
             int         lastIndex   = -1;
             JsonEvent   lastEvent   = default;
-            JsonAstSpan key         = default;
-            JsonAstSpan value       = default;
+            JsonAstSpan key         = default;  // for debugging use:  key.Value(ast)
+            JsonAstSpan value       = default;  // for debugging use:  value.Value(ast)
             while (true) {
                 var index   = nodes.Count;
                 if (lastIndex != -1) {
@@ -99,12 +100,13 @@ namespace Friflo.Json.Fliox.Transform.Tree
                     case JsonEvent.ObjectStart:
                         nodes.Add(default);     // reserve node
                         key     = isObject ? ast.AddSpan(parser.key) : default;
-                        value   = default;      // object has not value
+                        value   = default;      // object has no value
                         parser.NextEvent();
                         Traverse(true);
                         break;
                     case JsonEvent.ObjectEnd:
-                        nodes[lastIndex] = new JsonAstNode(lastEvent, key, value, -1); // last object member
+                        // last object member => set node.next= -1
+                        nodes[lastIndex] = new JsonAstNode(lastEvent, key, value, -1);
                         return;
                     case JsonEvent.ValueNull: {
                         nodes.Add(default);     // reserve node
@@ -127,12 +129,13 @@ namespace Friflo.Json.Fliox.Transform.Tree
                     case JsonEvent.ArrayStart:
                         nodes.Add(default);     // reserve node
                         key     = isObject ? ast.AddSpan(parser.key) : default;
-                        value   = default;      // array has not value
+                        value   = default;      // array has no value
                         parser.NextEvent();
                         Traverse(false);
                         break;
                     case JsonEvent.ArrayEnd:
-                        nodes[lastIndex] = new JsonAstNode(lastEvent, key, value, -1);  // last array item
+                        // last array item => set node.next= -1
+                        nodes[lastIndex] = new JsonAstNode(lastEvent, key, value, -1);
                         return;
                     case JsonEvent.EOF:
                         return;

@@ -12,10 +12,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
 {
     public class TestJsonMerge
     {
-        class MergeChild {
+        internal class MergeChild {
             public  int     childInt;
         }
-        class MergeClass {
+        
+        internal  class MergeClass {
             public  int         int1;
             public  MergeChild  child;
             public  int         int2;
