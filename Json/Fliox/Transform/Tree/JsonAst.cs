@@ -1,72 +1,81 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
-using System.Text;
 using Friflo.Json.Burst;
 
 namespace Friflo.Json.Fliox.Transform.Tree
 {
-    public readonly struct JsonAstNode {
-        internal  readonly  JsonEvent   type;
-        internal  readonly  Utf8String  key;
-        internal  readonly  Utf8String  value;
-        internal  readonly  int         next;
-
-        internal JsonAstNode (JsonEvent type, Utf8String key, Utf8String value, int next) {
-            this.type   = type;
-            this.key    = key;
-            this.value  = value;
-            this.next   = next;
-        }
-
-        public override string ToString() => GetString();
+    public readonly struct JsonAstSpan {
+        internal  readonly  int         start;
+        internal  readonly  int         len;
         
-        private string GetTypeLabel() {
-            switch (type) {
-                case JsonEvent.ArrayStart:  return "[";
-                case JsonEvent.ArrayEnd:    return "]";
-                case JsonEvent.ObjectStart: return "{";
-                case JsonEvent.ObjectEnd:   return "}";
-            }
-            return "";
+        internal JsonAstSpan (int start) {
+            this.start  = start;
+            this.len    = -1;
         }
         
-        private string GetString() {
-            var typeStr = GetTypeLabel();
-            var sb = new StringBuilder();
-            if (!key.IsNull) {
-                sb.Append('"');
-                sb.Append(key);
-                sb.Append("\": ");
-            }
-            sb.Append(' ');
-            sb.Append(typeStr);
-            if (!value.IsNull) {
-                if (type == JsonEvent.ValueString) {
-                    sb.Append('"');
-                    sb.Append(value.AsString());
-                    sb.Append('"');
-                } else {
-                    sb.Append(value.AsString());
-                }
-            }
-            if (next == -1) {
-                // sb.Append("    last");    
-            } else {
-                sb.Append("    next: ");
-                sb.Append(next);
-            }
-            return sb.ToString();
+        internal JsonAstSpan (int start, int len) {
+            this.start  = start;
+            this.len    = len;
         }
     }
-
-    public readonly struct JsonAst
-    {
-        private readonly List<JsonAstNode> nodes;
         
-        public JsonAst(List<JsonAstNode> nodes) {
-            this.nodes = nodes;
+
+    public struct JsonAst
+    {
+        private readonly    List<JsonAstNode>   nodes;
+        private             byte[]              buf;
+        private             int                 pos;
+        public              JsonAstNodeDebug[]  DebugNodes => GetDebugNodes();
+        
+        internal JsonAst(List<JsonAstNode> nodes) {
+            this.nodes      = nodes;
+            buf             = new byte[32];
+            pos             = 0;
+            var constants   = JsonAstSerializer.NullTrueFalse;
+            Buffer.BlockCopy(constants, 0, buf, 0, constants.Length);
+        }
+        
+        internal void Init() {
+            nodes.Clear();
+            pos             = 0;
+            var constants   = JsonAstSerializer.NullTrueFalse;
+            Buffer.BlockCopy(constants, 0, buf, 0, constants.Length);
+        }
+        
+        internal JsonAstSpan AddSpan (in Bytes bytes) {
+            var len     = bytes.Len;
+            int destPos = Reserve(len);
+            Buffer.BlockCopy(bytes.buffer.array, bytes.start, buf, destPos, len);
+            return new JsonAstSpan(destPos, len);
+        }
+        
+        private int Reserve (int len) {
+            int curPos  = pos;
+            int newLen  = curPos + len;
+            int bufLen  = buf.Length;
+            if (curPos + len > bufLen) {
+                var doubledLen = 2 * bufLen;
+                if (newLen < doubledLen) {
+                    newLen = doubledLen;
+                }
+                var newBuffer = new byte [newLen];
+                Buffer.BlockCopy(buf, 0, newBuffer, 0, curPos);
+                buf = newBuffer;
+            }
+            pos += len;
+            return curPos;
+        }
+        
+        private JsonAstNodeDebug[] GetDebugNodes() {
+            var count       = nodes.Count;
+            var debugNodes  = new JsonAstNodeDebug[count];
+            for (int n = 0; n < count; n++) {
+                debugNodes[n] = new JsonAstNodeDebug(nodes[n], buf);
+            }
+            return debugNodes;
         }
     }
 }

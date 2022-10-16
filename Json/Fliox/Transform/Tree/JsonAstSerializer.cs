@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Text;
 using Friflo.Json.Burst;
 
 namespace Friflo.Json.Fliox.Transform.Tree
@@ -15,28 +16,33 @@ namespace Friflo.Json.Fliox.Transform.Tree
         private             Utf8JsonParser      parser;
         private             Bytes               json    = new Bytes(128);
         private  readonly   List<JsonAstNode>   nodes   = new List<JsonAstNode>();
-        private  readonly   Utf8Buffer          buffer  = new Utf8Buffer();
+        private             JsonAst             ast;
         
-        private static readonly Utf8String      Null;
-        private static readonly Utf8String      True;
-        private static readonly Utf8String      False;
+        private  static readonly    JsonAstSpan     Null;
+        private  static readonly    JsonAstSpan     True;
+        private  static readonly    JsonAstSpan     False;
+        internal static readonly    byte[]          NullTrueFalse; 
+        
+        public JsonAstSerializer() {
+            ast = new JsonAst(nodes);
+        }
         
         static JsonAstSerializer() {
-            var buf = new Utf8Buffer();
-            Null    = buf.Add("null");
-            True    = buf.Add("true");
-            False   = buf.Add("false");
+            Null            = new JsonAstSpan(0, 4);    // "null"
+            True            = new JsonAstSpan(4, 8);    // "true"
+            False           = new JsonAstSpan(8, 13);   // "false"
+            // ReSharper disable once StringLiteralTypo
+            NullTrueFalse   = Encoding.UTF8.GetBytes("nulltruefalse");
         }
 
         public JsonAst CreateAst(in JsonValue value) {
-            buffer.Clear();
             json.Clear();
             json.AppendArray(value);
             parser.InitParser(json);
-            nodes.Clear();
+            ast.Init();
             
             Start();
-            return new JsonAst(nodes);
+            return ast;
         }
         
         public JsonAst Test(in JsonValue value) {
@@ -73,8 +79,8 @@ namespace Friflo.Json.Fliox.Transform.Tree
         private void Traverse(bool isObject) {
             int         lastIndex   = -1;
             JsonEvent   lastEvent   = default;
-            Utf8String  key         = default;
-            Utf8String  value       = default;
+            JsonAstSpan key         = new JsonAstSpan(-1);
+            JsonAstSpan value       = new JsonAstSpan(-1);
             bool        isFirst     = true;
             while (true) {
                 var index   = nodes.Count;
@@ -85,7 +91,7 @@ namespace Friflo.Json.Fliox.Transform.Tree
                 }
                 var ev  = parser.Event;
                 parser.NextEvent();
-                key     = isObject ? buffer.Add(parser.key, false) : default;
+                key     = isObject ? ast.AddSpan(parser.key) : default;
                 switch (ev) {
                     case JsonEvent.ObjectStart:
                         nodes.Add(default); // add placeholder
@@ -111,7 +117,7 @@ namespace Friflo.Json.Fliox.Transform.Tree
                     case JsonEvent.ValueString:
                     case JsonEvent.ValueNumber: {
                         nodes.Add(default); // add placeholder
-                        value = buffer.Add(parser.value, false);
+                        value = ast.AddSpan(parser.value);
                         break;
                     }
                     case JsonEvent.ArrayStart:
