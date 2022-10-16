@@ -91,11 +91,11 @@ namespace Friflo.Json.Fliox.Transform.Tree
                 }
                 var ev  = parser.Event;
                 parser.NextEvent();
-                key     = isObject ? ast.AddSpan(parser.key) : default;
+                key     = isObject ? ast.AddSpan(parser.key) : new JsonAstSpan(-1);
                 switch (ev) {
                     case JsonEvent.ObjectStart:
                         nodes.Add(default); // add placeholder
-                        value = default;
+                        value = new JsonAstSpan(-1);
                         Traverse(true);
                         break;
                     case JsonEvent.ObjectEnd:
@@ -122,7 +122,7 @@ namespace Friflo.Json.Fliox.Transform.Tree
                     }
                     case JsonEvent.ArrayStart:
                         nodes.Add(default); // add placeholder
-                        value = default;
+                        value = new JsonAstSpan(-1);
                         Traverse(false);
                         break;
                     case JsonEvent.ArrayEnd:
