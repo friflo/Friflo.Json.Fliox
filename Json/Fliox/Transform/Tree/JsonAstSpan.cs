@@ -6,8 +6,12 @@ using System.Text;
 namespace Friflo.Json.Fliox.Transform.Tree
 {
     public readonly struct JsonAstSpan {
-        internal  readonly  int         start;  // 0 => null
-        internal  readonly  int         len;
+        /// <summary>
+        /// if 0: string is null <br/>
+        /// >  0: is UTF-8 string with <see cref="start"/> in <see cref="JsonAst.Buf"/> 
+        /// </summary>
+        internal  readonly  int     start;
+        internal  readonly  int     len;
 
         internal JsonAstSpan (int start, int len) {
             this.start  = start;
