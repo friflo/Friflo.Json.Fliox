@@ -26,8 +26,8 @@ namespace Friflo.Json.Fliox.Transform.Tree
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private readonly    byte[]      buf;
         
-        private string      Key     => node.key.start   == - 1 ? null : Encoding.UTF8.GetString(buf, node.key.start,   node.key.len);
-        private string      Value   => node.value.start == - 1 ? null : Encoding.UTF8.GetString(buf, node.value.start, node.value.len);
+        private string      Key     => node.key.start   == 0 ? null : Encoding.UTF8.GetString(buf, node.key.start,   node.key.len);
+        private string      Value   => node.value.start == 0 ? null : Encoding.UTF8.GetString(buf, node.value.start, node.value.len);
         private int         Next    => node.next;
         private JsonEvent   Type    => node.type;
 
@@ -49,6 +49,8 @@ namespace Friflo.Json.Fliox.Transform.Tree
         }
         
         private string GetString() {
+            if (node.key.start == 0)
+                return "reserved";
             var typeStr = GetTypeLabel();
             var sb = new StringBuilder();
             if (Key != null) {

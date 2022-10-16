@@ -37,7 +37,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 // astParser.CreateAst(json);
             }
 
-            var value = astParser.CreateAst(new JsonValue("true"));
+            var trueValue =  new JsonValue("true");
+            var value = astParser.CreateAst(trueValue);
             
         }
     }

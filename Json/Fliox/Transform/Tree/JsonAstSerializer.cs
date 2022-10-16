@@ -28,11 +28,11 @@ namespace Friflo.Json.Fliox.Transform.Tree
         }
         
         static JsonAstSerializer() {
-            Null            = new JsonAstSpan(0, 4);    // "null"
-            True            = new JsonAstSpan(4, 8);    // "true"
-            False           = new JsonAstSpan(8, 13);   // "false"
+            Null            = new JsonAstSpan(1, 4);    // "null"
+            True            = new JsonAstSpan(5, 4);    // "true"
+            False           = new JsonAstSpan(9, 5);   // "false"
             // ReSharper disable once StringLiteralTypo
-            NullTrueFalse   = Encoding.UTF8.GetBytes("nulltruefalse");
+            NullTrueFalse   = Encoding.UTF8.GetBytes("~nulltruefalse"); // ~ placeholder for JsonAstSpan.start == 0
         }
 
         public JsonAst CreateAst(in JsonValue value) {
@@ -42,6 +42,9 @@ namespace Friflo.Json.Fliox.Transform.Tree
             ast.Init();
             
             Start();
+            
+            var ev = parser.Event; 
+            if (ev != JsonEvent.EOF)    throw new InvalidOperationException($"Expect EOF. was {ev}");
             return ast;
         }
         
@@ -62,14 +65,19 @@ namespace Friflo.Json.Fliox.Transform.Tree
                 case JsonEvent.ValueBool:
                 case JsonEvent.ValueNull:
                     Traverse(false);
+                    
                     break;
                 case JsonEvent.ArrayStart:
                     parser.NextEvent();
                     Traverse(false);
+                    
+                    parser.NextEvent();
                     break;
                 case JsonEvent.ObjectStart:
                     parser.NextEvent();
                     Traverse(true);
+                    
+                    parser.NextEvent();
                     break;
                 default:
                     throw new InvalidOperationException($"unexpected state: {ev}");
@@ -79,8 +87,8 @@ namespace Friflo.Json.Fliox.Transform.Tree
         private void Traverse(bool isObject) {
             int         lastIndex   = -1;
             JsonEvent   lastEvent   = default;
-            JsonAstSpan key         = new JsonAstSpan(-1);
-            JsonAstSpan value       = new JsonAstSpan(-1);
+            JsonAstSpan key         = default;
+            JsonAstSpan value       = default;
             bool        isFirst     = true;
             while (true) {
                 var index   = nodes.Count;
@@ -90,39 +98,40 @@ namespace Friflo.Json.Fliox.Transform.Tree
                     nodes[lastIndex] = new JsonAstNode(lastEvent, key, value, index); 
                 }
                 var ev  = parser.Event;
-                parser.NextEvent();
-                key     = isObject ? ast.AddSpan(parser.key) : new JsonAstSpan(-1);
                 switch (ev) {
                     case JsonEvent.ObjectStart:
-                        nodes.Add(default); // add placeholder
-                        value = new JsonAstSpan(-1);
+                        nodes.Add(default);     // reserve node
+                        key     = isObject ? ast.AddSpan(parser.key) : default;
+                        value   = default;      // object has not value
+                        parser.NextEvent();
                         Traverse(true);
                         break;
                     case JsonEvent.ObjectEnd:
                         nodes[lastIndex] = new JsonAstNode(lastEvent, key, value, -1); // last object member
                         return;
                     case JsonEvent.ValueNull: {
-                        nodes.Add(default); // add placeholder
-                        value = Null;
+                        nodes.Add(default);     // reserve node
+                        key     = isObject ? ast.AddSpan(parser.key) : default;
+                        value   = Null;
                         break;
                     }
                     case JsonEvent.ValueBool:
-                        nodes.Add(default); // add placeholder
-                        if (parser.boolValue) {
-                            value = True;
-                            break;
-                        }
-                        value = False;
+                        nodes.Add(default);     // reserve node
+                        key     = isObject ? ast.AddSpan(parser.key) : default;
+                        value   = parser.boolValue ? True : False;
                         break;
                     case JsonEvent.ValueString:
                     case JsonEvent.ValueNumber: {
-                        nodes.Add(default); // add placeholder
-                        value = ast.AddSpan(parser.value);
+                        nodes.Add(default);     // reserve node
+                        key     = isObject ? ast.AddSpan(parser.key) : default;
+                        value   = ast.AddSpan(parser.value);
                         break;
                     }
                     case JsonEvent.ArrayStart:
-                        nodes.Add(default); // add placeholder
-                        value = new JsonAstSpan(-1);
+                        nodes.Add(default);     // reserve node
+                        key     = isObject ? ast.AddSpan(parser.key) : default;
+                        value   = default;      // array has not value
+                        parser.NextEvent();
                         Traverse(false);
                         break;
                     case JsonEvent.ArrayEnd:
@@ -133,6 +142,7 @@ namespace Friflo.Json.Fliox.Transform.Tree
                     default:
                         throw new InvalidOperationException($"unexpected state: {ev}");
                 }
+                parser.NextEvent();
                 lastIndex = index;
                 lastEvent = ev;
             }

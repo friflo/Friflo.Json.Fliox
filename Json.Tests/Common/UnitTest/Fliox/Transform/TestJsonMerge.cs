@@ -12,12 +12,16 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
 {
     public class TestJsonMerge
     {
+        class MergeChild {
+            public  int     childInt;
+        }
         class MergeClass {
-            public  int     int1;
-            public  int     int2;
+            public  int         int1;
+            public  MergeChild  child;
+            public  int         int2;
         }
         
-        // [Test]
+        [Test]
         public void TestCreateJsonTree() {
             using (var typeStore        = new TypeStore()) 
             using (var differ           = new ObjectDiffer(typeStore))
@@ -26,8 +30,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             using (var merger           = new JsonMerger())
                 
             {
-                var left    = new MergeClass { int1 = 1, int2 = 2 };
-                var right   = new MergeClass { int1 = 3, int2 = 4 };
+                var left    = new MergeClass { int1 =  1, int2 =  2, child = new MergeChild { childInt =  3 }};
+                var right   = new MergeClass { int1 = 11, int2 = 12, child = new MergeChild { childInt = 13 }};
 
                 var diff        = differ.GetDiff(left, right, DiffKind.DiffArrays);
                 var patch       = jsonDiff.CreateJsonDiff(diff);
