@@ -89,12 +89,9 @@ namespace Friflo.Json.Fliox.Transform.Tree
             JsonEvent   lastEvent   = default;
             JsonAstSpan key         = default;
             JsonAstSpan value       = default;
-            bool        isFirst     = true;
             while (true) {
                 var index   = nodes.Count;
-                if (isFirst) {
-                    isFirst = false;
-                } else {
+                if (lastIndex != -1) {
                     nodes[lastIndex] = new JsonAstNode(lastEvent, key, value, index); 
                 }
                 var ev  = parser.Event;
