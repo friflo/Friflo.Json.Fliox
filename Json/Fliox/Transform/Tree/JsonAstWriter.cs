@@ -32,9 +32,9 @@ namespace Friflo.Json.Fliox.Transform.Tree
         }
         
         private void WriteValue(int index) {
-            var nodes = ast.nodes;
-            while (index != - 1) {
-                var node = nodes[index];
+            while (index != - 1)
+            {
+                var node = ast.nodes[index];
                 var ev = node.type;
                 switch (ev) {
                     case  JsonEvent.ObjectStart:
@@ -56,11 +56,11 @@ namespace Friflo.Json.Fliox.Transform.Tree
                         break;
                     case JsonEvent.ValueBool:
                     case JsonEvent.ValueNumber:
-                        value.SetDim(node.value.start, node.value.start + node.value.len);
+                        value. Set(node.value);
                         writer.ElementBytes(ref value);
                         break;
                     case JsonEvent.ValueString:
-                        value.SetDim(node.value.start, node.value.start + node.value.len);
+                        value. Set(node.value);
                         writer.ElementStr(value);
                         break;
                 }
@@ -69,14 +69,14 @@ namespace Friflo.Json.Fliox.Transform.Tree
         }
         
         private void WriteObject(int index) {
-            var nodes = ast.nodes;
-            while (index != - 1) {
-                var node = nodes[index];
+            while (index != - 1)
+            {
+                var node = ast.nodes[index];
                 var ev = node.type;
                 switch (ev) {
                     case  JsonEvent.ObjectStart:
                         if (node.child != -1) {
-                            key.SetDim(node.key.start,    node.key.start   + node.key.len);
+                            key.   Set(node.key);
                             writer.MemberObjectStart(key);
                             WriteObject(node.child);
                             writer.ObjectEnd();
@@ -84,30 +84,38 @@ namespace Friflo.Json.Fliox.Transform.Tree
                         break;
                     case  JsonEvent.ArrayStart:
                         if (node.child != -1) {
-                            key.SetDim(node.key.start,    node.key.start   + node.key.len);
+                            key.   Set(node.key);
                             writer.MemberArrayStart(key);
                             WriteValue(node.child);
                             writer.ArrayEnd();
                         }
                         break;
                     case JsonEvent.ValueNull:
-                        key.   SetDim(node.key.start,    node.key.start   + node.key.len);
+                        key.   Set(node.key);
                         writer.MemberNul(key);
                         break;
                     case JsonEvent.ValueBool:
                     case JsonEvent.ValueNumber:
-                        key.   SetDim(node.key.start,    node.key.start   + node.key.len);
-                        value. SetDim(node.value.start,  node.value.start + node.value.len);
+                        key.   Set(node.key);
+                        value. Set(node.value);
                         writer.MemberBytes(key, ref value);
                         break;
                     case JsonEvent.ValueString:
-                        key.   SetDim(node.key.start,    node.key.start   + node.key.len);
-                        value. SetDim(node.value.start,  node.value.start + node.value.len);
+                        key.   Set(node.key);
+                        value. Set(node.value);
                         writer.MemberStr(key, value);
                         break;
                 }
                 index = node.Next;
             }
+        }
+    }
+    
+    internal static class JsonAstWriterExtensions
+    {
+        internal static  void Set(this ref Bytes bytes, in JsonAstSpan span) {
+            bytes.start = span.start;
+            bytes.end   = span.start + span.len;
         }
     }
 }
