@@ -20,7 +20,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             writer.Pretty   = true;
             var jsonArray   = writer.WriteAsArray(sample);
             var json        = new JsonValue(jsonArray);
-            var astParser   = new JsonAstSerializer();
+            var astParser   = new JsonAstReader();
 
             var ast = astParser.CreateAst(json); // allocate buffers
             AreEqual(41, ast.NodesCount);
@@ -41,15 +41,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
         
         [Test]
         public void TestJsonTreePrimitives() {
-            var astParser   = new JsonAstSerializer();
+            var astReader   = new JsonAstReader();
             {
                 var json    = new JsonValue("true");
-                var ast     = astParser.CreateAst(json);
+                var ast     = astReader.CreateAst(json);
                 AreEqual(1, ast.NodesCount);
             }
             {
                 var json    =  new JsonValue("{}");
-                var ast     = astParser.CreateAst(json);
+                var ast     = astReader.CreateAst(json);
                 AreEqual(1, ast.NodesCount);
             }
         }

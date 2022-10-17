@@ -11,7 +11,7 @@ namespace Friflo.Json.Fliox.Transform.Tree
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
-    public sealed class JsonAstSerializer : IDisposable
+    public sealed class JsonAstReader : IDisposable
     {
         private             Utf8JsonParser      parser;
         private             Bytes               json    = new Bytes(128);
@@ -23,11 +23,11 @@ namespace Friflo.Json.Fliox.Transform.Tree
         private  static readonly    JsonAstSpan     False;
         internal static readonly    byte[]          NullTrueFalse; 
         
-        public JsonAstSerializer() {
+        public JsonAstReader() {
             ast = new JsonAst(1);
         }
         
-        static JsonAstSerializer() {
+        static JsonAstReader() {
             Null            = new JsonAstSpan(1, 4);    // "null"
             True            = new JsonAstSpan(5, 4);    // "true"
             False           = new JsonAstSpan(9, 5);   // "false"
@@ -44,7 +44,7 @@ namespace Friflo.Json.Fliox.Transform.Tree
             Start();
             
             var ev = parser.Event; 
-            if (ev != JsonEvent.EOF)    throw new InvalidOperationException($"Expect EOF. was {ev}");
+            if (ev != EOF)    throw new InvalidOperationException($"Expect EOF. was {ev}");
             return ast;
         }
         

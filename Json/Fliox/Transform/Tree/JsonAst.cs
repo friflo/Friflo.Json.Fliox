@@ -28,7 +28,7 @@ namespace Friflo.Json.Fliox.Transform.Tree
         
         internal void Init() {
             nodesCount      = 0;
-            var constants   = JsonAstSerializer.NullTrueFalse;
+            var constants   = JsonAstReader.NullTrueFalse;
             pos             = constants.Length;
             Buffer.BlockCopy(constants, 0, buf, 0, pos);
         }

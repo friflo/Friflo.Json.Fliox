@@ -10,14 +10,14 @@ namespace Friflo.Json.Fliox.Transform.Merge
     public class JsonMerger : IDisposable
     {
         private             Utf8JsonParser      parser;
-        private             Bytes               json            = new Bytes(128);
-        private readonly    JsonAstSerializer   astSerializer   = new JsonAstSerializer();
+        private             Bytes               json        = new Bytes(128);
+        private readonly    JsonAstReader       astReader   = new JsonAstReader();
         private             JsonAst             ast;
         
         public JsonMerger() { }
         
         public void Merge (JsonValue value, JsonValue patch) {
-            ast = astSerializer.CreateAst(patch);
+            ast = astReader.CreateAst(patch);
             
             json.Clear();
             json.AppendArray(value);
@@ -27,7 +27,7 @@ namespace Friflo.Json.Fliox.Transform.Merge
         }
 
         public void Dispose() {
-            astSerializer.Dispose();
+            astReader.Dispose();
             json.Dispose();
             parser.Dispose();
         }
