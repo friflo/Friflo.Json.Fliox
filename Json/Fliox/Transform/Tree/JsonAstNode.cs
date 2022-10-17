@@ -13,12 +13,16 @@ namespace Friflo.Json.Fliox.Transform.Tree
         public    readonly  JsonAstSpan key;
         public    readonly  JsonAstSpan value;
         public    readonly  JsonEvent   type;
+        /// <summary>Is not -1 if node <see cref="type"/> is <see cref="JsonEvent.ObjectStart"/> or <see cref="JsonEvent.ArrayStart"/></summary> 
+        public    readonly  int         child;
+        /// <summary>Is not -1 if the node has a successor - an object member or an array element</summary> 
         internal            int         next;
 
-        internal JsonAstNode (JsonEvent type, in JsonAstSpan key, in JsonAstSpan value, int next) {
+        internal JsonAstNode (JsonEvent type, in JsonAstSpan key, in JsonAstSpan value, int child, int next) {
             this.key    = key;
             this.value  = value;
             this.type   = type;
+            this.child  = child;
             this.next   = next;
         }
     }
@@ -30,6 +34,8 @@ namespace Friflo.Json.Fliox.Transform.Tree
         
         private string      Key     => node.key.start   == 0 ? null : Encoding.UTF8.GetString(buf, node.key.start,   node.key.len);
         private string      Value   => node.value.start == 0 ? null : Encoding.UTF8.GetString(buf, node.value.start, node.value.len);
+        // ReSharper disable once InconsistentNaming - want listing at bottom in debugger 
+        private int         _Child  => node.child;
         // ReSharper disable once InconsistentNaming - want listing at bottom in debugger 
         private int         _Next   => node.next;
         // ReSharper disable once InconsistentNaming - want listing at bottom in debugger 
@@ -74,11 +80,20 @@ namespace Friflo.Json.Fliox.Transform.Tree
                     sb.Append(Value);
                 }
             }
-            if (node.next == -1) {
-                // sb.Append("    last");    
-            } else {
-                sb.Append("    next: ");
-                sb.Append(node.next);
+            if (node.next != -1 || node.child != -1) {
+                sb.Append(' ');
+                int len = sb.Length;
+                for (int n = 30; n >= len; n--) {
+                    sb.Append(' ');
+                }
+                if (node.child != -1) {
+                    sb.Append(" child: ");
+                    sb.Append(node.child);
+                }
+                if (node.next != -1) {
+                    sb.Append(" next: ");
+                    sb.Append(node.next);
+                }
             }
             return sb.ToString();
         }

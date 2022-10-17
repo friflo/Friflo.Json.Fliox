@@ -2,13 +2,13 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
-using Friflo.Json.Burst;
 using Friflo.Json.Fliox;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Transform.Tree;
 using Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
+using static Friflo.Json.Burst.JsonEvent;
 
 namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
 {
@@ -33,11 +33,30 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             var dif = GC.GetAllocatedBytesForCurrentThread() - start;
             AreEqual(0, dif);
             
+            var count = TraverseNode(ast.Nodes, 0);
+            AreEqual(41, count);
+            
+            for (int n = 0; n < 1; n++) {
+                TraverseNode(ast.Nodes, 0);
+            }
 
             for (int n = 0; n < 1; n++) {
                 astParser.Test(json);
                 // astParser.CreateAst(json);
             }
+        }
+        
+        private static  int TraverseNode(JsonAstNode[] nodes, int index) {
+            int count = 0;
+            while (index != - 1) {
+                count++;
+                var node = nodes[index];
+                if (node.child != -1) {
+                    count += TraverseNode(nodes, node.child);
+                }
+                index = node.Next;
+            }
+            return count;
         }
         
         [Test]
@@ -48,46 +67,56 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 var ast     = astReader.CreateAst(json);
                 AreEqual(1, ast.NodesCount);
                 var node    = ast.GetNode(0);
-                AreEqual(JsonEvent.ValueString, node.type);
-                AreEqual("abc", ast.GetSpanString(node.value));
+                AreEqual(ValueString,   node.type);
+                AreEqual("abc",         ast.GetSpanString(node.value));
+                AreEqual(-1,            node.child);
             }
             {   // --- number
                 var json    =  new JsonValue("123");
                 var ast     = astReader.CreateAst(json);
                 AreEqual(1, ast.NodesCount);
                 var node    = ast.GetNode(0);
-                AreEqual(JsonEvent.ValueNumber, node.type);
-                AreEqual("123", ast.GetSpanString(node.value));
+                AreEqual(ValueNumber,   node.type);
+                AreEqual("123",         ast.GetSpanString(node.value));
+                AreEqual(-1,            node.child);
+
             }
             {   // --- bool
                 var json    =  new JsonValue("true");
                 var ast     = astReader.CreateAst(json);
                 AreEqual(1, ast.NodesCount);
                 var node    = ast.GetNode(0);
-                AreEqual(JsonEvent.ValueBool, node.type);
-                AreEqual("true", ast.GetSpanString(node.value));
+                AreEqual(ValueBool,     node.type);
+                AreEqual("true",        ast.GetSpanString(node.value));
+                AreEqual(-1,            node.child);
+
             }
             {   // --- null
                 var json    =  new JsonValue("null");
                 var ast     = astReader.CreateAst(json);
                 AreEqual(1, ast.NodesCount);
                 var node    = ast.GetNode(0);
-                AreEqual(JsonEvent.ValueNull, node.type);
-                AreEqual("null", ast.GetSpanString(node.value));
+                AreEqual(ValueNull,     node.type);
+                AreEqual("null",        ast.GetSpanString(node.value));
+                AreEqual(-1,            node.child);
+
             }
             {   // --- object
                 var json    =  new JsonValue("{}");
                 var ast     = astReader.CreateAst(json);
                 AreEqual(1, ast.NodesCount);
                 var node    = ast.GetNode(0);
-                AreEqual(JsonEvent.ObjectStart, node.type);
+                AreEqual(ObjectStart,   node.type);
+                AreEqual(-1,            node.child);
+
             }
             {   // --- array
                 var json    =  new JsonValue("[]");
                 var ast     = astReader.CreateAst(json);
                 AreEqual(1, ast.NodesCount);
                 var node    = ast.GetNode(0);
-                AreEqual(JsonEvent.ArrayStart, node.type);
+                AreEqual(ArrayStart,    node.type);
+                AreEqual(-1,            node.child);
             }
         }
     }

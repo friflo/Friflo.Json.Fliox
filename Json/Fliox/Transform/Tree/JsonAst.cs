@@ -9,14 +9,15 @@ namespace Friflo.Json.Fliox.Transform.Tree
 {
     public struct JsonAst
     {
-        public      int                 NodesCount => nodesCount;
+        public      int                 NodesCount  => nodesCount;
+        public      JsonAstNode[]       Nodes       => nodes;
+        public      JsonAstNodeDebug[]  DebugNodes  => GetDebugNodes();
         
         private     int                 nodesCount;
         private     int                 nodesCapacity;
         private     JsonAstNode[]       nodes;
         private     byte[]              buf;
         private     int                 pos;
-        public      JsonAstNodeDebug[]  DebugNodes => GetDebugNodes();
         internal    byte[]              Buf => buf;
         
         internal JsonAst(int capacity) {
@@ -43,10 +44,22 @@ namespace Friflo.Json.Fliox.Transform.Tree
         }
         
         internal void AddNode(JsonEvent ev, in JsonAstSpan key, in JsonAstSpan value) {
-            nodes[nodesCount] = new JsonAstNode(ev, key, value, -1);
+            nodes[nodesCount] = new JsonAstNode(ev, key, value, -1, -1);
             if (++nodesCount < nodesCapacity) {
                 return;
             }
+            ExtendCapacity();
+        }
+        
+        internal void AddContainerNode(JsonEvent ev, in JsonAstSpan key, int child) {
+            nodes[nodesCount] = new JsonAstNode(ev, key, default, child, -1);
+            if (++nodesCount < nodesCapacity) {
+                return;
+            }
+            ExtendCapacity();
+        }
+        
+        private void ExtendCapacity() {
             nodesCapacity = 2 * nodesCapacity;
             var newNodes = new JsonAstNode[nodesCapacity];
             for (int n = 0; n < nodesCount; n++) {
@@ -54,6 +67,7 @@ namespace Friflo.Json.Fliox.Transform.Tree
             }
             nodes = newNodes;
         }
+
         
         internal void SetNodeNext(int index, int next) {
             nodes[index].next = next;

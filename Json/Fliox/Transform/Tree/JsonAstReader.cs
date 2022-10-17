@@ -82,8 +82,8 @@ namespace Friflo.Json.Fliox.Transform.Tree
                     case ObjectStart: {
                         if (prevNode != -1) ast.SetNodeNext(prevNode, index);
                         var key     = ast.AddSpan(parser.key);
-                        ast.AddNode(ObjectStart, key, default); // object has no value
-                        parser.NextEvent();
+                        var child   = parser.NextEvent() != ObjectEnd ? index + 1 : -1;
+                        ast.AddContainerNode(ObjectStart, key, child);
                         TraverseObject();
                         break;
                     }
@@ -113,8 +113,8 @@ namespace Friflo.Json.Fliox.Transform.Tree
                     case ArrayStart: {
                         if (prevNode != -1) ast.SetNodeNext(prevNode, index);
                         var key     = ast.AddSpan(parser.key);
-                        ast.AddNode(ArrayStart, key, default); // array has no value
-                        parser.NextEvent();
+                        var child   = parser.NextEvent() != ArrayEnd ? index + 1 : -1;
+                        ast.AddContainerNode(ArrayStart, key, child);
                         TraverseValue();
                         break;
                     }
@@ -136,12 +136,13 @@ namespace Friflo.Json.Fliox.Transform.Tree
                 var index   = ast.NodesCount;
                 var ev      = parser.Event;
                 switch (ev) {
-                    case ObjectStart:
+                    case ObjectStart: {
                         if (prevNode != -1) ast.SetNodeNext(prevNode, index);
-                        ast.AddNode(ObjectStart, default, default); // object has no value
-                        parser.NextEvent();
+                        var child = parser.NextEvent() != ObjectEnd ? index + 1 : -1; 
+                        ast.AddContainerNode(ObjectStart, default, child);
                         TraverseObject();
                         break;
+                    }
                     case ObjectEnd:
                         return;
                     case ValueNull:
@@ -160,12 +161,13 @@ namespace Friflo.Json.Fliox.Transform.Tree
                         ast.AddNode(ev, default, value);
                         break;
                     }
-                    case ArrayStart:
+                    case ArrayStart: {
                         if (prevNode != -1) ast.SetNodeNext(prevNode, index);
-                        ast.AddNode(ArrayStart, default, default); // array has no value
-                        parser.NextEvent();
+                        var child = parser.NextEvent() != ArrayEnd ? index + 1 : -1;
+                        ast.AddContainerNode(ArrayStart, default, child);
                         TraverseValue();
                         break;
+                    }
                     case ArrayEnd:
                         return;
                     case EOF:
