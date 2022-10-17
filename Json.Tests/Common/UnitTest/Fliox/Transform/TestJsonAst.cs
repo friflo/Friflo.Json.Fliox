@@ -21,14 +21,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             writer.Pretty   = true;
             var jsonArray   = writer.WriteAsArray(sample);
             var json        = new JsonValue(jsonArray);
-            var astParser   = new JsonAstReader();
+            var astReader   = new JsonAstReader();
 
-            var ast = astParser.CreateAst(json); // allocate buffers
+            var ast = astReader.CreateAst(json); // allocate buffers
             AreEqual(41, ast.NodesCount);
             
             var start = GC.GetAllocatedBytesForCurrentThread();
             for (int n = 0; n < 1; n++) {
-                astParser.CreateAst(json);
+                astReader.CreateAst(json);
             }
             var dif = GC.GetAllocatedBytesForCurrentThread() - start;
             AreEqual(0, dif);
@@ -41,9 +41,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             }
 
             for (int n = 0; n < 1; n++) {
-                astParser.Test(json);
+                astReader.Test(json);
                 // astParser.CreateAst(json);
             }
+            
+
         }
         
         private static  int TraverseNode(JsonAst ast, int index) {
@@ -58,6 +60,19 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 index = node.Next;
             }
             return count;
+        }
+        
+        [Test]
+        public void TestJsonTreeWriter() {
+            var sample      = new SampleIL();
+            var writer      = new ObjectWriter(new TypeStore());
+            var jsonArray   = writer.WriteAsArray(sample);
+            var json        = new JsonValue(jsonArray);
+            var astReader   = new JsonAstReader();
+            var ast         = astReader.CreateAst(json);
+            var astWriter   = new JsonAstWriter();
+            var result      = astWriter.WriteAst(ast);
+            AreEqual(json.AsString(), result.AsString());
         }
         
         [Test]
