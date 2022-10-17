@@ -19,16 +19,21 @@ namespace Friflo.Json.Fliox.Transform.Tree
         public void Dispose() {
             writer.Dispose();
         }
-        
         public JsonValue WriteAst(JsonAst ast) {
-            this.ast            = ast.intern; 
-            key.  buffer.array  = ast.intern.Buf;
-            value.buffer.array  = ast.intern.Buf;
+            WriteAstBytes(ast);
+            return new JsonValue(writer.json.AsArray());
+        }
+        
+        public Bytes WriteAstBytes(JsonAst ast) {
+            this.ast            = ast.intern;
+            var buffer          = ast.intern.Buf; 
+            key.  buffer.array  = buffer;
+            value.buffer.array  = buffer;
             writer.InitSerializer();
             
             WriteValue(0);
             
-            return new JsonValue(writer.json.AsArray());
+            return writer.json;
         }
         
         private void WriteValue(int index) {

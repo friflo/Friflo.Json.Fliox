@@ -73,6 +73,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             var astWriter   = new JsonAstWriter();
             var result      = astWriter.WriteAst(ast);
             AreEqual(json.AsString(), result.AsString());
+            
+            var start = GC.GetAllocatedBytesForCurrentThread();
+            for (int n = 0; n < 1; n++) {
+                astWriter.WriteAstBytes(ast);
+            }
+            var dif = GC.GetAllocatedBytesForCurrentThread() - start;
+            AreEqual(0, dif);
         }
         
         [Test]
