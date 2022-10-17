@@ -2,30 +2,52 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections.Generic;
 using Friflo.Json.Burst;
 
 namespace Friflo.Json.Fliox.Transform.Tree
 {
     public struct JsonAst
     {
-        private readonly    List<JsonAstNode>   nodes;
-        private             byte[]              buf;
-        private             int                 pos;
-        public              JsonAstNodeDebug[]  DebugNodes => GetDebugNodes();
-        internal            byte[]              Buf => buf;
+        public      int                 NodesCount => nodesCount;
         
-        internal JsonAst(List<JsonAstNode> nodes) {
-            this.nodes      = nodes;
+        private     int                 nodesCount;
+        private     int                 nodesCapacity;
+        private     JsonAstNode[]       nodes;
+        private     byte[]              buf;
+        private     int                 pos;
+        public      JsonAstNodeDebug[]  DebugNodes => GetDebugNodes();
+        internal    byte[]              Buf => buf;
+        
+        internal JsonAst(int capacity) {
+            nodesCount      = 0;
+            nodesCapacity   = capacity;
+            nodes           = new JsonAstNode[nodesCapacity];
             buf             = new byte[32];
             pos             = -1;
         }
         
         internal void Init() {
-            nodes.Clear();
+            nodesCount      = 0;
             var constants   = JsonAstSerializer.NullTrueFalse;
             pos             = constants.Length;
             Buffer.BlockCopy(constants, 0, buf, 0, pos);
+        }
+        
+        internal void AddNode(JsonEvent ev, in JsonAstSpan key, in JsonAstSpan value) {
+            nodes[nodesCount] = new JsonAstNode(ev, key, value, -1);
+            if (++nodesCount < nodesCapacity) {
+                return;
+            }
+            nodesCapacity = 2 * nodesCapacity;
+            var newNodes = new JsonAstNode[nodesCapacity];
+            for (int n = 0; n < nodesCount; n++) {
+                newNodes[n] = nodes[n];
+            }
+            nodes = newNodes;
+        }
+        
+        internal void SetNodeNext(int index, int next) {
+            nodes[index].next = next;
         }
         
         internal JsonAstSpan AddSpan (in Bytes bytes) {
@@ -53,7 +75,7 @@ namespace Friflo.Json.Fliox.Transform.Tree
         }
         
         private JsonAstNodeDebug[] GetDebugNodes() {
-            var count       = nodes.Count;
+            var count       = nodesCount;
             var debugNodes  = new JsonAstNodeDebug[count];
             for (int n = 0; n < count; n++) {
                 debugNodes[n] = new JsonAstNodeDebug(nodes[n], buf);

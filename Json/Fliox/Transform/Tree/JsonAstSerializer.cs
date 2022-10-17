@@ -2,9 +2,9 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections.Generic;
 using System.Text;
 using Friflo.Json.Burst;
+using static Friflo.Json.Burst.JsonEvent;
 
 namespace Friflo.Json.Fliox.Transform.Tree
 {
@@ -16,7 +16,6 @@ namespace Friflo.Json.Fliox.Transform.Tree
         private             Utf8JsonParser      parser;
         private             Bytes               json    = new Bytes(128);
         /// for debugging use <see cref="JsonAst.DebugNodes"/>
-        private  readonly   List<JsonAstNode>   nodes   = new List<JsonAstNode>();
         private             JsonAst             ast;
         
         private  static readonly    JsonAstSpan     Null;
@@ -25,7 +24,7 @@ namespace Friflo.Json.Fliox.Transform.Tree
         internal static readonly    byte[]          NullTrueFalse; 
         
         public JsonAstSerializer() {
-            ast = new JsonAst(nodes);
+            ast = new JsonAst(1);
         }
         
         static JsonAstSerializer() {
@@ -61,90 +60,121 @@ namespace Friflo.Json.Fliox.Transform.Tree
         private void Start() {
             var ev = parser.NextEvent();
             switch (ev) {
-                case JsonEvent.ValueString:
-                case JsonEvent.ValueNumber:
-                case JsonEvent.ValueBool:
-                case JsonEvent.ValueNull:
-                    Traverse(false);
-                    
-                    break;
-                case JsonEvent.ArrayStart:
-                    parser.NextEvent();
-                    Traverse(false);
-                    
-                    parser.NextEvent();
-                    break;
-                case JsonEvent.ObjectStart:
-                    parser.NextEvent();
-                    Traverse(true);
-                    
-                    parser.NextEvent();
+                case ValueString:
+                case ValueNumber:
+                case ValueBool:
+                case ValueNull:
+                case ArrayStart:
+                case ObjectStart:
+                    TraverseValue();
                     break;
                 default:
                     throw new InvalidOperationException($"unexpected state: {ev}");
             }
         }
         
-        private void Traverse(bool isObject) {
-            int         lastIndex   = -1;
-            JsonEvent   lastEvent   = default;
-            JsonAstSpan key         = default;  // for debugging use:  key.Value(ast)
-            JsonAstSpan value       = default;  // for debugging use:  value.Value(ast)
+        private void TraverseObject() {
+            int prevNode   = -1;
             while (true) {
-                var index   = nodes.Count;
-                if (lastIndex != -1) {
-                    nodes[lastIndex] = new JsonAstNode(lastEvent, key, value, index); 
-                }
-                var ev  = parser.Event;
+                var index   = ast.NodesCount;
+                var ev      = parser.Event;
                 switch (ev) {
-                    case JsonEvent.ObjectStart:
-                        nodes.Add(default);     // reserve node
-                        key     = isObject ? ast.AddSpan(parser.key) : default;
-                        value   = default;      // object has no value
+                    case ObjectStart: {
+                        if (prevNode != -1) ast.SetNodeNext(prevNode, index);
+                        var key     = ast.AddSpan(parser.key);
+                        ast.AddNode(ObjectStart, key, default); // object has no value
                         parser.NextEvent();
-                        Traverse(true);
-                        break;
-                    case JsonEvent.ObjectEnd:
-                        // last object member => set node.next= -1
-                        nodes[lastIndex] = new JsonAstNode(lastEvent, key, value, -1);
-                        return;
-                    case JsonEvent.ValueNull: {
-                        nodes.Add(default);     // reserve node
-                        key     = isObject ? ast.AddSpan(parser.key) : default;
-                        value   = Null;
+                        TraverseObject();
                         break;
                     }
-                    case JsonEvent.ValueBool:
-                        nodes.Add(default);     // reserve node
-                        key     = isObject ? ast.AddSpan(parser.key) : default;
-                        value   = parser.boolValue ? True : False;
-                        break;
-                    case JsonEvent.ValueString:
-                    case JsonEvent.ValueNumber: {
-                        nodes.Add(default);     // reserve node
-                        key     = isObject ? ast.AddSpan(parser.key) : default;
-                        value   = ast.AddSpan(parser.value);
+                    case ObjectEnd:
+                        return;
+                    case ValueNull: {
+                        if (prevNode != -1) ast.SetNodeNext(prevNode, index);
+                        var key     = ast.AddSpan(parser.key);
+                        ast.AddNode(ValueNull, key, Null);
                         break;
                     }
-                    case JsonEvent.ArrayStart:
-                        nodes.Add(default);     // reserve node
-                        key     = isObject ? ast.AddSpan(parser.key) : default;
-                        value   = default;      // array has no value
-                        parser.NextEvent();
-                        Traverse(false);
+                    case ValueBool: {
+                        if (prevNode != -1) ast.SetNodeNext(prevNode, index);
+                        var key     = ast.AddSpan(parser.key);
+                        var value   = parser.boolValue ? True : False;
+                        ast.AddNode(ValueBool, key, value);
                         break;
-                    case JsonEvent.ArrayEnd:
-                        // last array item => set node.next= -1
-                        nodes[lastIndex] = new JsonAstNode(lastEvent, key, value, -1);
+                    }
+                    case ValueString:
+                    case ValueNumber: {
+                        if (prevNode != -1) ast.SetNodeNext(prevNode, index);
+                        var key     = ast.AddSpan(parser.key);
+                        var value   = ast.AddSpan(parser.value);
+                        ast.AddNode(ev, key, value);
+                        break;
+                    }
+                    case ArrayStart: {
+                        if (prevNode != -1) ast.SetNodeNext(prevNode, index);
+                        var key     = ast.AddSpan(parser.key);
+                        ast.AddNode(ArrayStart, key, default); // array has no value
+                        parser.NextEvent();
+                        TraverseValue();
+                        break;
+                    }
+                    case ArrayEnd:
                         return;
-                    case JsonEvent.EOF:
+                    case EOF:
                         return;
                     default:
                         throw new InvalidOperationException($"unexpected state: {ev}");
                 }
                 parser.NextEvent();
-                lastIndex = index;
-                lastEvent = ev;
+                prevNode = index;
+            }
+        }
+        
+        private void TraverseValue() {
+            int prevNode   = -1;
+            while (true) {
+                var index   = ast.NodesCount;
+                var ev      = parser.Event;
+                switch (ev) {
+                    case ObjectStart:
+                        if (prevNode != -1) ast.SetNodeNext(prevNode, index);
+                        ast.AddNode(ObjectStart, default, default); // object has no value
+                        parser.NextEvent();
+                        TraverseObject();
+                        break;
+                    case ObjectEnd:
+                        return;
+                    case ValueNull:
+                        ast.AddNode(ValueNull, default, Null);
+                        break;
+                    case ValueBool: {
+                        if (prevNode != -1) ast.SetNodeNext(prevNode, index);
+                        var value   = parser.boolValue ? True : False;
+                        ast.AddNode(ValueBool, default, value);
+                        break;
+                    }
+                    case ValueString:
+                    case ValueNumber: {
+                        if (prevNode != -1) ast.SetNodeNext(prevNode, index);
+                        var value   = ast.AddSpan(parser.value);
+                        ast.AddNode(ev, default, value);
+                        break;
+                    }
+                    case ArrayStart:
+                        if (prevNode != -1) ast.SetNodeNext(prevNode, index);
+                        ast.AddNode(ArrayStart, default, default); // array has no value
+                        parser.NextEvent();
+                        TraverseValue();
+                        break;
+                    case ArrayEnd:
+                        return;
+                    case EOF:
+                        return;
+                    default:
+                        throw new InvalidOperationException($"unexpected state: {ev}");
+                }
+                parser.NextEvent();
+                prevNode = index;
             }
         }
 

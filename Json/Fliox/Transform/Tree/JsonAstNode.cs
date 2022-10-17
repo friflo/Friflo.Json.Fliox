@@ -7,11 +7,11 @@ using Friflo.Json.Burst;
 
 namespace Friflo.Json.Fliox.Transform.Tree
 {
-    internal readonly struct JsonAstNode {
+    internal struct JsonAstNode {
         internal  readonly  JsonAstSpan key;
         internal  readonly  JsonAstSpan value;
         internal  readonly  JsonEvent   type;
-        internal  readonly  int         next;
+        internal            int         next;
 
         internal JsonAstNode (JsonEvent type, in JsonAstSpan key, in JsonAstSpan value, int next) {
             this.key    = key;

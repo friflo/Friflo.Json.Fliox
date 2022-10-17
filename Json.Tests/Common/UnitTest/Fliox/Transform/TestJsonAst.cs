@@ -14,7 +14,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
     public class TestJsonAst
     {
         [Test]
-        public void TestCreateJsonTree() {
+        public void TestJsonTreeCreate() {
             var sample      = new SampleIL();
             var writer      = new ObjectWriter(new TypeStore());
             writer.Pretty   = true;
@@ -22,7 +22,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             var json        = new JsonValue(jsonArray);
             var astParser   = new JsonAstSerializer();
 
-            astParser.CreateAst(json); // allocate buffers
+            var ast = astParser.CreateAst(json); // allocate buffers
+            AreEqual(41, ast.NodesCount);
             
             var start = GC.GetAllocatedBytesForCurrentThread();
             for (int n = 0; n < 1; n++) {
@@ -36,10 +37,21 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 astParser.Test(json);
                 // astParser.CreateAst(json);
             }
-
-            var trueValue =  new JsonValue("true");
-            var value = astParser.CreateAst(trueValue);
-            
+        }
+        
+        [Test]
+        public void TestJsonTreePrimitives() {
+            var astParser   = new JsonAstSerializer();
+            {
+                var json    = new JsonValue("true");
+                var ast     = astParser.CreateAst(json);
+                AreEqual(1, ast.NodesCount);
+            }
+            {
+                var json    =  new JsonValue("{}");
+                var ast     = astParser.CreateAst(json);
+                AreEqual(1, ast.NodesCount);
+            }
         }
     }
 }
