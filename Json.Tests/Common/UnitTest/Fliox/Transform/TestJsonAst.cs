@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
+using Friflo.Json.Burst;
 using Friflo.Json.Fliox;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Transform.Tree;
@@ -42,15 +43,51 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
         [Test]
         public void TestJsonTreePrimitives() {
             var astReader   = new JsonAstReader();
-            {
-                var json    = new JsonValue("true");
+            {   // --- string
+                var json    =  new JsonValue("\"abc\"");
                 var ast     = astReader.CreateAst(json);
                 AreEqual(1, ast.NodesCount);
+                var node    = ast.GetNode(0);
+                AreEqual(JsonEvent.ValueString, node.type);
+                AreEqual("abc", ast.GetSpanString(node.value));
             }
-            {
+            {   // --- number
+                var json    =  new JsonValue("123");
+                var ast     = astReader.CreateAst(json);
+                AreEqual(1, ast.NodesCount);
+                var node    = ast.GetNode(0);
+                AreEqual(JsonEvent.ValueNumber, node.type);
+                AreEqual("123", ast.GetSpanString(node.value));
+            }
+            {   // --- bool
+                var json    =  new JsonValue("true");
+                var ast     = astReader.CreateAst(json);
+                AreEqual(1, ast.NodesCount);
+                var node    = ast.GetNode(0);
+                AreEqual(JsonEvent.ValueBool, node.type);
+                AreEqual("true", ast.GetSpanString(node.value));
+            }
+            {   // --- null
+                var json    =  new JsonValue("null");
+                var ast     = astReader.CreateAst(json);
+                AreEqual(1, ast.NodesCount);
+                var node    = ast.GetNode(0);
+                AreEqual(JsonEvent.ValueNull, node.type);
+                AreEqual("null", ast.GetSpanString(node.value));
+            }
+            {   // --- object
                 var json    =  new JsonValue("{}");
                 var ast     = astReader.CreateAst(json);
                 AreEqual(1, ast.NodesCount);
+                var node    = ast.GetNode(0);
+                AreEqual(JsonEvent.ObjectStart, node.type);
+            }
+            {   // --- array
+                var json    =  new JsonValue("[]");
+                var ast     = astReader.CreateAst(json);
+                AreEqual(1, ast.NodesCount);
+                var node    = ast.GetNode(0);
+                AreEqual(JsonEvent.ArrayStart, node.type);
             }
         }
     }

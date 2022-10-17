@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
+using System.Text;
 using Friflo.Json.Burst;
 
 namespace Friflo.Json.Fliox.Transform.Tree
@@ -31,6 +32,14 @@ namespace Friflo.Json.Fliox.Transform.Tree
             var constants   = JsonAstReader.NullTrueFalse;
             pos             = constants.Length;
             Buffer.BlockCopy(constants, 0, buf, 0, pos);
+        }
+        
+        public JsonAstNode GetNode(int index) {
+            return nodes[index];
+        }
+        
+        public string GetSpanString(in JsonAstSpan span) {
+            return Encoding.UTF8.GetString(buf, span.start, span.len);
         }
         
         internal void AddNode(JsonEvent ev, in JsonAstSpan key, in JsonAstSpan value) {
