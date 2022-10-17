@@ -7,6 +7,7 @@ using Friflo.Json.Burst;
 
 namespace Friflo.Json.Fliox.Transform.Tree
 {
+    // Could be a struct but this requires replacing the whole node to update field next
     public struct JsonAstNode {
         public              int         Next => next;
         
@@ -35,11 +36,11 @@ namespace Friflo.Json.Fliox.Transform.Tree
         private string      Key     => node.key.start   == 0 ? null : Encoding.UTF8.GetString(buf, node.key.start,   node.key.len);
         private string      Value   => node.value.start == 0 ? null : Encoding.UTF8.GetString(buf, node.value.start, node.value.len);
         // ReSharper disable once InconsistentNaming - want listing at bottom in debugger 
-        private int         _Child  => node.child;
+        private int        _Child   => node.child;
         // ReSharper disable once InconsistentNaming - want listing at bottom in debugger 
-        private int         _Next   => node.next;
+        private int        _Next    => node.next;
         // ReSharper disable once InconsistentNaming - want listing at bottom in debugger 
-        private JsonEvent   _Type   => node.type;
+        private JsonEvent  _Type    => node.type;
 
         internal JsonAstNodeDebug (in JsonAstNode node, byte[] buf) {
             this.node   = node;

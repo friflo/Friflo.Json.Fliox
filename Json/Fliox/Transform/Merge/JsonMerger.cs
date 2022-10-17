@@ -12,12 +12,12 @@ namespace Friflo.Json.Fliox.Transform.Merge
         private             Utf8JsonParser      parser;
         private             Bytes               json        = new Bytes(128);
         private readonly    JsonAstReader       astReader   = new JsonAstReader();
-        private             JsonAst             ast;
+        private             JsonAstIntern       ast;
         
         public JsonMerger() { }
         
         public void Merge (JsonValue value, JsonValue patch) {
-            ast = astReader.CreateAst(patch);
+            ast = astReader.CreateAst(patch).intern;
             
             json.Clear();
             json.AppendArray(value);

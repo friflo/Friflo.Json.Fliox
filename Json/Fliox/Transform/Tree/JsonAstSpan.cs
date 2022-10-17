@@ -8,7 +8,7 @@ namespace Friflo.Json.Fliox.Transform.Tree
     public readonly struct JsonAstSpan {
         /// <summary>
         /// if 0: string is null <br/>
-        /// >  0: is UTF-8 string with <see cref="start"/> in <see cref="JsonAst.Buf"/> 
+        /// >  0: is UTF-8 string with <see cref="start"/> in <see cref="JsonAstIntern.Buf"/> 
         /// </summary>
         internal  readonly  int     start;
         internal  readonly  int     len;
@@ -24,7 +24,7 @@ namespace Friflo.Json.Fliox.Transform.Tree
         public              string      Value (JsonAst ast) {
             if (start == 0)
                 return null;
-            return Encoding.UTF8.GetString(ast.Buf, start, len);
+            return Encoding.UTF8.GetString(ast.intern.Buf, start, len);
         }
     }
 }

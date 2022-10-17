@@ -15,8 +15,9 @@ namespace Friflo.Json.Fliox.Transform.Tree
     {
         private             Utf8JsonParser      parser;
         private             Bytes               json    = new Bytes(128);
-        /// for debugging use <see cref="JsonAst.DebugNodes"/>
-        private             JsonAst             ast;
+        /// for debugging use <see cref="JsonAstIntern.DebugNodes"/>
+        private             JsonAstIntern       ast;
+        private  readonly   JsonAst             astApi  = new JsonAst();
         
         private  static readonly    JsonAstSpan     Null;
         private  static readonly    JsonAstSpan     True;
@@ -24,7 +25,7 @@ namespace Friflo.Json.Fliox.Transform.Tree
         internal static readonly    byte[]          NullTrueFalse; 
         
         public JsonAstReader() {
-            ast = new JsonAst(1);
+            ast = new JsonAstIntern(1);
         }
         
         static JsonAstReader() {
@@ -45,16 +46,15 @@ namespace Friflo.Json.Fliox.Transform.Tree
             
             var ev = parser.Event; 
             if (ev != EOF)    throw new InvalidOperationException($"Expect EOF. was {ev}");
-            return ast;
+            astApi.intern = ast;
+            return astApi;
         }
         
-        public JsonAst Test(in JsonValue value) {
+        public void Test(in JsonValue value) {
             json.Clear();
             json.AppendArray(value);
             parser.InitParser(json);
             parser.SkipTree();
-            
-            return default;
         }
         
         private void Start() {
@@ -76,7 +76,7 @@ namespace Friflo.Json.Fliox.Transform.Tree
         private void TraverseObject() {
             int prevNode   = -1;
             while (true) {
-                var index   = ast.NodesCount;
+                var index   = ast.nodesCount;
                 var ev      = parser.Event;
                 switch (ev) {
                     case ObjectStart: {
@@ -133,7 +133,7 @@ namespace Friflo.Json.Fliox.Transform.Tree
         private void TraverseValue() {
             int prevNode   = -1;
             while (true) {
-                var index   = ast.NodesCount;
+                var index   = ast.nodesCount;
                 var ev      = parser.Event;
                 switch (ev) {
                     case ObjectStart: {

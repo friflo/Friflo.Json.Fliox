@@ -33,11 +33,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             var dif = GC.GetAllocatedBytesForCurrentThread() - start;
             AreEqual(0, dif);
             
-            var count = TraverseNode(ast.Nodes, 0);
+            var count = TraverseNode(ast, 0);
             AreEqual(41, count);
             
             for (int n = 0; n < 1; n++) {
-                TraverseNode(ast.Nodes, 0);
+                TraverseNode(ast, 0);
             }
 
             for (int n = 0; n < 1; n++) {
@@ -46,13 +46,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             }
         }
         
-        private static  int TraverseNode(JsonAstNode[] nodes, int index) {
+        private static  int TraverseNode(JsonAst ast, int index) {
+            var nodes = ast.Nodes;
             int count = 0;
             while (index != - 1) {
                 count++;
                 var node = nodes[index];
                 if (node.child != -1) {
-                    count += TraverseNode(nodes, node.child);
+                    count += TraverseNode(ast, node.child);
                 }
                 index = node.Next;
             }
