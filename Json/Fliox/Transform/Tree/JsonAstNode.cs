@@ -19,12 +19,30 @@ namespace Friflo.Json.Fliox.Transform.Tree
         /// <summary>Is not -1 if the node has a successor - an object member or an array element</summary> 
         internal            int         next;
 
+        public    override  string      ToString() => GetString();
+
         internal JsonAstNode (JsonEvent type, in JsonAstSpan key, in JsonAstSpan value, int child, int next) {
             this.key    = key;
             this.value  = value;
             this.type   = type;
             this.child  = child;
             this.next   = next;
+        }
+        
+        private string GetString() {
+            var sb = new StringBuilder();
+            sb.Append(type);
+            if (type != JsonEvent.None) {
+                if (child != -1) {
+                    sb.Append(" child: ");
+                    sb.Append(child);
+                }
+                if (next != -1) {
+                    sb.Append(" next: ");
+                    sb.Append(next);
+                }
+            }
+            return sb.ToString();            
         }
     }
     
