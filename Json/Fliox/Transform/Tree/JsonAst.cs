@@ -10,22 +10,16 @@ namespace Friflo.Json.Fliox.Transform.Tree
 {
     public class JsonAst
     {
+        internal    JsonAstIntern       intern; // ast state / result
+        // --- public API
         public      int                 NodesCount  => intern.nodesCount;
         public      JsonAstNode[]       Nodes       => intern.nodes;
-        public      JsonAstNodeDebug[]  DebugNodes  => intern.GetDebugNodes();
-        
-        public      JsonAstNodeDebug    DebugNode(JsonAstNode node) => intern.DebugNode(node);
-        
-        internal    JsonAstIntern       intern;
-        
-        public JsonAstNode GetNode(int index) {
-            return intern.nodes[index];
-        }
-        
+        public      JsonAstNode         GetNode(int index)                  => intern.nodes[index];
         /// <summary> used to return <see cref="JsonAstNode.key"/> and <see cref="JsonAstNode.value"/> as string.</summary>
-        public string GetSpanString(in JsonAstSpan span) {
-            return Encoding.UTF8.GetString(intern.Buf, span.start, span.len);
-        }
+        public      string              GetSpanString(in JsonAstSpan span)  => Encoding.UTF8.GetString(intern.Buf, span.start, span.len);
+        // --- debug helper
+        public      JsonAstNodeDebug[]  DebugNodes                          => intern.GetDebugNodes();
+        public      JsonAstNodeDebug    DebugNode(JsonAstNode node)         => intern.DebugNode(node);
     }
 
     /// Is struct to enhance performance when traversing with <see cref="JsonAstReader"/>
@@ -83,7 +77,6 @@ namespace Friflo.Json.Fliox.Transform.Tree
             nodes = newNodes;
         }
 
-        
         internal void SetNodeNext(int index, int next) {
             nodes[index].next = next;
         }

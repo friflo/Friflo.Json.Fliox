@@ -238,6 +238,7 @@ namespace Friflo.Json.Fliox.Transform.Merge
     internal readonly struct AstMembers
     {
         internal readonly   List<AstMember> items;
+        
         public   override   string          ToString() => $"{items.Count}";
         
         internal AstMembers(List<AstMember> items) {
@@ -245,15 +246,16 @@ namespace Friflo.Json.Fliox.Transform.Merge
         }
     }
     
-    internal readonly struct AstMember {
-        internal readonly   int        index;
-        internal readonly   bool       found;
+    internal readonly struct AstMember
+    {
+        internal readonly   int     index;
+        internal readonly   bool    found;
+        
+        public   override   string  ToString() => $"index: {index} found: {found}";
         
         internal AstMember(int index, bool found) {
             this.index  = index;
             this.found  = found;
         }
-        
-        public   override   string          ToString() => $"index: {index} found: {found}";
     }
 }
