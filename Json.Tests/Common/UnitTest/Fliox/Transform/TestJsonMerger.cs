@@ -63,7 +63,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 merger.MergeBytes(json, patch);
 
                 var start   = GC.GetAllocatedBytesForCurrentThread();
-                for (int n = 0; n < 1_000_000; n++) {
+                for (int n = 0; n < 1; n++) {
                     merger.MergeBytes(json, patch);
                 }
                 var dif     = GC.GetAllocatedBytesForCurrentThread() - start;
