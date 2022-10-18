@@ -17,6 +17,7 @@ namespace Friflo.Json.Fliox.Transform.Tree
         private     Bytes           key;
         private     Bytes           value;
         private     JsonAst         ast;
+        public      bool            WriteNullMembers { get; set; }
         
         public void Dispose() {
             astWriter.Dispose();
@@ -121,8 +122,10 @@ namespace Friflo.Json.Fliox.Transform.Tree
                     }
                     break;
                 case ValueNull:
-                    key.   Set(node.key);
-                    writer.MemberNul(key);
+                    if (WriteNullMembers) { 
+                        key.   Set(node.key);
+                        writer.MemberNul(key);
+                    }
                     break;
                 case ValueBool:
                 case ValueNumber:

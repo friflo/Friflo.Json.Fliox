@@ -69,6 +69,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             var astReader   = new JsonAstReader();
             var ast         = astReader.CreateAst(json);
             var astWriter   = new JsonAstWriter();
+            astWriter.WriteNullMembers = true;
             var result      = astWriter.WriteAst(ast);
             AreEqual(json.AsString(), result.AsString());
             

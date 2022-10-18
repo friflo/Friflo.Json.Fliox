@@ -21,6 +21,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             public  int         int1;
             public  MergeChild  child1;
             public  MergeChild  child2;
+            public  string      str1;
             public  int         int2;
             public  int         int3;
         }
@@ -38,6 +39,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                     int2    =  2,
                     child1  = new MergeChild { childInt =  3 },
                     child2  = null,
+                    str1    = "Test",
                     int3    =  5
                 };
                 var right   = new MergeClass {
@@ -45,6 +47,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                     int2    = 12,
                     child1  = new MergeChild { childInt = 13 },
                     child2  = new MergeChild { childInt = 14 },
+                    str1    = null,  
                     int3    =  5
                 };
 
