@@ -14,6 +14,8 @@ namespace Friflo.Json.Fliox.Transform.Tree
         public      JsonAstNode[]       Nodes       => intern.nodes;
         public      JsonAstNodeDebug[]  DebugNodes  => intern.GetDebugNodes();
         
+        public      JsonAstNodeDebug    DebugNode(JsonAstNode node) => intern.DebugNode(node);
+        
         internal    JsonAstIntern       intern;
         
         public JsonAstNode GetNode(int index) {
@@ -108,13 +110,17 @@ namespace Friflo.Json.Fliox.Transform.Tree
             return curPos;
         }
         
-        internal JsonAstNodeDebug[] GetDebugNodes() {
+        public JsonAstNodeDebug[] GetDebugNodes() {
             var count       = nodesCount;
             var debugNodes  = new JsonAstNodeDebug[count];
             for (int n = 0; n < count; n++) {
                 debugNodes[n] = new JsonAstNodeDebug(nodes[n], buf);
             }
             return debugNodes;
+        }
+        
+        public JsonAstNodeDebug DebugNode(JsonAstNode node) {
+            return new JsonAstNodeDebug(node, buf);
         }
     }
 }

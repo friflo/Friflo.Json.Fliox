@@ -40,7 +40,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 var jsonArray   = writer.WriteAsArray(left);
                 var json        = new JsonValue(jsonArray);
                 
-                merger.Merge(json, patch);
+                var merge       = merger.Merge(json, patch);
+                var expect      = "{'int1':11,'child':{'childInt':13},'int2':12}".Replace('\'', '"');
+                AreEqual(expect, merge.AsString());
             }
         }
     }

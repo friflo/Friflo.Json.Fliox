@@ -44,8 +44,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 astReader.Test(json);
                 // astParser.CreateAst(json);
             }
-            
-
         }
         
         private static  int TraverseNode(JsonAst ast, int index) {

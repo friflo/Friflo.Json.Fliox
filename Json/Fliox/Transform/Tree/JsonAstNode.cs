@@ -46,6 +46,8 @@ namespace Friflo.Json.Fliox.Transform.Tree
         }
     }
     
+    // ReSharper disable InconsistentNaming - list properties with _ at bottom in debugger 
+    // ReSharper disable UnusedMember.Local - properties with _ are only for debugging
     public readonly struct JsonAstNodeDebug {
         private readonly    JsonAstNode node;
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
@@ -53,11 +55,8 @@ namespace Friflo.Json.Fliox.Transform.Tree
         
         private string      Key     => node.key.start   == 0 ? null : Encoding.UTF8.GetString(buf, node.key.start,   node.key.len);
         private string      Value   => node.value.start == 0 ? null : Encoding.UTF8.GetString(buf, node.value.start, node.value.len);
-        // ReSharper disable once InconsistentNaming - want listing at bottom in debugger 
         private int        _Child   => node.child;
-        // ReSharper disable once InconsistentNaming - want listing at bottom in debugger 
         private int        _Next    => node.next;
-        // ReSharper disable once InconsistentNaming - want listing at bottom in debugger 
         private JsonEvent  _Type    => node.type;
 
         internal JsonAstNodeDebug (in JsonAstNode node, byte[] buf) {
@@ -80,7 +79,7 @@ namespace Friflo.Json.Fliox.Transform.Tree
         
         private string GetString() {
             if (node.type == JsonEvent.None)
-                return "reserved";
+                return "unused";
             var typeStr = GetTypeLabel();
             var sb = new StringBuilder();
             if (Key != null) {

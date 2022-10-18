@@ -12,32 +12,40 @@ namespace Friflo.Json.Fliox.Transform.Tree
 #endif
     public sealed class JsonAstWriter : IDisposable
     {
-        private     Utf8JsonWriter  writer;
+        private     Utf8JsonWriter  astWriter;
         private     Bytes           key;
         private     Bytes           value;
         private     JsonAst         ast;
         
         public void Dispose() {
-            writer.Dispose();
+            astWriter.Dispose();
         }
+        
         public JsonValue WriteAst(JsonAst ast) {
-            WriteAstBytes(ast);
-            return new JsonValue(writer.json.AsArray());
+            WriteAstInternal(ast, ref astWriter);
+            return new JsonValue(astWriter.json.AsArray());
         }
         
         public Bytes WriteAstBytes(JsonAst ast) {
+            WriteAstInternal(ast, ref astWriter);
+            return astWriter.json;
+        }
+        
+        internal void Init(JsonAst ast) {
             this.ast            = ast;
             var buffer          = ast.intern.Buf; 
             key.  buffer.array  = buffer;
             value.buffer.array  = buffer;
-            writer.InitSerializer();
-            
-            WriteValue(0);
-            
-            return writer.json;
         }
         
-        private void WriteValue(int index) {
+        private void WriteAstInternal(JsonAst ast, ref Utf8JsonWriter writer) {
+            Init(ast);
+            writer.InitSerializer();
+            
+            WriteValue(0, ref writer);
+        }
+        
+        private void WriteValue(int index, ref Utf8JsonWriter writer) {
             while (index != - 1)
             {
                 var node = ast.intern.nodes[index];
@@ -46,14 +54,14 @@ namespace Friflo.Json.Fliox.Transform.Tree
                     case  ObjectStart:
                         if (node.child != -1) {
                             writer.ObjectStart();
-                            WriteObject(node.child);
+                            WriteObject(node.child, ref writer);
                             writer.ObjectEnd();
                         }
                         break;
                     case  ArrayStart:
                         if (node.child != -1) {
                             writer.ArrayStart(false);
-                            WriteValue(node.child);
+                            WriteValue(node.child, ref writer);
                             writer.ArrayEnd();
                         }
                         break;
@@ -74,46 +82,50 @@ namespace Friflo.Json.Fliox.Transform.Tree
             }
         }
         
-        private void WriteObject(int index) {
-            while (index != - 1)
-            {
-                var node = ast.intern.nodes[index];
-                var ev = node.type;
-                switch (ev) {
-                    case  ObjectStart:
-                        if (node.child != -1) {
-                            key.   Set(node.key);
-                            writer.MemberObjectStart(key);
-                            WriteObject(node.child);
-                            writer.ObjectEnd();
-                        }
-                        break;
-                    case  ArrayStart:
-                        if (node.child != -1) {
-                            key.   Set(node.key);
-                            writer.MemberArrayStart(key);
-                            WriteValue(node.child);
-                            writer.ArrayEnd();
-                        }
-                        break;
-                    case ValueNull:
-                        key.   Set(node.key);
-                        writer.MemberNul(key);
-                        break;
-                    case ValueBool:
-                    case ValueNumber:
-                        key.   Set(node.key);
-                        value. Set(node.value);
-                        writer.MemberBytes(key, ref value);
-                        break;
-                    case ValueString:
-                        key.   Set(node.key);
-                        value. Set(node.value);
-                        writer.MemberStr(key, value);
-                        break;
-                }
-                index = node.Next;
+        private void WriteObject(int index, ref Utf8JsonWriter writer) {
+            while (index != - 1) {
+                index = WriteObjectMember(index, ref writer);
             }
+        }
+        
+        internal int WriteObjectMember(int index, ref Utf8JsonWriter writer)
+        {
+            var node    = ast.intern.nodes[index];
+            var ev      = node.type;
+            switch (ev) {
+                case  ObjectStart:
+                    if (node.child != -1) {
+                        key.   Set(node.key);
+                        writer.MemberObjectStart(key);
+                        WriteObject(node.child, ref writer);
+                        writer.ObjectEnd();
+                    }
+                    break;
+                case  ArrayStart:
+                    if (node.child != -1) {
+                        key.   Set(node.key);
+                        writer.MemberArrayStart(key);
+                        WriteValue(node.child, ref writer);
+                        writer.ArrayEnd();
+                    }
+                    break;
+                case ValueNull:
+                    key.   Set(node.key);
+                    writer.MemberNul(key);
+                    break;
+                case ValueBool:
+                case ValueNumber:
+                    key.   Set(node.key);
+                    value. Set(node.value);
+                    writer.MemberBytes(key, ref value);
+                    break;
+                case ValueString:
+                    key.   Set(node.key);
+                    value. Set(node.value);
+                    writer.MemberStr(key, value);
+                    break;
+            }
+            return node.next;
         }
     }
     
