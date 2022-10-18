@@ -19,8 +19,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
         
         internal  class MergeClass {
             public  int         int1;
-            public  MergeChild  child;
+            public  MergeChild  child1;
+            public  MergeChild  child2;
             public  int         int2;
+            public  int         int3;
         }
         
         [Test]
@@ -31,8 +33,20 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             using (var writer           = new ObjectWriter(typeStore))
             using (var merger           = new JsonMerger())
             {
-                var left    = new MergeClass { int1 =  1, int2 =  2, child = new MergeChild { childInt =  3 }};
-                var right   = new MergeClass { int1 = 11, int2 = 12, child = new MergeChild { childInt = 13 }};
+                var left    = new MergeClass {
+                    int1    =  1,
+                    int2    =  2,
+                    child1  = new MergeChild { childInt =  3 },
+                    child2  = null,
+                    int3    =  5
+                };
+                var right   = new MergeClass {
+                    int1    = 11,
+                    int2    = 12,
+                    child1  = new MergeChild { childInt = 13 },
+                    child2  = new MergeChild { childInt = 14 },
+                    int3    =  5
+                };
 
                 var diff        = differ.GetDiff(left, right, DiffKind.DiffArrays);
                 var patch       = jsonDiff.CreateJsonDiff(diff);
@@ -42,8 +56,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 var json        = new JsonValue(jsonArray);
                 
                 var merge       = merger.Merge(json, patch);
-                var expect      = "{'int1':11,'child':{'childInt':13},'int2':12}".Replace('\'', '"');
+                var expect      = "{'int1':11,'child1':{'childInt':13},'child2':{'childInt':14},'int2':12,'int3':5}".Replace('\'', '"');
                 AreEqual(expect, merge.AsString());
+                
+                merger.MergeBytes(json, patch);
 
                 var start   = GC.GetAllocatedBytesForCurrentThread();
                 for (int n = 0; n < 1; n++) {

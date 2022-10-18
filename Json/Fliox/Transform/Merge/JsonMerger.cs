@@ -53,6 +53,8 @@ namespace Friflo.Json.Fliox.Transform.Merge
             parser.NextEvent();
 
             TraverseValue(0);
+            
+            astWriter.AssertBuffers();
         }
         
         private void TraverseValue(int index)

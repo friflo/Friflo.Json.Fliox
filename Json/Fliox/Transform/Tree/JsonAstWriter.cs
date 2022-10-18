@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
+using System.Diagnostics;
 using Friflo.Json.Burst;
 using static Friflo.Json.Burst.JsonEvent;
 
@@ -37,12 +38,22 @@ namespace Friflo.Json.Fliox.Transform.Tree
             key.  buffer.array  = buffer;
             value.buffer.array  = buffer;
         }
+
+        /// <summary>Ensure <see cref="Bytes.buffer"/> is not modified at <see cref="Bytes.AppendBytes"/></summary>
+        [Conditional("DEBUG")]
+        internal void AssertBuffers() {
+            var buffer          = ast.intern.Buf;
+            if (key.  buffer.array  != buffer)  throw new InvalidOperationException("key buffer modified");
+            if (value.buffer.array  != buffer)  throw new InvalidOperationException("value buffer modified");
+        }
         
         private void WriteAstInternal(JsonAst ast, ref Utf8JsonWriter writer) {
             Init(ast);
             writer.InitSerializer();
             
             WriteValue(0, ref writer);
+
+            AssertBuffers();
         }
         
         private void WriteValue(int index, ref Utf8JsonWriter writer) {

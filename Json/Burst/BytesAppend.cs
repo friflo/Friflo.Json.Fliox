@@ -10,6 +10,8 @@ namespace Friflo.Json.Burst
 {
     public partial struct Bytes
     {
+        public const int CopyRemainder = 8;
+        
         public unsafe void AppendBytes(ref Bytes src)
         {
 /*
@@ -28,9 +30,9 @@ namespace Friflo.Json.Burst
             int curEnd = end;
             hc = BytesConst.notHashed;
             // ensure both buffer's are large enough when accessing the byte array's via unsafe (long*)
-            src.EnsureCapacityAbs(src.end + 8);
+            src.EnsureCapacityAbs(src.end + CopyRemainder);
             int len = src.end - src.start;
-            EnsureCapacityAbs(end + len + 8);
+            EnsureCapacityAbs(end + len + CopyRemainder);
             
             end += len;
 #if JSON_BURST

@@ -35,6 +35,7 @@ namespace Friflo.Json.Fliox.Transform.Tree
         private     int                 nodesCapacity;
         internal    JsonAstNode[]       nodes;
         private     byte[]              buf;
+        private     int                 bufLength;
         private     int                 pos;
         
         internal    JsonAstNodeDebug[]  DebugNodes  => GetDebugNodes();
@@ -45,7 +46,8 @@ namespace Friflo.Json.Fliox.Transform.Tree
             nodesCount      = 0;
             nodesCapacity   = capacity;
             nodes           = new JsonAstNode[nodesCapacity];
-            buf             = new byte[32];
+            bufLength       = 32;
+            buf             = new byte[bufLength + Bytes.CopyRemainder];
             pos             = -1;
         }
         
@@ -96,15 +98,15 @@ namespace Friflo.Json.Fliox.Transform.Tree
         private int Reserve (int len) {
             int curPos  = pos;
             int newLen  = curPos + len;
-            int bufLen  = buf.Length;
-            if (curPos + len > bufLen) {
-                var doubledLen = 2 * bufLen;
+            if (curPos + len > bufLength) {
+                var doubledLen = 2 * bufLength;
                 if (newLen < doubledLen) {
                     newLen = doubledLen;
                 }
-                var newBuffer = new byte [newLen];
+                var newBuffer = new byte [newLen + Bytes.CopyRemainder];
                 Buffer.BlockCopy(buf, 0, newBuffer, 0, curPos);
-                buf = newBuffer;
+                buf         = newBuffer;
+                bufLength   = newLen;
             }
             pos += len;
             return curPos;
