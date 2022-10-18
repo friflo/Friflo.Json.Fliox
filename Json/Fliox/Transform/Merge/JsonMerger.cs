@@ -158,6 +158,7 @@ namespace Friflo.Json.Fliox.Transform.Merge
                         }
                         break;
                     case ObjectEnd:
+                        WriteNewMembers(members);
                         ReleaseMembers();
                         return;
                     case ArrayEnd:
@@ -166,6 +167,14 @@ namespace Friflo.Json.Fliox.Transform.Merge
                         throw new InvalidOperationException($"unexpected state: {ev}");
                 }
                 parser.NextEvent();
+            }
+        }
+        
+        private void WriteNewMembers(AstMembers members) {
+            foreach (var member in members.items) {
+                if (member.found)
+                    continue;
+                astWriter.WriteObjectMember(member.index, ref writer);
             }
         }
         

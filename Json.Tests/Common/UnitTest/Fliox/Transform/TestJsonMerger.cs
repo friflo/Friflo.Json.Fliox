@@ -51,18 +51,19 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 var diff        = differ.GetDiff(left, right, DiffKind.DiffArrays);
                 var patch       = jsonDiff.CreateJsonDiff(diff);
 
-                writer.Pretty   = true;
+                writer.Pretty           = true;
+                writer.WriteNullMembers = false;
                 var jsonArray   = writer.WriteAsArray(left);
                 var json        = new JsonValue(jsonArray);
                 
                 var merge       = merger.Merge(json, patch);
-                var expect      = "{'int1':11,'child1':{'childInt':13},'child2':{'childInt':14},'int2':12,'int3':5}".Replace('\'', '"');
+                var expect      = "{'int1':11,'child1':{'childInt':13},'int2':12,'int3':5,'child2':{'childInt':14}}".Replace('\'', '"');
                 AreEqual(expect, merge.AsString());
                 
                 merger.MergeBytes(json, patch);
 
                 var start   = GC.GetAllocatedBytesForCurrentThread();
-                for (int n = 0; n < 1; n++) {
+                for (int n = 0; n < 1_000_000; n++) {
                     merger.MergeBytes(json, patch);
                 }
                 var dif     = GC.GetAllocatedBytesForCurrentThread() - start;
