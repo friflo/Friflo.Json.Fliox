@@ -4,10 +4,9 @@
 using System;
 using System.Collections.Generic;
 using Friflo.Json.Burst;
-using Friflo.Json.Fliox.Transform.Tree;
 using static Friflo.Json.Burst.JsonEvent;
 
-namespace Friflo.Json.Fliox.Transform.Merge
+namespace Friflo.Json.Fliox.Transform.Tree
 {
     public class JsonMerger : IDisposable
     {

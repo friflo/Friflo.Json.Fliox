@@ -5,7 +5,7 @@ using System;
 using Friflo.Json.Fliox;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Mapper.Diff;
-using Friflo.Json.Fliox.Transform.Merge;
+using Friflo.Json.Fliox.Transform.Tree;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
 
