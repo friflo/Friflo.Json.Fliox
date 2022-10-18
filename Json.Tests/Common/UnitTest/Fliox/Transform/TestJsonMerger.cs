@@ -10,7 +10,7 @@ using static NUnit.Framework.Assert;
 
 namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
 {
-    public class TestJsonMerge
+    public class TestJsonMerger
     {
         internal class MergeChild {
             public  int     childInt;
@@ -23,13 +23,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
         }
         
         [Test]
-        public void TestCreateJsonTree() {
+        public void TestJsonMerge() {
             using (var typeStore        = new TypeStore()) 
             using (var differ           = new ObjectDiffer(typeStore))
             using (var jsonDiff         = new JsonDiff(typeStore))
             using (var writer           = new ObjectWriter(typeStore))
             using (var merger           = new JsonMerger())
-                
             {
                 var left    = new MergeClass { int1 =  1, int2 =  2, child = new MergeChild { childInt =  3 }};
                 var right   = new MergeClass { int1 = 11, int2 = 12, child = new MergeChild { childInt = 13 }};

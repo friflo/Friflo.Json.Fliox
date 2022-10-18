@@ -14,7 +14,7 @@ namespace Friflo.Json.Fliox.Transform.Tree
         private     Utf8JsonWriter  writer;
         private     Bytes           key;
         private     Bytes           value;
-        private     JsonAstIntern   ast;
+        private     JsonAst         ast;
         
         public void Dispose() {
             writer.Dispose();
@@ -25,7 +25,7 @@ namespace Friflo.Json.Fliox.Transform.Tree
         }
         
         public Bytes WriteAstBytes(JsonAst ast) {
-            this.ast            = ast.intern;
+            this.ast            = ast;
             var buffer          = ast.intern.Buf; 
             key.  buffer.array  = buffer;
             value.buffer.array  = buffer;
@@ -39,7 +39,7 @@ namespace Friflo.Json.Fliox.Transform.Tree
         private void WriteValue(int index) {
             while (index != - 1)
             {
-                var node = ast.nodes[index];
+                var node = ast.intern.nodes[index];
                 var ev = node.type;
                 switch (ev) {
                     case  JsonEvent.ObjectStart:
@@ -76,7 +76,7 @@ namespace Friflo.Json.Fliox.Transform.Tree
         private void WriteObject(int index) {
             while (index != - 1)
             {
-                var node = ast.nodes[index];
+                var node = ast.intern.nodes[index];
                 var ev = node.type;
                 switch (ev) {
                     case  JsonEvent.ObjectStart:
