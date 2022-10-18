@@ -3,6 +3,7 @@
 
 using System;
 using Friflo.Json.Burst;
+using static Friflo.Json.Burst.JsonEvent;
 
 namespace Friflo.Json.Fliox.Transform.Tree
 {
@@ -42,29 +43,29 @@ namespace Friflo.Json.Fliox.Transform.Tree
                 var node = ast.intern.nodes[index];
                 var ev = node.type;
                 switch (ev) {
-                    case  JsonEvent.ObjectStart:
+                    case  ObjectStart:
                         if (node.child != -1) {
                             writer.ObjectStart();
                             WriteObject(node.child);
                             writer.ObjectEnd();
                         }
                         break;
-                    case  JsonEvent.ArrayStart:
+                    case  ArrayStart:
                         if (node.child != -1) {
                             writer.ArrayStart(false);
                             WriteValue(node.child);
                             writer.ArrayEnd();
                         }
                         break;
-                    case JsonEvent.ValueNull:
+                    case ValueNull:
                         writer.ElementNul();
                         break;
-                    case JsonEvent.ValueBool:
-                    case JsonEvent.ValueNumber:
+                    case ValueBool:
+                    case ValueNumber:
                         value. Set(node.value);
                         writer.ElementBytes(ref value);
                         break;
-                    case JsonEvent.ValueString:
+                    case ValueString:
                         value. Set(node.value);
                         writer.ElementStr(value);
                         break;
@@ -79,7 +80,7 @@ namespace Friflo.Json.Fliox.Transform.Tree
                 var node = ast.intern.nodes[index];
                 var ev = node.type;
                 switch (ev) {
-                    case  JsonEvent.ObjectStart:
+                    case  ObjectStart:
                         if (node.child != -1) {
                             key.   Set(node.key);
                             writer.MemberObjectStart(key);
@@ -87,7 +88,7 @@ namespace Friflo.Json.Fliox.Transform.Tree
                             writer.ObjectEnd();
                         }
                         break;
-                    case  JsonEvent.ArrayStart:
+                    case  ArrayStart:
                         if (node.child != -1) {
                             key.   Set(node.key);
                             writer.MemberArrayStart(key);
@@ -95,17 +96,17 @@ namespace Friflo.Json.Fliox.Transform.Tree
                             writer.ArrayEnd();
                         }
                         break;
-                    case JsonEvent.ValueNull:
+                    case ValueNull:
                         key.   Set(node.key);
                         writer.MemberNul(key);
                         break;
-                    case JsonEvent.ValueBool:
-                    case JsonEvent.ValueNumber:
+                    case ValueBool:
+                    case ValueNumber:
                         key.   Set(node.key);
                         value. Set(node.value);
                         writer.MemberBytes(key, ref value);
                         break;
-                    case JsonEvent.ValueString:
+                    case ValueString:
                         key.   Set(node.key);
                         value. Set(node.value);
                         writer.MemberStr(key, value);

@@ -4,6 +4,7 @@
 using System;
 using Friflo.Json.Burst;
 using Friflo.Json.Fliox.Transform.Tree;
+using static Friflo.Json.Burst.JsonEvent;
 
 namespace Friflo.Json.Fliox.Transform.Merge
 {
@@ -41,33 +42,33 @@ namespace Friflo.Json.Fliox.Transform.Merge
         {
             var ev  = parser.Event;
             switch (ev) {
-                case JsonEvent.ValueNull:
+                case ValueNull:
                     writer.ElementNul   ();
                     break;
-                case JsonEvent.ValueBool:
+                case ValueBool:
                     writer.ElementBln   (parser.boolValue);
                     break;
-                case JsonEvent.ValueNumber:
+                case ValueNumber:
                     writer.ElementBytes (ref parser.value);
                     break;
-                case JsonEvent.ValueString:
+                case ValueString:
                     writer.ElementStr   (parser.value);
                     break;
-                case JsonEvent.ObjectStart:
+                case ObjectStart:
                     writer.ObjectStart  ();
                     parser.NextEvent();
                     TraverseObject(0);  // descend
                     writer.ObjectEnd    ();
                     return;
-                case JsonEvent.ArrayStart:
+                case ArrayStart:
                     writer.ArrayStart   (false);
                     parser.NextEvent();
                     TraverseArray(0);   // descend
                     writer.ArrayEnd     ();
                     return;
-                case JsonEvent.ObjectEnd:
-                case JsonEvent.ArrayEnd:
-                case JsonEvent.EOF:
+                case ObjectEnd:
+                case ArrayEnd:
+                case EOF:
                 default:
                     throw new InvalidOperationException($"unexpected state: {ev}");
             }
@@ -79,34 +80,34 @@ namespace Friflo.Json.Fliox.Transform.Merge
             while (true) {
                 var ev = parser.Event;
                 switch (ev) {
-                    case JsonEvent.ValueNull:
+                    case ValueNull:
                         writer.ElementNul   ();
                         break;
-                    case JsonEvent.ValueBool:
+                    case ValueBool:
                         writer.ElementBln   (parser.boolValue);
                         break;
-                    case JsonEvent.ValueNumber:
+                    case ValueNumber:
                         writer.ElementBytes (ref parser.value);
                         break;
-                    case JsonEvent.ValueString:
+                    case ValueString:
                         writer.ElementStr   (parser.value);
                         break;
-                    case JsonEvent.ObjectStart:
+                    case ObjectStart:
                         writer.ObjectStart  ();
                         parser.NextEvent();
                         TraverseObject(0);  // descend
                         writer.ObjectEnd    ();
                         break;
-                    case JsonEvent.ArrayStart:
+                    case ArrayStart:
                         writer.ArrayStart   (false);
                         parser.NextEvent();
                         TraverseArray(0);   // descend
                         writer.ArrayEnd     ();
                         break;
-                    case JsonEvent.ArrayEnd:
+                    case ArrayEnd:
                         return;
-                    case JsonEvent.ObjectEnd:
-                    case JsonEvent.EOF:
+                    case ObjectEnd:
+                    case EOF:
                     default:
                         throw new InvalidOperationException($"unexpected state: {ev}");
                 }
@@ -119,34 +120,34 @@ namespace Friflo.Json.Fliox.Transform.Merge
             while (true) {
                 var ev  = parser.Event;
                 switch (ev) {
-                    case JsonEvent.ValueNull:
+                    case ValueNull:
                         writer.MemberNul        (parser.key);
                         break;
-                    case JsonEvent.ValueBool:
+                    case ValueBool:
                         writer.MemberBln        (parser.key, parser.boolValue);
                         break;
-                    case JsonEvent.ValueNumber:
+                    case ValueNumber:
                         writer.MemberBytes      (parser.key, ref parser.value);
                         break;
-                    case JsonEvent.ValueString:
+                    case ValueString:
                         writer.MemberStr        (parser.key, parser.value);
                         break;
-                    case JsonEvent.ObjectStart:
+                    case ObjectStart:
                         writer.MemberObjectStart(parser.key);
                         parser.NextEvent();
                         TraverseObject (-1);    // descend
                         writer.ObjectEnd        ();
                         break;
-                    case JsonEvent.ArrayStart:
+                    case ArrayStart:
                         writer.MemberArrayStart (parser.key);
                         parser.NextEvent();
                         Start(0);               // descend
                         writer.ArrayEnd         ();
                         break;
-                    case JsonEvent.ObjectEnd:
+                    case ObjectEnd:
                         return;
-                    case JsonEvent.ArrayEnd:
-                    case JsonEvent.EOF:
+                    case ArrayEnd:
+                    case EOF:
                     default:
                         throw new InvalidOperationException($"unexpected state: {ev}");
                 }
