@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System;
 using Friflo.Json.Fliox;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Mapper.Diff;
@@ -43,6 +44,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 var merge       = merger.Merge(json, patch);
                 var expect      = "{'int1':11,'child':{'childInt':13},'int2':12}".Replace('\'', '"');
                 AreEqual(expect, merge.AsString());
+
+                var start   = GC.GetAllocatedBytesForCurrentThread();
+                for (int n = 0; n < 1; n++) {
+                    merger.MergeBytes(json, patch);
+                }
+                var dif     = GC.GetAllocatedBytesForCurrentThread() - start;
+                AreEqual(0, dif);
             }
         }
     }

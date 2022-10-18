@@ -30,8 +30,18 @@ namespace Friflo.Json.Fliox.Transform.Merge
             parser.Dispose();
             writer.Dispose();
         }
+        
+        public JsonValue    Merge (JsonValue value, JsonValue patch) {
+            MergeInternal(value, patch);
+            return new JsonValue(writer.json.AsArray());
+        }
+        
+        public Bytes        MergeBytes (JsonValue value, JsonValue patch) {
+            MergeInternal(value, patch);
+            return writer.json;
+        }
 
-        public JsonValue Merge (JsonValue value, JsonValue patch) {
+        private void MergeInternal (JsonValue value, JsonValue patch) {
             membersStackIndex   = 0;
             ast                 = astReader.CreateAst(patch);
             astWriter.Init(ast);
@@ -43,8 +53,6 @@ namespace Friflo.Json.Fliox.Transform.Merge
             parser.NextEvent();
 
             TraverseValue(0);
-            
-            return new JsonValue(writer.json.AsArray());
         }
         
         private void TraverseValue(int index)
