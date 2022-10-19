@@ -12,15 +12,19 @@ namespace Friflo.Json.Fliox.Transform.Tree
     {
         private             Utf8JsonParser      parser;
         private             Utf8JsonWriter      writer;
-        private             Bytes               json            = new Bytes(128);
-        private readonly    JsonAstReader       astReader       = new JsonAstReader();
-        private readonly    JsonAstWriter       astWriter       = new JsonAstWriter();
+        private             Bytes               json;
+        private readonly    JsonAstReader       astReader;
+        private readonly    JsonAstWriter       astWriter;
         private             JsonAst             ast;
-        private readonly    List<AstMembers>    membersStack    = new List<AstMembers>();
+        private readonly    List<AstMembers>    membersStack;
         private             int                 membersStackIndex;
         
-        // ReSharper disable once EmptyConstructor
-        public JsonMerger() { }
+        public JsonMerger() {
+            json            = new Bytes(128);
+            astReader       = new JsonAstReader();
+            astWriter       = new JsonAstWriter();
+            membersStack    = new List<AstMembers>();
+        }
         
         public void Dispose() {
             astReader.Dispose();
