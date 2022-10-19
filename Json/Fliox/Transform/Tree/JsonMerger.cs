@@ -123,7 +123,7 @@ namespace Friflo.Json.Fliox.Transform.Tree
         private void TraverseObject(int index)
         {
             var members = CreateMembers();
-            GetMembers(index, members.items);
+            GetPatchMembers(index, members.items);
 
             while (true) {
                 var ev  = parser.Event;
@@ -162,7 +162,7 @@ namespace Friflo.Json.Fliox.Transform.Tree
                         break;
                     case ObjectEnd:
                         WriteNewMembers(members);
-                        ReleaseMembers();
+                        ReleasePatchMembers();
                         return;
                     case ArrayEnd:
                     case EOF:
@@ -191,13 +191,16 @@ namespace Friflo.Json.Fliox.Transform.Tree
             return members;
         }
         
-        private void ReleaseMembers() {
+        private void ReleasePatchMembers() {
             var members = membersStack[--membersStackIndex];
             members.items.Clear();
         }
         
-        private void GetMembers (int index, List<AstMember> members) {
+        private void GetPatchMembers (int index, List<AstMember> members) {
             members.Clear();
+            if (index == -1) {
+                return; // case: only left (original) object available - no counterpart in patch (right) object 
+            }
             var child = ast.intern.nodes[index].child;
             while (child != -1) {
                 members.Add(new AstMember(child, false));

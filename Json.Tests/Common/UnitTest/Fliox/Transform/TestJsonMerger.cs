@@ -14,10 +14,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
 {
     public class TestJsonMerger
     {
-        private class MergeChild {
-            public  int     childInt;
-        }
-        
         private  class MergePrimitives {
             public  int         intEqual;
             public  int         intNotEqual;
@@ -65,6 +61,51 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 var merge       = merger.Merge(value, patch);
                 var expect      =
 "{'intEqual':1,'intNotEqual':22,'boolEqual':true,'boolNotEqual':false,'strEqual':'Test','strNotEqual':'Str-2','strOnlyRight':'only right'}".Replace('\'', '"');
+                AreEqual(expect, merge.AsString());
+                
+                AssertAlloc(value, patch, 1, merger);
+            }
+        }
+        
+        private class MergeChild {
+            public  int     val;
+        }
+        
+        private  class MergeClasses {
+            public  MergeChild  childEqual;
+            public  MergeChild  childNotEqual;
+            public  MergeChild  childEqualNull;
+            public  MergeChild  childOnlyLeft;
+            public  MergeChild  childOnlyRight;
+        }
+        
+        [Test]
+        public void TestJsonMergeClasses() {
+            using (var typeStore        = new TypeStore()) 
+            using (var differ           = new ObjectDiffer(typeStore))
+            using (var jsonDiff         = new JsonDiff(typeStore))
+            using (var writer           = new ObjectWriter(typeStore))
+            using (var merger           = new JsonMerger())
+            {
+                var left    = new MergeClasses {
+                    childEqual      = new MergeChild { val = 1 },
+                    childNotEqual   = new MergeChild { val = 2 },
+                    childEqualNull  = null,
+                    childOnlyLeft   = new MergeChild { val = 4 },
+                    childOnlyRight  = null
+                };
+                var right   = new MergeClasses {
+                    childEqual      = new MergeChild { val = 1 },
+                    childNotEqual   = new MergeChild { val = 3 },
+                    childEqualNull  = null,
+                    childOnlyLeft   = null,
+                    childOnlyRight  = new MergeChild { val = 5 },
+                };
+                PrepareMerge(left, right, differ, jsonDiff, writer, out var value, out var patch);
+                
+                var merge       = merger.Merge(value, patch);
+                var expect      =
+"{'childEqual':{'val':1},'childNotEqual':{'val':3},'childOnlyRight':{'val':5}}".Replace('\'', '"');
                 AreEqual(expect, merge.AsString());
                 
                 AssertAlloc(value, patch, 1, merger);
