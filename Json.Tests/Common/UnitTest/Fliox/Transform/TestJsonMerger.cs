@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
+using System.Text.RegularExpressions;
 using Friflo.Json.Fliox;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Mapper.Diff;
@@ -42,7 +43,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                     strEqual        = "Test",
                     strEqualNull    = null, 
                     strNotEqual     = "Str-1",
-                    strOnlyLeft     = "only left",
+                    strOnlyLeft     = "only-left",
                     strOnlyRight    = null
                 };
                 var right   = new MergePrimitives {
@@ -54,11 +55,19 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                     strEqualNull    = null,
                     strNotEqual     = "Str-2",
                     strOnlyLeft     = null,
-                    strOnlyRight    = "only right"
+                    strOnlyRight    = "only-right"
                 };
                 var expect =
-"{'intEqual':1,'intNotEqual':22,'boolEqual':true,'boolNotEqual':false,'strEqual':'Test','strNotEqual':'Str-2','strOnlyRight':'only right'}"
-                .Replace('\'', '"');
+@"{
+    'intEqual':     1,
+    'intNotEqual':  22,
+    'boolEqual':    true,
+    'boolNotEqual': false,
+    'strEqual':     'Test',
+    'strNotEqual':  'Str-2',
+    'strOnlyRight': 'only-right'
+}";
+                expect = NormalizeJson(expect);
 
                 PrepareMerge(left, right, differ, jsonDiff, writer, false, out var value, out var patch);
                 var merge       = merger.Merge(value, patch);
@@ -107,7 +116,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                     childOnlyRight  = new MergeChild { val = 5 },
                 };
                 var expect =
-                    "{'childEqual':{'val':1},'childNotEqual':{'val':3},'childOnlyRight':{'val':5}}".Replace('\'', '"');
+@"{
+    'childEqual':       {'val': 1},
+    'childNotEqual':    {'val': 3},
+    'childOnlyRight':   {'val': 5}
+}";
+                expect = NormalizeJson(expect);
 
                 PrepareMerge(left, right, differ, jsonDiff, writer, false, out var value, out var patch);
                 var merge       = merger.Merge(value, patch);
@@ -122,12 +136,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
         }
         
         private  class MergeArray {
-            public  int[]       int1;
-            public  int[]       int2;
-            public  bool[]      bool1;
-            public  bool[]      bool2;
-            public  string[]    str1;
-            public  string[]    str2;
+            public  int[]           int1;
+            public  int[]           int2;
+            public  bool[]          bool1;
+            public  bool[]          bool2;
+            public  string[]        str1;
+            public  string[]        str2;
+            public  MergeChild[]    child1;
+            public  MergeChild[]    child2;
         }
         
         [Test]
@@ -139,23 +155,37 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             using (var merger           = new JsonMerger())
             {
                 var left = new MergeArray {
-                    int1  = new [] { 10 },
-                    int2  = new [] { 20 },
-                    bool1 = new [] { true },
-                    bool2 = new [] { true },
-                    str1  = new [] { "A" },
-                    str2  = new [] { "B" },
+                    int1    = new [] { 10 },
+                    int2    = new [] { 20 },
+                    bool1   = new [] { true },
+                    bool2   = new [] { true },
+                    str1    = new [] { "A" },
+                    str2    = new [] { "B" },
+                    child1  = new [] { new MergeChild { val = 100 }},
+                    child2  = new [] { new MergeChild { val = 200 }}
                 };
                 var right = new MergeArray {
-                    int1  = new [] { 10 },
-                    int2  = new [] { 21 },
-                    bool1 = new [] { true },
-                    bool2 = new [] { false },
-                    str1  = new [] { "A" },
-                    str2  = new [] { "C" },
+                    int1    = new [] { 10 },
+                    int2    = new [] { 21 },
+                    bool1   = new [] { true },
+                    bool2   = new [] { false },
+                    str1    = new [] { "A" },
+                    str2    = new [] { "C" },
+                    child1  = new [] { new MergeChild { val = 100 }},
+                    child2  = new [] { new MergeChild { val = 201 }}
                 };
                 var expect =
-                "{'int1':[10],'int2':[21],'bool1':[true],'bool2':[false],'str1':['A'],'str2':['C']}".Replace('\'', '"');
+@"{
+    'int1':     [10],
+    'int2':     [21],
+    'bool1':    [true],
+    'bool2':    [false],
+    'str1':     ['A'],
+    'str2':     ['C'],
+    'child1':   [{'val':100}],
+    'child2':   [{'val':201}]
+}";
+                expect = NormalizeJson(expect);
                 
                 PrepareMerge(left, right, differ, jsonDiff, writer, false, out var value, out var patch);
                 var merge       = merger.Merge(value, patch);
@@ -196,6 +226,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             }
             var dif     = GC.GetAllocatedBytesForCurrentThread() - start;
             AreEqual(0, dif);
+        }
+        
+        private static string NormalizeJson(string value) {
+            return Regex.Replace(value, @"\s+", "").Replace('\'', '"');
         }
     }
 }
