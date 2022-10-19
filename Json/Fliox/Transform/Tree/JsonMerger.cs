@@ -220,19 +220,16 @@ namespace Friflo.Json.Fliox.Transform.Tree
                 return false;
             }
             ref var searchKey   = ref parser.key;
-            var searchKeyLen    = searchKey.Len;
-            var searchKeySpan   = new Span<byte> (searchKey.buffer.array, searchKey.start, searchKeyLen);
+            var searchKeySpan   = new Span<byte> (searchKey.buffer.array, searchKey.start, searchKey.Len);
             var items           = members.items;
             var memberCount     = items.Count;
             for (int n = 0; n < memberCount; n++)
             {
-                var astMember       = items[n];
+                var astMember   = items[n];
                 if (astMember.found)
                     continue;
-                var node            = ast.intern.nodes[astMember.index];
-                if (searchKeyLen != node.key.len)
-                    continue;
-                var nodeKey = new Span<byte> (ast.intern.Buf, node.key.start, node.key.len);
+                var node        = ast.intern.nodes[astMember.index];
+                var nodeKey     = new Span<byte> (ast.intern.Buf, node.key.start, node.key.len);
                 if (!searchKeySpan.SequenceEqual(nodeKey))
                     continue;
                 // --- found node member
