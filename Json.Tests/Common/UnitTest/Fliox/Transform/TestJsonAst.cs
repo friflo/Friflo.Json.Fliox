@@ -101,7 +101,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 AreEqual(ValueNumber,   node.type);
                 AreEqual("123",         ast.GetSpanString(node.value));
                 AreEqual(-1,            node.child);
-
             }
             {   // --- bool
                 var json    =  new JsonValue("true");
@@ -111,7 +110,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 AreEqual(ValueBool,     node.type);
                 AreEqual("true",        ast.GetSpanString(node.value));
                 AreEqual(-1,            node.child);
-
             }
             {   // --- null
                 var json    =  new JsonValue("null");
@@ -121,24 +119,59 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 AreEqual(ValueNull,     node.type);
                 AreEqual("null",        ast.GetSpanString(node.value));
                 AreEqual(-1,            node.child);
-
             }
-            {   // --- object
+        }
+        
+        [Test]
+        public void TestJsonTreeObjects() {
+            var astReader   = new JsonAstReader();
+            {
                 var json    =  new JsonValue("{}");
                 var ast     = astReader.CreateAst(json);
                 AreEqual(1, ast.NodesCount);
                 var node    = ast.GetNode(0);
                 AreEqual(ObjectStart,   node.type);
                 AreEqual(-1,            node.child);
-
             }
-            {   // --- array
+            {
+                var json    =  new JsonValue("{\"a\": 10}");
+                var ast     = astReader.CreateAst(json);
+                AreEqual(2, ast.NodesCount);
+                var node    = ast.GetNode(0);
+                AreEqual(ObjectStart,   node.type);
+                AreEqual(1,             node.child);
+                // --- child
+                var child1  = ast.GetNode(1);
+                AreEqual(ValueNumber,   child1.type);
+                AreEqual(-1,            child1.child);
+                AreEqual("a",           ast.GetSpanString(child1.key));
+                AreEqual("10",          ast.GetSpanString(child1.value));
+            }
+        }
+        
+        [Test]
+        public void TestJsonTreeArrays() {
+            var astReader   = new JsonAstReader();
+            {
                 var json    =  new JsonValue("[]");
                 var ast     = astReader.CreateAst(json);
                 AreEqual(1, ast.NodesCount);
                 var node    = ast.GetNode(0);
                 AreEqual(ArrayStart,    node.type);
                 AreEqual(-1,            node.child);
+            }
+            {
+                var json    =  new JsonValue("[11]");
+                var ast     = astReader.CreateAst(json);
+                AreEqual(2, ast.NodesCount);
+                var node    = ast.GetNode(0);
+                AreEqual(ArrayStart,    node.type);
+                AreEqual(1,             node.child);
+                // --- child
+                var child1  = ast.GetNode(1);
+                AreEqual(ValueNumber,   child1.type);
+                AreEqual(-1,            child1.child);
+                AreEqual("11",          ast.GetSpanString(child1.value));
             }
         }
     }
