@@ -105,6 +105,7 @@ namespace Friflo.Json.Fliox.Transform.Tree
                         writer.ObjectEnd    ();
                         break;
                     case ArrayStart:
+                        // no test coverage - at some point its enough :D
                         writer.ArrayStart   (false);
                         parser.NextEvent();
                         TraverseArray();    // descend
