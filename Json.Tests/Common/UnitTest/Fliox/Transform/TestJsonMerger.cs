@@ -56,11 +56,16 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                     strOnlyLeft     = null,
                     strOnlyRight    = "only right"
                 };
-                PrepareMerge(left, right, differ, jsonDiff, writer, out var value, out var patch);
-                
+                var expect =
+"{'intEqual':1,'intNotEqual':22,'boolEqual':true,'boolNotEqual':false,'strEqual':'Test','strNotEqual':'Str-2','strOnlyRight':'only right'}"
+                .Replace('\'', '"');
+
+                PrepareMerge(left, right, differ, jsonDiff, writer, false, out var value, out var patch);
                 var merge       = merger.Merge(value, patch);
-                var expect      =
-"{'intEqual':1,'intNotEqual':22,'boolEqual':true,'boolNotEqual':false,'strEqual':'Test','strNotEqual':'Str-2','strOnlyRight':'only right'}".Replace('\'', '"');
+                AreEqual(expect, merge.AsString());
+                
+                PrepareMerge(left, right, differ, jsonDiff, writer, true, out value, out patch);
+                merge          = merger.Merge(value, patch);
                 AreEqual(expect, merge.AsString());
                 
                 AssertAlloc(value, patch, 1, merger);
@@ -101,11 +106,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                     childOnlyLeft   = null,
                     childOnlyRight  = new MergeChild { val = 5 },
                 };
-                PrepareMerge(left, right, differ, jsonDiff, writer, out var value, out var patch);
-                
+                var expect =
+                    "{'childEqual':{'val':1},'childNotEqual':{'val':3},'childOnlyRight':{'val':5}}".Replace('\'', '"');
+
+                PrepareMerge(left, right, differ, jsonDiff, writer, false, out var value, out var patch);
                 var merge       = merger.Merge(value, patch);
-                var expect      =
-"{'childEqual':{'val':1},'childNotEqual':{'val':3},'childOnlyRight':{'val':5}}".Replace('\'', '"');
+                AreEqual(expect, merge.AsString());
+                
+                PrepareMerge(left, right, differ, jsonDiff, writer, true, out value, out patch);
+                merge          = merger.Merge(value, patch);
                 AreEqual(expect, merge.AsString());
                 
                 AssertAlloc(value, patch, 1, merger);
@@ -145,11 +154,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                     str1  = new [] { "A" },
                     str2  = new [] { "C" },
                 };
-                PrepareMerge(left, right, differ, jsonDiff, writer, out var value, out var patch);
+                var expect =
+                "{'int1':[10],'int2':[21],'bool1':[true],'bool2':[false],'str1':['A'],'str2':['C']}".Replace('\'', '"');
                 
+                PrepareMerge(left, right, differ, jsonDiff, writer, false, out var value, out var patch);
                 var merge       = merger.Merge(value, patch);
-                var expect      =
-"{'int1':[10],'int2':[21],'bool1':[true],'bool2':[false],'str1':['A'],'str2':['C']}".Replace('\'', '"');
+                AreEqual(expect, merge.AsString());
+                
+                PrepareMerge(left, right, differ, jsonDiff, writer, true, out value, out patch);
+                merge          = merger.Merge(value, patch);
                 AreEqual(expect, merge.AsString());
                 
                 AssertAlloc(value, patch, 1, merger);
@@ -162,6 +175,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 ObjectDiffer    differ,
                 JsonDiff        jsonDiff,
                 ObjectWriter    writer,
+                bool            writeNullMembers,
             out JsonValue       value,  // left as JSON
             out JsonValue       patch)  // the merge patch - when merging to left the result is right
         {
@@ -169,7 +183,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             patch       = jsonDiff.CreateJsonDiff(diff);
 
             writer.Pretty           = true;
-            writer.WriteNullMembers = false;
+            writer.WriteNullMembers = writeNullMembers;
             value        = writer.WriteAsValue(left);
         }
         

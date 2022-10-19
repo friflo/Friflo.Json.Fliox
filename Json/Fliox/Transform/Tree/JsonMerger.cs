@@ -10,6 +10,11 @@ namespace Friflo.Json.Fliox.Transform.Tree
 {
     public class JsonMerger : IDisposable
     {
+        public              bool                WriteNullMembers {
+            get => writeNullMembers;
+            set => writeNullMembers = astWriter.WriteNullMembers = value;
+        }
+
         private             Utf8JsonParser      parser;
         private             Utf8JsonWriter      writer;
         private             Bytes               json;
@@ -18,6 +23,7 @@ namespace Friflo.Json.Fliox.Transform.Tree
         private             JsonAst             ast;
         private readonly    List<AstMembers>    membersStack;
         private             int                 membersStackIndex;
+        private             bool                writeNullMembers;
         
         public JsonMerger() {
             json            = new Bytes(128);
@@ -129,7 +135,9 @@ namespace Friflo.Json.Fliox.Transform.Tree
                 var ev  = parser.Event;
                 switch (ev) {
                     case ValueNull:
-                        if (!ReplaceNode (index, members, out _)) { writer.MemberNul  (parser.key); }
+                        if (!ReplaceNode (index, members, out _)) {
+                            if (writeNullMembers)                   writer.MemberNul  (parser.key);
+                        }
                         break;
                     case ValueBool:
                         if (!ReplaceNode (index, members, out _)) { writer.MemberBln  (parser.key, parser.boolValue); }
