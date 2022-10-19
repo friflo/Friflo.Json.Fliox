@@ -2,21 +2,23 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
+using Friflo.Json.Fliox;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Mapper.Diff;
 using Friflo.Json.Fliox.Transform.Tree;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
 
+// ReSharper disable NotAccessedField.Local
 namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
 {
     public class TestJsonMerger
     {
-        internal class MergeChild {
+        private class MergeChild {
             public  int     childInt;
         }
         
-        internal  class MergeClass {
+        private  class MergeClass {
             public  int         int1;
             public  MergeChild  child1;
             public  MergeChild  child2;
@@ -50,26 +52,41 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                     int3    =  5
                 };
 
-                var diff        = differ.GetDiff(left, right, DiffKind.DiffArrays);
-                var patch       = jsonDiff.CreateJsonDiff(diff);
-
-                writer.Pretty           = true;
-                writer.WriteNullMembers = false;
-                var json        = writer.WriteAsValue(left);
-                
-                var merge       = merger.Merge(json, patch);
+                PrepareMerge(left, right, differ, jsonDiff, writer, out var value, out var patch);
+                var merge       = merger.Merge(value, patch);
                 var expect      = "{'int1':11,'child1':{'childInt':13},'int2':12,'int3':5,'child2':{'childInt':14}}".Replace('\'', '"');
                 AreEqual(expect, merge.AsString());
                 
-                merger.MergeBytes(json, patch);
-
-                var start   = GC.GetAllocatedBytesForCurrentThread();
-                for (int n = 0; n < 1; n++) {
-                    merger.MergeBytes(json, patch);
-                }
-                var dif     = GC.GetAllocatedBytesForCurrentThread() - start;
-                AreEqual(0, dif);
+                AssertAlloc(value, patch, 1, merger);
             }
+        }
+        
+        private static void PrepareMerge<T>(
+                T               left,
+                T               right,
+                ObjectDiffer    differ,
+                JsonDiff        jsonDiff,
+                ObjectWriter    writer,
+            out JsonValue       value,  // left as JSON
+            out JsonValue       patch)  // the merge patch - when merging to left the result is right
+        {
+            var diff    = differ.GetDiff(left, right, DiffKind.DiffArrays);
+            patch       = jsonDiff.CreateJsonDiff(diff);
+
+            writer.Pretty           = true;
+            writer.WriteNullMembers = false;
+            value        = writer.WriteAsValue(left);
+        }
+        
+        private static void AssertAlloc(JsonValue value, JsonValue patch, int count, JsonMerger merger) {
+            merger.MergeBytes(value, patch);
+
+            var start   = GC.GetAllocatedBytesForCurrentThread();
+            for (int n = 0; n < count; n++) {
+                merger.MergeBytes(value, patch);
+            }
+            var dif     = GC.GetAllocatedBytesForCurrentThread() - start;
+            AreEqual(0, dif);
         }
     }
 }
