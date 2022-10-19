@@ -216,8 +216,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                         intVal2 = 444,
                     }
                 };
-                var array = mapper.WriteAsArray(value);
-                var json = new JsonValue(array);
+                var json    = mapper.WriteAsValue(value);
                 
                 var result  = new DiffBase();
                 

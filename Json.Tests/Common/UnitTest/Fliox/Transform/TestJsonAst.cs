@@ -19,8 +19,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             var sample      = new SampleIL();
             var writer      = new ObjectWriter(new TypeStore());
             writer.Pretty   = true;
-            var jsonArray   = writer.WriteAsArray(sample);
-            var json        = new JsonValue(jsonArray);
+            var json        = writer.WriteAsValue(sample);
             var astReader   = new JsonAstReader();
 
             var ast = astReader.CreateAst(json); // allocate buffers
@@ -64,8 +63,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
         public void TestJsonTreeWriter() {
             var sample      = new SampleIL();
             var writer      = new ObjectWriter(new TypeStore());
-            var jsonArray   = writer.WriteAsArray(sample);
-            var json        = new JsonValue(jsonArray);
+            var json        = writer.WriteAsValue(sample);
             var astReader   = new JsonAstReader();
             var ast         = astReader.CreateAst(json);
             var astWriter   = new JsonAstWriter();

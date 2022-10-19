@@ -316,7 +316,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             for (int n = 0; n < tasks.Count; n++) {
                 var task = tasks[n];
                 if (task.json == null) {
-                    task.json = new JsonValue(writer.WriteAsArray(task));
+                    task.json = writer.WriteAsValue(task);
                 }
                 tasksJson[n] = task.json.Value;
             }

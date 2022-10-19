@@ -15,20 +15,21 @@ namespace Friflo.Json.Fliox.Mapper
     public interface IJsonWriter
     {
         // --- Bytes
-        void    Write<T>    (T      value, ref Bytes bytes);
-        void    WriteObject (object value, ref Bytes bytes);
+        void        Write<T>    (T      value, ref Bytes bytes);
+        void        WriteObject (object value, ref Bytes bytes);
         
         // --- Stream
-        void    Write<T>    (T      value, Stream stream);
-        void    WriteObject (object value, Stream stream);
+        void        Write<T>    (T      value, Stream stream);
+        void        WriteObject (object value, Stream stream);
         
         // --- string
-        string  Write<T>    (T      value);
-        string  WriteObject (object value);
+        string      Write<T>    (T      value);
+        string      WriteObject (object value);
         
         // --- byte[]
-        byte[]  WriteAsArray<T>     (T value);
-        byte[]  WriteObjectAsArray  (object value);
+        JsonValue   WriteAsValue<T>     (T value);
+        byte[]      WriteAsArray<T>     (T value);
+        byte[]      WriteObjectAsArray  (object value);
     }
     
 #if !UNITY_5_3_OR_NEWER
@@ -133,6 +134,12 @@ namespace Friflo.Json.Fliox.Mapper
         }
         
         // --------------- byte[] ---------------
+        public JsonValue WriteAsValue<T>(T value) {
+            InitJsonWriterString();
+            WriteStart(value);
+            return new JsonValue(intern.bytes.AsArray());
+        }
+
         public byte[] WriteAsArray<T>(T value) {
             InitJsonWriterString();
             WriteStart(value);

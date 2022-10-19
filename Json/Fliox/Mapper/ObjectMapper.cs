@@ -168,6 +168,10 @@ namespace Friflo.Json.Fliox.Mapper
         }
         
         // --- Write()
+        public JsonValue WriteAsValue<T>(T value) {
+            return writer.WriteAsValue(value);
+        }
+        
         public byte[] WriteAsArray<T>(T value) {
             return writer.WriteAsArray(value);
         }

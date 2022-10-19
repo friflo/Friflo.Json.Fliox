@@ -218,8 +218,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
 
             foreach (var createPair in creates) {
                 T entity    = createPair.Value.Entity;
-                var json    = writer.WriteAsArray(entity);
-                var entry   = new JsonValue(json);
+                var entry    = writer.WriteAsValue(entity);
                 entries.Add(entry);
                 keys.Add(createPair.Key);
             }
@@ -244,8 +243,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
 
             foreach (var upsertPair in peers) {
                 T entity    = upsertPair.Value.Entity;
-                var json    = writer.WriteAsArray(entity);
-                var entry   = new JsonValue(json);
+                var entry   = writer.WriteAsValue(entity);
+
                 entries.Add(entry);
                 keys.Add(upsertPair.Key);
             }
@@ -442,8 +441,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         }
 
         private static void SetNextPatchSource(Peer<T> peer, ObjectMapper mapper) {
-            var jsonArray   = mapper.writer.WriteAsArray(peer.Entity);
-            var json        = new JsonValue(jsonArray);
+            var json   = mapper.writer.WriteAsValue(peer.Entity);
             peer.SetNextPatchSource(mapper.Read<T>(json));
         }
 

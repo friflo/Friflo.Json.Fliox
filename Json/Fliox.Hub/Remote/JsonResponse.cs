@@ -35,8 +35,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 ObjectWriter writer     = pooled.instance.writer;
                 writer.Pretty           = true;
                 writer.WriteNullMembers = false;
-                var bodyArray           = writer.WriteAsArray<ProtocolMessage>(errorResponse);
-                var body                = new JsonValue(bodyArray);
+                var body                = writer.WriteAsValue<ProtocolMessage>(errorResponse);
                 return new JsonResponse(body, status);
             }
         }

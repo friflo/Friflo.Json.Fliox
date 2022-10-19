@@ -119,7 +119,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             using (var pooled = context.ObjectMapper.Get()) {
                 var writer          = pooled.instance.writer;
                 writer.Pretty       = true;
-                var entitiesJson    = new JsonValue(writer.WriteAsArray(entities));
+                var entitiesJson    = writer.WriteAsValue(entities);
                 context.Write(entitiesJson, 0, "application/json", 200);
             }
         }
@@ -161,8 +161,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             using (var pooled = context.ObjectMapper.Get()) {
                 var writer      = pooled.instance.writer;
                 writer.Pretty   = true;
-                var entityArray = writer.WriteAsArray(entities);
-                var response    = new JsonValue(entityArray);
+                var response    = writer.WriteAsValue(entities);
                 context.Write(response, 0, "application/json", 200);
             }
         }

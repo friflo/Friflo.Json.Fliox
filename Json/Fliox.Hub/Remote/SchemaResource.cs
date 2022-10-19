@@ -159,7 +159,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             }
             using (var pooled = context.ObjectMapper.Get()) {
                 var writer = pooled.instance.writer;
-                return new JsonValue(writer.WriteAsArray(jsonSchemaMap));
+                return writer.WriteAsValue(jsonSchemaMap);
             }
         }
     }

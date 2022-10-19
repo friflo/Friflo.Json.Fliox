@@ -57,7 +57,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                 var writer              = pooled.instance.writer;
                 writer.Pretty           = true;
                 writer.WriteNullMembers = false;
-                var schemaJson          =  new JsonValue(writer.WriteAsArray(gqlSchema));
+                var schemaJson          = writer.WriteAsValue(gqlSchema);
                 
                 var data = new Dictionary<string, JsonValue> {
                     { "__schema", schemaJson }
@@ -65,7 +65,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                 var response = new GqlResponse { data = data };
                 writer.Pretty           = true;
                 writer.WriteNullMembers = false;
-                return new JsonValue(writer.WriteAsArray(response));
+                return writer.WriteAsValue(response);
             }
         }
     }

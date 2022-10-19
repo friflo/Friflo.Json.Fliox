@@ -69,7 +69,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             }
             var response    = new GqlResponse { data = data, errors = errors };
             writer.Pretty   = true;
-            return new JsonValue(writer.WriteAsArray(response));
+            return writer.WriteAsValue(response);
         }
         
         private static JsonValue ProcessTaskResult(in ResultContext context) {
@@ -96,7 +96,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                 var entity = entities[id].Json;
                 items.Add(entity);
             }
-            var json            = new JsonValue(cx.writer.WriteAsArray(gqlQueryResult));
+            var json            = cx.writer.WriteAsValue(gqlQueryResult);
             if (cx.query.selectAll)
                 return json;
             return cx.projector.Project(cx.query.selection, json);
@@ -117,7 +117,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                 var entity = entities[id].Json;
                 list.Add(entity);
             }
-            var json            = new JsonValue(cx.writer.WriteAsArray(list));
+            var json            = cx.writer.WriteAsValue(list);
             if (cx.query.selectAll)
                 return json;
             return cx.projector.Project(cx.query.selection, json);
@@ -125,19 +125,19 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
         
         private static JsonValue CreateEntitiesResult(in ResultContext cx) {
             var createResult    = (CreateEntitiesResult)cx.result;
-            var json            = new JsonValue(cx.writer.WriteAsArray(createResult.errors));
+            var json            = cx.writer.WriteAsValue(createResult.errors);
             return cx.projector.Project(cx.query.selection, json);
         }
         
         private static JsonValue UpsertEntitiesResult(in ResultContext cx) {
             var upsertResult    = (UpsertEntitiesResult)cx.result;
-            var json            = new JsonValue(cx.writer.WriteAsArray(upsertResult.errors));
+            var json            = cx.writer.WriteAsValue(upsertResult.errors);
             return cx.projector.Project(cx.query.selection, json);
         }
         
         private static JsonValue DeleteEntitiesResult (in ResultContext cx) {
             var deleteResult    = (DeleteEntitiesResult)cx.result;
-            var json            = new JsonValue(cx.writer.WriteAsArray(deleteResult.errors));
+            var json            = cx.writer.WriteAsValue(deleteResult.errors);
             return cx.projector.Project(cx.query.selection, json);
         }
         

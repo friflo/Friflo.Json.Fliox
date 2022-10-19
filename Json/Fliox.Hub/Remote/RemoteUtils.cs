@@ -51,9 +51,9 @@ namespace Friflo.Json.Fliox.Hub.Remote
                         };
                         remoteEvents[n] = remoteEv;
                     }
-                    return new JsonValue(mapper.WriteAsArray(remoteEventMessage));
+                    return mapper.WriteAsValue(remoteEventMessage);
                 }
-                return new JsonValue(mapper.WriteAsArray(message));
+                return mapper.WriteAsValue(message);
             }
         }
         

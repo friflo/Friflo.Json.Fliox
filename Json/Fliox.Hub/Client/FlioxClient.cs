@@ -361,8 +361,8 @@ namespace Friflo.Json.Fliox.Hub.Client
         public MessageTask SendMessage<TMessage>(string name, TMessage param) {
             using (var pooled = ObjectMapper.Get()) {
                 var writer  = pooled.instance.writer;
-                var json    = writer.WriteAsArray(param);
-                var task    = new MessageTask(name, new JsonValue(json));
+                var json    = writer.WriteAsValue(param);
+                var task    = new MessageTask(name, json);
                 AddTask(task);
                 return task;
             }
@@ -395,8 +395,8 @@ namespace Friflo.Json.Fliox.Hub.Client
         public CommandTask<TResult> SendCommand<TParam, TResult>(string name, TParam param) {
             using (var pooled = ObjectMapper.Get()) {
                 var mapper  = pooled.instance;
-                var json    = mapper.WriteAsArray(param);
-                var task    = new CommandTask<TResult>(name, new JsonValue(json), _intern.pool);
+                var json    = mapper.WriteAsValue(param);
+                var task    = new CommandTask<TResult>(name, json, _intern.pool);
                 AddTask(task);
                 return task;
             }

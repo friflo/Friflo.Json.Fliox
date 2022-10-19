@@ -56,8 +56,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
 
                 writer.Pretty           = true;
                 writer.WriteNullMembers = false;
-                var jsonArray   = writer.WriteAsArray(left);
-                var json        = new JsonValue(jsonArray);
+                var json        = writer.WriteAsValue(left);
                 
                 var merge       = merger.Merge(json, patch);
                 var expect      = "{'int1':11,'child1':{'childInt':13},'int2':12,'int3':5,'child2':{'childInt':14}}".Replace('\'', '"');
