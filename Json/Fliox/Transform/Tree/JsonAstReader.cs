@@ -44,6 +44,7 @@ namespace Friflo.Json.Fliox.Transform.Tree
             
             Start();
             
+            parser.NextEvent();
             var ev = parser.Event; 
             if (ev != EOF)    throw new InvalidOperationException($"Expect EOF. was {ev}");
             astApi.intern = ast;
@@ -60,14 +61,35 @@ namespace Friflo.Json.Fliox.Transform.Tree
         private void Start() {
             var ev = parser.NextEvent();
             switch (ev) {
-                case ValueString:
-                case ValueNumber:
-                case ValueBool:
-                case ValueNull:
-                case ArrayStart:
-                case ObjectStart:
-                    TraverseValue();
+                case ObjectStart: {
+                    var child   = parser.NextEvent() != ObjectEnd ? 1 : -1;
+                    ast.AddContainerNode(ObjectStart, default, child);
+                    TraverseObject();
                     break;
+                }
+                case ArrayStart: {
+                    var child   = parser.NextEvent() != ArrayEnd ? 1 : -1;
+                    ast.AddContainerNode(ArrayStart, default, child);
+                    TraverseArray();
+                    break;
+                }
+                case ValueNull:
+                    ast.AddNode(ValueNull, default, Null);
+                    break;
+                case ValueBool: {
+                    var value   = parser.boolValue ? True : False;
+                    ast.AddNode(ValueBool, default, value);
+                    break;
+                }
+                case ValueString:
+                case ValueNumber: {
+                    var value   = ast.AddSpan(parser.value);
+                    ast.AddNode(ev, default, value);
+                    break;
+                }
+                case ArrayEnd:
+                case ObjectEnd:
+                case EOF:
                 default:
                     throw new InvalidOperationException($"unexpected state: {ev}");
             }
@@ -115,13 +137,11 @@ namespace Friflo.Json.Fliox.Transform.Tree
                         var key     = ast.AddSpan(parser.key);
                         var child   = parser.NextEvent() != ArrayEnd ? index + 1 : -1;
                         ast.AddContainerNode(ArrayStart, key, child);
-                        TraverseValue();
+                        TraverseArray();
                         break;
                     }
                     case ArrayEnd:
-                        return;
                     case EOF:
-                        return;
                     default:
                         throw new InvalidOperationException($"unexpected state: {ev}");
                 }
@@ -130,7 +150,7 @@ namespace Friflo.Json.Fliox.Transform.Tree
             }
         }
         
-        private void TraverseValue() {
+        private void TraverseArray() {
             int prevNode   = -1;
             while (true) {
                 var index   = ast.nodesCount;
@@ -143,8 +163,6 @@ namespace Friflo.Json.Fliox.Transform.Tree
                         TraverseObject();
                         break;
                     }
-                    case ObjectEnd:
-                        return;
                     case ValueNull:
                         ast.AddNode(ValueNull, default, Null);
                         break;
@@ -165,13 +183,13 @@ namespace Friflo.Json.Fliox.Transform.Tree
                         if (prevNode != -1) ast.SetNodeNext(prevNode, index);
                         var child = parser.NextEvent() != ArrayEnd ? index + 1 : -1;
                         ast.AddContainerNode(ArrayStart, default, child);
-                        TraverseValue();
+                        TraverseArray();
                         break;
                     }
                     case ArrayEnd:
                         return;
+                    case ObjectEnd:
                     case EOF:
-                        return;
                     default:
                         throw new InvalidOperationException($"unexpected state: {ev}");
                 }
