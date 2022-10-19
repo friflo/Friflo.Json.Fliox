@@ -61,30 +61,25 @@ namespace Friflo.Json.Fliox.Transform.Tree
             parser.InitParser(json);
             parser.NextEvent();
 
-            TraverseValue(0);
+            Start(0);
             
             astWriter.AssertBuffers();
         }
         
-        private void TraverseValue(int index)
+        private void Start(int index)
         {
             var ev  = parser.Event;
             switch (ev) {
-                case ValueNull:     writer.ElementNul   ();                 break;
-                case ValueBool:     writer.ElementBln   (parser.boolValue); break;
-                case ValueNumber:   writer.ElementBytes (ref parser.value); break;
-                case ValueString:   writer.ElementStr   (parser.value);     break;
+                case ValueNull:     astWriter.WriteRootValue(ref writer);   break;
+                case ValueBool:     astWriter.WriteRootValue(ref writer);   break;
+                case ValueNumber:   astWriter.WriteRootValue(ref writer);   break;
+                case ValueString:   astWriter.WriteRootValue(ref writer);   break;
+                case ArrayStart:    astWriter.WriteRootValue(ref writer);   break;
                 case ObjectStart:
                     writer.ObjectStart  ();
                     parser.NextEvent();
                     TraverseObject(index);  // descend
                     writer.ObjectEnd    ();
-                    return;
-                case ArrayStart:
-                    writer.ArrayStart   (false);
-                    parser.NextEvent();
-                    TraverseArray();        // descend
-                    writer.ArrayEnd     ();
                     return;
                 case ObjectEnd:
                 case ArrayEnd:

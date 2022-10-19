@@ -51,45 +51,54 @@ namespace Friflo.Json.Fliox.Transform.Tree
         private void WriteAstInternal(JsonAst ast, ref Utf8JsonWriter writer) {
             Init(ast);
             writer.InitSerializer();
+            var root = ast.intern.nodes[0];
             
-            WriteValue(0, ref writer);
+            WriteValue(root, ref writer);
 
             AssertBuffers();
         }
         
-        private void WriteValue(int index, ref Utf8JsonWriter writer) {
-            while (index != - 1)
-            {
+        internal void WriteRootValue(ref Utf8JsonWriter writer) {
+            var root = ast.intern.nodes[0];
+            WriteValue(root, ref writer);
+        }
+        
+        private void WriteValue(in JsonAstNode node, ref Utf8JsonWriter writer) {
+            var ev = node.type;
+            switch (ev) {
+                case  ObjectStart:
+                    if (node.child != -1) {
+                        writer.ObjectStart();
+                        WriteObject(node.child, ref writer);
+                        writer.ObjectEnd();
+                    }
+                    break;
+                case  ArrayStart:
+                    if (node.child != -1) {
+                        writer.ArrayStart(false);
+                        WriteArray(node.child, ref writer);
+                        writer.ArrayEnd();
+                    }
+                    break;
+                case ValueNull:
+                    writer.ElementNul();
+                    break;
+                case ValueBool:
+                case ValueNumber:
+                    value. Set(node.value);
+                    writer.ElementBytes(ref value);
+                    break;
+                case ValueString:
+                    value. Set(node.value);
+                    writer.ElementStr(value);
+                    break;
+            }
+        }
+        
+        private void WriteArray(int index, ref Utf8JsonWriter writer) {
+            while (index != - 1) {
                 var node = ast.intern.nodes[index];
-                var ev = node.type;
-                switch (ev) {
-                    case  ObjectStart:
-                        if (node.child != -1) {
-                            writer.ObjectStart();
-                            WriteObject(node.child, ref writer);
-                            writer.ObjectEnd();
-                        }
-                        break;
-                    case  ArrayStart:
-                        if (node.child != -1) {
-                            writer.ArrayStart(false);
-                            WriteValue(node.child, ref writer);
-                            writer.ArrayEnd();
-                        }
-                        break;
-                    case ValueNull:
-                        writer.ElementNul();
-                        break;
-                    case ValueBool:
-                    case ValueNumber:
-                        value. Set(node.value);
-                        writer.ElementBytes(ref value);
-                        break;
-                    case ValueString:
-                        value. Set(node.value);
-                        writer.ElementStr(value);
-                        break;
-                }
+                WriteValue(node, ref writer);
                 index = node.Next;
             }
         }
@@ -117,7 +126,7 @@ namespace Friflo.Json.Fliox.Transform.Tree
                     if (node.child != -1) {
                         key.   Set(node.key);
                         writer.MemberArrayStart(key);
-                        WriteValue(node.child, ref writer);
+                        WriteArray(node.child, ref writer);
                         writer.ArrayEnd();
                     }
                     break;

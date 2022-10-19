@@ -199,6 +199,43 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             }
         }
         
+        [Test]
+        public void TestJsonMergeValues() {
+            using (var merger           = new JsonMerger())
+            {
+                {
+                    var value   = new JsonValue("true");
+                    var patch   = new JsonValue("false");
+                    var merge   = merger.Merge(value, patch);
+                    AreEqual("false", merge.AsString());
+                }
+                {
+                    var value   = new JsonValue("1");
+                    var patch   = new JsonValue("2");
+                    var merge   = merger.Merge(value, patch);
+                    AreEqual("2", merge.AsString());
+                }
+                {
+                    var value   = new JsonValue("\"abc\"");
+                    var patch   = new JsonValue("\"xyz\"");
+                    var merge   = merger.Merge(value, patch);
+                    AreEqual("\"xyz\"", merge.AsString());
+                }
+                {
+                    var value   = new JsonValue("[]");
+                    var patch   = new JsonValue("[47]");
+                    var merge   = merger.Merge(value, patch);
+                    AreEqual("[47]", merge.AsString());
+                }
+                {
+                    var value   = new JsonValue("null");
+                    var patch   = new JsonValue("true");
+                    var merge   = merger.Merge(value, patch);
+                    AreEqual("true", merge.AsString());
+                }
+            }
+        }
+        
         private static void PrepareMerge<T>(
                 T               left,
                 T               right,
