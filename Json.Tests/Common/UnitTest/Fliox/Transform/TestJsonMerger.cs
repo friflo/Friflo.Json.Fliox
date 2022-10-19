@@ -233,6 +233,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                     var merge   = merger.Merge(value, patch);
                     AreEqual("true", merge.AsString());
                 }
+                {
+                    var value   = new JsonValue("{\"holy\":[[]]}");
+                    var patch   = new JsonValue("{}");
+                    var merge   = merger.Merge(value, patch);
+                    AreEqual("{\"holy\":[[]]}", merge.AsString());
+                }
             }
         }
         
