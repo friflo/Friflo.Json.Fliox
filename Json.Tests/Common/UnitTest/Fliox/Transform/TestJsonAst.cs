@@ -135,15 +135,22 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 var json    =  new JsonValue("{\"a\": 10}");
                 var ast     = astReader.CreateAst(json);
                 AreEqual(2, ast.NodesCount);
-                var node    = ast.GetNode(0);
-                AreEqual(ObjectStart,   node.type);
-                AreEqual(1,             node.child);
                 // --- child
                 var child1  = ast.GetNode(1);
                 AreEqual(ValueNumber,   child1.type);
                 AreEqual(-1,            child1.child);
                 AreEqual("a",           ast.GetSpanString(child1.key));
                 AreEqual("10",          ast.GetSpanString(child1.value));
+            }
+            {
+                var json    =  new JsonValue("{\"array\": [], \"array2\": []}");
+                var ast     = astReader.CreateAst(json);
+                AreEqual(3, ast.NodesCount);
+                // --- child
+                var child1  = ast.GetNode(1);
+                AreEqual(ArrayStart,    child1.type);
+                AreEqual(-1,            child1.child);
+                AreEqual("array",       ast.GetSpanString(child1.key));
             }
         }
         
@@ -159,17 +166,62 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 AreEqual(-1,            node.child);
             }
             {
-                var json    =  new JsonValue("[11]");
+                var json    =  new JsonValue("[11,22]");
                 var ast     = astReader.CreateAst(json);
-                AreEqual(2, ast.NodesCount);
-                var node    = ast.GetNode(0);
-                AreEqual(ArrayStart,    node.type);
-                AreEqual(1,             node.child);
+                AreEqual(3, ast.NodesCount);
                 // --- child
                 var child1  = ast.GetNode(1);
                 AreEqual(ValueNumber,   child1.type);
                 AreEqual(-1,            child1.child);
                 AreEqual("11",          ast.GetSpanString(child1.value));
+            }
+            {
+                var json    =  new JsonValue("[null,null]");
+                var ast     = astReader.CreateAst(json);
+                AreEqual(3, ast.NodesCount);
+                // --- child
+                var child1  = ast.GetNode(1);
+                AreEqual(ValueNull,     child1.type);
+                AreEqual(-1,            child1.child);
+                AreEqual("null",        ast.GetSpanString(child1.value));
+            }
+            {
+                var json    =  new JsonValue("[true,false]");
+                var ast     = astReader.CreateAst(json);
+                AreEqual(3, ast.NodesCount);
+                // --- child
+                var child1  = ast.GetNode(1);
+                AreEqual(ValueBool,     child1.type);
+                AreEqual(-1,            child1.child);
+                AreEqual("true",        ast.GetSpanString(child1.value));
+            }
+            {
+                var json    =  new JsonValue("[\"abc\",\"xyz\"]");
+                var ast     = astReader.CreateAst(json);
+                AreEqual(3, ast.NodesCount);
+                // --- child
+                var child1  = ast.GetNode(1);
+                AreEqual(ValueString,   child1.type);
+                AreEqual(-1,            child1.child);
+                AreEqual("abc",         ast.GetSpanString(child1.value));
+            }
+            {
+                var json    =  new JsonValue("[{},{}]");
+                var ast     = astReader.CreateAst(json);
+                AreEqual(3, ast.NodesCount);
+                // --- child
+                var child1  = ast.GetNode(1);
+                AreEqual(ObjectStart,   child1.type);
+                AreEqual(-1,            child1.child);
+            }
+            {
+                var json    =  new JsonValue("[[],[]]");
+                var ast     = astReader.CreateAst(json);
+                AreEqual(3, ast.NodesCount);
+                // --- child
+                var child1  = ast.GetNode(1);
+                AreEqual(ArrayStart,    child1.type);
+                AreEqual(-1,            child1.child);
             }
         }
     }
