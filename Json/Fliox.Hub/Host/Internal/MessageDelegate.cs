@@ -13,8 +13,8 @@ namespace Friflo.Json.Fliox.Hub.Host.Internal
 
         public override     string      ToString() => error ?? value.AsString();
 
-        internal InvokeResult(byte[] value) {
-            this.value  = new JsonValue(value);
+        internal InvokeResult(in JsonValue value) {
+            this.value  = value;
             this.error  = null;
         }
         
@@ -64,7 +64,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Internal
             if (error != null) {
                 return Task.FromResult(new InvokeResult(error));
             }
-            return Task.FromResult(new InvokeResult((byte[])null));
+            return Task.FromResult(new InvokeResult(new JsonValue()));
         }
     }
     
@@ -87,7 +87,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Internal
             if (error != null) {
                 return new InvokeResult(error);
             }
-            return new InvokeResult((byte[])null);
+            return new InvokeResult(new JsonValue());
         }
     }
     
@@ -115,7 +115,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Internal
                 writer.WriteNullMembers = cmd.WriteNull;
                 writer.Pretty           = cmd.WritePretty;
                 var jsonResult          = writer.WriteAsArray(result);
-                return Task.FromResult(new InvokeResult(jsonResult));
+                return Task.FromResult(new InvokeResult(new JsonValue(jsonResult)));
             }
         }
     }
@@ -145,7 +145,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Internal
                 writer.WriteNullMembers = cmd.WriteNull;
                 writer.Pretty           = cmd.WritePretty;
                 var jsonResult          = writer.WriteAsArray(result);
-                return new InvokeResult(jsonResult);
+                return new InvokeResult(new JsonValue(jsonResult));
             }
         }
     }
