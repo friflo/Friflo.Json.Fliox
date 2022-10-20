@@ -3,11 +3,11 @@
 
 using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using Friflo.Json.Fliox.Hub.Host.Utils;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Schema.Validation;
 using Friflo.Json.Fliox.Transform;
+using Friflo.Json.Fliox.Transform.Tree;
 using Friflo.Json.Fliox.Utils;
 
 namespace Friflo.Json.Fliox.Hub.Host
@@ -25,6 +25,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         private   readonly  ConcurrentDictionary<Type, IDisposable>   poolMap = new ConcurrentDictionary<Type, IDisposable>(); // object = SharedPool<T>
 
         internal    ObjectPool<JsonPatcher>     JsonPatcher     { get; }
+        internal    ObjectPool<JsonMerger>      JsonMerger      { get; }
         internal    ObjectPool<ScalarSelector>  ScalarSelector  { get; }
         internal    ObjectPool<JsonEvaluator>   JsonEvaluator   { get; }
         /// <summary> Returned <see cref="Mapper.ObjectMapper"/> doesnt throw Read() exceptions. To handle errors its
@@ -55,6 +56,7 @@ namespace Friflo.Json.Fliox.Hub.Host
 
         internal Pool(SharedEnv sharedEnv) {
             JsonPatcher     = new ObjectPool<JsonPatcher>       (() => new JsonPatcher());
+            JsonMerger      = new ObjectPool<JsonMerger>        (() => new JsonMerger());
             ScalarSelector  = new ObjectPool<ScalarSelector>    (() => new ScalarSelector());
             JsonEvaluator   = new ObjectPool<JsonEvaluator>     (() => new JsonEvaluator());
             ObjectMapper    = new ObjectPool<ObjectMapper>      (() => new ObjectMapper(sharedEnv.TypeStore),  m => m.ErrorHandler = ObjectReader.NoThrow);
@@ -64,6 +66,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         
         internal void Dispose() {
             JsonPatcher.    Dispose();
+            JsonMerger.     Dispose();
             ScalarSelector. Dispose();
             JsonEvaluator.  Dispose();
             ObjectMapper.   Dispose();
@@ -78,6 +81,7 @@ namespace Friflo.Json.Fliox.Hub.Host
 
         internal PoolUsage PoolUsage => new PoolUsage {
             jsonPatcher     = JsonPatcher       .Count,
+            jsonMerger      = JsonMerger        .Count,
             scalarSelector  = ScalarSelector    .Count,
             jsonEvaluator   = JsonEvaluator     .Count,
             objectMapper    = ObjectMapper      .Count,
@@ -88,6 +92,7 @@ namespace Friflo.Json.Fliox.Hub.Host
     
     internal struct PoolUsage {
         internal  int     jsonPatcher;
+        internal  int     jsonMerger;
         internal  int     scalarSelector;
         internal  int     jsonEvaluator;
         internal  int     objectMapper;
@@ -95,7 +100,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         internal  int     typeValidator;
 
         public override string ToString() =>
-            $"jsonPatcher: {jsonPatcher}, scalarSelector: {scalarSelector}, jsonEvaluator: {jsonEvaluator}, " +
+            $"jsonPatcher: {jsonPatcher}, jsonMerger: {jsonMerger}, scalarSelector: {scalarSelector}, jsonEvaluator: {jsonEvaluator}, " +
             $"objectMapper: {objectMapper}, entityProcessor: {entityProcessor}, typeValidator: {typeValidator}";
     }
 }
