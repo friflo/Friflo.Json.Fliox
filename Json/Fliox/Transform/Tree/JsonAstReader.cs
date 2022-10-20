@@ -31,7 +31,7 @@ namespace Friflo.Json.Fliox.Transform.Tree
         static JsonAstReader() {
             Null            = new JsonAstSpan(1, 4);    // "null"
             True            = new JsonAstSpan(5, 4);    // "true"
-            False           = new JsonAstSpan(9, 5);   // "false"
+            False           = new JsonAstSpan(9, 5);    // "false"
             // ReSharper disable once StringLiteralTypo
             NullTrueFalse   = Encoding.UTF8.GetBytes("~nulltruefalse"); // ~ placeholder for JsonAstSpan.start == 0
         }
@@ -43,11 +43,15 @@ namespace Friflo.Json.Fliox.Transform.Tree
             ast.Init();
             
             Start();
-            
-            parser.NextEvent();
-            var ev = parser.Event; 
-            if (ev != EOF)    throw new InvalidOperationException($"Expect EOF. was {ev}");
+
             astApi.intern = ast;
+            parser.NextEvent();
+            if (parser.Event != EOF) {
+                parser.ErrorMsg("JsonAstReader", $"Expect EOF. was: {parser.Event}");
+            }
+            if (parser.error.ErrSet) {
+                astApi.intern.error = parser.error.ToString();
+            }
             return astApi;
         }
         
@@ -91,7 +95,7 @@ namespace Friflo.Json.Fliox.Transform.Tree
                 case ObjectEnd:
                 case EOF:
                 default:
-                    throw new InvalidOperationException($"unexpected state: {ev}");
+                    return;
             }
         }
         
@@ -143,7 +147,7 @@ namespace Friflo.Json.Fliox.Transform.Tree
                     case ArrayEnd:
                     case EOF:
                     default:
-                        throw new InvalidOperationException($"unexpected state: {ev}");
+                        return;
                 }
                 parser.NextEvent();
                 prevNode = index;
@@ -191,7 +195,7 @@ namespace Friflo.Json.Fliox.Transform.Tree
                     case ObjectEnd:
                     case EOF:
                     default:
-                        throw new InvalidOperationException($"unexpected state: {ev}");
+                        return;
                 }
                 parser.NextEvent();
                 prevNode = index;

@@ -12,8 +12,9 @@ namespace Friflo.Json.Fliox.Transform.Tree
     {
         internal    JsonAstIntern       intern; // ast state / result
         // --- public API
-        public      int                 NodesCount  => intern.nodesCount;
-        public      JsonAstNode[]       Nodes       => intern.nodes;
+        public      string              Error                               => intern.error;
+        public      int                 NodesCount                          => intern.nodesCount;
+        public      JsonAstNode[]       Nodes                               => intern.nodes;
         public      JsonAstNode         GetNode(int index)                  => intern.nodes[index];
         /// <summary> used to return <see cref="JsonAstNode.key"/> and <see cref="JsonAstNode.value"/> as string.</summary>
         public      string              GetSpanString(in JsonAstSpan span)  => Encoding.UTF8.GetString(intern.Buf, span.start, span.len);
@@ -25,6 +26,7 @@ namespace Friflo.Json.Fliox.Transform.Tree
     /// Is struct to enhance performance when traversing with <see cref="JsonAstReader"/>
     internal struct JsonAstIntern
     {
+        internal    string              error;
         internal    int                 nodesCount;
         private     int                 nodesCapacity;
         internal    JsonAstNode[]       nodes;
@@ -37,6 +39,7 @@ namespace Friflo.Json.Fliox.Transform.Tree
         internal    byte[]              Buf         => buf;
 
         internal JsonAstIntern(int capacity) {
+            error           = null;
             nodesCount      = 0;
             nodesCapacity   = capacity;
             nodes           = new JsonAstNode[nodesCapacity];
@@ -46,6 +49,7 @@ namespace Friflo.Json.Fliox.Transform.Tree
         }
         
         internal void Init() {
+            error           = null;
             nodesCount      = 0;
             var constants   = JsonAstReader.NullTrueFalse;
             pos             = constants.Length;
