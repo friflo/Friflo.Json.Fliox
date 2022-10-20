@@ -242,6 +242,39 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             }
         }
         
+        [Test]
+        public void TestJsonMergeErrors() {
+            using (var merger           = new JsonMerger())
+            {
+                // --- patch value errors
+                {
+                    var value   = new JsonValue("true");
+                    var patch   = new JsonValue("x");
+                    merger.Merge(value, patch);
+                    AreEqual("patch value error: unexpected character while reading value. Found: x path: '(root)' at position: 1", merger.Error);
+                }
+                // --- merge value errors
+                {
+                    var value   = new JsonValue("y");
+                    var patch   = new JsonValue("false");
+                    merger.Merge(value, patch);
+                    AreEqual("merge value error: unexpected character while reading value. Found: y path: '(root)' at position: 1", merger.Error);
+                }
+                {
+                    var value   = new JsonValue("{\"key\":xxx}");
+                    var patch   = new JsonValue("false");
+                    merger.Merge(value, patch);
+                    AreEqual("merge value error: unexpected character while reading value. Found: x path: 'key' at position: 8", merger.Error);
+                }
+                {
+                    var value   = new JsonValue("{\"key\":[a]}");
+                    var patch   = new JsonValue("false");
+                    merger.Merge(value, patch);
+                    AreEqual("merge value error: unexpected character while reading value. Found: a path: 'key[0]' at position: 9", merger.Error);
+                }
+            }
+        }
+        
         private static void PrepareMerge<T>(
                 T               left,
                 T               right,

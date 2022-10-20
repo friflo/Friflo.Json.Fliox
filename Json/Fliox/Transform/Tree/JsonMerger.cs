@@ -10,6 +10,7 @@ namespace Friflo.Json.Fliox.Transform.Tree
 {
     public class JsonMerger : IDisposable
     {
+        public              string              Error { get; private set; }
         public              bool                WriteNullMembers {
             get => writeNullMembers;
             set => writeNullMembers = astWriter.WriteNullMembers = value;
@@ -41,18 +42,26 @@ namespace Friflo.Json.Fliox.Transform.Tree
         }
         
         public JsonValue    Merge (JsonValue value, JsonValue patch) {
-            MergeInternal(value, patch);
+            if (!MergeInternal(value, patch)) {
+                return default;
+            }
             return new JsonValue(writer.json.AsArray());
         }
         
         public Bytes        MergeBytes (JsonValue value, JsonValue patch) {
-            MergeInternal(value, patch);
+            if (!MergeInternal(value, patch)) {
+                return default;
+            }
             return writer.json;
         }
 
-        private void MergeInternal (JsonValue value, JsonValue patch) {
+        private bool MergeInternal (JsonValue value, JsonValue patch) {
             membersStackIndex   = 0;
             ast                 = astReader.CreateAst(patch);
+            if (ast.Error != null) {
+                Error = $"patch value error: {ast.Error}";
+                return false;
+            }
             astWriter.Init(ast);
             writer.InitSerializer();
             writer.SetPretty(false);
@@ -63,7 +72,12 @@ namespace Friflo.Json.Fliox.Transform.Tree
 
             Start(0);
             
+            if (parser.error.ErrSet) {
+                Error = $"merge value error: {parser.error.GetMessage()}";
+                return false;
+            }
             astWriter.AssertBuffers();
+            return true;
         }
         
         private void Start(int index)
@@ -85,7 +99,7 @@ namespace Friflo.Json.Fliox.Transform.Tree
                 case ArrayEnd:
                 case EOF:
                 default:
-                    throw new InvalidOperationException($"unexpected state: {ev}");
+                    return;
             }
             parser.NextEvent();
         }
@@ -117,7 +131,7 @@ namespace Friflo.Json.Fliox.Transform.Tree
                     case ObjectEnd:
                     case EOF:
                     default:
-                        throw new InvalidOperationException($"unexpected state: {ev}");
+                        return;
                 }
                 parser.NextEvent();
             }
@@ -172,7 +186,7 @@ namespace Friflo.Json.Fliox.Transform.Tree
                     case ArrayEnd:
                     case EOF:
                     default:
-                        throw new InvalidOperationException($"unexpected state: {ev}");
+                        return;
                 }
                 parser.NextEvent();
             }
