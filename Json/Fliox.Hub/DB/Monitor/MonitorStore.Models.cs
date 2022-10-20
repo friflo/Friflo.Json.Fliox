@@ -4,7 +4,6 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Friflo.Json.Fliox.Hub.DB.Cluster;
-using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable FieldCanBeMadeReadOnly.Global

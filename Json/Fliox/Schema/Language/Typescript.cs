@@ -9,8 +9,8 @@ using Friflo.Json.Fliox.Schema.Definition;
 using Friflo.Json.Fliox.Schema.Doc;
 using Friflo.Json.Fliox.Schema.Utils;
 using static Friflo.Json.Fliox.Schema.Language.Generator;
-// Allowed namespaces: .Schema.Definition, .Schema.Doc, .Schema.Utils
 
+// Allowed namespaces: .Schema.Definition, .Schema.Doc, .Schema.Utils
 namespace Friflo.Json.Fliox.Schema.Language
 {
     public sealed partial class TypescriptGenerator

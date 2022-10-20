@@ -6,7 +6,6 @@
 using System;
 using System.Collections.Generic;
 using Friflo.Json.Fliox.Transform;
-using Friflo.Json.Fliox.Transform.Query.Parser;
 using GraphQLParser.AST;
 
 namespace Friflo.Json.Fliox.Hub.GraphQL
