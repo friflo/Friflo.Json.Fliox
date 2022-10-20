@@ -55,13 +55,20 @@ namespace Friflo.Json.Burst
             return msg.AsString();
         }
         
+        /// <summary>Get error message including its position</summary>
         public string GetMessageBody () {
             var body = msg;
             body.start  = msgBodyStart;
             body.end    = msgBodyEnd;
             return body.AsString();
-        }   
+        }
         
+        /// <summary>Get error message without its position</summary>
+        public string GetMessage () {
+            var body = msg;
+            body.start  = msgBodyStart;
+            return body.AsString();
+        }
     }
 
     public interface IErrorHandler {

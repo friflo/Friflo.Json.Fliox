@@ -231,22 +231,22 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             {
                 var json    = new JsonValue("{\"key\": a");
                 var ast     = astReader.CreateAst(json);
-                AreEqual("JsonParser/JSON error: unexpected character while reading value. Found: a path: 'key' at position: 9", ast.Error);
+                AreEqual("unexpected character while reading value. Found: a path: 'key' at position: 9", ast.Error);
             }
             {
                 var json    = new JsonValue("{}b");
                 var ast     = astReader.CreateAst(json);
-                AreEqual("JsonParser/JSON error: Expected EOF path: '(root)' at position: 3", ast.Error);
+                AreEqual("Expected EOF path: '(root)' at position: 3", ast.Error);
             }
             {
                 var json    = new JsonValue("[c]");
                 var ast     = astReader.CreateAst(json);
-                AreEqual("JsonParser/JSON error: unexpected character while reading value. Found: c path: '[0]' at position: 2", ast.Error);
+                AreEqual("unexpected character while reading value. Found: c path: '[0]' at position: 2", ast.Error);
             }
             {
                 var json    = new JsonValue("d");
                 var ast     = astReader.CreateAst(json);
-                AreEqual("JsonParser/JSON error: unexpected character while reading value. Found: d path: '(root)' at position: 1", ast.Error);
+                AreEqual("unexpected character while reading value. Found: d path: '(root)' at position: 1", ast.Error);
             }
         }
     }

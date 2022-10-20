@@ -45,12 +45,9 @@ namespace Friflo.Json.Fliox.Transform.Tree
             Start();
 
             astApi.intern = ast;
-            parser.NextEvent();
-            if (parser.Event != EOF) {
-                parser.ErrorMsg("JsonAstReader", $"Expect EOF. was: {parser.Event}");
-            }
+            parser.NextEvent(); // read EOF
             if (parser.error.ErrSet) {
-                astApi.intern.error = parser.error.ToString();
+                astApi.intern.error = parser.error.GetMessage();
             }
             return astApi;
         }
