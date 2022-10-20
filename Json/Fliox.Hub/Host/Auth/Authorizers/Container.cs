@@ -19,6 +19,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
         private  readonly   bool            delete;
         private  readonly   bool            deleteAll;
         private  readonly   bool            patch;
+        private  readonly   bool            merge;
         //
         private  readonly   bool            read;
         private  readonly   bool            query;
@@ -30,11 +31,11 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
         {
             databaseFilter  = new DatabaseFilter(database);
             this.container  = container;
-            SetRoles(types, ref create, ref upsert, ref delete, ref deleteAll, ref patch, ref read, ref query, ref aggregate);
+            SetRoles(types, ref create, ref upsert, ref delete, ref deleteAll, ref patch, ref merge, ref read, ref query, ref aggregate);
         }
         
         private static void SetRoles (ICollection<OperationType> types,
-                ref bool create, ref bool upsert, ref bool delete, ref bool deleteAll, ref bool patch,
+                ref bool create, ref bool upsert, ref bool delete, ref bool deleteAll, ref bool patch, ref bool merge,
                 ref bool read,   ref bool query, ref bool aggregate)
         {
             foreach (var type in types) {
@@ -49,11 +50,11 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
                     case OperationType.query:       query       = true;   break;
                     case OperationType.aggregate:   aggregate   = true;   break;
                     case OperationType.mutate:
-                        create  = true; upsert  = true; delete  = true; patch   = true;
+                        create = true;  upsert = true;  delete = true;  patch = true;   merge = true;
                         break;
                     case OperationType.full:
-                        create  = true; upsert  = true; delete  = true; patch   = true;
-                        read    = true; query   = true;
+                        create = true;  upsert = true;  delete = true;  patch = true;   merge = true;
+                        read   = true;  query  = true;
                         break;
                     default:
                         throw new InvalidOperationException($"Invalid container role: {type}");
@@ -73,6 +74,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
                     var deleteEntities = (DeleteEntities)  task;
                     return deleteEntities.Authorize(container, delete, deleteAll);
                 case TaskType.patch:        return patch        && ((PatchEntities)     task).container == container;
+                case TaskType.merge:        return merge        && ((MergeEntities)     task).container == container;
                 //
                 case TaskType.read:         return read         && ((ReadEntities)      task).container == container;
                 case TaskType.query:        return query        && ((QueryEntities)     task).container == container;

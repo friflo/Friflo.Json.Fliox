@@ -39,6 +39,8 @@ namespace Friflo.Json.Fliox.Hub.Client
         public  int     subscribeChanges;
         /// <summary>number of patch tasks</summary>
         public  int     patch;
+        /// <summary>number of patch tasks</summary>
+        public  int     merge;
         /// <summary>number of delete tasks</summary>
         public  int     delete;
         public  int     reserveKeys;
@@ -56,6 +58,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             closeCursors    = 0;
             subscribeChanges= 0;
             patch           = 0;
+            merge           = 0;
             delete          = 0;
             reserveKeys     = 0;
         }
@@ -97,6 +100,7 @@ namespace Friflo.Json.Fliox.Hub.Client
                 AppendTasks(sb, "aggregate",    aggregate,      ref first);
                 AppendTasks(sb, "closeCursors", closeCursors,   ref first);
                 AppendTasks(sb, "patch",        patch,          ref first);
+                AppendTasks(sb, "merge",        merge,          ref first);
                 AppendTasks(sb, "delete",       delete,         ref first);
                 AppendTasks(sb, "reserveKeys",  reserveKeys,    ref first);
                 sb.Append(']');

@@ -86,6 +86,10 @@ namespace Friflo.Json.Fliox.Hub.Protocol
                         var patch = (PatchEntities)task;
                         info.changes.patches += patch.patches.Count;
                         break;
+                    case TaskType.merge:
+                        var merge = (MergeEntities)task;
+                        info.changes.merges  += merge.patches.Count;
+                        break;
                     case TaskType.message:
                     case TaskType.command:
                         info.messages++;
@@ -107,7 +111,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol
         
         public int Count => changes.Count + messages;
         
-        public override string ToString() => $"creates: {changes.creates}, upserts: {changes.upserts}, deletes: {changes.deletes}, patches: {changes.patches}, messages: {messages}";
+        public override string ToString() => $"creates: {changes.creates}, upserts: {changes.upserts}, deletes: {changes.deletes}, patches: {changes.patches}, merges: {changes.merges}, messages: {messages}";
         
         public void Clear() {
             changes.Clear();
@@ -125,8 +129,9 @@ namespace Friflo.Json.Fliox.Hub.Protocol
         public  int upserts;
         public  int deletes;
         public  int patches;
+        public  int merges;
         
-        public int Count => creates + upserts + deletes + patches;
+        public int Count => creates + upserts + deletes + patches + merges;
         
         public override string ToString() => FormatToString();
         
@@ -137,10 +142,11 @@ namespace Friflo.Json.Fliox.Hub.Protocol
         }
         
         internal void AppendTo(StringBuilder sb) {
-            sb.Append("creates: "); sb.Append(creates);
+            sb.Append("creates: ");   sb.Append(creates);
             sb.Append(", upserts: "); sb.Append(upserts);
             sb.Append(", deletes: "); sb.Append(deletes);
             sb.Append(", patches: "); sb.Append(patches);
+            sb.Append(", merges: ");  sb.Append(merges);
         }
         
         public void Clear() {
@@ -148,6 +154,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol
             upserts = 0;
             deletes = 0;
             patches = 0;
+            merges  = 0;
         }
         
         public void Add(ChangeInfo changeInfo) {
@@ -155,6 +162,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol
             upserts += changeInfo.upserts;
             deletes += changeInfo.deletes;
             patches += changeInfo.patches;
+            merges  += changeInfo.merges;
         }
     }
 }

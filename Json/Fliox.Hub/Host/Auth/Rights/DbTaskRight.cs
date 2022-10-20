@@ -49,6 +49,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth.Rights
                 case TaskType.create:              return new AuthorizeTaskType(TaskType.create,            database);
                 case TaskType.upsert:              return new AuthorizeTaskType(TaskType.upsert,            database);
                 case TaskType.patch:               return new AuthorizeTaskType(TaskType.patch,             database);
+                case TaskType.merge:               return new AuthorizeTaskType(TaskType.merge,             database);
                 case TaskType.delete:              return new AuthorizeTaskType(TaskType.delete,            database);
                 case TaskType.closeCursors:        return new AuthorizeTaskType(TaskType.closeCursors,      database);
                 //
