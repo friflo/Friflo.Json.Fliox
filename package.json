@@ -2,6 +2,7 @@
   "name": "friflo-fliox",
   "version": "0.1.0",
   "author": "Ullrich Praetz",
+  "private": true,
   "scripts": {
     "all": "npm run www:tsc && npm run schema:tsc && npm run schema:run",
 

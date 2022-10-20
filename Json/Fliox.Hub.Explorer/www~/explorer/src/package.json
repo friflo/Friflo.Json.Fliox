@@ -2,6 +2,7 @@
   "name": "friflo-fliox-explorer",
   "version": "0.1.0",
   "author": "Ullrich Praetz",
+  "private": false,
   "scripts": {
   },
   "devDependencies": {

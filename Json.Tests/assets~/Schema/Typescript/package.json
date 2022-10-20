@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "main": "index.js",
   "author": "Ullrich Praetz",
+  "private": false,
   "scripts": {
     "tsc-init": "tsc --init",
     "tsc": "tsc",

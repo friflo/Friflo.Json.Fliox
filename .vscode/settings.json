@@ -20,7 +20,8 @@
         "Directory.Build.props": true,
         "BannedSymbols.txt": true,
         "Friflo.Json.asmdef": true,
-        "csc.rsp": true
+        "csc.rsp": true,
+        "yarn.lock": true
     },
     "cSpell.words": [
         "AGPL",
