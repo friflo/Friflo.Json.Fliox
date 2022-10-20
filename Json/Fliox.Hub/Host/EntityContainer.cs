@@ -146,6 +146,11 @@ namespace Friflo.Json.Fliox.Hub.Host
                         AddEntityError(ref patchErrors, key, error);
                         continue;
                     }
+                    var entityError = entity.Error; 
+                    if (entityError != null) {
+                        AddEntityError(ref patchErrors, key, entityError);
+                        continue;
+                    }
                     var json = merger.Merge(entity.Json, patch);
                     targets.Add(json);
                     targetKeys.Add(key);
