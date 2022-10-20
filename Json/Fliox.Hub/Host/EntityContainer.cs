@@ -157,7 +157,7 @@ namespace Friflo.Json.Fliox.Hub.Host
                         AddEntityError(ref patchErrors, key, entityError);
                         continue;
                     }
-                    // todo force merging an object (not array or primitive)
+                    // patch is an object - ensured by GetKeysFromEntities() above
                     var json = merger.Merge(target, patch);
                     targets.Add(json);
                     targetKeys.Add(key);
