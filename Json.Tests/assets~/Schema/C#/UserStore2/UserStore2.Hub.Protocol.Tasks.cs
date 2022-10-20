@@ -13,6 +13,7 @@ public enum TaskType {
     create,
     upsert,
     patch,
+    merge,
     delete,
     aggregate,
     message,

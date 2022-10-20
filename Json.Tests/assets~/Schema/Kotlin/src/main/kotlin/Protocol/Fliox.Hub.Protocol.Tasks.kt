@@ -90,6 +90,15 @@ data class EntityPatch (
 )
 
 @Serializable
+@SerialName("merge")
+data class MergeEntities (
+    override  val info      : JsonElement? = null,
+              val container : String,
+              val keyName   : String? = null,
+              val patches   : List<JsonElement>,
+) : SyncRequestTask()
+
+@Serializable
 @SerialName("delete")
 data class DeleteEntities (
     override  val info      : JsonElement? = null,

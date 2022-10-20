@@ -10,6 +10,7 @@ enum class TaskType {
     create,
     upsert,
     patch,
+    merge,
     delete,
     aggregate,
     message,

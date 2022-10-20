@@ -207,6 +207,14 @@ class EntityPatch {
 }
 EntityPatch *-- "0..*" JsonPatch : patches
 
+SyncRequestTask <|-- MergeEntities
+class MergeEntities {
+    task       : "merge"
+    container  : string
+    keyName?   : string
+    patches    : any[]
+}
+
 SyncRequestTask <|-- DeleteEntities
 class DeleteEntities {
     task       : "delete"

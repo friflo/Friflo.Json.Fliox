@@ -127,6 +127,7 @@ class TaskType:::cssEnum {
     create
     upsert
     patch
+    merge
     delete
     aggregate
     message

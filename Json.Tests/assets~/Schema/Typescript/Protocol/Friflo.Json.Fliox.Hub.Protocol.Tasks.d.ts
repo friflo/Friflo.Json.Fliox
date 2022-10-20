@@ -20,6 +20,7 @@ export type SyncRequestTask_Union =
     | QueryEntities
     | AggregateEntities
     | PatchEntities
+    | MergeEntities
     | DeleteEntities
     | SendMessage
     | SendCommand
@@ -38,6 +39,7 @@ export abstract class SyncRequestTask {
         | "query"
         | "aggregate"
         | "patch"
+        | "merge"
         | "delete"
         | "message"
         | "command"
@@ -171,6 +173,18 @@ export class EntityPatch {
     id       : string;
     /** list of patches applied to an entity */
     patches  : JsonPatch_Union[];
+}
+
+/** Merge entities by id in the given **container**   */
+export class MergeEntities extends SyncRequestTask {
+    /** task type */
+    task       : "merge";
+    /** container name */
+    container  : string;
+    /** name of the primary key property of the entity **patches** */
+    keyName?   : string | null;
+    /** list of merge patches for each entity */
+    patches    : any[];
 }
 
 /**

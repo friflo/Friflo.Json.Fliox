@@ -6,6 +6,7 @@ export type TaskType =
     | "create"                /** create container entities */
     | "upsert"                /** upsert container entities */
     | "patch"                 /** patch container entities by id */
+    | "merge"                 /** merge container entities by id */
     | "delete"                /** delete container entities by id */
     | "aggregate"             /** aggregate - count - container entities using a filter */
     | "message"               /** send a database message */

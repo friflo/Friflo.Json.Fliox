@@ -44,6 +44,7 @@
                 "query":            { "ref":  "QueryEntities" },
                 "aggregate":        { "ref":  "AggregateEntities" },
                 "patch":            { "ref":  "PatchEntities" },
+                "merge":            { "ref":  "MergeEntities" },
                 "delete":           { "ref":  "DeleteEntities" },
                 "message":          { "ref":  "SendMessage" },
                 "command":          { "ref":  "SendCommand" },
@@ -181,6 +182,14 @@
             "properties": {
                 "path":  { "type": "string" },
                 "value": { "nullable": true }
+            }
+        },
+        "MergeEntities": {
+            "properties": {
+                "info":      { "nullable": true },
+                "container": { "type": "string" },
+                "keyName":   { "type": "string", "nullable": true },
+                "patches":   { "elements": {  } }
             }
         },
         "DeleteEntities": {

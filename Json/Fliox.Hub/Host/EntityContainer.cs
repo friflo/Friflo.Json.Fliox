@@ -100,6 +100,20 @@ namespace Friflo.Json.Fliox.Hub.Host
         #endregion
 
     #region - public utils
+        /// <summary>Apply the given <paramref name="mergeEntities"/> to the container entities</summary>
+        /// <remarks>
+        /// Default implementation to apply patches to entities.
+        /// The implementation perform three steps:
+        /// 1. Read entities to be patches from a database
+        /// 2. Apply merge patches
+        /// 3. Write back the merged entities
+        ///
+        /// If the used database has integrated support for merging (patching) JSON its <see cref="EntityContainer"/>
+        /// implementation can override this method to replace two database requests by one.
+        /// </remarks>
+        public virtual Task<MergeEntitiesResult> MergeEntities (MergeEntities mergeEntities, SyncResponse response, SyncContext syncContext) {
+            return Task.FromResult(new MergeEntitiesResult());
+        }
         /// <summary>Apply the given <paramref name="patchEntities"/> to the container entities</summary>
         /// <remarks>
         /// Default implementation to apply patches to entities.

@@ -11,6 +11,7 @@
                 { "$ref": "#/definitions/QueryEntities" },
                 { "$ref": "#/definitions/AggregateEntities" },
                 { "$ref": "#/definitions/PatchEntities" },
+                { "$ref": "#/definitions/MergeEntities" },
                 { "$ref": "#/definitions/DeleteEntities" },
                 { "$ref": "#/definitions/SendMessage" },
                 { "$ref": "#/definitions/SendCommand" },
@@ -20,7 +21,7 @@
                 { "$ref": "#/definitions/ReserveKeys" }
             ],
             "properties": {
-                "task": { "enum": ["create", "upsert", "read", "query", "aggregate", "patch", "delete", "message", "command", "closeCursors", "subscribeChanges", "subscribeMessage", "reserveKeys"], "description": "task type" },
+                "task": { "enum": ["create", "upsert", "read", "query", "aggregate", "patch", "merge", "delete", "message", "command", "closeCursors", "subscribeChanges", "subscribeMessage", "reserveKeys"], "description": "task type" },
                 "info": {  }
             },
             "required": [
@@ -163,6 +164,24 @@
             },
             "required": [
                 "id",
+                "patches"
+            ],
+            "additionalProperties": false
+        },
+        "MergeEntities": {
+            "type": "object",
+            "extends": { "$ref": "#/definitions/SyncRequestTask" },
+            "description": "Merge entities by id in the given <b>container</b><br/>",
+            "properties": {
+                "task":      { "enum": ["merge"] },
+                "info":      {  },
+                "container": { "type": "string", "description": "container name" },
+                "keyName":   { "type": ["string", "null"], "description": "name of the primary key property of the entity <b>patches</b>" },
+                "patches":   { "type": "array", "items": {  }, "description": "list of merge patches for each entity" }
+            },
+            "required": [
+                "task",
+                "container",
                 "patches"
             ],
             "additionalProperties": false

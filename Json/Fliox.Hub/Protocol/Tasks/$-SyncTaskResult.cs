@@ -40,6 +40,8 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         upsert,
         /// <summary>patch container entities by id</summary>
         patch,
+        /// <summary>merge container entities by id</summary>
+        merge,
         /// <summary>delete container entities by id</summary>
         delete,
         /// <summary>aggregate - count - container entities using a filter</summary>
