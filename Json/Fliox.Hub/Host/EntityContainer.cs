@@ -11,6 +11,7 @@ using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Transform;
+using Friflo.Json.Fliox.Transform.Tree;
 
 namespace Friflo.Json.Fliox.Hub.Host
 {
@@ -111,9 +112,61 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// If the used database has integrated support for merging (patching) JSON its <see cref="EntityContainer"/>
         /// implementation can override this method to replace two database requests by one.
         /// </remarks>
-        public virtual Task<MergeEntitiesResult> MergeEntities (MergeEntities mergeEntities, SyncResponse response, SyncContext syncContext) {
-            return Task.FromResult(new MergeEntitiesResult());
+        public virtual async Task<MergeEntitiesResult> MergeEntities (MergeEntities mergeEntities, SyncContext syncContext) {
+            var patches = mergeEntities.patches;
+            var ids     = EntityUtils.GetKeysFromEntities(mergeEntities.keyName, patches, syncContext, out string keyError);
+            if (ids == null) {
+                return new MergeEntitiesResult { Error = new CommandError(TaskErrorResultType.InvalidTask, keyError) };
+            }
+            // --- Read entities to be patched
+            var readTask    = new ReadEntities { ids = ids, keyName = mergeEntities.keyName };
+            var readResult  = await ReadEntities(readTask, syncContext).ConfigureAwait(false);
+            
+            if (readResult.Error != null) {
+                return new MergeEntitiesResult { Error = readResult.Error };
+            }
+            var entities = readResult.entities;
+            if (entities.Count != ids.Count)
+                throw new InvalidOperationException($"MergeEntities: Expect entities.Count of response matches request. expect: {ids.Count} got: {entities.Count}");
+            
+            // --- Apply merges
+            // iterate all patches and merge them to the entities read above
+            var targets     = new  List<JsonValue>  (entities.Count);
+            var targetKeys  = new  List<JsonKey>    (entities.Count);
+            var container   = mergeEntities.container;
+            List<EntityError> patchErrors = null;
+            using (var pooled = syncContext.pool.JsonMerger.Get())
+            {
+                JsonMerger merger = pooled.instance;
+                for (int n = 0; n < patches.Count; n++) {
+                    var patch   = patches[n];
+                    var key     = ids[n];
+                    if (!entities.TryGetValue(key, out var entity)) {
+                        var error = new EntityError(EntityErrorType.PatchError, container, key, "patch target not found");
+                        AddEntityError(ref patchErrors, key, error);
+                        continue;
+                    }
+                    var json = merger.Merge(entity.Json, patch);
+                    targets.Add(json);
+                    targetKeys.Add(key);
+                }
+            }
+            var valError = database.Schema?.ValidateEntities(container, targetKeys, targets, syncContext, EntityErrorType.PatchError, ref patchErrors);
+            if (valError != null) {
+                return new MergeEntitiesResult{Error = new CommandError(TaskErrorResultType.ValidationError, valError)};
+            }
+            
+            // --- write merged entities back
+            var task            = new UpsertEntities { entities = targets, entityKeys = targetKeys };
+            var upsertResult    = await UpsertEntities(task, syncContext).ConfigureAwait(false);
+            
+            if (upsertResult.Error != null) {
+                return new MergeEntitiesResult {Error = upsertResult.Error};
+            }
+            SyncResponse.AddEntityErrors(ref patchErrors, upsertResult.errors);
+            return new MergeEntitiesResult{ errors = patchErrors };
         }
+        
         /// <summary>Apply the given <paramref name="patchEntities"/> to the container entities</summary>
         /// <remarks>
         /// Default implementation to apply patches to entities.

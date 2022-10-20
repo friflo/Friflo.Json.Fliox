@@ -31,7 +31,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
             if (patches == null)
                 return MissingField(nameof(patches));
             var entityContainer = database.GetOrCreateContainer(container);
-            var result = await entityContainer.MergeEntities(this, response, syncContext).ConfigureAwait(false);
+            var result = await entityContainer.MergeEntities(this, syncContext).ConfigureAwait(false);
             if (result.Error != null) {
                 return TaskError(result.Error); 
             }
