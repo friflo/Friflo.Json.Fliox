@@ -14,7 +14,6 @@ using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Schema.Validation;
 using Friflo.Json.Fliox.Transform;
 using Friflo.Json.Fliox.Transform.Query.Ops;
-using Friflo.Json.Fliox.Transform.Query.Parser;
 
 // ReSharper disable SwitchStatementHandlesSomeKnownEnumValuesWithDefault
 // ReSharper disable ForeachCanBePartlyConvertedToQueryUsingAnotherGetEnumerator
@@ -354,13 +353,41 @@ namespace Friflo.Json.Fliox.Hub.Remote
             context.WriteString("PUT successful", "text/plain", 200);
         }
         
-        private static async Task PatchEntity(RequestContext context, string database, string container, string id, string keyName, JsonValue value) {
+        private static async Task MergeEntity(RequestContext context, string database, string container, string id, string keyName, JsonValue patch) {
+            if (database == context.hub.DatabaseName)
+                database = null;
+            keyName         = keyName ?? "id";
+            var patches     = new List<JsonValue> { patch };
+            var task        = new MergeEntities { container = container, keyName = keyName, patches = patches };
+            var syncRequest = CreateSyncRequest(context, database, task, out var syncContext);
+            var syncResult  = await context.hub.ExecuteSync(syncRequest, syncContext).ConfigureAwait(false);
+            
+            var restResult  = CreateRestResult(context, syncResult);
+            if (restResult.taskResult == null)
+                return;
+            var mergeResult = (MergeEntitiesResult)restResult.taskResult;
+            var resultError = mergeResult.Error;
+            if (resultError != null) {
+                context.WriteError("PATCH error", resultError.message, 500);
+                return;
+            }
+            var entityErrors = mergeResult.errors;
+            if (entityErrors != null) {
+                var sb = new StringBuilder();
+                FormatEntityErrors (entityErrors, sb);
+                context.WriteError("PATCH errors", sb.ToString(), 400);
+                return;
+            }
+            context.WriteString("PATCH successful", "text/plain", 200);
+        }
+        
+        private static async Task PatchEntity(RequestContext context, string database, string container, string id, string keyName, JsonValue patch) {
             if (database == context.hub.DatabaseName)
                 database = null;
             List<JsonPatch> patches;
             using (var pooled = context.ObjectMapper.Get()) {
                 var reader  = pooled.instance.reader;
-                patches     = reader.Read<List<JsonPatch>>(value);
+                patches     = reader.Read<List<JsonPatch>>(patch);
                 if (reader.Error.ErrSet) {
                     context.WriteError("PATCH error", reader.Error.ToString(), 400);
                     return;

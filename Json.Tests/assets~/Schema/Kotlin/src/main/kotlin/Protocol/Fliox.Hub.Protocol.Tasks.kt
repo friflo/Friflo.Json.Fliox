@@ -226,6 +226,12 @@ data class PatchEntitiesResult (
 ) : SyncTaskResult()
 
 @Serializable
+@SerialName("merge")
+data class MergeEntitiesResult (
+              val errors : List<EntityError>? = null,
+) : SyncTaskResult()
+
+@Serializable
 @SerialName("delete")
 data class DeleteEntitiesResult (
               val errors : List<EntityError>? = null,

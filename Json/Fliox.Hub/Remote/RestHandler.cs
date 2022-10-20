@@ -181,13 +181,14 @@ namespace Friflo.Json.Fliox.Hub.Remote
                         context.WriteError("invalid PATCH", "expect: /database/container/id", 400);
                         return;
                     }
-                    var value = await JsonValue.ReadToEndAsync(context.body).ConfigureAwait(false);
-                    if (!IsValidJson(pool, value, out string error)) {
+                    var patch = await JsonValue.ReadToEndAsync(context.body).ConfigureAwait(false);
+                    if (!IsValidJson(pool, patch, out string error)) {
                         context.WriteError("PATCH failed", error, 400);
                         return;
                     }
                     var keyName     = queryParams["keyName"];
-                    await PatchEntity(context, res.database, res.container, res.id, keyName, value).ConfigureAwait(false);
+                    await PatchEntity(context, res.database, res.container, res.id, keyName, patch).ConfigureAwait(false);
+                    // await MergeEntity(context, res.database, res.container, res.id, keyName, patch).ConfigureAwait(false);
                     return;
                 }
                 context.WriteError("invalid path/method", route, 400);

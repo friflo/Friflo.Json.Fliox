@@ -60,6 +60,7 @@ GET {{base}}/explorer/example-requests
     "31-upsert.sync.json",
     "32-delete.sync.json",
     "33-patch.sync.json",
+    "34-merge.sync.json",
     "40-subscribe-messages.sync.json",
     "41-subscribe-changes.sync.json",
     "50-monitor-queries.sync.json",

@@ -297,6 +297,7 @@
                 "query":            { "ref":  "QueryEntitiesResult" },
                 "aggregate":        { "ref":  "AggregateEntitiesResult" },
                 "patch":            { "ref":  "PatchEntitiesResult" },
+                "merge":            { "ref":  "MergeEntitiesResult" },
                 "delete":           { "ref":  "DeleteEntitiesResult" },
                 "message":          { "ref":  "SendMessageResult" },
                 "command":          { "ref":  "SendCommandResult" },
@@ -367,6 +368,11 @@
             }
         },
         "PatchEntitiesResult": {
+            "properties": {
+                "errors": { "elements": { "ref":  "EntityError" }, "nullable": true }
+            }
+        },
+        "MergeEntitiesResult": {
             "properties": {
                 "errors": { "elements": { "ref":  "EntityError" }, "nullable": true }
             }

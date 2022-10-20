@@ -350,6 +350,7 @@
                 { "$ref": "#/definitions/QueryEntitiesResult" },
                 { "$ref": "#/definitions/AggregateEntitiesResult" },
                 { "$ref": "#/definitions/PatchEntitiesResult" },
+                { "$ref": "#/definitions/MergeEntitiesResult" },
                 { "$ref": "#/definitions/DeleteEntitiesResult" },
                 { "$ref": "#/definitions/SendMessageResult" },
                 { "$ref": "#/definitions/SendCommandResult" },
@@ -360,7 +361,7 @@
                 { "$ref": "#/definitions/TaskErrorResult" }
             ],
             "properties": {
-                "task": { "enum": ["create", "upsert", "read", "query", "aggregate", "patch", "delete", "message", "command", "closeCursors", "subscribeChanges", "subscribeMessage", "reserveKeys", "error"], "description": "task result type" }
+                "task": { "enum": ["create", "upsert", "read", "query", "aggregate", "patch", "merge", "delete", "message", "command", "closeCursors", "subscribeChanges", "subscribeMessage", "reserveKeys", "error"], "description": "task result type" }
             },
             "required": [
                 "task"
@@ -444,6 +445,19 @@
             "description": "Result of a <b>PatchEntities</b> task",
             "properties": {
                 "task":   { "enum": ["patch"] },
+                "errors": { "type": ["array", "null"], "items": { "$ref": "./Friflo.Json.Fliox.Hub.Protocol.Models.json#/definitions/EntityError" }, "description": "list of entity errors failed to patch" }
+            },
+            "required": [
+                "task"
+            ],
+            "additionalProperties": false
+        },
+        "MergeEntitiesResult": {
+            "type": "object",
+            "extends": { "$ref": "#/definitions/SyncTaskResult" },
+            "description": "Result of a <b>MergeEntities</b> task",
+            "properties": {
+                "task":   { "enum": ["merge"] },
                 "errors": { "type": ["array", "null"], "items": { "$ref": "./Friflo.Json.Fliox.Hub.Protocol.Models.json#/definitions/EntityError" }, "description": "list of entity errors failed to patch" }
             },
             "required": [

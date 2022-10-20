@@ -12,6 +12,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     [PolymorphType(typeof(QueryEntitiesResult),     "query")]
     [PolymorphType(typeof(AggregateEntitiesResult), "aggregate")]
     [PolymorphType(typeof(PatchEntitiesResult),     "patch")]
+    [PolymorphType(typeof(MergeEntitiesResult),     "merge")]
     [PolymorphType(typeof(DeleteEntitiesResult),    "delete")]
     [PolymorphType(typeof(SendMessageResult),       "message")]
     [PolymorphType(typeof(SendCommandResult),       "command")]

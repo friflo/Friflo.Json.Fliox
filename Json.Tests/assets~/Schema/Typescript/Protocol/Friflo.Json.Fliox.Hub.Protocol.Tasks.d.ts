@@ -302,6 +302,7 @@ export type SyncTaskResult_Union =
     | QueryEntitiesResult
     | AggregateEntitiesResult
     | PatchEntitiesResult
+    | MergeEntitiesResult
     | DeleteEntitiesResult
     | SendMessageResult
     | SendCommandResult
@@ -321,6 +322,7 @@ export abstract class SyncTaskResult {
         | "query"
         | "aggregate"
         | "patch"
+        | "merge"
         | "delete"
         | "message"
         | "command"
@@ -381,6 +383,14 @@ export class AggregateEntitiesResult extends SyncTaskResult {
 export class PatchEntitiesResult extends SyncTaskResult {
     /** task result type */
     task    : "patch";
+    /** list of entity errors failed to patch */
+    errors? : EntityError[] | null;
+}
+
+/** Result of a **MergeEntities** task */
+export class MergeEntitiesResult extends SyncTaskResult {
+    /** task result type */
+    task    : "merge";
     /** list of entity errors failed to patch */
     errors? : EntityError[] | null;
 }

@@ -1,0 +1,16 @@
+{
+  "msg": "sync",
+  "tasks": [
+    {
+      "task":       "merge",
+      "container":  "articles",
+      "patches": [
+        {
+          "id": "new-article",
+          "name": "patched Name"
+        }
+      ]
+    }
+  ],
+  "info": "merge (patch) article member .name (article need to be present)"
+}

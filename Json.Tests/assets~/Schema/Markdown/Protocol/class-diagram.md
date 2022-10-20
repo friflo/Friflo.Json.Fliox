@@ -332,6 +332,13 @@ class PatchEntitiesResult {
 }
 PatchEntitiesResult *-- "0..*" EntityError : errors
 
+SyncTaskResult <|-- MergeEntitiesResult
+class MergeEntitiesResult {
+    task    : "merge"
+    errors? : EntityError[]
+}
+MergeEntitiesResult *-- "0..*" EntityError : errors
+
 SyncTaskResult <|-- DeleteEntitiesResult
 class DeleteEntitiesResult {
     task    : "delete"
