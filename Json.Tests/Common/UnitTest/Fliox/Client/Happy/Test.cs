@@ -173,7 +173,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                         
                         while (!listenSubscriber.receivedAll ) { await Task.Delay(1); }
                         
-                        AreEqual(9, createSubscriber.EventCount);
+                        AreEqual(8, createSubscriber.EventCount);
                         IsTrue(createSubscriber.IsOrigin);
                         listenSubscriber.AssertCreateStoreChanges();
                         await TestStores(createStore, useStore);
@@ -253,7 +253,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                     
                     while (!listenSubscriber.receivedAll ) { await Task.Delay(1); }
                     
-                    AreEqual(9, createSubscriber.EventCount);
+                    AreEqual(8, createSubscriber.EventCount);
                     IsTrue(createSubscriber.IsOrigin);
                     listenSubscriber.AssertCreateStoreChanges();
                     await TestStores(createStore, useStore);

@@ -74,25 +74,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             errors = upsertTask.Error.entityErrors;
             AreEqual("Missing required fields: [name] at Article > (root), pos: 29", errors[new JsonKey("article-missing-name")].message);
             AreEqual(expectError, upsertTask.Error.Message);
-            
-            
-            // test validation errors for patches
-            var patchModifier = modifierHub.GetPatchModifiers(nameof(PocStore.articles));
-            patchModifier.patches.Add("article-2", patch => {
-                var replace = (PatchReplace)patch.patches[0];
-                replace.value = new JsonValue("123");
-                return patch;
-            });
-            var articlePatch    = new Article { id = "article-2", name = "changed name"};
-            var patchArticle    = articles.Patch(selection => selection.Add(a => a.name)).Add(articlePatch);
-            
-            sync = await store.TrySyncTasks(); // ----------------
-            
-            IsFalse(patchArticle.Success);
-            AreEqual(@"EntityErrors ~ count: 1
-| PatchError: articles [article-2], Incorrect type. was: 123, expect: string at Article > name, pos: 40", patchArticle.Error.Message);
 
-
+            
             // --- test validation errors for invalid JSON
             articleModifier.writes.Add("invalid-json",       val => new JsonValue("X"));
             // articleModifier.writes.Add("empty-json",         val => new EntityValue(""));
@@ -102,7 +85,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
 
             createTask = articles.CreateRange(new [] { invalidJson });
             
-            await store.TrySyncTasks(); // ----------------
+            sync = await store.TrySyncTasks(); // ----------------
             
             IsFalse(sync.Success);
             IsFalse(createTask.Success);

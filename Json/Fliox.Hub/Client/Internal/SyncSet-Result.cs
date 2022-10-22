@@ -329,15 +329,13 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         /// error state via <see cref="DetectPatchesTask{T}.SetResult"/>.
         /// </summary> 
         internal override void PatchEntitiesResult(PatchEntities task, SyncTaskResult result) {
-            // task is either a PatchTask<T> or a DetectPatchesTask<T>
-            var patchTask       = task.syncTask as PatchTask<T>;
+            // task is a DetectPatchesTask<T>
             var detectPatches   = task.syncTask as DetectPatchesTask<T>;
             // ReSharper disable once PossibleNullReferenceException
-            var patches         = patchTask != null ? patchTask.entityPatches : detectPatches.entityPatches;
+            var patches         = detectPatches.entityPatches;
             if (result is TaskErrorResult taskError)
             {
-                patchTask?.     state.SetError(new TaskErrorInfo(taskError));
-                detectPatches?. state.SetError(new TaskErrorInfo(taskError));
+                detectPatches. state.SetError(new TaskErrorInfo(taskError));
                 if (errorsPatch == NoErrors) {
                     errorsPatch = new Dictionary<JsonKey, EntityError>(patches.Count, JsonKey.Equality);
                 }
@@ -362,8 +360,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                     peer.SetPatchSource(nextPatchSource);
                     peer.SetNextPatchSourceNull();
                 }
-                patchTask?.SetResult(errorsPatch);
-                detectPatches?.SetResult();
+                detectPatches.SetResult();
             }
             // enable GC to collect references in containers which are not needed anymore
             patches.Clear();

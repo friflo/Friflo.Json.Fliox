@@ -18,12 +18,9 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
 {
     internal abstract class SyncSetBase <T> : SyncSet where T : class
     {
-        internal abstract void AddEntityPatches(PatchTask<T> patchTask, ICollection<T> entities);
-        
         internal abstract SubscribeChanges  SubscribeChanges(SubscribeChangesTask<T>    sub,    in CreateTaskContext context);
         internal abstract CreateEntities    CreateEntities  (CreateTask<T>              create, in CreateTaskContext context);
         internal abstract UpsertEntities    UpsertEntities  (UpsertTask<T>              upsert, in CreateTaskContext context);
-        internal abstract PatchEntities     PatchEntities   (PatchTask<T>               patch);
         internal abstract PatchEntities     PatchEntities   (DetectPatchesTask<T>       detectPatches);
     }
 
@@ -155,13 +152,6 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         }
         
         // --- Patch
-        // - assign patches
-        internal PatchTask<T> Patch(MemberSelection<T> member) {
-            var patchTask  = new PatchTask<T>(this, member);
-            tasks.Add(patchTask);
-            return patchTask;
-        }
-
         // - detect patches
         internal void AddDetectPatches(DetectPatchesTask<T> detectPatchesTask) {
             tasks.Add(detectPatchesTask);
@@ -326,55 +316,6 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 container   = set.name,
                 cursors     = closeCursor.cursors,
                 syncTask    = closeCursor 
-            };
-        }
-        
-        internal override void AddEntityPatches(PatchTask<T> patchTask, ICollection<T> entities) {
-            using (var pooled = set.intern.store.ObjectMapper.Get()) {
-                var mapper          = pooled.instance;
-                // todo performance: cache MemberAccess instances with members as key
-                var members         = patchTask.selection.Members;
-                var memberAccess    = patchTask.selection.GetMemberAccess();
-                var memberAccessor  = new MemberAccessor(mapper.writer);
-                var entityPatches   = patchTask.entityPatches;
-                var taskPatches     = patchTask.patches;
-                // taskPatches.Capacity= taskPatches.Count + entities.Count;    -> degrade performance
-
-                foreach (var entity in entities) {
-                    var id = EntityKeyTMap.GetId(entity);
-                    if (!entityPatches.TryGetValue(id, out EntityPatch patch)) {
-                        patch = new EntityPatch { id = id, patches = new List<JsonPatch>() };
-                        entityPatches.Add(id, patch);
-                    }
-                    var patchInfo = new EntityPatchInfo<T>(patch, entity);
-                    taskPatches.Add(patchInfo);
-                    var key = KeyConvert.IdToKey(id);
-                    if (set.TryGetPeerByKey(key, out var peer)) {
-                        SetNextPatchSource(peer, mapper);
-                    }
-                    var patches         = patch.patches;
-                    var selectResults   = memberAccessor.GetValues(entity, memberAccess);
-                    int n = 0;
-                    foreach (var path in members) {
-                        var value = selectResults[n++].Json;
-                        patches.Add(new PatchReplace { path = path, value = value });
-                    }
-                }
-            }
-        }
-        
-        internal override PatchEntities PatchEntities(PatchTask<T> patch) {
-            var patches = patch.entityPatches;
-            if (patch.entityPatches.Count == 0) {
-                patch.state.Executed = true;
-            }
-            var list = new List<EntityPatch>(patches.Count);
-            foreach (var pair in patches) { list.Add(pair.Value); }
-            return new PatchEntities {
-                container   = set.name,
-                keyName     = SyncKeyName(set.GetKeyName()),
-                patches     = list,
-                syncTask    = patch 
             };
         }
         

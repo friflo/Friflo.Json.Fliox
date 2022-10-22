@@ -47,11 +47,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                     
                     while (!listenSubscriber.receivedAll ) { await Task.Delay(1); }
 
-                    AreEqual(9, createSubscriber.EventCount);
+                    AreEqual(8, createSubscriber.EventCount);
                     IsTrue(createSubscriber.IsOrigin);
                 }
                 listenSubscriber.AssertCreateStoreChanges();
-                AreEqual(9, listenSubscriber.EventCount);           // non protected access
+                AreEqual(8, listenSubscriber.EventCount);           // non protected access
                 IsFalse(listenSubscriber.IsOrigin);
                 await eventDispatcher.FinishQueues();
             }
@@ -290,12 +290,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         
         /// assert that all database changes by <see cref="TestRelationPoC.CreateStore"/> are reflected
         public void AssertCreateStoreChanges() {
-            AreEqual(9, EventCount);
-            AreEqual(9, subscribeEventsCalls);
+            AreEqual(8, EventCount);
+            AreEqual(8, subscribeEventsCalls);
             
             AreSimilar("creates: 0, upserts: 2, deletes: 0, patches: 0, merges: 0", orderSum);
             AreSimilar("creates: 1, upserts: 6, deletes: 1, patches: 0, merges: 0", customerSum);
-            AreSimilar("creates: 2, upserts: 7, deletes: 5, patches: 6, merges: 0", articleSum);
+            AreSimilar("creates: 2, upserts: 7, deletes: 5, patches: 4, merges: 0", articleSum);
             AreSimilar("creates: 3, upserts: 0, deletes: 3, patches: 0, merges: 0", producerSum);
             AreSimilar("creates: 1, upserts: 0, deletes: 1, patches: 0, merges: 0", employeeSum);
             AreSimilar("creates: 0, upserts: 1, deletes: 0, patches: 0, merges: 0", typesSum);
@@ -308,8 +308,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             
             var allChanges = orderSum.Count + customerSum.Count + articleSum.Count + producerSum.Count + employeeSum.Count + typesSum.Count;
             
-            AreEqual(39, allChanges);
-            AreEqual(39, countAllChanges);
+            AreEqual(37, allChanges);
+            AreEqual(37, countAllChanges);
         }
     }
     
@@ -531,7 +531,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 };
                 store.articles.CreateRange(createArticles);
                 store.articles.Delete("a-5");
-                store.articles.Patch(selection => selection.Add(a => a.name));
                 
                 store.customers.Upsert(new Customer{ id = "c-1", name = "Name1"});
                 

@@ -222,35 +222,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             AreSimilar("entities: 13",                                  store.ClientInfo);      // tasks executed and cleared
             
             
-            // patch the same article with two Patch methods   
-            notebook.name = "Galaxy Book";
-            var patchNotebook = articles.Patch(selection => selection.Add(a => a.name));
-            patchNotebook.Add(notebook);
-            var producerPath = new MemberPath<Article>(a => a.producer);
-            var patchArticles = articles.Patch(selection => selection.Add(producerPath));
-            patchArticles.Add(notebook);
-            
-            var patches = patchNotebook.Patches;
-            AreEqual(1, patches.Count);
-            AreEqual("article-notebook-💻-unicode", patches[0].Id.AsString());
-            AreEqual("Galaxy Book",                 patches[0].Entity.name);
-            var patchMembers = patches[0].Members;
-            AreEqual(1, patchMembers.Count);
-            AreEqual(".name",     patchMembers[0].path); AreEqual("\"Galaxy Book\"",      patchMembers[0].value.AsString());
-            
-            AreEqual(".producer",                                               producerPath.ToString());
-            AreEqual("PatchTask<Article> patches: 1, selection: [.name]",       patchNotebook.ToString());
-            AreEqual("PatchTask<Article> patches: 1, selection: [.producer]",   patchArticles.ToString());
-            
-            AreSimilar("entities: 13, tasks: 2 [container: 2]",         store.ClientInfo);
-            AreSimilar("articles:  6, tasks: 2 [patch: 2]",             articles);
-            
-            await store.SyncTasks(); // ----------------
-            AreSimilar("entities: 13",                                  store.ClientInfo);      // tasks executed and cleared
-            
-            IsTrue(patchNotebook.Success);
-            IsTrue(patchArticles.Success);
-
             customers.Upsert(new Customer{id = "log-patch-entity-read-error",   name = "used for successful read"});
             customers.Upsert(new Customer{id = "log-patch-entity-write-error",  name = "used for successful read"});
             

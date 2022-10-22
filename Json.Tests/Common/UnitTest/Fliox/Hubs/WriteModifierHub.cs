@@ -13,13 +13,11 @@ using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs
 {
     public delegate JsonValue   WriteModifier (JsonValue value);
-    public delegate EntityPatch PatchModifier (EntityPatch patch);
     
     public class WriteModifierHub : FlioxHub
     {
         private readonly    FlioxHub                            hub;
         private readonly    Dictionary<string, WriteModifiers>  writeModifiers  = new Dictionary<string, WriteModifiers>();
-        private readonly    Dictionary<string, PatchModifiers>  patchModifiers  = new Dictionary<string, PatchModifiers>();
         private readonly    EntityProcessor                     processor       = new EntityProcessor();
         
         public WriteModifierHub(FlioxHub hub) : base(hub.database, hub.sharedEnv) {
@@ -50,11 +48,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs
                             write.ModifyWrites(upsertEntities.keyName, upsertEntities.entities);
                         }
                         break;
-                    case PatchEntities patchEntities:
-                        if (patchModifiers.TryGetValue(patchEntities.container, out var patch)) {
-                            patch.ModifyPatches(patchEntities.patches);
-                        }
-                        break;
                 }
             }
             return await hub.ExecuteSync(syncRequest, syncContext);
@@ -66,14 +59,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs
                 writeModifiers.Add(container, writeModifier);
             }
             return writeModifier;
-        }
-        
-        public PatchModifiers GetPatchModifiers(string container) {
-            if (!patchModifiers.TryGetValue(container, out var patchModifier)) {
-                patchModifier = new PatchModifiers();
-                patchModifiers.Add(container, patchModifier);
-            }
-            return patchModifier;
         }
     }
     
@@ -96,28 +81,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs
                     var modified    = modifier (entity);
                     entities[n] = modified;
                 }
-            }
-        }
-    }
-    
-    public class PatchModifiers
-    {
-        public  readonly    Dictionary<string, PatchModifier>    patches    = new Dictionary<string, PatchModifier>();
-        
-        internal void ModifyPatches(List<EntityPatch> entityPatches) {
-            var modifications = new Dictionary<string, EntityPatch>();
-            foreach (var entityPatch in entityPatches) {
-                var key = entityPatch.id.AsString();
-                if (patches.TryGetValue(key, out var modifier)) {
-                    EntityPatch modified    = modifier (entityPatch);
-                    modifications.Add(key, modified);
-                }
-            }
-            foreach (var pair in modifications) {
-                var         key     = new JsonKey(pair.Key);
-                EntityPatch value   = pair.Value;
-                var modifiedIndex   = entityPatches.FindIndex(p => p.id.IsEqual(key));
-                entityPatches[modifiedIndex] = value;
             }
         }
     }

@@ -403,30 +403,6 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
         #endregion
 
-    #region - Patch creation
-        /// <summary> Create <see cref="PatchTask{T}.Patches"/> for the fields of the passed <paramref name="selection"/>
-        /// and the entities added with <see cref="PatchTask{T}.Add"/> subsequently </summary>
-        /// <remarks> This method is applicable for tracked and untracked entities. <br/>
-        /// To execute the task call <see cref="FlioxClient.SyncTasks"/> </remarks>
-        public PatchTask<T> Patch(MemberSelectionBuilder<T> selection) {
-            var memberSelection = new MemberSelection<T>();
-            selection(memberSelection);
-            var task = GetSyncSet().Patch(memberSelection);
-            intern.store.AddTask(task);
-            return task;
-        }
-        
-        /// <summary> Create <see cref="PatchTask{T}.Patches"/> for the fields of the passed <paramref name="memberSelection"/>
-        /// and the entities added with <see cref="PatchTask{T}.Add"/> subsequently </summary>
-        /// <remarks> This method is applicable for tracked and untracked entities. <br/>
-        /// To execute the task call <see cref="FlioxClient.SyncTasks"/> </remarks>
-        public PatchTask<T> Patch(MemberSelection<T> memberSelection) {
-            var task = GetSyncSet().Patch(memberSelection);
-            intern.store.AddTask(task);
-            return task;
-        }
-        #endregion
-        
     #region - Patch detection
         /// <summary>
         /// Detect <see cref="DetectPatchesTask{T}.Patches"/> made to all tracked entities.
