@@ -154,19 +154,22 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.TestLinq
             public TestChild child;
         }
         
-        public class TestProjection<T>
+        public class PatchProjection<T>
         {
-            void Patch(Expression<Func<T, object>> member) {
+            public void Patch(Expression<Func<T, object>> member) {
                 /* var path = new string[member.Length];
                 for (int n = 0; n < member.Length; n++) {
                     path[n] = Operation.PathFromLambda(member[n], ClientStatic.RefQueryPath);
                 }*/
             }
-            
+        }
+        
+        public static class TestProjection
+        {
             [Test]
             public static void PatchTest() {
                 
-                var test = new TestProjection<TestClass>();
+                var test = new PatchProjection<TestClass>();
                 test.Patch(order => new { order.a, order.b, order.child }); 
             }
             
