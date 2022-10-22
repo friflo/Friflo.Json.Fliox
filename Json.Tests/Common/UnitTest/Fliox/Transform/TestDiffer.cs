@@ -86,6 +86,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 var diffAlloc =  GC.GetAllocatedBytesForCurrentThread() - start;
                 AreEqual(0, diffAlloc);
                 Console.WriteLine($"Diff allocations: {diffAlloc}");
+                
+                AssertJsonDiffAlloc(diff, jsonDiff);
             }
         }
         
@@ -134,6 +136,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 var patch   = jsonDiff.CreateJsonDiff(diff);
                 var expected= "{'array1':[1,3],'array4':null,'array5':[33]}".Replace('\'', '\"');
                 AreEqual(expected, patch.ToString());
+                
+                AssertJsonDiffAlloc(diff, jsonDiff);
             }
         }
         
@@ -182,6 +186,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 var patch   = jsonDiff.CreateJsonDiff(diff);
                 var expected= "{'dict1':{'key1':'B'},'dict4':null,'dict5':{'key5':'E'}}".Replace('\'', '\"');
                 AreEqual(expected, patch.ToString());
+                
+                AssertJsonDiffAlloc(diff, jsonDiff);
             }
         }
         
@@ -200,6 +206,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             
             AreEqual(expectedJson, mergeJson);
             return diff;
+        }
+        
+        private static void AssertJsonDiffAlloc(DiffNode diff, JsonDiff jsonDiff) {
+            var start = GC.GetAllocatedBytesForCurrentThread();
+            jsonDiff.CreateJsonDiffBytes(diff);
+            var alloc = GC.GetAllocatedBytesForCurrentThread() - start;
+            AreEqual(0, alloc);
         }
         
         [Test]

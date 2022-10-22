@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
+using Friflo.Json.Burst;
 using Friflo.Json.Fliox.Mapper.Map;
 using Friflo.Json.Fliox.Mapper.Map.Object.Reflect;
 using static Friflo.Json.Fliox.Mapper.Diff.DiffType;
@@ -27,17 +28,21 @@ namespace Friflo.Json.Fliox.Mapper.Diff
         }
         
         public JsonValue CreateJsonDiff (DiffNode diffNode) {
-            var result = CreateJsonDiffArray(diffNode);
-            return new JsonValue(result);
+            CreateJsonDiffInternal(diffNode);
+            return new JsonValue(writer.bytes.AsArray());
         }
         
-        public byte[] CreateJsonDiffArray (DiffNode diffNode) {
+        public Bytes CreateJsonDiffBytes (DiffNode diffNode) {
+            CreateJsonDiffInternal(diffNode);
+            return writer.bytes;
+        }
+        
+        private void CreateJsonDiffInternal (DiffNode diffNode) {
             writer.bytes.Clear();
             writer.level            = 0;
             writer.writeNullMembers = true;
 
             Traverse(ref writer, diffNode);
-            return writer.bytes.AsArray();
         }
         
         private static void Traverse(ref Writer writer, DiffNode diffNode) {
