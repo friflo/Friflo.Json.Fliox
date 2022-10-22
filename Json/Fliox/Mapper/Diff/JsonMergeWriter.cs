@@ -13,13 +13,13 @@ namespace Friflo.Json.Fliox.Mapper.Diff
     /// Create the a JSON value by the given <see cref="DiffNode"/>. <br/>
     /// The JSON result is intended to be merged (assigned) into a given object by using <see cref="ObjectReader.ReadTo{T}(JsonValue,T)"/>
     /// </summary>
-    public sealed class JsonDiff : IDisposable
+    public sealed class JsonMergeWriter : IDisposable
     {
         public      bool    Pretty { get => writer.pretty; set => writer.pretty = value; }
 
         private     Writer  writer;
 
-        public JsonDiff(TypeStore typeStore) {
+        public JsonMergeWriter(TypeStore typeStore) {
             writer = new Writer(typeStore);
         }
         
@@ -33,7 +33,7 @@ namespace Friflo.Json.Fliox.Mapper.Diff
             writer.writeNullMembers = true;
         }
         
-        public JsonValue CreateMergePatch (DiffNode diffNode) {
+        public JsonValue WriteMergePatch (DiffNode diffNode) {
             Init();
             
             Traverse(ref writer, diffNode, true);
@@ -41,7 +41,7 @@ namespace Friflo.Json.Fliox.Mapper.Diff
             return new JsonValue(writer.bytes.AsArray());
         }
         
-        public Bytes CreateMergePatchBytes (DiffNode diffNode) {
+        public Bytes WriteMergePatchBytes (DiffNode diffNode) {
             Init();
             
             Traverse(ref writer, diffNode, true);
@@ -49,7 +49,7 @@ namespace Friflo.Json.Fliox.Mapper.Diff
             return writer.bytes;
         }
         
-        public JsonValue CreateEntityMergePatch<T> (DiffNode diffNode, T entity) where T : class {
+        public JsonValue WriteEntityMergePatch<T> (DiffNode diffNode, T entity) where T : class {
             Init();
             // TypeMapper could be passed as parameter to avoid lookup
             var mapper = writer.typeCache.GetTypeMapper(typeof(T));

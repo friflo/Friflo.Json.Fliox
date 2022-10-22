@@ -31,7 +31,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
         public void TestJsonMergePrimitives() {
             using (var typeStore        = new TypeStore()) 
             using (var differ           = new ObjectDiffer(typeStore))
-            using (var jsonDiff         = new JsonDiff(typeStore))
+            using (var mergeWriter      = new JsonMergeWriter(typeStore))
             using (var writer           = new ObjectWriter(typeStore))
             using (var merger           = new JsonMerger())
             {
@@ -69,11 +69,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
 }";
                 expect = NormalizeJson(expect);
 
-                PrepareMerge(left, right, differ, jsonDiff, writer, false, out var value, out var patch);
+                PrepareMerge(left, right, differ, mergeWriter, writer, false, out var value, out var patch);
                 var merge       = merger.Merge(value, patch);
                 AreEqual(expect, merge.AsString());
                 
-                PrepareMerge(left, right, differ, jsonDiff, writer, true, out value, out patch);
+                PrepareMerge(left, right, differ, mergeWriter, writer, true, out value, out patch);
                 merge          = merger.Merge(value, patch);
                 AreEqual(expect, merge.AsString());
                 
@@ -97,7 +97,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
         public void TestJsonMergeClasses() {
             using (var typeStore        = new TypeStore()) 
             using (var differ           = new ObjectDiffer(typeStore))
-            using (var jsonDiff         = new JsonDiff(typeStore))
+            using (var mergeWriter      = new JsonMergeWriter(typeStore))
             using (var writer           = new ObjectWriter(typeStore))
             using (var merger           = new JsonMerger())
             {
@@ -123,11 +123,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
 }";
                 expect = NormalizeJson(expect);
 
-                PrepareMerge(left, right, differ, jsonDiff, writer, false, out var value, out var patch);
+                PrepareMerge(left, right, differ, mergeWriter, writer, false, out var value, out var patch);
                 var merge       = merger.Merge(value, patch);
                 AreEqual(expect, merge.AsString());
                 
-                PrepareMerge(left, right, differ, jsonDiff, writer, true, out value, out patch);
+                PrepareMerge(left, right, differ, mergeWriter, writer, true, out value, out patch);
                 merge          = merger.Merge(value, patch);
                 AreEqual(expect, merge.AsString());
                 
@@ -150,7 +150,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
         public void TestJsonMergeArrays() {
             using (var typeStore        = new TypeStore()) 
             using (var differ           = new ObjectDiffer(typeStore))
-            using (var jsonDiff         = new JsonDiff(typeStore))
+            using (var mergeWriter      = new JsonMergeWriter(typeStore))
             using (var writer           = new ObjectWriter(typeStore))
             using (var merger           = new JsonMerger())
             {
@@ -187,11 +187,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
 }";
                 expect = NormalizeJson(expect);
                 
-                PrepareMerge(left, right, differ, jsonDiff, writer, false, out var value, out var patch);
+                PrepareMerge(left, right, differ, mergeWriter, writer, false, out var value, out var patch);
                 var merge       = merger.Merge(value, patch);
                 AreEqual(expect, merge.AsString());
                 
-                PrepareMerge(left, right, differ, jsonDiff, writer, true, out value, out patch);
+                PrepareMerge(left, right, differ, mergeWriter, writer, true, out value, out patch);
                 merge          = merger.Merge(value, patch);
                 AreEqual(expect, merge.AsString());
                 
@@ -279,14 +279,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 T               left,
                 T               right,
                 ObjectDiffer    differ,
-                JsonDiff        jsonDiff,
+                JsonMergeWriter mergeWriter,
                 ObjectWriter    writer,
                 bool            writeNullMembers,
             out JsonValue       value,  // left as JSON
             out JsonValue       patch)  // the merge patch - when merging to left the result is right
         {
             var diff    = differ.GetDiff(left, right, DiffKind.DiffArrays);
-            patch       = jsonDiff.CreateMergePatch(diff);
+            patch       = mergeWriter.WriteMergePatch(diff);
 
             writer.Pretty           = true;
             writer.WriteNullMembers = writeNullMembers;

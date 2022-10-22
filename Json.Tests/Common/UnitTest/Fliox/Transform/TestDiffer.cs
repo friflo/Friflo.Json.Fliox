@@ -39,7 +39,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             using (var typeStore        = new TypeStore()) 
             using (var mapper           = new ObjectMapper(typeStore))
             using (var differ           = new ObjectDiffer(typeStore))
-            using (var jsonDiff         = new JsonDiff(typeStore))
+            using (var mergeWriter      = new JsonMergeWriter(typeStore))
             {
                 var left  = new DiffBase {
                     child1 = new DiffChild(),   // not equal
@@ -73,7 +73,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
 "; 
                 AreEqual(expectedDiff, diffText);
                 
-                var patch    = jsonDiff.CreateMergePatch(diff);
+                var patch    = mergeWriter.WriteMergePatch(diff);
                 var expectedJson =
                 "{'child1':{'intVal1':1},'child2':{'intVal2':2},'child5':null,'child6':{'intVal1':0,'intVal2':0}}".Replace('\'', '\"'); 
                 AreEqual(expectedJson, patch.AsString());
@@ -88,7 +88,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 AreEqual(0, diffAlloc);
                 Console.WriteLine($"Diff allocations: {diffAlloc}");
                 
-                AssertJsonDiffAlloc(diff, jsonDiff);
+                AssertMergePatchAlloc(diff, mergeWriter);
             }
         }
         
@@ -106,7 +106,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             using (var typeStore        = new TypeStore()) 
             using (var mapper           = new ObjectMapper(typeStore))
             using (var differ           = new ObjectDiffer(typeStore))
-            using (var jsonDiff         = new JsonDiff(typeStore))
+            using (var mergeWriter      = new JsonMergeWriter(typeStore))
             {
                 var left  = new DiffArray {
                     array1 = new [] {1,   2},   // not equal
@@ -134,12 +134,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
 ";
                 AreEqual(expectedDiff, diffText);
                 
-                var patch   = jsonDiff.CreateMergePatch(diff);
+                var patch   = mergeWriter.WriteMergePatch(diff);
                 
                 var expected= "{'array1':[1,3],'array4':null,'array5':[33]}".Replace('\'', '\"');
                 AreEqual(expected, patch.ToString());
                 AssertMergePatch(left, right, patch, mapper);
-                AssertJsonDiffAlloc(diff, jsonDiff);
+                AssertMergePatchAlloc(diff, mergeWriter);
             }
         }
         
@@ -157,7 +157,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             using (var typeStore        = new TypeStore()) 
             using (var mapper           = new ObjectMapper(typeStore))
             using (var differ           = new ObjectDiffer(typeStore))
-            using (var jsonDiff         = new JsonDiff(typeStore))
+            using (var mergeWriter      = new JsonMergeWriter(typeStore))
             {
                 var left  = new DiffDictionary {
                     dict1 = new Dictionary<string, string>{{"key1", "A"}},  // not equal
@@ -185,11 +185,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
 ";
                 AreEqual(expectedDiff, diffText);
                 
-                var patch   = jsonDiff.CreateMergePatch(diff);
+                var patch   = mergeWriter.WriteMergePatch(diff);
                 var expected= "{'dict1':{'key1':'B'},'dict4':null,'dict5':{'key5':'E'}}".Replace('\'', '\"');
                 AreEqual(expected, patch.ToString());
                 AssertMergePatch(left, right, patch, mapper);
-                AssertJsonDiffAlloc(diff, jsonDiff);
+                AssertMergePatchAlloc(diff, mergeWriter);
             }
         }
         
@@ -204,7 +204,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             using (var typeStore        = new TypeStore()) 
             using (var mapper           = new ObjectMapper(typeStore))
             using (var differ           = new ObjectDiffer(typeStore))
-            using (var jsonDiff         = new JsonDiff(typeStore))
+            using (var mergeWriter      = new JsonMergeWriter(typeStore))
             {
                 var left  = new DiffEntityInt { id = 1, val = 10, };
                 var right = new DiffEntityInt { id = 1, val = 11, };
@@ -216,11 +216,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
 ";
                 AreEqual(expectedDiff, diffText);
                 
-                var patch   = jsonDiff.CreateEntityMergePatch(diff, left);
+                var patch   = mergeWriter.WriteEntityMergePatch(diff, left);
                 var expected= "{'id':1,'val':11}".Replace('\'', '\"');
                 AreEqual(expected, patch.ToString());
                 AssertMergePatch(left, right, patch, mapper);
-                AssertJsonDiffAlloc(diff, jsonDiff);
+                AssertMergePatchAlloc(diff, mergeWriter);
             }
         }
         
@@ -235,7 +235,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             using (var typeStore        = new TypeStore()) 
             using (var mapper           = new ObjectMapper(typeStore))
             using (var differ           = new ObjectDiffer(typeStore))
-            using (var jsonDiff         = new JsonDiff(typeStore))
+            using (var mergeWriter      = new JsonMergeWriter(typeStore))
             {
                 var left  = new DiffEntityString { strId = "A", val = 10, };
                 var right = new DiffEntityString { strId = "A", val = 11, };
@@ -247,11 +247,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
 ";
                 AreEqual(expectedDiff, diffText);
                 
-                var patch   = jsonDiff.CreateEntityMergePatch(diff, left);
+                var patch   = mergeWriter.WriteEntityMergePatch(diff, left);
                 var expected= "{'strId':'A','val':11}".Replace('\'', '\"');
                 AreEqual(expected, patch.ToString());
                 AssertMergePatch(left, right, patch, mapper);
-                AssertJsonDiffAlloc(diff, jsonDiff);
+                AssertMergePatchAlloc(diff, mergeWriter);
             }
         }
         
@@ -268,9 +268,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             AreEqual(expectedJson, mergeJson);
         }
         
-        private static void AssertJsonDiffAlloc(DiffNode diff, JsonDiff jsonDiff) {
+        private static void AssertMergePatchAlloc(DiffNode diff, JsonMergeWriter mergeWriter) {
             var start = GC.GetAllocatedBytesForCurrentThread();
-            jsonDiff.CreateMergePatchBytes(diff);
+            mergeWriter.WriteMergePatchBytes(diff);
             var alloc = GC.GetAllocatedBytesForCurrentThread() - start;
             AreEqual(0, alloc);
         }
