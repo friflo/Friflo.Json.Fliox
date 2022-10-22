@@ -71,7 +71,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
 
         public   virtual  void      MemberObject    (Accessor accessor, object value, PathNode<MemberValue> node) => throw new Invalid("MemberObject() is intended only for classes");
         
-        internal virtual  void      WriteEntityKey  (ref Writer writer, object obj)                         => throw new Invalid("not implemented");
+        internal virtual  void      WriteEntityKey  (ref Writer writer, object obj, ref bool firstMember)   => throw new Invalid("not implemented");
         
         public   abstract void      WriteVar        (ref Writer writer, in Var slot);
         public   abstract Var       ReadVar         (ref Reader reader, in Var slot, out bool success);

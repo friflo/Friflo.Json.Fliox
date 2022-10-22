@@ -52,10 +52,11 @@ namespace Friflo.Json.Fliox.Mapper.Diff
         public JsonValue WriteEntityMergePatch<T> (DiffNode diffNode, T entity) where T : class {
             Init();
             // TypeMapper could be passed as parameter to avoid lookup
-            var mapper = writer.typeCache.GetTypeMapper(typeof(T));
-            mapper.WriteEntityKey(ref writer, entity);
+            var  mapper         = writer.typeCache.GetTypeMapper(typeof(T));
+            bool firstMember    = true;
+            mapper.WriteEntityKey(ref writer, entity, ref firstMember);
             
-            Traverse(ref writer, diffNode, false);
+            Traverse(ref writer, diffNode, firstMember);
             
             return new JsonValue(writer.bytes.AsArray());
         }
