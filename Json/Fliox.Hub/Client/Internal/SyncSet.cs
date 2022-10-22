@@ -185,6 +185,9 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             var diff    = patcher.differ.GetDiff(patchSource, entity, DiffKind.DiffElements);
             if (diff == null)
                 return;
+            var jsonDiff    = set.intern.store._intern.JsonDiff();
+            var mergePatch  = jsonDiff.CreateEntityMergePatch(diff, entity);
+            
             var patches     = detectPatchesTask.entityPatches;
             var patchList   = patcher.CreatePatches(diff);
             var id          = peer.id;

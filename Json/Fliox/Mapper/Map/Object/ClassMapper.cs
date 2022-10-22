@@ -223,6 +223,16 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object
             writer.DecLevel(startLevel);
         }
         
+        internal override void WriteEntityKey(ref Writer writer, object obj) {
+            var keyField        = propFields.keyField;
+            if (keyField == null) throw new InvalidOperationException($"missing [Key] field in Type {typeof(T).Name}");
+            var elemVar         = keyField.member.GetVar(obj);
+            bool firstMember    = true;
+            writer.WriteFieldKey(keyField, ref firstMember);
+            keyField.fieldType.WriteVar(ref writer, elemVar);
+            writer.FlushFilledBuffer();
+        }
+        
         internal override void WriteObject(ref Writer writer, object slot, ref bool firstMember)
         {
             object objRef = slot; // box in case of a struct. This enables FieldInfo.GetValue() / SetValue() operating on struct also.

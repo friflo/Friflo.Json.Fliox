@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using Friflo.Json.Fliox;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Mapper.Diff;
@@ -72,12 +73,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
 "; 
                 AreEqual(expectedDiff, diffText);
                 
-                var json    = jsonDiff.CreateJsonDiff(diff);
+                var patch    = jsonDiff.CreateMergePatch(diff);
                 var expectedJson =
                 "{'child1':{'intVal1':1},'child2':{'intVal2':2},'child5':null,'child6':{'intVal1':0,'intVal2':0}}".Replace('\'', '\"'); 
-                AreEqual(expectedJson, json.AsString());
+                AreEqual(expectedJson, patch.AsString());
                 
-                MergeDiff(left, right, differ, mapper, jsonDiff);
+                AssertMergePatch(left, right, patch, mapper);
                 
                 var start = GC.GetAllocatedBytesForCurrentThread();
                 for (int n = 0; n < 10; n++) {
@@ -122,7 +123,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                     array5 = new [] {33}
                 };
                 
-                var diff            = MergeDiff(left, right, differ, mapper, jsonDiff);
+                var diff            = differ.GetDiff(left, right, DiffKind.DiffArrays);
                 var diffText        = diff.TextIndent(20);
                 var expectedDiff    = @"
 /                   {DiffArray} != {DiffArray}
@@ -133,10 +134,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
 ";
                 AreEqual(expectedDiff, diffText);
                 
-                var patch   = jsonDiff.CreateJsonDiff(diff);
+                var patch   = jsonDiff.CreateMergePatch(diff);
+                
                 var expected= "{'array1':[1,3],'array4':null,'array5':[33]}".Replace('\'', '\"');
                 AreEqual(expected, patch.ToString());
-                
+                AssertMergePatch(left, right, patch, mapper);
                 AssertJsonDiffAlloc(diff, jsonDiff);
             }
         }
@@ -172,7 +174,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                     dict5 = new Dictionary<string, string>{{"key5", "E"}},
                 };
                 
-                var diff            = MergeDiff(left, right, differ, mapper, jsonDiff);
+                var diff            = differ.GetDiff(left, right, DiffKind.DiffArrays);
                 var diffText        = diff.TextIndent(20);
                 var expectedDiff    = @"
 /                   {DiffDictionary} != {DiffDictionary}
@@ -183,34 +185,92 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
 ";
                 AreEqual(expectedDiff, diffText);
                 
-                var patch   = jsonDiff.CreateJsonDiff(diff);
+                var patch   = jsonDiff.CreateMergePatch(diff);
                 var expected= "{'dict1':{'key1':'B'},'dict4':null,'dict5':{'key5':'E'}}".Replace('\'', '\"');
                 AreEqual(expected, patch.ToString());
-                
+                AssertMergePatch(left, right, patch, mapper);
                 AssertJsonDiffAlloc(diff, jsonDiff);
             }
         }
         
-        private static DiffNode MergeDiff<T>(T left, T right, ObjectDiffer differ, ObjectMapper mapper, JsonDiff jsonDiff) {
-            // create JSON diff from DiffNode
-            var diff            = differ.GetDiff(left, right, DiffKind.DiffArrays);
-            var patch           = jsonDiff.CreateJsonDiff(diff);
+        class DiffEntityInt
+        {
+            public int  id  { get; set; }
+            public int  val { get; set; }
+        }
+        
+        [Test]
+        public void TestDiffEntityInt() {
+            using (var typeStore        = new TypeStore()) 
+            using (var mapper           = new ObjectMapper(typeStore))
+            using (var differ           = new ObjectDiffer(typeStore))
+            using (var jsonDiff         = new JsonDiff(typeStore))
+            {
+                var left  = new DiffEntityInt { id = 1, val = 10, };
+                var right = new DiffEntityInt { id = 1, val = 11, };
+                var diff            = differ.GetDiff(left, right, DiffKind.DiffArrays);
+                var diffText        = diff.TextIndent(20);
+                var expectedDiff    = @"
+/                   {DiffEntityInt} != {DiffEntityInt}
+/val                10 != 11
+";
+                AreEqual(expectedDiff, diffText);
+                
+                var patch   = jsonDiff.CreateEntityMergePatch(diff, left);
+                var expected= "{'id':1,'val':11}".Replace('\'', '\"');
+                AreEqual(expected, patch.ToString());
+                AssertMergePatch(left, right, patch, mapper);
+                AssertJsonDiffAlloc(diff, jsonDiff);
+            }
+        }
+        
+        class DiffEntityString
+        {
+            [Key]   public string   strId   { get; set; }
+                    public int      val     { get; set; }
+        }
+        
+        [Test]
+        public void TestDiffEntityString() {
+            using (var typeStore        = new TypeStore()) 
+            using (var mapper           = new ObjectMapper(typeStore))
+            using (var differ           = new ObjectDiffer(typeStore))
+            using (var jsonDiff         = new JsonDiff(typeStore))
+            {
+                var left  = new DiffEntityString { strId = "A", val = 10, };
+                var right = new DiffEntityString { strId = "A", val = 11, };
+                var diff            = differ.GetDiff(left, right, DiffKind.DiffArrays);
+                var diffText        = diff.TextIndent(20);
+                var expectedDiff    = @"
+/                   {DiffEntityString} != {DiffEntityString}
+/val                10 != 11
+";
+                AreEqual(expectedDiff, diffText);
+                
+                var patch   = jsonDiff.CreateEntityMergePatch(diff, left);
+                var expected= "{'strId':'A','val':11}".Replace('\'', '\"');
+                AreEqual(expected, patch.ToString());
+                AssertMergePatch(left, right, patch, mapper);
+                AssertJsonDiffAlloc(diff, jsonDiff);
+            }
+        }
+        
+        private static void AssertMergePatch<T>(T left, T right, JsonValue patch, ObjectMapper mapper) {
             // create a copy of left to leave original instance unchanged
-            var leftJson        = mapper.Write(left);       // for testing only 
-            var leftCopy        = mapper.Read<T>(leftJson); // for testing only
+            var leftJson        = mapper.Write(left); 
+            var leftCopy        = mapper.Read<T>(leftJson);
             // merge the JSON diff to the left copy
             var merge           = mapper.ReadTo(patch, leftCopy);
             // create JSON of merge and expected result to assert equality
-            var mergeJson       = mapper.Write(merge);      // for testing only
-            var expectedJson    = mapper.Write(right);      // for testing only
+            var mergeJson       = mapper.Write(merge);
+            var expectedJson    = mapper.Write(right);
             
             AreEqual(expectedJson, mergeJson);
-            return diff;
         }
         
         private static void AssertJsonDiffAlloc(DiffNode diff, JsonDiff jsonDiff) {
             var start = GC.GetAllocatedBytesForCurrentThread();
-            jsonDiff.CreateJsonDiffBytes(diff);
+            jsonDiff.CreateMergePatchBytes(diff);
             var alloc = GC.GetAllocatedBytesForCurrentThread() - start;
             AreEqual(0, alloc);
         }

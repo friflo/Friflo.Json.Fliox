@@ -286,7 +286,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             out JsonValue       patch)  // the merge patch - when merging to left the result is right
         {
             var diff    = differ.GetDiff(left, right, DiffKind.DiffArrays);
-            patch       = jsonDiff.CreateJsonDiff(diff);
+            patch       = jsonDiff.CreateMergePatch(diff);
 
             writer.Pretty           = true;
             writer.WriteNullMembers = writeNullMembers;

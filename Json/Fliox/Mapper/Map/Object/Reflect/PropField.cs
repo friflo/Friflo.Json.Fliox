@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using Friflo.Json.Burst;
-using Friflo.Json.Fliox.Mapper.Utils;
 
 namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
 {
@@ -46,7 +45,6 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
         public   readonly   int             objIndex;
         public   readonly   bool            required;
         public   readonly   string          docs;
-        public   readonly   bool            isKey;
         public   readonly   string          relation;
         internal            Bytes           nameBytes;          // don't mutate
         public              Bytes           firstMember;        // don't mutate
@@ -54,7 +52,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
         //
         internal readonly   FieldInfo                           field;
         internal readonly   PropertyInfo                        property;
-        private  readonly   IEnumerable<CustomAttributeData>    customAttributes;
+        internal readonly   IEnumerable<CustomAttributeData>    customAttributes;
     //  private  readonly   MethodInfo                          getMethod;
     //  private  readonly   Func<object, object>                getLambda;
     //  private  readonly   Delegate                            getDelegate;
@@ -90,7 +88,6 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
                 setLambda           = setLambdaExp.Compile();
             } */
             this.member     = member;
-            isKey           = AttributeUtils.IsKey(customAttributes);
             this.primIndex  = primIndex;
             this.objIndex   = objIndex;
             this.required   = required;

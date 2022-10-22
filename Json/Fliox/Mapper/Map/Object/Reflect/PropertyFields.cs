@@ -18,6 +18,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
         private  readonly   string                          typeName;
         
         public   abstract   PropField                       GetPropField (string fieldName);
+        internal abstract   PropField                       KeyField { get; }
         
         protected PropertyFields(FieldQuery query) {
             typeName        = query.type. ToString();
@@ -38,10 +39,12 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
         public   readonly   PropField<T> []                     typedFields;
         private  readonly   Dictionary <string, PropField<T>>   strMap      = new Dictionary <string, PropField<T>>(13);
         private  readonly   HashMapOpen<Bytes,  PropField<T>>   fieldMap;
+        internal readonly   PropField<T>                        keyField;
         
         private  readonly   Bytes                               removedKey;
         
         public   override   PropField                           GetPropField (string fieldName) => GetField(fieldName);
+        internal override   PropField                           KeyField => keyField;
         
         public PropertyFields (FieldQuery<T> query)
             : base (query)
@@ -61,6 +64,11 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
                 strMap.Add(field.name, field);
                 fieldMap.Put(ref field.nameBytes, field);
                 names32[n].FromBytes(ref field.nameBytes);
+
+                bool isKey = AttributeUtils.IsKey(field.customAttributes);
+                if (isKey || field.name == "id") {
+                    keyField = field;
+                }
             }
             fieldList. Clear();
         }

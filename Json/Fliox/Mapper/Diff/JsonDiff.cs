@@ -33,20 +33,34 @@ namespace Friflo.Json.Fliox.Mapper.Diff
             writer.writeNullMembers = true;
         }
         
-        public JsonValue CreateJsonDiff (DiffNode diffNode) {
+        public JsonValue CreateMergePatch (DiffNode diffNode) {
             Init();
-            Traverse(ref writer, diffNode);
+            
+            Traverse(ref writer, diffNode, true);
+            
             return new JsonValue(writer.bytes.AsArray());
         }
         
-        public Bytes CreateJsonDiffBytes (DiffNode diffNode) {
+        public Bytes CreateMergePatchBytes (DiffNode diffNode) {
             Init();
-            Traverse(ref writer, diffNode);
+            
+            Traverse(ref writer, diffNode, true);
+            
             return writer.bytes;
         }
         
-        private static void Traverse(ref Writer writer, DiffNode diffNode) {
-            bool    firstMember = true;
+        public JsonValue CreateEntityMergePatch<T> (DiffNode diffNode, T entity) where T : class {
+            Init();
+            // TypeMapper could be passed as parameter to avoid lookup
+            var mapper = writer.typeCache.GetTypeMapper(typeof(T));
+            mapper.WriteEntityKey(ref writer, entity);
+            
+            Traverse(ref writer, diffNode, false);
+            
+            return new JsonValue(writer.bytes.AsArray());
+        }
+        
+        private static void Traverse(ref Writer writer, DiffNode diffNode, bool firstMember) {
             int     pairCount   = 0;
             foreach (var child in diffNode.children) {
                 var key         = child.NodeKey;
@@ -68,7 +82,7 @@ namespace Friflo.Json.Fliox.Mapper.Diff
                         case None:
                             pairCount++;
                             writer.WriteFieldKey (field, ref firstMember);
-                            Traverse(ref writer, child);
+                            Traverse(ref writer, child, true);
                             continue;
                     }
                     continue;
@@ -107,7 +121,7 @@ namespace Friflo.Json.Fliox.Mapper.Diff
                     firstMember     = false;
                     mapper          = child.NodeMapper;
                     mapper.WriteKey (ref writer, key, pairCount++);
-                    Traverse(ref writer, child);
+                    Traverse(ref writer, child, true);
                     return;
             }
         } 

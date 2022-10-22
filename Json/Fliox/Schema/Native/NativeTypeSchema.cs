@@ -125,7 +125,7 @@ namespace Friflo.Json.Fliox.Schema.Native
                             }
                             var relation    = propField.relation;
                             var required    = propField.required || !isNullable;
-                            var isKey       = propField.isKey;
+                            var isKey       = propFields.KeyField == propField;
                             if (isKey) {
                                 typeDef.keyField = propField.jsonName;
                             }
