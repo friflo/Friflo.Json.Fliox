@@ -2,8 +2,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
+using Friflo.Json.Fliox.Hub.Client.Internal;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Mapper;
+using Friflo.Json.Fliox.Transform;
 using Friflo.Json.Tests.Common.UnitTest.Fliox.Client;
 using Friflo.Json.Tests.Unity.Utils;
 using NUnit.Framework;
@@ -135,6 +138,41 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.TestLinq
                 foreach (var order in orderQuery) {
                     IsTrue(order == orders[n++]);
                 }
+            }
+        }
+        
+        class TestChild
+        {
+            public int x;
+            public int y;
+        }
+        
+        class TestClass
+        {
+            public int a;
+            public int b;
+            public TestChild child;
+        }
+        
+        public class TestProjection<T>
+        {
+            void Patch(Expression<Func<T, object>> member) {
+                /* var path = new string[member.Length];
+                for (int n = 0; n < member.Length; n++) {
+                    path[n] = Operation.PathFromLambda(member[n], ClientStatic.RefQueryPath);
+                }*/
+            }
+            
+            [Test]
+            public static void PatchTest() {
+                
+                var test = new TestProjection<TestClass>();
+                test.Patch(order => new { order.a, order.b, order.child }); 
+            }
+            
+            public static void SuppressCompilerWarnings() {
+                var child = new TestChild { x = 1, y = 2 };
+                var test  = new TestClass { a = 1, b = 2, child = null };
             }
         }
     }
