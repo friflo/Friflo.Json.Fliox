@@ -27,22 +27,22 @@ namespace Friflo.Json.Fliox.Mapper.Diff
             writer.Dispose();
         }
         
+        private void Init() {
+            writer.bytes.Clear();
+            writer.level            = 0;
+            writer.writeNullMembers = true;
+        }
+        
         public JsonValue CreateJsonDiff (DiffNode diffNode) {
-            CreateJsonDiffInternal(diffNode);
+            Init();
+            Traverse(ref writer, diffNode);
             return new JsonValue(writer.bytes.AsArray());
         }
         
         public Bytes CreateJsonDiffBytes (DiffNode diffNode) {
-            CreateJsonDiffInternal(diffNode);
-            return writer.bytes;
-        }
-        
-        private void CreateJsonDiffInternal (DiffNode diffNode) {
-            writer.bytes.Clear();
-            writer.level            = 0;
-            writer.writeNullMembers = true;
-
+            Init();
             Traverse(ref writer, diffNode);
+            return writer.bytes;
         }
         
         private static void Traverse(ref Writer writer, DiffNode diffNode) {
