@@ -325,21 +325,21 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
 
         /// <summary>
         /// In case of a <see cref="TaskErrorResult"/> add entity errors to <see cref="SyncSet.errorsPatch"/> for all
-        /// <see cref="DetectPatchesTask{TKey,T}.entityPatches"/> to enable setting <see cref="DetectPatchesTask"/> to
+        /// <see cref="DetectPatchesTask{TKey,T}.Patches"/> to enable setting <see cref="DetectPatchesTask"/> to
         /// error state via <see cref="DetectPatchesTask{TKey,T}.SetResult"/>.
         /// </summary> 
         internal override void PatchEntitiesResult(MergeEntities task, SyncTaskResult result) {
             // task is a DetectPatchesTask<T>
             var detectPatches   = task.syncTask as DetectPatchesTask<TKey,T>;
             // ReSharper disable once PossibleNullReferenceException
-            var patches         = detectPatches.entityPatches;
+            var patches         = detectPatches.patches;
             if (result is TaskErrorResult taskError)
             {
                 detectPatches. state.SetError(new TaskErrorInfo(taskError));
                 if (errorsPatch == NoErrors) {
                     errorsPatch = new Dictionary<JsonKey, EntityError>(patches.Count, JsonKey.Equality);
                 }
-                foreach (var patch in detectPatches.Patches) {
+                foreach (var patch in patches) {
                     var id      = KeyConvert.KeyToId(patch.Key); 
                     var error   = new EntityError(EntityErrorType.PatchError, set.name, id, taskError.message){
                         taskErrorType   = taskError.type,
@@ -349,8 +349,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 }
             } else {
                 // var patchResult = (PatchEntitiesResult)result;
-                var entityPatches = detectPatches.Patches;
-                foreach (var entityPatch in entityPatches) {
+                foreach (var entityPatch in patches) {
                     var key     = entityPatch.Key;
                     var peer    = set.GetOrCreatePeerByKey(key, default);
                     var  nextPatchSource = peer.NextPatchSource;

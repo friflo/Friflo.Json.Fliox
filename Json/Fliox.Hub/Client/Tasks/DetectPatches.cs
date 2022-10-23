@@ -23,8 +23,7 @@ namespace Friflo.Json.Fliox.Hub.Client
     {
         public              IReadOnlyList<EntityPatchInfo<TKey,T>>   Patches     => patches;
         [DebuggerBrowsable(Never)]
-        private  readonly   List<EntityPatchInfo<TKey,T>>       patches;
-        internal readonly   List<JsonValue>                     entityPatches;
+        internal readonly   List<EntityPatchInfo<TKey,T>>       patches;
         private  readonly   SyncSet<TKey,T>                     syncSet;
 
         [DebuggerBrowsable(Never)]
@@ -41,7 +40,6 @@ namespace Friflo.Json.Fliox.Hub.Client
         internal DetectPatchesTask(SyncSet<TKey,T> syncSet) {
             this.syncSet    = syncSet;
             patches         = new List<EntityPatchInfo<TKey,T>>();
-            entityPatches   = new List<JsonValue>();
         }
         
         public override IReadOnlyList<EntityPatchInfo> GetPatches() {

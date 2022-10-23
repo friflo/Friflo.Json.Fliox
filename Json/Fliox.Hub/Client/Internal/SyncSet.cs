@@ -175,9 +175,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             var jsonDiff    = set.intern.store._intern.JsonMergeWriter();
             var mergePatch  = jsonDiff.WriteEntityMergePatch(diff, entity);
             
-            var patches     = detectPatchesTask.entityPatches;
             SetNextPatchSource(peer, mapper); // todo next patch source need to be set on Synchronize()
-            patches.Add(mergePatch);
             
             detectPatchesTask.AddPatch(mergePatch, key, entity);
             // tracer.Trace(entity);
@@ -311,12 +309,14 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         }
         
         internal MergeEntities MergeEntities(DetectPatchesTask<TKey,T> detectPatches) {
-            var patches = detectPatches.entityPatches;
-            if (detectPatches.entityPatches.Count == 0) {
+            var patches = detectPatches.Patches;
+            if (patches.Count == 0) {
                 detectPatches.state.Executed = true;
             }
-            // todo CHECK_MERGE - why is list copy required
-            var list = new List<JsonValue>(patches);
+            var list = new List<JsonValue>(patches.Count);
+            foreach (var patch in patches) {
+                list.Add(patch.entityPatch);
+            }
             return new MergeEntities {
                 container   = set.name,
                 keyName     = SyncKeyName(set.GetKeyName()),
