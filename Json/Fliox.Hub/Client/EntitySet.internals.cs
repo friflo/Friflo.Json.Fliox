@@ -274,15 +274,11 @@ namespace Friflo.Json.Fliox.Hub.Client
             }
         }
         
-        internal void PatchPeerEntities (List<Patch<TKey>> patches) {
-            // todo CHECK_MERGE - use ObjectMapper without using statement
-            using (var pooled = intern.store._intern.pool.ObjectMapper.Get()) {
-                var mapper = pooled.instance;
-                foreach (var patch in patches) {
-                    var peer    = GetOrCreatePeerByKey(patch.key, default);
-                    var entity  = peer.Entity;
-                    mapper.ReadTo(patch.patch, entity);
-                }
+        internal void PatchPeerEntities (List<Patch<TKey>> patches, ObjectMapper mapper) {
+            foreach (var patch in patches) {
+                var peer    = GetOrCreatePeerByKey(patch.key, default);
+                var entity  = peer.Entity;
+                mapper.ReadTo(patch.patch, entity);
             }
         }
 
