@@ -279,8 +279,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             using (var pooled = intern.store._intern.pool.ObjectMapper.Get()) {
                 var mapper = pooled.instance;
                 foreach (var patch in patches) {
-                    var id      = patch.id;
-                    var peer    = GetPeerById(id);
+                    var peer    = GetOrCreatePeerByKey(patch.key, default);
                     var entity  = peer.Entity;
                     mapper.ReadTo(patch.patch, entity);
                 }

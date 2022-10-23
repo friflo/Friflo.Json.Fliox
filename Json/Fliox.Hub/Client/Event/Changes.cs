@@ -160,7 +160,7 @@ namespace Friflo.Json.Fliox.Hub.Client
                 var     entityPatch = entityPatches[n];
                 var     id          = keyBuffer[n];
                 TKey    key         = KeyConvert.IdToKey(id);
-                var     patch       = new Patch<TKey>(key, id, entityPatch);
+                var     patch       = new Patch<TKey>(key, entityPatch);
                 Patches.Add(patch);
             }
             changeInfo.merges += entityPatches.Count;
@@ -208,19 +208,16 @@ namespace Friflo.Json.Fliox.Hub.Client
     }
     
     public readonly struct Patch<TKey> {
-        internal  readonly  JsonKey             id;
-        public    readonly  JsonValue           patch;
-        public    readonly  TKey                key;
-
-        public  override    string              ToString() => key.ToString();
+        public    readonly  JsonValue   patch;
+        public    readonly  TKey        key;
         
-        public Patch(TKey key, in JsonKey id, JsonValue patch) {
-            this.id         = id;
+        public  override    string      ToString() => key.ToString();
+        
+        public Patch(TKey key, JsonValue patch) {
             this.key        = key;
             this.patch      = patch;
         }
     }
-    
 
     internal abstract class ChangeCallback {
         internal abstract void InvokeCallback(Changes entityChanges, EventContext context);
