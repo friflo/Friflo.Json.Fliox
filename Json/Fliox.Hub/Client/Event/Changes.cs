@@ -179,12 +179,12 @@ namespace Friflo.Json.Fliox.Hub.Client
             var client = entitySet.intern.store;
             var localCreates    = rawCreates;
             if ((change & Change.create) != 0 && localCreates.Count > 0) {
-                GetKeysFromEntities (keyBuffer, client, entitySet.GetKeyName(), localCreates);
+                GetKeysFromEntities (keyBuffer, client, keyName, localCreates);
                 entitySet.SyncPeerEntities(keyBuffer, localCreates, objectMapper, applyInfos);
             }
             var localUpserts    = rawUpserts;
             if ((change & Change.upsert) != 0 && localUpserts.Count > 0) {
-                GetKeysFromEntities (keyBuffer, client, entitySet.GetKeyName(), localUpserts);
+                GetKeysFromEntities (keyBuffer, client, keyName, localUpserts);
                 entitySet.SyncPeerEntities(keyBuffer, localUpserts, objectMapper, applyInfos);
             }
             if ((change & Change.merge) != 0) {
