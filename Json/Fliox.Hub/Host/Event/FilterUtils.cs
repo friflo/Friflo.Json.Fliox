@@ -57,11 +57,11 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                     // todo apply filter
                     return task;
                 
-                case TaskType.patch:
-                    if (Array.IndexOf(subscribe.changes, EntityChange.patch) == -1)
+                case TaskType.merge:
+                    if (Array.IndexOf(subscribe.changes, EntityChange.merge) == -1)
                         return null;
-                    var patch = (PatchEntities) task;
-                    if (subscribe.container != patch.container)
+                    var merge = (MergeEntities) task;
+                    if (subscribe.container != merge.container)
                         return null;
                     // todo apply filter
                     return task;

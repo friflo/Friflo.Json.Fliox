@@ -113,8 +113,9 @@ namespace Friflo.Json.Fliox.Hub.Client
             var task    = new DetectPatchesTask<TKey,T>(set);
             var peers   = PeerMap();
             foreach (var peerPair in peers) {
-                Peer<T> peer = peerPair.Value;
-                set.DetectPeerPatches(peer, task, mapper);
+                TKey    key     = peerPair.Key;
+                Peer<T> peer    = peerPair.Value;
+                set.DetectPeerPatches(key, peer, task, mapper);
             }
             if (task.Patches.Count > 0) {
                 allPatches.entitySetPatches.Add(task);
@@ -274,12 +275,15 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
         
         internal void PatchPeerEntities (List<Patch<TKey>> patches) {
-            var objectPatcher   = intern.store._intern.ObjectPatcher();
-            foreach (var patch in patches) {
-                var id      = patch.id;
-                var peer    = GetPeerById(id);
-                var entity  = peer.Entity;
-                objectPatcher.ApplyPatches(entity, patch.patches);
+            // todo CHECK_MERGE - use ObjectMapper without using statement
+            using (var pooled = intern.store._intern.pool.ObjectMapper.Get()) {
+                var mapper = pooled.instance;
+                foreach (var patch in patches) {
+                    var id      = patch.id;
+                    var peer    = GetPeerById(id);
+                    var entity  = peer.Entity;
+                    mapper.ReadTo(patch.patch, entity);
+                }
             }
         }
 

@@ -1,10 +1,10 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
-using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using Friflo.Json.Fliox.Hub.Client.Internal;
+using Friflo.Json.Fliox.Hub.Client.Internal.Key;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using static System.Diagnostics.DebuggerBrowsableState;
@@ -21,10 +21,10 @@ namespace Friflo.Json.Fliox.Hub.Client
     
     public sealed class DetectPatchesTask<TKey,T> : DetectPatchesTask  where T : class
     {
-        public              IReadOnlyList<EntityPatchInfo<T>>   Patches     => patches;
+        public              IReadOnlyList<EntityPatchInfo<TKey,T>>   Patches     => patches;
         [DebuggerBrowsable(Never)]
-        private  readonly   List<EntityPatchInfo<T>>            patches;
-        internal readonly   Dictionary<JsonKey, EntityPatch>    entityPatches;
+        private  readonly   List<EntityPatchInfo<TKey,T>>       patches;
+        internal readonly   List<JsonValue>                     entityPatches;
         private  readonly   SyncSet<TKey,T>                     syncSet;
 
         [DebuggerBrowsable(Never)]
@@ -35,32 +35,34 @@ namespace Friflo.Json.Fliox.Hub.Client
         
         public   override   string                              Container       => syncSet.EntitySet.name;
         internal override   int                                 GetPatchCount() => patches.Count;
+        
+        private static readonly KeyConverter<TKey>  KeyConvert      = KeyConverter.GetConverter<TKey>();
 
         internal DetectPatchesTask(SyncSet<TKey,T> syncSet) {
             this.syncSet    = syncSet;
-            patches         = new List<EntityPatchInfo<T>>();
-            entityPatches   = new Dictionary<JsonKey, EntityPatch>(JsonKey.Equality);
+            patches         = new List<EntityPatchInfo<TKey,T>>();
+            entityPatches   = new List<JsonValue>();
         }
         
         public override IReadOnlyList<EntityPatchInfo> GetPatches() {
             var result = new List<EntityPatchInfo>(patches.Count);
             foreach (var patch in patches) {
-                result.Add(new EntityPatchInfo(patch.entityPatch));
+                var id = KeyConvert.KeyToId(patch.Key);
+                result.Add(new EntityPatchInfo(id, patch.entityPatch));
             }
             return result;
         }
 
-        internal void AddPatch(EntityPatch entityPatch, T entity) {
-            if (entityPatch.id.IsNull())
-                throw new ArgumentException("id must not be null");
-            var patch = new EntityPatchInfo<T>(entityPatch, entity);
+        internal void AddPatch(JsonValue mergePatch, TKey key, T entity) {
+            var patch = new EntityPatchInfo<TKey,T>(mergePatch, key, entity);
             patches.Add(patch);
         }
         
         internal void SetResult() {
             var entityErrorInfo = new TaskErrorInfo();
             foreach (var patch in patches) {
-                if (syncSet.errorsPatch.TryGetValue(patch.entityPatch.id, out EntityError error)) {
+                var id = KeyConvert.KeyToId(patch.Key);
+                if (syncSet.errorsPatch.TryGetValue(id, out EntityError error)) {
                     entityErrorInfo.AddEntityError(error);
                 }
             }
@@ -72,7 +74,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
         
         internal override SyncRequestTask CreateRequestTask(in CreateTaskContext context) {
-            return syncSet.PatchEntities(this);
+            return syncSet.MergeEntities(this);
         }
     }
 }

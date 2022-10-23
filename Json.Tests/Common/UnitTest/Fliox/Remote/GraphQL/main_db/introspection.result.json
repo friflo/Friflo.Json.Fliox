@@ -5539,6 +5539,10 @@
                     "description": "/** filter change events of entity patches. */\n"
                 },
                 {
+                    "name": "merge",
+                    "description": "/** filter change events of deleted entities. */\n"
+                },
+                {
                     "name": "delete",
                     "description": "/** filter change events of deleted entities. */\n"
                 }

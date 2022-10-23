@@ -161,7 +161,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         //   the entity to find changes in referenced entities in <see cref="Ref{TKey,T}"/> fields of the given entity.
         //   In these cases <see cref="Map.RefMapper{TKey,T}.Trace"/> add untracked entities (== have no <see cref="Peer{T}"/>)
         //   which is not already assigned)
-        internal void DetectPeerPatches(Peer<T> peer, DetectPatchesTask<TKey,T> detectPatchesTask, ObjectMapper mapper) {
+        internal void DetectPeerPatches(TKey key, Peer<T> peer, DetectPatchesTask<TKey,T> detectPatchesTask, ObjectMapper mapper) {
             if ((peer.state & (PeerState.Create | PeerState.Upsert)) != 0) {
                 // tracer.Trace(peer.Entity);
                 return;
@@ -170,24 +170,18 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             if (patchSource == null)
                 return;
             var entity  = peer.Entity;
-            var patcher = set.intern.store._intern.ObjectPatcher();
-            var diff    = patcher.differ.GetDiff(patchSource, entity, DiffKind.DiffElements);
+            var differ  = set.intern.store._intern.ObjectDiffer();
+            var diff    = differ.GetDiff(patchSource, entity, DiffKind.DiffArrays);
             if (diff == null)
                 return;
             var jsonDiff    = set.intern.store._intern.JsonMergeWriter();
             var mergePatch  = jsonDiff.WriteEntityMergePatch(diff, entity);
             
             var patches     = detectPatchesTask.entityPatches;
-            var patchList   = patcher.CreatePatches(diff);
-            var id          = peer.id;
             SetNextPatchSource(peer, mapper); // todo next patch source need to be set on Synchronize()
-            if (patches.TryGetValue(id, out var entityPatch)) {
-                entityPatch.patches.AddRange(patchList);
-            } else{
-                entityPatch = new EntityPatch { id = id, patches = patchList };
-                patches[id] = entityPatch;
-            }
-            detectPatchesTask.AddPatch(entityPatch, entity);
+            patches.Add(mergePatch);
+            
+            detectPatchesTask.AddPatch(mergePatch, key, entity);
             // tracer.Trace(entity);
         }
 
@@ -318,14 +312,14 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             };
         }
         
-        internal PatchEntities PatchEntities(DetectPatchesTask<TKey,T> detectPatches) {
+        internal MergeEntities MergeEntities(DetectPatchesTask<TKey,T> detectPatches) {
             var patches = detectPatches.entityPatches;
             if (detectPatches.entityPatches.Count == 0) {
                 detectPatches.state.Executed = true;
             }
-            var list = new List<EntityPatch>(patches.Count);
-            foreach (var pair in patches) { list.Add(pair.Value); }
-            return new PatchEntities {
+            // todo CHECK_MERGE - why is list copy required
+            var list = new List<JsonValue>(patches);
+            return new MergeEntities {
                 container   = set.name,
                 keyName     = SyncKeyName(set.GetKeyName()),
                 patches     = list,

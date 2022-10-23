@@ -15,6 +15,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
         private  readonly   bool                upsert;
         private  readonly   bool                delete;
         private  readonly   bool                patch;
+        private  readonly   bool                merge;
         
         public   override   string  ToString() => $"database: {databaseFilter.dbLabel}, container: {container}";
         
@@ -28,6 +29,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
                     case EntityChange.upsert: upsert = true; break;
                     case EntityChange.delete: delete = true; break;
                     case EntityChange.patch:  patch  = true; break;
+                    case EntityChange.merge:  merge  = true; break;
                 }
             }
         }
@@ -48,6 +50,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
                     case EntityChange.upsert:     authorize &= upsert;    break;
                     case EntityChange.delete:     authorize &= delete;    break;
                     case EntityChange.patch:      authorize &= patch;     break;
+                    case EntityChange.merge:      authorize &= merge;     break;
                 }
             }
             return authorize;

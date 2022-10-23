@@ -2,11 +2,7 @@
     "data": {
         "countArticles": 1,
         "countArticleWithVariable": 2,
-        "readAll": [null,{
-    "id": "article-1",
-    "name": "Changed name",
-    "producer": "producer-canon"
-}],
+        "readAll": [null,{"id":"article-1","name":"Changed name","producer":"producer-canon"}],
         "readArticlesWithSelectAllVar": [{
     "id": "article-2",
     "name": "Smartphone"
@@ -24,11 +20,7 @@
         "id": "article-galaxy"
     }
 ],
-        "queryAll": {"count":6,"items":[{
-    "id": "article-1",
-    "name": "Changed name",
-    "producer": "producer-canon"
-},{
+        "queryAll": {"count":6,"items":[{"id":"article-1","name":"Changed name","producer":"producer-canon"},{
     "id": "article-2",
     "name": "Smartphone"
 },{

@@ -29,7 +29,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
         private readonly        Dictionary<JsonKey, TaskAuthorizer> userRights;
         
         public UserDatabaseAuthenticator(string userDbName) {
-            var changes         = new [] { EntityChange.create, EntityChange.upsert, EntityChange.delete, EntityChange.patch };
+            var changes         = new [] { EntityChange.create, EntityChange.upsert, EntityChange.delete, EntityChange.patch, EntityChange.merge };
             var authUserRights  = new AuthorizeAny(new TaskAuthorizer[] {
                 new AuthorizeSendMessage     (nameof(UserStore.AuthenticateUser), userDbName),
                 new AuthorizeContainer       (nameof(UserStore.permissions), new []{ OperationType.read, OperationType.query },  userDbName),

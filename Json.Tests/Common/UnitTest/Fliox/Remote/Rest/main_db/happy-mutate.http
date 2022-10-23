@@ -26,11 +26,10 @@ Cookie: {{auth}}
 PATCH {{base}}/rest/main_db/articles/article-ipad
 Cookie: {{auth}}
 
-[{
-      "op": "replace",
-      "path": ".name",
-      "value": "patched via REST"
-}]
+{
+    "id": "article-ipad",
+    "name": "patched via REST"
+}
 
 ###
 DELETE {{base}}/rest/main_db/articles/article-1

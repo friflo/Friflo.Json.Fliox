@@ -273,13 +273,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                     AreEqual("iPad Pro", ipad.name);
                     break;
                 case 5:
-                    AreEqual("creates: 0, upserts: 0, deletes: 1, patches: 4, merges: 0", articleChanges.ChangeInfo.ToString());
+                    AreEqual("creates: 0, upserts: 0, deletes: 1, patches: 0, merges: 4", articleChanges.ChangeInfo.ToString());
                     IsTrue(articleChanges.Deletes.Contains("article-delete"));
                     Patch<string> articlePatch = articleChanges.Patches.Find(p => p.key == "article-1");
                     AreEqual("article-1",               articlePatch.ToString());
-                    var articlePatch0 = (PatchReplace)  articlePatch.patches[0];
-                    AreEqual("/name",                   articlePatch0.path);
-                    AreEqual("\"Changed name\"",        articlePatch0.value.AsString());
+                    var articleMerge =   articlePatch.patch;
+                    var expect = @"{""id"":""article-1"",""name"":""Changed name""}";
+                    AreEqual(expect,                    articleMerge.AsString());
+                    // AreEqual("/name",                   articlePatch0.path);
+                    // AreEqual("\"Changed name\"",        articlePatch0.value.AsString());
                     
                     // cached article is updated by ApplyChangesTo()
                     client.articles.Local.TryGetEntity("article-1", out var article);
@@ -295,7 +297,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             
             AreSimilar("creates: 0, upserts: 2, deletes: 0, patches: 0, merges: 0", orderSum);
             AreSimilar("creates: 1, upserts: 6, deletes: 1, patches: 0, merges: 0", customerSum);
-            AreSimilar("creates: 2, upserts: 7, deletes: 5, patches: 4, merges: 0", articleSum);
+            AreSimilar("creates: 2, upserts: 7, deletes: 5, patches: 0, merges: 4", articleSum);
             AreSimilar("creates: 3, upserts: 0, deletes: 3, patches: 0, merges: 0", producerSum);
             AreSimilar("creates: 1, upserts: 0, deletes: 1, patches: 0, merges: 0", employeeSum);
             AreSimilar("creates: 0, upserts: 1, deletes: 0, patches: 0, merges: 0", typesSum);

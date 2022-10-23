@@ -6,11 +6,7 @@ GET {{base}}/rest/main_db/articles/article-1
 # StatusCode:   200
 # Content-Type: application/json
 
-{
-    "id": "article-1",
-    "name": "Changed name",
-    "producer": "producer-canon"
-}
+{"id":"article-1","name":"Changed name","producer":"producer-canon"}
 
 ###
 POST {{base}}/rest/main_db/?message=Message1
@@ -96,11 +92,7 @@ GET {{base}}/rest/main_db/articles
 # Content-Type: application/json
 
 [
-    {
-    "id": "article-1",
-    "name": "Changed name",
-    "producer": "producer-canon"
-},
+    {"id":"article-1","name":"Changed name","producer":"producer-canon"},
     {
     "id": "article-2",
     "name": "Smartphone"
@@ -131,11 +123,7 @@ GET {{base}}/rest/main_db/articles/article-1
 # StatusCode:   200
 # Content-Type: application/json
 
-{
-    "id": "article-1",
-    "name": "Changed name",
-    "producer": "producer-canon"
-}
+{"id":"article-1","name":"Changed name","producer":"producer-canon"}
 
 ###
 GET {{base}}/rest/main_db/articles?filter=o=>o.producer=='producer-samsung'
@@ -161,11 +149,7 @@ GET {{base}}/rest/main_db/articles?ids=article-1,article-2
 # Content-Type: application/json
 
 [
-    {
-    "id": "article-1",
-    "name": "Changed name",
-    "producer": "producer-canon"
-},
+    {"id":"article-1","name":"Changed name","producer":"producer-canon"},
     {
     "id": "article-2",
     "name": "Smartphone"
@@ -178,11 +162,7 @@ POST {{base}}/rest/main_db/articles/bulk-get
 # Content-Type: application/json
 
 [
-    {
-    "id": "article-1",
-    "name": "Changed name",
-    "producer": "producer-canon"
-},
+    {"id":"article-1","name":"Changed name","producer":"producer-canon"},
     {
     "id": "article-2",
     "name": "Smartphone"

@@ -187,8 +187,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                         return;
                     }
                     var keyName     = queryParams["keyName"];
-                    await PatchEntity(context, res.database, res.container, res.id, keyName, patch).ConfigureAwait(false);
-                    // await MergeEntity(context, res.database, res.container, res.id, keyName, patch).ConfigureAwait(false);
+                    await MergeEntity(context, res.database, res.container, res.id, keyName, patch).ConfigureAwait(false);
                     return;
                 }
                 context.WriteError("invalid path/method", route, 400);

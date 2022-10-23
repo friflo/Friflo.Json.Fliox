@@ -79,6 +79,8 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         /// <summary>filter change events of entity patches.</summary>
         patch   = 4,
         /// <summary>filter change events of deleted entities.</summary>
-        delete  = 8
+        merge   = 8,
+        /// <summary>filter change events of deleted entities.</summary>
+        delete  = 16,
     }
 }

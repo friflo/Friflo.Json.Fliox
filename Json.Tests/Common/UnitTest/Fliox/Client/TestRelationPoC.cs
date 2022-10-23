@@ -136,10 +136,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             var articlePatches    = articles.DetectPatches();
             var articlePatchList  = articlePatches.Patches;
             AreEqual(1,             articlePatchList.Count);
-            AreEqual("article-1",   articlePatchList[0].Id.ToString());
+            AreEqual("article-1",   articlePatchList[0].Key);
             AreEqual("article-1",   articlePatchList[0].Entity.id);
-            AreEqual(1,             articlePatchList[0].Members.Count);
-            AreEqual("/name",       articlePatchList[0].Members[0].path);
+            var expect = @"{""id"":""article-1"",""name"":""Changed name""}";
+            AreEqual(expect,        articlePatchList[0].Merge.AsString());
             AreEqual("DetectPatchesTask (container: articles, patches: 1)", articlePatches.ToString());
 
             var storePatches3 =     store.DetectAllPatches();

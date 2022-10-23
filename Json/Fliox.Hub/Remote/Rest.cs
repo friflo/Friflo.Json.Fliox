@@ -353,6 +353,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             context.WriteString("PUT successful", "text/plain", 200);
         }
         
+        // todo CHECK_MERGE - check that id is same as in patch
         private static async Task MergeEntity(RequestContext context, string database, string container, string id, string keyName, JsonValue patch) {
             if (database == context.hub.DatabaseName)
                 database = null;
@@ -372,45 +373,6 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 return;
             }
             var entityErrors = mergeResult.errors;
-            if (entityErrors != null) {
-                var sb = new StringBuilder();
-                FormatEntityErrors (entityErrors, sb);
-                context.WriteError("PATCH errors", sb.ToString(), 400);
-                return;
-            }
-            context.WriteString("PATCH successful", "text/plain", 200);
-        }
-        
-        private static async Task PatchEntity(RequestContext context, string database, string container, string id, string keyName, JsonValue patch) {
-            if (database == context.hub.DatabaseName)
-                database = null;
-            List<JsonPatch> patches;
-            using (var pooled = context.ObjectMapper.Get()) {
-                var reader  = pooled.instance.reader;
-                patches     = reader.Read<List<JsonPatch>>(patch);
-                if (reader.Error.ErrSet) {
-                    context.WriteError("PATCH error", reader.Error.ToString(), 400);
-                    return;
-                }
-            }
-            var entityId    = new JsonKey(id);
-            keyName         = keyName ?? "id";
-            var entityPatch = new EntityPatch { id = entityId, patches = patches };
-            var task        = new PatchEntities { container = container, keyName = keyName };
-            task.patches.Add(entityPatch);
-            var syncRequest = CreateSyncRequest(context, database, task, out var syncContext);
-            var syncResult  = await context.hub.ExecuteSync(syncRequest, syncContext).ConfigureAwait(false);
-            
-            var restResult  = CreateRestResult(context, syncResult);
-            if (restResult.taskResult == null)
-                return;
-            var patchResult = (PatchEntitiesResult)restResult.taskResult;
-            var resultError = patchResult.Error;
-            if (resultError != null) {
-                context.WriteError("PATCH error", resultError.message, 500);
-                return;
-            }
-            var entityErrors = patchResult.errors;
             if (entityErrors != null) {
                 var sb = new StringBuilder();
                 FormatEntityErrors (entityErrors, sb);

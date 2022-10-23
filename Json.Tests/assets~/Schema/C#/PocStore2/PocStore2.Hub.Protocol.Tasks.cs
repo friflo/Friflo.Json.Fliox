@@ -11,6 +11,7 @@ public enum EntityChange {
     create,
     upsert,
     patch,
+    merge,
     delete,
 }
 

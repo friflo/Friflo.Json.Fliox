@@ -160,6 +160,7 @@ enum class EntityChange {
     create,
     upsert,
     patch,
+    merge,
     delete,
 }
 

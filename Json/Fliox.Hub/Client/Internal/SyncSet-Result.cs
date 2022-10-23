@@ -31,7 +31,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         internal  abstract  void    QueryEntitiesResult     (QueryEntities      task, SyncTaskResult result, ContainerEntities queryEntities);
         internal  abstract  void    AggregateEntitiesResult (AggregateEntities  task, SyncTaskResult result);
         internal  abstract  void    CloseCursorsResult      (CloseCursors       task, SyncTaskResult result);
-        internal  abstract  void    PatchEntitiesResult     (PatchEntities      task, SyncTaskResult result);
+        internal  abstract  void    PatchEntitiesResult     (MergeEntities      task, SyncTaskResult result);
         internal  abstract  void    DeleteEntitiesResult    (DeleteEntities     task, SyncTaskResult result);
         internal  abstract  void    SubscribeChangesResult  (SubscribeChanges   task, SyncTaskResult result);
         
@@ -328,7 +328,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         /// <see cref="DetectPatchesTask{TKey,T}.entityPatches"/> to enable setting <see cref="DetectPatchesTask"/> to
         /// error state via <see cref="DetectPatchesTask{TKey,T}.SetResult"/>.
         /// </summary> 
-        internal override void PatchEntitiesResult(PatchEntities task, SyncTaskResult result) {
+        internal override void PatchEntitiesResult(MergeEntities task, SyncTaskResult result) {
             // task is a DetectPatchesTask<T>
             var detectPatches   = task.syncTask as DetectPatchesTask<TKey,T>;
             // ReSharper disable once PossibleNullReferenceException
@@ -339,9 +339,9 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 if (errorsPatch == NoErrors) {
                     errorsPatch = new Dictionary<JsonKey, EntityError>(patches.Count, JsonKey.Equality);
                 }
-                foreach (var patchPair in patches) {
-                    var id = patchPair.Key;
-                    var error = new EntityError(EntityErrorType.PatchError, set.name, id, taskError.message){
+                foreach (var patch in detectPatches.Patches) {
+                    var id      = KeyConvert.KeyToId(patch.Key); 
+                    var error   = new EntityError(EntityErrorType.PatchError, set.name, id, taskError.message){
                         taskErrorType   = taskError.type,
                         stacktrace      = taskError.stacktrace
                     };
@@ -349,10 +349,10 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 }
             } else {
                 // var patchResult = (PatchEntitiesResult)result;
-                var entityPatches = task.patches;
+                var entityPatches = detectPatches.Patches;
                 foreach (var entityPatch in entityPatches) {
-                    var id      = entityPatch.id;
-                    var peer    = set.GetPeerById(id);
+                    var key     = entityPatch.Key;
+                    var peer    = set.GetOrCreatePeerByKey(key, default);
                     var  nextPatchSource = peer.NextPatchSource;
                     if (nextPatchSource == null)
                         continue;

@@ -239,6 +239,7 @@
                 "create",
                 "upsert",
                 "patch",
+                "merge",
                 "delete"
             ]
         }

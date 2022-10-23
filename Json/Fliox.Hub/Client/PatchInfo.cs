@@ -1,54 +1,42 @@
 // Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
-using System.Collections.Generic;
 using System.Diagnostics;
-using Friflo.Json.Fliox.Hub.Protocol.Tasks;
-using Friflo.Json.Fliox.Transform;
 using static System.Diagnostics.DebuggerBrowsableState;
 
 // ReSharper disable ConvertToAutoProperty
 namespace Friflo.Json.Fliox.Hub.Client
 {
     /// <summary>
-    /// Contain the patches applied to the <see cref="Members"/> of an entity identified by its <see cref="Id"/>
+    /// Contain the <see cref="merge"/> patch applied to an entity identified by its <see cref="id"/>
     /// </summary>
     public readonly struct EntityPatchInfo
     {
-        JsonKey                                         Id          => entityPatch.id;
-        IReadOnlyList<PatchReplace>                     Members     => GetMembers(entityPatch);
+                                    private readonly    JsonKey     id;
+        [DebuggerBrowsable(Never)]  private readonly    JsonValue   merge;
         
-        [DebuggerBrowsable(Never)] private  readonly    EntityPatch entityPatch;
-        
-        internal EntityPatchInfo (EntityPatch entityPatch) {
-            this.entityPatch    = entityPatch;
-        }
-        
-        /// creation of new array is okay, as it is expected to be used mainly for debugging 
-        internal static PatchReplace[]  GetMembers(EntityPatch entityPatch) {
-            var patches = entityPatch.patches;
-            var result = new PatchReplace[patches.Count];
-            for (int n = 0; n < patches.Count; n++) {
-                result[n] = (PatchReplace)patches[n];
-            }
-            return result;
+        internal EntityPatchInfo (JsonKey id, JsonValue merge) {
+            this.id     = id;
+            this.merge  = merge;
         }
     }
 
     /// <summary>
-    /// Contain the patches applied to the <see cref="Members"/> of an <see cref="Entity"/>
+    /// Contain the <see cref="Merge"/> patch patches applied to an <see cref="Entity"/>
     /// </summary>
-    public readonly struct EntityPatchInfo<T> where T : class {
-        public              JsonKey                                 Id      => entityPatch.id;
-        public              IReadOnlyList<PatchReplace>             Members => EntityPatchInfo.GetMembers(entityPatch);
+    public readonly struct EntityPatchInfo<TKey,T> where T : class {
+        public              TKey                                    Key     => key;
+        public              JsonValue                               Merge   => entityPatch;
         public              T                                       Entity  => entity;
         
-        [DebuggerBrowsable(Never)] internal  readonly   EntityPatch entityPatch;
+        [DebuggerBrowsable(Never)] internal  readonly   JsonValue   entityPatch;
+        [DebuggerBrowsable(Never)] private   readonly   TKey        key;
         [DebuggerBrowsable(Never)] private   readonly   T           entity;
-        public    override  string                                  ToString()  => entityPatch.id.AsString();
+        public    override  string                                  ToString()  => key.ToString();
 
-        internal EntityPatchInfo (EntityPatch entityPatch, T entity) {
+        internal EntityPatchInfo (JsonValue entityPatch, TKey key, T entity) {
             this.entityPatch    = entityPatch;
+            this.key            = key;
             this.entity         = entity;
         }
     }

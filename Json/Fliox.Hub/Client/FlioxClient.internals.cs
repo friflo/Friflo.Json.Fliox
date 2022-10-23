@@ -231,11 +231,11 @@ namespace Friflo.Json.Fliox.Hub.Client
                         syncSet             = syncSets[container];
                         CopyEntityErrorsToMap(createResult.errors,  container, ref syncSet.errorsCreate);
                         break;
-                    case TaskType.patch:
-                        var patchResult     = (PatchEntitiesResult)responseTask;
+                    case TaskType.merge:
+                        var patchResult     = (MergeEntitiesResult)responseTask;
                         if (patchResult.errors == null)
                             continue;
-                        container           = ((PatchEntities)task).container;
+                        container           = ((MergeEntities)task).container;
                         syncSet             = syncSets[container];
                         CopyEntityErrorsToMap(patchResult.errors,   container, ref syncSet.errorsPatch);
                         break;
@@ -464,8 +464,8 @@ namespace Friflo.Json.Fliox.Hub.Client
                     syncSet = syncSets[aggregate.container];
                     syncSet.AggregateEntitiesResult(aggregate, result);
                     break;
-                case TaskType.patch:
-                    var patch =             (PatchEntities)     task;
+                case TaskType.merge:
+                    var patch =             (MergeEntities)     task;
                     syncSet = syncSets[patch.container];
                     syncSet.PatchEntitiesResult(patch, result);
                     break;

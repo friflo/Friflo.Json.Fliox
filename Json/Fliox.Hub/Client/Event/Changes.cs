@@ -8,9 +8,7 @@ using System.Text;
 using Friflo.Json.Fliox.Hub.Client.Internal;
 using Friflo.Json.Fliox.Hub.Client.Internal.Key;
 using Friflo.Json.Fliox.Hub.Protocol;
-using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Mapper;
-using Friflo.Json.Fliox.Transform;
 using static System.Diagnostics.DebuggerBrowsableState;
 
 // ReSharper disable once CheckNamespace
@@ -50,7 +48,7 @@ namespace Friflo.Json.Fliox.Hub.Client
 
         internal  abstract  void        Clear       ();
         internal  abstract  void        AddDeletes  (List<JsonKey> ids);
-        internal  abstract  void        AddPatches  (List<EntityPatch> patches);
+        internal  abstract  void        AddPatches  (List<JsonValue> patches, FlioxClient client);
         internal  abstract  void        ApplyChangesToInternal  (EntitySet entitySet);
     }
     
@@ -88,12 +86,14 @@ namespace Friflo.Json.Fliox.Hub.Client
         [DebuggerBrowsable(Never)] private          List<T>         upserts;
         [DebuggerBrowsable(Never)] private readonly ObjectMapper    objectMapper;
         [DebuggerBrowsable(Never)] private readonly List<JsonKey>   keyBuffer;
+        [DebuggerBrowsable(Never)] private readonly string          keyName;
 
         
         private static readonly KeyConverter<TKey>  KeyConvert = KeyConverter.GetConverter<TKey>();
 
         /// <summary> called via <see cref="SubscriptionProcessor.GetChanges"/> </summary>
         internal Changes(EntitySet<TKey, T> entitySet, ObjectMapper mapper, List<JsonKey> keyBuffer) {
+            keyName         = entitySet.GetKeyName();
             Container       = entitySet.name;
             objectMapper    = mapper;
             this.keyBuffer  = keyBuffer;
@@ -154,14 +154,16 @@ namespace Friflo.Json.Fliox.Hub.Client
             changeInfo.deletes += ids.Count;
         }
         
-        internal override void AddPatches(List<EntityPatch> entityPatches) {
-            foreach (var entityPatch in entityPatches) {
-                var     id          = entityPatch.id;
+        internal override void AddPatches(List<JsonValue> entityPatches, FlioxClient client) {
+            GetKeysFromEntities (keyBuffer, client, keyName, entityPatches);
+            for (int n = 0; n < entityPatches.Count; n++) {
+                var     entityPatch = entityPatches[n];
+                var     id          = keyBuffer[n];
                 TKey    key         = KeyConvert.IdToKey(id);
-                var     patch       = new Patch<TKey>(key, id, entityPatch.patches);
+                var     patch       = new Patch<TKey>(key, id, entityPatch);
                 Patches.Add(patch);
             }
-            changeInfo.patches += entityPatches.Count;
+            changeInfo.merges += entityPatches.Count;
         }
         
         internal override void ApplyChangesToInternal  (EntitySet entitySet) {
@@ -185,7 +187,7 @@ namespace Friflo.Json.Fliox.Hub.Client
                 GetKeysFromEntities (keyBuffer, client, entitySet.GetKeyName(), localUpserts);
                 entitySet.SyncPeerEntities(keyBuffer, localUpserts, objectMapper, applyInfos);
             }
-            if ((change & Change.patch) != 0) {
+            if ((change & Change.merge) != 0) {
                 entitySet.PatchPeerEntities(Patches);
             }
             if ((change & Change.delete) != 0) {
@@ -207,15 +209,15 @@ namespace Friflo.Json.Fliox.Hub.Client
     
     public readonly struct Patch<TKey> {
         internal  readonly  JsonKey             id;
-        public    readonly  List<JsonPatch>     patches;
+        public    readonly  JsonValue           patch;
         public    readonly  TKey                key;
 
         public  override    string              ToString() => key.ToString();
         
-        public Patch(TKey key, in JsonKey id, List<JsonPatch> patches) {
+        public Patch(TKey key, in JsonKey id, JsonValue patch) {
             this.id         = id;
             this.key        = key;
-            this.patches    = patches;
+            this.patch      = patch;
         }
     }
     

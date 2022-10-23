@@ -72,7 +72,7 @@ namespace Friflo.Json.Fliox.Hub.Client
                     case TaskType.create:   ProcessCreate (client, (CreateEntities) task);  break;
                     case TaskType.upsert:   ProcessUpsert (client, (UpsertEntities) task);  break;
                     case TaskType.delete:   ProcessDelete (client, (DeleteEntities) task);  break;
-                    case TaskType.patch:    ProcessPatch  (client, (PatchEntities)  task);  break;
+                    case TaskType.merge:    ProcessPatch  (client, (MergeEntities)  task);  break;
                     case TaskType.message:
                     case TaskType.command:  ProcessMessage(        (SyncMessageTask)task);  break;
                 }
@@ -156,7 +156,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             entityChanges.AddDeletes(ids);
         }
         
-        private void ProcessPatch(FlioxClient client, PatchEntities patchEntities) {
+        private void ProcessPatch(FlioxClient client, MergeEntities patchEntities) {
             var patches = patchEntities.patches;
             if (patches.Count == 0)
                 return;
@@ -167,7 +167,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             // --- update changes
             var entityChanges = GetChanges(set);
             AddChanges(entityChanges);
-            entityChanges.AddPatches(patches);
+            entityChanges.AddPatches(patches, client);
         }
         
         private void ProcessMessage(SyncMessageTask task) {

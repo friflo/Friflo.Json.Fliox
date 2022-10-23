@@ -106,10 +106,6 @@ GET {{base}}/rest/main_db/articles?maxCount=1
 # Content-Type: application/json
 
 [
-    {
-    "id": "article-1",
-    "name": "Changed name",
-    "producer": "producer-canon"
-}
+    {"id":"article-1","name":"Changed name","producer":"producer-canon"}
 ]
 

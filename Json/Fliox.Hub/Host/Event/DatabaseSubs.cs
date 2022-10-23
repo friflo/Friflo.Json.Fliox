@@ -127,6 +127,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                     case TaskType.upsert:
                     case TaskType.delete:
                     case TaskType.patch:
+                    case TaskType.merge:
                         foreach (var pair in changeSubs) {
                             ChangeSub changeSub = pair.Value;
                             var taskResult = FilterUtils.FilterChanges(subClient, task, changeSub, jsonEvaluator);

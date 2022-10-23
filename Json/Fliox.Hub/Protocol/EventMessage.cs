@@ -82,10 +82,6 @@ namespace Friflo.Json.Fliox.Hub.Protocol
                         var delete = (DeleteEntities)task;
                         info.changes.deletes += delete.ids.Count;
                         break;
-                    case TaskType.patch:
-                        var patch = (PatchEntities)task;
-                        info.changes.patches += patch.patches.Count;
-                        break;
                     case TaskType.merge:
                         var merge = (MergeEntities)task;
                         info.changes.merges  += merge.patches.Count;

@@ -271,6 +271,7 @@ export type EntityChange =
     | "create"      /** filter change events of created entities. */
     | "upsert"      /** filter change events of upserted entities. */
     | "patch"       /** filter change events of entity patches. */
+    | "merge"       /** filter change events of deleted entities. */
     | "delete"      /** filter change events of deleted entities. */
 ;
 

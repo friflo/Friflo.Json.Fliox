@@ -79,6 +79,7 @@ class EntityChange:::cssEnum {
     create
     upsert
     patch
+    merge
     delete
 }
 
