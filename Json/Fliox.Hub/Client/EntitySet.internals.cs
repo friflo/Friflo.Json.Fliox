@@ -110,7 +110,7 @@ namespace Friflo.Json.Fliox.Hub.Client
 
         internal override void DetectSetPatchesInternal(DetectAllPatches allPatches, ObjectMapper mapper) {
             var set     = GetSyncSet();
-            var task    = new DetectPatchesTask<T>(set);
+            var task    = new DetectPatchesTask<TKey,T>(set);
             var peers   = PeerMap();
             foreach (var peerPair in peers) {
                 Peer<T> peer = peerPair.Value;

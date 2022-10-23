@@ -86,7 +86,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         }
         
         /// In case of a <see cref="TaskErrorResult"/> add entity errors to <see cref="SyncSet.errorsCreate"/> for all
-        /// <see cref="WriteTask{T}.peers"/> to enable setting <see cref="DetectPatchesTask"/> to error state via <see cref="DetectPatchesTask{T}.SetResult"/>. 
+        /// <see cref="WriteTask{T}.peers"/> to enable setting <see cref="DetectPatchesTask"/> to error state via <see cref="DetectPatchesTask{TKey,T}.SetResult"/>. 
         internal override void CreateEntitiesResult(CreateEntities task, SyncTaskResult result, ObjectMapper mapper) {
             var createTask = (CreateTask<T>)task.syncTask;
             CreateUpsertEntitiesResult(task.entityKeys, task.entities, result, createTask, errorsCreate, mapper);
@@ -325,12 +325,12 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
 
         /// <summary>
         /// In case of a <see cref="TaskErrorResult"/> add entity errors to <see cref="SyncSet.errorsPatch"/> for all
-        /// <see cref="DetectPatchesTask{T}.entityPatches"/> to enable setting <see cref="DetectPatchesTask"/> to
-        /// error state via <see cref="DetectPatchesTask{T}.SetResult"/>.
+        /// <see cref="DetectPatchesTask{TKey,T}.entityPatches"/> to enable setting <see cref="DetectPatchesTask"/> to
+        /// error state via <see cref="DetectPatchesTask{TKey,T}.SetResult"/>.
         /// </summary> 
         internal override void PatchEntitiesResult(PatchEntities task, SyncTaskResult result) {
             // task is a DetectPatchesTask<T>
-            var detectPatches   = task.syncTask as DetectPatchesTask<T>;
+            var detectPatches   = task.syncTask as DetectPatchesTask<TKey,T>;
             // ReSharper disable once PossibleNullReferenceException
             var patches         = detectPatches.entityPatches;
             if (result is TaskErrorResult taskError)

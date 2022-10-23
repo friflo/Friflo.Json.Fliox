@@ -21,7 +21,6 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         internal abstract SubscribeChanges  SubscribeChanges(SubscribeChangesTask<T>    sub,    in CreateTaskContext context);
         internal abstract CreateEntities    CreateEntities  (CreateTask<T>              create, in CreateTaskContext context);
         internal abstract UpsertEntities    UpsertEntities  (UpsertTask<T>              upsert, in CreateTaskContext context);
-        internal abstract PatchEntities     PatchEntities   (DetectPatchesTask<T>       detectPatches);
     }
 
     /// Multiple instances of this class can be created when calling <see cref="FlioxClient.SyncTasks"/> without
@@ -153,7 +152,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         
         // --- Patch
         // - detect patches
-        internal void AddDetectPatches(DetectPatchesTask<T> detectPatchesTask) {
+        internal void AddDetectPatches(DetectPatchesTask<TKey,T> detectPatchesTask) {
             tasks.Add(detectPatchesTask);
         }
 
@@ -162,7 +161,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         //   the entity to find changes in referenced entities in <see cref="Ref{TKey,T}"/> fields of the given entity.
         //   In these cases <see cref="Map.RefMapper{TKey,T}.Trace"/> add untracked entities (== have no <see cref="Peer{T}"/>)
         //   which is not already assigned)
-        internal void DetectPeerPatches(Peer<T> peer, DetectPatchesTask<T> detectPatchesTask, ObjectMapper mapper) {
+        internal void DetectPeerPatches(Peer<T> peer, DetectPatchesTask<TKey,T> detectPatchesTask, ObjectMapper mapper) {
             if ((peer.state & (PeerState.Create | PeerState.Upsert)) != 0) {
                 // tracer.Trace(peer.Entity);
                 return;
@@ -319,7 +318,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             };
         }
         
-        internal override PatchEntities PatchEntities(DetectPatchesTask<T> detectPatches) {
+        internal PatchEntities PatchEntities(DetectPatchesTask<TKey,T> detectPatches) {
             var patches = detectPatches.entityPatches;
             if (detectPatches.entityPatches.Count == 0) {
                 detectPatches.state.Executed = true;

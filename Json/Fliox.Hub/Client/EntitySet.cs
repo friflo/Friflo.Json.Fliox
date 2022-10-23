@@ -405,14 +405,14 @@ namespace Friflo.Json.Fliox.Hub.Client
 
     #region - Patch detection
         /// <summary>
-        /// Detect <see cref="DetectPatchesTask{T}.Patches"/> made to all tracked entities.
+        /// Detect <see cref="DetectPatchesTask{TKey,T}.Patches"/> made to all tracked entities.
         /// Detected patches are applied to the container when calling <see cref="FlioxClient.SyncTasks"/>
         /// </summary>
         /// <remarks> Consider using <see cref="DetectPatches(T)"/> or <see cref="DetectPatches(IEnumerable{T})"/>
         /// as this method run detection on all tracked entities. </remarks>
-        public DetectPatchesTask<T> DetectPatches() {
+        public DetectPatchesTask<TKey,T> DetectPatches() {
             var set     = GetSyncSet();
-            var task    = new DetectPatchesTask<T>(set);
+            var task    = new DetectPatchesTask<TKey,T>(set);
             var peers   = PeerMap();
             set.AddDetectPatches(task);
             using (var pooled = intern.store.ObjectMapper.Get()) {
@@ -426,16 +426,16 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
 
         /// <summary>
-        /// Detect <see cref="DetectPatchesTask{T}.Patches"/> made to the passed tracked <paramref name="entity"/>.
+        /// Detect <see cref="DetectPatchesTask{TKey,T}.Patches"/> made to the passed tracked <paramref name="entity"/>.
         /// Detected patches are applied to the container when calling <see cref="FlioxClient.SyncTasks"/>
         /// </summary>
-        public DetectPatchesTask<T> DetectPatches(T entity) {
+        public DetectPatchesTask<TKey,T> DetectPatches(T entity) {
             if (entity == null)                             throw new ArgumentNullException(nameof(entity));
             var key     = Static.EntityKeyTMap.GetKey(entity);
             if (Static.KeyConvert.IsKeyNull(key))                  throw new ArgumentException($"entity key must not be null.");
             if (!TryGetPeerByKey(key, out var peer))        throw new ArgumentException($"entity is not tracked. key: {key}");
             var set     = GetSyncSet();
-            var task    = new DetectPatchesTask<T>(set);
+            var task    = new DetectPatchesTask<TKey,T>(set);
             set.AddDetectPatches(task);
             using (var pooled = intern.store.ObjectMapper.Get()) {
                 set.DetectPeerPatches(peer, task, pooled.instance);
@@ -445,14 +445,14 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
         
         /// <summary>
-        /// Detect <see cref="DetectPatchesTask{T}.Patches"/> made to the passed tracked <paramref name="entities"/>.
+        /// Detect <see cref="DetectPatchesTask{TKey,T}.Patches"/> made to the passed tracked <paramref name="entities"/>.
         /// Detected patches are applied to the container when calling <see cref="FlioxClient.SyncTasks"/>
         /// </summary>
-        public DetectPatchesTask<T> DetectPatches(IEnumerable<T> entities) {
+        public DetectPatchesTask<TKey,T> DetectPatches(IEnumerable<T> entities) {
             if(entities == null)                            throw new ArgumentNullException(nameof(entities));
             int n       = 0;
             var set     = GetSyncSet();
-            var task    = new DetectPatchesTask<T>(set);
+            var task    = new DetectPatchesTask<TKey,T>(set);
             set.AddDetectPatches(task);
             using (var pooled = intern.store.ObjectMapper.Get()) {
                 foreach (var entity in entities) {

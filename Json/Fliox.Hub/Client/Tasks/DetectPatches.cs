@@ -19,13 +19,13 @@ namespace Friflo.Json.Fliox.Hub.Client
         internal abstract   int                             GetPatchCount();
     }
     
-    public sealed class DetectPatchesTask<T> : DetectPatchesTask  where T : class
+    public sealed class DetectPatchesTask<TKey,T> : DetectPatchesTask  where T : class
     {
         public              IReadOnlyList<EntityPatchInfo<T>>   Patches     => patches;
         [DebuggerBrowsable(Never)]
         private  readonly   List<EntityPatchInfo<T>>            patches;
         internal readonly   Dictionary<JsonKey, EntityPatch>    entityPatches;
-        private  readonly   SyncSetBase<T>                      syncSet;
+        private  readonly   SyncSet<TKey,T>                     syncSet;
 
         [DebuggerBrowsable(Never)]
         internal            TaskState                           state;
@@ -36,7 +36,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         public   override   string                              Container       => syncSet.EntitySet.name;
         internal override   int                                 GetPatchCount() => patches.Count;
 
-        internal DetectPatchesTask(SyncSetBase<T> syncSet) {
+        internal DetectPatchesTask(SyncSet<TKey,T> syncSet) {
             this.syncSet    = syncSet;
             patches         = new List<EntityPatchInfo<T>>();
             entityPatches   = new Dictionary<JsonKey, EntityPatch>(JsonKey.Equality);

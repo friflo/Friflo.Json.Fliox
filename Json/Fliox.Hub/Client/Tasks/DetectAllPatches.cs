@@ -31,11 +31,11 @@ namespace Friflo.Json.Fliox.Hub.Client
         internal DetectAllPatches() { }
         
         /// <summary>return type-safe patches of the given <paramref name="entitySet"/></summary>
-        public DetectPatchesTask<T> GetPatches<TKey,T>(EntitySet<TKey,T> entitySet) where T : class {
+        public DetectPatchesTask<TKey,T> GetPatches<TKey,T>(EntitySet<TKey,T> entitySet) where T : class {
             foreach (var detectPatchesTask in entitySetPatches) {
                 if (detectPatchesTask.Container != entitySet.name)
                     continue;
-                return (DetectPatchesTask<T>)detectPatchesTask;
+                return (DetectPatchesTask<TKey,T>)detectPatchesTask;
             }
             return null;
         }
