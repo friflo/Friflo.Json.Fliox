@@ -11,7 +11,6 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     [PolymorphType(typeof(ReadEntitiesResult),      "read")]
     [PolymorphType(typeof(QueryEntitiesResult),     "query")]
     [PolymorphType(typeof(AggregateEntitiesResult), "aggregate")]
-    [PolymorphType(typeof(PatchEntitiesResult),     "patch")]
     [PolymorphType(typeof(MergeEntitiesResult),     "merge")]
     [PolymorphType(typeof(DeleteEntitiesResult),    "delete")]
     [PolymorphType(typeof(SendMessageResult),       "message")]
@@ -40,8 +39,6 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         /// <summary>upsert container entities</summary>
         upsert,
         /// <summary>patch container entities by id</summary>
-        patch,
-        /// <summary>merge container entities by id</summary>
         merge,
         /// <summary>delete container entities by id</summary>
         delete,

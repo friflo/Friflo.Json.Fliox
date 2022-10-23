@@ -43,7 +43,6 @@
                 "read":             { "ref":  "ReadEntities" },
                 "query":            { "ref":  "QueryEntities" },
                 "aggregate":        { "ref":  "AggregateEntities" },
-                "patch":            { "ref":  "PatchEntities" },
                 "merge":            { "ref":  "MergeEntities" },
                 "delete":           { "ref":  "DeleteEntities" },
                 "message":          { "ref":  "SendMessage" },
@@ -121,69 +120,6 @@
                 "count"
             ]
         },
-        "PatchEntities": {
-            "properties": {
-                "info":      { "nullable": true },
-                "container": { "type": "string" },
-                "keyName":   { "type": "string", "nullable": true },
-                "patches":   { "elements": { "ref":  "EntityPatch" } }
-            }
-        },
-        "EntityPatch": {
-            "properties": {
-                "id":      { "type": "string" },
-                "patches": { "elements": { "ref":  "JsonPatch" } }
-            }
-        },
-        "JsonPatch": {
-            "discriminator": "op",
-            "mapping": {
-                "replace": { "ref":  "PatchReplace" },
-                "add":     { "ref":  "PatchAdd" },
-                "remove":  { "ref":  "PatchRemove" },
-                "copy":    { "ref":  "PatchCopy" },
-                "move":    { "ref":  "PatchMove" },
-                "test":    { "ref":  "PatchTest" }
-            },
-            "properties": {
-
-            }
-        },
-        "PatchReplace": {
-            "properties": {
-                "path":  { "type": "string" },
-                "value": {  }
-            }
-        },
-        "PatchAdd": {
-            "properties": {
-                "path":  { "type": "string" },
-                "value": {  }
-            }
-        },
-        "PatchRemove": {
-            "properties": {
-                "path": { "type": "string" }
-            }
-        },
-        "PatchCopy": {
-            "properties": {
-                "path": { "type": "string" },
-                "from": { "type": "string", "nullable": true }
-            }
-        },
-        "PatchMove": {
-            "properties": {
-                "path": { "type": "string" },
-                "from": { "type": "string", "nullable": true }
-            }
-        },
-        "PatchTest": {
-            "properties": {
-                "path":  { "type": "string" },
-                "value": { "nullable": true }
-            }
-        },
         "MergeEntities": {
             "properties": {
                 "info":      { "nullable": true },
@@ -249,7 +185,6 @@
             "enum": [
                 "create",
                 "upsert",
-                "patch",
                 "merge",
                 "delete"
             ]
@@ -297,7 +232,6 @@
                 "read":             { "ref":  "ReadEntitiesResult" },
                 "query":            { "ref":  "QueryEntitiesResult" },
                 "aggregate":        { "ref":  "AggregateEntitiesResult" },
-                "patch":            { "ref":  "PatchEntitiesResult" },
                 "merge":            { "ref":  "MergeEntitiesResult" },
                 "delete":           { "ref":  "DeleteEntitiesResult" },
                 "message":          { "ref":  "SendMessageResult" },
@@ -366,11 +300,6 @@
             "properties": {
                 "container": { "type": "string", "nullable": true },
                 "value":     { "type": "double", "nullable": true }
-            }
-        },
-        "PatchEntitiesResult": {
-            "properties": {
-                "errors": { "elements": { "ref":  "EntityError" }, "nullable": true }
             }
         },
         "MergeEntitiesResult": {

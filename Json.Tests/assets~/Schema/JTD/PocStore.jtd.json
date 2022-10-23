@@ -238,7 +238,6 @@
             "enum": [
                 "create",
                 "upsert",
-                "patch",
                 "merge",
                 "delete"
             ]

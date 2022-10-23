@@ -258,7 +258,6 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                     case TaskType.create:
                     case TaskType.upsert:
                     case TaskType.delete:
-                    case TaskType.patch:
                     case TaskType.merge:
                         return true;
                 }

@@ -2,8 +2,6 @@
 import { Guid }             from "./Standard";
 import { References }       from "./Friflo.Json.Fliox.Hub.Protocol.Models";
 import { int32 }            from "./Standard";
-import { JsonPatch }        from "./Friflo.Json.Fliox.Transform";
-import { JsonPatch_Union }  from "./Friflo.Json.Fliox.Transform";
 import { EntityError }      from "./Friflo.Json.Fliox.Hub.Protocol.Models";
 import { ReferencesResult } from "./Friflo.Json.Fliox.Hub.Protocol.Models";
 import { double }           from "./Standard";
@@ -19,7 +17,6 @@ export type SyncRequestTask_Union =
     | ReadEntities
     | QueryEntities
     | AggregateEntities
-    | PatchEntities
     | MergeEntities
     | DeleteEntities
     | SendMessage
@@ -38,7 +35,6 @@ export abstract class SyncRequestTask {
         | "read"
         | "query"
         | "aggregate"
-        | "patch"
         | "merge"
         | "delete"
         | "message"
@@ -153,28 +149,6 @@ export type AggregateType =
     | "count"      /** count entities */
 ;
 
-/**
- * Patch entities by id in the given **container**  
- * Each **EntityPatch** in **patches** contains a set of **patches** for each entity.
- */
-export class PatchEntities extends SyncRequestTask {
-    /** task type */
-    task       : "patch";
-    /** container name */
-    container  : string;
-    /** name of the primary key property of the entity **patches** */
-    keyName?   : string | null;
-    /** list of patches for each entity */
-    patches    : EntityPatch[];
-}
-
-/** Contains the **patches** applied to an entity. Used by **PatchEntities** */
-export class EntityPatch {
-    id       : string;
-    /** list of patches applied to an entity */
-    patches  : JsonPatch_Union[];
-}
-
 /** Merge entities by id in the given **container**   */
 export class MergeEntities extends SyncRequestTask {
     /** task type */
@@ -270,8 +244,7 @@ export class SubscribeChanges extends SyncRequestTask {
 export type EntityChange =
     | "create"      /** filter change events of created entities. */
     | "upsert"      /** filter change events of upserted entities. */
-    | "patch"       /** filter change events of entity patches. */
-    | "merge"       /** filter change events of deleted entities. */
+    | "merge"       /** filter change events of entity patches. */
     | "delete"      /** filter change events of deleted entities. */
 ;
 
@@ -302,7 +275,6 @@ export type SyncTaskResult_Union =
     | ReadEntitiesResult
     | QueryEntitiesResult
     | AggregateEntitiesResult
-    | PatchEntitiesResult
     | MergeEntitiesResult
     | DeleteEntitiesResult
     | SendMessageResult
@@ -322,7 +294,6 @@ export abstract class SyncTaskResult {
         | "read"
         | "query"
         | "aggregate"
-        | "patch"
         | "merge"
         | "delete"
         | "message"
@@ -378,14 +349,6 @@ export class AggregateEntitiesResult extends SyncTaskResult {
     /** container name - not utilized by Protocol */
     container? : string | null;
     value?     : double | null;
-}
-
-/** Result of a **PatchEntities** task */
-export class PatchEntitiesResult extends SyncTaskResult {
-    /** task result type */
-    task    : "patch";
-    /** list of entity errors failed to patch */
-    errors? : EntityError[] | null;
 }
 
 /** Result of a **MergeEntities** task */

@@ -390,7 +390,6 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                     case TaskType.aggregate:        info.aggregate++;           break;
                     case TaskType.create:           info.create++;              break;
                     case TaskType.upsert:           info.upsert++;              break;
-                    case TaskType.patch:            info.patch++;               break;
                     case TaskType.merge:            info.merge++;               break;
                     case TaskType.delete:           info.delete++;              break;
                     case TaskType.closeCursors:     info.closeCursors++;        break;
@@ -405,7 +404,6 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 info.closeCursors       +
                 info.create             +
                 info.upsert             +
-                info.patch              +
                 info.merge              +
                 info.delete             +
                 info.subscribeChanges   +

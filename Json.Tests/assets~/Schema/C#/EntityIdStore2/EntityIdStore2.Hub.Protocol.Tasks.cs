@@ -10,7 +10,6 @@ namespace EntityIdStore2.Hub.Protocol.Tasks {
 public enum EntityChange {
     create,
     upsert,
-    patch,
     merge,
     delete,
 }

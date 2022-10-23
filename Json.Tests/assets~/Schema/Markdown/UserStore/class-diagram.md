@@ -87,7 +87,7 @@ class OperationType:::cssEnum {
     upsert
     delete
     deleteAll
-    patch
+    merge
     read
     query
     aggregate
@@ -126,7 +126,6 @@ class TaskType:::cssEnum {
     query
     create
     upsert
-    patch
     merge
     delete
     aggregate
@@ -144,7 +143,6 @@ class EntityChange:::cssEnum {
     <<enumeration>>
     create
     upsert
-    patch
     merge
     delete
 }

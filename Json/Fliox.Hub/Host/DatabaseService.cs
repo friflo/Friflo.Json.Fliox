@@ -34,7 +34,7 @@ namespace Friflo.Json.Fliox.Hub.Host
     ///     <b>Database operations</b> are a build-in functionality of every <see cref="EntityDatabase"/>.
     ///     These operations are:
     ///     <see cref="CreateEntities"/>, <see cref="UpsertEntities"/>, <see cref="DeleteEntities"/>,
-    ///     <see cref="PatchEntities"/>, <see cref="MergeEntities"/>, <see cref="ReadEntities"/> or <see cref="QueryEntities"/>.
+    ///     <see cref="MergeEntities"/>, <see cref="ReadEntities"/> or <see cref="QueryEntities"/>.
     ///   </item>
     ///   <item>
     ///     An application can add <b>command</b> handlers to perform custom operations.

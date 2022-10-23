@@ -6,7 +6,6 @@ import CustomSerializer.*
 import kotlinx.serialization.json.*
 import java.util.*
 import Fliox.Hub.Protocol.Models.*
-import Fliox.Transform.*
 
 @Serializable
 // @JsonClassDiscriminator("task") https://github.com/Kotlin/kotlinx.serialization/issues/546
@@ -73,21 +72,6 @@ data class AggregateEntities (
 enum class AggregateType {
     count,
 }
-
-@Serializable
-@SerialName("patch")
-data class PatchEntities (
-    override  val info      : JsonElement? = null,
-              val container : String,
-              val keyName   : String? = null,
-              val patches   : List<EntityPatch>,
-) : SyncRequestTask()
-
-@Serializable
-data class EntityPatch (
-              val id      : String,
-              val patches : List<JsonPatch>,
-)
 
 @Serializable
 @SerialName("merge")
@@ -159,7 +143,6 @@ data class SubscribeChanges (
 enum class EntityChange {
     create,
     upsert,
-    patch,
     merge,
     delete,
 }
@@ -218,12 +201,6 @@ data class QueryEntitiesResult (
 data class AggregateEntitiesResult (
               val container : String? = null,
               val value     : Double? = null,
-) : SyncTaskResult()
-
-@Serializable
-@SerialName("patch")
-data class PatchEntitiesResult (
-              val errors : List<EntityError>? = null,
 ) : SyncTaskResult()
 
 @Serializable

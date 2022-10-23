@@ -12,7 +12,6 @@ public enum TaskType {
     query,
     create,
     upsert,
-    patch,
     merge,
     delete,
     aggregate,
@@ -28,7 +27,6 @@ public enum TaskType {
 public enum EntityChange {
     create,
     upsert,
-    patch,
     merge,
     delete,
 }

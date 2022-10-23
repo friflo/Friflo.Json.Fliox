@@ -18,7 +18,6 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
         private  readonly   bool            upsert;
         private  readonly   bool            delete;
         private  readonly   bool            deleteAll;
-        private  readonly   bool            patch;
         private  readonly   bool            merge;
         //
         private  readonly   bool            read;
@@ -31,11 +30,11 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
         {
             databaseFilter  = new DatabaseFilter(database);
             this.container  = container;
-            SetRoles(types, ref create, ref upsert, ref delete, ref deleteAll, ref patch, ref merge, ref read, ref query, ref aggregate);
+            SetRoles(types, ref create, ref upsert, ref delete, ref deleteAll, ref merge, ref read, ref query, ref aggregate);
         }
         
         private static void SetRoles (ICollection<OperationType> types,
-                ref bool create, ref bool upsert, ref bool delete, ref bool deleteAll, ref bool patch, ref bool merge,
+                ref bool create, ref bool upsert, ref bool delete, ref bool deleteAll, ref bool merge,
                 ref bool read,   ref bool query, ref bool aggregate)
         {
             foreach (var type in types) {
@@ -44,16 +43,16 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
                     case OperationType.upsert:      upsert      = true;   break;
                     case OperationType.delete:      delete      = true;   break;
                     case OperationType.deleteAll:   deleteAll   = true;   break;
-                    case OperationType.patch:       patch       = true;   break;
+                    case OperationType.merge:       merge       = true;   break;
                     //
                     case OperationType.read:        read        = true;   break;
                     case OperationType.query:       query       = true;   break;
                     case OperationType.aggregate:   aggregate   = true;   break;
                     case OperationType.mutate:
-                        create = true;  upsert = true;  delete = true;  patch = true;   merge = true;
+                        create = true;  upsert = true;  delete = true;  merge = true;
                         break;
                     case OperationType.full:
-                        create = true;  upsert = true;  delete = true;  patch = true;   merge = true;
+                        create = true;  upsert = true;  delete = true;  merge = true;
                         read   = true;  query  = true;
                         break;
                     default:
@@ -73,7 +72,6 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
                 case TaskType.delete:
                     var deleteEntities = (DeleteEntities)  task;
                     return deleteEntities.Authorize(container, delete, deleteAll);
-                case TaskType.patch:        return patch        && ((PatchEntities)     task).container == container;
                 case TaskType.merge:        return merge        && ((MergeEntities)     task).container == container;
                 //
                 case TaskType.read:         return read         && ((ReadEntities)      task).container == container;

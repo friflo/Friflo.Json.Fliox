@@ -9,7 +9,6 @@ enum class TaskType {
     query,
     create,
     upsert,
-    patch,
     merge,
     delete,
     aggregate,
@@ -25,7 +24,6 @@ enum class TaskType {
 enum class EntityChange {
     create,
     upsert,
-    patch,
     merge,
     delete,
 }

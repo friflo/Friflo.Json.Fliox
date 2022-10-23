@@ -22,7 +22,6 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     [PolymorphType(typeof(ReadEntities),            "read")]
     [PolymorphType(typeof(QueryEntities),           "query")]
     [PolymorphType(typeof(AggregateEntities),       "aggregate")]
-    [PolymorphType(typeof(PatchEntities),           "patch")]
     [PolymorphType(typeof(MergeEntities),           "merge")]
     [PolymorphType(typeof(DeleteEntities),          "delete")]
     [PolymorphType(typeof(SendMessage),             "message")]

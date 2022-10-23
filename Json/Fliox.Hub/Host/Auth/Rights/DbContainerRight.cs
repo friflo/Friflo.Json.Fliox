@@ -73,7 +73,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth.Rights
         /// <summary>allow to delete all container entities</summary>
         deleteAll,
         /// <summary>allow to patch entities in a container</summary>
-        patch,
+        merge,
         /// <summary>allow to read entities in a container</summary>
         read,
         /// <summary>allow to query entities in a container</summary>

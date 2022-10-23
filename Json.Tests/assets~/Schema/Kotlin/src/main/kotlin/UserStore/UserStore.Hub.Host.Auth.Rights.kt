@@ -46,7 +46,7 @@ enum class OperationType {
     upsert,
     delete,
     deleteAll,
-    patch,
+    merge,
     read,
     query,
     aggregate,

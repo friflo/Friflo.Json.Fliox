@@ -248,12 +248,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 case 3:
                     AreEqual(6, eventInfo.Count);
                     AreEqual(6, eventInfo.changes.Count);
-                    AreEqual("creates: 2, upserts: 4, deletes: 0, patches: 0, merges: 0, messages: 0", eventInfo.ToString());
+                    AreEqual("creates: 2, upserts: 4, deletes: 0, merges: 0, messages: 0", eventInfo.ToString());
                     var articleChanges  = context.GetChanges(client.articles);
                     var producerChanges = context.GetChanges(client.producers);
                     AreEqual(1, articleChanges.Creates.Count);
-                    AreEqual("articles - creates: 1, upserts: 4, deletes: 0, patches: 0, merges: 0", articleChanges.ToString());
-                    AreEqual("producers - creates: 1, upserts: 0, deletes: 0, patches: 0, merges: 0", producerChanges.ToString());
+                    AreEqual("articles - creates: 1, upserts: 4, deletes: 0, merges: 0", articleChanges.ToString());
+                    AreEqual("producers - creates: 1, upserts: 0, deletes: 0, merges: 0", producerChanges.ToString());
                     break;
                 case 9:
                     AreEqual(6, eventInfo.Count);
@@ -268,12 +268,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         private  void AssertChangeEvent (Changes<string, Article> articleChanges) {
             switch (EventCount) {
                 case 2:
-                    AreEqual("creates: 0, upserts: 2, deletes: 0, patches: 0, merges: 0", articleChanges.ChangeInfo.ToString());
+                    AreEqual("creates: 0, upserts: 2, deletes: 0, merges: 0", articleChanges.ChangeInfo.ToString());
                     var ipad = articleChanges.Upserts.Find(e => e.id == "article-ipad");
                     AreEqual("iPad Pro", ipad.name);
                     break;
                 case 5:
-                    AreEqual("creates: 0, upserts: 0, deletes: 1, patches: 0, merges: 4", articleChanges.ChangeInfo.ToString());
+                    AreEqual("creates: 0, upserts: 0, deletes: 1, merges: 4", articleChanges.ChangeInfo.ToString());
                     IsTrue(articleChanges.Deletes.Contains("article-delete"));
                     Patch<string> articlePatch = articleChanges.Patches.Find(p => p.key == "article-1");
                     AreEqual("article-1",               articlePatch.ToString());
@@ -295,12 +295,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             AreEqual(8, EventCount);
             AreEqual(8, subscribeEventsCalls);
             
-            AreSimilar("creates: 0, upserts: 2, deletes: 0, patches: 0, merges: 0", orderSum);
-            AreSimilar("creates: 1, upserts: 6, deletes: 1, patches: 0, merges: 0", customerSum);
-            AreSimilar("creates: 2, upserts: 7, deletes: 5, patches: 0, merges: 4", articleSum);
-            AreSimilar("creates: 3, upserts: 0, deletes: 3, patches: 0, merges: 0", producerSum);
-            AreSimilar("creates: 1, upserts: 0, deletes: 1, patches: 0, merges: 0", employeeSum);
-            AreSimilar("creates: 0, upserts: 1, deletes: 0, patches: 0, merges: 0", typesSum);
+            AreSimilar("creates: 0, upserts: 2, deletes: 0, merges: 0", orderSum);
+            AreSimilar("creates: 1, upserts: 6, deletes: 1, merges: 0", customerSum);
+            AreSimilar("creates: 2, upserts: 7, deletes: 5, merges: 4", articleSum);
+            AreSimilar("creates: 3, upserts: 0, deletes: 3, merges: 0", producerSum);
+            AreSimilar("creates: 1, upserts: 0, deletes: 1, merges: 0", employeeSum);
+            AreSimilar("creates: 0, upserts: 1, deletes: 0, merges: 0", typesSum);
             
             AreEqual(5,  messageCount);
             AreEqual(4,  testWildcardCalls);

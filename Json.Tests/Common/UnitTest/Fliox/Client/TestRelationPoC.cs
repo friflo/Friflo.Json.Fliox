@@ -153,7 +153,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             var deleteCamera =      articles.Delete(camForDelete.id);
             
             AreSimilar("entities: 10, tasks: 5 [container: 5]",         store.ClientInfo);
-            AreSimilar("articles:  6, tasks: 5 [patch: 4, delete: 1]",  articles);
+            AreSimilar("articles:  6, tasks: 5 [merge: 4, delete: 1]",  articles);
             
             await store.SyncTasks(); // ----------------
             
@@ -203,7 +203,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             AreSimilar("entities: 13, tasks: 6 [container: 6]",         store.ClientInfo);
             AreSimilar("articles:  6, tasks: 2 [create: 1, read: 1]",   articles);
             AreSimilar("customers: 1, tasks: 1 [create: 1]",            customers);
-            AreSimilar("orders:    1, tasks: 2 [upsert: 1, patch: 1]",  orders);
+            AreSimilar("orders:    1, tasks: 2 [upsert: 1, merge: 1]",  orders);
             AreSimilar("types:     1, tasks: 1 [upsert: 1]",            types);
 
             var storePatches1 = store.DetectAllPatches();

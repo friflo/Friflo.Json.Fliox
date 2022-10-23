@@ -207,8 +207,7 @@ export class SyncEvent {
     /**
      * Contains the events an application subscribed. These are:  **CreateEntities**, 
      * **UpsertEntities**, 
-     * **DeleteEntities**, 
-     * **PatchEntities**, 
+     * **DeleteEntities**,
      * **SendMessage**, 
      * **SendCommand**
      */

@@ -68,7 +68,6 @@
                 "query",
                 "create",
                 "upsert",
-                "patch",
                 "merge",
                 "delete",
                 "aggregate",
@@ -101,7 +100,7 @@
                 "upsert",
                 "delete",
                 "deleteAll",
-                "patch",
+                "merge",
                 "read",
                 "query",
                 "aggregate",
@@ -113,7 +112,6 @@
             "enum": [
                 "create",
                 "upsert",
-                "patch",
                 "merge",
                 "delete"
             ]

@@ -6,8 +6,7 @@ export type TaskType =
     | "query"                 /** query container entities using a filter */
     | "create"                /** create container entities */
     | "upsert"                /** upsert container entities */
-    | "patch"                 /** patch container entities by id */
-    | "merge"                 /** merge container entities by id */
+    | "merge"                 /** patch container entities by id */
     | "delete"                /** delete container entities by id */
     | "aggregate"             /** aggregate - count - container entities using a filter */
     | "message"               /** send a database message */
@@ -23,8 +22,7 @@ export type TaskType =
 export type EntityChange =
     | "create"      /** filter change events of created entities. */
     | "upsert"      /** filter change events of upserted entities. */
-    | "patch"       /** filter change events of entity patches. */
-    | "merge"       /** filter change events of deleted entities. */
+    | "merge"       /** filter change events of entity patches. */
     | "delete"      /** filter change events of deleted entities. */
 ;
 

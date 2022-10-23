@@ -77,10 +77,8 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         /// <summary>filter change events of upserted entities.</summary>
         upsert  = 2,
         /// <summary>filter change events of entity patches.</summary>
-        patch   = 4,
+        merge   = 4,
         /// <summary>filter change events of deleted entities.</summary>
-        merge   = 8,
-        /// <summary>filter change events of deleted entities.</summary>
-        delete  = 16,
+        delete  = 8,
     }
 }

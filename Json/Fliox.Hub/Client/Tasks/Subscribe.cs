@@ -51,20 +51,18 @@ namespace Friflo.Json.Fliox.Hub.Client
         None    = 0,
         /// <summary>Shortcut to subscribe to all types of entity changes.</summary>
         /// <remarks>
-        /// These ase <see cref="Change.create"/>, <see cref="Change.upsert"/>, <see cref="Change.patch"/> and <see cref="Change.delete"/>
+        /// These ase <see cref="Change.create"/>, <see cref="Change.upsert"/>, <see cref="Change.merge"/> and <see cref="Change.delete"/>
         /// </remarks>
-        All     = 1 | 2 | 4 | 8 | 16,
+        All     = 1 | 2 | 4 | 8,
         
         /// <summary>filter change events of created entities.</summary>
         create  = 1,
         /// <summary>filter change events of upserted entities.</summary>
         upsert  = 2,
         /// <summary>filter change events of entity patches.</summary>
-        patch   = 4,
+        merge   = 4,
         /// <summary>filter change events of deleted entities.</summary>
-        merge   = 8,
-        /// <summary>filter change events of deleted entities.</summary>
-        delete  = 16
+        delete  = 8
     }
     
     internal static class ChangeExtension
@@ -74,7 +72,6 @@ namespace Friflo.Json.Fliox.Hub.Client
             if ((change & Change.create) != 0) list.Add(EntityChange.create);
             if ((change & Change.upsert) != 0) list.Add(EntityChange.upsert);
             if ((change & Change.delete) != 0) list.Add(EntityChange.delete);
-            if ((change & Change.patch)  != 0) list.Add(EntityChange.patch);
             if ((change & Change.merge)  != 0) list.Add(EntityChange.merge);
             return list;
         }

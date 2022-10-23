@@ -9,7 +9,7 @@ POST {{base}}/
     {
       "task":       "subscribeChanges",
       "container":  "articles", 
-      "changes": ["create", "upsert", "delete", "patch"]
+      "changes": ["create", "upsert", "delete", "merge"]
     }
   ],
   "user":  "admin",

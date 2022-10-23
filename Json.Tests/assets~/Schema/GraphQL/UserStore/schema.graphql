@@ -170,7 +170,6 @@ enum TaskType {
     query
     create
     upsert
-    patch
     merge
     delete
     aggregate
@@ -212,7 +211,7 @@ enum OperationType {
     upsert
     delete
     deleteAll
-    patch
+    merge
     read
     query
     aggregate
@@ -223,7 +222,6 @@ enum OperationType {
 enum EntityChange {
     create
     upsert
-    patch
     merge
     delete
 }

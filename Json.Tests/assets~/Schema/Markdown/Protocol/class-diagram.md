@@ -192,21 +192,6 @@ class AggregateType:::cssEnum {
 }
 
 
-SyncRequestTask <|-- PatchEntities
-class PatchEntities {
-    task       : "patch"
-    container  : string
-    keyName?   : string
-    patches    : EntityPatch[]
-}
-PatchEntities *-- "0..*" EntityPatch : patches
-
-class EntityPatch {
-    id       : string
-    patches  : JsonPatch[]
-}
-EntityPatch *-- "0..*" JsonPatch : patches
-
 SyncRequestTask <|-- MergeEntities
 class MergeEntities {
     task       : "merge"
@@ -263,7 +248,6 @@ class EntityChange:::cssEnum {
     <<enumeration>>
     create
     upsert
-    patch
     merge
     delete
 }
@@ -325,13 +309,6 @@ class AggregateEntitiesResult {
     container? : string
     value?     : double
 }
-
-SyncTaskResult <|-- PatchEntitiesResult
-class PatchEntitiesResult {
-    task    : "patch"
-    errors? : EntityError[]
-}
-PatchEntitiesResult *-- "0..*" EntityError : errors
 
 SyncTaskResult <|-- MergeEntitiesResult
 class MergeEntitiesResult {
@@ -415,51 +392,6 @@ class TaskErrorResultType:::cssEnum {
     SyncError
 }
 
-
-class JsonPatch {
-    <<abstract>>
-}
-
-JsonPatch <|-- PatchReplace
-class PatchReplace {
-    op     : "replace"
-    path   : string
-    value  : any
-}
-
-JsonPatch <|-- PatchAdd
-class PatchAdd {
-    op     : "add"
-    path   : string
-    value  : any
-}
-
-JsonPatch <|-- PatchRemove
-class PatchRemove {
-    op    : "remove"
-    path  : string
-}
-
-JsonPatch <|-- PatchCopy
-class PatchCopy {
-    op    : "copy"
-    path  : string
-    from? : string
-}
-
-JsonPatch <|-- PatchMove
-class PatchMove {
-    op    : "move"
-    path  : string
-    from? : string
-}
-
-JsonPatch <|-- PatchTest
-class PatchTest {
-    op     : "test"
-    path   : string
-    value? : any
-}
 
 
 ```
