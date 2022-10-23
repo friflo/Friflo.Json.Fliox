@@ -65,18 +65,12 @@ var exampleSync: ProtocolMessage_Union =
             "ids": ["new-article"]
         },
         {
-            "task":         "patch",
+            "task":         "merge",
             "container":    "Article",
             "patches": [
                 {
                     "id": "new-article",
-                    "patches": [
-                        {
-                            "op":"replace",
-                            "path": ".name",
-                            "value": null
-                        }
-                    ]
+                    "name": null
                 }
             ]
         },
@@ -88,7 +82,7 @@ var exampleSync: ProtocolMessage_Union =
         {
             "task":         "subscribeChanges",
             "container":    "Article", 
-            "changes": ["create", "upsert", "delete", "patch"]
+            "changes": ["create", "upsert", "delete", "merge"]
         }
     ]
 }

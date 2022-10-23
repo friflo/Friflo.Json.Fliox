@@ -123,7 +123,7 @@ class SubEvent {
                 case "create":
                 case "upsert":
                 case "delete":
-                case "patch": {
+                case "merge": {
                     const containerName = SubEvent.internName(task.container);
                     containers.push(containerName);
                     break;
@@ -285,7 +285,7 @@ export class Events
                     tasksJson.push(json);
                     break;
                 }
-                case "patch": {
+                case "merge": {
                     const patches       = task.patches.map(patch => JSON.stringify(patch));
                     const patchesJson   = patches.join(",\n            ");
                     const json = `{"task":"${task.task}"${KV("container", task.container)}, "patches":[
@@ -396,7 +396,7 @@ export class Events
                     this.uiContainerText(ev.db, task.container, containerSub, "event");
                     break;
                 }
-                case "patch": {
+                case "merge": {
                     const containerSub = databaseSub.containerSubs[task.container];
                     containerSub.patches += task.patches.length;
                     this.uiContainerText(ev.db, task.container, containerSub, "event");
@@ -430,7 +430,7 @@ export class Events
         let changes: EntityChange[] = [];
         if (!containerSub.subscribed) {
             containerSub.subscribed = true;
-            changes = ["create", "upsert", "patch", "delete"];
+            changes = ["create", "upsert", "merge", "delete"];
             this.uiContainerSubscribed(databaseName, containerName, true);
             this.uiContainerText(databaseName, containerName, containerSub, null);
         } else {
