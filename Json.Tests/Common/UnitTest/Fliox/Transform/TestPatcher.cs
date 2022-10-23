@@ -3,7 +3,6 @@
 using System;
 using System.Collections.Generic;
 using System.Numerics;
-using Friflo.Json.Fliox;
 using Friflo.Json.Fliox.Transform;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Mapper.Diff;
@@ -13,6 +12,7 @@ using Friflo.Json.Tests.Unity.Utils;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
 using static Friflo.Json.Fliox.Mapper.DiffKind;
+
 namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
 {
     public class TestPatcher : LeakTestsFixture
