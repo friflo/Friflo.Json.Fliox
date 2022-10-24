@@ -33,7 +33,7 @@ export function createEl<K extends keyof HTMLElementTagNameMap>(tagName: K): HTM
 
 export type Entity = { [key: string] : any };
 
-export type Method = "GET" | "POST" | "PUT" | "DELETE";
+export type Method = "GET" | "POST" | "PUT" | "DELETE" | "PATCH";
 
 export const parseAst = (value: string) : jsonToAst.ValueNode => {
     try {

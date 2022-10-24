@@ -100,7 +100,7 @@ export class Explorer {
         e.cursor = response.headers.get("cursor");
         const entities = await this.readResponse(response, null);
         const type = app.getContainerSchema(e.database, e.container);
-        this.updateExplorerEntities(entities, type);
+        this.updateExplorerEntities(entities, type, "All");
     }
     initExplorer(database, container, query, entityType) {
         this.explorer = {
@@ -162,7 +162,7 @@ export class Explorer {
         table.append(head);
         table.classList.value = "entities";
         table.onclick = async (ev) => this.explorerOnClick(ev, p);
-        this.updateExplorerEntities(entities, entityType);
+        this.updateExplorerEntities(entities, entityType, "All");
         this.setColumnWidths();
         entityExplorer.innerText = "";
         entityExplorer.appendChild(table);
@@ -820,7 +820,7 @@ export class Explorer {
             column.th.style.width = `${column.width + 10}px`;
         }
     }
-    updateExplorerEntities(entities, entityType) {
+    updateExplorerEntities(entities, entityType, updateCell) {
         // console.log("entities", entities);
         const keyName = EntityEditor.getEntityKeyName(entityType);
         const entityFields = this.entityFields;
@@ -860,7 +860,7 @@ export class Explorer {
             // cell: set fields
             const calcWidth = entityCount < 20;
             const tds = rows[entityCount].children;
-            Explorer.assignRowCells(tds, entity, entityFields, calcWidth);
+            Explorer.assignRowCells(tds, entity, entityFields, updateCell, calcWidth);
             entityCount++;
         }
         // add new rows at once
@@ -872,7 +872,7 @@ export class Explorer {
         const countStr = `${count}${this.explorer.cursor ? " +" : ""}`;
         readEntitiesCount.innerText = countStr;
     }
-    static assignRowCells(tds, entity, entityFields, calcWidth) {
+    static assignRowCells(tds, entity, entityFields, updateCell, calcWidth) {
         let tdIndex = 1;
         for (const fieldName in entityFields) {
             // if (fieldName == "derivedClassNull.derivedVal") debugger;
@@ -888,6 +888,10 @@ export class Explorer {
             }
             if (i < pathLen - 1)
                 value = undefined;
+            if (updateCell == "NotNull") {
+                if (value === null || value === undefined)
+                    continue;
+            }
             const td = tds[tdIndex++];
             // clear all children added previously
             while (td.firstChild) {

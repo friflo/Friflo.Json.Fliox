@@ -372,7 +372,7 @@ export class EntityEditor
                 json = [json];
         }
         const type          = app.getContainerSchema(database, container);
-        app.explorer.updateExplorerEntities(json, type);
+        app.explorer.updateExplorerEntities(json, type, "All");
         this.selectEntities(database, container, ids);
     }
 
@@ -434,10 +434,50 @@ export class EntityEditor
         }
         writeResult.innerHTML = EntityEditor.formatResult("Save", response.status, response.statusText, "");
         // add or update explorer entities
-        app.explorer.updateExplorerEntities(entities, type);
+        app.explorer.updateExplorerEntities(entities, type, "All");
         if (EntityEditor.arraysEquals(this.entityIdentity.entityIds, ids))
             return;
         this.selectEntities(database, container, ids);        
+    }
+
+    /**
+     * Merge the given members to the stored entity using a PATCH request.
+     * See RFC 7386 'JSON Merge Patch' https://www.rfc-editor.org/rfc/rfc7386
+     **/
+    public async patchEntitiesAction () : Promise<void> {
+        const ei        = this.entityIdentity;
+        const jsonValue = this.entityModel.getValue();
+        await this.patchEntities(ei.database, ei.container, jsonValue);
+    }
+
+    private async patchEntities (database: string, container: string, jsonValue: string)
+    {
+        let value:      Entity | Entity[];
+        try {
+            value = JSON.parse(jsonValue) as Entity | Entity[];
+        } catch (error) {
+            writeResult.innerHTML = `<span style="color:red">Save failed: ${error}</code>`;
+            return;
+        }
+        const entities          = Array.isArray(value) ? value : [value];
+        const type              = app.getContainerSchema(database, container);
+        const keyName           = EntityEditor.getEntityKeyName(type as JsonType);
+        const ids               = entities.map(entity => String(entity[keyName]));
+        writeResult.innerHTML   = 'patch <span class="spinner"></span>';
+        const containerPath     = ids.length == 1 ? `${container}/${ids[0]}` : container;
+        const response          = await App.restRequest("PATCH", jsonValue, database, containerPath, null);
+        if (!response.ok) {
+            const error = await response.text();
+            writeResult.innerHTML = EntityEditor.formatResult("Patch", response.status, response.statusText, error);
+            return;
+        }
+        writeResult.innerHTML = EntityEditor.formatResult("Patch", response.status, response.statusText, "");
+
+        // add or update explorer entities
+        app.explorer.updateExplorerEntities(entities, type, "NotNull");
+        if (EntityEditor.arraysEquals(this.entityIdentity.entityIds, ids))
+            return;
+        this.selectEntities(database, container, ids);
     }
 
     private selectEntities(database: string, container: string, ids: string[]) {

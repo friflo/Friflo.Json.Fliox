@@ -36,6 +36,8 @@ type Column = {
 
 type TypeName   = "null" | "object" | "string" | "boolean" | "number" | "integer" | "array";
 
+export type UpdateCell = "All" | "NotNull";
+
 type DataType   = {
     readonly typeName:      TypeName,
     readonly jsonType:      JsonType | FieldType | null;
@@ -162,7 +164,7 @@ export class Explorer
 
         const type      = app.getContainerSchema(e.database, e.container);
 
-        this.updateExplorerEntities(entities, type);
+        this.updateExplorerEntities(entities, type, "All");
     }
 
     private static selectAllHtml=
@@ -243,7 +245,7 @@ export class Explorer
         table.classList.value   = "entities";
         table.onclick = async (ev) => this.explorerOnClick(ev, p);        
 
-        this.updateExplorerEntities(entities, entityType);
+        this.updateExplorerEntities(entities, entityType, "All");
         this.setColumnWidths();
         entityExplorer.innerText    = "";
         entityExplorer.appendChild(table);
@@ -931,7 +933,7 @@ export class Explorer
         }
     }
 
-    public updateExplorerEntities(entities: Entity[], entityType: JsonType) : void {
+    public updateExplorerEntities(entities: Entity[], entityType: JsonType, updateCell: UpdateCell) : void {
         // console.log("entities", entities);
         const keyName       = EntityEditor.getEntityKeyName(entityType);
         const entityFields  = this.entityFields;
@@ -975,7 +977,7 @@ export class Explorer
             // cell: set fields
             const calcWidth = entityCount < 20;
             const tds = rows[entityCount].children as never as HTMLTableCellElement[]; 
-            Explorer.assignRowCells(tds, entity, entityFields, calcWidth);
+            Explorer.assignRowCells(tds, entity, entityFields, updateCell, calcWidth);
             entityCount++;
         }
 
@@ -990,7 +992,13 @@ export class Explorer
         readEntitiesCount.innerText = countStr;
     }
 
-    private static assignRowCells (tds: HTMLTableCellElement[], entity: Entity, entityFields: { [key: string] : Column }, calcWidth: boolean) {
+    private static assignRowCells (
+        tds:            HTMLTableCellElement[],
+        entity:         Entity,
+        entityFields:   { [key: string] : Column },
+        updateCell:     UpdateCell,
+        calcWidth:      boolean)
+    {
         let tdIndex = 1;
         for (const fieldName in entityFields) {
             // if (fieldName == "derivedClassNull.derivedVal") debugger;
@@ -1006,6 +1014,10 @@ export class Explorer
             }
             if (i < pathLen - 1)
                 value = undefined;
+            if (updateCell == "NotNull") {
+                if (value === null || value === undefined)
+                    continue;
+            }
             const td        = tds[tdIndex++];
             // clear all children added previously
             while (td.firstChild) {
