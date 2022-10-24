@@ -888,11 +888,11 @@ export class Explorer {
             }
             if (i < pathLen - 1)
                 value = undefined;
+            const td = tds[tdIndex++];
             if (updateCell == "NotNull") {
                 if (value === null || value === undefined)
                     continue;
             }
-            const td = tds[tdIndex++];
             // clear all children added previously
             while (td.firstChild) {
                 td.removeChild(td.lastChild);
