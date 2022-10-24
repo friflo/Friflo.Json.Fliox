@@ -152,14 +152,15 @@ namespace Friflo.Json.Fliox.Hub.Host
                         AddEntityError(ref patchErrors, key, entityError);
                         continue;
                     }
-                    var target = entity.Json;
-                    if (target.IsNull()) {
-                        entityError = new EntityError(EntityErrorType.PatchError, container, key, "patch target not found");
+                    var target      = entity.Json;
+                    // patch is an object - ensured by GetKeysFromEntities() above
+                    var json        = merger.Merge(target, patch);
+                    var mergeError  = merger.Error;
+                    if (mergeError != null) {
+                        entityError = new EntityError(EntityErrorType.PatchError, container, key, mergeError);
                         AddEntityError(ref patchErrors, key, entityError);
                         continue;
                     }
-                    // patch is an object - ensured by GetKeysFromEntities() above
-                    var json = merger.Merge(target, patch);
                     targets.Add(json);
                     targetKeys.Add(key);
                 }
