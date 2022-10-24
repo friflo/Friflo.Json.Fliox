@@ -63,6 +63,8 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                     var merge = (MergeEntities) task;
                     if (subscribe.container != merge.container)
                         return null;
+                    if (!IsEventTarget(subClient, merge.users))
+                        return null;
                     // todo apply filter
                     return task;
                 

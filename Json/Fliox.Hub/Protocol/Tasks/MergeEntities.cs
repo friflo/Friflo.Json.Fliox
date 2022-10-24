@@ -22,15 +22,21 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         /// <summary>list of merge patches for each entity</summary>
         [Required]  public  List<JsonValue>     patches = new List<JsonValue>();
         
+        /// <summary>if set the Hub forward the Merge as an event only to given <see cref="users"/></summary>
+        [Ignore]    public  List<JsonKey>       users;
+        
         public   override   TaskType            TaskType => TaskType.merge;
         public   override   string              TaskName =>  $"container: '{container}'";
-        
+
         public override async Task<SyncTaskResult> Execute(EntityDatabase database, SyncResponse response, SyncContext syncContext) {
             if (container == null)
                 return MissingContainer();
             if (patches == null)
                 return MissingField(nameof(patches));
             var entityContainer = database.GetOrCreateContainer(container);
+            
+            await database.service.CustomizeMerge(this, syncContext).ConfigureAwait(false);
+            
             var result = await entityContainer.MergeEntities(this, syncContext).ConfigureAwait(false);
             if (result.Error != null) {
                 return TaskError(result.Error); 
