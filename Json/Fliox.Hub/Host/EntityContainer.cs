@@ -137,7 +137,8 @@ namespace Friflo.Json.Fliox.Hub.Host
             List<EntityError> patchErrors = null;
             using (var pooled = syncContext.pool.JsonMerger.Get())
             {
-                JsonMerger merger = pooled.instance;
+                JsonMerger merger   = pooled.instance;
+                merger.Pretty       = Pretty;
                 for (int n = 0; n < patches.Count; n++) {
                     var patch   = patches[n];
                     var key     = ids[n];

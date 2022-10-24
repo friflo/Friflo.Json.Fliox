@@ -15,9 +15,13 @@ namespace Friflo.Json.Fliox.Transform.Tree
             get => writeNullMembers;
             set => writeNullMembers = astWriter.WriteNullMembers = value;
         }
-
+        public              bool                Pretty {
+            get => pretty;
+            set => writer.SetPretty(pretty = value);
+        }
         private             Utf8JsonParser      parser;
         private             Utf8JsonWriter      writer;
+        private             bool                pretty;
         private             Bytes               json;
         private readonly    JsonAstReader       astReader;
         private readonly    JsonAstWriter       astWriter;
@@ -64,7 +68,6 @@ namespace Friflo.Json.Fliox.Transform.Tree
             }
             astWriter.Init(ast);
             writer.InitSerializer();
-            writer.SetPretty(false);
             json.Clear();
             json.AppendArray(value);
             parser.InitParser(json);
