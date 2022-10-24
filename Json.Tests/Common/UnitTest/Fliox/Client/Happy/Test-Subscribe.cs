@@ -554,27 +554,42 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 hub.EventDispatcher = eventDispatcher;
                 var eventCount      = 0;
                 
-                listen.articles.SubscribeChanges(Change.upsert, (changes, context) => {
+                listen.articles.SubscribeChanges(Change.upsert | Change.merge, (changes, context) => {
                     var applyResult = changes.ApplyChangesTo(listen.articles);
                     var applyInfos  = applyResult.applyInfos;
                     switch (eventCount++) {
-                        case 0:
+                        case 0: {
                             AreEqual(1,                                     applyInfos.Count);
-                            var info = applyInfos[0];
-                            AreEqual(ApplyInfoType.EntityCreated,           info.type);
-                            AreEqual("a-1",                                 info.key);
+                            var applyInfo = applyInfos[0];
+                            AreEqual(ApplyInfoType.EntityCreated,           applyInfo.type);
+                            AreEqual("a-1",                                 applyInfo.key);
                         
-                            NotNull (                                       info.entity);
-                            AreEqual("{\"id\":\"a-1\",\"name\":\"Name1\"}", info.rawEntity.AsString());
-                            break;                            
-                        case 1:
+                            NotNull (                                       applyInfo.entity);
+                            AreEqual(@"{""id"":""a-1"",""name"":""Name1""}",applyInfo.rawEntity.AsString());
+                            break;
+                        }
+                        case 1: {
                             // "a-1" is already applied. Only "a-2" is a new entity
                             AreEqual(2,                             applyInfos.Count);
-                            AreEqual(ApplyInfoType.EntityUpdated,   applyInfos[0].type);
-                            AreEqual("a-1",                         applyInfos[0].key);
-                            AreEqual(ApplyInfoType.EntityCreated,   applyInfos[1].type);
-                            AreEqual("a-2",                         applyInfos[1].key);
+                            var applyInfo0 = applyInfos[0];
+                            AreEqual(ApplyInfoType.EntityUpdated,   applyInfo0.type);
+                            AreEqual("a-1",                         applyInfo0.key);
+                            NotNull (                               applyInfo0.entity);
+                            var applyInfo1 = applyInfos[1];
+                            AreEqual(ApplyInfoType.EntityCreated,   applyInfo1.type);
+                            AreEqual("a-2",                         applyInfo1.key);
                             break;
+                        }
+                        case 2: {
+                            AreEqual(1,                             applyInfos.Count);
+                            var applyInfo = applyInfos[0];
+                            AreEqual("a-1",                         applyInfo.key);
+                            AreEqual(ApplyInfoType.EntityPatched,   applyInfo.type);
+                            NotNull (                               applyInfo.entity);
+                            var expect = @"{""id"":""a-1"",""name"":""name changed""}";
+                            AreEqual(expect,                        applyInfo.rawEntity.AsString());
+                            break;
+                        }
                     }
                 });
                 await listen.SyncTasks();
@@ -590,7 +605,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 store.articles.UpsertRange(upsertArticles);
                 await store.SyncTasks();
                 
-                AreEqual(2, eventCount);
+                a1.name         = "name changed";
+                var patchesTask = store.articles.DetectPatches();
+                var patches     = patchesTask.Patches; 
+                AreEqual(1, patches.Count);
+                await store.SyncTasks();
+                
+                AreEqual(3, eventCount);
             }
         }
     }
