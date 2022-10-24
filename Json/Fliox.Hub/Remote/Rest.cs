@@ -284,39 +284,46 @@ namespace Friflo.Json.Fliox.Hub.Remote
             context.WriteString("deleted successful", "text/plain", 200);
         }
         
-        private static async Task PutEntities(RequestContext context, string database, string container, string id, string keyName, JsonValue value, TaskType type) {
-            if (database == context.hub.DatabaseName)
-                database = null;
-            var             pool = context.Pool;
-            List<JsonValue> entities;
-            if (id != null) {
-                entities = new List<JsonValue> {value};
-            } else {
-                // read entity array from request body
-                using (var pooled = pool.EntityProcessor.Get()) {
-                    var processor = pooled.instance;
-                    entities = processor.ReadJsonArray(value, out string error);
-                    if (error != null) {
-                        context.WriteError("PUT error", error, 400);
-                        return;
-                    }
-                }
-            }
-            var entityId    = new JsonKey(id);
+        private static List<JsonValue> Body2JsonValues(RequestContext context, string id, string keyName, JsonValue value, out string error)
+        {
+            var pool        = context.Pool;
             keyName         = keyName ?? "id";
+            var entityId    = new JsonKey(id);
             if (id != null) {
                 // check if given id matches entity key
                 using (var pooled = pool.EntityProcessor.Get()) {
                     var processor = pooled.instance;
-                    if (!processor.GetEntityKey(value, keyName, out JsonKey key, out string entityError)) {
-                        context.WriteError("PUT error", entityError, 400);
-                        return;
+                    if (!processor.GetEntityKey(value, keyName, out JsonKey key, out error)) {
+                        return null;
                     }
                     if (!entityId.IsEqual(key)) {
-                        context.WriteError("PUT error", $"entity {keyName} != resource id. expect: {id}, was: {key.AsString()}", 400);
-                        return;
+                        error = $"entity {keyName} != resource id. expect: {id}, was: {key.AsString()}";
+                        return null;
                     }
                 }
+            }
+            if (id != null) {
+                error = null;
+                return new List<JsonValue> {value};
+            }
+            // read entity array from request body
+            using (var pooled = pool.EntityProcessor.Get()) {
+                var processor = pooled.instance;
+                var entities = processor.ReadJsonArray(value, out error);
+                if (error != null) {
+                    return null;
+                }
+                return entities;
+            }
+        }
+        
+        private static async Task PutEntities(RequestContext context, string database, string container, string id, string keyName, JsonValue value, TaskType type) {
+            if (database == context.hub.DatabaseName)
+                database = null;
+            var entities = Body2JsonValues(context, id, keyName, value, out string error);
+            if (error != null) {
+                context.WriteError("PUT error", error, 400);
+                return;
             }
             SyncRequestTask task;
             switch (type) {
@@ -353,12 +360,14 @@ namespace Friflo.Json.Fliox.Hub.Remote
             context.WriteString("PUT successful", "text/plain", 200);
         }
         
-        // todo CHECK_MERGE - check that id is same as in patch
-        private static async Task MergeEntity(RequestContext context, string database, string container, string id, string keyName, JsonValue patch) {
+        private static async Task MergeEntities(RequestContext context, string database, string container, string id, string keyName, JsonValue patch) {
             if (database == context.hub.DatabaseName)
                 database = null;
-            keyName         = keyName ?? "id";
-            var patches     = new List<JsonValue> { patch };
+            var patches = Body2JsonValues(context, id, keyName, patch, out string error);
+            if (error != null) {
+                context.WriteError("PATCH error", error, 400);
+                return;
+            }
             var task        = new MergeEntities { container = container, keyName = keyName, patches = patches };
             var syncRequest = CreateSyncRequest(context, database, task, out var syncContext);
             var syncResult  = await context.hub.ExecuteSync(syncRequest, syncContext).ConfigureAwait(false);

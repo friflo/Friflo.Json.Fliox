@@ -32,6 +32,15 @@ Cookie: {{auth}}
 }
 
 ###
+PATCH {{base}}/rest/main_db/articles
+Cookie: {{auth}}
+
+[{
+    "id": "article-2",
+    "name": "patched via REST"
+}]
+
+###
 DELETE {{base}}/rest/main_db/articles/article-1
 Cookie: {{auth}}
 

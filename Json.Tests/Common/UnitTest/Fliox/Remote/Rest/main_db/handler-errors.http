@@ -66,6 +66,12 @@ Cookie: {{auth}}
 { }
 
 ###
+PATCH {{base}}/rest/main_db
+Cookie: {{auth}}
+
+{}
+
+###
 PATCH {{base}}/rest/main_db/articles
 Cookie: {{auth}}
 

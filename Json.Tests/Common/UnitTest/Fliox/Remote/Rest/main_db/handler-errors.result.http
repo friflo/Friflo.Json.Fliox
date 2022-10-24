@@ -100,11 +100,18 @@ PUT {{base}}/rest/main_db/articles?create=invalid
 PUT failed > invalid boolean query parameter value: invalid, parameter: create
 
 ###
+PATCH {{base}}/rest/main_db
+# StatusCode:   400
+# Content-Type: text/plain
+
+invalid PATCH > expect: /database/container or /database/container/id
+
+###
 PATCH {{base}}/rest/main_db/articles
 # StatusCode:   400
 # Content-Type: text/plain
 
-invalid PATCH > expect: /database/container/id
+PATCH error > expect JSON array
 
 ###
 PATCH {{base}}/rest/main_db/articles/article-1

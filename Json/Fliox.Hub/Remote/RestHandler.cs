@@ -177,8 +177,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 }
                 // ------------------    PATCH          /rest/database/container/id
                 if (method == "PATCH") {
-                    if (res.length != 3) {
-                        context.WriteError("invalid PATCH", "expect: /database/container/id", 400);
+                    if (res.length != 2 && res.length != 3) {
+                        context.WriteError("invalid PATCH", "expect: /database/container or /database/container/id", 400);
                         return;
                     }
                     var patch = await JsonValue.ReadToEndAsync(context.body).ConfigureAwait(false);
@@ -187,7 +187,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
                         return;
                     }
                     var keyName     = queryParams["keyName"];
-                    await MergeEntity(context, res.database, res.container, res.id, keyName, patch).ConfigureAwait(false);
+                    var resource2   = res.length == 3 ? res.id : null;
+                    await MergeEntities(context, res.database, res.container, resource2, keyName, patch).ConfigureAwait(false);
                     return;
                 }
                 context.WriteError("invalid path/method", route, 400);

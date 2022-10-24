@@ -364,15 +364,15 @@ export class EntityEditor {
             return;
         this.selectEntities(database, container, ids);
     }
-    /**
-     * Merge the given members to the stored entity using a PATCH request.
-     * See RFC 7386 'JSON Merge Patch' https://www.rfc-editor.org/rfc/rfc7386
-     **/
     async patchEntitiesAction() {
         const ei = this.entityIdentity;
         const jsonValue = this.entityModel.getValue();
         await this.patchEntities(ei.database, ei.container, jsonValue);
     }
+    /**
+     * Merge the given members to the stored entity using a PATCH request.
+     * See RFC 7386 - JSON Merge Patch https://www.rfc-editor.org/rfc/rfc7386
+     **/
     async patchEntities(database, container, jsonValue) {
         let value;
         try {
