@@ -114,11 +114,25 @@ PATCH {{base}}/rest/main_db/articles
 PATCH error > expect JSON array
 
 ###
-PATCH {{base}}/rest/main_db/articles/article-1
+PATCH {{base}}/rest/main_db/articles/invalid-patch
 # StatusCode:   400
 # Content-Type: text/plain
 
 PATCH failed > JsonParser/JSON error: unexpected character while reading value. Found: I path: '(root)' at position: 1
+
+###
+PATCH {{base}}/rest/main_db/articles/article-abc
+# StatusCode:   400
+# Content-Type: text/plain
+
+PATCH error > entity id != resource id. expect: article-abc, was: article-xyz
+
+###
+PATCH {{base}}/rest/main_db/articles/article-missing-id
+# StatusCode:   400
+# Content-Type: text/plain
+
+PATCH error > missing key in JSON value. keyName: 'id'
 
 ###
 PATCH {{base}}/rest/main_db/articles/article-1

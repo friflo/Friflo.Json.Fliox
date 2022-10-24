@@ -78,10 +78,28 @@ Cookie: {{auth}}
 {}
 
 ###
-PATCH {{base}}/rest/main_db/articles/article-1
+PATCH {{base}}/rest/main_db/articles/invalid-patch
 Cookie: {{auth}}
 
 Invalid Patch
+
+###
+PATCH {{base}}/rest/main_db/articles/article-abc
+Cookie: {{auth}}
+
+{
+    "id": "article-xyz",
+    "name": "Foo"
+}
+
+###
+PATCH {{base}}/rest/main_db/articles/article-missing-id
+Cookie: {{auth}}
+
+{
+    "name": "Foo"
+}
+
 
 ###
 PATCH {{base}}/rest/main_db/articles/article-1
