@@ -188,7 +188,7 @@ namespace Friflo.Json.Fliox.Hub.Client
                 entitySet.SyncPeerEntities(keyBuffer, localUpserts, objectMapper, applyInfos);
             }
             if ((change & Change.merge) != 0) {
-                entitySet.PatchPeerEntities(Patches, objectMapper);
+                entitySet.PatchPeerEntities(Patches, objectMapper, applyInfos);
             }
             if ((change & Change.delete) != 0) {
                 entitySet.DeletePeerEntities(Deletes, applyInfos);
@@ -242,6 +242,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         EntityCreated   = 0x01,
         EntityUpdated   = 0x02,
         EntityDeleted   = 0x04,
+        EntityPatched   = 0x08,
         ParseError      = 0x80,
     }
     
