@@ -153,6 +153,11 @@ namespace Friflo.Json.Fliox.Hub.Host
                         continue;
                     }
                     var target      = entity.Json;
+                    if (target.IsNull()) {
+                        var error = new EntityError(EntityErrorType.PatchError, container, key, "patch target not found");
+                        AddEntityError(ref patchErrors, key, error);
+                        continue;
+                    }
                     // patch is an object - ensured by GetKeysFromEntities() above
                     var json        = merger.Merge(target, patch);
                     var mergeError  = merger.Error;

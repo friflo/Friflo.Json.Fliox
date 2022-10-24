@@ -121,6 +121,22 @@ PATCH {{base}}/rest/main_db/articles/article-1
 PATCH failed > JsonParser/JSON error: unexpected character while reading value. Found: I path: '(root)' at position: 1
 
 ###
+PATCH {{base}}/rest/main_db/articles/article-1
+# StatusCode:   400
+# Content-Type: text/plain
+
+PATCH errors > 
+| PatchError: [article-1], Incorrect type. was: 12345, expect: string at Article > name, pos: 30
+
+###
+PATCH {{base}}/rest/main_db/articles/missing-article
+# StatusCode:   400
+# Content-Type: text/plain
+
+PATCH errors > 
+| PatchError: [missing-article], patch target not found
+
+###
 HEAD {{base}}/rest/main_db
 # StatusCode:   400
 # Content-Type: text/plain
