@@ -331,72 +331,49 @@ export class EntityEditor {
             return entityType.key;
         return "id";
     }
+    /**
+     * Store - aka upsert - the entities in the database using a PUT request
+     */
     async saveEntitiesAction() {
         const ei = this.entityIdentity;
         const jsonValue = this.entityModel.getValue();
-        await this.saveEntities(ei.database, ei.container, jsonValue);
-    }
-    async saveEntities(database, container, jsonValue) {
-        let value;
-        try {
-            value = JSON.parse(jsonValue);
-        }
-        catch (error) {
-            writeResult.innerHTML = `<span style="color:red">Save failed: ${error}</code>`;
-            return;
-        }
-        const entities = Array.isArray(value) ? value : [value];
-        const type = app.getContainerSchema(database, container);
-        const keyName = EntityEditor.getEntityKeyName(type);
-        const ids = entities.map(entity => String(entity[keyName]));
-        writeResult.innerHTML = 'save <span class="spinner"></span>';
-        const containerPath = ids.length == 1 ? `${container}/${ids[0]}` : container;
-        const response = await App.restRequest("PUT", jsonValue, database, containerPath, null);
-        if (!response.ok) {
-            const error = await response.text();
-            writeResult.innerHTML = EntityEditor.formatResult("Save", response.status, response.statusText, error);
-            return;
-        }
-        writeResult.innerHTML = EntityEditor.formatResult("Save", response.status, response.statusText, "");
-        // add or update explorer entities
-        app.explorer.updateExplorerEntities(entities, type, "All");
-        if (EntityEditor.arraysEquals(this.entityIdentity.entityIds, ids))
-            return;
-        this.selectEntities(database, container, ids);
-    }
-    async patchEntitiesAction() {
-        const ei = this.entityIdentity;
-        const jsonValue = this.entityModel.getValue();
-        await this.patchEntities(ei.database, ei.container, jsonValue);
+        await this.changeEntities(ei.database, ei.container, jsonValue, "PUT");
     }
     /**
      * Merge the given members to the stored entity using a PATCH request.
      * See RFC 7386 - JSON Merge Patch https://www.rfc-editor.org/rfc/rfc7386
      **/
-    async patchEntities(database, container, jsonValue) {
+    async patchEntitiesAction() {
+        const ei = this.entityIdentity;
+        const jsonValue = this.entityModel.getValue();
+        await this.changeEntities(ei.database, ei.container, jsonValue, "PATCH");
+    }
+    async changeEntities(database, container, jsonValue, method) {
+        const action = method == "PUT" ? "Save" : "Patch";
         let value;
         try {
             value = JSON.parse(jsonValue);
         }
         catch (error) {
-            writeResult.innerHTML = `<span style="color:red">Save failed: ${error}</code>`;
+            writeResult.innerHTML = `<span style="color:red">${action} failed: ${error}</code>`;
             return;
         }
         const entities = Array.isArray(value) ? value : [value];
         const type = app.getContainerSchema(database, container);
         const keyName = EntityEditor.getEntityKeyName(type);
         const ids = entities.map(entity => String(entity[keyName]));
-        writeResult.innerHTML = 'patch <span class="spinner"></span>';
+        writeResult.innerHTML = `${action} <span class="spinner"></span>`;
         const containerPath = ids.length == 1 ? `${container}/${ids[0]}` : container;
-        const response = await App.restRequest("PATCH", jsonValue, database, containerPath, null);
+        const response = await App.restRequest(method, jsonValue, database, containerPath, null);
         if (!response.ok) {
             const error = await response.text();
-            writeResult.innerHTML = EntityEditor.formatResult("Patch", response.status, response.statusText, error);
+            writeResult.innerHTML = EntityEditor.formatResult(action, response.status, response.statusText, error);
             return;
         }
-        writeResult.innerHTML = EntityEditor.formatResult("Patch", response.status, response.statusText, "");
+        writeResult.innerHTML = EntityEditor.formatResult(action, response.status, response.statusText, "");
         // add or update explorer entities
-        app.explorer.updateExplorerEntities(entities, type, "NotNull");
+        const updateCell = method == "PUT" ? "All" : "NotNull";
+        app.explorer.updateExplorerEntities(entities, type, updateCell);
         if (EntityEditor.arraysEquals(this.entityIdentity.entityIds, ids))
             return;
         this.selectEntities(database, container, ids);

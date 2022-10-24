@@ -146,6 +146,15 @@ export class App {
                         return;
                 }
                 break;
+            case 'KeyP':
+                if (!event.ctrlKey)
+                    return;
+                switch (editor.activeExplorerEditor) {
+                    case "entity":
+                        this.execute(event, () => editor.patchEntitiesAction());
+                        return;
+                }
+                break;
             case 'ArrowLeft':
                 if (event.altKey)
                     this.execute(event, () => editor.navigateEntity(editor.entityHistoryPos - 1));
