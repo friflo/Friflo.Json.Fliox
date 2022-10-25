@@ -60,6 +60,8 @@ namespace Friflo.Json.Fliox.Hub.Host
         internal            string                              Path        => typeSchema.RootType.Path + ".json";
 
         public   override   string                              ToString()  => typeSchema.RootType.Name;
+        
+        public              ValidationType  GetValidationType (string container) => containerTypes[container];
 
         public DatabaseSchema(TypeSchema typeSchema) {
             this.typeSchema = typeSchema;
@@ -82,7 +84,7 @@ namespace Friflo.Json.Fliox.Hub.Host
                 containerTypes.Add(field.fieldName, field);
             }
         }
-
+        
         public string ValidateEntities (
             string                  container,
             List<JsonEntity>        entities,

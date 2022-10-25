@@ -159,6 +159,54 @@ namespace Friflo.Json.Fliox.Hub.Host
             var result = new DeleteEntitiesResult();
             return Task.FromResult(result);
         }
+        
+        /// <summary> Optimized implementation </summary>
+        public override Task<MergeEntitiesResult> MergeEntities (MergeEntities mergeEntities, SyncContext syncContext) {
+            var patches = mergeEntities.patches;
+            if (!EntityUtils.GetKeysFromEntities(mergeEntities.keyName, patches, syncContext, out string keyError)) {
+                var error = new CommandError(TaskErrorResultType.InvalidTask, keyError);
+                return Task.FromResult(new MergeEntitiesResult { Error = error });
+            }
+            var validationType              = database.Schema?.GetValidationType(mergeEntities.container);
+            var container                   = mergeEntities.container;
+            List<EntityError> patchErrors   = null;
+            using (var pooledMerger         = syncContext.pool.JsonMerger.Get())
+            using (var pooledValidator      = syncContext.pool.TypeValidator.Get())
+            {
+                var merger      = pooledMerger.instance;
+                var validator   = pooledValidator.instance;
+                foreach (var patch in patches)
+                {
+                    if (!keyValues.TryGetValue(patch.key, out var target)) {
+                        var error = new EntityError(EntityErrorType.PatchError, container, patch.key, "patch target not found");
+                        AddEntityError(ref patchErrors, patch.key, error);
+                        continue;
+                    }
+                    if (target.IsNull()) {
+                        var error = new EntityError(EntityErrorType.PatchError, container, patch.key, "patch target not found");
+                        AddEntityError(ref patchErrors, patch.key, error);
+                        continue;
+                    }
+                    // patch is an object - ensured by GetKeysFromEntities() above
+                    var merge       = merger.Merge(target, patch.value);
+                    var mergeError  = merger.Error;
+                    if (mergeError != null) {
+                        var entityError = new EntityError(EntityErrorType.PatchError, container, patch.key, mergeError);
+                        AddEntityError(ref patchErrors, patch.key, entityError);
+                        continue;
+                    }
+                    if (validationType != null) {
+                        if (!validator.ValidateObject(merge, validationType, out string error)) {
+                            var entityError = new EntityError(EntityErrorType.PatchError, container, patch.key, error);
+                            AddEntityError(ref patchErrors, patch.key, entityError);
+                            continue;
+                        }
+                    }
+                    keyValues[patch.key] = merge;
+                }
+            }
+            return Task.FromResult(new MergeEntitiesResult{ errors = patchErrors });
+        }
     }
     
     internal sealed class MemoryQueryEnumerator : QueryEnumerator

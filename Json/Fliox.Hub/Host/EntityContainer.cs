@@ -65,7 +65,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// databases (e.g. Mongo, Dynamo, Cosmos, Postgres, ...).
         /// </summary>
         protected readonly  string                              instanceName;
-        private   readonly  EntityDatabase                      database;
+        internal  readonly  EntityDatabase                      database;
         internal  readonly  Dictionary<string, QueryEnumerator> cursors = new Dictionary<string, QueryEnumerator>();
 
         public    virtual   bool                                Pretty      => false;
