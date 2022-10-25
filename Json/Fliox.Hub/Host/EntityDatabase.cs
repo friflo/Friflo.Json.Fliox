@@ -200,7 +200,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             foreach (var entity in queryResult.entities) {
                 entities.Add(new JsonEntity(entity.Value.Json));
             }
-            var entityKeys      = EntityUtils.GetKeysFromEntities (keyName, entities, syncContext, out _);
+            EntityUtils.GetKeysFromEntities (keyName, entities, syncContext, out _);
             var upsert          = new UpsertEntities { container = container, entities = entities };
             await dstContainer.UpsertEntities(upsert, syncContext).ConfigureAwait(false);
         }
