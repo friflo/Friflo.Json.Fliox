@@ -3,7 +3,6 @@
 
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
@@ -128,7 +127,10 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
                 // returned queryRefsResults.references is always set. Each references[] item contain either a result or an error.
             }
             result.container    = container;
-            var ids             = entities.Keys.ToHashSet(JsonKey.Equality); // TAG_PERF
+            var ids             = new HashSet<JsonKey>(JsonKey.Equality); // TAG_PERF
+            foreach (var entity in entities) {
+                ids.Add(entity.key);
+            }
             result.ids          = ids;
             if (ids.Count > 0) {
                 result.count        = ids.Count;
@@ -152,7 +154,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         [Required]  public  HashSet<JsonKey>                ids = new HashSet<JsonKey>(JsonKey.Equality);
                     public  List<ReferencesResult>          references;
                         
-        [Ignore]    public  Dictionary<JsonKey,EntityValue> entities;
+        [Ignore]    public  List<EntityValue>               entities;
         [Ignore]    public  CommandError                    Error { get; set; }
 
         

@@ -73,7 +73,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     public sealed class ReadEntitiesResult : SyncTaskResult
     {
                     public  List<ReferencesResult>          references;
-        [Ignore]    public  Dictionary<JsonKey,EntityValue> entities;
+        [Ignore]    public  List<EntityValue>               entities;
         
         [Ignore]    public  CommandError                    Error { get; set; }
         internal override   TaskType                        TaskType => TaskType.read;
@@ -95,8 +95,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         public void ValidateEntities(string container, string keyName, SyncContext syncContext) {
             using (var pooled = syncContext.EntityProcessor.Get()) {
                 EntityProcessor processor = pooled.instance;
-                foreach (var entityEntry in entities) {
-                    var entity = entityEntry.Value;
+                foreach (var entity in entities) {
                     if (entity.Error != null) {
                         continue;
                     }
@@ -106,18 +105,17 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
                     }
                     keyName = keyName ?? "id";
                     if (processor.Validate(json, keyName, out JsonKey payloadId, out string error)) {
-                        var id      = entityEntry.Key;
-                        if (id.IsEqual(payloadId))
+                        if (entity.key.IsEqual(payloadId))
                             continue;
                         error = $"entity key mismatch. '{keyName}': '{payloadId.AsString()}'";
                     }
                     var entityError = new EntityError {
                         type        = EntityErrorType.ParseError,
                         message     = error,
-                        id          = entityEntry.Key,
+                        id          = entity.key,
                         container   = container
                     };
-                    entity.SetError(entityError);
+                    entity.SetError(entity.key, entityError);
                 }
             }
         }

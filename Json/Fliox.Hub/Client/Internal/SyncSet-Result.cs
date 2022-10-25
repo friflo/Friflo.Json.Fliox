@@ -216,7 +216,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         private void AddEntityResponseError(in JsonKey id, Dictionary<JsonKey, EntityValue> entities, ref TaskErrorInfo entityErrorInfo) {
             var responseError = new EntityError(EntityErrorType.ReadError, set.name, id, "requested entity missing in response results");
             entityErrorInfo.AddEntityError(responseError);
-            var value = new EntityValue(responseError); 
+            var value = new EntityValue(id, responseError); 
             entities.Add(id, value);
         }
         

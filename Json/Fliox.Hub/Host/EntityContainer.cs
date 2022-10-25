@@ -141,13 +141,9 @@ namespace Friflo.Json.Fliox.Hub.Host
                 JsonMerger merger   = pooled.instance;
                 merger.Pretty       = Pretty;
                 for (int n = 0; n < patches.Count; n++) {
-                    var patch   = patches[n];
-                    var key     = ids[n];
-                    if (!entities.TryGetValue(key, out var entity)) {
-                        var error = new EntityError(EntityErrorType.PatchError, container, key, "patch target not found");
-                        AddEntityError(ref patchErrors, key, error);
-                        continue;
-                    }
+                    var patch       = patches[n];
+                    var key         = ids[n];
+                    var entity      = entities[n];
                     var entityError = entity.Error; 
                     if (entityError != null) {
                         AddEntityError(ref patchErrors, key, entityError);
@@ -208,7 +204,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// Default implementation. Performs a full table scan! Act as reference and is okay for small data sets
         protected async Task<QueryEntitiesResult> FilterEntities(QueryEntities command, QueryEnumerator entities, SyncContext syncContext) {
             var  jsonFilter = new JsonFilter(command.filterContext); // filter can be reused
-            var  result     = new Dictionary<JsonKey, EntityValue>(JsonKey.Equality);
+            var  result     = new List<EntityValue>();
             long limit      = command.limit     ?? long.MaxValue;
             long maxCount   = command.maxCount  ?? long.MaxValue;
             using (var pooled = syncContext.pool.JsonEvaluator.Get()) {
@@ -230,8 +226,8 @@ namespace Friflo.Json.Fliox.Hub.Host
                     }
                     if (!match)
                         continue;
-                    var entry = new EntityValue(json);
-                    result.Add(key, entry);
+                    var entry = new EntityValue(key, json);
+                    result.Add(entry);
                     if (result.Count >= limit)
                         break;
                     if (result.Count < maxCount)
@@ -276,10 +272,10 @@ namespace Friflo.Json.Fliox.Hub.Host
         }
 
         private static List<ReferencesResult> GetReferences(
-            List<References>                    references,
-            Dictionary<JsonKey, EntityValue>    entities,
-            string                              container,
-            SyncContext                         syncContext)
+            List<References>    references,
+            List<EntityValue>   entities,
+            string              container,
+            SyncContext         syncContext)
         {
             if (references.Count == 0)
                 throw new InvalidOperationException("Expect references.Count > 0");
@@ -301,8 +297,7 @@ namespace Friflo.Json.Fliox.Hub.Host
                 // Get the selected refs for all entities.
                 // Select() is expensive as it requires a full JSON parse. By using an selector array only one
                 // parsing cycle is required. Otherwise for each selector Select() needs to be called individually.
-                foreach (var entityPair in entities) {
-                    EntityValue entity  = entityPair.Value;
+                foreach (var entity in entities) {
                     if (entity.Error != null)
                         continue;
                     var         json    = entity.Json;
@@ -310,8 +305,8 @@ namespace Friflo.Json.Fliox.Hub.Host
                         continue;
                     var selectorResults = selector.Select(json, select);
                     if (selectorResults == null) {
-                        var error = new EntityError(EntityErrorType.ParseError, container, entityPair.Key, selector.ErrorMessage);
-                        entity.SetError(error);
+                        var error = new EntityError(EntityErrorType.ParseError, container, entity.key, selector.ErrorMessage);
+                        entity.SetError(entity.key, error);
                         continue;
                     }
                     for (int n = 0; n < references.Count; n++) {
@@ -330,12 +325,12 @@ namespace Friflo.Json.Fliox.Hub.Host
         }
 
         internal async Task<ReadReferencesResult> ReadReferences(
-                List<References>                    references,
-                Dictionary<JsonKey, EntityValue>    entities,
-                string                              container,
-                string                              selectorPath,
-                SyncResponse                        syncResponse,
-                SyncContext                         syncContext)
+                List<References>    references,
+                List<EntityValue>   entities,
+                string              container,
+                string              selectorPath,
+                SyncResponse        syncResponse,
+                SyncContext         syncContext)
         {
             var referenceResults = GetReferences(references, entities, container, syncContext);
             
@@ -351,6 +346,7 @@ namespace Friflo.Json.Fliox.Hub.Host
                 var refIdList   = ids.ToList();
                 var readRefIds  = new ReadEntities { ids = refIdList, keyName = reference.keyName, isIntKey = reference.isIntKey};
                 var refEntities = await refCont.ReadEntities(readRefIds, syncContext).ConfigureAwait(false);
+                
                 var subPath = $"{selectorPath} -> {reference.selector}";
                 // In case of ReadEntities error: Assign error to result and continue with other references.
                 // Resolving other references are independent may be successful.
@@ -365,9 +361,9 @@ namespace Friflo.Json.Fliox.Hub.Host
                 
                 if (subReferences == null)
                     continue;
-                var subEntities = new Dictionary<JsonKey, EntityValue>(ids.Count, JsonKey.Equality);
-                foreach (var id in ids) {
-                    subEntities.Add(id, refEntities.entities[id]);
+                var subEntities = new List<EntityValue>(ids.Count);
+                foreach (var entity in refEntities.entities) {
+                    subEntities.Add(entity);
                 }
                 var refReferencesResult =
                     await ReadReferences(subReferences, subEntities, refContName, subPath, syncResponse, syncContext).ConfigureAwait(false);

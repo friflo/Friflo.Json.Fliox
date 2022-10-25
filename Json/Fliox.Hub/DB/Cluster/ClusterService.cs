@@ -45,7 +45,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
                     var container   = response.GetContainerResult(read.container);
                     var entityMap   = container.entityMap;
                     foreach (var id in denied) {
-                        entityMap.Add(id, new EntityValue());
+                        entityMap.Add(id, new EntityValue(id));
                     }
                     /* var notFound    = container.notFound;
                     if (notFound == null) {

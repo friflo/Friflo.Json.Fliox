@@ -223,7 +223,7 @@ namespace Friflo.Json.Fliox.Hub.Client
                     peer.SetPatchSource(reader.Read<T>(json));
                 } else {
                     var entityError = new EntityError(EntityErrorType.ParseError, name, id, reader.Error.msg.ToString());
-                    entityMap[id].SetError(entityError);
+                    entityMap[id].SetError(id, entityError);
                 }
             }
         }

@@ -11,27 +11,27 @@ namespace Friflo.Json.Fliox.Hub.Host.Utils
     public static class EntityUtils
     {
         /// <summary>
-        /// Add the given <paramref name="entities"/> to the given <paramref name="entityMap"/>.
+        /// Add the given <paramref name="entities"/> to the given <paramref name="destEntities"/>.
         /// The given <paramref name="keyName"/> identifies the key property inside the JSON value in the given list of <paramref name="entities"/>.
         /// </summary>
-        public static void AddEntitiesToMap(
-            List<JsonValue>                     entities,
-            string                              keyName,
-            bool?                               isIntKey,
-            string                              newKeyName,
-            Dictionary<JsonKey, EntityValue>    entityMap,
-            SyncContext                         syncContext)
+        public static void AddEntities(
+            List<JsonValue>     entities,
+            string              keyName,
+            bool?               isIntKey,
+            string              newKeyName,
+            List<EntityValue>   destEntities,
+            SyncContext         syncContext)
         {
             var asIntKey = isIntKey == true;
             using (var pooled = syncContext.EntityProcessor.Get()) {
                 var processor = pooled.instance;
-                foreach (var entity in entities) {
+                for (int n = 0; n < entities.Count; n++) {
+                    var entity = entities[n];
                     var  json = processor.ReplaceKey(entity, keyName, asIntKey, newKeyName, out JsonKey keyValue, out _);
                     if (json.IsNull()) {
                         continue;
                     }
-                    var value   = new EntityValue(json);
-                    entityMap.Add(keyValue, value);
+                    destEntities[n] = new EntityValue(keyValue, json);
                 }
             }
         }

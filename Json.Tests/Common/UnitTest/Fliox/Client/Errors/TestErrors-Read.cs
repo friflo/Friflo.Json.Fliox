@@ -35,11 +35,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             const string articleMissingKey      = "article-missingKey";
             const string missingArticle         = "missing-article";
             
-            testArticles.readEntityErrors.Add(article2JsonError,    (value) => value.SetJson(@"{""invalidJson"" XXX}"));
-            testArticles.readEntityErrors.Add(article1ReadError,    (value) => value.SetError(testArticles.ReadError(article1ReadError)));
-            testArticles.readEntityErrors.Add(articleInvalidJson,   (value) => value.SetJson(@"{""invalidJson"" YYY}"));
-            testArticles.readEntityErrors.Add(articleIdDoesntMatch, (value) => value.SetJson(@"{""id"": ""article-unexpected-id""}"));
-            testArticles.readEntityErrors.Add(articleMissingKey,    (value) => value.SetJson(@"{}"));
+            testArticles.readEntityErrors.Add(article2JsonError,    (value) => value.SetJson (value.Key, @"{""invalidJson"" XXX}"));
+            testArticles.readEntityErrors.Add(article1ReadError,    (value) => value.SetError(value.Key, testArticles.ReadError(article1ReadError)));
+            testArticles.readEntityErrors.Add(articleInvalidJson,   (value) => value.SetJson (value.Key, @"{""invalidJson"" YYY}"));
+            testArticles.readEntityErrors.Add(articleIdDoesntMatch, (value) => value.SetJson (value.Key, @"{""id"": ""article-unexpected-id""}"));
+            testArticles.readEntityErrors.Add(articleMissingKey,    (value) => value.SetJson (value.Key, @"{}"));
             
             testArticles.missingResultErrors.Add(missingArticle);
             

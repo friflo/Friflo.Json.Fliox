@@ -113,7 +113,7 @@ namespace Friflo.Json.Fliox.Hub.Cosmos
                 return await ReadManyEntities(command, syncContext).ConfigureAwait(false);
             }
             // optimization: single item read requires no parsing of Response message
-            var entities        = new Dictionary<JsonKey, EntityValue>(keys.Count, JsonKey.Equality);
+            var entities        = new List<EntityValue>(keys.Count);
             var key             = keys[0];
             var id              = key.AsString();
             var partitionKey    = new PartitionKey(id);
@@ -123,13 +123,13 @@ namespace Friflo.Json.Fliox.Hub.Cosmos
                 var processor   = pooled.instance;
                 var content     = response.Content;
                 if (content == null) {
-                    entities.TryAdd(key, new EntityValue());
+                    entities.Add(new EntityValue(key));
                 } else {
                     var     payload     = await EntityUtils.ReadToEnd(content).ConfigureAwait(false);
                     bool    asIntKey    = command.isIntKey == true; 
                     var     json        = processor.ReplaceKey(payload, "id", asIntKey, command.keyName, out _, out _);
-                    var     entry       = new EntityValue(json);
-                    entities.TryAdd(key, entry);
+                    var     entry       = new EntityValue(key, json);
+                    entities.Add(entry);
                 }
             }
             return new ReadEntitiesResult{entities = entities};
@@ -137,7 +137,7 @@ namespace Friflo.Json.Fliox.Hub.Cosmos
         
         private async Task<ReadEntitiesResult> ReadManyEntities(ReadEntities command, SyncContext syncContext) {
             var keys        = command.ids;
-            var entities    = new Dictionary<JsonKey, EntityValue>(keys.Count, JsonKey.Equality);
+            var entities    = new List<EntityValue>(keys.Count);
             var list        = new List<(string, PartitionKey)>(keys.Count);
             foreach (var key in keys) {
                 var id = key.AsString();
@@ -148,12 +148,12 @@ namespace Friflo.Json.Fliox.Hub.Cosmos
             using (var pooled   = syncContext.ObjectMapper.Get()) {
                 var reader      = pooled.instance.reader;
                 var documents   = await CosmosUtils.ReadDocuments(reader, response.Content).ConfigureAwait(false);
-                EntityUtils.AddEntitiesToMap(documents, "id", command.isIntKey, command.keyName, entities, syncContext);
-                foreach (var key in keys) {
+                EntityUtils.AddEntities(documents, "id", command.isIntKey, command.keyName, entities, syncContext);
+                /* foreach (var key in keys) {
                     if (entities.ContainsKey(key))
                         continue;
-                    entities.Add(key, new EntityValue());
-                }
+                    entities.Add(new EntityValue(key));
+                } */
             }
             return new ReadEntitiesResult{entities = entities};
         }
@@ -162,7 +162,7 @@ namespace Friflo.Json.Fliox.Hub.Cosmos
         
         public override async Task<QueryEntitiesResult> QueryEntities(QueryEntities command, SyncContext syncContext) {
             await EnsureContainerExists().ConfigureAwait(false);
-            var entities    = new Dictionary<JsonKey, EntityValue>(JsonKey.Equality);
+            var entities    = new List<EntityValue>();
             var documents   = new List<JsonValue>();
             var sql         = filterByClient ? null : "SELECT * FROM c WHERE " + command.GetFilter().query.Cosmos;
             using (FeedIterator iterator    = cosmosContainer.GetItemQueryStreamIterator(sql))
@@ -177,7 +177,7 @@ namespace Friflo.Json.Fliox.Hub.Cosmos
                     }
                 }
             }
-            EntityUtils.AddEntitiesToMap(documents, "id", command.isIntKey, command.keyName, entities, syncContext);
+            EntityUtils.AddEntities(documents, "id", command.isIntKey, command.keyName, entities, syncContext);
             if (filterByClient) {
                 throw new NotImplementedException();
                 // return FilterEntities(command, entities, syncContext);

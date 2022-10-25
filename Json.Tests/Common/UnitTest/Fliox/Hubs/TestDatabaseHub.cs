@@ -184,17 +184,19 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs
         
         
         // --- simulate read/write error methods
-        private CommandError SimulateReadErrors(Dictionary<JsonKey,EntityValue> entities) {
+        private CommandError SimulateReadErrors(List<EntityValue> entities) {
             foreach (var pair in readEntityErrors) {
-                var id      = pair.Key;
-                if (entities.TryGetValue(new JsonKey(id), out EntityValue value)) {
+                var id      = new JsonKey(pair.Key);
+                var value   = entities.Find(entity => entity.Key.IsEqual(id));
+                if (value != null) {
                     var action = pair.Value;
                     action(value);
                 }
             }
             foreach (var pair in readTaskErrors) {
                 var id      = new JsonKey(pair.Key);
-                if (entities.ContainsKey(id)) {
+                var value   = entities.Find(entity => entity.Key.IsEqual(id));
+                if (value != null) {
                     var func = pair.Value;
                     return func();
                 }

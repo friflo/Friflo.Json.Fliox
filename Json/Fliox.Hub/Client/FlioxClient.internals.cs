@@ -288,7 +288,7 @@ namespace Friflo.Json.Fliox.Hub.Client
                     if (!processor.GetEntityKey(entity, keyName, out JsonKey key, out string errorMsg)) {
                         throw new InvalidOperationException($"GetEntityResults not found: {errorMsg}");
                     }
-                    entityMap.Add(key, new EntityValue(entity));
+                    entityMap.Add(key, new EntityValue(key, entity));
                 }
                 entities.Clear();
                 container.entities = null;
@@ -296,7 +296,7 @@ namespace Friflo.Json.Fliox.Hub.Client
                 // --- notFound
                 if (notFound != null) {
                     foreach (var notFoundKey in notFound) {
-                        entityMap.Add(notFoundKey, new EntityValue());
+                        entityMap.Add(notFoundKey, new EntityValue(notFoundKey));
                     }
                     notFound.Clear();
                     container.notFound = null;
@@ -306,7 +306,7 @@ namespace Friflo.Json.Fliox.Hub.Client
                 if (errors == null || errors.Count == 0)
                     continue;
                 foreach (var error in errors) {
-                    entityMap.Add(error.id, new EntityValue(error));
+                    entityMap.Add(error.id, new EntityValue(error.id, error));
                 }
                 errors.Clear();
                 container.errors = null;
