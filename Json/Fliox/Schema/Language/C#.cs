@@ -60,6 +60,7 @@ namespace Friflo.Json.Fliox.Schema.Language
             AddType (map, standard.DateTime,    "System" );
             AddType (map, standard.Guid,        "System" );
             AddType (map, standard.JsonValue,   "Friflo.Json.Fliox" );
+            AddType (map, standard.JsonEntity,  "Friflo.Json.Fliox" );
             return map;
         }
         

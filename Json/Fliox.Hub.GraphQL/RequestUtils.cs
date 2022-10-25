@@ -81,15 +81,15 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             return null;
         }
         
-        internal static List<JsonValue> TryGetAnyList(in QueryContext cx, GraphQLValue value, string name, out QueryError? error) {
+        internal static List<JsonEntity> TryGetAnyList(in QueryContext cx, GraphQLValue value, string name, out QueryError? error) {
             if (value is GraphQLListValue gqlList) {
                 var values = gqlList.Values;
                 if (values == null) {
                     error = null;
-                    return new List<JsonValue>();
+                    return new List<JsonEntity>();
                 }
                 var sb      = new StringBuilder();
-                var result  = new List<JsonValue>(values.Count);
+                var result  = new List<JsonEntity>(values.Count);
                 foreach (var item in values) {
                     sb.Clear();
                     var astError    = GetAny(item, sb);
@@ -99,13 +99,13 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                         error           = new QueryError(name, $"invalid value at position {loc.Start}. kind: {astError.kind}, value: {astValue}");
                         return null;
                     }
-                    result.Add(new JsonValue(sb.ToString()));
+                    result.Add(new JsonEntity(new JsonValue(sb.ToString())));
                 }
                 error = null;
                 return result;
             }
             if (value is GraphQLVariable gqlVariable) {
-                return cx.ReadVariable<List<JsonValue>>(cx, gqlVariable, name, out error);
+                return cx.ReadVariable<List<JsonEntity>>(cx, gqlVariable, name, out error);
             }
             error = QueryError(name, "expect list", value, cx.doc);
             return null;

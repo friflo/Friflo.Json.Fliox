@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host.Utils;
@@ -114,9 +113,12 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// </remarks>
         public virtual async Task<MergeEntitiesResult> MergeEntities (MergeEntities mergeEntities, SyncContext syncContext) {
             var patches = mergeEntities.patches;
-            var ids     = EntityUtils.GetKeysFromEntities(mergeEntities.keyName, patches, syncContext, out string keyError);
-            if (ids == null) {
+            if (!EntityUtils.GetKeysFromEntities(mergeEntities.keyName, patches, syncContext, out string keyError)) {
                 return new MergeEntitiesResult { Error = new CommandError(TaskErrorResultType.InvalidTask, keyError) };
+            }
+            var ids = new List<JsonKey>(patches.Count);
+            foreach (var patch in patches) {
+                ids.Add(patch.key);
             }
             // --- Read entities to be patched
             var readTask    = new ReadEntities { ids = ids, keyName = mergeEntities.keyName };
@@ -131,8 +133,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             
             // --- Apply merges
             // iterate all patches and merge them to the entities read above
-            var targets     = new  List<JsonValue>  (entities.Count);
-            var targetKeys  = new  List<JsonKey>    (entities.Count);
+            var targets     = new  List<JsonEntity>  (entities.Count);
             var container   = mergeEntities.container;
             List<EntityError> patchErrors = null;
             using (var pooled = syncContext.pool.JsonMerger.Get())
@@ -159,24 +160,23 @@ namespace Friflo.Json.Fliox.Hub.Host
                         continue;
                     }
                     // patch is an object - ensured by GetKeysFromEntities() above
-                    var json        = merger.Merge(target, patch);
+                    var merge       = merger.Merge(target, patch.value);
                     var mergeError  = merger.Error;
                     if (mergeError != null) {
                         entityError = new EntityError(EntityErrorType.PatchError, container, key, mergeError);
                         AddEntityError(ref patchErrors, key, entityError);
                         continue;
                     }
-                    targets.Add(json);
-                    targetKeys.Add(key);
+                    targets.Add(new JsonEntity(key, merge));
                 }
             }
-            var valError = database.Schema?.ValidateEntities(container, targetKeys, targets, syncContext, EntityErrorType.PatchError, ref patchErrors);
+            var valError = database.Schema?.ValidateEntities(container, targets, syncContext, EntityErrorType.PatchError, ref patchErrors);
             if (valError != null) {
                 return new MergeEntitiesResult{Error = new CommandError(TaskErrorResultType.ValidationError, valError)};
             }
             
             // --- write merged entities back
-            var task            = new UpsertEntities { entities = targets, entityKeys = targetKeys };
+            var task            = new UpsertEntities { entities = targets };
             var upsertResult    = await UpsertEntities(task, syncContext).ConfigureAwait(false);
             
             if (upsertResult.Error != null) {
@@ -385,13 +385,6 @@ namespace Friflo.Json.Fliox.Hub.Host
             }
             // add with TryAdd(). Only the first entity error is relevant. Subsequent entity errors are consequential failures.
             errors.Add(error);
-        }
-        
-        
-        [Conditional("DEBUG")]
-        public static void AssertEntityCounts(List<JsonKey> keys, List<JsonValue> entities) {
-            if (keys.Count != entities.Count)
-                throw new InvalidOperationException("expect equal counts");
         }
         #endregion
     }

@@ -4,14 +4,27 @@
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox
 {
-    public struct JsonEntity
+    public readonly struct JsonEntity
     {
-        public  JsonKey     key;
-        public  JsonValue   value;
-        
+        public  readonly    JsonKey     key;
+        public  readonly    JsonValue   value;
+
+        public  override    string      ToString() => GetString();
+
         public JsonEntity (JsonValue value) {
             key         = default;
             this.value  = value;
+        }
+        
+        public JsonEntity (JsonKey key, JsonValue value) {
+            this.key    = key;
+            this.value  = value;
+        }
+        
+        private string GetString() {
+            if (key.IsNull())
+                return $"value: {value}";
+            return $"key: {key}";
         }
     }
 }

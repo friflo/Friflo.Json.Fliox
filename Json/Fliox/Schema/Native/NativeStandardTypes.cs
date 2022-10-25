@@ -23,6 +23,7 @@ namespace Friflo.Json.Fliox.Schema.Native
         public   override   TypeDef     Guid        { get; }
         public   override   TypeDef     JsonValue   { get; }
         public   override   TypeDef     JsonKey     { get; }
+        public   override   TypeDef     JsonEntity  { get; }
         
         internal NativeStandardTypes (Dictionary<Type, NativeTypeDef> types) {
             Boolean     = Find(types, typeof(bool));
@@ -38,6 +39,7 @@ namespace Friflo.Json.Fliox.Schema.Native
             Guid        = Find(types, typeof(Guid));
             JsonValue   = Find(types, typeof(JsonValue));
             JsonKey     = Find(types, typeof(JsonKey));
+            JsonEntity  = Find(types, typeof(JsonEntity));
         }
         
         private static Dictionary<Type, string> GetTypes() {
@@ -54,7 +56,8 @@ namespace Friflo.Json.Fliox.Schema.Native
                 { typeof(DateTime),     "DateTime"},
                 { typeof(Guid),         "Guid"},
                 { typeof(JsonValue),    "JsonValue"},
-                { typeof(JsonKey),      "JsonKey"}
+                { typeof(JsonKey),      "JsonKey"},
+                { typeof(JsonEntity),   "JsonEntity"}
             };
             return map;
         }

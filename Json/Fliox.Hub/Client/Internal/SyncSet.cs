@@ -192,23 +192,21 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
 
         internal override CreateEntities CreateEntities(CreateTask<T> create, in CreateTaskContext context) {
             var creates = create.peers;
-            var entries = new List<JsonValue>   (creates.Count);
-            var keys    = new List<JsonKey>     (creates.Count);
+            var entries = new List<JsonEntity>(creates.Count);
             var writer  = context.mapper;
             writer.Pretty           = set.intern.writePretty;
             writer.WriteNullMembers = set.intern.writeNull;
 
             foreach (var createPair in creates) {
-                T entity    = createPair.Value.Entity;
-                var entry    = writer.WriteAsValue(entity);
-                entries.Add(entry);
-                keys.Add(createPair.Key);
+                var peer    = createPair.Value;
+                T entity    = peer.Entity;
+                var value   = writer.WriteAsValue(entity);
+                entries.Add(new JsonEntity(peer.id, value));
             }
             return new CreateEntities {
                 container       = set.name,
                 keyName         = SyncKeyName(set.GetKeyName()),
                 entities        = entries,
-                entityKeys      = keys,
                 reservedToken   = new Guid(), // todo
                 syncTask        = create
             };
@@ -220,21 +218,18 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             var writer              = context.mapper;
             writer.Pretty           = set.intern.writePretty;
             writer.WriteNullMembers = set.intern.writeNull;
-            var entries = new List<JsonValue>  (peers.Count);
-            var keys    = new List<JsonKey>    (peers.Count);
+            var entries = new List<JsonEntity>(peers.Count);
 
             foreach (var upsertPair in peers) {
-                T entity    = upsertPair.Value.Entity;
-                var entry   = writer.WriteAsValue(entity);
-
-                entries.Add(entry);
-                keys.Add(upsertPair.Key);
+                var peer    = upsertPair.Value;
+                T entity    = peer.Entity;
+                var value   = writer.WriteAsValue(entity);
+                entries.Add(new JsonEntity(peer.id, value));
             }
             return new UpsertEntities {
                 container   = set.name,
                 keyName     = SyncKeyName(set.GetKeyName()),
                 entities    = entries,
-                entityKeys  = keys,
                 syncTask    = upsert  
             };
         }
@@ -313,9 +308,9 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             if (patches.Count == 0) {
                 detectPatches.state.Executed = true;
             }
-            var list = new List<JsonValue>(patches.Count);
+            var list = new List<JsonEntity>(patches.Count);
             foreach (var patch in patches) {
-                list.Add(patch.entityPatch);
+                list.Add(new JsonEntity(patch.entityPatch));
             }
             return new MergeEntities {
                 container   = set.name,

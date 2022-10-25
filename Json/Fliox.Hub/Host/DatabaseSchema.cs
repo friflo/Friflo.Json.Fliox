@@ -85,13 +85,11 @@ namespace Friflo.Json.Fliox.Hub.Host
 
         public string ValidateEntities (
             string                  container,
-            List<JsonKey>           entityKeys,
-            List<JsonValue>         entities,
+            List<JsonEntity>        entities,
             SyncContext             syncContext,
             EntityErrorType         errorType,
             ref List<EntityError>   validationErrors
         ) {
-            EntityContainer.AssertEntityCounts(entityKeys, entities);
             if (!containerTypes.TryGetValue(container, out ValidationType type)) {
                 return $"No Schema definition for container Type: {container}";
             }
@@ -100,13 +98,12 @@ namespace Friflo.Json.Fliox.Hub.Host
                 for (int n = 0; n < entities.Count; n++) {
                     var entity = entities[n];
                     // if (entity.json == null)  continue; // TAG_ENTITY_NULL
-                    if (!validator.ValidateObject(entity, type, out string error)) {
-                        var key = entityKeys[n];
+                    if (!validator.ValidateObject(entity.value, type, out string error)) {
                         if (validationErrors == null) {
                             validationErrors = new List<EntityError>();
                         }
-                        entities[n] = new JsonValue();
-                        validationErrors.Add(new EntityError(errorType, container, key, error));
+                        entities[n] = default;
+                        validationErrors.Add(new EntityError(errorType, container, entity.key, error));
                     }
                 }
             }
@@ -117,15 +114,13 @@ namespace Friflo.Json.Fliox.Hub.Host
             int pos = 0;
             for (int n = 0; n < entities.Count; n++) {
                 var entity = entities[n];
-                if (entity.IsNull())
+                if (entity.value.IsNull())
                     continue;
                 entities  [pos] = entity;
-                entityKeys[pos] = entityKeys[n];
                 pos++;
             }
             int count = entities.Count - pos;
             entities.RemoveRange  (pos, count);
-            entityKeys.RemoveRange(pos, count);
             return null;
         }
         

@@ -48,28 +48,26 @@ namespace Friflo.Json.Fliox.Hub.Host.Utils
             }
         }
         
-        internal static List<JsonKey> GetKeysFromEntities (
+        internal static bool GetKeysFromEntities (
             string              keyName,
-            List<JsonValue>     entities,
+            List<JsonEntity>    entities,
             SyncContext         syncContext,
             out string          error
         ) {
-            var keys = new List<JsonKey>(entities.Count);
             using (var pooled = syncContext.EntityProcessor.Get()) {
                 var processor = pooled.instance;
                 for (int n = 0; n < entities.Count; n++) {
                     var entity  = entities[n];
-                    if (processor.GetEntityKey(entity, keyName, out JsonKey key, out string entityError)) {
-                        keys.Add(key);
+                    if (processor.GetEntityKey(entity.value, keyName, out JsonKey key, out string entityError)) {
+                        entities[n] = new JsonEntity(key, entity.value);
                         continue;
                     }
                     error = $"error at entities[{n}]: {entityError}";
-                    return null;
+                    return false;
                 }
             }
-            EntityContainer.AssertEntityCounts(keys, entities);
             error = null;
-            return keys;
+            return true;
         }
     }
 }

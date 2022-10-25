@@ -125,8 +125,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs
         }
 
         public override Task<CreateEntitiesResult> CreateEntities(CreateEntities command, SyncContext syncContext) {
-            AssertEntityCounts(command.entityKeys, command.entities);
-            var error = SimulateWriteErrors(command.entityKeys, out var errors);
+            var ids     = command.entities.Select(entity => entity.key);
+            var error   = SimulateWriteErrors(ids, out var errors);
             if (error != null)
                 return Task.FromResult(new CreateEntitiesResult { Error = error });
             if (errors != null)
@@ -135,8 +135,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs
         }
 
         public override Task<UpsertEntitiesResult> UpsertEntities(UpsertEntities command, SyncContext syncContext) {
-            AssertEntityCounts(command.entityKeys, command.entities);
-            var error = SimulateWriteErrors(command.entityKeys, out var errors);
+            var ids     = command.entities.Select(entity => entity.key);
+            var error   = SimulateWriteErrors(ids, out var errors);
             if (error != null)
                 return Task.FromResult(new UpsertEntitiesResult { Error = error });
             if (errors != null)
@@ -212,7 +212,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs
             return error;
         }
         
-        private CommandError SimulateWriteErrors(List<JsonKey> entities, out List<EntityError> errors) {
+        private CommandError SimulateWriteErrors(IEnumerable<JsonKey> entities, out List<EntityError> errors) {
             errors = null;
             foreach (var pair in writeEntityErrors) {
                 var id = new JsonKey(pair.Key);

@@ -211,6 +211,8 @@ namespace Friflo.Json.Fliox.Schema.Language
             var standard = context.standardTypes;
             if (type == standard.JsonValue)
                 return "any"; // known as Mr anti-any  :) 
+            if (type == standard.JsonEntity)
+                return "any"; 
             if (type == standard.String || type == standard.JsonKey)
                 return "string";
             if (type == standard.Boolean)

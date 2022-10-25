@@ -60,6 +60,7 @@ namespace Friflo.Json.Fliox.Schema.Language
             AddType (map, standard.DateTime,    "kotlinx.datetime" );
             AddType (map, standard.Guid,        "java.util" );
             AddType (map, standard.JsonValue,   "kotlinx.serialization.json" );
+            AddType (map, standard.JsonEntity,  "kotlinx.serialization.json" );
             return map;
         }
 
@@ -158,6 +159,8 @@ namespace Friflo.Json.Fliox.Schema.Language
             if (type == context.standardTypes.DateTime)
                 return "Instant";
             if (type == context.standardTypes.JsonValue)
+                return "JsonElement";
+            if (type == context.standardTypes.JsonEntity)
                 return "JsonElement";
             if (type == context.standardTypes.Guid)
                 return "UUID";

@@ -71,15 +71,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs
             this.processor = processor;
         }
         
-        internal void ModifyWrites(string keyName, List<JsonValue> entities) {
+        internal void ModifyWrites(string keyName, List<JsonEntity> entities) {
             for (int n = 0; n < entities.Count; n++) {
                 var entity = entities[n];
-                if (!processor.GetEntityKey(entity, keyName, out JsonKey entityKey, out string error))
+                if (!processor.GetEntityKey(entity.value, keyName, out JsonKey entityKey, out string error))
                     throw new InvalidOperationException($"Entity key error: {error}");
                 var key = entityKey.AsString();
                 if (writes.TryGetValue(key, out var modifier)) {
-                    var modified    = modifier (entity);
-                    entities[n] = modified;
+                    var modified    = modifier (entity.value);
+                    entities[n]     = new JsonEntity(entity.key, modified);
                 }
             }
         }

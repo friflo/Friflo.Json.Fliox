@@ -65,11 +65,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs
         public override Task<CreateEntitiesResult> CreateEntities(CreateEntities command, SyncContext syncContext) {
             var entities = command.entities;
             List<EntityError> createErrors = null;
-            AssertEntityCounts(command.entityKeys, entities);
             for (int n = 0; n < entities.Count; n++) {
-                var key     = command.entityKeys[n];
-                var payload = entities[n];
-                var entry   = CreateEntry(key, payload);
+                var entity  = entities[n];
+                var key     = entity.key;
+                var entry   = CreateEntry(key, entity.value);
                 if (keyValues.TryAdd(key, entry))
                     continue;
                 var error = new EntityError(EntityErrorType.WriteError, name, key, "entity already exist");
@@ -81,11 +80,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs
 
         public override Task<UpsertEntitiesResult> UpsertEntities(UpsertEntities command, SyncContext syncContext) {
             var entities = command.entities;
-            AssertEntityCounts(command.entityKeys, entities);
             for (int n = 0; n < entities.Count; n++) {
-                var key     = command.entityKeys[n];
-                var payload = entities[n];
-                keyValues[key] = CreateEntry(key, payload);
+                var entity  = entities[n];
+                var key     = entity.key;
+                keyValues[key] = CreateEntry(key, entity.value);
             }
             var result = new UpsertEntitiesResult();
             return Task.FromResult(result);

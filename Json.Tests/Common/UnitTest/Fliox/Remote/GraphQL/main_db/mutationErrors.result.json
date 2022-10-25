@@ -43,7 +43,7 @@
             }
         },
         {
-            "message": "Cannot assign string to List<JsonValue>. got: 'noArray'. was: $upserts",
+            "message": "Cannot assign string to List<JsonEntity>. got: 'noArray'. was: $upserts",
             "path": [
                 "upsertWithInvalidVar",
                 "entities"

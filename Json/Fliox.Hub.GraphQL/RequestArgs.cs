@@ -104,11 +104,11 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             return true;
         }
 
-        internal static List<JsonValue> GetEntities(in QueryContext cx, out QueryError? error)
+        internal static List<JsonEntity> GetEntities(in QueryContext cx, out QueryError? error)
         {
             if (!GetArguments(cx, out var arguments, out error))
                 return null;
-            List<JsonValue> entities = null;
+            List<JsonEntity> entities = null;
             foreach (var argument in arguments) {
                 var argName = argument.Name.Value.Span;
                 if (argName.SequenceEqual("entities")) {

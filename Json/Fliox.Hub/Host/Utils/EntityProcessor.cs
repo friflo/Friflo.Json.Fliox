@@ -171,7 +171,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Utils
         /// It is placed here as it shares all required parser related properties and
         /// its purpose is also related to parsing entities.
         /// </summary>
-        public List<JsonValue> ReadJsonArray(JsonValue json, out string error) {
+        public List<JsonEntity> ReadJsonArray(JsonValue json, out string error) {
             jsonBytes.Clear();
             jsonBytes.AppendArray(json);
             parser.InitParser(jsonBytes);
@@ -181,7 +181,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Utils
                 return null;
             }
             var srcArray    = jsonBytes.buffer.array;
-            var array       = new List<JsonValue>();
+            var array       = new List<JsonEntity>();
             while (true) {
                 ev = parser.NextEvent();
                 switch (ev) {
@@ -205,7 +205,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Utils
                         for (int n = 0; n < len; n++) {
                             payload[n] = srcArray[objStart + n];
                         }
-                        var element = new JsonValue(payload);
+                        var element = new JsonEntity(new JsonValue(payload));
                         array.Add(element);
                         break;
                     case JsonEvent.ArrayEnd:

@@ -57,6 +57,7 @@ namespace Friflo.Json.Fliox.Schema.Language
             AddType (map, standard.Boolean,     "/** boolean **/" );
             AddType (map, standard.JsonValue,   "/** any **/" );
             AddType (map, standard.JsonKey,     "/** string **/" );
+            AddType (map, standard.JsonEntity,  "/** any **/" );
             return map;
         }
 
@@ -228,6 +229,8 @@ namespace Friflo.Json.Fliox.Schema.Language
             var standard = context.standardTypes;
             if (type == standard.JsonValue)
                 return "any"; // known as Mr anti-any  :) 
+            if (type == standard.JsonEntity)
+                return "any"; 
             if (type == standard.String || type == standard.JsonKey)
                 return "string";
             if (type == standard.Boolean)

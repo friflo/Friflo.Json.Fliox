@@ -90,17 +90,16 @@ namespace Friflo.Json.Fliox.Hub.Host
         
         public override async Task<CreateEntitiesResult> CreateEntities(CreateEntities command, SyncContext syncContext) {
             var entities = command.entities;
-            AssertEntityCounts(command.entityKeys, entities);
             List<EntityError> createErrors = null;
             await rwLock.AcquireWriterLock().ConfigureAwait(false);
             try {
                 for (int n = 0; n < entities.Count; n++) {
-                    var payload = entities[n];
+                    var entity  = entities[n];
                     // if (payload.json == null)  continue; // TAG_ENTITY_NULL
-                    var key     = command.entityKeys[n];
+                    var key     = entity.key;
                     var path = FilePath(key.AsString());
                     try {
-                        await WriteText(path, payload, FileMode.CreateNew).ConfigureAwait(false);
+                        await WriteText(path, entity.value, FileMode.CreateNew).ConfigureAwait(false);
                     } catch (Exception e) {
                         var error = CreateEntityError(EntityErrorType.WriteError, key, e);
                         AddEntityError(ref createErrors, key, error);
@@ -114,17 +113,16 @@ namespace Friflo.Json.Fliox.Hub.Host
 
         public override async Task<UpsertEntitiesResult> UpsertEntities(UpsertEntities command, SyncContext syncContext) {
             var entities = command.entities;
-            AssertEntityCounts(command.entityKeys, entities);
             List<EntityError> upsertErrors = null;
             await rwLock.AcquireWriterLock().ConfigureAwait(false);
             try {
                 for (int n = 0; n < entities.Count; n++) {
-                    var payload = entities[n];
-                    // if (payload.json == null)  continue; // TAG_ENTITY_NULL
-                    var key     = command.entityKeys[n];
-                    var path = FilePath(key.AsString());
+                    var entity = entities[n];
+                    // if (entity.json == null)  continue; // TAG_ENTITY_NULL
+                    var key     = entity.key;
+                    var path    = FilePath(key.AsString());
                     try {
-                        await WriteText(path, payload, FileMode.Create).ConfigureAwait(false);
+                        await WriteText(path, entity.value, FileMode.Create).ConfigureAwait(false);
                     } catch (Exception e) {
                         var error = CreateEntityError(EntityErrorType.WriteError, key, e);
                         AddEntityError(ref upsertErrors, key, error);

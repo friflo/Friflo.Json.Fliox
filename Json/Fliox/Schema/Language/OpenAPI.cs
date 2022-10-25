@@ -166,6 +166,8 @@ namespace Friflo.Json.Fliox.Schema.Language
                 return BooleanType;
             if (typeDef == standardTypes.JsonValue)
                 return JsonValueType;
+            if (typeDef == standardTypes.JsonEntity)
+                return JsonValueType;
             if (typeDef == standardTypes.JsonKey)
                 return JsonKeyType;
 

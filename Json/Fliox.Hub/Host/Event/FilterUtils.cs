@@ -84,19 +84,19 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             return false;
         }
         
-        private static List<JsonValue> FilterEntities (
+        private static List<JsonEntity> FilterEntities (
             JsonFilter          jsonFilter,
-            List<JsonValue>     entities,
+            List<JsonEntity>    entities,
             JsonEvaluator       jsonEvaluator)    
         {
             if (jsonFilter == null)
                 return entities;
-            var result          = new List<JsonValue>();
+            var result          = new List<JsonEntity>();
 
             for (int n = 0; n < entities.Count; n++) {
-                var value   = entities[n];
-                if (jsonEvaluator.Filter(value, jsonFilter, out _)) {
-                    result.Add(value);
+                var entity   = entities[n];
+                if (jsonEvaluator.Filter(entity.value, jsonFilter, out _)) {
+                    result.Add(entity);
                 }
             }
             return result;

@@ -251,6 +251,8 @@ namespace Friflo.Json.Fliox.Schema.Language
             var standard = context.standardTypes;
             if (type == standard.JsonValue)
                 return ""; // allow any type                
+            if (type == standard.JsonEntity)
+                return ""; // allow any type                
             if (type == standard.String || type == standard.JsonKey)
                 return $"\"type\": {Opt(required, "string")}";
             if (type == standard.Boolean)

@@ -89,7 +89,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         /// <see cref="WriteTask{T}.peers"/> to enable setting <see cref="DetectPatchesTask"/> to error state via <see cref="DetectPatchesTask{TKey,T}.SetResult"/>. 
         internal override void CreateEntitiesResult(CreateEntities task, SyncTaskResult result, ObjectMapper mapper) {
             var createTask = (CreateTask<T>)task.syncTask;
-            CreateUpsertEntitiesResult(task.entityKeys, task.entities, result, createTask, errorsCreate, mapper);
+            CreateUpsertEntitiesResult(task.entities, result, createTask, errorsCreate, mapper);
             var creates = createTask.peers;
             if (result is TaskErrorResult taskError) {
                 if (errorsCreate == NoErrors) {
@@ -108,12 +108,11 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
 
         internal override void UpsertEntitiesResult(UpsertEntities task, SyncTaskResult result, ObjectMapper mapper) {
             var upsertTask = (UpsertTask<T>)task.syncTask;
-            CreateUpsertEntitiesResult(task.entityKeys, task.entities, result, upsertTask, errorsUpsert, mapper);
+            CreateUpsertEntitiesResult(task.entities, result, upsertTask, errorsUpsert, mapper);
         }
 
         private void CreateUpsertEntitiesResult(
-            List<JsonKey>                       keys,
-            List<JsonValue>                     entities,
+            List<JsonEntity>                    entities,
             SyncTaskResult                      result,
             WriteTask<T>                        writeTask,
             IDictionary<JsonKey, EntityError>   writeErrors,
@@ -123,20 +122,18 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 writeTask.state.SetError(new TaskErrorInfo(taskError));
                 return;
             }
-            if (keys.Count != entities.Count)
-                throw new InvalidOperationException("Expect equal counts");
             var reader = mapper.reader;
             for (int n = 0; n < entities.Count; n++) {
                 var entity = entities[n];
                 // if (entity.json == null)  continue; // TAG_ENTITY_NULL
-                var id = keys[n];
+                var id = entity.key;
                 if (writeErrors.TryGetValue(id, out EntityError _)) {
                     continue;
                 }
                 var key     = KeyConvert.IdToKey(id);
                 var peer    = set.GetOrCreatePeerByKey(key, id);
                 peer.state  = PeerState.None;
-                peer.SetPatchSource(reader.Read<T>(entity));
+                peer.SetPatchSource(reader.Read<T>(entity.value));
             }
 
             var entityErrorInfo = new TaskErrorInfo();

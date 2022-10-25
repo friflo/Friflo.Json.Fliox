@@ -284,7 +284,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             context.WriteString("deleted successful", "text/plain", 200);
         }
         
-        private static List<JsonValue> Body2JsonValues(RequestContext context, string id, string keyName, JsonValue value, out string error)
+        private static List<JsonEntity> Body2JsonValues(RequestContext context, string id, string keyName, JsonValue value, out string error)
         {
             var pool        = context.Pool;
             keyName         = keyName ?? "id";
@@ -304,7 +304,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             }
             if (id != null) {
                 error = null;
-                return new List<JsonValue> {value};
+                return new List<JsonEntity> { new JsonEntity(value) };
             }
             // read entity array from request body
             using (var pooled = pool.EntityProcessor.Get()) {

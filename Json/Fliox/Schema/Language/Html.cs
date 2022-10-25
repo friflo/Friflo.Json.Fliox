@@ -249,6 +249,8 @@ $@"        <tr>
             var standard = context.standardTypes;
             if (type == standard.JsonValue)
                 return "<predef>any</predef>"; // known as Mr anti-any  :) 
+            if (type == standard.JsonEntity)
+                return "<predef>any</predef>"; 
             if (type == standard.String || type == standard.JsonKey)
                 return "<predef>string</predef>";
             if (type == standard.Boolean)

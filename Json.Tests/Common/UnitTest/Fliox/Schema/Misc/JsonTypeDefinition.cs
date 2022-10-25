@@ -162,6 +162,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema.Misc
             var standard = context.standardTypes;
             if (type == standard.JsonValue)
                 return ""; // allow any type
+            if (type == standard.JsonEntity)
+                return ""; // allow any type
             if (primitiveTypes.TryGetValue(type, out var definition))
                 return $"\"type\": \"{definition}\"";
             return $"{Ref(type)}";

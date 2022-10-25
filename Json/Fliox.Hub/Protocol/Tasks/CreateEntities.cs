@@ -24,10 +24,8 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         /// <summary>name of the primary key property in <see cref="entities"/></summary>
                     public  string          keyName;
         /// <summary>the <see cref="entities"/> which are created in the specified <see cref="container"/></summary>
-        [Required]  public  List<JsonValue> entities;
+        [Required]  public  List<JsonEntity>entities;
                         
-        [Ignore]    public  List<JsonKey>   entityKeys;
-        
         public   override   TaskType        TaskType => TaskType.create;
         public   override   string          TaskName => $"container: '{container}'";
         
@@ -36,13 +34,12 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
                 return MissingContainer();
             if (entities == null)
                 return MissingField(nameof(entities));
-            entityKeys = EntityUtils.GetKeysFromEntities(keyName, entities, syncContext, out string error);
-            if (entityKeys == null) {
+            if (!EntityUtils.GetKeysFromEntities(keyName, entities, syncContext, out string error)) {
                 return InvalidTask(error);
             }
 
             List<EntityError> validationErrors = null;
-            error = database.Schema?.ValidateEntities (container, entityKeys, entities, syncContext, EntityErrorType.WriteError, ref validationErrors);
+            error = database.Schema?.ValidateEntities (container, entities, syncContext, EntityErrorType.WriteError, ref validationErrors);
             if (error != null) {
                 return TaskError(new CommandError(TaskErrorResultType.ValidationError, error));
             }
@@ -55,7 +52,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
                     for (int n = 0; n < entities.Count; n++) {
                         var entity = entities[n];
                         // if (entity.json == null)  continue; // TAG_ENTITY_NULL
-                        entities[n] = patcher.Copy(entity, true);
+                        entities[n] = new JsonEntity(entity.key, patcher.Copy(entity.value, true));
                     }
                 }
             }
