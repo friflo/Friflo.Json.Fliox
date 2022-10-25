@@ -60,22 +60,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
         }
         
         [Test]
-        public void TestJsonEntities() {
-            using (var typeStore = new TypeStore())
-            using (var mapper = new ObjectMapper(typeStore)) {
-                JsonEntities entities = new JsonEntities(2);
-                entities.entities.Add(new JsonKey("int"), new EntityValue("1"));
-                entities.entities.Add(new JsonKey("str"), new EntityValue("\"hello\""));
-                var json = mapper.Write(entities);
-                AreEqual("{\"int\":1,\"str\":\"hello\"}", json);
-                
-                var result = mapper.Read<JsonEntities>(json);
-                AreEqual(entities.entities[new JsonKey("int")].Json.AsString(), result.entities[new JsonKey("int")].Json.AsString());
-                AreEqual(entities.entities[new JsonKey("str")].Json.AsString(), result.entities[new JsonKey("str")].Json.AsString());
-            }
-        }
-        
-        [Test]
         public void TestEntityProcessor() {
             using (var processor = new EntityProcessor()) {
                 {
