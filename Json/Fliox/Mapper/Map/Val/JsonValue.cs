@@ -15,6 +15,10 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
         }
     }
     
+    /// <summary>
+    /// Basically same implementation as <see cref="JsonEntityMapper"/>
+    /// Note: Keep both implementation in sync
+    /// </summary>
     public sealed class JsonValueMapper : TypeMapper<JsonValue>
     {
         public override string DataTypeName() { return "JsonValue"; }
