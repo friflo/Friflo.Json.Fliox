@@ -18,17 +18,17 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     public sealed class UpsertEntities : SyncRequestTask
     {
         /// <summary>container name the <see cref="entities"/> are upserted - created or updated</summary>
-        [Required]  public  string          container;
+        [Required]  public  string              container;
         /// <summary>name of the primary key property in <see cref="entities"/></summary>
-                    public  string          keyName;
+                    public  string              keyName;
         /// <summary>the <see cref="entities"/> which are upserted in the specified <see cref="container"/></summary>
-        [Required]  public  List<JsonEntity>entities;
+        [Required]  public  List<JsonEntity>    entities;
         
         /// <summary>if set the Hub forward the Upsert as an event only to given <see cref="users"/></summary>
-        [Ignore]    public  List<JsonKey>   users;
+        [Ignore]    public  List<JsonKey>       users;
         
-        public   override   TaskType        TaskType => TaskType.upsert;
-        public   override   string          TaskName => $"container: '{container}'";
+        public   override   TaskType            TaskType => TaskType.upsert;
+        public   override   string              TaskName => $"container: '{container}'";
         
         public override async Task<SyncTaskResult> Execute(EntityDatabase database, SyncResponse response, SyncContext syncContext) {
             if (container == null)
@@ -75,9 +75,9 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     /// </summary>
     public sealed class UpsertEntitiesResult : SyncTaskResult, ICommandResult
     {
-        [Ignore]    public CommandError        Error { get; set; }
+        [Ignore]    public  CommandError        Error { get; set; }
         /// <summary>list of entity errors failed to upsert</summary>
-                    public List<EntityError>   errors;
+                    public  List<EntityError>   errors;
 
         internal override   TaskType            TaskType => TaskType.upsert;
     }

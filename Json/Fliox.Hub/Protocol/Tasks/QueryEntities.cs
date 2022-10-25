@@ -147,18 +147,18 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     public sealed class QueryEntitiesResult : SyncTaskResult, ICommandResult
     {
         /// <summary>container name - not utilized by Protocol</summary>
-        [DebugInfo] public  string                          container;
-                    public  string                          cursor;
+        [DebugInfo] public  string                  container;
+                    public  string                  cursor;
         /// <summary>number of <see cref="ids"/> - not utilized by Protocol</summary>
-        [DebugInfo] public  int?                            count;
-        [Required]  public  HashSet<JsonKey>                ids = new HashSet<JsonKey>(JsonKey.Equality);
-                    public  List<ReferencesResult>          references;
+        [DebugInfo] public  int?                    count;
+        [Required]  public  HashSet<JsonKey>        ids = new HashSet<JsonKey>(JsonKey.Equality);
+                    public  List<ReferencesResult>  references;
                         
-        [Ignore]    public  List<EntityValue>               entities;
-        [Ignore]    public  CommandError                    Error { get; set; }
+        [Ignore]    public  List<EntityValue>       entities;
+        [Ignore]    public  CommandError            Error { get; set; }
 
         
-        internal override   TaskType                        TaskType => TaskType.query;
-        public   override   string                          ToString() => $"(container: {container})";
+        internal override   TaskType                TaskType    => TaskType.query;
+        public   override   string                  ToString()  => $"(container: {container})";
     }
 }

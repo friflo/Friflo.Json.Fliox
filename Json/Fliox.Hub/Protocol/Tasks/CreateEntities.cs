@@ -19,15 +19,15 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     public sealed class CreateEntities : SyncRequestTask
     {
         /// <summary>container name the <see cref="entities"/> are created</summary>
-        [Required]  public  string          container;
-                    public  Guid?           reservedToken;
+        [Required]  public  string              container;
+                    public  Guid?               reservedToken;
         /// <summary>name of the primary key property in <see cref="entities"/></summary>
-                    public  string          keyName;
+                    public  string              keyName;
         /// <summary>the <see cref="entities"/> which are created in the specified <see cref="container"/></summary>
-        [Required]  public  List<JsonEntity>entities;
+        [Required]  public  List<JsonEntity>    entities;
                         
-        public   override   TaskType        TaskType => TaskType.create;
-        public   override   string          TaskName => $"container: '{container}'";
+        public   override   TaskType            TaskType => TaskType.create;
+        public   override   string              TaskName => $"container: '{container}'";
         
         public override async Task<SyncTaskResult> Execute(EntityDatabase database, SyncResponse response, SyncContext syncContext) {
             if (container == null)

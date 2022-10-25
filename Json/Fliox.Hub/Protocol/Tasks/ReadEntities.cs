@@ -19,17 +19,17 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     public sealed class ReadEntities : SyncRequestTask
     {
         /// <summary>container name</summary>
-        [Required]  public  string                  container;
+        [Required]  public  string              container;
         /// <summary> name of the primary key property of the returned entities </summary>
-                    public  string                  keyName;
-                    public  bool?                   isIntKey;
+                    public  string              keyName;
+                    public  bool?               isIntKey;
         /// <summary> list of requested entity <see cref="ids"/> </summary>
-        [Required]  public  List<JsonKey>           ids;
+        [Required]  public  List<JsonKey>       ids;
         /// <summary> used to request the entities referenced by properties of a read task result </summary>
-                    public  List<References>        references;
+                    public  List<References>    references;
         
-        public   override   TaskType                TaskType => TaskType.read;
-        public   override   string                  TaskName =>  $"container: '{container}'";
+        public   override   TaskType            TaskType => TaskType.read;
+        public   override   string              TaskName =>  $"container: '{container}'";
 
         public override async Task<SyncTaskResult> Execute(EntityDatabase database, SyncResponse response, SyncContext syncContext) {
             if (container == null)
@@ -72,11 +72,11 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     /// </summary>
     public sealed class ReadEntitiesResult : SyncTaskResult
     {
-                    public  List<ReferencesResult>          references;
-        [Ignore]    public  List<EntityValue>               entities;
+                    public  List<ReferencesResult>  references;
+        [Ignore]    public  List<EntityValue>       entities;
         
-        [Ignore]    public  CommandError                    Error { get; set; }
-        internal override   TaskType                        TaskType => TaskType.read;
+        [Ignore]    public  CommandError            Error { get; set; }
+        internal override   TaskType                TaskType => TaskType.read;
         
         /// <summary>
         /// Validate all <see cref="EntityValue.value"/>'s in the result set.
