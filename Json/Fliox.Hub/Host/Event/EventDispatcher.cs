@@ -130,7 +130,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                 subClient = GetOrCreateSubClient(user, clientId, eventReceiver);
                 if (!subClient.databaseSubs.TryGetValue(database, out var databaseSubs)) {
                     databaseSubs = new DatabaseSubs(database);
-                    subClient.databaseSubs.Add(database, databaseSubs);
+                    subClient.databaseSubs.TryAdd(database, databaseSubs);
                 }
                 databaseSubs.AddMessageSubscription(subscribe.name);
                 return true;
@@ -163,7 +163,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                 subClient = GetOrCreateSubClient(user, clientId, eventReceiver);
                 if (!subClient.databaseSubs.TryGetValue(database, out var databaseSubs)) {
                     databaseSubs = new DatabaseSubs(database);
-                    subClient.databaseSubs.Add(database, databaseSubs);
+                    subClient.databaseSubs.TryAdd(database, databaseSubs);
                 }
                 databaseSubs.AddChangeSubscription(subscribe);
                 return true;

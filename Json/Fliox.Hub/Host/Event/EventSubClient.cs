@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -34,11 +35,11 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         [DebuggerBrowsable(Never)]
         public              IHubLogger                          Logger { get; }
         
-        /// key: database
+        /// key: database - concurrent: database subs may change while running <see cref="EventDispatcher.EnqueueSyncTasks"/>
         [DebuggerBrowsable(Never)]
-        internal readonly   Dictionary<string, DatabaseSubs>    databaseSubs = new Dictionary<string, DatabaseSubs>();
+        internal readonly   ConcurrentDictionary<string, DatabaseSubs> databaseSubs = new ConcurrentDictionary<string, DatabaseSubs>();
         // ReSharper disable once UnusedMember.Local - expose Dictionary as list in Debugger
-        private             IReadOnlyCollection<DatabaseSubs>   DatabaseSubs => databaseSubs.Values;
+        private             ICollection<DatabaseSubs>           DatabaseSubs => databaseSubs.Values;
         
         internal            int                                 SubCount    => databaseSubs.Sum(sub => sub.Value.SubCount); 
         
