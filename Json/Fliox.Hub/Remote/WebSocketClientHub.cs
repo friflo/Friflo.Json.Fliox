@@ -84,6 +84,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
             }
         }
         
+        // static int count;
+        
         private async Task<WebSocketConnection> Connect() {
             var task = JoinConnects(out var tcs, out WebSocketConnection wsConn);
             if (tcs == null) {
@@ -94,6 +96,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             // Console.WriteLine($"WebSocketClientHub.Connect() endpoint: {endpoint}");
             // ws.Options.SetBuffer(4096, 4096);
             try {
+                // Console.WriteLine($"Connect {++count}");
                 await wsConn.websocket.ConnectAsync(endpointUri, CancellationToken.None).ConfigureAwait(false);
 
                 connectTask = null;
@@ -152,7 +155,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
                         }
                         var requestContent  = new JsonValue(memoryStream.ToArray());
                         OnReceive (wsConn, requestContent);
-                    } catch (Exception) {
+                    } catch (Exception e) {
+                        Logger.Log(HubLog.Error, e.Message);
                         foreach (var pair in wsConn.requests) {
                             var request = pair.Value;
                             request.response.SetCanceled();
