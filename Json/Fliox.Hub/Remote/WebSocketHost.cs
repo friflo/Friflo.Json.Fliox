@@ -18,19 +18,19 @@ namespace Friflo.Json.Fliox.Hub.Remote
     // [Things I Wish Someone Told Me About ASP.NET Core WebSockets | codetinkerer.com] https://www.codetinkerer.com/2018/06/05/aspnet-core-websockets.html
     public sealed class WebSocketHost : IDisposable, IEventReceiver, ILogSource
     {
-        private  readonly   WebSocket                               webSocket;
+        private  readonly   WebSocket                       webSocket;
         /// Only set to true for testing. It avoids an early out at <see cref="EventSubClient.SendEvents"/> 
-        private  readonly   bool                                    fakeOpenClosedSocket;
+        private  readonly   bool                            fakeOpenClosedSocket;
 
-        private  readonly   DataChannelSlim<ArraySegment<byte>>     channel;
-        private  readonly   IDataChannelWriter<ArraySegment<byte>>  sendWriter;
-        private  readonly   IDataChannelReader<ArraySegment<byte>>  sendReader;
-        private  readonly   Pool                                    pool;
-        private  readonly   SharedCache                             sharedCache;
-        private  readonly   IPEndPoint                              remoteEndPoint;
+        private  readonly   DataChannelSlim   <JsonValue>   channel;
+        private  readonly   IDataChannelWriter<JsonValue>   sendWriter;
+        private  readonly   IDataChannelReader<JsonValue>   sendReader;
+        private  readonly   Pool                            pool;
+        private  readonly   SharedCache                     sharedCache;
+        private  readonly   IPEndPoint                      remoteEndPoint;
         
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public              IHubLogger                              Logger { get; }
+        public              IHubLogger                      Logger { get; }
 
         
         private WebSocketHost (SharedEnv env, WebSocket webSocket, IPEndPoint remoteEndPoint, bool fakeOpenClosedSocket) {
@@ -41,7 +41,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             this.remoteEndPoint         = remoteEndPoint;
             this.fakeOpenClosedSocket   = fakeOpenClosedSocket;
             
-            channel     = DataChannelSlim<ArraySegment<byte>>.CreateUnbounded(true, false);
+            channel     = DataChannelSlim<JsonValue>.CreateUnbounded(true, false);
             sendWriter  = channel.Writer;
             sendReader  = channel.Reader;
         }
@@ -62,8 +62,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             try {
                 var pooledMapper    = pool.ObjectMapper;
                 var jsonEvent       = RemoteUtils.CreateProtocolMessage(ev, pooledMapper);
-                var arraySegment    = jsonEvent.AsArraySegment();
-                sendWriter.TryWrite(arraySegment);
+                sendWriter.TryWrite(jsonEvent);
                 return Task.FromResult(true);
             }
             catch (Exception) {
@@ -79,10 +78,11 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 try {
                     while (true) {
                         var sendMessage = await sendReader.ReadAsync().ConfigureAwait(false);
-                        if (sendMessage == null)
+                        if (sendMessage.IsNull())
                             return;
+                        var arraySegment = sendMessage.AsArraySegment();
                         // if (sendMessage.Count > 100000) Console.WriteLine($"SendLoop. size: {sendMessage.Count}");
-                        await webSocket.SendAsync(sendMessage, WebSocketMessageType.Text, true, CancellationToken.None).ConfigureAwait(false);
+                        await webSocket.SendAsync(arraySegment, WebSocketMessageType.Text, true, CancellationToken.None).ConfigureAwait(false);
                     }
                 } catch (Exception e) {
                     var msg = GetExceptionMessage("WebSocketHost.SendLoop()", remoteEndPoint, e);
@@ -113,8 +113,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                         var result          = await remoteHost.ExecuteJsonRequest(requestContent, syncContext).ConfigureAwait(false);
                         
                         syncContext.Release();
-                        var arraySegment    = result.body.AsArraySegment();
-                        sendWriter.TryWrite(arraySegment);
+                        sendWriter.TryWrite(result.body);
                     }
                     continue;
                 }
