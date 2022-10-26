@@ -61,13 +61,14 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
             if (dataBuffer == null) throw new InvalidOperationException("expect dataBuffer array not null");
             int remaining   = dataBuffer.Length;
             int dataPos     = 0;
+            var opCode      = GetOpcode(messageType);
             
             while (true) {
                 // if message > max buffer size write multiple fragments
                 var isLast      = remaining <= maxBufferSize;
                 var writeCount  = isLast ? remaining : maxBufferSize;
 
-                int bufferLen   = WriteHeader(writeCount, messageType, isLast, buffer, maskingKey);
+                int bufferLen   = WriteHeader(writeCount, opCode, isLast, buffer, maskingKey);
                 
                 // append writeCount bytes from message to buffer
                 if (maskingKey != null) {
@@ -83,20 +84,20 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
                 
                 if (remaining <= 0)
                     break;
+                opCode = 0;
             }
         }
         
         private static int WriteHeader(
             int                     count,
-            WebSocketMessageType    messageType,
-            bool                    endOfMessage,
+            Opcode                  opCode,
+            bool                    isFinal,
             byte[]                  buffer,
             byte[]                  maskingKey)
         {
             // --- write Fin & Opcode
-            var opcode      = (byte)GetOpcode(messageType);
-            var fin         = (byte)(endOfMessage ? FrameFlags.Fin : 0);
-            buffer[0]       = (byte)(fin | opcode);
+            buffer[0]       = (byte)((isFinal ? (int)FrameFlags.Fin : 0) | (int)opCode);
+
             var lenMask     = maskingKey == null ? 0 : (int)LenFlags.Mask;
             int  bufferPos  = 1;
             
