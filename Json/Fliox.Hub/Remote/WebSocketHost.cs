@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Net.WebSockets;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
@@ -70,6 +71,9 @@ namespace Friflo.Json.Fliox.Hub.Remote
             }
         }
         
+        private  static readonly   Regex   RegExLineFeed   = new Regex(@"\s+");
+        private  static readonly   bool    LogMessage      = false;
+        
         // Send queue (sendWriter / sendReader) is required  to prevent having more than one WebSocket.SendAsync() call outstanding.
         // Otherwise:
         // System.InvalidOperationException: There is already one outstanding 'SendAsync' call for this WebSocket instance. ReceiveAsync and SendAsync can be called simultaneously, but at most one outstanding operation for each of them is allowed at the same time. 
@@ -78,6 +82,10 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 try {
                     while (true) {
                         var sendMessage = await sendReader.ReadAsync().ConfigureAwait(false);
+                        if (LogMessage) {
+                            var msg = RegExLineFeed.Replace(sendMessage.AsString(), "");
+                            Logger.Log(HubLog.Info, msg);
+                        }
                         if (sendMessage.IsNull())
                             return;
                         var arraySegment = sendMessage.AsArraySegment();
