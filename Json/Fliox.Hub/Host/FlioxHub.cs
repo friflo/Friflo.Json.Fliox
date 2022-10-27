@@ -248,7 +248,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             if (dispatcher != null) {
                 dispatcher.EnqueueSyncTasks(syncRequest, syncContext);
                 if (dispatcher.dispatching == EventDispatching.Direct) {
-                    await dispatcher.SendQueuedEvents().ConfigureAwait(false); // use only for testing
+                    dispatcher.SendQueuedEvents(); // use only for testing
                 }
             }
             return new ExecuteSyncResult(response);

@@ -170,7 +170,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             }
         }
         
-        internal async Task SendEvents () {
+        internal void SendEvents () {
             var receiver = eventReceiver;
             // early out in case the target is a remote connection which already closed.
             if (receiver == null || !receiver.IsOpen()) {
@@ -191,7 +191,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                     // In case the event target is remote connection it is not guaranteed that the event arrives.
                     // The remote target may already be disconnected and this is still not know when sending the event.
                     var eventMessage = new EventMessage { dstClientId = clientId, events = events };
-                    await receiver.ProcessEvent(eventMessage).ConfigureAwait(false);
+                    receiver.ProcessEvent(eventMessage);
                 }
                 catch (Exception e) {
                     var message = "SendEvents failed";
@@ -208,7 +208,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                     while (true) {
                         var trigger = await triggerReader.ReadAsync().ConfigureAwait(false);
                         if (trigger == TriggerType.Event) {
-                            await SendEvents().ConfigureAwait(false);
+                            SendEvents();
                             continue;
                         }
                         Logger.Log(HubLog.Info, $"TriggerLoop() returns. {trigger}");

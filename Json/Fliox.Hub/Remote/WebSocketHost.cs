@@ -58,15 +58,15 @@ namespace Friflo.Json.Fliox.Hub.Remote
             return webSocket.State == WebSocketState.Open;
         }
 
-        public Task<bool> ProcessEvent(ProtocolEvent ev) {
+        public bool ProcessEvent(ProtocolEvent ev) {
             try {
                 var pooledMapper    = pool.ObjectMapper;
                 var jsonEvent       = RemoteUtils.CreateProtocolMessage(ev, pooledMapper);
                 sendWriter.TryWrite(jsonEvent);
-                return Task.FromResult(true);
+                return true;
             }
             catch (Exception) {
-                return Task.FromResult(false);
+                return false;
             }
         }
         

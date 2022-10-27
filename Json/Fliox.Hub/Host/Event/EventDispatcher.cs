@@ -16,9 +16,9 @@ using static System.Diagnostics.DebuggerBrowsableState;
 namespace Friflo.Json.Fliox.Hub.Host.Event
 {
     public interface IEventReceiver {
-        bool        IsOpen ();
-        bool        IsRemoteTarget ();
-        Task<bool>  ProcessEvent(ProtocolEvent ev);
+        bool    IsOpen ();
+        bool    IsRemoteTarget ();
+        bool    ProcessEvent(ProtocolEvent ev);
     }
     
     /// <summary>
@@ -228,13 +228,13 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
 
         // -------------------------- event distribution --------------------------------
         // use only for testing
-        internal async Task SendQueuedEvents() {
+        internal void SendQueuedEvents() {
             if (dispatching == EventDispatching.Queue) {
                 throw new InvalidOperationException("must not be called, if using a background Tasks");
             }
             foreach (var pair in subClients) {
                 var subClient = pair.Value;
-                await subClient.SendEvents().ConfigureAwait(false);
+                subClient.SendEvents();
             }
         }
         
