@@ -6,20 +6,12 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Protocol;
-using Friflo.Json.Fliox.Hub.Threading;
 using static System.Diagnostics.DebuggerBrowsableState;
 
 // ReSharper disable ConvertToAutoPropertyWhenPossible
 namespace Friflo.Json.Fliox.Hub.Host.Event
 {
-    internal enum TriggerType {
-        None,
-        Finish,
-        Event
-    }
-
     /// <summary>
     /// Each <see cref="EventSubClient"/> instance (Event Subscriber Client) - handle the subscriptions for a specific client. <br/>
     /// It send database changes and messages as events to the client for all subscriptions the client made. <br/>
@@ -51,9 +43,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         private  readonly   Queue<SyncEvent>                    sentEventsQueue     = new Queue<SyncEvent>();
         // }
         
-        private  readonly   EventDispatching                    dispatching;
-        internal readonly   Task                                triggerLoop;
-        private  readonly   IDataChannelWriter<TriggerType>     triggerWriter;
+        private  readonly   EventDispatcher                     dispatcher;
 
         internal            int                                 Seq                 => eventCounter;
         /// <summary> number of events stored for a client not yet acknowledged by the client </summary>
@@ -71,19 +61,12 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             SharedEnv           env,
             EventSubUser        user,
             in JsonKey          clientId,
-            EventDispatching    dispatching)
+            EventDispatcher     dispatcher)
         {
             Logger              = env.hubLogger;
             this.clientId       = clientId;
             this.user           = user;
-            this.dispatching    = dispatching;
-            if (dispatching != EventDispatching.Queue)
-                return;
-            // --- use trigger channel and loop
-            var channel         = DataChannelSlim<TriggerType>.CreateUnbounded(true, true);
-            triggerWriter       = channel.Writer;
-            var triggerReader   = channel.Reader;
-            triggerLoop         = TriggerLoop(triggerReader);
+            this.dispatcher     = dispatcher;
         }
         
         internal bool UpdateTarget(IEventReceiver eventReceiver) {
@@ -105,8 +88,8 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                 unsentEventsQueue.AddLast(ev);
             }
             // Signal new event. Need to be signaled after adding event to queue. No reason to execute this in the lock. 
-            if (dispatching == EventDispatching.Queue) {
-                EnqueueTrigger(TriggerType.Event);
+            if (dispatcher != null) {
+                dispatcher.NewClientEvent(this);
             }
         }
         
@@ -162,10 +145,10 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                     }
                 }
                 sentEventsQueue.Clear();
-                if (dispatching == EventDispatching.Queue && unsentEventsQueue.Count > 0) {
+                if (dispatcher != null && unsentEventsQueue.Count > 0) {
                     // Console.WriteLine($"unsentEventsQueue: {unsentEventsQueue.Count}");
                     // Trace.WriteLine($"*** SendUnacknowledgedEvents. Count: {unsentEventsQueue.Count}");
-                    EnqueueTrigger (TriggerType.Event);
+                    dispatcher.NewClientEvent(this);
                 }
             }
         }
@@ -182,7 +165,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                 return;
             }
             // Trace.WriteLine("--- SendEvents");
-            while (DequeueEvents(out var events)) {
+            while (DequeueEvents(out SyncEvent[] events)) {
                 // var msg = $"DequeueEvent {ev.seq}";
                 // Trace.WriteLine(msg);
                 // Console.WriteLine(msg);
@@ -199,40 +182,6 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                     Debug.Fail($"{message}, exception: {e}");
                 }
             }
-        }
-        
-        // ---------------------------- trigger channel and queue ----------------------------
-        private Task TriggerLoop(IDataChannelReader<TriggerType> triggerReader) {
-            var loopTask = Task.Run(async () => {
-                try {
-                    while (true) {
-                        var trigger = await triggerReader.ReadAsync().ConfigureAwait(false);
-                        if (trigger == TriggerType.Event) {
-                            SendEvents();
-                            continue;
-                        }
-                        Logger.Log(HubLog.Info, $"TriggerLoop() returns. {trigger}");
-                        return;
-                    }
-                } catch (Exception e) {
-                    var message = "TriggerLoop() failed";
-                    Logger.Log(HubLog.Error, message, e);
-                    Debug.Fail(message, e.Message);
-                }
-            });
-            return loopTask;
-        }
-        
-        private void EnqueueTrigger(TriggerType trigger) {
-            bool success = triggerWriter.TryWrite(trigger);
-            if (success)
-                return;
-            Debug.Fail("EnqueueTrigger() - writer.TryWrite() failed");
-        }
-        
-        internal void FinishQueue() {
-            EnqueueTrigger(TriggerType.Finish);
-            triggerWriter.Complete();
         }
     }
 }

@@ -52,7 +52,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 listenSubscriber.AssertCreateStoreChanges();
                 AreEqual(8, listenSubscriber.EventCount);           // non protected access
                 IsFalse(listenSubscriber.IsOrigin);
-                await eventDispatcher.FinishQueues();
+                await eventDispatcher.StopDispatcher();
             }
         }
         

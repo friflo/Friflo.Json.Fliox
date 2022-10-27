@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host.Auth;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
+using Friflo.Json.Fliox.Hub.Threading;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Transform;
 using static System.Diagnostics.DebuggerBrowsableState;
@@ -70,6 +71,10 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         public              int                                             SubscribedClientsCount => subClients.Count;
         //
         internal readonly   EventDispatching                                dispatching;
+        /// <see cref="clientEventLoop"/> and <see cref="clientEventWriter"/>
+        /// are used as a queue to send pending <see cref="SyncEvent"/>'s
+        private  readonly   Task                                            clientEventLoop;
+        private  readonly   IDataChannelWriter<EventSubClient>              clientEventWriter;
 
         public   override   string                                          ToString() => $"subscribers: {subClients.Count}";
 
@@ -82,6 +87,12 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             sendClients         = new ConcurrentDictionary<JsonKey, EventSubClient>(JsonKey.Equality);
             subUsers            = new ConcurrentDictionary<JsonKey, EventSubUser>(JsonKey.Equality);
             this.dispatching    = dispatching;
+            if (dispatching == EventDispatching.Queue) {
+                var channel             = DataChannelSlim<EventSubClient>.CreateUnbounded(true, true);
+                clientEventWriter       = channel.Writer;
+                var clientEventReader   = channel.Reader;
+                clientEventLoop         = ClientEventLoop(clientEventReader);
+            }
         }
 
         public void Dispose() {
@@ -101,16 +112,16 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             return count;
         }
 
-        public async Task FinishQueues() {
+        public async Task StopDispatcher() {
             if (dispatching != EventDispatching.Queue)
                 return;
-            var loopTasks = new List<Task>();
-            foreach (var pair in subClients) {
-                var subClient = pair.Value;
-                subClient.FinishQueue();
-                loopTasks.Add(subClient.triggerLoop);
-            }
-            await Task.WhenAll(loopTasks).ConfigureAwait(false);
+            StopQueue();
+            await clientEventLoop;
+        }
+        
+        private void StopQueue() {
+            NewClientEvent(null);
+            clientEventWriter.Complete();
         }
         
         // -------------------------------- add / remove subscriptions --------------------------------
@@ -193,7 +204,8 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                 subUser = new EventSubUser (user.userId, user.GetGroups());
                 subUsers.TryAdd(user.userId, subUser);
             }
-            subClient = new EventSubClient(sharedEnv, subUser, clientId, dispatching);
+            var dispatcher = dispatching == EventDispatching.Queue ? this : null;
+            subClient = new EventSubClient(sharedEnv, subUser, clientId, dispatcher);
             if (eventReceiver != null) {
                 subClient.UpdateTarget(eventReceiver);
             }
@@ -316,6 +328,38 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             }
         }
         
+        // ------------------------------- send client events -------------------------------
+        internal void NewClientEvent(EventSubClient client) {
+            bool success = clientEventWriter.TryWrite(client);
+            if (success)
+                return;
+            Debug.Fail("NewClientEvent() - clientEventWriter.TryWrite() failed");
+        }
+        
+        private Task ClientEventLoop(IDataChannelReader<EventSubClient> clientEventReader) {
+            var logger      = sharedEnv.Logger;
+            var loopTask    = Task.Run(async () =>
+            {
+                try {
+                    while (true) {
+                        var client = await clientEventReader.ReadAsync().ConfigureAwait(false);
+                        if (client != null) {
+                            client.SendEvents();
+                            continue;
+                        }
+                        logger.Log(HubLog.Info, $"ClientEventLoop() returns");
+                        return;
+                    }
+                } catch (Exception e) {
+                    var message = "ClientEventLoop() failed";
+                    logger.Log(HubLog.Error, message, e);
+                    Debug.Fail(message, e.Message);
+                }
+            });
+            return loopTask;
+        }
+
+        // --------------------------- serialize remote event optimization ---------------------------
         internal static bool SerializeRemoteEvents = true; // set to false for development
 
         /// Optimization: For remote connections the tasks are serialized to <see cref="SyncEvent.tasksJson"/>.

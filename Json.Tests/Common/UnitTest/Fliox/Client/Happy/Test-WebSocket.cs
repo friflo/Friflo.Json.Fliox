@@ -39,7 +39,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                     await AutoConnect(remoteHub);
                     await remoteHub.Close();
                 });
-                await eventDispatcher.FinishQueues();
+                await eventDispatcher.StopDispatcher();
             }
         }
         

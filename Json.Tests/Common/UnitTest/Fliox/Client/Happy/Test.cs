@@ -180,7 +180,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                     }
                     await remoteHub.Close();
                 });
-                await eventDispatcher.FinishQueues();
+                await eventDispatcher.StopDispatcher();
             }
         }
         
@@ -230,7 +230,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                     }
                     await remoteHub.Close();
                 });
-                await eventDispatcher.FinishQueues();
+                await eventDispatcher.StopDispatcher();
             }
         }
         
@@ -258,7 +258,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                     listenSubscriber.AssertCreateStoreChanges();
                     await TestStores(createStore, useStore);
                 }
-                await eventDispatcher.FinishQueues();
+                await eventDispatcher.StopDispatcher();
             }
         }
         
