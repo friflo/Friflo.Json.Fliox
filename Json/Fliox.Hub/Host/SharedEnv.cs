@@ -38,8 +38,9 @@ namespace Friflo.Json.Fliox.Hub.Host
             set => hubLogger.instance = value ?? throw new ArgumentNullException (nameof(Logger));
         }
         
-        public static readonly SharedEnv Default = new DefaultSharedEnv();
-
+        private static readonly SharedEnv DefaultSharedEnv  = new DefaultSharedEnv();
+        /// <summary>Set breakpoint to check if <see cref="DefaultSharedEnv"/> is used </summary>
+        public  static          SharedEnv Default           => DefaultSharedEnv;
 
         public SharedEnv() {
             typeStore       = new TypeStore();
