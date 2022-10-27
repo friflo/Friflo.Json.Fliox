@@ -27,7 +27,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                     using (var authenticator    = new UserAuthenticator(userDatabase, TestGlobals.Shared))
                     using (var database         = new MemoryDatabase(TestGlobals.DB))
                     using (var hub          	= new FlioxHub(database, TestGlobals.Shared))
-                    using (var eventDispatcher  = new EventDispatcher(false)) // require for SubscribeMessage() and SubscribeChanges()
+                    using (var eventDispatcher  = new EventDispatcher(EventDispatching.Direct)) // required for SubscribeMessage() and SubscribeChanges()
                     {
                         authenticator.RegisterPredicate(TestPredicate);
                         hub.Authenticator   = authenticator;

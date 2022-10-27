@@ -22,13 +22,25 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
     }
     
     /// <summary>
+    /// Specify the way in which events are send to their targets by an <see cref="EventDispatcher"/><br/>
+    /// Events are generated from the database changes and messages send to a <see cref="FlioxHub"/>
+    /// </summary>
+    public enum EventDispatching
+    {
+        /// <summary>Events are queued before they are sent to their targets</summary>
+        Queue,
+        /// <summary>Events are instantaneously send to their targets</summary>
+        Direct
+    }
+    
+    /// <summary>
     /// An <see cref="EventDispatcher"/> is used to enable Pub-Sub.
     /// </summary>
     /// <remarks>
     /// If assigned to <see cref="FlioxHub.EventDispatcher"/> the <see cref="FlioxHub"/> send
     /// push events to clients for database changes and messages these clients have subscribed. <br/>
     /// In case of remote database connections <b>WebSockets</b> are used to send push events to clients.
-    /// </remarks> 
+    /// </remarks>
     public sealed class EventDispatcher : IDisposable
     {
         private  readonly   SharedEnv                                       sharedEnv;
@@ -57,19 +69,19 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         [DebuggerBrowsable(Never)]
         public              int                                             SubscribedClientsCount => subClients.Count;
         //
-        internal readonly   bool                                            background;
+        internal readonly   EventDispatching                                dispatching;
 
         public   override   string                                          ToString() => $"subscribers: {subClients.Count}";
 
         private const string MissingEventReceiver = "subscribing events requires an eventReceiver. E.g a WebSocket as a target for push events.";
 
-        public EventDispatcher (bool background, SharedEnv env = null) {
-            sharedEnv       = env ?? SharedEnv.Default;
-            jsonEvaluator   = new JsonEvaluator();
-            subClients      = new ConcurrentDictionary<JsonKey, EventSubClient>(JsonKey.Equality);
-            sendClients     = new ConcurrentDictionary<JsonKey, EventSubClient>(JsonKey.Equality);
-            subUsers        = new ConcurrentDictionary<JsonKey, EventSubUser>(JsonKey.Equality);
-            this.background = background;
+        public EventDispatcher (EventDispatching dispatching, SharedEnv env = null) {
+            sharedEnv           = env ?? SharedEnv.Default;
+            jsonEvaluator       = new JsonEvaluator();
+            subClients          = new ConcurrentDictionary<JsonKey, EventSubClient>(JsonKey.Equality);
+            sendClients         = new ConcurrentDictionary<JsonKey, EventSubClient>(JsonKey.Equality);
+            subUsers            = new ConcurrentDictionary<JsonKey, EventSubUser>(JsonKey.Equality);
+            this.dispatching    = dispatching;
         }
 
         public void Dispose() {
@@ -90,7 +102,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         }
 
         public async Task FinishQueues() {
-            if (!background)
+            if (dispatching != EventDispatching.Queue)
                 return;
             var loopTasks = new List<Task>();
             foreach (var pair in subClients) {
@@ -181,7 +193,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                 subUser = new EventSubUser (user.userId, user.GetGroups());
                 subUsers.TryAdd(user.userId, subUser);
             }
-            subClient = new EventSubClient(sharedEnv, subUser, clientId, background);
+            subClient = new EventSubClient(sharedEnv, subUser, clientId, dispatching);
             if (eventReceiver != null) {
                 subClient.UpdateTarget(eventReceiver);
             }
@@ -217,7 +229,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         // -------------------------- event distribution --------------------------------
         // use only for testing
         internal async Task SendQueuedEvents() {
-            if (background) {
+            if (dispatching == EventDispatching.Queue) {
                 throw new InvalidOperationException("must not be called, if using a background Tasks");
             }
             foreach (var pair in subClients) {

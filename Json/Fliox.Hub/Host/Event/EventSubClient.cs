@@ -51,7 +51,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         private  readonly   Queue<SyncEvent>                    sentEventsQueue     = new Queue<SyncEvent>();
         // }
         
-        private  readonly   bool                                background;
+        private  readonly   EventDispatching                    dispatching;
         internal readonly   Task                                triggerLoop;
         private  readonly   IDataChannelWriter<TriggerType>     triggerWriter;
 
@@ -68,16 +68,16 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         
         
         internal EventSubClient (
-            SharedEnv       env,
-            EventSubUser    user,
-            in JsonKey      clientId,
-            bool            background)
+            SharedEnv           env,
+            EventSubUser        user,
+            in JsonKey          clientId,
+            EventDispatching    dispatching)
         {
             Logger              = env.hubLogger;
             this.clientId       = clientId;
             this.user           = user;
-            this.background     = background;
-            if (!this.background)
+            this.dispatching    = dispatching;
+            if (dispatching != EventDispatching.Queue)
                 return;
             // --- use trigger channel and loop
             var channel         = DataChannelSlim<TriggerType>.CreateUnbounded(true, true);
@@ -105,7 +105,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                 unsentEventsQueue.AddLast(ev);
             }
             // Signal new event. Need to be signaled after adding event to queue. No reason to execute this in the lock. 
-            if (background) {
+            if (dispatching == EventDispatching.Queue) {
                 EnqueueTrigger(TriggerType.Event);
             }
         }
@@ -162,7 +162,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                     }
                 }
                 sentEventsQueue.Clear();
-                if (background && unsentEventsQueue.Count > 0) {
+                if (dispatching == EventDispatching.Queue && unsentEventsQueue.Count > 0) {
                     // Console.WriteLine($"unsentEventsQueue: {unsentEventsQueue.Count}");
                     // Trace.WriteLine($"*** SendUnacknowledgedEvents. Count: {unsentEventsQueue.Count}");
                     EnqueueTrigger (TriggerType.Event);
