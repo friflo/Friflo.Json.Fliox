@@ -6,6 +6,7 @@ using System.Reflection;
 using Friflo.Json.Burst;
 using Friflo.Json.Fliox.Mapper.Access;
 using Friflo.Json.Fliox.Mapper.Diff;
+using Friflo.Json.Fliox.Mapper.Gen;
 using Friflo.Json.Fliox.Mapper.Map.Object.Reflect;
 using Friflo.Json.Fliox.Mapper.Map.Utils;
 using Friflo.Json.Fliox.Mapper.Map.Val;
@@ -45,6 +46,14 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object
                     return (TypeMapper) TypeMapperUtils.CreateGenericInstance(typeof(ClassILMapper<>), new[] {type}, constructorParams);
                 }
 #endif
+                var flags           = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static;
+                var genWrite        = type.GetMethod("Gen_Write", flags);
+                var genReadField    = type.GetMethod("Gen_ReadField", flags);
+                if (genWrite != null && genReadField != null) {
+                    constructorParams = new object[] {config, type, constructor, factory, type.IsValueType, genWrite, genReadField};
+                    // new ClassMapperGen<T>(config, type, constructor);    
+                    return (TypeMapper) TypeMapperUtils.CreateGenericInstance(typeof(ClassMapperGen<>), new[] {type}, constructorParams);
+                }
                 // new ClassMapper<T>(config, type, constructor);
                 return (TypeMapper) TypeMapperUtils.CreateGenericInstance(typeof(ClassMapper<>), new[] {type}, constructorParams);
             }
