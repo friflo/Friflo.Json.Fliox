@@ -15,9 +15,17 @@ namespace Friflo.Json.Fliox.Mapper.Map
             format.AppendInt(ref bytes, value);
         }
         
-        public void Write<T> (string name, PropField<T> field, T value, ref bool firstMember) {
+        public void Write<T> (string name, PropField field, T value, ref bool firstMember) {
+            if (value == null) {
+                if (!writeNullMembers)
+                    return;
+                WriteFieldKey(field, ref firstMember);
+                AppendNull();
+                return;
+            }
             WriteFieldKey(field, ref firstMember);
-            field.mapper.Write(ref this, value);
+            var mapper = (TypeMapper<T>)field.fieldType;
+            mapper.Write(ref this, value);
         }
     }
 }

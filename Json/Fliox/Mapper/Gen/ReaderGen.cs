@@ -40,11 +40,15 @@ namespace Friflo.Json.Fliox.Mapper.Map
             return success;
         }
         
-        public bool Read<T> (string name, PropField<T> field, ref T value) {
+        public bool Read<T> (string name, PropField field, ref T value) {
             if (parser.Event != JsonEvent.ObjectStart) {
                 return HandleEventGen(field.fieldType, ref value);
             }
-            field.mapper.Read(ref this, value, out bool success);
+            if (value == null) {
+                value = (T)field.fieldType.CreateInstance();
+            }
+            var mapper = (TypeMapper<T>)field.fieldType;
+            mapper.Read(ref this, value, out bool success);
             return success;
         }
     }

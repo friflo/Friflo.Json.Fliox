@@ -13,7 +13,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
 {
     public static class TestClassMapperGen
     {
-        class GenChild
+        partial class GenChild
         {
             public int val;
         }
@@ -22,7 +22,21 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
         {
             public int      intVal0;
             public int      intVal1;
-            // public GenChild child;
+            public GenChild child;
+        }
+        
+        partial class GenChild {
+           
+            private static void Gen_Write(GenChild obj, PropField[] fields, ref Writer writer, ref bool firstMember) {
+                writer.Write("val", fields[0], obj.val, ref firstMember);
+            }
+            
+            private static bool  Gen_ReadField (GenChild obj, PropField field, ref Reader reader) {
+                switch (field.fieldIndex) {
+                    case 0: return reader.Read("val", field, ref obj.val);
+                }
+                return false;
+            }
         }
             
         partial class GenClass {
@@ -31,7 +45,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
             private static void Gen_Write(GenClass obj, PropField[] fields, ref Writer writer, ref bool firstMember) {
                 writer.Write("intVal0", fields[0], obj.intVal0, ref firstMember);
                 writer.Write("intVal1", fields[1], obj.intVal1, ref firstMember);
-                // writer.Write("child",   fields[2], obj.child,   ref firstMember);
+                writer.Write("child",   fields[2], obj.child,   ref firstMember);
             }
             
             // delegate bool ReadFieldDelegate<in T>(T obj, PropField field, ref Reader reader);
@@ -40,7 +54,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
                 switch (field.fieldIndex) {
                     case 0: return reader.Read("intVal0", field, ref obj.intVal0);
                     case 1: return reader.Read("intVal1", field, ref obj.intVal1);
-                    // case 2:   return reader.Read("child",   field, ref obj.child);
+                    case 2: return reader.Read("child",   field, ref obj.child);
                 }
                 return false;
             }
@@ -48,19 +62,20 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
         
         [Test]
         public static void TestGeneratorClass() {
-            var genClass    = new GenClass { intVal0 = 11, intVal1 = 12 };
+            var genClass    = new GenClass { intVal0 = 11, intVal1 = 12, child = new GenChild { val = 22 }};
             var typeStore   = new TypeStore();
             var mapper      = new ObjectMapper(typeStore);
-            
+
             var json = mapper.WriteAsValue(genClass);
             
-            AreEqual(@"{""intVal0"":11,""intVal1"":12}", json.AsString());
+            AreEqual(@"{""intVal0"":11,""intVal1"":12,""child"":{""val"":22}}", json.AsString());
             
             var dest    = new GenClass();
             mapper.ReadTo(json, dest);
             
             AreEqual(11, dest.intVal0);
             AreEqual(12, dest.intVal1);
+            AreEqual(22, dest.child.val);
             
             var start = GC.GetAllocatedBytesForCurrentThread();
             for (int n = 0; n < 10; n++) {
@@ -89,7 +104,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
             var genClass    = new GenClass { intVal0 = 11, intVal1 = 12 };
             var options     = new System.Text.Json.JsonSerializerOptions {IncludeFields = true};
             var json = System.Text.Json.JsonSerializer.Serialize(genClass, options);
-            AreEqual(@"{""intVal0"":11,""intVal1"":12}", json);
+            AreEqual(@"{""intVal0"":11,""intVal1"":12,""child"":null}", json);
             
             for (int n = 0; n < 10; n++) {
                 System.Text.Json.JsonSerializer.Serialize(genClass, options);

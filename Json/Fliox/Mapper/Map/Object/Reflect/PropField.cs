@@ -9,13 +9,11 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
 {
     public sealed class PropField<T> : PropField
     {
-        public readonly TypeMapper<T> mapper;
         
         public PropField(string name, string jsonName, TypeMapper fieldType, FieldInfo field, PropertyInfo property,
             int primIndex, int objIndex, int fieldIndex, bool required, string docs)
             : base(name, jsonName, fieldType, field, property, CreateMember(fieldType, field, property), primIndex, objIndex, fieldIndex, required, docs)
         {
-            mapper = fieldType as TypeMapper<T>;
         }
         
         private static Var.Member CreateMember (TypeMapper fieldType, FieldInfo field, PropertyInfo property) {
