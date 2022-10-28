@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
+using Friflo.Json.Fliox;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Mapper.Map;
 using Friflo.Json.Fliox.Mapper.Map.Object.Reflect;
@@ -53,5 +54,38 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
             var dif = GC.GetAllocatedBytesForCurrentThread() - start;
             AreEqual(0, dif);
         }
+        
+        [Test]
+        public static void TestGeneratorClass2() {
+            var genClass    = new GenClass { intVal0 = 11, intVal1 = 12 };
+            JsonSerializer.Serialize(genClass);
+            
+            for (int n = 0; n < 10; n++) {
+                JsonSerializer.Serialize(genClass);
+            }
+        }
+        
+        [Test]
+        public static void TestSystemTextJson() {
+            var genClass    = new GenClass { intVal0 = 11, intVal1 = 12 };
+            var options     = new System.Text.Json.JsonSerializerOptions {IncludeFields = true};
+            var json = System.Text.Json.JsonSerializer.Serialize(genClass, options);
+            AreEqual(@"{""intVal0"":11,""intVal1"":12}", json);
+            
+            for (int n = 0; n < 10; n++) {
+                System.Text.Json.JsonSerializer.Serialize(genClass, options);
+            }
+        }
+        
+        /* public static void TestSystemTextJson2() {
+            var genClass        = new GenClass { intVal0 = 11, intVal1 = 12 };
+            
+            var bufferWriter    = new ArrayBufferWriter<byte>();
+            for (int n = 0; n < 1; n++) {
+                bufferWriter.Clear();
+                var utf8Writer      = new Utf8JsonWriter (bufferWriter);
+                JsonSerializer.Serialize(utf8Writer, genClass, new System.Text.Json.JsonSerializerOptions {IncludeFields = true});
+            }
+        } */
     }
 }
