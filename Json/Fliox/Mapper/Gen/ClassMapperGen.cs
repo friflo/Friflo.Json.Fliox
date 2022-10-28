@@ -58,7 +58,7 @@ namespace Friflo.Json.Fliox.Mapper.Gen
                         PropField field;
                         if ((field = reader.GetField(propFields)) == null)
                             break;
-                        readField(obj, field, ref reader, out success);
+                        success = readField(obj, field, ref reader);
                         if (!success)
                             return default;
                         break;

@@ -13,26 +13,36 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
 {
     public static class TestClassMapperGen
     {
-        class GenClass
+        class GenChild
         {
-            public int intVal0;
-            public int intVal1;
+            public int val;
+        }
+        
+        partial class GenClass
+        {
+            public int      intVal0;
+            public int      intVal1;
+            // public GenChild child;
+        }
             
+        partial class GenClass {
             // delegate void WriteDelegate<in T>(T obj, PropField[] fields, ref Writer writer, ref bool firstMember);
             
             private static void Gen_Write(GenClass obj, PropField[] fields, ref Writer writer, ref bool firstMember) {
                 writer.Write("intVal0", fields[0], obj.intVal0, ref firstMember);
                 writer.Write("intVal1", fields[1], obj.intVal1, ref firstMember);
+                // writer.Write("child",   fields[2], obj.child,   ref firstMember);
             }
             
-            // delegate void ReadFieldDelegate<in T>(T obj, PropField field, ref Reader reader, out bool success);
+            // delegate bool ReadFieldDelegate<in T>(T obj, PropField field, ref Reader reader);
             
-            private static void  Gen_ReadField (GenClass obj, PropField field, ref Reader reader, out bool success) {
+            private static bool  Gen_ReadField (GenClass obj, PropField field, ref Reader reader) {
                 switch (field.fieldIndex) {
-                    case 0:   obj.intVal0 = reader.ReadInt32("intVal0", field, out success);   return;
-                    case 1:   obj.intVal1 = reader.ReadInt32("intVal1", field, out success);   return;
+                    case 0: return reader.Read("intVal0", field, ref obj.intVal0);
+                    case 1: return reader.Read("intVal1", field, ref obj.intVal1);
+                    // case 2:   return reader.Read("child",   field, ref obj.child);
                 }
-                success = false;
+                return false;
             }
         }
         

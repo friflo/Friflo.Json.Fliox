@@ -14,5 +14,10 @@ namespace Friflo.Json.Fliox.Mapper.Map
             WriteFieldKey(field, ref firstMember);
             format.AppendInt(ref bytes, value);
         }
+        
+        public void Write<T> (string name, PropField<T> field, T value, ref bool firstMember) {
+            WriteFieldKey(field, ref firstMember);
+            field.mapper.Write(ref this, value);
+        }
     }
 }

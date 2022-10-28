@@ -8,31 +8,44 @@ using Friflo.Json.Fliox.Mapper.Map.Object.Reflect;
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Mapper.Map
 {
-    delegate void ReadFieldDelegate<in T>(T obj, PropField field, ref Reader reader, out bool success);
+    delegate bool ReadFieldDelegate<in T>(T obj, PropField field, ref Reader reader);
 
     partial struct Reader
     {
-        private TVal HandleEventGen<TVal>(TypeMapper mapper, out bool success) {
+        private bool HandleEventGen<TVal>(TypeMapper mapper, ref TVal value) {
             switch (parser.Event) {
                 case JsonEvent.ValueNull:
-                    if (!mapper.isNullable)
-                        return ErrorIncompatible<TVal>(mapper.DataTypeName(), mapper, out success);
-                    success = true;
-                    return default;
-                
+                    if (!mapper.isNullable) {
+                        value = ErrorIncompatible<TVal>(mapper.DataTypeName(), mapper, out bool success);
+                        return success;
+                    }
+                    value = default;
+                    return true;
                 case JsonEvent.Error:
                     const string msg2 = "requirement: error must be handled by owner. Add missing JsonEvent.Error case to its Mapper";
                     throw new InvalidOperationException(msg2);
                 // return null;
-                default:
-                    return ErrorIncompatible<TVal>(mapper.DataTypeName(), mapper, out success);
+                default: {
+                    value = default;
+                    ErrorIncompatible<TVal>(mapper.DataTypeName(), mapper, out _);
+                    return false;
+                }
             }
         }
 
-        public int ReadInt32 (string name, PropField field, out bool success) {
+        public bool Read (string name, PropField field, ref int value) {
             if (parser.Event != JsonEvent.ValueNumber)
-                return HandleEventGen<int>(field.fieldType, out success);
-            return parser.ValueAsByte(out success);
+                return HandleEventGen(field.fieldType, ref value);
+            value = parser.ValueAsByte(out bool success);
+            return success;
+        }
+        
+        public bool Read<T> (string name, PropField<T> field, ref T value) {
+            if (parser.Event != JsonEvent.ObjectStart) {
+                return HandleEventGen(field.fieldType, ref value);
+            }
+            field.mapper.Read(ref this, value, out bool success);
+            return success;
         }
     }
 }
