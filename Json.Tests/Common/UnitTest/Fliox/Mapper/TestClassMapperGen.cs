@@ -55,7 +55,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
             AreEqual(0, dif);
         }
         
-        [Test]
+        //[Test]
         public static void TestGeneratorClass2() {
             var genClass    = new GenClass { intVal0 = 11, intVal1 = 12 };
             JsonSerializer.Serialize(genClass);
