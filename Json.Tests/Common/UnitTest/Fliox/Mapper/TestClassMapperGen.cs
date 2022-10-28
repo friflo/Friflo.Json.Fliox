@@ -56,7 +56,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
             for (int n = 0; n < 10; n++) {
                 mapper.writer.WriteAsBytes(genClass);
             }
-            for (int n = 0; n < 10_000_000; n++) {
+            for (int n = 0; n < 10; n++) {
                 mapper.ReadTo(json, dest);
             }
             var dif = GC.GetAllocatedBytesForCurrentThread() - start;
@@ -73,6 +73,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
             }
         }
         
+#if !UNITY_5_3_OR_NEWER
         [Test]
         public static void TestSystemTextJson() {
             var genClass    = new GenClass { intVal0 = 11, intVal1 = 12 };
@@ -95,5 +96,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
                 JsonSerializer.Serialize(utf8Writer, genClass, new System.Text.Json.JsonSerializerOptions {IncludeFields = true});
             }
         } */
+#endif
     }
 }
