@@ -42,7 +42,10 @@ namespace Friflo.Json.Fliox.Mapper.Gen
         // T Read(T obj, PropField[] fields, ref Reader reader, out bool success)
         public override T Read(ref Reader reader, T obj, out bool success)
         {
-            JsonEvent ev = reader.parser.Event;
+            // Ensure preconditions are fulfilled
+            if (!reader.StartObject(this, out success))
+                return default;
+            var ev = reader.parser.NextEvent();
 
             while (true) {
                 switch (ev) {
