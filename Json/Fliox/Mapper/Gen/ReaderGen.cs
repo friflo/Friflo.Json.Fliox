@@ -33,14 +33,8 @@ namespace Friflo.Json.Fliox.Mapper.Map
             }
         }
 
-        public bool Read (string name, PropField field, ref int value) {
-            if (parser.Event != JsonEvent.ValueNumber)
-                return HandleEventGen(field.fieldType, ref value);
-            value = parser.ValueAsByte(out bool success);
-            return success;
-        }
-        
-        public bool Read<T> (string name, PropField field, ref T value) {
+        // used specific name to avoid using it accidentally with a non class / struct type  
+        public bool ReadObj<T> (string name, PropField field, ref T value) {
             if (parser.Event != JsonEvent.ObjectStart) {
                 return HandleEventGen(field.fieldType, ref value);
             }
@@ -49,6 +43,13 @@ namespace Friflo.Json.Fliox.Mapper.Map
             }
             var mapper = (TypeMapper<T>)field.fieldType;
             mapper.Read(ref this, value, out bool success);
+            return success;
+        }
+        
+        public bool Read (string name, PropField field, ref int value) {
+            if (parser.Event != JsonEvent.ValueNumber)
+                return HandleEventGen(field.fieldType, ref value);
+            value = parser.ValueAsByte(out bool success);
             return success;
         }
     }

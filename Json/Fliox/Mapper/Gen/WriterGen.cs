@@ -10,12 +10,8 @@ namespace Friflo.Json.Fliox.Mapper.Map
 
     partial struct Writer
     {
-        public void Write (string name, PropField field, int value, ref bool firstMember) {
-            WriteFieldKey(field, ref firstMember);
-            format.AppendInt(ref bytes, value);
-        }
-        
-        public void Write<T> (string name, PropField field, T value, ref bool firstMember) {
+        // used specific name to avoid using it accidentally with a non class / struct type  
+        public void WriteObj<T> (string name, PropField field, T value, ref bool firstMember) {
             if (value == null) {
                 if (!writeNullMembers)
                     return;
@@ -26,6 +22,11 @@ namespace Friflo.Json.Fliox.Mapper.Map
             WriteFieldKey(field, ref firstMember);
             var mapper = (TypeMapper<T>)field.fieldType;
             mapper.Write(ref this, value);
+        }
+        
+        public void Write (string name, PropField field, int value, ref bool firstMember) {
+            WriteFieldKey(field, ref firstMember);
+            format.AppendInt(ref bytes, value);
         }
     }
 }
