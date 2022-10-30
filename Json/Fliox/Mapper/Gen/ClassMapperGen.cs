@@ -56,7 +56,7 @@ namespace Friflo.Json.Fliox.Mapper.Gen
                     case JsonEvent.ObjectStart:
                     case JsonEvent.ValueNull:
                         PropField field;
-                        if ((field = reader.GetField(propFields)) == null)
+                        if ((field = reader.GetField32(propFields)) == null)
                             break;
                         success = readField(obj, field, ref reader);
                         if (!success)
