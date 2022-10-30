@@ -87,7 +87,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
             for (int n = 0; n < 10; n++) {
                 mapper.writer.WriteAsBytes(genClass);
             }
-            for (int n = 0; n < 10; n++) {
+            for (int n = 0; n < 10_000_000; n++) {
                 mapper.ReadTo(json, dest);
             }
             var dif = GC.GetAllocatedBytesForCurrentThread() - start;
