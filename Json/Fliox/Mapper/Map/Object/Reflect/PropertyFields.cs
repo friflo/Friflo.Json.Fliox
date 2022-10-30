@@ -59,7 +59,6 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
             for (int n = 0; n < count; n++) {
                 typedFields[n]  = fieldList[n];
                 var field       = typedFields[n];
-                if (field.fieldIndex != n) throw new InvalidOperationException($"expect fieldIndex: {n} was {field.fieldIndex}");
                 if (strMap.ContainsKey(field.name))
                     throw new InvalidOperationException("assert field is accessible via string lookup");
                 strMap.Add(field.name, field);

@@ -11,8 +11,8 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
     {
         
         public PropField(string name, string jsonName, TypeMapper fieldType, FieldInfo field, PropertyInfo property,
-            int primIndex, int objIndex, int fieldIndex, bool required, string docs)
-            : base(name, jsonName, fieldType, field, property, CreateMember(fieldType, field, property), primIndex, objIndex, fieldIndex, required, docs)
+            int primIndex, int objIndex, int genIndex, bool required, string docs)
+            : base(name, jsonName, fieldType, field, property, CreateMember(fieldType, field, property), primIndex, objIndex, genIndex, required, docs)
         {
         }
         
@@ -48,7 +48,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
         public   readonly   VarType         varType;            // never null
         public   readonly   int             primIndex;
         public   readonly   int             objIndex;
-        public   readonly   int             fieldIndex;
+        public   readonly   int             genIndex;
         public   readonly   bool            required;
         public   readonly   string          docs;
         public   readonly   string          relation;
@@ -68,7 +68,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
 
 
         internal PropField (string name, string jsonName, TypeMapper fieldType, FieldInfo field, PropertyInfo property, Var.Member member,
-            int primIndex, int objIndex, int fieldIndex, bool required, string docs)
+            int primIndex, int objIndex, int genIndex, bool required, string docs)
         {
             this.name       = name;
             this.key        = new JsonKey(name);
@@ -96,7 +96,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
             this.member     = member;
             this.primIndex  = primIndex;
             this.objIndex   = objIndex;
-            this.fieldIndex = fieldIndex;
+            this.genIndex   = genIndex;
             this.required   = required;
             this.docs       = docs;
             this.relation   = GetRelationAttributeType();

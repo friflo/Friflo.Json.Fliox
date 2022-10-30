@@ -49,7 +49,14 @@ namespace Friflo.Json.Fliox.Mapper.Map
         public bool Read (string name, PropField field, ref int value) {
             if (parser.Event != JsonEvent.ValueNumber)
                 return HandleEventGen(field.fieldType, ref value);
-            value = parser.ValueAsByte(out bool success);
+            value = parser.ValueAsInt(out bool success);
+            return success;
+        }
+        
+        public bool Read (string name, PropField field, ref float value) {
+            if (parser.Event != JsonEvent.ValueNumber)
+                return HandleEventGen(field.fieldType, ref value);
+            value = parser.ValueAsFloat(out bool success);
             return success;
         }
     }

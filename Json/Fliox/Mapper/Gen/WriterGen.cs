@@ -28,5 +28,10 @@ namespace Friflo.Json.Fliox.Mapper.Map
             WriteFieldKey(field, ref firstMember);
             format.AppendInt(ref bytes, value);
         }
+        
+        public void Write (string name, PropField field, float value, ref bool firstMember) {
+            WriteFieldKey(field, ref firstMember);
+            format.AppendFlt(ref bytes, value);
+        }
     }
 }
