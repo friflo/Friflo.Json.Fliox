@@ -31,13 +31,13 @@ namespace Friflo.Json.Fliox.Mapper.Map
         }
         
         // ------------------------------------------- bool ---------------------------------------------
-        public void Write (PropField field, bool value, ref bool firstMember) {
+        public void WriteBoolean (PropField field, bool value, ref bool firstMember) {
             WriteFieldKey(field, ref firstMember);
             format.AppendBool(ref bytes, value);
         }
         
         // --- nullable
-        public void Write (PropField field, bool? value, ref bool firstMember) {
+        public void WriteBooleanNull (PropField field, bool? value, ref bool firstMember) {
             if (value == null) { WriteKeyNull(field, ref firstMember); return; }
             WriteFieldKey(field, ref firstMember);
             format.AppendBool(ref bytes, value.Value);
@@ -45,84 +45,84 @@ namespace Friflo.Json.Fliox.Mapper.Map
         
         // ------------------------------------------- number ---------------------------------------------
         // --- integer
-        public void Write (PropField field, byte value, ref bool firstMember) {
+        public void WriteByte (PropField field, byte value, ref bool firstMember) {
             WriteFieldKey(field, ref firstMember);
             format.AppendInt(ref bytes, value);
         }
         
-        public void Write (PropField field, short value, ref bool firstMember) {
+        public void WriteInt16 (PropField field, short value, ref bool firstMember) {
             WriteFieldKey(field, ref firstMember);
             format.AppendInt(ref bytes, value);
         }
         
-        public void Write (PropField field, int value, ref bool firstMember) {
+        public void WriteInt32 (PropField field, int value, ref bool firstMember) {
             WriteFieldKey(field, ref firstMember);
             format.AppendInt(ref bytes, value);
         }
         
-        public void Write (PropField field, long value, ref bool firstMember) {
+        public void WriteInt64 (PropField field, long value, ref bool firstMember) {
             WriteFieldKey(field, ref firstMember);
             format.AppendLong(ref bytes, value);
         }
         
         // --- floating point
-        public void Write (PropField field, float value, ref bool firstMember) {
+        public void WriteSingle (PropField field, float value, ref bool firstMember) {
             WriteFieldKey(field, ref firstMember);
             format.AppendFlt(ref bytes, value);
         }
         
-        public void Write (PropField field, double value, ref bool firstMember) {
+        public void WriteDouble (PropField field, double value, ref bool firstMember) {
             WriteFieldKey(field, ref firstMember);
             format.AppendDbl(ref bytes, value);
         }
         
         // -------------------------------- nullable number ------------------------------------------
         // --- integer
-        public void Write (PropField field, byte? value, ref bool firstMember) {
+        public void WriteByteNull (PropField field, byte? value, ref bool firstMember) {
             if (value == null) { WriteKeyNull(field, ref firstMember); return; }
             WriteFieldKey(field, ref firstMember);
             format.AppendInt(ref bytes, value.Value);
         }
         
-        public void Write (PropField field, short? value, ref bool firstMember) {
+        public void WriteInt16Null (PropField field, short? value, ref bool firstMember) {
             if (value == null) { WriteKeyNull(field, ref firstMember); return; }
             WriteFieldKey(field, ref firstMember);
             format.AppendInt(ref bytes, value.Value);
         }
         
-        public void Write (PropField field, int? value, ref bool firstMember) {
+        public void WriteInt32Null (PropField field, int? value, ref bool firstMember) {
             if (value == null) { WriteKeyNull(field, ref firstMember); return; }
             WriteFieldKey(field, ref firstMember);
             format.AppendInt(ref bytes, value.Value);
         }
         
-        public void Write (PropField field, long? value, ref bool firstMember) {
+        public void WriteInt64Null (PropField field, long? value, ref bool firstMember) {
             if (value == null) { WriteKeyNull(field, ref firstMember); return; }
             WriteFieldKey(field, ref firstMember);
             format.AppendLong(ref bytes, value.Value);
         }
         
         // --- floating point
-        public void Write (PropField field, float? value, ref bool firstMember) {
+        public void WriteSingleNull (PropField field, float? value, ref bool firstMember) {
             if (value == null) { WriteKeyNull(field, ref firstMember); return; }
             WriteFieldKey(field, ref firstMember);
             format.AppendFlt(ref bytes, value.Value);
         }
         
-        public void Write (PropField field, double? value, ref bool firstMember) {
+        public void WriteDoubleNull (PropField field, double? value, ref bool firstMember) {
             if (value == null) { WriteKeyNull(field, ref firstMember); return; }
             WriteFieldKey(field, ref firstMember);
             format.AppendDbl(ref bytes, value.Value);
         }
         
         // ------------------------------------------- string ---------------------------------------------
-        public void Write (PropField field, string value, ref bool firstMember) {
+        public void WriteString (PropField field, string value, ref bool firstMember) {
             if (value == null) { WriteKeyNull(field, ref firstMember); return; }
             WriteFieldKey(field, ref firstMember);
             WriteString(value);
         }
 
-        public void Write (PropField field, in JsonKey value, ref bool firstMember) {
+        public void WriteJsonKey (PropField field, in JsonKey value, ref bool firstMember) {
             WriteFieldKey(field, ref firstMember);
             switch (value.type) {
                 case JsonKeyType.Long:
@@ -142,12 +142,12 @@ namespace Friflo.Json.Fliox.Mapper.Map
             }
         }
         
-        public void Write (PropField field, in Guid value, ref bool firstMember) {
+        public void WriteGuid (PropField field, in Guid value, ref bool firstMember) {
             WriteFieldKey(field, ref firstMember);
             WriteGuid(value);
         }
         
-        public void Write (PropField field, in DateTime value, ref bool firstMember) {
+        public void WriteDateTime (PropField field, in DateTime value, ref bool firstMember) {
             WriteFieldKey(field, ref firstMember);
             DateTimeMapper.ToRFC_3339(value);
         }
@@ -163,7 +163,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
         }
 
         // ------------------------------------------- JSON ---------------------------------------------
-        public void Write (PropField field, in JsonValue value, ref bool firstMember) {
+        public void WriteJsonValue (PropField field, in JsonValue value, ref bool firstMember) {
             WriteFieldKey(field, ref firstMember);
             if (!value.IsNull())
                 bytes.AppendArray(value);
@@ -178,7 +178,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
             mapper.Write(ref this, value);
         }
         
-        public void WriteEnum<T> (PropField field, T? value, ref bool firstMember) where T : struct {
+        public void WriteEnumNull<T> (PropField field, T? value, ref bool firstMember) where T : struct {
             if (!value.HasValue) {
                 WriteKeyNull(field, ref firstMember);
                 return;

@@ -86,15 +86,14 @@ namespace Friflo.Json.Fliox.Schema.Language
             sb.AppendLF($"            bool success;");
             sb.AppendLF($"            switch (field.genIndex) {{");
             foreach (var field in emitFields) {
-                
-                var name        = field.def.name;
-                var indent      = Indent(maxFieldName, name);
-                var fieldDef    = field.def;
-                if (fieldDef.type.IsClass || fieldDef.type.IsStruct || fieldDef.isArray || fieldDef.isDictionary) {
-                    sb.AppendLF($"                case Gen_{name}:{indent} obj.{field.def.nativeName}{indent} = reader.Read   (field, obj.{field.def.nativeName}, out success);  return success;");
+                var def     = field.def;
+                var name    = def.name;
+                var indent  = Indent(maxFieldName, name);
+                if (IsComplex(def)) {
+                    sb.AppendLF($"                case Gen_{name}:{indent} obj.{def.nativeName}{indent} = reader.Read             (field, obj.{def.nativeName}, out success);  return success;");
                 } else {
-                    var suffix  = GetMethodSuffix(field.def);
-                    sb.AppendLF($"                case Gen_{name}:{indent} obj.{field.def.nativeName}{indent} = reader.Read{suffix}   (field, out success);  return success;");
+                    var suffix  = GetMethodSuffix(def);
+                    sb.AppendLF($"                case Gen_{name}:{indent} obj.{def.nativeName}{indent} = reader.Read{suffix} (field, out success);  return success;");
                 }
             }
             sb.AppendLF("            }");
@@ -105,9 +104,15 @@ namespace Friflo.Json.Fliox.Schema.Language
             // --- Write(...)
             sb.AppendLF($"        private static void Write({type.Name} obj, PropField[] fields, ref Writer writer, ref bool firstMember) {{");
             foreach (var field in emitFields) {
-                var name    = field.def.name;
+                var def     = field.def;
+                var name    = def.name;
                 var indent  = Indent(maxFieldName, name);
-                sb.AppendLF($"            writer.Write    (fields[Gen_{name}],{indent} obj.{field.def.nativeName},{indent} ref firstMember);");
+                if (IsComplex(def)) {
+                    sb.AppendLF($"            writer.Write             (fields[Gen_{name}],{indent} obj.{def.nativeName},{indent} ref firstMember);");
+                } else {
+                    var suffix  = GetMethodSuffix(def);
+                    sb.AppendLF($"            writer.Write{suffix} (fields[Gen_{name}],{indent} obj.{def.nativeName},{indent} ref firstMember);");
+                }
             }
             sb.AppendLF("        }");
             sb.AppendLF("    }");
@@ -116,13 +121,25 @@ namespace Friflo.Json.Fliox.Schema.Language
             return new EmitType(type, sb);
         }
         
+        private static bool IsComplex(FieldDef fieldDef) {
+            return fieldDef.type.IsClass    ||
+                   fieldDef.type.IsStruct   ||
+                   fieldDef.isArray         ||
+                   fieldDef.isDictionary;
+        }
+        
         private string GetMethodSuffix(FieldDef field) {
-            if (field.type.IsClass || field.type.IsStruct)
-                return "";
-            var suffix = methodSuffixes[field.type];
-            if (field.isNullableElement)
-                return suffix + "Null";
-            return suffix;
+            string suffix;
+            if (field.type == generator.standardTypes.String) {
+                suffix = "String";
+            } else {
+                suffix = methodSuffixes[field.type];
+                if (!field.required) {
+                    suffix += "Null";
+                }
+            }
+            var indent  = Indent(12, suffix);
+            return suffix + indent;
         }
     }
 }
