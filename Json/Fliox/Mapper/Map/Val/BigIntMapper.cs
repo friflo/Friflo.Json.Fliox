@@ -17,7 +17,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
             return null;
         }
         
-        internal static BigInteger Read<TVal>(TypeMapper<TVal> mapper, ref Reader reader, out bool success) {
+        internal static BigInteger Read(TypeMapper mapper, ref Reader reader, out bool success) {
             ref var value = ref reader.parser.value;
             switch (reader.parser.Event) {
                 case JsonEvent.ValueString:
@@ -34,13 +34,13 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
                     return ret2;
                 case JsonEvent.ValueNull:
                     if (!mapper.isNullable) {
-                        reader.ErrorIncompatible<TVal>(mapper.DataTypeName(), mapper, out success);
+                        reader.ErrorIncompatible<BigInteger>(mapper.DataTypeName(), mapper, out success);
                         return default;
                     }
                     success = true;
                     return default;
                 default:
-                    reader.ErrorIncompatible<TVal>(mapper.DataTypeName(), mapper, out success);
+                    reader.ErrorIncompatible<BigInteger>(mapper.DataTypeName(), mapper, out success);
                     return default;
             }
         }

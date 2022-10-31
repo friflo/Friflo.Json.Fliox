@@ -4,6 +4,7 @@
 using System;
 using Friflo.Json.Burst;
 using Friflo.Json.Fliox.Mapper.Map.Object.Reflect;
+using Friflo.Json.Fliox.Mapper.Map.Val;
 
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Mapper.Map
@@ -34,7 +35,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
         }
 
         // used specific name to avoid using it accidentally with a non class / struct type  
-        public bool ReadObj<T> (string name, PropField field, ref T value) {
+        public bool ReadObj<T> (PropField field, ref T value) {
             if (parser.Event != JsonEvent.ObjectStart) {
                 return HandleEventGen(field.fieldType, ref value);
             }
@@ -47,7 +48,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
         }
         
         // ------------------------------------------- bool ---------------------------------------------
-        public bool Read (string name, PropField field, ref bool value) {
+        public bool Read (PropField field, ref bool value) {
             if (parser.Event != JsonEvent.ValueBool)
                 return HandleEventGen(field.fieldType, ref value);
             value = parser.ValueAsBool(out bool success);
@@ -55,7 +56,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
         }
         
         // --- nullable
-        public bool Read (string name, PropField field, ref bool? value) {
+        public bool Read (PropField field, ref bool? value) {
             if (parser.Event != JsonEvent.ValueBool)
                 return HandleEventGen(field.fieldType, ref value);
             value = parser.ValueAsBool(out bool success);
@@ -64,28 +65,28 @@ namespace Friflo.Json.Fliox.Mapper.Map
         
         // ------------------------------------------- number ---------------------------------------------
         // --- integer
-        public bool Read (string name, PropField field, ref byte value) {
+        public bool Read (PropField field, ref byte value) {
             if (parser.Event != JsonEvent.ValueNumber)
                 return HandleEventGen(field.fieldType, ref value);
             value = parser.ValueAsByte(out bool success);
             return success;
         }
         
-        public bool Read (string name, PropField field, ref short value) {
+        public bool Read (PropField field, ref short value) {
             if (parser.Event != JsonEvent.ValueNumber)
                 return HandleEventGen(field.fieldType, ref value);
             value = parser.ValueAsShort(out bool success);
             return success;
         }
         
-        public bool Read (string name, PropField field, ref int value) {
+        public bool Read (PropField field, ref int value) {
             if (parser.Event != JsonEvent.ValueNumber)
                 return HandleEventGen(field.fieldType, ref value);
             value = parser.ValueAsInt(out bool success);
             return success;
         }
         
-        public bool Read (string name, PropField field, ref long value) {
+        public bool Read (PropField field, ref long value) {
             if (parser.Event != JsonEvent.ValueNumber)
                 return HandleEventGen(field.fieldType, ref value);
             value = parser.ValueAsLong(out bool success);
@@ -93,14 +94,14 @@ namespace Friflo.Json.Fliox.Mapper.Map
         }
         
         // --- floating point ---
-        public bool Read (string name, PropField field, ref float value) {
+        public bool Read (PropField field, ref float value) {
             if (parser.Event != JsonEvent.ValueNumber)
                 return HandleEventGen(field.fieldType, ref value);
             value = parser.ValueAsFloat(out bool success);
             return success;
         }
         
-        public bool Read (string name, PropField field, ref double value) {
+        public bool Read (PropField field, ref double value) {
             if (parser.Event != JsonEvent.ValueNumber)
                 return HandleEventGen(field.fieldType, ref value);
             value = parser.ValueAsDouble(out bool success);
@@ -109,28 +110,28 @@ namespace Friflo.Json.Fliox.Mapper.Map
         
         // --------------------------------- nullable number ------------------------------------------
         // --- integer
-        public bool Read (string name, PropField field, ref byte? value) {
+        public bool Read (PropField field, ref byte? value) {
             if (parser.Event != JsonEvent.ValueNumber)
                 return HandleEventGen(field.fieldType, ref value);
             value = parser.ValueAsByte(out bool success);
             return success;
         }
         
-        public bool Read (string name, PropField field, ref short? value) {
+        public bool Read (PropField field, ref short? value) {
             if (parser.Event != JsonEvent.ValueNumber)
                 return HandleEventGen(field.fieldType, ref value);
             value = parser.ValueAsShort(out bool success);
             return success;
         }
         
-        public bool Read (string name, PropField field, ref int? value) {
+        public bool Read (PropField field, ref int? value) {
             if (parser.Event != JsonEvent.ValueNumber)
                 return HandleEventGen(field.fieldType, ref value);
             value = parser.ValueAsInt(out bool success);
             return success;
         }
         
-        public bool Read (string name, PropField field, ref long? value) {
+        public bool Read (PropField field, ref long? value) {
             if (parser.Event != JsonEvent.ValueNumber)
                 return HandleEventGen(field.fieldType, ref value);
             value = parser.ValueAsLong(out bool success);
@@ -138,14 +139,14 @@ namespace Friflo.Json.Fliox.Mapper.Map
         }
         
         // --- floating point ---
-        public bool Read (string name, PropField field, ref float? value) {
+        public bool Read (PropField field, ref float? value) {
             if (parser.Event != JsonEvent.ValueNumber)
                 return HandleEventGen(field.fieldType, ref value);
             value = parser.ValueAsFloat(out bool success);
             return success;
         }
         
-        public bool Read (string name, PropField field, ref double? value) {
+        public bool Read (PropField field, ref double? value) {
             if (parser.Event != JsonEvent.ValueNumber)
                 return HandleEventGen(field.fieldType, ref value);
             value = parser.ValueAsDouble(out bool success);
@@ -153,23 +154,55 @@ namespace Friflo.Json.Fliox.Mapper.Map
         }
         
         // ------------------------------------------- string ---------------------------------------------
-        public bool Read (string name, PropField field, ref string value) {
+        public bool Read (PropField field, ref string value) {
             if (parser.Event != JsonEvent.ValueString)
                 return HandleEventGen(field.fieldType, ref value);
             value = parser.value.GetString(ref charBuf);
             return true;
         }
         
-        public bool Read (string name, PropField field, ref JsonKey value) {
+        public bool Read (PropField field, ref JsonKey value) {
             if (parser.Event != JsonEvent.ValueString)
                 return HandleEventGen(field.fieldType, ref value);
             value = new JsonKey(ref parser.value, ref parser.valueParser);
             return true;
         }
         
+        public bool Read (PropField field, ref Guid value) {
+            ref var parserValue = ref parser.value;
+            if (parser.Event != JsonEvent.ValueString) {
+                return HandleEventGen(field.fieldType, ref value);
+            }
+            if (!parserValue.TryParseGuid(out value, out _)) {
+                ErrorMsg<Guid>("Failed parsing Guid. value: ", parserValue.AsString(), out _);
+                return false;
+            }
+            return true;
+        }
+        
+        public bool Read (PropField field, ref DateTime value) {
+            var mapper = (DateTimeMapper)field.fieldType;
+            value = mapper.Read(ref this, value, out bool success);
+            return success;
+        }
+        
+        public bool ReadCustom<T> (PropField field, ref T value) {
+            var mapper = (TypeMapper<T>)field.fieldType;
+            if (parser.Event == JsonEvent.ValueNull) {
+                if (!mapper.isNullable) {
+                    value = ErrorIncompatible<T>(mapper.DataTypeName(), mapper, out _);
+                    return false;
+                }
+                value = default;
+                return true;
+            }
+            mapper.Read(ref this, value, out bool success);
+            return success;
+        }
+        
         // ------------------------------------------- any ---------------------------------------------
         // ReSharper disable once RedundantAssignment
-        public bool Read (string name, PropField field, ref JsonValue value) {
+        public bool Read (PropField field, ref JsonValue value) {
             var stub = jsonWriterStub;
             if (stub == null)
                 jsonWriterStub = stub = new Utf8JsonWriterStub();
@@ -180,6 +213,25 @@ namespace Friflo.Json.Fliox.Mapper.Map
             var json    = serializer.json.AsArray();
             value       = new JsonValue (json);
             return true;
+        }
+        
+        // ------------------------------------------- enum ---------------------------------------------
+        // ReSharper disable once RedundantAssignment
+        public bool ReadEnum<T> (PropField field, ref T value) where T : struct {
+            var mapper = (EnumMapper<T>)field.fieldType;
+            value = mapper.Read(ref this, default, out bool success);
+            return success;
+        }
+        
+        // ReSharper disable once RedundantAssignment
+        public bool ReadEnum<T> (PropField field, ref T? value) where T : struct {
+            if (parser.Event == JsonEvent.ValueNull) {
+                value = null;
+                return true;
+            }
+            var mapper = (EnumMapper<T>)field.fieldType;
+            value = mapper.Read(ref this, default, out bool success);
+            return success;
         }
     }
 }

@@ -31,13 +31,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
             
             private static bool  Gen_ReadField (GenChild obj, PropField field, ref Reader reader) {
                 switch (field.genIndex) {
-                    case Gen_val: return reader.Read("val", field, ref obj.val);
+                    case Gen_val: return reader.Read(field, ref obj.val);
                 }
                 return false;
             }
             
             private static void Gen_Write(GenChild obj, PropField[] fields, ref Writer writer, ref bool firstMember) {
-                writer.Write("val", fields[0], obj.val, ref firstMember);
+                writer.Write(fields[0], obj.val, ref firstMember);
             }
         }
             
@@ -51,18 +51,18 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
             
             private static bool  Gen_ReadField (GenClass obj, PropField field, ref Reader reader) {
                 switch (field.genIndex) {
-                    case Gen_intVal0:   return reader.Read   ("intVal0", field, ref obj.intVal0);
-                    case Gen_intVal1:   return reader.Read   ("intVal1", field, ref obj.intVal1);
-                    case Gen_child:     return reader.ReadObj("child",   field, ref obj.child);
+                    case Gen_intVal0:   return reader.Read   (field, ref obj.intVal0);
+                    case Gen_intVal1:   return reader.Read   (field, ref obj.intVal1);
+                    case Gen_child:     return reader.ReadObj(field, ref obj.child);
                 }
                 return false;
             }
             // delegate void WriteDelegate<in T>(T obj, PropField[] fields, ref Writer writer, ref bool firstMember);
             
             private static void Gen_Write(GenClass obj, PropField[] fields, ref Writer writer, ref bool firstMember) {
-                writer.Write    ("intVal0", fields[0], obj.intVal0, ref firstMember);
-                writer.Write    ("intVal1", fields[1], obj.intVal1, ref firstMember);
-                writer.WriteObj ("child",   fields[2], obj.child,   ref firstMember);
+                writer.Write    (fields[0], obj.intVal0, ref firstMember);
+                writer.Write    (fields[1], obj.intVal1, ref firstMember);
+                writer.WriteObj (fields[2], obj.child,   ref firstMember);
             }
         }
         
