@@ -72,12 +72,12 @@ namespace Friflo.Json.Fliox.Schema.Language
             sb.AppendLF("{");
             sb.AppendLF($"    static class Gen_{type.Name}");
             sb.AppendLF("    {");
-            int maxFieldName    = emitFields.MaxLength(field => field.def.name.Length);
+            int maxFieldName    = emitFields.MaxLength(field => field.def.nativeName.Length);
             
             // --- field indices
             int index = 0;
             foreach (var field in emitFields) {
-                sb.AppendLF($"        private const int Gen_{field.def.name} = {index++};");
+                sb.AppendLF($"        private const int Gen_{field.def.nativeName} = {index++};");
             }
             sb.AppendLF("");
             
@@ -87,13 +87,13 @@ namespace Friflo.Json.Fliox.Schema.Language
             sb.AppendLF($"            switch (field.genIndex) {{");
             foreach (var field in emitFields) {
                 var def     = field.def;
-                var name    = def.name;
+                var name    = def.nativeName;
                 var indent  = Indent(maxFieldName, name);
                 if (IsComplex(def)) {
-                    sb.AppendLF($"                case Gen_{name}:{indent} obj.{def.nativeName}{indent} = reader.Read             (field, obj.{def.nativeName}, out success);  return success;");
+                    sb.AppendLF($"                case Gen_{name}:{indent} obj.{name}{indent} = reader.Read             (field, obj.{name}, out success);  return success;");
                 } else {
                     var suffix  = GetMethodSuffix(def);
-                    sb.AppendLF($"                case Gen_{name}:{indent} obj.{def.nativeName}{indent} = reader.Read{suffix} (field, out success);  return success;");
+                    sb.AppendLF($"                case Gen_{name}:{indent} obj.{name}{indent} = reader.Read{suffix} (field, out success);  return success;");
                 }
             }
             sb.AppendLF("            }");
@@ -105,13 +105,13 @@ namespace Friflo.Json.Fliox.Schema.Language
             sb.AppendLF($"        private static void Write({type.Name} obj, PropField[] fields, ref Writer writer, ref bool firstMember) {{");
             foreach (var field in emitFields) {
                 var def     = field.def;
-                var name    = def.name;
+                var name    = def.nativeName;
                 var indent  = Indent(maxFieldName, name);
                 if (IsComplex(def)) {
-                    sb.AppendLF($"            writer.Write             (fields[Gen_{name}],{indent} obj.{def.nativeName},{indent} ref firstMember);");
+                    sb.AppendLF($"            writer.Write             (fields[Gen_{name}],{indent} obj.{name},{indent} ref firstMember);");
                 } else {
                     var suffix  = GetMethodSuffix(def);
-                    sb.AppendLF($"            writer.Write{suffix} (fields[Gen_{name}],{indent} obj.{def.nativeName},{indent} ref firstMember);");
+                    sb.AppendLF($"            writer.Write{suffix} (fields[Gen_{name}],{indent} obj.{name},{indent} ref firstMember);");
                 }
             }
             sb.AppendLF("        }");
