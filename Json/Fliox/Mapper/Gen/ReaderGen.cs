@@ -13,196 +13,175 @@ namespace Friflo.Json.Fliox.Mapper.Map
 
     partial struct Reader
     {
-        private bool HandleEventGen<TVal>(TypeMapper mapper, ref TVal value) {
+        private TVal HandleEventGen<TVal>(TypeMapper mapper, out bool success) {
             switch (parser.Event) {
                 case JsonEvent.ValueNull:
                     if (!mapper.isNullable) {
-                        value = ErrorIncompatible<TVal>(mapper.DataTypeName(), mapper, out bool success);
-                        return success;
+                        return ErrorIncompatible<TVal>(mapper.DataTypeName(), mapper, out success);
                     }
-                    value = default;
-                    return true;
+                    success = true;
+                    return default;
                 case JsonEvent.Error:
                     const string msg2 = "requirement: error must be handled by owner. Add missing JsonEvent.Error case to its Mapper";
                     throw new InvalidOperationException(msg2);
                 // return null;
                 default: {
-                    value = default;
-                    ErrorIncompatible<TVal>(mapper.DataTypeName(), mapper, out _);
-                    return false;
+                    return ErrorIncompatible<TVal>(mapper.DataTypeName(), mapper, out success);
                 }
             }
         }
 
         // used specific name to avoid using it accidentally with a non class / struct type  
-        public bool ReadObj<T> (PropField field, ref T value) {
+        public T ReadObj<T> (PropField field, T value, out bool success) {
             if (parser.Event != JsonEvent.ObjectStart) {
-                return HandleEventGen(field.fieldType, ref value);
+                return HandleEventGen<T>(field.fieldType, out success);
             }
             if (value == null) {
                 value = (T)field.fieldType.CreateInstance();
             }
             var mapper = (TypeMapper<T>)field.fieldType;
-            mapper.Read(ref this, value, out bool success);
-            return success;
+            return mapper.Read(ref this, value, out success);
         }
         
         // ------------------------------------------- bool ---------------------------------------------
-        public bool Read (PropField field, ref bool value) {
+        public bool ReadBool (PropField field, out bool success) {
             if (parser.Event != JsonEvent.ValueBool)
-                return HandleEventGen(field.fieldType, ref value);
-            value = parser.ValueAsBool(out bool success);
-            return success;
+                return HandleEventGen<bool>(field.fieldType, out success);
+            return parser.ValueAsBool(out success);
         }
         
         // --- nullable
-        public bool Read (PropField field, ref bool? value) {
+        public bool? ReadBoolNull (PropField field, out bool success) {
             if (parser.Event != JsonEvent.ValueBool)
-                return HandleEventGen(field.fieldType, ref value);
-            value = parser.ValueAsBool(out bool success);
-            return success;
+                return HandleEventGen<bool?>(field.fieldType, out success);
+            return parser.ValueAsBool(out success);
         }
         
         // ------------------------------------------- number ---------------------------------------------
         // --- integer
-        public bool Read (PropField field, ref byte value) {
+        public byte ReadByte (PropField field, out bool success) {
             if (parser.Event != JsonEvent.ValueNumber)
-                return HandleEventGen(field.fieldType, ref value);
-            value = parser.ValueAsByte(out bool success);
-            return success;
+                return HandleEventGen<byte>(field.fieldType, out success);
+            return parser.ValueAsByte(out success);
         }
         
-        public bool Read (PropField field, ref short value) {
+        public short ReadInt16 (PropField field, out bool success) {
             if (parser.Event != JsonEvent.ValueNumber)
-                return HandleEventGen(field.fieldType, ref value);
-            value = parser.ValueAsShort(out bool success);
-            return success;
+                return HandleEventGen<short>(field.fieldType, out success);
+            return parser.ValueAsShort(out success);
         }
         
-        public bool Read (PropField field, ref int value) {
+        public int ReadInt32 (PropField field, out bool success) {
             if (parser.Event != JsonEvent.ValueNumber)
-                return HandleEventGen(field.fieldType, ref value);
-            value = parser.ValueAsInt(out bool success);
-            return success;
+                return HandleEventGen<int>(field.fieldType, out success);
+            return parser.ValueAsInt(out success);
         }
         
-        public bool Read (PropField field, ref long value) {
+        public long ReadInt64 (PropField field, out bool success) {
             if (parser.Event != JsonEvent.ValueNumber)
-                return HandleEventGen(field.fieldType, ref value);
-            value = parser.ValueAsLong(out bool success);
-            return success;
+                return HandleEventGen<long>(field.fieldType, out success);
+            return parser.ValueAsLong(out success);
         }
         
         // --- floating point ---
-        public bool Read (PropField field, ref float value) {
+        public float ReadSingle (PropField field, out bool success) {
             if (parser.Event != JsonEvent.ValueNumber)
-                return HandleEventGen(field.fieldType, ref value);
-            value = parser.ValueAsFloat(out bool success);
-            return success;
+                return HandleEventGen<float>(field.fieldType, out success);
+            return parser.ValueAsFloat(out success);
         }
         
-        public bool Read (PropField field, ref double value) {
+        public double ReadDouble (PropField field, out bool success) {
             if (parser.Event != JsonEvent.ValueNumber)
-                return HandleEventGen(field.fieldType, ref value);
-            value = parser.ValueAsDouble(out bool success);
-            return success;
+                return HandleEventGen<double>(field.fieldType, out success);
+            return parser.ValueAsDouble(out success);
         }
         
         // --------------------------------- nullable number ------------------------------------------
         // --- integer
-        public bool Read (PropField field, ref byte? value) {
+        public byte? ReadByteNull (PropField field, out bool success) {
             if (parser.Event != JsonEvent.ValueNumber)
-                return HandleEventGen(field.fieldType, ref value);
-            value = parser.ValueAsByte(out bool success);
-            return success;
+                return HandleEventGen<byte?>(field.fieldType, out success);
+            return parser.ValueAsByte(out success);
         }
         
-        public bool Read (PropField field, ref short? value) {
+        public short? ReadInt16Null (PropField field, out bool success) {
             if (parser.Event != JsonEvent.ValueNumber)
-                return HandleEventGen(field.fieldType, ref value);
-            value = parser.ValueAsShort(out bool success);
-            return success;
+                return HandleEventGen<short?>(field.fieldType, out success);
+            return parser.ValueAsShort(out success);
         }
         
-        public bool Read (PropField field, ref int? value) {
+        public int? ReadInt32Null (PropField field, out bool success) {
             if (parser.Event != JsonEvent.ValueNumber)
-                return HandleEventGen(field.fieldType, ref value);
-            value = parser.ValueAsInt(out bool success);
-            return success;
+                return HandleEventGen<int?>(field.fieldType, out success);
+            return parser.ValueAsInt(out success);
         }
         
-        public bool Read (PropField field, ref long? value) {
+        public long? ReadInt64Null (PropField field, out bool success) {
             if (parser.Event != JsonEvent.ValueNumber)
-                return HandleEventGen(field.fieldType, ref value);
-            value = parser.ValueAsLong(out bool success);
-            return success;
+                return HandleEventGen<long?>(field.fieldType, out success);
+            return parser.ValueAsLong(out success);
         }
         
         // --- floating point ---
-        public bool Read (PropField field, ref float? value) {
+        public float? ReadSingleNull (PropField field, out bool success) {
             if (parser.Event != JsonEvent.ValueNumber)
-                return HandleEventGen(field.fieldType, ref value);
-            value = parser.ValueAsFloat(out bool success);
-            return success;
+                return HandleEventGen<float?>(field.fieldType, out success);
+            return parser.ValueAsFloat(out success);
         }
         
-        public bool Read (PropField field, ref double? value) {
+        public double? ReadDoubleNull (PropField field, out bool success) {
             if (parser.Event != JsonEvent.ValueNumber)
-                return HandleEventGen(field.fieldType, ref value);
-            value = parser.ValueAsDouble(out bool success);
-            return success;
+                return HandleEventGen<double?>(field.fieldType, out success);
+            return parser.ValueAsDouble(out success);
         }
         
         // ------------------------------------------- string ---------------------------------------------
-        public bool Read (PropField field, ref string value) {
+        public string ReadString (PropField field, out bool success) {
             if (parser.Event != JsonEvent.ValueString)
-                return HandleEventGen(field.fieldType, ref value);
-            value = parser.value.GetString(ref charBuf);
-            return true;
+                return HandleEventGen<string>(field.fieldType, out success);
+            success = true;
+            return parser.value.GetString(ref charBuf);
         }
         
-        public bool Read (PropField field, ref JsonKey value) {
+        public JsonKey ReadJsonKey (PropField field, out bool success) {
             if (parser.Event != JsonEvent.ValueString)
-                return HandleEventGen(field.fieldType, ref value);
-            value = new JsonKey(ref parser.value, ref parser.valueParser);
-            return true;
+                return HandleEventGen<JsonKey>(field.fieldType, out success);
+            success = true;
+            return new JsonKey(ref parser.value, ref parser.valueParser);
         }
         
-        public bool Read (PropField field, ref Guid value) {
+        public Guid ReadGuid (PropField field, out bool success) {
             ref var parserValue = ref parser.value;
             if (parser.Event != JsonEvent.ValueString) {
-                return HandleEventGen(field.fieldType, ref value);
+                return HandleEventGen<Guid>(field.fieldType, out success);
             }
-            if (!parserValue.TryParseGuid(out value, out _)) {
-                ErrorMsg<Guid>("Failed parsing Guid. value: ", parserValue.AsString(), out _);
-                return false;
+            if (!parserValue.TryParseGuid(out Guid value, out _)) {
+                return ErrorMsg<Guid>("Failed parsing Guid. value: ", parserValue.AsString(), out success);
             }
-            return true;
+            success = true;
+            return value;
         }
         
-        public bool Read (PropField field, ref DateTime value) {
+        public DateTime ReadDateTime (PropField field, out bool success) {
             var mapper = (DateTimeMapper)field.fieldType;
-            value = mapper.Read(ref this, value, out bool success);
-            return success;
+            return mapper.Read(ref this, default, out success);
         }
         
-        public bool Read<T> (PropField field, ref T value) {
+        public T Read<T> (PropField field, T value, out bool success) {
             var mapper = (TypeMapper<T>)field.fieldType;
             if (parser.Event == JsonEvent.ValueNull) {
                 if (!mapper.isNullable) {
-                    value = ErrorIncompatible<T>(mapper.DataTypeName(), mapper, out _);
-                    return false;
+                    return ErrorIncompatible<T>(mapper.DataTypeName(), mapper, out success);
                 }
-                value = default;
-                return true;
+                success = true;
+                return default;
             }
-            mapper.Read(ref this, value, out bool success);
-            return success;
+            return mapper.Read(ref this, value, out success);
         }
         
         // ------------------------------------------- any ---------------------------------------------
         // ReSharper disable once RedundantAssignment
-        public bool Read (PropField field, ref JsonValue value) {
+        public JsonValue ReadJsonValue (PropField field, out bool success) {
             var stub = jsonWriterStub;
             if (stub == null)
                 jsonWriterStub = stub = new Utf8JsonWriterStub();
@@ -211,27 +190,25 @@ namespace Friflo.Json.Fliox.Mapper.Map
             serializer.InitSerializer();
             serializer.WriteTree(ref parser);
             var json    = serializer.json.AsArray();
-            value       = new JsonValue (json);
-            return true;
+            success     = true;
+            return new JsonValue (json);
         }
         
         // ------------------------------------------- enum ---------------------------------------------
         // ReSharper disable once RedundantAssignment
-        public bool ReadEnum<T> (PropField field, ref T value) where T : struct {
+        public T ReadEnum<T> (PropField field, out bool success) where T : struct {
             var mapper = (EnumMapper<T>)field.fieldType;
-            value = mapper.Read(ref this, default, out bool success);
-            return success;
+            return mapper.Read(ref this, default, out success);
         }
         
         // ReSharper disable once RedundantAssignment
-        public bool ReadEnum<T> (PropField field, ref T? value) where T : struct {
+        public T? ReadEnumNull<T> (PropField field, out bool success) where T : struct {
             if (parser.Event == JsonEvent.ValueNull) {
-                value = null;
-                return true;
+                success = true;
+                return default;
             }
             var mapper = (EnumMapper<T>)field.fieldType;
-            value = mapper.Read(ref this, default, out bool success);
-            return success;
+            return mapper.Read(ref this, default, out success);
         }
     }
 }

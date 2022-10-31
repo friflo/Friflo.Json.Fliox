@@ -15,7 +15,7 @@ namespace Gen.Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
             
         private static bool  ReadField (GenChild obj, PropField field, ref Reader reader) {
             switch (field.genIndex) {
-                case Gen_val: return reader.Read(field, ref obj.val);
+                case Gen_val: obj.val = reader.ReadInt32(field, out bool success); return success; 
             }
             return false;
         }
@@ -34,10 +34,11 @@ namespace Gen.Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
         // delegate bool ReadFieldDelegate<in T>(T obj, PropField field, ref Reader reader);
             
         private static bool  ReadField (GenClass obj, PropField field, ref Reader reader) {
+            bool success = false;
             switch (field.genIndex) {
-                case Gen_intVal0:   return reader.Read   (field, ref obj.intVal0);
-                case Gen_intVal1:   return reader.Read   (field, ref obj.intVal1);
-                case Gen_child:     return reader.ReadObj(field, ref obj.child);
+                case Gen_intVal0:   obj.intVal0 = reader.ReadInt32(field, out success);  return success;
+                case Gen_intVal1:   obj.intVal1 = reader.ReadInt32(field, out success);  return success;
+                case Gen_child:     obj.child   = reader.ReadObj  (field, obj.child,   out success);  return success;
             }
             return false;
         }
