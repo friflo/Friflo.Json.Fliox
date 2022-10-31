@@ -38,7 +38,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal.Map
         }
         
         public override void InitTypeMapper(TypeStore typeStore) {
-            var query = new FieldQuery<T>(typeStore, type, ClientFieldFilter.Instance);
+            var query = new FieldQuery<T>(typeStore, type, null, ClientFieldFilter.Instance);
             using (var fields = new PropertyFields<T>(query)) {
                 FieldInfo fieldInfo = mapperType.GetField(nameof(propFields), BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
                 // ReSharper disable once PossibleNullReferenceException

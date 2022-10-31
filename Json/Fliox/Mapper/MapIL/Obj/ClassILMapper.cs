@@ -14,8 +14,14 @@ namespace Friflo.Json.Fliox.Mapper.MapIL.Obj
    
     internal class ClassILMapper<T> : ClassMapper<T> {
         
-        public ClassILMapper (StoreConfig config, Type type, ConstructorInfo constructor, InstanceFactory instanceFactory, bool isValueType) :
-            base (config, type, constructor, instanceFactory, isValueType)
+        public ClassILMapper (
+            StoreConfig     config,
+            Type            type,
+            ConstructorInfo constructor,
+            InstanceFactory instanceFactory,
+            bool            isValueType,
+            Type            genClass)
+        : base (config, type, constructor, instanceFactory, isValueType, genClass)
         {
         }
 

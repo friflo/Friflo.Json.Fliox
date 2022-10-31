@@ -4,69 +4,25 @@
 using System;
 using Friflo.Json.Fliox;
 using Friflo.Json.Fliox.Mapper;
-using Friflo.Json.Fliox.Mapper.Map;
-using Friflo.Json.Fliox.Mapper.Map.Object.Reflect;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
 
 namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
 {
+    internal class GenChild
+    {
+        public int val;
+    }
+        
+    internal class GenClass
+    {
+        public int      intVal0;
+        public int      intVal1;
+        public GenChild child;
+    }
+    
     public static class TestClassMapperGen
     {
-        partial class GenChild
-        {
-            public int val;
-        }
-        
-        partial class GenClass
-        {
-            public int      intVal0;
-            public int      intVal1;
-            public GenChild child;
-        }
-        
-        partial class GenChild {
-           
-            const int Gen_val   = 0;
-            
-            private static bool  Gen_ReadField (GenChild obj, PropField field, ref Reader reader) {
-                switch (field.genIndex) {
-                    case Gen_val: return reader.Read(field, ref obj.val);
-                }
-                return false;
-            }
-            
-            private static void Gen_Write(GenChild obj, PropField[] fields, ref Writer writer, ref bool firstMember) {
-                writer.Write(fields[0], obj.val, ref firstMember);
-            }
-        }
-            
-        partial class GenClass {
-            
-            const int Gen_intVal0   = 0;
-            const int Gen_intVal1   = 1;
-            const int Gen_child     = 2;
-            
-            // delegate bool ReadFieldDelegate<in T>(T obj, PropField field, ref Reader reader);
-            
-            private static bool  Gen_ReadField (GenClass obj, PropField field, ref Reader reader) {
-                switch (field.genIndex) {
-                    case Gen_intVal0:   return reader.Read   (field, ref obj.intVal0);
-                    case Gen_intVal1:   return reader.Read   (field, ref obj.intVal1);
-                    case Gen_child:     return reader.ReadObj(field, ref obj.child);
-                }
-                return false;
-            }
-            
-            // delegate void WriteDelegate<in T>(T obj, PropField[] fields, ref Writer writer, ref bool firstMember);
-            
-            private static void Gen_Write(GenClass obj, PropField[] fields, ref Writer writer, ref bool firstMember) {
-                writer.Write    (fields[Gen_intVal0],   obj.intVal0, ref firstMember);
-                writer.Write    (fields[Gen_intVal1],   obj.intVal1, ref firstMember);
-                writer.WriteObj (fields[Gen_child],     obj.child,   ref firstMember);
-            }
-        }
-        
         [Test]
         public static void TestGeneratorClass() {
             var genClass    = new GenClass { intVal0 = 11, intVal1 = 12, child = new GenChild { val = 22 }};

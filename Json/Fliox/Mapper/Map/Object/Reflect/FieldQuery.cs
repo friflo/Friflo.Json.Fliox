@@ -16,11 +16,13 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
         protected readonly  TypeStore           typeStore;
         protected readonly  FieldFilter         fieldFilter;
         internal  readonly  Type                type;
+        internal  readonly  Type                genClass;
         
-        internal FieldQuery(TypeStore typeStore, Type type, FieldFilter fieldFilter) {
+        internal FieldQuery(TypeStore typeStore, Type type, Type genClass, FieldFilter fieldFilter) {
             this.typeStore      = typeStore;
             this.fieldFilter    = fieldFilter;
             this.type           = type;
+            this.genClass       = genClass;
         }
     } 
     
@@ -28,8 +30,8 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
     {
         internal readonly   List<PropField<T>>  fieldList = new List <PropField<T>>();
 
-        public FieldQuery(TypeStore typeStore, Type type, FieldFilter fieldFilter = null)
-            : base(typeStore, type, fieldFilter ?? FieldFilter.DefaultMemberFilter)
+        public FieldQuery(TypeStore typeStore, Type type, Type genClass, FieldFilter fieldFilter = null)
+            : base(typeStore, type, genClass, fieldFilter ?? FieldFilter.DefaultMemberFilter)
         {
             TraverseMembers(type, true);
             foreach (var field in fieldList) {
@@ -87,8 +89,8 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
                         docs           = assemblyDocs.GetDocs(declaringType.Assembly, signature);
                     }
                     var genIndex = -1;
-                    var genIndexField = type.GetField($"Gen_{fieldName}", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static);
-                    if (genIndexField != null) {
+                    if (genClass != null) {
+                        var genIndexField = genClass.GetField($"Gen_{fieldName}", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static);
                         genIndex = (int)genIndexField.GetValue(null);
                     }
                     

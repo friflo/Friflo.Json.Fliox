@@ -12,8 +12,8 @@ namespace Friflo.Json.Fliox.Mapper.Gen
 {
     internal class ClassMapperGen<T> : ClassMapper<T> {
         
-        private readonly WriteDelegate<T>        write;
-        private readonly ReadFieldDelegate<T>    readField;
+        private readonly WriteDelegate<T>       write;
+        private readonly ReadFieldDelegate<T>   readField;
 
         protected ClassMapperGen (
             StoreConfig             config,
@@ -21,9 +21,10 @@ namespace Friflo.Json.Fliox.Mapper.Gen
             ConstructorInfo         constructor,
             InstanceFactory         instanceFactory,
             bool                    isValueType,
+            Type                    genClass,
             MethodInfo              writeMethod,
             MethodInfo              readFieldMethod)
-            : base (config, type, constructor, instanceFactory, isValueType)
+            : base (config, type, constructor, instanceFactory, isValueType, genClass)
         {
             write     = (WriteDelegate<T>)    Delegate.CreateDelegate(typeof(WriteDelegate<T>),     writeMethod);
             readField = (ReadFieldDelegate<T>)Delegate.CreateDelegate(typeof(ReadFieldDelegate<T>), readFieldMethod);

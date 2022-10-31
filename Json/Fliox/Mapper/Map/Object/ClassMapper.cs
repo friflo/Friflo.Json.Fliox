@@ -35,7 +35,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object
                 if (notInstantiable && factory == null)
                     throw new InvalidOperationException($"type requires concrete types by [InstanceType()] or [PolymorphType()] on: {type}");
                 
-                object[] constructorParams = {config, type, constructor, factory, type.IsValueType};
+                object[] constructorParams = {config, type, constructor, factory, type.IsValueType, null};
 #if !UNITY_5_3_OR_NEWER
                 if (config.useIL) {
                     if (type.IsValueType) {
@@ -46,11 +46,17 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object
                     return (TypeMapper) TypeMapperUtils.CreateGenericInstance(typeof(ClassILMapper<>), new[] {type}, constructorParams);
                 }
 #endif
-                var flags           = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static;
-                var genWrite        = type.GetMethod("Gen_Write", flags);
-                var genReadField    = type.GetMethod("Gen_ReadField", flags);
+                var genClassName    = $"Gen.{type.Namespace}.Gen_{type.Name}";
+                var genClass        = type.Assembly.GetType(genClassName);
+                MethodInfo genWrite     = null;
+                MethodInfo genReadField = null;
+                if (genClass != null) {
+                    var flags       = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static;
+                    genWrite        = genClass.GetMethod("Write", flags);
+                    genReadField    = genClass.GetMethod("ReadField", flags);
+                }
                 if (genWrite != null && genReadField != null) {
-                    constructorParams = new object[] {config, type, constructor, factory, type.IsValueType, genWrite, genReadField};
+                    constructorParams = new object[] {config, type, constructor, factory, type.IsValueType, genClass, genWrite, genReadField };
                     // new ClassMapperGen<T>(config, type, constructor);    
                     return (TypeMapper) TypeMapperUtils.CreateGenericInstance(typeof(ClassMapperGen<>), new[] {type}, constructorParams);
                 }
@@ -64,6 +70,8 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object
     internal class ClassMapper<T> : TypeMapper<T> {
         private readonly    ConstructorInfo     constructor;
         private readonly    Func<T>             createInstance;
+        private readonly    Type                genClass;
+
 
         public  override    string              DataTypeName() { return $"class {typeof(T).Name}"; }
         public  override    bool                IsComplex       => true;
@@ -72,8 +80,14 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object
         
         public  override    PropertyFields      PropFields => propFields;
 
-        protected ClassMapper (StoreConfig config, Type type, ConstructorInfo constructor, InstanceFactory instanceFactory, bool isValueType) :
-            base (config, type, TypeUtils.IsNullable(type), isValueType)
+        protected ClassMapper (
+            StoreConfig     config,
+            Type            type,
+            ConstructorInfo constructor,
+            InstanceFactory instanceFactory,
+            bool            isValueType,
+            Type            genClass)
+            : base (config, type, TypeUtils.IsNullable(type), isValueType)
         {
             this.instanceFactory = instanceFactory;
             if (instanceFactory != null)
@@ -82,6 +96,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object
             var lambda      = CreateInstanceExpression();
             createInstance  = lambda.Compile();
             propFields      = null; // suppress [CS0649] Field '...' is never assigned to, and will always have its default value null
+            this.genClass   = genClass;        
         }
         
         public override void Dispose() {
@@ -112,7 +127,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object
         
         public override void InitTypeMapper(TypeStore typeStore) {
             instanceFactory?.InitFactory(typeStore);
-            var query   = new FieldQuery<T>(typeStore, type);
+            var query   = new FieldQuery<T>(typeStore, type, genClass);
             var fields  = new PropertyFields<T>(query);
             FieldInfo fieldInfo = mapperType.GetField(nameof(propFields), BindingFlags.Public | BindingFlags.Instance);
             // ReSharper disable once PossibleNullReferenceException
