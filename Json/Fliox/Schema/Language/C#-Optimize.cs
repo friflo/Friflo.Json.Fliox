@@ -66,6 +66,7 @@ namespace Friflo.Json.Fliox.Schema.Language
             sb.AppendLF("using Friflo.Json.Fliox.Mapper.Map.Object.Reflect;");
             sb.AppendLF($"using {type.Namespace};");
             sb.AppendLF("");
+            sb.AppendLF("// ReSharper disable InconsistentNaming");
             sb.AppendLF($"namespace Gen.{type.Namespace}");
             sb.AppendLF("{");
             sb.AppendLF($"    static class Gen_{type.Name}");
