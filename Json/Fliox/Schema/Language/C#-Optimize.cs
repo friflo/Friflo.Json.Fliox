@@ -130,8 +130,13 @@ namespace Friflo.Json.Fliox.Schema.Language
         
         private string GetMethodSuffix(FieldDef field) {
             string suffix;
-            if (field.type == generator.standardTypes.String) {
+            var std = generator.standardTypes;
+            if (field.type == std.String) {
                 suffix = "String";
+            } else if (field.type == std.JsonKey) {
+                suffix = "JsonKey";
+            } else if (field.type == std.JsonValue) {
+                suffix = "JsonValue";
             } else {
                 suffix = methodSuffixes[field.type];
                 if (!field.required) {
