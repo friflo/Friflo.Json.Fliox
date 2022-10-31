@@ -28,20 +28,17 @@ namespace Friflo.Json.Fliox.Schema.Language
                     continue;
                 generator.AddEmitType(result);
             }
-            // generator.GroupTypesByPath(true); // sort dependencies - otherwise possible error TS2449: Class '...' used before its declaration.
-            generator.EmitFiles(sb, ns => $"{ns}{generator.fileExt}");
+            generator.EmitTypes();
         }
-        
-        
+
         private EmitType EmitType(TypeDef type, StringBuilder sb) {
-            if (type.IsClass) {
+            if (type.IsClass && !type.IsSchema) {
                 return EmitClassType(type, sb);
             }
             return null;
         }
         
         private EmitType EmitClassType(TypeDef type, StringBuilder sb) {
-            var imports     = new HashSet<TypeDef>();
             var fields      = type.Fields;
             var emitFields = new List<EmitField>(fields.Count);
             foreach (var field in fields) {
@@ -55,33 +52,40 @@ namespace Friflo.Json.Fliox.Schema.Language
             sb.AppendLF("");
             sb.AppendLF($"namespace Gen.{type.Namespace}");
             sb.AppendLF("{");
-            sb.AppendLF($"    static class {type.Name} {{");
+            sb.AppendLF($"    static class Gen_{type.Name}");
+            sb.AppendLF("    {");
+            int maxFieldName    = emitFields.MaxLength(field => field.def.name.Length);
             
-            // int maxFieldName    = emitFields.MaxLength(field => field.type.Length);
             // --- field indices
             int index = 0;
             foreach (var field in emitFields) {
-                sb.AppendLF($"        private const in Gen_{field.def.name} = {index++}");
+                sb.AppendLF($"        private const int Gen_{field.def.name} = {index++};");
             }
+            sb.AppendLF("");
             
             // --- ReadField(...)
             sb.AppendLF($"        private static bool ReadField ({type.Name} obj, PropField field, ref Reader reader) {{");
             sb.AppendLF($"            switch (field.genIndex) {{");
             foreach (var field in emitFields) {
-                sb.AppendLF($"                case Gen_{field.def.name}:   return reader.Read   (field, ref obj.{field.def.name});");
+                var indent   = Indent(maxFieldName, field.def.name);
+                sb.AppendLF($"                case Gen_{field.def.name}:{indent} return reader.Read   (field, ref obj.{field.def.name});");
             }
             sb.AppendLF("            }");
+            sb.AppendLF("            return false;");
             sb.AppendLF("        }");
+            sb.AppendLF("");
             
             // --- Write(...)
-            sb.AppendLF($"        private static void Write(GenClass obj, PropField[] fields, ref Writer writer, ref bool firstMember) {{");
+            sb.AppendLF($"        private static void Write({type.Name} obj, PropField[] fields, ref Writer writer, ref bool firstMember) {{");
             foreach (var field in emitFields) {
-                sb.AppendLF($"            writer.Write    (fields[Gen_{field.def.name}],   obj.{field.def.name}, ref firstMember);");
+                var indent   = Indent(maxFieldName, field.def.name);
+                sb.AppendLF($"            writer.Write    (fields[Gen_{field.def.name}],{indent} obj.{field.def.name},{indent} ref firstMember);");
             }
             sb.AppendLF("        }");
             sb.AppendLF("    }");
+            sb.AppendLF("}");
             sb.AppendLF();
-            return new EmitType(type, sb, imports);
+            return new EmitType(type, sb);
         }
     }
 }

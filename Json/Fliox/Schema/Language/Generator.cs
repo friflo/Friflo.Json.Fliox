@@ -188,6 +188,14 @@ namespace Friflo.Json.Fliox.Schema.Language
             emitTypes.Add(emit.type, emit);
         }
         
+        public void EmitTypes() {
+            ICollection<EmitType> emits = emitTypes.Values;
+            foreach (var emit in emits) {
+                var filePath = $"{emit.path}-{emit.type.Name}{fileExt}";
+                files.Add(filePath, emit.content);
+            }
+        }
+        
         public void GroupTypesByPath(bool sortDependencies) {
             ICollection<EmitType> emits;
             if (sortDependencies) {
