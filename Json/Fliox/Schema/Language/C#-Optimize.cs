@@ -13,9 +13,11 @@ namespace Friflo.Json.Fliox.Schema.Language
     public sealed class CSharpOptimizeGenerator
     {
         private  readonly   Generator                   generator;
+        private  readonly   Dictionary<TypeDef, string> methodSuffixes;
 
         private CSharpOptimizeGenerator (Generator generator) {
             this.generator  = generator;
+            methodSuffixes  = GetMethodSuffixes(generator.standardTypes);
         }
         
         public static void Generate(Generator generator) {
@@ -29,6 +31,22 @@ namespace Friflo.Json.Fliox.Schema.Language
                 generator.AddEmitType(result);
             }
             generator.EmitTypes();
+        }
+        
+        private static Dictionary<TypeDef, string> GetMethodSuffixes(StandardTypes standard) {
+            var map = new Dictionary<TypeDef, string>();
+            AddType (map, standard.Boolean,     "Boolean" );
+            AddType (map, standard.String,      "String" );
+
+            AddType (map, standard.Uint8,       "Byte" );
+            AddType (map, standard.Int16,       "Int16" );
+            AddType (map, standard.Int32,       "Int32" );
+            AddType (map, standard.Int64,       "Int64" );
+               
+            AddType (map, standard.Double,      "Double" );
+            AddType (map, standard.Float,       "Single" );
+            AddType (map, standard.JsonKey,     "JsonKey" );
+            return map;
         }
 
         private EmitType EmitType(TypeDef type, StringBuilder sb) {
@@ -65,11 +83,19 @@ namespace Friflo.Json.Fliox.Schema.Language
             
             // --- ReadField(...)
             sb.AppendLF($"        private static bool ReadField ({type.Name} obj, PropField field, ref Reader reader) {{");
+            sb.AppendLF($"            bool success;");
             sb.AppendLF($"            switch (field.genIndex) {{");
             foreach (var field in emitFields) {
-                var name    = field.def.name;
-                var indent  = Indent(maxFieldName, name);
-                sb.AppendLF($"                case Gen_{name}:{indent} return reader.Read   (field, ref obj.{field.def.nativeName});");
+                
+                var name        = field.def.name;
+                var indent      = Indent(maxFieldName, name);
+                var fieldDef    = field.def;
+                if (fieldDef.type.IsClass || fieldDef.type.IsStruct || fieldDef.isArray || fieldDef.isDictionary) {
+                    sb.AppendLF($"                case Gen_{name}:{indent} obj.{field.def.nativeName}{indent} = reader.Read   (field, obj.{field.def.nativeName}, out success);  return success;");
+                } else {
+                    var suffix  = GetMethodSuffix(field.def);
+                    sb.AppendLF($"                case Gen_{name}:{indent} obj.{field.def.nativeName}{indent} = reader.Read{suffix}   (field, out success);  return success;");
+                }
             }
             sb.AppendLF("            }");
             sb.AppendLF("            return false;");
@@ -88,6 +114,15 @@ namespace Friflo.Json.Fliox.Schema.Language
             sb.AppendLF("}");
             sb.AppendLF();
             return new EmitType(type, sb);
+        }
+        
+        private string GetMethodSuffix(FieldDef field) {
+            if (field.type.IsClass || field.type.IsStruct)
+                return "";
+            var suffix = methodSuffixes[field.type];
+            if (field.isNullableElement)
+                return suffix + "Null";
+            return suffix;
         }
     }
 }

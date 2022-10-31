@@ -44,14 +44,14 @@ namespace Friflo.Json.Fliox.Mapper.Map
         }
         
         // ------------------------------------------- bool ---------------------------------------------
-        public bool ReadBool (PropField field, out bool success) {
+        public bool ReadBoolean (PropField field, out bool success) {
             if (parser.Event != JsonEvent.ValueBool)
                 return HandleEventGen<bool>(field.fieldType, out success);
             return parser.ValueAsBool(out success);
         }
         
         // --- nullable
-        public bool? ReadBoolNull (PropField field, out bool success) {
+        public bool? ReadBooleanNull (PropField field, out bool success) {
             if (parser.Event != JsonEvent.ValueBool)
                 return HandleEventGen<bool?>(field.fieldType, out success);
             return parser.ValueAsBool(out success);
