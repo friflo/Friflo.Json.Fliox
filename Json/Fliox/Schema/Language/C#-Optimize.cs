@@ -67,8 +67,9 @@ namespace Friflo.Json.Fliox.Schema.Language
             sb.AppendLF($"        private static bool ReadField ({type.Name} obj, PropField field, ref Reader reader) {{");
             sb.AppendLF($"            switch (field.genIndex) {{");
             foreach (var field in emitFields) {
-                var indent   = Indent(maxFieldName, field.def.name);
-                sb.AppendLF($"                case Gen_{field.def.name}:{indent} return reader.Read   (field, ref obj.{field.def.name});");
+                var name    = field.def.name;
+                var indent  = Indent(maxFieldName, name);
+                sb.AppendLF($"                case Gen_{name}:{indent} return reader.Read   (field, ref obj.{field.def.nativeName});");
             }
             sb.AppendLF("            }");
             sb.AppendLF("            return false;");
@@ -78,8 +79,9 @@ namespace Friflo.Json.Fliox.Schema.Language
             // --- Write(...)
             sb.AppendLF($"        private static void Write({type.Name} obj, PropField[] fields, ref Writer writer, ref bool firstMember) {{");
             foreach (var field in emitFields) {
-                var indent   = Indent(maxFieldName, field.def.name);
-                sb.AppendLF($"            writer.Write    (fields[Gen_{field.def.name}],{indent} obj.{field.def.name},{indent} ref firstMember);");
+                var name    = field.def.name;
+                var indent  = Indent(maxFieldName, name);
+                sb.AppendLF($"            writer.Write    (fields[Gen_{name}],{indent} obj.{field.def.nativeName},{indent} ref firstMember);");
             }
             sb.AppendLF("        }");
             sb.AppendLF("    }");

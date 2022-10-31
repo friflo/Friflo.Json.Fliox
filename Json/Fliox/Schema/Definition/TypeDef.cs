@@ -125,6 +125,7 @@ namespace Friflo.Json.Fliox.Schema.Definition
     /// </summary>
     public sealed class FieldDef {
         public   readonly   string          name;
+        public   readonly   string          nativeName;
         public   readonly   Utf8String      nameUtf8;
         public   readonly   bool            required;
         public   readonly   bool            isKey;
@@ -148,6 +149,7 @@ namespace Friflo.Json.Fliox.Schema.Definition
         
         public FieldDef(
             string      name,
+            string      nativeName,
             bool        required,
             bool        isKey,
             bool        isAutoIncrement,
@@ -161,6 +163,7 @@ namespace Friflo.Json.Fliox.Schema.Definition
             IUtf8Buffer buffer) 
         {
             this.name               = name;
+            this.nativeName         = nativeName;
             this.nameUtf8           = buffer.GetOrAdd(name);
             this.required           = required;
             this.isKey              = isKey;

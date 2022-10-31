@@ -131,7 +131,7 @@ namespace Friflo.Json.Fliox.Schema.Native
                             }
                             bool isAutoIncrement = AttributeUtils.IsAutoIncrement(propField.Member.CustomAttributes);
 
-                            var fieldDef = new FieldDef (propField.jsonName, required, isKey, isAutoIncrement, type,
+                            var fieldDef = new FieldDef (propField.jsonName, propField.name, required, isKey, isAutoIncrement, type,
                                 isArray, isDictionary, isNullableElement, typeDef, relation, propField.docs, Utf8Buffer);
                             typeDef.fields.Add(fieldDef);
                         }
@@ -210,7 +210,7 @@ namespace Friflo.Json.Fliox.Schema.Native
                 return null;
             var attr        = GetArgAttributes(type);
             required       |= attr.required;
-            return new FieldDef(name, required, false, false, attr.typeDef, false, false, false, null, null, null, Utf8Buffer);
+            return new FieldDef(name, null, required, false, false, attr.typeDef, false, false, false, null, null, null, Utf8Buffer);
         }
         
         private void AddType(List<TypeDef> types, TypeMapper typeMapper, TypeStore typeStore) {

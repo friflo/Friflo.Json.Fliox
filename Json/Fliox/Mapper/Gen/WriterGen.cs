@@ -152,7 +152,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
             DateTimeMapper.ToRFC_3339(value);
         }
         
-        public void WriteCustom<T> (PropField field, T value, ref bool firstMember) {
+        public void Write<T> (PropField field, T value, ref bool firstMember) {
             var mapper = (TypeMapper<T>)field.fieldType;
             if (mapper.IsNull(ref value)) {
                 AppendNull();

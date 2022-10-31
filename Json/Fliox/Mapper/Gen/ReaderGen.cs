@@ -186,7 +186,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
             return success;
         }
         
-        public bool ReadCustom<T> (PropField field, ref T value) {
+        public bool Read<T> (PropField field, ref T value) {
             var mapper = (TypeMapper<T>)field.fieldType;
             if (parser.Event == JsonEvent.ValueNull) {
                 if (!mapper.isNullable) {
