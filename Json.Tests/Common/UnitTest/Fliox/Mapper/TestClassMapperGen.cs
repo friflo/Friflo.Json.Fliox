@@ -57,12 +57,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
                 }
                 return false;
             }
+            
             // delegate void WriteDelegate<in T>(T obj, PropField[] fields, ref Writer writer, ref bool firstMember);
             
             private static void Gen_Write(GenClass obj, PropField[] fields, ref Writer writer, ref bool firstMember) {
-                writer.Write    (fields[0], obj.intVal0, ref firstMember);
-                writer.Write    (fields[1], obj.intVal1, ref firstMember);
-                writer.WriteObj (fields[2], obj.child,   ref firstMember);
+                writer.Write    (fields[Gen_intVal0],   obj.intVal0, ref firstMember);
+                writer.Write    (fields[Gen_intVal1],   obj.intVal1, ref firstMember);
+                writer.WriteObj (fields[Gen_child],     obj.child,   ref firstMember);
             }
         }
         
