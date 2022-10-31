@@ -13,11 +13,11 @@ namespace Friflo.Json.Fliox.Schema.Language
     public sealed class CSharpOptimizeGenerator
     {
         private  readonly   Generator                   generator;
-        private  readonly   Dictionary<TypeDef, string> methodSuffixes;
+        private  readonly   Dictionary<TypeDef, string> standardType;
 
         private CSharpOptimizeGenerator (Generator generator) {
             this.generator  = generator;
-            methodSuffixes  = GetMethodSuffixes(generator.standardTypes);
+            standardType  = GetStandardTypes(generator.standardTypes);
         }
         
         public static void Generate(Generator generator) {
@@ -33,10 +33,9 @@ namespace Friflo.Json.Fliox.Schema.Language
             generator.EmitTypes();
         }
         
-        private static Dictionary<TypeDef, string> GetMethodSuffixes(StandardTypes standard) {
+        private static Dictionary<TypeDef, string> GetStandardTypes(StandardTypes standard) {
             var map = new Dictionary<TypeDef, string>();
             AddType (map, standard.Boolean,     "Boolean" );
-            AddType (map, standard.String,      "String" );
 
             AddType (map, standard.Uint8,       "Byte" );
             AddType (map, standard.Int16,       "Int16" );
@@ -45,7 +44,6 @@ namespace Friflo.Json.Fliox.Schema.Language
                
             AddType (map, standard.Double,      "Double" );
             AddType (map, standard.Float,       "Single" );
-            AddType (map, standard.JsonKey,     "JsonKey" );
             return map;
         }
 
@@ -73,6 +71,7 @@ namespace Friflo.Json.Fliox.Schema.Language
             sb.AppendLF($"    static class Gen_{type.Name}");
             sb.AppendLF("    {");
             int maxFieldName    = emitFields.MaxLength(field => field.def.nativeName.Length);
+            int maxSuffix       = emitFields.MaxLength(field => IsPrimitive(field.def, out var suffix) ? suffix.Length : 4);
             
             // --- field indices
             int index = 0;
@@ -89,12 +88,13 @@ namespace Friflo.Json.Fliox.Schema.Language
                 var def     = field.def;
                 var name    = def.nativeName;
                 var indent  = Indent(maxFieldName, name);
-                if (IsComplex(def)) {
-                    sb.AppendLF($"                case Gen_{name}:{indent} obj.{name}{indent} = reader.Read             (field, obj.{name}, out success);  return success;");
+                if (IsPrimitive(def, out string suffix)) {
+                    var suffixIndent    = Indent(maxSuffix, suffix);
+                    sb.AppendLF($"                case Gen_{name}:{indent} obj.{name}{indent} = reader.Read{suffix}{suffixIndent} (field, out success);  return success;");
                 } else {
-                    var suffix  = GetMethodSuffix(def);
-                    sb.AppendLF($"                case Gen_{name}:{indent} obj.{name}{indent} = reader.Read{suffix} (field, out success);  return success;");
-                }
+                    var suffixIndent    = Indent(maxSuffix, "");
+                    sb.AppendLF($"                case Gen_{name}:{indent} obj.{name}{indent} = reader.Read{suffixIndent} (field, obj.{name},{indent} out success);  return success;");
+                } 
             }
             sb.AppendLF("            }");
             sb.AppendLF("            return false;");
@@ -107,12 +107,13 @@ namespace Friflo.Json.Fliox.Schema.Language
                 var def     = field.def;
                 var name    = def.nativeName;
                 var indent  = Indent(maxFieldName, name);
-                if (IsComplex(def)) {
-                    sb.AppendLF($"            writer.Write             (fields[Gen_{name}],{indent} obj.{name},{indent} ref firstMember);");
+                if (IsPrimitive(def, out string suffix)) {
+                    var suffixIndent    = Indent(maxSuffix, suffix);
+                    sb.AppendLF($"            writer.Write{suffix}{suffixIndent} (fields[Gen_{name}],{indent} obj.{name},{indent} ref firstMember);");
                 } else {
-                    var suffix  = GetMethodSuffix(def);
-                    sb.AppendLF($"            writer.Write{suffix} (fields[Gen_{name}],{indent} obj.{name},{indent} ref firstMember);");
-                }
+                    var suffixIndent    = Indent(maxSuffix, "");
+                    sb.AppendLF($"            writer.Write{suffixIndent} (fields[Gen_{name}],{indent} obj.{name},{indent} ref firstMember);");
+                } 
             }
             sb.AppendLF("        }");
             sb.AppendLF("    }");
@@ -121,30 +122,28 @@ namespace Friflo.Json.Fliox.Schema.Language
             return new EmitType(type, sb);
         }
         
-        private static bool IsComplex(FieldDef fieldDef) {
-            return fieldDef.type.IsClass    ||
-                   fieldDef.type.IsStruct   ||
-                   fieldDef.isArray         ||
-                   fieldDef.isDictionary;
-        }
-        
-        private string GetMethodSuffix(FieldDef field) {
-            string suffix;
-            var std = generator.standardTypes;
-            if (field.type == std.String) {
+        private bool IsPrimitive(FieldDef field, out string suffix) {
+            if (field.isArray || field.isDictionary) {
+                suffix = "";
+                return false;
+            }
+            var type = field.type;
+            if (type == generator.standardTypes.String) {
                 suffix = "String";
-            } else if (field.type == std.JsonKey) {
+                return true;
+            }
+            if (type == generator.standardTypes.JsonKey) {
                 suffix = "JsonKey";
-            } else if (field.type == std.JsonValue) {
-                suffix = "JsonValue";
-            } else {
-                suffix = methodSuffixes[field.type];
+                return true;
+            }
+            if (standardType.TryGetValue(type, out suffix)) {
                 if (!field.required) {
                     suffix += "Null";
                 }
+                return true;
             }
-            var indent  = Indent(12, suffix);
-            return suffix + indent;
+            suffix = "";
+            return false;
         }
     }
 }
