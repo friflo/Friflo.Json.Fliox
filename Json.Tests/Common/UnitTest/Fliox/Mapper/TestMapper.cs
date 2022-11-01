@@ -39,6 +39,27 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
             using (var enc   = new ObjectReader(typeStore) { ErrorHandler =  ObjectReader.NoThrow} )
             using (var write = new ObjectWriter(typeStore))
             {
+                EnumClass   enumValue1  = enc.Read<EnumClass> (value1);
+                EnumClass?  enumValue2  = enc.Read<EnumClass?>(value2);
+                write.Write(enumValue1);
+                write.Write(enumValue2);
+                
+                // --- check allocation Read()
+                var start = GC.GetAllocatedBytesForCurrentThread();
+                enumValue1  = enc.Read<EnumClass>(value1);
+                enumValue2  = enc.Read<EnumClass?>(value2);
+                var dif = GC.GetAllocatedBytesForCurrentThread() - start;
+                AreEqual(0, dif);
+                AreEqual(EnumClass.Value1, enumValue1);
+                AreEqual(EnumClass.Value2, enumValue2);
+                
+                // --- check allocation Write()
+                start = GC.GetAllocatedBytesForCurrentThread();
+                write.Write(enumValue1);
+                write.Write(enumValue2);
+                dif = GC.GetAllocatedBytesForCurrentThread() - start;
+                // AreEqual(0, dif); todo - ensure no allocation
+
                 AreEqual(EnumClass.Value1, enc.Read<EnumClass>(value1));
                 AreEqual(EnumClass.Value2, enc.Read<EnumClass>(value2));
                 AreEqual(EnumClass.Value3, enc.Read<EnumClass>(value3));
