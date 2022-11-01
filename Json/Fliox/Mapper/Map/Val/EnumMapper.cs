@@ -62,8 +62,8 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
     /// </summary>    
     internal sealed class EnumMapper<T> : TypeMapper<T>
     {
-        private     readonly Dictionary<BytesString, T> stringToEnum   = new Dictionary<BytesString, T>();
-        private     readonly Dictionary<T, BytesString> enumToString   = new Dictionary<T, BytesString>();
+        private     readonly Dictionary<BytesString, T> stringToEnum;
+        private     readonly Dictionary<T, BytesString> enumToString;
         //
     //  private     readonly Dictionary<long, T>        integralToEnum = new Dictionary<long, T>();
         private     readonly Dictionary<string, string> stringToDoc;
@@ -74,16 +74,19 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
             base (config, typeof(T), Nullable.GetUnderlyingType(typeof(T)) != null, false)
         {
             Type enumType       = isNullable ? nullableUnderlyingType : type;
+            FieldInfo[] fields  = enumType.GetFields();
+            var count           = fields.Length;
+            stringToEnum        = new Dictionary<BytesString, T>(count);
+            enumToString        = new Dictionary<T, BytesString>(count);
             var  enumContext    = new EnumContext(enumType, config.assemblyDocs);
             // ReSharper disable once PossibleNullReferenceException
-            FieldInfo[] fields = enumType.GetFields();
-            for (int n = 0; n < fields.Length; n++) {
+            for (int n = 0; n < count; n++) {
                 FieldInfo enumField = fields[n];
                 if (enumField.FieldType.IsEnum) {
                     T    enumValue          = (T)enumField.GetValue(type);
                     string  enumName        = enumField.Name;
-                    object  enumConst       = enumField.GetRawConstantValue();
-                    long    enumIntegral    = TypeUtils.GetIntegralValue(enumConst, type);
+                //  object  enumConst       = enumField.GetRawConstantValue();
+                //  long    enumIntegral    = TypeUtils.GetIntegralValue(enumConst, type);
                     var     name            = new BytesString(enumName);
                     stringToEnum.Add(name, enumValue);
                     enumToString.  TryAdd(enumValue, name);
