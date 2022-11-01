@@ -33,17 +33,19 @@ namespace Friflo.Json.Fliox.Mapper.Map
 
         // ---------------------------------- object - class / struct  ----------------------------------
         public T ReadClass<T> (PropField field, T value, out bool success) where T : class {
-            if (parser.Event != JsonEvent.ObjectStart) {
-                return HandleEventGen<T>(field.fieldType, out success);
+            if (parser.Event == JsonEvent.ValueNull) {
+                success = true;
+                return null;
             }
             if (value == null) {
+                // instance creation should be done inside Read<>()
                 value = (T)field.fieldType.CreateInstance();
             }
             var mapper = (TypeMapper<T>)field.fieldType;
             return mapper.Read(ref this, value, out success);
         }
         
-        // parameter value is only used to infer type to avoid setting generic Type T explicit
+        /// <summary> <paramref name="value"/> is only used to infer type to avoid setting generic Type T explicit </summary>
         public T ReadStruct<T> (PropField field, in T value, out bool success) where T : struct {
             var mapper = (TypeMapper<T>)field.fieldType;
             if (parser.Event == JsonEvent.ValueNull) {
@@ -52,7 +54,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
             return mapper.Read(ref this, default, out success);
         }
         
-        // parameter value is only used to infer type to avoid setting generic Type T explicit
+        /// <summary> <paramref name="value"/> is only used to infer type to avoid setting generic Type T explicit </summary>
         public T? ReadStructNull<T> (PropField field, in T? value, out bool success) where T : struct {
             var mapper = (TypeMapper<T>)field.fieldType;
             if (parser.Event == JsonEvent.ValueNull) {
