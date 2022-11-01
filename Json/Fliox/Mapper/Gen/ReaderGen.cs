@@ -208,12 +208,14 @@ namespace Friflo.Json.Fliox.Mapper.Map
         }
         
         // ------------------------------------------- enum ---------------------------------------------
-        public T ReadEnum<T> (PropField field, out bool success) where T : struct {
+        /// <summary> <paramref name="value"/> is only used to infer type to avoid setting generic Type T explicit </summary>
+        public T ReadEnum<T> (PropField field, T value, out bool success) where T : struct {
             var mapper = (EnumMapper<T>)field.fieldType;
             return mapper.Read(ref this, default, out success);
         }
         
-        public T? ReadEnumNull<T> (PropField field, out bool success) where T : struct {
+        /// <summary> <paramref name="value"/> is only used to infer type to avoid setting generic Type T explicit </summary>
+        public T? ReadEnumNull<T> (PropField field, T? value, out bool success) where T : struct {
             if (parser.Event == JsonEvent.ValueNull) {
                 success = true;
                 return default;

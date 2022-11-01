@@ -73,7 +73,7 @@ namespace Friflo.Json.Fliox.Schema.Language
             sb.AppendLF($"    static class Gen_{type.Name}");
             sb.AppendLF("    {");
             int maxFieldName    = emitFields.MaxLength(field => field.def.nativeName.Length);
-            int maxSuffix       = emitFields.MaxLength(field => IsPrimitive(field.def, out var suffix) ? suffix.Length : 4);
+            int maxSuffix       = emitFields.MaxLength(field => GetSuffix(field.def, out var suffix) ? suffix.Length : 4);
             
             // --- field indices
             int index = 0;
@@ -90,7 +90,7 @@ namespace Friflo.Json.Fliox.Schema.Language
                 var def     = field.def;
                 var name    = def.nativeName;
                 var indent  = Indent(maxFieldName, name);
-                if (IsPrimitive(def, out string suffix)) {
+                if (GetSuffix(def, out string suffix)) {
                     var suffixIndent    = Indent(maxSuffix, suffix);
                     sb.AppendLF($"                case Gen_{name}:{indent} obj.{name}{indent} = reader.Read{suffix}{suffixIndent} (field, out success);  return success;");
                 } else {
@@ -109,13 +109,9 @@ namespace Friflo.Json.Fliox.Schema.Language
                 var def     = field.def;
                 var name    = def.nativeName;
                 var indent  = Indent(maxFieldName, name);
-                if (IsPrimitive(def, out string suffix)) {
-                    var suffixIndent    = Indent(maxSuffix, suffix);
-                    sb.AppendLF($"            writer.Write{suffix}{suffixIndent} (fields[Gen_{name}],{indent} obj.{name},{indent} ref firstMember);");
-                } else {
-                    var suffixIndent    = Indent(maxSuffix, suffix);
-                    sb.AppendLF($"            writer.Write{suffix}{suffixIndent} (fields[Gen_{name}],{indent} obj.{name},{indent} ref firstMember);");
-                } 
+                GetSuffix(def, out string suffix);
+                var suffixIndent    = Indent(maxSuffix, suffix);
+                sb.AppendLF($"            writer.Write{suffix}{suffixIndent} (fields[Gen_{name}],{indent} obj.{name},{indent} ref firstMember);");
             }
             sb.AppendLF("        }");
             sb.AppendLF("    }");
@@ -124,7 +120,9 @@ namespace Friflo.Json.Fliox.Schema.Language
             return new EmitType(type, sb);
         }
         
-        private bool IsPrimitive(FieldDef field, out string suffix) {
+        // return true if the field type is a primitive type
+        // ReSharper disable PossibleUnintendedReferenceComparison
+        private bool GetSuffix(FieldDef field, out string suffix) {
             if (field.isArray || field.isDictionary) {
                 suffix = "Class";
                 return false;
@@ -142,6 +140,14 @@ namespace Friflo.Json.Fliox.Schema.Language
             if (type == std.JsonValue) {
                 suffix = "JsonValue";
                 return true;
+            }
+            if (type.IsEnum) {
+                if (field.required) {
+                    suffix = "Enum";
+                } else {
+                    suffix = "EnumNull";
+                }
+                return false;
             }
             if (standardType.TryGetValue(type, out suffix)) {
                 if (!field.required) {
