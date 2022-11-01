@@ -43,7 +43,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
             return mapper.Read(ref this, value, out success);
         }
         
-        public T Read<T> (PropField field, T value, out bool success) {
+        public T ReadCustom<T> (PropField field, T value, out bool success) {
             var mapper = (TypeMapper<T>)field.fieldType;
             if (parser.Event == JsonEvent.ValueNull) {
                 if (!mapper.isNullable) {
@@ -162,6 +162,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
             return new JsonKey(ref parser.value, ref parser.valueParser);
         }
         
+        /*
         public Guid ReadGuid (PropField field, out bool success) {
             ref var parserValue = ref parser.value;
             if (parser.Event != JsonEvent.ValueString) {
@@ -177,7 +178,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
         public DateTime ReadDateTime (PropField field, out bool success) {
             var mapper = (DateTimeMapper)field.fieldType;
             return mapper.Read(ref this, default, out success);
-        }
+        } */
         
         // ------------------------------------------- any ---------------------------------------------
         // ReSharper disable once RedundantAssignment

@@ -93,8 +93,8 @@ namespace Friflo.Json.Fliox.Schema.Language
                     var suffixIndent    = Indent(maxSuffix, suffix);
                     sb.AppendLF($"                case Gen_{name}:{indent} obj.{name}{indent} = reader.Read{suffix}{suffixIndent} (field, out success);  return success;");
                 } else {
-                    var suffixIndent    = Indent(maxSuffix, "");
-                    sb.AppendLF($"                case Gen_{name}:{indent} obj.{name}{indent} = reader.Read{suffixIndent} (field, obj.{name},{indent} out success);  return success;");
+                    var suffixIndent    = Indent(maxSuffix, suffix);
+                    sb.AppendLF($"                case Gen_{name}:{indent} obj.{name}{indent} = reader.Read{suffix}{suffixIndent} (field, obj.{name},{indent} out success);  return success;");
                 } 
             }
             sb.AppendLF("            }");
@@ -112,8 +112,8 @@ namespace Friflo.Json.Fliox.Schema.Language
                     var suffixIndent    = Indent(maxSuffix, suffix);
                     sb.AppendLF($"            writer.Write{suffix}{suffixIndent} (fields[Gen_{name}],{indent} obj.{name},{indent} ref firstMember);");
                 } else {
-                    var suffixIndent    = Indent(maxSuffix, "");
-                    sb.AppendLF($"            writer.Write{suffixIndent} (fields[Gen_{name}],{indent} obj.{name},{indent} ref firstMember);");
+                    var suffixIndent    = Indent(maxSuffix, suffix);
+                    sb.AppendLF($"            writer.Write{suffix}{suffixIndent} (fields[Gen_{name}],{indent} obj.{name},{indent} ref firstMember);");
                 } 
             }
             sb.AppendLF("        }");
@@ -124,11 +124,11 @@ namespace Friflo.Json.Fliox.Schema.Language
         }
         
         private bool IsPrimitive(FieldDef field, out string suffix) {
-            if (field.isArray || field.isDictionary) {
-                suffix = "";
+            var type = field.type;
+            if (field.isArray || field.isDictionary || type.IsClass) {
+                suffix = "Object";
                 return false;
             }
-            var type = field.type;
             if (type == generator.standardTypes.String) {
                 suffix = "String";
                 return true;
@@ -137,13 +137,17 @@ namespace Friflo.Json.Fliox.Schema.Language
                 suffix = "JsonKey";
                 return true;
             }
+            if (type == generator.standardTypes.JsonValue) {
+                suffix = "JsonValue";
+                return true;
+            }
             if (standardType.TryGetValue(type, out suffix)) {
                 if (!field.required) {
                     suffix += "Null";
                 }
                 return true;
             }
-            suffix = "";
+            suffix = "Custom";
             return false;
         }
     }

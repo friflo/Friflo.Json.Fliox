@@ -1,7 +1,6 @@
 // Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
-using System;
 using Friflo.Json.Fliox.Mapper.Map.Object.Reflect;
 using Friflo.Json.Fliox.Mapper.Map.Val;
 
@@ -30,10 +29,10 @@ namespace Friflo.Json.Fliox.Mapper.Map
             mapper.Write(ref this, value);
         }
         
-        public void Write<T> (PropField field, T value, ref bool firstMember) {
+        public void WriteCustom<T> (PropField field, T value, ref bool firstMember) {
             var mapper = (TypeMapper<T>)field.fieldType;
             if (mapper.IsNull(ref value)) {
-                AppendNull();
+                WriteKeyNull(field, ref firstMember);
                 return;
             }
             WriteFieldKey(field, ref firstMember);
@@ -152,6 +151,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
             }
         }
         
+        /*
         public void WriteGuid (PropField field, in Guid value, ref bool firstMember) {
             WriteFieldKey(field, ref firstMember);
             WriteGuid(value);
@@ -160,7 +160,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
         public void WriteDateTime (PropField field, in DateTime value, ref bool firstMember) {
             WriteFieldKey(field, ref firstMember);
             DateTimeMapper.ToRFC_3339(value);
-        }
+        } */
         
         // ------------------------------------------- JSON ---------------------------------------------
         public void WriteJsonValue (PropField field, in JsonValue value, ref bool firstMember) {

@@ -21,7 +21,7 @@ namespace Gen.Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
         }
             
         private static void Write(GenChild obj, PropField[] fields, ref Writer writer, ref bool firstMember) {
-            writer.Write(fields[0], obj.val, ref firstMember);
+            writer.WriteInt32 (fields[0], obj.val, ref firstMember);
         }
     }
             
@@ -46,9 +46,9 @@ namespace Gen.Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
         // delegate void WriteDelegate<in T>(T obj, PropField[] fields, ref Writer writer, ref bool firstMember);
             
         private static void Write(GenClass obj, PropField[] fields, ref Writer writer, ref bool firstMember) {
-            writer.Write       (fields[Gen_intVal0],   obj.intVal0, ref firstMember);
-            writer.Write       (fields[Gen_intVal1],   obj.intVal1, ref firstMember);
-            writer.WriteObject (fields[Gen_child],     obj.child,   ref firstMember);
+            writer.WriteInt32   (fields[Gen_intVal0],   obj.intVal0, ref firstMember);
+            writer.WriteInt32   (fields[Gen_intVal1],   obj.intVal1, ref firstMember);
+            writer.WriteObject  (fields[Gen_child],     obj.child,   ref firstMember);
         }
     }
 }
