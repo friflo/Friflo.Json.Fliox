@@ -41,8 +41,14 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
             }
             return true;
         }
-
         
+        internal  static T Int2Enum<T>(int value) {
+#if UNITY_5_3_OR_NEWER
+            return Unity.Collections.LowLevel.Unsafe.UnsafeUtility.As<int, T>(ref value);
+#else
+            return System.Runtime.CompilerServices.Unsafe.As<int, T>(ref value);
+#endif
+        }
     }
 
     /// <summary>
@@ -56,11 +62,11 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
     /// </summary>    
     internal sealed class EnumMapper<T> : TypeMapper<T>
     {
-        private     readonly Dictionary<BytesString, object> stringToEnum   = new Dictionary<BytesString, object>();
-        private     readonly Dictionary<object, BytesString> enumToString   = new Dictionary<object, BytesString>();
+        private     readonly Dictionary<BytesString, T> stringToEnum   = new Dictionary<BytesString, T>();
+        private     readonly Dictionary<T, BytesString> enumToString   = new Dictionary<T, BytesString>();
         //
-        private     readonly Dictionary<long, object>        integralToEnum = new Dictionary<long, object>();
-        private     readonly Dictionary<string, string>      stringToDoc;
+    //  private     readonly Dictionary<long, T>        integralToEnum = new Dictionary<long, T>();
+        private     readonly Dictionary<string, string> stringToDoc;
         
         public override string DataTypeName() { return $"enum {typeof(T).Name}"; }
         
@@ -74,14 +80,14 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
             for (int n = 0; n < fields.Length; n++) {
                 FieldInfo enumField = fields[n];
                 if (enumField.FieldType.IsEnum) {
-                    Enum    enumValue       = (Enum)enumField.GetValue(type);
+                    T    enumValue          = (T)enumField.GetValue(type);
                     string  enumName        = enumField.Name;
                     object  enumConst       = enumField.GetRawConstantValue();
                     long    enumIntegral    = TypeUtils.GetIntegralValue(enumConst, type);
                     var     name            = new BytesString(enumName);
                     stringToEnum.Add(name, enumValue);
                     enumToString.  TryAdd(enumValue, name);
-                    integralToEnum.TryAdd(enumIntegral, enumValue);
+                //  integralToEnum.TryAdd(enumIntegral, enumValue);
                     enumContext.AddEnumValueDoc(ref stringToDoc, enumName);
                 }
             }
@@ -133,19 +139,20 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
             ref var parser = ref reader.parser;
             if (parser.Event == JsonEvent.ValueString) {
                 reader.keyRef.value = parser.value;
-                if (stringToEnum.TryGetValue(reader.keyRef, out object enumValue)) {
+                if (stringToEnum.TryGetValue(reader.keyRef, out T enumValue)) {
                     success = true;
-                    return (T)enumValue;
+                    return enumValue;
                 }
                 return reader.ErrorIncompatible<T>("enum ", typeof(T).Name, this, out success);
             }
             if (parser.Event == JsonEvent.ValueNumber) {
-                long integralValue = parser.ValueAsLong(out success);
+                int integralValue = parser.ValueAsInt(out success);
                 if (!success)
                     return default;
-                if (integralToEnum.TryGetValue(integralValue, out object enumValue)) {
+                var enumValue = EnumMatcher.Int2Enum<T>(integralValue);
+                if (enumToString.ContainsKey(enumValue)) {
                     success = true;
-                    return (T)enumValue;
+                    return enumValue;
                 }
                 return reader.ErrorIncompatible<T>("enum ", typeof(T).Name, this, out success);
             }
