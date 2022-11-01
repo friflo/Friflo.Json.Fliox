@@ -32,7 +32,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
         }
 
         // ---------------------------------- object - class / struct  ----------------------------------
-        public T ReadObject<T> (PropField field, T value, out bool success) {
+        public T ReadClass<T> (PropField field, T value, out bool success) where T : class {
             if (parser.Event != JsonEvent.ObjectStart) {
                 return HandleEventGen<T>(field.fieldType, out success);
             }
@@ -43,16 +43,26 @@ namespace Friflo.Json.Fliox.Mapper.Map
             return mapper.Read(ref this, value, out success);
         }
         
-        public T ReadCustom<T> (PropField field, T value, out bool success) {
+        // parameter value is only used to infer type to avoid setting generic Type T explicit
+        public T ReadStruct<T> (PropField field, in T value, out bool success) where T : struct {
+            var mapper = (TypeMapper<T>)field.fieldType;
+            if (parser.Event == JsonEvent.ValueNull) {
+                return ErrorIncompatible<T>(mapper.DataTypeName(), mapper, out success);
+            }
+            return mapper.Read(ref this, default, out success);
+        }
+        
+        // parameter value is only used to infer type to avoid setting generic Type T explicit
+        public T? ReadStructNull<T> (PropField field, in T? value, out bool success) where T : struct {
             var mapper = (TypeMapper<T>)field.fieldType;
             if (parser.Event == JsonEvent.ValueNull) {
                 if (!mapper.isNullable) {
                     return ErrorIncompatible<T>(mapper.DataTypeName(), mapper, out success);
                 }
                 success = true;
-                return default;
+                return null;
             }
-            return mapper.Read(ref this, value, out success);
+            return mapper.Read(ref this, default, out success);
         }
         
         // ------------------------------------------- bool ---------------------------------------------

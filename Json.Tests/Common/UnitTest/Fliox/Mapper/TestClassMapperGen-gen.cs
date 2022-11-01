@@ -38,7 +38,7 @@ namespace Gen.Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
             switch (field.genIndex) {
                 case Gen_intVal0:   obj.intVal0 = reader.ReadInt32 (field, out success);  return success;
                 case Gen_intVal1:   obj.intVal1 = reader.ReadInt32 (field, out success);  return success;
-                case Gen_child:     obj.child   = reader.ReadObject(field, obj.child,   out success);  return success;
+                case Gen_child:     obj.child   = reader.ReadClass (field, obj.child,   out success);  return success;
             }
             return false;
         }
@@ -48,7 +48,7 @@ namespace Gen.Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
         private static void Write(GenClass obj, PropField[] fields, ref Writer writer, ref bool firstMember) {
             writer.WriteInt32   (fields[Gen_intVal0],   obj.intVal0, ref firstMember);
             writer.WriteInt32   (fields[Gen_intVal1],   obj.intVal1, ref firstMember);
-            writer.WriteObject  (fields[Gen_child],     obj.child,   ref firstMember);
+            writer.WriteClass   (fields[Gen_child],     obj.child,   ref firstMember);
         }
     }
 }

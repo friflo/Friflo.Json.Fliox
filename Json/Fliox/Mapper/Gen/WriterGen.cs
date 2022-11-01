@@ -19,7 +19,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
         }
         
         // ---------------------------------- object - class / struct  ----------------------------------
-        public void WriteObject<T> (PropField field, T value, ref bool firstMember) {
+        public void WriteClass<T> (PropField field, T value, ref bool firstMember) where T : class {
             if (value == null) {
                 WriteKeyNull(field, ref firstMember);
                 return;
@@ -29,14 +29,20 @@ namespace Friflo.Json.Fliox.Mapper.Map
             mapper.Write(ref this, value);
         }
         
-        public void WriteCustom<T> (PropField field, T value, ref bool firstMember) {
+        public void WriteStruct<T> (PropField field, T value, ref bool firstMember) where T : struct {
             var mapper = (TypeMapper<T>)field.fieldType;
-            if (mapper.IsNull(ref value)) {
+            WriteFieldKey(field, ref firstMember);
+            mapper.Write(ref this, value);
+        }
+        
+        public void WriteStructNull<T> (PropField field, T? value, ref bool firstMember) where T : struct {
+            var mapper = (TypeMapper<T>)field.fieldType;
+            if (value == null) {
                 WriteKeyNull(field, ref firstMember);
                 return;
             }
             WriteFieldKey(field, ref firstMember);
-            mapper.Write(ref this, value);
+            mapper.Write(ref this, value.Value);
         }
         
         // ------------------------------------------- bool ---------------------------------------------

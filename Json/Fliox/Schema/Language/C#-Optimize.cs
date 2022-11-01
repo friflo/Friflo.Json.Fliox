@@ -4,6 +4,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Friflo.Json.Fliox.Schema.Definition;
+using Friflo.Json.Fliox.Schema.Native;
 using Friflo.Json.Fliox.Schema.Utils;
 using static Friflo.Json.Fliox.Schema.Language.Generator;
 // Allowed namespaces: .Schema.Definition, .Schema.Doc, .Schema.Utils
@@ -124,20 +125,21 @@ namespace Friflo.Json.Fliox.Schema.Language
         }
         
         private bool IsPrimitive(FieldDef field, out string suffix) {
-            var type = field.type;
-            if (field.isArray || field.isDictionary || type.IsClass) {
-                suffix = "Object";
+            if (field.isArray || field.isDictionary) {
+                suffix = "Class";
                 return false;
             }
-            if (type == generator.standardTypes.String) {
+            var type = (NativeTypeDef)field.type;
+            var std = generator.standardTypes;
+            if (type == std.String) {
                 suffix = "String";
                 return true;
             }
-            if (type == generator.standardTypes.JsonKey) {
+            if (type == std.JsonKey) {
                 suffix = "JsonKey";
                 return true;
             }
-            if (type == generator.standardTypes.JsonValue) {
+            if (type == std.JsonValue) {
                 suffix = "JsonValue";
                 return true;
             }
@@ -147,7 +149,15 @@ namespace Friflo.Json.Fliox.Schema.Language
                 }
                 return true;
             }
-            suffix = "Custom";
+            if (type.native.IsValueType) {
+                if (field.required) {
+                    suffix = "Struct";
+                } else {
+                    suffix = "StructNull";
+                }
+                return false;
+            }
+            suffix = "Class";
             return false;
         }
     }
