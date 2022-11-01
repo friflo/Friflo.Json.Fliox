@@ -31,8 +31,8 @@ namespace Friflo.Json.Fliox.Mapper.Map
             }
         }
 
-        // used specific name to avoid using it accidentally with a non class / struct type  
-        public T ReadObj<T> (PropField field, T value, out bool success) {
+        // ---------------------------------- object - class / struct  ----------------------------------
+        public T ReadObject<T> (PropField field, T value, out bool success) {
             if (parser.Event != JsonEvent.ObjectStart) {
                 return HandleEventGen<T>(field.fieldType, out success);
             }
@@ -40,6 +40,18 @@ namespace Friflo.Json.Fliox.Mapper.Map
                 value = (T)field.fieldType.CreateInstance();
             }
             var mapper = (TypeMapper<T>)field.fieldType;
+            return mapper.Read(ref this, value, out success);
+        }
+        
+        public T Read<T> (PropField field, T value, out bool success) {
+            var mapper = (TypeMapper<T>)field.fieldType;
+            if (parser.Event == JsonEvent.ValueNull) {
+                if (!mapper.isNullable) {
+                    return ErrorIncompatible<T>(mapper.DataTypeName(), mapper, out success);
+                }
+                success = true;
+                return default;
+            }
             return mapper.Read(ref this, value, out success);
         }
         
@@ -167,18 +179,6 @@ namespace Friflo.Json.Fliox.Mapper.Map
             return mapper.Read(ref this, default, out success);
         }
         
-        public T Read<T> (PropField field, T value, out bool success) {
-            var mapper = (TypeMapper<T>)field.fieldType;
-            if (parser.Event == JsonEvent.ValueNull) {
-                if (!mapper.isNullable) {
-                    return ErrorIncompatible<T>(mapper.DataTypeName(), mapper, out success);
-                }
-                success = true;
-                return default;
-            }
-            return mapper.Read(ref this, value, out success);
-        }
-        
         // ------------------------------------------- any ---------------------------------------------
         // ReSharper disable once RedundantAssignment
         public JsonValue ReadJsonValue (PropField field, out bool success) {
@@ -195,13 +195,11 @@ namespace Friflo.Json.Fliox.Mapper.Map
         }
         
         // ------------------------------------------- enum ---------------------------------------------
-        // ReSharper disable once RedundantAssignment
         public T ReadEnum<T> (PropField field, out bool success) where T : struct {
             var mapper = (EnumMapper<T>)field.fieldType;
             return mapper.Read(ref this, default, out success);
         }
         
-        // ReSharper disable once RedundantAssignment
         public T? ReadEnumNull<T> (PropField field, out bool success) where T : struct {
             if (parser.Event == JsonEvent.ValueNull) {
                 success = true;

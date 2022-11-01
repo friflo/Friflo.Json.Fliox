@@ -12,8 +12,15 @@ namespace Friflo.Json.Fliox.Mapper.Map
 
     partial struct Writer
     {
-        // used specific name to avoid using it accidentally with a non class / struct type  
-        public void WriteObj<T> (PropField field, T value, ref bool firstMember) {
+        private void WriteKeyNull (PropField field, ref bool firstMember) {
+            if (!writeNullMembers)
+                return;
+            WriteFieldKey(field, ref firstMember);
+            AppendNull();
+        }
+        
+        // ---------------------------------- object - class / struct  ----------------------------------
+        public void WriteObject<T> (PropField field, T value, ref bool firstMember) {
             if (value == null) {
                 WriteKeyNull(field, ref firstMember);
                 return;
@@ -23,11 +30,14 @@ namespace Friflo.Json.Fliox.Mapper.Map
             mapper.Write(ref this, value);
         }
         
-        private void WriteKeyNull (PropField field, ref bool firstMember) {
-            if (!writeNullMembers)
+        public void Write<T> (PropField field, T value, ref bool firstMember) {
+            var mapper = (TypeMapper<T>)field.fieldType;
+            if (mapper.IsNull(ref value)) {
+                AppendNull();
                 return;
+            }
             WriteFieldKey(field, ref firstMember);
-            AppendNull();
+            mapper.Write(ref this, value);
         }
         
         // ------------------------------------------- bool ---------------------------------------------
@@ -152,16 +162,6 @@ namespace Friflo.Json.Fliox.Mapper.Map
             DateTimeMapper.ToRFC_3339(value);
         }
         
-        public void Write<T> (PropField field, T value, ref bool firstMember) {
-            var mapper = (TypeMapper<T>)field.fieldType;
-            if (mapper.IsNull(ref value)) {
-                AppendNull();
-                return;
-            }
-            WriteFieldKey(field, ref firstMember);
-            mapper.Write(ref this, value);
-        }
-
         // ------------------------------------------- JSON ---------------------------------------------
         public void WriteJsonValue (PropField field, in JsonValue value, ref bool firstMember) {
             WriteFieldKey(field, ref firstMember);

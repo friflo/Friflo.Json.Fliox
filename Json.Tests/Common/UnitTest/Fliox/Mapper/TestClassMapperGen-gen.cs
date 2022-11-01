@@ -36,9 +36,9 @@ namespace Gen.Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
         private static bool  ReadField (GenClass obj, PropField field, ref Reader reader) {
             bool success = false;
             switch (field.genIndex) {
-                case Gen_intVal0:   obj.intVal0 = reader.ReadInt32(field, out success);  return success;
-                case Gen_intVal1:   obj.intVal1 = reader.ReadInt32(field, out success);  return success;
-                case Gen_child:     obj.child   = reader.ReadObj  (field, obj.child,   out success);  return success;
+                case Gen_intVal0:   obj.intVal0 = reader.ReadInt32 (field, out success);  return success;
+                case Gen_intVal1:   obj.intVal1 = reader.ReadInt32 (field, out success);  return success;
+                case Gen_child:     obj.child   = reader.ReadObject(field, obj.child,   out success);  return success;
             }
             return false;
         }
@@ -46,9 +46,9 @@ namespace Gen.Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
         // delegate void WriteDelegate<in T>(T obj, PropField[] fields, ref Writer writer, ref bool firstMember);
             
         private static void Write(GenClass obj, PropField[] fields, ref Writer writer, ref bool firstMember) {
-            writer.Write    (fields[Gen_intVal0],   obj.intVal0, ref firstMember);
-            writer.Write    (fields[Gen_intVal1],   obj.intVal1, ref firstMember);
-            writer.WriteObj (fields[Gen_child],     obj.child,   ref firstMember);
+            writer.Write       (fields[Gen_intVal0],   obj.intVal0, ref firstMember);
+            writer.Write       (fields[Gen_intVal1],   obj.intVal1, ref firstMember);
+            writer.WriteObject (fields[Gen_child],     obj.child,   ref firstMember);
         }
     }
 }
