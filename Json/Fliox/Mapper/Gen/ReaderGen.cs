@@ -218,7 +218,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
         public T? ReadEnumNull<T> (PropField field, T? value, out bool success) where T : struct {
             if (parser.Event == JsonEvent.ValueNull) {
                 success = true;
-                return default;
+                return null;
             }
             var mapper = (EnumMapper<T>)field.fieldType;
             return mapper.Read(ref this, default, out success);

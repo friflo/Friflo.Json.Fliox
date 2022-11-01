@@ -30,18 +30,18 @@ namespace Friflo.Json.Fliox.Mapper.Map
         }
         
         public void WriteStruct<T> (PropField field, T value, ref bool firstMember) where T : struct {
-            var mapper = (TypeMapper<T>)field.fieldType;
             WriteFieldKey(field, ref firstMember);
+            var mapper = (TypeMapper<T>)field.fieldType;
             mapper.Write(ref this, value);
         }
         
         public void WriteStructNull<T> (PropField field, T? value, ref bool firstMember) where T : struct {
-            var mapper = (TypeMapper<T>)field.fieldType;
             if (value == null) {
                 WriteKeyNull(field, ref firstMember);
                 return;
             }
             WriteFieldKey(field, ref firstMember);
+            var mapper = (TypeMapper<T>)field.fieldType;
             mapper.Write(ref this, value.Value);
         }
         
@@ -179,8 +179,8 @@ namespace Friflo.Json.Fliox.Mapper.Map
         
         // ------------------------------------------- enum ---------------------------------------------
         public void WriteEnum<T> (PropField field, T value, ref bool firstMember) where T : struct {
-            var mapper = (EnumMapper<T>)field.fieldType;
             WriteFieldKey(field, ref firstMember);
+            var mapper = (EnumMapper<T>)field.fieldType;
             mapper.Write(ref this, value);
         }
         
@@ -189,8 +189,8 @@ namespace Friflo.Json.Fliox.Mapper.Map
                 WriteKeyNull(field, ref firstMember);
                 return;
             }
-            var mapper = (EnumMapper<T>)field.fieldType;
             WriteFieldKey(field, ref firstMember);
+            var mapper = (EnumMapper<T>)field.fieldType;
             mapper.Write(ref this, value.Value);
         }
     }
