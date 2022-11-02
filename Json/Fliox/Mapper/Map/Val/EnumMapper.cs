@@ -127,10 +127,10 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
                 return reader.ErrorIncompatible<T>("enum ", typeof(T).Name, mapper, out success);
             }
             if (parser.Event == JsonEvent.ValueNumber) {
-                int integralValue = parser.ValueAsInt(out success);
+                long integralValue = parser.ValueAsLong(out success);
                 if (!success)
                     return default;
-                var enumValue = convert.IntToEnum(integralValue);
+                var enumValue = convert.LongToEnum(integralValue);
                 if (enumToString.ContainsKey(enumValue)) {
                     success = true;
                     return enumValue;
