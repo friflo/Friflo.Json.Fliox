@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 using System;
-using System.Collections.Generic;
 using Friflo.Json.Burst;
 using Friflo.Json.Burst.Utils;
 using Friflo.Json.Fliox.Mapper.Utils;
@@ -27,10 +26,6 @@ namespace Friflo.Json.Fliox.Mapper.Map
         /// <summary>Can be used for custom mappers to create a temporary "string"
         /// without creating a string on the heap.</summary>
         public              char[]              charBuf;
-        public              object[]            setMethodParams;
-        /// <summary>Can be used for custom mappers to lookup for a "string" in a Dictionary
-        /// without creating a string on the heap.</summary>
-        internal readonly   BytesString         keyRef;
         public   readonly   TypeCache           typeCache;
         public              Utf8JsonWriterStub  jsonWriterStub;
         
@@ -45,8 +40,6 @@ namespace Friflo.Json.Fliox.Mapper.Map
             strBuf          = new Bytes(0);
             searchKey       = new Bytes32();
             charBuf         = new char[128];
-            setMethodParams = new object[1];
-            keyRef          = new BytesString();
             jsonWriterStub = null;
 #if !JSON_BURST
             parser.error.errorHandler = DefaultErrorHandler;

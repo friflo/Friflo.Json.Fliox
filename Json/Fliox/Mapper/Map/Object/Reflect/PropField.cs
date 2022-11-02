@@ -46,8 +46,8 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
         // field ist set via reflection to enable using a readonly field
         public   readonly   TypeMapper      fieldType;          // never null
         public   readonly   VarType         varType;            // never null
-        public   readonly   int             primIndex;
-        public   readonly   int             objIndex;
+        private  readonly   int             primIndex;          // obsolete - was used by generated IL code
+        private  readonly   int             objIndex;           // obsolete - was used by generated IL code
         public   readonly   int             genIndex;
         public   readonly   bool            required;
         public   readonly   string          docs;
