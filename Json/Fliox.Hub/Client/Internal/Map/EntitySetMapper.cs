@@ -31,6 +31,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal.Map
         
         public  override    bool            IsDictionary        => true;
         public  override    TypeMapper      GetElementMapper()  => elementType;
+        public  override    bool            IsNull(ref T value) => value == null;
         
         public EntitySetMapper (StoreConfig config, Type type) :
             base (config, type, true, false)

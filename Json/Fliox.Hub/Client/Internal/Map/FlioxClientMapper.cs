@@ -24,6 +24,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal.Map
     
     internal sealed class FlioxClientMapper<T> : TypeMapper<T>
     {
+        public  override    bool    IsNull(ref T value)  => value == null;
         public  override    bool    IsComplex => true;
         // ReSharper disable once UnassignedReadonlyField - field ist set via reflection below to use make field readonly
         private readonly    PropertyFields<T>   propFields;

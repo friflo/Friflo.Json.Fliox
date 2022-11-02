@@ -42,9 +42,10 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object
     {
         private readonly    KeyMapper<TKey> keyMapper;
         
-        public  override    string          DataTypeName() { return $"IDictionary<{typeof(TKey).Name},{typeof(TElm).Name}>"; }
-        public  override    bool            IsArray         => false;
-        public  override    bool            IsDictionary    => true;
+        public override string  DataTypeName()          => $"IDictionary<{typeof(TKey).Name},{typeof(TElm).Name}>";
+        public override bool    IsNull(ref TMap value)  => value == null;
+        public override bool    IsArray                 => false;
+        public override bool    IsDictionary            => true;
         
         public DictionaryMapper(StoreConfig config, Type type, ConstructorInfo constructor) :
             base(config, type, typeof(TElm), 1, typeof(string), constructor)

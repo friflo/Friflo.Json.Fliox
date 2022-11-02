@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 using System;
+using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Reflection;
 using Friflo.Json.Burst;
@@ -73,7 +74,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object
         private readonly    Type                genClass;
 
 
-        public  override    string              DataTypeName() { return $"class {typeof(T).Name}"; }
+        public  override    string              DataTypeName()  => $"class {typeof(T).Name}";
         public  override    bool                IsComplex       => true;
         // ReSharper disable once UnassignedReadonlyField - field ist set via reflection below to use make field readonly
         public  readonly    PropertyFields<T>   propFields;
@@ -123,6 +124,15 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object
                 create = Expression.New(typeof(T));
             }
             return Expression.Lambda<Func<T>> (create);
+        }
+        
+        public override bool IsNull(ref T value) {
+            if (isValueType) {
+                if (nullableUnderlyingType == null)
+                    return false;
+                return EqualityComparer<T>.Default.Equals(value, default);
+            }
+            return value == null;
         }
         
         public override void InitTypeMapper(TypeStore typeStore) {

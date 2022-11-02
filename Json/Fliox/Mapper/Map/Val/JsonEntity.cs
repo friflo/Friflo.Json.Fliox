@@ -20,7 +20,8 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
     /// </summary>
     public sealed class JsonEntityMapper : TypeMapper<JsonEntity>
     {
-        public override string DataTypeName() { return "JsonEntity"; }
+        public override string  DataTypeName()                  => "JsonEntity";
+        public override bool    IsNull(ref JsonEntity value)    => value.value.IsNull();
 
         public JsonEntityMapper(StoreConfig config, Type type) : base (config, type, false, false) { }
         

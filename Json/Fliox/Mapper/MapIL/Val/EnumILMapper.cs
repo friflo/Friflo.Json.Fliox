@@ -33,7 +33,8 @@ namespace Friflo.Json.Fliox.Mapper.MapIL.Val
         private   readonly  Dictionary<string,      string>         stringToDoc;
 
         
-        public override string DataTypeName() { return $"enum {typeof(T).Name}"; }
+        public override string  DataTypeName()      => $"enum {typeof(T).Name}";
+        public override bool    IsNull(ref T value) => value == null;
         
         public EnumILMapper(StoreConfig config, Type type) :
             base(config, typeof(T), Nullable.GetUnderlyingType(typeof(T)) != null, true)

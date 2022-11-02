@@ -18,7 +18,8 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
     
     internal sealed class JsonKeyMapper : TypeMapper<JsonKey>
     {
-        public override string DataTypeName() { return "JsonKey"; }
+        public override string  DataTypeName()              => "JsonKey";
+        public override bool    IsNull(ref JsonKey value)   => value.IsNull();
 
         public JsonKeyMapper(StoreConfig config, Type type) : base (config, type, true, false) { }
         

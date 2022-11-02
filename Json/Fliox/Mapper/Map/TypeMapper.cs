@@ -112,17 +112,9 @@ namespace Friflo.Json.Fliox.Mapper.Map
             base(null, typeof(TVal), TypeUtils.IsNullable(typeof(TVal)), false) {
         }
         
-        public virtual bool IsNull(ref TVal value){
-            if (isValueType) {
-                if (nullableUnderlyingType == null)
-                    return false;
-                return EqualityComparer<TVal>.Default.Equals(value, default);
-            }
-            return value == null;
-        }
-
-        public abstract void        Write       (ref Writer writer, TVal slot);
-        public abstract TVal        Read        (ref Reader reader, TVal slot, out bool success);
+        public abstract bool        IsNull  (ref TVal value);
+        public abstract void        Write   (ref Writer writer, TVal slot);
+        public abstract TVal        Read    (ref Reader reader, TVal slot, out bool success);
         
         public virtual Var ToVar(TVal value) {
             return new Var(value);

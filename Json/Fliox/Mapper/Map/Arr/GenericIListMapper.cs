@@ -36,8 +36,9 @@ namespace Friflo.Json.Fliox.Mapper.Map.Arr
     
     internal sealed class GenericIListMapper<TCol, TElm> : CollectionMapper<TCol, TElm> where TCol : IList<TElm>
     {
-        public override string  DataTypeName() { return $"IList<{typeof(TElm).Name}>"; }
-        public override int     Count(object array) => ((TCol) array).Count;
+        public override string  DataTypeName()          => $"IList<{typeof(TElm).Name}>";
+        public override bool    IsNull(ref TCol value)  => value == null;
+        public override int     Count(object array)     => ((TCol) array).Count;
         
         public GenericIListMapper(StoreConfig config, Type type, Type elementType, ConstructorInfo constructor) :
             base(config, type, elementType, 1, typeof(string), constructor) {

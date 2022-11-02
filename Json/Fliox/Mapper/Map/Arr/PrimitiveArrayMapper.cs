@@ -61,8 +61,9 @@ namespace Friflo.Json.Fliox.Mapper.Map.Arr
     
     internal sealed class PrimitiveArrayMapper<T> : CollectionMapper <T[], T>
     {
-        public override string  DataTypeName() { return $"{typeof(T).Name}[]"; }
-        public override int     Count(object array) => ((T[]) array).Length;
+        public override string  DataTypeName()          => $"{typeof(T).Name}[]";
+        public override bool    IsNull(ref T[] value)   => value == null;
+        public override int     Count(object array)     => ((T[]) array).Length;
         
         public PrimitiveArrayMapper(StoreConfig config, Type type) :
             base(config, type, typeof(T), 1, typeof(string), null) {

@@ -20,7 +20,8 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
     
     internal sealed class GuidMapper : TypeMapper<Guid>
     {
-        public  override    string          DataTypeName() { return "Guid"; }
+        public override string  DataTypeName()          => "Guid";
+        public override bool    IsNull(ref Guid value)  => false;
 
         public GuidMapper(StoreConfig config, Type type) :
             base (config, type, false, true)
@@ -45,7 +46,8 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
     
     internal sealed class NullableGuidMapper : TypeMapper<Guid?>
     {
-        public override string DataTypeName() { return "Guid?"; }
+        public override string  DataTypeName()          => "Guid?";
+        public override bool    IsNull(ref Guid? value) => !value.HasValue;
         
         public NullableGuidMapper(StoreConfig config, Type type) :
             base (config, type, true, true) {

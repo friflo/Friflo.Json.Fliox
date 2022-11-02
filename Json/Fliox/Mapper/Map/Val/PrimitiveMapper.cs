@@ -23,7 +23,8 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
     
     internal sealed class StringMapper : TypeMapper<string>
     {
-        public override string DataTypeName() { return "string"; }
+        public override string  DataTypeName()              => "string";
+        public override bool    IsNull(ref string value)    => value == null;
         
         public StringMapper(StoreConfig config, Type type) : base (config, type, true, false) { }
 
@@ -58,7 +59,8 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
         }
     }
     internal class DoubleMapper : TypeMapper<double> {
-        public override string DataTypeName() { return "double"; }
+        public override string  DataTypeName()              => "double";
+        public override bool    IsNull(ref double value)    => false;
         
         public DoubleMapper(StoreConfig config, Type type) : base (config, type, false, true) { }
 
@@ -77,7 +79,8 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
         }
     }
     internal class NullableDoubleMapper : TypeMapper<double?> {
-        public override string DataTypeName() { return "double?"; }
+        public override string  DataTypeName()              => "double?";
+        public override bool    IsNull(ref double? value)   => !value.HasValue;
         
         public NullableDoubleMapper(StoreConfig config, Type type) : base (config, type, true, true) { }
 
@@ -109,7 +112,8 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
         }
     }
     internal class FloatMapper : TypeMapper<float> {
-        public override string DataTypeName() { return "float"; }
+        public override string  DataTypeName()          => "float";
+        public override bool    IsNull(ref float value) => false;
 
         public FloatMapper(StoreConfig config, Type type) : base (config, type, false, true) { }
         
@@ -128,7 +132,8 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
         }
     }
     internal class NullableFloatMapper : TypeMapper<float?> {
-        public override string DataTypeName() { return "float?"; }
+        public override string  DataTypeName()              => "float?";
+        public override bool    IsNull(ref float? value)    => !value.HasValue;
 
         public NullableFloatMapper(StoreConfig config, Type type) : base (config, type, true, true) { }
         
@@ -160,7 +165,8 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
         }
     }
     internal class LongMapper : TypeMapper<long> {
-        public override string DataTypeName() { return "long"; }
+        public override string  DataTypeName()          => "long";
+        public override bool    IsNull(ref long value)  => false;
 
         public LongMapper(StoreConfig config, Type type) : base (config, type, false, true) { }
         
@@ -179,7 +185,8 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
         }
     }
     internal class NullableLongMapper : TypeMapper<long?> {
-        public override string DataTypeName() { return "long?"; }
+        public override string  DataTypeName()          => "long?";
+        public override bool    IsNull(ref long? value) => !value.HasValue;
 
         public NullableLongMapper(StoreConfig config, Type type) : base (config, type, true, true) { }
         
@@ -211,7 +218,8 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
         }
     }
     internal class IntMapper : TypeMapper<int> {
-        public override string DataTypeName() { return "int"; }
+        public override string  DataTypeName()          => "int";
+        public override bool    IsNull(ref int value)   => false;
 
         public IntMapper(StoreConfig config, Type type) : base (config, type, false, true) { }
         
@@ -230,7 +238,8 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
         }
     }
     internal class NullableIntMapper : TypeMapper<int?> {
-        public override string DataTypeName() { return "int?"; }
+        public override string  DataTypeName()          => "int?";
+        public override bool    IsNull(ref int? value)  => !value.HasValue;
 
         public NullableIntMapper(StoreConfig config, Type type) : base (config, type, true, true) { }
         
@@ -262,7 +271,8 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
         }
     }
     internal class ShortMapper : TypeMapper<short> {
-        public override string DataTypeName() { return "short"; }
+        public override string  DataTypeName()          => "short";
+        public override bool    IsNull(ref short value) => false;
         
         public ShortMapper(StoreConfig config, Type type) : base (config, type, false, true) { }
 
@@ -281,7 +291,8 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
         }
     }
     internal class NullableShortMapper : TypeMapper<short?> {
-        public override string DataTypeName() { return "short?"; }
+        public override string  DataTypeName()              => "short?";
+        public override bool    IsNull(ref short? value)    => !value.HasValue;
         
         public NullableShortMapper(StoreConfig config, Type type) : base (config, type, true, true) { }
 
@@ -314,7 +325,8 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
         }
     }
     internal class ByteMapper : TypeMapper<byte> {
-        public override string DataTypeName() { return "byte"; }
+        public override string  DataTypeName()          => "byte";
+        public override bool    IsNull(ref byte value)  => false;
 
         public ByteMapper(StoreConfig config, Type type) : base (config, type, false, true) { }
         
@@ -333,7 +345,8 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
         }
     }
     internal class NullableByteMapper : TypeMapper<byte?> {
-        public override string DataTypeName() { return "byte?"; }
+        public override string  DataTypeName()          => "byte?";
+        public override bool    IsNull(ref byte? value) => !value.HasValue;
 
         public NullableByteMapper(StoreConfig config, Type type) : base (config, type, true, true) { }
         
@@ -366,7 +379,8 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
     }
     
     internal class BoolMapper : TypeMapper<bool> {
-        public override string DataTypeName() { return "bool"; }
+        public override string  DataTypeName()          => "bool";
+        public override bool    IsNull(ref bool value)  => false;
         
         public BoolMapper(StoreConfig config, Type type) : base (config, type, false, true) { }
 
@@ -385,7 +399,8 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
         }
     }
     internal class NullableBoolMapper : TypeMapper<bool?> {
-        public override string DataTypeName() { return "bool?"; }
+        public override string  DataTypeName()          => "bool?";
+        public override bool    IsNull(ref bool? value) => !value.HasValue;
         
         public NullableBoolMapper(StoreConfig config, Type type) : base (config, type, true, true) { }
 

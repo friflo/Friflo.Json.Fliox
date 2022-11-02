@@ -33,7 +33,8 @@ namespace Friflo.Json.Fliox.Mapper.Map.Arr
     
     internal sealed class GenericIEnumerableMapper<TCol, TElm> : CollectionMapper<TCol, TElm> where TCol : IEnumerable<TElm>
     {
-        public override string DataTypeName() { return $"IEnumerable<{typeof(TElm).Name}>"; }
+        public override string  DataTypeName()          => $"IEnumerable<{typeof(TElm).Name}>";
+        public override bool    IsNull(ref TCol value)  => value == null;
         
         public GenericIEnumerableMapper(StoreConfig config, Type type, Type elementType, ConstructorInfo constructor) :
             base(config, type, elementType, 1, typeof(string), constructor) {
