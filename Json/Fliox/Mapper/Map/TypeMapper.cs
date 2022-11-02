@@ -7,7 +7,6 @@ using Friflo.Json.Fliox.Mapper.Access;
 using Friflo.Json.Fliox.Mapper.Diff;
 using Friflo.Json.Fliox.Mapper.Map.Object.Reflect;
 using Friflo.Json.Fliox.Mapper.Map.Utils;
-using Friflo.Json.Fliox.Mapper.MapIL.Obj;
 using Friflo.Json.Fliox.Transform.Select;
 
 using Invalid = System.InvalidOperationException;
@@ -37,8 +36,6 @@ namespace Friflo.Json.Fliox.Mapper.Map
         public virtual      int             Count(object array) => throw new Invalid("Count not applicable");
         public virtual      string          DataTypeName()      => type.Name;
         public virtual      PropertyFields  PropFields => null;
-        public              ClassLayout     layout;  // todo make readonly
-
 
         protected TypeMapper(StoreConfig config, Type type, bool isNullable, bool isValueType) {
             this.type                   = type;
@@ -80,10 +77,6 @@ namespace Friflo.Json.Fliox.Mapper.Map
         internal virtual  void      WriteObject     (ref Writer writer, object slot, ref bool firstMember)  => throw new Invalid("not implemented");
         internal virtual  DiffType  DiffObject      (Differ differ, object left, object right)              => throw new Invalid("not implemented");
         internal virtual  void      WriteKey        (ref Writer writer, object key, int pos)                => throw new Invalid("not implemented");
-        
-        internal abstract bool      IsValueNullIL   (ClassMirror mirror, int primPos, int objPos);
-        internal abstract void      WriteValueIL    (ref Writer writer, ClassMirror mirror, int primPos, int objPos);
-        internal abstract bool      ReadValueIL     (ref Reader reader, ClassMirror mirror, int primPos, int objPos);
         
         public   abstract void      CopyVar         (in Var src, ref Var dst);
         
@@ -140,10 +133,6 @@ namespace Friflo.Json.Fliox.Mapper.Map
             } // else: both null => equal
             return DiffType.Equal;
         }
-
-        internal override bool IsValueNullIL(ClassMirror mirror, int primPos, int objPos)                    => throw new Invalid("IsValueNullIL() not applicable");
-        internal override void WriteValueIL (ref Writer writer, ClassMirror mirror, int primPos, int objPos) => throw new Invalid("WriteValueIL() not applicable");
-        internal override bool ReadValueIL  (ref Reader reader, ClassMirror mirror, int primPos, int objPos) => throw new Invalid("ReadValueIL() not applicable");
 
         public override void WriteVar(ref Writer writer, in Var value) {
             var objectValue = value.TryGetObject();

@@ -11,7 +11,6 @@ using Friflo.Json.Fliox.Mapper.Gen;
 using Friflo.Json.Fliox.Mapper.Map.Object.Reflect;
 using Friflo.Json.Fliox.Mapper.Map.Utils;
 using Friflo.Json.Fliox.Mapper.Map.Val;
-using Friflo.Json.Fliox.Mapper.MapIL.Obj;
 using Friflo.Json.Fliox.Mapper.Utils;
 using Friflo.Json.Fliox.Transform.Select;
 
@@ -37,16 +36,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object
                     throw new InvalidOperationException($"type requires concrete types by [InstanceType()] or [PolymorphType()] on: {type}");
                 
                 object[] constructorParams = {config, type, constructor, factory, type.IsValueType, null};
-#if !UNITY_5_3_OR_NEWER
-                if (config.useIL) {
-                    if (type.IsValueType) {
-                        // new StructMapper<T>(config, type, constructor);
-                        return (TypeMapper) TypeMapperUtils.CreateGenericInstance(typeof(StructILMapper<>), new[] {type}, constructorParams);
-                    }
-                    // new ClassILMapper<T>(config, type, constructor);
-                    return (TypeMapper) TypeMapperUtils.CreateGenericInstance(typeof(ClassILMapper<>), new[] {type}, constructorParams);
-                }
-#endif
+
                 var genClassName    = $"Gen.{type.Namespace}.Gen_{type.Name}";
                 var genClass        = type.Assembly.GetType(genClassName);
                 MethodInfo genWrite     = null;

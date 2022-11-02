@@ -83,7 +83,6 @@ namespace Friflo.Json.Fliox.Mapper
             inputStringBuf.Set(json);
             intern.parser.InitParser(inputStringBuf.buffer, inputStringBuf.start, inputStringBuf.Len);
             intern.parser.SetMaxDepth(maxDepth);
-            intern.InitMirrorStack();
         }
         
         private void InitJsonReaderArray(JsonValue array) {
@@ -91,24 +90,20 @@ namespace Friflo.Json.Fliox.Mapper
             inputStringBuf.AppendArray(array, 0, array.Length);
             intern.parser.InitParser(inputStringBuf.buffer, inputStringBuf.start, inputStringBuf.Len);
             intern.parser.SetMaxDepth(maxDepth);
-            intern.InitMirrorStack();
         }
 
         private void InitJsonReaderBytes(ref ByteList bytes, int offset, int len) {
             intern.parser.InitParser(bytes, offset, len);
             intern.parser.SetMaxDepth(maxDepth);
-            intern.InitMirrorStack();
         }
         
         private void InitJsonReaderStream(Stream stream) {
             intern.parser.InitParser(stream);
             intern.parser.SetMaxDepth(maxDepth);
-            intern.InitMirrorStack();
         }
 
         public void Dispose() {
             intern.         Dispose();
-            intern.DisposeMirrorStack();
             inputStringBuf.Dispose();
         }
 
@@ -268,13 +263,10 @@ namespace Friflo.Json.Fliox.Mapper
                     case JsonEvent.ValueString:
                     case JsonEvent.ValueNumber:
                     case JsonEvent.ValueBool:
-                        try {
-                            Var result = mapper.ReadVar(ref intern, defaultValue, out bool success);
-                            if (success)
-                                intern.parser.NextEvent(); // EOF
-                            return result;
-                        }
-                        finally { intern.ClearMirrorStack(); }
+                        Var result = mapper.ReadVar(ref intern, defaultValue, out bool success);
+                        if (success)
+                            intern.parser.NextEvent(); // EOF
+                        return result;
                     case JsonEvent.ValueNull:
                         if (!mapper.isNullable) {
                             intern.ErrorIncompatible<bool>(mapper.DataTypeName(), mapper, out bool _);
@@ -301,13 +293,10 @@ namespace Friflo.Json.Fliox.Mapper
                     case JsonEvent.ValueString:
                     case JsonEvent.ValueNumber:
                     case JsonEvent.ValueBool:
-                        try {
-                            T result = mapper.Read(ref intern, value, out bool success);
-                            if (success)
-                                intern.parser.NextEvent(); // EOF
-                            return result;
-                        }
-                        finally { intern.ClearMirrorStack(); }
+                        T result = mapper.Read(ref intern, value, out bool success);
+                        if (success)
+                            intern.parser.NextEvent(); // EOF
+                        return result;
                     case JsonEvent.ValueNull:
                         if (!mapper.isNullable)
                             return intern.ErrorIncompatible<T>(mapper.DataTypeName(), mapper, out _);
@@ -329,13 +318,10 @@ namespace Friflo.Json.Fliox.Mapper
                 switch (ev) {
                     case JsonEvent.ObjectStart:
                     case JsonEvent.ArrayStart:
-                        try {
-                            T result = mapper.Read(ref intern, value, out bool success);
-                            if (success)
-                                intern.parser.NextEvent(); // EOF
-                            return result;
-                        }
-                        finally { intern.ClearMirrorStack(); }
+                        T result = mapper.Read(ref intern, value, out bool success);
+                        if (success)
+                            intern.parser.NextEvent(); // EOF
+                        return result;
                     case JsonEvent.Error:
                         return default;
                     default:
@@ -351,14 +337,11 @@ namespace Friflo.Json.Fliox.Mapper
                 switch (ev) {
                     case JsonEvent.ObjectStart:
                     case JsonEvent.ArrayStart:
-                        try {
-                            Var valueVar = mapper.varType.FromObject(value);
-                            Var result   = mapper.ReadVar(ref intern, valueVar, out bool success);
-                            if (success)
-                                intern.parser.NextEvent(); // EOF
-                            return result.ToObject();
-                        }
-                        finally { intern.ClearMirrorStack(); }
+                        Var valueVar = mapper.varType.FromObject(value);
+                        Var result   = mapper.ReadVar(ref intern, valueVar, out bool success);
+                        if (success)
+                            intern.parser.NextEvent(); // EOF
+                        return result.ToObject();
                     case JsonEvent.Error:
                         return mapper.varType.DefaultValue;
                     default:

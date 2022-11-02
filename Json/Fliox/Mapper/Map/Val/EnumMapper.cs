@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using Friflo.Json.Burst;
-using Friflo.Json.Fliox.Mapper.MapIL.Val;
 using Friflo.Json.Fliox.Mapper.Utils;
 
 namespace Friflo.Json.Fliox.Mapper.Map.Val
@@ -16,12 +15,6 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
             if (!IsEnum(type, out bool _))
                 return null;
             object[] constructorParams = {config, type};
-#if !UNITY_5_3_OR_NEWER
-            if (config.useIL) {
-                // new EnumILMapper<T>(config, type);
-                return (TypeMapper) TypeMapperUtils.CreateGenericInstance(typeof(EnumILMapper<>), new[] {type}, constructorParams);
-            }
-#endif
             var underlyingType = Nullable.GetUnderlyingType(type);
             if (underlyingType != null) {
                 // new EnumMapperNull<T> (config, type)

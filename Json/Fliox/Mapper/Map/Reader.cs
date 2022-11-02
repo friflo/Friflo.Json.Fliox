@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using Friflo.Json.Burst;
 using Friflo.Json.Burst.Utils;
-using Friflo.Json.Fliox.Mapper.MapIL.Obj;
 using Friflo.Json.Fliox.Mapper.Utils;
 
 namespace Friflo.Json.Fliox.Mapper.Map
@@ -34,10 +33,6 @@ namespace Friflo.Json.Fliox.Mapper.Map
         internal readonly   BytesString         keyRef;
         public   readonly   TypeCache           typeCache;
         public              Utf8JsonWriterStub  jsonWriterStub;
-#if !UNITY_5_3_OR_NEWER
-        private             int                 classLevel;
-        private  readonly   List<ClassMirror>   mirrorStack;
-#endif
         
         public              IErrorHandler       ErrorHandler {
             get => parser.error.errorHandler;
@@ -53,10 +48,6 @@ namespace Friflo.Json.Fliox.Mapper.Map
             setMethodParams = new object[1];
             keyRef          = new BytesString();
             jsonWriterStub = null;
-#if !UNITY_5_3_OR_NEWER
-            mirrorStack     = new List<ClassMirror>(16);
-            classLevel      = 0;
-#endif
 #if !JSON_BURST
             parser.error.errorHandler = DefaultErrorHandler;
 #endif

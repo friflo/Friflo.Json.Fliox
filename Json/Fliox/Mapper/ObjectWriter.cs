@@ -67,7 +67,6 @@ namespace Friflo.Json.Fliox.Mapper
         private void InitJsonWriter() {
             intern.bytes.Clear();
             intern.level = 0;
-            intern.InitMirrorStack();
         }
 
         private void InitJsonWriterBytes() {
@@ -170,12 +169,9 @@ namespace Friflo.Json.Fliox.Mapper
                 intern.AppendNull();
                 return;
             }
-            TypeMapper mapper = intern.typeCache.GetTypeMapper(value.GetType());
-            try {
-                var objectVar = mapper.varType.FromObject(value);
-                mapper.WriteVar(ref intern, objectVar);
-            }
-            finally { intern.ClearMirrorStack(); }
+            TypeMapper mapper   = intern.typeCache.GetTypeMapper(value.GetType());
+            var objectVar       = mapper.varType.FromObject(value);
+            mapper.WriteVar(ref intern, objectVar);
 
             if (intern.level != 0)
                 throw new InvalidOperationException($"Unexpected level after JsonWriter.Write(). Expect 0, Found: {intern.level}");
@@ -183,13 +179,10 @@ namespace Friflo.Json.Fliox.Mapper
         
         private void WriteStart<T>(T value) {
             var mapper = (TypeMapper<T>)intern.typeCache.GetTypeMapper(typeof(T));
-            try {
-                if (mapper.IsNull(ref value))
-                    intern.AppendNull();
-                else
-                    mapper.Write(ref intern, value);
-            }
-            finally { intern.ClearMirrorStack(); }
+            if (mapper.IsNull(ref value))
+                intern.AppendNull();
+            else
+                mapper.Write(ref intern, value);
 
             if (intern.level != 0)
                 throw new InvalidOperationException($"Unexpected level after JsonWriter.Write(). Expect 0, Found: {intern.level}");
@@ -201,10 +194,7 @@ namespace Friflo.Json.Fliox.Mapper
                 return;
             }
             TypeMapper mapper = intern.typeCache.GetTypeMapper(value.GetType());
-            try {
-                mapper.WriteVar(ref intern, value);
-            }
-            finally { intern.ClearMirrorStack(); }
+            mapper.WriteVar(ref intern, value);
 
             if (intern.level != 0)
                 throw new InvalidOperationException($"Unexpected level after JsonWriter.Write(). Expect 0, Found: {intern.level}");

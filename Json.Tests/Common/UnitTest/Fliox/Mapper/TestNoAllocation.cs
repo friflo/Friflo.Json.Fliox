@@ -29,9 +29,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
     public class TestClass {
         public TestClass    selfReference; // test cyclic references
         public TestClass    testChild;
-        public int          key;
         public int[]        intArray;
-        public SomeEnum     someEnum;
 
     }
 
@@ -40,11 +38,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
         string testClassJson = $@"
 {{
     ""testChild"": {{
-        ""someEnum"":""Value2""
     }},
     ""intArray"":[1,2,3],
-    ""key"":42,
-    ""someEnum"":""Value1"",
     ""unknownObject"": {{
         ""anotherUnknown"": 42
     }},
@@ -111,7 +106,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
              // --- class/map
             var testClass =     testClassJson; 
             
-            using (var typeStore    = new TypeStore(new StoreConfig(TypeAccess.IL)))
+            using (var typeStore    = new TypeStore(new StoreConfig(TypeAccess.Reflection)))
             using (var enc          = new ObjectReader(typeStore) { ErrorHandler =  ObjectReader.NoThrow} )
             using (var write        = new ObjectWriter(typeStore))
             {
@@ -182,10 +177,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
 
                     // --------------------------------- class ---------------------------------
                     enc.ReadTo(testClass, reusedClass);
-                    AreEqual(3,               reusedClass.intArray.Length);
-                    IsTrue(SomeEnum.Value1 == reusedClass.someEnum);
-                    IsTrue(SomeEnum.Value2 == reusedClass.testChild.someEnum);
-                    AreEqual(42, reusedClass.key);
+                    AreEqual(3,  reusedClass.intArray.Length);
                     
                     // ------------------------------ Dictionary<,> ----------------------------
                     NotNull(enc.ReadTo(mapInt, reusedDictionaryInt));
@@ -210,7 +202,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
                     }
                     enc.TypeCache.ClearCounts();
                 }
-                AreEqual(636000,   enc.ProcessedBytes);
+                AreEqual(569000,   enc.ProcessedBytes);
             }
             memLog.AssertNoAllocations();
         }

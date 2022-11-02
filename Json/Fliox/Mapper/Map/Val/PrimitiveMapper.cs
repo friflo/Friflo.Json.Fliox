@@ -3,7 +3,6 @@
 using System;
 using Friflo.Json.Burst;
 using Friflo.Json.Fliox.Mapper.Diff;
-using Friflo.Json.Fliox.Mapper.MapIL.Val;
 using static Friflo.Json.Fliox.Mapper.Diff.DiffType;
 
 // ReSharper disable CompareOfFloatsByEqualityOperator
@@ -52,9 +51,9 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
 
         public TypeMapper MatchTypeMapper(Type type, StoreConfig config) {
             if (type == typeof(double))
-                return config.useIL ? new DoubleFieldMapper(config, type) : new DoubleMapper (config, type);
+                return new DoubleMapper (config, type);
             if (type == typeof(double?))
-                return config.useIL ? new NullableDoubleFieldMapper(config, type) : new NullableDoubleMapper (config, type);
+                return new NullableDoubleMapper (config, type);
             return null;
         }
     }
@@ -105,9 +104,9 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
 
         public TypeMapper MatchTypeMapper(Type type, StoreConfig config) {
             if (type == typeof(float))
-                return config.useIL ? new FloatFieldMapper(config, type) : new FloatMapper (config, type); 
+                return new FloatMapper (config, type); 
             if (type == typeof(float?))
-                return config.useIL ? new NullableFloatFieldMapper(config, type) : new NullableFloatMapper (config, type); 
+                return new NullableFloatMapper (config, type); 
             return null;
         }
     }
@@ -158,9 +157,9 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
                 
         public TypeMapper MatchTypeMapper(Type type, StoreConfig config) {
             if (type == typeof(long))
-                return config.useIL ? new LongFieldMapper(config, type) : new LongMapper (config, type);
+                return new LongMapper (config, type);
             if (type == typeof(long?))
-                return config.useIL ? new NullableLongFieldMapper(config, type) : new NullableLongMapper (config, type);
+                return new NullableLongMapper (config, type);
             return null;
         }
     }
@@ -211,9 +210,9 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
 
         public TypeMapper MatchTypeMapper(Type type, StoreConfig config) {
             if (type == typeof(int))
-                return config.useIL ? new IntFieldMapper(config, type) : new IntMapper (config, type); 
+                return new IntMapper (config, type); 
             if (type == typeof(int?))
-                return config.useIL ? new NullableIntFieldMapper(config, type) : new NullableIntMapper(config, type);
+                return new NullableIntMapper(config, type);
             return null;
         }
     }
@@ -264,9 +263,9 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
 
         public TypeMapper MatchTypeMapper(Type type, StoreConfig config) {
             if (type == typeof(short))
-                return config.useIL ? new ShortFieldMapper(config, type) : new ShortMapper (config, type);
+                return new ShortMapper (config, type);
             if (type == typeof(short?))
-                return config.useIL ? new NullableShortFieldMapper(config, type) : new NullableShortMapper (config, type);
+                return new NullableShortMapper (config, type);
             return null;
         }
     }
@@ -318,9 +317,9 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
 
         public TypeMapper MatchTypeMapper(Type type, StoreConfig config) {
             if (type == typeof(byte))
-                return config.useIL ? new ByteFieldMapper(config, type) : new ByteMapper (config, type); 
+                return new ByteMapper (config, type); 
             if (type == typeof(byte?))
-                return config.useIL ? new NullableByteFieldMapper(config, type) : new NullableByteMapper(config, type);
+                return new NullableByteMapper(config, type);
             return null;
         }
     }
@@ -371,9 +370,9 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
 
         public TypeMapper MatchTypeMapper(Type type, StoreConfig config) {
             if (type == typeof(bool))
-                return config.useIL ? new BoolFieldMapper(config, type) : new BoolMapper (config, type);
+                return new BoolMapper (config, type);
             if (type == typeof(bool?))
-                return config.useIL ? new NullableBoolFieldMapper(config, type) : new NullableBoolMapper (config, type);
+                return new NullableBoolMapper (config, type);
             return null;
         }
     }

@@ -2,7 +2,6 @@
 // See LICENSE file in the project root for full license information.
 using Friflo.Json.Burst;
 using Friflo.Json.Fliox.Mapper.Map.Object.Reflect;
-using Friflo.Json.Fliox.Mapper.MapIL.Obj;
 
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Mapper.Map
@@ -32,17 +31,6 @@ namespace Friflo.Json.Fliox.Mapper.Map
         }
 
         public T ReadElement<T>(TypeMapper<T> mapper, ref T value, out bool success) {
-#if !UNITY_5_3_OR_NEWER
-            if (mapper.useIL) {
-                TypeMapper typeMapper = mapper;
-                ClassMirror mirror = InstanceLoad(mapper, ref typeMapper, ref value);
-                success = mapper.ReadValueIL(ref this, mirror, 0, 0);  
-                if (!success)
-                    return default;
-                InstanceStore(mirror, ref value);
-                return value;
-            }
-#endif
             return mapper.Read(ref this, value, out success);
         }
         

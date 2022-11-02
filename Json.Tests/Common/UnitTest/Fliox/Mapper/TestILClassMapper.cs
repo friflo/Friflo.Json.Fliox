@@ -215,8 +215,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
             }
         }
         
-        [Test] public void  NoAllocWriteClassReflect()   { NoAllocWriteClass(TypeAccess.Reflection); }
-        [Test] public void  NoAllocWriteClassIL()        { NoAllocWriteClass(TypeAccess.IL); }
+        [Test]  public void  NoAllocWriteClassReflect()   { NoAllocWriteClass(TypeAccess.Reflection); }
+                public void  NoAllocWriteClassIL()        { NoAllocWriteClass(TypeAccess.IL); }
         
         private void        NoAllocWriteClass (TypeAccess typeAccess) {
 
@@ -237,8 +237,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
                 memLog.AssertNoAllocations();
         }
         
-        [Test] public void  NoAllocReadClassReflect()   { NoAllocReadClass(TypeAccess.Reflection); }
-        [Test] public void  NoAllocReadClassIL()        { NoAllocReadClass(TypeAccess.IL); }
+        [Test]  public void  NoAllocReadClassReflect()   { NoAllocReadClass(TypeAccess.Reflection); }
+                public void  NoAllocReadClassIL()        { NoAllocReadClass(TypeAccess.IL); }
         
         private void        NoAllocReadClass (TypeAccess typeAccess) {
             var memLog      = new MemoryLogger(100, 100, MemoryLog.Enabled);
@@ -280,8 +280,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
             }
         }
         
-        [Test] public void NoAllocListClassReflect()   { NoAllocListClass(TypeAccess.Reflection); }
-        [Test] public void NoAllocListClassIL()        { NoAllocListClass(TypeAccess.IL); }
+        [Test]  public void NoAllocListClassReflect()   { NoAllocListClass(TypeAccess.Reflection); }
+                public void NoAllocListClassIL()        { NoAllocListClass(TypeAccess.IL); }
         
         private void        NoAllocListClass (TypeAccess typeAccess) {
             var memLog      = new MemoryLogger(100, 100, MemoryLog.Enabled);
@@ -308,7 +308,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
         }
         
         [Test]  public void NoAllocListStructReflect()   { NoAllocListStruct(TypeAccess.Reflection); }
-        [Test]  public void NoAllocListStructIL()        { NoAllocListStruct(TypeAccess.IL); } 
+                public void NoAllocListStructIL()        { NoAllocListStruct(TypeAccess.IL); } 
         
         private void        NoAllocListStruct (TypeAccess typeAccess) {
             var memLog      = new MemoryLogger(100, 100, MemoryLog.Enabled);
@@ -335,7 +335,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
         }
 
         [Test]  public void NoAllocArrayClassReflect()   { NoAllocArrayClass(TypeAccess.Reflection); }
-        [Test]  public void NoAllocArrayClassIL()        { NoAllocArrayClass(TypeAccess.IL); } 
+                public void NoAllocArrayClassIL()        { NoAllocArrayClass(TypeAccess.IL); } 
         
         private void        NoAllocArrayClass (TypeAccess typeAccess) {
             var memLog      = new MemoryLogger(100, 100, MemoryLog.Enabled);
@@ -362,7 +362,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
         }
         
         [Test]  public void NoAllocArrayStructReflect()   { NoAllocArrayStruct(TypeAccess.Reflection); }
-        [Test]  public void NoAllocArrayStructIL()        { NoAllocArrayStruct(TypeAccess.IL); }
+                public void NoAllocArrayStructIL()        { NoAllocArrayStruct(TypeAccess.IL); }
         
         private void        NoAllocArrayStruct (TypeAccess typeAccess) {
             var memLog      = new MemoryLogger(100, 100, MemoryLog.Enabled);

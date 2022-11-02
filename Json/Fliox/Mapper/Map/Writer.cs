@@ -6,7 +6,6 @@ using System.Runtime.CompilerServices;
 using Friflo.Json.Burst;
 using Friflo.Json.Burst.Utils;
 using Friflo.Json.Fliox.Mapper.Map.Object.Reflect;
-using Friflo.Json.Fliox.Mapper.MapIL.Obj;
 using Friflo.Json.Fliox.Mapper.Utils;
 
 namespace Friflo.Json.Fliox.Mapper.Map
@@ -32,10 +31,6 @@ namespace Friflo.Json.Fliox.Mapper.Map
         public              int                 maxDepth;
         public              bool                pretty;
         public              bool                writeNullMembers;
-#if !UNITY_5_3_OR_NEWER
-        private             int                 classLevel;
-        private  readonly   List<ClassMirror>   mirrorStack;
-#endif
 
         internal            OutputType          outputType;
 #if JSON_BURST
@@ -62,10 +57,6 @@ namespace Friflo.Json.Fliox.Mapper.Map
 #else
             bytesWriter     = null;
 #endif
-#if !UNITY_5_3_OR_NEWER
-            classLevel      = 0;
-            mirrorStack     = new List<ClassMirror>(16);
-#endif
         }
         
         public void Dispose() {
@@ -73,7 +64,6 @@ namespace Friflo.Json.Fliox.Mapper.Map
             @null.Dispose();
             format.Dispose();
             bytes.Dispose();
-            DisposeMirrorStack();
         }
         
         // --- WriteUtils
@@ -226,16 +216,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
         
         // --- array element
         public void WriteElement<T>(TypeMapper<T> mapper, ref T value) {
-#if !UNITY_5_3_OR_NEWER
-            if (mapper.useIL) {
-                TypeMapper typeMapper = mapper;
-                ClassMirror mirror = InstanceLoad(mapper, ref typeMapper, ref value);
-                mapper.WriteValueIL(ref this, mirror, 0, 0);
-                return;
-            }
-#endif
             mapper.Write(ref this, value);
-            
         }
         
         public void WriteGuid (in Guid guid) {
