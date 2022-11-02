@@ -289,14 +289,14 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object
                 string discriminator = factory.discriminator;
                 if (discriminator == null) {
                     obj = (T) factory.CreateInstance(typeof(T));
-                    if (classType.IsNull(ref obj))
+                    if (obj == null)
                         return reader.ErrorMsg<TypeMapper<T>>($"No instance created in InstanceFactory: ", factory.GetType().Name, out success);
                     classType = reader.typeCache.GetTypeMapper(obj.GetType());
                 } else {
                     if (ev == JsonEvent.ValueString && reader.parser.key.IsEqualString(discriminator)) {
                         string discriminant = reader.parser.value.AsString();
                         obj = (T) factory.CreatePolymorph(discriminant);
-                        if (classType.IsNull(ref obj))
+                        if (obj == null)
                             return reader.ErrorMsg<TypeMapper<T>>($"No [PolymorphType] type declared for discriminant: '{discriminant}' on type: ", classType.type.Name, out success);
                         classType = reader.typeCache.GetTypeMapper(obj.GetType());
                         parser.NextEvent();
@@ -306,7 +306,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object
                 success = true;
                 return classType;
             }
-            if (classType.IsNull(ref obj))
+            if (obj == null)
                 obj = (T) classType.CreateInstance();
             success = true;
             return null;

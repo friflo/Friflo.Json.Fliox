@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 using System;
+using System.Collections.Generic;
 
 #if JSON_BURST
     using Unity.Collections.LowLevel.Unsafe;
@@ -110,6 +111,19 @@ namespace Friflo.Json.Burst
                 // Buffer.BlockCopy(src.buffer.array, src.start, buffer.array, curEnd, len);
 #endif
             }
+        }
+        
+        public static readonly  BytesComparer Equality = new BytesComparer();
+    }
+    
+    public sealed class BytesComparer : IEqualityComparer<Bytes>
+    {
+        public bool Equals(Bytes x, Bytes y) {
+            return x.IsEqual(ref y);
+        }
+
+        public int GetHashCode(Bytes value) {
+            return value.hc;
         }
     }
 }

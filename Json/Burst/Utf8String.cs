@@ -5,6 +5,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Friflo.Json.Burst.Utils;
 
 // ReSharper disable MemberCanBePrivate.Global
 namespace Friflo.Json.Burst
@@ -19,7 +20,7 @@ namespace Friflo.Json.Burst
 
         public    override  string      ToString()  => AsString();
         public              bool        IsNull      => buffer?.Buf == null;
-
+        
         internal Utf8String (Utf8Buffer buffer, int start, int len) {
             this.buffer = buffer;
             this.start  = start;
@@ -27,7 +28,6 @@ namespace Friflo.Json.Burst
             // hashCode    = ComputeHash(buffer.Buf, start, start + len);
         }
 
-        // ReSharper disable once UnusedMember.Local
         // using as resulted in 20% less performance - not convinced to use it
         private static int ComputeHash(byte[] array, int start, int end) {
             var result  = 0;
@@ -87,6 +87,10 @@ namespace Friflo.Json.Burst
                 return null;
             return Utf8Buffer.Utf8.GetString(buf, start, len);  
         }
+        
+        public Bytes AsBytes () {
+            return new Bytes { buffer = new ByteList { array = buffer.Buf }, start = start, end = start + len };
+        }
     }
     
     /// <summary>
@@ -110,7 +114,7 @@ namespace Friflo.Json.Burst
         private             byte[]              buf;
         private             int                 pos;
         private  readonly   List<Utf8String>    strings = new List<Utf8String>();
-        
+        /// <summary>Important! Is internal by intention </summary>
         internal            byte[]              Buf         => buf;
         public override     string              ToString()  => $"count: {strings.Count}";
         

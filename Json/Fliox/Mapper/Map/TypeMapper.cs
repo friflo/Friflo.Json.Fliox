@@ -91,15 +91,6 @@ namespace Friflo.Json.Fliox.Mapper.Map
 
         public   virtual  bool      IsNullVar       (in Var value) => value.IsNull;
         
-
-        public bool IsNull<T>(ref T value) {
-            if (isValueType) {
-                if (nullableUnderlyingType == null)
-                    return false;
-                return EqualityComparer<T>.Default.Equals(value, default);
-            }
-            return value == null;
-        }
         // --- Schema / Code generation related methods --- 
         public virtual  TypeMapper                          GetElementMapper    ()  => null;
         public virtual  List<string>                        GetEnumValues       ()  => null;
@@ -119,6 +110,15 @@ namespace Friflo.Json.Fliox.Mapper.Map
         
         protected TypeMapper() :
             base(null, typeof(TVal), TypeUtils.IsNullable(typeof(TVal)), false) {
+        }
+        
+        public virtual bool IsNull(ref TVal value){
+            if (isValueType) {
+                if (nullableUnderlyingType == null)
+                    return false;
+                return EqualityComparer<TVal>.Default.Equals(value, default);
+            }
+            return value == null;
         }
 
         public abstract void        Write       (ref Writer writer, TVal slot);

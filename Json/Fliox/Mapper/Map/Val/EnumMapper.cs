@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using Friflo.Json.Burst;
-using Friflo.Json.Fliox.Mapper.Map.Utils;
 using Friflo.Json.Fliox.Mapper.MapIL.Val;
 using Friflo.Json.Fliox.Mapper.Utils;
 
@@ -23,6 +22,12 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
                 return (TypeMapper) TypeMapperUtils.CreateGenericInstance(typeof(EnumILMapper<>), new[] {type}, constructorParams);
             }
 #endif
+            var underlyingType = Nullable.GetUnderlyingType(type);
+            if (underlyingType != null) {
+                // new EnumMapperNull<T> (config, type)
+                var enumNullMapper = TypeMapperUtils.CreateGenericInstance(typeof(EnumMapperNull<>), new[] {underlyingType}, constructorParams);
+                return (TypeMapper)enumNullMapper;
+            }
             // new EnumMapper<T> (config, type)
             var enumMapper = TypeMapperUtils.CreateGenericInstance(typeof(EnumMapper<>), new[] {type}, constructorParams);
             return (TypeMapper)enumMapper;
@@ -41,16 +46,8 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
             }
             return true;
         }
-        
-        internal  static T Int2Enum<T>(int value) {
-#if UNITY_5_3_OR_NEWER
-            return Unity.Collections.LowLevel.Unsafe.UnsafeUtility.As<int, T>(ref value);
-#else
-            return System.Runtime.CompilerServices.Unsafe.As<int, T>(ref value);
-#endif
-        }
     }
-
+    
     /// <summary>
     /// The mapping <see cref="enumToString"/> and <see cref="stringToEnum"/> is not bidirectional as this is the behaviour of C# enum types
     /// <code>
@@ -59,108 +56,150 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
     ///     Value2 = 11, // duplicate constant value - C#/.NET maps these enum values to the first value using same constant
     /// }
     /// </code>
-    /// </summary>    
-    internal sealed class EnumMapper<T> : TypeMapper<T>
+    /// </summary>  
+    internal sealed class EnumMapperInternal<T> where T : struct
     {
-        private     readonly Dictionary<BytesString, T> stringToEnum;
-        private     readonly Dictionary<T, BytesString> enumToString;
+        private     readonly    TypeMapper                  mapper;
+        private     readonly    Dictionary<Bytes, T>        stringToEnum;
+        private     readonly    Dictionary<T, Bytes>        enumToString;
         //
-    //  private     readonly Dictionary<long, T>        integralToEnum = new Dictionary<long, T>();
-        private     readonly Dictionary<string, string> stringToDoc;
+        internal    readonly    Dictionary<string, string>  stringToDoc;
+        private     readonly    EnumConvert<T>              convert;
         
-        public override string DataTypeName() { return $"enum {typeof(T).Name}"; }
-        
-        public EnumMapper(StoreConfig config, Type type) :
-            base (config, typeof(T), Nullable.GetUnderlyingType(typeof(T)) != null, false)
-        {
-            Type enumType       = isNullable ? nullableUnderlyingType : type;
+        internal EnumMapperInternal (TypeMapper mapper, StoreConfig config) {
+            this.mapper         = mapper;
+            convert             = EnumConvert.GetEnumConvert<T>();
+            Type enumType       = mapper.isNullable ? mapper.nullableUnderlyingType : mapper.type;
             FieldInfo[] fields  = enumType.GetFields();
             var count           = fields.Length;
-            stringToEnum        = new Dictionary<BytesString, T>(count);
-            enumToString        = new Dictionary<T, BytesString>(count);
-            var  enumContext    = new EnumContext(enumType, config.assemblyDocs);
-            // ReSharper disable once PossibleNullReferenceException
+            stringToEnum        = new Dictionary<Bytes, T>(count, Bytes.Equality);
+            enumToString        = new Dictionary<T, Bytes>(count);
+            var enumContext     = new EnumContext(enumType, config.assemblyDocs);
+            var names           = CreateNames(fields);
             for (int n = 0; n < count; n++) {
                 FieldInfo enumField = fields[n];
-                if (enumField.FieldType.IsEnum) {
-                    T    enumValue          = (T)enumField.GetValue(type);
-                    string  enumName        = enumField.Name;
-                //  object  enumConst       = enumField.GetRawConstantValue();
-                //  long    enumIntegral    = TypeUtils.GetIntegralValue(enumConst, type);
-                    var     name            = new BytesString(enumName);
-                    stringToEnum.Add(name, enumValue);
-                    enumToString.  TryAdd(enumValue, name);
-                //  integralToEnum.TryAdd(enumIntegral, enumValue);
-                    enumContext.AddEnumValueDoc(ref stringToDoc, enumName);
-                }
+                if (!enumField.FieldType.IsEnum)
+                    continue;
+                T       enumValue   = (T)enumField.GetValue(enumType);
+                string  enumName    = enumField.Name;
+                Bytes   name        = names[n].AsBytes();
+                name.UpdateHashCode();
+                stringToEnum.Add   (name, enumValue);
+                enumToString.TryAdd(enumValue, name);
+                enumContext.AddEnumValueDoc(ref stringToDoc, enumName);
             }
-            /*
-            Type underlyingType = Enum.GetUnderlyingType(type);
-            Array enumValues = Enum.GetValues(type);
-            string[] enumNames = Enum.GetNames(type);
-
-            for (int n = 0; n < enumValues.Length; n++) {
-                Enum enumValue = (Enum)enumValues.GetValue(n);
-                string enumName = enumNames[n];
-                var name            = new BytesString(enumName);
-                stringToEnum.TryAdd(name, enumValue);
-                enumToString.Add(enumValue, name);
-                // long underlyingValue = GetIntegralValue(enumValue, underlyingType);
-                // integralToEnum.TryAdd(underlyingValue, enumValue);
-            } */
         }
         
-        public override void Dispose() {
-            foreach (var key in stringToEnum.Keys)
-                key.value.Dispose(Untracked.Bytes);
+        /// Add enum values to buffer in a separate loop to use only a single <see cref="Utf8Buffer"/> buffer array
+        private static Utf8String[] CreateNames(FieldInfo[] fields) {
+            var buffer  = new Utf8Buffer();
+            var names   = new Utf8String[fields.Length];
+            for (int n = 0; n < fields.Length; n++) {
+                FieldInfo enumField = fields[n];
+                if (!enumField.FieldType.IsEnum)
+                    continue;
+                names[n]    = buffer.Add(enumField.Name);
+            }
+            var remainder = new string('-', Bytes.CopyRemainder);
+            buffer.Add(remainder);
+            return names;
         }
         
-        public override  List<string>    GetEnumValues() {
+        internal  List<string>    GetEnumValues() {
             var enumValues = new List<string>();
             foreach (var pair in stringToEnum) {
-                BytesString enumValueBytes  = pair.Key;
-                string      enumValue       = enumValueBytes.ToString();
+                var     enumValueBytes  = pair.Key;
+                string  enumValue       = enumValueBytes.ToString();
                 enumValues.Add(enumValue);
             }
             return enumValues;
         }
         
-        public override  IReadOnlyDictionary<string, string> GetEnumValueDocs() => stringToDoc;
-
-        public override void InitTypeMapper(TypeStore typeStore) {
-        }
-
-        public override void Write(ref Writer writer, T slot) {
-            if (enumToString.TryGetValue(slot, out BytesString enumName)) {
+        internal void Write(ref Writer writer, T slot) {
+            if (enumToString.TryGetValue(slot, out var enumName)) {
                 writer.bytes.AppendChar('\"');
-                writer.bytes.AppendBytes(ref enumName.value);
+                writer.bytes.AppendBytes(ref enumName);
                 writer.bytes.AppendChar('\"');
             }
         }
-
-        public override T Read(ref Reader reader, T slot, out bool success) {
+        
+        internal T Read(ref Reader reader, T slot, out bool success) {
             ref var parser = ref reader.parser;
             if (parser.Event == JsonEvent.ValueString) {
-                reader.keyRef.value = parser.value;
-                if (stringToEnum.TryGetValue(reader.keyRef, out T enumValue)) {
+                reader.parser.value.UpdateHashCode();
+                if (stringToEnum.TryGetValue(reader.parser.value, out T enumValue)) {
                     success = true;
                     return enumValue;
                 }
-                return reader.ErrorIncompatible<T>("enum ", typeof(T).Name, this, out success);
+                return reader.ErrorIncompatible<T>("enum ", typeof(T).Name, mapper, out success);
             }
             if (parser.Event == JsonEvent.ValueNumber) {
                 int integralValue = parser.ValueAsInt(out success);
                 if (!success)
                     return default;
-                var enumValue = EnumMatcher.Int2Enum<T>(integralValue);
+                var enumValue = convert.IntToEnum(integralValue);
                 if (enumToString.ContainsKey(enumValue)) {
                     success = true;
                     return enumValue;
                 }
-                return reader.ErrorIncompatible<T>("enum ", typeof(T).Name, this, out success);
+                return reader.ErrorIncompatible<T>("enum ", typeof(T).Name, mapper, out success);
             }
-            return reader.HandleEvent(this, out success);
+            return reader.ErrorIncompatible<T>(mapper.DataTypeName(), mapper, out success);
+        }
+    }
+
+    internal sealed class EnumMapper<T> : TypeMapper<T> where T : struct
+    {
+        private readonly    EnumMapperInternal<T>               intern;
+
+        public override     string                              DataTypeName()      => $"enum {typeof(T).Name}";
+        public override     bool                                IsNull(ref T value) => false;
+        public override     List<string>                        GetEnumValues()     => intern.GetEnumValues();
+        public override     IReadOnlyDictionary<string, string> GetEnumValueDocs()  => intern.stringToDoc;
+
+        public EnumMapper(StoreConfig config, Type type) :
+            base (config, typeof(T), false, true)
+        {
+            intern          = new EnumMapperInternal<T>(this, config);
+        }
+
+        public override void Write(ref Writer writer, T slot) {
+            intern.Write(ref writer, slot);
+        }
+
+        public override T Read(ref Reader reader, T slot, out bool success) {
+            return intern.Read(ref reader, slot, out success);
         }        
+    }
+    
+    internal sealed class EnumMapperNull<T> : TypeMapper<T?> where T : struct
+    {
+        private readonly    EnumMapperInternal<T>               intern;
+
+        public override     string                              DataTypeName()          =>  $"enum {typeof(T).Name}?";
+        public override     bool                                IsNull(ref T? value)    => !value.HasValue;
+        public override     List<string>                        GetEnumValues()         => intern.GetEnumValues();
+        public override     IReadOnlyDictionary<string, string> GetEnumValueDocs()      => intern.stringToDoc;
+
+        public EnumMapperNull(StoreConfig config, Type type) :
+            base (config, typeof(T?), true, true)
+        {
+            intern          = new EnumMapperInternal<T>(this, config);
+        }
+
+        public override void Write(ref Writer writer, T? slot) {
+            if (!slot.HasValue) throw new InvalidOperationException("Expect enum value not null");
+            T value = slot.Value;
+            intern.Write(ref writer, value);
+        }
+
+        public override T? Read(ref Reader reader, T? slot, out bool success) {
+            if (reader.parser.Event == JsonEvent.ValueNull) {
+                success = true;
+                return null;
+            }
+            return intern.Read(ref reader, default, out success);
+        }
     }
     
     internal readonly struct EnumContext
