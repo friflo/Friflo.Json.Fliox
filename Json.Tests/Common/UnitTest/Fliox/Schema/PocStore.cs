@@ -101,15 +101,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema
             generator.WriteFiles(CommonUtils.GetBasePath() + "assets~/Schema/Markdown/PocStore");
         }
         
-        /// C# -> Optimize
-        // [Test]
-        public static void CS_Optimize () {
-            var typeSchema  = NativeTypeSchema.Create(typeof(PocStore));
-            var generator   = new Generator(typeSchema, ".cs");
-            CSharpOptimizeGenerator.Generate(generator);
-            generator.WriteFiles(CommonUtils.GetBasePath() + "assets~/Schema/C#-Optimize/PocStore");
-        }
-        
         // ---------------------------------- input: JSON Schema ----------------------------------
         
         static readonly string JsonSchemaFolder = CommonUtils.GetBasePath() + "assets~/Schema/JSON/PocStore";
