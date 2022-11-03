@@ -12,8 +12,8 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
         public   readonly   PropField []                    fields;
         public   readonly   Bytes32 []                      names32;
         public   readonly   int                             count;
-        public   readonly   int                             primCount;
-        public   readonly   int                             objCount;
+        private  readonly   int                             primCount;  // obsolete - was used by generated IL code
+        private  readonly   int                             objCount;   // obsolete - was used by generated IL code
         // ReSharper disable once NotAccessedField.Local
         private  readonly   string                          typeName;
         

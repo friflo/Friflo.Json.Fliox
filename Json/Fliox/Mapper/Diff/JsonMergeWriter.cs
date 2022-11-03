@@ -4,7 +4,6 @@
 using System;
 using Friflo.Json.Burst;
 using Friflo.Json.Fliox.Mapper.Map;
-using Friflo.Json.Fliox.Mapper.Map.Object.Reflect;
 using static Friflo.Json.Fliox.Mapper.Diff.DiffType;
 
 namespace Friflo.Json.Fliox.Mapper.Diff

@@ -1,11 +1,13 @@
 // Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
+
 using System;
 using System.Collections.Generic;
 using System.Reflection;
 using Friflo.Json.Burst;
+using Friflo.Json.Fliox.Mapper.Map.Object.Reflect;
 
-namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
+namespace Friflo.Json.Fliox.Mapper.Map
 {
     public sealed class PropField<T> : PropField
     {
@@ -56,8 +58,8 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
         public              Bytes           firstMember;        // don't mutate
         public              Bytes           subSeqMember;       // don't mutate
         //
-        internal readonly   FieldInfo                           field;
-        internal readonly   PropertyInfo                        property;
+        private  readonly   FieldInfo                           field;
+        private  readonly   PropertyInfo                        property;
         internal readonly   IEnumerable<CustomAttributeData>    customAttributes;
     //  private  readonly   MethodInfo                          getMethod;
     //  private  readonly   Func<object, object>                getLambda;
