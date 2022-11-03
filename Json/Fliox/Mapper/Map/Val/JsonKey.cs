@@ -48,9 +48,6 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
         }
 
         public override JsonKey Read(ref Reader reader, JsonKey slot, out bool success) {
-            // var stub = reader.jsonWriterStub;
-            // if (stub == null)
-            //     reader.jsonWriterStub = stub = new Utf8JsonWriterStub();
             ref var parser = ref reader.parser;
             var ev = parser.Event;
             switch (ev) {

@@ -137,6 +137,8 @@ namespace Friflo.Json.Fliox.Mapper.Map
             WriteString(value);
         }
 
+        // --- JsonKey
+        /// <see cref="JsonKeyMapper.Write"/>
         public void WriteJsonKey (PropField field, in JsonKey value, ref bool firstMember) {
             WriteFieldKey(field, ref firstMember);
             switch (value.type) {
@@ -157,18 +159,8 @@ namespace Friflo.Json.Fliox.Mapper.Map
             }
         }
         
-        /*
-        public void WriteGuid (PropField field, in Guid value, ref bool firstMember) {
-            WriteFieldKey(field, ref firstMember);
-            WriteGuid(value);
-        }
-        
-        public void WriteDateTime (PropField field, in DateTime value, ref bool firstMember) {
-            WriteFieldKey(field, ref firstMember);
-            DateTimeMapper.ToRFC_3339(value);
-        } */
-        
-        // ------------------------------------------- JSON ---------------------------------------------
+        // --- JsonValue
+        /// <see cref="JsonValueMapper.Write"/>
         public void WriteJsonValue (PropField field, in JsonValue value, ref bool firstMember) {
             WriteFieldKey(field, ref firstMember);
             if (!value.IsNull())

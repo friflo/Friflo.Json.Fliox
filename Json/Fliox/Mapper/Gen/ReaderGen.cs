@@ -167,6 +167,8 @@ namespace Friflo.Json.Fliox.Mapper.Map
             return parser.value.GetString(ref charBuf);
         }
         
+        // --- JsonKey
+        /// <see cref="JsonKeyMapper.Read"/>
         public JsonKey ReadJsonKey (PropField field, out bool success) {
             if (parser.Event != JsonEvent.ValueString)
                 return HandleEventGen<JsonKey>(field.fieldType, out success);
@@ -174,26 +176,8 @@ namespace Friflo.Json.Fliox.Mapper.Map
             return new JsonKey(ref parser.value, ref parser.valueParser);
         }
         
-        /*
-        public Guid ReadGuid (PropField field, out bool success) {
-            ref var parserValue = ref parser.value;
-            if (parser.Event != JsonEvent.ValueString) {
-                return HandleEventGen<Guid>(field.fieldType, out success);
-            }
-            if (!parserValue.TryParseGuid(out Guid value, out _)) {
-                return ErrorMsg<Guid>("Failed parsing Guid. value: ", parserValue.AsString(), out success);
-            }
-            success = true;
-            return value;
-        }
-        
-        public DateTime ReadDateTime (PropField field, out bool success) {
-            var mapper = (DateTimeMapper)field.fieldType;
-            return mapper.Read(ref this, default, out success);
-        } */
-        
-        // ------------------------------------------- any ---------------------------------------------
-        // ReSharper disable once RedundantAssignment
+        // --- JsonValue
+        /// <see cref="JsonValueMapper.Read"/>
         public JsonValue ReadJsonValue (PropField field, out bool success) {
             var stub = jsonWriterStub;
             if (stub == null)
@@ -216,11 +200,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
         
         /// <summary> <paramref name="value"/> is only used to infer type to avoid setting generic Type T explicit </summary>
         public T? ReadEnumNull<T> (PropField field, T? value, out bool success) where T : struct {
-            if (parser.Event == JsonEvent.ValueNull) {
-                success = true;
-                return null;
-            }
-            var mapper = (EnumMapper<T>)field.fieldType;
+            var mapper = (EnumMapperNull<T>)field.fieldType;
             return mapper.Read(ref this, default, out success);
         }
     }
