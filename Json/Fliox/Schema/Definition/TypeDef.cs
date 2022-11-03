@@ -206,7 +206,7 @@ namespace Friflo.Json.Fliox.Schema.Definition
         }
         
         internal static List<EnumValue> CreateEnumValues(
-            ICollection<string>                 enumNames,
+            IReadOnlyList<string>               enumNames,
             IReadOnlyDictionary<string,string>  enumDocs,
             IUtf8Buffer                         buffer)
         {

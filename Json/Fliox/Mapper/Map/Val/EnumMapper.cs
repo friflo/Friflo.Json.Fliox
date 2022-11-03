@@ -55,6 +55,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
         private     readonly    TypeMapper                  mapper;
         private     readonly    Dictionary<Bytes, T>        stringToEnum;
         private     readonly    Dictionary<T, Bytes>        enumToString;
+        private     readonly    EnumInfo<T>[]               enumInfos;
         //
         internal    readonly    Dictionary<string, string>  stringToDoc;
         private     readonly    EnumConvert<T>              convert;
@@ -64,48 +65,51 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
             convert             = EnumConvert.GetEnumConvert<T>();
             Type enumType       = mapper.isNullable ? mapper.nullableUnderlyingType : mapper.type;
             FieldInfo[] fields  = enumType.GetFields();
-            var count           = fields.Length;
+            enumInfos           = CreateEnumInfos(fields, enumType);
+            var count           = enumInfos.Length;
             stringToEnum        = new Dictionary<Bytes, T>(count, Bytes.Equality);
             enumToString        = new Dictionary<T, Bytes>(count);
             var enumContext     = new EnumContext(enumType, config.assemblyDocs);
-            var names           = CreateNames(fields);
+            var names           = CreateNames(enumInfos);
             for (int n = 0; n < count; n++) {
-                FieldInfo enumField = fields[n];
-                if (!enumField.FieldType.IsEnum)
-                    continue;
-                T       enumValue   = (T)enumField.GetValue(enumType);
-                string  enumName    = enumField.Name;
-                Bytes   name        = names[n].AsBytes();
+                var enumInfo    = enumInfos[n];
+                Bytes   name    = names[n].AsBytes();
                 name.UpdateHashCode();
-                stringToEnum.Add   (name, enumValue);
-                enumToString.TryAdd(enumValue, name);
-                enumContext.AddEnumValueDoc(ref stringToDoc, enumName);
+                stringToEnum.Add   (name, enumInfo.value);
+                enumToString.TryAdd(enumInfo.value, name);
+                enumContext.AddEnumValueDoc(ref stringToDoc, enumInfo.name);
             }
         }
         
-        /// Add enum values to buffer in a separate loop to use only a single <see cref="Utf8Buffer"/> buffer array
-        private static Utf8String[] CreateNames(FieldInfo[] fields) {
-            var buffer  = new Utf8Buffer();
-            var names   = new Utf8String[fields.Length];
-            for (int n = 0; n < fields.Length; n++) {
-                FieldInfo enumField = fields[n];
+        private static EnumInfo<T>[] CreateEnumInfos(FieldInfo[] fields, Type enumType) {
+            var result = new List<EnumInfo<T>>(fields.Length);
+            foreach (var enumField in fields) {
                 if (!enumField.FieldType.IsEnum)
                     continue;
-                names[n]    = buffer.Add(enumField.Name);
+                var enumValue   = (T)enumField.GetValue(enumType);
+                result.Add(new EnumInfo<T>(enumField.Name, enumValue));
+            }
+            return result.ToArray();
+        }
+        
+        /// Add enum values to buffer in a separate loop to use only a single <see cref="Utf8Buffer"/> buffer array
+        private static Utf8String[] CreateNames(EnumInfo<T>[] enumValues) {
+            var buffer  = new Utf8Buffer();
+            var names   = new Utf8String[enumValues.Length];
+            for (int n = 0; n < enumValues.Length; n++) {
+                names[n]    = buffer.Add(enumValues[n].name);
             }
             var remainder = new string('-', Bytes.CopyRemainder);
             buffer.Add(remainder);
             return names;
         }
         
-        internal  List<string>    GetEnumValues() {
-            var enumValues = new List<string>();
-            foreach (var pair in stringToEnum) {
-                var     enumValueBytes  = pair.Key;
-                string  enumValue       = enumValueBytes.ToString();
-                enumValues.Add(enumValue);
+        internal  IReadOnlyList<string>    GetEnumValues() {
+            var result = new string[enumInfos.Length];
+            for (int n = 0; n < enumInfos.Length; n++) {
+                result[n] = enumInfos[n].name;
             }
-            return enumValues;
+            return result;
         }
         
         internal void Write(ref Writer writer, T slot) {
@@ -116,7 +120,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
             }
         }
         
-        internal T Read(ref Reader reader, T slot, out bool success) {
+        internal T Read(ref Reader reader, out bool success) {
             ref var parser = ref reader.parser;
             if (parser.Event == JsonEvent.ValueString) {
                 reader.parser.value.UpdateHashCode();
@@ -140,6 +144,19 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
             return reader.ErrorIncompatible<T>(mapper.DataTypeName(), mapper, out success);
         }
     }
+    
+    internal readonly struct EnumInfo<T> where T : struct
+    {
+        internal readonly   string  name;
+        internal readonly   T       value; // integral type - commonly int
+
+        public   override   string  ToString() => name;
+
+        internal EnumInfo(string name, T value) {
+            this.name   = name;
+            this.value  = value;
+        }
+    }
 
     internal sealed class EnumMapper<T> : TypeMapper<T> where T : struct
     {
@@ -147,7 +164,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
 
         public override     string                              DataTypeName()      => $"enum {typeof(T).Name}";
         public override     bool                                IsNull(ref T value) => false;
-        public override     List<string>                        GetEnumValues()     => intern.GetEnumValues();
+        public override     IReadOnlyList<string>               GetEnumValues()     => intern.GetEnumValues();
         public override     IReadOnlyDictionary<string, string> GetEnumValueDocs()  => intern.stringToDoc;
 
         public EnumMapper(StoreConfig config, Type type) :
@@ -161,7 +178,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
         }
 
         public override T Read(ref Reader reader, T slot, out bool success) {
-            return intern.Read(ref reader, slot, out success);
+            return intern.Read(ref reader, out success);
         }        
     }
     
@@ -171,7 +188,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
 
         public override     string                              DataTypeName()          =>  $"enum {typeof(T).Name}?";
         public override     bool                                IsNull(ref T? value)    => !value.HasValue;
-        public override     List<string>                        GetEnumValues()         => intern.GetEnumValues();
+        public override     IReadOnlyList<string>               GetEnumValues()         => intern.GetEnumValues();
         public override     IReadOnlyDictionary<string, string> GetEnumValueDocs()      => intern.stringToDoc;
 
         public EnumMapperNull(StoreConfig config, Type type) :
@@ -191,7 +208,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
                 success = true;
                 return null;
             }
-            return intern.Read(ref reader, default, out success);
+            return intern.Read(ref reader, out success);
         }
     }
     

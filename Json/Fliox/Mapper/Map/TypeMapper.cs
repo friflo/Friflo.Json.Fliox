@@ -86,7 +86,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
         
         // --- Schema / Code generation related methods --- 
         public virtual  TypeMapper                          GetElementMapper    ()  => null;
-        public virtual  List<string>                        GetEnumValues       ()  => null;
+        public virtual  IReadOnlyList<string>               GetEnumValues       ()  => null;
         public virtual  IReadOnlyDictionary<string, string> GetEnumValueDocs    ()  => null;
         public virtual  TypeMapper                          GetUnderlyingMapper ()  => this;
     }
