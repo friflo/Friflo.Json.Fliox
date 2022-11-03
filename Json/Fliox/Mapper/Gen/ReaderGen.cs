@@ -56,7 +56,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
         
         /// <summary> <paramref name="value"/> is only used to infer type to avoid setting generic Type T explicit </summary>
         public T? ReadStructNull<T> (PropField field, in T? value, out bool success) where T : struct {
-            var mapper = (TypeMapper<T>)field.fieldType;
+            var mapper = (TypeMapper<T?>)field.fieldType;
             if (parser.Event == JsonEvent.ValueNull) {
                 if (!mapper.isNullable) {
                     return ErrorIncompatible<T>(mapper.DataTypeName(), mapper, out success);

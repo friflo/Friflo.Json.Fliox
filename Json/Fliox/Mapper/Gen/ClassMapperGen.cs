@@ -40,13 +40,21 @@ namespace Friflo.Json.Fliox.Mapper.Gen
             writer.DecLevel(startLevel);
         }
         
-        // T Read(T obj, PropField[] fields, ref Reader reader, out bool success)
+        /// <see cref="ClassMapper{T}.Read"/>
         public override T Read(ref Reader reader, T obj, out bool success)
         {
             // Ensure preconditions are fulfilled
             if (!reader.StartObject(this, out success))
                 return default;
-            var ev = reader.parser.NextEvent();
+            
+            var subType = GetPolymorphType(ref reader, this, ref obj, out success);
+            if (!success)
+                return default;
+            if (subType != null) {
+                throw new NotImplementedException("ClassMapperGen");
+                // return (T)subType.ReadObject(ref reader, obj, out success);
+            }
+            var ev = reader.parser.Event;
 
             while (true) {
                 switch (ev) {
