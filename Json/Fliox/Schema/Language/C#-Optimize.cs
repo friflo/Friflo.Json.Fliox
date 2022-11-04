@@ -2,12 +2,14 @@
 // See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
+using System.Reflection;
 using System.Text;
 using Friflo.Json.Fliox.Schema.Definition;
 using Friflo.Json.Fliox.Schema.Native;
 using Friflo.Json.Fliox.Schema.Utils;
 using static Friflo.Json.Fliox.Schema.Language.Generator;
-// Allowed namespaces: .Schema.Definition, .Schema.Doc, .Schema.Utils
+// Allowed namespaces:          .Schema.Definition, .Schema.Doc, .Schema.Utils
+// Exception - also allowed:    System.Reflection
 
 namespace Friflo.Json.Fliox.Schema.Language
 {
@@ -15,16 +17,22 @@ namespace Friflo.Json.Fliox.Schema.Language
     {
         private  readonly   Generator                   generator;
         private  readonly   Dictionary<TypeDef, string> standardType;
+        private  readonly   Assembly                    assembly;
 
         private CSharpOptimizeGenerator (Generator generator) {
             this.generator  = generator;
-            standardType  = GetStandardTypes(generator.standardTypes);
+            standardType    = GetStandardTypes(generator.standardTypes);
+            var nativeRoot  = (NativeTypeDef)generator.rootType;
+            assembly        = nativeRoot.native.Assembly;
         }
         
         public static void Generate(Generator generator) {
             var emitter = new CSharpOptimizeGenerator(generator);
             var sb      = new StringBuilder();
             foreach (var type in generator.types) {
+                var nativeType = (NativeTypeDef)type;
+                if (nativeType.native.Assembly != emitter.assembly)
+                    continue;
                 sb.Clear();
                 var result = emitter.EmitType(type, sb);
                 if (result == null)
