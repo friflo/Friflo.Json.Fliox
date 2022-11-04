@@ -94,21 +94,23 @@ namespace Friflo.Json.Fliox.Schema.Language
             
             // --- ReadField(...)
             sb.AppendLF($"        private static bool ReadField ({type.Name} obj, PropField field, ref Reader reader) {{");
-            sb.AppendLF($"            bool success;");
-            sb.AppendLF($"            switch (field.genIndex) {{");
-            foreach (var field in emitFields) {
-                var def     = field.def;
-                var name    = def.nativeName;
-                var indent  = Indent(maxFieldName, name);
-                if (GetSuffix(def, out string suffix)) {
-                    var suffixIndent    = Indent(maxSuffix, suffix);
-                    sb.AppendLF($"                case Gen_{name}:{indent} obj.{name}{indent} = reader.Read{suffix}{suffixIndent} (field, out success);  return success;");
-                } else {
-                    var suffixIndent    = Indent(maxSuffix, suffix);
-                    sb.AppendLF($"                case Gen_{name}:{indent} obj.{name}{indent} = reader.Read{suffix}{suffixIndent} (field, obj.{name},{indent} out success);  return success;");
-                } 
+            if (emitFields.Count > 0) {
+                sb.AppendLF($"            bool success;");
+                sb.AppendLF($"            switch (field.genIndex) {{");
+                foreach (var field in emitFields) {
+                    var def     = field.def;
+                    var name    = def.nativeName;
+                    var indent  = Indent(maxFieldName, name);
+                    if (GetSuffix(def, out string suffix)) {
+                        var suffixIndent    = Indent(maxSuffix, suffix);
+                        sb.AppendLF($"                case Gen_{name}:{indent} obj.{name}{indent} = reader.Read{suffix}{suffixIndent} (field, out success);  return success;");
+                    } else {
+                        var suffixIndent    = Indent(maxSuffix, suffix);
+                        sb.AppendLF($"                case Gen_{name}:{indent} obj.{name}{indent} = reader.Read{suffix}{suffixIndent} (field, obj.{name},{indent} out success);  return success;");
+                    } 
+                }
+                sb.AppendLF("            }");
             }
-            sb.AppendLF("            }");
             sb.AppendLF("            return false;");
             sb.AppendLF("        }");
             sb.AppendLF("");
