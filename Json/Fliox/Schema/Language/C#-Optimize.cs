@@ -57,7 +57,10 @@ namespace Friflo.Json.Fliox.Schema.Language
         }
 
         private EmitType EmitType(TypeDef type, StringBuilder sb) {
-            if (type.IsClass && !type.IsSchema) {
+            if (type.IsClass            &&
+               !type.IsAbstract         &&
+               !type.IsSchema)
+            {
                 return EmitClassType(type, sb);
             }
             return null;
