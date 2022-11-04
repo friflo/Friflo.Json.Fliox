@@ -93,7 +93,7 @@ namespace Friflo.Json.Fliox.Schema.Language
             sb.AppendLF("");
             
             // --- ReadField(...)
-            sb.AppendLF($"        private static bool ReadField ({type.Name} obj, PropField field, ref Reader reader) {{");
+            sb.AppendLF($"        private static bool ReadField (ref {type.Name} obj, PropField field, ref Reader reader) {{");
             if (emitFields.Count > 0) {
                 sb.AppendLF($"            bool success;");
                 sb.AppendLF($"            switch (field.genIndex) {{");
@@ -116,7 +116,7 @@ namespace Friflo.Json.Fliox.Schema.Language
             sb.AppendLF("");
             
             // --- Write(...)
-            sb.AppendLF($"        private static void Write({type.Name} obj, PropField[] fields, ref Writer writer, ref bool firstMember) {{");
+            sb.AppendLF($"        private static void Write(ref {type.Name} obj, PropField[] fields, ref Writer writer, ref bool firstMember) {{");
             foreach (var field in emitFields) {
                 var def     = field.def;
                 var name    = def.nativeName;

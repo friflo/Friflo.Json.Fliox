@@ -43,17 +43,18 @@ namespace Friflo.Json.Fliox.Mapper.Gen
                     writer.WriteDiscriminator(this, classMapper, ref firstMember);
                     classMapper.WriteObject(ref writer, obj, ref firstMember);
                 } else {
-                    write(obj, fields, ref writer, ref firstMember);
+                    write(ref obj, fields, ref writer, ref firstMember);
                 }
             } else {
-                write(obj, fields, ref writer, ref firstMember);
+                write(ref obj, fields, ref writer, ref firstMember);
             }
             writer.WriteObjectEnd(firstMember);
             writer.DecLevel(startLevel);
         }
         
-        internal override void WriteObject(ref Writer writer, object obj, ref bool firstMember) {
-            write((T)obj, propFields.fields, ref writer, ref firstMember);
+        internal override void WriteObject(ref Writer writer, object value, ref bool firstMember) {
+            T obj = (T)value;
+            write(ref obj, propFields.fields, ref writer, ref firstMember);
         }
         
         /// <see cref="ClassMapper{T}.Read"/>
@@ -82,7 +83,7 @@ namespace Friflo.Json.Fliox.Mapper.Gen
                         PropField field;
                         if ((field = reader.GetField32(propFields)) == null)
                             break;
-                        success = readField(obj, field, ref reader);
+                        success = readField(ref obj, field, ref reader);
                         if (!success)
                             return default;
                         break;
@@ -113,7 +114,7 @@ namespace Friflo.Json.Fliox.Mapper.Gen
                         PropField field;
                         if ((field = reader.GetField32(propFields)) == null)
                             break;
-                        success = readField(obj, field, ref reader);
+                        success = readField(ref obj, field, ref reader);
                         if (!success)
                             return default;
                         break;

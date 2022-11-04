@@ -6,7 +6,7 @@ using Friflo.Json.Fliox.Mapper.Map.Val;
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Mapper.Map
 {
-    delegate void WriteDelegate<in T>(T obj, PropField[] fields, ref Writer writer, ref bool firstMember);
+    delegate void WriteDelegate<T>(ref T obj, PropField[] fields, ref Writer writer, ref bool firstMember);
 
     partial struct Writer
     {

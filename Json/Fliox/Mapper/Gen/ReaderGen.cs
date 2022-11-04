@@ -9,7 +9,7 @@ using Friflo.Json.Fliox.Mapper.Map.Val;
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Mapper.Map
 {
-    delegate bool ReadFieldDelegate<in T>(T obj, PropField field, ref Reader reader);
+    delegate bool ReadFieldDelegate<T>(ref T obj, PropField field, ref Reader reader);
 
     partial struct Reader
     {
