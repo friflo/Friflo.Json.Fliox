@@ -312,6 +312,12 @@ namespace Friflo.Json.Fliox.Schema.Language
                 var content     = file.Value;
                 var path        = $"{folder}/{filename}";
                 fileSet.Remove(path);
+                // write file content only if curren content is different to avoid unnecessary recompilation
+                if (File.Exists(path)) {
+                    var current     = File.ReadAllText(path, utf8);
+                    if (current == content)
+                        continue;
+                }
                 var lastSlash   = path.LastIndexOf("/", StringComparison.InvariantCulture);
                 var fileFolder  = lastSlash == -1 ? folder : path.Substring(0, lastSlash);
                 Directory.CreateDirectory(fileFolder);
