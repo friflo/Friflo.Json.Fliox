@@ -30,14 +30,30 @@ namespace Friflo.Json.Fliox.Mapper.Gen
             readField = (ReadFieldDelegate<T>)Delegate.CreateDelegate(typeof(ReadFieldDelegate<T>), readFieldMethod);
         }
         
+        /// <see cref="ClassMapper{T}.Write"/>
         public override void Write(ref Writer writer, T obj) {
             int startLevel = writer.IncLevel();
-            bool firstMember = true;
             
-            write(obj, propFields.fields, ref writer, ref firstMember);
-            
+            bool firstMember    = true;
+            var  fields         = propFields.fields;
+            if (!isValueType) { // && instanceFactory != null)   todo
+                Type objType = obj.GetType();  // GetType() cost performance. May use a pre-check with isPolymorphic
+                if (type != objType) {
+                    var classMapper = writer.typeCache.GetTypeMapper(objType);
+                    writer.WriteDiscriminator(this, classMapper, ref firstMember);
+                    classMapper.WriteObject(ref writer, obj, ref firstMember);
+                } else {
+                    write(obj, fields, ref writer, ref firstMember);
+                }
+            } else {
+                write(obj, fields, ref writer, ref firstMember);
+            }
             writer.WriteObjectEnd(firstMember);
             writer.DecLevel(startLevel);
+        }
+        
+        internal override void WriteObject(ref Writer writer, object obj, ref bool firstMember) {
+            write((T)obj, propFields.fields, ref writer, ref firstMember);
         }
         
         /// <see cref="ClassMapper{T}.Read"/>
@@ -51,11 +67,41 @@ namespace Friflo.Json.Fliox.Mapper.Gen
             if (!success)
                 return default;
             if (subType != null) {
-                throw new NotImplementedException("ClassMapperGen");
-                // return (T)subType.ReadObject(ref reader, obj, out success);
+                return (T)subType.ReadObject(ref reader, obj, out success);
             }
             var ev = reader.parser.Event;
 
+            while (true) {
+                switch (ev) {
+                    case JsonEvent.ValueString:
+                    case JsonEvent.ValueNumber:
+                    case JsonEvent.ValueBool:
+                    case JsonEvent.ArrayStart:
+                    case JsonEvent.ObjectStart:
+                    case JsonEvent.ValueNull:
+                        PropField field;
+                        if ((field = reader.GetField32(propFields)) == null)
+                            break;
+                        success = readField(obj, field, ref reader);
+                        if (!success)
+                            return default;
+                        break;
+                    case JsonEvent.ObjectEnd:
+                        success = true;
+                        return obj;
+                    case JsonEvent.Error:
+                        success = false;
+                        return default;
+                    default:
+                        return reader.ErrorMsg<T>("unexpected state: ", ev, out success);
+                }
+                ev = reader.parser.NextEvent();
+            }
+        }
+        
+        internal override object ReadObject(ref Reader reader, object value, out bool success) {
+            var obj = (T)value;
+            var ev  = reader.parser.Event;
             while (true) {
                 switch (ev) {
                     case JsonEvent.ValueString:

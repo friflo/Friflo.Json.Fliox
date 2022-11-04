@@ -40,7 +40,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
                 return;
             }
             WriteFieldKey(field, ref firstMember);
-            var mapper = (TypeMapper<T>)field.fieldType;
+            var mapper = (TypeMapper<T?>)field.fieldType;
             mapper.Write(ref this, value.Value);
         }
         
