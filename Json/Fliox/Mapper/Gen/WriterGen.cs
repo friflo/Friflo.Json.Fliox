@@ -139,6 +139,10 @@ namespace Friflo.Json.Fliox.Mapper.Map
         // --- JsonKey
         /// <see cref="JsonKeyMapper.Write"/>
         public void WriteJsonKey (PropField field, in JsonKey value, ref bool firstMember) {
+            if (value.IsNull()) {
+                WriteKeyNull(field, ref firstMember);
+                return;
+            }
             WriteFieldKey(field, ref firstMember);
             switch (value.type) {
                 case JsonKeyType.Long:
@@ -152,20 +156,18 @@ namespace Friflo.Json.Fliox.Mapper.Map
                 case JsonKeyType.Guid:
                     WriteGuid(value.guid);
                     break;
-                case JsonKeyType.Null:
-                    AppendNull();
-                    break;
             }
         }
         
         // --- JsonValue
         /// <see cref="JsonValueMapper.Write"/>
         public void WriteJsonValue (PropField field, in JsonValue value, ref bool firstMember) {
+            if (value.IsNull()) {
+                WriteKeyNull(field, ref firstMember);
+                return;
+            }
             WriteFieldKey(field, ref firstMember);
-            if (!value.IsNull())
-                bytes.AppendArray(value);
-            else
-                AppendNull();
+            bytes.AppendArray(value);
         }
         
         // ------------------------------------------- enum ---------------------------------------------

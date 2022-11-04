@@ -3,6 +3,7 @@
 
 using System;
 using Friflo.Json.Burst;
+using Friflo.Json.Fliox.Mapper.Map.Object;
 using Friflo.Json.Fliox.Mapper.Map.Val;
 
 // ReSharper disable once CheckNamespace
@@ -31,14 +32,11 @@ namespace Friflo.Json.Fliox.Mapper.Map
         }
 
         // ---------------------------------- object - class / struct  ----------------------------------
+        /// <see cref="ClassMapper{T}.Read"/> or any other <see cref="TypeMapper{TVal}.Read"/>
         public T ReadClass<T> (PropField field, T value, out bool success) where T : class {
             if (parser.Event == JsonEvent.ValueNull) {
                 success = true;
                 return null;
-            }
-            if (value == null) {
-                // instance creation should be done inside Read<>()
-                value = (T)field.fieldType.CreateInstance();
             }
             var mapper = (TypeMapper<T>)field.fieldType;
             return mapper.Read(ref this, value, out success);
