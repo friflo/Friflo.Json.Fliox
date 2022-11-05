@@ -10,14 +10,14 @@ using Friflo.Json.Fliox.Mapper.Map.Object.Reflect;
 
 namespace Friflo.Json.Fliox.Mapper.Gen
 {
-    internal class ClassMapperGen<T> : ClassMapper<T> {
+    internal class StructMapperGen<T> : ClassMapper<T> where T : struct {
         
         private readonly WriteDelegate<T>       write;
         private readonly ReadFieldDelegate<T>   readField;
         
-        public  override bool                   IsNull(ref T value) => value == null;
+        public  override bool                   IsNull(ref T value) => false;
 
-        protected ClassMapperGen (
+        protected StructMapperGen (
             StoreConfig             config,
             Type                    type,
             ConstructorInfo         constructor,
@@ -37,23 +37,10 @@ namespace Friflo.Json.Fliox.Mapper.Gen
             int startLevel = writer.IncLevel();
             
             bool firstMember    = true;
-            var  fields         = propFields.fields;
-            if (isValueType) throw new InvalidOperationException($"Expect reference type. was {type}");
-            Type objType = obj.GetType();  // GetType() cost performance. May use a pre-check with isPolymorphic
-            if (type != objType) {
-                var classMapper = writer.typeCache.GetTypeMapper(objType);
-                writer.WriteDiscriminator(this, classMapper, ref firstMember);
-                classMapper.WriteObject(ref writer, obj, ref firstMember);
-            } else {
-                write(ref obj, fields, ref writer, ref firstMember);
-            }
+            write(ref obj, propFields.fields, ref writer, ref firstMember);
+            
             writer.WriteObjectEnd(firstMember);
             writer.DecLevel(startLevel);
-        }
-        
-        internal override void WriteObject(ref Writer writer, object value, ref bool firstMember) {
-            T obj = (T)value;
-            write(ref obj, propFields.fields, ref writer, ref firstMember);
         }
         
         /// <see cref="ClassMapper{T}.Read"/>
@@ -63,45 +50,7 @@ namespace Friflo.Json.Fliox.Mapper.Gen
             if (!reader.StartObject(this, out success))
                 return default;
             
-            var subType = GetPolymorphType(ref reader, this, ref obj, out success);
-            if (!success)
-                return default;
-            if (subType != null) {
-                return (T)subType.ReadObject(ref reader, obj, out success);
-            }
-            var ev = reader.parser.Event;
-
-            while (true) {
-                switch (ev) {
-                    case JsonEvent.ValueString:
-                    case JsonEvent.ValueNumber:
-                    case JsonEvent.ValueBool:
-                    case JsonEvent.ArrayStart:
-                    case JsonEvent.ObjectStart:
-                    case JsonEvent.ValueNull:
-                        PropField field;
-                        if ((field = reader.GetField32(propFields)) == null)
-                            break;
-                        success = readField(ref obj, field, ref reader);
-                        if (!success)
-                            return default;
-                        break;
-                    case JsonEvent.ObjectEnd:
-                        success = true;
-                        return obj;
-                    case JsonEvent.Error:
-                        success = false;
-                        return default;
-                    default:
-                        return reader.ErrorMsg<T>("unexpected state: ", ev, out success);
-                }
-                ev = reader.parser.NextEvent();
-            }
-        }
-        
-        internal override object ReadObject(ref Reader reader, object value, out bool success) {
-            var obj = (T)value;
-            var ev  = reader.parser.Event;
+            var ev = reader.parser.NextEvent();
             while (true) {
                 switch (ev) {
                     case JsonEvent.ValueString:

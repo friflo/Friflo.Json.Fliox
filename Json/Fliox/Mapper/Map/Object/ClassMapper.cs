@@ -13,6 +13,7 @@ using Friflo.Json.Fliox.Mapper.Map.Utils;
 using Friflo.Json.Fliox.Mapper.Map.Val;
 using Friflo.Json.Fliox.Mapper.Utils;
 using Friflo.Json.Fliox.Transform.Select;
+using static Friflo.Json.Fliox.Mapper.Map.TypeMapperUtils;
 
 namespace Friflo.Json.Fliox.Mapper.Map.Object
 {
@@ -35,24 +36,28 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object
                 if (notInstantiable && factory == null)
                     throw new InvalidOperationException($"type requires concrete types by [InstanceType()] or [PolymorphType()] on: {type}");
                 
+                var underlyingType  = Nullable.GetUnderlyingType(type);
+                var genType         = underlyingType ?? type;
                 object[] constructorParams = {config, type, constructor, factory, type.IsValueType, null};
 
-                var genClassName    = $"Gen.{type.Namespace}.Gen_{type.Name}";
-                var genClass        = type.Assembly.GetType(genClassName);
-                MethodInfo genWrite     = null;
-                MethodInfo genReadField = null;
+                var genClassName    = $"Gen.{genType.Namespace}.Gen_{genType.Name}";
+                var genClass        = genType.Assembly.GetType(genClassName);
                 if (genClass != null) {
-                    var flags       = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static;
-                    genWrite        = genClass.GetMethod("Write", flags);
-                    genReadField    = genClass.GetMethod("ReadField", flags);
-                }
-                if (genWrite != null && genReadField != null) {
+                    var flags               = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static;
+                    MethodInfo genWrite     = genClass.GetMethod("Write", flags);
+                    MethodInfo genReadField = genClass.GetMethod("ReadField", flags);
                     constructorParams = new object[] {config, type, constructor, factory, type.IsValueType, genClass, genWrite, genReadField };
+                    if (underlyingType != null) {
+                        return (TypeMapper) CreateGenericInstance(typeof(StructNullMapperGen<>), new[] {underlyingType}, constructorParams);
+                    }
+                    if (type.IsValueType) {
+                        return (TypeMapper) CreateGenericInstance(typeof(StructMapperGen<>), new[] {type}, constructorParams);
+                    }
                     // new ClassMapperGen<T>(config, type, constructor);    
-                    return (TypeMapper) TypeMapperUtils.CreateGenericInstance(typeof(ClassMapperGen<>), new[] {type}, constructorParams);
+                    return (TypeMapper) CreateGenericInstance(typeof(ClassMapperGen<>), new[] {type}, constructorParams);
                 }
                 // new ClassMapper<T>(config, type, constructor);
-                return (TypeMapper) TypeMapperUtils.CreateGenericInstance(typeof(ClassMapper<>), new[] {type}, constructorParams);
+                return (TypeMapper) CreateGenericInstance(typeof(ClassMapper<>), new[] {type}, constructorParams);
             }
             return null;
         }

@@ -61,7 +61,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
                 success = true;
                 return null;
             }
-            return mapper.Read(ref this, default, out success);
+            return mapper.Read(ref this, new T(), out success);
         }
         
         // ------------------------------------------- bool ---------------------------------------------
