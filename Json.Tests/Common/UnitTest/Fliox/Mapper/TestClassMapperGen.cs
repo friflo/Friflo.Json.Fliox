@@ -9,7 +9,7 @@ using static NUnit.Framework.Assert;
 
 namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
 {
-    internal class GenChild
+    internal struct GenChild
     {
         public int val;
     }
@@ -64,10 +64,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
 #if !UNITY_5_3_OR_NEWER
         [Test]
         public static void TestSystemTextJson() {
-            var genClass    = new GenClass { intVal0 = 11, intVal1 = 12 };
+            var genClass    = new GenClass { intVal0 = 11, intVal1 = 12, child = new GenChild { val = 22 } };
             var options     = new System.Text.Json.JsonSerializerOptions {IncludeFields = true};
             var json = System.Text.Json.JsonSerializer.Serialize(genClass, options);
-            AreEqual(@"{""intVal0"":11,""intVal1"":12,""child"":null}", json);
+            AreEqual(@"{""intVal0"":11,""intVal1"":12,""child"":{""val"":22}}", json);
             
             for (int n = 0; n < 10; n++) {
                 System.Text.Json.JsonSerializer.Serialize(genClass, options);

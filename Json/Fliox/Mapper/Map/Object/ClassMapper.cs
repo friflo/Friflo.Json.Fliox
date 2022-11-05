@@ -279,8 +279,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object
             }
         }
 
-
-        protected static TypeMapper GetPolymorphType(ref Reader reader, TypeMapper classType, ref T obj, out bool success) {
+        protected static TypeMapper GetPolymorphType(ref Reader reader, ClassMapper<T> classType, ref T obj, out bool success) {
             ref var parser = ref reader.parser;
             var ev = parser.NextEvent();
 
@@ -291,22 +290,21 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object
                     obj = (T) factory.CreateInstance(typeof(T));
                     if (obj == null)
                         return reader.ErrorMsg<TypeMapper<T>>($"No instance created in InstanceFactory: ", factory.GetType().Name, out success);
-                    classType = reader.typeCache.GetTypeMapper(obj.GetType());
-                } else {
-                    if (ev == JsonEvent.ValueString && reader.parser.key.IsEqualString(discriminator)) {
-                        string discriminant = reader.parser.value.AsString();
-                        obj = (T) factory.CreatePolymorph(discriminant);
-                        if (obj == null)
-                            return reader.ErrorMsg<TypeMapper<T>>($"No [PolymorphType] type declared for discriminant: '{discriminant}' on type: ", classType.type.Name, out success);
-                        classType = reader.typeCache.GetTypeMapper(obj.GetType());
-                        parser.NextEvent();
-                    } else
-                        return reader.ErrorMsg<TypeMapper<T>>($"Expect discriminator '{discriminator}': '...' as first JSON member for type: ", classType.type.Name, out success);
+                    success = true;
+                    return reader.typeCache.GetTypeMapper(obj.GetType());
                 }
-                success = true;
-                return classType;
+                if (ev == JsonEvent.ValueString && reader.parser.key.IsEqualString(discriminator)) {
+                    string discriminant = reader.parser.value.AsString();
+                    obj = (T) factory.CreatePolymorph(discriminant);
+                    if (obj == null)
+                        return reader.ErrorMsg<TypeMapper<T>>($"No [PolymorphType] type declared for discriminant: '{discriminant}' on type: ", classType.type.Name, out success);
+                    parser.NextEvent();
+                    success = true;
+                    return reader.typeCache.GetTypeMapper(obj.GetType());
+                }
+                return reader.ErrorMsg<TypeMapper<T>>($"Expect discriminator '{discriminator}': '...' as first JSON member for type: ", classType.type.Name, out success);
             }
-            if (obj == null)
+            if (classType.IsNull(ref obj))
                 obj = (T) classType.CreateInstance();
             success = true;
             return null;
