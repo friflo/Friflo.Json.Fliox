@@ -16,9 +16,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
         
     internal class GenClass
     {
-        public int      intVal0;
-        public int      intVal1;
-        public GenChild child;
+        public int          intVal0;
+        public int          intVal1;
+        public GenChild     child;
+        public GenChild?    child2;
     }
     
     public static class TestClassMapperGen
@@ -28,6 +29,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
             var genClass    = new GenClass { intVal0 = 11, intVal1 = 12, child = new GenChild { val = 22 }};
             var typeStore   = new TypeStore();
             var mapper      = new ObjectMapper(typeStore);
+            mapper.WriteNullMembers = false;
 
             var json = mapper.WriteAsValue(genClass);
             
@@ -65,7 +67,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
         [Test]
         public static void TestSystemTextJson() {
             var genClass    = new GenClass { intVal0 = 11, intVal1 = 12, child = new GenChild { val = 22 } };
-            var options     = new System.Text.Json.JsonSerializerOptions {IncludeFields = true};
+            var options     = new System.Text.Json.JsonSerializerOptions {
+                IncludeFields           = true,
+                DefaultIgnoreCondition  = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull
+            };
             var json = System.Text.Json.JsonSerializer.Serialize(genClass, options);
             AreEqual(@"{""intVal0"":11,""intVal1"":12,""child"":{""val"":22}}", json);
             
