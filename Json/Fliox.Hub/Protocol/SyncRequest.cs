@@ -22,8 +22,9 @@ namespace Friflo.Json.Fliox.Hub.Protocol
         /// In case using of using <see cref="DB.UserAuth.UserAuthenticator"/> the <see cref="userId"/> and <see cref="token"/>
         /// are use for user authentication.
         /// </summary>
-        [Serialize("user")]             public  JsonKey                 userId;
-                                        public  string                  token;
+        [Serialize                                ("user")]
+                    public  JsonKey                 userId;
+                    public  string                  token;
         /// <summary>
         /// <see cref="eventAck"/> is used to ensure (change) events are delivered reliable.
         /// A client set <see cref="eventAck"/> to the last received <see cref="SyncEvent.seq"/> in case

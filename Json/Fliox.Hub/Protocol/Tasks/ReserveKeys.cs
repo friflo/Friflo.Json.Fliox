@@ -18,6 +18,9 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         [Required]  public  string          container;
         [Required]  public  int             count;
         
+        public   override   TaskType        TaskType => TaskType.reserveKeys;
+        public   override   string          TaskName => $"container: '{container}'";
+
         public override async Task<SyncTaskResult> Execute(EntityDatabase database, SyncResponse response, SyncContext syncContext) {
             var hub = syncContext.Hub;
             // var store           = new SequenceStore(database, SyncTypeStore.Get(), null);
@@ -62,15 +65,13 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
                 return result;
             }
         }
-
-        public   override       TaskType        TaskType => TaskType.reserveKeys;
-        public   override       string          TaskName => $"container: '{container}'";
     }
     
     /// <summary>
     /// WIP
     /// </summary>
-    public sealed class ReserveKeysResult : SyncTaskResult {
+    public sealed class ReserveKeysResult : SyncTaskResult
+    {
                     public  ReservedKeys?   keys;
         
         [Ignore]    public  CommandError    Error { get; set; }
