@@ -37,7 +37,6 @@ namespace Friflo.Json.Fliox.Mapper.Gen
             int startLevel = writer.IncLevel();
             
             bool firstMember    = true;
-            var  fields         = propFields.fields;
             if (isValueType) throw new InvalidOperationException($"Expect reference type. was {type}");
             Type objType = obj.GetType();  // GetType() cost performance. May use a pre-check with isPolymorphic
             if (type != objType) {
@@ -45,7 +44,7 @@ namespace Friflo.Json.Fliox.Mapper.Gen
                 writer.WriteDiscriminator(this, classMapper, ref firstMember);
                 classMapper.WriteObject(ref writer, obj, ref firstMember);
             } else {
-                write(ref obj, fields, ref writer, ref firstMember);
+                write(ref obj, propFields.fields, ref writer, ref firstMember);
             }
             writer.WriteObjectEnd(firstMember);
             writer.DecLevel(startLevel);
