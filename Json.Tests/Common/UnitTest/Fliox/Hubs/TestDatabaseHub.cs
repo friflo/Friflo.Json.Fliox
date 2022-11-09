@@ -207,14 +207,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs
         private CommandError SimulateReadErrors(List<EntityValue> entities) {
             for (int n = 0; n < entities.Count; n++) {
                 var entity  = entities[n];
-                var id      = entity.Key.AsString();
+                var id      = entity.key.AsString();
                 if (!readEntityErrors.TryGetValue(id, out var value))
                     continue;
-                entities[n] = value.ToEntityValue(entity.Key);
+                entities[n] = value.ToEntityValue(entity.key);
             }
             for (int n = 0; n < entities.Count; n++) {
                 var entity  = entities[n];
-                var id      = entity.Key.AsString();
+                var id      = entity.key.AsString();
                 if (!readTaskErrors.TryGetValue(id, out var error))
                     continue;
                 return error();

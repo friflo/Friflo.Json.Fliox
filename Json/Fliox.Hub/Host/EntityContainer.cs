@@ -307,7 +307,8 @@ namespace Friflo.Json.Fliox.Hub.Host
                     var selectorResults = selector.Select(json, select);
                     if (selectorResults == null) {
                         var error = new EntityError(EntityErrorType.ParseError, container, entity.key, selector.ErrorMessage);
-                        entity.SetError(entity.key, error);
+                        // entity.SetError(entity.key, error); - used when using class EntityValue
+                        entities[i] = new EntityValue(entity.key, error);
                         continue;
                     }
                     for (int n = 0; n < references.Count; n++) {

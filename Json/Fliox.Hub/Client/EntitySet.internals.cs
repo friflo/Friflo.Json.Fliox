@@ -223,7 +223,9 @@ namespace Friflo.Json.Fliox.Hub.Client
                     peer.SetPatchSource(reader.Read<T>(json));
                 } else {
                     var entityError = new EntityError(EntityErrorType.ParseError, name, id, reader.Error.msg.ToString());
-                    entityMap[id].SetError(id, entityError);
+                    // entityMap[id].SetError(id, entityError); - used when using class EntityValue
+                    // [c# - Editing dictionary values in a foreach loop - Stack Overflow] https://stackoverflow.com/questions/1070766/editing-dictionary-values-in-a-foreach-loop
+                    entityMap[id] = new EntityValue(id, entityError);
                 }
             }
         }

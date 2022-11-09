@@ -116,16 +116,18 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
             if (result.Error != null) {
                 return TaskError(result.Error);
             }
-            var containerResult = response.GetContainerResult(container);
             var entities = result.entities;
             result.entities = null;  // clear -> its not part of protocol
-            containerResult.AddEntities(entities);
             var queryRefsResults = new ReadReferencesResult();
             if (references != null && references.Count > 0) {
                 queryRefsResults =
                     await entityContainer.ReadReferences(references, entities, container, "", response, syncContext).ConfigureAwait(false);
                 // returned queryRefsResults.references is always set. Each references[] item contain either a result or an error.
             }
+            // entities elements can be updated in ReadReferences()
+            var containerResult = response.GetContainerResult(container);
+            containerResult.AddEntities(entities);
+
             result.container    = container;
             var ids             = new HashSet<JsonKey>(JsonKey.Equality); // TAG_PERF
             foreach (var entity in entities) {

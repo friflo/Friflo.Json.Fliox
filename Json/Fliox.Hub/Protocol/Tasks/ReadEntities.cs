@@ -52,8 +52,6 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
             }
             var entities = readResult.entities;
             readResult.entities = null;
-            var containerResult = response.GetContainerResult(container);
-            containerResult.AddEntities(entities);
 
             var result  = new ReadEntitiesResult ();
             if (references != null && references.Count > 0) {
@@ -62,6 +60,9 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
                 // returned readRefResults.references is always set. Each references[] item contain either a result or an error.
                 result.references = readRefResults.references;
             }
+            // entities elements can be updated in ReadReferences()
+            var containerResult = response.GetContainerResult(container);
+            containerResult.AddEntities(entities);
             return result;
         }
     }
@@ -116,7 +117,8 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
                         id          = entity.key,
                         container   = container
                     };
-                    entity.SetError(entity.key, entityError);
+                    // entity.SetError(entity.key, entityError); - used when using class EntityValue
+                    entities[n] = new EntityValue(entity.key, entityError);
                 }
             }
         }
