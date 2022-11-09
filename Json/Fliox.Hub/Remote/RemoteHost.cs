@@ -69,18 +69,9 @@ namespace Friflo.Json.Fliox.Hub.Remote
         /// <see cref="Client.FlioxClient.GetContainerResults"/> remap these properties.
         public static void SetContainerResults(SyncResponse response)
         {
-            if (response == null)
+            var containers = response?.containers;
+            if (containers == null)
                 return;
-            var resultMap       = response.resultMap;
-            response.resultMap  = null;
-            if (resultMap.Count == 0)
-                return;
-            var containers      = new List<ContainerEntities>(resultMap.Count);
-            response.containers = containers;
-            foreach (var resultPair in resultMap) {
-                ContainerEntities value = resultPair.Value;
-                containers.Add(value);
-            }
             foreach (var container in containers) {
                 var entityMap       = container.entityMap;
                 var entities        = new List<JsonValue> (entityMap.Count);
@@ -115,8 +106,6 @@ namespace Friflo.Json.Fliox.Hub.Remote
                     container.count = entities.Count;
                 }
             }
-            resultMap.Clear();
         }
-
     }
 }

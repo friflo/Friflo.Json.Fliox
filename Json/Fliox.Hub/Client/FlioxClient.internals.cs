@@ -255,16 +255,9 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// <see cref="ContainerEntities.errors"/> to <see cref="ContainerEntities.entityMap"/>.
         /// These properties are set by <see cref="RemoteHost.SetContainerResults"/>.
         private void GetContainerResults(SyncResponse response) {
-            var containers      = response.containers;
-            response.containers = null;
+            var containers = response.containers;
             if (containers == null) {
-                response.resultMap = new Dictionary<string, ContainerEntities>();
                 return;
-            }
-            var resultMap       = new Dictionary<string, ContainerEntities>(containers.Count);
-            response.resultMap  = resultMap;
-            foreach (var result in containers) {
-                resultMap.Add(result.container, result);
             }
             var processor = _intern.EntityProcessor();
             foreach (var container in containers) {
@@ -311,7 +304,6 @@ namespace Friflo.Json.Fliox.Hub.Client
                 errors.Clear();
                 container.errors = null;
             }
-            containers.Clear();
         }
         
         private SyncResult HandleSyncResponse(SyncRequest syncRequest, ExecuteSyncResult response, SyncStore syncStore) {
@@ -373,7 +365,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             if (error != null) {
                 // ----------- handle ErrorResponse -----------
                 var syncError       = new TaskErrorResult (TaskErrorResultType.SyncError, error.message);
-                var emptyResults    = new Dictionary<string, ContainerEntities>();
+                var emptyResults    = new List<ContainerEntities>();
                 // process all task using by passing an error 
                 for (int n = 0; n < tasks.Count; n++) {
                     SyncRequestTask task    = tasks[n];
@@ -388,11 +380,12 @@ namespace Friflo.Json.Fliox.Hub.Client
             if (hub is RemoteClientHub) {
                 GetContainerResults(syncResponse);
             }
-            var containerResults = syncResponse.resultMap;
-            foreach (var containerResult in containerResults) {
-                ContainerEntities containerEntities = containerResult.Value;
-                EntitySet set = _intern.GetSetByName(containerResult.Key);
-                set.SyncPeerEntityMap(containerEntities.entityMap, mapper);
+            var containers = syncResponse.containers;
+            if (containers != null) {
+                foreach (var containerEntities in containers) {
+                    EntitySet set = _intern.GetSetByName(containerEntities.container);
+                    set.SyncPeerEntityMap(containerEntities.entityMap, mapper);
+                }
             }
             var responseTasks = syncResponse.tasks;
             // Ensure every response task result type matches its task
@@ -414,7 +407,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             for (int n = 0; n < tasks.Count; n++) {
                 SyncRequestTask task    = tasks[n];
                 SyncTaskResult  result  = responseTasks[n];
-                ProcessTaskResult(task, result, syncStore, containerResults, mapper);
+                ProcessTaskResult(task, result, syncStore, containers, mapper);
             }
         }
         
@@ -422,7 +415,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             SyncRequestTask                         task,
             SyncTaskResult                          result,
             SyncStore                               syncStore,
-            Dictionary<string, ContainerEntities>   containerResults,
+            List<ContainerEntities>                 containerResults,
             ObjectMapper                            mapper)
         {
             var syncSets    = syncStore.SyncSets;
@@ -445,13 +438,13 @@ namespace Friflo.Json.Fliox.Hub.Client
                 case TaskType.read:
                     var readList =          (ReadEntities)      task;
                     syncSet = syncSets[readList.container];
-                    containerResults.TryGetValue(readList.container, out ContainerEntities entities);
+                    var entities = containerResults?.Find(c => c.container == readList.container);
                     syncSet.ReadEntitiesResult(readList, result, entities);
                     break;
                 case TaskType.query:
                     var query =             (QueryEntities)     task;
                     syncSet = syncSets[query.container];
-                    containerResults.TryGetValue(query.container, out ContainerEntities queryEntities);
+                    var queryEntities = containerResults?.Find(c => c.container == query.container);
                     syncSet.QueryEntitiesResult(query, result, queryEntities);
                     break;
                 case TaskType.closeCursors:

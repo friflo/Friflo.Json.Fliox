@@ -25,17 +25,28 @@ namespace Friflo.Json.Fliox.Hub.Protocol
         /// <summary>entities as results from the <see cref="SyncRequest.tasks"/> in a <see cref="SyncRequest"/>
         /// grouped by container</summary>
                     public  List<ContainerEntities>                 containers;
-        // key of all Dictionary's is the container name
-        [Ignore]    public  Dictionary<string, ContainerEntities>   resultMap;
                     public  JsonValue                               info;
                         
         internal override   MessageType                             MessageType => MessageType.resp;
         
-        internal ContainerEntities GetContainerResult(string container) {
-            if (resultMap.TryGetValue(container, out ContainerEntities result))
-                return result;
-            result = new ContainerEntities { container = container };
-            resultMap.Add(container, result);
+        public ContainerEntities FindContainer(string containerName) {
+            if (containers == null)
+                return null;
+            foreach (var container in containers) {
+                if (container.container == containerName)
+                    return container;
+            }
+            return null;
+        }
+        
+        internal ContainerEntities GetContainerResult(string containerName) {
+            if (containers == null) containers = new List<ContainerEntities>();
+            foreach (var container in containers) {
+                if (container.container == containerName)
+                    return container;
+            }
+            var result = new ContainerEntities { container = containerName };
+            containers.Add(result);
             return result;
         }
 

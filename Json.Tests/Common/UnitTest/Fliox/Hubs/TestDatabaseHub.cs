@@ -75,7 +75,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs
             var response = await base.ExecuteSync(syncRequest, syncContext);
             foreach (var pair in testDatabase.testContainers) {
                 TestContainer testContainer = pair.Value;
-                if (!response.success.resultMap.TryGetValue(testContainer.name, out var result))
+                var result = response.success.FindContainer(testContainer.name);
+                if (result == null)
                     continue;
                 var entities = result.entityMap;
                 foreach (var id in testContainer.missingResultErrors) {

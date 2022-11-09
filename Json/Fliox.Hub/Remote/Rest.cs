@@ -109,7 +109,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 context.WriteError("read error", resultError.message, 500);
                 return;
             }
-            var entityMap   = restResult.syncResponse.resultMap[container].entityMap;
+            var entityMap   = restResult.syncResponse.FindContainer(container).entityMap;
             var entities    = new List<JsonValue>(entityMap.Count);
             foreach (var pair in entityMap) {
                 entities.Add(pair.Value.Json);
@@ -151,7 +151,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             if (taskResult.cursor != null) {
                 context.AddHeader("cursor", taskResult.cursor);
             }
-            var entityMap   = restResult.syncResponse.resultMap[container].entityMap;
+            var entityMap   = restResult.syncResponse.FindContainer(container).entityMap;
             var entities    = new List<JsonValue>(entityMap.Count);
             foreach (var pair in entityMap) {
                 entities.Add(pair.Value.Json);
@@ -244,7 +244,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 context.WriteError("read error", resultError.message, 500);
                 return;
             }
-            var entityMap   = restResult.syncResponse.resultMap[container].entityMap;
+            var entityMap   = restResult.syncResponse.FindContainer(container).entityMap;
             var content     = entityMap[entityId];
             var entityError = content.Error;
             if (entityError != null) {

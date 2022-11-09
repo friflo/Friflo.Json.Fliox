@@ -217,8 +217,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             await service.PreExecuteTasks(syncRequest, syncContext).ConfigureAwait(false);
 
             var tasks       = new List<SyncTaskResult>(requestTasks.Count);
-            var resultMap   = new Dictionary<string, ContainerEntities>();
-            var response    = new SyncResponse { tasks = tasks, resultMap = resultMap, database = syncDbName };
+            var response    = new SyncResponse { tasks = tasks, database = syncDbName };
             
             // ------------------------ loop through all given tasks and execute them ------------------------
             for (int index = 0; index < requestTasks.Count; index++) {
