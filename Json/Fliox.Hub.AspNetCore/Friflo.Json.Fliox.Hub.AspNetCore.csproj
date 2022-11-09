@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFrameworks>netcoreapp3.1</TargetFrameworks>
+        <TargetFrameworks>net6.0</TargetFrameworks>
         <PackageVersion>0.0.0</PackageVersion>
         <AssemblyVersion>0.0.0.0</AssemblyVersion>
         <FileVersion>0.0.0.0</FileVersion>
@@ -51,7 +51,7 @@
       <ProjectReference Include="..\Fliox.Hub\Friflo.Json.Fliox.Hub.csproj" />
       <PackageReference Include="Microsoft.AspNetCore.Http" Version="*" />
       <PackageReference Include="Microsoft.Extensions.Logging" Version="*" />
-      <None Include="..\package-icon.png" Pack="true" PackagePath=""/>
+      <None Include="..\package-icon.png" Pack="true" PackagePath="" />
     </ItemGroup>
 
 </Project>
