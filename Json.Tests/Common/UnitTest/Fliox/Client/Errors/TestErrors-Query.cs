@@ -37,8 +37,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             var testArticles  = testHub.GetTestContainer(nameof(PocStore.articles));
             var testCustomers = testHub.GetTestContainer(nameof(PocStore.customers));
             
-            testArticles.readEntityErrors.Add(article2JsonError, (value) => value.SetJson (value.Key, @"{""invalidJson"" XXX}"));
-            testArticles.readEntityErrors.Add(article1ReadError, (value) => value.SetError(value.Key, testArticles.ReadError(article1ReadError)));
+            testArticles.readEntityErrors.Add(article2JsonError, new SimValue(@"{""invalidJson"" XXX}"));
+            testArticles.readEntityErrors.Add(article1ReadError, new SimValue(testArticles.ReadError(article1ReadError)));
             testCustomers.readTaskErrors. Add(readTaskError,     () => new CommandError("simulated read task error"));
 
             var orders      = store.orders;

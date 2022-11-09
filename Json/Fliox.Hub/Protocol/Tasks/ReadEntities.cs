@@ -95,7 +95,8 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         public void ValidateEntities(string container, string keyName, SyncContext syncContext) {
             using (var pooled = syncContext.EntityProcessor.Get()) {
                 EntityProcessor processor = pooled.instance;
-                foreach (var entity in entities) {
+                for (int n = 0; n < entities.Count; n++) {
+                    var entity = entities[n];
                     if (entity.Error != null) {
                         continue;
                     }

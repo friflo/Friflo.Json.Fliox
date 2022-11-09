@@ -297,7 +297,8 @@ namespace Friflo.Json.Fliox.Hub.Host
                 // Get the selected refs for all entities.
                 // Select() is expensive as it requires a full JSON parse. By using an selector array only one
                 // parsing cycle is required. Otherwise for each selector Select() needs to be called individually.
-                foreach (var entity in entities) {
+                for (int i = 0; i < entities.Count; i++) {
+                    var entity = entities[i];
                     if (entity.Error != null)
                         continue;
                     var         json    = entity.Json;

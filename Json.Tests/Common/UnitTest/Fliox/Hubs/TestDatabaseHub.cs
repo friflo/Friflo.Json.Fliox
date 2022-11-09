@@ -93,6 +93,26 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs
         }
     }
     
+    public class SimValue
+    {
+        private readonly string        value;
+        private readonly EntityError   error;
+        
+        internal SimValue(string value) {
+            this.value = value;
+        }
+        
+        internal SimValue(EntityError error) {
+            this.error = error;
+        }
+        
+        internal EntityValue ToEntityValue(JsonKey key) {
+            if (value != null)
+                return new EntityValue(key, new JsonValue(value));
+            return new EntityValue(key, error);
+        }
+    }
+    
     /// <summary>
     /// Used to create all possible errors and exceptions which can be made by a <see cref="EntityContainer"/> implementation.
     /// These are:
@@ -106,7 +126,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs
     public class TestContainer : EntityContainer
     {
         private readonly    EntityContainer local;
-        public  readonly    Dictionary<string, Action<EntityValue>> readEntityErrors    = new Dictionary<string, Action<EntityValue>>();
+        public  readonly    Dictionary<string, SimValue>            readEntityErrors    = new Dictionary<string, SimValue>();
         public  readonly    HashSet<string>                         missingResultErrors = new HashSet<string>();
         public  readonly    Dictionary<string, Func<CommandError>>  readTaskErrors      = new Dictionary<string, Func<CommandError>>();
 
@@ -185,21 +205,19 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs
         
         // --- simulate read/write error methods
         private CommandError SimulateReadErrors(List<EntityValue> entities) {
-            foreach (var pair in readEntityErrors) {
-                var id      = new JsonKey(pair.Key);
-                var value   = entities.Find(entity => entity.Key.IsEqual(id));
-                if (value != null) {
-                    var action = pair.Value;
-                    action(value);
-                }
+            for (int n = 0; n < entities.Count; n++) {
+                var entity  = entities[n];
+                var id      = entity.Key.AsString();
+                if (!readEntityErrors.TryGetValue(id, out var value))
+                    continue;
+                entities[n] = value.ToEntityValue(entity.Key);
             }
-            foreach (var pair in readTaskErrors) {
-                var id      = new JsonKey(pair.Key);
-                var value   = entities.Find(entity => entity.Key.IsEqual(id));
-                if (value != null) {
-                    var func = pair.Value;
-                    return func();
-                }
+            for (int n = 0; n < entities.Count; n++) {
+                var entity  = entities[n];
+                var id      = entity.Key.AsString();
+                if (!readTaskErrors.TryGetValue(id, out var error))
+                    continue;
+                return error();
             }
             return null;
         }
