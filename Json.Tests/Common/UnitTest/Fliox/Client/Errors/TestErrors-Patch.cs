@@ -36,7 +36,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
 
             // --- setup simulation errors after preconditions are established
             {
-                testCustomers.writeEntityErrors.Add(writeError, () => testCustomers.WriteError(writeError));
+                testCustomers.writeEntityErrors.Add(writeError, new SimWriteError());
                 testCustomers.readEntityErrors. Add(readError,  new SimReadError());
 
                 customerWriteError.Result.name  = "<change write 1>";

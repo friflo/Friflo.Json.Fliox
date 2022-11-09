@@ -110,11 +110,16 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs
     
     public class SimReadError : SimValue
     {
-        internal SimReadError() {  }
-        
         internal override EntityValue ToEntityValue(string container, JsonKey key) {
             var error = new EntityError(EntityErrorType.ReadError, container, key, "simulated read entity error");
             return new EntityValue(key, error);
+        }
+    }
+    
+    public class SimWriteError
+    {
+        internal EntityError ToEntityError(string container, JsonKey key) {
+            return new EntityError(EntityErrorType.WriteError, container, key, "simulated write entity error");
         }
     }
     
@@ -135,7 +140,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs
         public  readonly    HashSet<string>                         missingResultErrors = new HashSet<string>();
         public  readonly    Dictionary<string, Func<CommandError>>  readTaskErrors      = new Dictionary<string, Func<CommandError>>();
 
-        public  readonly    Dictionary<string, Func<EntityError>>   writeEntityErrors   = new Dictionary<string, Func<EntityError>>();
+        public  readonly    Dictionary<string, SimWriteError>       writeEntityErrors   = new Dictionary<string, SimWriteError>();
         public  readonly    Dictionary<string, Func<CommandError>>  writeTaskErrors     = new Dictionary<string, Func<CommandError>>();
 
         public  readonly    Dictionary<string, Func<QueryEntitiesResult>>  queryErrors  = new Dictionary<string,  Func<QueryEntitiesResult>>();
@@ -227,11 +232,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs
             return null;
         }
         
-        public EntityError WriteError(string id) {
-            var error = new EntityError(EntityErrorType.WriteError, name, new JsonKey(id), "simulated write entity error");
-            return error;
-        }
-        
         private CommandError SimulateWriteErrors(IEnumerable<JsonKey> entities, out List<EntityError> errors) {
             errors = null;
             foreach (var pair in writeEntityErrors) {
@@ -239,8 +239,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs
                 if (entities.Contains(id, JsonKey.Equality)) {
                     if (errors == null)
                         errors = new List<EntityError>();
-                    var fcn = pair.Value;
-                    var entityError = fcn();
+                    var entityError = pair.Value.ToEntityError(name, id);
                     errors.Add(entityError);
                 }
             }

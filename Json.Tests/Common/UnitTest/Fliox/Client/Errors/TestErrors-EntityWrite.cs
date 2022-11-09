@@ -27,9 +27,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             const string createEntityError      = "create-entity-error";
             const string upsertEntityError      = "upsert-entity-error";
             
-            testCustomers.writeEntityErrors.Add(deleteEntityError,    () => testCustomers.WriteError(deleteEntityError));
-            testCustomers.writeEntityErrors.Add(createEntityError,    () => testCustomers.WriteError(createEntityError));
-            testCustomers.writeEntityErrors.Add(upsertEntityError,    () => testCustomers.WriteError(upsertEntityError));
+            testCustomers.writeEntityErrors.Add(deleteEntityError,    new SimWriteError());
+            testCustomers.writeEntityErrors.Add(createEntityError,    new SimWriteError());
+            testCustomers.writeEntityErrors.Add(upsertEntityError,    new SimWriteError());
             
             var customers = store.customers;
             
