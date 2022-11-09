@@ -91,8 +91,8 @@ namespace Friflo.Json.Fliox.Hub.Protocol
 
         public override     string              ToString() => container;
 
-        internal void AddEntities(List<EntityValue> add) {
-            entityMap.EnsureCapacity(entityMap.Count + add.Count);
+        internal void AddEntities(EntityValue[] add) {
+            entityMap.EnsureCapacity(entityMap.Count + add.Length);
             foreach (var entity in add) {
                 entityMap.TryAdd(entity.key, entity);
             }

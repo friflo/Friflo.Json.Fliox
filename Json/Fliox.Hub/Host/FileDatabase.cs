@@ -136,7 +136,8 @@ namespace Friflo.Json.Fliox.Hub.Host
 
         public override async Task<ReadEntitiesResult> ReadEntities(ReadEntities command, SyncContext syncContext) {
             var keys        = command.ids;
-            var entities    = new List<EntityValue>(keys.Count);
+            var entities    = new EntityValue[keys.Count];
+            int index       = 0;
             await rwLock.AcquireReaderLock().ConfigureAwait(false);
             try {
                 foreach (var key in keys) {
@@ -153,7 +154,7 @@ namespace Friflo.Json.Fliox.Hub.Host
                     } else {
                         entry = new EntityValue(key);
                     }
-                    entities.Add(entry);
+                    entities[index++] = entry;
                 }
             } finally {
                 rwLock.ReleaseReaderLock();

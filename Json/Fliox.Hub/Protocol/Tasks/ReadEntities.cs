@@ -74,7 +74,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     public sealed class ReadEntitiesResult : SyncTaskResult
     {
                     public  List<ReferencesResult>  references;
-        [Ignore]    public  List<EntityValue>       entities;
+        [Ignore]    public  EntityValue[]           entities;
         
         [Ignore]    public  CommandError            Error { get; set; }
         internal override   TaskType                TaskType => TaskType.read;
@@ -96,7 +96,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         public void ValidateEntities(string container, string keyName, SyncContext syncContext) {
             using (var pooled = syncContext.EntityProcessor.Get()) {
                 EntityProcessor processor = pooled.instance;
-                for (int n = 0; n < entities.Count; n++) {
+                for (int n = 0; n < entities.Length; n++) {
                     var entity = entities[n];
                     if (entity.Error != null) {
                         continue;

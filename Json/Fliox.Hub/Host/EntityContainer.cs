@@ -128,12 +128,12 @@ namespace Friflo.Json.Fliox.Hub.Host
                 return new MergeEntitiesResult { Error = readResult.Error };
             }
             var entities = readResult.entities;
-            if (entities.Count != ids.Count)
-                throw new InvalidOperationException($"MergeEntities: Expect entities.Count of response matches request. expect: {ids.Count} got: {entities.Count}");
+            if (entities.Length != ids.Count)
+                throw new InvalidOperationException($"MergeEntities: Expect entities.Count of response matches request. expect: {ids.Count} got: {entities.Length}");
             
             // --- Apply merges
             // iterate all patches and merge them to the entities read above
-            var targets     = new  List<JsonEntity>  (entities.Count);
+            var targets     = new  List<JsonEntity>  (entities.Length);
             var container   = mergeEntities.container;
             List<EntityError> patchErrors = null;
             using (var pooled = syncContext.pool.JsonMerger.Get())
@@ -196,7 +196,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             if (queryError != null) {
                 return new AggregateEntitiesResult { Error = queryError };
             }
-            var value   = queryResult.entities.Count;
+            var value   = queryResult.entities.Length;
             var result  = new AggregateEntitiesResult { container = command.container, value = value };
             return result;
         }
@@ -233,10 +233,10 @@ namespace Friflo.Json.Fliox.Hub.Host
                     if (result.Count < maxCount)
                         continue;
                     var cursor = StoreCursor(entities, syncContext.User.userId);
-                    return new QueryEntitiesResult{ entities = result, cursor = cursor };
+                    return new QueryEntitiesResult{ entities = result.ToArray(), cursor = cursor };
                 }
             }
-            return new QueryEntitiesResult{ entities = result };
+            return new QueryEntitiesResult{ entities = result.ToArray() };
         }
         #endregion
     
@@ -273,7 +273,7 @@ namespace Friflo.Json.Fliox.Hub.Host
 
         private static List<ReferencesResult> GetReferences(
             List<References>    references,
-            List<EntityValue>   entities,
+            EntityValue[]       entities,
             string              container,
             SyncContext         syncContext)
         {
@@ -297,7 +297,7 @@ namespace Friflo.Json.Fliox.Hub.Host
                 // Get the selected refs for all entities.
                 // Select() is expensive as it requires a full JSON parse. By using an selector array only one
                 // parsing cycle is required. Otherwise for each selector Select() needs to be called individually.
-                for (int i = 0; i < entities.Count; i++) {
+                for (int i = 0; i < entities.Length; i++) {
                     var entity = entities[i];
                     if (entity.Error != null)
                         continue;
@@ -328,7 +328,7 @@ namespace Friflo.Json.Fliox.Hub.Host
 
         internal async Task<ReadReferencesResult> ReadReferences(
                 List<References>    references,
-                List<EntityValue>   entities,
+                EntityValue[]       entities,
                 string              container,
                 string              selectorPath,
                 SyncResponse        syncResponse,
@@ -363,9 +363,9 @@ namespace Friflo.Json.Fliox.Hub.Host
                 
                 if (subReferences == null)
                     continue;
-                var subEntities = new List<EntityValue>(ids.Count);
-                foreach (var entity in refEntities.entities) {
-                    subEntities.Add(entity);
+                var subEntities = new EntityValue [ids.Count];
+                for (int i = 0; i < refEntities.entities.Length; i++) {
+                    subEntities[i] = refEntities.entities[i];
                 }
                 var refReferencesResult =
                     await ReadReferences(subReferences, subEntities, refContName, subPath, syncResponse, syncContext).ConfigureAwait(false);

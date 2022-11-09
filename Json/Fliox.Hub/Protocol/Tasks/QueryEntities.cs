@@ -156,7 +156,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         [Required]  public  HashSet<JsonKey>        ids = new HashSet<JsonKey>(JsonKey.Equality);
                     public  List<ReferencesResult>  references;
                         
-        [Ignore]    public  List<EntityValue>       entities;
+        [Ignore]    public  EntityValue[]           entities;
         [Ignore]    public  CommandError            Error { get; set; }
 
         

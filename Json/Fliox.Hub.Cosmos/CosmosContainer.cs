@@ -132,7 +132,7 @@ namespace Friflo.Json.Fliox.Hub.Cosmos
                     entities.Add(entry);
                 }
             }
-            return new ReadEntitiesResult{entities = entities};
+            return new ReadEntitiesResult{entities = entities.ToArray() };
         }
         
         private async Task<ReadEntitiesResult> ReadManyEntities(ReadEntities command, SyncContext syncContext) {
@@ -155,7 +155,7 @@ namespace Friflo.Json.Fliox.Hub.Cosmos
                     entities.Add(new EntityValue(key));
                 } */
             }
-            return new ReadEntitiesResult{entities = entities};
+            return new ReadEntitiesResult{entities = entities.ToArray() };
         }
 
         private readonly bool filterByClient = false; // true: used for development => query all and filter thereafter
@@ -182,7 +182,7 @@ namespace Friflo.Json.Fliox.Hub.Cosmos
                 throw new NotImplementedException();
                 // return FilterEntities(command, entities, syncContext);
             }
-            return new QueryEntitiesResult{entities = entities};
+            return new QueryEntitiesResult{entities = entities.ToArray() };
         }
         
         public override Task<AggregateEntitiesResult> AggregateEntities (AggregateEntities command, SyncContext syncContext) {

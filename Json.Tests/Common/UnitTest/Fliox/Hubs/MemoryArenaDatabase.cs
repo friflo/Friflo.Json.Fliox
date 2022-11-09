@@ -90,13 +90,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs
         }
 
         public override Task<ReadEntitiesResult> ReadEntities(ReadEntities command, SyncContext syncContext) {
-            var keys = command.ids;
-            var entities = new List<EntityValue>(keys.Count);
+            var keys        = command.ids;
+            var entities    = new EntityValue[keys.Count];
+            int index       = 0;
             foreach (var key in keys) {
                 keyValues.TryGetValue(key, out var arenaEntry);
                 var payload = GetValue(arenaEntry.index);
                 var entry   = new EntityValue(key, payload);
-                entities.Add(entry);
+                entities[index++] = entry;
             }
             var result = new ReadEntitiesResult{entities = entities};
             return Task.FromResult(result);
