@@ -1,6 +1,7 @@
 // Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
@@ -11,17 +12,18 @@ namespace Friflo.Json.Fliox.Hub.Host.Utils
     public static class EntityUtils
     {
         /// <summary>
-        /// Add the given <paramref name="entities"/> to the given <paramref name="destEntities"/>.
+        /// Copy the given <paramref name="entities"/> to the given <paramref name="destEntities"/>.
         /// The given <paramref name="keyName"/> identifies the key property inside the JSON value in the given list of <paramref name="entities"/>.
         /// </summary>
-        public static void AddEntities(
+        public static void CopyEntities(
             List<JsonValue>     entities,
             string              keyName,
             bool?               isIntKey,
             string              newKeyName,
-            List<EntityValue>   destEntities,
+            EntityValue[]       destEntities,
             SyncContext         syncContext)
         {
+            if (entities.Count != destEntities.Length) throw new InvalidOperationException("Expect entities.Count == destEntities.Length");
             var asIntKey = isIntKey == true;
             using (var pooled = syncContext.EntityProcessor.Get()) {
                 var processor = pooled.instance;

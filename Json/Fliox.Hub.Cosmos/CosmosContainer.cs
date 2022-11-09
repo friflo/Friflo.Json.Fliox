@@ -113,7 +113,7 @@ namespace Friflo.Json.Fliox.Hub.Cosmos
                 return await ReadManyEntities(command, syncContext).ConfigureAwait(false);
             }
             // optimization: single item read requires no parsing of Response message
-            var entities        = new List<EntityValue>(keys.Count);
+            var entities        = new EntityValue[1];
             var key             = keys[0];
             var id              = key.AsString();
             var partitionKey    = new PartitionKey(id);
@@ -123,21 +123,21 @@ namespace Friflo.Json.Fliox.Hub.Cosmos
                 var processor   = pooled.instance;
                 var content     = response.Content;
                 if (content == null) {
-                    entities.Add(new EntityValue(key));
+                    entities[0] = new EntityValue(key);
                 } else {
                     var     payload     = await EntityUtils.ReadToEnd(content).ConfigureAwait(false);
                     bool    asIntKey    = command.isIntKey == true; 
                     var     json        = processor.ReplaceKey(payload, "id", asIntKey, command.keyName, out _, out _);
                     var     entry       = new EntityValue(key, json);
-                    entities.Add(entry);
+                    entities[0]         = entry;
                 }
             }
-            return new ReadEntitiesResult{entities = entities.ToArray() };
+            return new ReadEntitiesResult{entities = entities };
         }
         
         private async Task<ReadEntitiesResult> ReadManyEntities(ReadEntities command, SyncContext syncContext) {
             var keys        = command.ids;
-            var entities    = new List<EntityValue>(keys.Count);
+            var entities    = new EntityValue[keys.Count];
             var list        = new List<(string, PartitionKey)>(keys.Count);
             foreach (var key in keys) {
                 var id = key.AsString();
@@ -148,21 +148,20 @@ namespace Friflo.Json.Fliox.Hub.Cosmos
             using (var pooled   = syncContext.ObjectMapper.Get()) {
                 var reader      = pooled.instance.reader;
                 var documents   = await CosmosUtils.ReadDocuments(reader, response.Content).ConfigureAwait(false);
-                EntityUtils.AddEntities(documents, "id", command.isIntKey, command.keyName, entities, syncContext);
+                EntityUtils.CopyEntities(documents, "id", command.isIntKey, command.keyName, entities, syncContext);
                 /* foreach (var key in keys) {
                     if (entities.ContainsKey(key))
                         continue;
                     entities.Add(new EntityValue(key));
                 } */
             }
-            return new ReadEntitiesResult{entities = entities.ToArray() };
+            return new ReadEntitiesResult{entities = entities };
         }
 
         private readonly bool filterByClient = false; // true: used for development => query all and filter thereafter
         
         public override async Task<QueryEntitiesResult> QueryEntities(QueryEntities command, SyncContext syncContext) {
             await EnsureContainerExists().ConfigureAwait(false);
-            var entities    = new List<EntityValue>();
             var documents   = new List<JsonValue>();
             var sql         = filterByClient ? null : "SELECT * FROM c WHERE " + command.GetFilter().query.Cosmos;
             using (FeedIterator iterator    = cosmosContainer.GetItemQueryStreamIterator(sql))
@@ -177,12 +176,13 @@ namespace Friflo.Json.Fliox.Hub.Cosmos
                     }
                 }
             }
-            EntityUtils.AddEntities(documents, "id", command.isIntKey, command.keyName, entities, syncContext);
+            var entities    = new EntityValue[documents.Count];
+            EntityUtils.CopyEntities(documents, "id", command.isIntKey, command.keyName, entities, syncContext);
             if (filterByClient) {
                 throw new NotImplementedException();
                 // return FilterEntities(command, entities, syncContext);
             }
-            return new QueryEntitiesResult{entities = entities.ToArray() };
+            return new QueryEntitiesResult{entities = entities };
         }
         
         public override Task<AggregateEntitiesResult> AggregateEntities (AggregateEntities command, SyncContext syncContext) {
