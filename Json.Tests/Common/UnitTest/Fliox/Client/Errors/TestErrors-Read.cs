@@ -35,11 +35,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             const string articleMissingKey      = "article-missingKey";
             const string missingArticle         = "missing-article";
             
-            testArticles.readEntityErrors.Add(article2JsonError,    new SimValue(@"{""invalidJson"" XXX}"));
-            testArticles.readEntityErrors.Add(article1ReadError,    new SimValue(testArticles.ReadError(article1ReadError)));
-            testArticles.readEntityErrors.Add(articleInvalidJson,   new SimValue(@"{""invalidJson"" YYY}"));
-            testArticles.readEntityErrors.Add(articleIdDoesntMatch, new SimValue(@"{""id"": ""article-unexpected-id""}"));
-            testArticles.readEntityErrors.Add(articleMissingKey,    new SimValue(@"{}"));
+            testArticles.readEntityErrors.Add(article2JsonError,    new SimJson(@"{""invalidJson"" XXX}"));
+            testArticles.readEntityErrors.Add(article1ReadError,    new SimReadError());
+            testArticles.readEntityErrors.Add(articleInvalidJson,   new SimJson(@"{""invalidJson"" YYY}"));
+            testArticles.readEntityErrors.Add(articleIdDoesntMatch, new SimJson(@"{""id"": ""article-unexpected-id""}"));
+            testArticles.readEntityErrors.Add(articleMissingKey,    new SimJson(@"{}"));
             
             testArticles.missingResultErrors.Add(missingArticle);
             

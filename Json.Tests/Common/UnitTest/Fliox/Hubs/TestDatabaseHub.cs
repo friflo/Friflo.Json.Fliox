@@ -94,22 +94,26 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs
         }
     }
     
-    public class SimValue
+    public abstract class SimValue
+    {
+        internal abstract EntityValue ToEntityValue(string container, JsonKey key);
+    }
+    
+    public class SimJson : SimValue
     {
         private readonly string        value;
-        private readonly EntityError   error;
         
-        internal SimValue(string value) {
-            this.value = value;
-        }
+        internal SimJson(string value) { this.value = value; }
         
-        internal SimValue(EntityError error) {
-            this.error = error;
-        }
+        internal override EntityValue ToEntityValue(string container, JsonKey key) { return new EntityValue(key, new JsonValue(value)); }
+    }
+    
+    public class SimReadError : SimValue
+    {
+        internal SimReadError() {  }
         
-        internal EntityValue ToEntityValue(JsonKey key) {
-            if (value != null)
-                return new EntityValue(key, new JsonValue(value));
+        internal override EntityValue ToEntityValue(string container, JsonKey key) {
+            var error = new EntityError(EntityErrorType.ReadError, container, key, "simulated read entity error");
             return new EntityValue(key, error);
         }
     }
@@ -211,7 +215,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs
                 var id      = entity.key.AsString();
                 if (!readEntityErrors.TryGetValue(id, out var value))
                     continue;
-                entities[n] = value.ToEntityValue(entity.key);
+                entities[n] = value.ToEntityValue(name, entity.key);
             }
             for (int n = 0; n < entities.Length; n++) {
                 var entity  = entities[n];
@@ -221,11 +225,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs
                 return error();
             }
             return null;
-        }
-        
-        public EntityError ReadError(string id) {
-            var error = new EntityError(EntityErrorType.ReadError, name, new JsonKey(id), "simulated read entity error");
-            return error;
         }
         
         public EntityError WriteError(string id) {
