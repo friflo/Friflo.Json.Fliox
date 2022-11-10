@@ -45,21 +45,21 @@ namespace Friflo.Json.Fliox.Transform.Tree
             writer.Dispose();
         }
         
-        public JsonValue    Merge (JsonValue value, JsonValue patch) {
+        public JsonValue    Merge (in JsonValue value, in JsonValue patch) {
             if (!MergeInternal(value, patch)) {
                 return default;
             }
             return new JsonValue(writer.json.AsArray());
         }
         
-        public Bytes        MergeBytes (JsonValue value, JsonValue patch) {
+        public Bytes        MergeBytes (in JsonValue value, in JsonValue patch) {
             if (!MergeInternal(value, patch)) {
                 return default;
             }
             return writer.json;
         }
 
-        private bool MergeInternal (JsonValue value, JsonValue patch) {
+        private bool MergeInternal (in JsonValue value, in JsonValue patch) {
             membersStackIndex   = 0;
             ast                 = astReader.CreateAst(patch);
             if (ast.Error != null) {

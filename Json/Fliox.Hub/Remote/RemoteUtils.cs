@@ -57,7 +57,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             }
         }
         
-        public static ProtocolMessage ReadProtocolMessage (JsonValue jsonMessage, ObjectPool<ObjectMapper> mapperPool, out string error)
+        public static ProtocolMessage ReadProtocolMessage (in JsonValue jsonMessage, ObjectPool<ObjectMapper> mapperPool, out string error)
         {
             using (var pooledMapper = mapperPool.Get()) {
                 ObjectReader reader = pooledMapper.instance.reader;

@@ -57,7 +57,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             this.headers    = headers;
         }
         
-        public void Write (JsonValue value, int offset, string contentType, int statusCode) {
+        public void Write (in JsonValue value, int offset, string contentType, int statusCode) {
             ResponseContentType = contentType;
             StatusCode          = statusCode;
             Response            = value;

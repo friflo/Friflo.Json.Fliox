@@ -15,7 +15,7 @@ namespace Friflo.Json.Fliox.Hub.Client
                                     private readonly    JsonKey     id;
         [DebuggerBrowsable(Never)]  private readonly    JsonValue   merge;
         
-        internal EntityPatchInfo (JsonKey id, JsonValue merge) {
+        internal EntityPatchInfo (in JsonKey id, in JsonValue merge) {
             this.id     = id;
             this.merge  = merge;
         }
@@ -34,7 +34,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         [DebuggerBrowsable(Never)] private   readonly   T           entity;
         public    override  string                                  ToString()  => key.ToString();
 
-        internal EntityPatchInfo (JsonValue entityPatch, TKey key, T entity) {
+        internal EntityPatchInfo (in JsonValue entityPatch, TKey key, T entity) {
             this.entityPatch    = entityPatch;
             this.key            = key;
             this.entity         = entity;

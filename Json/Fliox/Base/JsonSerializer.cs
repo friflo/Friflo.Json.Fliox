@@ -70,7 +70,7 @@ namespace Friflo.Json.Fliox
             }
         }
         
-        public static T Deserialize<T>(JsonValue json, SerializerOptions options = null) {
+        public static T Deserialize<T>(in JsonValue json, SerializerOptions options = null) {
             using (var pooled = ReaderPool.Get()) {
                 var reader = pooled.instance;
                 AssignOptions(reader, options);

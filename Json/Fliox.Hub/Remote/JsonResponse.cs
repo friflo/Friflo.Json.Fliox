@@ -22,7 +22,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         public readonly     JsonValue           body;
         public readonly     JsonResponseStatus  status;
         
-        public JsonResponse(JsonValue body, JsonResponseStatus status) {
+        public JsonResponse(in JsonValue body, JsonResponseStatus status) {
             this.body   = body;
             this.status = status;
         }

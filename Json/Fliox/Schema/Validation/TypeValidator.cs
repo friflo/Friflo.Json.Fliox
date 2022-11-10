@@ -42,7 +42,7 @@ namespace Friflo.Json.Fliox.Schema.Validation
             sb.Clear();
         }
         
-        private void Init(JsonValue json) {
+        private void Init(in JsonValue json) {
             validationError = new ValidationError();
             jsonBytes.Clear();
             jsonBytes.AppendArray(json);
@@ -62,7 +62,7 @@ namespace Friflo.Json.Fliox.Schema.Validation
             return RootError(typeDef, "Expected EOF after reading JSON", out error);
         }
         
-        public bool ValidateJson(JsonValue json, out string error) {
+        public bool ValidateJson(in JsonValue json, out string error) {
             jsonBytes.Clear();
             jsonBytes.AppendArray(json);
             parser.InitParser(jsonBytes);
@@ -76,7 +76,7 @@ namespace Friflo.Json.Fliox.Schema.Validation
             return success;
         }
         
-        public bool Validate (JsonValue json, ValidationType type, out string error) {
+        public bool Validate (in JsonValue json, ValidationType type, out string error) {
             Init(json);
             var ev      = parser.NextEvent();
             var typeDef = type.typeDef;
@@ -119,7 +119,7 @@ namespace Friflo.Json.Fliox.Schema.Validation
             throw new InvalidOperationException($"Unexpected JSON event: {ev}");
         }
         
-        public bool ValidateObject (JsonValue json, ValidationType type, out string error) {
+        public bool ValidateObject (in JsonValue json, ValidationType type, out string error) {
             Init(json);
             var ev = parser.NextEvent();
             var typeDef = type.typeDef;
@@ -130,7 +130,7 @@ namespace Friflo.Json.Fliox.Schema.Validation
             return RootError(typeDef, "expect object. was:", out error);
         }
         
-        public bool ValidateObjectMap (JsonValue json, ValidationType type, out string error) {
+        public bool ValidateObjectMap (in JsonValue json, ValidationType type, out string error) {
             Init(json);
             var ev      = parser.NextEvent();
             var typeDef = type.typeDef;
@@ -141,7 +141,7 @@ namespace Friflo.Json.Fliox.Schema.Validation
             return RootError(typeDef, "expect object. was:", out error);
         }
         
-        public bool ValidateArray (JsonValue json, ValidationType type, out string error) {
+        public bool ValidateArray (in JsonValue json, ValidationType type, out string error) {
             Init(json);
             var ev      = parser.NextEvent();
             var typeDef = type.typeDef;

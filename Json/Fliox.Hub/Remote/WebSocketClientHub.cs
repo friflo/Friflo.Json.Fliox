@@ -166,7 +166,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             }
         }
         
-        private void OnReceive(WebSocketConnection wsConn, JsonValue messageJson) {
+        private void OnReceive(WebSocketConnection wsConn, in JsonValue messageJson) {
             try {
                 var pooledMapper        = sharedEnv.Pool.ObjectMapper;
                 // if (messageJson.Length > 100000) Console.WriteLine($"OnReceive. size: {messageJson.Length}");

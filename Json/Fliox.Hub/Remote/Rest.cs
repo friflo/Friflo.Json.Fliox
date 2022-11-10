@@ -32,7 +32,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             return keys;
         }
         
-        private static bool IsValidJson (Pool pool, JsonValue value, out string error) {
+        private static bool IsValidJson (Pool pool, in JsonValue value, out string error) {
             error = null;
             if (value.IsNull())
                 return true;
@@ -284,7 +284,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             context.WriteString("deleted successful", "text/plain", 200);
         }
         
-        private static List<JsonEntity> Body2JsonValues(RequestContext context, string id, string keyName, JsonValue value, out string error)
+        private static List<JsonEntity> Body2JsonValues(RequestContext context, string id, string keyName, in JsonValue value, out string error)
         {
             var pool        = context.Pool;
             keyName         = keyName ?? "id";

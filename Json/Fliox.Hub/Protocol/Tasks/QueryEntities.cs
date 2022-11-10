@@ -57,7 +57,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         }
         
         internal static bool ValidateFilter(
-                JsonValue           filterTree,
+            in  JsonValue           filterTree,
                 string              filter,
                 SyncContext         syncContext,
             ref FilterOperation     filterLambda,

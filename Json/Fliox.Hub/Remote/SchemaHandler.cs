@@ -119,7 +119,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
 
         public    override  string          ToString() => schemaModel.type;
 
-        internal ModelResource(SchemaModel schemaModel, JsonValue fullSchema) {
+        internal ModelResource(SchemaModel schemaModel, in JsonValue fullSchema) {
             this.schemaModel    = schemaModel;
             this.fullSchema     = fullSchema;
             zipNameSuffix       = $".{schemaModel.type}.zip";
@@ -140,7 +140,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         internal  readonly  JsonValue   bytes;
         internal  readonly  bool        isText;
         
-        private Result (string content, string contentType, JsonValue bytes, bool isText, bool success) {
+        private Result (string content, string contentType, in JsonValue bytes, bool isText, bool success) {
             this.content        = content;
             this.contentType    = contentType;
             this.bytes          = bytes;
@@ -152,7 +152,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             return new Result(content, contentType, default, true, true);
         }
         
-        internal static  Result Success(JsonValue  content, string  contentType) {
+        internal static  Result Success(in JsonValue content, string  contentType) {
             return new Result(null, contentType, content, false, true);
         }
         

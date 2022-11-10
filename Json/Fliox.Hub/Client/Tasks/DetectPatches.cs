@@ -51,7 +51,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             return result;
         }
 
-        internal void AddPatch(JsonValue mergePatch, TKey key, T entity) {
+        internal void AddPatch(in JsonValue mergePatch, TKey key, T entity) {
             var patch = new EntityPatchInfo<TKey,T>(mergePatch, key, entity);
             patches.Add(patch);
         }

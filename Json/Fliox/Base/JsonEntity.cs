@@ -11,12 +11,12 @@ namespace Friflo.Json.Fliox
 
         public  override    string      ToString() => GetString();
 
-        public JsonEntity (JsonValue value) {
+        public JsonEntity (in JsonValue value) {
             key         = default;
             this.value  = value;
         }
         
-        public JsonEntity (in JsonKey key, JsonValue value) {
+        public JsonEntity (in JsonKey key, in JsonValue value) {
             this.key    = key;
             this.value  = value;
         }

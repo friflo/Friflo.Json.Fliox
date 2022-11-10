@@ -35,16 +35,16 @@ namespace Friflo.Json.Fliox.Hub.Host.Utils
         private             bool                    asIntKey;
         private             Bytes                   sb          = new Bytes(0);
         
-        public bool GetEntityKey(JsonValue json, string keyName, out JsonKey keyValue, out string error) {
+        public bool GetEntityKey(in JsonValue json, string keyName, out JsonKey keyValue, out string error) {
             keyName  = keyName ?? "id";
             return Traverse(json, keyName, out keyValue, ProcessingType.GetKey,   out error);
         }
         
-        public bool Validate(JsonValue json, string keyName, out JsonKey keyValue, out string error) {
+        public bool Validate(in JsonValue json, string keyName, out JsonKey keyValue, out string error) {
             return Traverse(json, keyName, out keyValue, ProcessingType.Validate, out error);
         }
         
-        public JsonValue ReplaceKey(JsonValue json, string keyName, bool asIntKey, string newKeyName, out JsonKey keyValue, out string error) {
+        public JsonValue ReplaceKey(in JsonValue json, string keyName, bool asIntKey, string newKeyName, out JsonKey keyValue, out string error) {
             this.asIntKey   = asIntKey;
             keyName         = keyName       ?? "id";
             newKeyName      = newKeyName    ?? "id";
@@ -77,7 +77,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Utils
             return new JsonValue(result);
         }
 
-        private bool Traverse (JsonValue json, string keyName, out JsonKey keyValue, ProcessingType processingType, out string error) {
+        private bool Traverse (in JsonValue json, string keyName, out JsonKey keyValue, ProcessingType processingType, out string error) {
             foundKey = false;
             idKey.Clear();
             idKey.FromString(keyName);
@@ -171,7 +171,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Utils
         /// It is placed here as it shares all required parser related properties and
         /// its purpose is also related to parsing entities.
         /// </summary>
-        public List<JsonEntity> ReadJsonArray(JsonValue json, out string error) {
+        public List<JsonEntity> ReadJsonArray(in JsonValue json, out string error) {
             jsonBytes.Clear();
             jsonBytes.AppendArray(json);
             parser.InitParser(jsonBytes);

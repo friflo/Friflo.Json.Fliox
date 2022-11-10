@@ -25,7 +25,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Models
             error       = null;
         }
 
-        public EntityValue(in JsonKey key, JsonValue json) {
+        public EntityValue(in JsonKey key, in JsonValue json) {
             this.key    = key;
             value       = json;
             error       = null;

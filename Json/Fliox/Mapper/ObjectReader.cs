@@ -85,7 +85,7 @@ namespace Friflo.Json.Fliox.Mapper
             intern.parser.SetMaxDepth(maxDepth);
         }
         
-        private void InitJsonReaderArray(JsonValue array) {
+        private void InitJsonReaderArray(in JsonValue array) {
             inputStringBuf.Clear();
             inputStringBuf.AppendArray(array, 0, array.Length);
             intern.parser.InitParser(inputStringBuf.buffer, inputStringBuf.start, inputStringBuf.Len);

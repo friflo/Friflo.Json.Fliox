@@ -65,12 +65,12 @@ namespace Friflo.Json.Fliox
             return array == null;
         }
 
-        public bool IsEqual (JsonValue value) {
+        public bool IsEqual (in JsonValue value) {
             return Array.SequenceEqual(value.Array);
         }
         
         /// <summary>Use for testing only</summary>
-        public bool IsEqualReference (JsonValue value) {
+        public bool IsEqualReference (in JsonValue value) {
             return ReferenceEquals(array, value.array);
         }
         
@@ -89,11 +89,11 @@ namespace Friflo.Json.Fliox
     
     public static class JsonValueExtensions {
     
-        public static void AppendArray(this ref Bytes bytes, JsonValue array) {
+        public static void AppendArray(this ref Bytes bytes, in JsonValue array) {
             AppendArray (ref bytes, array, 0, array.Array.Length);
         }
         
-        public static void AppendArray(this ref Bytes bytes, JsonValue array, int offset, int len) {
+        public static void AppendArray(this ref Bytes bytes, in JsonValue array, int offset, int len) {
             bytes.EnsureCapacity(len);
             int pos     = bytes.end;
             int arrEnd  = offset + len;
@@ -109,7 +109,7 @@ namespace Friflo.Json.Fliox
             await stream.WriteAsync(array.Array, offset, count).ConfigureAwait(false);
         }
         
-        public static void Write(this Stream stream, JsonValue array, int offset, int count) {
+        public static void Write(this Stream stream, in JsonValue array, int offset, int count) {
             stream.Write(array.Array, offset, count);
         }
     }

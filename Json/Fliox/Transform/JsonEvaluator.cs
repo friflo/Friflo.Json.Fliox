@@ -21,7 +21,7 @@ namespace Friflo.Json.Fliox.Transform
         }
 
         // --- Filter
-        public bool Filter(JsonValue json, JsonFilter filter, out string error) {
+        public bool Filter(in JsonValue json, JsonFilter filter, out string error) {
             if (filter.op is TrueLiteral) {
                 error = null;
                 return true;  // result is independent fom given json
@@ -54,7 +54,7 @@ namespace Friflo.Json.Fliox.Transform
         }
 
         // --- Eval
-        public object Eval(JsonValue json, JsonLambda lambda, out string error) {
+        public object Eval(in JsonValue json, JsonLambda lambda, out string error) {
             ReadJsonFields(json, lambda);
             var cx = new EvalCx(-1);
             var evalResult = lambda.op.Eval(cx);
@@ -82,7 +82,7 @@ namespace Friflo.Json.Fliox.Transform
             return evalResults;
         }
 
-        private void ReadJsonFields(JsonValue json, JsonLambda lambda) {
+        private void ReadJsonFields(in JsonValue json, JsonLambda lambda) {
             var query = lambda.scalarSelect;
             scalarSelector.Select(json, query);
             var fields = lambda.fields;
