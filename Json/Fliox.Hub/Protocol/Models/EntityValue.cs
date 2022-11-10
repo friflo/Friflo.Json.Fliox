@@ -37,8 +37,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Models
         public EntityValue(in JsonKey key, EntityError error) {
             this.key    = key;
             this.error  = error;
+            value       = default;
         }
     }
-    
-
 }
