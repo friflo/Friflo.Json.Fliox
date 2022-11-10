@@ -99,7 +99,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             jsonEvaluator.Dispose();
         }
         
-        internal bool TryGetSubscriber(JsonKey key, out EventSubClient subClient) {
+        internal bool TryGetSubscriber(in JsonKey key, out EventSubClient subClient) {
             return subClients.TryGetValue(key, out subClient);
         }
         

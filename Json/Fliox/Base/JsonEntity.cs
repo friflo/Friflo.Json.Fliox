@@ -16,7 +16,7 @@ namespace Friflo.Json.Fliox
             this.value  = value;
         }
         
-        public JsonEntity (JsonKey key, JsonValue value) {
+        public JsonEntity (in JsonKey key, JsonValue value) {
             this.key    = key;
             this.value  = value;
         }

@@ -42,7 +42,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
             return stateDB.CreateContainer(name, database);
         }
 
-        internal static bool FindTask(string container, JsonKey dbKey, List<SyncRequestTask> tasks) {
+        internal static bool FindTask(string container, in JsonKey dbKey, List<SyncRequestTask> tasks) {
             foreach (var task in tasks) {
                 if (task is ReadEntities read && read.container == container) {
                     return read.ids.Contains(dbKey, JsonKey.Equality);

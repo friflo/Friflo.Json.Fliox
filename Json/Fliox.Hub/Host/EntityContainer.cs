@@ -376,7 +376,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         #endregion
 
     #region - public static utils
-        protected static void AddEntityError(ref List<EntityError> errors, JsonKey key, EntityError error) {
+        protected static void AddEntityError(ref List<EntityError> errors, in JsonKey key, EntityError error) {
             if (errors == null) {
                 errors = new List<EntityError>();
             }
