@@ -226,8 +226,7 @@ namespace Friflo.Json.Fliox.Hub.Host
                     }
                     if (!match)
                         continue;
-                    var entry = new EntityValue(key, json);
-                    result.Add(entry);
+                    result.Add(new EntityValue(key, json));
                     if (result.Count >= limit)
                         break;
                     if (result.Count < maxCount)

@@ -106,8 +106,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             int index       = 0;
             foreach (var key in keys) {
                 keyValues.TryGetValue(key, out var payload);
-                var entry = new EntityValue(key, payload);
-                entities[index++] = entry;
+                entities[index++] = new EntityValue(key, payload);
             }
             var result = new ReadEntitiesResult{entities = entities};
             return Task.FromResult(result);

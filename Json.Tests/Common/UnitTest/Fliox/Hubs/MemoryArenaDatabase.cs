@@ -96,8 +96,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs
             foreach (var key in keys) {
                 keyValues.TryGetValue(key, out var arenaEntry);
                 var payload = GetValue(arenaEntry.index);
-                var entry   = new EntityValue(key, payload);
-                entities[index++] = entry;
+                entities[index++] = new EntityValue(key, payload);;
             }
             var result = new ReadEntitiesResult{entities = entities};
             return Task.FromResult(result);
