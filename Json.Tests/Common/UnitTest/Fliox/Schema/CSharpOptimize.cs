@@ -14,7 +14,7 @@ using NUnit.Framework;
 
 namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema
 {
-    [TestFixture, Ignore("WIP")]
+    // [TestFixture, Ignore("WIP")]
     public static class CSharpOptimize
     {
         /// C# -> Optimize - Assembly: Friflo.Json.Tests
