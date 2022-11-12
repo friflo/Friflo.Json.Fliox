@@ -27,7 +27,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         
         private static async Task WebSocketConnect() {
             using (var _                = SharedEnv.Default) // for LeakTestsFixture
-            using (var eventDispatcher  = new EventDispatcher(EventDispatching.Direct))
+            using (var eventDispatcher  = new EventDispatcher(EventDispatching.Send))
             using (var database         = new MemoryDatabase(TestGlobals.DB))
             using (var hub          	= new FlioxHub(database, TestGlobals.Shared))
             using (var httpHost         = new HttpHost(hub, "/", TestGlobals.Shared))

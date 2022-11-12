@@ -34,7 +34,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         
         private static async Task AssertSubscribe() {
             using (var _                = SharedEnv.Default) // for LeakTestsFixture
-            using (var eventDispatcher  = new EventDispatcher(EventDispatching.Direct))
+            using (var eventDispatcher  = new EventDispatcher(EventDispatching.Send))
             using (var database         = new FileDatabase(TestGlobals.DB, TestGlobals.PocStoreFolder, new PocService()))
             using (var hub              = new FlioxHub(database, TestGlobals.Shared))
             using (var listenDb         = new PocStore(hub) { UserId = "listenDb", ClientId = "listen-client" }) {
@@ -320,7 +320,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             
         private static async Task AssertAcknowledgeMessages() {
             using (var _                = SharedEnv.Default) // for LeakTestsFixture
-            using (var eventDispatcher  = new EventDispatcher(EventDispatching.Direct))
+            using (var eventDispatcher  = new EventDispatcher(EventDispatching.Send))
             using (var database         = new MemoryDatabase(TestGlobals.DB))
             using (var hub              = new FlioxHub(database, TestGlobals.Shared))
             using (var listenDb         = new FlioxClient(hub) { ClientId = "listenDb" }) {
@@ -353,7 +353,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             
         private static async Task AssertMultiDbSubscriptions() {
             using (var _                = SharedEnv.Default) // for LeakTestsFixture
-            using (var eventDispatcher  = new EventDispatcher(EventDispatching.Direct))
+            using (var eventDispatcher  = new EventDispatcher(EventDispatching.Send))
             using (var database         = new MemoryDatabase(TestGlobals.DB))
             using (var extDB            = new MemoryDatabase("ext_db"))
             using (var hub              = new FlioxHub(database, TestGlobals.Shared))
@@ -410,7 +410,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         /// Ensure <see cref="HubPermission.queueEvents"/> is true if client ask for <see cref="ClientParam.queueEvents"/>
         private static async Task AssertTestQueueEvents() {
             using (var _                = SharedEnv.Default) // for LeakTestsFixture
-            using (var eventDispatcher  = new EventDispatcher(EventDispatching.Direct))
+            using (var eventDispatcher  = new EventDispatcher(EventDispatching.Send))
             using (var database         = new MemoryDatabase(TestGlobals.DB))
             using (var hub              = new FlioxHub(database, TestGlobals.Shared))
             using (var testQueueEvents  = new FlioxClient(hub) { UserId = "test-queue-events" }) {
@@ -457,7 +457,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         /// </summary>
         private static async Task AssertModifySubscriptionInHandler() {
             using (var _                = SharedEnv.Default) // for LeakTestsFixture
-            using (var eventDispatcher  = new EventDispatcher(EventDispatching.Direct))
+            using (var eventDispatcher  = new EventDispatcher(EventDispatching.Send))
             using (var database         = new MemoryDatabase(TestGlobals.DB))
             using (var hub              = new FlioxHub(database, TestGlobals.Shared))
             using (var store            = new PocStore(hub) { UserId = "test-modify-handler" }) {
@@ -485,7 +485,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         public static void TestSubscribeChangesFilter() { SingleThreadSynchronizationContext.Run(AssertSubscribeChangesFilter); }
         private static async Task AssertSubscribeChangesFilter() {
             using (var _                = SharedEnv.Default) // for LeakTestsFixture
-            using (var eventDispatcher  = new EventDispatcher(EventDispatching.Direct))
+            using (var eventDispatcher  = new EventDispatcher(EventDispatching.Send))
             using (var database         = new MemoryDatabase(TestGlobals.DB))
             using (var hub              = new FlioxHub(database, TestGlobals.Shared))
             using (var store            = new PocStore(hub) { UserId = "test-modify-handler" }) {
@@ -546,7 +546,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         public static void TestSubscribeApplyChanges() { SingleThreadSynchronizationContext.Run(AssertSubscribeApplyChanges); }
         private static async Task AssertSubscribeApplyChanges() {
             using (var _                = SharedEnv.Default) // for LeakTestsFixture
-            using (var eventDispatcher  = new EventDispatcher(EventDispatching.Direct))
+            using (var eventDispatcher  = new EventDispatcher(EventDispatching.Send))
             using (var database         = new MemoryDatabase(TestGlobals.DB))
             using (var hub              = new FlioxHub(database, TestGlobals.Shared))
             using (var store            = new PocStore(hub) { UserId = "store" })

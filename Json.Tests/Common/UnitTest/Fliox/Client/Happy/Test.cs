@@ -155,7 +155,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         /// simultaneously. In this case three <see cref="PocStore"/> instances.
         private static async Task WebSocketCreate() {
             using (var _                = SharedEnv.Default) // for LeakTestsFixture
-            using (var eventDispatcher  = new EventDispatcher(EventDispatching.Direct))
+            using (var eventDispatcher  = new EventDispatcher(EventDispatching.Send))
             using (var database         = new FileDatabase(TestGlobals.DB, TestGlobals.PocStoreFolder, new PocService()))
             using (var hub          	= new FlioxHub(database, TestGlobals.Shared))
             using (var httpHost         = new HttpHost(hub, "/", TestGlobals.Shared))
@@ -191,7 +191,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         /// <see cref="SyncRequest.eventAck"/> is used to inform database about arrived events. All not acknowledged events are resent.
         private static async Task WebSocketReconnect() {
             using (var _                = SharedEnv.Default) // for LeakTestsFixture
-            using (var eventDispatcher  = new EventDispatcher(EventDispatching.Queue))
+            using (var eventDispatcher  = new EventDispatcher(EventDispatching.QueueSend))
             using (var database         = new FileDatabase(TestGlobals.DB, TestGlobals.PocStoreFolder, new PocService()))
             using (var hub          	= new FlioxHub(database, TestGlobals.Shared))
             using (var hostHub          = new HttpHost(hub, "/"))
@@ -239,7 +239,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         
         private static async Task LoopbackUse() {
             using (var _                = SharedEnv.Default) // for LeakTestsFixture
-            using (var eventDispatcher  = new EventDispatcher(EventDispatching.Direct))
+            using (var eventDispatcher  = new EventDispatcher(EventDispatching.Send))
             using (var database         = new FileDatabase(TestGlobals.DB, TestGlobals.PocStoreFolder, new PocService()))
             using (var hub          	= new FlioxHub(database, TestGlobals.Shared))
             using (var loopbackHub      = new LoopbackHub(hub))

@@ -28,10 +28,18 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
     /// </summary>
     public enum EventDispatching
     {
-        /// <summary>Events are queued before they are sent to their targets</summary>
+        /// <summary>Events are queued and send asynchronously to their targets</summary>
+        QueueSend,
+        /// <summary>
+        /// Events are queued only.<br/>
+        /// The application need to call <see cref="EventDispatcher.SendQueuedEvents"/> regularly
+        /// to send events asynchronously to their targets.
+        /// </summary>
         Queue,
-        /// <summary>Events are instantaneously send to their targets</summary>
-        Direct
+        /// <summary>
+        /// Events are instantaneously send to their targets when processing a request in <see cref="FlioxHub.ExecuteSync"/>.
+        /// </summary>
+        Send
     }
     
     /// <summary>
@@ -87,7 +95,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             sendClients         = new ConcurrentDictionary<JsonKey, EventSubClient>(JsonKey.Equality);
             subUsers            = new ConcurrentDictionary<JsonKey, EventSubUser>(JsonKey.Equality);
             this.dispatching    = dispatching;
-            if (dispatching == EventDispatching.Queue) {
+            if (dispatching == EventDispatching.QueueSend) {
                 var channel             = DataChannelSlim<EventSubClient>.CreateUnbounded(true, true);
                 clientEventWriter       = channel.Writer;
                 var clientEventReader   = channel.Reader;
@@ -113,7 +121,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         }
 
         public async Task StopDispatcher() {
-            if (dispatching != EventDispatching.Queue)
+            if (dispatching != EventDispatching.QueueSend)
                 return;
             StopQueue();
             await clientEventLoop;
@@ -204,7 +212,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                 subUser = new EventSubUser (user.userId, user.GetGroups());
                 subUsers.TryAdd(user.userId, subUser);
             }
-            var dispatcher = dispatching == EventDispatching.Queue ? this : null;
+            var dispatcher = dispatching == EventDispatching.QueueSend ? this : null;
             subClient = new EventSubClient(sharedEnv, subUser, clientId, dispatcher);
             if (eventReceiver != null) {
                 subClient.UpdateTarget(eventReceiver);
@@ -239,10 +247,9 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         }
 
         // -------------------------- event distribution --------------------------------
-        // use only for testing
-        internal void SendQueuedEvents() {
-            if (dispatching == EventDispatching.Queue) {
-                throw new InvalidOperationException("must not be called, if using a background Tasks");
+        public void SendQueuedEvents() {
+            if (dispatching == EventDispatching.QueueSend) {
+                throw new InvalidOperationException($"must not be called if using {nameof(EventDispatcher)}.{EventDispatching.QueueSend}");
             }
             using(var pooled = sharedEnv.Pool.ObjectMapper.Get()) {
                 foreach (var pair in subClients) {

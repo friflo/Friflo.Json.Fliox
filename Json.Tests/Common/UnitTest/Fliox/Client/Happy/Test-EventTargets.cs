@@ -23,7 +23,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             using (var hub              = new FlioxHub(database))
             using (var client1          = new PocStore(hub))
             using (var client2          = new PocStore(hub))
-            using (hub.EventDispatcher  = new EventDispatcher(EventDispatching.Direct)) // dispatch events directly to simplify test
+            using (hub.EventDispatcher  = new EventDispatcher(EventDispatching.Send)) // dispatch events directly to simplify test
             {
                 client1.ClientId    = "client-1";
                 client1.UserId      = "user-1";
