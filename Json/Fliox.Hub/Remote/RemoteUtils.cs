@@ -10,7 +10,7 @@ using Friflo.Json.Fliox.Utils;
 namespace Friflo.Json.Fliox.Hub.Remote
 {
     /// <summary> Reflect the shape of a <see cref="EventMessage"/> </summary>
-    internal sealed class RemoteEventMessage
+    internal struct RemoteEventMessage
     {
         /** map to <see cref="ProtocolEvent"/> discriminator */ public  string              msg;
         /** map to <see cref="ProtocolEvent.dstClientId"/> */   public  JsonKey             clt;
@@ -18,7 +18,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
     }
     
     /// <summary> Reflect the shape of a <see cref="SyncEvent"/> </summary>
-    internal sealed class RemoteSyncEvent
+    internal struct RemoteSyncEvent
     {
         /** map to <see cref="SyncEvent.seq"/> */               public  int         seq; 
         /** map to <see cref="SyncEvent.srcUserId"/> */         public  JsonKey     src;
@@ -29,32 +29,29 @@ namespace Friflo.Json.Fliox.Hub.Remote
     
     public static class RemoteUtils
     {
-        public static JsonValue CreateProtocolMessage (ProtocolMessage message, ObjectPool<ObjectMapper> mapperPool)
+        public static JsonValue CreateProtocolMessage (ProtocolMessage message, ObjectMapper mapper)
         {
-            using (var pooledMapper = mapperPool.Get()) {
-                ObjectMapper mapper = pooledMapper.instance;
-                mapper.Pretty = true;
-                mapper.WriteNullMembers = false;
-                if (EventDispatcher.SerializeRemoteEvents && message is EventMessage eventMessage) {
-                    var remoteEventMessage      = new RemoteEventMessage { msg = "ev", clt = eventMessage.dstClientId };
-                    var events                  = eventMessage.events;
-                    var remoteEvents            = new RemoteSyncEvent[events.Length];
-                    remoteEventMessage.events   = remoteEvents;
-                    for (int n = 0; n < events.Length; n++) {
-                        var ev = events[n];
-                        var remoteEv = new RemoteSyncEvent {
-                            seq         = ev.seq,
-                            src         = ev.srcUserId,
-                            db          = ev.db,
-                            isOrigin    = ev.isOrigin,
-                            tasks       = ev.tasksJson,
-                        };
-                        remoteEvents[n] = remoteEv;
-                    }
-                    return mapper.WriteAsValue(remoteEventMessage);
+            mapper.Pretty = true;
+            mapper.WriteNullMembers = false;
+            if (EventDispatcher.SerializeRemoteEvents && message is EventMessage eventMessage) {
+                var remoteEventMessage      = new RemoteEventMessage { msg = "ev", clt = eventMessage.dstClientId };
+                var events                  = eventMessage.events;
+                var remoteEvents            = new RemoteSyncEvent[events.Length];
+                remoteEventMessage.events   = remoteEvents;
+                for (int n = 0; n < events.Length; n++) {
+                    var ev = events[n];
+                    var remoteEv = new RemoteSyncEvent {
+                        seq         = ev.seq,
+                        src         = ev.srcUserId,
+                        db          = ev.db,
+                        isOrigin    = ev.isOrigin,
+                        tasks       = ev.tasksJson,
+                    };
+                    remoteEvents[n] = remoteEv;
                 }
-                return mapper.WriteAsValue(message);
+                return mapper.WriteAsValue(remoteEventMessage);
             }
+            return mapper.WriteAsValue(message);
         }
         
         public static ProtocolMessage ReadProtocolMessage (in JsonValue jsonMessage, ObjectPool<ObjectMapper> mapperPool, out string error)

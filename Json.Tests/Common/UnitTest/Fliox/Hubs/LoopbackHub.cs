@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System.Threading.Tasks;
+using Friflo.Json.Fliox;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Remote;
@@ -33,7 +34,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs
         }
         
         public override async Task<ExecuteSyncResult> ExecuteSync(SyncRequest syncRequest, SyncContext syncContext) {
-            var requestJson     = RemoteUtils.CreateProtocolMessage(syncRequest, syncContext.ObjectMapper);
+            JsonValue requestJson;
+            using (var pooled = syncContext.ObjectMapper.Get()) {
+                requestJson     = RemoteUtils.CreateProtocolMessage(syncRequest, pooled.instance);
+            }
             var requestMessage  = RemoteUtils.ReadProtocolMessage (requestJson, syncContext.ObjectMapper, out _);
             var requestCopy     = (SyncRequest)requestMessage;
             
@@ -43,7 +47,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs
                 return syncResponse;
             }
             RemoteHost.SetContainerResults(syncResponse.success);
-            var responseJson    = RemoteUtils.CreateProtocolMessage(syncResponse.success, syncContext.ObjectMapper);
+            JsonValue responseJson;
+            using (var pooled = syncContext.ObjectMapper.Get()) {
+                responseJson    = RemoteUtils.CreateProtocolMessage(syncResponse.success, pooled.instance);
+            }
             var responseMessage = RemoteUtils.ReadProtocolMessage (responseJson, syncContext.ObjectMapper, out _);
             var responseCopy    = (SyncResponse)responseMessage;
             

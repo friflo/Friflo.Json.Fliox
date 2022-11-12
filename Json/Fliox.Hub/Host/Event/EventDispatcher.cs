@@ -19,7 +19,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
     public interface IEventReceiver {
         bool    IsOpen ();
         bool    IsRemoteTarget ();
-        bool    ProcessEvent(ProtocolEvent ev);
+        bool    ProcessEvent(ProtocolEvent ev, ObjectMapper mapper);
     }
     
     /// <summary>
@@ -244,9 +244,11 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             if (dispatching == EventDispatching.Queue) {
                 throw new InvalidOperationException("must not be called, if using a background Tasks");
             }
-            foreach (var pair in subClients) {
-                var subClient = pair.Value;
-                subClient.SendEvents();
+            using(var pooled = sharedEnv.Pool.ObjectMapper.Get()) {
+                foreach (var pair in subClients) {
+                    var subClient = pair.Value;
+                    subClient.SendEvents(pooled.instance);
+                }
             }
         }
         
@@ -341,10 +343,13 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             var loopTask    = Task.Run(async () =>
             {
                 try {
+                    var mapperPool = sharedEnv.Pool.ObjectMapper;
                     while (true) {
                         var client = await clientEventReader.ReadAsync().ConfigureAwait(false);
                         if (client != null) {
-                            client.SendEvents();
+                            using (var pooled = mapperPool.Get()) {
+                                client.SendEvents(pooled.instance);
+                            }
                             continue;
                         }
                         logger.Log(HubLog.Info, $"ClientEventLoop() returns");

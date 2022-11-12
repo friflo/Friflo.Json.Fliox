@@ -203,7 +203,10 @@ namespace Friflo.Json.Fliox.Hub.Remote
             }
             int sendReqId       = Interlocked.Increment(ref reqId);
             syncRequest.reqId   = sendReqId;
-            var jsonRequest     = RemoteUtils.CreateProtocolMessage(syncRequest, syncContext.ObjectMapper);
+            JsonValue jsonRequest;
+            using (var pooled = syncContext.ObjectMapper.Get()) {
+                jsonRequest     = RemoteUtils.CreateProtocolMessage(syncRequest, pooled.instance);
+            }
             try {
                 // request need to be queued _before_ sending it to be prepared for handling the response.
                 var wsRequest       = new WebsocketRequest(syncContext, cancellationToken);

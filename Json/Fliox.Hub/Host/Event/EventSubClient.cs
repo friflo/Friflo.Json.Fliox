@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using Friflo.Json.Fliox.Hub.Protocol;
+using Friflo.Json.Fliox.Mapper;
 using static System.Diagnostics.DebuggerBrowsableState;
 
 // ReSharper disable ConvertToAutoPropertyWhenPossible
@@ -153,7 +154,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             }
         }
         
-        internal void SendEvents () {
+        internal void SendEvents (ObjectMapper mapper) {
             var receiver = eventReceiver;
             // early out in case the target is a remote connection which already closed.
             if (receiver == null || !receiver.IsOpen()) {
@@ -174,7 +175,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                     // In case the event target is remote connection it is not guaranteed that the event arrives.
                     // The remote target may already be disconnected and this is still not know when sending the event.
                     var eventMessage = new EventMessage { dstClientId = clientId, events = events };
-                    receiver.ProcessEvent(eventMessage);
+                    receiver.ProcessEvent(eventMessage, mapper);
                 }
                 catch (Exception e) {
                     var message = "SendEvents failed";

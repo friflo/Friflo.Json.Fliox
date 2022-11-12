@@ -13,6 +13,7 @@ using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.Event;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Threading;
+using Friflo.Json.Fliox.Mapper;
 
 namespace Friflo.Json.Fliox.Hub.Remote
 {
@@ -59,10 +60,9 @@ namespace Friflo.Json.Fliox.Hub.Remote
             return webSocket.State == WebSocketState.Open;
         }
 
-        public bool ProcessEvent(ProtocolEvent ev) {
+        public bool ProcessEvent(ProtocolEvent ev, ObjectMapper mapper) {
             try {
-                var pooledMapper    = pool.ObjectMapper;
-                var jsonEvent       = RemoteUtils.CreateProtocolMessage(ev, pooledMapper);
+                var jsonEvent       = RemoteUtils.CreateProtocolMessage(ev, mapper);
                 sendWriter.TryWrite(jsonEvent);
                 return true;
             }
