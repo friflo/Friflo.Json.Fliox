@@ -1,20 +1,32 @@
 // Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System;
+
 namespace Friflo.Json.Fliox.Utils
 {
     public class Deque<T>
     {
         private int     first;
-        private int     last;
         private int     capacity;
-        private T[]     items;
+        private T[]     array;
         
         public  int     Count { get; private set; }
+        private T[]     Items => ToArray();
 
         public Deque(int capacity = 4) {
             this.capacity   = capacity;
-            items           = new T[capacity];
+            array           = new T[capacity];
+        }
+        
+        public T[] ToArray() {
+            var count   = Count;
+            var result  = new T[count];
+            for (int n = 0; n < count; n++) {
+                var index   = (first + n) % capacity;
+                result[n]   = array[index];
+            }
+            return result;
         }
         
         public Enumerator GetEnumerator() {
@@ -22,20 +34,20 @@ namespace Friflo.Json.Fliox.Utils
         }
         
         public void Clear() {
-            int i = first;
-            while (i != last) {
-                items[i] = default;
+            int i       = first;
+            var count   = Count;
+            for (int n = 0; n < count; n++) {
+                array[i] = default;
                 i = (i + 1) % capacity;
             }
             Count   = 0;
             first   = 0;
-            last    = 0;
         }
 
         public T RemoveHead() {
             if (Count > 0) {
-                var result      = items[first];
-                items[first]    = default;
+                var result      = array[first];
+                array[first]    = default;
                 first           = (first + 1) % capacity;
                 Count--;
                 return result;
@@ -47,38 +59,36 @@ namespace Friflo.Json.Fliox.Utils
             var count = Count++;
             if (count < capacity) {
                 first = (first + capacity - 1) % capacity;
-                items[first] = item;
+                array[first] = item;
                 return;
             }
             var newItems    = new T[2 * capacity];
             for (int n = 0; n < count; n++) {
                 var index = (n + first) % capacity;
-                newItems[n + 1] = items[index];
+                newItems[n + 1] = array[index];
             }
             capacity        = newItems.Length;
-            items           = newItems;
+            array           = newItems;
             first           = 0;
-            items[0]        = item;
-            last            = count;
+            array[0]        = item;
         }
         
         public void AddTail(T item) {
-            var count = Count++;
+            var count   = Count++;
             if (count < capacity) {
-                items[last] = item;
-                last = (last + 1) % capacity;
+                var last    = (first + count) % capacity;
+                array[last] = item;
                 return;
             }
             var newItems    = new T[2 * capacity];
             for (int n = 0; n < count; n++) {
                 var index = (n + first) % capacity;
-                newItems[n] = items[index];
+                newItems[n] = array[index];
             }
             capacity        = newItems.Length;
-            items           = newItems;
+            array           = newItems;
             first           = 0;
-            last            = count;
-            items[last]     = item;
+            array[count]    = item;
         }
         
         // ---------------------------------------- Enumerator<T> ----------------------------------------
@@ -91,7 +101,7 @@ namespace Friflo.Json.Fliox.Utils
             private             int     current;
             
             internal Enumerator (Deque<T> deque) {
-                items       = deque.items;
+                items       = deque.array;
                 capacity    = deque.capacity;
                 remaining   = deque.Count;
                 next        = deque.first;
@@ -105,10 +115,11 @@ namespace Friflo.Json.Fliox.Utils
                     remaining--;
                     return true;
                 }
+                current = -1;
                 return false;
             }
         
-            public T Current => current != -1 ? items[current] : default;
+            public T Current => current != -1 ? items[current] : throw new InvalidOperationException("invalid enumerator");
         }
     }
 }

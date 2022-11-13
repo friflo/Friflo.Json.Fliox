@@ -100,5 +100,19 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Utils
             if (removed != 2)           throw new InvalidOperationException($"unexpected item: {removed}");
             if (deque.Count != 0)       throw new InvalidOperationException($"unexpected Count {deque.Count}");
         }
+        
+        [Test]
+        public static void TestDequeClear() {
+            var deque = new Deque<int>(1);
+            deque.AddTail(11);
+            var array = deque.ToArray();
+            AreEqual(1,     array.Length);
+            AreEqual(11,    array[0]);
+            
+            deque.Clear();
+            
+            AreEqual(0, deque.Count);
+            foreach (var unused in deque) { Fail("unexpected"); }
+        }
     }
 }
