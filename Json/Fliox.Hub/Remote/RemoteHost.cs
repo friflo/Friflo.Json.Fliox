@@ -49,10 +49,9 @@ namespace Friflo.Json.Fliox.Hub.Remote
                         }
                         SetContainerResults(response.success);
                         response.Result.reqId   = syncRequest.reqId;
-                        using (var pooled = objectMapper.Get()) {
-                            JsonValue jsonResponse  = RemoteUtils.CreateProtocolMessage(response.Result, pooled.instance);
-                            return new JsonResponse(jsonResponse, JsonResponseStatus.Ok);
-                        }
+                        JsonValue jsonResponse  = RemoteUtils.CreateProtocolMessage(response.Result, objectMapper);
+                        return new JsonResponse(jsonResponse, JsonResponseStatus.Ok);
+
                     default:
                         var msg = $"Unknown request. Name: {request.GetType().Name}";
                         return JsonResponse.CreateError(objectMapper, msg, ErrorResponseType.BadResponse, null);

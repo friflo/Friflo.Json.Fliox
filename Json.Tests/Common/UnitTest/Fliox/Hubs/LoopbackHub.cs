@@ -2,7 +2,6 @@
 // See LICENSE file in the project root for full license information.
 
 using System.Threading.Tasks;
-using Friflo.Json.Fliox;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Remote;
@@ -34,11 +33,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs
         }
         
         public override async Task<ExecuteSyncResult> ExecuteSync(SyncRequest syncRequest, SyncContext syncContext) {
-            JsonValue requestJson;
-            using (var pooled = syncContext.ObjectMapper.Get()) {
-                requestJson     = RemoteUtils.CreateProtocolMessage(syncRequest, pooled.instance);
-            }
-            var requestMessage  = RemoteUtils.ReadProtocolMessage (requestJson, syncContext.ObjectMapper, out _);
+            var objectMapper    = syncContext.ObjectMapper;
+            var requestJson     = RemoteUtils.CreateProtocolMessage(syncRequest, objectMapper);
+            var requestMessage  = RemoteUtils.ReadProtocolMessage (requestJson, objectMapper, out _);
             var requestCopy     = (SyncRequest)requestMessage;
             
             var syncResponse    = await host.ExecuteSync(requestCopy, syncContext);
@@ -47,11 +44,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs
                 return syncResponse;
             }
             RemoteHost.SetContainerResults(syncResponse.success);
-            JsonValue responseJson;
-            using (var pooled = syncContext.ObjectMapper.Get()) {
-                responseJson    = RemoteUtils.CreateProtocolMessage(syncResponse.success, pooled.instance);
-            }
-            var responseMessage = RemoteUtils.ReadProtocolMessage (responseJson, syncContext.ObjectMapper, out _);
+            var responseJson    = RemoteUtils.CreateProtocolMessage(syncResponse.success, objectMapper);
+            var responseMessage = RemoteUtils.ReadProtocolMessage (responseJson, objectMapper, out _);
             var responseCopy    = (SyncResponse)responseMessage;
             
             return new ExecuteSyncResult(responseCopy);
