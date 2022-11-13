@@ -370,7 +370,6 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             {
                 try {
                     var mapperPool  = sharedEnv.Pool.ObjectMapper;
-                    var eventBuffer = new List<RemoteSyncEvent>();
                     while (true) {
                         var client = await clientEventReader.ReadAsync().ConfigureAwait(false);
                         if (client != null) {
