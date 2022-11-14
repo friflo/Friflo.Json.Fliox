@@ -54,7 +54,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             var remoteEvents            = args.eventBuffer;
             remoteEvents.Clear();
             remoteEventMessage.events   = remoteEvents;
-            for (int n = 0; n < events.Length; n++) {
+            for (int n = 0; n < events.Count; n++) {
                 var ev = events[n];
                 var remoteEv = new RemoteSyncEvent {
                     seq         = ev.seq,

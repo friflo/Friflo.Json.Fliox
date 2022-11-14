@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
@@ -19,7 +20,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol
         /// Each <see cref="SyncEvent"/> corresponds to a <see cref="SyncRequest"/> and contains the subscribed
         /// messages and container changes in its <see cref="SyncEvent.tasks"/> field
         /// </summary>
-        public                  SyncEvent[]         events;
+        public                  List<SyncEvent>     events;
         
         internal override       MessageType         MessageType => MessageType.ev;
     }

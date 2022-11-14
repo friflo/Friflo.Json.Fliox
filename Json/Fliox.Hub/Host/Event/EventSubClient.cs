@@ -95,7 +95,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             }
         }
         
-        private bool DequeueEvents(out SyncEvent[] events) {
+        private bool DequeueEvents(out List<SyncEvent> events) {
             var deque = unsentEventsDeque;
             lock (deque) {
                 var count = deque.Count;
@@ -104,10 +104,10 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                     return false;
                 }
                 if (count > 100) count = 100;
-                events = new SyncEvent[count];
+                events = new List<SyncEvent>(count);
                 for (int n = 0; n < count; n++) {
                     var ev = deque.RemoveHead();
-                    events[n] = ev;
+                    events.Add(ev);
                     if (queueEvents) {
                         sentEventsQueue.Enqueue(ev);
                     }
@@ -161,7 +161,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                 return;
             }
             // Trace.WriteLine("--- SendEvents");
-            while (DequeueEvents(out SyncEvent[] events)) {
+            while (DequeueEvents(out List<SyncEvent> events)) {
                 // var msg = $"DequeueEvent {ev.seq}";
                 // Trace.WriteLine(msg);
                 // Console.WriteLine(msg);
