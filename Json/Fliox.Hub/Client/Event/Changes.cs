@@ -77,7 +77,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// <summary> return patches applied to container entities </summary>
         public              List<Patch<TKey>>   Patches { get; } = new List<Patch<TKey>>();
         
-        internal  readonly  List<ApplyInfo<TKey,T>> applyInfos  = new List<ApplyInfo<TKey,T>>();
+        private   readonly  List<ApplyInfo<TKey,T>> applyInfos  = new List<ApplyInfo<TKey,T>>();
 
         public    override  string              ToString()      => FormatToString();       
         public    override  string              Container       { get; }
@@ -261,11 +261,11 @@ namespace Friflo.Json.Fliox.Hub.Client
     }
 
     public readonly struct ApplyResult<TKey, T> where T : class {
-        public readonly IReadOnlyList<ApplyInfo<TKey,T>> applyInfos;
+        public readonly List<ApplyInfo<TKey,T>> applyInfos;
         
         public override string  ToString() => applyInfos != null ? $"Count: {applyInfos.Count}" : "error";
         
-        internal ApplyResult(IReadOnlyList<ApplyInfo<TKey,T>> applyInfos) {
+        internal ApplyResult(List<ApplyInfo<TKey,T>> applyInfos) {
             this.applyInfos = applyInfos;
         }
     }

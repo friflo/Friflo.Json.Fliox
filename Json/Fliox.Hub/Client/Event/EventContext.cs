@@ -52,10 +52,10 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// <summary> number of received events </summary>
         public              int                     EventCount      => processor.EventCount;
         /// <summary> return the <see cref="Messages"/> sent by a user </summary>
-        public              IReadOnlyList<Message>  Messages        => processor.messages;
+        public              List<Message>           Messages        => processor.messages;
         /// <summary> <see cref="Changes"/> return the changes per database container.
         /// Use <see cref="GetChanges{TKey,T}"/> to get <b>strongly typed</b> container changes </summary>
-        public              IReadOnlyList<Changes>  Changes         => processor.contextChanges;
+        public              List<Changes>           Changes         => processor.contextChanges;
         /// <summary> return the number of <see cref="Messages"/> and <see cref="Changes"/> of the subscription event </summary>
         public              EventInfo               EventInfo       => ev.GetEventInfo();
         /// <summary> is true if the client is the origin of the event </summary>
