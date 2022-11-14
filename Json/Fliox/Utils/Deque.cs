@@ -2,16 +2,19 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 
+// ReSharper disable ConvertToAutoPropertyWithPrivateSetter
 namespace Friflo.Json.Fliox.Utils
 {
     public class Deque<T>
     {
+        private int     count;
         private int     first;
         private int     capacity;
         private T[]     array;
         
-        public  int     Count { get; private set; }
+        public  int     Count => count;
         private T[]     Items => ToArray();
 
         public Deque(int capacity = 4) {
@@ -20,7 +23,6 @@ namespace Friflo.Json.Fliox.Utils
         }
         
         public T[] ToArray() {
-            var count   = Count;
             var result  = new T[count];
             for (int n = 0; n < count; n++) {
                 var index   = (first + n) % capacity;
@@ -34,61 +36,64 @@ namespace Friflo.Json.Fliox.Utils
         }
         
         public void Clear() {
-            int i       = first;
-            var count   = Count;
+            int i   = first;
             for (int n = 0; n < count; n++) {
-                array[i] = default;
-                i = (i + 1) % capacity;
+                array[i]    = default;
+                i           = (i + 1) % capacity;
             }
-            Count   = 0;
+            count   = 0;
             first   = 0;
         }
 
         public T RemoveHead() {
-            if (Count > 0) {
+            if (count > 0) {
                 var result      = array[first];
                 array[first]    = default;
                 first           = (first + 1) % capacity;
-                Count--;
+                count--;
                 return result;
             }
             return default;
         }
         
         public void AddHead(T item) {
-            var count = Count++;
-            if (count < capacity) {
-                first = (first + capacity - 1) % capacity;
-                array[first] = item;
-                return;
+            if (count == capacity) {
+                Resize(2 * capacity);
             }
-            var newItems    = new T[2 * capacity];
-            for (int n = 0; n < count; n++) {
-                var index = (n + first) % capacity;
-                newItems[n + 1] = array[index];
+            first = (first + capacity - 1) % capacity;
+            array[first] = item;
+            count++;
+        }
+        
+        public void AddHeadQueue(Queue<T> queue) {
+            var newCount    = count + queue.Count;
+            if (newCount > capacity) {
+                Resize(newCount);
             }
-            capacity        = newItems.Length;
-            array           = newItems;
-            first           = 0;
-            array[0]        = item;
+            int index = first = (first + capacity - queue.Count) % capacity;
+            foreach (var item in queue) {
+                array[index]    = item;
+                index           = (index + 1) % capacity;
+            }
+            count = newCount;
         }
         
         public void AddTail(T item) {
-            var count   = Count++;
-            if (count < capacity) {
-                var last    = (first + count) % capacity;
-                array[last] = item;
-                return;
+            if (Count == capacity) {
+                Resize(2 * capacity);
             }
-            var newItems    = new T[2 * capacity];
+            var last    = (first + count++) % capacity;
+            array[last] = item;
+        }
+        
+        private void Resize(int newCapacity) {
+            var newItems = new T[newCapacity];
             for (int n = 0; n < count; n++) {
-                var index = (n + first) % capacity;
+                var index   = (n + first) % capacity;
                 newItems[n] = array[index];
             }
-            capacity        = newItems.Length;
-            array           = newItems;
-            first           = 0;
-            array[count]    = item;
+            capacity    = newCapacity;
+            array       = newItems;
         }
         
         // ---------------------------------------- Enumerator<T> ----------------------------------------
