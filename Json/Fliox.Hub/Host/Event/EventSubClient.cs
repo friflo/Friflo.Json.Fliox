@@ -7,8 +7,10 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using Friflo.Json.Fliox.Hub.Protocol;
+using Friflo.Json.Fliox.Utils;
 using static System.Diagnostics.DebuggerBrowsableState;
 
+// ReSharper disable InlineTemporaryVariable
 // ReSharper disable ConvertToAutoPropertyWhenPossible
 namespace Friflo.Json.Fliox.Hub.Host.Event
 {
@@ -35,10 +37,10 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         
         internal            int                                 SubCount    => databaseSubs.Sum(sub => sub.Value.SubCount); 
         
-        /// lock (<see cref="unsentEventsQueue"/>) {
+        /// lock (<see cref="unsentEventsDeque"/>) {
         private             int                                 eventCounter;
-        /// contains all events not yet sent. Should be a Deque but C# doesn't contain this container type. 
-        private  readonly   LinkedList<SyncEvent>               unsentEventsQueue   = new LinkedList<SyncEvent>();
+        /// contains all events not yet sent. 
+        private  readonly   Deque<SyncEvent>                    unsentEventsDeque   = new Deque<SyncEvent>();
         /// contains all events which are sent but not acknowledged
         private  readonly   Queue<SyncEvent>                    sentEventsQueue     = new Queue<SyncEvent>();
         // }
@@ -47,7 +49,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
 
         internal            int                                 Seq                 => eventCounter;
         /// <summary> number of events stored for a client not yet acknowledged by the client </summary>
-        internal            int                                 QueuedEventsCount   => unsentEventsQueue.Count + sentEventsQueue.Count;
+        internal            int                                 QueuedEventsCount   => unsentEventsDeque.Count + sentEventsQueue.Count;
         /// <summary>
         /// <b>true</b>  if eventReceiver is null or a remote target (WebSocket). <br/>
         /// <b>false</b> if the eventReceiver is provided by a FlioxClient (in process) 
@@ -83,9 +85,9 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         }
         
         internal void EnqueueEvent(SyncEvent ev) {
-            lock (unsentEventsQueue) {
+            lock (unsentEventsDeque) {
                 ev.seq = ++eventCounter;
-                unsentEventsQueue.AddLast(ev);
+                unsentEventsDeque.AddTail(ev);
             }
             // Signal new event. Need to be signaled after adding event to queue. No reason to execute this in the lock. 
             if (dispatcher != null) {
@@ -94,8 +96,9 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         }
         
         private bool DequeueEvents(out SyncEvent[] events) {
-            lock (unsentEventsQueue) {
-                var count = unsentEventsQueue.Count;
+            var deque = unsentEventsDeque;
+            lock (deque) {
+                var count = deque.Count;
                 if (count == 0) {
                     events = null;
                     return false;
@@ -103,8 +106,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                 if (count > 100) count = 100;
                 events = new SyncEvent[count];
                 for (int n = 0; n < count; n++) {
-                    var ev = unsentEventsQueue.First();
-                    unsentEventsQueue.RemoveFirst();
+                    var ev = deque.RemoveHead();
                     events[n] = ev;
                     if (queueEvents) {
                         sentEventsQueue.Enqueue(ev);
@@ -118,7 +120,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         /// Remove all acknowledged events from <see cref="sentEventsQueue"/>
         /// </summary>
         internal void AcknowledgeEvents(int eventAck) {
-            lock (unsentEventsQueue) {
+            lock (unsentEventsDeque) {
                 while (sentEventsQueue.Count > 0) {
                     var ev = sentEventsQueue.Peek();
                     if (ev.seq <= eventAck) {
@@ -131,21 +133,15 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         }
 
         /// <summary>
-        /// Prepend all not acknowledged events to <see cref="unsentEventsQueue"/> in their original order
-        /// and trigger sending these events stored in <see cref="unsentEventsQueue"/>
+        /// Prepend all not acknowledged events to <see cref="unsentEventsDeque"/> in their original order
+        /// and trigger sending the events stored in the deque.
         /// </summary>
         private void SendUnacknowledgedEvents() {
-            lock (unsentEventsQueue) {
-                LinkedListNode<SyncEvent> head = null;
-                foreach (var ev in sentEventsQueue) {
-                    if (head == null) {
-                        head = unsentEventsQueue.AddFirst(ev);
-                    } else  {
-                        head = unsentEventsQueue.AddAfter(head, ev);
-                    }
-                }
+            var deque = unsentEventsDeque;
+            lock (deque) {
+                deque.AddHeadQueue(sentEventsQueue);
                 sentEventsQueue.Clear();
-                if (dispatcher != null && unsentEventsQueue.Count > 0) {
+                if (dispatcher != null && deque.Count > 0) {
                     // Console.WriteLine($"unsentEventsQueue: {unsentEventsQueue.Count}");
                     // Trace.WriteLine($"*** SendUnacknowledgedEvents. Count: {unsentEventsQueue.Count}");
                     dispatcher.NewClientEvent(this);
@@ -159,8 +155,8 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             if (receiver == null || !receiver.IsOpen()) {
                 if (queueEvents)
                     return;
-                lock (unsentEventsQueue) {
-                    unsentEventsQueue.Clear();
+                lock (unsentEventsDeque) {
+                    unsentEventsDeque.Clear();
                 }
                 return;
             }
