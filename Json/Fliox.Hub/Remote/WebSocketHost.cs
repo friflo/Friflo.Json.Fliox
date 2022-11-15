@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Net;
@@ -12,26 +13,25 @@ using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.Event;
 using Friflo.Json.Fliox.Hub.Protocol;
-using Friflo.Json.Fliox.Hub.Threading;
 
 namespace Friflo.Json.Fliox.Hub.Remote
 {
     // [Things I Wish Someone Told Me About ASP.NET Core WebSockets | codetinkerer.com] https://www.codetinkerer.com/2018/06/05/aspnet-core-websockets.html
     public sealed class WebSocketHost : EventReceiver, IDisposable, ILogSource
     {
-        private  readonly   WebSocket                       webSocket;
+        private  readonly   WebSocket                           webSocket;
         /// Only set to true for testing. It avoids an early out at <see cref="EventSubClient.SendEvents"/> 
-        private  readonly   bool                            fakeOpenClosedSocket;
+        private  readonly   bool                                fakeOpenClosedSocket;
 
-        private  readonly   DataChannelSlim   <JsonValue>   channel;
-        private  readonly   IDataChannelWriter<JsonValue>   sendWriter;
-        private  readonly   IDataChannelReader<JsonValue>   sendReader;
-        private  readonly   Pool                            pool;
-        private  readonly   SharedCache                     sharedCache;
-        private  readonly   IPEndPoint                      remoteEndPoint;
+        private  readonly   RemoteMessageQueue                  sendQueue;
+        private  readonly   List<RemoteMessage>                 messages;
+        
+        private  readonly   Pool                                pool;
+        private  readonly   SharedCache                         sharedCache;
+        private  readonly   IPEndPoint                          remoteEndPoint;
         
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public              IHubLogger                      Logger { get; }
+        public              IHubLogger                          Logger { get; }
 
         
         private WebSocketHost (SharedEnv env, WebSocket webSocket, IPEndPoint remoteEndPoint, bool fakeOpenClosedSocket) {
@@ -42,13 +42,12 @@ namespace Friflo.Json.Fliox.Hub.Remote
             this.remoteEndPoint         = remoteEndPoint;
             this.fakeOpenClosedSocket   = fakeOpenClosedSocket;
             
-            channel     = DataChannelSlim<JsonValue>.CreateUnbounded(true, false);
-            sendWriter  = channel.Writer;
-            sendReader  = channel.Reader;
+            sendQueue                   = new RemoteMessageQueue();
+            messages                    = new List<RemoteMessage>();
         }
 
         public void Dispose() {
-            channel.Dispose();
+            sendQueue.Dispose();
         }
 
         // --- IEventReceiver
@@ -61,8 +60,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
 
         public override void SendEvent(EventMessage eventMessage, bool reusedEvent, in SendEventArgs args) {
             try {
-                var jsonEvent       = RemoteUtils.CreateProtocolEvent(eventMessage, args);
-                sendWriter.TryWrite(jsonEvent);
+                var bytesEvent  = RemoteUtils.CreateProtocolEvent(eventMessage, args);
+                sendQueue.Enqueue(bytesEvent);
             }
             catch (Exception e) {
                Logger.Log(HubLog.Error, "WebSocketHost.SendEvent", e);
@@ -79,16 +78,20 @@ namespace Friflo.Json.Fliox.Hub.Remote
             var loopTask = Task.Run(async () => {
                 try {
                     while (true) {
-                        var sendMessage = await sendReader.ReadAsync().ConfigureAwait(false);
-                        if (LogMessage) {
-                            var msg = RegExLineFeed.Replace(sendMessage.AsString(), "");
-                            Logger.Log(HubLog.Info, msg);
-                        }
-                        if (sendMessage.IsNull())
+                        var remoteEvent = await sendQueue.DequeMessages(messages).ConfigureAwait(false);
+                        if (remoteEvent == RemoteEvent.Closed) {
                             return;
-                        var arraySegment = sendMessage.AsArraySegment();
-                        // if (sendMessage.Count > 100000) Console.WriteLine($"SendLoop. size: {sendMessage.Count}");
-                        await webSocket.SendAsync(arraySegment, WebSocketMessageType.Text, true, CancellationToken.None).ConfigureAwait(false);
+                        }
+                        foreach (var message in messages) {
+                            if (LogMessage) {
+                                var msg = RegExLineFeed.Replace(message.AsString(), "");
+                                Logger.Log(HubLog.Info, msg);
+                            }
+                            var arraySegment = message.AsArraySegment();
+                            // if (sendMessage.Count > 100000) Console.WriteLine($"SendLoop. size: {sendMessage.Count}");
+                            await webSocket.SendAsync(arraySegment, WebSocketMessageType.Text, true, CancellationToken.None).ConfigureAwait(false);
+                        }
+                        sendQueue.FreeDequeuedMessages();
                     }
                 } catch (Exception e) {
                     var msg = GetExceptionMessage("WebSocketHost.SendLoop()", remoteEndPoint, e);
@@ -119,7 +122,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                         var result          = await remoteHost.ExecuteJsonRequest(requestContent, syncContext).ConfigureAwait(false);
                         
                         syncContext.Release();
-                        sendWriter.TryWrite(result.body);
+                        sendQueue.Enqueue(result.body);
                     }
                     continue;
                 }
@@ -146,8 +149,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
 
                 await target.RunReceiveLoop(remoteHost).ConfigureAwait(false);
 
-                target.sendWriter.TryWrite(default);
-                target.sendWriter.Complete();
+                target.sendQueue.Close();
             }
             catch (WebSocketException e) {
                 var msg = GetExceptionMessage("WebSocketHost.SendReceiveMessages()", remoteEndPoint, e);

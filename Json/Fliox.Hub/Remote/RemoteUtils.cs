@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
+using Friflo.Json.Burst;
 using Friflo.Json.Fliox.Hub.Host.Event;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Mapper;
@@ -40,13 +41,13 @@ namespace Friflo.Json.Fliox.Hub.Remote
             }
         }
         
-        public static JsonValue CreateProtocolEvent (EventMessage eventMessage, in SendEventArgs args)
+        public static Bytes CreateProtocolEvent (EventMessage eventMessage, in SendEventArgs args)
         {
             var mapper              = args.mapper;
             mapper.Pretty           = true;
             mapper.WriteNullMembers = false;
             if (!EventDispatcher.SerializeRemoteEvents) {
-                return mapper.WriteAsValue(eventMessage);
+                return mapper.writer.WriteAsBytes(eventMessage);
             }
             var remoteEventMessage      = new RemoteEventMessage { msg = "ev", clt = eventMessage.dstClientId };
             var events                  = eventMessage.events;
@@ -64,7 +65,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 };
                 remoteEvents.Add(remoteEv);
             }
-            return mapper.WriteAsValue(remoteEventMessage);
+            return mapper.writer.WriteAsBytes(remoteEventMessage);
         }
         
         public static ProtocolMessage ReadProtocolMessage (in JsonValue jsonMessage, ObjectPool<ObjectMapper> mapperPool, out string error)

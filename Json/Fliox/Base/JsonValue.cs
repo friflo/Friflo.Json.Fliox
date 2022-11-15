@@ -21,7 +21,8 @@ namespace Friflo.Json.Fliox
     public readonly struct JsonValue {
         // array & Array are not public to prevent potential side effects by application code mutating array elements
         private  readonly   byte[]  array;                                          // can be null
-        internal            byte[]  Array       => array ?? Null;                   // never null
+        internal            byte[]  Array               => array ?? Null;           // never null
+        public              byte[]  GetArrayMutable()   => array ?? Null;           // never null
         
         public              int     Length      => array?.Length ?? Null.Length;    // always > 0
         public   override   string  ToString()  => AsString();
