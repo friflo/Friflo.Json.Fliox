@@ -60,8 +60,13 @@ namespace Friflo.Json.Fliox.Hub.Remote
         }
 
         public override void SendEvent(EventMessage eventMessage, bool reusedEvent, in SendEventArgs args) {
-            var jsonEvent = RemoteUtils.CreateProtocolEvent(eventMessage, args);
-            sendWriter.TryWrite(jsonEvent);
+            try {
+                var jsonEvent       = RemoteUtils.CreateProtocolEvent(eventMessage, args);
+                sendWriter.TryWrite(jsonEvent);
+            }
+            catch (Exception e) {
+               Logger.Log(HubLog.Error, "WebSocketHost.SendEvent", e);
+            }
         }
         
         private  static readonly   Regex   RegExLineFeed   = new Regex(@"\s+");
