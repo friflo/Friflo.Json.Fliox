@@ -185,7 +185,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                         request.response.SetResult(resp);
                         return;
                     case EventMessage ev:
-                        ProcessEvent(ev);
+                        OnReceiveEvent(ev);
                         break;
                 }
             }

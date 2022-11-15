@@ -35,7 +35,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             eventReceivers.Remove(clientId);
         }
         
-        protected void ProcessEvent(ProtocolEvent ev) {
+        protected void OnReceiveEvent(ProtocolEvent ev) {
             if (eventReceivers.TryGetValue(ev.dstClientId, out var eventReceiver)) {
                 eventReceiver.SendEvent(ev, default);
                 return;
