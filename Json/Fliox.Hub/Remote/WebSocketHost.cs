@@ -59,15 +59,9 @@ namespace Friflo.Json.Fliox.Hub.Remote
             return webSocket.State == WebSocketState.Open;
         }
 
-        public override bool SendEvent(EventMessage eventMessage, bool reusedEvent, in ProcessEventRemoteArgs args) {
-            try {
-                var jsonEvent       = RemoteUtils.CreateProtocolEvent(eventMessage, args);
-                sendWriter.TryWrite(jsonEvent);
-                return true;
-            }
-            catch (Exception) {
-                return false;
-            }
+        public override void SendEvent(EventMessage eventMessage, bool reusedEvent, in SendEventArgs args) {
+            var jsonEvent = RemoteUtils.CreateProtocolEvent(eventMessage, args);
+            sendWriter.TryWrite(jsonEvent);
         }
         
         private  static readonly   Regex   RegExLineFeed   = new Regex(@"\s+");

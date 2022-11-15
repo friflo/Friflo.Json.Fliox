@@ -149,7 +149,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             }
         }
         
-        internal void SendEvents (in ProcessEventRemoteArgs args) {
+        internal void SendEvents (in SendEventArgs args) {
             var receiver = eventReceiver;
             // early out in case the target is a remote connection which already closed.
             if (receiver == null || !receiver.IsOpen()) {

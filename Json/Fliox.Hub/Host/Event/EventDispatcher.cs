@@ -18,27 +18,6 @@ using static System.Diagnostics.DebuggerBrowsableState;
 namespace Friflo.Json.Fliox.Hub.Host.Event
 {
     /// <summary>
-    /// Optimization for sending remote events.<br/>
-    /// Avoids frequent allocation of <see cref="eventBuffer"/> lists
-    /// </summary>
-    public readonly struct ProcessEventRemoteArgs
-    {
-        internal readonly   ObjectMapper            mapper;
-        internal readonly   List<RemoteSyncEvent>   eventBuffer;
-            
-        internal ProcessEventRemoteArgs(ObjectMapper mapper, List<RemoteSyncEvent> eventBuffer) {
-            this.mapper         = mapper;
-            this.eventBuffer    = eventBuffer;
-        }
-    }
-    
-    public abstract class EventReceiver {
-        public abstract bool    IsOpen ();
-        public abstract bool    IsRemoteTarget ();
-        public abstract bool    SendEvent(EventMessage eventMessage, bool reusedEvent, in ProcessEventRemoteArgs args);
-    }
-    
-    /// <summary>
     /// Specify the way in which events are send to their targets by an <see cref="EventDispatcher"/><br/>
     /// Events are generated from the database changes and messages send to a <see cref="FlioxHub"/>
     /// </summary>
@@ -272,7 +251,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             if (dispatching == EventDispatching.QueueSend) {
                 throw new InvalidOperationException($"must not be called if using {nameof(EventDispatcher)}.{EventDispatching.QueueSend}");
             }
-            var args = new ProcessEventRemoteArgs (mapper, eventBuffer);
+            var args = new SendEventArgs (mapper, eventBuffer);
             foreach (var pair in subClients) {
                 var subClient = pair.Value;
                 subClient.SendEvents(args);
@@ -373,7 +352,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                     while (true) {
                         var client = await clientEventReader.ReadAsync().ConfigureAwait(false);
                         if (client != null) {
-                            var args = new ProcessEventRemoteArgs(mapper, eventBuffer);
+                            var args = new SendEventArgs(mapper, eventBuffer);
                             client.SendEvents(args);
                             continue;
                         }

@@ -40,7 +40,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             }
         }
         
-        public static JsonValue CreateProtocolEvent (EventMessage eventMessage, in ProcessEventRemoteArgs args)
+        public static JsonValue CreateProtocolEvent (EventMessage eventMessage, in SendEventArgs args)
         {
             var mapper              = args.mapper;
             mapper.Pretty           = true;
