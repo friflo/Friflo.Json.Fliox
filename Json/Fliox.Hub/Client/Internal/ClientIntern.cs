@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Client.Event;
 using Friflo.Json.Fliox.Hub.Client.Internal.Map;
 using Friflo.Json.Fliox.Hub.Host;
+using Friflo.Json.Fliox.Hub.Host.Event;
 using Friflo.Json.Fliox.Hub.Host.Utils;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Hub.Remote;
@@ -51,7 +52,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
 
         // --- mutable state
         internal            SyncStore                   syncStore;
-        internal            EventProcessor             eventProcessor;         // never null
+        internal            EventProcessor              eventProcessor;         // never null
         private             SubscriptionProcessor       subscriptionProcessor;  // lazy creation. Needed only if dealing with subscriptions 
         internal            ChangeSubscriptionHandler   changeSubscriptionHandler;
         internal            SubscriptionEventHandler    subscriptionEventHandler;

@@ -155,7 +155,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         #endregion
         
     #region - event receiver
-        public   virtual    void    AddEventReceiver      (in JsonKey clientId, IEventReceiver eventReceiver) {}
+        public   virtual    void    AddEventReceiver      (in JsonKey clientId, EventReceiver eventReceiver) {}
         public   virtual    void    RemoveEventReceiver   (in JsonKey clientId) {}
         #endregion
 

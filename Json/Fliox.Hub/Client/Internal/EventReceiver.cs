@@ -7,19 +7,19 @@ using Friflo.Json.Fliox.Hub.Protocol;
 
 namespace Friflo.Json.Fliox.Hub.Client.Internal
 {
-    internal sealed class EventReceiver : IEventReceiver
+    internal sealed class ClientEventReceiver : EventReceiver
     {
         private readonly FlioxClient    client;
         
-        internal EventReceiver (FlioxClient client) {
+        internal ClientEventReceiver (FlioxClient client) {
             this.client = client; 
         } 
             
         // --- IEventReceiver
-        public bool     IsRemoteTarget ()   => false;
-        public bool     IsOpen ()           => true;
+        public override bool    IsRemoteTarget ()   => false;
+        public override bool    IsOpen ()           => true;
 
-        public bool SendEvent(EventMessage eventMessage, bool reusedEvent, in ProcessEventRemoteArgs args) {
+        public override bool    SendEvent(EventMessage eventMessage, bool reusedEvent, in ProcessEventRemoteArgs args) {
             if (!eventMessage.dstClientId.IsEqual(client._intern.clientId))
                 throw new InvalidOperationException("Expect ProtocolEvent.dstId == FlioxClient.clientId");
             

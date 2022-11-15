@@ -41,7 +41,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// </summary>
         internal  readonly  Pool                    pool;
         /// <summary>Is set for clients requests only. In other words - from the initiator of a <see cref="ProtocolRequest"/></summary>
-        internal  readonly  IEventReceiver          eventReceiver;
+        internal  readonly  EventReceiver           eventReceiver;
         internal            AuthState               authState;
         internal            Action                  canceler = () => {};
         internal            FlioxHub                hub;
@@ -51,13 +51,13 @@ namespace Friflo.Json.Fliox.Hub.Host
         
         public override     string                  ToString() => $"userId: {authState.user}, auth: {authState}";
 
-        internal SyncContext (Pool pool, IEventReceiver eventReceiver, SharedCache sharedCache) {
+        internal SyncContext (Pool pool, EventReceiver eventReceiver, SharedCache sharedCache) {
             this.pool           = pool;
             this.eventReceiver    = eventReceiver;
             this.sharedCache    = sharedCache;
         }
         
-        internal SyncContext (Pool pool, IEventReceiver eventReceiver, SharedCache sharedCache, in JsonKey clientId) {
+        internal SyncContext (Pool pool, EventReceiver eventReceiver, SharedCache sharedCache, in JsonKey clientId) {
             this.pool           = pool;
             this.eventReceiver  = eventReceiver;
             this.clientId       = clientId;

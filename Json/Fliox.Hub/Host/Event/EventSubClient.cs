@@ -23,7 +23,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         internal readonly   JsonKey                             clientId;   // key field
         internal readonly   EventSubUser                        user;
         internal            bool                                queueEvents;
-        private             IEventReceiver                      eventReceiver; // can be null if created by a REST request
+        private             EventReceiver                       eventReceiver; // can be null if created by a REST request
 
         public              bool                                Connected => eventReceiver?.IsOpen() ?? false;
         [DebuggerBrowsable(Never)]
@@ -71,7 +71,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             this.dispatcher     = dispatcher;
         }
         
-        internal bool UpdateTarget(IEventReceiver eventReceiver) {
+        internal bool UpdateTarget(EventReceiver eventReceiver) {
             if (eventReceiver == null) throw new ArgumentNullException(nameof(eventReceiver));
             if (this.eventReceiver == eventReceiver)
                 return false;

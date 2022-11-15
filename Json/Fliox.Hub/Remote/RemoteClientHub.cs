@@ -13,19 +13,19 @@ namespace Friflo.Json.Fliox.Hub.Remote
 {
     public abstract class RemoteClientHub : FlioxHub
     {
-        private  readonly   Dictionary<JsonKey, IEventReceiver>   eventReceivers;
+        private  readonly   Dictionary<JsonKey, EventReceiver>   eventReceivers;
 
         // ReSharper disable once EmptyConstructor - added for source navigation
         protected RemoteClientHub(EntityDatabase database, SharedEnv env)
             : base(database, env)
         {
-            eventReceivers = new Dictionary<JsonKey, IEventReceiver>(JsonKey.Equality);
+            eventReceivers = new Dictionary<JsonKey, EventReceiver>(JsonKey.Equality);
         }
 
         /// <summary>A class extending  <see cref="RemoteClientHub"/> must implement this method.</summary>
         public abstract override Task<ExecuteSyncResult> ExecuteSync(SyncRequest syncRequest, SyncContext syncContext);
         
-        public override void AddEventReceiver(in JsonKey clientId, IEventReceiver eventReceiver) {
+        public override void AddEventReceiver(in JsonKey clientId, EventReceiver eventReceiver) {
             eventReceivers.Add(clientId, eventReceiver);
         }
         

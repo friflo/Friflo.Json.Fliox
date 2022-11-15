@@ -32,10 +32,10 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         }
     }
     
-    public interface IEventReceiver {
-        bool    IsOpen ();
-        bool    IsRemoteTarget ();
-        bool    SendEvent(EventMessage eventMessage, bool reusedEvent, in ProcessEventRemoteArgs args);
+    public abstract class EventReceiver {
+        public abstract bool    IsOpen ();
+        public abstract bool    IsRemoteTarget ();
+        public abstract bool    SendEvent(EventMessage eventMessage, bool reusedEvent, in ProcessEventRemoteArgs args);
     }
     
     /// <summary>
@@ -159,7 +159,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             SubscribeMessage    subscribe,
             User                user,
             in JsonKey          clientId,
-            IEventReceiver      eventReceiver,
+            EventReceiver      eventReceiver,
             out string          error)
         {
             if (eventReceiver == null) {
@@ -194,7 +194,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             SubscribeChanges    subscribe,
             User                user,
             in JsonKey          clientId,
-            IEventReceiver      eventReceiver,
+            EventReceiver       eventReceiver,
             out string          error)
         {
             if (eventReceiver == null) {
@@ -222,7 +222,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             }
         }
         
-        internal EventSubClient GetOrCreateSubClient(User user, in JsonKey clientId, IEventReceiver eventReceiver) {
+        internal EventSubClient GetOrCreateSubClient(User user, in JsonKey clientId, EventReceiver eventReceiver) {
             subClients.TryGetValue(clientId, out EventSubClient subClient);
             if (subClient != null) {
                 // add to sendClients as the client could have been removed meanwhile caused by a disconnect
