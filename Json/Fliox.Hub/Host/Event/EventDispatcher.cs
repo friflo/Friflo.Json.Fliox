@@ -35,7 +35,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
     public interface IEventReceiver {
         bool    IsOpen ();
         bool    IsRemoteTarget ();
-        bool    ProcessEvent(ProtocolEvent ev, in ProcessEventRemoteArgs args);
+        bool    SendEvent(ProtocolEvent ev, in ProcessEventRemoteArgs args);
     }
     
     /// <summary>
