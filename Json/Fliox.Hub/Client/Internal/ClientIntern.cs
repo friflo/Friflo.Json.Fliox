@@ -51,7 +51,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
 
         // --- mutable state
         internal            SyncStore                   syncStore;
-        internal            IEventProcessor             eventProcessor;         // never null
+        internal            EventProcessor             eventProcessor;         // never null
         private             SubscriptionProcessor       subscriptionProcessor;  // lazy creation. Needed only if dealing with subscriptions 
         internal            ChangeSubscriptionHandler   changeSubscriptionHandler;
         internal            SubscriptionEventHandler    subscriptionEventHandler;

@@ -19,16 +19,11 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         public bool     IsRemoteTarget ()   => false;
         public bool     IsOpen ()           => true;
 
-        public bool SendEvent(ProtocolEvent protocolEvent, in ProcessEventRemoteArgs args) {
-            if (!protocolEvent.dstClientId.IsEqual(client._intern.clientId))
+        public bool SendEvent(EventMessage eventMessage, bool reusedEvent, in ProcessEventRemoteArgs args) {
+            if (!eventMessage.dstClientId.IsEqual(client._intern.clientId))
                 throw new InvalidOperationException("Expect ProtocolEvent.dstId == FlioxClient.clientId");
             
-
-            var eventMessage = protocolEvent as EventMessage;
-            if (eventMessage == null)
-                return true;
-            client._intern.eventProcessor.EnqueueEvent(client, eventMessage);
-
+            client._intern.eventProcessor.EnqueueEvent(client, eventMessage, reusedEvent);
             return true;
         }
     }

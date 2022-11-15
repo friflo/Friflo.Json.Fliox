@@ -11,15 +11,15 @@ using Friflo.Json.Fliox.Hub.Threading;
 namespace Friflo.Json.Fliox.Hub.Client
 {
     /// <summary>
-    /// An <see cref="IEventProcessor"/> is used to process subscription events subscribed by a <see cref="FlioxClient"/>
+    /// An <see cref="EventProcessor"/> is used to process subscription events subscribed by a <see cref="FlioxClient"/>
     /// </summary>
     /// <remarks>
     /// By default a <see cref="FlioxClient"/> uses a <see cref="DirectEventProcessor"/> to handle subscription events
     /// in the thread the events arrive.
     /// </remarks>
-    public interface IEventProcessor
+    public abstract class EventProcessor
     {
-        void EnqueueEvent(FlioxClient client, EventMessage eventMessage);
+        public abstract void EnqueueEvent(FlioxClient client, EventMessage eventMessage, bool reusedEvent);
     }
     
     /// <summary>
@@ -28,15 +28,15 @@ namespace Friflo.Json.Fliox.Hub.Client
     /// <remarks>
     /// E.g. In case of a <see cref="System.Net.WebSockets.WebSocket"/> in the thread reading data from the WebSocket stream.
     /// </remarks>
-    public sealed class DirectEventProcessor : IEventProcessor
+    public sealed class DirectEventProcessor : EventProcessor
     {
-        public void EnqueueEvent(FlioxClient client, EventMessage eventMessage) {
+        public override void EnqueueEvent(FlioxClient client, EventMessage eventMessage, bool reusedEvent) {
             client.ProcessEvents(eventMessage);
         }
     }
     
     /// <summary>
-    /// An <see cref="IEventProcessor"/> implementation used for UI based applications having a <see cref="SynchronizationContext"/>
+    /// An <see cref="EventProcessor"/> implementation used for UI based applications having a <see cref="SynchronizationContext"/>
     /// </summary>
     /// <remarks>
     /// The <see cref="SynchronizationContextProcessor"/> ensures that the handler methods passed to the <b>Subscribe*()</b> methods of
@@ -57,7 +57,7 @@ namespace Friflo.Json.Fliox.Hub.Client
     ///   </item>
     /// </list>
     /// </remarks>
-    public sealed class SynchronizationContextProcessor : IEventProcessor
+    public sealed class SynchronizationContextProcessor : EventProcessor
     {
         private  readonly   SynchronizationContext  synchronizationContext;
         
@@ -76,7 +76,7 @@ namespace Friflo.Json.Fliox.Hub.Client
 This is typically the case in console applications or unit tests. 
 Consider running application / test withing SingleThreadSynchronizationContext.Run()";
         
-        public void EnqueueEvent(FlioxClient client, EventMessage eventMessage) {
+        public override void EnqueueEvent(FlioxClient client, EventMessage eventMessage, bool reusedEvent) {
             synchronizationContext.Post(delegate {
                 client.ProcessEvents(eventMessage);
             }, null);
@@ -84,7 +84,7 @@ Consider running application / test withing SingleThreadSynchronizationContext.R
     }
     
     /// <summary>
-    /// Is a queuing <see cref="IEventProcessor"/> giving an application full control when event callback are invoked.
+    /// Is a queuing <see cref="EventProcessor"/> giving an application full control when event callback are invoked.
     /// </summary>
     /// <remarks>
     /// In this case the application must frequently call <see cref="ProcessEvents"/> to apply changes to the
@@ -92,13 +92,13 @@ Consider running application / test withing SingleThreadSynchronizationContext.R
     /// This allows to specify the exact code point in an application (e.g. Unity) to call the handler
     /// methods of message and changes subscriptions.
     /// </remarks>
-    public sealed class QueuingEventProcessor : IEventProcessor
+    public sealed class QueuingEventProcessor : EventProcessor
     {
         private readonly    ConcurrentQueue <QueuedMessage>      eventQueue = new ConcurrentQueue <QueuedMessage> ();
 
         public QueuingEventProcessor() { }
         
-        public void EnqueueEvent(FlioxClient client, EventMessage eventMessage) {
+        public override void EnqueueEvent(FlioxClient client, EventMessage eventMessage, bool reusedEvent) {
             eventQueue.Enqueue(new QueuedMessage(client, eventMessage));
         }
         

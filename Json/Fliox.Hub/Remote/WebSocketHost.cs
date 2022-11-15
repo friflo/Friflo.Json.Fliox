@@ -59,9 +59,9 @@ namespace Friflo.Json.Fliox.Hub.Remote
             return webSocket.State == WebSocketState.Open;
         }
 
-        public bool SendEvent(ProtocolEvent ev, in ProcessEventRemoteArgs args) {
+        public bool SendEvent(EventMessage eventMessage, bool reusedEvent, in ProcessEventRemoteArgs args) {
             try {
-                var jsonEvent       = RemoteUtils.CreateProtocolEvent(ev, args);
+                var jsonEvent       = RemoteUtils.CreateProtocolEvent(eventMessage, args);
                 sendWriter.TryWrite(jsonEvent);
                 return true;
             }

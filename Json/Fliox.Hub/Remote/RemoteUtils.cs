@@ -40,15 +40,14 @@ namespace Friflo.Json.Fliox.Hub.Remote
             }
         }
         
-        public static JsonValue CreateProtocolEvent (ProtocolEvent message, in ProcessEventRemoteArgs args)
+        public static JsonValue CreateProtocolEvent (EventMessage eventMessage, in ProcessEventRemoteArgs args)
         {
             var mapper              = args.mapper;
             mapper.Pretty           = true;
             mapper.WriteNullMembers = false;
             if (!EventDispatcher.SerializeRemoteEvents) {
-                return mapper.WriteAsValue(message);
+                return mapper.WriteAsValue(eventMessage);
             }
-            var eventMessage            = (EventMessage)message;
             var remoteEventMessage      = new RemoteEventMessage { msg = "ev", clt = eventMessage.dstClientId };
             var events                  = eventMessage.events;
             var remoteEvents            = args.eventBuffer;

@@ -170,7 +170,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                     // In case the event target is remote connection it is not guaranteed that the event arrives.
                     // The remote target may already be disconnected and this is still not know when sending the event.
                     var eventMessage = new EventMessage { dstClientId = clientId, events = events };
-                    receiver.SendEvent(eventMessage, args);
+                    receiver.SendEvent(eventMessage, true, args);
                 }
                 catch (Exception e) {
                     var message = "SendEvents failed";

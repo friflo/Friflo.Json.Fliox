@@ -35,12 +35,12 @@ namespace Friflo.Json.Fliox.Hub.Remote
             eventReceivers.Remove(clientId);
         }
         
-        protected void OnReceiveEvent(ProtocolEvent ev) {
-            if (eventReceivers.TryGetValue(ev.dstClientId, out var eventReceiver)) {
-                eventReceiver.SendEvent(ev, default);
+        protected void OnReceiveEvent(EventMessage eventMessage) {
+            if (eventReceivers.TryGetValue(eventMessage.dstClientId, out var eventReceiver)) {
+                eventReceiver.SendEvent(eventMessage, false, default);
                 return;
             }
-            var msg = $"received event for unknown client: {GetType().Name}({this}), client id: {ev.dstClientId}";
+            var msg = $"received event for unknown client: {GetType().Name}({this}), client id: {eventMessage.dstClientId}";
             Logger.Log(HubLog.Error, msg);
         }
     }
