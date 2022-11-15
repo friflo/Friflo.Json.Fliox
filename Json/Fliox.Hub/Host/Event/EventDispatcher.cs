@@ -51,6 +51,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         private  readonly   JsonEvaluator                                   jsonEvaluator;
         private  readonly   List<RemoteSyncEvent>                           eventBuffer;
         private  readonly   ObjectMapper                                    mapper;
+        private  readonly   EventMessage                                    eventMessage;
         //
         /// key: <see cref="EventSubClient.clientId"/>
         [DebuggerBrowsable(Never)]
@@ -93,6 +94,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             subUsers            = new ConcurrentDictionary<JsonKey, EventSubUser>(JsonKey.Equality);
             eventBuffer         = new List<RemoteSyncEvent>();
             mapper              = new ObjectMapper(sharedEnv.TypeStore);
+            eventMessage        = new EventMessage { events = new List<SyncEvent>() };
             this.dispatching    = dispatching;
             if (dispatching == EventDispatching.QueueSend) {
                 var channel             = DataChannelSlim<EventSubClient>.CreateUnbounded(true, true);
@@ -251,7 +253,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             if (dispatching == EventDispatching.QueueSend) {
                 throw new InvalidOperationException($"must not be called if using {nameof(EventDispatcher)}.{EventDispatching.QueueSend}");
             }
-            var args = new SendEventArgs (mapper, eventBuffer);
+            var args = new SendEventArgs (mapper, eventMessage, eventBuffer);
             foreach (var pair in subClients) {
                 var subClient = pair.Value;
                 subClient.SendEvents(args);
@@ -348,11 +350,11 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             var logger      = sharedEnv.Logger;
             var loopTask    = Task.Run(async () =>
             {
+                var args = new SendEventArgs(mapper, eventMessage, eventBuffer);
                 try {
                     while (true) {
                         var client = await clientEventReader.ReadAsync().ConfigureAwait(false);
                         if (client != null) {
-                            var args = new SendEventArgs(mapper, eventBuffer);
                             client.SendEvents(args);
                             continue;
                         }

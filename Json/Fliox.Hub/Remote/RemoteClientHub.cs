@@ -37,6 +37,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         
         protected void OnReceiveEvent(EventMessage eventMessage) {
             if (eventReceivers.TryGetValue(eventMessage.dstClientId, out var eventReceiver)) {
+                // each eventMessage is an individual instance => reusedEvent: false  
                 eventReceiver.SendEvent(eventMessage, false, default);
                 return;
             }

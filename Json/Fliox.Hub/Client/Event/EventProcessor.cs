@@ -77,8 +77,9 @@ This is typically the case in console applications or unit tests.
 Consider running application / test withing SingleThreadSynchronizationContext.Run()";
         
         public override void EnqueueEvent(FlioxClient client, EventMessage eventMessage, bool reusedEvent) {
+            var ev = reusedEvent ? EventMessage.Clone(eventMessage) : eventMessage;
             synchronizationContext.Post(delegate {
-                client.ProcessEvents(eventMessage);
+                client.ProcessEvents(ev);
             }, null);
         }
     }
@@ -99,7 +100,8 @@ Consider running application / test withing SingleThreadSynchronizationContext.R
         public QueuingEventProcessor() { }
         
         public override void EnqueueEvent(FlioxClient client, EventMessage eventMessage, bool reusedEvent) {
-            eventQueue.Enqueue(new QueuedMessage(client, eventMessage));
+            var ev = reusedEvent ? EventMessage.Clone(eventMessage) : eventMessage;
+            eventQueue.Enqueue(new QueuedMessage(client, ev));
         }
         
         /// <summary>

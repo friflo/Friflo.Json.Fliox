@@ -95,16 +95,15 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             }
         }
         
-        private bool DequeueEvents(out List<SyncEvent> events) {
+        private bool DequeueEvents(List<SyncEvent> events) {
             var deque = unsentEventsDeque;
+            events.Clear();
             lock (deque) {
                 var count = deque.Count;
                 if (count == 0) {
-                    events = null;
                     return false;
                 }
                 if (count > 100) count = 100;
-                events = new List<SyncEvent>(count);
                 for (int n = 0; n < count; n++) {
                     var ev = deque.RemoveHead();
                     events.Add(ev);
@@ -160,8 +159,9 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                 }
                 return;
             }
+            var eventMessage = args.eventMessage;
             // Trace.WriteLine("--- SendEvents");
-            while (DequeueEvents(out List<SyncEvent> events)) {
+            while (DequeueEvents(eventMessage.events)) {
                 // var msg = $"DequeueEvent {ev.seq}";
                 // Trace.WriteLine(msg);
                 // Console.WriteLine(msg);
@@ -169,7 +169,8 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                     // Console.WriteLine($"--- SendEvents: {events.Length}");
                     // In case the event target is remote connection it is not guaranteed that the event arrives.
                     // The remote target may already be disconnected and this is still not know when sending the event.
-                    var eventMessage = new EventMessage { dstClientId = clientId, events = events };
+                    eventMessage.dstClientId = clientId;
+                    // using single instance of eventMessage => reusedEvent: true  
                     receiver.SendEvent(eventMessage, true, args);
                 }
                 catch (Exception e) {

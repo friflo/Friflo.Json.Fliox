@@ -16,15 +16,20 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
     
     /// <summary>
     /// Optimization for sending remote events.<br/>
-    /// Avoids frequent allocation of <see cref="eventBuffer"/> lists
+    /// Avoids frequent allocations of <br/>
+    /// <see cref="eventBuffer"/> lists <br/>
+    /// <see cref="EventMessage"/> <br/>
+    /// <see cref="EventMessage.events"/> <br/>
     /// </summary>
     public readonly struct SendEventArgs
     {
         internal readonly   ObjectMapper            mapper;
         internal readonly   List<RemoteSyncEvent>   eventBuffer;
-            
-        internal SendEventArgs(ObjectMapper mapper, List<RemoteSyncEvent> eventBuffer) {
+        internal readonly   EventMessage            eventMessage;
+
+        internal SendEventArgs(ObjectMapper mapper, EventMessage eventMessage, List<RemoteSyncEvent> eventBuffer) {
             this.mapper         = mapper;
+            this.eventMessage   = eventMessage;
             this.eventBuffer    = eventBuffer;
         }
     }

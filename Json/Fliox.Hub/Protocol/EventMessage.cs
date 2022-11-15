@@ -23,6 +23,13 @@ namespace Friflo.Json.Fliox.Hub.Protocol
         public                  List<SyncEvent>     events;
         
         internal override       MessageType         MessageType => MessageType.ev;
+        
+        internal static EventMessage Clone(EventMessage ev) {
+            return new EventMessage {
+                dstClientId = ev.dstClientId,
+                events      = new List<SyncEvent>(ev.events),
+            };
+        } 
     }
 
     /// <summary>
