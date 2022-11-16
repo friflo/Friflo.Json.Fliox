@@ -92,40 +92,50 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Utils
         
         [Test]
         public async Task TestMessageBufferConcurrent() {
-            var queue = new MessageBufferQueue(2);
+            var queue       = new MessageBufferQueue(2);
+            var duration    = 10;
+            var bulkSize    = 1000;
             
             var thread = new Thread(() =>
             {
-                var stopwatch = new Stopwatch();
-                stopwatch.Start();
-                var index = 0;
-                for (int n = 0; n < 20; n++) {
-                    for (int i = 0; i < 10; i++) {
-                        var msg = new JsonValue($"{index++}");
-                        queue.Enqueue(msg);
+                try {
+                    var stopwatch = new Stopwatch();
+                    stopwatch.Start();
+                    var index = 0;
+                    for (int n = 0; n < duration; n++) {
+                        for (int i = 0; i < bulkSize; i++) {
+                            var msg = new JsonValue($"{index++}");
+                            queue.Enqueue(msg);
+                        }
+                        while (stopwatch.ElapsedMilliseconds < n) { }
                     }
-                    while (stopwatch.ElapsedMilliseconds < n) { }
+                    queue.Close();
                 }
-                queue.Close();
+                catch (Exception e) {
+                    Fail(e.Message);
+                }
             });
             thread.Start();
-            
-            await Task.Run(async () => {
-                int count = 0;
-                while (true) {
-                    var messages    = new List<MessageBuffer>();
-                    var ev          = await queue.DequeMessages(messages);
-                    Console.WriteLine($"{count} - messages: {messages.Count}");
-                    foreach (var msg in messages) {
-                        int.TryParse(msg.AsString(), out int value);
-                        if (value != count) throw  new InvalidOperationException($"Expect {count}, was {value}");
-                        count++;
-                    }
-                    queue.FreeDequeuedMessages();
-                    if (ev == MessageBufferEvent.Closed)
-                        return;
+
+            int messageIndex    = 0;
+            int dequeCount      = 0;
+            while (true) {
+                var messages    = new List<MessageBuffer>();
+                var ev          = await queue.DequeMessages(messages);
+                dequeCount++;
+                // Console.WriteLine($"{count} - messages: {messages.Count}");
+                foreach (var msg in messages) {
+                    int.TryParse(msg.AsString(), out int value);
+                    if (value != messageIndex) throw  new InvalidOperationException($"Expect {messageIndex}, was {value}");
+                    messageIndex++;
                 }
-            });
+                queue.FreeDequeuedMessages();
+                if (ev == MessageBufferEvent.Closed) {
+                    Console.WriteLine($"Finished messages: {messageIndex}, dequeues: {dequeCount}");
+                    AreEqual(duration * bulkSize, messageIndex);
+                    return;
+                }
+            }
         }
     }
 }
