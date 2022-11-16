@@ -103,6 +103,40 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Utils
             if (deque.Count != 0)       throw new InvalidOperationException($"unexpected Count {deque.Count}");
         }
         
+        // --------------------------------- add head element ---------------------------------
+        [Test]
+        public static void TestDequeResize() {
+            var deque = new Deque<int>(2);
+            AssertDequeResize(deque); // increases capacity
+            
+            deque = new Deque<int>(3);
+            var start = GC.GetAllocatedBytesForCurrentThread();
+            AssertDequeResize(deque);
+            var dif = GC.GetAllocatedBytesForCurrentThread() - start;
+            
+            AreEqual(0, dif);
+        }
+
+        /// Ensure setting Deque{T}.first in Deque{T}.Resize()
+        private static void AssertDequeResize(Deque<int> deque)
+        {
+            foreach (var unused in deque) { Fail("unexpected"); }
+            
+            // --- items: [1, 2, 3]
+            deque.AddTail(2);
+            deque.AddHead(1);
+            deque.AddTail(3); // Deque{T}.Resize() is called if capacity == 2
+            
+            if (deque.Count != 3)       throw new InvalidOperationException($"unexpected Count {deque.Count}");
+
+            int value = 0;
+            foreach (var item in deque) {
+                if (item != ++value)    throw new InvalidOperationException($"expect {value}");
+            }
+            if (value != 3)             throw new InvalidOperationException($"unexpected {value}");
+        }
+
+        
         // --------------------------------- add head queue ---------------------------------
         [Test]
         public static void TestDequeAddHeadQueue() {

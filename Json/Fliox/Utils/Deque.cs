@@ -53,7 +53,7 @@ namespace Friflo.Json.Fliox.Utils
                 count--;
                 return result;
             }
-            return default;
+            throw new InvalidOperationException("Expect Deque not empty");
         }
         
         public void AddHead(T item) {
@@ -94,6 +94,7 @@ namespace Friflo.Json.Fliox.Utils
             }
             capacity    = newCapacity;
             array       = newItems;
+            first       = 0;
         }
         
         // ---------------------------------------- Enumerator<T> ----------------------------------------
