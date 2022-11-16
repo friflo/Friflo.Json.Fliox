@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.Event;
 using Friflo.Json.Fliox.Hub.Protocol;
+using Friflo.Json.Fliox.Utils;
 
 namespace Friflo.Json.Fliox.Hub.Remote
 {
@@ -23,8 +24,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
         /// Only set to true for testing. It avoids an early out at <see cref="EventSubClient.SendEvents"/> 
         private  readonly   bool                                fakeOpenClosedSocket;
 
-        private  readonly   RemoteMessageQueue                  sendQueue;
-        private  readonly   List<RemoteMessage>                 messages;
+        private  readonly   MessageBufferQueue                  sendQueue;
+        private  readonly   List<MessageBuffer>                 messages;
         
         private  readonly   Pool                                pool;
         private  readonly   SharedCache                         sharedCache;
@@ -42,8 +43,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
             this.remoteEndPoint         = remoteEndPoint;
             this.fakeOpenClosedSocket   = fakeOpenClosedSocket;
             
-            sendQueue                   = new RemoteMessageQueue();
-            messages                    = new List<RemoteMessage>();
+            sendQueue                   = new MessageBufferQueue();
+            messages                    = new List<MessageBuffer>();
         }
 
         public void Dispose() {
@@ -79,9 +80,6 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 try {
                     while (true) {
                         var remoteEvent = await sendQueue.DequeMessages(messages).ConfigureAwait(false);
-                        if (remoteEvent == RemoteEvent.Closed) {
-                            return;
-                        }
                         foreach (var message in messages) {
                             if (LogMessage) {
                                 var msg = RegExLineFeed.Replace(message.AsString(), "");
@@ -92,6 +90,9 @@ namespace Friflo.Json.Fliox.Hub.Remote
                             await webSocket.SendAsync(arraySegment, WebSocketMessageType.Text, true, CancellationToken.None).ConfigureAwait(false);
                         }
                         sendQueue.FreeDequeuedMessages();
+                        if (remoteEvent == MessageBufferEvent.Closed) {
+                            return;
+                        }
                     }
                 } catch (Exception e) {
                     var msg = GetExceptionMessage("WebSocketHost.SendLoop()", remoteEndPoint, e);
