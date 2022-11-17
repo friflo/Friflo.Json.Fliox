@@ -37,15 +37,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Utils
             AreEqual("msg-2", messages[1].AsString());
             AreEqual(MessageBufferEvent.NewMessage, ev);
             
-            queue.FreeDequeuedMessages();
-            
             ev = await queue.DequeMessages(messages);
             
             AreEqual(1, messages.Count);
             AreEqual("msg-3", messages[0].AsString());
             AreEqual(MessageBufferEvent.NewMessage, ev);
-            
-            queue.FreeDequeuedMessages();
         }
         
         [Test]
@@ -63,8 +59,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Utils
             AreEqual(1, messages.Count);
             AreEqual("msg-1", messages[0].AsString());
             AreEqual(MessageBufferEvent.Closed, ev);
-            
-            queue.FreeDequeuedMessages();
         }
         
         [Test]
@@ -86,8 +80,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Utils
             AreEqual(1, messages.Count);
             AreEqual("msg-1", messages[0].AsString());
             AreEqual(MessageBufferEvent.NewMessage, ev);
-            
-            queue.FreeDequeuedMessages();
         }
         
         [Test]
@@ -129,7 +121,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Utils
                     if (value != messageIndex) throw  new InvalidOperationException($"Expect {messageIndex}, was {value}");
                     messageIndex++;
                 }
-                queue.FreeDequeuedMessages();
                 if (ev == MessageBufferEvent.Closed) {
                     Console.WriteLine($"Finished messages: {messageIndex}, dequeues: {dequeCount}");
                     AreEqual(duration * bulkSize, messageIndex);

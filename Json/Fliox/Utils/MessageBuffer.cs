@@ -42,8 +42,9 @@ namespace Friflo.Json.Fliox.Utils
         
         private             int                     writeBuffer; // 0 or 1
         
-        private             byte[]                  Buffer   => writeBuffer == 0 ? buffer0 : buffer1;
-        private             ref int BufferPos       { get { if (writeBuffer == 0) return ref buffer0Pos; return ref buffer1Pos; } }
+        private             byte[]                  Buffer         => writeBuffer == 0 ? buffer0 : buffer1;
+        private             int                     GetBufferPos() => writeBuffer == 0 ? buffer0Pos : buffer1Pos;
+        private             void                    SetBufferPos(int pos) { if (writeBuffer == 0) buffer0Pos = pos; else buffer1Pos = pos; }
 
         private  readonly   List<MessageBuffer>     queue;
         
@@ -73,12 +74,13 @@ namespace Friflo.Json.Fliox.Utils
         }
 
         private void Enqueue(byte[] data, int start, int len) {
-            if (closed) throw new InvalidOperationException("MessageBufferQueue already closed");
-                
             lock (queue) {
+                if (closed) {
+                    throw new InvalidOperationException("MessageBufferQueue already closed");
+                }
                 var buffer          = Buffer;
                 var bufferLen       = buffer.Length;
-                ref var bufferPos   = ref BufferPos;
+                var bufferPos       = GetBufferPos();
                 var remaining       = bufferLen - bufferPos;
                 if (len > remaining) {
                     bufferLen   = Math.Max(2 * bufferLen, len);
@@ -88,17 +90,17 @@ namespace Friflo.Json.Fliox.Utils
                     } else {
                         buffer1 = buffer;
                     }
-                    BufferPos = 0;
+                    SetBufferPos(0);
+                    bufferPos = 0;
                 }
                 System.Buffer.BlockCopy(data, start, buffer, bufferPos, len);
                 var message = new MessageBuffer(buffer, bufferPos, len);
                 queue.Add(message);
-                BufferPos += len;
-                
-                // send event _after_ adding message to queue
-                if (messageAvailable.CurrentCount == 0) {
-                    messageAvailable.Release();
-                }
+                SetBufferPos(bufferPos + len);
+            }
+            // send event _after_ adding message to queue
+            if (messageAvailable.CurrentCount == 0) {
+                messageAvailable.Release();
             }
         }
         
@@ -108,25 +110,17 @@ namespace Friflo.Json.Fliox.Utils
             await messageAvailable.WaitAsync().ConfigureAwait(false);
 
             lock (queue) {
+                writeBuffer = writeBuffer == 0 ? 1 : 0;
+                SetBufferPos(0);
                 foreach (var message in queue) {
                     messages.Add(message);                    
                 }
                 queue.Clear();
-                writeBuffer = writeBuffer == 0 ? 1 : 0;
+
                 return closed ? MessageBufferEvent.Closed : MessageBufferEvent.NewMessage;
             }
         }
         
-        public void FreeDequeuedMessages() {
-            lock (queue) {
-                if (writeBuffer == 0) {
-                    buffer1Pos = 0; 
-                } else {
-                    buffer0Pos = 0;
-                }
-            }
-        }
-
         public void Close() {
             lock (queue) {
                 closed = true;
