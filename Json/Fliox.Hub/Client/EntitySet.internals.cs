@@ -264,7 +264,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             }
         }
         
-        internal void DeletePeerEntities (ICollection<TKey> keys, List<ApplyInfo<TKey,T>> applyInfos) {
+        internal void DeletePeerEntities (List<TKey> keys, List<ApplyInfo<TKey,T>> applyInfos) {
             var peers = PeerMap();
             foreach (var key in keys) {
                 var found   = peers.Remove(key);

@@ -31,20 +31,20 @@ namespace Friflo.Json.Fliox.Hub.Client
     public abstract class Changes
     {
         /// <summary> total number of container changes </summary>
-        public              int                         Count       => changeInfo.Count;
+        public                                          int                 Count       => changeInfo.Count;
         /// <summary> number of changes per mutation type: creates, upserts, deletes and patches </summary>
-        public              ChangeInfo                  ChangeInfo  => changeInfo;
+        public                                          ChangeInfo          ChangeInfo  => changeInfo;
         /// <summary> name of the container the changes are referring to </summary>
-        public    abstract  string                      Container   { get; }
+        public    abstract                              string              Container   { get; }
         /// <summary> raw JSON values of created container entities </summary>
-        public              IReadOnlyList<JsonEntity>   RawCreates  => rawCreates;
+        public                                          List<JsonEntity>    RawCreates  => rawCreates;
         /// <summary> raw JSON values of upserted container entities </summary>
-        public              IReadOnlyList<JsonEntity>   RawUpserts  => rawUpserts;
+        public                                          List<JsonEntity>    RawUpserts  => rawUpserts;
         
-        [DebuggerBrowsable(Never)]  internal            bool            added;
-        [DebuggerBrowsable(Never)]  internal            ChangeInfo      changeInfo;
-        [DebuggerBrowsable(Never)]  internal  readonly  List<JsonEntity>rawCreates  = new List<JsonEntity>();
-        [DebuggerBrowsable(Never)]  internal  readonly  List<JsonEntity>rawUpserts  = new List<JsonEntity>();
+        [DebuggerBrowsable(Never)]  internal            bool                added;
+        [DebuggerBrowsable(Never)]  internal            ChangeInfo          changeInfo;
+        [DebuggerBrowsable(Never)]  internal  readonly  List<JsonEntity>    rawCreates  = new List<JsonEntity>();
+        [DebuggerBrowsable(Never)]  internal  readonly  List<JsonEntity>    rawUpserts  = new List<JsonEntity>();
 
         internal  abstract  void        Clear       ();
         internal  abstract  void        AddDeletes  (List<JsonKey> ids);
