@@ -47,19 +47,21 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
             }
             Buffer.BlockCopy(description, 0, response, closeStatusLen, description.Length);
 
-            await WriteFrame(stream, response, WebSocketMessageType.Close, true, cancellationToken).ConfigureAwait(false);
+            await WriteFrame(stream, response, 0, response.Length, WebSocketMessageType.Close, true, cancellationToken).ConfigureAwait(false);
         }
         
         public async Task WriteFrame(
             Stream                  stream,
-            byte[]                  dataBuffer,
+            byte[]                  data,
+            int                     dataOffset,
+            int                     dataCount,
             WebSocketMessageType    messageType,
             bool                    endOfMessage,
             CancellationToken       cancellationToken)
         {
             var buffer      = writeBuffer; // performance: use local enable CPU using these value from stack
-            if (dataBuffer == null) throw new InvalidOperationException("expect dataBuffer array not null");
-            int remaining   = dataBuffer.Length;
+            if (data == null) throw new InvalidOperationException("expect dataBuffer array not null");
+            int remaining   = dataCount;
             int dataPos     = 0;
             var opCode      = GetOpcode(messageType);
             
@@ -72,9 +74,9 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
                 
                 // append writeCount bytes from message to buffer
                 if (maskingKey != null) {
-                    VectorOps.Instance.Xor(buffer, bufferLen, dataBuffer, dataPos, maskingKey, dataPos, writeCount);
+                    VectorOps.Instance.Xor(buffer, bufferLen, data, dataPos + dataOffset, maskingKey, dataPos, writeCount);
                 } else {
-                    Buffer.BlockCopy(dataBuffer, dataPos, buffer, bufferLen, writeCount);
+                    Buffer.BlockCopy(data, dataPos + dataOffset, buffer, bufferLen, writeCount);
                 }
                 bufferLen   += writeCount;
                 remaining   -= writeCount;

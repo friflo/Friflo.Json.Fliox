@@ -139,8 +139,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.WebSockets
         
         private static async Task           Write(FrameProtocolWriter writer, Stream stream, string message)
         {
-            var bytes = Encoding.UTF8.GetBytes(message);
-            await writer.WriteFrame(stream, bytes, WebSocketMessageType.Text, true, CancellationToken.None);
+            var bytes       = Encoding.UTF8.GetBytes(message);
+            var bytesLen    = bytes.Length;
+            await writer.WriteFrame(stream, bytes, 0, bytesLen, WebSocketMessageType.Text, true, CancellationToken.None);
         }
         
         private static async Task<string>   Read(FrameProtocolReader reader, Stream stream, byte[] buffer, MemoryStream messageBuffer)
@@ -254,7 +255,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.WebSockets
             var count = 10; // 1_000_000;
             for (int n = 0; n < count; n++) {
                 stream.Position = 0;
-                await writer.WriteFrame(stream, payload, WebSocketMessageType.Text, true, CancellationToken.None);
+                await writer.WriteFrame(stream, payload, 0, payload.Length, WebSocketMessageType.Text, true, CancellationToken.None);
                 
                 stream.Position = 0;
                 await reader.ReadFrame(stream, readBuffer, CancellationToken.None);

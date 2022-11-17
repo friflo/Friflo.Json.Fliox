@@ -52,9 +52,9 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
             throw new NotImplementedException();
         }
 
-        public override async Task<WebSocketReceiveResult> ReceiveAsync(ArraySegment<byte> dataBuffer, CancellationToken cancellationToken) {
-            var buffer = dataBuffer.Array;
-            var socketState = await reader.ReadFrame(stream, buffer, cancellationToken).ConfigureAwait(false);
+        public override async Task<WebSocketReceiveResult> ReceiveAsync(ArraySegment<byte> buffer, CancellationToken cancellationToken) {
+            var frame = buffer.Array;
+            var socketState = await reader.ReadFrame(stream, frame, cancellationToken).ConfigureAwait(false);
             if (socketState == WebSocketState.Open) {
                 return new WebSocketReceiveResult(reader.ByteCount, reader.MessageType, reader.EndOfMessage);
             }
@@ -65,11 +65,13 @@ namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
             return new WebSocketReceiveResult(reader.ByteCount, reader.MessageType, reader.EndOfMessage, closeStatus, closeStatusDescription);
         }
 
-        public override async Task SendAsync(ArraySegment<byte> dataBuffer, WebSocketMessageType messageType, bool endOfMessage, CancellationToken cancellationToken) {
+        public override async Task SendAsync(ArraySegment<byte> buffer, WebSocketMessageType messageType, bool endOfMessage, CancellationToken cancellationToken) {
             await sendLock.WaitAsync(cancellationToken).ConfigureAwait(false);
-            var buffer = dataBuffer.Array;
+            var data        = buffer.Array;
+            var dataOffset  = buffer.Offset;
+            var dataLen     = buffer.Count;
             try {
-                await writer.WriteFrame(stream, buffer, messageType, endOfMessage, cancellationToken).ConfigureAwait(false);
+                await writer.WriteFrame(stream, data, dataOffset, dataLen, messageType, endOfMessage, cancellationToken).ConfigureAwait(false);
                 await stream.FlushAsync(cancellationToken).ConfigureAwait(false); // todo required?
             }
             finally{
