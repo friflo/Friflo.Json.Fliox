@@ -16,7 +16,6 @@ namespace Friflo.Json.Fliox.Utils
         private  readonly   int     start;
         private  readonly   int     len;
         
-        internal            bool    IsNull()        => buffer == null;
         public   override   string  ToString()      => AsString();
         public              string  AsString()      => buffer == null ? "null" : Encoding.UTF8.GetString(buffer, start, len);
         public  ArraySegment<byte>  AsArraySegment()=> new ArraySegment<byte>(buffer, start, len);
@@ -33,6 +32,11 @@ namespace Friflo.Json.Fliox.Utils
         NewMessage  = 2,
     }
     
+    /// <summary>
+    /// A queue to store messages using double buffering to avoid frequent allocations of byte arrays for each message. <br/>
+    /// One buffer is used to store newly enqueued messages. <br/>
+    /// The other buffer is used to read dequeued messages. <br/> 
+    /// </summary>
     public class MessageBufferQueue : IDisposable
     {
         private             byte[]                  buffer0;
@@ -110,7 +114,9 @@ namespace Friflo.Json.Fliox.Utils
             await messageAvailable.WaitAsync().ConfigureAwait(false);
 
             lock (queue) {
+                // swap read & write buffer.
                 writeBuffer = writeBuffer == 0 ? 1 : 0;
+                // newly enqueued messages are written to the head of the write buffer
                 SetBufferPos(0);
                 foreach (var message in queue) {
                     messages.Add(message);                    
