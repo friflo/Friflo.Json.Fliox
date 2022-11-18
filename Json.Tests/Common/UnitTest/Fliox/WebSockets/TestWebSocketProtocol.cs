@@ -7,9 +7,11 @@ using System.Threading;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Remote.WebSockets;
 using Friflo.Json.Fliox.Hub.Threading;
+using Friflo.Json.Tests.Common.UnitTest.Fliox.Transform;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
 
+// ReSharper disable ConvertToConstant.Local
 // ReSharper disable IdentifierTypo
 // ReSharper disable InconsistentNaming
 namespace Friflo.Json.Tests.Common.UnitTest.Fliox.WebSockets
@@ -241,27 +243,42 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.WebSockets
             AreEqual(WebSocketMessageType.Close,            reader.MessageType);
             AreEqual("",                                    reader.CloseStatusDescription);
         }
-        
+
+        private const string Str100 = "_123456789_123456789_123456789_123456789_123456789_123456789_123456789_123456789_123456789_123456789";
+
         [Test]      public void  TestWebSocketsPerf()       { SingleThreadSynchronizationContext.Run(AssertWebSocketsPerf); }
         private static async Task AssertWebSocketsPerf() {
             var writer          = new FrameProtocolWriter(true, 4094); // mask == false  =>  4 x faster by Buffer.BlockCopy() in reader
             var reader          = new FrameProtocolReader(4094);
             var readBuffer      = new byte[4094];
             var stream          = new MemoryStream();
-            var payloadSize     = 208;
-            var payload         = Encoding.UTF8.GetBytes(new string('x', payloadSize));
-            // payload          = Encoding.UTF8.GetBytes("0123456789abcdef");
+            var str             = Str100;
+            // var str             = Encoding.UTF8.GetBytes(new string('x', 208));
+            var payload         = new byte[300];
+            var payloadStart    = 5;
+            var payloadLen      = Encoding.UTF8.GetBytes(str, 0, str.Length, payload, payloadStart);
             
             var count = 10; // 1_000_000;
             for (int n = 0; n < count; n++) {
                 stream.Position = 0;
-                await writer.WriteFrame(stream, payload, 0, payload.Length, WebSocketMessageType.Text, true, CancellationToken.None);
+                await writer.WriteFrame(stream, payload, payloadStart, payloadLen, WebSocketMessageType.Text, true, CancellationToken.None);
                 
                 stream.Position = 0;
                 await reader.ReadFrame(stream, readBuffer, CancellationToken.None);
-                if (reader.ByteCount != payload.Length) throw new InvalidOperationException($"expect {payload.Length}, was: {reader.ByteCount}");
+                AssertEqual(payload, payloadStart, payloadLen, readBuffer, 0, reader.ByteCount);
             }
             Console.WriteLine($"ProcessedByteCount: {reader.ProcessedByteCount}");
+        }
+        
+        private static void AssertEqual(byte[] left, int leftStart, int leftCount, byte[] right, int rightStart, int rightCount) {
+            if (leftCount != rightCount) {
+                throw new InvalidOperationException($"expect {leftCount}, was: {rightCount}");
+            }
+            var leftSpan    = new Span<byte>(left,  leftStart,  leftCount);
+            var rightSpan   = new Span<byte>(right, rightStart, rightCount);
+            if (!leftSpan.SequenceEqual(rightSpan)) {
+                throw new InvalidOperationException("byte arrays not equal");
+            }
         }
     }
 }
