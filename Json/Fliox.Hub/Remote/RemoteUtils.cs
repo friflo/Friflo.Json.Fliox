@@ -72,11 +72,11 @@ namespace Friflo.Json.Fliox.Hub.Remote
         private static readonly byte[] DiscriminatorKey     = Encoding.UTF8.GetBytes("msg");
         private static readonly byte[] DiscriminatorValue   = Encoding.UTF8.GetBytes("sync");
         
-        public static string ReadSyncRequest (SyncRequest syncRequest, in JsonValue jsonMessage, ObjectPool<ObjectMapper> mapperPool)
+        public static string ReadSyncRequest (SyncRequest syncRequest, bool setMissingFields, in JsonValue jsonMessage, ObjectPool<ObjectMapper> mapperPool)
         {
             using (var pooledMapper = mapperPool.Get()) {
                 ObjectReader reader = pooledMapper.instance.reader;
-                reader.InitJsonReaderArray(jsonMessage, true);
+                reader.InitJsonReaderArray(jsonMessage, setMissingFields);
                 var ev      = reader.NextEvent();
                 if (ev != JsonEvent.ObjectStart) {
                     return reader.ErrorMsg("ReadSyncRequest", "expect object");

@@ -36,7 +36,10 @@ namespace Friflo.Json.Fliox.Hub.Remote
         internal async Task<JsonResponse> ExecuteJsonRequest(SyncRequest syncRequest, JsonValue jsonRequest, SyncContext syncContext) {
             var objectMapper = syncContext.ObjectMapper;
             try {
-                var error = RemoteUtils.ReadSyncRequest(syncRequest, jsonRequest, objectMapper);
+                // if syncRequest is reused missing field need to be set to their defaults
+                var setMissingFields = false; // todo need to be: syncRequest != null;
+                syncRequest = syncRequest ?? new SyncRequest(); 
+                var error = RemoteUtils.ReadSyncRequest(syncRequest, setMissingFields, jsonRequest, objectMapper);
                 if (error != null) {
                     return JsonResponse.CreateError(objectMapper, error, ErrorResponseType.BadResponse, null);
                 }
