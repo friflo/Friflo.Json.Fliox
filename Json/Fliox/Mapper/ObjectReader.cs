@@ -239,7 +239,6 @@ namespace Friflo.Json.Fliox.Mapper
             T result = ReadToStart(obj);
             JsonBurstError();
             return result;
-
         }
 
         public object ReadToObject(JsonValue utf8Array, object obj)  {
@@ -255,99 +254,94 @@ namespace Friflo.Json.Fliox.Mapper
             TypeMapper  mapper  = intern.typeCache.GetTypeMapper(type);
             Var defaultValue    = mapper.varType.DefaultValue;
 
-            while (true) {
-                JsonEvent ev = intern.parser.NextEvent();
-                switch (ev) {
-                    case JsonEvent.ObjectStart:
-                    case JsonEvent.ArrayStart:
-                    case JsonEvent.ValueString:
-                    case JsonEvent.ValueNumber:
-                    case JsonEvent.ValueBool:
-                        Var result = mapper.ReadVar(ref intern, defaultValue, out bool success);
-                        if (success)
-                            intern.parser.NextEvent(); // EOF
-                        return result;
-                    case JsonEvent.ValueNull:
-                        if (!mapper.isNullable) {
-                            intern.ErrorIncompatible<bool>(mapper.DataTypeName(), mapper, out bool _);
-                            return defaultValue;
-                        }
+            JsonEvent ev = intern.parser.NextEvent();
+            switch (ev) {
+                case JsonEvent.ObjectStart:
+                case JsonEvent.ArrayStart:
+                case JsonEvent.ValueString:
+                case JsonEvent.ValueNumber:
+                case JsonEvent.ValueBool:
+                    Var result = mapper.ReadVar(ref intern, defaultValue, out bool success);
+                    if (success)
                         intern.parser.NextEvent(); // EOF
+                    return result;
+                case JsonEvent.ValueNull:
+                    if (!mapper.isNullable) {
+                        intern.ErrorIncompatible<bool>(mapper.DataTypeName(), mapper, out bool _);
                         return defaultValue;
-                    case JsonEvent.Error:
-                        return defaultValue;
-                    default:
-                        intern.ErrorMsg<bool>("unexpected state in Read() : ", ev, out bool _);
-                        return defaultValue;
-                }
+                    }
+                    intern.parser.NextEvent(); // EOF
+                    return defaultValue;
+                case JsonEvent.Error:
+                    return defaultValue;
+                default:
+                    intern.ErrorMsg<bool>("unexpected state in Read() : ", ev, out bool _);
+                    return defaultValue;
             }
         }
 
         private T ReadStart<T>(T value) {
             TypeMapper<T>  mapper  = (TypeMapper<T>)intern.typeCache.GetTypeMapper(typeof(T));
-            while (true) {
-                JsonEvent ev = intern.parser.NextEvent();
-                switch (ev) {
-                    case JsonEvent.ObjectStart:
-                    case JsonEvent.ArrayStart:
-                    case JsonEvent.ValueString:
-                    case JsonEvent.ValueNumber:
-                    case JsonEvent.ValueBool:
-                        T result = mapper.Read(ref intern, value, out bool success);
-                        if (success)
-                            intern.parser.NextEvent(); // EOF
-                        return result;
-                    case JsonEvent.ValueNull:
-                        if (!mapper.isNullable)
-                            return intern.ErrorIncompatible<T>(mapper.DataTypeName(), mapper, out _);
-                        
+
+            JsonEvent ev = intern.parser.NextEvent();
+            switch (ev) {
+                case JsonEvent.ObjectStart:
+                case JsonEvent.ArrayStart:
+                case JsonEvent.ValueString:
+                case JsonEvent.ValueNumber:
+                case JsonEvent.ValueBool:
+                    T result = mapper.Read(ref intern, value, out bool success);
+                    if (success)
                         intern.parser.NextEvent(); // EOF
-                        return default;
-                    case JsonEvent.Error:
-                        return default;
-                    default:
-                        return intern.ErrorMsg<T>("unexpected state in Read() : ", ev, out _);
-                }
+                    return result;
+                case JsonEvent.ValueNull:
+                    if (!mapper.isNullable)
+                        return intern.ErrorIncompatible<T>(mapper.DataTypeName(), mapper, out _);
+                    
+                    intern.parser.NextEvent(); // EOF
+                    return default;
+                case JsonEvent.Error:
+                    return default;
+                default:
+                    return intern.ErrorMsg<T>("unexpected state in Read() : ", ev, out _);
             }
         }
         
         private T ReadToStart<T>(T value) {
             TypeMapper<T> mapper  = (TypeMapper<T>) intern.typeCache.GetTypeMapper(value.GetType());
-            while (true) {
-                JsonEvent ev = intern.parser.NextEvent();
-                switch (ev) {
-                    case JsonEvent.ObjectStart:
-                    case JsonEvent.ArrayStart:
-                        T result = mapper.Read(ref intern, value, out bool success);
-                        if (success)
-                            intern.parser.NextEvent(); // EOF
-                        return result;
-                    case JsonEvent.Error:
-                        return default;
-                    default:
-                        return intern.ErrorMsg<T>("ReadTo() can only used on an JSON object or array. Found: ", ev, out _);
-                }
+
+            JsonEvent ev = intern.parser.NextEvent();
+            switch (ev) {
+                case JsonEvent.ObjectStart:
+                case JsonEvent.ArrayStart:
+                    T result = mapper.Read(ref intern, value, out bool success);
+                    if (success)
+                        intern.parser.NextEvent(); // EOF
+                    return result;
+                case JsonEvent.Error:
+                    return default;
+                default:
+                    return intern.ErrorMsg<T>("ReadTo() can only used on an JSON object or array. Found: ", ev, out _);
             }
         }
 
         private object ReadToStart(object value) {
             TypeMapper mapper  = intern.typeCache.GetTypeMapper(value.GetType());
-            while (true) {
-                JsonEvent ev = intern.parser.NextEvent();
-                switch (ev) {
-                    case JsonEvent.ObjectStart:
-                    case JsonEvent.ArrayStart:
-                        Var valueVar = mapper.varType.FromObject(value);
-                        Var result   = mapper.ReadVar(ref intern, valueVar, out bool success);
-                        if (success)
-                            intern.parser.NextEvent(); // EOF
-                        return result.ToObject();
-                    case JsonEvent.Error:
-                        return mapper.varType.DefaultValue;
-                    default:
-                        intern.ErrorMsg<bool>("ReadTo() can only used on an JSON object or array. Found: ", ev, out _);
-                        return mapper.varType.DefaultValue;
-                }
+
+            JsonEvent ev = intern.parser.NextEvent();
+            switch (ev) {
+                case JsonEvent.ObjectStart:
+                case JsonEvent.ArrayStart:
+                    Var valueVar = mapper.varType.FromObject(value);
+                    Var result   = mapper.ReadVar(ref intern, valueVar, out bool success);
+                    if (success)
+                        intern.parser.NextEvent(); // EOF
+                    return result.ToObject();
+                case JsonEvent.Error:
+                    return mapper.varType.DefaultValue;
+                default:
+                    intern.ErrorMsg<bool>("ReadTo() can only used on an JSON object or array. Found: ", ev, out _);
+                    return mapper.varType.DefaultValue;
             }
         }
 
