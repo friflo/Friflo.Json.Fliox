@@ -35,8 +35,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs
         public override async Task<ExecuteSyncResult> ExecuteSync(SyncRequest syncRequest, SyncContext syncContext) {
             var objectMapper    = syncContext.ObjectMapper;
             var requestJson     = RemoteUtils.CreateProtocolMessage(syncRequest, objectMapper);
-            var requestMessage  = RemoteUtils.ReadProtocolMessage (requestJson, objectMapper, out _);
-            var requestCopy     = (SyncRequest)requestMessage;
+            var requestCopy     = new SyncRequest();
+            RemoteUtils.ReadSyncRequest (requestCopy, requestJson, objectMapper);
             
             var syncResponse    = await host.ExecuteSync(requestCopy, syncContext);
             

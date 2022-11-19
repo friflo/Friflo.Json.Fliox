@@ -4,7 +4,6 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using Friflo.Json.Burst;
-using Friflo.Json.Burst.Utils;
 using Friflo.Json.Fliox.Mapper.Map;
 using Friflo.Json.Fliox.Mapper.Utils;
 
@@ -85,7 +84,7 @@ namespace Friflo.Json.Fliox.Mapper
             intern.parser.SetMaxDepth(maxDepth);
         }
         
-        private void InitJsonReaderArray(in JsonValue array) {
+        public void InitJsonReaderArray(in JsonValue array) {
             inputStringBuf.Clear();
             inputStringBuf.AppendArray(array, 0, array.Length);
             intern.parser.InitParser(inputStringBuf.buffer, inputStringBuf.start, inputStringBuf.Len);
@@ -343,6 +342,23 @@ namespace Friflo.Json.Fliox.Mapper
                     intern.ErrorMsg<bool>("ReadTo() can only used on an JSON object or array. Found: ", ev, out _);
                     return mapper.varType.DefaultValue;
             }
+        }
+        
+        public JsonEvent    NextEvent() => intern.parser.NextEvent();
+        public ref Bytes    Key()       => ref intern.parser.key;
+        public ref Bytes    Value()     => ref intern.parser.value;
+        
+        public string ErrorMsg(string module, string msg) {
+            intern.parser.ErrorMsg(module, msg);
+            return intern.parser.error.msg.AsString();
+        }
+
+        public bool InternalReadToObject<T>(T value) {
+            TypeMapper<T> mapper  = (TypeMapper<T>) intern.typeCache.GetTypeMapper(value.GetType());
+            mapper.ReadObject(ref intern, value, out bool success);
+            if (success)
+                intern.parser.NextEvent(); // EOF
+            return success;
         }
 
         public static readonly NoThrowHandler NoThrow = new NoThrowHandler();

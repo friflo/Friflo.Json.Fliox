@@ -119,7 +119,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
                     if (wsResult.MessageType == WebSocketMessageType.Text) {
                         var requestContent  = new JsonValue(memoryStream.ToArray());
                         var syncContext     = new SyncContext(pool, this, sharedCache);
-                        var result          = await remoteHost.ExecuteJsonRequest(requestContent, syncContext).ConfigureAwait(false);
+                        var syncRequest     = new SyncRequest();
+                        var result          = await remoteHost.ExecuteJsonRequest(syncRequest, requestContent, syncContext).ConfigureAwait(false);
                         
                         syncContext.Release();
                         sendQueue.Enqueue(result.body);

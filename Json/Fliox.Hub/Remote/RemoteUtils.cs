@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
+using System.Text;
 using Friflo.Json.Burst;
 using Friflo.Json.Fliox.Hub.Host.Event;
 using Friflo.Json.Fliox.Hub.Protocol;
@@ -66,6 +67,35 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 remoteEvents.Add(remoteEv);
             }
             return mapper.writer.WriteAsBytes(remoteEventMessage);
+        }
+        
+        private static readonly byte[] DiscriminatorKey     = Encoding.UTF8.GetBytes("msg");
+        private static readonly byte[] DiscriminatorValue   = Encoding.UTF8.GetBytes("sync");
+        
+        public static string ReadSyncRequest (SyncRequest syncRequest, in JsonValue jsonMessage, ObjectPool<ObjectMapper> mapperPool)
+        {
+            using (var pooledMapper = mapperPool.Get()) {
+                ObjectReader reader = pooledMapper.instance.reader;
+                reader.InitJsonReaderArray(jsonMessage);
+                var ev      = reader.NextEvent();
+                if (ev != JsonEvent.ObjectStart) {
+                    return reader.ErrorMsg("ReadSyncRequest", "expect object");
+                }
+                ev      = reader.NextEvent();
+                if (ev != JsonEvent.ValueString) {
+                    return reader.ErrorMsg("ReadSyncRequest", "expect member 'msg'");
+                }
+                if (!reader.Key().IsEqualArray(DiscriminatorKey)) {
+                    return reader.ErrorMsg("ReadSyncRequest", $"expect member 'msg'. was: {reader.Key()}");
+                }
+                if (!reader.Value().IsEqualArray(DiscriminatorValue)) {
+                    return reader.ErrorMsg("ReadSyncRequest", $"expect member 'msg'=='sync'. was: {reader.Value()}");
+                }
+                if (!reader.InternalReadToObject(syncRequest)) {
+                    return reader.Error.msg.AsString();
+                }
+                return null;
+            }
         }
         
         public static ProtocolMessage ReadProtocolMessage (in JsonValue jsonMessage, ObjectPool<ObjectMapper> mapperPool, out string error)

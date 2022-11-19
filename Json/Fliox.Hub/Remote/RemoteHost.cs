@@ -33,29 +33,23 @@ namespace Friflo.Json.Fliox.Hub.Remote
         
         public void Dispose() { }
         
-        internal async Task<JsonResponse> ExecuteJsonRequest(JsonValue jsonRequest, SyncContext syncContext) {
+        internal async Task<JsonResponse> ExecuteJsonRequest(SyncRequest syncRequest, JsonValue jsonRequest, SyncContext syncContext) {
             var objectMapper = syncContext.ObjectMapper;
             try {
-                var request = RemoteUtils.ReadProtocolMessage(jsonRequest, objectMapper, out string error);
-                switch (request) {
-                    case null:
-                        return JsonResponse.CreateError(objectMapper, error, ErrorResponseType.BadResponse, null);
-                    case SyncRequest syncRequest:
-                        var response = await localHub.ExecuteSync(syncRequest, syncContext).ConfigureAwait(false);
-                        
-                        var responseError = response.error;
-                        if (responseError != null) {
-                            return JsonResponse.CreateError(objectMapper, responseError.message, responseError.type, syncRequest.reqId);
-                        }
-                        SetContainerResults(response.success);
-                        response.Result.reqId   = syncRequest.reqId;
-                        JsonValue jsonResponse  = RemoteUtils.CreateProtocolMessage(response.Result, objectMapper);
-                        return new JsonResponse(jsonResponse, JsonResponseStatus.Ok);
-
-                    default:
-                        var msg = $"Unknown request. Name: {request.GetType().Name}";
-                        return JsonResponse.CreateError(objectMapper, msg, ErrorResponseType.BadResponse, null);
+                var error = RemoteUtils.ReadSyncRequest(syncRequest, jsonRequest, objectMapper);
+                if (error != null) {
+                    return JsonResponse.CreateError(objectMapper, error, ErrorResponseType.BadResponse, null);
                 }
+                var response = await localHub.ExecuteSync(syncRequest, syncContext).ConfigureAwait(false);
+                
+                var responseError = response.error;
+                if (responseError != null) {
+                    return JsonResponse.CreateError(objectMapper, responseError.message, responseError.type, syncRequest.reqId);
+                }
+                SetContainerResults(response.success);
+                response.Result.reqId   = syncRequest.reqId;
+                JsonValue jsonResponse  = RemoteUtils.CreateProtocolMessage(response.Result, objectMapper);
+                return new JsonResponse(jsonResponse, JsonResponseStatus.Ok);
             }
             catch (Exception e) {
                 var errorMsg = ErrorResponse.ErrorFromException(e).ToString();

@@ -52,7 +52,7 @@ POST {{base}}/
 
 {
     "msg":"error",
-    "message": "JsonReader/error: No [PolymorphType] type declared for discriminant: 'invalidMsgType' on type: ProtocolMessage path: 'msg' at position: 27",
+    "message": "ReadSyncRequest/error: expect member 'msg'=='sync'. was: invalidMsgType path: 'msg' at position: 27",
     "type": "BadResponse"
 }
 
