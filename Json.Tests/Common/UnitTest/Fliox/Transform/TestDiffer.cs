@@ -260,7 +260,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             var leftJson        = mapper.Write(left); 
             var leftCopy        = mapper.Read<T>(leftJson);
             // merge the JSON diff to the left copy
-            var merge           = mapper.ReadTo(patch, leftCopy);
+            var merge           = mapper.ReadTo(patch, leftCopy, false);
             // create JSON of merge and expected result to assert equality
             var mergeJson       = mapper.Write(merge);
             var expectedJson    = mapper.Write(right);
@@ -293,10 +293,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 
                 var result  = new DiffBase();
                 
-                mapper.ReadTo(json, result);
+                mapper.ReadTo(json, result, false);
                 var start = GC.GetAllocatedBytesForCurrentThread();
                 for (int n = 0; n < 10; n++) {
-                    mapper.ReadTo(json, result);
+                    mapper.ReadTo(json, result, false);
                 }
                 var diffAlloc =  GC.GetAllocatedBytesForCurrentThread() - start;
                 // AreEqual(0, diffAlloc);

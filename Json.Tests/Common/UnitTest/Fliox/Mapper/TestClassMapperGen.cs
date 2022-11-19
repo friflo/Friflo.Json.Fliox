@@ -36,7 +36,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
             AreEqual(@"{""intVal0"":11,""intVal1"":12,""child"":{""val"":22}}", json.AsString());
             
             var dest    = new GenClass();
-            mapper.ReadTo(json, dest);
+            mapper.ReadTo(json, dest, false);
             
             AreEqual(11, dest.intVal0);
             AreEqual(12, dest.intVal1);
@@ -47,7 +47,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
                 mapper.writer.WriteAsBytes(genClass);
             }
             for (int n = 0; n < 10; n++) {
-                mapper.ReadTo(json, dest);
+                mapper.ReadTo(json, dest, false);
             }
             var dif = GC.GetAllocatedBytesForCurrentThread() - start;
             AreEqual(0, dif);

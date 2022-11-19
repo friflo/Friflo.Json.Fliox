@@ -54,7 +54,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
             using (var enc = new ObjectReader(typeStore) { ErrorHandler =  ObjectReader.NoThrow} ) {
                 // StopWatch stopwatch = new StopWatch();
                 for (int n = 0; n < num2; n++) {
-                    enc.ReadTo(json, obj);
+                    enc.ReadTo(json, obj, false);
                     if (!enc.Success)
                         throw new InvalidOperationException(enc.Error.msg.ToString());
                 }

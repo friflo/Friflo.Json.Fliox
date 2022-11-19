@@ -68,7 +68,8 @@ namespace Friflo.Json.Fliox.Mapper.Gen
             if (subType != null) {
                 return (T)subType.ReadObject(ref reader, obj, out success);
             }
-            var ev = reader.parser.Event;
+            var         ev      = reader.parser.Event;
+            Span<bool>  found   = reader.setMissingFields ? stackalloc bool [GetFoundCount()] : default;
 
             while (true) {
                 switch (ev) {
@@ -81,11 +82,13 @@ namespace Friflo.Json.Fliox.Mapper.Gen
                         PropField field;
                         if ((field = reader.GetField32(propFields)) == null)
                             break;
+                        if (reader.setMissingFields) found[field.fieldIndex] = true;
                         success = readField(ref obj, field, ref reader);
                         if (!success)
                             return default;
                         break;
                     case JsonEvent.ObjectEnd:
+                        if (reader.setMissingFields) ClearReadToFields(obj, found);
                         success = true;
                         return obj;
                     case JsonEvent.Error:
@@ -99,8 +102,9 @@ namespace Friflo.Json.Fliox.Mapper.Gen
         }
         
         internal override object ReadObject(ref Reader reader, object value, out bool success) {
-            var obj = (T)value;
-            var ev  = reader.parser.Event;
+            var         obj     = (T)value;
+            var         ev      = reader.parser.Event;
+            Span<bool>  found   = reader.setMissingFields ? stackalloc bool [GetFoundCount()] : default;
             while (true) {
                 switch (ev) {
                     case JsonEvent.ValueString:
@@ -112,11 +116,13 @@ namespace Friflo.Json.Fliox.Mapper.Gen
                         PropField field;
                         if ((field = reader.GetField32(propFields)) == null)
                             break;
+                        if (reader.setMissingFields) found[field.fieldIndex] = true;
                         success = readField(ref obj, field, ref reader);
                         if (!success)
                             return default;
                         break;
                     case JsonEvent.ObjectEnd:
+                        if (reader.setMissingFields) ClearReadToFields(obj, found);
                         success = true;
                         return obj;
                     case JsonEvent.Error:

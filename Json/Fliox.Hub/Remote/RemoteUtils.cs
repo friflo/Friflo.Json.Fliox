@@ -76,7 +76,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         {
             using (var pooledMapper = mapperPool.Get()) {
                 ObjectReader reader = pooledMapper.instance.reader;
-                reader.InitJsonReaderArray(jsonMessage);
+                reader.InitJsonReaderArray(jsonMessage, true);
                 var ev      = reader.NextEvent();
                 if (ev != JsonEvent.ObjectStart) {
                     return reader.ErrorMsg("ReadSyncRequest", "expect object");

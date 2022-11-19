@@ -19,30 +19,30 @@ namespace Friflo.Json.Fliox.Mapper
         T       Read<T>     (Bytes utf8Bytes);
         object  ReadObject  (Bytes utf8Bytes, Type type);
 
-        T       ReadTo<T>   (Bytes utf8Bytes, T         obj);
-        object  ReadToObject(Bytes utf8Bytes, object    obj); 
+        T       ReadTo<T>   (Bytes utf8Bytes, T         obj, bool setMissingFields);
+        object  ReadToObject(Bytes utf8Bytes, object    obj, bool setMissingFields); 
         
         // --- Stream
         T       Read<T>     (Stream utf8Stream);
         object  ReadObject  (Stream utf8Stream, Type type);
 
-        T       ReadTo<T>   (Stream utf8Stream, T       obj);
-        object  ReadToObject(Stream utf8Stream, object  obj);  
+        T       ReadTo<T>   (Stream utf8Stream, T       obj, bool setMissingFields);
+        object  ReadToObject(Stream utf8Stream, object  obj, bool setMissingFields);  
         
         // --- string
         T       Read<T>     (string json);
         object  ReadObject  (string json, Type type);
 
-        T       ReadTo<T>   (string json, T         obj);
-        object  ReadToObject(string json, object    obj); 
+        T       ReadTo<T>   (string json, T         obj, bool setMissingFields);
+        object  ReadToObject(string json, object    obj, bool setMissingFields); 
         
         //
         // --- Utf8Array
         T       Read<T>     (JsonValue utf8Array);
         object  ReadObject  (JsonValue utf8Array, Type type);
 
-        T       ReadTo<T>   (JsonValue utf8Array, T         obj);
-        object  ReadToObject(JsonValue utf8Array, object    obj);
+        T       ReadTo<T>   (JsonValue utf8Array, T         obj, bool setMissingFields);
+        object  ReadToObject(JsonValue utf8Array, object    obj, bool setMissingFields);
     }
     
 #if !UNITY_5_3_OR_NEWER
@@ -77,28 +77,32 @@ namespace Friflo.Json.Fliox.Mapper
             maxDepth    = Utf8JsonParser.DefaultMaxDepth;
         }
         
-        private void InitJsonReaderString(string json) {
+        private void InitJsonReaderString(string json, bool setMissingFields) {
             inputStringBuf.Clear();
             inputStringBuf.Set(json);
             intern.parser.InitParser(inputStringBuf.buffer, inputStringBuf.start, inputStringBuf.Len);
             intern.parser.SetMaxDepth(maxDepth);
+            intern.setMissingFields = setMissingFields;
         }
         
-        public void InitJsonReaderArray(in JsonValue array) {
+        public void InitJsonReaderArray(in JsonValue array, bool setMissingFields) {
             inputStringBuf.Clear();
             inputStringBuf.AppendArray(array, 0, array.Length);
             intern.parser.InitParser(inputStringBuf.buffer, inputStringBuf.start, inputStringBuf.Len);
             intern.parser.SetMaxDepth(maxDepth);
+            intern.setMissingFields = setMissingFields;
         }
 
-        private void InitJsonReaderBytes(ref Bytes bytes) {
+        private void InitJsonReaderBytes(ref Bytes bytes, bool setMissingFields) {
             intern.parser.InitParser(bytes.buffer, bytes.start, bytes.Len);
             intern.parser.SetMaxDepth(maxDepth);
+            intern.setMissingFields = setMissingFields;
         }
         
-        private void InitJsonReaderStream(Stream stream) {
+        private void InitJsonReaderStream(Stream stream, bool setMissingFields) {
             intern.parser.InitParser(stream);
             intern.parser.SetMaxDepth(maxDepth);
+            intern.setMissingFields = setMissingFields;
         }
 
         public void Dispose() {
@@ -118,29 +122,29 @@ namespace Friflo.Json.Fliox.Mapper
         // --------------- Bytes ---------------
         // --- Read()
         public T Read<T>(Bytes utf8Bytes) {
-            InitJsonReaderBytes(ref utf8Bytes);
+            InitJsonReaderBytes(ref utf8Bytes, false);
             T result =  ReadStart<T>(default);
             JsonBurstError();
             return result;
         }
         
         public object ReadObject(Bytes utf8Bytes, Type type) {
-            InitJsonReaderBytes(ref utf8Bytes);
+            InitJsonReaderBytes(ref utf8Bytes, false);
             Var result = ReadStart(type);
             JsonBurstError();
             return result.ToObject();
         }
 
         // --- ReadTo()
-        public T ReadTo<T>(Bytes utf8Bytes, T obj)  {
-            InitJsonReaderBytes(ref utf8Bytes);
+        public T ReadTo<T>(Bytes utf8Bytes, T obj, bool setMissingFields)  {
+            InitJsonReaderBytes(ref utf8Bytes, setMissingFields);
             T result = ReadToStart(obj);
             JsonBurstError();
             return result;
         }
 
-        public object ReadToObject(Bytes utf8Bytes, object obj)  {
-            InitJsonReaderBytes(ref utf8Bytes);
+        public object ReadToObject(Bytes utf8Bytes, object obj, bool setMissingFields)  {
+            InitJsonReaderBytes(ref utf8Bytes, setMissingFields);
             object result = ReadToStart(obj);
             JsonBurstError();
             return result;
@@ -149,29 +153,29 @@ namespace Friflo.Json.Fliox.Mapper
         // --------------- Stream ---------------
         // --- Read()
         public T Read<T>(Stream utf8Stream) {
-            InitJsonReaderStream(utf8Stream);
+            InitJsonReaderStream(utf8Stream, false);
             T result = ReadStart<T>(default);
             JsonBurstError();
             return result;
         }
         
         public object ReadObject(Stream utf8Stream, Type type) {
-            InitJsonReaderStream(utf8Stream);
+            InitJsonReaderStream(utf8Stream, false);
             Var result = ReadStart(type);
             JsonBurstError();
             return result.ToObject();
         }
 
         // --- ReadTo()
-        public T ReadTo<T>(Stream utf8Stream, T obj)  {
-            InitJsonReaderStream(utf8Stream);
+        public T ReadTo<T>(Stream utf8Stream, T obj, bool setMissingFields)  {
+            InitJsonReaderStream(utf8Stream, setMissingFields);
             T result = ReadToStart(obj);
             JsonBurstError();
             return result;
         }
 
-        public object ReadToObject(Stream utf8Stream, object obj)  {
-            InitJsonReaderStream(utf8Stream);
+        public object ReadToObject(Stream utf8Stream, object obj, bool setMissingFields)  {
+            InitJsonReaderStream(utf8Stream, setMissingFields);
             object result = ReadToStart(obj);
             JsonBurstError();
             return result;
@@ -180,30 +184,30 @@ namespace Friflo.Json.Fliox.Mapper
         // --------------- string ---------------
         // --- Read()
         public T Read<T>(string json) {
-            InitJsonReaderString(json);
+            InitJsonReaderString(json, false);
             T result = ReadStart<T>(default);
             JsonBurstError();
             return result;
         }
         
         public object ReadObject(string json, Type type) {
-            InitJsonReaderString(json);
+            InitJsonReaderString(json, false);
             Var result = ReadStart(type);
             JsonBurstError();
             return result.ToObject();
         }
 
         // --- ReadTo()
-        public T ReadTo<T>(string json, T obj)  {
-            InitJsonReaderString(json);
+        public T ReadTo<T>(string json, T obj, bool setMissingFields)  {
+            InitJsonReaderString(json, setMissingFields);
             T result = ReadToStart(obj);
             JsonBurstError();
             return result;
 
         }
 
-        public object ReadToObject(string json, object obj)  {
-            InitJsonReaderString(json);
+        public object ReadToObject(string json, object obj, bool setMissingFields)  {
+            InitJsonReaderString(json, setMissingFields);
             object result = ReadToStart(obj);
             JsonBurstError();
             return result;
@@ -212,36 +216,36 @@ namespace Friflo.Json.Fliox.Mapper
         // --------------- JsonValue ---------------
         // --- Read()
         public T Read<T>(JsonValue utf8Array) {
-            InitJsonReaderArray(utf8Array);
+            InitJsonReaderArray(utf8Array, false);
             T result = ReadStart<T>(default);
             JsonBurstError();
             return result;
         }
         
         public object ReadObject(JsonValue utf8Array, Type type) {
-            InitJsonReaderArray(utf8Array);
+            InitJsonReaderArray(utf8Array, false);
             Var result = ReadStart(type);
             JsonBurstError();
             return result.ToObject();
         }
         
         internal Var ReadObjectVar(JsonValue utf8Array, Type type) {
-            InitJsonReaderArray(utf8Array);
+            InitJsonReaderArray(utf8Array, false);
             Var result = ReadStart(type);
             JsonBurstError();
             return result;
         }
 
         // --- ReadTo()
-        public T ReadTo<T>(JsonValue utf8Array, T obj)  {
-            InitJsonReaderArray(utf8Array);
+        public T ReadTo<T>(JsonValue utf8Array, T obj, bool setMissingFields)  {
+            InitJsonReaderArray(utf8Array, setMissingFields);
             T result = ReadToStart(obj);
             JsonBurstError();
             return result;
         }
 
-        public object ReadToObject(JsonValue utf8Array, object obj)  {
-            InitJsonReaderArray(utf8Array);
+        public object ReadToObject(JsonValue utf8Array, object obj, bool setMissingFields)  {
+            InitJsonReaderArray(utf8Array, setMissingFields);
             object result = ReadToStart(obj);
             JsonBurstError();
             return result;

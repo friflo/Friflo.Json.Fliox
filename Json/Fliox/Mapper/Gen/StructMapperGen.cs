@@ -50,7 +50,8 @@ namespace Friflo.Json.Fliox.Mapper.Gen
             if (!reader.StartObject(this, out success))
                 return default;
             
-            var ev = reader.parser.NextEvent();
+            var         ev      = reader.parser.NextEvent();
+            Span<bool>  found   = reader.setMissingFields ? stackalloc bool [GetFoundCount()] : default;
             while (true) {
                 switch (ev) {
                     case JsonEvent.ValueString:
@@ -62,11 +63,13 @@ namespace Friflo.Json.Fliox.Mapper.Gen
                         PropField field;
                         if ((field = reader.GetField32(propFields)) == null)
                             break;
+                        if (reader.setMissingFields) found[field.fieldIndex] = true;
                         success = readField(ref obj, field, ref reader);
                         if (!success)
                             return default;
                         break;
                     case JsonEvent.ObjectEnd:
+                        if (reader.setMissingFields) ClearReadToFields(obj, found);
                         success = true;
                         return obj;
                     case JsonEvent.Error:

@@ -495,11 +495,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
                     {
                         var expect = new Dictionary<JsonKey, int> (JsonKey.Equality){{ new JsonKey(123), 42 }};
                         var dest = new Dictionary<JsonKey, int>(JsonKey.Equality);
-                        AssertUtils.Equivalent(expect, reader.ReadTo(intMapNum, dest));
+                        AssertUtils.Equivalent(expect, reader.ReadTo(intMapNum, dest, false));
 
                         dest.Clear();
                         expect = new Dictionary<JsonKey, int> (JsonKey.Equality){{ new JsonKey("key"), 42 }};
-                        AssertUtils.Equivalent(expect, reader.ReadTo(mapNum, dest));
+                        AssertUtils.Equivalent(expect, reader.ReadTo(mapNum, dest, false));
                     }
                     
                     // ---- BigInteger ---
@@ -587,7 +587,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
         private T ReadTo<T>(string json, T value) where T : class {
             // return reader.ReadTo<T>(bytes, value);
 
-            T result = reader.ReadTo(json, value);
+            T result = reader.ReadTo(json, value, false);
             if (!reader.Success)
                 return default;
 

@@ -132,11 +132,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
                 // --- ReadTo ---
                 int[] reuse  = new int[1];
                 int[] expect = { 1 };
-                int[] result = read.ReadTo(arr1, reuse);                // generic
+                int[] result = read.ReadTo(arr1, reuse, false);                // generic
                 AreEqual(expect, result);   
                 IsTrue(reuse == result); // same reference - size did not change
                 
-                object resultObj = read.ReadToObject(arr1, reuse);      // non generic
+                object resultObj = read.ReadToObject(arr1, reuse, false);      // non generic
                 AreEqual(expect, resultObj);
                 IsTrue(reuse == resultObj); // same reference - size did not change
             }
@@ -164,11 +164,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
             // --- ReadTo ---
             int[] reuse  = new int[1];
             int[] expect = { 1 };
-            int[] result = read.ReadTo(StreamFromString("[1]"), reuse);             // generic
+            int[] result = read.ReadTo(StreamFromString("[1]"), reuse, false);             // generic
             AreEqual(expect, result);   
             IsTrue(reuse == result); // same reference - size did not change
             
-            object resultObj = read.ReadToObject(StreamFromString("[1]"), reuse);   // non generic
+            object resultObj = read.ReadToObject(StreamFromString("[1]"), reuse, false);   // non generic
             AreEqual(expect, resultObj);
             IsTrue(reuse == resultObj); // same reference - size did not change
         }
@@ -194,11 +194,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
             // --- ReadTo ---
             int[] reuse  = new int[1];
             int[] expect = { 1 };
-            int[] result = read.ReadTo("[1]", reuse);               // generic
+            int[] result = read.ReadTo("[1]", reuse, false);               // generic
             AreEqual(expect, result);   
             IsTrue(reuse == result); // same reference - size did not change
             
-            object resultObj = read.ReadToObject("[1]", reuse);     // non generic
+            object resultObj = read.ReadToObject("[1]", reuse, false);     // non generic
             AreEqual(expect, resultObj);
             IsTrue(reuse == resultObj); // same reference - size did not change
         }

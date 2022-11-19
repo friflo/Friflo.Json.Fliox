@@ -337,8 +337,8 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object
         {
             object objRef = slot; // box in case of a struct. This enables FieldInfo.GetValue() / SetValue() operating on struct also.
             
-            JsonEvent ev = reader.parser.Event;
-            var fields = propFields;
+            JsonEvent   ev      = reader.parser.Event;
+            Span<bool>  found   = reader.setMissingFields ? stackalloc bool [GetFoundCount()] : default;
 
             while (true) {
                 switch (ev) {
@@ -349,8 +349,9 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object
                     case JsonEvent.ObjectStart:
                     case JsonEvent.ValueNull:
                         PropField<T> field;
-                        if ((field = reader.GetField(fields)) == null)
+                        if ((field = reader.GetField(propFields)) == null)
                             break;
+                        if (reader.setMissingFields) found[field.fieldIndex] = true;
                         TypeMapper fieldType = field.fieldType;
                         Var fieldVal    = field.member.GetVar(objRef);
                         Var curFieldVal = fieldVal;
@@ -366,6 +367,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object
                         break;
 
                     case JsonEvent.ObjectEnd:
+                        if (reader.setMissingFields) ClearReadToFields(objRef, found);
                         success = true;
                         return (T)objRef;
                     case JsonEvent.Error:
@@ -375,6 +377,19 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object
                         return reader.ErrorMsg<T>("unexpected state: ", ev, out success);
                 }
                 ev = reader.parser.NextEvent();
+            }
+        }
+        
+        protected int GetFoundCount() {
+            return propFields.count;
+        }
+
+        protected void ClearReadToFields(object obj, in Span<bool> found) {
+            for (int n = 0; n < propFields.count; n++) {
+                if (found[n])
+                    continue;
+                var missingField = propFields.fields[n];
+                missingField.member.SetVar(obj, missingField.defaultValue);
             }
         }
         

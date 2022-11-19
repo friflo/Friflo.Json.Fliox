@@ -13,6 +13,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
         internal  readonly  List<PropField>     fields = new List <PropField>();
         internal            int                 primCount;
         internal            int                 objCount;
+        internal            int                 fieldCount;
         protected readonly  TypeStore           typeStore;
         protected readonly  FieldFilter         fieldFilter;
         internal  readonly  Type                type;
@@ -96,13 +97,14 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
                     
                     PropField<T> pf;
                     if (memberType.IsEnum || memberType.IsPrimitive || isNullablePrimitive || isNullableEnum) {
-                        pf =     new PropField<T>(fieldName, jsonName, mapper, field, property, primCount,    -9999, genIndex, required, docs); // force index exception in case of buggy impl.
+                        pf =     new PropField<T>(fieldName, jsonName, mapper, field, property, primCount,    -9999, fieldCount, genIndex, required, docs); // force index exception in case of buggy impl.
                     } else {
                         if (mapper.isValueType)
-                            pf = new PropField<T>(fieldName, jsonName, mapper, field, property, primCount, objCount, genIndex, required, docs);
+                            pf = new PropField<T>(fieldName, jsonName, mapper, field, property, primCount, objCount, fieldCount, genIndex, required, docs);
                         else
-                            pf = new PropField<T>(fieldName, jsonName, mapper, field, property, -9999,     objCount, genIndex, required, docs); // force index exception in case of buggy impl.
+                            pf = new PropField<T>(fieldName, jsonName, mapper, field, property, -9999,     objCount, fieldCount, genIndex, required, docs); // force index exception in case of buggy impl.
                     }
+                    fieldCount++;
                     fieldList.Add(pf);
                 }
                 

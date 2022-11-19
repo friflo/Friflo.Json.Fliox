@@ -139,13 +139,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
                     AreEqual(null,    enc.Read<byte[]>  (@null));
                     AreEqual(null,    enc.Read<bool[]>  (@null));
                     
-                    NotNull(enc.ReadTo(arrFlt, reusedArrDbl  ));             AreEqual(11.5d, reusedArrDbl[0]);
-                    NotNull(enc.ReadTo(arrNum, reusedArrFlt  ));
-                    NotNull(enc.ReadTo(arrNum, reusedArrLng  ));
-                    NotNull(enc.ReadTo(arrNum, reusedArrInt  ));
-                    NotNull(enc.ReadTo(arrNum, reusedArrShort));
-                    NotNull(enc.ReadTo(arrNum, reusedArrByte ));
-                    NotNull(enc.ReadTo(arrBln, reusedArrBool ));
+                    NotNull(enc.ReadTo(arrFlt, reusedArrDbl,   false));             AreEqual(11.5d, reusedArrDbl[0]);
+                    NotNull(enc.ReadTo(arrNum, reusedArrFlt,   false));
+                    NotNull(enc.ReadTo(arrNum, reusedArrLng,   false));
+                    NotNull(enc.ReadTo(arrNum, reusedArrInt,   false));
+                    NotNull(enc.ReadTo(arrNum, reusedArrShort, false));
+                    NotNull(enc.ReadTo(arrNum, reusedArrByte,  false));
+                    NotNull(enc.ReadTo(arrBln, reusedArrBool,  false));
 
                     // --------------------------------- enum -----------------------------------
                     {
@@ -158,39 +158,39 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
 
                     // --------------------------------- List<> ---------------------------------
                     // non nullable elements
-                    NotNull(enc.ReadTo(arrFlt, reusedListDbl  ));              AreEqual(11.5d, reusedListDbl[0]);
-                    NotNull(enc.ReadTo(arrNum, reusedListFlt  ));
-                    NotNull(enc.ReadTo(arrNum, reusedListLng  ));
-                    NotNull(enc.ReadTo(arrNum, reusedListInt  ));
-                    NotNull(enc.ReadTo(arrNum, reusedListShort));
-                    NotNull(enc.ReadTo(arrNum, reusedListByte ));
-                    NotNull(enc.ReadTo(arrBln, reusedListBool ));
+                    NotNull(enc.ReadTo(arrFlt, reusedListDbl,   false));              AreEqual(11.5d, reusedListDbl[0]);
+                    NotNull(enc.ReadTo(arrNum, reusedListFlt,   false));
+                    NotNull(enc.ReadTo(arrNum, reusedListLng,   false));
+                    NotNull(enc.ReadTo(arrNum, reusedListInt,   false));
+                    NotNull(enc.ReadTo(arrNum, reusedListShort, false));
+                    NotNull(enc.ReadTo(arrNum, reusedListByte,  false));
+                    NotNull(enc.ReadTo(arrBln, reusedListBool,  false));
                     
                     // nullable elements
-                    NotNull(enc.ReadTo(arrFlt, reusedListNulDbl  ));           AreEqual(11.5d, reusedListDbl[0]);
-                    NotNull(enc.ReadTo(arrNum, reusedListNulFlt  ));
-                    NotNull(enc.ReadTo(arrNum, reusedListNulLng  ));
-                    NotNull(enc.ReadTo(arrNum, reusedListNulInt  ));
-                    NotNull(enc.ReadTo(arrNum, reusedListNulShort));
-                    NotNull(enc.ReadTo(arrNum, reusedListNulByte ));
-                    NotNull(enc.ReadTo(arrBln, reusedListNulBool ));
+                    NotNull(enc.ReadTo(arrFlt, reusedListNulDbl,   false));           AreEqual(11.5d, reusedListDbl[0]);
+                    NotNull(enc.ReadTo(arrNum, reusedListNulFlt,   false));
+                    NotNull(enc.ReadTo(arrNum, reusedListNulLng,   false));
+                    NotNull(enc.ReadTo(arrNum, reusedListNulInt,   false));
+                    NotNull(enc.ReadTo(arrNum, reusedListNulShort, false));
+                    NotNull(enc.ReadTo(arrNum, reusedListNulByte,  false));
+                    NotNull(enc.ReadTo(arrBln, reusedListNulBool,  false));
 
                     // --------------------------------- class ---------------------------------
-                    enc.ReadTo(testClass, reusedClass);
+                    enc.ReadTo(testClass, reusedClass, false);
                     AreEqual(3,  reusedClass.intArray.Length);
                     
                     // ------------------------------ Dictionary<,> ----------------------------
-                    NotNull(enc.ReadTo(mapInt, reusedDictionaryInt));
+                    NotNull(enc.ReadTo(mapInt, reusedDictionaryInt, false));
                     AreEqual(123, reusedDictionaryInt[20]);
                     
-                    NotNull(enc.ReadTo(mapGuid, reusedDictionaryGuid));
+                    NotNull(enc.ReadTo(mapGuid, reusedDictionaryGuid, false));
                     AreEqual(124, reusedDictionaryGuid[guid]);
                     
                     // NotNull(enc.ReadTo(mapInt, reusedDictionaryStr));
                     // AreEqual(123, reusedDictionaryStr["20"]);
                     
                     // -------------------------------- HashSet<> ------------------------------
-                    NotNull(enc.ReadTo(arrNum, reusedHashSet));
+                    NotNull(enc.ReadTo(arrNum, reusedHashSet, false));
                     IsTrue(reusedHashSet.Contains(1));
 
 

@@ -38,7 +38,7 @@ namespace Friflo.Json.Fliox.Mapper.Diff
                     json = replace.value;
                     path = PathTools.PathToPathTokens(replace.path, pathNodes);
                     if (pathNodes.Count == 0) {
-                        jsonReader.ReadTo(json, root);
+                        jsonReader.ReadTo(json, root, false);
                         return;
                     }
                     break;

@@ -218,7 +218,7 @@ namespace Friflo.Json.Fliox.Hub.Client
                     SetEntityId(entity, id);
                     peer.SetEntity(entity);
                 }
-                reader.ReadTo(json, entity);
+                reader.ReadTo(json, entity, false);
                 if (reader.Success) {
                     peer.SetPatchSource(reader.Read<T>(json));
                 } else {
@@ -253,7 +253,7 @@ namespace Friflo.Json.Fliox.Hub.Client
                 } else {
                     applyType   = ApplyInfoType.EntityUpdated;
                 }
-                reader.ReadTo(jsonEntity.value, entity);
+                reader.ReadTo(jsonEntity.value, entity, false);
                 if (reader.Success) {
                     peer.SetPatchSource(reader.Read<T>(jsonEntity.value));
                 } else {
@@ -279,7 +279,7 @@ namespace Friflo.Json.Fliox.Hub.Client
                 var applyType   = ApplyInfoType.EntityPatched;
                 var peer        = GetOrCreatePeerByKey(patch.key, default);
                 var entity      = peer.Entity;
-                reader.ReadTo(patch.patch, entity);
+                reader.ReadTo(patch.patch, entity, false);
                 if (reader.Error.ErrSet) {
                     applyType |= ApplyInfoType.ParseError;
                 }

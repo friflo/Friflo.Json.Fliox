@@ -23,6 +23,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
         public              Utf8JsonParser      parser;
         public              Bytes               strBuf;
         public              Bytes32             searchKey;
+        internal            bool                setMissingFields;
         /// <summary>Can be used for custom mappers to create a temporary "string"
         /// without creating a string on the heap.</summary>
         public              char[]              charBuf;
@@ -40,7 +41,8 @@ namespace Friflo.Json.Fliox.Mapper.Map
             strBuf          = new Bytes(0);
             searchKey       = new Bytes32();
             charBuf         = new char[128];
-            jsonWriterStub = null;
+            jsonWriterStub  = null;
+            setMissingFields= false;
 #if !JSON_BURST
             parser.error.errorHandler = DefaultErrorHandler;
 #endif

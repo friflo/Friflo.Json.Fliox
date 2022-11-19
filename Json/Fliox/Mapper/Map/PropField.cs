@@ -13,8 +13,8 @@ namespace Friflo.Json.Fliox.Mapper.Map
     {
         
         public PropField(string name, string jsonName, TypeMapper fieldType, FieldInfo field, PropertyInfo property,
-            int primIndex, int objIndex, int genIndex, bool required, string docs)
-            : base(name, jsonName, fieldType, field, property, CreateMember(fieldType, field, property), primIndex, objIndex, genIndex, required, docs)
+            int primIndex, int objIndex, int fieldIndex, int genIndex, bool required, string docs)
+            : base(name, jsonName, fieldType, field, property, CreateMember(fieldType, field, property), primIndex, objIndex, fieldIndex, genIndex, required, docs)
         {
         }
         
@@ -48,9 +48,11 @@ namespace Friflo.Json.Fliox.Mapper.Map
         // field ist set via reflection to enable using a readonly field
         public   readonly   TypeMapper      fieldType;          // never null
         public   readonly   VarType         varType;            // never null
+        public   readonly   Var             defaultValue;
         private  readonly   int             primIndex;          // obsolete - was used by generated IL code
         private  readonly   int             objIndex;           // obsolete - was used by generated IL code
         public   readonly   int             genIndex;
+        public   readonly   int             fieldIndex;
         public   readonly   bool            required;
         public   readonly   string          docs;
         public   readonly   string          relation;
@@ -70,13 +72,14 @@ namespace Friflo.Json.Fliox.Mapper.Map
 
 
         internal PropField (string name, string jsonName, TypeMapper fieldType, FieldInfo field, PropertyInfo property, Var.Member member,
-            int primIndex, int objIndex, int genIndex, bool required, string docs)
+            int primIndex, int objIndex, int fieldIndex, int genIndex, bool required, string docs)
         {
             this.name       = name;
             this.key        = new JsonKey(name);
             this.jsonName   = jsonName;
             this.fieldType  = fieldType;
             this.varType    = VarType.FromType(fieldType.type);
+            defaultValue    = varType.DefaultValue;
             this.nameBytes  = new Bytes(jsonName,                   Untracked.Bytes);
             firstMember     = new Bytes($"{'{'}\"{jsonName}\":",    Untracked.Bytes);
             subSeqMember    = new Bytes($",\"{jsonName}\":",        Untracked.Bytes);
@@ -98,6 +101,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
             this.member     = member;
             this.primIndex  = primIndex;
             this.objIndex   = objIndex;
+            this.fieldIndex = fieldIndex;
             this.genIndex   = genIndex;
             this.required   = required;
             this.docs       = docs;

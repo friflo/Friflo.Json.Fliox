@@ -252,7 +252,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
                 int iterations = 1000;
                 for (int n = 0; n < iterations; n++) {
                     memLog.Snapshot();
-                    obj = reader.ReadTo(json, obj);
+                    obj = reader.ReadTo(json, obj, false);
                     if (reader.Error.ErrSet)
                         Fail(reader.Error.msg.ToString());
                     AssertSampleIL(obj);
@@ -297,7 +297,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
                 for (int n = 0; n < iterations; n++) {
                     memLog.Snapshot();
                     writer.Write(list, ref dst.bytes);
-                    list = reader.ReadTo(dst.bytes, list);
+                    list = reader.ReadTo(dst.bytes, list, false);
                     if (reader.Error.ErrSet)
                         Fail(reader.Error.msg.ToString());
                     AssertSampleIL(list[0]);
@@ -324,7 +324,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
                     memLog.Snapshot();
                     writer.Write(list, ref dst.bytes);
                     list[0] = new ChildStructIL { val2 = 999 };
-                    list = reader.ReadTo(dst.bytes, list);
+                    list = reader.ReadTo(dst.bytes, list, false);
                     AreEqual(42, list[0].val2);   // ensure List element being a struct is updated
                     if (reader.Error.ErrSet)
                         Fail(reader.Error.msg.ToString());
@@ -351,7 +351,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
                 for (int n = 0; n < iterations; n++) {
                     memLog.Snapshot();
                     writer.Write(arr, ref dst.bytes);
-                    arr = reader.ReadTo(dst.bytes, arr);
+                    arr = reader.ReadTo(dst.bytes, arr, false);
                     if (reader.Error.ErrSet)
                         Fail(reader.Error.msg.ToString());
                     AssertSampleIL(arr[0]);
@@ -378,7 +378,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
                     memLog.Snapshot();
                     writer.Write(arr, ref dst.bytes);
                     arr[0] = new ChildStructIL { val2 = 999 };
-                    arr = reader.ReadTo(dst.bytes, arr);
+                    arr = reader.ReadTo(dst.bytes, arr, false);
                     AreEqual(42, arr[0].val2);   // ensure array element being a struct is updated
                     if (reader.Error.ErrSet)
                         Fail(reader.Error.msg.ToString());

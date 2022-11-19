@@ -73,12 +73,12 @@ namespace Friflo.Json.Fliox.Mapper
         }
 
         // --- ReadTo()
-        public T ReadTo<T>(Bytes utf8Bytes, T obj)  {
-            return reader.ReadTo(utf8Bytes, obj);
+        public T ReadTo<T>(Bytes utf8Bytes, T obj, bool setMissingFields)  {
+            return reader.ReadTo(utf8Bytes, obj, setMissingFields);
         }
 
-        public object ReadToObject(Bytes utf8Bytes, object obj)  {
-            return reader.ReadToObject(utf8Bytes, obj);
+        public object ReadToObject(Bytes utf8Bytes, object obj, bool setMissingFields)  {
+            return reader.ReadToObject(utf8Bytes, obj, setMissingFields);
         }
         
         // --- Write()
@@ -102,12 +102,12 @@ namespace Friflo.Json.Fliox.Mapper
         }
 
         // --- ReadTo()
-        public T ReadTo<T>(Stream utf8Stream, T obj)  {
-            return reader.ReadTo(utf8Stream, obj);
+        public T ReadTo<T>(Stream utf8Stream, T obj, bool setMissingFields)  {
+            return reader.ReadTo(utf8Stream, obj, setMissingFields);
         }
 
-        public object ReadToObject(Stream utf8Stream, object obj)  {
-            return reader.ReadToObject(utf8Stream, obj);
+        public object ReadToObject(Stream utf8Stream, object obj, bool setMissingFields)  {
+            return reader.ReadToObject(utf8Stream, obj, setMissingFields);
         }
         
         // --- Write()
@@ -131,12 +131,12 @@ namespace Friflo.Json.Fliox.Mapper
         }
 
         // --- ReadTo()
-        public T ReadTo<T>(string json, T obj)  {
-            return reader.ReadTo(json, obj);
+        public T ReadTo<T>(string json, T obj, bool setMissingFields)  {
+            return reader.ReadTo(json, obj, setMissingFields);
         }
 
-        public object ReadToObject(string json, object obj)  {
-            return reader.ReadToObject(json, obj);
+        public object ReadToObject(string json, object obj, bool setMissingFields)  {
+            return reader.ReadToObject(json, obj, setMissingFields);
         }
         
         // --- Write()
@@ -159,12 +159,12 @@ namespace Friflo.Json.Fliox.Mapper
         }
 
         // --- ReadTo()
-        public T ReadTo<T>(JsonValue utf8Array, T obj)  {
-            return reader.ReadTo(utf8Array, obj);
+        public T ReadTo<T>(JsonValue utf8Array, T obj, bool setMissingFields)  {
+            return reader.ReadTo(utf8Array, obj, setMissingFields);
         }
 
-        public object ReadToObject(JsonValue utf8Array, object obj)  {
-            return reader.ReadToObject(utf8Array, obj);
+        public object ReadToObject(JsonValue utf8Array, object obj, bool setMissingFields)  {
+            return reader.ReadToObject(utf8Array, obj, setMissingFields);
         }
         
         // --- Write()

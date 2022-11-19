@@ -131,7 +131,7 @@ namespace Friflo.Playground.Perf.Mapper
                 using (var typeStore = new TypeStore(new StoreConfig(TypeAccess.IL)))
                 using (var reader = new ObjectReader(typeStore))
                 {
-                    reader.ReadTo(bookShelfJson, shelf);
+                    reader.ReadTo(bookShelfJson, shelf, false);
                     IsTrue(reader.Success);
                 }
                 int end = TimeUtil.GetMs();
