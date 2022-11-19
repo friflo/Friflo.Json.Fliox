@@ -92,8 +92,8 @@ namespace Friflo.Json.Fliox.Mapper
             intern.parser.SetMaxDepth(maxDepth);
         }
 
-        private void InitJsonReaderBytes(ref ByteList bytes, int offset, int len) {
-            intern.parser.InitParser(bytes, offset, len);
+        private void InitJsonReaderBytes(ref Bytes bytes) {
+            intern.parser.InitParser(bytes.buffer, bytes.start, bytes.Len);
             intern.parser.SetMaxDepth(maxDepth);
         }
         
@@ -119,14 +119,14 @@ namespace Friflo.Json.Fliox.Mapper
         // --------------- Bytes ---------------
         // --- Read()
         public T Read<T>(Bytes utf8Bytes) {
-            InitJsonReaderBytes(ref utf8Bytes.buffer, utf8Bytes.StartPos, utf8Bytes.Len);
+            InitJsonReaderBytes(ref utf8Bytes);
             T result =  ReadStart<T>(default);
             JsonBurstError();
             return result;
         }
         
         public object ReadObject(Bytes utf8Bytes, Type type) {
-            InitJsonReaderBytes(ref utf8Bytes.buffer, utf8Bytes.StartPos, utf8Bytes.Len);
+            InitJsonReaderBytes(ref utf8Bytes);
             Var result = ReadStart(type);
             JsonBurstError();
             return result.ToObject();
@@ -134,14 +134,14 @@ namespace Friflo.Json.Fliox.Mapper
 
         // --- ReadTo()
         public T ReadTo<T>(Bytes utf8Bytes, T obj)  {
-            InitJsonReaderBytes(ref utf8Bytes.buffer, utf8Bytes.StartPos, utf8Bytes.Len);
+            InitJsonReaderBytes(ref utf8Bytes);
             T result = ReadToStart(obj);
             JsonBurstError();
             return result;
         }
 
         public object ReadToObject(Bytes utf8Bytes, object obj)  {
-            InitJsonReaderBytes(ref utf8Bytes.buffer, utf8Bytes.StartPos, utf8Bytes.Len);
+            InitJsonReaderBytes(ref utf8Bytes);
             object result = ReadToStart(obj);
             JsonBurstError();
             return result;
