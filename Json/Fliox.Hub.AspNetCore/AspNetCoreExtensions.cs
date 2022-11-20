@@ -71,14 +71,14 @@ namespace Friflo.Json.Fliox.Hub.AspNetCore
             JsonValue response          = requestContext.Response;
             httpResponse.StatusCode     = requestContext.StatusCode;
             httpResponse.ContentType    = requestContext.ResponseContentType;
-            httpResponse.ContentLength  = response.Length;
+            httpResponse.ContentLength  = response.Count;
             var responseHeaders         = requestContext.ResponseHeaders;
             if (responseHeaders != null) {
                 foreach (var header in responseHeaders) {
                     httpResponse.Headers[header.Key] = header.Value;
                 }
             }
-            await httpResponse.Body.WriteAsync(response, 0, response.Length).ConfigureAwait(false);
+            await httpResponse.Body.WriteAsync(response, 0, response.Count).ConfigureAwait(false);
         }
         
         /// <summary>

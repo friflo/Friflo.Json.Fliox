@@ -189,6 +189,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             var hub         = new NoopDatabaseHub("noop_db", env);
             var store       = new PocStore(hub);
             await store.SyncTasks();                    // force one time allocations
+            await store.SyncTasks();                    // force one time allocations
             // GC.Collect();
             var stopwatch = new Stopwatch();
             stopwatch.Start();
@@ -200,7 +201,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             var diff        = GC.GetAllocatedBytesForCurrentThread() - start;
             stopwatch.Stop();
             Console.WriteLine($"SyncTasks() count: {count}, ms: {stopwatch.ElapsedMilliseconds}");
-            var expected    = IsDebug() ? 1176 : 920;  // Test Debug & Release
+            var expected    = IsDebug() ? 1192 : 936;  // Test Debug & Release
             AreEqual(expected, diff);
         }
         
@@ -224,7 +225,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
                 await store.SyncTasks();
             }
             var diff = GC.GetAllocatedBytesForCurrentThread() - start;
-            var expected = IsDebug() ? Is.InRange(30664, 33640) : Is.InRange(27408, 30184); // Test Debug & Release
+            var expected = IsDebug() ? Is.InRange(30664, 35168) : Is.InRange(27408, 31800); // Test Debug & Release
             That(diff, expected);
         }
         

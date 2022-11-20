@@ -132,7 +132,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                 }
                 return new JsonValue();
             }
-            JsonValue result;
+            JsonValue result = default;
             foreach (var argument in arguments) {
                 var argName = argument.Name.Value.Span;
                 if (argName.SequenceEqual("param")) {

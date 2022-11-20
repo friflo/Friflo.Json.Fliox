@@ -66,8 +66,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 return;
             }
             var responseBody = requestContext.Response;
-            SetResponseHeader(resp, requestContext.ResponseContentType, requestContext.StatusCode, responseBody.Length, requestContext.ResponseHeaders);
-            await resp.OutputStream.WriteAsync(responseBody, 0, responseBody.Length).ConfigureAwait(false);
+            SetResponseHeader(resp, requestContext.ResponseContentType, requestContext.StatusCode, responseBody.Count, requestContext.ResponseHeaders);
+            await resp.OutputStream.WriteAsync(responseBody, 0, responseBody.Count).ConfigureAwait(false);
             resp.Close();
         }
         

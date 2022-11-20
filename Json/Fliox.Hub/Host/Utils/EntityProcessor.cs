@@ -70,7 +70,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Utils
                 keyValue.AppendTo(ref sb, ref parser.format);
                 sb.AppendChar('\"');
             }
-            var remaining = json.Length - keyEnd; 
+            var remaining = json.Count - keyEnd; 
             sb.AppendArray(json, keyEnd, remaining);
             var result = sb.AsArray();
             sb.Clear();

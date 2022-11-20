@@ -87,7 +87,7 @@ namespace Friflo.Json.Fliox.Mapper
         
         public void InitJsonReaderArray(in JsonValue array, bool setMissingFields) {
             inputStringBuf.Clear();
-            inputStringBuf.AppendArray(array, 0, array.Length);
+            inputStringBuf.AppendArray(array, 0, array.Count);
             intern.parser.InitParser(inputStringBuf.buffer, inputStringBuf.start, inputStringBuf.Len);
             intern.parser.SetMaxDepth(maxDepth);
             intern.setMissingFields = setMissingFields;

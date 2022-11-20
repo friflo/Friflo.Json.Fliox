@@ -264,7 +264,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// </summary>
         private static async Task WriteText(string filePath, JsonValue json, FileMode fileMode) {
             using (var destStream = new FileStream(filePath, fileMode, FileAccess.Write, FileShare.Read, bufferSize: 4096, useAsync: false)) {
-                await destStream.WriteAsync(json, 0, json.Length).ConfigureAwait(false);
+                await destStream.WriteAsync(json, 0, json.Count).ConfigureAwait(false);
             }
         }
         

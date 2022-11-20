@@ -9,6 +9,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Friflo.Json.Burst;
 
+// ReSharper disable ConvertToAutoProperty
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox
 {
@@ -19,46 +20,60 @@ namespace Friflo.Json.Fliox
     /// the passed array must not be changed subsequently.
     /// </summary>
     public readonly struct JsonValue {
-        // array & Array are not public to prevent potential side effects by application code mutating array elements
-        private  readonly   byte[]  array;                                          // can be null
-        internal            byte[]  Array               => array ?? Null;           // never null
+        /// not public to prevent potential side effects by application code mutating array elements
+        private  readonly       byte[]  array;                                              // can be null - default struct value
+        private  readonly       int     count;                                              // can be 0    - default struct value
         
-        public              int     Length      => array?.Length ?? Null.Length;    // always > 0
-        public   override   string  ToString()  => AsString();
-        public              string  AsString()  => array == null ? "null" : Encoding.UTF8.GetString(array, 0, array.Length);
+        /// not public to prevent potential side effects by application code mutating array elements
+        internal                byte[]  Array       => array ?? Null;                       // never null
+        public                  int     Count       => array != null ? count : Null.Length; // always > 0
         
-        public  ArraySegment<byte>      AsArraySegment()        => new ArraySegment<byte>(Array, 0, Array.Length);
+        public   override       string  ToString()  => AsString();
+        public                  string  AsString()  => array == null ? "null" : Encoding.UTF8.GetString(array, 0, count);
+        
+        public  ArraySegment<byte>      AsArraySegment()        => new ArraySegment<byte>(Array, 0, Count);
 #if !UNITY_5_3_OR_NEWER
 //      public  ReadOnlyMemory<byte>    AsReadOnlyMemory()      => new ReadOnlyMemory<byte>(Array, 0, Array.Length);
 #endif
-        public  ByteArrayContent        AsByteArrayContent()    => new ByteArrayContent(Array); // todo hm. dependency System.Net.Http 
-        public  byte[]                  AsByteArray()           => array.ToArray();
+        public  ByteArrayContent        AsByteArrayContent()    => new ByteArrayContent(Array, 0, Count); // todo hm. dependency System.Net.Http
         
-        private static readonly byte[] Null =  {(byte)'n', (byte)'u', (byte)'l', (byte)'l'};
+        public  byte[]                  AsByteArray() {
+            var result = new byte[Count];
+            Buffer.BlockCopy(Array, 0, result, 0, Count);
+            return result;
+        }
+
+        private static readonly byte[] Null =  Encoding.UTF8.GetBytes("null");
 
         public JsonValue(byte[] array) {
             if (array == null) {
-                this.array = null;
+                this.array  = null;
+                count       = Null.Length;
                 return;
             }
             if (array.Length == Null.Length && array.SequenceEqual(Null)) {
-                this.array = null;
+                this.array  = null;
+                count       = Null.Length;
                 return;
             } 
             this.array  = array;
+            count       = array.Length;
         }
         
         /// <summary> Prefer using <see cref="JsonValue(byte[])"/> </summary>
         public JsonValue(string value) {
             if (value == null) {
-                array = null;
+                array   = null;
+                count   = Null.Length;
                 return;
             }
             if (value == "null") {
-                array = null;
+                array   = null;
+                count   = Null.Length;
                 return;
             } 
-            array  = Encoding.UTF8.GetBytes(value);
+            array   = Encoding.UTF8.GetBytes(value);
+            count   = array.Length;
         }
         
         public bool IsNull() {
@@ -90,7 +105,7 @@ namespace Friflo.Json.Fliox
     public static class JsonValueExtensions {
     
         public static void AppendArray(this ref Bytes bytes, in JsonValue array) {
-            AppendArray (ref bytes, array, 0, array.Array.Length);
+            AppendArray (ref bytes, array, 0, array.Count);
         }
         
         public static void AppendArray(this ref Bytes bytes, in JsonValue array, int offset, int len) {

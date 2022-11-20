@@ -61,7 +61,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                         param = new JsonValue(queryValue);
                     }
                     // Treat missing request body as null
-                    if (param.Length == 0) {
+                    if (param.Count == 0) {
                         param = new JsonValue();
                     } else {
                         if (!IsValidJson(pool, param, out string error)) {
