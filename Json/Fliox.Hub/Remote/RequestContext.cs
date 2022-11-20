@@ -31,6 +31,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         public    readonly  string                      route;
         public    readonly  string                      query;
         public    readonly  Stream                      body;
+        public    readonly  int                         contentLength;
         public    readonly  IHttpHeaders                headers;
         private             Dictionary<string, string>  responseHeaders;
         internal            bool                        handled;
@@ -48,13 +49,22 @@ namespace Friflo.Json.Fliox.Hub.Remote
 
         public    override  string                      ToString()          => $"{method} {route}{query}";
 
-        public RequestContext (RemoteHost remoteHost, string method, string route, string query, Stream body, IHttpHeaders headers) {
-            this.hub        = remoteHost.LocalHub;
-            this.method     = method;
-            this.route      = route;
-            this.query      = query;
-            this.body       = body;
-            this.headers    = headers;
+        public RequestContext (
+            RemoteHost      remoteHost,
+            string          method,
+            string          route,
+            string          query,
+            Stream          body,
+            int             contentLength,
+            IHttpHeaders    headers)
+        {
+            this.hub            = remoteHost.LocalHub;
+            this.method         = method;
+            this.route          = route;
+            this.query          = query;
+            this.body           = body;
+            this.contentLength  = contentLength;
+            this.headers        = headers;
         }
         
         public void Write (in JsonValue value, int offset, string contentType, int statusCode) {

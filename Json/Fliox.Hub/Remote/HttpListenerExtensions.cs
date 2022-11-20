@@ -48,7 +48,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 return null;
             }
             var headers         = new HttpListenerHeaders(request.Headers, request.Cookies);
-            var requestContext  = new RequestContext(httpHost, method, route, url.Query, req.InputStream, headers);
+            var contentLength   = (int)req.ContentLength64;
+            var requestContext  = new RequestContext(httpHost, method, route, url.Query, req.InputStream, contentLength, headers);
             await httpHost.ExecuteHttpRequest(requestContext).ConfigureAwait(false);
             return requestContext;
         }

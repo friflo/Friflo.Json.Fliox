@@ -140,7 +140,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         /// </summary>
         public async Task ExecuteHttpRequest(RequestContext request) {
             if (request.method == "POST" && request.route == "/") {
-                var requestContent  = await JsonValue.ReadToEndAsync(request.body).ConfigureAwait(false);
+                var requestContent  = await JsonValue.ReadToEndAsync(request.body, request.contentLength).ConfigureAwait(false);
 
                 // Each request require its own pool as multiple request running concurrently. Could cache a Pool instance per connection.
                 var pool        = sharedEnv.Pool;

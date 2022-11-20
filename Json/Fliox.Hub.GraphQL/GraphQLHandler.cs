@@ -58,7 +58,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             if (method == "POST") {
                 using (var pooled = context.ObjectMapper.Get()) {
                     var mapper          = pooled.instance;
-                    var body            = await JsonValue.ReadToEndAsync(context.body).ConfigureAwait(false);
+                    var body            = await JsonValue.ReadToEndAsync(context.body, context.contentLength).ConfigureAwait(false);
                     var gqlRequest      = ReadRequestBody(mapper, body, out error);
                     if (error != null) {
                         context.WriteError("invalid request body", error, 400);

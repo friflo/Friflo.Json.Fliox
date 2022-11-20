@@ -55,7 +55,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                         database = null;
                     JsonValue param;
                     if (isPost) {
-                        param = await JsonValue.ReadToEndAsync(context.body).ConfigureAwait(false);
+                        param = await JsonValue.ReadToEndAsync(context.body, context.contentLength).ConfigureAwait(false);
                     } else {
                         var queryValue = queryParams["param"];
                         param = new JsonValue(queryValue);
@@ -100,7 +100,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                     JsonKey[] keys;
                     using (var pooled = pool.ObjectMapper.Get()) {
                         var reader  = pooled.instance.reader;
-                        var body    = await JsonValue.ReadToEndAsync(context.body).ConfigureAwait(false);
+                        var body    = await JsonValue.ReadToEndAsync(context.body, context.contentLength).ConfigureAwait(false);
                         keys        = reader.Read<JsonKey[]>(body);
                         if (reader.Error.ErrSet) {
                             context.WriteError("invalid id list", reader.Error.ToString(), 400);
@@ -160,7 +160,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                         context.WriteError("invalid PUT", "expect: /database/container or /database/container/id", 400);
                         return;
                     }
-                    var value = await JsonValue.ReadToEndAsync(context.body).ConfigureAwait(false);
+                    var value = await JsonValue.ReadToEndAsync(context.body, context.contentLength).ConfigureAwait(false);
                     if (!IsValidJson(pool, value, out string error)) {
                         context.WriteError("PUT failed", error, 400);
                         return;
@@ -181,7 +181,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                         context.WriteError("invalid PATCH", "expect: /database/container or /database/container/id", 400);
                         return;
                     }
-                    var patch = await JsonValue.ReadToEndAsync(context.body).ConfigureAwait(false);
+                    var patch = await JsonValue.ReadToEndAsync(context.body, context.contentLength).ConfigureAwait(false);
                     if (!IsValidJson(pool, patch, out string error)) {
                         context.WriteError("PATCH failed", error, 400);
                         return;

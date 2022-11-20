@@ -94,16 +94,15 @@ namespace Friflo.Json.Fliox
             return ReferenceEquals(array, value.array);
         }
         
-        public static async Task<JsonValue> ReadToEndAsync(Stream input) {
-            byte[] buffer = new byte[16 * 1024];                // todo performance -> cache
-            using (MemoryStream ms = new MemoryStream()) {      // todo performance -> cache
-                int read;
-                while ((read = await input.ReadAsync(buffer, 0, buffer.Length).ConfigureAwait(false)) > 0) {
-                    ms.Write(buffer, 0, read);
-                }
-                var array = ms.ToArray(); 
-                return new JsonValue(array);
+        public static async Task<JsonValue> ReadToEndAsync(Stream input, int length) {
+            byte[]  buffer  = new byte[length];
+            int     pos     = 0;
+            int     read;
+            while ((read = await input.ReadAsync(buffer, pos, length - pos).ConfigureAwait(false)) > 0) {
+                pos += read;
             }
+            if (length != pos) throw new InvalidOperationException($"Expect length {length}, was: {pos}");
+            return new JsonValue(buffer);
         }
         
         /// <summary>

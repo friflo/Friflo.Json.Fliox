@@ -18,7 +18,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.Test
         public  readonly    string              body;
         public  readonly    IHttpHeaders        headers;
         
-        public              Stream              BodyStream => StringToStream(body);
+        public              Stream              Body(out int length) => StringToStream(body, out length);
 
         public  override    string  ToString() {
             if (query == "")
@@ -105,12 +105,13 @@ namespace Friflo.Json.Fliox.Hub.Remote.Test
             return result;
         }
         
-        public static Stream StringToStream(string jsonBody) {
+        public static Stream StringToStream(string jsonBody, out int length) {
             var bodyStream      = new MemoryStream();
             var writer          = new StreamWriter(bodyStream);
             writer.Write(jsonBody);
             writer.Flush();
-            bodyStream.Position   = 0;
+            length              = (int)bodyStream.Position;
+            bodyStream.Position = 0;
             return bodyStream;
         }
     }
