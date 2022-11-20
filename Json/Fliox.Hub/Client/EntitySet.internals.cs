@@ -220,7 +220,7 @@ namespace Friflo.Json.Fliox.Hub.Client
                 }
                 reader.ReadTo(json, entity, false);
                 if (reader.Success) {
-                    peer.SetPatchSource(reader.Read<T>(json));
+                    peer.SetPatchSource(json);
                 } else {
                     var entityError = new EntityError(EntityErrorType.ParseError, name, id, reader.Error.msg.ToString());
                     // entityMap[id].SetError(id, entityError); - used when using class EntityValue
@@ -255,7 +255,7 @@ namespace Friflo.Json.Fliox.Hub.Client
                 }
                 reader.ReadTo(jsonEntity.value, entity, false);
                 if (reader.Success) {
-                    peer.SetPatchSource(reader.Read<T>(jsonEntity.value));
+                    peer.SetPatchSource(jsonEntity.value);
                 } else {
                     applyType |= ApplyInfoType.ParseError;
                 }

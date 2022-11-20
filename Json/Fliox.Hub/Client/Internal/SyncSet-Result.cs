@@ -133,7 +133,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 var key     = KeyConvert.IdToKey(id);
                 var peer    = set.GetOrCreatePeerByKey(key, id);
                 peer.state  = PeerState.None;
-                peer.SetPatchSource(reader.Read<T>(entity.value));
+                peer.SetPatchSource(entity.value);
             }
 
             var entityErrorInfo = new TaskErrorInfo();
@@ -349,8 +349,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 foreach (var entityPatch in patches) {
                     var key     = entityPatch.Key;
                     var peer    = set.GetOrCreatePeerByKey(key, default);
-                    var  nextPatchSource = peer.NextPatchSource;
-                    if (nextPatchSource == null)
+                    var nextPatchSource = peer.NextPatchSource;
+                    if (nextPatchSource.IsNull())
                         continue;
                     // set patch source (diff reference) only if entity is tracked
                     peer.SetPatchSource(nextPatchSource);

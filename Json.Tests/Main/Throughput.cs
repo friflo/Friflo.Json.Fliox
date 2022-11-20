@@ -13,7 +13,7 @@ namespace Friflo.Json.Tests.Main
         public static async Task MemoryDbThroughput() {
             var database    = new MemoryDatabase(TestDB);
             var hub         = new FlioxHub(database);
-            await TestHappy.ConcurrentAccess(hub, 4, 0, 1_000_000, false);
+            await TestHappy.ConcurrentAccess(hub, 4, 0, 10_000_000, false);
         }
         
         public static async Task FileDbThroughput() {

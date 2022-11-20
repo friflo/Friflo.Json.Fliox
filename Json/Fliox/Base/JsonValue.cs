@@ -49,7 +49,7 @@ namespace Friflo.Json.Fliox
             this.array  = array ?? throw new ArgumentNullException(nameof(array));
             this.count  = count;
         }
-
+        
         public JsonValue(byte[] array) {
             if (array == null) {
                 this.array  = null;
@@ -104,6 +104,20 @@ namespace Friflo.Json.Fliox
                 var array = ms.ToArray(); 
                 return new JsonValue(array);
             }
+        }
+        
+        public static void Update(ref JsonValue dst, in JsonValue src) {
+            if (src.IsNull()) {
+                dst = default;
+                return;
+            }
+            var dstArray    = dst.array;
+            var count       = src.Count;
+            if (dstArray == null || dstArray.Length < count) {
+                dstArray = new byte[count];
+            }
+            Buffer.BlockCopy(src.array, 0, dstArray, 0, count);
+            dst = new JsonValue(dstArray, count);
         }
     }
     

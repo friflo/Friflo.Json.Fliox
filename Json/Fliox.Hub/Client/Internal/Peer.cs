@@ -24,11 +24,14 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                                     internal            EntityError     error;
         [DebuggerBrowsable(Never)]  internal            PeerState       state;
 
-        [DebuggerBrowsable(Never)]  internal            T               PatchSource     { get; private set; }
-        [DebuggerBrowsable(Never)]  internal            T               NextPatchSource { get; private set; }
+        [DebuggerBrowsable(Never)]  private             JsonValue       patchSource;
+        [DebuggerBrowsable(Never)]  internal            JsonValue       PatchSource     => patchSource;
+        
+        [DebuggerBrowsable(Never)]  private             JsonValue       nextPatchSource;
+        [DebuggerBrowsable(Never)]  internal            JsonValue       NextPatchSource => nextPatchSource;
         /// Using the the unchecked <see cref="NullableEntity"/> must be an exception. Use <see cref="Entity"/> by default.
-        [DebuggerBrowsable(Never)]  internal            T               NullableEntity   => entity;
-        [DebuggerBrowsable(Never)]  internal            T               Entity           => entity ?? throw new InvalidOperationException($"Caller ensure & expect entity not null. id: '{id}'");
+        [DebuggerBrowsable(Never)]  internal            T               NullableEntity  => entity;
+        [DebuggerBrowsable(Never)]  internal            T               Entity          => entity ?? throw new InvalidOperationException($"Caller ensure & expect entity not null. id: '{id}'");
 
         public   override                               string          ToString()      => FormatToString();
         
@@ -78,24 +81,24 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 throw new ArgumentException($"Entity is already tracked by another instance. id: '{id}'");
         }
 
-        internal void SetPatchSource(T entity) {
-            if (entity == null)
-                throw new InvalidOperationException("SetPatchSource() - expect entity not null");
-            PatchSource = entity;
+        internal void SetPatchSource(in JsonValue value) {
+            if (value.IsNull())
+                throw new InvalidOperationException("SetPatchSource() - expect value not null");
+            JsonValue.Update(ref patchSource, value);
         }
         
         internal void SetPatchSourceNull() {
-            PatchSource = null;
+            patchSource = default;
         }
         
-        internal void SetNextPatchSource(T entity) {
-            if (entity == null)
-                throw new InvalidOperationException("SetNextPatchSource() - expect entity not null");
-            NextPatchSource = entity;
+        internal void SetNextPatchSource(in JsonValue value) {
+            if (value.IsNull())
+                throw new InvalidOperationException("SetNextPatchSource() - expect value not null");
+            JsonValue.Update(ref nextPatchSource, value);
         }
         
         internal void SetNextPatchSourceNull() {
-            NextPatchSource = null;
+            nextPatchSource = default;
         }
     }
     

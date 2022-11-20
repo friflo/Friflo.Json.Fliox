@@ -165,11 +165,12 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 return;
             }
             var patchSource = peer.PatchSource;
-            if (patchSource == null)
+            if (patchSource.IsNull())
                 return;
             var entity  = peer.Entity;
             var differ  = set.intern.store._intern.ObjectDiffer();
-            var diff    = differ.GetDiff(patchSource, entity, DiffKind.DiffArrays);
+            var source  = mapper.Read<T>(patchSource);
+            var diff    = differ.GetDiff(source, entity, DiffKind.DiffArrays);
             if (diff == null)
                 return;
             var jsonDiff    = set.intern.store._intern.JsonMergeWriter();
@@ -372,7 +373,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
 
         private static void SetNextPatchSource(Peer<T> peer, ObjectMapper mapper) {
             var json   = mapper.writer.WriteAsValue(peer.Entity);
-            peer.SetNextPatchSource(mapper.Read<T>(json));
+            peer.SetNextPatchSource(json);
         }
 
         internal void SetTaskInfo(ref SetInfo info) {
