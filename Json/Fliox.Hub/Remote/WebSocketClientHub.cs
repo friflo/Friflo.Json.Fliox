@@ -153,7 +153,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                             Logger.Log(HubLog.Error, $"Expect WebSocket message type text. type: {messageType} {endpoint}");
                             continue;
                         }
-                        var requestContent  = new JsonValue(memoryStream.ToArray());
+                        var requestContent  = new JsonValue(memoryStream.GetBuffer(), (int)memoryStream.Position);
                         OnReceive (wsConn, requestContent);
                     } catch (Exception e) {
                         Logger.Log(HubLog.Error, e.Message);
