@@ -38,7 +38,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
                 writer.AppendNull();
         }
 
-        public override JsonValue Read(ref Reader reader, JsonValue slot, out bool success) {
+        public override JsonValue Read(ref Reader reader, JsonValue value, out bool success) {
             var stub = reader.jsonWriterStub;
             if (stub == null)
                 reader.jsonWriterStub = stub = new Utf8JsonWriterStub();
@@ -46,10 +46,12 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
             ref var serializer = ref stub.jsonWriter;
             serializer.InitSerializer();
             serializer.WriteTree(ref reader.parser);
-            var json = serializer.json.AsArray();
-            var patchValue = new JsonValue (json);
+            ref var json = ref serializer.json;
+            if (json.start != 0) throw new InvalidOperationException("Expect json.start == 0");
+            var patchValue = new JsonValue (json.buffer.array, json.Len);
+            JsonValue.Copy(ref value, patchValue); // reuse JsonValue.array if big enough
             success = true;
-            return patchValue;
+            return value;
         }
     }
 }

@@ -106,7 +106,11 @@ namespace Friflo.Json.Fliox
             }
         }
         
-        public static void Update(ref JsonValue dst, in JsonValue src) {
+        /// <summary>
+        /// Copy the given <paramref name="src"/> array to <paramref name="dst"/> <br/>
+        /// The <paramref name="src"/> array remains unchanged.
+        /// </summary>
+        public static void Copy(ref JsonValue dst, in JsonValue src) {
             if (src.IsNull()) {
                 dst = default;
                 return;

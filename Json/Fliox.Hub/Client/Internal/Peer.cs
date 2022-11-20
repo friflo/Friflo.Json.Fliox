@@ -84,7 +84,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         internal void SetPatchSource(in JsonValue value) {
             if (value.IsNull())
                 throw new InvalidOperationException("SetPatchSource() - expect value not null");
-            JsonValue.Update(ref patchSource, value);
+            JsonValue.Copy(ref patchSource, value); // reuse JsonValue.array if big enough
         }
         
         internal void SetPatchSourceNull() {
@@ -94,7 +94,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         internal void SetNextPatchSource(in JsonValue value) {
             if (value.IsNull())
                 throw new InvalidOperationException("SetNextPatchSource() - expect value not null");
-            JsonValue.Update(ref nextPatchSource, value);
+            JsonValue.Copy(ref nextPatchSource, value);
         }
         
         internal void SetNextPatchSourceNull() {
