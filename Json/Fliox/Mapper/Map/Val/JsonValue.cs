@@ -49,7 +49,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
             ref var json = ref serializer.json;
             if (json.start != 0) throw new InvalidOperationException("Expect json.start == 0");
             var patchValue = new JsonValue (json.buffer.array, json.Len);
-            JsonValue.Copy(ref value, patchValue); // reuse JsonValue.array if big enough
+            JsonValue.Copy(ref value, patchValue); // reuse JsonValue.array when using ReadTo()
             success = true;
             return value;
         }
