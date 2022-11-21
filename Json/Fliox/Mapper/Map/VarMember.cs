@@ -5,6 +5,17 @@ namespace Friflo.Json.Fliox.Mapper.Map
 {
 public partial struct Var
 {
+    internal readonly struct MemberMethods
+    {
+        internal readonly  MethodInfo  getter;
+        internal readonly  MethodInfo  setter;
+        
+        internal MemberMethods (MethodInfo getter, MethodInfo setter) {
+            this.getter = getter;
+            this.setter = setter;
+        }
+    }
+
     internal abstract class Member {
         internal    abstract    Var     GetVar (object obj);
         internal    abstract    void    SetVar (object obj, in Var value);
@@ -25,9 +36,9 @@ public partial struct Var
         internal    override    Var                 GetVar (object obj)                 => new Var(getter((T)obj));
         internal    override    void                SetVar (object obj, in Var value)   => setter((T)obj, value.Int8);
     
-        internal    MemberInt8(PropertyInfo mi) {
-            getter = CreateGet<T,byte>(mi.GetGetMethod(true));
-            setter = CreateSet<T,byte>(mi.GetSetMethod(true));
+        internal    MemberInt8(MemberMethods mm) {
+            getter = CreateGet<T,byte>(mm.getter);
+            setter = CreateSet<T,byte>(mm.setter);
         }
     }
     
@@ -37,9 +48,9 @@ public partial struct Var
         internal    override    Var                 GetVar (object obj)                 => new Var(getter((T)obj));
         internal    override    void                SetVar (object obj, in Var value)   => setter((T)obj, value.Int16);
     
-        internal    MemberInt16(PropertyInfo mi) {
-            getter = CreateGet<T,short>(mi.GetGetMethod(true));
-            setter = CreateSet<T,short>(mi.GetSetMethod(true));
+        internal    MemberInt16(MemberMethods mm) {
+            getter = CreateGet<T,short>(mm.getter);
+            setter = CreateSet<T,short>(mm.setter);
         }
     }
     
@@ -49,9 +60,9 @@ public partial struct Var
         internal    override    Var                 GetVar (object obj)                 => new Var(getter((T)obj));
         internal    override    void                SetVar (object obj, in Var value)   => setter((T)obj, value.Int32);
     
-        internal    MemberInt32(PropertyInfo mi) {
-            getter = CreateGet<T,int>(mi.GetGetMethod(true));
-            setter = CreateSet<T,int>(mi.GetSetMethod(true));
+        internal    MemberInt32(MemberMethods mm) {
+            getter = CreateGet<T,int>(mm.getter);
+            setter = CreateSet<T,int>(mm.setter);
         }
     }
     
@@ -61,9 +72,9 @@ public partial struct Var
         internal    override    Var                 GetVar (object obj)                 => new Var(getter((T)obj));
         internal    override    void                SetVar (object obj, in Var value)   => setter((T)obj, value.Int64);
     
-        internal    MemberInt64(PropertyInfo mi) {
-            getter = CreateGet<T,long>(mi.GetGetMethod(true));
-            setter = CreateSet<T,long>(mi.GetSetMethod(true));
+        internal    MemberInt64(MemberMethods mm) {
+            getter = CreateGet<T,long>(mm.getter);
+            setter = CreateSet<T,long>(mm.setter);
         }
     }
     
@@ -74,9 +85,9 @@ public partial struct Var
         internal    override    Var                 GetVar (object obj)                 => new Var(getter((T)obj));
         internal    override    void                SetVar (object obj, in Var value)   => setter((T)obj, value.Int8Null);
     
-        internal    MemberInt8Null(PropertyInfo mi) {
-            getter = CreateGet<T,byte?>(mi.GetGetMethod(true));
-            setter = CreateSet<T,byte?>(mi.GetSetMethod(true));
+        internal    MemberInt8Null(MemberMethods mm) {
+            getter = CreateGet<T,byte?>(mm.getter);
+            setter = CreateSet<T,byte?>(mm.setter);
         }
     }
     
@@ -86,9 +97,9 @@ public partial struct Var
         internal    override    Var                 GetVar (object obj)                 => new Var(getter((T)obj));
         internal    override    void                SetVar (object obj, in Var value)   => setter((T)obj, value.Int16Null);
     
-        internal    MemberInt16Null(PropertyInfo mi) {
-            getter = CreateGet<T,short?>(mi.GetGetMethod(true));
-            setter = CreateSet<T,short?>(mi.GetSetMethod(true));
+        internal    MemberInt16Null(MemberMethods mm) {
+            getter = CreateGet<T,short?>(mm.getter);
+            setter = CreateSet<T,short?>(mm.setter);
         }
     }
     
@@ -98,9 +109,9 @@ public partial struct Var
         internal    override    Var                 GetVar (object obj)                 => new Var(getter((T)obj));
         internal    override    void                SetVar (object obj, in Var value)   => setter((T)obj, value.Int32Null);
     
-        internal    MemberInt32Null(PropertyInfo mi) {
-            getter = CreateGet<T,int?>(mi.GetGetMethod(true));
-            setter = CreateSet<T,int?>(mi.GetSetMethod(true));
+        internal    MemberInt32Null(MemberMethods mm) {
+            getter = CreateGet<T,int?>(mm.getter);
+            setter = CreateSet<T,int?>(mm.setter);
         }
     }
     
@@ -110,9 +121,9 @@ public partial struct Var
         internal    override    Var                 GetVar (object obj)                 => new Var(getter((T)obj));
         internal    override    void                SetVar (object obj, in Var value)   => setter((T)obj, value.Int64Null);
     
-        internal    MemberInt64Null(PropertyInfo mi) {
-            getter = CreateGet<T,long?>(mi.GetGetMethod(true));
-            setter = CreateSet<T,long?>(mi.GetSetMethod(true));
+        internal    MemberInt64Null(MemberMethods mm) {
+            getter = CreateGet<T,long?>(mm.getter);
+            setter = CreateSet<T,long?>(mm.setter);
         }
     }
     
@@ -123,9 +134,9 @@ public partial struct Var
         internal    override    Var                 GetVar (object obj)                 => new Var(getter((T)obj));
         internal    override    void                SetVar (object obj, in Var value)   => setter((T)obj, value.Flt32);
     
-        internal    MemberFlt(PropertyInfo mi) {
-            getter = CreateGet<T,float>(mi.GetGetMethod(true));
-            setter = CreateSet<T,float>(mi.GetSetMethod(true));
+        internal    MemberFlt(MemberMethods mm) {
+            getter = CreateGet<T,float>(mm.getter);
+            setter = CreateSet<T,float>(mm.setter);
         }
     }
     
@@ -135,9 +146,9 @@ public partial struct Var
         internal    override    Var                 GetVar (object obj)                 => new Var(getter((T)obj));
         internal    override    void                SetVar (object obj, in Var value)   => setter((T)obj, value.Flt32Null);
     
-        internal    MemberFltNull(PropertyInfo mi) {
-            getter = CreateGet<T,float?>(mi.GetGetMethod(true));
-            setter = CreateSet<T,float?>(mi.GetSetMethod(true));
+        internal    MemberFltNull(MemberMethods mm) {
+            getter = CreateGet<T,float?>(mm.getter);
+            setter = CreateSet<T,float?>(mm.setter);
         }
     }
     
@@ -148,9 +159,9 @@ public partial struct Var
         internal    override    Var                 GetVar (object obj)                 => new Var(getter((T)obj));
         internal    override    void                SetVar (object obj, in Var value)   => setter((T)obj, value.Flt64);
     
-        internal    MemberDbl(PropertyInfo mi) {
-            getter = CreateGet<T,double>(mi.GetGetMethod(true));
-            setter = CreateSet<T,double>(mi.GetSetMethod(true));
+        internal    MemberDbl(MemberMethods mm) {
+            getter = CreateGet<T,double>(mm.getter);
+            setter = CreateSet<T,double>(mm.setter);
         }
     }
     
@@ -160,9 +171,9 @@ public partial struct Var
         internal    override    Var                 GetVar (object obj)                 => new Var(getter((T)obj));
         internal    override    void                SetVar (object obj, in Var value)   => setter((T)obj, value.Flt64Null);
     
-        internal    MemberDblNull(PropertyInfo mi) {
-            getter = CreateGet<T,double?>(mi.GetGetMethod(true));
-            setter = CreateSet<T,double?>(mi.GetSetMethod(true));
+        internal    MemberDblNull(MemberMethods mm) {
+            getter = CreateGet<T,double?>(mm.getter);
+            setter = CreateSet<T,double?>(mm.setter);
         }
     }
     
@@ -173,9 +184,9 @@ public partial struct Var
         internal    override    Var                 GetVar (object obj)                 => new Var(getter((T)obj));
         internal    override    void                SetVar (object obj, in Var value)   => setter((T)obj, value.Bool);
     
-        internal    MemberBool(PropertyInfo mi) {
-            getter = CreateGet<T,bool>(mi.GetGetMethod(true));
-            setter = CreateSet<T,bool>(mi.GetSetMethod(true));
+        internal    MemberBool(MemberMethods mm) {
+            getter = CreateGet<T,bool>(mm.getter);
+            setter = CreateSet<T,bool>(mm.setter);
         }
     }
     
@@ -185,9 +196,9 @@ public partial struct Var
         internal    override    Var                 GetVar (object obj)                 => new Var(getter((T)obj));
         internal    override    void                SetVar (object obj, in Var value)   => setter((T)obj, value.BoolNull);
     
-        internal    MemberBoolNull(PropertyInfo mi) {
-            getter = CreateGet<T,bool?>(mi.GetGetMethod(true));
-            setter = CreateSet<T,bool?>(mi.GetSetMethod(true));
+        internal    MemberBoolNull(MemberMethods mm) {
+            getter = CreateGet<T,bool?>(mm.getter);
+            setter = CreateSet<T,bool?>(mm.setter);
         }
     }
     
@@ -198,9 +209,9 @@ public partial struct Var
         internal    override    Var                 GetVar (object obj)                 => new Var(getter((T)obj));
         internal    override    void                SetVar (object obj, in Var value)   => setter((T)obj, value.Char);
     
-        internal    MemberChar(PropertyInfo mi) {
-            getter = CreateGet<T,char>(mi.GetGetMethod(true));
-            setter = CreateSet<T,char>(mi.GetSetMethod(true));
+        internal    MemberChar(MemberMethods mm) {
+            getter = CreateGet<T,char>(mm.getter);
+            setter = CreateSet<T,char>(mm.setter);
         }
     }
     
@@ -210,9 +221,9 @@ public partial struct Var
         internal    override    Var                 GetVar (object obj)                 => new Var(getter((T)obj));
         internal    override    void                SetVar (object obj, in Var value)   => setter((T)obj, value.CharNull);
     
-        internal    MemberCharNull(PropertyInfo mi) {
-            getter = CreateGet<T,char?>(mi.GetGetMethod(true));
-            setter = CreateSet<T,char?>(mi.GetSetMethod(true));
+        internal    MemberCharNull(MemberMethods mm) {
+            getter = CreateGet<T,char?>(mm.getter);
+            setter = CreateSet<T,char?>(mm.setter);
         }
     }
 }

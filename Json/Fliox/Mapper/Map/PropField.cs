@@ -26,7 +26,10 @@ namespace Friflo.Json.Fliox.Mapper.Map
             if (typeof(T).IsValueType) {
                 return new MemberProperty(fieldType.varType, property);    
             }
-            var member = fieldType.varType.CreateMember<T>(property);
+            var getter          = property.GetGetMethod(true);
+            var setter          = property.GetSetMethod(true);
+            var memberMethods   = new Var.MemberMethods(getter, setter);
+            var member          = fieldType.varType.CreateMember<T>(memberMethods);
             if (member != null)
                 return member;
             // object (string, structs, classes) are using a generic MemberProperty  
