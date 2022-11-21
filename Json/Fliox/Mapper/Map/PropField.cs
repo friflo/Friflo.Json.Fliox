@@ -13,8 +13,8 @@ namespace Friflo.Json.Fliox.Mapper.Map
     {
         
         public PropField(string name, string jsonName, TypeMapper fieldType, FieldInfo field, PropertyInfo property,
-            int primIndex, int objIndex, int fieldIndex, int genIndex, bool required, string docs)
-            : base(name, jsonName, fieldType, field, property, CreateMember(fieldType, field, property), primIndex, objIndex, fieldIndex, genIndex, required, docs)
+            int fieldIndex, int genIndex, bool required, string docs)
+            : base(name, jsonName, fieldType, field, property, CreateMember(fieldType, field, property), fieldIndex, genIndex, required, docs)
         {
         }
         
@@ -52,8 +52,6 @@ namespace Friflo.Json.Fliox.Mapper.Map
         public   readonly   TypeMapper      fieldType;          // never null
         public   readonly   VarType         varType;            // never null
         public   readonly   Var             defaultValue;
-        private  readonly   int             primIndex;          // obsolete - was used by generated IL code
-        private  readonly   int             objIndex;           // obsolete - was used by generated IL code
         public   readonly   int             genIndex;
         public   readonly   int             fieldIndex;
         public   readonly   bool            required;
@@ -75,7 +73,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
 
 
         internal PropField (string name, string jsonName, TypeMapper fieldType, FieldInfo field, PropertyInfo property, Var.Member member,
-            int primIndex, int objIndex, int fieldIndex, int genIndex, bool required, string docs)
+            int fieldIndex, int genIndex, bool required, string docs)
         {
             this.name       = name;
             this.key        = new JsonKey(name);
@@ -102,8 +100,6 @@ namespace Friflo.Json.Fliox.Mapper.Map
                 setLambda           = setLambdaExp.Compile();
             } */
             this.member     = member;
-            this.primIndex  = primIndex;
-            this.objIndex   = objIndex;
             this.fieldIndex = fieldIndex;
             this.genIndex   = genIndex;
             this.required   = required;
