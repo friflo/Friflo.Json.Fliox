@@ -427,7 +427,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object
                 var member          = field.member;
                 var srcMemberVar    = member.GetVar(src);
                 if (srcMemberVar.IsNull) {
-                    member.SetVar(dst, field.varType.DefaultValue);
+                    member.SetVar(dst, field.defaultValue);
                     continue;
                 }
                 var fieldType       = field.fieldType;

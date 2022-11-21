@@ -21,7 +21,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
         public   abstract Var       FromObject      (object obj);
         public   abstract object    ToObject        (in Var value);
         internal virtual  object    TryGetObject    (in Var value) => null;
-        internal abstract Member CreateMember<T>(MemberMethods mm);
+        internal abstract Member    CreateMember<T> (MemberMethods mm);
 
         public   override string    ToString() => Name;
         
