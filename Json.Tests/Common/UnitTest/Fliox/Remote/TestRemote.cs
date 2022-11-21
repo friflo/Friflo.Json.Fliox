@@ -73,7 +73,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
             var sb              = new StringBuilder();
             restFile.AppendFileHeader(sb);
             foreach (var req in restFile.requests) {
-                var stream      = req.Body(out var length);
+                var stream      = req.GetBody(out var length);
                 var context     = new RequestContext(_httpHost, req.method, req.path, req.query, stream, length, req.headers);
                 // execute synchronous to enable tests running in Unity Test Runner
                 _httpHost.ExecuteHttpRequest(context).Wait();

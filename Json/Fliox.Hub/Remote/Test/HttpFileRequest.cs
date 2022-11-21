@@ -18,7 +18,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.Test
         public  readonly    string              body;
         public  readonly    IHttpHeaders        headers;
         
-        public              Stream              Body(out int length) => StringToStream(body, out length);
+        public              Stream              GetBody(out int length) => StringToStream(body, out length);
 
         public  override    string  ToString() {
             if (query == "")
