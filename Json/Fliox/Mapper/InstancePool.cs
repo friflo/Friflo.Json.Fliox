@@ -84,9 +84,13 @@ namespace Friflo.Json.Fliox.Mapper
             var typeCount   = 0;
             for (int n = 0; n < poolCount; n++) {
                 ref var pool = ref pools[n];
-                used        += pool.used;
                 count       += pool.count;
-                typeCount   += pool.objects != null ? 1 : 0;
+                if (pool.objects == null)
+                    continue;
+                typeCount++;
+                if (version == pool.version) {
+                    used    += pool.used;
+                }
             }
             return $"count: {count} used: {used} types: {typeCount} version: {version}";
         }
