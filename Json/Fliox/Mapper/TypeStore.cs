@@ -59,6 +59,7 @@ namespace Friflo.Json.Fliox.Mapper
 
         public                  int                             typeCreationCount;
         public                  int                             storeLookupCount;
+        public                  int                             currentMapperId;
 
         public TypeStore() {
             typeResolver    = new DefaultTypeResolver();
@@ -105,6 +106,7 @@ namespace Friflo.Json.Fliox.Mapper
                     // Deferred initialization of TypeMapper to allow circular type dependencies.
                     // So it supports type hierarchies without a 'directed acyclic graph' (DAG) of type dependencies.
                     last.InitTypeMapper(this);
+                    last.id = currentMapperId++;
                 }
                 if (mapper != null)
                     return mapper;

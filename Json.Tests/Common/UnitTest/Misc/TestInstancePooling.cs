@@ -4,23 +4,27 @@ using System.Threading.Tasks;
 using Friflo.Json.Fliox;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
+using Friflo.Json.Fliox.Mapper;
+using Friflo.Json.Fliox.Utils;
 using NUnit.Framework;
 
 namespace Friflo.Json.Tests.Common.UnitTest.Misc
 {
-    public class TestInstancePooling
+    public static class TestInstancePooling
     {
+        private const int Count = 2000; // 2_000_000;
+        
         [Test]
-        public void TestPoolReferenceParallel()
+        public static void TestPoolReferenceParallel()
         {
             Parallel.For(0, 4, i => TestPoolReference());
         }
         
         [Test]
-        public void TestPoolReference()
+        public static void TestPoolReference()
         {
             var objects = new List<object>();
-            for (int n = 0; n < 2_000_000; n++) {
+            for (int n = 0; n < Count; n++) {
                 var syncRequest = new SyncRequest();
                 var tasks       = new List<SyncRequestTask>();
                 var upsert1     = new UpsertEntities();
@@ -32,28 +36,35 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc
                 objects.Add(upsert1);
                 objects.Add(upsert2);
                 objects.Add(entities);
+                
                 objects.Clear();
             }
         }
         
         [Test]
-        public void TestPoolParallel()
+        public static void TestPoolParallel()
         {
-            Parallel.For(0, 4, i => TestPool());
+            var typeStore = new TypeStore();
+            Parallel.For(0, 4, i => TestPoolInternal(typeStore));
         }
         
         [Test]
-        public void TestPool()
+        public static void TestPool() {
+            var typeStore = new TypeStore();
+            TestPoolInternal(typeStore);
+        }
+        
+        private static void TestPoolInternal(TypeStore typeStore)
         {
-            var pool                    = new Pool();
-            var syncRequestMapper       = new Mapper<SyncRequest>           (0, () => new SyncRequest());
-            var syncRequestTasksMapper  = new Mapper<List<SyncRequestTask>> (1, () => new List<SyncRequestTask>());
-            var upsertMapper            = new Mapper<UpsertEntities>        (2, () => new UpsertEntities());
-            var entitiesMapper          = new Mapper<List<JsonEntity>>      (3, () => new List<JsonEntity>());
+            var pool                    = new InstancePool();
+            var syncRequestMapper       = typeStore.GetTypeMapper(typeof(SyncRequest));
+            var syncRequestTasksMapper  = typeStore.GetTypeMapper(typeof(List<SyncRequestTask>));
+            var upsertMapper            = typeStore.GetTypeMapper(typeof(UpsertEntities));
+            var entitiesMapper          = typeStore.GetTypeMapper(typeof(List<JsonEntity>));
             
             var start = GC.GetAllocatedBytesForCurrentThread();
             var objects = new List<object>();
-            for (int n = 0; n < 2_000_000; n++) {
+            for (int n = 0; n < Count; n++) {
                 var syncRequest = pool.Create(syncRequestMapper);
                 var tasks       = pool.Create(syncRequestTasksMapper);
                 var upsert1     = pool.Create(upsertMapper);
@@ -65,101 +76,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc
                 objects.Add(upsert1);
                 objects.Add(upsert2);
                 objects.Add(entities);
+                
                 objects.Clear();
                 pool.Reuse();
             }
             var dif = GC.GetAllocatedBytesForCurrentThread() - start;
             Console.WriteLine(dif);
-        }
-        
-        class Mapper
-        {
-            internal readonly int index;
-            
-            internal Mapper(int index) {
-                this.index = index;
-            }
-        }
-        
-        class Mapper<T> : Mapper
-        {
-            internal readonly Func<T> factory;
-            
-            internal Mapper(int index, Func<T> factory) : base(index) {
-                this.factory = factory;
-            }
-        }
-        
-        class Pool
-        {
-            private InstancePool[]  instancePools       = Array.Empty<InstancePool>();
-            private int             instancePoolsCount;
-            private int             version;
-            
-            internal T Create<T>(Mapper<T> mapper)
-            {
-                var index = mapper.index;
-                if (index < instancePoolsCount) {
-                    ref var instancePool = ref instancePools[index];
-                    if (instancePool.version != version) {
-                        instancePool.version = version;
-                        if (instancePool.count > 0) {
-                            instancePool.used = 1;
-                            return (T)instancePool.instances[0];
-                        }
-                    } else {
-                        int used = instancePool.used;
-                        if (used < instancePool.count) {
-                            instancePool.used++;
-                            return (T)instancePool.instances[used];
-                        }
-                    }
-                    return (T)instancePool.Create(mapper);
-                }
-                return CreateInstancePool(mapper);
-            }
-            
-            private T CreateInstancePool<T>(Mapper<T> mapper) {
-                var count           = instancePoolsCount;
-                var index           = mapper.index;
-                instancePoolsCount  = index + 1;
-                var newPool         = new InstancePool( new List<object>() ) { version = version };
-                var instance        = (T)newPool.Create(mapper);
-                var newPools        = new InstancePool[instancePoolsCount];
-                for (int n = 0; n < count; n++) {
-                    newPools[n] = instancePools[n];
-                }
-                instancePools           = newPools;
-                instancePools[index]    = newPool;
-                return instance;
-            }
-            
-            internal void Reuse() {
-                version++;
-            }
-        }
-        
-        struct InstancePool
-        {
-            internal readonly   List<object>    instances;
-            internal            int             used;
-            internal            int             count;
-            internal            int             version;
-            
-            internal InstancePool(List<object> instances) {
-                this.instances  = instances;
-                used            =  0;
-                count           =  0;
-                version         = -1;
-            }
-            
-            internal object Create<T>(Mapper<T> mapper) {
-                used++;
-                var instance = mapper.factory();
-                count++;
-                instances.Add(instance);
-                return instance;               
-            }
         }
     }
 }

@@ -26,6 +26,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
         public  readonly    Type            nullableUnderlyingType;
         public  readonly    bool            useIL;
         public  readonly    string          docs;
+        internal            int             id;
         public              InstanceFactory instanceFactory;
         internal            string          discriminant;
         public              string          Discriminant        => discriminant;
