@@ -18,6 +18,8 @@ namespace Friflo.Json.Fliox.Mapper
         private             int             poolCount;
         private             int             version;
         
+        public   override   string          ToString() => GetString();
+        
         public InstancePool(TypeStore typeStore) {
             pools           = Array.Empty<ClassPool>();
             this.typeStore  = typeStore;
@@ -75,6 +77,19 @@ namespace Friflo.Json.Fliox.Mapper
             pools[id]   = newPool;
             return instance;
         }
+        
+        private string GetString() {
+            var used        = 0;
+            var count       = 0;
+            var typeCount   = 0;
+            for (int n = 0; n < poolCount; n++) {
+                ref var pool = ref pools[n];
+                used        += pool.used;
+                count       += pool.count;
+                typeCount   += pool.objects != null ? 1 : 0;
+            }
+            return $"count: {count} used: {used} types: {typeCount} version: {version}";
+        }
     }
     
     /// <summary> Contain pooled instances of a specific type </summary>
@@ -84,7 +99,9 @@ namespace Friflo.Json.Fliox.Mapper
         internal            int             used;
         internal            int             count;
         internal            int             version;
-        
+
+        public   override   string          ToString() => GetString();
+
         internal ClassPool(List<object> objects) {
             this.objects    = objects;
             used            =  0;
@@ -98,6 +115,14 @@ namespace Friflo.Json.Fliox.Mapper
             var instance = mapper.NewInstance();
             objects.Add(instance);
             return instance;               
+        }
+        
+        private string GetString() {
+            if (objects == null)
+                return "";
+            var type        = objects[0].GetType();
+            var typeName    = VarType.GetTypeName(type);
+            return $"count: {count} used: {used} - {typeName}";
         }
     }
 }
