@@ -214,7 +214,7 @@ namespace Friflo.Json.Fliox.Hub.Client
                 }
                 var entity  = peer.NullableEntity;
                 if (entity == null) {
-                    entity  = (T)intern.GetMapper().CreateInstance();
+                    entity  = (T)intern.GetMapper().NewInstance();
                     SetEntityId(entity, id);
                     peer.SetEntity(entity);
                 }
@@ -247,7 +247,7 @@ namespace Friflo.Json.Fliox.Hub.Client
                 ApplyInfoType applyType;
                 if (entity == null) {
                     applyType   = ApplyInfoType.EntityCreated;
-                    entity      = (T)intern.GetMapper().CreateInstance();
+                    entity      = (T)intern.GetMapper().NewInstance();
                     SetEntityId(entity, jsonEntity.key);
                     peer.SetEntity(entity);
                 } else {

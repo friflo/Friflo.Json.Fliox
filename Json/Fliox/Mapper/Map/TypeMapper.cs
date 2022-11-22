@@ -81,7 +81,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
         
         public   abstract void      CopyVar         (in Var src, ref Var dst);
         
-        public   abstract object    CreateInstance();
+        public   abstract object    NewInstance();
 
         public   virtual  bool      IsNullVar       (in Var value) => value.IsNull;
         
@@ -184,7 +184,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
         /// </summary>
         public override      void    InitTypeMapper(TypeStore typeStore) { }
 
-        public override      object  CreateInstance() =>  null;
+        public override      object  NewInstance() =>  null;
     }
     
     internal sealed class ConcreteTypeMatcher : ITypeMatcher

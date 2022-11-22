@@ -103,7 +103,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Arr
             
             var queue = slot;
             if (queue == null)
-                queue = (TCol) CreateInstance();
+                queue = (TCol) NewInstance();
             else
                 queue.Clear();
 

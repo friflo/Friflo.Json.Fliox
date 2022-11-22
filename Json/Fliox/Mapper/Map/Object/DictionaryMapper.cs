@@ -140,7 +140,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object
                 return default;
 
             if (map == null) {
-                map = (TMap) CreateInstance();
+                map = (TMap) NewInstance();
             } else {
                 map.Clear();
             }

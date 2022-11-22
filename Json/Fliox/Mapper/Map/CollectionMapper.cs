@@ -54,7 +54,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
             fieldInfo.SetValue(this, mapper);
         }
         
-        public override object CreateInstance()
+        public override object NewInstance()
         {
             return ReflectUtils.CreateInstance(constructor);
         }

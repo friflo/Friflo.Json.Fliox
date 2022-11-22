@@ -139,7 +139,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object
             fieldInfo.SetValue(this, fields);
         }
         
-        public override object CreateInstance() {
+        public override object NewInstance() {
             if (instanceFactory != null)
                 return instanceFactory.CreateInstance(typeof(T));
             
@@ -314,7 +314,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object
                 return reader.ErrorMsg<TypeMapper<T>>($"Expect discriminator '{discriminator}': '...' as first JSON member for type: ", classType.type.Name, out success);
             }
             if (classType.IsNull(ref obj))
-                obj = (T) classType.CreateInstance();
+                obj = (T) classType.NewInstance();
             success = true;
             return null;
         }
@@ -398,7 +398,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object
             if (dst == null || srcType != dst.GetType()) {
                 var factory = instanceFactory;
                 if (factory == null) {
-                    dst = (T)CreateInstance();
+                    dst = (T)NewInstance();
                 } else {
                     dst = (T)factory.CreatePolymorph(srcType);
                 }
