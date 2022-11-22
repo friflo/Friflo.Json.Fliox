@@ -34,10 +34,10 @@ namespace Friflo.Json.Fliox.Hub.Remote
         
         public void Dispose() { }
         
-        internal async Task<JsonResponse> ExecuteJsonRequest(InstancePool instancePool, JsonValue jsonRequest, SyncContext syncContext) {
+        internal async Task<JsonResponse> ExecuteJsonRequest(RemoteArgs args, JsonValue jsonRequest, SyncContext syncContext) {
             var objectMapper = syncContext.ObjectMapper;
             try {
-                var syncRequest = RemoteUtils.ReadSyncRequest(instancePool, jsonRequest, objectMapper, out string error);
+                var syncRequest = RemoteUtils.ReadSyncRequest(args, jsonRequest, out string error);
                 if (error != null) {
                     return JsonResponse.CreateError(objectMapper, error, ErrorResponseType.BadResponse, null);
                 }

@@ -30,6 +30,17 @@ namespace Friflo.Json.Fliox.Hub.Remote
         /** map to <see cref="SyncEvent.tasks"/> */             public  JsonValue[] tasks;
     }
     
+    public readonly struct RemoteArgs
+    {
+        internal readonly   InstancePool    instancePool;
+        internal readonly   ObjectMapper    mapper;
+        
+        public RemoteArgs (InstancePool instancePool, ObjectMapper mapper) {
+            this.instancePool   = instancePool;
+            this.mapper         = mapper;
+        }
+    }
+    
     public static class RemoteUtils
     {
         public static JsonValue CreateProtocolMessage (ProtocolMessage message, ObjectPool<ObjectMapper> objectMapper)
@@ -72,26 +83,20 @@ namespace Friflo.Json.Fliox.Hub.Remote
         private static readonly byte[] DiscriminatorKey     = Encoding.UTF8.GetBytes("msg");
         private static readonly byte[] DiscriminatorValue   = Encoding.UTF8.GetBytes("sync");
         
-        public static SyncRequest ReadSyncRequest (
-            InstancePool                instancePool,
-            in JsonValue                jsonMessage,
-            ObjectPool<ObjectMapper>    mapperPool,
-            out string                  error)
+        public static SyncRequest ReadSyncRequest (in RemoteArgs args, in JsonValue jsonMessage, out string error)
         {
-            using (var pooledMapper = mapperPool.Get()) {
-                var reader  = pooledMapper.instance.reader;
-                var message = reader.Read<ProtocolMessage>(jsonMessage);
-                if (reader.Error.ErrSet) {
-                    error = reader.Error.GetMessage();
-                    return null;
-                }
-                if (message is SyncRequest syncRequest) {
-                    error = null;
-                    return syncRequest;
-                }
-                error = $"Expect 'sync' request. was: '{message.MessageType}'";
+            var reader  = args.mapper.reader;
+            var message = reader.Read<ProtocolMessage>(jsonMessage);
+            if (reader.Error.ErrSet) {
+                error = reader.Error.GetMessage();
                 return null;
             }
+            if (message is SyncRequest syncRequest) {
+                error = null;
+                return syncRequest;
+            }
+            error = $"Expect 'sync' request. was: '{message.MessageType}'";
+            return null;
         }
         
         public static ProtocolMessage ReadProtocolMessage (in JsonValue jsonMessage, ObjectPool<ObjectMapper> mapperPool, out string error)
