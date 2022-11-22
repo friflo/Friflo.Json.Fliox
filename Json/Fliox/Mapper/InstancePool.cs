@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using Friflo.Json.Fliox.Mapper.Map;
 
 namespace Friflo.Json.Fliox.Mapper
@@ -34,7 +33,10 @@ namespace Friflo.Json.Fliox.Mapper
         
         public object CreateObject(TypeMapper mapper)
         {
-            AssertTypeStore(mapper);
+#if DEBUG
+            if (typeStore != mapper.typeStore)
+                throw new InvalidOperationException($"used TypeMapper from a different TypeStore.Type {mapper.type}");
+#endif
             var id = mapper.id;
             if (id < poolCount) {
                 ref var pool    = ref pools[id];
@@ -72,14 +74,6 @@ namespace Friflo.Json.Fliox.Mapper
             pools       = newPools;
             pools[id]   = newPool;
             return instance;
-        }
-        
-        [Conditional("DEBUG")]
-        private void AssertTypeStore(TypeMapper mapper) {
-#if DEBUG
-            if (typeStore != mapper.typeStore)
-                throw new InvalidOperationException($"used TypeMapper from a different TypeStore.Type {mapper.type}");
-#endif
         }
     }
     
