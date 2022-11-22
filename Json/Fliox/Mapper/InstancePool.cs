@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using Friflo.Json.Fliox.Mapper.Map;
 
-namespace Friflo.Json.Fliox.Utils
+namespace Friflo.Json.Fliox.Mapper
 {
     public class InstancePool
     {
