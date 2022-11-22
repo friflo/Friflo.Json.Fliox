@@ -142,9 +142,10 @@ namespace Friflo.Json.Fliox.Mapper.Map.Arr
                 return default;
             
             var list = slot;
-            if (list == null)
-                list = new List<T>(Reader.minLen);
-
+            if (list == null) {
+                list = (List<T>)CreateInstance(reader.instancePool); 
+                list.Capacity = Reader.minLen;
+            }
             int startLen = list.Count;
             int index = 0;
             while (true) {

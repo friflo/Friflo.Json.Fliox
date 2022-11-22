@@ -62,7 +62,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
             return instancePool.Create(instanceMapper);
         }
         
-        internal object CreatePolymorph(string name, object obj) {
+        internal object CreatePolymorph(InstancePool instancePool, string name, object obj) {
             if (!mapperByDiscriminator.TryGetValue(name, out TypeMapper mapper))
                 return null;
             if (obj != null) {
@@ -70,7 +70,9 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
                 if (objType == mapper.type)
                     return obj;
             }
-            return mapper.NewInstance();
+            if (instancePool == null)
+                return mapper.NewInstance();
+            return instancePool.Create(mapper);
         }
         
         internal object CreatePolymorph(Type type) {

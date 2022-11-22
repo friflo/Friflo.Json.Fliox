@@ -42,7 +42,11 @@ namespace Friflo.Json.Fliox.Mapper.Map.Arr
         public GenericIReadOnlyCollectionMapper(StoreConfig config, Type type, Type elementType, ConstructorInfo constructor) :
             base(config, type, elementType, 1, typeof(string), constructor) {
         }
-        
+
+        public override object NewInstance() {
+            return new List<TElm>();
+        }
+
         public override DiffType Diff(Differ differ, TCol left, TCol right) {
             if (left.Count != right.Count)
                 return differ.AddNotEqualObject(left, right);
@@ -92,7 +96,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Arr
             if (!reader.StartArray(this, out success))
                 return default;
             
-            List<TElm> list = new List<TElm>();
+            var list = (List<TElm>)CreateInstance(reader.instancePool);
             while (true) {
                 JsonEvent ev = reader.parser.NextEvent();
                 switch (ev) {
