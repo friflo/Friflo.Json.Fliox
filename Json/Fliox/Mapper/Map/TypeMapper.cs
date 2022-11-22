@@ -192,7 +192,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
         protected            object  CreateInstance(InstancePool pool) {
             if (pool == null)
                 return NewInstance();
-            return pool.Create(this);
+            return pool.CreateObject(this);
         }
     }
     

@@ -15,7 +15,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
 {
     public static class TestInstancePooling
     {
-        private const int Count = 2000; // 2_000_000;
+        private const int Count = 10_000_000;
         
         [Test]
         public static void TestPoolReferenceParallel()
@@ -72,11 +72,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
                 if (n == 1) start = GC.GetAllocatedBytesForCurrentThread();
                 objects.Clear();
                 
-                var syncRequest = pool.Create(syncRequestMapper);
-                var tasks       = pool.Create(syncRequestTasksMapper);
-                var upsert1     = pool.Create(upsertMapper);
-                var upsert2     = pool.Create(upsertMapper);
-                var entities    = pool.Create(entitiesMapper);
+                var syncRequest = pool.CreateObject(syncRequestMapper);
+                var tasks       = pool.CreateObject(syncRequestTasksMapper);
+                var upsert1     = pool.CreateObject(upsertMapper);
+                var upsert2     = pool.CreateObject(upsertMapper);
+                var entities    = pool.CreateObject(entitiesMapper);
                 
                 objects.Add(syncRequest);
                 objects.Add(tasks);

@@ -28,7 +28,11 @@ namespace Friflo.Json.Fliox.Mapper
             version++;
         }
         
-        public object Create(TypeMapper mapper)
+        public T Create<T>(TypeMapper<T> mapper) {
+            return (T)CreateObject(mapper);
+        }
+        
+        public object CreateObject(TypeMapper mapper)
         {
             AssertTypeStore(mapper);
             var id = mapper.id;
