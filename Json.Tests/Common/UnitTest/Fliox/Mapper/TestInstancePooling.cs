@@ -1,3 +1,6 @@
+// Copyright (c) Ullrich Praetz. All rights reserved.
+// See LICENSE file in the project root for full license information.
+
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -6,8 +9,9 @@ using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Mapper;
 using NUnit.Framework;
+using static NUnit.Framework.Assert;
 
-namespace Friflo.Json.Tests.Common.UnitTest.Misc
+namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
 {
     public static class TestInstancePooling
     {
@@ -24,6 +28,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc
         {
             var objects = new List<object>();
             for (int n = 0; n < Count; n++) {
+                objects.Clear();
+                
                 var syncRequest = new SyncRequest();
                 var tasks       = new List<SyncRequestTask>();
                 var upsert1     = new UpsertEntities();
@@ -35,9 +41,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc
                 objects.Add(upsert1);
                 objects.Add(upsert2);
                 objects.Add(entities);
-                
-                objects.Clear();
             }
+            AreEqual(5, objects.Count);
         }
         
         [Test]
@@ -61,9 +66,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc
             var upsertMapper            = typeStore.GetTypeMapper(typeof(UpsertEntities));
             var entitiesMapper          = typeStore.GetTypeMapper(typeof(List<JsonEntity>));
             
-            var start = GC.GetAllocatedBytesForCurrentThread();
+            long start = 0;
             var objects = new List<object>();
             for (int n = 0; n < Count; n++) {
+                if (n == 1) start = GC.GetAllocatedBytesForCurrentThread();
+                objects.Clear();
+                
                 var syncRequest = pool.Create(syncRequestMapper);
                 var tasks       = pool.Create(syncRequestTasksMapper);
                 var upsert1     = pool.Create(upsertMapper);
@@ -76,11 +84,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc
                 objects.Add(upsert2);
                 objects.Add(entities);
                 
-                objects.Clear();
                 pool.Reuse();
             }
             var dif = GC.GetAllocatedBytesForCurrentThread() - start;
-            Console.WriteLine(dif);
+            AreEqual(5, objects.Count);
+            AreEqual(0, dif);
         }
     }
 }
