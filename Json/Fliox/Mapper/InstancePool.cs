@@ -9,7 +9,7 @@ using Friflo.Json.Fliox.Mapper.Map;
 namespace Friflo.Json.Fliox.Mapper
 {
     /// <summary>
-    /// A pool for class instances of all types contained in a <see cref="TypeStore"/>.<br/>
+    /// A pool for class instances of all types defined in a <see cref="TypeStore"/>.<br/>
     /// Pooled instances are reused when deserializing JSON using an <see cref="ObjectReader"/>
     /// </summary>
     public class InstancePool
@@ -83,7 +83,7 @@ namespace Friflo.Json.Fliox.Mapper
         }
     }
     
-    /// <summary> Contain pooled instances of a specific class </summary>
+    /// <summary> Contain pooled instances of a specific type </summary>
     internal struct ClassPool
     {
         internal readonly   List<object>    objects;
