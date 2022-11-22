@@ -75,7 +75,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                     // --------------    POST           /graphql/{database}     case: "operationName" == "IntrospectionQuery"
                     if (operationName == "IntrospectionQuery") {
                         var schemaResponse = IntrospectionQuery(mapper, query, schema.schemaResponse);
-                        context.Write(schemaResponse, schemaResponse.Count, "application/json", 200);
+                        context.Write(schemaResponse, "application/json", 200);
                         return;
                     }
                     // --------------    POST           /graphql/{database}     case: any other "operationName"
@@ -93,7 +93,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                         return;
                     }
                     var opResponse = QLResponseHandler.Process(mapper, projectorPool, request.queries, syncResult.success);
-                    context.Write(opResponse, 0, "application/json", 200);
+                    context.Write(opResponse, "application/json", 200);
                     return;
                 }
             }

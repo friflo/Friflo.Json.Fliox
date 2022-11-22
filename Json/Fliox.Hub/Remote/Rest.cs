@@ -119,7 +119,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 var writer          = pooled.instance.writer;
                 writer.Pretty       = true;
                 var entitiesJson    = writer.WriteAsValue(entities);
-                context.Write(entitiesJson, 0, "application/json", 200);
+                context.Write(entitiesJson, "application/json", 200);
             }
         }
         
@@ -161,7 +161,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 var writer      = pooled.instance.writer;
                 writer.Pretty   = true;
                 var response    = writer.WriteAsValue(entities);
-                context.Write(response, 0, "application/json", 200);
+                context.Write(response, "application/json", 200);
             }
         }
         
@@ -252,7 +252,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 return;
             }
             var entityStatus = content.Json.IsNull() ? 404 : 200;
-            context.Write(content.Json, 0, "application/json", entityStatus);
+            context.Write(content.Json, "application/json", entityStatus);
         }
         
         private static async Task DeleteEntities(RequestContext context, string database, string container, JsonKey[] keys) {
@@ -417,7 +417,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 context.WriteError("send error", resultError.message, 500);
                 return;
             }
-            context.Write(sendResult.result, 0, "application/json", 200);
+            context.Write(sendResult.result, "application/json", 200);
         }
         
         private static async Task Message(RequestContext context, string database, string message, JsonValue param) {

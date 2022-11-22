@@ -148,7 +148,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 var result      = await ExecuteJsonRequest(null, requestContent, syncContext).ConfigureAwait(false);
                 
                 syncContext.Release();
-                request.Write(result.body, 0, "application/json", (int)result.status);
+                request.Write(result.body, "application/json", (int)result.status);
                 request.handled = true;
                 return;
             }

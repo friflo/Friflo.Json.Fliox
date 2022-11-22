@@ -88,7 +88,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 }
                 if (cache.TryGetValue(context.route, out CacheEntry entry)) {
                     var body = new JsonValue(entry.body);
-                    context.Write(body, 0, entry.mediaType, entry.status);
+                    context.Write(body, entry.mediaType, entry.status);
                     context.SetHeaders(entry.headers);
                     return;
                 }
@@ -119,7 +119,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             }
             var content = await fileHandler.ReadFile(path).ConfigureAwait(false);
             var contentType = ContentTypeFromPath(path);
-            context.Write(new JsonValue(content), 0, contentType, 200);
+            context.Write(new JsonValue(content), contentType, 200);
         }
         
         private void ListDirectory (RequestContext context) {

@@ -9,6 +9,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Friflo.Json.Burst;
 
+// ReSharper disable ConvertToAutoPropertyWhenPossible
 // ReSharper disable ConvertToAutoProperty
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox
@@ -22,24 +23,26 @@ namespace Friflo.Json.Fliox
     public readonly struct JsonValue {
         /// not public to prevent potential side effects by application code mutating array elements
         private  readonly       byte[]  array;                                              // can be null - default struct value
+        private  readonly       int     start;                                              // > 0 if using an InstancePool
         private  readonly       int     count;                                              // can be 0    - default struct value
         
         /// not public to prevent potential side effects by application code mutating array elements
         internal                byte[]  Array       => array ?? Null;                       // never null
+        public                  int     Start       => start;
         public                  int     Count       => array != null ? count : Null.Length; // always > 0
         
         public   override       string  ToString()  => AsString();
-        public                  string  AsString()  => array == null ? "null" : Encoding.UTF8.GetString(array, 0, count);
+        public                  string  AsString()  => array == null ? "null" : Encoding.UTF8.GetString(array, start, count);
         
-        public  ArraySegment<byte>      AsArraySegment()        => new ArraySegment<byte>(Array, 0, Count);
+        public  ArraySegment<byte>      AsArraySegment()        => new ArraySegment<byte>(Array, start, Count);
 #if !UNITY_5_3_OR_NEWER
-//      public  ReadOnlyMemory<byte>    AsReadOnlyMemory()      => new ReadOnlyMemory<byte>(Array, 0, Array.Length);
+//      public  ReadOnlyMemory<byte>    AsReadOnlyMemory()      => new ReadOnlyMemory<byte>(Array, start, Array.Length);
 #endif
-        public  ByteArrayContent        AsByteArrayContent()    => new ByteArrayContent(Array, 0, Count); // todo hm. dependency System.Net.Http
+        public  ByteArrayContent        AsByteArrayContent()    => new ByteArrayContent(Array, start, Count); // todo hm. dependency System.Net.Http
         
         public  byte[]                  AsByteArray() {
             var result = new byte[Count];
-            Buffer.BlockCopy(Array, 0, result, 0, Count);
+            Buffer.BlockCopy(Array, start, result, 0, Count);
             return result;
         }
 
@@ -48,21 +51,25 @@ namespace Friflo.Json.Fliox
         public JsonValue(byte[] array, int count) {
             this.array  = array ?? throw new ArgumentNullException(nameof(array));
             this.count  = count;
+            start       = 0;
         }
         
         public JsonValue(byte[] array) {
             if (array == null) {
                 this.array  = null;
                 count       = Null.Length;
+                start       = 0;
                 return;
             }
             if (array.Length == Null.Length && array.SequenceEqual(Null)) {
                 this.array  = null;
                 count       = Null.Length;
+                start       = 0;
                 return;
             } 
             this.array  = array;
             count       = array.Length;
+            start       = 0;
         }
         
         /// <summary> Prefer using <see cref="JsonValue(byte[])"/> </summary>
@@ -70,15 +77,18 @@ namespace Friflo.Json.Fliox
             if (value == null) {
                 array   = null;
                 count   = Null.Length;
+                start   = 0;
                 return;
             }
             if (value == "null") {
                 array   = null;
                 count   = Null.Length;
+                start   = 0;
                 return;
-            } 
+            }
             array   = Encoding.UTF8.GetBytes(value);
             count   = array.Length;
+            start   = 0;
         }
         
         public bool IsNull() {
@@ -114,12 +124,13 @@ namespace Friflo.Json.Fliox
                 dst = default;
                 return;
             }
+            if (dst.start != 0) throw new InvalidOperationException("Expect start = 0");
             var dstArray    = dst.array;
             var count       = src.Count;
             if (dstArray == null || dstArray.Length < count) {
                 dstArray = new byte[count];
             }
-            Buffer.BlockCopy(src.array, 0, dstArray, 0, count);
+            Buffer.BlockCopy(src.array, src.start, dstArray, 0, count);
             dst = new JsonValue(dstArray, count);
         }
     }
@@ -127,7 +138,7 @@ namespace Friflo.Json.Fliox
     public static class JsonValueExtensions {
     
         public static void AppendArray(this ref Bytes bytes, in JsonValue array) {
-            AppendArray (ref bytes, array, 0, array.Count);
+            AppendArray (ref bytes, array, array.Start, array.Count);
         }
         
         public static void AppendArray(this ref Bytes bytes, in JsonValue array, int offset, int len) {
@@ -142,12 +153,12 @@ namespace Friflo.Json.Fliox
             bytes.hc = BytesConst.notHashed;
         }
         
-        public static async Task WriteAsync(this Stream stream, JsonValue array, int offset, int count) {
-            await stream.WriteAsync(array.Array, offset, count).ConfigureAwait(false);
+        public static async Task WriteAsync(this Stream stream, JsonValue array) {
+            await stream.WriteAsync(array.Array, array.Start, array.Count).ConfigureAwait(false);
         }
         
-        public static void Write(this Stream stream, in JsonValue array, int offset, int count) {
-            stream.Write(array.Array, offset, count);
+        public static void Write(this Stream stream, in JsonValue array) {
+            stream.Write(array.Array, array.Start, array.Count);
         }
     }
 }

@@ -39,7 +39,6 @@ namespace Friflo.Json.Fliox.Hub.Remote
         public              string                      ResponseContentType { get; private set; }
         public              int                         StatusCode          { get; private set; }
         public              JsonValue                   Response            { get; private set; }
-        public              int                         Offset              { get; private set; }
         public              Dictionary<string, string>  ResponseHeaders     => responseHeaders;
         public              bool                        Handled             => handled;
         public              ObjectPool<ObjectMapper>    ObjectMapper        => Pool.ObjectMapper;
@@ -67,18 +66,16 @@ namespace Friflo.Json.Fliox.Hub.Remote
             this.headers        = headers;
         }
         
-        public void Write (in JsonValue value, int offset, string contentType, int statusCode) {
+        public void Write (in JsonValue value, string contentType, int statusCode) {
             ResponseContentType = contentType;
             StatusCode          = statusCode;
             Response            = value;
-            Offset              = offset;
         }
         
         public void WriteString (string value, string contentType, int statusCode) {
             ResponseContentType = contentType;
             StatusCode          = statusCode;
             Response            = new JsonValue(value);
-            Offset              = 0;
         }
         
         public void WriteError (string errorType, string message, int statusCode) {
@@ -86,7 +83,6 @@ namespace Friflo.Json.Fliox.Hub.Remote
             ResponseContentType = "text/plain";
             StatusCode          = statusCode;
             Response            = new JsonValue(error);
-            Offset              = 0;
         }
         
         public void AddHeader(string key, string value) {

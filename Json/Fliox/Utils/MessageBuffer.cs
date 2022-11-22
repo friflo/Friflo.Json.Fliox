@@ -69,8 +69,9 @@ namespace Friflo.Json.Fliox.Utils
         
         public void Enqueue(in JsonValue data) {
             var array   = data.Array;
+            var start   = data.Start;
             var len     = data.Count;
-            Enqueue(array, 0, len);
+            Enqueue(array, start, len);
         }
         
         public void Enqueue(in Bytes bytes) {

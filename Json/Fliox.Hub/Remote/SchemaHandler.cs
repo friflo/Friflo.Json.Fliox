@@ -75,7 +75,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 context.WriteString(result.content, result.contentType, 200);
                 return Task.CompletedTask;
             }
-            context.Write(result.bytes, 0, result.contentType, 200);
+            context.Write(result.bytes, result.contentType, 200);
             return Task.CompletedTask;
         }
         
