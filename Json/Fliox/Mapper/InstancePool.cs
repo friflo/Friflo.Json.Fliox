@@ -75,8 +75,8 @@ namespace Friflo.Json.Fliox.Mapper
         
         internal object Create(TypeMapper mapper) {
             used++;
-            var instance = mapper.NewInstance();
             count++;
+            var instance = mapper.NewInstance();
             objects.Add(instance);
             return instance;               
         }
