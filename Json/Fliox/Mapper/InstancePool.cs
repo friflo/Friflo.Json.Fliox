@@ -8,15 +8,19 @@ using Friflo.Json.Fliox.Mapper.Map;
 
 namespace Friflo.Json.Fliox.Mapper
 {
+    /// <summary>
+    /// A pool for class instances of all types contained in a <see cref="TypeStore"/>.<br/>
+    /// Pooled instances are reused when deserializing JSON using an <see cref="ObjectReader"/>
+    /// </summary>
     public class InstancePool
     {
-        private             Pool[]      pools;
-        private readonly    TypeStore   typeStore;
-        private             int         poolCount;
-        private             int         version;
+        private             ClassPool[]     pools;
+        private readonly    TypeStore       typeStore;
+        private             int             poolCount;
+        private             int             version;
         
         public InstancePool(TypeStore typeStore) {
-            pools           = Array.Empty<Pool>();
+            pools           = Array.Empty<ClassPool>();
             this.typeStore  = typeStore;
         }
         
@@ -54,10 +58,10 @@ namespace Friflo.Json.Fliox.Mapper
         private object CreateInstancePool(TypeMapper mapper) {
             var count           = poolCount;
             var id              = mapper.id;
-            poolCount  = Math.Max(id + 1, count);
-            var newPool         = new Pool( new List<object>() ) { version = version };
+            poolCount           = Math.Max(id + 1, count);
+            var newPool         = new ClassPool( new List<object>() ) { version = version };
             var instance        = newPool.Create(mapper);
-            var newPools        = new Pool[poolCount];
+            var newPools        = new ClassPool[poolCount];
             for (int n = 0; n < count; n++) {
                 newPools[n] = pools[n];
             }
@@ -75,14 +79,15 @@ namespace Friflo.Json.Fliox.Mapper
         }
     }
     
-    internal struct Pool
+    /// <summary> Contain pooled instances of a specific class </summary>
+    internal struct ClassPool
     {
         internal readonly   List<object>    objects;
         internal            int             used;
         internal            int             count;
         internal            int             version;
         
-        internal Pool(List<object> objects) {
+        internal ClassPool(List<object> objects) {
             this.objects    = objects;
             used            =  0;
             count           =  0;
