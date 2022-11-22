@@ -41,7 +41,7 @@ POST {{base}}/
 
 {
     "msg":"error",
-    "message": "JsonReader/error: No [PolymorphType] type declared for discriminant: 'invalidTaskType' on type: SyncRequestTask path: 'tasks[0].task' at position: 73",
+    "message": "No [PolymorphType] type declared for discriminant: 'invalidTaskType' on type: SyncRequestTask path: 'tasks[0].task' at position: 73",
     "type": "BadResponse"
 }
 
@@ -52,7 +52,7 @@ POST {{base}}/
 
 {
     "msg":"error",
-    "message": "ReadSyncRequest/error: expect member 'msg'=='sync'. was: invalidMsgType path: 'msg' at position: 27",
+    "message": "No [PolymorphType] type declared for discriminant: 'invalidMsgType' on type: ProtocolMessage path: 'msg' at position: 27",
     "type": "BadResponse"
 }
 

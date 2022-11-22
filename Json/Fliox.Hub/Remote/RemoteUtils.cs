@@ -72,32 +72,24 @@ namespace Friflo.Json.Fliox.Hub.Remote
         private static readonly byte[] DiscriminatorKey     = Encoding.UTF8.GetBytes("msg");
         private static readonly byte[] DiscriminatorValue   = Encoding.UTF8.GetBytes("sync");
         
-        public static string ReadSyncRequest (
-            SyncRequest                 syncRequest,
-            bool                        setMissingFields,
+        public static SyncRequest ReadSyncRequest (
+            InstancePool                instancePool,
             in JsonValue                jsonMessage,
-            ObjectPool<ObjectMapper>    mapperPool)
+            ObjectPool<ObjectMapper>    mapperPool,
+            out string                  error)
         {
             using (var pooledMapper = mapperPool.Get()) {
-                ObjectReader reader = pooledMapper.instance.reader;
-                reader.InitJsonReaderArray(jsonMessage, setMissingFields);
-                var ev      = reader.NextEvent();
-                if (ev != JsonEvent.ObjectStart) {
-                    return reader.ErrorMsg("ReadSyncRequest", "expect object");
+                var reader  = pooledMapper.instance.reader;
+                var message = reader.Read<ProtocolMessage>(jsonMessage);
+                if (reader.Error.ErrSet) {
+                    error = reader.Error.GetMessage();
+                    return null;
                 }
-                ev      = reader.NextEvent();
-                if (ev != JsonEvent.ValueString) {
-                    return reader.ErrorMsg("ReadSyncRequest", "expect member 'msg'");
+                if (message is SyncRequest syncRequest) {
+                    error = null;
+                    return syncRequest;
                 }
-                if (!reader.Key().IsEqualArray(DiscriminatorKey)) {
-                    return reader.ErrorMsg("ReadSyncRequest", $"expect member 'msg'. was: {reader.Key()}");
-                }
-                if (!reader.Value().IsEqualArray(DiscriminatorValue)) {
-                    return reader.ErrorMsg("ReadSyncRequest", $"expect member 'msg'=='sync'. was: {reader.Value()}");
-                }
-                if (!reader.InternalReadToObject(syncRequest)) {
-                    return reader.Error.msg.AsString();
-                }
+                error = $"Expect 'sync' request. was: '{message.MessageType}'";
                 return null;
             }
         }

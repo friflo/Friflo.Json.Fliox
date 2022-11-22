@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.Event;
 using Friflo.Json.Fliox.Hub.Protocol;
+using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Utils;
 
 namespace Friflo.Json.Fliox.Hub.Remote
@@ -30,6 +31,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         private  readonly   Pool                                pool;
         private  readonly   SharedCache                         sharedCache;
         private  readonly   IPEndPoint                          remoteEndPoint;
+        private  readonly   TypeStore                           typeStore;
         
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         public              IHubLogger                          Logger { get; }
@@ -39,6 +41,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             pool                        = env.Pool;
             sharedCache                 = env.sharedCache;
             Logger                      = env.hubLogger;
+            typeStore                   = env.TypeStore;
             this.webSocket              = webSocket;
             this.remoteEndPoint         = remoteEndPoint;
             this.fakeOpenClosedSocket   = fakeOpenClosedSocket;
@@ -104,7 +107,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         private async Task RunReceiveLoop(RemoteHost remoteHost) {
             var memoryStream    = new MemoryStream();
             var buffer          = new ArraySegment<byte>(new byte[8192]);
-            var syncRequest     = new SyncRequest();    // reused SyncRequest
+            var instancePool    = new InstancePool(typeStore);    // reused SyncRequest
             while (true) {
                 var state = webSocket.State;
                 if (state == WebSocketState.Open) {

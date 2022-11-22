@@ -9,6 +9,7 @@ using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.Event;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
+using Friflo.Json.Fliox.Mapper;
 
 // Note! - Must not have any dependency to System.Net or System.Net.Http (or other HTTP stuff)
 namespace Friflo.Json.Fliox.Hub.Remote
@@ -33,13 +34,10 @@ namespace Friflo.Json.Fliox.Hub.Remote
         
         public void Dispose() { }
         
-        internal async Task<JsonResponse> ExecuteJsonRequest(SyncRequest syncRequest, JsonValue jsonRequest, SyncContext syncContext) {
+        internal async Task<JsonResponse> ExecuteJsonRequest(InstancePool instancePool, JsonValue jsonRequest, SyncContext syncContext) {
             var objectMapper = syncContext.ObjectMapper;
             try {
-                // if syncRequest is reused missing field need to be set to their defaults
-                var setMissingFields = false; // todo need to be: syncRequest != null;
-                syncRequest = syncRequest ?? new SyncRequest(); 
-                var error = RemoteUtils.ReadSyncRequest(syncRequest, setMissingFields, jsonRequest, objectMapper);
+                var syncRequest = RemoteUtils.ReadSyncRequest(instancePool, jsonRequest, objectMapper, out string error);
                 if (error != null) {
                     return JsonResponse.CreateError(objectMapper, error, ErrorResponseType.BadResponse, null);
                 }
