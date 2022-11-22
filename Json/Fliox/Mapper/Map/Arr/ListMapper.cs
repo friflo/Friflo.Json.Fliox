@@ -95,7 +95,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Arr
             var list = slot;
             int startLen = 0;
             if (list == null)
-                list = (List<TElm>) NewInstance();
+                list = (List<TElm>) CreateInstance(reader.instancePool);
             else
                 startLen = list.Count;
             

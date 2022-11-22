@@ -141,7 +141,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object
         
         public override object NewInstance() {
             if (instanceFactory != null)
-                return instanceFactory.CreateInstance(typeof(T));
+                return instanceFactory.CreateInstance(null, typeof(T));
             
             if (createInstance != null)
                 return createInstance();
@@ -293,7 +293,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object
                 string discriminator = factory.discriminator;
                 if (discriminator == null) {
                     if (obj == null) {
-                        obj = (T) factory.CreateInstance(typeof(T));
+                        obj = (T) factory.CreateInstance(reader.instancePool, typeof(T));
                         if (obj == null)
                             return reader.ErrorMsg<TypeMapper<T>>($"No instance created in InstanceFactory: ", factory.GetType().Name, out success);
                     } else {

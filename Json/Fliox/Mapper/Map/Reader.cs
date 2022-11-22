@@ -29,6 +29,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
         public              char[]              charBuf;
         public   readonly   TypeCache           typeCache;
         public              Utf8JsonWriterStub  jsonWriterStub;
+        public              InstancePool        instancePool;
         
         public              IErrorHandler       ErrorHandler {
             get => parser.error.errorHandler;
@@ -43,6 +44,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
             charBuf         = new char[128];
             jsonWriterStub  = null;
             setMissingFields= false;
+            instancePool    = null;
 #if !JSON_BURST
             parser.error.errorHandler = DefaultErrorHandler;
 #endif

@@ -185,6 +185,12 @@ namespace Friflo.Json.Fliox.Mapper.Map
         public override      void    InitTypeMapper(TypeStore typeStore) { }
 
         public override      object  NewInstance() =>  null;
+        
+        protected            object  CreateInstance(InstancePool pool) {
+            if (pool == null)
+                return NewInstance();
+            return pool.Create(this);
+        }
     }
     
     internal sealed class ConcreteTypeMatcher : ITypeMatcher

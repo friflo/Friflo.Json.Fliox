@@ -117,7 +117,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Arr
             
             var list = slot;
             if (list == null)
-                list = (TCol) NewInstance();
+                list = (TCol) CreateInstance(reader.instancePool);
             else
                 list.Clear();
 

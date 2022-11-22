@@ -54,10 +54,12 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
             }
         }
 
-        internal object CreateInstance(Type type) {
+        internal object CreateInstance(InstancePool instancePool, Type type) {
             if (isAbstract)
                 throw new InvalidOperationException($"type requires concrete types by [InstanceType()] or [PolymorphType()] on: {type.Name}");
-            return instanceMapper.NewInstance();
+            if (instancePool == null)
+                return instanceMapper.NewInstance();
+            return instancePool.Create(instanceMapper);
         }
         
         internal object CreatePolymorph(string name, object obj) {
