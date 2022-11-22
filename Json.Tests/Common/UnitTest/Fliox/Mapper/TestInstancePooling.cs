@@ -61,10 +61,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
         private static void TestPoolInternal(TypeStore typeStore)
         {
             var pool                    = new InstancePool(typeStore);
-            var syncRequestMapper       = typeStore.GetTypeMapper(typeof(SyncRequest));
-            var syncRequestTasksMapper  = typeStore.GetTypeMapper(typeof(List<SyncRequestTask>));
-            var upsertMapper            = typeStore.GetTypeMapper(typeof(UpsertEntities));
-            var entitiesMapper          = typeStore.GetTypeMapper(typeof(List<JsonEntity>));
+            var syncRequestMapper       = typeStore.GetTypeMapper<SyncRequest>();
+            var syncRequestTasksMapper  = typeStore.GetTypeMapper<List<SyncRequestTask>>();
+            var upsertMapper            = typeStore.GetTypeMapper<UpsertEntities>();
+            var entitiesMapper          = typeStore.GetTypeMapper<List<JsonEntity>>();
             
             long start = 0;
             var objects = new List<object>();

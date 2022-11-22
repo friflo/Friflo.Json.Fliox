@@ -92,6 +92,10 @@ namespace Friflo.Json.Fliox.Mapper
             }
             return list;
         }
+        
+        public TypeMapper<T> GetTypeMapper<T> () {
+            return (TypeMapper<T>)GetTypeMapper(typeof(T));
+        }
 
         public TypeMapper GetTypeMapper (Type type)
         {
