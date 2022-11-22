@@ -3,15 +3,22 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using Friflo.Json.Fliox.Mapper.Map;
 
 namespace Friflo.Json.Fliox.Mapper
 {
     public class InstancePool
     {
-        private Instances[] instancePools       = Array.Empty<Instances>();
-        private int         instancePoolsCount;
-        private int         version;
+        private             Pool[]      pools;
+        private readonly    TypeStore   typeStore;
+        private             int         poolCount;
+        private             int         version;
+        
+        public InstancePool(TypeStore typeStore) {
+            pools           = Array.Empty<Pool>();
+            this.typeStore  = typeStore;
+        }
         
         public void Reuse() {
             version++;
@@ -19,54 +26,63 @@ namespace Friflo.Json.Fliox.Mapper
         
         public object Create(TypeMapper mapper)
         {
+            AssertTypeStore(mapper);
             var id = mapper.id;
-            if (id < instancePoolsCount) {
-                ref var instancePool    = ref instancePools[id];
-                var instances           = instancePool.objects;
-                if (instances != null) {
-                    if (instancePool.version != version) {
-                        instancePool.version = version;
-                        if (instancePool.count > 0) {
-                            instancePool.used = 1;
-                            return instances[0];
+            if (id < poolCount) {
+                ref var pool    = ref pools[id];
+                var objects     = pool.objects;
+                if (objects != null) {
+                    if (pool.version != version) {
+                        pool.version = version;
+                        if (pool.count > 0) {
+                            pool.used = 1;
+                            return objects[0];
                         }
-                        return instancePool.Create(mapper);
+                        return pool.Create(mapper);
                     }
-                    int used = instancePool.used;
-                    if (used < instancePool.count) {
-                        instancePool.used++;
-                        return instances[used];
+                    int used = pool.used;
+                    if (used < pool.count) {
+                        pool.used++;
+                        return objects[used];
                     }
-                    return instancePool.Create(mapper);
+                    return pool.Create(mapper);
                 }
             }
             return CreateInstancePool(mapper);
         }
         
         private object CreateInstancePool(TypeMapper mapper) {
-            var count           = instancePoolsCount;
+            var count           = poolCount;
             var id              = mapper.id;
-            instancePoolsCount  = Math.Max(id + 1, count);
-            var newPool         = new Instances( new List<object>() ) { version = version };
+            poolCount  = Math.Max(id + 1, count);
+            var newPool         = new Pool( new List<object>() ) { version = version };
             var instance        = newPool.Create(mapper);
-            var newPools        = new Instances[instancePoolsCount];
+            var newPools        = new Pool[poolCount];
             for (int n = 0; n < count; n++) {
-                newPools[n] = instancePools[n];
+                newPools[n] = pools[n];
             }
-            instancePools       = newPools;
-            instancePools[id]   = newPool;
+            pools       = newPools;
+            pools[id]   = newPool;
             return instance;
+        }
+        
+        [Conditional("DEBUG")]
+        private void AssertTypeStore(TypeMapper mapper) {
+#if DEBUG
+            if (typeStore != mapper.typeStore)
+                throw new InvalidOperationException($"used TypeMapper from a different TypeStore.Type {mapper.type}");
+#endif
         }
     }
     
-    internal struct Instances
+    internal struct Pool
     {
         internal readonly   List<object>    objects;
         internal            int             used;
         internal            int             count;
         internal            int             version;
         
-        internal Instances(List<object> objects) {
+        internal Pool(List<object> objects) {
             this.objects    = objects;
             used            =  0;
             count           =  0;

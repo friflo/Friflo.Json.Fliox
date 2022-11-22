@@ -55,7 +55,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc
         
         private static void TestPoolInternal(TypeStore typeStore)
         {
-            var pool                    = new InstancePool();
+            var pool                    = new InstancePool(typeStore);
             var syncRequestMapper       = typeStore.GetTypeMapper(typeof(SyncRequest));
             var syncRequestTasksMapper  = typeStore.GetTypeMapper(typeof(List<SyncRequestTask>));
             var upsertMapper            = typeStore.GetTypeMapper(typeof(UpsertEntities));

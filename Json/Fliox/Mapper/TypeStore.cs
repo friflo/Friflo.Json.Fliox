@@ -106,7 +106,10 @@ namespace Friflo.Json.Fliox.Mapper
                     // Deferred initialization of TypeMapper to allow circular type dependencies.
                     // So it supports type hierarchies without a 'directed acyclic graph' (DAG) of type dependencies.
                     last.InitTypeMapper(this);
-                    last.id = currentMapperId++;
+                    last.id         = currentMapperId++;
+#if DEBUG
+                    last.typeStore  = this;
+#endif
                 }
                 if (mapper != null)
                     return mapper;
