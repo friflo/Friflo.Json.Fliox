@@ -15,7 +15,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
 {
     public static class TestInstancePooling
     {
-        private const int Count = 10_000_000;
+        private const int Count = 2000; // 2_000_000;
         
         [Test]
         public static void TestPoolReferenceParallel()
