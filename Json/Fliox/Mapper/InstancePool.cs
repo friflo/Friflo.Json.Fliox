@@ -22,7 +22,7 @@ namespace Friflo.Json.Fliox.Mapper
             var id = mapper.id;
             if (id < instancePoolsCount) {
                 ref var instancePool    = ref instancePools[id];
-                var instances           = instancePool.instances;
+                var instances           = instancePool.objects;
                 if (instances != null) {
                     if (instancePool.version != version) {
                         instancePool.version = version;
@@ -61,13 +61,13 @@ namespace Friflo.Json.Fliox.Mapper
     
     internal struct Instances
     {
-        internal readonly   List<object>    instances;
+        internal readonly   List<object>    objects;
         internal            int             used;
         internal            int             count;
         internal            int             version;
         
-        internal Instances(List<object> instances) {
-            this.instances  = instances;
+        internal Instances(List<object> objects) {
+            this.objects    = objects;
             used            =  0;
             count           =  0;
             version         = -1;
@@ -77,7 +77,7 @@ namespace Friflo.Json.Fliox.Mapper
             used++;
             var instance = mapper.CreateInstance();
             count++;
-            instances.Add(instance);
+            objects.Add(instance);
             return instance;               
         }
     }
