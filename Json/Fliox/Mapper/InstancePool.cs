@@ -13,15 +13,19 @@ namespace Friflo.Json.Fliox.Mapper
     public class InstancePool
     {
         private             ClassPool[]     pools;
-        private readonly    TypeStore       typeStore;
         private             int             poolCount;
         private             int             version;
+#if DEBUG
+        private readonly    TypeStore       typeStore;
+#endif
         
         public   override   string          ToString() => GetString();
         
         public InstancePool(TypeStore typeStore) {
             pools           = Array.Empty<ClassPool>();
+#if DEBUG
             this.typeStore  = typeStore;
+#endif
         }
         
         public void Reuse() {
