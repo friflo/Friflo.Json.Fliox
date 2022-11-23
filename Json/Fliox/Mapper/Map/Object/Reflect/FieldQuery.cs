@@ -95,15 +95,15 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
                         var genIndexField = genClass.GetField($"Gen_{fieldName}", flags);
                         genIndex = (int)genIndexField.GetValue(null);
                     }
-                    
+                    var member = PropField.CreateMember<T>(mapper, field, property);
                     PropField<T> pf;
                     if (memberType.IsEnum || memberType.IsPrimitive || isNullablePrimitive || isNullableEnum) {
-                        pf =     new PropField<T>(fieldName, jsonName, mapper, field, property, fieldCount, genIndex, required, docs); // force index exception in case of buggy impl.
+                        pf =     new PropField<T>(fieldName, jsonName, mapper, field, property, member, fieldCount, genIndex, required, docs); // force index exception in case of buggy impl.
                     } else {
                         if (mapper.isValueType)
-                            pf = new PropField<T>(fieldName, jsonName, mapper, field, property, fieldCount, genIndex, required, docs);
+                            pf = new PropField<T>(fieldName, jsonName, mapper, field, property, member, fieldCount, genIndex, required, docs);
                         else
-                            pf = new PropField<T>(fieldName, jsonName, mapper, field, property, fieldCount, genIndex, required, docs); // force index exception in case of buggy impl.
+                            pf = new PropField<T>(fieldName, jsonName, mapper, field, property, member, fieldCount, genIndex, required, docs); // force index exception in case of buggy impl.
                     }
                     fieldCount++;
                     fieldList.Add(pf);

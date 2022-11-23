@@ -5,39 +5,24 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using Friflo.Json.Burst;
+using Friflo.Json.Fliox.Mapper.Map.Object;
 using Friflo.Json.Fliox.Mapper.Map.Object.Reflect;
 
 namespace Friflo.Json.Fliox.Mapper.Map
 {
-    public sealed class PropField<T> : PropField
+    /// <summary>
+    /// May use generic type T in future to avoid casting object to T in <see cref="ClassMapper{T}"/> implementations. <br/>
+    /// E.g. In calls <see cref="Var.Member.GetVar"/> in <see cref="ClassMapper{T}.Read"/>
+    /// </summary>
+    public sealed class PropField<T> : PropField // dont remove T - see docs
     {
-        
-        public PropField(string name, string jsonName, TypeMapper fieldType, FieldInfo field, PropertyInfo property,
+        public PropField(string name, string jsonName, TypeMapper fieldType, FieldInfo field, PropertyInfo property, Var.Member member,
             int fieldIndex, int genIndex, bool required, string docs)
-            : base(name, jsonName, fieldType, field, property, CreateMember(fieldType, field, property), fieldIndex, genIndex, required, docs)
+            : base(name, jsonName, fieldType, field, property, member, fieldIndex, genIndex, required, docs)
         {
         }
-        
-        private static Var.Member CreateMember (TypeMapper fieldType, FieldInfo field, PropertyInfo property) {
-            if (field != null) {
-                return new MemberField(fieldType.varType, field);
-            }
-            // Is struct?
-            if (typeof(T).IsValueType) {
-                return new MemberProperty(fieldType.varType, property);    
-            }
-            var getter          = property.GetGetMethod(true);
-            var setter          = property.GetSetMethod(true);
-            var memberMethods   = new Var.MemberMethods(getter, setter);
-            var member          = fieldType.varType.CreateMember<T>(memberMethods);
-            if (member != null)
-                return member;
-            // object (string, structs, classes) are using a generic MemberProperty  
-            return new MemberProperty(fieldType.varType, property);
-        }
     }
-
-    
+        
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
@@ -130,6 +115,24 @@ namespace Friflo.Json.Fliox.Mapper.Map
                     return (string)attr.ConstructorArguments[0].Value;
             }
             return null;
+        }
+        
+        internal static Var.Member CreateMember<T> (TypeMapper fieldType, FieldInfo field, PropertyInfo property) {
+            if (field != null) {
+                return new MemberField(fieldType.varType, field);
+            }
+            // Is struct?
+            if (typeof(T).IsValueType) {
+                return new MemberProperty(fieldType.varType, property);    
+            }
+            var getter          = property.GetGetMethod(true);
+            var setter          = property.GetSetMethod(true);
+            var memberMethods   = new Var.MemberMethods(getter, setter);
+            var member          = fieldType.varType.CreateMember<T>(memberMethods);
+            if (member != null)
+                return member;
+            // object (string, structs, classes) are using a generic MemberProperty  
+            return new MemberProperty(fieldType.varType, property);
         }
     }
 }

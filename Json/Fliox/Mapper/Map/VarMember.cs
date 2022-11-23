@@ -16,7 +16,7 @@ public partial struct Var
         }
     }
 
-    internal abstract class Member {
+    public abstract class Member {
         internal    abstract    Var     GetVar (object obj);
         internal    abstract    void    SetVar (object obj, in Var value);
     }
