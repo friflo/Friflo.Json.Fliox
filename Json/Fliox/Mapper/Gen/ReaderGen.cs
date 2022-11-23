@@ -161,7 +161,11 @@ namespace Friflo.Json.Fliox.Mapper.Map
             if (parser.Event != JsonEvent.ValueString)
                 return HandleEventGen<string>(field.fieldType, out success);
             success = true;
-            return parser.value.GetString(ref charBuf);
+            var chars   = parser.value.GetChars(ref charBuf, out int len);
+            var span    = new Span<char> (chars, 0, len);
+            // if (value != null && span.SequenceEqual(value))  // todo add old string value as parameter
+            //    return value;
+            return new string(chars, 0, len);
         }
         
         // --- JsonKey

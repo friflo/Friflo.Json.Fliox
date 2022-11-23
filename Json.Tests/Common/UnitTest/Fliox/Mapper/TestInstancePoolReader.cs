@@ -24,10 +24,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
             mapper.WriteNullMembers = false;
             
             var syncRequest = new SyncRequest {
-                // database    = "db",
+                database    = "db",
                 tasks       = new List<SyncRequestTask> {
                     new UpsertEntities {
-                        // container   = "test",
+                        container   = "test",
                         entities    = new List<JsonEntity> {
                             new JsonEntity(new JsonKey(11), new JsonValue(@"{""id"":11}")),
                             new JsonEntity(new JsonKey(22), new JsonValue(@"{""id"":22}"))

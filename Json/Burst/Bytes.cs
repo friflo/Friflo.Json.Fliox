@@ -420,7 +420,7 @@ namespace Friflo.Json.Burst
 #endif
         }
         
-        public string GetString (ref char[] dst)
+        public char[] GetChars (ref char[] dst, out int length)
         {
 #if JSON_BURST
             return ToString();
@@ -429,7 +429,8 @@ namespace Friflo.Json.Burst
             if (maxCharCount > dst.Length)
                 dst = new char[maxCharCount];
 
-            int writtenChars = utf8.GetChars(buffer.array, start, Len, dst, 0);
+            length = utf8.GetChars(buffer.array, start, Len, dst, 0);
+            return dst;
             /* unsafe {
                 fixed (char* chars = dst) {
                     return new string(chars, 0, writtenChars);
@@ -437,7 +438,7 @@ namespace Friflo.Json.Burst
             } */
             /* ReadOnlySpan<char> span = new ReadOnlySpan<char>(dst, 0, writtenChars);
                return new string(span); */
-            return new string(dst, 0, writtenChars);
+            // return new string(dst, 0, writtenChars);
 #endif
         }
         

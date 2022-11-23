@@ -35,11 +35,15 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
         public override Var         ReadVar (ref Reader reader, in Var value, out bool success) => new Var(Read(ref reader, value.String, out success));
         public override void        CopyVar (in Var src, ref Var dst)                   => dst = new Var(src.String);
         
-        public override string Read(ref Reader reader, string slot, out bool success) {
+        public override string Read(ref Reader reader, string value, out bool success) {
             if (reader.parser.Event != JsonEvent.ValueString)
                 return reader.HandleEvent(this, out success);
-            success = true;
-            return reader.parser.value.GetString(ref reader.charBuf);
+            success     = true;
+            var chars   = reader.parser.value.GetChars(ref reader.charBuf, out int len);
+            var span    = new Span<char> (chars, 0, len);
+            if (value != null && span.SequenceEqual(value))
+                return value;
+            return new string(chars, 0, len);
             // return reader.parser.value.ToString();
             // return null;
         }
