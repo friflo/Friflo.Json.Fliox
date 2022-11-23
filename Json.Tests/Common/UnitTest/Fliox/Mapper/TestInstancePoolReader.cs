@@ -35,14 +35,17 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
                     }
                 }
             };
-            var json = mapper.Write<ProtocolMessage>(syncRequest);
+            var json = mapper.WriteAsValue<ProtocolMessage>(syncRequest);
             
             var reader          = mapper.reader;
             var pool            = new InstancePool(typeStore);
             reader.InstancePool = pool;
             long start = 0;
             for (int n = 0; n < Count; n++) {
-                if (n == 1)    start = GC.GetAllocatedBytesForCurrentThread();
+                if (n == 1) {
+                    AreEqual("count: 4, used: 4, types: 4, version: 1", pool.ToString());
+                    start = GC.GetAllocatedBytesForCurrentThread();
+                }
                 pool.Reuse();
                 reader.Read<ProtocolMessage>(json);
             }
