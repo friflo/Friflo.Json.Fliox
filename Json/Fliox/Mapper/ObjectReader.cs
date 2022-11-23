@@ -71,6 +71,11 @@ namespace Friflo.Json.Fliox.Mapper
             get => intern.ErrorHandler;
             set => intern.ErrorHandler = value;
         }
+        
+        public              InstancePool        InstancePool {
+            get => intern.instancePool;
+            set => intern.instancePool = value;
+        }
 
         public ObjectReader(TypeStore typeStore) {
             intern      = new Reader (typeStore);

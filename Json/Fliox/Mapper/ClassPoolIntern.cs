@@ -44,7 +44,7 @@ namespace Friflo.Json.Fliox.Mapper
                 return "";
             var type        = objects[0].GetType();
             var typeName    = VarType.GetTypeName(type);
-            return $"count: {count} used: {used} - {typeName}";
+            return $"count: {count}, used: {used} - {typeName}";
         }
     }
 }

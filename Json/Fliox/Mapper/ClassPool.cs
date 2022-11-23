@@ -36,7 +36,7 @@ namespace Friflo.Json.Fliox.Mapper
                     used    += pool.Used;
                 }
             }
-            return $"count: {count} used: {used} types: {typeCount} version: {version}";
+            return $"count: {count}, used: {used}, types: {typeCount}, version: {version}";
         }
     }
     
