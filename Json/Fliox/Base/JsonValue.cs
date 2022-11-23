@@ -105,6 +105,12 @@ namespace Friflo.Json.Fliox
             return Array.SequenceEqual(value.Array);
         }
         
+        public bool IsEqual (ref Bytes value) {
+            var val1 = new Span<byte>(array, start, count);
+            var val2 = new Span<byte>(value.buffer.array, value.start, value.Len);
+            return val1.SequenceEqual(val2);
+        }
+        
         /// <summary>Use for testing only</summary>
         public bool IsEqualReference (in JsonValue value) {
             return ReferenceEquals(array, value.array);

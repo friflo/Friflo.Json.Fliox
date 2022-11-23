@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 using System;
 using System.Collections.Generic;
+using Friflo.Json.Burst;
 
 namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
 {
@@ -25,9 +26,23 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
         private  readonly   Type                            instanceType;
         public   readonly   PolyType[]                      polyTypes;
         private             TypeMapper                      instanceMapper;
-        private  readonly   Dictionary<string, TypeMapper>  mapperByDiscriminator = new Dictionary<string, TypeMapper>();
-        private  readonly   Dictionary<Type,   TypeMapper>  mapperByType          = new Dictionary<Type,   TypeMapper>();
+        private             Entry[]                         mappers;
         public   readonly   bool                            isAbstract;
+        
+        readonly struct Entry
+        {
+            internal readonly JsonValue     name;
+            internal readonly Type          type;
+            internal readonly TypeMapper    mapper;
+
+            public   override string        ToString() => $"{name}: {mapper.DataTypeName()}";
+
+            internal Entry(in JsonValue name, Type type, TypeMapper mapper) {
+                this.name   = name;
+                this.type   = type;
+                this.mapper = mapper;
+            }
+        }
 
         private InstanceFactory(string discriminator, string description, Type instanceType, PolyType[] polyTypes) {
             this.discriminator  = discriminator;
@@ -46,11 +61,19 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
             if (instanceType != null)
                 instanceMapper = typeStore.GetTypeMapper(instanceType);
             
+            var buffer = new Utf8Buffer();
             foreach (var polyType in polyTypes) {
-                var mapper = typeStore.GetTypeMapper(polyType.type);
+                buffer.Add(polyType.name);
+            }
+            var names = buffer.AsBytes();
+            mappers = new Entry[polyTypes.Length];
+            for(int n = 0; n < polyTypes.Length; n++) {
+                var polyType    = polyTypes[n];
+                var mapper      = typeStore.GetTypeMapper(polyType.type);
+                ref var name    = ref names[n]; 
                 mapper.discriminant = polyType.name;
-                mapperByDiscriminator.Add(polyType.name, mapper);
-                mapperByType         .Add(polyType.type, mapper);
+                var jsonName    = new JsonValue(name.buffer.array, name.start, name.Len);
+                mappers[n]      = new Entry (jsonName, polyType.type, mapper);
             }
         }
 
@@ -62,8 +85,14 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
             return instancePool.CreateObject(instanceMapper);
         }
         
-        internal object CreatePolymorph(InstancePool instancePool, string name, object obj) {
-            if (!mapperByDiscriminator.TryGetValue(name, out TypeMapper mapper))
+        internal object CreatePolymorph(InstancePool instancePool, ref Bytes name, object obj) {
+            TypeMapper mapper = null;
+            foreach (var entry in mappers) {
+                if (!entry.name.IsEqual(ref name))
+                    continue;
+                mapper = entry.mapper;
+            }
+            if (mapper == null)
                 return null;
             if (obj != null) {
                 var objType = obj.GetType();
@@ -76,9 +105,12 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
         }
         
         internal object CreatePolymorph(Type type) {
-            if (!mapperByType.TryGetValue(type, out TypeMapper mapper))
-                return null;
-            return mapper.NewInstance();
+            foreach (var mapper in mappers) {
+                if (type != mapper.type)
+                    continue;
+                return mapper.mapper.NewInstance();    
+            }
+            return null;
         }
         
         

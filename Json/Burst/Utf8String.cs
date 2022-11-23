@@ -188,6 +188,19 @@ namespace Friflo.Json.Burst
             return utf8;
         }
         
+        public Bytes[] AsBytes() {
+            // create a buffer copy to avoid leaking the internal buffer as a mutable array
+            var buffer = new byte[pos];
+            Buffer.BlockCopy(buf, 0, buffer, 0, pos);
+            var bytes = new Bytes[strings.Count];
+            for (int n = 0; n < strings.Count; n++) {
+                var value   = strings[n];
+                var start   = value.start;
+                bytes[n]    = new Bytes { buffer = new ByteList { array = buffer }, start = start, end = start + value.len };
+            }
+            return bytes;
+        }
+
         private int Reserve (int len) {
             int curPos  = pos;
             int newLen  = curPos + len;

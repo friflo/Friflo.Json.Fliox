@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Friflo.Json.Fliox;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
@@ -14,12 +15,24 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
 {
     public static class TestInstancePoolReader
     {
-        private const int Count         = 100; // 1_000_000;
+        private const int Count         = 100_000;
+        private const int ParallelCount = 8;
+        
+        [Test]
+        public static void TestInstancePoolReadParallel()
+        {
+            var typeStore = new TypeStore();
+            Parallel.For(0, ParallelCount, i => TestInstancePoolReadInternal(typeStore));
+        }
         
         [Test]
         public static void TestInstancePoolRead()
         {
-            var typeStore           = new TypeStore();
+            TestInstancePoolReadInternal(new TypeStore());
+        }
+
+        private static void TestInstancePoolReadInternal(TypeStore typeStore)
+        {
             var mapper              = new ObjectMapper(typeStore);
             mapper.WriteNullMembers = false;
             
@@ -51,8 +64,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
             }
             var dif = GC.GetAllocatedBytesForCurrentThread() - start;
             AreEqual($"count: 4, used: 1, types: 4, version: {Count}", pool.ToString());
-            Console.WriteLine($"dif: {dif}");
-            // AreEqual(7128, dif);
+            AreEqual(0, dif);
         }
     }
 }
