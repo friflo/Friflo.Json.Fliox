@@ -15,12 +15,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
 {
     public static class TestInstancePooling
     {
-        private const int Count = 2000; // 2_000_000;
+        private const int Count         = 2000; // 2_000_000;
+        private const int ParallelCount = 8;
         
         [Test]
         public static void TestPoolReferenceParallel()
         {
-            Parallel.For(0, 4, i => TestPoolReference());
+            Parallel.For(0, ParallelCount, i => TestPoolReference());
         }
         
         [Test]
@@ -49,7 +50,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
         public static void TestPoolParallel()
         {
             var typeStore = new TypeStore();
-            Parallel.For(0, 4, i => TestPoolInternal(typeStore));
+            Parallel.For(0, ParallelCount, i => TestPoolInternal(typeStore));
         }
         
         [Test]

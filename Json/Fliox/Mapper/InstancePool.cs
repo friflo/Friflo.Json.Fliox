@@ -2,7 +2,6 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections.Generic;
 using Friflo.Json.Fliox.Mapper.Map;
 
 namespace Friflo.Json.Fliox.Mapper
@@ -67,7 +66,7 @@ namespace Friflo.Json.Fliox.Mapper
             var count           = poolCount;
             var id              = mapper.id;
             poolCount           = Math.Max(id + 1, count);
-            var newPool         = new ClassPool( new List<object>() ) { version = version };
+            var newPool         = new ClassPool(new object[4]) { version = version };
             var instance        = newPool.Create(mapper);
             var newPools        = new ClassPool[poolCount];
             for (int n = 0; n < count; n++) {
@@ -99,14 +98,14 @@ namespace Friflo.Json.Fliox.Mapper
     /// <summary> Contain pooled instances of a specific type </summary>
     internal struct ClassPool
     {
-        internal readonly   List<object>    objects;
-        internal            int             used;
-        internal            int             count;
-        internal            int             version;
+        internal    object[]    objects;
+        internal    int         used;
+        internal    int         version;
+        internal    int         count;
 
-        public   override   string          ToString() => GetString();
+        public override string  ToString() => GetString();
 
-        internal ClassPool(List<object> objects) {
+        internal ClassPool(object[] objects) {
             this.objects    = objects;
             used            =  0;
             count           =  0;
@@ -115,10 +114,18 @@ namespace Friflo.Json.Fliox.Mapper
         
         internal object Create(TypeMapper mapper) {
             used++;
-            count++;
-            var instance = mapper.NewInstance();
-            objects.Add(instance);
-            return instance;               
+            var instance        = mapper.NewInstance();
+            if (count < objects.Length) {
+                objects[count++] = instance;
+                return instance;
+            }
+            var newObjects = new object[2 * count];
+            for (int n = 0; n < count; n++) {
+                newObjects[n] = objects[n];                
+            }
+            objects             = newObjects;
+            objects[count++]    = instance;
+            return instance;
         }
         
         private string GetString() {
