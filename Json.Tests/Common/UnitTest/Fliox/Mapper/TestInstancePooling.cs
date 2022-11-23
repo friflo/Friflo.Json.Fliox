@@ -91,5 +91,49 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
             AreEqual(5, objects.Count);
             AreEqual(0, dif);
         }
+        
+        [Test]
+        public static void TestClassPoolParallel()
+        {
+            Parallel.For(0, ParallelCount, i => TestClassPoolInternal());
+        }
+        
+        [Test]
+        public static void TestClassPool() {
+            TestClassPoolInternal();
+        }
+        
+        private static void TestClassPoolInternal()
+        {
+            var pools                   = new ClassPools();
+            var syncRequestMapper       = new ClassPool<SyncRequest>            (pools);
+            var syncRequestTasksMapper  = new ClassPool<List<SyncRequestTask>>  (pools);
+            var upsertMapper            = new ClassPool<UpsertEntities>         (pools);
+            var entitiesMapper          = new ClassPool<List<JsonEntity>>       (pools);
+            
+            long start = 0;
+            var objects = new List<object>();
+            for (int n = 0; n < Count; n++) {
+                if (n == 1) start = GC.GetAllocatedBytesForCurrentThread();
+                objects.Clear();
+                
+                var syncRequest = syncRequestMapper.Create();
+                var tasks       = syncRequestTasksMapper.Create();
+                var upsert1     = upsertMapper.Create();
+                var upsert2     = upsertMapper.Create();
+                var entities    = entitiesMapper.Create();
+                
+                objects.Add(syncRequest);
+                objects.Add(tasks);
+                objects.Add(upsert1);
+                objects.Add(upsert2);
+                objects.Add(entities);
+                
+                pools.Reuse();
+            }
+            var dif = GC.GetAllocatedBytesForCurrentThread() - start;
+            AreEqual(5, objects.Count);
+            AreEqual(0, dif);
+        }
     }
 }
