@@ -18,7 +18,7 @@ namespace Gen.Friflo.Json.Fliox.Hub.Remote
             switch (field.genIndex) {
                 case Gen_seq:      obj.seq      = reader.ReadInt32       (field, out success);  return success;
                 case Gen_src:      obj.src      = reader.ReadJsonKey     (field, out success);  return success;
-                case Gen_db:       obj.db       = reader.ReadString      (field, out success);  return success;
+                case Gen_db:       obj.db       = reader.ReadString      (field, obj.db,       out success);  return success;
                 case Gen_isOrigin: obj.isOrigin = reader.ReadBooleanNull (field, out success);  return success;
                 case Gen_tasks:    obj.tasks    = reader.ReadClass       (field, obj.tasks,    out success);  return success;
             }

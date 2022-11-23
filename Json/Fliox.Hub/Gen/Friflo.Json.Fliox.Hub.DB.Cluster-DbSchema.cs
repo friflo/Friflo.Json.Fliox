@@ -15,10 +15,10 @@ namespace Gen.Friflo.Json.Fliox.Hub.DB.Cluster
         private static bool ReadField (ref DbSchema obj, PropField field, ref Reader reader) {
             bool success;
             switch (field.genIndex) {
-                case Gen_id:          obj.id          = reader.ReadString (field, out success);  return success;
-                case Gen_schemaName:  obj.schemaName  = reader.ReadString (field, out success);  return success;
-                case Gen_schemaPath:  obj.schemaPath  = reader.ReadString (field, out success);  return success;
-                case Gen_jsonSchemas: obj.jsonSchemas = reader.ReadClass  (field, obj.jsonSchemas, out success);  return success;
+                case Gen_id:          obj.id          = reader.ReadString (field, obj.id,          out success);  return success;
+                case Gen_schemaName:  obj.schemaName  = reader.ReadString (field, obj.schemaName,  out success);  return success;
+                case Gen_schemaPath:  obj.schemaPath  = reader.ReadString (field, obj.schemaPath,  out success);  return success;
+                case Gen_jsonSchemas: obj.jsonSchemas = reader.ReadClass (field, obj.jsonSchemas, out success);  return success;
             }
             return false;
         }
@@ -27,7 +27,7 @@ namespace Gen.Friflo.Json.Fliox.Hub.DB.Cluster
             writer.WriteString (fields[Gen_id],          obj.id,          ref firstMember);
             writer.WriteString (fields[Gen_schemaName],  obj.schemaName,  ref firstMember);
             writer.WriteString (fields[Gen_schemaPath],  obj.schemaPath,  ref firstMember);
-            writer.WriteClass  (fields[Gen_jsonSchemas], obj.jsonSchemas, ref firstMember);
+            writer.WriteClass (fields[Gen_jsonSchemas], obj.jsonSchemas, ref firstMember);
         }
     }
 }

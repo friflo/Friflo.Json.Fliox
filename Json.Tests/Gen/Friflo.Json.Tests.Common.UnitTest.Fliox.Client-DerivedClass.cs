@@ -15,19 +15,19 @@ namespace Gen.Friflo.Json.Tests.Common.UnitTest.Fliox.Client
         private static bool ReadField (ref DerivedClass obj, PropField field, ref Reader reader) {
             bool success;
             switch (field.genIndex) {
-                case Gen_article:    obj.article    = reader.ReadString (field, out success);  return success;
-                case Gen_amount:     obj.amount     = reader.ReadInt32  (field, out success);  return success;
-                case Gen_name:       obj.name       = reader.ReadString (field, out success);  return success;
-                case Gen_derivedVal: obj.derivedVal = reader.ReadInt32  (field, out success);  return success;
+                case Gen_article:    obj.article    = reader.ReadString (field, obj.article,    out success);  return success;
+                case Gen_amount:     obj.amount     = reader.ReadInt32 (field, out success);  return success;
+                case Gen_name:       obj.name       = reader.ReadString (field, obj.name,       out success);  return success;
+                case Gen_derivedVal: obj.derivedVal = reader.ReadInt32 (field, out success);  return success;
             }
             return false;
         }
 
         private static void Write(ref DerivedClass obj, PropField[] fields, ref Writer writer, ref bool firstMember) {
             writer.WriteString (fields[Gen_article],    obj.article,    ref firstMember);
-            writer.WriteInt32  (fields[Gen_amount],     obj.amount,     ref firstMember);
+            writer.WriteInt32 (fields[Gen_amount],     obj.amount,     ref firstMember);
             writer.WriteString (fields[Gen_name],       obj.name,       ref firstMember);
-            writer.WriteInt32  (fields[Gen_derivedVal], obj.derivedVal, ref firstMember);
+            writer.WriteInt32 (fields[Gen_derivedVal], obj.derivedVal, ref firstMember);
         }
     }
 }

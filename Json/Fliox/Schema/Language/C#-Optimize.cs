@@ -143,7 +143,7 @@ namespace Friflo.Json.Fliox.Schema.Language
             var std = generator.standardTypes;
             if (type == std.String) {
                 suffix = "String";
-                return true;
+                return false;
             }
             if (type == std.JsonKey) {
                 suffix = "JsonKey";

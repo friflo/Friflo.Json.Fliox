@@ -16,9 +16,9 @@ namespace Gen.Friflo.Json.Fliox.Hub.Protocol.Models
         private static bool ReadField (ref References obj, PropField field, ref Reader reader) {
             bool success;
             switch (field.genIndex) {
-                case Gen_selector:   obj.selector   = reader.ReadString      (field, out success);  return success;
-                case Gen_container:  obj.container  = reader.ReadString      (field, out success);  return success;
-                case Gen_keyName:    obj.keyName    = reader.ReadString      (field, out success);  return success;
+                case Gen_selector:   obj.selector   = reader.ReadString      (field, obj.selector,   out success);  return success;
+                case Gen_container:  obj.container  = reader.ReadString      (field, obj.container,  out success);  return success;
+                case Gen_keyName:    obj.keyName    = reader.ReadString      (field, obj.keyName,    out success);  return success;
                 case Gen_isIntKey:   obj.isIntKey   = reader.ReadBooleanNull (field, out success);  return success;
                 case Gen_references: obj.references = reader.ReadClass       (field, obj.references, out success);  return success;
             }

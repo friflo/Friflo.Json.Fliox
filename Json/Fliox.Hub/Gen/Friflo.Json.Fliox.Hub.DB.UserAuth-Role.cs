@@ -15,18 +15,18 @@ namespace Gen.Friflo.Json.Fliox.Hub.DB.UserAuth
         private static bool ReadField (ref Role obj, PropField field, ref Reader reader) {
             bool success;
             switch (field.genIndex) {
-                case Gen_id:          obj.id          = reader.ReadString (field, out success);  return success;
-                case Gen_taskRights:  obj.taskRights  = reader.ReadClass  (field, obj.taskRights,  out success);  return success;
-                case Gen_hubRights:   obj.hubRights   = reader.ReadClass  (field, obj.hubRights,   out success);  return success;
-                case Gen_description: obj.description = reader.ReadString (field, out success);  return success;
+                case Gen_id:          obj.id          = reader.ReadString (field, obj.id,          out success);  return success;
+                case Gen_taskRights:  obj.taskRights  = reader.ReadClass (field, obj.taskRights,  out success);  return success;
+                case Gen_hubRights:   obj.hubRights   = reader.ReadClass (field, obj.hubRights,   out success);  return success;
+                case Gen_description: obj.description = reader.ReadString (field, obj.description, out success);  return success;
             }
             return false;
         }
 
         private static void Write(ref Role obj, PropField[] fields, ref Writer writer, ref bool firstMember) {
             writer.WriteString (fields[Gen_id],          obj.id,          ref firstMember);
-            writer.WriteClass  (fields[Gen_taskRights],  obj.taskRights,  ref firstMember);
-            writer.WriteClass  (fields[Gen_hubRights],   obj.hubRights,   ref firstMember);
+            writer.WriteClass (fields[Gen_taskRights],  obj.taskRights,  ref firstMember);
+            writer.WriteClass (fields[Gen_hubRights],   obj.hubRights,   ref firstMember);
             writer.WriteString (fields[Gen_description], obj.description, ref firstMember);
         }
     }

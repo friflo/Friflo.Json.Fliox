@@ -12,7 +12,7 @@ namespace Gen.Friflo.Json.Tests.Common.UnitTest.Fliox.Client
         private static bool ReadField (ref TestCommand obj, PropField field, ref Reader reader) {
             bool success;
             switch (field.genIndex) {
-                case Gen_text: obj.text = reader.ReadString (field, out success);  return success;
+                case Gen_text: obj.text = reader.ReadString (field, obj.text, out success);  return success;
             }
             return false;
         }

@@ -13,7 +13,7 @@ namespace Gen.Friflo.Json.Fliox.Hub.Protocol.Tasks
         private static bool ReadField (ref AggregateEntitiesResult obj, PropField field, ref Reader reader) {
             bool success;
             switch (field.genIndex) {
-                case Gen_container: obj.container = reader.ReadString     (field, out success);  return success;
+                case Gen_container: obj.container = reader.ReadString     (field, obj.container, out success);  return success;
                 case Gen_value:     obj.value     = reader.ReadDoubleNull (field, out success);  return success;
             }
             return false;

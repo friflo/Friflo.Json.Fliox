@@ -38,7 +38,7 @@ namespace Gen.Friflo.Json.Tests.Common.UnitTest.Fliox.Client
         private static bool ReadField (ref TestType obj, PropField field, ref Reader reader) {
             bool success;
             switch (field.genIndex) {
-                case Gen_id:               obj.id               = reader.ReadString      (field, out success);  return success;
+                case Gen_id:               obj.id               = reader.ReadString      (field, obj.id,               out success);  return success;
                 case Gen_dateTime:         obj.dateTime         = reader.ReadStruct      (field, obj.dateTime,         out success);  return success;
                 case Gen_dateTimeNull:     obj.dateTimeNull     = reader.ReadStructNull  (field, obj.dateTimeNull,     out success);  return success;
                 case Gen_bigInt:           obj.bigInt           = reader.ReadStruct      (field, obj.bigInt,           out success);  return success;

@@ -157,14 +157,14 @@ namespace Friflo.Json.Fliox.Mapper.Map
         }
         
         // ------------------------------------------- string ---------------------------------------------
-        public string ReadString (PropField field, out bool success) {
+        public string ReadString (PropField field, string value, out bool success) {
             if (parser.Event != JsonEvent.ValueString)
                 return HandleEventGen<string>(field.fieldType, out success);
             success = true;
             var chars   = parser.value.GetChars(ref charBuf, out int len);
             var span    = new Span<char> (chars, 0, len);
-            // if (value != null && span.SequenceEqual(value))  // todo add old string value as parameter
-            //    return value;
+            if (value != null && span.SequenceEqual(value))
+                return value;
             return new string(chars, 0, len);
         }
         

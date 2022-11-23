@@ -17,10 +17,10 @@ namespace Gen.Friflo.Json.Fliox.Hub.Protocol.Tasks
             bool success;
             switch (field.genIndex) {
                 case Gen_info:       obj.info       = reader.ReadJsonValue (field, out success);  return success;
-                case Gen_container:  obj.container  = reader.ReadString    (field, out success);  return success;
+                case Gen_container:  obj.container  = reader.ReadString    (field, obj.container,  out success);  return success;
                 case Gen_type:       obj.type       = reader.ReadEnum      (field, obj.type,       out success);  return success;
                 case Gen_filterTree: obj.filterTree = reader.ReadJsonValue (field, out success);  return success;
-                case Gen_filter:     obj.filter     = reader.ReadString    (field, out success);  return success;
+                case Gen_filter:     obj.filter     = reader.ReadString    (field, obj.filter,     out success);  return success;
             }
             return false;
         }

@@ -17,7 +17,7 @@ namespace Gen.Friflo.Json.Fliox.Hub.Protocol
             switch (field.genIndex) {
                 case Gen_reqId:    obj.reqId    = reader.ReadInt32Null (field, out success);  return success;
                 case Gen_clientId: obj.clientId = reader.ReadJsonKey   (field, out success);  return success;
-                case Gen_message:  obj.message  = reader.ReadString    (field, out success);  return success;
+                case Gen_message:  obj.message  = reader.ReadString    (field, obj.message,  out success);  return success;
                 case Gen_type:     obj.type     = reader.ReadEnum      (field, obj.type,     out success);  return success;
             }
             return false;

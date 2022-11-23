@@ -16,7 +16,7 @@ namespace Gen.Friflo.Json.Fliox.Hub.Protocol
         private static bool ReadField (ref ContainerEntities obj, PropField field, ref Reader reader) {
             bool success;
             switch (field.genIndex) {
-                case Gen_container: obj.container = reader.ReadString    (field, out success);  return success;
+                case Gen_container: obj.container = reader.ReadString    (field, obj.container, out success);  return success;
                 case Gen_count:     obj.count     = reader.ReadInt32Null (field, out success);  return success;
                 case Gen_entities:  obj.entities  = reader.ReadClass     (field, obj.entities,  out success);  return success;
                 case Gen_notFound:  obj.notFound  = reader.ReadClass     (field, obj.notFound,  out success);  return success;

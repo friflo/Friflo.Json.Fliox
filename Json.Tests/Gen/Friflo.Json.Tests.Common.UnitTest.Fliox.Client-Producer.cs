@@ -14,9 +14,9 @@ namespace Gen.Friflo.Json.Tests.Common.UnitTest.Fliox.Client
         private static bool ReadField (ref Producer obj, PropField field, ref Reader reader) {
             bool success;
             switch (field.genIndex) {
-                case Gen_id:           obj.id           = reader.ReadString (field, out success);  return success;
-                case Gen_name:         obj.name         = reader.ReadString (field, out success);  return success;
-                case Gen_employeeList: obj.employeeList = reader.ReadClass  (field, obj.employeeList, out success);  return success;
+                case Gen_id:           obj.id           = reader.ReadString (field, obj.id,           out success);  return success;
+                case Gen_name:         obj.name         = reader.ReadString (field, obj.name,         out success);  return success;
+                case Gen_employeeList: obj.employeeList = reader.ReadClass (field, obj.employeeList, out success);  return success;
             }
             return false;
         }
@@ -24,7 +24,7 @@ namespace Gen.Friflo.Json.Tests.Common.UnitTest.Fliox.Client
         private static void Write(ref Producer obj, PropField[] fields, ref Writer writer, ref bool firstMember) {
             writer.WriteString (fields[Gen_id],           obj.id,           ref firstMember);
             writer.WriteString (fields[Gen_name],         obj.name,         ref firstMember);
-            writer.WriteClass  (fields[Gen_employeeList], obj.employeeList, ref firstMember);
+            writer.WriteClass (fields[Gen_employeeList], obj.employeeList, ref firstMember);
         }
     }
 }

@@ -14,9 +14,9 @@ namespace Gen.Friflo.Json.Tests.Common.UnitTest.Fliox.Client
         private static bool ReadField (ref Employee obj, PropField field, ref Reader reader) {
             bool success;
             switch (field.genIndex) {
-                case Gen_id:        obj.id        = reader.ReadString (field, out success);  return success;
-                case Gen_firstName: obj.firstName = reader.ReadString (field, out success);  return success;
-                case Gen_lastName:  obj.lastName  = reader.ReadString (field, out success);  return success;
+                case Gen_id:        obj.id        = reader.ReadString (field, obj.id,        out success);  return success;
+                case Gen_firstName: obj.firstName = reader.ReadString (field, obj.firstName, out success);  return success;
+                case Gen_lastName:  obj.lastName  = reader.ReadString (field, obj.lastName,  out success);  return success;
             }
             return false;
         }

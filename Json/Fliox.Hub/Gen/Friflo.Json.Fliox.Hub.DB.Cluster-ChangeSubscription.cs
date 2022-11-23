@@ -14,16 +14,16 @@ namespace Gen.Friflo.Json.Fliox.Hub.DB.Cluster
         private static bool ReadField (ref ChangeSubscription obj, PropField field, ref Reader reader) {
             bool success;
             switch (field.genIndex) {
-                case Gen_container: obj.container = reader.ReadString (field, out success);  return success;
-                case Gen_changes:   obj.changes   = reader.ReadClass  (field, obj.changes,   out success);  return success;
-                case Gen_filter:    obj.filter    = reader.ReadString (field, out success);  return success;
+                case Gen_container: obj.container = reader.ReadString (field, obj.container, out success);  return success;
+                case Gen_changes:   obj.changes   = reader.ReadClass (field, obj.changes,   out success);  return success;
+                case Gen_filter:    obj.filter    = reader.ReadString (field, obj.filter,    out success);  return success;
             }
             return false;
         }
 
         private static void Write(ref ChangeSubscription obj, PropField[] fields, ref Writer writer, ref bool firstMember) {
             writer.WriteString (fields[Gen_container], obj.container, ref firstMember);
-            writer.WriteClass  (fields[Gen_changes],   obj.changes,   ref firstMember);
+            writer.WriteClass (fields[Gen_changes],   obj.changes,   ref firstMember);
             writer.WriteString (fields[Gen_filter],    obj.filter,    ref firstMember);
         }
     }

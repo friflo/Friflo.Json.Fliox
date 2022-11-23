@@ -21,13 +21,13 @@ namespace Gen.Friflo.Json.Fliox.Hub.DB.Cluster
         private static bool ReadField (ref HostInfo obj, PropField field, ref Reader reader) {
             bool success;
             switch (field.genIndex) {
-                case Gen_hostVersion:    obj.hostVersion    = reader.ReadString  (field, out success);  return success;
-                case Gen_flioxVersion:   obj.flioxVersion   = reader.ReadString  (field, out success);  return success;
-                case Gen_hostName:       obj.hostName       = reader.ReadString  (field, out success);  return success;
-                case Gen_projectName:    obj.projectName    = reader.ReadString  (field, out success);  return success;
-                case Gen_projectWebsite: obj.projectWebsite = reader.ReadString  (field, out success);  return success;
-                case Gen_envName:        obj.envName        = reader.ReadString  (field, out success);  return success;
-                case Gen_envColor:       obj.envColor       = reader.ReadString  (field, out success);  return success;
+                case Gen_hostVersion:    obj.hostVersion    = reader.ReadString  (field, obj.hostVersion,    out success);  return success;
+                case Gen_flioxVersion:   obj.flioxVersion   = reader.ReadString  (field, obj.flioxVersion,   out success);  return success;
+                case Gen_hostName:       obj.hostName       = reader.ReadString  (field, obj.hostName,       out success);  return success;
+                case Gen_projectName:    obj.projectName    = reader.ReadString  (field, obj.projectName,    out success);  return success;
+                case Gen_projectWebsite: obj.projectWebsite = reader.ReadString  (field, obj.projectWebsite, out success);  return success;
+                case Gen_envName:        obj.envName        = reader.ReadString  (field, obj.envName,        out success);  return success;
+                case Gen_envColor:       obj.envColor       = reader.ReadString  (field, obj.envColor,       out success);  return success;
                 case Gen_pubSub:         obj.pubSub         = reader.ReadBoolean (field, out success);  return success;
                 case Gen_routes:         obj.routes         = reader.ReadClass   (field, obj.routes,         out success);  return success;
                 case Gen_memory:         obj.memory         = reader.ReadClass   (field, obj.memory,         out success);  return success;

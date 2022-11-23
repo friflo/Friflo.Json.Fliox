@@ -14,9 +14,9 @@ namespace Gen.Friflo.Json.Fliox.Hub.DB.Cluster
         private static bool ReadField (ref DbContainers obj, PropField field, ref Reader reader) {
             bool success;
             switch (field.genIndex) {
-                case Gen_id:         obj.id         = reader.ReadString (field, out success);  return success;
-                case Gen_storage:    obj.storage    = reader.ReadString (field, out success);  return success;
-                case Gen_containers: obj.containers = reader.ReadClass  (field, obj.containers, out success);  return success;
+                case Gen_id:         obj.id         = reader.ReadString (field, obj.id,         out success);  return success;
+                case Gen_storage:    obj.storage    = reader.ReadString (field, obj.storage,    out success);  return success;
+                case Gen_containers: obj.containers = reader.ReadClass (field, obj.containers, out success);  return success;
             }
             return false;
         }
@@ -24,7 +24,7 @@ namespace Gen.Friflo.Json.Fliox.Hub.DB.Cluster
         private static void Write(ref DbContainers obj, PropField[] fields, ref Writer writer, ref bool firstMember) {
             writer.WriteString (fields[Gen_id],         obj.id,         ref firstMember);
             writer.WriteString (fields[Gen_storage],    obj.storage,    ref firstMember);
-            writer.WriteClass  (fields[Gen_containers], obj.containers, ref firstMember);
+            writer.WriteClass (fields[Gen_containers], obj.containers, ref firstMember);
         }
     }
 }

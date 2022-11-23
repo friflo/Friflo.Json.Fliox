@@ -14,15 +14,15 @@ namespace Gen.Friflo.Json.Fliox.Hub.Protocol.Tasks
         private static bool ReadField (ref TaskErrorResult obj, PropField field, ref Reader reader) {
             bool success;
             switch (field.genIndex) {
-                case Gen_type:       obj.type       = reader.ReadEnum   (field, obj.type,       out success);  return success;
-                case Gen_message:    obj.message    = reader.ReadString (field, out success);  return success;
-                case Gen_stacktrace: obj.stacktrace = reader.ReadString (field, out success);  return success;
+                case Gen_type:       obj.type       = reader.ReadEnum (field, obj.type,       out success);  return success;
+                case Gen_message:    obj.message    = reader.ReadString (field, obj.message,    out success);  return success;
+                case Gen_stacktrace: obj.stacktrace = reader.ReadString (field, obj.stacktrace, out success);  return success;
             }
             return false;
         }
 
         private static void Write(ref TaskErrorResult obj, PropField[] fields, ref Writer writer, ref bool firstMember) {
-            writer.WriteEnum   (fields[Gen_type],       obj.type,       ref firstMember);
+            writer.WriteEnum (fields[Gen_type],       obj.type,       ref firstMember);
             writer.WriteString (fields[Gen_message],    obj.message,    ref firstMember);
             writer.WriteString (fields[Gen_stacktrace], obj.stacktrace, ref firstMember);
         }

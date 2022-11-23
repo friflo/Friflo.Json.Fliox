@@ -18,7 +18,7 @@ namespace Gen.Friflo.Json.Fliox.Hub.Protocol.Tasks
             bool success;
             switch (field.genIndex) {
                 case Gen_info:    obj.info    = reader.ReadJsonValue (field, out success);  return success;
-                case Gen_name:    obj.name    = reader.ReadString    (field, out success);  return success;
+                case Gen_name:    obj.name    = reader.ReadString    (field, obj.name,    out success);  return success;
                 case Gen_param:   obj.param   = reader.ReadJsonValue (field, out success);  return success;
                 case Gen_users:   obj.users   = reader.ReadClass     (field, obj.users,   out success);  return success;
                 case Gen_clients: obj.clients = reader.ReadClass     (field, obj.clients, out success);  return success;

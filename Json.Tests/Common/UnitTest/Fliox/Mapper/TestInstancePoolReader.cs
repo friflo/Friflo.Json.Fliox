@@ -49,7 +49,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
             var dif = GC.GetAllocatedBytesForCurrentThread() - start;
             AreEqual($"count: 4, used: 1, types: 4, version: {Count}", pool.ToString());
             Console.WriteLine($"dif: {dif}");
-            // AreEqual(13464, dif);
+            // AreEqual(7128, dif);
         }
     }
 }

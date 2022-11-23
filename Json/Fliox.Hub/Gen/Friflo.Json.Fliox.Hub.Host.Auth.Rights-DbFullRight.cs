@@ -13,8 +13,8 @@ namespace Gen.Friflo.Json.Fliox.Hub.Host.Auth.Rights
         private static bool ReadField (ref DbFullRight obj, PropField field, ref Reader reader) {
             bool success;
             switch (field.genIndex) {
-                case Gen_description: obj.description = reader.ReadString (field, out success);  return success;
-                case Gen_database:    obj.database    = reader.ReadString (field, out success);  return success;
+                case Gen_description: obj.description = reader.ReadString (field, obj.description, out success);  return success;
+                case Gen_database:    obj.database    = reader.ReadString (field, obj.database,    out success);  return success;
             }
             return false;
         }

@@ -14,7 +14,7 @@ namespace Gen.Friflo.Json.Fliox.Hub.Remote
         private static bool ReadField (ref RemoteEventMessage obj, PropField field, ref Reader reader) {
             bool success;
             switch (field.genIndex) {
-                case Gen_msg:    obj.msg    = reader.ReadString  (field, out success);  return success;
+                case Gen_msg:    obj.msg    = reader.ReadString  (field, obj.msg,    out success);  return success;
                 case Gen_clt:    obj.clt    = reader.ReadJsonKey (field, out success);  return success;
                 case Gen_events: obj.events = reader.ReadClass   (field, obj.events, out success);  return success;
             }

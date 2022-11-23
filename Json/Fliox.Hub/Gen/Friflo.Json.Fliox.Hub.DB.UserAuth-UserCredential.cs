@@ -14,7 +14,7 @@ namespace Gen.Friflo.Json.Fliox.Hub.DB.UserAuth
             bool success;
             switch (field.genIndex) {
                 case Gen_id:    obj.id    = reader.ReadJsonKey (field, out success);  return success;
-                case Gen_token: obj.token = reader.ReadString  (field, out success);  return success;
+                case Gen_token: obj.token = reader.ReadString  (field, obj.token, out success);  return success;
             }
             return false;
         }

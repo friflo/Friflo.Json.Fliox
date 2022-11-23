@@ -14,9 +14,9 @@ namespace Gen.Friflo.Json.Fliox.Hub.Host.Auth.Rights
         private static bool ReadField (ref SendMessageRight obj, PropField field, ref Reader reader) {
             bool success;
             switch (field.genIndex) {
-                case Gen_description: obj.description = reader.ReadString (field, out success);  return success;
-                case Gen_database:    obj.database    = reader.ReadString (field, out success);  return success;
-                case Gen_names:       obj.names       = reader.ReadClass  (field, obj.names,       out success);  return success;
+                case Gen_description: obj.description = reader.ReadString (field, obj.description, out success);  return success;
+                case Gen_database:    obj.database    = reader.ReadString (field, obj.database,    out success);  return success;
+                case Gen_names:       obj.names       = reader.ReadClass (field, obj.names,       out success);  return success;
             }
             return false;
         }
@@ -24,7 +24,7 @@ namespace Gen.Friflo.Json.Fliox.Hub.Host.Auth.Rights
         private static void Write(ref SendMessageRight obj, PropField[] fields, ref Writer writer, ref bool firstMember) {
             writer.WriteString (fields[Gen_description], obj.description, ref firstMember);
             writer.WriteString (fields[Gen_database],    obj.database,    ref firstMember);
-            writer.WriteClass  (fields[Gen_names],       obj.names,       ref firstMember);
+            writer.WriteClass (fields[Gen_names],       obj.names,       ref firstMember);
         }
     }
 }

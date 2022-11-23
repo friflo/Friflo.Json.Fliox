@@ -14,17 +14,17 @@ namespace Gen.Friflo.Json.Fliox.Hub.DB.Cluster
         private static bool ReadField (ref DbMessages obj, PropField field, ref Reader reader) {
             bool success;
             switch (field.genIndex) {
-                case Gen_id:       obj.id       = reader.ReadString (field, out success);  return success;
-                case Gen_commands: obj.commands = reader.ReadClass  (field, obj.commands, out success);  return success;
-                case Gen_messages: obj.messages = reader.ReadClass  (field, obj.messages, out success);  return success;
+                case Gen_id:       obj.id       = reader.ReadString (field, obj.id,       out success);  return success;
+                case Gen_commands: obj.commands = reader.ReadClass (field, obj.commands, out success);  return success;
+                case Gen_messages: obj.messages = reader.ReadClass (field, obj.messages, out success);  return success;
             }
             return false;
         }
 
         private static void Write(ref DbMessages obj, PropField[] fields, ref Writer writer, ref bool firstMember) {
             writer.WriteString (fields[Gen_id],       obj.id,       ref firstMember);
-            writer.WriteClass  (fields[Gen_commands], obj.commands, ref firstMember);
-            writer.WriteClass  (fields[Gen_messages], obj.messages, ref firstMember);
+            writer.WriteClass (fields[Gen_commands], obj.commands, ref firstMember);
+            writer.WriteClass (fields[Gen_messages], obj.messages, ref firstMember);
         }
     }
 }

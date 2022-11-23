@@ -13,15 +13,15 @@ namespace Gen.Friflo.Json.Fliox.Hub.Host.Auth.Rights
         private static bool ReadField (ref PredicateRight obj, PropField field, ref Reader reader) {
             bool success;
             switch (field.genIndex) {
-                case Gen_description: obj.description = reader.ReadString (field, out success);  return success;
-                case Gen_names:       obj.names       = reader.ReadClass  (field, obj.names,       out success);  return success;
+                case Gen_description: obj.description = reader.ReadString (field, obj.description, out success);  return success;
+                case Gen_names:       obj.names       = reader.ReadClass (field, obj.names,       out success);  return success;
             }
             return false;
         }
 
         private static void Write(ref PredicateRight obj, PropField[] fields, ref Writer writer, ref bool firstMember) {
             writer.WriteString (fields[Gen_description], obj.description, ref firstMember);
-            writer.WriteClass  (fields[Gen_names],       obj.names,       ref firstMember);
+            writer.WriteClass (fields[Gen_names],       obj.names,       ref firstMember);
         }
     }
 }
