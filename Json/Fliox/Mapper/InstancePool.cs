@@ -42,9 +42,9 @@ namespace Friflo.Json.Fliox.Mapper
             if (typeStore != mapper.typeStore)
                 throw new InvalidOperationException($"used TypeMapper from a different TypeStore.Type {mapper.type}");
 #endif
-            var id = mapper.id;
-            if (id < poolCount) {
-                ref var pool    = ref pools[id];
+            var classId = mapper.classId;
+            if (classId < poolCount) {
+                ref var pool    = ref pools[classId];
                 var objects     = pool.objects;
                 if (objects != null) {
                     if (pool.version != version) {
@@ -68,16 +68,16 @@ namespace Friflo.Json.Fliox.Mapper
         
         private object CreateInstancePool(TypeMapper mapper) {
             var count           = poolCount;
-            var id              = mapper.id;
-            poolCount           = Math.Max(id + 1, count);
+            var classId         = mapper.classId;
+            poolCount           = Math.Max(classId + 1, count);
             var newPool         = new ClassPool(new object[4]) { version = version };
             var instance        = newPool.Create(mapper);
             var newPools        = new ClassPool[poolCount];
             for (int n = 0; n < count; n++) {
                 newPools[n] = pools[n];
             }
-            pools       = newPools;
-            pools[id]   = newPool;
+            pools           = newPools;
+            pools[classId]  = newPool;
             return instance;
         }
         

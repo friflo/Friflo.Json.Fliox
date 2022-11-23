@@ -26,7 +26,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
         public  readonly    Type            nullableUnderlyingType;
         public  readonly    bool            useIL;
         public  readonly    string          docs;
-        internal            int             id;
+        internal            int             classId;    // id >= 0 for reference types. Otherwise -1
 #if DEBUG
         internal            TypeStore       typeStore;
 #endif
