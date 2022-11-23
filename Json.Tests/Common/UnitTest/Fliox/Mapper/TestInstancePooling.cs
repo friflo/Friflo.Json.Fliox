@@ -95,17 +95,18 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
         [Test]
         public static void TestClassPoolParallel()
         {
-            Parallel.For(0, ParallelCount, i => TestClassPoolInternal());
+            var typeStore = new TypeStore();
+            Parallel.For(0, ParallelCount, i => TestClassPoolInternal(typeStore));
         }
         
         [Test]
         public static void TestClassPool() {
-            TestClassPoolInternal();
+            TestClassPoolInternal(new TypeStore());
         }
         
-        private static void TestClassPoolInternal()
+        private static void TestClassPoolInternal(TypeStore typeStore)
         {
-            var pools                   = new ClassPools();
+            var pools                   = new ClassPools(typeStore);
             var syncRequestMapper       = new ClassPool<SyncRequest>            (pools);
             var syncRequestTasksMapper  = new ClassPool<List<SyncRequestTask>>  (pools);
             var upsertMapper            = new ClassPool<UpsertEntities>         (pools);

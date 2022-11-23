@@ -39,7 +39,7 @@ namespace Friflo.Json.Fliox.Mapper
             return instance;
         }
         
-        private string GetString() {
+        internal string GetString() {
             if (objects == null)
                 return "";
             var type        = objects[0].GetType();

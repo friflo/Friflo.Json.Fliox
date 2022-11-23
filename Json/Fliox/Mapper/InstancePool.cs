@@ -19,7 +19,7 @@ namespace Friflo.Json.Fliox.Mapper
         private readonly    TypeStore                   typeStore;
 #endif
         
-        public   override   string          ToString() => GetString();
+        public   override   string                      ToString() => GetString();
         
         public InstancePool(TypeStore typeStore) {
             pools           = Array.Empty<ClassPoolIntern<object>>();

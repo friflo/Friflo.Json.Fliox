@@ -1,6 +1,9 @@
 // Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System.Collections.Generic;
+using Friflo.Json.Fliox.Mapper.Map;
+
 namespace Friflo.Json.Fliox.Mapper
 {
     /// <summary>
@@ -9,25 +12,58 @@ namespace Friflo.Json.Fliox.Mapper
     public class ClassPools
     {
         internal            int             version;
-        //  internal readonly   List<ClassPool> pools = new List<ClassPool>();
+        internal  readonly  TypeStore       typeStore;
+        internal  readonly  List<ClassPool> pools;
+        public    override  string          ToString() => GetString();
+
+        public ClassPools(TypeStore typeStore) {
+            this.typeStore  = typeStore;
+            pools           = new List<ClassPool>();
+        }
 
         public void Reuse() {
             version++;
         }
+        
+        private string GetString() {
+            var used        = 0;
+            var count       = 0;
+            var typeCount   = 0;
+            foreach (var pool in pools) {
+                count       += pool.Count;
+                typeCount++;
+                if (version == pool.Version) {
+                    used    += pool.Used;
+                }
+            }
+            return $"count: {count} used: {used} types: {typeCount} version: {version}";
+        }
     }
     
-    public class ClassPool { } 
+    public abstract class ClassPool
+    {
+        internal  abstract  int     Used    { get; }
+        internal  abstract  int     Version { get; }
+        internal  abstract  int     Count   { get; }
+    } 
 
     /// <summary> Contain pooled instances of a specific type </summary>
     public class ClassPool<T> : ClassPool where T : new()
     {
         private  readonly   ClassPools          pools;
+        private  readonly   TypeMapper<T>       mapper;
         private             ClassPoolIntern<T>  pool;
+        
+        internal  override  int                 Used        => pool.used;
+        internal  override  int                 Version     => pool.version;
+        internal  override  int                 Count       => pool.count;
+        public    override  string              ToString()  => pool.GetString();
         
         public ClassPool(ClassPools pools) {
             this.pools  = pools;
-            // pools.pools.Add(this);
-            pool      = new ClassPoolIntern<T>(new T[4]);
+            pools.pools.Add(this);
+            mapper      = pools.typeStore.GetTypeMapper<T>();
+            pool        = new ClassPoolIntern<T>(new T[4]);
         }
         
         private static T NewInstance() => new T();
