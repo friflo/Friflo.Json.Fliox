@@ -45,10 +45,13 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
             ref var serializer = ref stub.jsonWriter;
             serializer.InitSerializer();
             serializer.WriteTree(ref reader.parser);
+            success     = true;
+            var pool    = reader.instancePool;
+            if (pool != null) {
+                return new JsonEntity(pool.CreateJsonValue(ref serializer.json));
+            }
             var json = serializer.json.AsArray();
-            var patchValue = new JsonEntity (new JsonValue(json));
-            success = true;
-            return patchValue;
+            return new JsonEntity (new JsonValue(json));
         }
     }
 }

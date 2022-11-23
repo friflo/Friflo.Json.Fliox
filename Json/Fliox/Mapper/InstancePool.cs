@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
+using Friflo.Json.Burst;
 using Friflo.Json.Fliox.Mapper.Map;
 
 namespace Friflo.Json.Fliox.Mapper
@@ -15,14 +16,18 @@ namespace Friflo.Json.Fliox.Mapper
         private             ClassPoolIntern<object>[]   pools;
         private             int                         poolCount;
         private             int                         version;
+        private             byte[]                      buffer;
+        private             int                         bufferPos;
 #if DEBUG
         private readonly    TypeStore                   typeStore;
 #endif
-        
+        private const       int                         BufferMax = 16 * 1024;
+
         public   override   string                      ToString() => GetString();
         
         public InstancePool(TypeStore typeStore) {
             pools           = Array.Empty<ClassPoolIntern<object>>();
+            buffer          = new byte[128];
 #if DEBUG
             this.typeStore  = typeStore;
 #endif
@@ -30,6 +35,7 @@ namespace Friflo.Json.Fliox.Mapper
         
         public void Reuse() {
             version++;
+            bufferPos = 0;
         }
         
         public T Create<T>(TypeMapper<T> mapper) {
@@ -80,6 +86,28 @@ namespace Friflo.Json.Fliox.Mapper
             pools[classId]  = newPool;
             return instance;
         }
+
+        
+        internal JsonValue CreateJsonValue(ref Bytes value) {
+            var len         = value.Len;
+            if (len > BufferMax) {
+                return new JsonValue(value.AsArray());
+            }
+            var srcArray    = value.buffer.array;
+            var remaining   = buffer.Length - bufferPos;
+            if (len <= remaining) {
+                var start    = bufferPos;
+                bufferPos   += len;
+                Buffer.BlockCopy(srcArray, 0, buffer, start, len);
+                return new JsonValue(buffer, start, len);
+            }
+            var newBufferLen    = Math.Max(2 * buffer.Length, len); 
+            newBufferLen        = Math.Min(newBufferLen, BufferMax);
+            buffer              = new byte[newBufferLen];
+            bufferPos           = len;
+            Buffer.BlockCopy(srcArray, 0, buffer, 0, len);
+            return new JsonValue(buffer, 0, len);
+        }
         
         private string GetString() {
             var used        = 0;
@@ -98,8 +126,4 @@ namespace Friflo.Json.Fliox.Mapper
             return $"count: {count}, used: {used}, types: {typeCount}, version: {version}";
         }
     }
-    
-
-    
-
 }

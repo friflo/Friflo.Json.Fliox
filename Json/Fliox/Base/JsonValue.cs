@@ -48,6 +48,12 @@ namespace Friflo.Json.Fliox
 
         private static readonly byte[] Null =  Encoding.UTF8.GetBytes("null");
         
+        public JsonValue(byte[] array, int start, int count) {
+            this.array  = array ?? throw new ArgumentNullException(nameof(array));
+            this.start  = start;
+            this.count  = count;
+        }
+        
         public JsonValue(byte[] array, int count) {
             this.array  = array ?? throw new ArgumentNullException(nameof(array));
             this.count  = count;

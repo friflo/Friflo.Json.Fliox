@@ -13,9 +13,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
 {
     public static class TestInstancePoolReader
     {
-       
+        private const int Count         = 100; // 1_000_000;
+        
         [Test]
-        public static void TestPoolReferenceParallel()
+        public static void TestInstancePoolRead()
         {
             var typeStore           = new TypeStore();
             var mapper              = new ObjectMapper(typeStore);
@@ -39,10 +40,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
             var pool            = new InstancePool(typeStore);
             reader.InstancePool = pool;
             
-            var result          = reader.Read<ProtocolMessage>(json);
-
-            AreEqual("count: 4, used: 4, types: 4, version: 0", pool.ToString());
-
+            for (int n = 0; n < Count; n++) {
+                pool.Reuse();
+                reader.Read<ProtocolMessage>(json);
+            }
+            AreEqual($"count: 4, used: 1, types: 4, version: {Count}", pool.ToString());
         }
     }
 }
