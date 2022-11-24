@@ -26,7 +26,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Utils
             var result = ReadString(buffer, ms);
 
             AreEqual("hello", result);
-            AreEqual(8, buffer.Capacity);
+            AreEqual(8,         buffer.Capacity);   // capacity is doubled 3 times
+            AreEqual(5,         buffer.Position);
             AreEqual(3,         buffer.BufferVersion);
         }
         
@@ -42,7 +43,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Utils
             var result = ReadString(buffer, ms);
 
             AreEqual("hello", result);
-            AreEqual(10,        buffer.Capacity);
+            AreEqual(10,        buffer.Capacity);       // capacity is sufficient to store the message
             AreEqual(5,         buffer.Position);
             AreEqual(1,         buffer.BufferVersion);
         }
