@@ -17,6 +17,8 @@ namespace Friflo.Json.Fliox.Utils
         private     int     bufferVersion;
         
         public      int     Capacity        => capacity;
+        /// <summary> <see cref="Capacity"/> - <see cref="Position"/> </summary>
+        public      int     Remaining       => capacity - position;
         public      int     MessageStart    => messageStart;
         public      int     MessageLength   => position - messageStart; 
         public      byte[]  GetBuffer()     => buffer;
@@ -58,7 +60,7 @@ namespace Friflo.Json.Fliox.Utils
             bufferVersion++;
         }
         
-        public void AddReadBuffer() {
+        public void AddReadSpace() {
             if (2 * MessageLength > capacity) {
                 SetCapacity(2 * capacity);
                 return;

@@ -51,12 +51,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Utils
         private static string ReadString(MemoryBuffer buffer, Stream stream) {
             buffer.SetMessageStart();
             int read;
-            while ((read = stream.Read(buffer.GetBuffer(), buffer.Position, buffer.Capacity - buffer.Position)) > 0)
+            if (buffer.Remaining == 0) {
+                buffer.AddReadSpace();
+            }
+            while ((read = stream.Read(buffer.GetBuffer(), buffer.Position, buffer.Remaining)) > 0)
             {
                 buffer.Position += read;
-                if (buffer.Position < buffer.Capacity)
+                if (buffer.Remaining > 0)
                     continue;
-                buffer.AddReadBuffer();
+                buffer.AddReadSpace();
             }
             return Encoding.UTF8.GetString(buffer.GetBuffer(), buffer.MessageStart, buffer.MessageLength);
         }
