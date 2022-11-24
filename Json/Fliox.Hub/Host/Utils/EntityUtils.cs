@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
+using Friflo.Json.Fliox.Utils;
 
 namespace Friflo.Json.Fliox.Hub.Host.Utils
 {
@@ -39,15 +40,17 @@ namespace Friflo.Json.Fliox.Hub.Host.Utils
         }
         
         public static Task<JsonValue> ReadToEnd(Stream input) {
-            byte[] buffer = new byte[16 * 1024];                // todo performance -> cache
-            using (MemoryStream ms = new MemoryStream()) {      // todo performance -> cache
-                int read;
-                while ((read = input.Read(buffer, 0, buffer.Length)) > 0) {
-                    ms.Write(buffer, 0, read);
+            var capacity    = 16 * 1024;
+            var buffer      = new MemoryBuffer(capacity);
+            buffer.SetMessageStart();
+            int read;
+            while ((read = input.Read(buffer.GetBuffer(), buffer.Position, capacity - buffer.Position)) > 0) {
+                buffer.Position += read;
+                if (buffer.Position == capacity) {
+                    buffer.SetCapacity(capacity = 2 * capacity);
                 }
-                var array = ms.ToArray(); 
-                return Task.FromResult(new JsonValue(array));
             }
+            return Task.FromResult(new JsonValue(buffer.GetBuffer(), buffer.MessageStart, buffer.MessageLength));
         }
         
         internal static bool GetKeysFromEntities (
@@ -72,4 +75,6 @@ namespace Friflo.Json.Fliox.Hub.Host.Utils
             return true;
         }
     }
+    
+
 }
