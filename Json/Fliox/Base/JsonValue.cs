@@ -173,6 +173,7 @@ namespace Friflo.Json.Fliox
                     capacity    = Math.Max(2 * capacity, count);
                     buffer.SetCapacity(capacity);
                 } else {
+                    // count < capacity / 2   =>  a new buffer is sufficient to store the JsonValue
                     buffer.NewBuffer();
                 }
                 bufferStart = buffer.Position;
