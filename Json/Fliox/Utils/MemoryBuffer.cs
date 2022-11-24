@@ -38,6 +38,7 @@ namespace Friflo.Json.Fliox.Utils
             messageStart = position;
         }
         
+        /// <summary>Set new capacity of the internal buffer returned with <see cref="GetBuffer"/>. Capacity can only be increased.</summary>
         public void SetCapacity (int newCapacity) {
             if (capacity >= newCapacity) throw new ArgumentException("expect new capacity >= current Capacity");
             capacity        = newCapacity;
