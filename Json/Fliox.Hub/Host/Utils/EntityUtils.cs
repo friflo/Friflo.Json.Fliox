@@ -50,7 +50,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Utils
                     buffer.SetCapacity(capacity = 2 * capacity);
                 }
             }
-            return Task.FromResult(new JsonValue(buffer.GetBuffer(), buffer.MessageStart, buffer.MessageLength));
+            return Task.FromResult(new JsonValue(buffer.CreateMessageArray()));
         }
         
         internal static bool GetKeysFromEntities (

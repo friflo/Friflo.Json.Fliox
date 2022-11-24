@@ -45,5 +45,12 @@ namespace Friflo.Json.Fliox.Utils
             messageStart    = 0;
             buffer          = newBuffer;
         }
+        
+        public byte[] CreateMessageArray() {
+            var len     = MessageLength;
+            var result  = new byte[len];
+            Buffer.BlockCopy(buffer, messageStart, result, 0, len);
+            return result;
+        }
     }
 }
