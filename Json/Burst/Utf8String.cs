@@ -196,7 +196,9 @@ namespace Friflo.Json.Burst
             for (int n = 0; n < strings.Count; n++) {
                 var value   = strings[n];
                 var start   = value.start;
-                bytes[n]    = new Bytes { buffer = new ByteList { array = buffer }, start = start, end = start + value.len };
+                var str     = new Bytes { buffer = new ByteList { array = buffer }, start = start, end = start + value.len };
+                str.UpdateHashCode();
+                bytes[n]    = str;
             }
             return bytes;
         }

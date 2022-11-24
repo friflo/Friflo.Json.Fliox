@@ -27,11 +27,12 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
         public   readonly   PolyType[]                      polyTypes;
         private             TypeMapper                      instanceMapper;
         private             Entry[]                         mappers;
+        private  readonly   Dictionary<Bytes, TypeMapper>   mapperByName;
         public   readonly   bool                            isAbstract;
         
         readonly struct Entry
         {
-            internal readonly JsonValue     name;
+            private  readonly JsonValue     name;
             internal readonly Type          type;
             internal readonly TypeMapper    mapper;
 
@@ -49,6 +50,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
             this.description    = description;
             this.instanceType   = instanceType;
             this.polyTypes      = polyTypes;
+            this.mapperByName   = new Dictionary<Bytes, TypeMapper>(Bytes.Equality);
         }
         
         public InstanceFactory() {
@@ -74,6 +76,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
                 mapper.discriminant = polyType.name;
                 var jsonName    = new JsonValue(name.buffer.array, name.start, name.Len);
                 mappers[n]      = new Entry (jsonName, polyType.type, mapper);
+                mapperByName.Add(name, mapper);
             }
         }
 
@@ -86,13 +89,8 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
         }
         
         internal object CreatePolymorph(InstancePool instancePool, ref Bytes name, object obj) {
-            TypeMapper mapper = null;
-            foreach (var entry in mappers) {
-                if (!entry.name.IsEqual(ref name))
-                    continue;
-                mapper = entry.mapper;
-            }
-            if (mapper == null)
+            name.UpdateHashCode();
+            if (!mapperByName.TryGetValue(name, out var mapper))
                 return null;
             if (obj != null) {
                 var objType = obj.GetType();

@@ -15,7 +15,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
 {
     public static class TestInstancePoolReader
     {
-        private const int Count         = 100; // 100_000;
+        private const int Count         = 200; // 200_000;
         private const int ParallelCount = 8;
         
         [Test]
