@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host.Utils;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
+using Friflo.Json.Fliox.Utils;
 
 namespace Friflo.Json.Fliox.Hub.Host
 {
@@ -106,9 +107,12 @@ namespace Friflo.Json.Fliox.Hub.Host
             var keys        = command.ids;
             var entities    = new EntityValue [keys.Count];
             int index       = 0;
+            // var buffer      = new MemoryBuffer(10);
             foreach (var key in keys) {
                 keyValues.TryGetValue(key, out var payload);
                 entities[index++] = new EntityValue(key, payload);
+                // var value = payload.AddToBuffer(buffer);
+                // entities[index++] = new EntityValue(key, value);
             }
             var result = new ReadEntitiesResult{entities = entities};
             return Task.FromResult(result);

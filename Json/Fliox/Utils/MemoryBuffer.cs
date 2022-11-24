@@ -2,6 +2,8 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
+using System.IO;
+using System.Threading.Tasks;
 
 // ReSharper disable ConvertToAutoPropertyWithPrivateSetter
 namespace Friflo.Json.Fliox.Utils
@@ -12,11 +14,13 @@ namespace Friflo.Json.Fliox.Utils
         private     int     capacity;
         private     int     position;
         private     byte[]  buffer;
+        private     int     bufferVersion;
         
         public      int     Capacity        => capacity;
         public      int     MessageStart    => messageStart;
         public      int     MessageLength   => position - messageStart; 
         public      byte[]  GetBuffer()     => buffer;
+        public      int     BufferVersion   => bufferVersion;
         
         public      int     Position {
             get => position;
@@ -38,15 +42,29 @@ namespace Friflo.Json.Fliox.Utils
             messageStart = position;
         }
         
-        /// <summary>Set new capacity of the internal buffer returned with <see cref="GetBuffer"/>. Capacity can only be increased.</summary>
+        /// <summary>Set new capacity of the internal buffer returned with <see cref="GetBuffer"/>.</summary>
         public void SetCapacity (int newCapacity) {
-            if (capacity >= newCapacity) throw new ArgumentException("expect new capacity >= current Capacity");
+            if (capacity > newCapacity) throw new ArgumentException("expect new capacity > current Capacity");
             capacity        = newCapacity;
+            NewBuffer();
+        }
+        
+        public void NewBuffer () {
             var newBuffer   = new byte[capacity];
-            Buffer.BlockCopy(buffer, messageStart, newBuffer, 0, position - messageStart);
+            Buffer.BlockCopy(buffer, messageStart, newBuffer, 0, MessageLength);
             position       -= messageStart;
             messageStart    = 0;
             buffer          = newBuffer;
+            bufferVersion++;
+        }
+        
+        public void AddReadBuffer() {
+            if (2 * MessageLength > capacity) {
+                SetCapacity(2 * capacity);
+                return;
+            }
+            // MessageLength < capacity / 2   =>  still enough remaining read buffer space
+            NewBuffer();
         }
         
         public byte[] CreateMessageArray() {
