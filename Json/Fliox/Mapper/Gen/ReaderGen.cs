@@ -162,9 +162,10 @@ namespace Friflo.Json.Fliox.Mapper.Map
                 return HandleEventGen<string>(field.fieldType, out success);
             success = true;
             var chars   = parser.value.GetChars(ref charBuf, out int len);
-            var span    = new Span<char> (chars, 0, len);
-            if (value != null && span.SequenceEqual(value))
-                return value;
+            if (value != null) {
+                if (new Span<char> (chars, 0, len).SequenceEqual(value))
+                    return value;
+            }
             return new string(chars, 0, len);
         }
         
