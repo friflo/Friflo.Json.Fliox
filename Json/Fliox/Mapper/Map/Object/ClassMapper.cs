@@ -302,7 +302,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object
                     success = true;
                     return reader.typeCache.GetTypeMapper(obj.GetType());
                 }
-                if (ev == JsonEvent.ValueString && reader.parser.key.IsEqualBytes(ref factory.discriminatorBytes)) {
+                if (ev == JsonEvent.ValueString && reader.parser.key.IsEqualArray(factory.discriminatorBytes)) {
                     ref Bytes discriminant = ref reader.parser.value;
                     obj = (T) factory.CreatePolymorph(reader.instancePool, ref discriminant, obj);
                     if (obj == null)
