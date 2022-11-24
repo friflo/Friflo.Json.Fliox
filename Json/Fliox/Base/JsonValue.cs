@@ -60,6 +60,18 @@ namespace Friflo.Json.Fliox
             start       = 0;
         }
         
+        /// <summary>create a copy of the given <paramref name="value"/> </summary>
+        public JsonValue(in JsonValue value) {
+            if (!value.IsNull()) {
+                count   = value.count;
+                start   = 0;
+                array   = new byte[count];
+                Buffer.BlockCopy(value.array, value.start, array, 0, count);
+                return;
+            }
+            this = default;
+        }
+        
         public JsonValue(byte[] array) {
             if (array == null) {
                 this.array  = null;
@@ -129,6 +141,7 @@ namespace Friflo.Json.Fliox
         
         /// <summary>
         /// Copy the given <paramref name="src"/> array to <paramref name="dst"/> <br/>
+        /// The <paramref name="dst"/> array is reused if big enough <br/>
         /// The <paramref name="src"/> array remains unchanged.
         /// </summary>
         public static void Copy(ref JsonValue dst, in JsonValue src) {

@@ -81,7 +81,8 @@ namespace Friflo.Json.Fliox.Hub.Host
             for (int n = 0; n < entities.Count; n++) {
                 var entity  = entities[n];
                 var key     = entity.key;
-                if (keyValues.TryAdd(key, entity.value))
+                var value   = new JsonValue (entity.value);
+                if (keyValues.TryAdd(key, value))
                     continue;
                 var error = new EntityError(EntityErrorType.WriteError, name, key, "entity already exist");
                 AddEntityError(ref createErrors, key, error);
@@ -94,7 +95,8 @@ namespace Friflo.Json.Fliox.Hub.Host
             var entities = command.entities;
             for (int n = 0; n < entities.Count; n++) {
                 var entity              = entities[n];
-                keyValues[entity.key]   = entity.value;
+                // put a value copy - the current value cannot be reused as its array may be used in a read meanwhile
+                keyValues[entity.key]   = new JsonValue(entity.value);
             }
             var result = new UpsertEntitiesResult();
             return Task.FromResult(result);
