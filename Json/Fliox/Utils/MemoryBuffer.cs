@@ -27,13 +27,15 @@ namespace Friflo.Json.Fliox.Utils
             }
         }
         
+        public MemoryBuffer() : this (4096) { }
+        
         public MemoryBuffer(int capacity) {
             this.capacity   = capacity;
             buffer          = new byte[capacity];
         }
         
         public void SetMessageStart() {
-            messageStart = position; 
+            messageStart = position;
         }
         
         public void SetCapacity (int newCapacity) {

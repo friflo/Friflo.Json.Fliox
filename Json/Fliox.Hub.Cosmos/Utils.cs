@@ -8,6 +8,7 @@ using System.IO;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host.Utils;
 using Friflo.Json.Fliox.Mapper;
+using Friflo.Json.Fliox.Utils;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable InconsistentNaming
@@ -25,8 +26,8 @@ namespace Friflo.Json.Fliox.Hub.Cosmos
     
     internal static class CosmosUtils
     {
-        internal static async Task<List<JsonValue>> ReadDocuments(ObjectReader reader, Stream content) {
-            var documentsJson   = await EntityUtils.ReadToEnd(content).ConfigureAwait(false);
+        internal static async Task<List<JsonValue>> ReadDocuments(ObjectReader reader, Stream content, MemoryBuffer buffer) {
+            var documentsJson   = await EntityUtils.ReadToEnd(content, buffer).ConfigureAwait(false);
             var responseFeed    = reader.Read<ResponseFeed>(documentsJson);
             return responseFeed.Documents;
         }

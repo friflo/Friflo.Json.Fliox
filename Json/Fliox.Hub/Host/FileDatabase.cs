@@ -11,6 +11,7 @@ using Friflo.Json.Fliox.Hub.Host.Utils;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Hub.Threading;
+using Friflo.Json.Fliox.Utils;
 
 namespace Friflo.Json.Fliox.Hub.Host
 {
@@ -138,6 +139,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             var keys        = command.ids;
             var entities    = new EntityValue[keys.Count];
             int index       = 0;
+            var buffer      = new MemoryBuffer();
             await rwLock.AcquireReaderLock().ConfigureAwait(false);
             try {
                 foreach (var key in keys) {
@@ -145,7 +147,7 @@ namespace Friflo.Json.Fliox.Hub.Host
                     EntityValue entry;
                     if (File.Exists(filePath)) {
                         try {
-                            var payload = await ReadText(filePath).ConfigureAwait(false);
+                            var payload = await ReadText(filePath, buffer).ConfigureAwait(false);
                             entry = new EntityValue(key, payload);
                         } catch (Exception e) {
                             var error = CreateEntityError(EntityErrorType.ReadError, key, e);
@@ -268,9 +270,9 @@ namespace Friflo.Json.Fliox.Hub.Host
             }
         }
         
-        internal static async Task<JsonValue> ReadText(string filePath) {
+        internal static async Task<JsonValue> ReadText(string filePath, MemoryBuffer buffer) {
             using (var sourceStream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read, bufferSize: 4096, useAsync: false)) {
-                return await EntityUtils.ReadToEnd(sourceStream).ConfigureAwait(false);
+                return await EntityUtils.ReadToEnd(sourceStream, buffer).ConfigureAwait(false);
             }
         }
         
@@ -285,6 +287,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         private readonly    string              folder; // keep there for debugging
         private readonly    int                 folderLen;
         private readonly    IEnumerator<string> enumerator;
+        private readonly    MemoryBuffer        buffer = new MemoryBuffer();
             
         internal FileQueryEnumerator (string folder)
         {
@@ -323,7 +326,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         
         public override async       Task<JsonValue> CurrentValueAsync() { 
             var path    = enumerator.Current;
-            return await FileContainer.ReadText(path).ConfigureAwait(false);
+            return await FileContainer.ReadText(path, buffer).ConfigureAwait(false);
         }
     }
 }

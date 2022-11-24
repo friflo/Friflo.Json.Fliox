@@ -10,6 +10,7 @@ using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.Utils;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
+using Friflo.Json.Fliox.Utils;
 using Microsoft.Azure.Cosmos;
 
 namespace Friflo.Json.Fliox.Hub.Cosmos
@@ -125,7 +126,8 @@ namespace Friflo.Json.Fliox.Hub.Cosmos
                 if (content == null) {
                     entities[0] = new EntityValue(key);
                 } else {
-                    var     payload     = await EntityUtils.ReadToEnd(content).ConfigureAwait(false);
+                    var     buffer      = new MemoryBuffer();
+                    var     payload     = await EntityUtils.ReadToEnd(content, buffer).ConfigureAwait(false);
                     bool    asIntKey    = command.isIntKey == true; 
                     var     json        = processor.ReplaceKey(payload, "id", asIntKey, command.keyName, out _, out _);
                     entities[0]         = new EntityValue(key, json);
@@ -145,8 +147,9 @@ namespace Friflo.Json.Fliox.Hub.Cosmos
             // todo handle error;
             using (var response = await cosmosContainer.ReadManyItemsStreamAsync(list).ConfigureAwait(false))
             using (var pooled   = syncContext.ObjectMapper.Get()) {
+                var buffer      = new MemoryBuffer();
                 var reader      = pooled.instance.reader;
-                var documents   = await CosmosUtils.ReadDocuments(reader, response.Content).ConfigureAwait(false);
+                var documents   = await CosmosUtils.ReadDocuments(reader, response.Content, buffer).ConfigureAwait(false);
                 EntityUtils.CopyEntities(documents, "id", command.isIntKey, command.keyName, entities, syncContext);
                 /* foreach (var key in keys) {
                     if (entities.ContainsKey(key))
@@ -161,6 +164,7 @@ namespace Friflo.Json.Fliox.Hub.Cosmos
         
         public override async Task<QueryEntitiesResult> QueryEntities(QueryEntities command, SyncContext syncContext) {
             await EnsureContainerExists().ConfigureAwait(false);
+            var buffer      = new MemoryBuffer();
             var documents   = new List<JsonValue>();
             var sql         = filterByClient ? null : "SELECT * FROM c WHERE " + command.GetFilter().query.Cosmos;
             using (FeedIterator iterator    = cosmosContainer.GetItemQueryStreamIterator(sql))
@@ -168,7 +172,7 @@ namespace Friflo.Json.Fliox.Hub.Cosmos
                 while (iterator.HasMoreResults) {
                     using(ResponseMessage response = await iterator.ReadNextAsync().ConfigureAwait(false)) {
                         var reader  = pooled.instance.reader;
-                        var docs    = await CosmosUtils.ReadDocuments(reader, response.Content).ConfigureAwait(false);
+                        var docs    = await CosmosUtils.ReadDocuments(reader, response.Content, buffer).ConfigureAwait(false);
                         if (docs == null)
                             throw new InvalidOperationException($"no Documents in Cosmos ResponseMessage. command: {command}");
                         documents.AddRange(docs);

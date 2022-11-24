@@ -39,9 +39,8 @@ namespace Friflo.Json.Fliox.Hub.Host.Utils
             }
         }
         
-        public static Task<JsonValue> ReadToEnd(Stream input) {
-            var capacity    = 16 * 1024;
-            var buffer      = new MemoryBuffer(capacity);
+        public static Task<JsonValue> ReadToEnd(Stream input, MemoryBuffer buffer) {
+            var capacity = buffer.Capacity;
             buffer.SetMessageStart();
             int read;
             while ((read = input.Read(buffer.GetBuffer(), buffer.Position, capacity - buffer.Position)) > 0) {
@@ -50,7 +49,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Utils
                     buffer.SetCapacity(capacity = 2 * capacity);
                 }
             }
-            return Task.FromResult(new JsonValue(buffer.CreateMessageArray()));
+            return Task.FromResult(new JsonValue(buffer.GetBuffer(), buffer.MessageStart, buffer.MessageLength));
         }
         
         internal static bool GetKeysFromEntities (
