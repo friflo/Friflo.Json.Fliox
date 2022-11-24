@@ -25,6 +25,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
         public   readonly   string                          description;
         private  readonly   Type                            instanceType;
         public   readonly   PolyType[]                      polyTypes;
+        internal            Bytes                           discriminatorBytes;
         private             TypeMapper                      instanceMapper;
         private             Entry[]                         mappers;
         private  readonly   Dictionary<Bytes, TypeMapper>   mapperByName;
@@ -46,11 +47,12 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
         }
 
         private InstanceFactory(string discriminator, string description, Type instanceType, PolyType[] polyTypes) {
-            this.discriminator  = discriminator;
-            this.description    = description;
-            this.instanceType   = instanceType;
-            this.polyTypes      = polyTypes;
-            this.mapperByName   = new Dictionary<Bytes, TypeMapper>(Bytes.Equality);
+            this.discriminator      = discriminator;
+            this.discriminatorBytes = new Bytes(discriminator);
+            this.description        = description;
+            this.instanceType       = instanceType;
+            this.polyTypes          = polyTypes;
+            this.mapperByName       = new Dictionary<Bytes, TypeMapper>(Bytes.Equality);
         }
         
         public InstanceFactory() {
