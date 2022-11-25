@@ -27,7 +27,7 @@ namespace Friflo.Json.Fliox.Hub.Cosmos
     internal static class CosmosUtils
     {
         internal static async Task<List<JsonValue>> ReadDocuments(ObjectReader reader, Stream content, MemoryBuffer buffer) {
-            var documentsJson   = await EntityUtils.ReadToEnd(content, buffer).ConfigureAwait(false);
+            var documentsJson   = await EntityUtils.ReadToEndAsync(content, buffer).ConfigureAwait(false);
             var responseFeed    = reader.Read<ResponseFeed>(documentsJson);
             return responseFeed.Documents;
         }

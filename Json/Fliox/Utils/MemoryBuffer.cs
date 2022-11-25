@@ -42,8 +42,7 @@ namespace Friflo.Json.Fliox.Utils
         }
         
         public byte[] ToArray() {
-            var len     = position;
-            var result  = new byte[len];
+            var result  = new byte[position];
             Buffer.BlockCopy(buffer, 0, result, 0, position);
             return result;
         }

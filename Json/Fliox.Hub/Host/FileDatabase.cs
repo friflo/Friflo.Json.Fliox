@@ -267,12 +267,13 @@ namespace Friflo.Json.Fliox.Hub.Host
         private static async Task WriteText(string filePath, JsonValue json, FileMode fileMode) {
             using (var destStream = new FileStream(filePath, fileMode, FileAccess.Write, FileShare.Read, bufferSize: 4096, useAsync: false)) {
                 await destStream.WriteAsync(json).ConfigureAwait(false);
+                await destStream.FlushAsync().ConfigureAwait(false);
             }
         }
         
         internal static async Task<JsonValue> ReadText(string filePath, MemoryBuffer buffer) {
             using (var sourceStream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read, bufferSize: 4096, useAsync: false)) {
-                return await EntityUtils.ReadToEnd(sourceStream, buffer).ConfigureAwait(false);
+                return await EntityUtils.ReadToEndAsync(sourceStream, buffer).ConfigureAwait(false);
             }
         }
         

@@ -127,7 +127,7 @@ namespace Friflo.Json.Fliox.Hub.Cosmos
                     entities[0] = new EntityValue(key);
                 } else {
                     var     buffer      = new MemoryBuffer();
-                    var     payload     = await EntityUtils.ReadToEnd(content, buffer).ConfigureAwait(false);
+                    var     payload     = await EntityUtils.ReadToEndAsync(content, buffer).ConfigureAwait(false);
                     bool    asIntKey    = command.isIntKey == true; 
                     var     json        = processor.ReplaceKey(payload, "id", asIntKey, command.keyName, out _, out _);
                     entities[0]         = new EntityValue(key, json);
