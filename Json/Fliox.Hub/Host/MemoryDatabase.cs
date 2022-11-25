@@ -130,10 +130,8 @@ namespace Friflo.Json.Fliox.Hub.Host
                     keyValues.TryGetValue(key, out JsonValue value);
                     var filter  = filterContext.FilterEntity(key, value);
                     
-                    if (filter == FilterEntityResult.FilterError) {
-                        result.Error = new CommandError (TaskErrorResultType.FilterError, filterContext.Error );
-                        return Task.FromResult(result);
-                    }
+                    if (filter == FilterEntityResult.FilterError)
+                        return Task.FromResult(filterContext.QueryError(result));
                     if (filter == FilterEntityResult.ReachedLimit)
                         break;
                     if (filter == FilterEntityResult.ReachedMaxCount) {

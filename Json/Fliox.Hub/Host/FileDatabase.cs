@@ -179,10 +179,8 @@ namespace Friflo.Json.Fliox.Hub.Host
                     var value   = await keyValueEnum.CurrentValueAsync();
                     var filter  = filterContext.FilterEntity(key, value);
                     
-                    if (filter == FilterEntityResult.FilterError) {
-                        result.Error = new CommandError (TaskErrorResultType.FilterError, filterContext.Error );
-                        return result;
-                    }
+                    if (filter == FilterEntityResult.FilterError)
+                        return filterContext.QueryError(result);
                     if (filter == FilterEntityResult.ReachedLimit)
                         break;
                     if (filter == FilterEntityResult.ReachedMaxCount) {

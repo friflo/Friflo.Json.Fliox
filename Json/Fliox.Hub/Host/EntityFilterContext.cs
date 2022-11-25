@@ -23,8 +23,7 @@ namespace Friflo.Json.Fliox.Hub.Host
     /// Default implementation. Performs a full table scan! Act as reference and is okay for small data sets
     public class EntityFilterContext : IDisposable
     {
-        public              List<EntityValue>       Result  => result;
-        public              string                  Error   => error;
+        public              List<EntityValue>       Result              => result;
         
         private  readonly   Pooled<JsonEvaluator>   poolJsonEvaluator;
         private  readonly   JsonEvaluator           evaluator;
@@ -68,6 +67,11 @@ namespace Friflo.Json.Fliox.Hub.Host
             }
             return HasMore;
         }
+        
+        public QueryEntitiesResult QueryError(QueryEntitiesResult result) {
+            result.Error = new CommandError (TaskErrorResultType.FilterError, error );
+            return result;
+        } 
         
         public void Dispose() {
             poolJsonEvaluator.Dispose();
