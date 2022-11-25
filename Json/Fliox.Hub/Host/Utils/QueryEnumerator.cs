@@ -3,7 +3,6 @@
 
 using System.Collections;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace Friflo.Json.Fliox.Hub.Host.Utils
 {
@@ -37,12 +36,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Utils
         }
         
         // ---
-        public      abstract bool               IsAsync             { get; }
-        /// <summary> Preferred in favor of <see cref="CurrentValueAsync"/> to avoid a task allocation per entity </summary>
-        public      abstract JsonValue          CurrentValue        { get; }
-        /// <summary> If possible use <see cref="CurrentValue"/> instead </summary>
-        public      abstract Task<JsonValue>    CurrentValueAsync();
-        protected   abstract void               DisposeEnumerator();
+        protected abstract void DisposeEnumerator();
 
         public void Attach() {
             detached = false;

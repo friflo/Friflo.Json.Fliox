@@ -167,15 +167,33 @@ namespace Friflo.Json.Fliox.Hub.Host
         }
 
         public override async Task<QueryEntitiesResult> QueryEntities(QueryEntities command, SyncContext syncContext) {
-            if (!FindCursor(command.cursor, syncContext, out var keyValueEnum, out var error)) {
+            if (!FindCursor(command.cursor, syncContext, out var fileEnumerator, out var error)) {
                 return new QueryEntitiesResult { Error = error };
             }
-            keyValueEnum = keyValueEnum ?? new FileQueryEnumerator(folder);
+            var keyValueEnum    = (FileQueryEnumerator)fileEnumerator ?? new FileQueryEnumerator(folder);
+            var filterContext   = new EntityFilterContext(command, this, syncContext);
+            var result          = new QueryEntitiesResult();
             try {
-                var result = await FilterEntities(command, keyValueEnum, syncContext).ConfigureAwait(false);
+                while (keyValueEnum.MoveNext()) {
+                    var key     = keyValueEnum.Current;
+                    var value   = await keyValueEnum.CurrentValueAsync();
+                    var filter  = filterContext.FilterEntity(key, value);
+                    
+                    if (filter == FilterEntityResult.FilterError) {
+                        result.Error = new CommandError (TaskErrorResultType.FilterError, filterContext.Error );
+                        return result;
+                    }
+                    if (filter == FilterEntityResult.ReachedLimit)
+                        break;
+                    if (filter == FilterEntityResult.ReachedMaxCount) {
+                        result.cursor = StoreCursor(keyValueEnum, syncContext.User.userId);
+                        break;
+                    }
+                }
+                result.entities = filterContext.Result.ToArray();
                 return result;
-            }
-            finally {
+            } finally {
+                filterContext.Dispose();
                 keyValueEnum.Dispose();
             }
         }
@@ -321,11 +339,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             enumerator.Dispose();
         }
         
-        // --- ContainerEnumerator
-        public override bool        IsAsync         => true;
-        public override JsonValue   CurrentValue    => throw new NotImplementedException();
-        
-        public override async       Task<JsonValue> CurrentValueAsync() { 
+        public async       Task<JsonValue> CurrentValueAsync() { 
             var path    = enumerator.Current;
             return await FileContainer.ReadText(path, buffer).ConfigureAwait(false);
         }

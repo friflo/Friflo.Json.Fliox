@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host.Utils;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
-using Friflo.Json.Fliox.Utils;
 
 namespace Friflo.Json.Fliox.Hub.Host
 {
@@ -118,16 +117,34 @@ namespace Friflo.Json.Fliox.Hub.Host
             return Task.FromResult(result);
         }
         
-        public override async Task<QueryEntitiesResult> QueryEntities(QueryEntities command, SyncContext syncContext) {
+        public override Task<QueryEntitiesResult> QueryEntities(QueryEntities command, SyncContext syncContext) {
             if (!FindCursor(command.cursor, syncContext, out var keyValueEnum, out var error)) {
-                return new QueryEntitiesResult { Error = error };
+                return Task.FromResult(new QueryEntitiesResult { Error = error });
             }
-            keyValueEnum = keyValueEnum ?? new MemoryQueryEnumerator(keyValues);   // TAG_PERF
+            keyValueEnum        = keyValueEnum ?? new MemoryQueryEnumerator(keyValues);   // TAG_PERF
+            var filterContext   = new EntityFilterContext(command, this, syncContext);
+            var result          = new QueryEntitiesResult();
             try {
-                var result  = await FilterEntities(command, keyValueEnum, syncContext).ConfigureAwait(false);
-                return result;
-            }
-            finally {
+                while (keyValueEnum.MoveNext()) {
+                    var key     = keyValueEnum.Current;
+                    keyValues.TryGetValue(key, out JsonValue value);
+                    var filter  = filterContext.FilterEntity(key, value);
+                    
+                    if (filter == FilterEntityResult.FilterError) {
+                        result.Error = new CommandError (TaskErrorResultType.FilterError, filterContext.Error );
+                        return Task.FromResult(result);
+                    }
+                    if (filter == FilterEntityResult.ReachedLimit)
+                        break;
+                    if (filter == FilterEntityResult.ReachedMaxCount) {
+                        result.cursor = StoreCursor(keyValueEnum, syncContext.User.userId);
+                        break;
+                    }
+                }
+                result.entities = filterContext.Result.ToArray();
+                return Task.FromResult(result);
+            } finally {
+                filterContext.Dispose();
                 keyValueEnum.Dispose();
             }
         }
@@ -232,10 +249,5 @@ namespace Friflo.Json.Fliox.Hub.Host
         protected override void DisposeEnumerator() {
             enumerator.Dispose();
         }
-        
-        // --- ContainerEnumerator
-        public override bool            IsAsync             => false;
-        public override JsonValue       CurrentValue        => enumerator.Current.Value;
-        public override Task<JsonValue> CurrentValueAsync() => throw new NotImplementedException();
     }
 }

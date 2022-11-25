@@ -200,47 +200,11 @@ namespace Friflo.Json.Fliox.Hub.Host
             var result  = new AggregateEntitiesResult { container = command.container, value = value };
             return result;
         }
-        
-        /// Default implementation. Performs a full table scan! Act as reference and is okay for small data sets
-        protected async Task<QueryEntitiesResult> FilterEntities(QueryEntities command, QueryEnumerator entities, SyncContext syncContext) {
-            var  jsonFilter = new JsonFilter(command.filterContext); // filter can be reused
-            var  result     = new List<EntityValue>();
-            long limit      = command.limit     ?? long.MaxValue;
-            long maxCount   = command.maxCount  ?? long.MaxValue;
-            using (var pooled = syncContext.pool.JsonEvaluator.Get()) {
-                JsonEvaluator evaluator = pooled.instance;
-                while (entities.MoveNext()) {
-                    var         key = entities.Current;
-                    JsonValue   json;
-                    if (entities.IsAsync) {
-                        json = await entities.CurrentValueAsync().ConfigureAwait(false);
-                    } else {
-                        json = entities.CurrentValue; // JSON was invalid. Error != null    
-                    }
-                    if (json.IsNull())
-                        continue;
-                    var match = evaluator.Filter(json, jsonFilter, out string filterError);
-                    if (filterError != null) {
-                        var message = $"at {name}[{key}] {filterError}";
-                        return new QueryEntitiesResult{ Error = new CommandError (TaskErrorResultType.FilterError, message) };
-                    }
-                    if (!match)
-                        continue;
-                    result.Add(new EntityValue(key, json));
-                    if (result.Count >= limit)
-                        break;
-                    if (result.Count < maxCount)
-                        continue;
-                    var cursor = StoreCursor(entities, syncContext.User.userId);
-                    return new QueryEntitiesResult{ entities = result.ToArray(), cursor = cursor };
-                }
-            }
-            return new QueryEntitiesResult{ entities = result.ToArray() };
-        }
+
         #endregion
     
     #region - internal methods
-        private string StoreCursor(QueryEnumerator enumerator, in JsonKey userId) {
+        internal string StoreCursor(QueryEnumerator enumerator, in JsonKey userId) {
             var cursor      = enumerator.Cursor;
             if (cursor != null) {
                 cursors.Remove(cursor);
