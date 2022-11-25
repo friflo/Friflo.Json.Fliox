@@ -123,28 +123,32 @@ namespace Friflo.Json.Fliox.Hub.Host
             }
             keyValueEnum        = keyValueEnum ?? new MemoryQueryEnumerator(keyValues);   // TAG_PERF
             var filterContext   = new EntityFilterContext(command, this, syncContext);
-            var result          = new QueryEntitiesResult();
             try {
-                while (keyValueEnum.MoveNext()) {
-                    var key     = keyValueEnum.Current;
-                    keyValues.TryGetValue(key, out JsonValue value);
-                    var filter  = filterContext.FilterEntity(key, value);
-                    
-                    if (filter == FilterEntityResult.FilterError)
-                        return Task.FromResult(filterContext.QueryError(result));
-                    if (filter == FilterEntityResult.ReachedLimit)
-                        break;
-                    if (filter == FilterEntityResult.ReachedMaxCount) {
-                        result.cursor = StoreCursor(keyValueEnum, syncContext.User.userId);
-                        break;
-                    }
-                }
-                result.entities = filterContext.Result.ToArray();
-                return Task.FromResult(result);
+                return Task.FromResult(FilterEntities(filterContext, keyValueEnum, syncContext));
             } finally {
                 filterContext.Dispose();
                 keyValueEnum.Dispose();
             }
+        }
+        
+        private QueryEntitiesResult FilterEntities (EntityFilterContext filterContext, QueryEnumerator keyValueEnum, SyncContext syncContext) {
+            var result = new QueryEntitiesResult();
+            while (keyValueEnum.MoveNext()) {
+                var key     = keyValueEnum.Current;
+                keyValues.TryGetValue(key, out JsonValue value);
+                var filter  = filterContext.FilterEntity(key, value);
+                
+                if (filter == FilterEntityResult.FilterError)
+                    return filterContext.QueryError(result);
+                if (filter == FilterEntityResult.ReachedLimit)
+                    break;
+                if (filter == FilterEntityResult.ReachedMaxCount) {
+                    result.cursor = StoreCursor(keyValueEnum, syncContext.User.userId);
+                    break;
+                }
+            }
+            result.entities = filterContext.Result.ToArray();
+            return result;
         }
         
         public override async Task<AggregateEntitiesResult> AggregateEntities (AggregateEntities command, SyncContext syncContext) {
