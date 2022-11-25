@@ -126,7 +126,7 @@ namespace Friflo.Json.Fliox.Hub.Cosmos
                 if (content == null) {
                     entities[0] = new EntityValue(key);
                 } else {
-                    var     buffer      = new MemoryBuffer();
+                    var     buffer      = new StreamBuffer();
                     var     payload     = await EntityUtils.ReadToEndAsync(content, buffer).ConfigureAwait(false);
                     bool    asIntKey    = command.isIntKey == true; 
                     var     json        = processor.ReplaceKey(payload, "id", asIntKey, command.keyName, out _, out _);
@@ -147,7 +147,7 @@ namespace Friflo.Json.Fliox.Hub.Cosmos
             // todo handle error;
             using (var response = await cosmosContainer.ReadManyItemsStreamAsync(list).ConfigureAwait(false))
             using (var pooled   = syncContext.ObjectMapper.Get()) {
-                var buffer      = new MemoryBuffer();
+                var buffer      = new StreamBuffer();
                 var reader      = pooled.instance.reader;
                 var documents   = await CosmosUtils.ReadDocuments(reader, response.Content, buffer).ConfigureAwait(false);
                 EntityUtils.CopyEntities(documents, "id", command.isIntKey, command.keyName, entities, syncContext);
@@ -164,7 +164,7 @@ namespace Friflo.Json.Fliox.Hub.Cosmos
         
         public override async Task<QueryEntitiesResult> QueryEntities(QueryEntities command, SyncContext syncContext) {
             await EnsureContainerExists().ConfigureAwait(false);
-            var buffer      = new MemoryBuffer();
+            var buffer      = new StreamBuffer();
             var documents   = new List<JsonValue>();
             var sql         = filterByClient ? null : "SELECT * FROM c WHERE " + command.GetFilter().query.Cosmos;
             using (FeedIterator iterator    = cosmosContainer.GetItemQueryStreamIterator(sql))

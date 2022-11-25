@@ -9,17 +9,17 @@ using static NUnit.Framework.Assert;
 
 namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Utils
 {
-    public static class TestMemoryBuffer
+    public static class TestStreamBuffer
     {
         private static readonly byte[] Hello = Encoding.UTF8.GetBytes("hello");
         
         [Test]
-        public static void TestMemoryBufferCapacity1() {
+        public static void TestStreamBufferCapacity1() {
             MemoryStream ms = new MemoryStream();
             ms.Write(Hello);
             ms.Position = 0;
             
-            var buffer = new MemoryBuffer(1);
+            var buffer = new StreamBuffer(1);
             
             var result = ReadString(buffer, ms);
 
@@ -28,7 +28,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Utils
             AreEqual(5,         buffer.Position);
         }
         
-        private static string ReadString(MemoryBuffer buffer, Stream stream) {
+        private static string ReadString(StreamBuffer buffer, Stream stream) {
             buffer.Position = 0;
             int read;
             while ((read = stream.Read(buffer.GetBuffer(), buffer.Position, buffer.Remaining)) > 0)

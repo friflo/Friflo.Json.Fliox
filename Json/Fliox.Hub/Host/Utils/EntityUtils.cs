@@ -39,7 +39,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Utils
             }
         }
         
-        public static async Task<JsonValue> ReadToEndAsync(Stream input, MemoryBuffer buffer) {
+        public static async Task<JsonValue> ReadToEndAsync(Stream input, StreamBuffer buffer) {
             buffer.Position = 0;
             int read;
             while ((read = await input.ReadAsync(buffer.GetBuffer(), buffer.Position, buffer.Remaining).ConfigureAwait(false)) > 0) {

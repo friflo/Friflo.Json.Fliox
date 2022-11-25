@@ -139,7 +139,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             var keys        = command.ids;
             var entities    = new EntityValue[keys.Count];
             int index       = 0;
-            var buffer      = new MemoryBuffer();
+            var buffer      = new StreamBuffer();
             await rwLock.AcquireReaderLock().ConfigureAwait(false);
             try {
                 foreach (var key in keys) {
@@ -287,7 +287,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             }
         }
         
-        internal static async Task<JsonValue> ReadText(string filePath, MemoryBuffer buffer) {
+        internal static async Task<JsonValue> ReadText(string filePath, StreamBuffer buffer) {
             using (var sourceStream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read, bufferSize: 4096, useAsync: false)) {
                 return await EntityUtils.ReadToEndAsync(sourceStream, buffer).ConfigureAwait(false);
             }
@@ -304,7 +304,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         private readonly    string              folder; // keep there for debugging
         private readonly    int                 folderLen;
         private readonly    IEnumerator<string> enumerator;
-        private readonly    MemoryBuffer        buffer = new MemoryBuffer();
+        private readonly    StreamBuffer        buffer = new StreamBuffer();
             
         internal FileQueryEnumerator (string folder)
         {

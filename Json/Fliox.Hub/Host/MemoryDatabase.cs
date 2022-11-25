@@ -136,6 +136,8 @@ namespace Friflo.Json.Fliox.Hub.Host
             while (keyValueEnum.MoveNext()) {
                 var key     = keyValueEnum.Current;
                 keyValues.TryGetValue(key, out JsonValue value);
+                if (value.IsNull())
+                    continue;
                 var filter  = filterContext.FilterEntity(key, value);
                 
                 if (filter == FilterEntityResult.FilterError)
