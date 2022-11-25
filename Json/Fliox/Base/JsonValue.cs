@@ -8,7 +8,6 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Friflo.Json.Burst;
-using Friflo.Json.Fliox.Utils;
 
 // ReSharper disable ConvertToAutoPropertyWhenPossible
 // ReSharper disable ConvertToAutoProperty
@@ -158,29 +157,6 @@ namespace Friflo.Json.Fliox
             }
             Buffer.BlockCopy(src.array, src.start, dstArray, 0, count);
             dst = new JsonValue(dstArray, count);
-        }
-        
-        public JsonValue AddToBuffer(MemoryBuffer buffer) {
-            if (IsNull()) {
-                return default;
-            }
-            buffer.SetMessageStart();
-            var bufferStart = buffer.Position;
-            var capacity    = buffer.Capacity;
-            var remaining   = capacity - bufferStart;
-            if (count > remaining) {
-                if (2 * count > capacity) {
-                    capacity    = Math.Max(2 * capacity, count);
-                    buffer.SetCapacity(capacity);
-                } else {
-                    // count < capacity / 2   =>  a new buffer is sufficient to store the JsonValue
-                    buffer.NewBuffer();
-                }
-                bufferStart = buffer.Position;
-            }
-            buffer.Position += count;
-            Buffer.BlockCopy(array, start, buffer.GetBuffer(), bufferStart, count);
-            return new JsonValue(buffer.GetBuffer(), bufferStart, count);
         }
     }
     
