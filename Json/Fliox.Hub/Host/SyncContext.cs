@@ -48,20 +48,25 @@ namespace Friflo.Json.Fliox.Hub.Host
         internal  readonly  SharedCache             sharedCache;
         internal            JsonKey                 clientId;
         internal            ClientIdValidation      clientIdValidation;
+        internal  readonly  MemoryBuffer            memoryBuffer;
         
         public override     string                  ToString() => $"userId: {authState.user}, auth: {authState}";
 
-        internal SyncContext (Pool pool, EventReceiver eventReceiver, SharedCache sharedCache) {
+        internal SyncContext (Pool pool, EventReceiver eventReceiver, SharedCache sharedCache, MemoryBuffer memoryBuffer) {
             this.pool           = pool;
-            this.eventReceiver    = eventReceiver;
+            this.eventReceiver  = eventReceiver;
             this.sharedCache    = sharedCache;
+            this.memoryBuffer   = memoryBuffer ?? throw new ArgumentNullException(nameof(memoryBuffer));
+            memoryBuffer.Reset();
         }
         
-        internal SyncContext (Pool pool, EventReceiver eventReceiver, SharedCache sharedCache, in JsonKey clientId) {
+        internal SyncContext (Pool pool, EventReceiver eventReceiver, SharedCache sharedCache, MemoryBuffer memoryBuffer, in JsonKey clientId) {
             this.pool           = pool;
             this.eventReceiver  = eventReceiver;
             this.clientId       = clientId;
             this.sharedCache    = sharedCache;
+            this.memoryBuffer   = memoryBuffer ?? throw new ArgumentNullException(nameof(memoryBuffer));
+            memoryBuffer.Reset();
         }
         
         public void AuthenticationFailed(User user, string error, TaskAuthorizer taskAuthorizer, HubPermission hubPermission) {

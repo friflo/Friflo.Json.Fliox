@@ -13,6 +13,7 @@ using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Schema.Definition;
 using Friflo.Json.Fliox.Transform;
 using Friflo.Json.Fliox.Transform.Query.Ops;
+using Friflo.Json.Fliox.Utils;
 using static System.Diagnostics.DebuggerBrowsableState;
 
 namespace Friflo.Json.Fliox.Hub.Host
@@ -175,7 +176,8 @@ namespace Friflo.Json.Fliox.Hub.Host
         public async Task SeedDatabase(EntityDatabase src) {
             var sharedEnv       = new SharedEnv();
             var pool            = sharedEnv.Pool;
-            var syncContext     = new SyncContext(pool, null, sharedEnv.sharedCache);
+            var memoryBuffer    = new MemoryBuffer();
+            var syncContext     = new SyncContext(pool, null, sharedEnv.sharedCache, memoryBuffer);
             var containerNames  = await src.GetContainers().ConfigureAwait(false);
             var entityTypes     = src.Schema?.typeSchema.GetEntityTypes();
             foreach (var container in containerNames) {
@@ -184,6 +186,9 @@ namespace Friflo.Json.Fliox.Hub.Host
                     keyName = entityType.KeyField;
                 }
                 await SeedContainer(src, container, keyName, syncContext).ConfigureAwait(false);
+                
+                memoryBuffer.DebugClear();
+                memoryBuffer.Reset();
             }
         }
         

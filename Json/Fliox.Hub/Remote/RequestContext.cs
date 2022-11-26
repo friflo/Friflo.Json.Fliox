@@ -35,6 +35,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         public    readonly  IHttpHeaders                headers;
         private             Dictionary<string, string>  responseHeaders;
         internal            bool                        handled;
+        public    readonly  MemoryBuffer                memoryBuffer;
         // --- public properties
         public              string                      ResponseContentType { get; private set; }
         public              int                         StatusCode          { get; private set; }
@@ -55,7 +56,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
             string          query,
             Stream          body,
             int             contentLength,
-            IHttpHeaders    headers)
+            IHttpHeaders    headers,
+            MemoryBuffer    memoryBuffer)
         {
             this.hub            = remoteHost.LocalHub;
             this.method         = method;
@@ -64,6 +66,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             this.body           = body;
             this.contentLength  = contentLength;
             this.headers        = headers;
+            this.memoryBuffer   = memoryBuffer;
         }
         
         public void Write (in JsonValue value, string contentType, int statusCode) {
@@ -108,7 +111,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         public SyncContext CreateSyncContext(EventReceiver eventReceiver) {
             var sharedCache = SharedCache;
             var pool        = hub.sharedEnv.Pool;
-            return new SyncContext(pool, eventReceiver, sharedCache);
+            return new SyncContext(pool, eventReceiver, sharedCache, memoryBuffer);
         }
     }
     

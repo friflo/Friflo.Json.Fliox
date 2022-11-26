@@ -33,6 +33,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         internal    ObjectPool<ObjectMapper>    ObjectMapper    { get; }
         internal    ObjectPool<EntityProcessor> EntityProcessor { get; }
         internal    ObjectPool<TypeValidator>   TypeValidator   { get; }
+        internal    ObjectPool<MemoryBuffer>    MemoryBuffer    { get; }
         /// <summary>
         /// Enable pooling instances of the given Type <typeparamref name="T"/>. In case no cached instance of <typeparamref name="T"/>
         /// is available the <paramref name="factory"/> method is called to create a new instance.
@@ -62,6 +63,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             ObjectMapper    = new ObjectPool<ObjectMapper>      (() => new ObjectMapper(sharedEnv.TypeStore),  m => m.ErrorHandler = ObjectReader.NoThrow);
             EntityProcessor = new ObjectPool<EntityProcessor>   (() => new EntityProcessor());
             TypeValidator   = new ObjectPool<TypeValidator>     (() => new TypeValidator());
+            MemoryBuffer    = new ObjectPool<MemoryBuffer>      (() => new MemoryBuffer());
         }
         
         internal void Dispose() {
@@ -72,6 +74,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             ObjectMapper.   Dispose();
             EntityProcessor.Dispose();
             TypeValidator.  Dispose();
+            MemoryBuffer.   Dispose();
             foreach (var pair in poolMap) {
                 var pool = pair.Value;
                 pool.Dispose();
@@ -86,7 +89,8 @@ namespace Friflo.Json.Fliox.Hub.Host
             jsonEvaluator   = JsonEvaluator     .Count,
             objectMapper    = ObjectMapper      .Count,
             entityProcessor = EntityProcessor   .Count,
-            typeValidator   = TypeValidator     .Count
+            typeValidator   = TypeValidator     .Count,
+            memoryBuffer    = MemoryBuffer      .Count
         };
     }
     
@@ -98,9 +102,10 @@ namespace Friflo.Json.Fliox.Hub.Host
         internal  int     objectMapper;
         internal  int     entityProcessor;
         internal  int     typeValidator;
+        internal  int     memoryBuffer;
 
         public override string ToString() =>
             $"jsonPatcher: {jsonPatcher}, jsonMerger: {jsonMerger}, scalarSelector: {scalarSelector}, jsonEvaluator: {jsonEvaluator}, " +
-            $"objectMapper: {objectMapper}, entityProcessor: {entityProcessor}, typeValidator: {typeValidator}";
+            $"objectMapper: {objectMapper}, entityProcessor: {entityProcessor}, typeValidator: {typeValidator}, memoryBuffer: {memoryBuffer}";
     }
 }

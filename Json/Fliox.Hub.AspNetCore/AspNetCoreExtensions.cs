@@ -57,11 +57,12 @@ namespace Friflo.Json.Fliox.Hub.AspNetCore
             var query           = httpRequest.QueryString.Value;
             var body            = httpRequest.Body;
             int bodyLength      = (int)(httpRequest.ContentLength ?? 0);
-            var requestContext  = new RequestContext(httpHost, httpRequest.Method, route, query, body, bodyLength, headers);
-
-            await httpHost.ExecuteHttpRequest(requestContext).ConfigureAwait(false);
+            using(var memoryBuffer = httpHost.sharedEnv.MemoryBuffer.Get()) {
+                var requestContext  = new RequestContext(httpHost, httpRequest.Method, route, query, body, bodyLength, headers, memoryBuffer.instance);
+                await httpHost.ExecuteHttpRequest(requestContext).ConfigureAwait(false);
                     
-            return requestContext;
+                return requestContext;
+            }
         }
         
         /// <summary>

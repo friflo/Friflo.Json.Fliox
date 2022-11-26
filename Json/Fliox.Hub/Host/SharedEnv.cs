@@ -6,6 +6,7 @@ using Friflo.Json.Fliox.Hub.Host.Utils;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Schema.Validation;
+using Friflo.Json.Fliox.Utils;
 
 // ReSharper disable ConvertToAutoProperty
 namespace Friflo.Json.Fliox.Hub.Host
@@ -28,12 +29,13 @@ namespace Friflo.Json.Fliox.Hub.Host
     /// </remarks>
     public class SharedEnv : IDisposable, ILogSource
     {
-        private  readonly   TypeStore       typeStore;
-        internal readonly   SharedCache     sharedCache;
-        public   virtual    TypeStore       TypeStore   => typeStore;
-        internal            Pool            Pool        { get; }
-        internal readonly   HubLogger       hubLogger = new HubLogger();
-        public              IHubLogger      Logger {
+        private  readonly   TypeStore                   typeStore;
+        internal readonly   SharedCache                 sharedCache;
+        public   virtual    TypeStore                   TypeStore       => typeStore;
+        internal            Pool                        Pool            { get; }
+        public              ObjectPool<MemoryBuffer>    MemoryBuffer    => Pool.MemoryBuffer;
+        internal readonly   HubLogger                   hubLogger       = new HubLogger();
+        public              IHubLogger                  Logger {
             get => hubLogger.instance;
             set => hubLogger.instance = value ?? throw new ArgumentNullException (nameof(Logger));
         }

@@ -9,6 +9,7 @@ using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Remote;
 using Friflo.Json.Fliox.Hub.Remote.Test;
 using Friflo.Json.Fliox.Mapper;
+using Friflo.Json.Fliox.Utils;
 using Friflo.Json.Tests.Common.Utils;
 using Friflo.Json.Tests.Main;
 using NUnit.Framework;
@@ -44,11 +45,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
             var body            = QueryToStream(query, operationName, vars, out int bodyLength);
             var cookies         = CreateDefaultCookies();
             var headers         = new TestHttpHeaders(null, cookies);
-            var requestContext  = new RequestContext(_httpHost, "POST", route, "", body, bodyLength, headers);
-            // execute synchronous to enable tests running in Unity Test Runner
-            _httpHost.ExecuteHttpRequest(requestContext).Wait();
-            
-            return requestContext;
+            using(var memoryBuffer = _httpHost.sharedEnv.MemoryBuffer.Get()) {
+                var requestContext  = new RequestContext(_httpHost, "POST", route, "", body, bodyLength, headers, memoryBuffer.instance);
+                // execute synchronous to enable tests running in Unity Test Runner
+                _httpHost.ExecuteHttpRequest(requestContext).Wait();
+                
+                return requestContext;
+            }
         }
         
         private static Stream QueryToStream(string query, string operationName, string vars, out int streamLength) {
@@ -71,13 +74,16 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
             var content         = File.ReadAllText(path);
             var restFile        = new HttpFile(path, content);
             var sb              = new StringBuilder();
+            var memoryBuffer    = new MemoryBuffer();
             restFile.AppendFileHeader(sb);
             foreach (var req in restFile.requests) {
                 var stream      = req.GetBody(out var length);
-                var context     = new RequestContext(_httpHost, req.method, req.path, req.query, stream, length, req.headers);
+                var context     = new RequestContext(_httpHost, req.method, req.path, req.query, stream, length, req.headers, memoryBuffer);
                 // execute synchronous to enable tests running in Unity Test Runner
                 _httpHost.ExecuteHttpRequest(context).Wait();
                 
+                memoryBuffer.DebugClear();
+                memoryBuffer.Reset();
                 HttpFile.AppendRequest(sb, context);
             }
             var fullResult      = httpFolder + resultPath;
@@ -90,7 +96,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
             var bodyStream      = HttpFileRequest.StringToStream(jsonBody, out int length);
             var cookies         = CreateDefaultCookies();
             var headers         = new TestHttpHeaders(null, cookies);
-            var requestContext  = new RequestContext(_httpHost, method, route, query, bodyStream, length, headers);
+            var memoryBuffer    = new MemoryBuffer();
+            var requestContext  = new RequestContext(_httpHost, method, route, query, bodyStream, length, headers, memoryBuffer);
             // execute synchronous to enable tests running in Unity Test Runner
             _httpHost.ExecuteHttpRequest(requestContext).Wait();
             

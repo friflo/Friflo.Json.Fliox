@@ -144,7 +144,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
 
                 // Each request require its own pool as multiple request running concurrently. Could cache a Pool instance per connection.
                 var pool        = sharedEnv.Pool;
-                var syncContext = new SyncContext(pool, null, sharedEnv.sharedCache);
+                var syncContext = new SyncContext(pool, null, sharedEnv.sharedCache, request.memoryBuffer);
                 using (var pooledMapper = pool.ObjectMapper.Get()) {
                     var args    = new RemoteArgs(null, pooledMapper.instance);
                     var result  = await ExecuteJsonRequest(args, requestContent, syncContext).ConfigureAwait(false);

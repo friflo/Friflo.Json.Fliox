@@ -141,7 +141,7 @@ namespace Friflo.Json.Fliox
         
         /// <summary>
         /// Copy the given <paramref name="src"/> array to <paramref name="dst"/> <br/>
-        /// The <paramref name="dst"/> array is reused if big enough <br/>
+        /// The <paramref name="dst"/> array is reused if big enough. Otherwise a new array is created<br/>
         /// The <paramref name="src"/> array remains unchanged.
         /// </summary>
         public static void Copy(ref JsonValue dst, in JsonValue src) {
