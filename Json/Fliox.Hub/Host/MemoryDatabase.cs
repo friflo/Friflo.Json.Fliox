@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host.Utils;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
+using Friflo.Json.Fliox.Utils;
 
 namespace Friflo.Json.Fliox.Hub.Host
 {
@@ -58,6 +59,7 @@ namespace Friflo.Json.Fliox.Hub.Host
     {
         private  readonly   IDictionary<JsonKey, JsonValue>             keyValues;
         private  readonly   ConcurrentDictionary<JsonKey, JsonValue>    keyValuesConcurrent;
+        private  readonly   int                                         smallValueSize = 4096;
         
         public   override   bool                                        Pretty      { get; }
         
@@ -70,7 +72,7 @@ namespace Friflo.Json.Fliox.Hub.Host
                 keyValuesConcurrent = new ConcurrentDictionary<JsonKey, JsonValue>(JsonKey.Equality);
                 keyValues           = keyValuesConcurrent;
             } else {
-                keyValues = new Dictionary<JsonKey, JsonValue>(JsonKey.Equality);
+                keyValues           = new Dictionary<JsonKey, JsonValue>(JsonKey.Equality);
             }
             Pretty = pretty;
         }
@@ -81,6 +83,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             for (int n = 0; n < entities.Count; n++) {
                 var entity  = entities[n];
                 var key     = entity.key;
+                // Add always a copy as it expect no key/value exist to update
                 var value   = new JsonValue (entity.value);
                 if (keyValues.TryAdd(key, value))
                     continue;
@@ -95,8 +98,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             var entities = command.entities;
             for (int n = 0; n < entities.Count; n++) {
                 var entity              = entities[n];
-                // put a value copy - the current value cannot be reused as its array may be used in a read meanwhile
-                keyValues[entity.key]   = new JsonValue(entity.value);
+                PutValue(entity);
             }
             var result = new UpsertEntitiesResult();
             return Task.FromResult(result);
@@ -106,12 +108,9 @@ namespace Friflo.Json.Fliox.Hub.Host
             var keys        = command.ids;
             var entities    = new EntityValue [keys.Count];
             int index       = 0;
-            // var buffer      = new MemoryBuffer(10);
             foreach (var key in keys) {
-                keyValues.TryGetValue(key, out var payload);
-                entities[index++] = new EntityValue(key, payload);
-                // var value = payload.AddToBuffer(buffer);
-                // entities[index++] = new EntityValue(key, value);
+                TryGetValue(key, out JsonValue value, syncContext.memoryBuffer);
+                entities[index++]   = new EntityValue(key, value);
             }
             var result = new ReadEntitiesResult{entities = entities};
             return Task.FromResult(result);
@@ -135,7 +134,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             var result = new QueryEntitiesResult();
             while (keyValueEnum.MoveNext()) {
                 var key     = keyValueEnum.Current;
-                keyValues.TryGetValue(key, out JsonValue value);
+                TryGetValue(key, out JsonValue value, syncContext.memoryBuffer);
                 if (value.IsNull())
                     continue;
                 var filter  = filterContext.FilterEntity(key, value);
@@ -204,7 +203,7 @@ namespace Friflo.Json.Fliox.Hub.Host
                 var validator   = pooledValidator.instance;
                 foreach (var patch in patches)
                 {
-                    if (!keyValues.TryGetValue(patch.key, out var target)) {
+                    if (!TryGetValue(patch.key, out var target, syncContext.memoryBuffer)) {
                         var error = new EntityError(EntityErrorType.PatchError, container, patch.key, "patch target not found");
                         AddEntityError(ref patchErrors, patch.key, error);
                         continue;
@@ -215,7 +214,7 @@ namespace Friflo.Json.Fliox.Hub.Host
                         continue;
                     }
                     // patch is an object - ensured by GetKeysFromEntities() above
-                    var merge       = merger.Merge(target, patch.value);
+                    var merge       = merger.Merge(target, patch.value); // todo use MergeBytes to avoid array copy
                     var mergeError  = merger.Error;
                     if (mergeError != null) {
                         var entityError = new EntityError(EntityErrorType.PatchError, container, patch.key, mergeError);
@@ -229,10 +228,49 @@ namespace Friflo.Json.Fliox.Hub.Host
                             continue;
                         }
                     }
-                    keyValues[patch.key] = merge;
+                    var entity = new JsonEntity(patch.key, merge);
+                    PutValue(entity);
                 }
             }
             return Task.FromResult(new MergeEntitiesResult{ errors = patchErrors });
+        }
+        
+        private void PutValue (in JsonEntity entity) {
+            if (entity.value.IsNull()) {
+                keyValues[entity.key] = default;
+                return;
+            }
+            // Update if:   - current value exist
+            //              - current and new values are small
+            if (entity.value.Count <= smallValueSize) {
+                if (keyValues.TryGetValue(entity.key, out var current)) {
+                    if (!current.IsNull() && current.Count <= smallValueSize) {
+                        lock (keyValues)  { // could use are more specific lock by using the entity value array instead
+                            JsonValue.Copy(ref current, entity.value);
+                            keyValues[entity.key] = current;
+                        }
+                        return;
+                    }
+                }
+            }
+            // Otherwise: put a value copy
+            keyValues[entity.key] = new JsonValue(entity.value);
+        }
+        
+        private bool TryGetValue(in JsonKey key, out JsonValue value, MemoryBuffer buffer) {
+            if (!keyValues.TryGetValue(key, out value))
+                return false;
+            if (value.IsNull())
+                return default;
+            // If value is small:   return a copy of the value 
+            if (value.Count <= smallValueSize) {
+                lock (keyValues)  { // could lock its array instead
+                    value = buffer.Add(value);
+                    return true;
+                }
+            }
+            // Otherwise:           return value as it is
+            return true;
         }
     }
     

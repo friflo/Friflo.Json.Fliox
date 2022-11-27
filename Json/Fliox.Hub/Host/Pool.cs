@@ -63,7 +63,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             ObjectMapper    = new ObjectPool<ObjectMapper>      (() => new ObjectMapper(sharedEnv.TypeStore),  m => m.ErrorHandler = ObjectReader.NoThrow);
             EntityProcessor = new ObjectPool<EntityProcessor>   (() => new EntityProcessor());
             TypeValidator   = new ObjectPool<TypeValidator>     (() => new TypeValidator());
-            MemoryBuffer    = new ObjectPool<MemoryBuffer>      (() => new MemoryBuffer(true));
+            MemoryBuffer    = new ObjectPool<MemoryBuffer>      (() => new MemoryBuffer(true, 32 * 4096));
         }
         
         internal void Dispose() {
