@@ -90,7 +90,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 });
                 count.Start();
 
-                await Task.WhenAll(tasks);
+                // await Task.WhenAll(tasks);
+                
+                await Parallel.ForEachAsync(tasks, async (i, cancellationToken) => await i);
+                
                 CountRequests(readerStores, writerStores, lastCount);
                 count.Interrupt();
             }

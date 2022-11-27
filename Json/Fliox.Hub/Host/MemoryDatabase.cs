@@ -35,17 +35,34 @@ namespace Friflo.Json.Fliox.Hub.Host
     {
         private  readonly   bool        pretty;
         private  readonly   MemoryType  containerType;
+        private  readonly   int         smallValueSize;
+        
         public   override   string      StorageType => "in-memory";
 
-        public MemoryDatabase(string dbName, DatabaseService service = null, MemoryType? type = null, DbOpt opt = null, bool pretty = false)
+        /// <param name="dbName"></param>
+        /// <param name="service"></param>
+        /// <param name="type"></param>
+        /// <param name="opt"></param>
+        /// <param name="pretty"></param>
+        /// <param name="smallValueSize"> Intended for write heavy containers. <br/>
+        /// Byte arrays used to store container values are reused in case their length is less or equal this size. 
+        /// </param>
+        public MemoryDatabase(
+            string          dbName,
+            DatabaseService service         = null,
+            MemoryType?     type            = null,
+            DbOpt           opt             = null,
+            bool            pretty          = false,
+            int             smallValueSize  = -1)
             : base(dbName, service, opt)
         {
-            this.pretty     = pretty;
-            containerType   = type ?? MemoryType.Concurrent;
+            this.pretty         = pretty;
+            this.smallValueSize = smallValueSize;
+            containerType       = type ?? MemoryType.Concurrent;
         }
         
         public override EntityContainer CreateContainer(string name, EntityDatabase database) {
-            return new MemoryContainer(name, database, containerType, pretty);
+            return new MemoryContainer(name, database, containerType, pretty, smallValueSize);
         }
     }
     
@@ -59,15 +76,16 @@ namespace Friflo.Json.Fliox.Hub.Host
     {
         private  readonly   IDictionary<JsonKey, JsonValue>             keyValues;
         private  readonly   ConcurrentDictionary<JsonKey, JsonValue>    keyValuesConcurrent;
-        private  readonly   int                                         smallValueSize = 4096;
+        private  readonly   int                                         smallValueSize;
         
         public   override   bool                                        Pretty      { get; }
         
         public    override  string  ToString()  => $"{name}  Count: {keyValues.Count}";
 
-        public MemoryContainer(string name, EntityDatabase database, MemoryType type, bool pretty)
+        public MemoryContainer(string name, EntityDatabase database, MemoryType type, bool pretty, int smallValueSize)
             : base(name, database)
         {
+            this.smallValueSize     = smallValueSize;
             if (type == MemoryType.Concurrent) {
                 keyValuesConcurrent = new ConcurrentDictionary<JsonKey, JsonValue>(JsonKey.Equality);
                 keyValues           = keyValuesConcurrent;

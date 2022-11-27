@@ -11,7 +11,7 @@ namespace Friflo.Json.Tests.Main
         private const string TestDB = "test_db";
         
         public static async Task MemoryDbThroughput() {
-            var database    = new MemoryDatabase(TestDB);
+            var database    = new MemoryDatabase(TestDB, smallValueSize: -1);
             var hub         = new FlioxHub(database);
             await TestHappy.ConcurrentAccess(hub, 4, 0, 10_000_000, false);
         }
@@ -48,7 +48,7 @@ namespace Friflo.Json.Tests.Main
         }
         
         public static async Task LoopbackDbThroughput() {
-            var database                = new MemoryDatabase(TestDB);
+            var database                = new MemoryDatabase(TestDB, smallValueSize: -1);
             using (var hub          	= new FlioxHub(database))
             using (var loopbackHub      = new LoopbackHub(hub)) {
                 await TestHappy.ConcurrentAccess(loopbackHub, 4, 0, 1_000_000, false);
