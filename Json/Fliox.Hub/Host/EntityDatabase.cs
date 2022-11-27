@@ -176,7 +176,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         public async Task SeedDatabase(EntityDatabase src) {
             var sharedEnv       = new SharedEnv();
             var pool            = sharedEnv.Pool;
-            var memoryBuffer    = new MemoryBuffer();
+            var memoryBuffer    = new MemoryBuffer(true);
             var syncContext     = new SyncContext(pool, null, sharedEnv.sharedCache, memoryBuffer);
             var containerNames  = await src.GetContainers().ConfigureAwait(false);
             var entityTypes     = src.Schema?.typeSchema.GetEntityTypes();
@@ -187,7 +187,6 @@ namespace Friflo.Json.Fliox.Hub.Host
                 }
                 await SeedContainer(src, container, keyName, syncContext).ConfigureAwait(false);
                 
-                memoryBuffer.DebugClear();
                 memoryBuffer.Reset();
             }
         }

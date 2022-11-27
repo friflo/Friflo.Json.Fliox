@@ -121,16 +121,16 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// The method can be called without awaiting the result of a previous call. </remarks>
         public async Task<SyncResult> SyncTasks() {
             var syncRequest = CreateSyncRequest(out SyncStore syncStore);
-            using(var memoryBuffer = _intern.pool.MemoryBuffer.Get()) {
-                var syncContext = new SyncContext(_intern.pool, _intern.eventReceiver, _intern.sharedCache, memoryBuffer.instance, _intern.clientId);
-                var response    = await ExecuteSync(syncRequest, syncContext).ConfigureAwait(Static.OriginalContext);
-                
-                var result      = HandleSyncResponse(syncRequest, response, syncStore);
-                if (!result.Success)
-                    throw new SyncTasksException(response.error, result.failed);
-                syncContext.Release();
-                return result;
-            }
+            var buffer      = new MemoryBuffer(false);  // cannot be reused as its buffer may be used by application
+            var syncContext = new SyncContext(_intern.pool, _intern.eventReceiver, _intern.sharedCache, buffer, _intern.clientId);
+            var response    = await ExecuteSync(syncRequest, syncContext).ConfigureAwait(Static.OriginalContext);
+            
+            var result      = HandleSyncResponse(syncRequest, response, syncStore);
+            if (!result.Success)
+                throw new SyncTasksException(response.error, result.failed);
+            syncContext.Release();
+            return result;
+
         }
         
         /// <summary> Execute all tasks created by methods of <see cref="EntitySet{TKey,T}"/> and <see cref="FlioxClient"/> </summary>
@@ -140,28 +140,27 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// The method can be called without awaiting the result of a previous call. </remarks>
         public async Task<SyncResult> TrySyncTasks() {
             var syncRequest = CreateSyncRequest(out SyncStore syncStore);
-            using(var memoryBuffer = _intern.pool.MemoryBuffer.Get()) {
-                var syncContext = new SyncContext(_intern.pool, _intern.eventReceiver, _intern.sharedCache, memoryBuffer.instance, _intern.clientId);
-                var response    = await ExecuteSync(syncRequest, syncContext).ConfigureAwait(Static.OriginalContext);
+            var buffer      = new MemoryBuffer(false);  // cannot be reused as its buffer may be used by application
+            var syncContext = new SyncContext(_intern.pool, _intern.eventReceiver, _intern.sharedCache, buffer, _intern.clientId);
+            var response    = await ExecuteSync(syncRequest, syncContext).ConfigureAwait(Static.OriginalContext);
 
-                var result = HandleSyncResponse(syncRequest, response, syncStore);
-                syncContext.Release();
-                return result;
-            }
+            var result = HandleSyncResponse(syncRequest, response, syncStore);
+            syncContext.Release();
+            return result;
         }
         
         /// <summary> Specific characteristic: Method can run in parallel on any thread </summary>
         private async Task<SyncResult> TrySyncAcknowledgeEvents() {
             var syncRequest = CreateSyncRequestInstance(new List<SyncRequestTask>());
-            using(var memoryBuffer = _intern.pool.MemoryBuffer.Get()) {
-                var syncContext = new SyncContext(_intern.pool, _intern.eventReceiver, _intern.sharedCache, memoryBuffer.instance, _intern.clientId);
-                var response    = await ExecuteSync(syncRequest, syncContext).ConfigureAwait(false);
+            var buffer      = new MemoryBuffer(false);  // cannot be reused as its buffer may be used by application
+            var syncContext = new SyncContext(_intern.pool, _intern.eventReceiver, _intern.sharedCache, buffer, _intern.clientId);
+            var response    = await ExecuteSync(syncRequest, syncContext).ConfigureAwait(false);
 
-                var syncStore   = new SyncStore();  // create default (empty) SyncStore
-                var result = HandleSyncResponse(syncRequest, response, syncStore);
-                syncContext.Release();
-                return result;
-            }
+            var syncStore   = new SyncStore();  // create default (empty) SyncStore
+            var result = HandleSyncResponse(syncRequest, response, syncStore);
+            syncContext.Release();
+            return result;
+
         }
         
         /// <summary> Cancel execution of pending calls to <see cref="SyncTasks"/> and <see cref="TrySyncTasks"/> </summary>
