@@ -32,6 +32,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         public              EntityDatabase              Database        => hub.GetDatabase(DatabaseName);   // not null
         public              ObjectPool<ObjectMapper>    ObjectMapper    => pool.ObjectMapper;
         public              ObjectPool<EntityProcessor> EntityProcessor => pool.EntityProcessor;
+        public              MemoryBuffer                MemoryBuffer    => memoryBuffer;
         public              object                      data;
 
         // --- internal / private by intention

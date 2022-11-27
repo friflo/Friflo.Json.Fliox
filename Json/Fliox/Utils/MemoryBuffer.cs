@@ -15,16 +15,21 @@ namespace Friflo.Json.Fliox.Utils
         public MemoryBuffer(bool reuse, int capacity = 32 * 1024) {
             this.capacity       = capacity;
             permanent           = reuse ? new byte[capacity] : null;
-            position            = reuse ? 0: capacity;
         }
         
         public void Dispose() { }
         
         public void Reset() {
-            current     = permanent;
-            position    = 0;
+            if (permanent != null) {
+                current     = permanent;
+                position    = 0;
+                return;
+            }
+            current     = null;
+            position    = capacity;
         }
 
+        /// <summary> add the <paramref name="value"/> to the <see cref="MemoryBuffer"/> </summary>
         public JsonValue Add(in JsonValue value) {
             int len     = value.Count;
             int start   = position;

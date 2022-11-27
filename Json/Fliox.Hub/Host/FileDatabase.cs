@@ -147,7 +147,7 @@ namespace Friflo.Json.Fliox.Hub.Host
                     EntityValue entry;
                     if (File.Exists(filePath)) {
                         try {
-                            var payload = await ReadText(filePath, buffer).ConfigureAwait(false);
+                            var payload = await ReadText(filePath, buffer, syncContext.memoryBuffer).ConfigureAwait(false);
                             entry = new EntityValue(key, payload);
                         } catch (Exception e) {
                             var error = CreateEntityError(EntityErrorType.ReadError, key, e);
@@ -170,7 +170,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             if (!FindCursor(command.cursor, syncContext, out var fileEnumerator, out var error)) {
                 return new QueryEntitiesResult { Error = error };
             }
-            var keyValueEnum    = (FileQueryEnumerator)fileEnumerator ?? new FileQueryEnumerator(folder);
+            var keyValueEnum    = (FileQueryEnumerator)fileEnumerator ?? new FileQueryEnumerator(folder, syncContext.MemoryBuffer);
             var filterContext   = new EntityFilterContext(command, this, syncContext);
             var result          = new QueryEntitiesResult();
             try {
@@ -202,7 +202,7 @@ namespace Friflo.Json.Fliox.Hub.Host
                 case AggregateType.count:
                     // count all?
                     if (filter.IsTrue) {
-                        var keyValueEnum = new FileQueryEnumerator (folder);
+                        var keyValueEnum = new FileQueryEnumerator (folder, syncContext.MemoryBuffer);
                         try {
                             var count = 0;
                             while (keyValueEnum.MoveNext()) { count++; }
@@ -287,9 +287,10 @@ namespace Friflo.Json.Fliox.Hub.Host
             }
         }
         
-        internal static async Task<JsonValue> ReadText(string filePath, StreamBuffer buffer) {
+        internal static async Task<JsonValue> ReadText(string filePath, StreamBuffer buffer, MemoryBuffer memoryBuffer) {
             using (var sourceStream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read, bufferSize: 4096, useAsync: false)) {
-                return await EntityUtils.ReadToEndAsync(sourceStream, buffer).ConfigureAwait(false);
+                var value = await EntityUtils.ReadToEndAsync(sourceStream, buffer).ConfigureAwait(false);
+                return EntityUtils.CreateCopy(value, memoryBuffer);
             }
         }
         
@@ -305,11 +306,13 @@ namespace Friflo.Json.Fliox.Hub.Host
         private readonly    int                 folderLen;
         private readonly    IEnumerator<string> enumerator;
         private readonly    StreamBuffer        buffer = new StreamBuffer();
+        private readonly    MemoryBuffer        memoryBuffer;
             
-        internal FileQueryEnumerator (string folder)
+        internal FileQueryEnumerator (string folder, MemoryBuffer memoryBuffer)
         {
-            this.folder = folder;
-            folderLen   = folder.Length;
+            this.folder         = folder;
+            folderLen           = folder.Length;
+            this.memoryBuffer   = memoryBuffer; 
 #if !UNITY_2020_1_OR_NEWER
             var options = new EnumerationOptions {
                 MatchCasing             = MatchCasing.CaseSensitive,
@@ -339,7 +342,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         
         public async       Task<JsonValue> CurrentValueAsync() { 
             var path    = enumerator.Current;
-            return await FileContainer.ReadText(path, buffer).ConfigureAwait(false);
+            return await FileContainer.ReadText(path, buffer, memoryBuffer).ConfigureAwait(false);
         }
     }
 }

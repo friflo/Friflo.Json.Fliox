@@ -48,7 +48,13 @@ namespace Friflo.Json.Fliox.Hub.Host.Utils
                     continue;
                 buffer.SetCapacity(2 * buffer.Capacity);
             }
-            return new JsonValue(buffer.ToArray());
+            return new JsonValue(buffer.GetBuffer(), 0, buffer.Position);
+        }
+        
+        public static JsonValue CreateCopy(in JsonValue value, MemoryBuffer buffer) {
+            if (value.Count < 4096)
+                return buffer.Add(value);
+            return new JsonValue(value);
         }
         
         internal static bool GetKeysFromEntities (
