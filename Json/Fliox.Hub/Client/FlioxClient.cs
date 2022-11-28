@@ -123,7 +123,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// The method can be called without awaiting the result of a previous call. </remarks>
         public async Task<SyncResult> SyncTasks() {
             var syncRequest = CreateSyncRequest(out SyncStore syncStore);
-            var buffer      = new MemoryBuffer(false, MemoryBufferCapacity);  // cannot be reused as its buffer may be used by application
+            var buffer      = CreateMemoryBuffer();
             var syncContext = new SyncContext(_intern.pool, _intern.eventReceiver, _intern.sharedCache, buffer, _intern.clientId);
             var response    = await ExecuteSync(syncRequest, syncContext).ConfigureAwait(Static.OriginalContext);
             
@@ -142,7 +142,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// The method can be called without awaiting the result of a previous call. </remarks>
         public async Task<SyncResult> TrySyncTasks() {
             var syncRequest = CreateSyncRequest(out SyncStore syncStore);
-            var buffer      = new MemoryBuffer(false, MemoryBufferCapacity);  // cannot be reused as its buffer may be used by application
+            var buffer      = CreateMemoryBuffer();
             var syncContext = new SyncContext(_intern.pool, _intern.eventReceiver, _intern.sharedCache, buffer, _intern.clientId);
             var response    = await ExecuteSync(syncRequest, syncContext).ConfigureAwait(Static.OriginalContext);
 
@@ -154,7 +154,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// <summary> Specific characteristic: Method can run in parallel on any thread </summary>
         private async Task<SyncResult> TrySyncAcknowledgeEvents() {
             var syncRequest = CreateSyncRequestInstance(new List<SyncRequestTask>());
-            var buffer      = new MemoryBuffer(false, MemoryBufferCapacity);  // cannot be reused as its buffer may be used by application
+            var buffer      = CreateMemoryBuffer();
             var syncContext = new SyncContext(_intern.pool, _intern.eventReceiver, _intern.sharedCache, buffer, _intern.clientId);
             var response    = await ExecuteSync(syncRequest, syncContext).ConfigureAwait(false);
 
@@ -162,7 +162,10 @@ namespace Friflo.Json.Fliox.Hub.Client
             var result = HandleSyncResponse(syncRequest, response, syncStore);
             syncContext.Release();
             return result;
-
+        }
+        
+        private MemoryBuffer CreateMemoryBuffer() {
+            return new MemoryBuffer(false, MemoryBufferCapacity);  // cannot be reused as its buffer may be used by application
         }
         
         /// <summary> Cancel execution of pending calls to <see cref="SyncTasks"/> and <see cref="TrySyncTasks"/> </summary>
