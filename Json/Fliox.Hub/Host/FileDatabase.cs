@@ -176,7 +176,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             try {
                 while (keyValueEnum.MoveNext()) {
                     var key     = keyValueEnum.Current;
-                    var value   = await keyValueEnum.CurrentValueAsync();
+                    var value   = await keyValueEnum.CurrentValueAsync().ConfigureAwait(false);
                     var filter  = filterContext.FilterEntity(key, value);
                     
                     if (filter == FilterEntityResult.FilterError)
