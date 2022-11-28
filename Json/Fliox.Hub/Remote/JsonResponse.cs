@@ -18,6 +18,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
     
     internal readonly struct JsonResponse
     {
+        /// <summary><b>Attention</b> <see cref="body"/> is <b>only</b> valid until used <see cref="ObjectMapper"/> is reused </summary>
         public readonly     JsonValue           body;
         public readonly     JsonResponseStatus  status;
         
@@ -27,7 +28,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         }
         
         /// <summary>
-        /// <b>Attention</b> returned <see cref="JsonResponse"/> is <b>only</b> until the passed <paramref name="mapper"/> is reused
+        /// <b>Attention</b> returned <see cref="JsonResponse"/> is <b>only</b> valid until the passed <paramref name="mapper"/> is reused
         /// </summary>
         public static JsonResponse CreateError(ObjectMapper mapper, string message, ErrorResponseType type, int? reqId)
         {

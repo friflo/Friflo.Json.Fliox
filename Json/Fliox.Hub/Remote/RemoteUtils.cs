@@ -37,13 +37,13 @@ namespace Friflo.Json.Fliox.Hub.Remote
     }
     
     /// <summary>
-    /// <b>Attention</b> all <c>Create</c> methods return a <see cref="JsonValue"/> which is only valid until the
+    /// <b>Attention</b> all <c>Create</c> methods return a <see cref="JsonValue"/> which are only valid until the
     /// passed <see cref="ObjectMapper"/> it reused 
     /// </summary>
     public static class RemoteUtils
     {
         /// <summary>
-        /// <b>Attention</b> returned <see cref="JsonValue"/> is <b>only</b> until the passed <paramref name="mapper"/> is reused
+        /// <b>Attention</b> returned <see cref="JsonValue"/> is <b>only</b> valid until the passed <paramref name="mapper"/> is reused
         /// </summary>
         public static JsonValue CreateProtocolMessage (
             ProtocolMessage message,
@@ -56,7 +56,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         }
         
         /// <summary>
-        /// <b>Attention</b> returned <see cref="JsonValue"/> is <b>only</b> until the passed <paramref name="args"/> mapper in  is reused
+        /// <b>Attention</b> returned <see cref="JsonValue"/> is <b>only</b> valid until the passed <paramref name="args"/> mapper in  is reused
         /// </summary>
         public static JsonValue CreateProtocolEvent (
             EventMessage        eventMessage,

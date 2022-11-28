@@ -128,7 +128,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                             var result          = await remoteHost.ExecuteJsonRequest(args, mapper, requestContent, syncContext).ConfigureAwait(false);
                             
                             syncContext.Release();
-                            sendQueue.Enqueue(result.body);
+                            sendQueue.Enqueue(result.body); // Enqueue() copy the result.body array
                         }
                     }
                     continue;

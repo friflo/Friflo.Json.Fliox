@@ -35,7 +35,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         public void Dispose() { }
         
         /// <summary>
-        /// <b>Attention</b> returned <see cref="JsonResponse"/> is <b>only</b> until the passed <paramref name="mapper"/> is reused
+        /// <b>Attention</b> returned <see cref="JsonResponse"/> is <b>only</b> valid until the passed <paramref name="mapper"/> is reused
         /// </summary>
         internal async Task<JsonResponse> ExecuteJsonRequest(
             RemoteArgs      args,

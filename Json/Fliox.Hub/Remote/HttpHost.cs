@@ -150,7 +150,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
                     var result  = await ExecuteJsonRequest(args, pooledMapper.instance, requestContent, syncContext).ConfigureAwait(false);
                 
                     syncContext.Release();
-                    request.Write(result.body, "application/json", (int)result.status);
+                    var body        = new JsonValue(result.body); // create copy => result.body array may change when the pooledMapper is reused
+                    request.Write(body, "application/json", (int)result.status);
                     request.handled = true;
                     return;
                 }
