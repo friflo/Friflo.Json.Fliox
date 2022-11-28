@@ -170,11 +170,21 @@ namespace Friflo.Json.Fliox.Hub.Client
         
         /// <summary> Cancel execution of pending calls to <see cref="SyncTasks"/> and <see cref="TrySyncTasks"/> </summary>
         public async Task CancelPendingSyncs() {
-            foreach (var pair in _intern.pendingSyncs) {
-                var syncContext = pair.Value;
-                syncContext.Cancel();
+            List<SyncContext>   pendingSyncs;
+            List<Task>          pendingTasks;
+            lock (_intern.pendingSyncs) {
+                var count       = _intern.pendingSyncs.Count;
+                pendingSyncs    = new List<SyncContext> (count);
+                pendingTasks    = new List<Task>        (count);
+                foreach (var pair in _intern.pendingSyncs) {
+                    pendingSyncs.Add(pair.Value);
+                    pendingTasks.Add(pair.Key);
+                }
             }
-            await Task.WhenAll(_intern.pendingSyncs.Keys).ConfigureAwait(false);
+            foreach (var sync in pendingSyncs) {
+                sync.Cancel();
+            }
+            await Task.WhenAll(pendingTasks).ConfigureAwait(false);
         }
         #endregion
 

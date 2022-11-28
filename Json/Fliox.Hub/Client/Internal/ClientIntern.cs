@@ -2,7 +2,6 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -47,7 +46,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         private             IReadOnlyCollection<MessageSubscriber>  Subscriptions => subscriptions?.Values;
 
         internal            List<MessageSubscriber>                 subscriptionsPrefix;    // create on demand - only used for subscriptions
-        internal readonly   ConcurrentDictionary<Task, SyncContext> pendingSyncs;
+        // lock (pendingSyncs) instead of using ConcurrentDictionary<,> to avoid heap allocations
+        internal readonly   Dictionary<Task, SyncContext>           pendingSyncs;
         private             List<JsonKey>                           idsBuf;     //  create buffer on demand - only used for Upsert
 
         // --- mutable state
@@ -112,7 +112,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             setByName               = new Dictionary<string, EntitySet>(entityInfos.Length);
             subscriptions           = null; 
             subscriptionsPrefix     = null; 
-            pendingSyncs            = new ConcurrentDictionary<Task, SyncContext>();
+            pendingSyncs            = new Dictionary<Task, SyncContext>();
             idsBuf                  = null;
 
             // --- mutable state
@@ -137,7 +137,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             // readonly - owned
             ackTimer?.Dispose();
             idsBuf?.Clear();
-            pendingSyncs.Clear();
+            lock (pendingSyncs) { pendingSyncs.Clear(); }
             disposed = true;
             // messageReader.Dispose();
             subscriptionProcessor?.Dispose();

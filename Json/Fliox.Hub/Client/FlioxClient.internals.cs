@@ -95,8 +95,9 @@ namespace Friflo.Json.Fliox.Hub.Client
             Task<ExecuteSyncResult> task = null;
             try {
                 task = _intern.hub.ExecuteSync(syncRequest, syncContext);
-
-                _intern.pendingSyncs.TryAdd(task, syncContext);
+                lock (_intern.pendingSyncs) {
+                    _intern.pendingSyncs.Add(task, syncContext);
+                }
                 var response = await task.ConfigureAwait(false);
                 
                 // The Hub returns a client id if the client didn't provide one and one of its task require one. 
@@ -104,11 +105,15 @@ namespace Friflo.Json.Fliox.Hub.Client
                 if (_intern.clientId.IsNull() && success != null && !success.clientId.IsNull()) {
                     SetClientId(success.clientId);
                 }
-                _intern.pendingSyncs.TryRemove(task, out _);
+                lock (_intern.pendingSyncs) {
+                    _intern.pendingSyncs.Remove(task);
+                }
                 return response;
             }
             catch (Exception e) {
-                _intern.pendingSyncs.TryRemove(task, out _);
+                lock (_intern.pendingSyncs) {
+                    if (task != null) _intern.pendingSyncs.Remove(task);
+                }
                 var errorMsg = ErrorResponse.ErrorFromException(e).ToString();
                 return new ExecuteSyncResult(errorMsg, ErrorResponseType.Exception);
             }
