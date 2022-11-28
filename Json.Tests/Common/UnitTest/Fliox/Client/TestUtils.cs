@@ -182,7 +182,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             Console.WriteLine($"PocStore Reset. platform: {platform}, memory: {diff}");
             AreEqual(72, diff);
         }
-
+        
         [Test]
         public async Task TestMemorySync() {
             var env         = new SharedEnv();
@@ -201,7 +201,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             var diff        = GC.GetAllocatedBytesForCurrentThread() - start;
             stopwatch.Stop();
             Console.WriteLine($"SyncTasks() count: {count}, ms: {stopwatch.ElapsedMilliseconds}");
-            var expected    = IsDebug() ? 1272 : 1008;  // Test Debug & Release
+            var expected    = IsDebug() ? 1208 : 944;  // Test Debug & Release
             AreEqual(expected, diff);
         }
         
@@ -242,6 +242,25 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
                 sub.ProcessEvent(client, ev);
             }
             var diff = GC.GetAllocatedBytesForCurrentThread() - start;
+            AreEqual(0, diff);
+        }
+        
+        class PooledClass : IDisposable {
+            public void Dispose() { }
+        }
+        
+        [Test]
+        public void TestObjectPool() {
+            var pool    = new ObjectPool<PooledClass>(() => new PooledClass());
+            var pooled  = pool.Get();
+            pool.Return(pooled.instance);
+
+            var start   = GC.GetAllocatedBytesForCurrentThread();
+            for (int n = 0; n < 10; n++) {
+                pooled  = pool.Get();
+                pool.Return(pooled.instance);
+            }
+            var diff    = GC.GetAllocatedBytesForCurrentThread() - start;
             AreEqual(0, diff);
         }
         
