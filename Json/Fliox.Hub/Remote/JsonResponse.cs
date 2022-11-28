@@ -17,7 +17,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         Exception   = 500
     }
     
-    internal sealed class JsonResponse
+    internal readonly struct JsonResponse
     {
         public readonly     JsonValue           body;
         public readonly     JsonResponseStatus  status;
