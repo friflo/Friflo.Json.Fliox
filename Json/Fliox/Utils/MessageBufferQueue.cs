@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Friflo.Json.Burst;
 
 namespace Friflo.Json.Fliox.Utils
 {
@@ -72,10 +71,6 @@ namespace Friflo.Json.Fliox.Utils
             var start   = data.Start;
             var len     = data.Count;
             Enqueue(array, start, len);
-        }
-        
-        public void Enqueue(in Bytes bytes) {
-            Enqueue(bytes.buffer.array, bytes.start, bytes.Len);
         }
 
         private void Enqueue(byte[] data, int start, int len) {

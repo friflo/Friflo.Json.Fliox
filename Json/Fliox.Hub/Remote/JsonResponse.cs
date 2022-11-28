@@ -3,7 +3,6 @@
 
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Mapper;
-using Friflo.Json.Fliox.Utils;
 
 // Note! - Must not have any dependency to System.Net or System.Net.Http (or other HTTP stuff)
 namespace Friflo.Json.Fliox.Hub.Remote
@@ -27,6 +26,9 @@ namespace Friflo.Json.Fliox.Hub.Remote
             this.status = status;
         }
         
+        /// <summary>
+        /// <b>Attention</b> returned <see cref="JsonResponse"/> is <b>only</b> until the passed <paramref name="mapper"/> is reused
+        /// </summary>
         public static JsonResponse CreateError(ObjectMapper mapper, string message, ErrorResponseType type, int? reqId)
         {
             var status          = type == ErrorResponseType.Exception ? JsonResponseStatus.Exception : JsonResponseStatus.Error;
@@ -35,8 +37,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
             ObjectWriter writer     = mapper.writer;
             writer.Pretty           = true;
             writer.WriteNullMembers = false;
-            var body                = writer.WriteAsValue<ProtocolMessage>(errorResponse);
-            return new JsonResponse(body, status);
+            var body                = writer.WriteAsBytes<ProtocolMessage>(errorResponse);
+            return new JsonResponse(new JsonValue(ref body), status);
         }
     }
 }

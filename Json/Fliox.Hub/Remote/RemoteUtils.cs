@@ -2,12 +2,9 @@
 // See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
-using System.Text;
-using Friflo.Json.Burst;
 using Friflo.Json.Fliox.Hub.Host.Event;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Mapper;
-using Friflo.Json.Fliox.Utils;
 
 // Note! - Must not have any dependency to System.Net or System.Net.Http (or other HTTP stuff)
 namespace Friflo.Json.Fliox.Hub.Remote
@@ -33,30 +30,44 @@ namespace Friflo.Json.Fliox.Hub.Remote
     public readonly struct RemoteArgs
     {
         internal readonly   InstancePool    instancePool;
-        internal readonly   ObjectMapper    mapper;
-        
-        public RemoteArgs (InstancePool instancePool, ObjectMapper mapper) {
+
+        public RemoteArgs (InstancePool instancePool) {
             this.instancePool   = instancePool;
-            this.mapper         = mapper;
         }
     }
     
+    /// <summary>
+    /// <b>Attention</b> all <c>Create</c> methods return a <see cref="JsonValue"/> which is only valid until the
+    /// passed <see cref="ObjectMapper"/> it reused 
+    /// </summary>
     public static class RemoteUtils
     {
-        public static JsonValue CreateProtocolMessage (ProtocolMessage message, ObjectMapper mapper)
+        /// <summary>
+        /// <b>Attention</b> returned <see cref="JsonValue"/> is <b>only</b> until the passed <paramref name="mapper"/> is reused
+        /// </summary>
+        public static JsonValue CreateProtocolMessage (
+            ProtocolMessage message,
+            ObjectMapper    mapper)
         {
             mapper.Pretty           = true;
             mapper.WriteNullMembers = false;
-            return mapper.WriteAsValue(message);
+            var result              = mapper.writer.WriteAsBytes(message);
+            return new JsonValue(ref result);
         }
         
-        public static Bytes CreateProtocolEvent (EventMessage eventMessage, in SendEventArgs args)
+        /// <summary>
+        /// <b>Attention</b> returned <see cref="JsonValue"/> is <b>only</b> until the passed <paramref name="args"/> mapper in  is reused
+        /// </summary>
+        public static JsonValue CreateProtocolEvent (
+            EventMessage        eventMessage,
+            in SendEventArgs    args)
         {
             var mapper              = args.mapper;
             mapper.Pretty           = true;
             mapper.WriteNullMembers = false;
             if (!EventDispatcher.SerializeRemoteEvents) {
-                return mapper.writer.WriteAsBytes(eventMessage);
+                var ev = mapper.writer.WriteAsBytes(eventMessage);
+                return new JsonValue(ref ev);
             }
             var remoteEventMessage      = new RemoteEventMessage { msg = "ev", clt = eventMessage.dstClientId };
             var events                  = eventMessage.events;
@@ -74,15 +85,17 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 };
                 remoteEvents.Add(remoteEv);
             }
-            return mapper.writer.WriteAsBytes(remoteEventMessage);
+            var result = mapper.writer.WriteAsBytes(remoteEventMessage);
+            return new JsonValue(ref result);
         }
         
-        private static readonly byte[] DiscriminatorKey     = Encoding.UTF8.GetBytes("msg");
-        private static readonly byte[] DiscriminatorValue   = Encoding.UTF8.GetBytes("sync");
-        
-        public static SyncRequest ReadSyncRequest (in RemoteArgs args, in JsonValue jsonMessage, out string error)
+        public static SyncRequest ReadSyncRequest (
+            in RemoteArgs   args,
+            ObjectMapper    mapper,
+            in JsonValue    jsonMessage,
+            out string      error)
         {
-            var reader  = args.mapper.reader;
+            var reader  = mapper.reader;
             var message = reader.Read<ProtocolMessage>(jsonMessage);
             if (reader.Error.ErrSet) {
                 error = reader.Error.GetMessage();
@@ -96,7 +109,10 @@ namespace Friflo.Json.Fliox.Hub.Remote
             return null;
         }
         
-        public static ProtocolMessage ReadProtocolMessage (in JsonValue jsonMessage, ObjectMapper mapper, out string error)
+        public static ProtocolMessage ReadProtocolMessage (
+            in JsonValue    jsonMessage,
+            ObjectMapper    mapper,
+            out string      error)
         {
             ObjectReader reader = mapper.reader;
             var message         = reader.Read<ProtocolMessage>(jsonMessage);

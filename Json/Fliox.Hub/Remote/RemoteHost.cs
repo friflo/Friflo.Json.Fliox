@@ -34,10 +34,17 @@ namespace Friflo.Json.Fliox.Hub.Remote
         
         public void Dispose() { }
         
-        internal async Task<JsonResponse> ExecuteJsonRequest(RemoteArgs args, JsonValue jsonRequest, SyncContext syncContext) {
-            var mapper = args.mapper;
+        /// <summary>
+        /// <b>Attention</b> returned <see cref="JsonResponse"/> is <b>only</b> until the passed <paramref name="mapper"/> is reused
+        /// </summary>
+        internal async Task<JsonResponse> ExecuteJsonRequest(
+            RemoteArgs      args,
+            ObjectMapper    mapper,
+            JsonValue       jsonRequest,
+            SyncContext     syncContext)
+        {
             try {
-                var syncRequest = RemoteUtils.ReadSyncRequest(args, jsonRequest, out string error);
+                var syncRequest = RemoteUtils.ReadSyncRequest(args, mapper, jsonRequest, out string error);
                 if (error != null) {
                     return JsonResponse.CreateError(mapper, error, ErrorResponseType.BadResponse, null);
                 }
