@@ -196,7 +196,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             var start       = GC.GetAllocatedBytesForCurrentThread();
             int count = 1; // 1_000_000;
             for (int n = 0; n < count; n++) {
-                await store.SyncTasks();                    // ~ 0.73 µs (Release)
+                await store.SyncTasks();                    // ~ 0.59 µs (Release)
             }
             var diff        = GC.GetAllocatedBytesForCurrentThread() - start;
             stopwatch.Stop();
