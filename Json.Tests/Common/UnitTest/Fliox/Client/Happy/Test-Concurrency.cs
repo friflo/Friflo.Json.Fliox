@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox;
@@ -132,10 +131,16 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         
         private static int CountRequests (List<SimpleStore> readers, List<SimpleStore> writers, int lastCount) {
             int sum = 0;
-            sum += readers.Sum(reader => reader.GetSyncCount());
-            sum += writers.Sum(writer => writer.GetSyncCount());
+            sum += CountClientRequests(readers);
+            sum += CountClientRequests(writers);
             var requests = sum - lastCount;
             Console.WriteLine($"requests: {requests}, sum: {sum}");
+            return sum;
+        }
+        
+        private static int CountClientRequests (List<SimpleStore> stores) {
+            int sum = 0; // count without LINQ Sum() to avoid heap allocation noise 
+            foreach (var store in stores) { sum += store.GetSyncCount(); }
             return sum;
         }
         
