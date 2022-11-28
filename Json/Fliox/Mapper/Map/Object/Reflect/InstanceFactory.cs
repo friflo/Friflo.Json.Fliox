@@ -77,7 +77,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
                 var mapper      = typeStore.GetTypeMapper(polyType.type);
                 ref var name    = ref names[n]; 
                 mapper.discriminant = polyType.name;
-                var jsonName    = new JsonValue(name.buffer.array, name.start, name.Len);
+                var jsonName    = new JsonValue(ref name);
                 mappers[n]      = new Entry (jsonName, polyType.type, mapper);
                 mapperByName.Add(name, mapper);
             }

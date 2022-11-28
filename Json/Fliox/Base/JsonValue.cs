@@ -60,6 +60,17 @@ namespace Friflo.Json.Fliox
             start       = 0;
         }
         
+        /// <summary>
+        /// <b>Attention!</b> <see cref="Bytes"/> are commonly reused. <br/>
+        /// So the created <see cref="JsonValue"/> need to be processed before the passed <paramref name="value"/> is reused.
+        /// </summary>
+        public JsonValue(ref Bytes value) {
+            array   = value.buffer.array ?? throw new ArgumentNullException(nameof(value), "value array == null");
+            start   = value.start;
+            count   = value.Len;
+            start   = 0;
+        }
+        
         /// <summary>create a copy of the given <paramref name="value"/> </summary>
         public JsonValue(in JsonValue value) {
             if (!value.IsNull()) {
