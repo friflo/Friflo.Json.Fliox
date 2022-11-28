@@ -64,6 +64,10 @@ namespace Friflo.Json.Fliox
         /// <b>Attention!</b> <see cref="Bytes"/> are commonly reused. <br/>
         /// So the created <see cref="JsonValue"/> need to be processed before the passed <paramref name="value"/> is reused.
         /// </summary>
+        /// <remarks>
+        /// Add following comment to methods returning a <see cref="JsonValue"/> created with this constructor<br/>
+        /// <b>Attention</b> returned <see cref="JsonValue"/> contains a mutable array.
+        /// </remarks>
         public JsonValue(ref Bytes value) {
             array   = value.buffer.array ?? throw new ArgumentNullException(nameof(value), "value array == null");
             start   = value.start;
