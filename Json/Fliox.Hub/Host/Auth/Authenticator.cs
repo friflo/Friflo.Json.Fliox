@@ -114,7 +114,10 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
         
         internal void ClearUserStats() {
             foreach (var pair in users) {
-                pair.Value.requestCounts.Clear();
+                var requestCounts = pair.Value.requestCounts;
+                lock (requestCounts) {
+                    requestCounts.Clear();
+                }
             }
         }
     }

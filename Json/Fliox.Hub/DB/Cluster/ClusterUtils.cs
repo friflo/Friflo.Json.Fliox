@@ -31,16 +31,18 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
         
         // --- RequestCount
         internal static void UpdateCountsMap (
-            IDictionary<string, RequestCount>   requestCounts, // key: database
+            Dictionary<string, RequestCount>    requestCounts, // key: database
             string                              database,
             SyncRequest                         syncRequest)
         {
-            if (!requestCounts.TryGetValue(database, out RequestCount requestCount)) {
-                requestCount = new RequestCount { db = database };
+            lock (requestCounts) {
+                if (!requestCounts.TryGetValue(database, out RequestCount requestCount)) {
+                    requestCount = new RequestCount { db = database };
+                    requestCounts[database] = requestCount;
+                }
+                UpdateCounts(ref requestCount, syncRequest);
                 requestCounts[database] = requestCount;
             }
-            UpdateCounts(ref requestCount, syncRequest);
-            requestCounts[database] = requestCount;
         }
         
         internal static void UpdateCounts(ref RequestCount counts, SyncRequest syncRequest) {
@@ -50,15 +52,17 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
         
         internal static void CountsMapToList(
             List<RequestCount>                  dst,
-            IDictionary<string, RequestCount>   src,
+            Dictionary<string, RequestCount>    src,
             string                              exclude)
         {
             dst.Clear();
-            foreach (var pair in src) {
-                var counts = pair.Value;
-                /* if (exclude != null && counts.db == exclude)
-                    continue; */
-                dst.Add(counts);
+            lock (src) {
+                foreach (var pair in src) {
+                    var counts = pair.Value;
+                    /* if (exclude != null && counts.db == exclude)
+                        continue; */
+                    dst.Add(counts);
+                }
             }
             dst.Sort((c1, c2) => string.Compare(c1.db, c2.db, StringComparison.Ordinal));
         }

@@ -30,16 +30,17 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
         public   override   string          ToString() => userId.AsString();
         
         // --- internal
-        internal readonly   ConcurrentDictionary<JsonKey, Empty>        clients;        // key: clientId
-        internal readonly   ConcurrentDictionary<string, RequestCount>  requestCounts;  // key: database
-        private             HashSet<string>                             groups;         // can be null
+        internal readonly   ConcurrentDictionary<JsonKey, Empty>    clients;        // key: clientId
+        /// <b>Note</b> requires lock when accessing. Did not use ConcurrentDictionary to avoid heap allocation
+        internal readonly   Dictionary<string, RequestCount>        requestCounts;  // key: database
+        private             HashSet<string>                         groups;         // can be null
         
         public static readonly  JsonKey   AnonymousId = new JsonKey("anonymous");
 
 
         internal User (in JsonKey userId, string token) {
             clients             = new ConcurrentDictionary<JsonKey, Empty>(JsonKey.Equality);
-            requestCounts       = new ConcurrentDictionary<string, RequestCount>();
+            requestCounts       = new Dictionary<string, RequestCount>();
             this.userId         = userId;
             this.token          = token;
         }
