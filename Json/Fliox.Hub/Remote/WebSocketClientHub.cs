@@ -168,25 +168,27 @@ namespace Friflo.Json.Fliox.Hub.Remote
         
         private void OnReceive(WebSocketConnection wsConn, in JsonValue messageJson) {
             try {
-                var pooledMapper        = sharedEnv.Pool.ObjectMapper;
-                // if (messageJson.Length > 100000) Console.WriteLine($"OnReceive. size: {messageJson.Length}");
-                ProtocolMessage message = RemoteUtils.ReadProtocolMessage (messageJson, pooledMapper, out _);
-                switch (message) {
-                    case null:
-                        break; // errors are ignored. 
-                    case ProtocolResponse resp:
-                        var responseReqId = resp.reqId;
-                        if (!responseReqId.HasValue)
-                            throw new InvalidOperationException($"WebSocketClientDatabase requires reqId in response:\n{messageJson}");
-                        var id = responseReqId.Value;
-                        if (!wsConn.requests.TryRemove(id, out WebsocketRequest request)) {
-                            throw new InvalidOperationException($"Expect corresponding request to response. id: {id}");
-                        }
-                        request.response.SetResult(resp);
-                        return;
-                    case EventMessage ev:
-                        OnReceiveEvent(ev);
-                        break;
+                using (var pooledMapper = sharedEnv.Pool.ObjectMapper.Get()) {
+                    var mapper = pooledMapper.instance;
+                    // if (messageJson.Length > 100000) Console.WriteLine($"OnReceive. size: {messageJson.Length}");
+                    ProtocolMessage message = RemoteUtils.ReadProtocolMessage (messageJson, mapper, out _);
+                    switch (message) {
+                        case null:
+                            break; // errors are ignored. 
+                        case ProtocolResponse resp:
+                            var responseReqId = resp.reqId;
+                            if (!responseReqId.HasValue)
+                                throw new InvalidOperationException($"WebSocketClientDatabase requires reqId in response:\n{messageJson}");
+                            var id = responseReqId.Value;
+                            if (!wsConn.requests.TryRemove(id, out WebsocketRequest request)) {
+                                throw new InvalidOperationException($"Expect corresponding request to response. id: {id}");
+                            }
+                            request.response.SetResult(resp);
+                            return;
+                        case EventMessage ev:
+                            OnReceiveEvent(ev);
+                            break;
+                    }
                 }
             }
             catch (Exception e) {
@@ -203,27 +205,30 @@ namespace Friflo.Json.Fliox.Hub.Remote
             }
             int sendReqId       = Interlocked.Increment(ref reqId);
             syncRequest.reqId   = sendReqId;
-            var jsonRequest     = RemoteUtils.CreateProtocolMessage(syncRequest, syncContext.ObjectMapper);
 
             try {
-                // request need to be queued _before_ sending it to be prepared for handling the response.
-                var wsRequest       = new WebsocketRequest(syncContext, cancellationToken);
-                wsConn.requests.TryAdd(sendReqId, wsRequest);
-                var buffer    = jsonRequest.AsArraySegment();
+                using (var pooledMapper = syncContext.ObjectMapper.Get()) {
+                    var mapper      = pooledMapper.instance;
+                    var jsonRequest = RemoteUtils.CreateProtocolMessage(syncRequest, mapper);
+                    // request need to be queued _before_ sending it to be prepared for handling the response.
+                    var wsRequest   = new WebsocketRequest(syncContext, cancellationToken);
+                    wsConn.requests.TryAdd(sendReqId, wsRequest);
+                    var buffer      = jsonRequest.AsArraySegment();
 
-                // --- Send message
-                await wsConn.websocket.SendAsync(buffer, WebSocketMessageType.Text, true, CancellationToken.None).ConfigureAwait(false);
-                
-                // --- Wait for response
-                var response = await wsRequest.response.Task.ConfigureAwait(false);
-                
-                if (response is SyncResponse syncResponse) {
-                    return new ExecuteSyncResult(syncResponse);
+                    // --- Send message
+                    await wsConn.websocket.SendAsync(buffer, WebSocketMessageType.Text, true, CancellationToken.None).ConfigureAwait(false);
+                    
+                    // --- Wait for response
+                    var response = await wsRequest.response.Task.ConfigureAwait(false);
+                    
+                    if (response is SyncResponse syncResponse) {
+                        return new ExecuteSyncResult(syncResponse);
+                    }
+                    if (response is ErrorResponse errorResponse) {
+                        return new ExecuteSyncResult(errorResponse.message, errorResponse.type);
+                    }
+                    return new ExecuteSyncResult($"invalid response: Was: {response.MessageType}", ErrorResponseType.BadResponse);
                 }
-                if (response is ErrorResponse errorResponse) {
-                    return new ExecuteSyncResult(errorResponse.message, errorResponse.type);
-                }
-                return new ExecuteSyncResult($"invalid response: Was: {response.MessageType}", ErrorResponseType.BadResponse);
             }
             catch (Exception e) {
                 var error = ErrorResponse.ErrorFromException(e);

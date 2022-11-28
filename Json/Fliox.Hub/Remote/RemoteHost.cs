@@ -35,26 +35,26 @@ namespace Friflo.Json.Fliox.Hub.Remote
         public void Dispose() { }
         
         internal async Task<JsonResponse> ExecuteJsonRequest(RemoteArgs args, JsonValue jsonRequest, SyncContext syncContext) {
-            var objectMapper = syncContext.ObjectMapper;
+            var mapper = args.mapper;
             try {
                 var syncRequest = RemoteUtils.ReadSyncRequest(args, jsonRequest, out string error);
                 if (error != null) {
-                    return JsonResponse.CreateError(objectMapper, error, ErrorResponseType.BadResponse, null);
+                    return JsonResponse.CreateError(mapper, error, ErrorResponseType.BadResponse, null);
                 }
                 var response = await localHub.ExecuteSync(syncRequest, syncContext).ConfigureAwait(false);
                 
                 var responseError = response.error;
                 if (responseError != null) {
-                    return JsonResponse.CreateError(objectMapper, responseError.message, responseError.type, syncRequest.reqId);
+                    return JsonResponse.CreateError(mapper, responseError.message, responseError.type, syncRequest.reqId);
                 }
                 SetContainerResults(response.success);
                 response.Result.reqId   = syncRequest.reqId;
-                JsonValue jsonResponse  = RemoteUtils.CreateProtocolMessage(response.Result, objectMapper);
+                JsonValue jsonResponse  = RemoteUtils.CreateProtocolMessage(response.Result, mapper);
                 return new JsonResponse(jsonResponse, JsonResponseStatus.Ok);
             }
             catch (Exception e) {
                 var errorMsg = ErrorResponse.ErrorFromException(e).ToString();
-                return JsonResponse.CreateError(objectMapper, errorMsg, ErrorResponseType.Exception, null);
+                return JsonResponse.CreateError(mapper, errorMsg, ErrorResponseType.Exception, null);
             }
         }
         

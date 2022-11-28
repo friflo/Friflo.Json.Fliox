@@ -43,14 +43,11 @@ namespace Friflo.Json.Fliox.Hub.Remote
     
     public static class RemoteUtils
     {
-        public static JsonValue CreateProtocolMessage (ProtocolMessage message, ObjectPool<ObjectMapper> objectMapper)
+        public static JsonValue CreateProtocolMessage (ProtocolMessage message, ObjectMapper mapper)
         {
-            using (var pooled = objectMapper.Get()) {
-                var mapper = pooled.instance;
-                mapper.Pretty           = true;
-                mapper.WriteNullMembers = false;
-                return mapper.WriteAsValue(message);
-            }
+            mapper.Pretty           = true;
+            mapper.WriteNullMembers = false;
+            return mapper.WriteAsValue(message);
         }
         
         public static Bytes CreateProtocolEvent (EventMessage eventMessage, in SendEventArgs args)
@@ -99,18 +96,16 @@ namespace Friflo.Json.Fliox.Hub.Remote
             return null;
         }
         
-        public static ProtocolMessage ReadProtocolMessage (in JsonValue jsonMessage, ObjectPool<ObjectMapper> mapperPool, out string error)
+        public static ProtocolMessage ReadProtocolMessage (in JsonValue jsonMessage, ObjectMapper mapper, out string error)
         {
-            using (var pooledMapper = mapperPool.Get()) {
-                ObjectReader reader = pooledMapper.instance.reader;
-                var message         = reader.Read<ProtocolMessage>(jsonMessage);
-                if (reader.Error.ErrSet) {
-                    error = reader.Error.msg.ToString();
-                    return null;
-                }
-                error = null;
-                return message;
+            ObjectReader reader = mapper.reader;
+            var message         = reader.Read<ProtocolMessage>(jsonMessage);
+            if (reader.Error.ErrSet) {
+                error = reader.Error.msg.ToString();
+                return null;
             }
+            error = null;
+            return message;
         }
     }
 }

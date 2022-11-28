@@ -33,24 +33,24 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs
         }
         
         public override async Task<ExecuteSyncResult> ExecuteSync(SyncRequest syncRequest, SyncContext syncContext) {
-            var objectMapper    = syncContext.ObjectMapper;
-            var requestJson     = RemoteUtils.CreateProtocolMessage(syncRequest, objectMapper);
-            SyncRequest requestCopy;
             using (var pooledMapper = syncContext.ObjectMapper.Get()) {
-                var args    = new RemoteArgs(null, pooledMapper.instance);
-                requestCopy = RemoteUtils.ReadSyncRequest (args, requestJson, out var _);
+                var mapper          = pooledMapper.instance;
+                var requestJson     = RemoteUtils.CreateProtocolMessage(syncRequest, mapper);
+                var args            = new RemoteArgs(null, pooledMapper.instance);
+                var requestCopy     = RemoteUtils.ReadSyncRequest (args, requestJson, out var _);
+
+                var syncResponse    = await host.ExecuteSync(requestCopy, syncContext);
+                
+                if (syncResponse.error != null) {
+                    return syncResponse;
+                }
+                RemoteHost.SetContainerResults(syncResponse.success);
+                var responseJson    = RemoteUtils.CreateProtocolMessage(syncResponse.success, mapper);
+                var responseMessage = RemoteUtils.ReadProtocolMessage (responseJson, mapper, out _);
+                var responseCopy    = (SyncResponse)responseMessage;
+                
+                return new ExecuteSyncResult(responseCopy);
             }
-            var syncResponse    = await host.ExecuteSync(requestCopy, syncContext);
-            
-            if (syncResponse.error != null) {
-                return syncResponse;
-            }
-            RemoteHost.SetContainerResults(syncResponse.success);
-            var responseJson    = RemoteUtils.CreateProtocolMessage(syncResponse.success, objectMapper);
-            var responseMessage = RemoteUtils.ReadProtocolMessage (responseJson, objectMapper, out _);
-            var responseCopy    = (SyncResponse)responseMessage;
-            
-            return new ExecuteSyncResult(responseCopy);
         }
     }
 }
