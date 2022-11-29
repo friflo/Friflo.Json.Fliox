@@ -124,6 +124,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                         var requestContent  = new JsonValue(memoryStream.GetBuffer(), (int)memoryStream.Position);
                         using (var pooledBuffer = remoteHost.sharedEnv.MemoryBuffer.Get()) {
                             var syncContext     = new SyncContext(pool, this, sharedCache, pooledBuffer.instance);
+                            mapper.reader.InstancePool?.Reuse();
                             var result          = await remoteHost.ExecuteJsonRequest(mapper, requestContent, syncContext).ConfigureAwait(false);
                             
                             syncContext.Release();

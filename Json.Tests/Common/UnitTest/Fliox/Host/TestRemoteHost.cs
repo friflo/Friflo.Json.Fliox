@@ -66,8 +66,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
                     long dif = 0;
                     for (int n = 0; n < 10; n++) {
                         long start      = GC.GetAllocatedBytesForCurrentThread();
+                        cx.contextRead  = cx.remoteHost.CreateSyncContext(cx.memoryBuffer, null, default);
                         cx.mapper.reader.InstancePool.Reuse();
-                        cx.contextRead  = cx.remoteHost.CreateSyncContext(cx.memoryBuffer, null, default);            
                         var response    = await cx.remoteHost.ExecuteJsonRequest(cx.mapper, cx.writeReq, cx.contextRead);
                         
                         dif = GC.GetAllocatedBytesForCurrentThread() - start;
