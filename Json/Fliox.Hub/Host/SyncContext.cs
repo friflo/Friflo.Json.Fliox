@@ -51,7 +51,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         internal            ClientIdValidation      clientIdValidation;
         internal  readonly  MemoryBuffer            memoryBuffer;
         
-        public override     string                  ToString() => $"userId: {authState.user}, auth: {authState}";
+        public override     string                  ToString() => GetString();
 
         internal SyncContext (Pool pool, EventReceiver eventReceiver, SharedCache sharedCache, MemoryBuffer memoryBuffer) {
             this.pool           = pool;
@@ -100,6 +100,13 @@ namespace Friflo.Json.Fliox.Hub.Host
             if (user == null)           throw new ArgumentNullException(nameof(user));
             if (taskAuthorizer == null) throw new ArgumentNullException(nameof(taskAuthorizer));
             if (hubPermission == null)  throw new ArgumentNullException(nameof(hubPermission));
+        }
+        
+        private string GetString() {
+            // extracted method to avoid boxing authState struct in string interpolation which causes noise in Rider > Debug > Memory list
+            var user    = authState.user;
+            var state   = authState.ToString();
+            return $"userId: {user}, auth: {state}";
         }
         
         internal void Cancel() {
