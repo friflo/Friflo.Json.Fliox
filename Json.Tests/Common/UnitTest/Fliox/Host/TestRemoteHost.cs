@@ -20,18 +20,25 @@ using static NUnit.Framework.Assert;
 namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
 {
     
-    public static class TestRemoteHost
+    public class TestRemoteHost
     {
+        // Add fields to avoid showing them in Rider > Debug > Variables. 
+        // If listed Rider calls their ToString() methods causing object instantiations (e.g. of string)
+        // which will be listed in Rider > Debug > Memory list
+        private JsonValue       readReq;
+        private SyncContext     contextRead;
+        private RemoteHost      remoteHost;
+        
         [Test]
-        public static void TestRemoteHostRequestAlloc() { SingleThreadSynchronizationContext.Run(AssertRemoteHostRequestAlloc); }
+        public void TestRemoteHostRequestAlloc() { SingleThreadSynchronizationContext.Run(AssertRemoteHostRequestAlloc); }
 
-        private static async Task AssertRemoteHostRequestAlloc ()
+        private async Task AssertRemoteHostRequestAlloc ()
         {
             using (var _            = SharedEnv.Default) { // for LeakTestsFixture
                 var typeStore       = SharedEnv.Default.TypeStore;
                 var database        = new MemoryDatabase("remote-memory");
                 var testHub         = new FlioxHub(database);
-                var remoteHost      = new RemoteHost(testHub, null);
+                remoteHost          = new RemoteHost(testHub, null);
                 var memoryBuffer    = new MemoryBuffer (true, 4 * 1024);
                 var mapper          = new ObjectMapper(typeStore);
                 mapper.WriteNullMembers = false;
@@ -55,28 +62,30 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
                         new ReadEntities { container = "test", ids = new List<JsonKey> { new JsonKey(1)} }
                     }
                 };
-                var readReq = mapper.WriteAsValue<ProtocolMessage>(syncRead);
+                readReq = mapper.WriteAsValue<ProtocolMessage>(syncRead);
                 
                 var contextWrite    = remoteHost.CreateSyncContext(memoryBuffer, null, default);          
                 var writeResponse   = await remoteHost.ExecuteJsonRequest(mapper, writeReq, contextWrite);
                 AreEqual(JsonResponseStatus.Ok, writeResponse.status);
 
                 // GC.Collect();
-                
-                
-                long dif = 0;
-                for (int n = 0; n < 10; n++) {
-                    long start      = GC.GetAllocatedBytesForCurrentThread();
-                    mapper.reader.InstancePool.Reuse();
-                    var contextRead = remoteHost.CreateSyncContext(memoryBuffer, null, default);            
-                    var response    = await remoteHost.ExecuteJsonRequest(mapper, readReq, contextRead);
-                    
-                    dif = GC.GetAllocatedBytesForCurrentThread() - start;
-                    if (response.status != JsonResponseStatus.Ok)   Fail("Expect OK");
-                }
-                var expect = TestUtils.IsDebug() ? 2360 : 1592;
-                AreEqual(expect, dif);
+                await ExecuteRequest(mapper, memoryBuffer);
             }
+        }
+        
+        private async Task ExecuteRequest (ObjectMapper mapper, MemoryBuffer memoryBuffer) {
+            long dif = 0;
+            for (int n = 0; n < 10; n++) {
+                long start      = GC.GetAllocatedBytesForCurrentThread();
+                mapper.reader.InstancePool.Reuse();
+                contextRead     = remoteHost.CreateSyncContext(memoryBuffer, null, default);            
+                var response    = await remoteHost.ExecuteJsonRequest(mapper, readReq, contextRead);
+                        
+                dif = GC.GetAllocatedBytesForCurrentThread() - start;
+                if (response.status != JsonResponseStatus.Ok)   Fail("Expect OK");
+            }
+            var expect = TestUtils.IsDebug() ? 2360 : 1592;
+            AreEqual(expect, dif);
         }
     }
 }
