@@ -7,7 +7,7 @@ using Friflo.Json.Fliox.Mapper;
 // Note! - Must not have any dependency to System.Net or System.Net.Http (or other HTTP stuff)
 namespace Friflo.Json.Fliox.Hub.Remote
 {
-    internal enum JsonResponseStatus {
+    public enum JsonResponseStatus {
         /// maps to HTTP 200 OK
         Ok          = 200,         
         /// maps to HTTP 400 Bad Request
@@ -16,7 +16,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         Exception   = 500
     }
     
-    internal readonly struct JsonResponse
+    public readonly struct JsonResponse
     {
         /// <summary><b>Attention</b> <see cref="body"/> is <b>only</b> valid until used <see cref="ObjectMapper"/> is reused </summary>
         public readonly     JsonValue           body;

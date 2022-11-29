@@ -10,6 +10,7 @@ using Friflo.Json.Fliox.Hub.Host.Event;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Mapper;
+using Friflo.Json.Fliox.Utils;
 
 // Note! - Must not have any dependency to System.Net or System.Net.Http (or other HTTP stuff)
 namespace Friflo.Json.Fliox.Hub.Remote
@@ -27,7 +28,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         public              IHubLogger  Logger      => sharedEnv.hubLogger;
 
 
-        protected RemoteHost(FlioxHub hub, SharedEnv env) {
+        public RemoteHost(FlioxHub hub, SharedEnv env) {
             sharedEnv   = env  ?? SharedEnv.Default;
             localHub    = hub;
         }
@@ -37,7 +38,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         /// <summary>
         /// <b>Attention</b> returned <see cref="JsonResponse"/> is <b>only</b> valid until the passed <paramref name="mapper"/> is reused
         /// </summary>
-        internal async Task<JsonResponse> ExecuteJsonRequest(
+        public async Task<JsonResponse> ExecuteJsonRequest(
             RemoteArgs      args,
             ObjectMapper    mapper,
             JsonValue       jsonRequest,
@@ -109,6 +110,10 @@ namespace Friflo.Json.Fliox.Hub.Remote
                     container.count = entities.Count;
                 }
             }
+        }
+        
+        public SyncContext CreateSyncContext(MemoryBuffer memoryBuffer, EventReceiver eventReceiver, JsonKey clientId) {
+            return new SyncContext (sharedEnv.Pool, eventReceiver, sharedEnv.sharedCache, memoryBuffer);
         }
     }
 }

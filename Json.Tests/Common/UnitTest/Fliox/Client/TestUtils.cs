@@ -264,7 +264,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             AreEqual(0, diff);
         }
         
-        private static bool IsDebug() {
+        public static bool IsDebug() {
 #if DEBUG
             return true;
 #else
