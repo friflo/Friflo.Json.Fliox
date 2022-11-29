@@ -263,6 +263,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             var diff    = GC.GetAllocatedBytesForCurrentThread() - start;
             AreEqual(0, diff);
         }
+#endif
         
         public static bool IsDebug() {
 #if DEBUG
@@ -271,7 +272,5 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             return false;
 #endif
         }
-
-#endif
     }
 }

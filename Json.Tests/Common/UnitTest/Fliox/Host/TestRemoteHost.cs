@@ -9,6 +9,7 @@ using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Hub.Remote;
+using Friflo.Json.Fliox.Hub.Threading;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Utils;
 using Friflo.Json.Tests.Common.UnitTest.Fliox.Client;
@@ -22,7 +23,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
     public static class TestRemoteHost
     {
         [Test]
-        public static async Task TestRemoteHostRequestAlloc () {
+        public static void TestRemoteHostRequestAlloc() { SingleThreadSynchronizationContext.Run(AssertRemoteHostRequestAlloc); }
+
+        private static async Task AssertRemoteHostRequestAlloc ()
+        {
             using (var _            = SharedEnv.Default) { // for LeakTestsFixture
                 var typeStore       = SharedEnv.Default.TypeStore;
                 var database        = new MemoryDatabase("remote-memory");
@@ -59,7 +63,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
                 // GC.Collect();
                 
                 var instancePool = new InstancePool(typeStore);
-                mapper.reader.InstancePool = instancePool; 
+                mapper.reader.InstancePool = instancePool;
                 
                 long dif = 0;
                 for (int n = 0; n < 10; n++) {
