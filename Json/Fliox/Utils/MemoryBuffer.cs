@@ -26,12 +26,10 @@ namespace Friflo.Json.Fliox.Utils
         private readonly    int     initialCapacity;
         private             int     capacity;
         // --- stats
-        private             int     bigSize;
-        private             int     bigCount;
-        private             int     smallSize;
-        private             int     smallCount;
+        private             int     allocatedSize;
+        private             int     allocatedCount;
 
-        public  override    string  ToString() => $"count {bigCount + smallCount}, size: {bigSize + smallSize}";
+        public  override    string  ToString() => $"count {allocatedCount}, size: {allocatedSize}";
 
         // [Large object heap (LOH) on Windows | Microsoft Learn] https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/large-object-heap
         private const       int     LargeHeapObjectSize = 84000;                    // large object size: 85_000. Use a size smaller than this
@@ -46,28 +44,26 @@ namespace Friflo.Json.Fliox.Utils
         public void Dispose() { }
         
         public void Reset() {
-            capacity    = initialCapacity;
-            buffer      = permanent;
-            position    = permanent == null ? capacity : 0;
-            bigSize     = 0;
-            bigCount    = 0;
-            smallSize   = 0;
-            smallCount  = 0;
+            buffer          = permanent;
+            position        = 0;
+            capacity        = initialCapacity;
+            allocatedSize   = 0;
+            allocatedCount  = 0;
         }
 
         /// <summary> add the <paramref name="value"/> to the <see cref="MemoryBuffer"/> </summary>
         public JsonValue Add(in JsonValue value) {
-            int len          = value.Count;
-            // value size beyond limits => create an individual copy
+            int len         = value.Count;
+            allocatedSize  += len;
+            allocatedCount ++;            // value size beyond limits => create an individual copy
             if (len >= BigValueLength) {
-                bigSize     += len;
-                bigCount    ++;
                 return new JsonValue(value);
             }
-            smallSize  += len;
-            smallCount ++;
             int start   = position;
             if (start + len <= capacity) {
+                if (buffer == null) {
+                    buffer = new byte[capacity];
+                }
                 // add value to current buffer
                 Buffer.BlockCopy(value.Array, value.Start, buffer, start, len);
                 position += len;
@@ -76,7 +72,7 @@ namespace Friflo.Json.Fliox.Utils
             capacity    = 4 * Math.Max(len, capacity);              // quadruple current len / capacity to avoid allocation of too many unused remaining bytes
             capacity    = Math.Min(capacity, LargeHeapObjectSize);  // cap array size to LargeHeapObjectSize
             // create a new buffer and add value
-            buffer     = new byte[capacity];
+            buffer      = new byte[capacity];
             Buffer.BlockCopy(value.Array, value.Start, buffer, 0, len);
             position    = len;
             return new JsonValue(buffer, 0, len);
