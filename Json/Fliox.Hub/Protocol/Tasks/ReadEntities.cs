@@ -45,15 +45,13 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
                 return error;
 
             var entityContainer = database.GetOrCreateContainer(container);
-            var readResult      = await entityContainer.ReadEntities(this, syncContext).ConfigureAwait(false);
+            var result          = await entityContainer.ReadEntities(this, syncContext).ConfigureAwait(false);
             
-            if (readResult.Error != null) {
-                return TaskError(readResult.Error);
+            if (result.Error != null) {
+                return TaskError(result.Error);
             }
-            var entities = readResult.entities;
-            readResult.entities = null;
-
-            var result  = new ReadEntitiesResult ();
+            var entities = result.entities;
+            
             if (references != null && references.Count > 0) {
                 var readRefResults =
                     await entityContainer.ReadReferences(references, entities, entityContainer.name, "", response, syncContext).ConfigureAwait(false);
