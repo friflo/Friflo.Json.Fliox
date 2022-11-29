@@ -73,7 +73,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
                         dif = GC.GetAllocatedBytesForCurrentThread() - start;
                         if (response.status != JsonResponseStatus.Ok)   Fail("Expect OK");
                     }
-                    var expect = TestUtils.IsDebug() ? 1592 : 872;
+                    var expect = TestUtils.IsDebug() ? 1560 : 840;
                     AreEqual(expect, dif);
                 }
             });
@@ -83,13 +83,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
         {
             var cx = new RemoteCx();
             var typeStore       = sharedEnv.TypeStore;
-            var database        = new MemoryDatabase("remote-memory");
+            var database        = new MemoryDatabase("remote-memory", smallValueSize: 1024);
             var testHub         = new FlioxHub(database);
             cx.remoteHost       = new RemoteHost(testHub, null);
             cx.memoryBuffer     = new MemoryBuffer (true, 4 * 1024);
             cx.mapper           = new ObjectMapper(typeStore);
             cx.mapper.WriteNullMembers = false;
-            cx.mapper.reader.InstancePool = new InstancePool(typeStore);;
+            cx.mapper.reader.InstancePool = new InstancePool(typeStore);
 
             // -- create request with upsert task
             var syncWrite = new SyncRequest {
