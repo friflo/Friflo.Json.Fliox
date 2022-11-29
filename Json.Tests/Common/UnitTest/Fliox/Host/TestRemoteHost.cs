@@ -35,6 +35,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
                 var memoryBuffer    = new MemoryBuffer (true, 4 * 1024);
                 var mapper          = new ObjectMapper(typeStore);
                 mapper.WriteNullMembers = false;
+                mapper.reader.InstancePool = new InstancePool(typeStore);;
 
                 // -- create request with upsert task
                 var syncWrite = new SyncRequest {
@@ -62,13 +63,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
 
                 // GC.Collect();
                 
-                var instancePool = new InstancePool(typeStore);
-                mapper.reader.InstancePool = instancePool;
                 
                 long dif = 0;
                 for (int n = 0; n < 10; n++) {
                     long start      = GC.GetAllocatedBytesForCurrentThread();
-                    instancePool.Reuse();
+                    mapper.reader.InstancePool.Reuse();
                     var contextRead = remoteHost.CreateSyncContext(memoryBuffer, null, default);            
                     var response    = await remoteHost.ExecuteJsonRequest(mapper, readReq, contextRead);
                     
