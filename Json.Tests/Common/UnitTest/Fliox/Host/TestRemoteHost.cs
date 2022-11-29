@@ -24,11 +24,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
         [Test]
         public static async Task TestRemoteHostRequestAlloc () {
             using (var _            = SharedEnv.Default) { // for LeakTestsFixture
+                var typeStore       = SharedEnv.Default.TypeStore;
                 var database        = new MemoryDatabase("remote-memory");
                 var testHub         = new FlioxHub(database);
                 var remoteHost      = new RemoteHost(testHub, null);
                 var memoryBuffer    = new MemoryBuffer (true, 4 * 1024);
-                var mapper          = new ObjectMapper(SharedEnv.Default.TypeStore);
+                var mapper          = new ObjectMapper(typeStore);
                 mapper.WriteNullMembers = false;
 
                 // -- create request with upsert task
@@ -52,21 +53,25 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
                 var readReq = mapper.WriteAsValue<ProtocolMessage>(syncRead);
                 
                 var contextWrite    = remoteHost.CreateSyncContext(memoryBuffer, null, default);          
-                var writeResponse   = await remoteHost.ExecuteJsonRequest(default, mapper, writeReq, contextWrite);
+                var writeResponse   = await remoteHost.ExecuteJsonRequest(mapper, writeReq, contextWrite);
                 AreEqual(JsonResponseStatus.Ok, writeResponse.status);
 
-                GC.Collect();
+                // GC.Collect();
+                
+                var instancePool = new InstancePool(typeStore);
+                mapper.reader.InstancePool = instancePool; 
                 
                 long dif = 0;
                 for (int n = 0; n < 10; n++) {
                     long start      = GC.GetAllocatedBytesForCurrentThread();
+                    instancePool.Reuse();
                     var contextRead = remoteHost.CreateSyncContext(memoryBuffer, null, default);            
-                    var response    = await remoteHost.ExecuteJsonRequest(default, mapper, readReq, contextRead);
+                    var response    = await remoteHost.ExecuteJsonRequest(mapper, readReq, contextRead);
                     
                     dif = GC.GetAllocatedBytesForCurrentThread() - start;
                     if (response.status != JsonResponseStatus.Ok)   Fail("Expect OK");
                 }
-                var expect = TestUtils.IsDebug() ? 3016 : 2240;
+                var expect = TestUtils.IsDebug() ? 2360 : 1592;
                 AreEqual(expect, dif);
             }
         }

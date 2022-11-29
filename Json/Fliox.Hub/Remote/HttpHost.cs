@@ -146,8 +146,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 var pool        = sharedEnv.Pool;
                 var syncContext = new SyncContext(pool, null, sharedEnv.sharedCache, request.memoryBuffer);
                 using (var pooledMapper = pool.ObjectMapper.Get()) {
-                    var args    = new RemoteArgs(null);
-                    var result  = await ExecuteJsonRequest(args, pooledMapper.instance, requestContent, syncContext).ConfigureAwait(false);
+                    var result  = await ExecuteJsonRequest(pooledMapper.instance, requestContent, syncContext).ConfigureAwait(false);
                 
                     syncContext.Release();
                     var body        = new JsonValue(result.body); // create copy => result.body array may change when the pooledMapper is reused

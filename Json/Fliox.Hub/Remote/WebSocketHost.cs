@@ -105,10 +105,9 @@ namespace Friflo.Json.Fliox.Hub.Remote
         }
         
         private async Task RunReceiveLoop(RemoteHost remoteHost, ObjectMapper mapper) {
-            var memoryStream    = new MemoryStream();
-            var buffer          = new ArraySegment<byte>(new byte[8192]);
-            var instancePool    = new InstancePool(typeStore);    // reused SyncRequest
-            var args            = new RemoteArgs(instancePool);
+            var memoryStream            = new MemoryStream();
+            var buffer                  = new ArraySegment<byte>(new byte[8192]);
+            // mapper.reader.InstancePool  = new InstancePool(typeStore);    // reused SyncRequest
             while (true) {
                 var state = webSocket.State;
                 if (state == WebSocketState.Open) {
@@ -125,7 +124,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                         var requestContent  = new JsonValue(memoryStream.GetBuffer(), (int)memoryStream.Position);
                         using (var pooledBuffer = remoteHost.sharedEnv.MemoryBuffer.Get()) {
                             var syncContext     = new SyncContext(pool, this, sharedCache, pooledBuffer.instance);
-                            var result          = await remoteHost.ExecuteJsonRequest(args, mapper, requestContent, syncContext).ConfigureAwait(false);
+                            var result          = await remoteHost.ExecuteJsonRequest(mapper, requestContent, syncContext).ConfigureAwait(false);
                             
                             syncContext.Release();
                             sendQueue.Enqueue(result.body); // Enqueue() copy the result.body array

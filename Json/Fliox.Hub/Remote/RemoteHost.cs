@@ -39,13 +39,12 @@ namespace Friflo.Json.Fliox.Hub.Remote
         /// <b>Attention</b> returned <see cref="JsonResponse"/> is <b>only</b> valid until the passed <paramref name="mapper"/> is reused
         /// </summary>
         public async Task<JsonResponse> ExecuteJsonRequest(
-            RemoteArgs      args,
             ObjectMapper    mapper,
             JsonValue       jsonRequest,
             SyncContext     syncContext)
         {
             try {
-                var syncRequest = RemoteUtils.ReadSyncRequest(args, mapper, jsonRequest, out string error);
+                var syncRequest = RemoteUtils.ReadSyncRequest(mapper, jsonRequest, out string error);
                 if (error != null) {
                     return JsonResponse.CreateError(mapper, error, ErrorResponseType.BadResponse, null);
                 }

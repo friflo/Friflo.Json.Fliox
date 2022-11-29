@@ -27,15 +27,6 @@ namespace Friflo.Json.Fliox.Hub.Remote
         /** map to <see cref="SyncEvent.tasks"/> */             public  JsonValue[] tasks;
     }
     
-    public readonly struct RemoteArgs
-    {
-        internal readonly   InstancePool    instancePool;
-
-        public RemoteArgs (InstancePool instancePool) {
-            this.instancePool   = instancePool;
-        }
-    }
-    
     /// <summary>
     /// <b>Attention</b> all <c>Create</c> methods return a <see cref="JsonValue"/> which are only valid until the
     /// passed <see cref="ObjectMapper"/> it reused 
@@ -90,7 +81,6 @@ namespace Friflo.Json.Fliox.Hub.Remote
         }
         
         public static SyncRequest ReadSyncRequest (
-            in RemoteArgs   args,
             ObjectMapper    mapper,
             in JsonValue    jsonMessage,
             out string      error)
