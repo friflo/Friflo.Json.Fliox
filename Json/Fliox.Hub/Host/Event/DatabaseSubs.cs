@@ -3,11 +3,9 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using Friflo.Json.Fliox.Hub.DB.Cluster;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Transform;
-using static System.Diagnostics.DebuggerBrowsableState;
 
 namespace Friflo.Json.Fliox.Hub.Host.Event
 {
@@ -23,13 +21,10 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
 
         private  readonly   HashSet<string>                 messageSubs         = new HashSet<string>();
         private  readonly   HashSet<string>                 messagePrefixSubs   = new HashSet<string>();
-        /// key: <see cref="SubscribeChanges.container"/>
-        [DebuggerBrowsable(Never)] 
-        private  readonly   Dictionary<string, ChangeSub>   changeSubs          = new Dictionary<string, ChangeSub>();
-        // ReSharper disable once UnusedMember.Local - expose Dictionary as list in Debugger
-        private             IReadOnlyCollection<ChangeSub>  ChangeSubs          => changeSubs.Values;
+        /// key: <see cref="SubscribeChanges.container"/> - used array instead of Dictionary for performance
+        private             ChangeSub[]                     changeSubs          = Array.Empty<ChangeSub>();
 
-        internal            int                             SubCount => changeSubs.Count + messageSubs.Count + messagePrefixSubs.Count; 
+        internal            int                             SubCount => changeSubs.Length + messageSubs.Count + messagePrefixSubs.Count; 
 
         
         internal DatabaseSubs (string database) {
@@ -60,13 +55,13 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         }
         
         internal List<ChangeSubscription> GetChangeSubscriptions (List<ChangeSubscription> subs) {
-            if (changeSubs.Count == 0)
+            var changeSubsLength = changeSubs.Length;
+            if (changeSubsLength == 0)
                 return null;
-            if (subs == null) subs = new List<ChangeSubscription>(changeSubs.Count);
+            if (subs == null) subs = new List<ChangeSubscription>(changeSubsLength);
             subs.Clear();
-            subs.Capacity = changeSubs.Count;
-            foreach (var pair in changeSubs) {
-                ChangeSub sub = pair.Value;
+            subs.Capacity = changeSubsLength;
+            foreach (var sub in changeSubs) {
                 var changeSubscription = new ChangeSubscription {
                     container   = sub.container,
                     changes     = sub.changes,
@@ -96,7 +91,15 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         }
 
         internal void RemoveChangeSubscription(string container) {
-            changeSubs.Remove(container);
+            var list = new List<ChangeSub>(changeSubs.Length);
+            foreach (var changeSub in changeSubs) {
+                if (changeSub.container == container)
+                    continue;
+                list.Add(changeSub);
+            }
+            if (changeSubs.Length == list.Count)
+                return;
+            changeSubs = list.ToArray();
         }
 
         internal void AddChangeSubscription(SubscribeChanges subscribe) {
@@ -112,7 +115,14 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             }
             var changes     = subscribe.changes.ToArray();
             var changeSub   = new ChangeSub(subscribe.container, changes, jsonFilter);
-            changeSubs[subscribe.container] = changeSub;
+            
+            // remove old change subscription if exist and add new one
+            RemoveChangeSubscription(subscribe.container);
+            var oldLen          = changeSubs.Length;
+            var newChangeSubs   = new ChangeSub[oldLen + 1];
+            Array.Copy(changeSubs, newChangeSubs, oldLen);
+            changeSubs          = newChangeSubs;
+            changeSubs[oldLen]  = changeSub;
         }
 
         internal void AddEventTasks(
@@ -126,15 +136,16 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                     case TaskType.create:
                     case TaskType.upsert:
                     case TaskType.delete:
-                    case TaskType.merge:
-                        foreach (var pair in changeSubs) {
-                            ChangeSub changeSub = pair.Value;
-                            var taskResult = FilterUtils.FilterChanges(subClient, task, changeSub, jsonEvaluator);
+                    case TaskType.merge: {
+                        var changeSubsLength = changeSubs.Length;
+                        for (int n = 0; n < changeSubsLength; n++) {
+                            var taskResult = FilterUtils.FilterChanges(subClient, task, changeSubs[n], jsonEvaluator);
                             if (taskResult == null)
                                 continue;
                             AddTask(ref eventTasks, taskResult);
                         }
                         break;
+                    }
                     case TaskType.message:
                     case TaskType.command:
                         var messageTask = (SyncMessageTask)task;
