@@ -18,21 +18,23 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         {
             switch (task.TaskType) {
                 
-                case TaskType.create:
+                case TaskType.create: {
                     if (Array.IndexOf(subscribe.changes, EntityChange.create) == -1)
                         return null;
                     var create = (CreateEntities) task;
                     if (create.container != subscribe.container)
                         return null;
-                    var entities = FilterEntities(subscribe.jsonFilter, create.entities, jsonEvaluator);
-                    var createResult = new CreateEntities {
+                    var filter = subscribe.jsonFilter;
+                    if (filter == null)
+                        return create;
+                    var entities    = FilterEntities(filter, create.entities, jsonEvaluator);
+                    return new CreateEntities {
                         container   = create.container,
                         entities    = entities,
                         keyName     = create.keyName   
                     };
-                    return createResult;
-                
-                case TaskType.upsert:
+                }
+                case TaskType.upsert: {
                     if (Array.IndexOf(subscribe.changes, EntityChange.upsert) == -1)
                         return null;
                     var upsert = (UpsertEntities) task;
@@ -40,14 +42,16 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                         return null;
                     if (!IsEventTarget(subClient, upsert.users))
                         return null;
-                    entities = FilterEntities(subscribe.jsonFilter, upsert.entities, jsonEvaluator);
-                    var upsertResult = new UpsertEntities {
+                    var filter = subscribe.jsonFilter;
+                    if (filter == null)
+                        return upsert;
+                    var entities    = FilterEntities(filter, upsert.entities, jsonEvaluator);
+                    return new UpsertEntities {
                         container   = upsert.container,
                         entities    = entities,
                         keyName     = upsert.keyName
                     };
-                    return upsertResult;
-                
+                }
                 case TaskType.delete:
                     if (Array.IndexOf(subscribe.changes, EntityChange.delete) == -1)
                         return null;
@@ -89,12 +93,8 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             List<JsonEntity>    entities,
             JsonEvaluator       jsonEvaluator)    
         {
-            if (jsonFilter == null)
-                return entities;
-            var result          = new List<JsonEntity>();
-
-            for (int n = 0; n < entities.Count; n++) {
-                var entity   = entities[n];
+            var result  = new List<JsonEntity>();
+            foreach (var entity in entities) {
                 if (jsonEvaluator.Filter(entity.value, jsonFilter, out _)) {
                     result.Add(entity);
                 }
