@@ -42,21 +42,21 @@ namespace Friflo.Json.Fliox.Hub.Protocol
         /// Increasing event sequence number starting with 1 for a specific target client <see cref="ProtocolEvent.dstClientId"/>.
         /// Each target client (subscriber) has its own sequence.
         /// </summary>
-                    public      int                 seq;
+                    public      int                     seq;
         /// <summary>
         /// The user which caused the event. Specifically the user which made a database change or sent a message / command.
         /// The user client is not preserved by en extra property as a use case for this is not obvious.
         /// </summary>
-        [Serialize                                ("src")]
-        [Required]  public      JsonKey             srcUserId;
+        [Serialize                                    ("src")]
+        [Required]  public      JsonKey                 srcUserId;
         
         /// <summary>
         /// Is true if the receiving client is the origin of the event
         /// </summary>
-                    public      bool?               isOrigin;
+                    public      bool?                   isOrigin;
         
         /// <summary>The database the <see cref="tasks"/> refer to</summary>
-        [Required]  public      string              db;
+        [Required]  public      string                  db;
 
         /// <summary>
         /// Contains the events an application subscribed. These are:<br/>
@@ -66,12 +66,12 @@ namespace Friflo.Json.Fliox.Hub.Protocol
         /// <see cref="SendMessage"/>, 
         /// <see cref="SendCommand"/>
         /// </summary>
-                    public      SyncRequestTask[]   tasks;
+                    public      List<SyncRequestTask>   tasks;
 
         /// Used for optimization. Either <see cref="tasks"/> or <see cref="tasksJson"/> is set
-        [Ignore]    internal    JsonValue[]         tasksJson;
+        [Ignore]    internal    JsonValue[]             tasksJson;
         
-        public   override       string              ToString()  => GetEventInfo().ToString();
+        public   override       string                  ToString()  => GetEventInfo().ToString();
         
         public EventInfo    GetEventInfo() {
             var info = new EventInfo();
