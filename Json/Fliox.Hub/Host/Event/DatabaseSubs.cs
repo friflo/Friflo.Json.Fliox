@@ -209,7 +209,9 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         internal    readonly    string          container;
         internal    readonly    EntityChange    changes;    // flags
         internal    readonly    JsonFilter      jsonFilter;
-        
+
+        public      override    string          ToString() => $"{container}: {changes}";
+
         internal ChangeSub(string container, List<EntityChange> changes, JsonFilter jsonFilter) {
             this.container  = container;
             this.changes    = EntityChangeUtils.ListToFlags(changes);
