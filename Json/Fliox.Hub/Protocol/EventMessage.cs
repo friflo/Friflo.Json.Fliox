@@ -36,7 +36,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol
     /// A <see cref="SyncEvent"/> corresponds to a <see cref="SyncRequest"/> and contains the subscribed
     /// messages and container changes in its <see cref="SyncEvent.tasks"/> field
     /// </summary>
-    public sealed class SyncEvent
+    public struct SyncEvent
     {
         /// <summary>
         /// Increasing event sequence number starting with 1 for a specific target client <see cref="ProtocolEvent.dstClientId"/>.

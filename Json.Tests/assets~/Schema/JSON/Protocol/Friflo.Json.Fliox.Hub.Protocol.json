@@ -104,6 +104,7 @@
         },
         "SyncEvent": {
             "type": "object",
+            "isStruct": true,
             "description": "A <b>SyncEvent</b> corresponds to a <b>SyncRequest</b> and contains the subscribed\nmessages and container changes in its <b>tasks</b> field",
             "properties": {
                 "seq":      { "$ref": "./Standard.json#/definitions/int32", "description": "Increasing event sequence number starting with 1 for a specific target client <b>dstClientId</b>.\nEach target client (subscriber) has its own sequence." },

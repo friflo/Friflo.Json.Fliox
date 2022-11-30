@@ -84,7 +84,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             return true;
         }
         
-        internal void EnqueueEvent(SyncEvent ev) {
+        internal void EnqueueEvent(ref SyncEvent ev) {
             lock (unsentEventsDeque) {
                 ev.seq = ++eventCounter;
                 unsentEventsDeque.AddTail(ev);
