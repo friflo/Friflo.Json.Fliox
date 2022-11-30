@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Utils;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
@@ -196,6 +197,16 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Utils
             
             AreEqual(0, deque.Count);
             foreach (var unused in deque) { Fail("unexpected"); }
+        }
+        
+        [Test]
+        public static void TestDequeAddTailPerf() {
+            var deque = new Deque<SyncEvent>(10);
+            var ev = new SyncEvent();
+            for (int n = 0; n < 20; n++) {
+                deque.AddTail(ev); // IL: callvirt Deque<SyncEvent>::AddTail(!0/*valuetype SyncEvent*/&)
+                deque.RemoveHead();
+            }
         }
     }
 }

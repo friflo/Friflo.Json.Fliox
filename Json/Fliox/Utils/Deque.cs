@@ -56,7 +56,8 @@ namespace Friflo.Json.Fliox.Utils
             throw new InvalidOperationException("Expect Deque not empty");
         }
         
-        public void AddHead(T item) {
+        // using in modifier enables passing structs values by reference. IL: AddHead(!0/*valuetype T*/&)
+        public void AddHead(in T item) {
             if (count == capacity) {
                 Resize(2 * capacity);
             }
@@ -78,7 +79,8 @@ namespace Friflo.Json.Fliox.Utils
             count = newCount;
         }
         
-        public void AddTail(T item) {
+        // using in modifier enables passing structs values by reference. IL: AddTail(!0/*valuetype T*/&)
+        public void AddTail(in T item) {
             if (Count == capacity) {
                 Resize(2 * capacity);
             }
