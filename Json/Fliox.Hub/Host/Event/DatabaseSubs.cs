@@ -64,7 +64,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             foreach (var sub in changeSubs) {
                 var changeSubscription = new ChangeSubscription {
                     container   = sub.container,
-                    changes     = sub.changes,
+                    changes     = EntityChangeUtils.FlagsToList(sub.changes),
                     filter      = sub.jsonFilter?.Linq
                 };
                 subs.Add(changeSubscription);
@@ -113,8 +113,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                     throw new InvalidOperationException($"filter {filter} is not a FilterOperation");
                 jsonFilter      = filterOperation.IsTrue ? null : new JsonFilter(filterOperation);
             }
-            var changes     = subscribe.changes.ToArray();
-            var changeSub   = new ChangeSub(subscribe.container, changes, jsonFilter);
+            var changeSub   = new ChangeSub(subscribe.container, subscribe.changes, jsonFilter);
             
             // remove old change subscription if exist and add new one
             RemoveChangeSubscription(subscribe.container);
@@ -208,12 +207,12 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
     
     internal readonly struct ChangeSub {
         internal    readonly    string          container;
-        internal    readonly    EntityChange[]  changes;
+        internal    readonly    EntityChange    changes;    // flags
         internal    readonly    JsonFilter      jsonFilter;
         
-        internal ChangeSub(string container, EntityChange[] changes, JsonFilter jsonFilter) {
+        internal ChangeSub(string container, List<EntityChange> changes, JsonFilter jsonFilter) {
             this.container  = container;
-            this.changes    = changes;
+            this.changes    = EntityChangeUtils.ListToFlags(changes);
             this.jsonFilter = jsonFilter;
         }
     }

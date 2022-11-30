@@ -1,7 +1,6 @@
 // Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
-using System;
 using System.Collections.Generic;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Transform;
@@ -19,7 +18,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             switch (task.TaskType) {
                 
                 case TaskType.create: {
-                    if (Array.IndexOf(subscribe.changes, EntityChange.create) == -1)
+                    if ((subscribe.changes & EntityChange.create) == 0)
                         return null;
                     var create = (CreateEntities) task;
                     if (create.container != subscribe.container)
@@ -35,7 +34,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                     };
                 }
                 case TaskType.upsert: {
-                    if (Array.IndexOf(subscribe.changes, EntityChange.upsert) == -1)
+                    if ((subscribe.changes & EntityChange.upsert) == 0)
                         return null;
                     var upsert = (UpsertEntities) task;
                     if (upsert.container != subscribe.container)
@@ -53,7 +52,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                     };
                 }
                 case TaskType.delete:
-                    if (Array.IndexOf(subscribe.changes, EntityChange.delete) == -1)
+                    if ((subscribe.changes & EntityChange.delete) == 0)
                         return null;
                     var delete = (DeleteEntities) task;
                     if (subscribe.container != delete.container)
@@ -62,7 +61,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                     return task;
                 
                 case TaskType.merge:
-                    if (Array.IndexOf(subscribe.changes, EntityChange.merge) == -1)
+                    if ((subscribe.changes & EntityChange.merge) == 0)
                         return null;
                     var merge = (MergeEntities) task;
                     if (subscribe.container != merge.container)
