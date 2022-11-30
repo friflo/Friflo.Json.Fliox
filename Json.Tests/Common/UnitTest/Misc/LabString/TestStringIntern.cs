@@ -8,6 +8,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.LabString
 {
     public static class TestStringIntern
     {
+        private const long Count = 1000; // 1_000_000_000;
+            
         [Test]
         public static void TestStringInternGet() {
             var hello1 = new string("hello");
@@ -17,7 +19,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.LabString
             var intern = new StringIntern();
             intern.Get2(hello1);
             
-            for (int n = 0; n < 1000_000_000; n++) {
+            for (int n = 0; n < Count; n++) {
                 // hello2.GetHashCode();
                 intern.Get(hello2);
             }
@@ -25,21 +27,19 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.LabString
         
         [Test]
         public static void TestStringInternGetHashCode() {
-            for (int n = 0; n < 1000_000_000; n++) {
+            for (int n = 0; n < Count; n++) {
                 "hello".GetHashCode();
             }
         }
         
         [Test]
         public static void TestStringInternGetHashCode2() {
-            for (int n = 0; n < 1000_000_000; n++) {
+            for (int n = 0; n < Count; n++) {
                 CalculateHash("hello");
             }
         }
-        
-        
 
-        static ulong CalculateHash(string read)
+        private static ulong CalculateHash(string read)
         {
             ulong hashedValue = 3074457345618258791ul;
             for(int i=0; i<read.Length; i++)
@@ -59,7 +59,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.LabString
         
         private static void TestStringInternPerfEqualsIntern(string str1, string str2) {
             var result = false;
-            for (long n = 0; n < 1000_000_000; n++) {
+            for (long n = 0; n < Count; n++) {
                 result = result || str1 != str2;
             }
             IsTrue(result);
@@ -70,7 +70,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.LabString
             var result = false;
             var hello1 = new string("hello");
             
-            for (long n = 0; n < 1000_000_000; n++) {
+            for (long n = 0; n < Count; n++) {
                 result = result || ReferenceEquals(hello1, hello1);
             }
             IsTrue(result);
