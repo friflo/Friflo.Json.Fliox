@@ -6,6 +6,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using Friflo.Json.Burst.Utils;
 using Friflo.Json.Fliox.Hub.Host.Auth;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
@@ -140,20 +141,21 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             SubscribeMessage    subscribe,
             User                user,
             in JsonKey          clientId,
-            EventReceiver      eventReceiver,
+            EventReceiver       eventReceiver,
             out string          error)
         {
             if (eventReceiver == null) {
                 error = MissingEventReceiver; 
                 return false;
             }
+            var databaseCmp = new SmallString(database);
             error = null;
             EventSubClient subClient;
             var remove = subscribe.remove;
             if (remove.HasValue && remove.Value) {
                 if (!subClients.TryGetValue(clientId, out subClient))
                     return true;
-                if (!subClient.databaseSubs.TryGetValue(database, out var databaseSubs)) {
+                if (!subClient.databaseSubs.TryGetValue(databaseCmp, out var databaseSubs)) {
                     return true;
                 }
                 databaseSubs.RemoveMessageSubscription(subscribe.name);
@@ -161,9 +163,9 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                 return true;
             } else {
                 subClient = GetOrCreateSubClient(user, clientId, eventReceiver);
-                if (!subClient.databaseSubs.TryGetValue(database, out var databaseSubs)) {
+                if (!subClient.databaseSubs.TryGetValue(databaseCmp, out var databaseSubs)) {
                     databaseSubs = new DatabaseSubs(database);
-                    subClient.databaseSubs.TryAdd(database, databaseSubs);
+                    subClient.databaseSubs.TryAdd(databaseCmp, databaseSubs);
                 }
                 databaseSubs.AddMessageSubscription(subscribe.name);
                 return true;
@@ -182,21 +184,22 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                 error = MissingEventReceiver; 
                 return false;
             }
+            var databaseCmp = new SmallString(database);
             error = null;
             EventSubClient subClient;
             if (subscribe.changes.Count == 0) {
                 if (!subClients.TryGetValue(clientId, out subClient))
                     return true;
-                if (!subClient.databaseSubs.TryGetValue(database, out var databaseSubs))
+                if (!subClient.databaseSubs.TryGetValue(databaseCmp, out var databaseSubs))
                     return true;
                 databaseSubs.RemoveChangeSubscription(subscribe.container);
                 RemoveEmptySubClient(subClient);
                 return true;
             } else {
                 subClient = GetOrCreateSubClient(user, clientId, eventReceiver);
-                if (!subClient.databaseSubs.TryGetValue(database, out var databaseSubs)) {
+                if (!subClient.databaseSubs.TryGetValue(databaseCmp, out var databaseSubs)) {
                     databaseSubs = new DatabaseSubs(database);
-                    subClient.databaseSubs.TryAdd(database, databaseSubs);
+                    subClient.databaseSubs.TryAdd(databaseCmp, databaseSubs);
                 }
                 databaseSubs.AddChangeSubscription(subscribe);
                 return true;
@@ -308,7 +311,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             }
             using (var pooled = syncContext.ObjectMapper.Get()) {
                 ObjectWriter writer     = pooled.instance.writer;
-                var database            = syncContext.DatabaseName;
+                var database            = new SmallString(syncContext.DatabaseName);
                 writer.Pretty           = false;    // write sub's as one liner
                 writer.WriteNullMembers = false;
                 foreach (var pair in sendClients) {
@@ -327,7 +330,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                         continue;
                     // mark change events for (change) tasks which are sent by the client itself
                     bool?   isOrigin    = syncContext.clientId.IsEqual(subClient.clientId) ? true : (bool?)null;
-                    var syncEvent = new SyncEvent { db = database, tasks = eventTasks, srcUserId = syncRequest.userId, isOrigin = isOrigin };
+                    var syncEvent = new SyncEvent { db = database.value, tasks = eventTasks, srcUserId = syncRequest.userId, isOrigin = isOrigin };
                     
                     if (SerializeRemoteEvents && subClient.SerializeEvents) {
                         SerializeRemoteEvent(ref syncEvent, eventTasks, writer);

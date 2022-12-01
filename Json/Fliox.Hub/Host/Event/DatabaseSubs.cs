@@ -142,7 +142,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                             var taskResult = FilterUtils.FilterChanges(subClient, task, changeSubs[n], jsonEvaluator);
                             if (taskResult == null)
                                 continue;
-                            AddTask(ref eventTasks, taskResult);
+                            AddTask(ref eventTasks, taskResult, tasks);
                         }
                         break;
                     }
@@ -157,17 +157,17 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                         messageTask.users   = null;
                         messageTask.clients = null;
                         messageTask.groups  = null;
-                        AddTask(ref eventTasks, messageTask);
+                        AddTask(ref eventTasks, messageTask, tasks);
                     break;
                 }
             }
         }
         
-        private static void AddTask(ref List<SyncRequestTask> tasks, SyncRequestTask task) {
-            if (tasks == null) {
-                tasks = new List<SyncRequestTask>();
+        private static void AddTask(ref List<SyncRequestTask> eventTasks, SyncRequestTask task, List<SyncRequestTask> tasks) {
+            if (eventTasks == null) {
+                eventTasks = new List<SyncRequestTask>(tasks.Count);
             }
-            tasks.Add(task);
+            eventTasks.Add(task);
         }
         
         private static bool IsEventTarget (EventSubClient subClient, SyncMessageTask messageTask)

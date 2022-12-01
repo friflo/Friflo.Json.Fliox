@@ -6,6 +6,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using Friflo.Json.Burst.Utils;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Utils;
 using static System.Diagnostics.DebuggerBrowsableState;
@@ -31,7 +32,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         
         /// key: database - concurrent: database subs may change while running <see cref="EventDispatcher.EnqueueSyncTasks"/>
         [DebuggerBrowsable(Never)]
-        internal readonly   ConcurrentDictionary<string, DatabaseSubs> databaseSubs = new ConcurrentDictionary<string, DatabaseSubs>();
+        internal readonly   ConcurrentDictionary<SmallString, DatabaseSubs> databaseSubs;
         // ReSharper disable once UnusedMember.Local - expose Dictionary as list in Debugger
         private             ICollection<DatabaseSubs>           DatabaseSubs => databaseSubs.Values;
         
@@ -69,6 +70,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             this.clientId       = clientId;
             this.user           = user;
             this.dispatcher     = dispatcher;
+            databaseSubs        = new ConcurrentDictionary<SmallString, DatabaseSubs>(SmallString.Equality);
         }
         
         internal bool UpdateTarget(EventReceiver eventReceiver) {

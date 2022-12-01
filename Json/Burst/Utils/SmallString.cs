@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace Friflo.Json.Burst.Utils
 {
@@ -13,7 +14,15 @@ namespace Friflo.Json.Burst.Utils
         
         public  readonly    string  value;
 
-        public  override    string  ToString() => value;
+        public  override    string  ToString()          => value;
+        
+        public override bool Equals(object obj) {
+            throw new NotImplementedException("not implemented by intention to avoid boxing. Use IsEqual() or SmallString.Equality comparer");
+        }
+
+        public override int GetHashCode() {
+            throw new NotImplementedException("not implemented by intention to avoid boxing. Use SmallString.Equality comparer");
+        }
         
         public bool IsEqual(in SmallString str) {
             return len <= 16 ?
@@ -63,5 +72,19 @@ namespace Friflo.Json.Burst.Utils
                 Pre0:   c00 = *(ulong*)(srcPtr +  0);
             }
         }
+        
+        public static readonly  SmallStringComparer Equality = new SmallStringComparer();
+        
+        public sealed class SmallStringComparer : IEqualityComparer<SmallString>
+        {
+            public bool Equals(SmallString x, SmallString y) {
+                return x.IsEqual(y);
+            }
+
+            public int GetHashCode(SmallString small) {
+                return small.value.GetHashCode();
+            }
+        }
     }
+    
 }
