@@ -4,6 +4,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
+using Friflo.Json.Burst.Utils;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
 
@@ -17,6 +18,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     {
         /// <summary>container name</summary>
         [Required]  public  string              container;
+        [Ignore]   internal SmallString         containerCmp;
         /// <summary>name of the primary key property of the entity <see cref="patches"/></summary>
                     public  string              keyName;
         /// <summary>list of merge patches for each entity</summary>
@@ -33,6 +35,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
                 return MissingContainer();
             if (patches == null)
                 return MissingField(nameof(patches));
+            containerCmp        = new SmallString(container);
             var entityContainer = database.GetOrCreateContainer(container);
             
             await database.service.CustomizeMerge(this, syncContext).ConfigureAwait(false);

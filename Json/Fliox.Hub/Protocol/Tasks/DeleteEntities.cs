@@ -4,6 +4,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
+using Friflo.Json.Burst.Utils;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
 
@@ -18,6 +19,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     {
         /// <summary>container name</summary>
         [Required]  public  string              container;
+        [Ignore]   internal SmallString         containerCmp;
         /// <summary>list of <see cref="ids"/> requested for deletion</summary>
                     public  List<JsonKey>       ids;
         /// <summary>if true all entities in the specified <see cref="container"/> are deleted</summary>
@@ -40,6 +42,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
                 return MissingContainer();
             if (ids == null && all == null)
                 return MissingField($"[{nameof(ids)} | {nameof(all)}]");
+            containerCmp        = new SmallString(container);
             var entityContainer = database.GetOrCreateContainer(container);
             var result = await entityContainer.DeleteEntities(this, syncContext).ConfigureAwait(false);
             if (result.Error != null) {

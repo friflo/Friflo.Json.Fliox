@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
+using Friflo.Json.Burst.Utils;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.Utils;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
@@ -20,6 +21,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     {
         /// <summary>container name the <see cref="entities"/> are created</summary>
         [Required]  public  string              container;
+        [Ignore]   internal SmallString         containerCmp;
                     public  Guid?               reservedToken;
         /// <summary>name of the primary key property in <see cref="entities"/></summary>
                     public  string              keyName;
@@ -37,6 +39,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
             if (!EntityUtils.GetKeysFromEntities(keyName, entities, syncContext, out string error)) {
                 return InvalidTask(error);
             }
+            containerCmp = new SmallString(container);
 
             List<EntityError> validationErrors = null;
             error = database.Schema?.ValidateEntities (container, entities, syncContext, EntityErrorType.WriteError, ref validationErrors);

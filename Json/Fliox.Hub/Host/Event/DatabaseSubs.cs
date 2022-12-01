@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using Friflo.Json.Burst.Utils;
 using Friflo.Json.Fliox.Hub.DB.Cluster;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Transform;
@@ -63,7 +64,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             subs.Capacity = changeSubsLength;
             foreach (var sub in changeSubs) {
                 var changeSubscription = new ChangeSubscription {
-                    container   = sub.container,
+                    container   = sub.container.value,
                     changes     = EntityChangeUtils.FlagsToList(sub.changes),
                     filter      = sub.jsonFilter?.Linq
                 };
@@ -93,7 +94,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         internal void RemoveChangeSubscription(string container) {
             var list = new List<ChangeSub>(changeSubs.Length);
             foreach (var changeSub in changeSubs) {
-                if (changeSub.container == container)
+                if (changeSub.container.value == container)
                     continue;
                 list.Add(changeSub);
             }
@@ -206,14 +207,14 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
     }
     
     internal readonly struct ChangeSub {
-        internal    readonly    string          container;
+        internal    readonly    SmallString     container;
         internal    readonly    EntityChange    changes;    // flags
         internal    readonly    JsonFilter      jsonFilter;
 
-        public      override    string          ToString() => $"{container}: {changes}";
+        public      override    string          ToString() => $"{container.value}: {changes}";
 
         internal ChangeSub(string container, List<EntityChange> changes, JsonFilter jsonFilter) {
-            this.container  = container;
+            this.container  = new SmallString(container);
             this.changes    = EntityChangeUtils.ListToFlags(changes);
             this.jsonFilter = jsonFilter;
         }

@@ -21,7 +21,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                     if ((subscribe.changes & EntityChange.create) == 0)
                         return null;
                     var create = (CreateEntities) task;
-                    if (create.container != subscribe.container)
+                    if (!create.containerCmp.IsEqual(subscribe.container))
                         return null;
                     var filter = subscribe.jsonFilter;
                     if (filter == null)
@@ -37,7 +37,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                     if ((subscribe.changes & EntityChange.upsert) == 0)
                         return null;
                     var upsert = (UpsertEntities) task;
-                    if (upsert.container != subscribe.container)
+                    if (!upsert.containerCmp.IsEqual(subscribe.container))
                         return null;
                     if (!IsEventTarget(subClient, upsert.users))
                         return null;
@@ -55,7 +55,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                     if ((subscribe.changes & EntityChange.delete) == 0)
                         return null;
                     var delete = (DeleteEntities) task;
-                    if (subscribe.container != delete.container)
+                    if (!delete.containerCmp.IsEqual(subscribe.container))
                         return null;
                     // todo apply filter
                     return task;
@@ -64,7 +64,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                     if ((subscribe.changes & EntityChange.merge) == 0)
                         return null;
                     var merge = (MergeEntities) task;
-                    if (subscribe.container != merge.container)
+                    if (!merge.containerCmp.IsEqual(subscribe.container))
                         return null;
                     if (!IsEventTarget(subClient, merge.users))
                         return null;
