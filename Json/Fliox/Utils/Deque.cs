@@ -9,13 +9,15 @@ namespace Friflo.Json.Fliox.Utils
 {
     public class Deque<T>
     {
-        private int     count;
-        private int     first;
-        private int     capacity;
-        private T[]     array;
+        private         int     count;
+        private         int     first;
+        private         int     capacity;
+        private         T[]     array;
         
-        public  int     Count => count;
-        private T[]     Items => ToArray();
+        public          int     Count => count;
+        private         T[]     Items => ToArray();
+
+        public override string  ToString() => $"Count: {count}";
 
         public Deque(int capacity = 4) {
             this.capacity   = capacity;

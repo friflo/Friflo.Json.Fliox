@@ -302,6 +302,10 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             return false;
         }
         
+        /// <summary>
+        /// Create <see cref="SyncEvent"/>'s for the passed <see cref="SyncRequest.tasks"/> for
+        /// all <see cref="EventSubClient"/>'s having matching <see cref="DatabaseSubs"/>
+        /// </summary>
         internal void EnqueueSyncTasks (SyncRequest syncRequest, SyncContext syncContext) {
             var syncTasks = syncRequest.tasks;
             ProcessSubscriber (syncRequest, syncContext);

@@ -8,6 +8,7 @@ using Friflo.Json.Fliox.Hub.Client.Event;
 using Friflo.Json.Fliox.Hub.Client.Internal;
 using Friflo.Json.Fliox.Hub.Client.Internal.Map;
 using Friflo.Json.Fliox.Hub.Host;
+using Friflo.Json.Fliox.Hub.Host.Event;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Utils;
@@ -60,7 +61,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         [Browse(Never)] internal    readonly   Type             type;
         [Browse(Never)] internal    ObjectPool<ObjectMapper>    ObjectMapper    => _intern.pool.ObjectMapper;
         [Browse(Never)] public      IHubLogger                  Logger          => _intern.hubLogger;
-        
+        [Browse(Never)] public      EventReceiver               EventReceiver   => _intern.eventReceiver;
         public override             string                      ToString()      => FormatToString();
         
         private const               int                         MemoryBufferCapacity = 1024;
@@ -91,8 +92,8 @@ namespace Friflo.Json.Fliox.Hub.Client
         public FlioxClient(FlioxHub hub, string dbName = null) {
             if (hub  == null)  throw new ArgumentNullException(nameof(hub));
             type    = GetType();
-            var eventReceiver = hub.SupportPushEvents ? new ClientEventReceiver(this) : null;
-            _intern = new ClientIntern(this, hub, dbName, eventReceiver);
+            _intern = new ClientIntern(this, hub, dbName);
+            SetEventReceiver(hub.SupportPushEvents ? new ClientEventReceiver(this) : null);
             std     = new StdCommands  (this);
             hub.sharedEnv.sharedCache.AddRootType(type);
         }
@@ -284,6 +285,13 @@ namespace Friflo.Json.Fliox.Hub.Client
         internal void SetSubscriptionProcessor(SubscriptionProcessor subscriptionProcessor) {
             var processor = subscriptionProcessor ?? throw new ArgumentNullException(nameof(subscriptionProcessor));
             _intern.SetSubscriptionProcessor(processor);
+        }
+        
+        /// <summary>Support setting a custom <see cref="EventReceiver"/> for testing</summary>
+        public void SetEventReceiver (EventReceiver value){
+            if (value != null && !_intern.hub.SupportPushEvents)
+                throw new InvalidOperationException("the attached Hub does not support pushing events");
+            _intern.eventReceiver = value;
         }
         #endregion
 

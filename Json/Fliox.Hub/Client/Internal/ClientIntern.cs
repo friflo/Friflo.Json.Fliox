@@ -31,7 +31,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         internal readonly   IHubLogger                  hubLogger;
         internal readonly   string                      database;
         /// <summary>is null if <see cref="FlioxHub.SupportPushEvents"/> == false</summary> 
-        internal readonly   EventReceiver               eventReceiver;
+        internal            EventReceiver               eventReceiver;
         
         // --- readonly / private - owned
         private             ObjectDiffer                            objectDiffer;  // create on demand
@@ -89,8 +89,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         internal ClientIntern(
             FlioxClient     client,
             FlioxHub        hub,
-            string          database,
-            EventReceiver   eventReceiver)
+            string          database)
         {
             var entityInfos         = ClientEntityUtils.GetEntityInfos (client.type);
             var sharedEnv           = hub.sharedEnv;
@@ -102,9 +101,9 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             this.hubLogger          = sharedEnv.hubLogger;
             this.hub                = hub;
             this.database           = database ?? (hub is RemoteClientHub remoteHub ? remoteHub.DatabaseName : null);
-            this.eventReceiver      = eventReceiver;
             
             // --- readonly / private - owned
+            eventReceiver           = null;
             objectDiffer            = null;
             mergeWriter             = null;
             processor               = null;
