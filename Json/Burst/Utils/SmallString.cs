@@ -55,8 +55,7 @@ namespace Friflo.Json.Burst.Utils
                     case 15:    c12 = s[12]+ ((ulong)s[13] << 16)+ ((ulong)s[14] << 32);                            goto Pre8;
                         
                     case 16:                                                                                        goto Pre12;
-                    default:
-                        throw  new InvalidCastException();
+                    default:    c00 = 0; c04 = 0; c08 = 0; c12 = 0;                                                 return;
                 }
                 Pre12:  c12 = *(ulong*)(srcPtr + 12);
                 Pre8:   c08 = *(ulong*)(srcPtr +  8);
