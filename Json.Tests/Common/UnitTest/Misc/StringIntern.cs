@@ -8,8 +8,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.LabString
     public class StringIntern
     {
         private readonly    Dictionary<StringHash, string>  stringMap       = new Dictionary<StringHash, string>(Equality);
-        private readonly    StringHash[]                    stringList      = new StringHash[10];
-        private             int                             stringListCount;
         
         public string Get(string str) {
             var strHash = new StringHash(str);
@@ -20,20 +18,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.LabString
             }
         }
         
-        public string Get2(string str) {
-            var strHash = new StringHash(str);
-            lock (stringList) {
-                for (int i = 0; i < stringListCount; i++) {
-                    ref var item = ref stringList[i];
-                    if (!item.IsEqual(strHash))
-                        continue;
-                    return strHash.value;
-                }
-                stringList[stringListCount++] = strHash;
-                return strHash.value;
-            }
-        }
-
         private readonly struct StringHash
         {
             internal readonly string value;
