@@ -7,13 +7,15 @@ using Friflo.Json.Tests.Common.UnitTest.Misc.LabString;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
 
+// ReSharper disable UnusedVariable
+// ReSharper disable MemberCanBePrivate.Global
 namespace Friflo.Json.Tests.Common.UnitTest.Burst
 {
     public static class TestSmallStringPerf
     {
-        private const   long    Count = 10; // 100_000_000;
-        private const   string  Str1 = "----1111";
-        private const   string  Str2 = "----1111";
+        private const           long    Count = 1000_000_000;
+        public  static readonly string  Str1 = new string("----1111");
+        public  static readonly string  Str2 = new string("----1111");
         
         [Test]
         public static void SmallString_Init() {
@@ -38,15 +40,19 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
         [Test]
         public static void SmallString_GetHashCode() {
             for (int n = 0; n < Count; n++) {
-                Str1.GetHashCode();
+                var hash = Str1.GetHashCode();
             }
         }
         
         [Test]
         public static void SmallString_Equals() {
+            SmallString_EqualsIntern(Str1, Str2);
+        }
+        
+        private static void SmallString_EqualsIntern(string str1, string str2) {
             var result = false;
             for (long n = 0; n < Count; n++) {
-                result = Str1 == Str2;
+                result = str1 == str2;
             }
             Console.WriteLine(result);
         }
@@ -73,18 +79,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
             IsFalse(result);
         }
         
-        [Test]
+        // [Test]
         public static void SmallString_InternGet() {
-            var hello1 = new string(Str1);
-            var hello2 = new string(Str2);
-            hello2.GetHashCode();
-            
             var intern = new StringIntern();
-            intern.Get(hello1);
+            intern.Get(Str1);
             
             for (int n = 0; n < Count; n++) {
-                // hello2.GetHashCode();
-                intern.Get(hello2);
+                intern.Get(Str2);
             }
         }
     }
