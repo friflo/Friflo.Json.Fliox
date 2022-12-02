@@ -88,10 +88,11 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// Instantiate a <see cref="FlioxClient"/> for the <paramref name="dbName"/> exposed by the given <paramref name="hub"/>.
         /// If <paramref name="dbName"/> is null the client uses the default database assigned to the <paramref name="hub"/>.
         /// </summary>
-        public FlioxClient(FlioxHub hub, string dbName = null) {
+        public FlioxClient(FlioxHub hub, string dbName = null, ClientOptions options = null) {
             if (hub  == null)  throw new ArgumentNullException(nameof(hub));
             type                = GetType();
-            var eventReceiver   = hub.ClientInitializer.CreateEventReceiver(hub, this);
+            options             = options ?? ClientOptions.Default;
+            var eventReceiver   = options.CreateEventReceiver(hub, this);
             _intern             = new ClientIntern(this, hub, dbName, eventReceiver);
             std                 = new StdCommands  (this);
             hub.sharedEnv.sharedCache.AddRootType(type);
@@ -425,15 +426,15 @@ namespace Friflo.Json.Fliox.Hub.Client
     }
     
     /// <summary>
-    /// A <see cref="ClientInitializer"/> is assigned to a <see cref="FlioxHub"/> to customize a <see cref="FlioxClient"/>
-    /// when calling its constructor. <br/>
+    /// <see cref="ClientOptions"/> can be passed to a <see cref="FlioxClient"/> constructor to customize
+    /// general client behavior. <br/>
     /// For now its sole use case is to customize a client for testing purposes.
     /// </summary>
-    public class ClientInitializer
+    public class ClientOptions
     {
-        internal static readonly ClientInitializer Default = new ClientInitializer();
+        internal static readonly ClientOptions Default = new ClientOptions();
             
-        public   virtual    EventReceiver   CreateEventReceiver   (FlioxHub hub, FlioxClient client) {
+        public virtual EventReceiver CreateEventReceiver (FlioxHub hub, FlioxClient client) {
             return hub.SupportPushEvents ? new ClientEventReceiver(client) : null;
         }        
     }

@@ -10,7 +10,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
         // --- containers
         public readonly EntitySet <int, Player>     players;
 
-        public TestRemoteClient(FlioxHub hub, string dbName = null) : base (hub, dbName) { }
+        public TestRemoteClient(FlioxHub hub, string dbName = null) : base (hub, dbName, new TestRemoteOptions()) { }
     }
         
     public class Player
@@ -27,7 +27,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
     }
     
     /// <summary> Used to test performance and memory usage of <see cref="EventDispatcher.EnqueueSyncTasks"/> </summary>
-    public class TestRemoteInitializer : ClientInitializer {
+    public class TestRemoteOptions : ClientOptions {
         public override EventReceiver CreateEventReceiver(FlioxHub hub, FlioxClient client) {
             return new TestEventReceiver();
         }
