@@ -125,12 +125,13 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             changeSubs[oldLen]  = changeSub;
         }
 
-        internal void AddEventTasks(
-            List<SyncRequestTask>       tasks,
-            EventSubClient              subClient,
-            ref List<SyncRequestTask>   eventTasks,
-            JsonEvaluator               jsonEvaluator)
+        internal  List<SyncRequestTask> AddEventTasks(
+            List<SyncRequestTask>   tasks,
+            EventSubClient          subClient,
+            List<SyncRequestTask>   eventTasks,
+            JsonEvaluator           jsonEvaluator)
         {
+            List<SyncRequestTask> addedTasks = null;
             foreach (var task in tasks) {
                 switch (task.TaskType) {
                     case TaskType.create:
@@ -143,6 +144,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                             if (taskResult == null)
                                 continue;
                             AddTask(ref eventTasks, taskResult, tasks);
+                            addedTasks = eventTasks;
                         }
                         break;
                     }
@@ -158,16 +160,19 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                         messageTask.clients = null;
                         messageTask.groups  = null;
                         AddTask(ref eventTasks, messageTask, tasks);
+                        addedTasks = eventTasks;
                     break;
                 }
             }
+            return addedTasks;
         }
         
-        private static void AddTask(ref List<SyncRequestTask> eventTasks, SyncRequestTask task, List<SyncRequestTask> tasks) {
+        private static List<SyncRequestTask> AddTask(ref List<SyncRequestTask> eventTasks, SyncRequestTask task, List<SyncRequestTask> tasks) {
             if (eventTasks == null) {
                 eventTasks = new List<SyncRequestTask>(tasks.Count);
             }
             eventTasks.Add(task);
+            return eventTasks;
         }
         
         private static bool IsEventTarget (EventSubClient subClient, SyncMessageTask messageTask)

@@ -2,11 +2,13 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using Friflo.Json.Fliox.Hub.Host.Auth;
 using Friflo.Json.Fliox.Hub.Host.Event;
 using Friflo.Json.Fliox.Hub.Host.Utils;
 using Friflo.Json.Fliox.Hub.Protocol;
+using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Utils;
 
@@ -50,7 +52,8 @@ namespace Friflo.Json.Fliox.Hub.Host
         internal            JsonKey                 clientId;
         internal            ClientIdValidation      clientIdValidation;
         internal  readonly  MemoryBuffer            memoryBuffer;
-        
+        internal  readonly  SyncBuffers             syncBuffers;
+
         public override     string                  ToString() => GetString();
 
         public SyncContext (SharedEnv sharedEnv, EventReceiver eventReceiver, MemoryBuffer memoryBuffer) {
@@ -61,6 +64,17 @@ namespace Friflo.Json.Fliox.Hub.Host
             memoryBuffer.Reset();
         }
         
+        /// <summary>Special constructor used to minimize heap allocation. <b>Note</b> <see cref="SyncBuffers"/> </summary>
+        public SyncContext (SharedEnv sharedEnv, EventReceiver eventReceiver, MemoryBuffer memoryBuffer, in SyncBuffers syncBuffers) {
+            this.pool           = sharedEnv.Pool;
+            this.eventReceiver  = eventReceiver;
+            this.sharedCache    = sharedEnv.sharedCache;
+            this.memoryBuffer   = memoryBuffer ?? throw new ArgumentNullException(nameof(memoryBuffer));
+            memoryBuffer.Reset();
+            this.syncBuffers    = syncBuffers;
+        }
+        
+        /// <summary>Specific constructor if <see cref="clientId"/> is already available</summary>
         public SyncContext (SharedEnv sharedEnv, EventReceiver eventReceiver, MemoryBuffer memoryBuffer, in JsonKey clientId) {
             this.pool           = sharedEnv.Pool;
             this.eventReceiver  = eventReceiver;
@@ -115,6 +129,21 @@ namespace Friflo.Json.Fliox.Hub.Host
         
         // todo remove
         public void Release() { }
+    }
+    
+    /// <summary>
+    /// <see cref="SyncBuffers"/> can be used to minimize heap allocations by passing to <see cref="SyncContext"/> constructor. <br/>
+    /// <b>Note</b> The the caller of <see cref="FlioxHub.ExecuteSync"/> <b>must</b> ensure that only one call to
+    /// <see cref="FlioxHub.ExecuteSync"/> is running at a time.<br/>
+    /// This requirement is fulfilled by stream based request execution like <see cref="Remote.WebSocketHost"/>
+    /// </summary>
+    public readonly struct SyncBuffers
+    {
+        internal readonly List<SyncRequestTask> eventTasks;
+        
+        public SyncBuffers (List<SyncRequestTask> eventTasks) {
+            this.eventTasks   = eventTasks;
+        }
     }
     
     /// <summary>

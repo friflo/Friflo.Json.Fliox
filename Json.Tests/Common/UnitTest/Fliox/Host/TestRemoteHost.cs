@@ -27,16 +27,17 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
             // Add fields to avoid showing them in Rider > Debug > Variables. 
             // If listed Rider calls their ToString() methods causing object instantiations (e.g. of string)
             // which will be listed in Rider > Debug > Memory list
-            internal    JsonValue       readReq;
-            internal    JsonValue       writeReq;
-            internal    SyncContext     contextRead;
-            internal    FlioxHub        hub;
-            internal    RemoteHost      remoteHost;
-            internal    MemoryBuffer    memoryBuffer;
-            internal    ObjectMapper    mapper; 
+            internal            JsonValue               readReq;
+            internal            JsonValue               writeReq;
+            internal            SyncContext             contextRead;
+            internal            FlioxHub                hub;
+            internal            RemoteHost              remoteHost;
+            internal            MemoryBuffer            memoryBuffer;
+            internal            ObjectMapper            mapper;
+            private readonly    List<SyncRequestTask>   eventTasks = new List<SyncRequestTask>(); 
             
             internal SyncContext CreateSyncContext() {
-                return new SyncContext (remoteHost.sharedEnv, null, memoryBuffer);
+                return new SyncContext (remoteHost.sharedEnv, null, memoryBuffer, new SyncBuffers(eventTasks));
             }
         }
         
@@ -57,7 +58,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
                         dif = GC.GetAllocatedBytesForCurrentThread() - start;
                         if (response.status != JsonResponseStatus.Ok)   Fail("Expect OK");
                     }
-                    var expect = TestUtils.IsDebug() ? 2312 : 1552;
+                    var expect = TestUtils.IsDebug() ? 2320 : 1560;
                     AreEqual(expect, dif);
                 }
             });
@@ -80,7 +81,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
                         dif = GC.GetAllocatedBytesForCurrentThread() - start;
                         if (response.status != JsonResponseStatus.Ok)   Fail("Expect OK");
                     }
-                    var expect = TestUtils.IsDebug() ? 1560 : 840;
+                    var expect = TestUtils.IsDebug() ? 1568 : 848;
                     AreEqual(expect, dif);
                 }
             });
@@ -111,7 +112,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
                         dif = GC.GetAllocatedBytesForCurrentThread() - start;
                         if (response.status != JsonResponseStatus.Ok)   Fail("Expect OK");
                     }
-                    var expect = TestUtils.IsDebug() ? 1856 : 1136;
+                    var expect = TestUtils.IsDebug() ? 1800 : 1080;
                     AreEqual(expect, dif);
                 }
             });

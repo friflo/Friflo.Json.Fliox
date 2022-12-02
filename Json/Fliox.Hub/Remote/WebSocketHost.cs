@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.Event;
 using Friflo.Json.Fliox.Hub.Protocol;
+using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Utils;
 
@@ -107,6 +108,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         private async Task RunReceiveLoop(RemoteHost remoteHost, ObjectMapper mapper) {
             var memoryStream            = new MemoryStream();
             var buffer                  = new ArraySegment<byte>(new byte[8192]);
+            var syncBuffers             = new SyncBuffers(new List<SyncRequestTask>());
             // mapper.reader.InstancePool  = new InstancePool(typeStore);    // reused SyncRequest
             while (true) {
                 var state = webSocket.State;
@@ -123,7 +125,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                     if (wsResult.MessageType == WebSocketMessageType.Text) {
                         var requestContent  = new JsonValue(memoryStream.GetBuffer(), (int)memoryStream.Position);
                         using (var pooledBuffer = remoteHost.sharedEnv.MemoryBuffer.Get()) {
-                            var syncContext     = new SyncContext(sharedEnv, this, pooledBuffer.instance);
+                            var syncContext     = new SyncContext(sharedEnv, this, pooledBuffer.instance, syncBuffers);
                             mapper.reader.InstancePool?.Reuse();
                             var result          = await remoteHost.ExecuteJsonRequest(mapper, requestContent, syncContext).ConfigureAwait(false);
                             

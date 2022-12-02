@@ -318,6 +318,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                 var database            = new SmallString(syncContext.DatabaseName);
                 writer.Pretty           = false;    // write sub's as one liner
                 writer.WriteNullMembers = false;
+                
                 foreach (var pair in sendClients) {
                     EventSubClient subClient = pair.Value;
                     if (!subClient.queueEvents && !subClient.Connected) {
@@ -327,16 +328,16 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                     if (!subClient.databaseSubs.TryGetValue(database, out var databaseSubs))
                         continue;
                     
-                    List<SyncRequestTask>  eventTasks = null;
-                    databaseSubs.AddEventTasks(syncTasks, subClient, ref eventTasks, jsonEvaluator);
-
+                    var serializeEvents = SerializeRemoteEvents && subClient.SerializeEvents;
+                    var buffer          = serializeEvents ? syncContext.syncBuffers.eventTasks : null;                    
+                    var eventTasks      = databaseSubs.AddEventTasks(syncTasks, subClient, buffer, jsonEvaluator);
                     if (eventTasks == null)
                         continue;
                     // mark change events for (change) tasks which are sent by the client itself
                     bool?   isOrigin    = syncContext.clientId.IsEqual(subClient.clientId) ? true : (bool?)null;
                     var syncEvent = new SyncEvent { db = database.value, tasks = eventTasks, srcUserId = syncRequest.userId, isOrigin = isOrigin };
                     
-                    if (SerializeRemoteEvents && subClient.SerializeEvents) {
+                    if (serializeEvents) {
                         SerializeRemoteEvent(ref syncEvent, eventTasks, writer);
                     }
                     subClient.EnqueueEvent(ref syncEvent);
@@ -389,11 +390,13 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             for (int n = 0; n < tasks.Count; n++) {
                 var task = tasks[n];
                 if (task.json == null) {
+                    // create an individual byte array.
+                    // This is necessary as multiple arrays are queued and by this cannot be reused.
                     task.json = writer.WriteAsValue(task);
                 }
                 tasksJson[n] = task.json.Value;
             }
-            tasks.Clear();
+            tasks.Clear(); // is necessary as tasks List<> may be reused
             syncEvent.tasks = null;
         }
     }
