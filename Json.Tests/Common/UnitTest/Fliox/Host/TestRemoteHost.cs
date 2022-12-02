@@ -90,10 +90,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
                     var cx = await PrepareRemoteHost(sharedEnv);
                     cx.hub.EventDispatcher = new EventDispatcher(EventDispatching.Queue, sharedEnv);
 
-                    var eventReceiver   = new TestEventReceiver();
                     for (int n = 0; n < 1; n++) {
                         var client  = new TestRemoteClient(cx.hub) { ClientId = $"client-{n}" };
-                        client.SetEventReceiver(eventReceiver);
                         client.players.SubscribeChanges(Change.All, (changes, context) =>  {} );
                         await client.SyncTasks();
                     }
@@ -120,7 +118,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
             var cx = new RemoteCx();
             var typeStore       = sharedEnv.TypeStore;
             var database        = new MemoryDatabase("remote-memory", smallValueSize: 1024);
-            cx.hub              = new FlioxHub(database, sharedEnv);
+            var initializer     = new TestRemoteInitializer();
+            cx.hub              = new FlioxHub(database, sharedEnv, clientInitializer: initializer);
             cx.remoteHost       = new RemoteHost(cx.hub, sharedEnv);
             cx.memoryBuffer     = new MemoryBuffer (true, 4 * 1024);
             cx.mapper           = new ObjectMapper(typeStore);

@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
 using System.Threading.Tasks;
+using Friflo.Json.Fliox.Hub.Client;
 using Friflo.Json.Fliox.Hub.DB.Cluster;
 using Friflo.Json.Fliox.Hub.DB.Monitor;
 using Friflo.Json.Fliox.Hub.Host.Auth;
@@ -101,6 +102,8 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// </summary>
         public              ClientController    ClientController{ get => clientController; set => clientController = value ?? throw new ArgumentNullException(nameof(ClientController)); }
         
+        public              ClientInitializer   ClientInitializer { get; }
+
         /// <summary>
         /// A host name that is assigned to a default database.
         /// Its only purpose is to use it as id in <see cref="HostHits.id"/>.
@@ -139,10 +142,16 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// <summary>
         /// Construct a <see cref="FlioxHub"/> with the given default <paramref name="database"/>.
         /// </summary>
-        public FlioxHub (EntityDatabase database, SharedEnv env = null, string hostName = null) {
-            sharedEnv       = env  ?? SharedEnv.Default;
-            this.database   = database ?? throw new ArgumentNullException(nameof(database));
-            this.hostName   = hostName ?? "host";
+        public FlioxHub (
+            EntityDatabase      database,
+            SharedEnv           env                 = null,
+            string              hostName            = null,
+            ClientInitializer   clientInitializer   = null)
+        {
+            sharedEnv           = env  ?? SharedEnv.Default;
+            this.database       = database ?? throw new ArgumentNullException(nameof(database));
+            this.hostName       = hostName ?? "host";
+            ClientInitializer   = clientInitializer ?? ClientInitializer.Default;
         }
         
         public virtual void Dispose() { }  // todo - remove

@@ -25,4 +25,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
         public override bool    IsRemoteTarget()   => true;
         public override void    SendEvent(EventMessage eventMessage, bool reusedEvent, in SendEventArgs args) { }
     }
+    
+    /// <summary> Used to test performance and memory usage of <see cref="EventDispatcher.EnqueueSyncTasks"/> </summary>
+    public class TestRemoteInitializer : ClientInitializer {
+        public override EventReceiver CreateEventReceiver(FlioxHub hub, FlioxClient client) {
+            return new TestEventReceiver();
+        }
+    }
 }

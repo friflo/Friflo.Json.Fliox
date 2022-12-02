@@ -61,7 +61,6 @@ namespace Friflo.Json.Fliox.Hub.Client
         [Browse(Never)] internal    readonly   Type             type;
         [Browse(Never)] internal    ObjectPool<ObjectMapper>    ObjectMapper    => _intern.pool.ObjectMapper;
         [Browse(Never)] public      IHubLogger                  Logger          => _intern.hubLogger;
-        [Browse(Never)] public      EventReceiver               EventReceiver   => _intern.eventReceiver;
         public override             string                      ToString()      => FormatToString();
         
         private const               int                         MemoryBufferCapacity = 1024;
@@ -91,10 +90,10 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// </summary>
         public FlioxClient(FlioxHub hub, string dbName = null) {
             if (hub  == null)  throw new ArgumentNullException(nameof(hub));
-            type    = GetType();
-            _intern = new ClientIntern(this, hub, dbName);
-            SetEventReceiver(hub.SupportPushEvents ? new ClientEventReceiver(this) : null);
-            std     = new StdCommands  (this);
+            type                = GetType();
+            var eventReceiver   = hub.ClientInitializer.CreateEventReceiver(hub, this);
+            _intern             = new ClientIntern(this, hub, dbName, eventReceiver);
+            std                 = new StdCommands  (this);
             hub.sharedEnv.sharedCache.AddRootType(type);
         }
         
@@ -286,13 +285,6 @@ namespace Friflo.Json.Fliox.Hub.Client
             var processor = subscriptionProcessor ?? throw new ArgumentNullException(nameof(subscriptionProcessor));
             _intern.SetSubscriptionProcessor(processor);
         }
-        
-        /// <summary>Support setting a custom <see cref="EventReceiver"/> for testing</summary>
-        public void SetEventReceiver (EventReceiver value){
-            if (value != null && !_intern.hub.SupportPushEvents)
-                throw new InvalidOperationException("the attached Hub does not support pushing events");
-            _intern.eventReceiver = value;
-        }
         #endregion
 
     #region - subscribe all changes
@@ -430,5 +422,19 @@ namespace Friflo.Json.Fliox.Hub.Client
             }
         }
         #endregion
+    }
+    
+    /// <summary>
+    /// A <see cref="ClientInitializer"/> is assigned to a <see cref="FlioxHub"/> to customize a <see cref="FlioxClient"/>
+    /// when calling its constructor. <br/>
+    /// For now its sole use case is to customize a client for testing purposes.
+    /// </summary>
+    public class ClientInitializer
+    {
+        internal static readonly ClientInitializer Default = new ClientInitializer();
+            
+        public   virtual    EventReceiver   CreateEventReceiver   (FlioxHub hub, FlioxClient client) {
+            return hub.SupportPushEvents ? new ClientEventReceiver(client) : null;
+        }        
     }
 }
