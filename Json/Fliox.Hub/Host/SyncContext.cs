@@ -64,10 +64,10 @@ namespace Friflo.Json.Fliox.Hub.Host
         public SyncContext (SharedEnv sharedEnv, EventReceiver eventReceiver, MemoryBuffer memoryBuffer, in JsonKey clientId) {
             this.pool           = sharedEnv.Pool;
             this.eventReceiver  = eventReceiver;
-            this.clientId       = clientId;
             this.sharedCache    = sharedEnv.sharedCache;
             this.memoryBuffer   = memoryBuffer ?? throw new ArgumentNullException(nameof(memoryBuffer));
             memoryBuffer.Reset();
+            this.clientId       = clientId;
         }
         
         public void AuthenticationFailed(User user, string error, TaskAuthorizer taskAuthorizer, HubPermission hubPermission) {
