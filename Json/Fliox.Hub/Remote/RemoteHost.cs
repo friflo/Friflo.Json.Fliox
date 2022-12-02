@@ -112,7 +112,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         }
         
         public SyncContext CreateSyncContext(MemoryBuffer memoryBuffer, EventReceiver eventReceiver, JsonKey clientId) {
-            return new SyncContext (sharedEnv.Pool, eventReceiver, sharedEnv.sharedCache, memoryBuffer);
+            return new SyncContext (sharedEnv, eventReceiver, memoryBuffer);
         }
     }
 }

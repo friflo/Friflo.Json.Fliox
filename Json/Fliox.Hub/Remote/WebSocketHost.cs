@@ -29,7 +29,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         private  readonly   List<MessageBuffer>                 messages;
         
         private  readonly   Pool                                pool;
-        private  readonly   SharedCache                         sharedCache;
+        private  readonly   SharedEnv                           sharedEnv;
         private  readonly   IPEndPoint                          remoteEndPoint;
         private  readonly   TypeStore                           typeStore;
         
@@ -39,7 +39,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         
         private WebSocketHost (SharedEnv env, WebSocket webSocket, IPEndPoint remoteEndPoint, bool fakeOpenClosedSocket) {
             pool                        = env.Pool;
-            sharedCache                 = env.sharedCache;
+            sharedEnv                   = env;
             Logger                      = env.hubLogger;
             typeStore                   = env.TypeStore;
             this.webSocket              = webSocket;
@@ -123,7 +123,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                     if (wsResult.MessageType == WebSocketMessageType.Text) {
                         var requestContent  = new JsonValue(memoryStream.GetBuffer(), (int)memoryStream.Position);
                         using (var pooledBuffer = remoteHost.sharedEnv.MemoryBuffer.Get()) {
-                            var syncContext     = new SyncContext(pool, this, sharedCache, pooledBuffer.instance);
+                            var syncContext     = new SyncContext(sharedEnv, this, pooledBuffer.instance);
                             mapper.reader.InstancePool?.Reuse();
                             var result          = await remoteHost.ExecuteJsonRequest(mapper, requestContent, syncContext).ConfigureAwait(false);
                             

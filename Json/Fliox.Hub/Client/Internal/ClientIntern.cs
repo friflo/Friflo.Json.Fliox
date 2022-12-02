@@ -27,7 +27,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         internal readonly   FlioxHub                    hub;
         internal readonly   TypeStore                   typeStore;
         internal readonly   Pool                        pool;
-        internal readonly   SharedCache                 sharedCache;
+        internal readonly   SharedEnv                   sharedEnv;
         internal readonly   IHubLogger                  hubLogger;
         internal readonly   string                      database;
         /// <summary>is null if <see cref="FlioxHub.SupportPushEvents"/> == false</summary> 
@@ -93,12 +93,11 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             EventReceiver   eventReceiver)
         {
             var entityInfos         = ClientEntityUtils.GetEntityInfos (client.type);
-            var sharedEnv           = hub.sharedEnv;
             
             // --- readonly
+            sharedEnv               = hub.sharedEnv;
             typeStore               = sharedEnv.TypeStore;
             this.pool               = sharedEnv.Pool;
-            this.sharedCache        = sharedEnv.sharedCache;
             this.hubLogger          = sharedEnv.hubLogger;
             this.hub                = hub;
             this.database           = database ?? (hub is RemoteClientHub remoteHub ? remoteHub.DatabaseName : null);

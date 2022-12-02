@@ -53,19 +53,19 @@ namespace Friflo.Json.Fliox.Hub.Host
         
         public override     string                  ToString() => GetString();
 
-        internal SyncContext (Pool pool, EventReceiver eventReceiver, SharedCache sharedCache, MemoryBuffer memoryBuffer) {
-            this.pool           = pool;
+        internal SyncContext (SharedEnv sharedEnv, EventReceiver eventReceiver, MemoryBuffer memoryBuffer) {
+            this.pool           = sharedEnv.Pool;
             this.eventReceiver  = eventReceiver;
-            this.sharedCache    = sharedCache;
+            this.sharedCache    = sharedEnv.sharedCache;
             this.memoryBuffer   = memoryBuffer ?? throw new ArgumentNullException(nameof(memoryBuffer));
             memoryBuffer.Reset();
         }
         
-        internal SyncContext (Pool pool, EventReceiver eventReceiver, SharedCache sharedCache, MemoryBuffer memoryBuffer, in JsonKey clientId) {
-            this.pool           = pool;
+        internal SyncContext (SharedEnv sharedEnv, EventReceiver eventReceiver, MemoryBuffer memoryBuffer, in JsonKey clientId) {
+            this.pool           = sharedEnv.Pool;
             this.eventReceiver  = eventReceiver;
             this.clientId       = clientId;
-            this.sharedCache    = sharedCache;
+            this.sharedCache    = sharedEnv.sharedCache;
             this.memoryBuffer   = memoryBuffer ?? throw new ArgumentNullException(nameof(memoryBuffer));
             memoryBuffer.Reset();
         }

@@ -125,7 +125,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         public async Task<SyncResult> SyncTasks() {
             var syncRequest = CreateSyncRequest(out SyncStore syncStore);
             var buffer      = CreateMemoryBuffer();
-            var syncContext = new SyncContext(_intern.pool, _intern.eventReceiver, _intern.sharedCache, buffer, _intern.clientId);
+            var syncContext = new SyncContext(_intern.sharedEnv, _intern.eventReceiver, buffer, _intern.clientId);
             var response    = await ExecuteSync(syncRequest, syncContext).ConfigureAwait(Static.OriginalContext);
             
             var result      = HandleSyncResponse(syncRequest, response, syncStore);
@@ -144,7 +144,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         public async Task<SyncResult> TrySyncTasks() {
             var syncRequest = CreateSyncRequest(out SyncStore syncStore);
             var buffer      = CreateMemoryBuffer();
-            var syncContext = new SyncContext(_intern.pool, _intern.eventReceiver, _intern.sharedCache, buffer, _intern.clientId);
+            var syncContext = new SyncContext(_intern.sharedEnv, _intern.eventReceiver, buffer, _intern.clientId);
             var response    = await ExecuteSync(syncRequest, syncContext).ConfigureAwait(Static.OriginalContext);
 
             var result      = HandleSyncResponse(syncRequest, response, syncStore);
@@ -156,7 +156,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         private async Task<SyncResult> TrySyncAcknowledgeEvents() {
             var syncRequest = CreateSyncRequestInstance(new List<SyncRequestTask>());
             var buffer      = CreateMemoryBuffer();
-            var syncContext = new SyncContext(_intern.pool, _intern.eventReceiver, _intern.sharedCache, buffer, _intern.clientId);
+            var syncContext = new SyncContext(_intern.sharedEnv, _intern.eventReceiver, buffer, _intern.clientId);
             var response    = await ExecuteSync(syncRequest, syncContext).ConfigureAwait(false);
 
             var syncStore   = new SyncStore();  // create default (empty) SyncStore
