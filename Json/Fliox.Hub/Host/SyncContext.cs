@@ -135,7 +135,7 @@ namespace Friflo.Json.Fliox.Hub.Host
     /// <see cref="SyncBuffers"/> can be used to minimize heap allocations by passing to <see cref="SyncContext"/> constructor. <br/>
     /// <b>Note</b> The the caller of <see cref="FlioxHub.ExecuteSync"/> <b>must</b> ensure that only one call to
     /// <see cref="FlioxHub.ExecuteSync"/> is running at a time.<br/>
-    /// This requirement is fulfilled by stream based request execution like <see cref="Remote.WebSocketHost"/>
+    /// This requirement is fulfilled if request execution is stream based like <see cref="Remote.WebSocketHost"/>
     /// </summary>
     public readonly struct SyncBuffers
     {
