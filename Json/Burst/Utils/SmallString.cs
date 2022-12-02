@@ -5,11 +5,11 @@ namespace Friflo.Json.Burst.Utils
 {
     /// <summary>
     /// Provide a performant equality test for the encapsulated string with a <see cref="string"/> length less or equal 16 characters<br/>
-    /// For longer strings it falls back to <see cref="string.Equals(object?)"/> call.
+    /// For longer strings it falls back to string.Equals(string).
     /// </summary>
     /// <remarks>
-    /// Performance improvement - CLR: 5x,   Unity: 10x - 20x compared to <see cref="string.Equals(object?)"/><br/>
-    /// Requires initialization - CLR: 1.5x, Unity: 0.45x     compared to <see cref="string.Equals(object?)"/><br/>
+    /// Performance improvement - CLR: 5x,   Unity: 10x - 20x compared to string.Equals(string)<br/>
+    /// Requires initialization - CLR: 1.5x, Unity: 0.45x     compared to string.Equals(string)<br/>
     /// </remarks>
     public readonly struct SmallString
     {

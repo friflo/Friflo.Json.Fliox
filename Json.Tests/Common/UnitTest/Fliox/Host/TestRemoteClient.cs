@@ -18,7 +18,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
         public int id;
     }
     
-    /// <summary> Used to test performance and memory usage of <see cref="EventDispatcher.EnqueueSyncTasks"/> </summary>
+    /// <summary> Used to test performance and memory usage of <see cref="EventDispatcher"/>.EnqueueSyncTasks() </summary>
     public class TestEventReceiver : EventReceiver
     {
         public override bool    IsOpen()           => true;
@@ -26,7 +26,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
         public override void    SendEvent(EventMessage eventMessage, bool reusedEvent, in SendEventArgs args) { }
     }
     
-    /// <summary> Used to test performance and memory usage of <see cref="EventDispatcher.EnqueueSyncTasks"/> </summary>
     public class TestRemoteOptions : ClientOptions {
         public override EventReceiver CreateEventReceiver(FlioxHub hub, FlioxClient client) {
             return new TestEventReceiver();
