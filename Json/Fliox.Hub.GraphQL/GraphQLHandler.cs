@@ -6,6 +6,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Remote;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Schema.Language;
@@ -84,7 +85,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                     var headers         = context.headers;
                     syncRequest.userId  = new JsonKey(headers.Cookie("fliox-user")); 
                     syncRequest.token   = headers.Cookie("fliox-token");
-                    var syncContext     = context.CreateSyncContext(null);
+                    var syncContext     = new SyncContext(context.hub.sharedEnv, null, context.memoryBuffer);
                     var syncResult      = await context.hub.ExecuteSync(syncRequest, syncContext).ConfigureAwait(false);
 
                     syncContext.Release();

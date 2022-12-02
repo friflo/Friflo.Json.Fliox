@@ -106,11 +106,6 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 return true;
             return route[basePath.Length] == '/';
         }
-        
-        // method is added to preserve API internal for: SharedCache, Pool()
-        public SyncContext CreateSyncContext(EventReceiver eventReceiver) {
-            return new SyncContext(hub.sharedEnv, eventReceiver, memoryBuffer);
-        }
     }
     
     public interface IHttpHeaders {

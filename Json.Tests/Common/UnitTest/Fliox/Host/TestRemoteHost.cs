@@ -46,7 +46,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
                     long dif = 0;
                     for (int n = 0; n < 10; n++) {
                         long start      = GC.GetAllocatedBytesForCurrentThread();
-                        cx.contextRead  = cx.remoteHost.CreateSyncContext(cx.memoryBuffer, null, default);            
+                        cx.contextRead  = new SyncContext (cx.remoteHost.sharedEnv, null, cx.memoryBuffer);
                         cx.mapper.reader.InstancePool?.Reuse();
                         var response    = await cx.remoteHost.ExecuteJsonRequest(cx.mapper, cx.readReq, cx.contextRead);
                         
@@ -69,7 +69,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
                     long dif = 0;
                     for (int n = 0; n < 10; n++) {
                         long start      = GC.GetAllocatedBytesForCurrentThread();
-                        cx.contextRead  = cx.remoteHost.CreateSyncContext(cx.memoryBuffer, null, default);
+                        cx.contextRead  = new SyncContext (cx.remoteHost.sharedEnv, null, cx.memoryBuffer);
                         cx.mapper.reader.InstancePool?.Reuse();
                         var response    = await cx.remoteHost.ExecuteJsonRequest(cx.mapper, cx.writeReq, cx.contextRead);
                         
@@ -99,7 +99,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
                     long dif = 0;
                     for (int n = 0; n < 10; n++) {
                         long start      = GC.GetAllocatedBytesForCurrentThread();
-                        cx.contextRead  = cx.remoteHost.CreateSyncContext(cx.memoryBuffer, null, default);
+                        cx.contextRead  = new SyncContext (cx.remoteHost.sharedEnv, null, cx.memoryBuffer);
                         cx.mapper.reader.InstancePool?.Reuse();
                         var response    = await cx.remoteHost.ExecuteJsonRequest(cx.mapper, cx.writeReq, cx.contextRead);
                         cx.hub.EventDispatcher?.SendQueuedEvents();
@@ -145,7 +145,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
             };
             cx.readReq = cx.mapper.WriteAsValue<ProtocolMessage>(syncRead);
             
-            var contextWrite    = cx.remoteHost.CreateSyncContext(cx.memoryBuffer, null, default);          
+            var contextWrite    = new SyncContext (cx.remoteHost.sharedEnv, null, cx.memoryBuffer);
             var writeResponse   = await cx.remoteHost.ExecuteJsonRequest(cx.mapper, cx.writeReq, contextWrite);
             AreEqual(JsonResponseStatus.Ok, writeResponse.status);
             return cx;
