@@ -34,6 +34,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     {
                     public     JsonValue    info;
         [Ignore]    internal   int          index;
+        /// <summary>cached JSON of this <see cref="SyncRequestTask"/> instance serialized as JSON</summary>
         [Ignore]    internal   JsonValue?   json;
         [Ignore]    internal   SyncTask     syncTask;
         
