@@ -66,7 +66,9 @@ namespace Friflo.Json.Fliox.Mapper.Map
             this.fieldType  = fieldType;
             this.varType    = VarType.FromType(fieldType.type);
             defaultValue    = varType.DefaultValue;
-            this.nameBytes  = new Bytes(jsonName,                   Untracked.Bytes);
+            var tempName    = new Bytes(jsonName,                   Untracked.Bytes);
+            tempName.UpdateHashCode();
+            nameBytes       = tempName;
             firstMember     = new Bytes($"{'{'}\"{jsonName}\":",    Untracked.Bytes);
             subSeqMember    = new Bytes($",\"{jsonName}\":",        Untracked.Bytes);
             //

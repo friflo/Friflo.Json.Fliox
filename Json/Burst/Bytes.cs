@@ -31,9 +31,8 @@ namespace Friflo.Json.Burst
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
-    public partial struct Bytes : IDisposable, IMapKey<Bytes>
+    public partial struct Bytes : IDisposable
     {
-
         public  int             hc; //      = notHashed;
 
         public  int             start;
@@ -275,15 +274,6 @@ namespace Friflo.Json.Burst
             return IsEqualString (cs);
         }
 #endif
-
-        public bool IsSet() {
-            return buffer.IsCreated();
-        }
-
-        public bool IsEqual(ref Bytes value) {
-            return IsEqualBytes(ref value);
-        }
-
         public bool IsEqualBytes(ref Bytes value)
         {
             int len = end - start;

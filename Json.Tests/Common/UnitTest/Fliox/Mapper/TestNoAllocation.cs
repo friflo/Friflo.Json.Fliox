@@ -207,6 +207,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
             memLog.AssertNoAllocations();
         }
 
+        /* Note: Did not use Bytes as key type T in HashMapOpen<,> anymore
         [Test]
         public void TestHashMapOpen() {
             var memLog = new MemoryLogger(100, 100, MemoryLog.Enabled);
@@ -255,7 +256,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
                 }
             }
             memLog.AssertNoAllocations();
-        }
+        } */
     }
 
     /// <summary>

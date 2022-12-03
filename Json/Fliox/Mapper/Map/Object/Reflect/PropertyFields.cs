@@ -38,10 +38,8 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
     {
         public   readonly   PropField<T> []                     typedFields;
         private  readonly   Dictionary <string, PropField<T>>   strMap      = new Dictionary <string, PropField<T>>(13);
-        private  readonly   HashMapOpen<Bytes,  PropField<T>>   fieldMap;
+        private  readonly   Dictionary<Bytes,  PropField<T>>    fieldMap;
         internal readonly   PropField<T>                        keyField;
-        
-        private  readonly   Bytes                               removedKey;
         
         public   override   PropField                           GetPropField (string fieldName) => GetField(fieldName);
         internal override   PropField                           KeyField => keyField;
@@ -51,8 +49,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
         {
 
             var fieldList   = query.fieldList;
-            removedKey      = new Bytes("__REMOVED", Untracked.Bytes);
-            fieldMap        = new HashMapOpen<Bytes, PropField<T>>(11, removedKey);
+            fieldMap        = new Dictionary<Bytes, PropField<T>>(Bytes.Equality);
             
             typedFields     = new PropField<T> [count];
             
@@ -62,7 +59,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
                 if (strMap.ContainsKey(field.name))
                     throw new InvalidOperationException("assert field is accessible via string lookup");
                 strMap.Add(field.name, field);
-                fieldMap.Put(ref field.nameBytes, field);
+                fieldMap.Add(field.nameBytes, field);
                 names32[n].FromBytes(ref field.nameBytes);
 
                 bool isKey = AttributeUtils.IsKey(field.customAttributes);
@@ -80,8 +77,8 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
         public PropField<T> GetField (ref Bytes fieldName) {
             // Note: its likely that hashcode ist not set properly. So calculate anyway
             fieldName.UpdateHashCode();
-            PropField<T> pf = fieldMap.Get(ref fieldName);
-            return pf;
+            fieldMap.TryGetValue(fieldName, out var result);
+            return result;
         }
         
         public PropField<T> GetField (string fieldName) {
@@ -92,7 +89,6 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
         public void Dispose() {
             for (int i = 0; i < typedFields.Length; i++)
                 typedFields[i].Dispose();
-            removedKey.Dispose(Untracked.Bytes);
         }
     }
 }
