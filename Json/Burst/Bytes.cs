@@ -448,7 +448,7 @@ namespace Friflo.Json.Burst
             end += byteLen;
         }
 
-        private void DoubleSize(int size) {
+        public void DoubleSize(int size) {
             var capacity = buffer.Length;
             if (size < 2 * capacity) {
                 size = 2 * capacity;

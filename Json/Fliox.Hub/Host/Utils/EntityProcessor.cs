@@ -71,7 +71,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Utils
                 sb.AppendChar('\"');
             }
             var remaining = json.Count - keyEnd; 
-            sb.AppendArray(json, json.Start + keyEnd, remaining);
+            sb.AppendArray(json, json.start + keyEnd, remaining);
             var result = sb.AsArray();
             sb.Clear();
             return new JsonValue(result);

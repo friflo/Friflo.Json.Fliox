@@ -23,12 +23,11 @@ namespace Friflo.Json.Fliox
     public readonly struct JsonValue {
         /// not public to prevent potential side effects by application code mutating array elements
         private  readonly       byte[]  array;                                              // can be null - default struct value
-        private  readonly       int     start;                                              // > 0 if using an InstancePool
+        public   readonly       int     start;                                              // > 0 if using an InstancePool
         private  readonly       int     count;                                              // can be 0    - default struct value
         
         /// not public to prevent potential side effects by application code mutating array elements
         internal                byte[]  Array       => array ?? Null;                       // never null
-        public                  int     Start       => start;
         public                  int     Count       => array != null ? count : Null.Length; // always > 0
         
         public   override       string  ToString()  => AsString();
@@ -174,11 +173,13 @@ namespace Friflo.Json.Fliox
     public static class JsonValueExtensions {
     
         public static void AppendArray(this ref Bytes bytes, in JsonValue array) {
-            AppendArray (ref bytes, array, array.Start, array.Count);
+            AppendArray (ref bytes, array, array.start, array.Count);
         }
         
         public static void AppendArray(this ref Bytes bytes, in JsonValue array, int offset, int len) {
-            bytes.EnsureCapacity(len);
+            if (bytes.end + len > bytes.buffer.Length) {
+                bytes.DoubleSize(bytes.end + len);    
+            }
             int pos     = bytes.end;
             int arrEnd  = offset + len;
             var buf     = bytes.buffer;
@@ -189,11 +190,11 @@ namespace Friflo.Json.Fliox
         }
         
         public static async Task WriteAsync(this Stream stream, JsonValue array) {
-            await stream.WriteAsync(array.Array, array.Start, array.Count).ConfigureAwait(false);
+            await stream.WriteAsync(array.Array, array.start, array.Count).ConfigureAwait(false);
         }
         
         public static void Write(this Stream stream, in JsonValue array) {
-            stream.Write(array.Array, array.Start, array.Count);
+            stream.Write(array.Array, array.start, array.Count);
         }
     }
 }

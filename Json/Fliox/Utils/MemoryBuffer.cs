@@ -65,7 +65,7 @@ namespace Friflo.Json.Fliox.Utils
                     buffer = new byte[capacity];
                 }
                 // add value to current buffer
-                Buffer.BlockCopy(value.Array, value.Start, buffer, start, len);
+                Buffer.BlockCopy(value.Array, value.start, buffer, start, len);
                 position += len;
                 return new JsonValue(buffer, start, len);
             }
@@ -73,7 +73,7 @@ namespace Friflo.Json.Fliox.Utils
             capacity    = Math.Min(capacity, LargeHeapObjectSize);  // cap array size to LargeHeapObjectSize
             // create a new buffer and add value
             buffer      = new byte[capacity];
-            Buffer.BlockCopy(value.Array, value.Start, buffer, 0, len);
+            Buffer.BlockCopy(value.Array, value.start, buffer, 0, len);
             position    = len;
             return new JsonValue(buffer, 0, len);
         }
