@@ -286,8 +286,8 @@ namespace Friflo.Json.Burst
 
         public bool IsEqualBytes(ref Bytes value)
         {
-            int len = Len;
-            if (len != value.Len)
+            int len = end - start;
+            if (len != value.end - value.start)
                 return false;
             ref var str     = ref buffer.array;
             int     valEnd  = start + len;
@@ -472,10 +472,11 @@ namespace Friflo.Json.Burst
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void EnsureCapacityAbs(int size) {
-            if (size <= buffer. Count)
+            var capacity = buffer.array.Length;
+            if (size <= capacity)
                 return;
-            if (size < 2 * buffer. Count)
-                size = 2 * buffer. Count;
+            if (size < 2 * capacity)
+                size = 2 * capacity;
 
             buffer.Resize(size);
         }
