@@ -175,12 +175,12 @@ namespace Friflo.Json.Burst
         
         private const int  HighSurrogateLimit  = LowSurrogateStart - HighSurrogateStart;
 
-        
+        private static readonly Encoding Utf8 = Encoding.UTF8;
 
         //         Tight loop! Avoid calling any trivial method
         // --- comment to enable source alignment in WinMerge
         public static void AppendEscString(ref Bytes dst, in string src) {
-            int maxByteLen = Encoding.UTF8.GetMaxByteCount(src.Length) + 2; // + 2 * '"'
+            int maxByteLen = Utf8.GetMaxByteCount(src.Length) + 2; // + 2 * '"'
             dst.EnsureCapacityAbs(dst.end + maxByteLen);
 #if UNITY_5_3_OR_NEWER
             var span = src;

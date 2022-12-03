@@ -448,16 +448,19 @@ namespace Friflo.Json.Burst
             end += byteLen;
         }
 
+        private void DoubleSize(int size) {
+            var capacity = buffer.Length;
+            if (size < 2 * capacity) {
+                size = 2 * capacity;
+            }
+            Resize(size);
+        }
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void EnsureCapacityAbs(int size) {
-            var capacity = buffer.Length;
-            if (size <= capacity)
+            if (size <= buffer.Length)
                 return;
-            if (size < 2 * capacity)
-                size = 2 * capacity;
-
-            Resize(size);
+            DoubleSize(size);
         }
         
         public void EnsureCapacity(int count) {
@@ -467,16 +470,13 @@ namespace Friflo.Json.Burst
         // ------------------------------ Append methods ------------------------------
         public void AppendString(string str)
         {
-            AppendString (str, 0, str. Length);
-        }
-
-        public void AppendString(string str, int offset, int len)
-        {
-            EnsureCapacity(len);
+            int len = str.Length;
+            if (end + len > buffer.Length) {
+                DoubleSize(end + len);    
+            }
             int pos = end;
-            int strEnd = offset + len;
             var buf = buffer;
-            for (int n = offset; n < strEnd; n++)
+            for (int n = 0; n < len; n++)
                 buf[pos++] = (byte) str[ n ];
             end += len;
         }
@@ -534,14 +534,18 @@ namespace Friflo.Json.Burst
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void AppendChar(char c)
         {
-            EnsureCapacityAbs(end + 1);
+            if (end >= buffer.Length) {
+                DoubleSize(end + 1);
+            }
             buffer[end++] = (byte)c;
         }
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void AppendChar2(char c0, char c1)
         {
-            EnsureCapacityAbs(end + 2);
+            if (end + 2 > buffer.Length) {
+                DoubleSize(end + 2);
+            }
             buffer[end++] = (byte)c0;
             buffer[end++] = (byte)c1;
         }
