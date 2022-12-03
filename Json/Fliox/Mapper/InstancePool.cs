@@ -89,7 +89,7 @@ namespace Friflo.Json.Fliox.Mapper
 
         
         internal JsonValue CreateJsonValue(ref Bytes value) {
-            var len         = value.Len;
+            var len         = value.end - value.start;
             if (len > BufferMax) {
                 return new JsonValue(value.AsArray());
             }

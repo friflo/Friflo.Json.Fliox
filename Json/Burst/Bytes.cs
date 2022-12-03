@@ -306,8 +306,9 @@ namespace Friflo.Json.Burst
 
         /// <summary>deprecated: Use <see cref="Utf8String"/> instead </summary>
         public bool IsEqualArray(byte[] array) {
+            int len = end - start;
 #if UNITY_5_3_OR_NEWER
-            if (Len != array.Length)
+            if (len != array.Length)
                 return false;
             int pos = 0;
             var buf = buffer;
@@ -318,7 +319,7 @@ namespace Friflo.Json.Burst
             }
             return true;
 #else
-            var span  = new ReadOnlySpan<byte>(buffer, start, Len);
+            var span  = new ReadOnlySpan<byte>(buffer, start, len);
             var other = new ReadOnlySpan<byte>(array);
             return span.SequenceEqual(other);
 #endif
@@ -429,9 +430,10 @@ namespace Friflo.Json.Burst
         public void FromString(string str) {
             if (str == null)
                 throw new ArgumentNullException(nameof(str));
-            int maxByteLen = utf8.GetMaxByteCount(str.Length);
-            EnsureCapacity(maxByteLen);
-
+            int maxByteLen = end + utf8.GetMaxByteCount(str.Length);
+            if (maxByteLen > buffer.Length) {
+                DoubleSize(maxByteLen);
+            }
 #if JSON_BURST
             int byteLen = 0;
             unsafe {
