@@ -78,7 +78,7 @@ namespace Friflo.Json.Burst.Utils
         public static void AppendUnicodeToBytes(ref Bytes dst, int uni) {
             // UTF-8 Encoding
 #if DEBUG
-            if (dst.Len + 4 > dst.buffer.Count)
+            if (dst.Len + 4 > dst.buffer.Length)
                 throw new InvalidOperationException("Insufficient buffer size");
 #endif
             var dstArr = dst.buffer;
