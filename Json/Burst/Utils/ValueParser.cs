@@ -309,13 +309,13 @@ namespace Friflo.Json.Burst.Utils
             String val = bytes.ToString();
             return double.TryParse(val, NumberStyles.Float, NumberFormatInfo.InvariantInfo, out result);
 #else
-            if (bytes.Len > charBuf.Length) {
+            var len = bytes.Len;
+            if (len > charBuf.Length) {
                 result = default;
                 return false;
             }
             byte[] arr = bytes.buffer;
             int pos = bytes.start;
-            int len = bytes.Len;
             for (int n = 0; n < len; n++)
                 charBuf[n] = (char)arr[pos + n];
             ReadOnlySpan<char> span = new ReadOnlySpan<char> (charBuf, 0 , len);
@@ -344,13 +344,13 @@ namespace Friflo.Json.Burst.Utils
             String val = bytes.ToString();
             return float.TryParse(val, NumberStyles.Float, NumberFormatInfo.InvariantInfo, out result);
 #else
-            if (bytes.Len > charBuf.Length) {
+            int len = bytes.Len;
+            if (len > charBuf.Length) {
                 result = default;
                 return false;
             }
             byte[] arr = bytes.buffer;
             int pos = bytes.start;
-            int len = bytes.Len;
             for (int n = 0; n < len; n++)
                 charBuf[n] = (char)arr[pos + n];
             ReadOnlySpan<char> span = new ReadOnlySpan<char> (charBuf, 0 , len);

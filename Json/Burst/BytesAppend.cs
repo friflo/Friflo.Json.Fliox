@@ -29,10 +29,16 @@ namespace Friflo.Json.Burst
 */
             int curEnd = end;
             // ensure both buffer's are large enough when accessing the byte array's via unsafe (long*)
-            src.EnsureCapacityAbs(src.end + CopyRemainder);
-            int len = src.end - src.start;
-            EnsureCapacityAbs(end + len + CopyRemainder);
-            
+            var srcLen = src.end + CopyRemainder;
+            if (srcLen > src.buffer.Length) {
+                src.DoubleSize(srcLen);
+            }
+            int len     = src.end - src.start;
+            int dstLen  = end + len + CopyRemainder;
+            if (dstLen > buffer.Length) {
+                DoubleSize(dstLen);
+            }
+           
             end += len;
 #if JSON_BURST
             byte*  srcPtr =  &((byte*)src.buffer.array.GetUnsafeList()->Ptr) [src.start];

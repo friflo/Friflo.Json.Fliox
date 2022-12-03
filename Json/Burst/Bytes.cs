@@ -27,8 +27,6 @@ namespace Friflo.Json.Burst
         public  byte[]          buffer;
         
         public  int             Len => end - start;
-        public  int             StartPos => start;
-        public  int             EndPos => end;
 
         /// called previously <see cref="ByteList"/> constructor
         public void InitBytes(int capacity) {
@@ -230,7 +228,8 @@ namespace Friflo.Json.Burst
 
         /// In case of Unity <paramref name="str"/> is not null. Otherwise null.
         public bool TryParseGuid(out Guid guid, out string str) {
-            if (Len < MinGuidLength || MaxGuidLength < Len) {
+            int len = end - start;
+            if (len < MinGuidLength || MaxGuidLength < len) {
                 str = null;
                 guid = new Guid();
                 return false;
@@ -240,9 +239,8 @@ namespace Friflo.Json.Burst
             return Guid.TryParse(str, out guid);
 #else
             str = null;
-            Span<char> span = stackalloc char[Len];
+            Span<char> span = stackalloc char[len];
             var array   = buffer;
-            var len     = Len;
             for (int n = 0; n < len; n++)
                 span[n] = (char)array[start + n];
             return Guid.TryParse(span, out guid);
@@ -405,11 +403,12 @@ namespace Friflo.Json.Burst
 #if JSON_BURST
             return ToString();
 #else
-            int maxCharCount = utf8.GetMaxCharCount(Len);
+            int len             = end - start;
+            int maxCharCount    = utf8.GetMaxCharCount(len);
             if (maxCharCount > dst.Length)
                 dst = new char[maxCharCount];
 
-            length = utf8.GetChars(buffer, start, Len, dst, 0);
+            length = utf8.GetChars(buffer, start, len, dst, 0);
             return dst;
             /* unsafe {
                 fixed (char* chars = dst) {

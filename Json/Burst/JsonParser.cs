@@ -472,9 +472,9 @@ namespace Friflo.Json.Burst
                 if (!ReadString(ref key))
                     return JsonEvent.Error;
                 // update current path
-                path.SetEnd(pathPos.array[stateLevel-1]);  // "Clear"
+                path.end = pathPos.array[stateLevel-1];  // "Clear"
                 path.AppendBytes(ref key);
-                pathPos.array[stateLevel] = path.EndPos;
+                pathPos.array[stateLevel] = path.end;
                 //
                 c = ReadWhiteSpace();
                 if (c != ':')
@@ -749,18 +749,18 @@ namespace Friflo.Json.Burst
             // UTF-8 Encoding
             token.EnsureCapacity(4);
             var str = token.buffer;
-            int i   = token.EndPos;
+            int i   = token.end;
             if (uni < 0x80)
             {
                 str[i] =    (byte)uni;
-                token.SetEnd(i + 1);
+                token.end = i + 1;
                 return true;
             }
             if (uni < 0x800)
             {
                 str[i]   =  (byte)(m_11oooooo | (uni >> 6));
                 str[i+1] =  (byte)(m_1ooooooo | (uni         & m_oo111111));
-                token.SetEnd(i + 2);
+                token.end = i + 2;
                 return true;
             }
             if (uni < 0x10000)
@@ -768,14 +768,14 @@ namespace Friflo.Json.Burst
                 str[i]   =  (byte)(m_111ooooo |  (uni >> 12));
                 str[i+1] =  (byte)(m_1ooooooo | ((uni >> 6)  & m_oo111111));
                 str[i+2] =  (byte)(m_1ooooooo |  (uni        & m_oo111111));
-                token.SetEnd(i + 3);
+                token.end = i + 3;
                 return true;
             }
             str[i]   =      (byte)(m_1111oooo |  (uni >> 18));
             str[i+1] =      (byte)(m_1ooooooo | ((uni >> 12) & m_oo111111));
             str[i+2] =      (byte)(m_1ooooooo | ((uni >> 6)  & m_oo111111));
             str[i+3] =      (byte)(m_1ooooooo |  (uni        & m_oo111111));
-            token.SetEnd(i + 4);
+            token.end = i + 4;
             return true;
         }
     

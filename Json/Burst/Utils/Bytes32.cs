@@ -21,8 +21,8 @@ namespace Friflo.Json.Burst.Utils
         private const ulong Zero = 0L;
 
         public unsafe void FromBytes (in Bytes str, Untracked _ = Untracked.Bytes) {
-            int start = str.start;
-            len = str.Len;
+            int start   = str.start;
+            len         = str.end - start;
             if (str.buffer.Length < start + 32)
                 throw new InvalidOperationException("FromBytes() - insufficient length");
             

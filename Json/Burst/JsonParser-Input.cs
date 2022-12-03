@@ -43,7 +43,8 @@ namespace Friflo.Json.Burst
         }
         
         public void InitParser(Bytes bytes) {
-            InitParser (bytes.buffer, bytes.start, bytes.Len);
+            int len = bytes.end - bytes.start;
+            InitParser (bytes.buffer, bytes.start, len);
         }
 
         private bool Read() {
