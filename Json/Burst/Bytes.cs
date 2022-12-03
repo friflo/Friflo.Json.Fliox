@@ -274,7 +274,7 @@ namespace Friflo.Json.Burst
             return IsEqualString (cs);
         }
 #endif
-        public bool IsEqualBytes(ref Bytes value)
+        public bool IsEqualBytes(in Bytes value)
         {
             int len = end - start;
             if (len != value.end - value.start)
@@ -282,7 +282,7 @@ namespace Friflo.Json.Burst
             ref var str     = ref buffer.array;
             int     valEnd  = start + len;
             int     i2      = value.start;
-            ref var str2 = ref value.buffer.array;
+            var     str2    = value.buffer.array;
             for (int i = start; i < valEnd; i++ )
             {
                 if (str[i] != str2[i2++])
@@ -319,7 +319,7 @@ namespace Friflo.Json.Burst
             if (obj == null)
                 return false;
             Bytes value = (Bytes)obj; // Bytes is a struct -> so unboxing -> boxing before allocates memory on the heap!
-            return IsEqualBytes(ref value);
+            return IsEqualBytes(value);
         }
 
         internal int GetHash()

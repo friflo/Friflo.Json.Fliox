@@ -119,7 +119,7 @@ namespace Friflo.Json.Burst
     public sealed class BytesComparer : IEqualityComparer<Bytes>
     {
         public bool Equals(Bytes x, Bytes y) {
-            return x.IsEqualBytes(ref y);
+            return x.IsEqualBytes(y);
         }
 
         public int GetHashCode(Bytes value) {

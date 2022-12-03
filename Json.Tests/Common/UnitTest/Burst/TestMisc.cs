@@ -27,7 +27,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
 
             Bytes dst = new Bytes(0);
             dst.FromString("€");
-            IsTrue(src.IsEqualBytes(ref dst));
+            IsTrue(src.IsEqualBytes(dst));
             dst.Dispose();
             src.Dispose();
         }
