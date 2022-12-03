@@ -14,12 +14,12 @@ namespace Friflo.Json.Burst
         public BytesHash(in Bytes value) {
             var array   = value.buffer.array;
             int len     = value.end - value.start;
-            int h       = len;
+            int hash    = len;
             // Rotate by 3 bits and XOR the new value.
             for (int i = value.start; i < value.end; i++) {
-                h = (h << 3) | (h >> (29)) ^ array[i];
+                hash = (hash << 3) | (hash >> (29)) ^ array[i];
             }
-            hashCode            = Math.Abs(h);
+            hashCode            = hash;
 
             this.value.buffer   = value.buffer;
             this.value.start    = value.start;
