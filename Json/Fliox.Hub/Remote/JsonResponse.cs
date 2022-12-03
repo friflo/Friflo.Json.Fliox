@@ -39,7 +39,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             writer.Pretty           = true;
             writer.WriteNullMembers = false;
             var body                = writer.WriteAsBytes<ProtocolMessage>(errorResponse);
-            return new JsonResponse(new JsonValue(ref body), status);
+            return new JsonResponse(new JsonValue(body), status);
         }
     }
 }

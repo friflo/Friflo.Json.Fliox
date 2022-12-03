@@ -48,7 +48,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
             serializer.WriteTree(ref reader.parser);
             ref var json = ref serializer.json;
             if (json.start != 0) throw new InvalidOperationException("Expect json.start == 0");
-            var patchValue = new JsonValue (ref json);
+            var patchValue = new JsonValue (json);
             JsonValue.Copy(ref value, patchValue); // reuse JsonValue.array when using ReadTo()
             success = true;
             return value;

@@ -48,7 +48,6 @@ namespace Friflo.Json.Burst.Utils
                 dst.AppendStr32(in @true);
             else
                 dst.AppendStr32(in @false);
-            dst.hc = BytesConst.notHashed;
         }
 
         public void AppendInt (ref Bytes dst, int val)
@@ -75,7 +74,6 @@ namespace Friflo.Json.Burst.Utils
             for (int n = 0; n < len; n++)
                 dstArr[last - n] = (byte)('0' + digits[n]);
             dst.end += len;
-            dst.hc = BytesConst.notHashed;
         }
 
         public void AppendLong (ref Bytes dst, long val)
@@ -101,7 +99,6 @@ namespace Friflo.Json.Burst.Utils
             for (int n = 0; n < len; n++)
                 dst.buffer.array[last - n] = (byte)('0' + digit.array [n]);
             dst.end += len;
-            dst.hc = BytesConst.notHashed;
         }
 
         private static int GetExponent(double d)
@@ -332,7 +329,6 @@ namespace Friflo.Json.Burst.Utils
             }
         
             dst.end = pos;
-            dst.hc = BytesConst.notHashed;
         }
     }
 }

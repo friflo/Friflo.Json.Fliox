@@ -15,15 +15,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
             var bytes32 = new Bytes32();
             
             var str0 = new Bytes("", Untracked.Bytes);
-            bytes32.FromBytes(ref str0);
+            bytes32.FromBytes(str0);
             str0.Dispose(Untracked.Bytes);
             
             var str1 = new Bytes("1", Untracked.Bytes);
-            bytes32.FromBytes(ref str1);
+            bytes32.FromBytes(str1);
             str1.Dispose(Untracked.Bytes);
             
             var str8 = new Bytes("12345678", Untracked.Bytes);
-            bytes32.FromBytes(ref str8);
+            bytes32.FromBytes(str8);
             str8.Dispose(Untracked.Bytes);
                 
             var src = new Bytes("", Untracked.Bytes);

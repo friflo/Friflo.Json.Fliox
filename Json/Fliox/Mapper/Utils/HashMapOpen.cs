@@ -4,6 +4,12 @@ using Friflo.Json.Burst;
 
 namespace Friflo.Json.Fliox.Mapper.Utils
 {
+    public interface IMapKey<K> where K : struct
+    {
+        bool    IsEqual(ref K other);
+        bool    IsSet();
+    }
+    
     /// <summary>
     /// Requirement/feature: Allocation free hash map when using Get()
     /// </summary>

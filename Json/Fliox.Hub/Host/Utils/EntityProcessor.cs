@@ -97,7 +97,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Utils
                 switch (ev) {
                     case JsonEvent.ValueString:
                     case JsonEvent.ValueNumber:
-                        if (!parser.key.IsEqualBytes(idKey))
+                        if (!parser.key.IsEqual(idKey))
                             break;
                         foundKey = true;
                         if (ev == JsonEvent.ValueNumber && !parser.isFloat) {

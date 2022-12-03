@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 using System;
-using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using System.Text;
 using Friflo.Json.Burst.Utils;
@@ -18,23 +17,11 @@ using Friflo.Json.Burst.Utils;
 
 namespace Friflo.Json.Burst
 {
-    public struct BytesConst {
-        public static readonly int  notHashed = 0;
-    }
-
-    public interface IMapKey<K> where K : struct
-    {
-        bool    IsEqual(ref K other);
-        bool    IsSet();
-    }
-    
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
     public partial struct Bytes : IDisposable
     {
-        public  int             hc; //      = notHashed;
-
         public  int             start;
         public  int             end;
         public  ByteList        buffer;
@@ -69,21 +56,18 @@ namespace Friflo.Json.Burst
         }
 
         public Bytes(int capacity) {
-            hc = 0;
             start = 0;
             end = 0;
             buffer = new ByteList(capacity, AllocType.Persistent);
         }
         
         public Bytes(int capacity, AllocType allocType) {
-            hc = 0;
             start = 0;
             end = 0;
             buffer = new ByteList(capacity, allocType);
         }
         
         public Bytes (string str) {
-            hc = 0;
             start = 0;
             end = 0;
             buffer = new ByteList(0, AllocType.Persistent);
@@ -109,11 +93,9 @@ namespace Friflo.Json.Burst
 #endif
             start = 0;
             end     = byteLen;
-            hc      = BytesConst.notHashed;
         }
         
         public Bytes (ref Bytes src) {
-            hc =    src.hc;
             start = 0;
             end =   0;
             buffer = new ByteList(src.Len, AllocType.Persistent);
@@ -124,19 +106,16 @@ namespace Friflo.Json.Burst
         {
             this.start  = start; 
             this.end    = end;
-            this.hc     = BytesConst.notHashed;
         }       
 
         public void SetStart (int start)
         {
             this.start  = start;
-            this.hc     = BytesConst.notHashed;
         }
 
         public void SetEnd (int end)
         {
             this.end    = end;
-            this.hc     = BytesConst.notHashed;
         }
     
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -144,7 +123,6 @@ namespace Friflo.Json.Burst
         {
             this.start  = 0; 
             this.end    = 0;
-            this.hc     = BytesConst.notHashed;
         }
 
         public void Set(ref Bytes source, int start, int end) {
@@ -152,7 +130,6 @@ namespace Friflo.Json.Burst
             EnsureCapacityAbs(l);
             this.start = 0;
             this.end = l;
-            this.hc = source.hc;
             var dst = buffer.array;
             var src = source.buffer.array;
             for (int n = 0; n < Len; n++)
@@ -274,7 +251,7 @@ namespace Friflo.Json.Burst
             return IsEqualString (cs);
         }
 #endif
-        public bool IsEqualBytes(in Bytes value)
+        public bool IsEqual(in Bytes value)
         {
             int len = end - start;
             if (len != value.end - value.start)
@@ -316,32 +293,11 @@ namespace Friflo.Json.Burst
         }
 
         public override bool Equals (object obj) {
-            if (obj == null)
-                return false;
-            Bytes value = (Bytes)obj; // Bytes is a struct -> so unboxing -> boxing before allocates memory on the heap!
-            return IsEqualBytes(value);
+            throw new NotImplementedException("not implemented by intention to avoid boxing. Use IsEqual()");
         }
 
-        internal int GetHash()
-        {
-            return hc;
-        }
-        
-        public int UpdateHashCode() {
-            ref var str = ref buffer.array;
-            int     h = Len;
-            // Rotate by 3 bits and XOR the new value.
-            for (int i = start; i < end; i++)
-                h = (h << 3) | (h >> (29)) ^ str[i];
-            return hc = Math.Abs(h);
-        }
-
-        [SuppressMessage("ReSharper", "NonReadonlyMemberInGetHashCode")]
-        public override int GetHashCode()
-        {
-            if (hc != BytesConst.notHashed)
-                return hc;
-            return hc = UpdateHashCode();
+        public override int GetHashCode() {
+            throw new NotImplementedException("not implemented by intention to avoid boxing. Use BytesHash and its Equality comparer");
         }
 
 #if JSON_BURST
@@ -456,7 +412,6 @@ namespace Friflo.Json.Burst
             int byteLen = utf8.GetBytes(str, 0, str.Length, buffer.array, start);
 #endif
             end += byteLen;
-            hc = BytesConst.notHashed;
         }
 
         
@@ -490,7 +445,6 @@ namespace Friflo.Json.Burst
             for (int n = offset; n < strEnd; n++)
                 buf[pos++] = (byte) str[ n ];
             end += len;
-            hc = BytesConst.notHashed;
         }
 
         public void Set (string val)
@@ -542,7 +496,6 @@ namespace Friflo.Json.Burst
             for (int n = 0; n < strLen; n++)
                 buf[thisEnd + n] = strArr[start+n];
             this.end += strLen;
-            hc = BytesConst.notHashed;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -550,7 +503,6 @@ namespace Friflo.Json.Burst
         {
             EnsureCapacityAbs(end + 1);
             buffer.array[end++] = (byte)c;
-            hc = BytesConst.notHashed;
         }
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -559,7 +511,6 @@ namespace Friflo.Json.Burst
             EnsureCapacityAbs(end + 2);
             buffer.array[end++] = (byte)c0;
             buffer.array[end++] = (byte)c1;
-            hc = BytesConst.notHashed;
         }
         
         public void AppendGuid (in Guid guid, char[] buf) {
@@ -575,7 +526,6 @@ namespace Friflo.Json.Burst
                 buffer.array[thisEnd + n] = (byte)buf[n];
             }
             end += len;
-            hc = BytesConst.notHashed;
 #endif
         }
     }

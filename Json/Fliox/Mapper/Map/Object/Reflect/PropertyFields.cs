@@ -37,8 +37,8 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
     public sealed class PropertyFields<T> : PropertyFields, IDisposable
     {
         public   readonly   PropField<T> []                     typedFields;
-        private  readonly   Dictionary <string, PropField<T>>   strMap      = new Dictionary <string, PropField<T>>(13);
-        private  readonly   Dictionary<Bytes,  PropField<T>>    fieldMap;
+        private  readonly   Dictionary <string,   PropField<T>> strMap      = new Dictionary <string, PropField<T>>(13);
+        private  readonly   Dictionary <BytesHash,PropField<T>> fieldMap;
         internal readonly   PropField<T>                        keyField;
         
         public   override   PropField                           GetPropField (string fieldName) => GetField(fieldName);
@@ -49,7 +49,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
         {
 
             var fieldList   = query.fieldList;
-            fieldMap        = new Dictionary<Bytes, PropField<T>>(Bytes.Equality);
+            fieldMap        = new Dictionary<BytesHash, PropField<T>>(BytesHash.Equality);
             
             typedFields     = new PropField<T> [count];
             
@@ -59,8 +59,8 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
                 if (strMap.ContainsKey(field.name))
                     throw new InvalidOperationException("assert field is accessible via string lookup");
                 strMap.Add(field.name, field);
-                fieldMap.Add(field.nameBytes, field);
-                names32[n].FromBytes(ref field.nameBytes);
+                fieldMap.Add(field.nameKey, field);
+                names32[n].FromBytes(field.nameBytes);
 
                 bool isKey = AttributeUtils.IsKey(field.customAttributes);
                 if (isKey || field.name == "id") {
@@ -76,8 +76,8 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
         
         public PropField<T> GetField (ref Bytes fieldName) {
             // Note: its likely that hashcode ist not set properly. So calculate anyway
-            fieldName.UpdateHashCode();
-            fieldMap.TryGetValue(fieldName, out var result);
+            var key = new BytesHash(fieldName);
+            fieldMap.TryGetValue(key, out var result);
             return result;
         }
         

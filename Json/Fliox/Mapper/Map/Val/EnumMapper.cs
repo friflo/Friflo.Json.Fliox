@@ -53,7 +53,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
     internal sealed class EnumMapperInternal<T> where T : struct
     {
         private     readonly    TypeMapper                  mapper;
-        private     readonly    Dictionary<Bytes, T>        stringToEnum;
+        private     readonly    Dictionary<BytesHash, T>    stringToEnum;
         private     readonly    Dictionary<T, Bytes>        enumToString;
         private     readonly    EnumInfo<T>[]               enumInfos;
         //
@@ -67,15 +67,15 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
             FieldInfo[] fields  = enumType.GetFields();
             enumInfos           = CreateEnumInfos(fields, enumType);
             var count           = enumInfos.Length;
-            stringToEnum        = new Dictionary<Bytes, T>(count, Bytes.Equality);
+            stringToEnum        = new Dictionary<BytesHash, T>(count, BytesHash.Equality);
             enumToString        = new Dictionary<T, Bytes>(count);
             var enumContext     = new EnumContext(enumType, config.assemblyDocs);
             var names           = CreateNames(enumInfos);
             for (int n = 0; n < count; n++) {
                 var enumInfo    = enumInfos[n];
-                Bytes   name    = names[n].AsBytes();
-                name.UpdateHashCode();
-                stringToEnum.Add   (name, enumInfo.value);
+                var name        = names[n].AsBytes();
+                var key         = new BytesHash(name);
+                stringToEnum.Add   (key, enumInfo.value);
                 enumToString.TryAdd(enumInfo.value, name);
                 enumContext.AddEnumValueDoc(ref stringToDoc, enumInfo.name);
             }
@@ -123,8 +123,8 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
         internal T Read(ref Reader reader, out bool success) {
             ref var parser = ref reader.parser;
             if (parser.Event == JsonEvent.ValueString) {
-                reader.parser.value.UpdateHashCode();
-                if (stringToEnum.TryGetValue(reader.parser.value, out T enumValue)) {
+                var key = new BytesHash(reader.parser.value);
+                if (stringToEnum.TryGetValue(key, out T enumValue)) {
                     success = true;
                     return enumValue;
                 }

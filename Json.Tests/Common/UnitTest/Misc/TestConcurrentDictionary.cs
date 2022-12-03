@@ -50,7 +50,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc
         public void ConcurrentStringIntern()
         {
             int len     = 0;
-            var key     = new Bytes("0123456789");
+            var key     = new BytesHash(new Bytes("0123456789"));
             var intern  = new StringIntern();
             intern.Get(ref key);
             intern.Get(ref key);
@@ -69,15 +69,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc
     
     class StringIntern
     {
-        private readonly ConcurrentDictionary<Bytes, string> interns = new ConcurrentDictionary<Bytes, string>(Bytes.Equality);
+        private readonly ConcurrentDictionary<BytesHash, string> interns = new ConcurrentDictionary<BytesHash, string>(BytesHash.Equality);
         
-        public string Get(ref Bytes value) {
-            value.UpdateHashCode();
-            if (interns.TryGetValue(value, out var str)) {
+        public string Get(ref BytesHash key) {
+            if (interns.TryGetValue(key, out var str)) {
                 return str;
             }
-            str = value.AsString();
-            interns.TryAdd(value, str);
+            str = key.value.AsString();
+            interns.TryAdd(key, str);
             return str;
         }
     }

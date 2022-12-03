@@ -64,7 +64,7 @@ namespace Friflo.Json.Fliox
         /// <b>Attention!</b> <see cref="Bytes"/> are commonly reused. <br/>
         /// So the created <see cref="JsonValue"/> need to be processed before the passed <paramref name="value"/> is reused.
         /// </summary>
-        public JsonValue(ref Bytes value) {
+        public JsonValue(in Bytes value) {
             array   = value.buffer.array ?? throw new ArgumentNullException(nameof(value), "value array == null");
             start   = value.start;
             count   = value.Len;
@@ -186,7 +186,6 @@ namespace Friflo.Json.Fliox
             for (int n = offset; n < arrEnd; n++)
                 buf[pos++] = src[n];
             bytes.end += len;
-            bytes.hc = BytesConst.notHashed;
         }
         
         public static async Task WriteAsync(this Stream stream, JsonValue array) {

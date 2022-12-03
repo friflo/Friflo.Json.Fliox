@@ -43,7 +43,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             mapper.Pretty           = true;
             mapper.WriteNullMembers = false;
             var result              = mapper.writer.WriteAsBytes(message);
-            return new JsonValue(ref result);
+            return new JsonValue(result);
         }
         
         /// <summary>
@@ -58,7 +58,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             mapper.WriteNullMembers = false;
             if (!EventDispatcher.SerializeRemoteEvents) {
                 var ev = mapper.writer.WriteAsBytes(eventMessage);
-                return new JsonValue(ref ev);
+                return new JsonValue(ev);
             }
             var remoteEventMessage      = new RemoteEventMessage { msg = "ev", clt = eventMessage.dstClientId };
             var events                  = eventMessage.events;
@@ -77,7 +77,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 remoteEvents.Add(remoteEv);
             }
             var result = mapper.writer.WriteAsBytes(remoteEventMessage);
-            return new JsonValue(ref result);
+            return new JsonValue(result);
         }
         
         public static SyncRequest ReadSyncRequest (

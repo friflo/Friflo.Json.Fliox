@@ -20,7 +20,7 @@ namespace Friflo.Json.Burst.Utils
         private const ulong Mask = 0xffffffffffffffff;
         private const ulong Zero = 0L;
 
-        public unsafe void FromBytes (ref Bytes str, Untracked _ = Untracked.Bytes) {
+        public unsafe void FromBytes (in Bytes str, Untracked _ = Untracked.Bytes) {
             int start = str.start;
             len = str.Len;
             if (str.buffer.array.Length < start + 32)

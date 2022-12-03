@@ -19,7 +19,6 @@ namespace Friflo.Json.Fliox.Mapper.Utils
             dst.EnsureCapacityAbs(src.Length);
             dst.start = 0;
             dst.end = src.Length;
-            dst.hc = 0;
 #if JSON_BURST
             /* unsafe {
                 void* dstPtr = Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.GetUnsafePtr(array.array);

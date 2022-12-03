@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace Friflo.Json.Burst
 {
-    public readonly struct BytesHash : IDisposable
+    public readonly struct BytesHash
     {
-        public readonly int     hc;
+        public readonly int     hashCode;
         public readonly Bytes   value;
 
         public static readonly  BytesHashComparer Equality = new BytesHashComparer();
@@ -13,28 +13,28 @@ namespace Friflo.Json.Burst
         
         public BytesHash(in Bytes value) {
             var array   = value.buffer.array;
-            int h       = value.Len;
+            int len     = value.end - value.start;
+            int h       = len;
             // Rotate by 3 bits and XOR the new value.
             for (int i = value.start; i < value.end; i++) {
                 h = (h << 3) | (h >> (29)) ^ array[i];
             }
-            hc          = Math.Abs(h);
-            this.value  = value;
-        }
+            hashCode            = Math.Abs(h);
 
-        public void Dispose() {
-            value.Dispose();
+            this.value.buffer   = value.buffer;
+            this.value.start    = value.start;
+            this.value.end      = value.end;
         }
     }
     
     public sealed class BytesHashComparer : IEqualityComparer<BytesHash>
     {
         public bool Equals(BytesHash x, BytesHash y) {
-            return x.value.IsEqualBytes(y.value);
+            return x.value.IsEqual(y.value);
         }
 
         public int GetHashCode(BytesHash value) {
-            return value.hc;
+            return value.hashCode;
         }
     }
 }

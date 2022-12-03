@@ -278,7 +278,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
             if (obj == null)
                 return false;
             if (obj is BytesStr other)
-                return value.IsEqualBytes(other.value);
+                return value.IsEqual(other.value);
             return false;
         }
 

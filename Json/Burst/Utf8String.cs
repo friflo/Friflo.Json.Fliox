@@ -42,7 +42,6 @@ namespace Friflo.Json.Burst
             dest.EnsureCapacityAbs(l);
             dest.start  = 0;
             dest.end    = l;
-            dest.hc     = BytesConst.notHashed;
             var dst = dest.buffer.array;
             var src = buffer.Buf;
             for (int n = 0; n < l; n++)
@@ -197,7 +196,6 @@ namespace Friflo.Json.Burst
                 var value   = strings[n];
                 var start   = value.start;
                 var str     = new Bytes { buffer = new ByteList { array = buffer }, start = start, end = start + value.len };
-                str.UpdateHashCode();
                 bytes[n]    = str;
             }
             return bytes;

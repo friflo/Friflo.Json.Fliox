@@ -22,15 +22,15 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
 
     // Is public to support external schema / code generators
     public sealed class InstanceFactory {
-        public   readonly   string                          discriminator;
-        public   readonly   string                          description;
-        private  readonly   Type                            instanceType;
-        public   readonly   PolyType[]                      polyTypes;
-        internal readonly   byte[]                          discriminatorBytes;
-        private             TypeMapper                      instanceMapper;
-        private             Entry[]                         mappers;
-        private  readonly   Dictionary<Bytes, TypeMapper>   mapperByName;
-        public   readonly   bool                            isAbstract;
+        public   readonly   string                              discriminator;
+        public   readonly   string                              description;
+        private  readonly   Type                                instanceType;
+        public   readonly   PolyType[]                          polyTypes;
+        internal readonly   byte[]                              discriminatorBytes;
+        private             TypeMapper                          instanceMapper;
+        private             Entry[]                             mappers;
+        private  readonly   Dictionary<BytesHash, TypeMapper>   mapperByName;
+        public   readonly   bool                                isAbstract;
         
         readonly struct Entry
         {
@@ -53,7 +53,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
             this.description        = description;
             this.instanceType       = instanceType;
             this.polyTypes          = polyTypes;
-            this.mapperByName       = new Dictionary<Bytes, TypeMapper>(Bytes.Equality);
+            this.mapperByName       = new Dictionary<BytesHash, TypeMapper>(BytesHash.Equality);
         }
         
         public InstanceFactory() {
@@ -75,9 +75,9 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
             for(int n = 0; n < polyTypes.Length; n++) {
                 var polyType    = polyTypes[n];
                 var mapper      = typeStore.GetTypeMapper(polyType.type);
-                ref var name    = ref names[n]; 
+                var name        = new BytesHash(names[n]); 
                 mapper.discriminant = polyType.name;
-                var jsonName    = new JsonValue(ref name);
+                var jsonName    = new JsonValue(name.value);
                 mappers[n]      = new Entry (jsonName, polyType.type, mapper);
                 mapperByName.Add(name, mapper);
             }
@@ -92,8 +92,8 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
         }
         
         internal object CreatePolymorph(InstancePool instancePool, ref Bytes name, object obj) {
-            name.UpdateHashCode();
-            if (!mapperByName.TryGetValue(name, out var mapper))
+            var key = new BytesHash (name);
+            if (!mapperByName.TryGetValue(key, out var mapper))
                 return null;
             if (obj != null) {
                 var objType = obj.GetType();

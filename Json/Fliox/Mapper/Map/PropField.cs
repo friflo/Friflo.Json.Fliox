@@ -42,6 +42,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
         public   readonly   bool            required;
         public   readonly   string          docs;
         public   readonly   string          relation;
+        internal readonly   BytesHash       nameKey;
         internal            Bytes           nameBytes;          // don't mutate
         public              Bytes           firstMember;        // don't mutate
         public              Bytes           subSeqMember;       // don't mutate
@@ -66,9 +67,8 @@ namespace Friflo.Json.Fliox.Mapper.Map
             this.fieldType  = fieldType;
             this.varType    = VarType.FromType(fieldType.type);
             defaultValue    = varType.DefaultValue;
-            var tempName    = new Bytes(jsonName,                   Untracked.Bytes);
-            tempName.UpdateHashCode();
-            nameBytes       = tempName;
+            nameBytes       = new Bytes(jsonName,                   Untracked.Bytes);
+            nameKey         = new BytesHash(nameBytes);
             firstMember     = new Bytes($"{'{'}\"{jsonName}\":",    Untracked.Bytes);
             subSeqMember    = new Bytes($",\"{jsonName}\":",        Untracked.Bytes);
             //
