@@ -134,22 +134,6 @@ namespace Friflo.Json.Burst
             buffer = newArr;
         }
 
-        public void SetDim (int start, int end)
-        {
-            this.start  = start; 
-            this.end    = end;
-        }       
-
-        public void SetStart (int start)
-        {
-            this.start  = start;
-        }
-
-        public void SetEnd (int end)
-        {
-            this.end    = end;
-        }
-    
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Clear()
         {
