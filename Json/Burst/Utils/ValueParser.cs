@@ -46,7 +46,7 @@ namespace Friflo.Json.Burst.Utils
         }
         
         private static void SetErrorFalse (in Str128 msg, ref Bytes value, ref Bytes dst) {
-            if (dst.buffer.IsCreated()) {
+            if (dst.IsCreated()) {
                 dst.Clear();
                 dst.AppendStr128(in msg);
                 dst.AppendBytes(ref value);
@@ -56,11 +56,11 @@ namespace Friflo.Json.Burst.Utils
         public int ParseInt(ref Bytes bytes, ref Bytes valueError, out bool success) {
             success = false;
             valueError.Clear();
-            int val = 0;
-            bool positive= true;
-            ref var str = ref bytes.buffer.array;
-            int first = bytes.start;
-            int limit = -int.MaxValue;
+            int val         = 0;
+            bool positive   = true;
+            ref var str     = ref bytes.buffer;  // could be resized
+            int first       = bytes.start;
+            int limit       = -int.MaxValue;
             if (bytes.end > bytes.start)
             {
                 int c = str[first];
@@ -99,11 +99,11 @@ namespace Friflo.Json.Burst.Utils
         public long ParseLong(ref Bytes bytes, ref Bytes valueError, out bool success) {
             success = false;
             valueError.Clear();
-            long val = 0;
-            bool positive= true;
-            ref var str = ref bytes.buffer.array;
-            int first = bytes.start;
-            long limit = -long.MaxValue;
+            long val        = 0;
+            bool positive   = true;
+            ref var str     = ref bytes.buffer; // could be resized
+            int  first      = bytes.start;
+            long limit      = -long.MaxValue;
             if (bytes.end > bytes.start)
             {
                 int c = str[first];
@@ -142,11 +142,11 @@ namespace Friflo.Json.Burst.Utils
         public double ParseDouble(ref Bytes bytes, ref Bytes valueError, out bool success)
         {
             valueError.Clear();
-            success = false;
-            bool negative = false;
-            ref var str = ref bytes.buffer.array;
-            int end = bytes.end;
-            int n = bytes.start;
+            success         = false;
+            bool negative   = false;
+            ref var str     = ref bytes.buffer; // could be resized
+            int end         = bytes.end;
+            int n           = bytes.start;
             if (n >= end) {
                 SetErrorFalse("Invalid number: ", ref bytes, ref valueError);
                 return 0;
@@ -313,7 +313,7 @@ namespace Friflo.Json.Burst.Utils
                 result = default;
                 return false;
             }
-            byte[] arr = bytes.buffer.array;
+            byte[] arr = bytes.buffer;
             int pos = bytes.start;
             int len = bytes.Len;
             for (int n = 0; n < len; n++)
@@ -348,7 +348,7 @@ namespace Friflo.Json.Burst.Utils
                 result = default;
                 return false;
             }
-            byte[] arr = bytes.buffer.array;
+            byte[] arr = bytes.buffer;
             int pos = bytes.start;
             int len = bytes.Len;
             for (int n = 0; n < len; n++)

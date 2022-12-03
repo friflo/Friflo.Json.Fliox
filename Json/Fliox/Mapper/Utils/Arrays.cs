@@ -28,7 +28,7 @@ namespace Friflo.Json.Fliox.Mapper.Utils
             } */
             dst.buffer.array.CopyFrom(src);
 #else
-            Buffer.BlockCopy (src, 0, dst.buffer.array, 0, src.Length);
+            Buffer.BlockCopy (src, 0, dst.buffer, 0, src.Length);
 #endif
         }
         
@@ -39,7 +39,7 @@ namespace Friflo.Json.Fliox.Mapper.Utils
             for (int i = 0; i < src.Len; i++)
                 dst[i] = src.buffer.array[src.start + i];
 #else
-            Buffer.BlockCopy (src.buffer.array, src.start, dst, 0, src.Len);
+            Buffer.BlockCopy (src.buffer, src.start, dst, 0, src.Len);
 #endif
         }
     }

@@ -12,10 +12,10 @@ namespace Friflo.Json.Burst.Utils
     {
 
         public static bool IsStringEqualUtf8(String str, in Bytes bytes) {
-            return IsStringEqualUtf8(str, in bytes.buffer, bytes.start, bytes.end);
+            return IsStringEqualUtf8(str, bytes.buffer, bytes.start, bytes.end);
         }
 
-        public static bool IsStringEqualUtf8 (String str, in ByteList bytes, int start, int end) {
+        public static bool IsStringEqualUtf8 (String str, byte[] bytes, int start, int end) {
             int strPos = 0;
             int bytePos = start;
             while (bytePos < end && strPos < str.Length) {
@@ -40,8 +40,7 @@ namespace Friflo.Json.Burst.Utils
         private static readonly int     m_ooo11111 = 0x1f;
         private static readonly int     m_oo111111 = 0x3f;
         
-        static int UnicodeFromUtf8Bytes(ByteList byteArray, ref int n) {
-            var bytes = byteArray.array;
+        static int UnicodeFromUtf8Bytes(byte[] bytes, ref int n) {
             int b = bytes[n++];
         
             if  (b < m_1ooooooo )
@@ -82,7 +81,7 @@ namespace Friflo.Json.Burst.Utils
             if (dst.Len + 4 > dst.buffer.Count)
                 throw new InvalidOperationException("Insufficient buffer size");
 #endif
-            ref var dstArr = ref dst.buffer.array;
+            var dstArr = dst.buffer;
             int i = dst.end;
             if (uni < 0x80)
             {

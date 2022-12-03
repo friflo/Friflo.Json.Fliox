@@ -24,53 +24,67 @@ namespace Friflo.Json.Burst
     {
         public  int             start;
         public  int             end;
-        public  ByteList        buffer;
+        public  byte[]          buffer;
         
         public  int             Len => end - start;
         public  int             StartPos => start;
         public  int             EndPos => end;
 
+        /// called previously <see cref="ByteList"/> constructor
         public void InitBytes(int capacity) {
-            if (!buffer.IsCreated())
-                buffer = new ByteList(capacity, AllocType.Persistent);
+            if (IsCreated())
+                return;
+            buffer = AllocateBuffer(capacity);
+        }
+        
+        public bool IsCreated() {
+            return buffer != null;
         }
 
         /// <summary>
         /// Dispose all internal used arrays.
-        /// Only required when running with JSON_BURST within Unity. 
+        /// Only required when running with JSON_BURST within Unity.
+        /// was previous in <see cref="ByteList.Dispose()"/>
         /// </summary>
         public void Dispose() {
-            if (buffer.IsCreated())
-                buffer.Dispose();
+            if (!IsCreated())
+                return;
+            DebugUtils.UntrackAllocation(buffer);
+            buffer = null;
         }
         
+        /// was previous in <see cref="ByteList.Dispose(Untracked)"/>
         public void Dispose(Untracked _) {
-            if (buffer.IsCreated())
-                buffer.Dispose(Untracked.Bytes);
+            if (!IsCreated())
+                return;
+            buffer = null;
         }
         
         public Bytes SwapWithDefault() {
-            Bytes ret = this;
-            this = default(Bytes);
+            Bytes ret   = this;
+            this        = default;
             return ret;
         }
 
+        /// called previously <see cref="ByteList"/> constructor
         public Bytes(int capacity) {
-            start = 0;
-            end = 0;
-            buffer = new ByteList(capacity, AllocType.Persistent);
+            start   = 0;
+            end     = 0;
+            buffer  = AllocateBuffer(capacity);
         }
         
+        /// called previously <see cref="ByteList"/> constructor
         public Bytes(int capacity, AllocType allocType) {
-            start = 0;
-            end = 0;
-            buffer = new ByteList(capacity, allocType);
+            start   = 0;
+            end     = 0;
+            buffer  = AllocateBuffer(capacity);
         }
         
+        /// called previously <see cref="ByteList"/> constructor
         public Bytes (string str) {
-            start = 0;
-            end = 0;
-            buffer = new ByteList(0, AllocType.Persistent);
+            start   = 0;
+            end     = 0;
+            buffer  = AllocateBuffer(0);
             FromString(str);
         }
         
@@ -78,7 +92,7 @@ namespace Friflo.Json.Burst
         public Bytes (string str, Untracked _) {
             int byteLen =  utf8.GetByteCount(str);
            
-            buffer.array = new byte[byteLen + 32];
+            buffer = new byte[byteLen + 32];
 #if JSON_BURST
             int byteLen = 0;
             unsafe {
@@ -89,17 +103,36 @@ namespace Friflo.Json.Burst
                 }
             }
 #else
-            utf8.GetBytes(str, 0, str.Length, buffer.array, 0);
+            utf8.GetBytes(str, 0, str.Length, buffer, 0);
 #endif
             start = 0;
             end     = byteLen;
         }
         
         public Bytes (ref Bytes src) {
-            start = 0;
-            end =   0;
-            buffer = new ByteList(src.Len, AllocType.Persistent);
+            start   = 0;
+            end     = 0;
+            buffer  = AllocateBuffer(src.Len);
             AppendBytes(ref src);
+        }
+        
+        /// was previous in <see cref="ByteList"/> constructor
+        private static byte[] AllocateBuffer(int size) {
+            var result = new byte [size];
+            DebugUtils.TrackAllocation(result);
+            return result;
+        }
+        
+        /// was previous in <see cref="ByteList.Resize"/>
+        public void Resize(int size) {
+            byte[] newArr = new byte[size];
+            int len = size < buffer.Length ? size : buffer.Length;
+            Buffer.BlockCopy (buffer, 0, newArr, 0, len);
+            //  for (int i = 0; i < len; i++)
+            //      newArr[i] = array[i];
+            DebugUtils.UntrackAllocation(buffer);
+            DebugUtils.TrackAllocation(newArr);
+            buffer = newArr;
         }
 
         public void SetDim (int start, int end)
@@ -130,8 +163,8 @@ namespace Friflo.Json.Burst
             EnsureCapacityAbs(l);
             this.start = 0;
             this.end = l;
-            var dst = buffer.array;
-            var src = source.buffer.array;
+            var dst = buffer;
+            var src = source.buffer;
             for (int n = 0; n < Len; n++)
                 dst[n] = src[n];
         }
@@ -145,11 +178,11 @@ namespace Friflo.Json.Burst
         {
             if (start < this.start)
                 start = this.start;
-            ref var         str = ref buffer.array;
-            int             end1        = end - subStr.Len;
-            int             start2      = subStr.start; 
-            int             end2        = subStr.end;
-            ref var         str2    = ref subStr.buffer.array;
+            var str     = buffer;
+            int end1    = end - subStr.Len;
+            int start2  = subStr.start; 
+            int end2    = subStr.end;
+            var str2    = subStr.buffer;
             for (int n = start; n <= end1; n++)
             {
                 int off = n - start2;
@@ -169,7 +202,7 @@ namespace Friflo.Json.Burst
             int len = end - start;
             if (len == 0)
                 return false;
-            ref var str = ref buffer.array;
+            var str = buffer;
             byte c = str[0];
             if (len == 1) {
                 return '0' <= c && c <= '9'; 
@@ -207,8 +240,8 @@ namespace Friflo.Json.Burst
 #else
             str = null;
             Span<char> span = stackalloc char[Len];
-            ref var array   = ref buffer.array;
-            var len         = Len;
+            var array   = buffer;
+            var len     = Len;
             for (int n = 0; n < len; n++)
                 span[n] = (char)array[start + n];
             return Guid.TryParse(span, out guid);
@@ -223,8 +256,8 @@ namespace Friflo.Json.Burst
             Span<char> span = stackalloc char[MaxGuidLength];
             if (!guid.TryFormat(span, out int charsWritten))
                 throw new InvalidOperationException("AppendGuid() failed");
-            ref var array   = ref buffer.array;
             EnsureCapacity(charsWritten);
+            var array   = buffer;
             for (int n = 0; n < charsWritten; n++)
                 array[start + n] = (byte)span[n];
             end += charsWritten;
@@ -256,10 +289,10 @@ namespace Friflo.Json.Burst
             int len = end - start;
             if (len != value.end - value.start)
                 return false;
-            ref var str     = ref buffer.array;
+            var     str     = buffer;
             int     valEnd  = start + len;
             int     i2      = value.start;
-            var     str2    = value.buffer.array;
+            var     str2    = value.buffer;
             for (int i = start; i < valEnd; i++ )
             {
                 if (str[i] != str2[i2++])
@@ -286,7 +319,7 @@ namespace Friflo.Json.Burst
             }
             return true;
 #else
-            var span  = new ReadOnlySpan<byte>(buffer.array, start, Len);
+            var span  = new ReadOnlySpan<byte>(buffer, start, Len);
             var other = new ReadOnlySpan<byte>(array);
             return span.SequenceEqual(other);
 #endif
@@ -333,7 +366,7 @@ namespace Friflo.Json.Burst
         public byte[] AsArray() {
             var len     = Len;
             var array   = new byte[len];
-            ref var buf =  ref buffer.array;
+            var buf     =  buffer;
             for (int i = 0; i < len; i++) {
                 array[i] = buf[i + start];
             }
@@ -348,7 +381,7 @@ namespace Friflo.Json.Burst
         /**
          * Must not by called from Burst. Burst cant handle managed types
          */
-        public static string ToString (ByteList data, int pos, int size)
+        public static string ToString (byte[] data, int pos, int size)
         {
 #if JSON_BURST
             unsafe {
@@ -362,7 +395,7 @@ namespace Friflo.Json.Burst
                 fixed (sbyte* sbytePtr = sbyteData)
                     return new string(sbytePtr, pos, size, Encoding.UTF8);
             } */
-            return Encoding.UTF8.GetString(data.array, pos, size);
+            return Encoding.UTF8.GetString(data, pos, size);
 #endif
         }
         
@@ -375,7 +408,7 @@ namespace Friflo.Json.Burst
             if (maxCharCount > dst.Length)
                 dst = new char[maxCharCount];
 
-            length = utf8.GetChars(buffer.array, start, Len, dst, 0);
+            length = utf8.GetChars(buffer, start, Len, dst, 0);
             return dst;
             /* unsafe {
                 fixed (char* chars = dst) {
@@ -409,7 +442,7 @@ namespace Friflo.Json.Burst
                 }
             }
 #else
-            int byteLen = utf8.GetBytes(str, 0, str.Length, buffer.array, start);
+            int byteLen = utf8.GetBytes(str, 0, str.Length, buffer, start);
 #endif
             end += byteLen;
         }
@@ -417,13 +450,13 @@ namespace Friflo.Json.Burst
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void EnsureCapacityAbs(int size) {
-            var capacity = buffer.array.Length;
+            var capacity = buffer.Length;
             if (size <= capacity)
                 return;
             if (size < 2 * capacity)
                 size = 2 * capacity;
 
-            buffer.Resize(size);
+            Resize(size);
         }
         
         public void EnsureCapacity(int count) {
@@ -441,7 +474,7 @@ namespace Friflo.Json.Burst
             EnsureCapacity(len);
             int pos = end;
             int strEnd = offset + len;
-            var buf = buffer.array;
+            var buf = buffer;
             for (int n = offset; n < strEnd; n++)
                 buf[pos++] = (byte) str[ n ];
             end += len;
@@ -486,15 +519,14 @@ namespace Friflo.Json.Burst
         }
 #endif
 
-        public void AppendArray(ref ByteList str, int start, int end)
+        public void AppendArray(byte[] str, int start, int end)
         {
-            int strLen = end - start;
-            ref var buf = ref buffer.array;
-            ref var strArr = ref str.array;
+            int strLen  = end - start;
             int thisEnd = this.end;
             EnsureCapacity(strLen);
+            var buf     = buffer;
             for (int n = 0; n < strLen; n++)
-                buf[thisEnd + n] = strArr[start+n];
+                buf[thisEnd + n] = str[start+n];
             this.end += strLen;
         }
 
@@ -502,15 +534,15 @@ namespace Friflo.Json.Burst
         public void AppendChar(char c)
         {
             EnsureCapacityAbs(end + 1);
-            buffer.array[end++] = (byte)c;
+            buffer[end++] = (byte)c;
         }
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void AppendChar2(char c0, char c1)
         {
             EnsureCapacityAbs(end + 2);
-            buffer.array[end++] = (byte)c0;
-            buffer.array[end++] = (byte)c1;
+            buffer[end++] = (byte)c0;
+            buffer[end++] = (byte)c1;
         }
         
         public void AppendGuid (in Guid guid, char[] buf) {
@@ -523,7 +555,7 @@ namespace Friflo.Json.Burst
             EnsureCapacity(len);
             int thisEnd = end;
             for (int n = 0; n < len; n++) {
-                buffer.array[thisEnd + n] = (byte)buf[n];
+                buffer[thisEnd + n] = (byte)buf[n];
             }
             end += len;
 #endif

@@ -12,7 +12,7 @@ using Friflo.Json.Burst.Utils;
 namespace Friflo.Json.Burst
 {
     enum InputType {
-        ByteList,
+        ByteArray,
         ByteReader,
     }
     
@@ -30,7 +30,7 @@ namespace Friflo.Json.Burst
                 for (; n < end; n++) {
                     if (n == pos)
                         builder.Append(" =>");
-                    builder.Append((char) buf.buffer.array[n]);
+                    builder.Append((char) buf.buffer[n]);
                 }
                 if (pos == bufEnd)
                     builder.Append(" =>");
@@ -56,15 +56,15 @@ namespace Friflo.Json.Burst
             int readBytes;
             
             switch (inputType) {
-                case InputType.ByteList:
-                    readBytes = ReadByteList();
+                case InputType.ByteArray:
+                    readBytes = ReadByteArray();
                     break;
                 case InputType.ByteReader:
 #if JSON_BURST
                     readBytes = 0;
                     NonBurstReader.ReadNonBurst(readerHandle, ref buf.buffer, ref readBytes, BufSize);
 #else
-                    readBytes = bytesReader.Read(ref buf.buffer, BufSize);
+                    readBytes = bytesReader.Read(buf.buffer, BufSize);
 #endif
                     break;
                 default:
@@ -102,7 +102,7 @@ namespace Friflo.Json.Burst
             Start();
         }
         
-        public void InitParser(byte[] array, int start, int count) {
+        /* public void InitParser(byte[] array, int start, int count) {
             inputType           = InputType.ByteReader;
             IBytesReader reader  = new ByteArrayReader(array, start, count);
 #if JSON_BURST
@@ -111,18 +111,18 @@ namespace Friflo.Json.Burst
             bytesReader = reader;
 #endif
             Start();
-        }
+        } */
 
-        public void InitParser(ByteList bytes, int start, int len) {
-            inputType       = InputType.ByteList;
-            inputByteList   = bytes;
+        public void InitParser(byte[] bytes, int start, int len) {
+            inputType       = InputType.ByteArray;
+            inputArray      = bytes;
             inputArrayPos   = start;
             inputArrayEnd   = start + len;
             Start();
         }
         
         // ReSharper disable once RedundantUnsafeContext
-        private unsafe int ReadByteList() {
+        private unsafe int ReadByteArray() {
             int curPos = inputArrayPos;
             inputArrayPos += BufSize;
             if (inputArrayPos > inputArrayEnd)
@@ -136,7 +136,7 @@ namespace Friflo.Json.Burst
             byte*  destPtr = &((byte*)buf.buffer.array.GetUnsafeList()->Ptr)    [0];
             UnsafeUtility.MemCpy(destPtr, srcPtr, len);
 #else
-            Buffer.BlockCopy(inputByteList.array, curPos, buf.buffer.array, 0, len);
+            Buffer.BlockCopy(inputArray, curPos, buf.buffer, 0, len);
 #endif
             return len;
         }

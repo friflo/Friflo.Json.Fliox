@@ -180,7 +180,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Utils
                 error   = $"expect JSON array";
                 return null;
             }
-            var srcArray    = jsonBytes.buffer.array;
+            var srcArray    = jsonBytes.buffer;
             var array       = new List<JsonEntity>();
             while (true) {
                 ev = parser.NextEvent();

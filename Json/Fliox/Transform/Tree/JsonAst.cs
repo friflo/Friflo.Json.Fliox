@@ -88,7 +88,7 @@ namespace Friflo.Json.Fliox.Transform.Tree
         internal JsonAstSpan AddSpan (in Bytes bytes) {
             var len     = bytes.Len;
             int destPos = Reserve(len);
-            Buffer.BlockCopy(bytes.buffer.array, bytes.start, buf, destPos, len);
+            Buffer.BlockCopy(bytes.buffer, bytes.start, buf, destPos, len);
             return new JsonAstSpan(destPos, len);
         }
         

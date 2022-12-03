@@ -83,7 +83,7 @@ namespace Friflo.Json.Burst
         /// create internal buffers.
         /// </summary>
         public void InitSerializer() {
-            if (!json.buffer.IsCreated())
+            if (!json.IsCreated())
                 json.InitBytes(128);
             json.Clear();
             format.InitTokenFormat();
@@ -97,7 +97,7 @@ namespace Friflo.Json.Burst
 #endif
             if (!nodeType.IsCreated())
                 nodeType = new ValueList<NodeType>(initDepth, AllocType.Persistent); nodeType.  Resize(initDepth);
-            if (!strBuf.buffer.IsCreated())
+            if (!strBuf.IsCreated())
                 strBuf.InitBytes(128);
             @null = "null"; 
             level = 0;
@@ -157,11 +157,11 @@ namespace Friflo.Json.Burst
 #endif            
             if (nodeFlags.IsCreated())
                 nodeFlags.Dispose();
-            if (strBuf.buffer.IsCreated())
+            if (strBuf.IsCreated())
                 strBuf.Dispose();
             if (nodeType.IsCreated())
                 nodeType.Dispose();
-            if (json.buffer.IsCreated())
+            if (json.IsCreated())
                 json.Dispose();
             format.Dispose();
         }
@@ -187,9 +187,9 @@ namespace Friflo.Json.Burst
 #else
             ReadOnlySpan<char> span = src;
 #endif
-            int end = src.Length;
+            int end     = src.Length;
             
-            ref var dstArr = ref dst.buffer.array;
+            ref var dstArr = ref dst.buffer; // could be without ref
             var srcSpan = span;
             
             // --- bounds checks degrade performance => used managed arrays
@@ -243,7 +243,7 @@ namespace Friflo.Json.Burst
                 if ((flags & NodeFlags.First) != 0)
                     return;
                 json.EnsureCapacityAbs(json.end + 1);
-                json.buffer.array[json.end++] = (byte) ' ';
+                json.buffer[json.end++] = (byte) ' ';
                 return;
             }
             IndentJsonNode(ref json, level);
@@ -257,12 +257,12 @@ namespace Friflo.Json.Burst
         
         public static void IndentJsonNode(ref Bytes json, int level) {
             json.EnsureCapacityAbs(json.end + 1 + 4 * level); // LF + level * four spaces
-            json.buffer.array[json.end++] = (byte)'\n';
+            json.buffer[json.end++] = (byte)'\n';
             for (int n = 0; n < level; n++) {
-                json.buffer.array[json.end++] = (byte) ' ';
-                json.buffer.array[json.end++] = (byte) ' ';
-                json.buffer.array[json.end++] = (byte) ' ';
-                json.buffer.array[json.end++] = (byte) ' ';
+                json.buffer[json.end++] = (byte) ' ';
+                json.buffer[json.end++] = (byte) ' ';
+                json.buffer[json.end++] = (byte) ' ';
+                json.buffer[json.end++] = (byte) ' ';
             }
         }
 

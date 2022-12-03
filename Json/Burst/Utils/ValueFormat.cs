@@ -52,8 +52,8 @@ namespace Friflo.Json.Burst.Utils
 
         public void AppendInt (ref Bytes dst, int val)
         {
-            ref var dstArr = ref dst.buffer.array;
             dst.EnsureCapacity (dst.end + 12); //  -2147483648 - 11 bytes + 1 for safety :)
+            var dstArr = dst.buffer;
             if (val == 0) {
                 dstArr[dst.end++] = (byte)'0'; 
                 return;
@@ -97,7 +97,7 @@ namespace Friflo.Json.Burst.Utils
             dst.EnsureCapacity (len);
             int last = dst.end + len - 1;
             for (int n = 0; n < len; n++)
-                dst.buffer.array[last - n] = (byte)('0' + digit.array [n]);
+                dst.buffer[last - n] = (byte)('0' + digit.array [n]);
             dst.end += len;
         }
 
@@ -257,11 +257,11 @@ namespace Friflo.Json.Burst.Utils
             int pos = end;      
             int exp = shiftExp10 + digitNum - 1;
 
-            ref var bytes = ref dst.buffer.array;
             // --- render in "computerized scientific notation". E.g. -1.23E-300
             if (exp >= +7 || -4 >= exp)
             {
                 dst.EnsureCapacity (digitNum + 8); // digitNum + worst cast: -1.0E-300  => 8
+                var bytes = dst.buffer;
                 if (negative)
                     bytes[pos++] = (byte) '-';
                 bytes[pos++] = (byte)('0' + digit.array [digitNum- 1]);
@@ -300,6 +300,7 @@ namespace Friflo.Json.Burst.Utils
             // --- render in common presentation. E.g: 123.456
             {
                 dst.EnsureCapacity (digitNum + 6); // digitNum + worst cast: -0.0001
+                var bytes = dst.buffer;
                 if (negative)
                     bytes[pos++] = (byte) '-';
                 if (exp < 0)

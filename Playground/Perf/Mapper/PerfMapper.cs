@@ -39,7 +39,7 @@ namespace Friflo.Playground.Perf.Mapper
         }
         
         private void CreateBookShelfJson(ref Bytes json) {
-            if (json.buffer.IsCreated())
+            if (json.IsCreated())
                 return;
             json = new Bytes(0);
             var shelf = CreateBookShelf();

@@ -65,7 +65,7 @@ namespace Friflo.Json.Fliox
         /// So the created <see cref="JsonValue"/> need to be processed before the passed <paramref name="value"/> is reused.
         /// </summary>
         public JsonValue(in Bytes value) {
-            array   = value.buffer.array ?? throw new ArgumentNullException(nameof(value), "value array == null");
+            array   = value.buffer ?? throw new ArgumentNullException(nameof(value), "value array == null");
             start   = value.start;
             count   = value.Len;
             start   = 0;
@@ -130,7 +130,7 @@ namespace Friflo.Json.Fliox
         
         public bool IsEqual (ref Bytes value) {
             var val1 = new Span<byte>(array, start, count);
-            var val2 = new Span<byte>(value.buffer.array, value.start, value.Len);
+            var val2 = new Span<byte>(value.buffer, value.start, value.Len);
             return val1.SequenceEqual(val2);
         }
         
@@ -181,8 +181,8 @@ namespace Friflo.Json.Fliox
             bytes.EnsureCapacity(len);
             int pos     = bytes.end;
             int arrEnd  = offset + len;
-            ref var buf = ref bytes.buffer.array;
-            var src = array.Array;
+            var buf     = bytes.buffer;
+            var src     = array.Array;
             for (int n = offset; n < arrEnd; n++)
                 buf[pos++] = src[n];
             bytes.end += len;

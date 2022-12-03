@@ -93,7 +93,7 @@ namespace Friflo.Json.Fliox.Mapper
             if (len > BufferMax) {
                 return new JsonValue(value.AsArray());
             }
-            var srcArray    = value.buffer.array;
+            var srcArray    = value.buffer;
             var remaining   = buffer.Length - bufferPos;
             if (len <= remaining) {
                 var start    = bufferPos;

@@ -155,7 +155,7 @@ namespace Friflo.Json.Burst
 #else
         private     IBytesReader        bytesReader;
 #endif
-        private     ByteList            inputByteList;
+        private     byte[]              inputArray;
         private     int                 inputArrayPos;
         private     int                 inputArrayEnd;
 
@@ -331,10 +331,10 @@ namespace Friflo.Json.Burst
                     case State.ExpectMember:
                         if (index > 1)
                             str.AppendChar('.');
-                        str.AppendArray(ref path.buffer, lastPos, lastPos= pathPos.array[index]);
+                        str.AppendArray(path.buffer, lastPos, lastPos= pathPos.array[index]);
                         break;
                     case State.ExpectMemberFirst:
-                        str.AppendArray(ref path.buffer, lastPos, lastPos= pathPos.array[index]);
+                        str.AppendArray(path.buffer, lastPos, lastPos= pathPos.array[index]);
                         break;
                     case State.ExpectElement:
                     case State.ExpectElementFirst:
@@ -375,7 +375,7 @@ namespace Friflo.Json.Burst
             pathPos =  new ValueList<int>  (initSize, AllocType.Persistent); pathPos. Resize(initSize);
             arrIndex = new ValueList<int>  (initSize, AllocType.Persistent); arrIndex.Resize(initSize);
             buf.InitBytes(BufSize);
-            buf.buffer.Resize(BufSize);
+            buf.Resize(BufSize);
             error.InitJsonError(128);
             key.InitBytes(32);
             path.InitBytes(32);
@@ -595,7 +595,7 @@ namespace Friflo.Json.Burst
                 int end     = bufEnd;
                 for (; p < end;)
                 {
-                    int c = buf.buffer.array[p++];
+                    int c = buf.buffer[p++];
                     if (c > ' ') {
                         pos = p;
                         return c;
@@ -624,7 +624,7 @@ namespace Friflo.Json.Burst
             while (true) {
                 for (; pos < bufEnd; pos++)
                 {
-                    int c = buf.buffer.array[pos];
+                    int c = buf.buffer[pos];
                     switch (c)
                     {
                         case '0':   case '1':   case '2':   case '3':   case '4':
@@ -667,7 +667,7 @@ namespace Friflo.Json.Burst
                 
                 for (; p < end; p++)
                 {
-                    int c = buf.buffer.array[p];
+                    int c = buf.buffer[p];
                     if (c == '\"')
                     {
                         pos = p + 1;
@@ -685,7 +685,7 @@ namespace Friflo.Json.Burst
                             p   = pos;
                             end = bufEnd;
                         }
-                        c = buf.buffer.array[p];
+                        c = buf.buffer[p];
                         switch (c)
                         {
                         case '"':   token.AppendChar('"');  break;
@@ -724,22 +724,22 @@ namespace Friflo.Json.Burst
                 if (!Read())
                     return SetErrorFalse("Expect 4 hex digits after '\\u' in value");
             }
-            int d1 = Digit2Int(buf.buffer.array[pos++]);
+            int d1 = Digit2Int(buf.buffer[pos++]);
             if (pos >= bufEnd) {
                 if (!Read())
                     return SetErrorFalse("Expect 4 hex digits after '\\u' in value");
             }
-            int d2 = Digit2Int(buf.buffer.array[pos++]);
+            int d2 = Digit2Int(buf.buffer[pos++]);
             if (pos >= bufEnd) {
                 if (!Read())
                     return SetErrorFalse("Expect 4 hex digits after '\\u' in value");
             }
-            int d3 = Digit2Int(buf.buffer.array[pos++]);
+            int d3 = Digit2Int(buf.buffer[pos++]);
             if (pos >= bufEnd) {
                 if (!Read())
                     return SetErrorFalse("Expect 4 hex digits after '\\u' in value");
             }
-            int d4 = Digit2Int(buf.buffer.array[pos++]);
+            int d4 = Digit2Int(buf.buffer[pos++]);
 
             if (d1 == -1 || d2 == -1 || d3 == -1 || d4 == -1)
                 return SetErrorFalse("Invalid hex digits after '\\u' in value");
@@ -748,8 +748,8 @@ namespace Friflo.Json.Burst
         
             // UTF-8 Encoding
             token.EnsureCapacity(4);
-            ref var str = ref token.buffer.array;
-            int i = token.EndPos;
+            var str = token.buffer;
+            int i   = token.EndPos;
             if (uni < 0x80)
             {
                 str[i] =    (byte)uni;
@@ -808,7 +808,7 @@ namespace Friflo.Json.Burst
                 
                 for (; pos < bufEnd; pos++)
                 {
-                    int c = buf.buffer.array[pos];
+                    int c = buf.buffer[pos];
                     value.AppendChar((char)c);
                     if (c == keyword[keyWordPos++]) {
                         if (keyWordPos != keyword.Length)

@@ -12,7 +12,7 @@ namespace Friflo.Json.Burst.Utils
 {
     public interface IBytesWriter
     {
-        void Write(ref ByteList src, int count);
+        void Write(byte[] src, int count);
     }
     
     public sealed class StreamBytesWriter: IBytesWriter {
@@ -25,7 +25,7 @@ namespace Friflo.Json.Burst.Utils
             this.stream = stream;
         }
         
-        public  void Write(ref ByteList src, int count) {
+        public  void Write(byte[] src, int count) {
 #if JSON_BURST
             if (buffer.Length < count)
                 buffer = new byte[2 * count];
@@ -37,7 +37,7 @@ namespace Friflo.Json.Burst.Utils
             }
             stream.Write(buffer, 0, count);
 #else
-            stream.Write(src.array, 0, count);
+            stream.Write(src, 0, count);
 #endif
         }
     }

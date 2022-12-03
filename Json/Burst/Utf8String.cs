@@ -5,7 +5,6 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using Friflo.Json.Burst.Utils;
 
 // ReSharper disable MemberCanBePrivate.Global
 namespace Friflo.Json.Burst
@@ -42,7 +41,7 @@ namespace Friflo.Json.Burst
             dest.EnsureCapacityAbs(l);
             dest.start  = 0;
             dest.end    = l;
-            var dst = dest.buffer.array;
+            var dst = dest.buffer;
             var src = buffer.Buf;
             for (int n = 0; n < l; n++)
                 dst[n] = src[n + start];
@@ -75,7 +74,7 @@ namespace Friflo.Json.Burst
             return ArraysEqual(buffer.Buf, start, value.buffer.array, len);
 #else
             var left   = ReadOnlySpan;
-            var right  = new ReadOnlySpan<byte> (value.buffer.array, value.start, value.Len);
+            var right  = new ReadOnlySpan<byte> (value.buffer, value.start, value.Len);
             return left.SequenceEqual(right);
 #endif
         }
@@ -88,7 +87,7 @@ namespace Friflo.Json.Burst
         }
         
         public Bytes AsBytes () {
-            return new Bytes { buffer = new ByteList { array = buffer.Buf }, start = start, end = start + len };
+            return new Bytes { buffer = buffer.Buf, start = start, end = start + len };
         }
     }
     
@@ -178,7 +177,7 @@ namespace Friflo.Json.Burst
         public Utf8String Add (Bytes bytes, bool reusable) {
             var len     = bytes.Len;
             int destPos = Reserve(len);
-            Buffer.BlockCopy(bytes.buffer.array, bytes.start, buf, destPos, len);
+            Buffer.BlockCopy(bytes.buffer, bytes.start, buf, destPos, len);
             var utf8    = new Utf8String(this, destPos, len);
             if (!reusable) {
                 return utf8;
@@ -195,7 +194,7 @@ namespace Friflo.Json.Burst
             for (int n = 0; n < strings.Count; n++) {
                 var value   = strings[n];
                 var start   = value.start;
-                var str     = new Bytes { buffer = new ByteList { array = buffer }, start = start, end = start + value.len };
+                var str     = new Bytes { buffer = buffer, start = start, end = start + value.len };
                 bytes[n]    = str;
             }
             return bytes;

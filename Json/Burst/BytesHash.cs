@@ -12,7 +12,7 @@ namespace Friflo.Json.Burst
 
         
         public BytesHash(in Bytes value) {
-            var array   = value.buffer.array;
+            var array   = value.buffer;
             int len     = value.end - value.start;
             int hash    = len;
             // Rotate by 3 bits and XOR the new value.

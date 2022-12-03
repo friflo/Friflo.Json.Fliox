@@ -21,7 +21,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
             ref var value = ref reader.parser.value;
             switch (reader.parser.Event) {
                 case JsonEvent.ValueString:
-                    if (value.Len > 0 && value.buffer.array[value.Len - 1] == 'n')
+                    if (value.Len > 0 && value.buffer[value.Len - 1] == 'n')
                         value.end--;
                     if (!BigInteger.TryParse(value.AsString(), out BigInteger ret))
                         return reader.ErrorMsg<BigInteger>("Failed parsing BigInt. value: ", value.AsString(), out success);

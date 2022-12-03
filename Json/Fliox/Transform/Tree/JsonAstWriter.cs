@@ -34,18 +34,18 @@ namespace Friflo.Json.Fliox.Transform.Tree
         }
         
         internal void Init(JsonAst ast) {
-            this.ast            = ast;
-            var buffer          = ast.intern.Buf; 
-            key.  buffer.array  = buffer;
-            value.buffer.array  = buffer;
+            this.ast        = ast;
+            var buffer      = ast.intern.Buf; 
+            key.  buffer    = buffer;
+            value.buffer    = buffer;
         }
 
         /// <summary>Ensure <see cref="Bytes.buffer"/> is not modified at <see cref="Bytes.AppendBytes"/></summary>
         [Conditional("DEBUG")]
         internal void AssertBuffers() {
             var buffer          = ast.intern.Buf;
-            if (key.  buffer.array  != buffer)  throw new InvalidOperationException("key buffer modified");
-            if (value.buffer.array  != buffer)  throw new InvalidOperationException("value buffer modified");
+            if (key.  buffer  != buffer)  throw new InvalidOperationException("key buffer modified");
+            if (value.buffer  != buffer)  throw new InvalidOperationException("value buffer modified");
         }
         
         private void WriteAstInternal(JsonAst ast, ref Utf8JsonWriter writer) {

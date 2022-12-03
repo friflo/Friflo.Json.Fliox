@@ -23,13 +23,13 @@ namespace Friflo.Json.Burst.Utils
         public unsafe void FromBytes (in Bytes str, Untracked _ = Untracked.Bytes) {
             int start = str.start;
             len = str.Len;
-            if (str.buffer.array.Length < start + 32)
+            if (str.buffer.Length < start + 32)
                 throw new InvalidOperationException("FromBytes() - insufficient length");
             
 #if JSON_BURST
             byte*  srcPtr =  &((byte*)str.buffer.array.GetUnsafeList()->Ptr) [start];
 #else
-            fixed (byte*  srcPtr  = &str.buffer.array [start])
+            fixed (byte*  srcPtr  = &str.buffer[start])
 #endif
             fixed (ulong* destPtr = &byte00)
             {
@@ -68,7 +68,7 @@ namespace Friflo.Json.Burst.Utils
         }
         
         public unsafe void ToBytes (ref Bytes str) {
-            if (str.buffer.array.Length < 32)
+            if (str.buffer.Length < 32)
                 str.EnsureCapacityAbs(32);
             str.start = 0;
             str.end = len;
@@ -76,7 +76,7 @@ namespace Friflo.Json.Burst.Utils
 #if JSON_BURST
             byte*  destPtr = &((byte*)str.buffer.array.GetUnsafeList()->Ptr)[0];
 #else
-            fixed (byte*  destPtr = &str.buffer.array [0])
+            fixed (byte*  destPtr = &str.buffer[0])
 #endif
             fixed (ulong* srcPtr  = &byte00)
             {

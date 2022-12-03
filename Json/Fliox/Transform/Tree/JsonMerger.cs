@@ -237,7 +237,7 @@ namespace Friflo.Json.Fliox.Transform.Tree
                 return false;
             }
             ref var searchKey   = ref parser.key;
-            var searchKeySpan   = new Span<byte> (searchKey.buffer.array, searchKey.start, searchKey.Len);
+            var searchKeySpan   = new Span<byte> (searchKey.buffer, searchKey.start, searchKey.Len);
             var items           = members.items;
             var memberCount     = items.Count;
             for (int n = 0; n < memberCount; n++)

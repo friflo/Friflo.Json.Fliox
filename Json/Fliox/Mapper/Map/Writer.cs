@@ -94,7 +94,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
         public void WriteDelimiter(int pos) {
             if (pos > 0) {
                 bytes.EnsureCapacityAbs(bytes.end + 1);
-                bytes.buffer.array[bytes.end++] = (byte)',';
+                bytes.buffer[bytes.end++] = (byte)',';
             }
             if (pretty)
                 IndentBegin();
@@ -103,7 +103,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void WriteArrayBegin() {
             bytes.EnsureCapacityAbs(bytes.end + 1);
-            bytes.buffer.array[bytes.end++] = (byte)'[';
+            bytes.buffer[bytes.end++] = (byte)'[';
         }
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -111,7 +111,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
             if (pretty)
                 IndentEnd();
             bytes.EnsureCapacityAbs(bytes.end + 1);
-            bytes.buffer.array[bytes.end++] = (byte)']';
+            bytes.buffer[bytes.end++] = (byte)']';
         }
         
         public void IndentBegin() {
@@ -130,11 +130,11 @@ namespace Friflo.Json.Fliox.Mapper.Map
 
             if (emptyObject) {
                 bytes.EnsureCapacityAbs(bytes.end + 2);
-                bytes.buffer.array[bytes.end++] = (byte)'{';
-                bytes.buffer.array[bytes.end++] = (byte)'}';
+                bytes.buffer[bytes.end++] = (byte)'{';
+                bytes.buffer[bytes.end++] = (byte)'}';
             } else {
                 bytes.EnsureCapacityAbs(bytes.end + 1);
-                bytes.buffer.array[bytes.end++] = (byte)'}';
+                bytes.buffer[bytes.end++] = (byte)'}';
             }
         }
         
@@ -205,7 +205,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
 #if JSON_BURST
                     NonBurstWriter.WriteNonBurst(writerHandle, ref bytes.buffer, bytes.end);
 #else
-                    bytesWriter.Write(ref bytes.buffer, bytes.end);
+                    bytesWriter.Write(bytes.buffer, bytes.end);
 #endif                    
                     bytes.Clear();
                     break;

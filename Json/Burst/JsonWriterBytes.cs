@@ -55,9 +55,9 @@ namespace Friflo.Json.Burst
         // --- comment to enable source alignment in WinMerge
         public static void AppendEscStringBytes(ref Bytes dst, in Bytes src) {
             dst.EnsureCapacityAbs(dst.end + 2 * src.Len);
-            int end = src.end;
-            ref var dstArr = ref dst.buffer.array;
-            var srcArr = src.buffer.array; 
+            int end     = src.end;
+            var dstArr  = dst.buffer;
+            var srcArr  = src.buffer; 
             
             dstArr[dst.end++] = (byte)'"';
             for (int n = src.start; n < end; n++) {
@@ -81,7 +81,7 @@ namespace Friflo.Json.Burst
 
         private void AppendKeyBytes(ref Bytes dst, in Bytes key) {
             AppendEscStringBytes(ref dst, in key);
-            ref var dstArr = ref dst.buffer.array;
+            ref var dstArr = ref dst.buffer;
             dst.EnsureCapacityAbs(dst.end + 1);
             dstArr[dst.end++] = (byte)':';
             if (pretty) {

@@ -38,8 +38,8 @@ namespace Friflo.Json.Burst
             byte*  srcPtr =  &((byte*)src.buffer.array.GetUnsafeList()->Ptr) [src.start];
             byte*  destPtr = &((byte*)buffer.array.GetUnsafeList()->Ptr)     [curEnd];
 #else
-            fixed (byte* srcPtr =     &src.buffer.array                      [src.start])
-            fixed (byte* destPtr =    &buffer.array                          [curEnd])
+            fixed (byte* srcPtr =     &src.buffer                            [src.start])
+            fixed (byte* destPtr =    &buffer                                [curEnd])
 #endif
             {
                 if (len <= 8) {
@@ -105,7 +105,7 @@ namespace Friflo.Json.Burst
 #if JSON_BURST
                 UnsafeUtility.MemCpy(destPtr, srcPtr, len);
 #else
-                Buffer.MemoryCopy(srcPtr, destPtr, buffer.array.Length - curEnd, len);
+                Buffer.MemoryCopy(srcPtr, destPtr, buffer.Length - curEnd, len);
                 // Buffer.BlockCopy(src.buffer.array, src.start, buffer.array, curEnd, len);
 #endif
             }

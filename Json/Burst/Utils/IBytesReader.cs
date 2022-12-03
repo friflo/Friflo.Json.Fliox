@@ -15,7 +15,7 @@ namespace Friflo.Json.Burst.Utils
 {
     public interface IBytesReader
     {
-        int Read(ref ByteList dst, int count);
+        int Read(byte[] dst, int count);
     }
     
     public sealed class StreamBytesReader: IBytesReader {
@@ -28,7 +28,7 @@ namespace Friflo.Json.Burst.Utils
             this.stream = stream;
         }
         
-        public unsafe int Read(ref ByteList dst, int count) {
+        public unsafe int Read(byte[] dst, int count) {
 #if JSON_BURST
             int requestBytes = count > 4096 ? 4096 : count;
             int readBytes = stream.Read(buffer, 0, requestBytes);
@@ -40,7 +40,7 @@ namespace Friflo.Json.Burst.Utils
             return readBytes;
 
 #else
-            return stream.Read(dst.array, 0, count);
+            return stream.Read(dst, 0, count);
 #endif
         }
     }
@@ -62,7 +62,7 @@ namespace Friflo.Json.Burst.Utils
             this.end = start + count;
         }
         
-        public int Read(ref ByteList dst, int count) {
+        public int Read(byte[] dst, int count) {
             int curPos = pos;
             pos += count;
             if (pos > end)
@@ -79,7 +79,7 @@ namespace Friflo.Json.Burst.Utils
                 }
             }
 #else
-            Buffer.BlockCopy(array, curPos, dst.array, 0, len);
+            Buffer.BlockCopy(array, curPos, dst, 0, len);
 #endif
             return len;
         }
