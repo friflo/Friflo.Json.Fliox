@@ -1,4 +1,8 @@
-image: gitpod/workspace-dotnet
+image: gitpod/workspace-dotnet:2022-11-12-01-07-25
+# 2022-11-12-01-07-25      latest NET 6 version: 6.0.200
+# https://github.com/gitpod-io/workspace-images/commit/dd6b7306d3fd51195c928382b0b01b3563fc892e
+# https://hub.docker.com/layers/gitpod/workspace-dotnet/2022-11-12-01-07-25/images/sha256-c78fcfd6344ffd8e5fb08e9ccd79356871d8f829ad6cf8c83b829fa12efb15e3
+
 
 tasks:
   - name: Restore & Build
