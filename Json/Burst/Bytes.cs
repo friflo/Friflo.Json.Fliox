@@ -312,7 +312,7 @@ namespace Friflo.Json.Burst
             if (Len != array.Length)
                 return false;
             int pos = 0;
-            var buf = buffer.array;
+            var buf = buffer;
             var endPos = end; 
             for (int n = start; n < endPos; n++) {
                 if (buf[n] != array[pos++])

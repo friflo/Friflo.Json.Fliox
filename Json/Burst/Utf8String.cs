@@ -71,7 +71,7 @@ namespace Friflo.Json.Burst
             if (len != value.Len)
                 return false;
 #if UNITY_5_3_OR_NEWER
-            return ArraysEqual(buffer.Buf, start, value.buffer.array, len);
+            return ArraysEqual(buffer.Buf, start, value.buffer, len);
 #else
             var left   = ReadOnlySpan;
             var right  = new ReadOnlySpan<byte> (value.buffer, value.start, value.Len);
