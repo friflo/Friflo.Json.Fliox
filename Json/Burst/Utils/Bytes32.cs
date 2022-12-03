@@ -88,7 +88,7 @@ namespace Friflo.Json.Burst.Utils
         }
 
         public override string ToString() {
-            var str = new Bytes(32, AllocType.Persistent);
+            var str = new Bytes(32);
             ToBytes(ref str);
             return str.ToString();
         }

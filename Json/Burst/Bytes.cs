@@ -73,12 +73,13 @@ namespace Friflo.Json.Burst
             buffer  = AllocateBuffer(capacity);
         }
         
-        /// called previously <see cref="ByteList"/> constructor
+        
+        /* called previously <see cref="ByteList"/> constructor
         public Bytes(int capacity, AllocType allocType) {
             start   = 0;
             end     = 0;
             buffer  = AllocateBuffer(capacity);
-        }
+        } */
         
         /// called previously <see cref="ByteList"/> constructor
         public Bytes (string str) {
