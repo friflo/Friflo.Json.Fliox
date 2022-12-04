@@ -14,7 +14,6 @@ namespace Friflo.Json.Fliox.Transform.Tree
     public sealed class JsonAstReader : IDisposable
     {
         private             Utf8JsonParser      parser;
-        private             Bytes               json    = new Bytes(128);
         /// for debugging use <see cref="JsonAstIntern.DebugNodes"/>
         private             JsonAstIntern       ast;
         private  readonly   JsonAst             astApi  = new JsonAst();
@@ -37,9 +36,7 @@ namespace Friflo.Json.Fliox.Transform.Tree
         }
 
         public JsonAst CreateAst(in JsonValue value) {
-            json.Clear();
-            json.AppendArray(value);
-            parser.InitParser(json);
+            parser.InitParser(value);
             ast.Init();
             
             Start();
@@ -53,9 +50,7 @@ namespace Friflo.Json.Fliox.Transform.Tree
         }
         
         public void Test(in JsonValue value) {
-            json.Clear();
-            json.AppendArray(value);
-            parser.InitParser(json);
+            parser.InitParser(value);
             parser.SkipTree();
         }
         
@@ -200,7 +195,6 @@ namespace Friflo.Json.Fliox.Transform.Tree
         }
 
         public void Dispose() {
-            json.Dispose();
             parser.Dispose();
         }
     }

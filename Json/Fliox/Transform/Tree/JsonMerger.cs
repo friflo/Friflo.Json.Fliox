@@ -22,7 +22,6 @@ namespace Friflo.Json.Fliox.Transform.Tree
         private             Utf8JsonParser      parser;
         private             Utf8JsonWriter      writer;
         private             bool                pretty;
-        private             Bytes               json;
         private readonly    JsonAstReader       astReader;
         private readonly    JsonAstWriter       astWriter;
         private             JsonAst             ast;
@@ -31,7 +30,6 @@ namespace Friflo.Json.Fliox.Transform.Tree
         private             bool                writeNullMembers;
         
         public JsonMerger() {
-            json            = new Bytes(128);
             astReader       = new JsonAstReader();
             astWriter       = new JsonAstWriter();
             membersStack    = new List<AstMembers>();
@@ -40,7 +38,6 @@ namespace Friflo.Json.Fliox.Transform.Tree
         public void Dispose() {
             astReader.Dispose();
             astWriter.Dispose();
-            json.Dispose();
             parser.Dispose();
             writer.Dispose();
         }
@@ -68,9 +65,7 @@ namespace Friflo.Json.Fliox.Transform.Tree
             }
             astWriter.Init(ast);
             writer.InitSerializer();
-            json.Clear();
-            json.AppendArray(value);
-            parser.InitParser(json);
+            parser.InitParser(value);
             parser.NextEvent();
 
             Start(0);

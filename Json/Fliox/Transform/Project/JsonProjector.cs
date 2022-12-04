@@ -10,8 +10,6 @@ namespace Friflo.Json.Fliox.Transform.Project
     public sealed class JsonProjector: IDisposable
     {
         private             Utf8JsonWriter          serializer;
-            
-        private             Bytes                   targetJson  = new Bytes(128);
         private             Utf8JsonParser          parser;
         private             Bytes                   valueBuf    = new Bytes(1);
         private             Bytes                   __typename;
@@ -26,14 +24,11 @@ namespace Friflo.Json.Fliox.Transform.Project
             __typename.Dispose();
             valueBuf.Dispose();
             parser.Dispose();
-            targetJson.Dispose();
             serializer.Dispose();
         }
 
         public JsonValue Project(in SelectionNode node, in JsonValue value) {
-            targetJson.Clear();
-            targetJson.AppendArray(value);
-            parser.InitParser(targetJson);
+            parser.InitParser(value);
             parser.NextEvent();
             serializer.InitSerializer();
             serializer.SetPretty(true);

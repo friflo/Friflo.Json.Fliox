@@ -13,7 +13,6 @@ namespace Friflo.Json.Fliox.Schema.Validation
     public sealed class TypeValidator : IDisposable
     {
         internal            Utf8JsonParser  parser; // on top enabling instance offset 0
-        private             Bytes           jsonBytes = new Bytes(128);
         private             ValidationError validationError;
         private  readonly   List<bool[]>    foundFieldsCache = new List<bool[]>();
         private  readonly   StringBuilder   sb = new StringBuilder();
@@ -37,16 +36,13 @@ namespace Friflo.Json.Fliox.Schema.Validation
         
         public void Dispose() {
             parser.Dispose();
-            jsonBytes.Dispose();
             foundFieldsCache.Clear();
             sb.Clear();
         }
         
         private void Init(in JsonValue json) {
             validationError = new ValidationError();
-            jsonBytes.Clear();
-            jsonBytes.AppendArray(json);
-            parser.InitParser(jsonBytes);
+            parser.InitParser(json);
         }
         
         private bool Return(ValidationTypeDef typeDef, bool success, out string error) {
@@ -63,9 +59,7 @@ namespace Friflo.Json.Fliox.Schema.Validation
         }
         
         public bool ValidateJson(in JsonValue json, out string error) {
-            jsonBytes.Clear();
-            jsonBytes.AppendArray(json);
-            parser.InitParser(jsonBytes);
+            parser.InitParser(json);
             parser.SkipTree();
             var success = !parser.error.ErrSet;
             if (success) {

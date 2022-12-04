@@ -8,13 +8,10 @@ namespace Friflo.Json.Fliox.Transform
 {
     public sealed class JsonValidator : IDisposable
     {
-        private             Bytes           jsonBytes = new Bytes(128);
         private             Utf8JsonParser  parser;
         
         public bool IsValidJson(in JsonValue json, out string error) {
-            jsonBytes.Clear();
-            jsonBytes.AppendArray(json);
-            parser.InitParser(jsonBytes);
+            parser.InitParser(json);
             while (true) {
                 var ev = parser.NextEvent();
                 if (ev == JsonEvent.EOF) {
@@ -29,7 +26,6 @@ namespace Friflo.Json.Fliox.Transform
         }
         
         public void Dispose() {
-            jsonBytes.Dispose();
             parser.Dispose();
         }
     }

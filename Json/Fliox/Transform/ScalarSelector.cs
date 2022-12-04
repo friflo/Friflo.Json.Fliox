@@ -13,7 +13,6 @@ namespace Friflo.Json.Fliox.Transform
 #endif
     public sealed class ScalarSelector : IDisposable
     {
-        private             Bytes                               targetJson = new Bytes(128);
         private             Utf8JsonParser                      targetParser;
         
         /// use <see cref="NodeStack"/> while debugging
@@ -27,7 +26,6 @@ namespace Friflo.Json.Fliox.Transform
 
         public void Dispose() {
             targetParser.Dispose();
-            targetJson.Dispose();
         }
 
         /// <summary>
@@ -38,9 +36,7 @@ namespace Friflo.Json.Fliox.Transform
             scalarSelect.InitSelectorResults();
             nodeStack.Clear();
             nodeStack.Add(scalarSelect.nodeTree.rootNode);
-            targetJson.Clear();
-            targetJson.AppendArray(json);
-            targetParser.InitParser(targetJson);
+            targetParser.InitParser(json);
             targetParser.NextEvent();
             
             TraceTree(ref targetParser);

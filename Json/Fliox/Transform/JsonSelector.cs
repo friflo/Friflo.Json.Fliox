@@ -14,8 +14,6 @@ namespace Friflo.Json.Fliox.Transform
     public sealed class JsonSelector : IDisposable
     {
         private             Utf8JsonWriter                      serializer;
-            
-        private             Bytes                               targetJson = new Bytes(128);
         private             Utf8JsonParser                      targetParser;
         
         private readonly    List<PathNode<JsonSelectResult>>    nodeStack = new List<PathNode<JsonSelectResult>>();
@@ -25,7 +23,6 @@ namespace Friflo.Json.Fliox.Transform
 
         public void Dispose() {
             targetParser.Dispose();
-            targetJson.Dispose();
             serializer.Dispose();
         }
 
@@ -37,9 +34,7 @@ namespace Friflo.Json.Fliox.Transform
             scalarSelect.InitSelectorResults();
             nodeStack.Clear();
             nodeStack.Add(scalarSelect.nodeTree.rootNode);
-            targetJson.Clear();
-            targetJson.AppendArray(json);
-            targetParser.InitParser(targetJson);
+            targetParser.InitParser(json);
             targetParser.NextEvent();
             serializer.SetPretty(pretty);
             

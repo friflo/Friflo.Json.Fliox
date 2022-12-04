@@ -91,9 +91,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Utils
             foundKey = false;
             SetKey(ref idKey, keyName);
             keyValue = new JsonKey();
-            jsonBytes.Clear();
-            jsonBytes.AppendArray(json);
-            parser.InitParser(jsonBytes);
+            parser.InitParser(json);
             var ev = parser.NextEvent();
             if (ev != JsonEvent.ObjectStart) {
                 error   = $"entity value must be an object.";
