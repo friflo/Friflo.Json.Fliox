@@ -14,11 +14,7 @@ namespace Friflo.Json.Fliox.Transform
     public sealed class JsonPatcher : IDisposable
     {
         private             Utf8JsonWriter  serializer;
-        
-        private             Bytes           targetJson = new Bytes(128);
         private             Utf8JsonParser  targetParser;
-        
-        private             Bytes           patchJson = new Bytes(128);
         private             Utf8JsonParser  patchParser;
         
         private             Bytes           keyBytes = new Bytes(32);
@@ -29,9 +25,7 @@ namespace Friflo.Json.Fliox.Transform
         public void Dispose() {
             keyBytes.Dispose();
             patchParser.Dispose();
-            patchJson.Dispose();
             targetParser.Dispose();
-            targetJson.Dispose();
             serializer.Dispose();
         }
         
@@ -42,9 +36,7 @@ namespace Friflo.Json.Fliox.Transform
             PatchNode.CreatePatchTree(rootNode, patches, pathTokens);
             nodeStack.Clear();
             nodeStack.Add(rootNode);
-            targetJson.Clear();
-            targetJson.AppendArray(target);
-            targetParser.InitParser(targetJson);
+            targetParser.InitParser(target);
             targetParser.NextEvent();
             serializer.InitSerializer();
             serializer.SetPretty(pretty);
@@ -58,9 +50,7 @@ namespace Friflo.Json.Fliox.Transform
 
         public JsonValue Copy(JsonValue json, bool pretty) {
             serializer.SetPretty(pretty);
-            this.targetJson.Clear();
-            this.targetJson.AppendArray(json);
-            targetParser.InitParser(this.targetJson);
+            targetParser.InitParser(json);
             targetParser.NextEvent();
             serializer.InitSerializer();
             serializer.WriteTree(ref targetParser);
@@ -75,9 +65,7 @@ namespace Friflo.Json.Fliox.Transform
                     switch (patch.patchType) {
                         case PatchType.Replace:
                         case PatchType.Add:
-                            patchJson.Clear();
-                            patchJson.AppendArray(patch.json);
-                            patchParser.InitParser(patchJson);
+                            patchParser.InitParser(patch.json);
                             patchParser.NextEvent();
                             serializer.WriteMember(ref p.key, ref patchParser);
                             targetParser.SkipEvent();
@@ -135,9 +123,7 @@ namespace Friflo.Json.Fliox.Transform
                                 child.Key.AppendTo(ref keyBytes, ref p.format);
                                 // var key = child.Key.AsString();
                                 // keyBytes.AppendString(key);
-                                patchJson.Clear();
-                                patchJson.AppendArray(patch.json);
-                                patchParser.InitParser(patchJson);
+                                patchParser.InitParser(patch.json);
                                 patchParser.NextEvent();
                                 serializer.WriteMember(ref keyBytes, ref patchParser);
                                 continue;
@@ -167,9 +153,7 @@ namespace Friflo.Json.Fliox.Transform
                 if (node.children.TryGetValue(key, out PatchNode patch)) {
                     switch (patch.patchType) {
                         case PatchType.Replace:
-                            patchJson.Clear();
-                            patchJson.AppendArray(patch.json);
-                            patchParser.InitParser(patchJson);
+                            patchParser.InitParser(patch.json);
                             patchParser.NextEvent();
                             serializer.WriteTree(ref patchParser);
                             targetParser.SkipEvent();
@@ -228,9 +212,7 @@ namespace Friflo.Json.Fliox.Transform
         private bool TraceTree(ref Utf8JsonParser p) {
             switch (rootNode.patchType) {
                 case PatchType.Replace:
-                    patchJson.Clear();
-                    patchJson.AppendArray(rootNode.json);
-                    patchParser.InitParser(patchJson);
+                    patchParser.InitParser(rootNode.json);
                     patchParser.NextEvent();
                     serializer.WriteTree(ref patchParser);
                     nodeStack.Clear();
