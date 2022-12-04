@@ -26,6 +26,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Utils
         private             Bytes                   jsonBytes   = new Bytes(128);
         private             Utf8JsonParser          parser;
         private             Bytes                   idKey       = new Bytes(16);
+        private             Bytes                   defaultKey  = new Bytes("id");
         private             bool                    foundKey;
         //                  --- ReplaceKey
         private             Utf8JsonParser.State    keyState;
@@ -35,8 +36,17 @@ namespace Friflo.Json.Fliox.Hub.Host.Utils
         private             bool                    asIntKey;
         private             Bytes                   sb          = new Bytes(0);
         
+        
+        private void SetKey(ref Bytes dst, string value) {
+            dst.Clear();
+            if (value == null) {
+                dst.AppendBytes(ref defaultKey);
+            } else {
+                dst.AppendStringUtf8(value);   
+            }
+        }
+        
         public bool GetEntityKey(in JsonValue json, string keyName, out JsonKey keyValue, out string error) {
-            keyName  = keyName ?? "id";
             return Traverse(json, keyName, out keyValue, ProcessingType.GetKey,   out error);
         }
         
@@ -46,11 +56,13 @@ namespace Friflo.Json.Fliox.Hub.Host.Utils
         
         public JsonValue ReplaceKey(in JsonValue json, string keyName, bool asIntKey, string newKeyName, out JsonKey keyValue, out string error) {
             this.asIntKey   = asIntKey;
+            if (!Traverse  (json, keyName, out keyValue, ProcessingType.SetKey,   out error)) {
+                return new JsonValue();
+            }
+            SetKey(ref idKey, newKeyName);
             keyName         = keyName       ?? "id";
             newKeyName      = newKeyName    ?? "id";
             bool equalKeys  = keyName == newKeyName;
-            if (!Traverse  (json, keyName, out keyValue, ProcessingType.SetKey,   out error))
-                return new JsonValue();
             if (equalKeys && foundIntKey == asIntKey)
                 return json;
             sb.Clear();
@@ -59,8 +71,6 @@ namespace Friflo.Json.Fliox.Hub.Host.Utils
                 sb.AppendChar(',');
             }
             sb.AppendChar('\"');
-            idKey.Clear();
-            idKey.FromString(newKeyName);
             sb.AppendBytes(ref idKey);
             sb.AppendString("\":");
             if (asIntKey) {
@@ -79,8 +89,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Utils
 
         private bool Traverse (in JsonValue json, string keyName, out JsonKey keyValue, ProcessingType processingType, out string error) {
             foundKey = false;
-            idKey.Clear();
-            idKey.FromString(keyName);
+            SetKey(ref idKey, keyName);
             keyValue = new JsonKey();
             jsonBytes.Clear();
             jsonBytes.AppendArray(json);
@@ -221,6 +230,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Utils
         }
         
         public void Dispose() {
+            defaultKey.Dispose();
             idKey.Dispose();
             jsonBytes.Dispose();
             parser.Dispose();

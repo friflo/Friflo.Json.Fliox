@@ -84,7 +84,7 @@ namespace Friflo.Json.Burst
             start   = 0;
             end     = 0;
             buffer  = AllocateBuffer(0);
-            FromString(str);
+            AppendStringUtf8(str);
         }
         
         /// <summary> <see cref="Bytes32.FromBytes"/> expect capacity + 32</summary>
@@ -411,7 +411,7 @@ namespace Friflo.Json.Burst
         /*
          * Must not by called from Burst. Burst cant handle managed types
          */
-        public void FromString(string str) {
+        public void AppendStringUtf8(string str) {
             if (str == null)
                 throw new ArgumentNullException(nameof(str));
             int maxByteLen = end + utf8.GetMaxByteCount(str.Length);
@@ -468,7 +468,7 @@ namespace Friflo.Json.Burst
 
         public void Set (string val)
         {
-            FromString(val);
+            AppendStringUtf8(val);
         }
         
 #if JSON_BURST

@@ -196,5 +196,9 @@ namespace Friflo.Json.Fliox
         public static void Write(this Stream stream, in JsonValue array) {
             stream.Write(array.Array, array.start, array.Count);
         }
+        
+        public static void InitParser(this Utf8JsonParser parser, in JsonValue json) {
+            parser.InitParser (json.Array, json.start, json.Count);
+        }
     }
 }

@@ -26,7 +26,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
             AreEqual("€", str);
 
             Bytes dst = new Bytes(0);
-            dst.FromString("€");
+            dst.AppendStringUtf8("€");
             IsTrue(src.IsEqual(dst));
             dst.Dispose();
             src.Dispose();

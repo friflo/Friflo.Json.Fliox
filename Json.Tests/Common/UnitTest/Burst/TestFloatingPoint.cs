@@ -100,7 +100,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
 
         double ParseDbl(String value, ref ParseDblCx parseCx) {
             parseCx.bytes.Clear();
-            parseCx.bytes.FromString(value);
+            parseCx.bytes.AppendStringUtf8(value);
             return parseCx.parser.ParseDouble(ref parseCx.bytes, ref parseCx.parseError, out parseCx.success);
         }
         
