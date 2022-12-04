@@ -314,7 +314,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         }
         
         public EntityDatabase GetDatabase(in SmallString name) {
-            if (name.IsEqual(DatabaseName))
+            if (name.IsEqual(database.name))
                 return database;
             return extensionDbs[name];
         }
