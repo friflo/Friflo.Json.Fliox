@@ -67,7 +67,6 @@ namespace Friflo.Json.Fliox
             array   = value.buffer ?? throw new ArgumentNullException(nameof(value), "value array == null");
             start   = value.start;
             count   = value.Len;
-            start   = 0;
         }
         
         /// <summary>create a copy of the given <paramref name="value"/> </summary>

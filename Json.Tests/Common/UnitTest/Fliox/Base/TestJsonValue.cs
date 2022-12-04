@@ -1,6 +1,7 @@
 // Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System.Text;
 using Friflo.Json.Fliox;
 using Friflo.Json.Fliox.Mapper;
 using NUnit.Framework;
@@ -38,6 +39,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Base
             test = mapper.ReadTo(@"{""value"":3333}", test, false);
             AreEqual("3333", test.value.AsString());
             IsFalse(val1.IsEqualReference(test.value));
+        }
+        
+        [Test]
+        public static void TestJsonValueInit() {
+            var value = new JsonValue(Encoding.UTF8.GetBytes("abc1234"), 3, 2);
+            AreEqual("12", value.ToString());
         }
     }
 }
