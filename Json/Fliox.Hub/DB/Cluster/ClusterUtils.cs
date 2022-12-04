@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using Friflo.Json.Burst.Utils;
 using Friflo.Json.Fliox.Hub.Host.Event;
 using Friflo.Json.Fliox.Hub.Protocol;
 
@@ -31,13 +32,13 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
         
         // --- RequestCount
         internal static void UpdateCountsMap (
-            Dictionary<string, RequestCount>    requestCounts, // key: database
-            string                              database,
-            SyncRequest                         syncRequest)
+            Dictionary<SmallString, RequestCount>   requestCounts, // key: database
+            in SmallString                          database,
+            SyncRequest                             syncRequest)
         {
             lock (requestCounts) {
                 if (!requestCounts.TryGetValue(database, out RequestCount requestCount)) {
-                    requestCount = new RequestCount { db = database };
+                    requestCount = new RequestCount { db = database.value };
                     requestCounts[database] = requestCount;
                 }
                 UpdateCounts(ref requestCount, syncRequest);
@@ -51,9 +52,9 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
         }
         
         internal static void CountsMapToList(
-            List<RequestCount>                  dst,
-            Dictionary<string, RequestCount>    src,
-            string                              exclude)
+            List<RequestCount>                      dst,
+            Dictionary<SmallString, RequestCount>   src,
+            string                                  exclude)
         {
             dst.Clear();
             lock (src) {

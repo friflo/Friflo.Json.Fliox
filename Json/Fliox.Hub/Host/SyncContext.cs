@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using Friflo.Json.Burst.Utils;
 using Friflo.Json.Fliox.Hub.Host.Auth;
 using Friflo.Json.Fliox.Hub.Host.Event;
 using Friflo.Json.Fliox.Hub.Host.Utils;
@@ -30,8 +31,8 @@ namespace Friflo.Json.Fliox.Hub.Host
         public              JsonKey                     ClientId        => clientId;
         public              User                        User            => authState.user;
         public              bool                        Authenticated   => authState.authenticated;
-        public              string                      DatabaseName    { get; internal set; }              // not null
-        public              EntityDatabase              Database        => hub.GetDatabase(DatabaseName);   // not null
+        public              SmallString                 DatabaseName    => databaseName;                    // not null
+        public              EntityDatabase              Database        => hub.GetDatabase(databaseName);   // not null
         public              ObjectPool<ObjectMapper>    ObjectMapper    => pool.ObjectMapper;
         public              ObjectPool<EntityProcessor> EntityProcessor => pool.EntityProcessor;
         public              MemoryBuffer                MemoryBuffer    => memoryBuffer;
@@ -50,6 +51,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         internal            FlioxHub                hub;
         internal  readonly  SharedCache             sharedCache;
         internal            JsonKey                 clientId;
+        internal            SmallString             databaseName;              // not null
         internal            ClientIdValidation      clientIdValidation;
         internal  readonly  MemoryBuffer            memoryBuffer;
         internal  readonly  SyncBuffers             syncBuffers;

@@ -100,7 +100,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             this.pool               = sharedEnv.Pool;
             this.hubLogger          = sharedEnv.hubLogger;
             this.hub                = hub;
-            this.database           = database ?? (hub is RemoteClientHub remoteHub ? remoteHub.DatabaseName : null);
+            this.database           = database ?? (hub is RemoteClientHub remoteHub ? remoteHub.DatabaseName.value : null);
             this.eventReceiver      = eventReceiver;
             
             // --- readonly / private - owned

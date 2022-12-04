@@ -6,6 +6,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using Friflo.Json.Burst.Utils;
 using Friflo.Json.Fliox.Hub.DB.Cluster;
 using Friflo.Json.Fliox.Hub.Host.Utils;
 using Friflo.Json.Fliox.Hub.Protocol;
@@ -52,8 +53,8 @@ namespace Friflo.Json.Fliox.Hub.Host
     {
     #region - members
         /// <summary>database name</summary>
-        public   readonly   string              name;       // non null
-        public   override   string              ToString()  => name;
+        public   readonly   SmallString         name;       // non null
+        public   override   string              ToString()  => name.value;
         
         /// <summary> map of of containers identified by their container name </summary>
         [DebuggerBrowsable(Never)]
@@ -91,7 +92,8 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// </summary>
         protected EntityDatabase(string dbName, DatabaseService service, DbOpt opt){
             containers          = new ConcurrentDictionary<string, EntityContainer>();
-            this.name           = dbName ?? throw new ArgumentNullException(nameof(dbName));
+            if (dbName == null) throw new ArgumentNullException(nameof(dbName));
+            name                = new SmallString(dbName); 
             customContainerName = (opt ?? DbOpt.Default).customContainerName;
             this.service        = service ?? new DatabaseService();
         }

@@ -5,6 +5,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using Friflo.Json.Burst.Utils;
 using Friflo.Json.Fliox.Hub.DB.Cluster;
 
 namespace Friflo.Json.Fliox.Hub.Host.Auth
@@ -32,7 +33,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
         // --- internal
         internal readonly   ConcurrentDictionary<JsonKey, Empty>    clients;        // key: clientId
         /// <b>Note</b> requires lock when accessing. Did not use ConcurrentDictionary to avoid heap allocation
-        internal readonly   Dictionary<string, RequestCount>        requestCounts;  // key: database
+        internal readonly   Dictionary<SmallString, RequestCount>   requestCounts;  // key: database
         private             HashSet<string>                         groups;         // can be null
         
         public static readonly  JsonKey   AnonymousId = new JsonKey("anonymous");
@@ -40,7 +41,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
 
         internal User (in JsonKey userId, string token) {
             clients             = new ConcurrentDictionary<JsonKey, Empty>(JsonKey.Equality);
-            requestCounts       = new Dictionary<string, RequestCount>();
+            requestCounts       = new Dictionary<SmallString, RequestCount>(SmallString.Equality);
             this.userId         = userId;
             this.token          = token;
         }

@@ -3,42 +3,42 @@
 
 using System;
 using System.Collections.Generic;
+using Friflo.Json.Burst.Utils;
 
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.Host.Auth
 {
     public readonly struct DatabaseFilter
     {
-        internal   readonly     string  database;
-        internal   readonly     bool    isPrefix;
-        internal   readonly     string  dbLabel;
+        internal   readonly     SmallString database;
+        internal   readonly     bool        isPrefix;
+        internal   readonly     string      dbLabel;
 
-        public     override     string  ToString()  => dbLabel;
+        public     override     string      ToString()  => dbLabel;
 
         internal DatabaseFilter (string database) {
             dbLabel     = database ?? throw new ArgumentNullException(nameof(database));
             isPrefix    = database.EndsWith("*");
             if (isPrefix) {
-                this.database = database.Substring(0, database.Length - 1);
+                this.database = new SmallString(database.Substring(0, database.Length - 1));
             } else {
-                this.database = database;
+                this.database = new SmallString(database);
             }
         }
         
-        private bool Authorize(string databaseName) {
-            if (databaseName == null) throw new ArgumentNullException(nameof(databaseName));
+        private bool Authorize(in SmallString databaseName) {
+            if (databaseName.IsNull()) throw new ArgumentNullException(nameof(databaseName));
             if (isPrefix) {
-                return databaseName.StartsWith(database);
+                return databaseName.value.StartsWith(database.value);
             }
-            return databaseName == database;
+            return databaseName.IsEqual(database);
         }
         
         internal bool Authorize(SyncContext syncContext) {
-            var databaseName = syncContext.DatabaseName;
-            return Authorize(databaseName);
+            return Authorize(syncContext.databaseName);
         }
         
-        internal static bool IsAuthorizedDatabase(IEnumerable<DatabaseFilter> databaseFilters, string databaseName) {
+        internal static bool IsAuthorizedDatabase(IEnumerable<DatabaseFilter> databaseFilters, in SmallString databaseName) {
             foreach (var authorizeDatabase in databaseFilters) {
                 if (authorizeDatabase.Authorize(databaseName))
                     return true;

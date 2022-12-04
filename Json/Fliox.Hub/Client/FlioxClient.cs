@@ -48,7 +48,7 @@ namespace Friflo.Json.Fliox.Hub.Client
                         private     FlioxHub                    Hub             => _intern.hub;
 
         /// <summary> name of the database the client is attached to </summary>
-        [Browse(Never)] public      string                      DatabaseName    => _intern.database ?? _intern.hub.DatabaseName;
+        [Browse(Never)] public      string                      DatabaseName    => _intern.database ?? _intern.hub.DatabaseName.value;
         /// <summary> access to standard database commands - <see cref="StdCommands"/> </summary>
         [Browse(Never)] public readonly   StdCommands           std;
         [Browse(Never)] public      IReadOnlyList<SyncFunction> Functions       => _intern.syncStore.functions;

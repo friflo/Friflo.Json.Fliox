@@ -58,7 +58,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
                         dif = GC.GetAllocatedBytesForCurrentThread() - start;
                         if (response.status != JsonResponseStatus.Ok)   Fail("Expect OK");
                     }
-                    var expect = TestUtils.IsDebug() ? 2320 : 1560;
+                    var expect = TestUtils.IsDebug() ? 2480 : 1600;
                     AreEqual(expect, dif);
                 }
             });
@@ -81,7 +81,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
                         dif = GC.GetAllocatedBytesForCurrentThread() - start;
                         if (response.status != JsonResponseStatus.Ok)   Fail("Expect OK");
                     }
-                    var expect = TestUtils.IsDebug() ? 1568 : 848;
+                    var expect = TestUtils.IsDebug() ? 1728 : 888;
                     AreEqual(expect, dif);
                 }
             });
@@ -112,7 +112,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
                         dif = GC.GetAllocatedBytesForCurrentThread() - start;
                         if (response.status != JsonResponseStatus.Ok)   Fail("Expect OK");
                     }
-                    var expect = TestUtils.IsDebug() ? 1928 : 1208;
+                    var expect = TestUtils.IsDebug() ? 2088 : 1248;
                     AreEqual(expect, dif);
                 }
             });

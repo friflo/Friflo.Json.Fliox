@@ -25,7 +25,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         public              string          Name            { get; }
         public              SyncRequestTask Task            { get; }
         public              FlioxHub        Hub             => syncContext.hub;
-        public              string          DatabaseName    => syncContext.DatabaseName; // not null
+        public              string          DatabaseName    => syncContext.databaseName.value; // not null
         public              EntityDatabase  Database        => syncContext.Database;     // not null
         public              User            User            => syncContext.User;
         public              JsonKey         ClientId        => syncContext.clientId;

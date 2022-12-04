@@ -91,7 +91,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         
         // -------------------------------------- resource access  --------------------------------------
         private static async Task GetEntitiesById(RequestContext context, string database, string container, JsonKey[] keys) {
-            if (database == context.hub.DatabaseName)
+            if (database == context.hub.DatabaseName.value)
                 database = null;
             var readEntities = new ReadEntities { container = container, ids = new List<JsonKey>(keys.Length)};
             foreach (var id in keys) {
@@ -124,7 +124,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         }
         
         private static async Task QueryEntities(RequestContext context, string database, string container, NameValueCollection queryParams) {
-            if (database == context.hub.DatabaseName)
+            if (database == context.hub.DatabaseName.value)
                 database = null;
             var filter = CreateFilterTree(context, queryParams);
             if (filter.IsNull())
@@ -228,7 +228,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         }
         
         private static async Task GetEntity(RequestContext context, string database, string container, string id) {
-            if (database == context.hub.DatabaseName)
+            if (database == context.hub.DatabaseName.value)
                 database = null;
             var entityId        = new JsonKey(id);
             var readEntities = new ReadEntities { container = container, ids = new List<JsonKey> {entityId}};
@@ -256,7 +256,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         }
         
         private static async Task DeleteEntities(RequestContext context, string database, string container, JsonKey[] keys) {
-            if (database == context.hub.DatabaseName)
+            if (database == context.hub.DatabaseName.value)
                 database = null;
             var deleteEntities  = new DeleteEntities { container = container, ids = new List<JsonKey>(keys.Length) };
             foreach (var key in keys) {
@@ -318,7 +318,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         }
         
         private static async Task PutEntities(RequestContext context, string database, string container, string id, string keyName, JsonValue value, TaskType type) {
-            if (database == context.hub.DatabaseName)
+            if (database == context.hub.DatabaseName.value)
                 database = null;
             var entities = Body2JsonValues(context, id, keyName, value, out string error);
             if (error != null) {
@@ -361,7 +361,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         }
         
         private static async Task MergeEntities(RequestContext context, string database, string container, string id, string keyName, JsonValue patch) {
-            if (database == context.hub.DatabaseName)
+            if (database == context.hub.DatabaseName.value)
                 database = null;
             var patches = Body2JsonValues(context, id, keyName, patch, out string error);
             if (error != null) {

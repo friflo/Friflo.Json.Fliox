@@ -137,7 +137,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         
         // -------------------------------- add / remove subscriptions --------------------------------
         internal bool SubscribeMessage(
-            string              database,
+            in SmallString      database,
             SubscribeMessage    subscribe,
             User                user,
             in JsonKey          clientId,
@@ -148,14 +148,13 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                 error = MissingEventReceiver; 
                 return false;
             }
-            var databaseCmp = new SmallString(database);
             error = null;
             EventSubClient subClient;
             var remove = subscribe.remove;
             if (remove.HasValue && remove.Value) {
                 if (!subClients.TryGetValue(clientId, out subClient))
                     return true;
-                if (!subClient.databaseSubs.TryGetValue(databaseCmp, out var databaseSubs)) {
+                if (!subClient.databaseSubs.TryGetValue(database, out var databaseSubs)) {
                     return true;
                 }
                 databaseSubs.RemoveMessageSubscription(subscribe.name);
@@ -163,9 +162,9 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                 return true;
             } else {
                 subClient = GetOrCreateSubClient(user, clientId, eventReceiver);
-                if (!subClient.databaseSubs.TryGetValue(databaseCmp, out var databaseSubs)) {
+                if (!subClient.databaseSubs.TryGetValue(database, out var databaseSubs)) {
                     databaseSubs = new DatabaseSubs(database);
-                    subClient.databaseSubs.TryAdd(databaseCmp, databaseSubs);
+                    subClient.databaseSubs.TryAdd(database, databaseSubs);
                 }
                 databaseSubs.AddMessageSubscription(subscribe.name);
                 return true;
@@ -173,7 +172,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         }
 
         internal bool SubscribeChanges (
-            string              database,
+            in SmallString      database,
             SubscribeChanges    subscribe,
             User                user,
             in JsonKey          clientId,
@@ -184,22 +183,21 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                 error = MissingEventReceiver; 
                 return false;
             }
-            var databaseCmp = new SmallString(database);
             error = null;
             EventSubClient subClient;
             if (subscribe.changes.Count == 0) {
                 if (!subClients.TryGetValue(clientId, out subClient))
                     return true;
-                if (!subClient.databaseSubs.TryGetValue(databaseCmp, out var databaseSubs))
+                if (!subClient.databaseSubs.TryGetValue(database, out var databaseSubs))
                     return true;
                 databaseSubs.RemoveChangeSubscription(subscribe.container);
                 RemoveEmptySubClient(subClient);
                 return true;
             } else {
                 subClient = GetOrCreateSubClient(user, clientId, eventReceiver);
-                if (!subClient.databaseSubs.TryGetValue(databaseCmp, out var databaseSubs)) {
+                if (!subClient.databaseSubs.TryGetValue(database, out var databaseSubs)) {
                     databaseSubs = new DatabaseSubs(database);
-                    subClient.databaseSubs.TryAdd(databaseCmp, databaseSubs);
+                    subClient.databaseSubs.TryAdd(database, databaseSubs);
                 }
                 databaseSubs.AddChangeSubscription(subscribe);
                 return true;
@@ -315,7 +313,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             }
             using (var pooled = syncContext.ObjectMapper.Get()) {
                 ObjectWriter writer     = pooled.instance.writer;
-                var database            = new SmallString(syncContext.DatabaseName);
+                var database            = syncContext.databaseName;
                 writer.Pretty           = false;    // write sub's as one liner
                 writer.WriteNullMembers = false;
                 

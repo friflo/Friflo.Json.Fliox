@@ -16,7 +16,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
     /// </summary>
     internal sealed class DatabaseSubs
     {
-        private  readonly   string                          database;
+        private  readonly   SmallString                     database;
 
         public   override   string                          ToString()          => $"database: {database}";
 
@@ -28,7 +28,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         internal            int                             SubCount => changeSubs.Length + messageSubs.Count + messagePrefixSubs.Count; 
 
         
-        internal DatabaseSubs (string database) {
+        internal DatabaseSubs (in SmallString database) {
             this.database   = database;
         }
         

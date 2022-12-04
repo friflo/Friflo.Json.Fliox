@@ -4,6 +4,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using Friflo.Json.Burst.Utils;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.Auth;
 using Friflo.Json.Fliox.Hub.Protocol;
@@ -71,7 +72,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
 
             var ids = new List<JsonKey>(read.ids.Count);
             foreach (var id in read.ids) {
-                var database    = id.AsString();
+                var database    = new SmallString(id.AsString());
                 if (DatabaseFilter.IsAuthorizedDatabase(databaseFilters, database)) {
                     ids.Add(id);
                 } else {

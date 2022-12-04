@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Friflo.Json.Burst.Utils;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.Auth;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
@@ -103,12 +104,12 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
             var databases       = hub.GetDatabases();
             var databaseList    = new List<DbContainers>(databases.Count);
             foreach (var pair in databases) {
-                var databaseName    = pair.Key;
+                var databaseName    = new SmallString(pair.Key);
                 if (!DatabaseFilter.IsAuthorizedDatabase(authorizedDatabases, databaseName))
                     continue;
                 var database        = pair.Value;
                 var dbContainers    = await database.GetDbContainers().ConfigureAwait(false);
-                dbContainers.id     = databaseName;
+                dbContainers.id     = databaseName.value;
                 databaseList.Add(dbContainers);
             }
             return new HostCluster{ databases = databaseList };
