@@ -64,6 +64,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         public override bool SynchronousExecution(SyncRequestTask task) {
             switch (task.TaskType) {
                 case TaskType.create:
+                case TaskType.upsert:
                     return true;
             }
             return false;
