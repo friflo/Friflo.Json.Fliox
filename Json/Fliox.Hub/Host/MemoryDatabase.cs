@@ -65,6 +65,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             switch (task.TaskType) {
                 case TaskType.create:
                 case TaskType.upsert:
+                case TaskType.delete:
                     return true;
             }
             return false;

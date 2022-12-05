@@ -36,15 +36,43 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
                 return true;
             return false;
         }
+        
+        private EntityContainer PrepareDelete(
+            EntityDatabase          database,
+            SyncContext             syncContext,
+            out TaskErrorResult     error)
+        {
+            if (container == null) {
+                error = MissingContainer();
+                return null;
+            }
+            if (ids == null && all == null) {
+                error = MissingField($"[{nameof(ids)} | {nameof(all)}]");
+                return null;
+            }
+            containerCmp    = new SmallString(container);
+            error           = null;
+            return database.GetOrCreateContainer(container);
+        }
 
         public override async Task<SyncTaskResult> ExecuteAsync(EntityDatabase database, SyncResponse response, SyncContext syncContext) {
-            if (container == null)
-                return MissingContainer();
-            if (ids == null && all == null)
-                return MissingField($"[{nameof(ids)} | {nameof(all)}]");
-            containerCmp        = new SmallString(container);
-            var entityContainer = database.GetOrCreateContainer(container);
+            var entityContainer = PrepareDelete (database, syncContext, out var error);
+            if (error != null) {
+                return error;
+            }
             var result = await entityContainer.DeleteEntitiesAsync(this, syncContext).ConfigureAwait(false);
+            if (result.Error != null) {
+                return TaskError(result.Error);
+            }
+            return result;
+        }
+        
+        public override SyncTaskResult Execute(EntityDatabase database, SyncResponse response, SyncContext syncContext) {
+            var entityContainer = PrepareDelete (database, syncContext, out var error);
+            if (error != null) {
+                return error;
+            }
+            var result = entityContainer.DeleteEntities(this, syncContext);
             if (result.Error != null) {
                 return TaskError(result.Error);
             }
