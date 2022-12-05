@@ -38,7 +38,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
             containerCmp        = new SmallString(container);
             var entityContainer = database.GetOrCreateContainer(container);
             
-            await database.service.CustomizeMerge(this, syncContext).ConfigureAwait(false);
+            database.service.CustomizeMerge(this, syncContext);
             
             var result = await entityContainer.MergeEntities(this, syncContext).ConfigureAwait(false);
             if (result.Error != null) {
