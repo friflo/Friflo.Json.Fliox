@@ -22,23 +22,24 @@ namespace Friflo.Json.Fliox
     /// </summary>
     public readonly struct JsonValue {
         /// not public to prevent potential side effects by application code mutating array elements
-        private  readonly       byte[]  array;                                              // can be null - default struct value
-        public   readonly       int     start;                                              // > 0 if using an InstancePool
-        private  readonly       int     count;                                              // can be 0    - default struct value
+        private  readonly   byte[]      array;              // can be null - default struct value
+        public   readonly   int         start;              // > 0 if using an InstancePool
+        private  readonly   int         count;              // can be 0    - default struct value
         
-        /// not public to prevent potential side effects by application code mutating array elements
-        internal                byte[]  Array       => array ?? Null;                       // never null
-        public                  int     Count       => array != null ? count : Null.Length; // always > 0
+        /// <summary><b>Note</b> Not public to prevent potential side effects by application code mutating array elements</summary>
+        internal            byte[]      Array               => array ?? Null;                       // never null
+        public              int         Count               => array != null ? count : Null.Length; // always > 0
+        public              bool        IsNull()            => array == null;
+
+        public   override   string      ToString()          => AsString();
+        public              string      AsString()          => array == null ? "null" : Encoding.UTF8.GetString(array, start, count);
         
-        public   override       string  ToString()  => AsString();
-        public                  string  AsString()  => array == null ? "null" : Encoding.UTF8.GetString(array, start, count);
+        public  ArraySegment<byte>      AsArraySegment()    => new ArraySegment<byte>   (Array, start, Count);
+        public  ReadOnlyMemory<byte>    AsReadOnlyMemory()  => new ReadOnlyMemory<byte> (Array, start, Count);
+        public  ByteArrayContent        AsByteArrayContent()=> new ByteArrayContent     (Array, start, Count); // todo may remove dependency System.Net.Http
+        public  ReadOnlySpan<byte>      AsReadOnlySpan()    => new ReadOnlySpan<byte>   (Array, start, Count);
         
-        public  ArraySegment<byte>      AsArraySegment()        => new ArraySegment<byte>(Array, start, Count);
-#if !UNITY_5_3_OR_NEWER
-//      public  ReadOnlyMemory<byte>    AsReadOnlyMemory()      => new ReadOnlyMemory<byte>(Array, start, Array.Length);
-#endif
-        public  ByteArrayContent        AsByteArrayContent()    => new ByteArrayContent(Array, start, Count); // todo hm. dependency System.Net.Http
-        
+        /// <summary>Create a <see cref="byte"/> array copy</summary>
         public  byte[]                  AsByteArray() {
             var result = new byte[Count];
             Buffer.BlockCopy(Array, start, result, 0, Count);
@@ -118,10 +119,6 @@ namespace Friflo.Json.Fliox
             start   = 0;
         }
         
-        public bool IsNull() {
-            return array == null;
-        }
-
         public bool IsEqual (in JsonValue value) {
             return Array.SequenceEqual(value.Array);
         }

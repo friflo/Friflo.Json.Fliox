@@ -23,7 +23,6 @@ namespace Friflo.Json.Fliox.Hub.Host.Utils
     /// </summary>
     public sealed class EntityProcessor : IDisposable
     {
-        private             Bytes                   jsonBytes   = new Bytes(128);
         private             Utf8JsonParser          parser;
         private             Bytes                   idKey       = new Bytes(16);
         private             Bytes                   defaultKey  = new Bytes("id");
@@ -179,15 +178,13 @@ namespace Friflo.Json.Fliox.Hub.Host.Utils
         /// its purpose is also related to parsing entities.
         /// </summary>
         public List<JsonEntity> ReadJsonArray(in JsonValue json, out string error) {
-            jsonBytes.Clear();
-            jsonBytes.AppendArray(json);
-            parser.InitParser(jsonBytes);
+            parser.InitParser(json);
             var ev = parser.NextEvent();
             if (ev != JsonEvent.ArrayStart) {
                 error   = $"expect JSON array";
                 return null;
             }
-            var srcArray    = jsonBytes.buffer;
+            var srcArray    = json.AsReadOnlySpan();
             var array       = new List<JsonEntity>();
             while (true) {
                 ev = parser.NextEvent();
@@ -230,7 +227,6 @@ namespace Friflo.Json.Fliox.Hub.Host.Utils
         public void Dispose() {
             defaultKey.Dispose();
             idKey.Dispose();
-            jsonBytes.Dispose();
             parser.Dispose();
             sb.Dispose();
         }
