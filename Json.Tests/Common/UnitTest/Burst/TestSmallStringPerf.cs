@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 using Friflo.Json.Burst.Utils;
 using Friflo.Json.Tests.Common.UnitTest.Misc.LabString;
 using NUnit.Framework;
@@ -13,7 +14,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
 {
     public static class TestSmallStringPerf
     {
-        private const           long    Count = 100; // 1000_000_000;
+        private const           long    Count = 40; // 40_000_000;
         public  static readonly string  Str1 = new string("---1");
         public  static readonly string  Str2 = new string("---2");
         
@@ -95,6 +96,28 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                 result = result || val1 == val2;
             }
             IsFalse(result);
+        }
+        
+        [Test]
+        public static void SmallString_Dictionary() {
+            var key1 = new SmallString("0123456789abcdef");
+            var map = new Dictionary<SmallString, int>(SmallString.Equality);
+            map[key1] = 1;
+            for (int n= 0; n < Count; n++) {
+                var v = map[key1];
+            }
+            AreEqual(1, map.Count);
+        }
+        
+        [Test]
+        public static void SmallString_DictionaryReference() {
+            var key1 = "0123456789abcdef";
+            var map = new Dictionary<string, int>();
+            map[key1] = 1;
+            for (int n= 0; n < Count; n++) {
+                var v = map[key1];
+            }
+            AreEqual(1, map.Count);
         }
         
         // [Test]

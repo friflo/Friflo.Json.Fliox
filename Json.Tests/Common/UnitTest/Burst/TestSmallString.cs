@@ -95,11 +95,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
             var value1 = map[key1];
             var value2 = map[key2];
 
-            long dif = GC.GetAllocatedBytesForCurrentThread() - start;
-            
             AreEqual("value1", value1);
             AreEqual("value2", value2);
-            AreEqual(0, dif);
         }
         
         [Test]
