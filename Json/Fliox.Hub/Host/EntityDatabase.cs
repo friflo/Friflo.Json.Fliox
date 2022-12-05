@@ -83,6 +83,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         internal readonly   DatabaseService     service;    // never null
         /// <summary>name of the storage type. E.g. <c>in-memory, file-system, remote, Cosmos, ...</c></summary>
         public   abstract   string              StorageType  { get; }
+        public   virtual    bool                SynchronousExecution(SyncRequestTask task) => false;
         #endregion
         
     #region - initialize

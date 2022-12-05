@@ -229,7 +229,12 @@ namespace Friflo.Json.Fliox.Hub.Host
             for (int index = 0; index < requestTasks.Count; index++) {
                 var task = requestTasks[index];
                 try {
-                    var result = await service.ExecuteTask(task, db, response, syncContext).ConfigureAwait(false);
+                    SyncTaskResult result;
+                    if (db.SynchronousExecution(task)) {
+                        result = service.ExecuteTaskSync(task, db, response, syncContext);
+                    } else {
+                        result = await service.ExecuteTask(task, db, response, syncContext).ConfigureAwait(false);
+                    }
                     tasks.Add(result);
                 } catch (Exception e) {
                     tasks.Add(TaskExceptionError(e)); // Note!  Should not happen - see documentation of this method.

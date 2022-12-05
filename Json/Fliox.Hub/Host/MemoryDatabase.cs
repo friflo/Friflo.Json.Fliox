@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using Friflo.Json.Fliox.Hub.Host.Utils;
+using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 
 namespace Friflo.Json.Fliox.Hub.Host
 {
@@ -32,7 +33,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         private  readonly   MemoryType  containerType;
         private  readonly   int         smallValueSize;
         
-        public   override   string      StorageType => "in-memory";
+        public   override   string      StorageType             => "in-memory";
 
         /// <param name="dbName"></param>
         /// <param name="service"></param>
@@ -58,6 +59,14 @@ namespace Friflo.Json.Fliox.Hub.Host
         
         public override EntityContainer CreateContainer(string name, EntityDatabase database) {
             return new MemoryContainer(name, database, containerType, pretty, smallValueSize);
+        }
+        
+        public override bool SynchronousExecution(SyncRequestTask task) {
+            switch (task.TaskType) {
+                case TaskType.create:
+                    return true;
+            }
+            return false;
         }
     }
     

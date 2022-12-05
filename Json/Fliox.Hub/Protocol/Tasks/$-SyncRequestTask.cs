@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Client;
@@ -38,7 +39,9 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         [Ignore]    internal   JsonValue?   json;
         [Ignore]    internal   SyncTask     syncTask;
         
-        public      abstract Task<SyncTaskResult> Execute(EntityDatabase database, SyncResponse response, SyncContext syncContext);
+        public      abstract   Task<SyncTaskResult> Execute(EntityDatabase database, SyncResponse response, SyncContext syncContext);
+        // todo make abstract when SyncRequestTask are implemented 
+        public      virtual    SyncTaskResult   ExecuteSync(EntityDatabase database, SyncResponse response, SyncContext syncContext) => throw new NotImplementedException();
         
         public      abstract   TaskType     TaskType { get; }
         public      abstract   string       TaskName { get; }
