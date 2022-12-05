@@ -32,6 +32,8 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
         private  readonly   Dictionary<BytesHash, TypeMapper>   mapperByName;
         public   readonly   bool                                isAbstract;
         
+        public              TypeMapper                          InstanceMapper => instanceMapper;
+        
         readonly struct Entry
         {
             private  readonly JsonValue     name;
@@ -91,9 +93,9 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
             return instancePool.CreateObject(instanceMapper);
         }
         
-        internal object CreatePolymorph(InstancePool instancePool, ref Bytes name, object obj) {
+        internal object CreatePolymorph(InstancePool instancePool, ref Bytes name, object obj, out TypeMapper mapper) {
             var key = new BytesHash (name);
-            if (!mapperByName.TryGetValue(key, out var mapper))
+            if (!mapperByName.TryGetValue(key, out mapper))
                 return null;
             if (obj != null) {
                 var objType = obj.GetType();
