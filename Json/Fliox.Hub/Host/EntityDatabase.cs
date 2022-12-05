@@ -198,7 +198,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             var filterContext   = new OperationContext();
             filterContext.Init(Operation.FilterTrue, out _);
             var query           = new QueryEntities { container = container, filterContext = filterContext, keyName = keyName };
-            var queryResult     = await srcContainer.QueryEntities(query, syncContext).ConfigureAwait(false);
+            var queryResult     = await srcContainer.QueryEntitiesAsync(query, syncContext).ConfigureAwait(false);
             
             var entities        = new List<JsonEntity>(queryResult.entities.Length);
             foreach (var entity in queryResult.entities) {
@@ -206,7 +206,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             }
             EntityUtils.GetKeysFromEntities (keyName, entities, syncContext, out _);
             var upsert          = new UpsertEntities { container = container, entities = entities };
-            await dstContainer.UpsertEntities(upsert, syncContext).ConfigureAwait(false);
+            await dstContainer.UpsertEntitiesAsync(upsert, syncContext).ConfigureAwait(false);
         }
         #endregion
     }

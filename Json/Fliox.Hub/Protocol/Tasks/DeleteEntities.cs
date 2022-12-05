@@ -37,14 +37,14 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
             return false;
         }
 
-        public override async Task<SyncTaskResult> Execute(EntityDatabase database, SyncResponse response, SyncContext syncContext) {
+        public override async Task<SyncTaskResult> ExecuteAsync(EntityDatabase database, SyncResponse response, SyncContext syncContext) {
             if (container == null)
                 return MissingContainer();
             if (ids == null && all == null)
                 return MissingField($"[{nameof(ids)} | {nameof(all)}]");
             containerCmp        = new SmallString(container);
             var entityContainer = database.GetOrCreateContainer(container);
-            var result = await entityContainer.DeleteEntities(this, syncContext).ConfigureAwait(false);
+            var result = await entityContainer.DeleteEntitiesAsync(this, syncContext).ConfigureAwait(false);
             if (result.Error != null) {
                 return TaskError(result.Error);
             }

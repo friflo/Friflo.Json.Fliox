@@ -16,7 +16,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Utils
     }
     
     /// <summary>
-    /// Is used to ensure that <see cref="ReadEntitiesResult"/> returned by <see cref="EntityContainer.ReadEntities"/>
+    /// Is used to ensure that <see cref="ReadEntitiesResult"/> returned by <see cref="EntityContainer.ReadEntitiesAsync"/>
     /// contains valid <see cref="ReadEntitiesResult.entities"/>.
     /// Validation is required for <see cref="FlioxHub"/> implementations which cannot ensure that the value of
     /// its key/values are JSON. See <see cref="ReadEntitiesResult.ValidateEntities"/>.

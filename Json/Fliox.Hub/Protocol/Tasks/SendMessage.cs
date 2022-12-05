@@ -41,7 +41,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     {
         public   override       TaskType        TaskType => TaskType.message;
 
-        public override async Task<SyncTaskResult> Execute(EntityDatabase database, SyncResponse response, SyncContext syncContext) {
+        public override async Task<SyncTaskResult> ExecuteAsync(EntityDatabase database, SyncResponse response, SyncContext syncContext) {
             if (name == null)
                 return MissingField(nameof(name));
             if (database.service.TryGetMessage(name, out var callback)) {

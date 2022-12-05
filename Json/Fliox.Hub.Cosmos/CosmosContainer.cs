@@ -68,7 +68,7 @@ namespace Friflo.Json.Fliox.Hub.Cosmos
             cosmosContainer = await db.CreateContainerIfNotExistsAsync(instanceName, "/id", throughput).ConfigureAwait(false);
         }
         
-        public override async Task<CreateEntitiesResult> CreateEntities(CreateEntities command, SyncContext syncContext) {
+        public override async Task<CreateEntitiesResult> CreateEntitiesAsync(CreateEntities command, SyncContext syncContext) {
             await EnsureContainerExists().ConfigureAwait(false);
             var entities = command.entities;
             using(var memory   = new ReusedMemoryStream()) {
@@ -86,7 +86,7 @@ namespace Friflo.Json.Fliox.Hub.Cosmos
             return new CreateEntitiesResult();
         }
 
-        public override async Task<UpsertEntitiesResult> UpsertEntities(UpsertEntities command, SyncContext syncContext) {
+        public override async Task<UpsertEntitiesResult> UpsertEntitiesAsync(UpsertEntities command, SyncContext syncContext) {
             await EnsureContainerExists().ConfigureAwait(false);
             var entities = command.entities;
             using (var memory           = new ReusedMemoryStream())
@@ -107,7 +107,7 @@ namespace Friflo.Json.Fliox.Hub.Cosmos
             return new UpsertEntitiesResult();
         }
 
-        public override async Task<ReadEntitiesResult> ReadEntities(ReadEntities command, SyncContext syncContext) {
+        public override async Task<ReadEntitiesResult> ReadEntitiesAsync(ReadEntities command, SyncContext syncContext) {
             await EnsureContainerExists().ConfigureAwait(false);
             var keys = command.ids;
             if (keys.Count > 1) {
@@ -163,7 +163,7 @@ namespace Friflo.Json.Fliox.Hub.Cosmos
 
         private readonly bool filterByClient = false; // true: used for development => query all and filter thereafter
         
-        public override async Task<QueryEntitiesResult> QueryEntities(QueryEntities command, SyncContext syncContext) {
+        public override async Task<QueryEntitiesResult> QueryEntitiesAsync(QueryEntities command, SyncContext syncContext) {
             await EnsureContainerExists().ConfigureAwait(false);
             var buffer      = new StreamBuffer();
             var documents   = new List<JsonValue>();
@@ -189,12 +189,12 @@ namespace Friflo.Json.Fliox.Hub.Cosmos
             return new QueryEntitiesResult{entities = entities };
         }
         
-        public override Task<AggregateEntitiesResult> AggregateEntities (AggregateEntities command, SyncContext syncContext) {
+        public override Task<AggregateEntitiesResult> AggregateEntitiesAsync (AggregateEntities command, SyncContext syncContext) {
             var result = new AggregateEntitiesResult { Error = new CommandError($"aggregate {command.type} not implement") };
             return Task.FromResult(result);
         }
         
-        public override async Task<DeleteEntitiesResult> DeleteEntities(DeleteEntities command, SyncContext syncContext) {
+        public override async Task<DeleteEntitiesResult> DeleteEntitiesAsync(DeleteEntities command, SyncContext syncContext) {
             await EnsureContainerExists().ConfigureAwait(false);
             var keys = command.ids;
             foreach (var key in keys) {

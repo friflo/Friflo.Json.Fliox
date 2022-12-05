@@ -28,7 +28,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
             }
         }
         
-        public override async Task<SyncTaskResult> ExecuteTask (SyncRequestTask task, EntityDatabase database, SyncResponse response, SyncContext syncContext)
+        public override async Task<SyncTaskResult> ExecuteTaskAsync (SyncRequestTask task, EntityDatabase database, SyncResponse response, SyncContext syncContext)
         {
             // Note: Keep deprecated comment - may change behavior in future
             //   tasks execution for cluster database bypass authorization - access is always allowed by intention.
@@ -38,11 +38,11 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
             }
             switch (task.TaskType) {
                 case TaskType.command:
-                    return await task.Execute(database, response, syncContext).ConfigureAwait(false);
+                    return await task.ExecuteAsync(database, response, syncContext).ConfigureAwait(false);
                 case TaskType.read:
                     var read        = (ReadEntities)task;
                     var denied      = ApplyAuthorizedDatabaseFilter(read, syncContext);
-                    var readResult  = (ReadEntitiesResult)await task.Execute(clusterDB.stateDB, response, syncContext).ConfigureAwait(false);
+                    var readResult  = (ReadEntitiesResult)await task.ExecuteAsync(clusterDB.stateDB, response, syncContext).ConfigureAwait(false);
                     var container   = response.GetContainerResult(read.container);
                     var entityMap   = container.entityMap;
                     foreach (var id in denied) {
@@ -57,7 +57,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
                     // return await task.Execute(clusterDB.stateDB, response, syncContext).ConfigureAwait(false);
                 case TaskType.query:
                     ApplyAuthorizedDatabaseFilter((QueryEntities)task, syncContext);
-                    return await task.Execute(clusterDB.stateDB, response, syncContext).ConfigureAwait(false);
+                    return await task.ExecuteAsync(clusterDB.stateDB, response, syncContext).ConfigureAwait(false);
                 default:
                     SyncTaskResult result = SyncRequestTask.InvalidTask ($"ClusterDB does not support task: '{task.TaskType}'");
                     return result;

@@ -122,7 +122,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             foreach (var name in containerNames) {
                 var container   = database.GetOrCreateContainer(name);
                 var aggregate   = new AggregateEntities { container = name, type = AggregateType.count };
-                var aggResult   = await container.AggregateEntities(aggregate, context.SyncContext).ConfigureAwait(false);
+                var aggResult   = await container.AggregateEntitiesAsync(aggregate, context.SyncContext).ConfigureAwait(false);
                 
                 double count    = aggResult.value ?? 0;
                 var stats       = new ContainerStats { name = name, count = (long)count };

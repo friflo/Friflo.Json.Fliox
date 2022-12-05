@@ -31,7 +31,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         public   override   TaskType            TaskType => TaskType.read;
         public   override   string              TaskName =>  $"container: '{container}'";
 
-        public override async Task<SyncTaskResult> Execute(EntityDatabase database, SyncResponse response, SyncContext syncContext) {
+        public override async Task<SyncTaskResult> ExecuteAsync(EntityDatabase database, SyncResponse response, SyncContext syncContext) {
             if (container == null)
                 return MissingContainer();
 
@@ -45,7 +45,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
                 return error;
 
             var entityContainer = database.GetOrCreateContainer(container);
-            var result          = await entityContainer.ReadEntities(this, syncContext).ConfigureAwait(false);
+            var result          = await entityContainer.ReadEntitiesAsync(this, syncContext).ConfigureAwait(false);
             
             if (result.Error != null) {
                 return TaskError(result.Error);

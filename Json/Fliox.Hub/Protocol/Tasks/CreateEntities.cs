@@ -71,13 +71,13 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
             return true;
         }
         
-        public override async Task<SyncTaskResult> Execute(EntityDatabase database, SyncResponse response, SyncContext syncContext) {
+        public override async Task<SyncTaskResult> ExecuteAsync(EntityDatabase database, SyncResponse response, SyncContext syncContext) {
             var entityContainer = database.GetOrCreateContainer(container);
             List<EntityError> validationErrors = null;
             if (!PrepareCreate(entityContainer, syncContext, ref validationErrors, out var error)) {
                 return error;
             }
-            var result = await entityContainer.CreateEntities(this, syncContext).ConfigureAwait(false);
+            var result = await entityContainer.CreateEntitiesAsync(this, syncContext).ConfigureAwait(false);
             
             if (result.Error != null) {
                 return TaskError(result.Error);
@@ -86,13 +86,13 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
             return result;
         }
         
-        public override SyncTaskResult ExecuteSync(EntityDatabase database, SyncResponse response, SyncContext syncContext) {
+        public override SyncTaskResult Execute(EntityDatabase database, SyncResponse response, SyncContext syncContext) {
             var entityContainer = database.GetOrCreateContainer(container);
             List<EntityError> validationErrors = null;
             if (!PrepareCreate(entityContainer, syncContext, ref validationErrors, out var error)) {
                 return error;
             }
-            var result = entityContainer.CreateEntitiesSync(this, syncContext);
+            var result = entityContainer.CreateEntities(this, syncContext);
             
             if (result.Error != null) {
                 return TaskError(result.Error);

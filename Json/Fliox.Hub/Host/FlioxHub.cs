@@ -18,6 +18,7 @@ using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Hub.Utils;
 using static System.Diagnostics.DebuggerBrowsableState;
 
+// ReSharper disable MethodHasAsyncOverload
 namespace Friflo.Json.Fliox.Hub.Host
 {
     /// <summary>
@@ -231,9 +232,9 @@ namespace Friflo.Json.Fliox.Hub.Host
                 try {
                     SyncTaskResult result;
                     if (db.SynchronousExecution(task)) {
-                        result = service.ExecuteTaskSync(task, db, response, syncContext);
+                        result = service.ExecuteTask(task, db, response, syncContext);
                     } else {
-                        result = await service.ExecuteTask(task, db, response, syncContext).ConfigureAwait(false);
+                        result = await service.ExecuteTaskAsync(task, db, response, syncContext).ConfigureAwait(false);
                     }
                     tasks.Add(result);
                 } catch (Exception e) {

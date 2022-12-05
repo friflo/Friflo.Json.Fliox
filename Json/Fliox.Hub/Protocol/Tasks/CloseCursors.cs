@@ -23,7 +23,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         
         public   override   string          TaskName => $"container: '{container}', cursor: {cursors}";
 
-        public override Task<SyncTaskResult> Execute(EntityDatabase database, SyncResponse response, SyncContext syncContext) {
+        public override Task<SyncTaskResult> ExecuteAsync(EntityDatabase database, SyncResponse response, SyncContext syncContext) {
             if (container == null)
                 return Task.FromResult<SyncTaskResult>(MissingContainer());
             

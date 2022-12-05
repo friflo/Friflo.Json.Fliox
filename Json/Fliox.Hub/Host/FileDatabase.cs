@@ -89,7 +89,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             return folder + key + ".json";
         }
         
-        public override async Task<CreateEntitiesResult> CreateEntities(CreateEntities command, SyncContext syncContext) {
+        public override async Task<CreateEntitiesResult> CreateEntitiesAsync(CreateEntities command, SyncContext syncContext) {
             var entities = command.entities;
             List<EntityError> createErrors = null;
             await rwLock.AcquireWriterLock().ConfigureAwait(false);
@@ -112,7 +112,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             return new CreateEntitiesResult{ errors = createErrors };
         }
 
-        public override async Task<UpsertEntitiesResult> UpsertEntities(UpsertEntities command, SyncContext syncContext) {
+        public override async Task<UpsertEntitiesResult> UpsertEntitiesAsync(UpsertEntities command, SyncContext syncContext) {
             var entities = command.entities;
             List<EntityError> upsertErrors = null;
             await rwLock.AcquireWriterLock().ConfigureAwait(false);
@@ -135,7 +135,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             return new UpsertEntitiesResult{ errors = upsertErrors };
         }
 
-        public override async Task<ReadEntitiesResult> ReadEntities(ReadEntities command, SyncContext syncContext) {
+        public override async Task<ReadEntitiesResult> ReadEntitiesAsync(ReadEntities command, SyncContext syncContext) {
             var keys        = command.ids;
             var entities    = new EntityValue[keys.Count];
             int index       = 0;
@@ -166,7 +166,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             return result;
         }
 
-        public override async Task<QueryEntitiesResult> QueryEntities(QueryEntities command, SyncContext syncContext) {
+        public override async Task<QueryEntitiesResult> QueryEntitiesAsync(QueryEntities command, SyncContext syncContext) {
             if (!FindCursor(command.cursor, syncContext, out var fileEnumerator, out var error)) {
                 return new QueryEntitiesResult { Error = error };
             }
@@ -196,7 +196,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             }
         }
         
-        public override async Task<AggregateEntitiesResult> AggregateEntities (AggregateEntities command, SyncContext syncContext) {
+        public override async Task<AggregateEntitiesResult> AggregateEntitiesAsync (AggregateEntities command, SyncContext syncContext) {
             var filter = command.GetFilter();
             switch (command.type) {
                 case AggregateType.count:
@@ -218,7 +218,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             return new AggregateEntitiesResult { Error = new CommandError($"aggregate {command.type} not implement") };
         }
 
-        public override async Task<DeleteEntitiesResult> DeleteEntities(DeleteEntities command, SyncContext syncContext) {
+        public override async Task<DeleteEntitiesResult> DeleteEntitiesAsync(DeleteEntities command, SyncContext syncContext) {
             var keys = command.ids;
             List<EntityError> deleteErrors = null;
             await rwLock.AcquireWriterLock().ConfigureAwait(false);

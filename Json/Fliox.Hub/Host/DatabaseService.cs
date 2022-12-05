@@ -65,16 +65,16 @@ namespace Friflo.Json.Fliox.Hub.Host
         protected internal virtual void CustomizeUpsert (UpsertEntities task, SyncContext syncContext) { }
         protected internal virtual void CustomizeMerge  (MergeEntities  task, SyncContext syncContext) { }
         
-        public virtual async Task<SyncTaskResult> ExecuteTask (SyncRequestTask task, EntityDatabase database, SyncResponse response, SyncContext syncContext) {
+        public virtual async Task<SyncTaskResult> ExecuteTaskAsync (SyncRequestTask task, EntityDatabase database, SyncResponse response, SyncContext syncContext) {
             if (!AuthorizeTask(task, syncContext, out var error))
                 return error;
-            return await task.Execute(database, response, syncContext).ConfigureAwait(false);
+            return await task.ExecuteAsync(database, response, syncContext).ConfigureAwait(false);
         }
         
-        public virtual SyncTaskResult ExecuteTaskSync (SyncRequestTask task, EntityDatabase database, SyncResponse response, SyncContext syncContext) {
+        public virtual            SyncTaskResult  ExecuteTask (SyncRequestTask task, EntityDatabase database, SyncResponse response, SyncContext syncContext) {
             if (!AuthorizeTask(task, syncContext, out var error))
                 return error;
-            return task.ExecuteSync(database, response, syncContext);
+            return task.Execute(database, response, syncContext);
         }
         
         protected static bool AuthorizeTask(SyncRequestTask task, SyncContext syncContext, out SyncTaskResult error) {

@@ -41,11 +41,11 @@ namespace Friflo.Json.Fliox.Hub.Host
     ///         E.g. Writing an entity to a file with a <see cref="FileContainer"/> fails because it is used by another process.
     ///         => An <see cref="EntityError"/> need to be added to task result errors.
     ///            E.g. add an error to <see cref="CreateEntitiesResult.errors"/> in case of
-    ///            <see cref="FileContainer.CreateEntities"/>
+    ///            <see cref="FileContainer.CreateEntitiesAsync"/>
     ///   </para>
     ///   
     ///   All ...Result types returned by the interface methods of <see cref="EntityContainer"/> like
-    ///   <see cref="CreateEntities"/>, <see cref="ReadEntities"/>, ... implement <see cref="ICommandResult"/>.
+    ///   <see cref="CreateEntitiesAsync"/>, <see cref="ReadEntitiesAsync"/>, ... implement <see cref="ICommandResult"/>.
     ///   In case a database command fails completely  <see cref="ICommandResult.Error"/> needs to be set.
     ///   See <see cref="FlioxHub.ExecuteSync"/> for proper error handling.
     /// </para>
@@ -74,28 +74,28 @@ namespace Friflo.Json.Fliox.Hub.Host
 
     #region - abstract container methods
         /// <summary>Create the entities specified in the given <paramref name="command"/></summary>
-        public abstract Task<CreateEntitiesResult>    CreateEntities   (CreateEntities    command, SyncContext syncContext);
+        public abstract Task<CreateEntitiesResult>    CreateEntitiesAsync   (CreateEntities    command, SyncContext syncContext);
         /// <summary>Upsert the entities specified in the given <paramref name="command"/></summary>
-        public abstract Task<UpsertEntitiesResult>    UpsertEntities   (UpsertEntities    command, SyncContext syncContext);
+        public abstract Task<UpsertEntitiesResult>    UpsertEntitiesAsync   (UpsertEntities    command, SyncContext syncContext);
         /// <summary>Read entities by id with the ids passed in the given <paramref name="command"/></summary>
-        public abstract Task<ReadEntitiesResult>      ReadEntities     (ReadEntities      command, SyncContext syncContext);
+        public abstract Task<ReadEntitiesResult>      ReadEntitiesAsync     (ReadEntities      command, SyncContext syncContext);
         /// <summary>Delete entities by id with the ids passed in the given <paramref name="command"/></summary>
-        public abstract Task<DeleteEntitiesResult>    DeleteEntities   (DeleteEntities    command, SyncContext syncContext);
+        public abstract Task<DeleteEntitiesResult>    DeleteEntitiesAsync   (DeleteEntities    command, SyncContext syncContext);
         /// <summary>Query entities using the filter in the given <paramref name="command"/></summary>
-        public abstract Task<QueryEntitiesResult>     QueryEntities    (QueryEntities     command, SyncContext syncContext);
+        public abstract Task<QueryEntitiesResult>     QueryEntitiesAsync    (QueryEntities     command, SyncContext syncContext);
         /// <summary>Performs an aggregation specified in the given <paramref name="command"/></summary>
-        public abstract Task<AggregateEntitiesResult> AggregateEntities(AggregateEntities command, SyncContext syncContext);
+        public abstract Task<AggregateEntitiesResult> AggregateEntitiesAsync(AggregateEntities command, SyncContext syncContext);
         
         // ------------------------------- synchronous version -------------------------------
-        public virtual CreateEntitiesResult    CreateEntitiesSync   (CreateEntities    command, SyncContext syncContext) => throw new NotImplementedException();
+        public virtual CreateEntitiesResult    CreateEntities   (CreateEntities    command, SyncContext syncContext) => throw new NotImplementedException();
         /// <summary>Upsert the entities specified in the given <paramref name="command"/></summary>
-        public virtual UpsertEntitiesResult    UpsertEntitiesSync   (UpsertEntities    command, SyncContext syncContext) => throw new NotImplementedException();
+        public virtual UpsertEntitiesResult    UpsertEntities   (UpsertEntities    command, SyncContext syncContext) => throw new NotImplementedException();
         /// <summary>Read entities by id with the ids passed in the given <paramref name="command"/></summary>
-        public virtual ReadEntitiesResult      ReadEntitiesSync     (ReadEntities      command, SyncContext syncContext) => throw new NotImplementedException();
+        public virtual ReadEntitiesResult      ReadEntities     (ReadEntities      command, SyncContext syncContext) => throw new NotImplementedException();
         /// <summary>Delete entities by id with the ids passed in the given <paramref name="command"/></summary>
-        public virtual DeleteEntitiesResult    DeleteEntitiesSync   (DeleteEntities    command, SyncContext syncContext) => throw new NotImplementedException();
+        public virtual DeleteEntitiesResult    DeleteEntities   (DeleteEntities    command, SyncContext syncContext) => throw new NotImplementedException();
         /// <summary>Query entities using the filter in the given <paramref name="command"/></summary>
-        public virtual QueryEntitiesResult     QueryEntitiesSync    (QueryEntities     command, SyncContext syncContext) => throw new NotImplementedException();
+        public virtual QueryEntitiesResult     QueryEntities    (QueryEntities     command, SyncContext syncContext) => throw new NotImplementedException();
         
         // not supported:  virtual AggregateEntitiesResult AggregateEntitiesSync(AggregateEntities command, SyncContext syncContext)
         
@@ -136,7 +136,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             }
             // --- Read entities to be patched
             var readTask    = new ReadEntities { ids = ids, keyName = mergeEntities.keyName };
-            var readResult  = await ReadEntities(readTask, syncContext).ConfigureAwait(false);
+            var readResult  = await ReadEntitiesAsync(readTask, syncContext).ConfigureAwait(false);
             
             if (readResult.Error != null) {
                 return new MergeEntitiesResult { Error = readResult.Error };
@@ -187,7 +187,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             
             // --- write merged entities back
             var task            = new UpsertEntities { entities = targets };
-            var upsertResult    = await UpsertEntities(task, syncContext).ConfigureAwait(false);
+            var upsertResult    = await UpsertEntitiesAsync(task, syncContext).ConfigureAwait(false);
             
             if (upsertResult.Error != null) {
                 return new MergeEntitiesResult {Error = upsertResult.Error};
@@ -204,7 +204,7 @@ namespace Friflo.Json.Fliox.Hub.Host
                 filterTree      = command.filterTree,
                 filterContext   = command.filterContext
             };
-            var queryResult = await QueryEntities(query, syncContext).ConfigureAwait(false);
+            var queryResult = await QueryEntitiesAsync(query, syncContext).ConfigureAwait(false);
             
             var queryError = queryResult.Error; 
             if (queryError != null) {
@@ -324,7 +324,7 @@ namespace Friflo.Json.Fliox.Hub.Host
                     continue;
                 var refIdList   = ids.ToList();
                 var readRefIds  = new ReadEntities { ids = refIdList, keyName = reference.keyName, isIntKey = reference.isIntKey};
-                var refEntities = await refCont.ReadEntities(readRefIds, syncContext).ConfigureAwait(false);
+                var refEntities = await refCont.ReadEntitiesAsync(readRefIds, syncContext).ConfigureAwait(false);
                 
                 var subPath = $"{selectorPath} -> {reference.selector}";
                 // In case of ReadEntities error: Assign error to result and continue with other references.

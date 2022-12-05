@@ -21,7 +21,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         public   override   TaskType        TaskType => TaskType.reserveKeys;
         public   override   string          TaskName => $"container: '{container}'";
 
-        public override async Task<SyncTaskResult> Execute(EntityDatabase database, SyncResponse response, SyncContext syncContext) {
+        public override async Task<SyncTaskResult> ExecuteAsync(EntityDatabase database, SyncResponse response, SyncContext syncContext) {
             var hub = syncContext.Hub;
             // var store           = new SequenceStore(database, SyncTypeStore.Get(), null);
             var pool = syncContext.pool;

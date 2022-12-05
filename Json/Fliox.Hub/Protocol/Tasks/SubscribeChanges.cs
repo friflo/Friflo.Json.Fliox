@@ -27,7 +27,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         public   override       TaskType            TaskType  => TaskType.subscribeChanges;
         public   override       string              TaskName  => $"container: '{container}'";
 
-        public override Task<SyncTaskResult> Execute(EntityDatabase database, SyncResponse response, SyncContext syncContext) {
+        public override Task<SyncTaskResult> ExecuteAsync(EntityDatabase database, SyncResponse response, SyncContext syncContext) {
             var hub             = syncContext.Hub;
             var eventDispatcher = hub.EventDispatcher;
             if (eventDispatcher == null)

@@ -34,11 +34,11 @@ namespace Friflo.Json.Fliox.Hub.Host
             Pretty = pretty;
         }
         
-        public override Task<CreateEntitiesResult> CreateEntities(CreateEntities command, SyncContext syncContext) {
-            return Task.FromResult(CreateEntitiesSync(command, syncContext));
+        public override Task<CreateEntitiesResult> CreateEntitiesAsync(CreateEntities command, SyncContext syncContext) {
+            return Task.FromResult(CreateEntities(command, syncContext));
         }
         
-        public override CreateEntitiesResult CreateEntitiesSync(CreateEntities command, SyncContext syncContext) {
+        public override CreateEntitiesResult CreateEntities(CreateEntities command, SyncContext syncContext) {
             var entities = command.entities;
             List<EntityError> createErrors = null;
             for (int n = 0; n < entities.Count; n++) {
@@ -54,11 +54,11 @@ namespace Friflo.Json.Fliox.Hub.Host
             return new CreateEntitiesResult { errors = createErrors };
         }
 
-        public override Task<UpsertEntitiesResult> UpsertEntities(UpsertEntities command, SyncContext syncContext) {
-            return Task.FromResult(UpsertEntitiesSync(command, syncContext));           
+        public override Task<UpsertEntitiesResult> UpsertEntitiesAsync(UpsertEntities command, SyncContext syncContext) {
+            return Task.FromResult(UpsertEntities(command, syncContext));           
         }
         
-        public override UpsertEntitiesResult UpsertEntitiesSync(UpsertEntities command, SyncContext syncContext) {
+        public override UpsertEntitiesResult UpsertEntities(UpsertEntities command, SyncContext syncContext) {
             var entities = command.entities;
             for (int n = 0; n < entities.Count; n++) {
                 var entity              = entities[n];
@@ -67,11 +67,11 @@ namespace Friflo.Json.Fliox.Hub.Host
             return new UpsertEntitiesResult();
         }
 
-        public override Task<ReadEntitiesResult> ReadEntities(ReadEntities command, SyncContext syncContext) {
-           return Task.FromResult(ReadEntitiesSync(command, syncContext));
+        public override Task<ReadEntitiesResult> ReadEntitiesAsync(ReadEntities command, SyncContext syncContext) {
+           return Task.FromResult(ReadEntities(command, syncContext));
         }
         
-        public override ReadEntitiesResult ReadEntitiesSync(ReadEntities command, SyncContext syncContext) {
+        public override ReadEntitiesResult ReadEntities(ReadEntities command, SyncContext syncContext) {
             var keys        = command.ids;
             var entities    = new EntityValue [keys.Count];
             int index       = 0;
@@ -83,11 +83,11 @@ namespace Friflo.Json.Fliox.Hub.Host
             return result;
         }
         
-        public override Task<QueryEntitiesResult> QueryEntities(QueryEntities command, SyncContext syncContext) {
-            return Task.FromResult(QueryEntitiesSync(command, syncContext));
+        public override Task<QueryEntitiesResult> QueryEntitiesAsync(QueryEntities command, SyncContext syncContext) {
+            return Task.FromResult(QueryEntities(command, syncContext));
         }
         
-        public override QueryEntitiesResult QueryEntitiesSync(QueryEntities command, SyncContext syncContext) {
+        public override QueryEntitiesResult QueryEntities(QueryEntities command, SyncContext syncContext) {
             if (!FindCursor(command.cursor, syncContext, out var keyValueEnum, out var error)) {
                 return new QueryEntitiesResult { Error = error };
             }
@@ -123,7 +123,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             return result;
         }
         
-        public override async Task<AggregateEntitiesResult> AggregateEntities (AggregateEntities command, SyncContext syncContext) {
+        public override async Task<AggregateEntitiesResult> AggregateEntitiesAsync (AggregateEntities command, SyncContext syncContext) {
             var filter = command.GetFilter();
             switch (command.type) {
                 case AggregateType.count:
@@ -138,11 +138,11 @@ namespace Friflo.Json.Fliox.Hub.Host
             return new AggregateEntitiesResult { Error = new CommandError($"aggregate {command.type} not implement") };
         }
         
-        public override Task<DeleteEntitiesResult> DeleteEntities(DeleteEntities command, SyncContext syncContext) {
-            return Task.FromResult(DeleteEntitiesSync(command, syncContext));
+        public override Task<DeleteEntitiesResult> DeleteEntitiesAsync(DeleteEntities command, SyncContext syncContext) {
+            return Task.FromResult(DeleteEntities(command, syncContext));
         }
 
-        public override DeleteEntitiesResult DeleteEntitiesSync(DeleteEntities command, SyncContext syncContext) {
+        public override DeleteEntitiesResult DeleteEntities(DeleteEntities command, SyncContext syncContext) {
             var keys = command.ids;
             if (keys != null && keys.Count > 0) {
                 foreach (var key in keys) {
