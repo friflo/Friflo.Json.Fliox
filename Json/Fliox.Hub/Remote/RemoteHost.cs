@@ -10,14 +10,13 @@ using Friflo.Json.Fliox.Hub.Host.Event;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Mapper;
-using Friflo.Json.Fliox.Utils;
 
 // Note! - Must not have any dependency to System.Net or System.Net.Http (or other HTTP stuff)
 namespace Friflo.Json.Fliox.Hub.Remote
 {
     public class RemoteHost : IDisposable, ILogSource
     {
-        private  readonly   FlioxHub    localHub;
+        public   readonly   FlioxHub    localHub;
         public   readonly   SharedEnv   sharedEnv;
         
         /// Only set to true for testing. It avoids an early out at <see cref="EventSubClient.SendEvents"/> 
@@ -38,31 +37,42 @@ namespace Friflo.Json.Fliox.Hub.Remote
         /// <summary>
         /// <b>Attention</b> returned <see cref="JsonResponse"/> is <b>only</b> valid until the passed <paramref name="mapper"/> is reused
         /// </summary>
+        /// <remarks>
+        /// <b>Hint</b> Copy / Paste implementation to avoid an async call in caller
+        /// </remarks>
         public async Task<JsonResponse> ExecuteJsonRequest(
             ObjectMapper    mapper,
             JsonValue       jsonRequest,
             SyncContext     syncContext)
         {
+            // used response assignment instead of return in each branch to provide copy/paste code to avoid an async call in caller
+            JsonResponse response;
             try {
                 var syncRequest = RemoteUtils.ReadSyncRequest(mapper, jsonRequest, out string error);
                 if (error != null) {
-                    return JsonResponse.CreateError(mapper, error, ErrorResponseType.BadResponse, null);
-                }
-                var response = await localHub.ExecuteSync(syncRequest, syncContext).ConfigureAwait(false);
+                    response = JsonResponse.CreateError(mapper, error, ErrorResponseType.BadResponse, null);
+                } else {
+                    var syncResult = await localHub.ExecuteSync(syncRequest, syncContext).ConfigureAwait(false);
                 
-                var responseError = response.error;
-                if (responseError != null) {
-                    return JsonResponse.CreateError(mapper, responseError.message, responseError.type, syncRequest.reqId);
+                    response = CreateJsonResponse(syncResult, syncRequest.reqId, mapper);
                 }
-                SetContainerResults(response.success);
-                response.Result.reqId   = syncRequest.reqId;
-                JsonValue jsonResponse  = RemoteUtils.CreateProtocolMessage(response.Result, mapper);
-                return new JsonResponse(jsonResponse, JsonResponseStatus.Ok);
             }
             catch (Exception e) {
                 var errorMsg = ErrorResponse.ErrorFromException(e).ToString();
-                return JsonResponse.CreateError(mapper, errorMsg, ErrorResponseType.Exception, null);
+                response = JsonResponse.CreateError(mapper, errorMsg, ErrorResponseType.Exception, null);
             }
+            return response;
+        }
+        
+        public static JsonResponse CreateJsonResponse(in ExecuteSyncResult response, in int? reqId, ObjectMapper mapper) {
+            var responseError = response.error;
+            if (responseError != null) {
+                return JsonResponse.CreateError(mapper, responseError.message, responseError.type, reqId);
+            }
+            SetContainerResults(response.success);
+            response.Result.reqId   = reqId;
+            JsonValue jsonResponse  = RemoteUtils.CreateProtocolMessage(response.Result, mapper);
+            return new JsonResponse(jsonResponse, JsonResponseStatus.Ok);
         }
         
         /// Required only by <see cref="RemoteHost"/>

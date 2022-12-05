@@ -146,11 +146,28 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 var pool        = sharedEnv.Pool;
                 var syncContext = new SyncContext(sharedEnv, null, request.memoryBuffer);
                 using (var pooledMapper = pool.ObjectMapper.Get()) {
-                    var result  = await ExecuteJsonRequest(pooledMapper.instance, requestContent, syncContext).ConfigureAwait(false);
+                    var mapper = pooledMapper.instance;
+                    // inlined ExecuteJsonRequest() to avoid async call:
+                    // JsonResponse response  = await ExecuteJsonRequest(mapper, requestContent, syncContext).ConfigureAwait(false);
+                    JsonResponse response;
+                    try {
+                        var syncRequest = RemoteUtils.ReadSyncRequest(mapper, requestContent, out string error);
+                        if (error != null) {
+                            response = JsonResponse.CreateError(mapper, error, ErrorResponseType.BadResponse, null);
+                        } else {
+                            var syncResult = await localHub.ExecuteSync(syncRequest, syncContext).ConfigureAwait(false);
+                    
+                            response = CreateJsonResponse(syncResult, syncRequest.reqId, mapper);
+                        }
+                    }
+                    catch (Exception e) {
+                        var errorMsg = ErrorResponse.ErrorFromException(e).ToString();
+                        response = JsonResponse.CreateError(mapper, errorMsg, ErrorResponseType.Exception, null);
+                    }
                 
                     syncContext.Release();
-                    var body        = new JsonValue(result.body); // create copy => result.body array may change when the pooledMapper is reused
-                    request.Write(body, "application/json", (int)result.status);
+                    var body        = new JsonValue(response.body); // create copy => result.body array may change when the pooledMapper is reused
+                    request.Write(body, "application/json", (int)response.status);
                     request.handled = true;
                     return;
                 }

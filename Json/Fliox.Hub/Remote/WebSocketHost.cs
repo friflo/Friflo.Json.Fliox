@@ -127,10 +127,25 @@ namespace Friflo.Json.Fliox.Hub.Remote
                         using (var pooledBuffer = remoteHost.sharedEnv.MemoryBuffer.Get()) {
                             var syncContext     = new SyncContext(sharedEnv, this, pooledBuffer.instance, syncBuffers);
                             mapper.reader.InstancePool?.Reuse();
-                            var result          = await remoteHost.ExecuteJsonRequest(mapper, requestContent, syncContext).ConfigureAwait(false);
-                            
+                            // inlined ExecuteJsonRequest() to avoid async call:
+                            // JsonResponse response = await remoteHost.ExecuteJsonRequest(mapper, requestContent, syncContext).ConfigureAwait(false);
+                            JsonResponse response;
+                            try {
+                                var syncRequest = RemoteUtils.ReadSyncRequest(mapper, requestContent, out string error);
+                                if (error != null) {
+                                    response = JsonResponse.CreateError(mapper, error, ErrorResponseType.BadResponse, null);
+                                } else {
+                                    var syncResult = await remoteHost.localHub.ExecuteSync(syncRequest, syncContext).ConfigureAwait(false);
+                    
+                                    response = RemoteHost.CreateJsonResponse(syncResult, syncRequest.reqId, mapper);
+                                }
+                            }
+                            catch (Exception e) {
+                                var errorMsg = ErrorResponse.ErrorFromException(e).ToString();
+                                response = JsonResponse.CreateError(mapper, errorMsg, ErrorResponseType.Exception, null);
+                            }
                             syncContext.Release();
-                            sendQueue.Enqueue(result.body); // Enqueue() copy the result.body array
+                            sendQueue.Enqueue(response.body); // Enqueue() copy the result.body array
                         }
                     }
                     continue;
