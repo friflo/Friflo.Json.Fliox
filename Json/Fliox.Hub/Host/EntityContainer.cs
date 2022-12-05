@@ -85,6 +85,20 @@ namespace Friflo.Json.Fliox.Hub.Host
         public abstract Task<QueryEntitiesResult>     QueryEntities    (QueryEntities     command, SyncContext syncContext);
         /// <summary>Performs an aggregation specified in the given <paramref name="command"/></summary>
         public abstract Task<AggregateEntitiesResult> AggregateEntities(AggregateEntities command, SyncContext syncContext);
+        
+        // ------------------------------- synchronous version -------------------------------
+        public virtual CreateEntitiesResult    CreateEntitiesSync   (CreateEntities    command, SyncContext syncContext) => throw new NotImplementedException();
+        /// <summary>Upsert the entities specified in the given <paramref name="command"/></summary>
+        public virtual UpsertEntitiesResult    UpsertEntitiesSync   (UpsertEntities    command, SyncContext syncContext) => throw new NotImplementedException();
+        /// <summary>Read entities by id with the ids passed in the given <paramref name="command"/></summary>
+        public virtual ReadEntitiesResult      ReadEntitiesSync     (ReadEntities      command, SyncContext syncContext) => throw new NotImplementedException();
+        /// <summary>Delete entities by id with the ids passed in the given <paramref name="command"/></summary>
+        public virtual DeleteEntitiesResult    DeleteEntitiesSync   (DeleteEntities    command, SyncContext syncContext) => throw new NotImplementedException();
+        /// <summary>Query entities using the filter in the given <paramref name="command"/></summary>
+        public virtual QueryEntitiesResult     QueryEntitiesSync    (QueryEntities     command, SyncContext syncContext) => throw new NotImplementedException();
+        
+        // not supported:  virtual AggregateEntitiesResult AggregateEntitiesSync(AggregateEntities command, SyncContext syncContext)
+        
         #endregion
 
     #region - initialize
