@@ -40,7 +40,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
             
             database.service.CustomizeMerge(this, syncContext);
             
-            var result = await entityContainer.MergeEntities(this, syncContext).ConfigureAwait(false);
+            var result = await entityContainer.MergeEntitiesAsync(this, syncContext).ConfigureAwait(false);
             if (result.Error != null) {
                 return TaskError(result.Error); 
             }

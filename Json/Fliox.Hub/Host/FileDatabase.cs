@@ -212,7 +212,7 @@ namespace Friflo.Json.Fliox.Hub.Host
                             keyValueEnum.Dispose();
                         }
                     }
-                    var result = await CountEntities(command, syncContext).ConfigureAwait(false);
+                    var result = await CountEntitiesAsync(command, syncContext).ConfigureAwait(false);
                     return result;
             }
             return new AggregateEntitiesResult { Error = new CommandError($"aggregate {command.type} not implement") };

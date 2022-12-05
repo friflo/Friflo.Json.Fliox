@@ -125,7 +125,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// If the used database has integrated support for merging (patching) JSON its <see cref="EntityContainer"/>
         /// implementation can override this method to replace two database requests by one.
         /// </remarks>
-        public virtual async Task<MergeEntitiesResult> MergeEntities (MergeEntities mergeEntities, SyncContext syncContext) {
+        public virtual async Task<MergeEntitiesResult> MergeEntitiesAsync (MergeEntities mergeEntities, SyncContext syncContext) {
             var patches = mergeEntities.patches;
             if (!EntityUtils.GetKeysFromEntities(mergeEntities.keyName, patches, syncContext, out string keyError)) {
                 return new MergeEntitiesResult { Error = new CommandError(TaskErrorResultType.InvalidTask, keyError) };
@@ -197,7 +197,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         }
         
         /// Default implementation. Performs a full table scan! Act as reference and is okay for small data sets
-        protected async Task<AggregateEntitiesResult> CountEntities (AggregateEntities command, SyncContext syncContext) {
+        protected async Task<AggregateEntitiesResult> CountEntitiesAsync (AggregateEntities command, SyncContext syncContext) {
             var query = new QueryEntities {
                 container       = command.container,
                 filter          = command.filter,
@@ -303,7 +303,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             return referenceResults;
         }
 
-        internal async Task<ReadReferencesResult> ReadReferences(
+        internal async Task<ReadReferencesResult> ReadReferencesAsync(
                 List<References>    references,
                 EntityValue[]       entities,
                 string              container,
@@ -345,7 +345,7 @@ namespace Friflo.Json.Fliox.Hub.Host
                     subEntities[i] = refEntities.entities[i];
                 }
                 var refReferencesResult =
-                    await ReadReferences(subReferences, subEntities, refContName, subPath, syncResponse, syncContext).ConfigureAwait(false);
+                    await ReadReferencesAsync(subReferences, subEntities, refContName, subPath, syncResponse, syncContext).ConfigureAwait(false);
                 // returned refReferencesResult.references is always set. Each references[] item contain either a result or an error.
                 referenceResult.references = refReferencesResult.references;
             }
