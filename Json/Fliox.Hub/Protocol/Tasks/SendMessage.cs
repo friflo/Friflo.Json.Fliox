@@ -38,10 +38,10 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         /// </summary>
         public bool PreExecute(DatabaseService service) {
             if (name == null)
-                return true;
+                return true;    // true => execute error synchronously. error: missing field: {name}
             if (service.TryGetMessage(name, out callback))
                 return callback.IsSynchronous;
-            return true;
+            return true;        // true => execute error synchronously. error: no command handler for: '{name}'
         }
 
         public   override   string          TaskName => $"name: '{name}'";
