@@ -19,7 +19,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Monitor
             AddCommandHandler<ClearStats, ClearStatsResult> (nameof(ClearStats), ClearStats);
         }
         
-        protected internal override async Task PreExecuteTasks(SyncRequest syncRequest, SyncContext syncContext) {
+        protected internal override void PreExecuteTasks(SyncRequest syncRequest, SyncContext syncContext) {
             var pool = syncContext.pool;
             using (var pooled  = pool.Type(() => new MonitorStore(monitorDB.monitorHub)).Get()) {
                 var monitor = pooled.instance;
@@ -30,7 +30,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Monitor
                 if (MonitorDB.FindTask(nameof(MonitorStore.histories),tasks)) monitor.UpdateHistories(hub.hostStats.requestHistories);
                 if (MonitorDB.FindTask(nameof(MonitorStore.hosts),    tasks)) monitor.UpdateHost     (hub.hostStats);
                 
-                await monitor.TrySyncTasks().ConfigureAwait(false);
+                monitor.TrySyncTasksSynchronous();
             }
         }
         

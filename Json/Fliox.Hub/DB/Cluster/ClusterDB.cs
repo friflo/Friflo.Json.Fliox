@@ -57,14 +57,15 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
     
     public partial class ClusterStore
     {
-        internal async Task UpdateClusterDB(FlioxHub hub, List<SyncRequestTask> tasks) {
+        internal void UpdateClusterDB(FlioxHub hub, List<SyncRequestTask> tasks) {
             var hubDbs = hub.GetDatabases();
             foreach (var pair in hubDbs) {
                 var database        = pair.Value;
                 var databaseName    = pair.Key;
                 var dbKey           = new JsonKey(databaseName);
                 if (ClusterDB.FindTask(nameof(containers), dbKey, tasks)) {
-                    var dbContainers    = await database.GetDbContainers().ConfigureAwait(false);
+                    // synchronous call OK => ClusterDB is a memory database - it tasks are executed synchronous
+                    var dbContainers    = database.GetDbContainers().Result;
                     dbContainers.id     = databaseName;
                     containers.Upsert(dbContainers);
                 }

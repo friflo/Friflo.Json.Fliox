@@ -94,6 +94,9 @@ namespace Friflo.Json.Fliox.Hub.Host
                 case TaskType.message:
                 case TaskType.command:
                     return ((SyncMessageTask)task).PreExecute(service);
+                case TaskType.subscribeChanges:
+                case TaskType.subscribeMessage:
+                    return true;
             }
             return false;
         }

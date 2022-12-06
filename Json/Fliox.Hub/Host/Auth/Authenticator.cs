@@ -43,6 +43,8 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
         public    override  string                                  ToString() => $"users: {users.Count}";
 
         public abstract Task    AuthenticateAsync    (SyncRequest syncRequest, SyncContext syncContext);
+        public virtual  void    Authenticate         (SyncRequest syncRequest, SyncContext syncContext)
+            => throw new NotSupportedException("Authenticator supports only asynchronous authentication");
         
         protected Authenticator () {
             registeredPredicates    = new Dictionary<string, AuthorizePredicate>();

@@ -15,6 +15,11 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
     public sealed class AuthenticateNone : Authenticator
     {
         public override Task AuthenticateAsync(SyncRequest syncRequest, SyncContext syncContext) {
+            Authenticate(syncRequest, syncContext);
+            return Task.CompletedTask;
+        }
+        
+        public override void Authenticate(SyncRequest syncRequest, SyncContext syncContext) {
             User user;
             ref var userId = ref syncRequest.userId;
             if (userId.IsNull()) {
@@ -28,7 +33,6 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
                 }
             }
             syncContext.AuthenticationFailed(user, "not authenticated", AnonymousTaskAuthorizer, AnonymousHubPermission);
-            return Task.CompletedTask;
         }
     }
 }

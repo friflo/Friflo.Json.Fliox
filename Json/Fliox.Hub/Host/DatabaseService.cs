@@ -59,7 +59,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             AddStdCommandHandlers();
         }
         
-        protected internal virtual Task PreExecuteTasks (SyncRequest syncRequest, SyncContext syncContext)  => Task.CompletedTask;
+        protected internal virtual void PreExecuteTasks (SyncRequest syncRequest, SyncContext syncContext)  { }
         protected internal virtual void PostExecuteTasks(SyncRequest syncRequest, SyncContext syncContext)  { }
         
         protected internal virtual void CustomizeUpsert (UpsertEntities task, SyncContext syncContext) { }

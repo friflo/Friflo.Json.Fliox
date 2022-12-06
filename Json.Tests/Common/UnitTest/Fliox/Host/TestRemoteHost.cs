@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using Friflo.Json.Fliox;
 using Friflo.Json.Fliox.Hub.Client;
 using Friflo.Json.Fliox.Hub.Host;
@@ -11,7 +10,6 @@ using Friflo.Json.Fliox.Hub.Host.Event;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Hub.Remote;
-using Friflo.Json.Fliox.Hub.Threading;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Utils;
 using Friflo.Json.Tests.Common.UnitTest.Fliox.Client;
@@ -43,82 +41,73 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
         
         [Test]
         public static  void TestRemoteHostReadRequest() {
-            SingleThreadSynchronizationContext.Run(async () =>
-            {
-                using (var sharedEnv = SharedEnv.Default) { // for LeakTestsFixture
-                    var cx = await PrepareRemoteHost(sharedEnv);
-                    // GC.Collect();
-                    long dif = 0;
-                    for (int n = 0; n < 10; n++) {
-                        long start      = GC.GetAllocatedBytesForCurrentThread();
-                        cx.contextRead  = cx.CreateSyncContext();
-                        cx.mapper.reader.InstancePool.Reuse();
-                        var response    = await cx.remoteHost.ExecuteJsonRequest(cx.mapper, cx.readReq, cx.contextRead);
-                        
-                        dif = GC.GetAllocatedBytesForCurrentThread() - start;
-                        if (response.status != JsonResponseStatus.Ok)   Fail("Expect OK");
-                    }
-                    var expect = TestUtils.IsDebug() ? 1896 : 1344;
-                    AreEqual(expect, dif);
+            using (var sharedEnv = SharedEnv.Default) { // for LeakTestsFixture
+                var cx = PrepareRemoteHost(sharedEnv);
+                // GC.Collect();
+                long dif = 0;
+                for (int n = 0; n < 10; n++) {
+                    long start      = GC.GetAllocatedBytesForCurrentThread();
+                    cx.contextRead  = cx.CreateSyncContext();
+                    cx.mapper.reader.InstancePool.Reuse();
+                    var response    = cx.remoteHost.ExecuteJsonRequest(cx.mapper, cx.readReq, cx.contextRead);
+                    
+                    dif = GC.GetAllocatedBytesForCurrentThread() - start;
+                    if (response.status != JsonResponseStatus.Ok)   Fail("Expect OK");
                 }
-            });
+                var expect = TestUtils.IsDebug() ? 1216 : 1176;
+                AreEqual(expect, dif);
+            }
         }
         
         [Test]
         public static  void TestRemoteHostWriteRequest() {
-            SingleThreadSynchronizationContext.Run(async () =>
-            {
-                using (var sharedEnv = SharedEnv.Default) { // for LeakTestsFixture
-                    var cx = await PrepareRemoteHost(sharedEnv);
+            using (var sharedEnv = SharedEnv.Default) { // for LeakTestsFixture
+                var cx = PrepareRemoteHost(sharedEnv);
+                
+                long dif = 0;
+                for (int n = 0; n < 10; n++) {
+                    long start      = GC.GetAllocatedBytesForCurrentThread();
+                    cx.contextRead  = cx.CreateSyncContext();
+                    cx.mapper.reader.InstancePool.Reuse();
+                    var response    = cx.remoteHost.ExecuteJsonRequest(cx.mapper, cx.writeReq, cx.contextRead);
                     
-                    long dif = 0;
-                    for (int n = 0; n < 10; n++) {
-                        long start      = GC.GetAllocatedBytesForCurrentThread();
-                        cx.contextRead  = cx.CreateSyncContext();
-                        cx.mapper.reader.InstancePool.Reuse();
-                        var response    = await cx.remoteHost.ExecuteJsonRequest(cx.mapper, cx.writeReq, cx.contextRead);
-                        
-                        dif = GC.GetAllocatedBytesForCurrentThread() - start;
-                        if (response.status != JsonResponseStatus.Ok)   Fail("Expect OK");
-                    }
-                    var expect = TestUtils.IsDebug() ? 1184 : 632;
-                    AreEqual(expect, dif);
+                    dif = GC.GetAllocatedBytesForCurrentThread() - start;
+                    if (response.status != JsonResponseStatus.Ok)   Fail("Expect OK");
                 }
-            });
+                var expect = TestUtils.IsDebug() ? 504 : 464;
+                AreEqual(expect, dif);
+            }
         }
         
         [Test]
         public static  void TestRemoteHostWriteSubscribe() {
-            SingleThreadSynchronizationContext.Run(async () =>
-            {
-                using (var sharedEnv = SharedEnv.Default) { // for LeakTestsFixture
-                    var cx = await PrepareRemoteHost(sharedEnv);
-                    cx.hub.EventDispatcher = new EventDispatcher(EventDispatching.Queue, sharedEnv);
+            using (var sharedEnv = SharedEnv.Default) { // for LeakTestsFixture
+                var cx = PrepareRemoteHost(sharedEnv);
+                cx.hub.EventDispatcher = new EventDispatcher(EventDispatching.Queue, sharedEnv);
 
-                    for (int n = 0; n < 2; n++) {
-                        var client  = new TestRemoteClient(cx.hub) { ClientId = $"client-{n}" };
-                        client.players.SubscribeChanges(Change.All, (changes, context) =>  {} );
-                        await client.SyncTasks();
-                    }
-
-                    long dif = 0;
-                    for (int n = 0; n < 10; n++) {
-                        long start      = GC.GetAllocatedBytesForCurrentThread();
-                        cx.contextRead  = cx.CreateSyncContext();
-                        cx.mapper.reader.InstancePool.Reuse();
-                        var response    = await cx.remoteHost.ExecuteJsonRequest(cx.mapper, cx.writeReq, cx.contextRead);
-                        cx.hub.EventDispatcher?.SendQueuedEvents();
-                        
-                        dif = GC.GetAllocatedBytesForCurrentThread() - start;
-                        if (response.status != JsonResponseStatus.Ok)   Fail("Expect OK");
-                    }
-                    var expect = TestUtils.IsDebug() ? 1544 : 992;
-                    AreEqual(expect, dif);
+                for (int n = 0; n < 2; n++) {
+                    var client  = new TestRemoteClient(cx.hub) { ClientId = $"client-{n}" };
+                    client.players.SubscribeChanges(Change.All, (changes, context) =>  {} );
+                    client.SyncTasksSynchronous();
                 }
-            });
+
+                long dif = 0;
+                for (int n = 0; n < 10; n++) {
+                    long start      = GC.GetAllocatedBytesForCurrentThread();
+                    cx.contextRead  = cx.CreateSyncContext();
+                    cx.mapper.reader.InstancePool.Reuse();
+                    var response    = cx.remoteHost.ExecuteJsonRequest(cx.mapper, cx.writeReq, cx.contextRead);
+                    cx.hub.EventDispatcher?.SendQueuedEvents();
+                    
+                    dif = GC.GetAllocatedBytesForCurrentThread() - start;
+                    if (response.status != JsonResponseStatus.Ok)   Fail("Expect OK");
+                }
+                var expect = TestUtils.IsDebug() ? 864 : 824;
+                AreEqual(expect, dif);
+            }
         }
 
-        private static async Task<RemoteCx> PrepareRemoteHost (SharedEnv sharedEnv)
+        private static RemoteCx PrepareRemoteHost (SharedEnv sharedEnv)
         {
             var cx = new RemoteCx();
             var typeStore       = sharedEnv.TypeStore;
@@ -151,7 +140,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
             cx.readReq = cx.mapper.WriteAsValue<ProtocolMessage>(syncRead);
             
             var contextWrite    = cx.CreateSyncContext();
-            var writeResponse   = await cx.remoteHost.ExecuteJsonRequest(cx.mapper, cx.writeReq, contextWrite);
+            var writeResponse   = cx.remoteHost.ExecuteJsonRequest(cx.mapper, cx.writeReq, contextWrite);
             AreEqual(JsonResponseStatus.Ok, writeResponse.status);
             return cx;
         }

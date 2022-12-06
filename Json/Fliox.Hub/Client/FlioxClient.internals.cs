@@ -86,39 +86,6 @@ namespace Friflo.Json.Fliox.Hub.Client
             // Console.WriteLine($"--- AcknowledgeEvents");
         } 
         
-        private async Task<ExecuteSyncResult> ExecuteRequestAsync(SyncRequest syncRequest, SyncContext syncContext) {
-            _intern.syncCount++;
-            if (_intern.ackTimerPending) {
-                _intern.ackTimer?.Change(Timeout.Infinite, Timeout.Infinite);
-                _intern.ackTimerPending = false;
-            }
-            Task<ExecuteSyncResult> task = null;
-            try {
-                task = _intern.hub.ExecuteRequestAsync(syncRequest, syncContext);
-                lock (_intern.pendingSyncs) {
-                    _intern.pendingSyncs.Add(task, syncContext);
-                }
-                var response = await task.ConfigureAwait(false);
-                
-                // The Hub returns a client id if the client didn't provide one and one of its task require one. 
-                var success = response.success;
-                if (_intern.clientId.IsNull() && success != null && !success.clientId.IsNull()) {
-                    SetClientId(success.clientId);
-                }
-                lock (_intern.pendingSyncs) {
-                    _intern.pendingSyncs.Remove(task);
-                }
-                return response;
-            }
-            catch (Exception e) {
-                lock (_intern.pendingSyncs) {
-                    if (task != null) _intern.pendingSyncs.Remove(task);
-                }
-                var errorMsg = ErrorResponse.ErrorFromException(e).ToString();
-                return new ExecuteSyncResult(errorMsg, ErrorResponseType.Exception);
-            }
-        }
-        
         // ReSharper disable once UnusedMember.Local
         private int GetSubscriptionCount() {
             int count = _intern.subscriptions?.Count ?? 0;

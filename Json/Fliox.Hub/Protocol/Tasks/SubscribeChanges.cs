@@ -26,33 +26,40 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         
         public   override       TaskType            TaskType  => TaskType.subscribeChanges;
         public   override       string              TaskName  => $"container: '{container}'";
-
+        
         public override Task<SyncTaskResult> ExecuteAsync(EntityDatabase database, SyncResponse response, SyncContext syncContext) {
+            return Task.FromResult(Execute(database, response, syncContext));
+        }
+        
+        public override SyncTaskResult Execute(EntityDatabase database, SyncResponse response, SyncContext syncContext) {
             var hub             = syncContext.Hub;
             var eventDispatcher = hub.EventDispatcher;
-            if (eventDispatcher == null)
-                return Task.FromResult<SyncTaskResult>(InvalidTask("Hub has no EventDispatcher"));
-            if (container == null)
-                return Task.FromResult<SyncTaskResult>(MissingContainer());
-            if (changes == null)
-                return Task.FromResult<SyncTaskResult>(MissingField(nameof(changes)));
-            
-            if (!hub.Authenticator.EnsureValidClientId(hub.ClientController, syncContext, out string error))
-                return Task.FromResult<SyncTaskResult>(InvalidTask(error));
-
+            if (eventDispatcher == null) {
+                return InvalidTask("Hub has no EventDispatcher");
+            }
+            if (container == null) {
+                return MissingContainer();
+            }
+            if (changes == null) {
+                return MissingField(nameof(changes));
+            }
+            if (!hub.Authenticator.EnsureValidClientId(hub.ClientController, syncContext, out string errorMsg)) {
+                return InvalidTask(errorMsg);
+            }
             if (filter != null) {
                 var operation = Operation.Parse(filter, out var parseError);
-                if (operation == null)
-                    return Task.FromResult<SyncTaskResult>(InvalidTask($"filter error: {parseError}"));
-                if (!(operation is FilterOperation))
-                    return Task.FromResult<SyncTaskResult>(InvalidTask($"invalid filter: {filter}"));
+                if (operation == null) {
+                    return InvalidTask($"filter error: {parseError}");
+                }
+                if (!(operation is FilterOperation)) {
+                    return InvalidTask($"invalid filter: {filter}");
+                }
             }
-
             var eventReceiver   = syncContext.eventReceiver;
-            if (!eventDispatcher.SubscribeChanges(database.name, this, syncContext.User, syncContext.clientId, eventReceiver, out error))
-                return Task.FromResult<SyncTaskResult>(InvalidTask(error));
-            
-            return Task.FromResult<SyncTaskResult>(new SubscribeChangesResult());
+            if (!eventDispatcher.SubscribeChanges(database.name, this, syncContext.User, syncContext.clientId, eventReceiver, out errorMsg)) {
+                return InvalidTask(errorMsg);
+            }
+            return new SubscribeChangesResult();
         }
     }
     

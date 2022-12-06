@@ -40,7 +40,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         /// <remarks>
         /// <b>Hint</b> Copy / Paste implementation to avoid an async call in caller
         /// </remarks>
-        public async Task<JsonResponse> ExecuteJsonRequest(
+        public async Task<JsonResponse> ExecuteJsonRequestAsync(
             ObjectMapper    mapper,
             JsonValue       jsonRequest,
             SyncContext     syncContext)
@@ -53,6 +53,30 @@ namespace Friflo.Json.Fliox.Hub.Remote
                     response = JsonResponse.CreateError(mapper, error, ErrorResponseType.BadResponse, null);
                 } else {
                     var syncResult = await localHub.ExecuteRequestAsync(syncRequest, syncContext).ConfigureAwait(false);
+                
+                    response = CreateJsonResponse(syncResult, syncRequest.reqId, mapper);
+                }
+            }
+            catch (Exception e) {
+                var errorMsg = ErrorResponse.ErrorFromException(e).ToString();
+                response = JsonResponse.CreateError(mapper, errorMsg, ErrorResponseType.Exception, null);
+            }
+            return response;
+        }
+        
+        public JsonResponse ExecuteJsonRequest(
+            ObjectMapper    mapper,
+            JsonValue       jsonRequest,
+            SyncContext     syncContext)
+        {
+            // used response assignment instead of return in each branch to provide copy/paste code to avoid an async call in caller
+            JsonResponse response;
+            try {
+                var syncRequest = RemoteUtils.ReadSyncRequest(mapper, jsonRequest, out string error);
+                if (error != null) {
+                    response = JsonResponse.CreateError(mapper, error, ErrorResponseType.BadResponse, null);
+                } else {
+                    var syncResult = localHub.ExecuteRequest(syncRequest, syncContext);
                 
                     response = CreateJsonResponse(syncResult, syncRequest.reqId, mapper);
                 }

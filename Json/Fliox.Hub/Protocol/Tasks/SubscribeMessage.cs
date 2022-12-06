@@ -23,22 +23,26 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         public   override   string      TaskName    => $"name: '{name}'";
 
         public override Task<SyncTaskResult> ExecuteAsync(EntityDatabase database, SyncResponse response, SyncContext syncContext) {
+            return Task.FromResult(Execute(database, response, syncContext));
+        }
+        
+        public override SyncTaskResult Execute(EntityDatabase database, SyncResponse response, SyncContext syncContext) {
             var hub             = syncContext.Hub;
             var eventDispatcher = hub.EventDispatcher;
             if (eventDispatcher == null)
-                return Task.FromResult<SyncTaskResult>(InvalidTask("Hub has no EventDispatcher"));
+                return InvalidTask("Hub has no EventDispatcher");
             if (name == null)
-                return Task.FromResult<SyncTaskResult>(MissingField(nameof(name)));
+                return MissingField(nameof(name));
             
             if (!hub.Authenticator.EnsureValidClientId(hub.ClientController, syncContext, out string error))
-                return Task.FromResult<SyncTaskResult>(InvalidTask(error));
+                return InvalidTask(error);
             
             var eventReceiver   = syncContext.eventReceiver;
             var user            = syncContext.User;
             if (!eventDispatcher.SubscribeMessage(database.name, this, user, syncContext.clientId, eventReceiver, out error))
-                return Task.FromResult<SyncTaskResult>(InvalidTask(error));
+                return InvalidTask(error);
             
-            return Task.FromResult<SyncTaskResult>(new SubscribeMessageResult());
+            return new SubscribeMessageResult();
         }
         
         internal static string GetPrefix (string name) {
