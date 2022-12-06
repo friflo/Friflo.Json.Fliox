@@ -35,8 +35,8 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// <para>
         ///   An exception can have two different reasons:
         ///   <para> 1. The implementation of an <see cref="EntityContainer"/> is missing a proper error handling.
-        ///          A proper error handling requires to set a meaningful <see cref="CommandError"/> to
-        ///          <see cref="ICommandResult.Error"/></para>
+        ///          A proper error handling requires to set a meaningful <see cref="Protocol.Models.CommandError"/> to
+        ///          <see cref="Protocol.Models.ICommandResult.Error"/></para>
         ///   <para> 2. An issue in the namespace <see cref="Friflo.Json.Fliox.Hub.Protocol"/> which must to be fixed.</para> 
         /// </para>
         /// </remarks>
