@@ -7,6 +7,8 @@ using Friflo.Json.Fliox.Hub.Client.Internal;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Protocol;
 
+// Note!  Keep file in sync with:  FlioxClient.execute.async.cs
+
 namespace Friflo.Json.Fliox.Hub.Client
 {
     public partial class FlioxClient
