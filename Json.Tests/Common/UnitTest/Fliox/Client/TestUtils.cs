@@ -218,14 +218,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             read.FindRange(ids);
             await store.SyncTasks();                // force one time allocations
             
-            var start = GC.GetAllocatedBytesForCurrentThread();
-            for (int n = 0; n < 1; n++) {
+            long start = 0;
+            for (int n = 0; n < 5; n++) {
+                if (n > 0) start = GC.GetAllocatedBytesForCurrentThread();
                 read = store.intEntities.Read();
                 read.FindRange(ids);
                 await store.SyncTasks();
             }
             var diff = GC.GetAllocatedBytesForCurrentThread() - start;
-            var expected = IsDebug() ? Is.InRange(30664, 35304) : Is.InRange(27408, 31840); // Test Debug & Release
+            var expected = IsDebug() ? Is.InRange(34472, 34472) : Is.InRange(31408, 31408); // Test Debug & Release
             That(diff, expected);
         }
         

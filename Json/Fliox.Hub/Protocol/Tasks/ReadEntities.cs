@@ -30,22 +30,38 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         
         public   override   TaskType            TaskType => TaskType.read;
         public   override   string              TaskName =>  $"container: '{container}'";
+        
+        private EntityContainer PrepareRead(
+            EntityDatabase          database,
+            out TaskErrorResult     error)
+        {
+            if (container == null) {
+                error = MissingContainer();
+                return null;
+            }
+            if (ids == null) {
+                error = MissingField(nameof(ids));
+                return null;
+            }
+            foreach (var id in ids) {
+                if (id.IsNull()) {
+                    error = InvalidTask("elements in ids must not be null");
+                    return null;
+                }
+            }
+            error = null;
+            return database.GetOrCreateContainer(container);
+        }
 
         public override async Task<SyncTaskResult> ExecuteAsync(EntityDatabase database, SyncResponse response, SyncContext syncContext) {
-            if (container == null)
-                return MissingContainer();
-
-            if (ids == null)
-                return MissingField(nameof(ids));
-            foreach (var id in ids) {
-                if (id.IsNull())
-                    return InvalidTask("elements in ids must not be null");
-            }
-            if (!ValidReferences(references, out var error))
+            var entityContainer = PrepareRead(database, out var error);
+            if (error != null) {
                 return error;
-
-            var entityContainer = database.GetOrCreateContainer(container);
-            var result          = await entityContainer.ReadEntitiesAsync(this, syncContext).ConfigureAwait(false);
+            }
+            if (!ValidReferences(references, out  error)) {
+                return error;
+            }
+            var result = await entityContainer.ReadEntitiesAsync(this, syncContext).ConfigureAwait(false);
             
             if (result.Error != null) {
                 return TaskError(result.Error);
@@ -61,6 +77,21 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
             // entities elements can be updated in ReadReferences()
             var containerResult = response.GetContainerResult(container);
             containerResult.AddEntities(entities);
+            return result;
+        }
+        
+        public override SyncTaskResult Execute(EntityDatabase database, SyncResponse response, SyncContext syncContext) {
+            var entityContainer = PrepareRead(database, out var error);
+            if (error != null) {
+                return error;
+            }
+            var result = entityContainer.ReadEntities(this, syncContext);
+            
+            if (result.Error != null) {
+                return TaskError(result.Error);
+            }
+            var containerResult = response.GetContainerResult(container);
+            containerResult.AddEntities(result.entities);
             return result;
         }
     }

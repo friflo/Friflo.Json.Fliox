@@ -67,6 +67,9 @@ namespace Friflo.Json.Fliox.Hub.Host
                 case TaskType.upsert:
                 case TaskType.delete:
                     return true;
+                case  TaskType.read:
+                    var read = (ReadEntities)task;
+                    return read.references == null;
             }
             return false;
         }
