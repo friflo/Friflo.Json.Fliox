@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
+using Friflo.Json.Fliox.Hub.Host.Internal;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
 
 namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
@@ -28,6 +29,20 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
                     public  List<JsonKey>   clients;
         /// <summary>if set the Hub forward the message as an event only to given <see cref="groups"/></summary>
                     public  List<string>    groups;
+        
+        [Ignore]   internal MessageDelegate callback;
+        
+        /// <summary>
+        /// return true to execute this task synchronous. <br/>
+        /// return false to execute task asynchronous
+        /// </summary>
+        public bool PreExecute(DatabaseService service) {
+            if (name == null)
+                return true;
+            if (service.TryGetMessage(name, out callback))
+                return callback.IsSynchronous;
+            return true;
+        }
 
         public   override   string          TaskName => $"name: '{name}'";
     }
@@ -44,8 +59,20 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         public override async Task<SyncTaskResult> ExecuteAsync(EntityDatabase database, SyncResponse response, SyncContext syncContext) {
             if (name == null)
                 return MissingField(nameof(name));
-            if (database.service.TryGetMessage(name, out var callback)) {
-                var result  = await callback.InvokeDelegateAsync(this, name, param, syncContext).ConfigureAwait(false); // todo could be synchronous call
+            if (callback != null) {
+                var result  = await callback.InvokeDelegateAsync(this, name, param, syncContext).ConfigureAwait(false);
+                if (result.error != null) {
+                    return new TaskErrorResult (TaskErrorResultType.CommandError, result.error);
+                }
+            }
+            return new SendMessageResult();
+        }
+        
+        public override SyncTaskResult Execute(EntityDatabase database, SyncResponse response, SyncContext syncContext) {
+            if (name == null)
+                return MissingField(nameof(name));
+            if (callback != null) {
+                var result  = callback.InvokeDelegate(this, name, param, syncContext);
                 if (result.error != null) {
                     return new TaskErrorResult (TaskErrorResultType.CommandError, result.error);
                 }

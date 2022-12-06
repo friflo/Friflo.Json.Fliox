@@ -61,7 +61,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             return new MemoryContainer(name, database, containerType, pretty, smallValueSize);
         }
         
-        public override bool SynchronousExecution(SyncRequestTask task) {
+        public override bool PreExecute(SyncRequestTask task) {
             switch (task.TaskType) {
                 case TaskType.create:
                 case TaskType.upsert:
@@ -70,6 +70,9 @@ namespace Friflo.Json.Fliox.Hub.Host
                 case  TaskType.read:
                     var read = (ReadEntities)task;
                     return read.references == null;
+                case TaskType.message:
+                case TaskType.command:
+                    return ((SyncMessageTask)task).PreExecute(service);
             }
             return false;
         }

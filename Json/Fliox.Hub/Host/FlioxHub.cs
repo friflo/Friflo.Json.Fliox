@@ -231,7 +231,7 @@ namespace Friflo.Json.Fliox.Hub.Host
                 var task = requestTasks[index];
                 try {
                     SyncTaskResult result;
-                    if (db.SynchronousExecution(task)) {
+                    if (db.PreExecute(task)) {
                         result = service.ExecuteTask(task, db, response, syncContext);
                     } else {
                         result = await service.ExecuteTaskAsync(task, db, response, syncContext).ConfigureAwait(false);

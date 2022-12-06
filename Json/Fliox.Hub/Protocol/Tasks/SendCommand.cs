@@ -15,19 +15,39 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     public sealed class SendCommand : SyncMessageTask
     {
         public   override   TaskType        TaskType => TaskType.command;
-
-        public override async Task<SyncTaskResult> ExecuteAsync(EntityDatabase database, SyncResponse response, SyncContext syncContext) {
+        
+        
+        private TaskErrorResult PrepareSend() {
             if (name == null) {
                 return MissingField(nameof(name));
             }
-            if (database.service.TryGetMessage(name, out var callback)) {
-                var result  = await callback.InvokeDelegateAsync(this, name, param, syncContext).ConfigureAwait(false);
-                if (result.error == null)
-                    return new SendCommandResult { result = result.value };
-                return new TaskErrorResult (TaskErrorResultType.CommandError, result.error);
+            if (callback == null) {
+                var msg = $"no command handler for: '{name}'";
+                return new TaskErrorResult (TaskErrorResultType.NotImplemented, msg);
             }
-            var msg = $"no command handler for: '{name}'";
-            return new TaskErrorResult (TaskErrorResultType.NotImplemented, msg);
+            return null;
+        }
+
+        public override async Task<SyncTaskResult> ExecuteAsync(EntityDatabase database, SyncResponse response, SyncContext syncContext) {
+            var error = PrepareSend();
+            if (error != null) {
+                return error;
+            }
+            var result  = await callback.InvokeDelegateAsync(this, name, param, syncContext).ConfigureAwait(false);
+            if (result.error == null)
+                return new SendCommandResult { result = result.value };
+            return new TaskErrorResult (TaskErrorResultType.CommandError, result.error);
+        }
+        
+        public override SyncTaskResult Execute(EntityDatabase database, SyncResponse response, SyncContext syncContext) {
+            var error = PrepareSend();
+            if (error != null) {
+                return error;
+            }
+            var result  = callback.InvokeDelegate(this, name, param, syncContext);
+            if (result.error == null)
+                return new SendCommandResult { result = result.value };
+            return new TaskErrorResult (TaskErrorResultType.CommandError, result.error);
         }
     }
     
