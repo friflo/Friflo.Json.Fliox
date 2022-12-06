@@ -86,7 +86,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             // Console.WriteLine($"--- AcknowledgeEvents");
         } 
         
-        private async Task<ExecuteSyncResult> ExecuteSync(SyncRequest syncRequest, SyncContext syncContext) {
+        private async Task<ExecuteSyncResult> ExecuteRequestAsync(SyncRequest syncRequest, SyncContext syncContext) {
             _intern.syncCount++;
             if (_intern.ackTimerPending) {
                 _intern.ackTimer?.Change(Timeout.Infinite, Timeout.Infinite);

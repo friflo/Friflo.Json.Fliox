@@ -68,7 +68,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// <summary> using a static class prevents noise in form of 'Static members' for class instances in Debugger </summary>
         private static class Static {
             /// <summary>
-            /// Process continuation of <see cref="FlioxClient.ExecuteSync"/> on caller context. <br/>
+            /// Process continuation of <see cref="FlioxClient.ExecuteRequestAsync"/> on caller context. <br/>
             /// This ensures modifications to entities are applied on the same context used by the caller. <br/>
             /// It also ensures that <see cref="SyncFunction.OnSync"/> is called on caller context. <br/>
             /// </summary>
@@ -126,14 +126,13 @@ namespace Friflo.Json.Fliox.Hub.Client
             var syncRequest = CreateSyncRequest(out SyncStore syncStore);
             var buffer      = CreateMemoryBuffer();
             var syncContext = new SyncContext(_intern.sharedEnv, _intern.eventReceiver, buffer, _intern.clientId);
-            var response    = await ExecuteSync(syncRequest, syncContext).ConfigureAwait(Static.OriginalContext);
+            var response    = await ExecuteRequestAsync(syncRequest, syncContext).ConfigureAwait(Static.OriginalContext);
             
             var result      = HandleSyncResponse(syncRequest, response, syncStore);
             if (!result.Success)
                 throw new SyncTasksException(response.error, result.failed);
             syncContext.Release();
             return result;
-
         }
         
         /// <summary> Execute all tasks created by methods of <see cref="EntitySet{TKey,T}"/> and <see cref="FlioxClient"/> </summary>
@@ -145,7 +144,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             var syncRequest = CreateSyncRequest(out SyncStore syncStore);
             var buffer      = CreateMemoryBuffer();
             var syncContext = new SyncContext(_intern.sharedEnv, _intern.eventReceiver, buffer, _intern.clientId);
-            var response    = await ExecuteSync(syncRequest, syncContext).ConfigureAwait(Static.OriginalContext);
+            var response    = await ExecuteRequestAsync(syncRequest, syncContext).ConfigureAwait(Static.OriginalContext);
 
             var result      = HandleSyncResponse(syncRequest, response, syncStore);
             syncContext.Release();
@@ -157,7 +156,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             var syncRequest = CreateSyncRequestInstance(new List<SyncRequestTask>());
             var buffer      = CreateMemoryBuffer();
             var syncContext = new SyncContext(_intern.sharedEnv, _intern.eventReceiver, buffer, _intern.clientId);
-            var response    = await ExecuteSync(syncRequest, syncContext).ConfigureAwait(false);
+            var response    = await ExecuteRequestAsync(syncRequest, syncContext).ConfigureAwait(false);
 
             var syncStore   = new SyncStore();  // create default (empty) SyncStore
             var result      = HandleSyncResponse(syncRequest, response, syncStore);
