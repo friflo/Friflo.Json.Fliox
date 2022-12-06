@@ -12,7 +12,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
     /// </summary>
     /// <remarks>
     /// This <see cref="TaskAuthorizer"/> it stored at <see cref="AuthState.taskAuthorizer"/>.
-    /// The <see cref="AuthState.taskAuthorizer"/> is set via <see cref="Authenticator.Authenticate"/> for
+    /// The <see cref="AuthState.taskAuthorizer"/> is set via <see cref="Authenticator.AuthenticateAsync"/> for
     /// <see cref="AuthState.authenticated"/> and for not <see cref="AuthState.authenticated"/> users.
     /// </remarks> 
     public abstract class TaskAuthorizer

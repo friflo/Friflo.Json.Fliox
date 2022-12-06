@@ -39,7 +39,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
         public CommandTask<bool>                 ClearAuthCache()                       => SendCommand<bool>(nameof(ClearAuthCache));
 
         // --- IUserAuth
-        public async Task<AuthResult> Authenticate(Credentials command) {
+        public async Task<AuthResult> AuthenticateAsync(Credentials command) {
             var commandTask = AuthenticateUser(command);
             await SyncTasks().ConfigureAwait(false);
             return commandTask.Result;

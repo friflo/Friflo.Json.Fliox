@@ -27,7 +27,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
     }
     
     public interface IUserAuth {
-        Task<AuthResult> Authenticate(Credentials value);
+        Task<AuthResult> AuthenticateAsync(Credentials value);
     }
 
     /// <summary>
@@ -134,7 +134,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
 
         private const string InvalidUserToken = "Authentication failed";
         
-        public override async Task Authenticate(SyncRequest syncRequest, SyncContext syncContext)
+        public override async Task AuthenticateAsync(SyncRequest syncRequest, SyncContext syncContext)
         {
             var userId = syncRequest.userId;
             if (userId.IsNull()) {
@@ -164,11 +164,11 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
                 var userStore = pooled.instance;
                 userStore.UserId = UserStore.AuthenticationUser;
                 var auth    = userAuth ?? userStore;
-                var result  = await auth.Authenticate(command).ConfigureAwait(false);
+                var result  = await auth.AuthenticateAsync(command).ConfigureAwait(false);
                 
                 if (result.isValid) {
                     var authCred        = new AuthCred(token);
-                    var userAuthInfo    = await GetUserAuthInfo(userStore, userId).ConfigureAwait(false);
+                    var userAuthInfo    = await GetUserAuthInfoAsync(userStore, userId).ConfigureAwait(false);
                     if (!userAuthInfo.Success) {
                         syncContext.AuthenticationFailed(anonymousUser, userAuthInfo.error, AnonymousTaskAuthorizer, AnonymousHubPermission);
                         return;
@@ -230,7 +230,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
             throw new InvalidOperationException ("unexpected clientIdValidation state");
         }
         
-        public override async Task SetUserOptions (User user, UserParam param) {
+        public override async Task SetUserOptionsAsync (User user, UserParam param) {
             var store       = new UserStore(userHub);
             store.UserId    = UserStore.AuthenticationUser;
             var read        = store.targets.Read().Find(user.userId);
@@ -242,10 +242,10 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
             store.targets.Upsert(userTarget);
             await store.SyncTasks().ConfigureAwait(false);
 
-            await base.SetUserOptions(user, param).ConfigureAwait(false); 
+            await base.SetUserOptionsAsync(user, param).ConfigureAwait(false); 
         }
 
-        private async Task<Result<UserAuthInfo>> GetUserAuthInfo(UserStore userStore, JsonKey userId) {
+        private async Task<Result<UserAuthInfo>> GetUserAuthInfoAsync(UserStore userStore, JsonKey userId) {
             var readPermission  = userStore.permissions.Read().Find(userId);
             var readTarget      = userStore.targets.Read().Find(userId);
             await userStore.SyncTasks().ConfigureAwait(false);

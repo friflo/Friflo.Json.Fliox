@@ -191,15 +191,16 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// </para>
         /// </remarks>
         public virtual async Task<ExecuteSyncResult> ExecuteRequestAsync(SyncRequest syncRequest, SyncContext syncContext) {
+            if (syncContext.authState.authExecuted) throw new InvalidOperationException("Expect AuthExecuted == false");
+            await authenticator.AuthenticateAsync(syncRequest, syncContext).ConfigureAwait(false);
+            
             syncContext.hub = this;
             var syncDbName  = new SmallString(syncRequest.database);        // is nullable
             var hubDbName   = syncContext.hub.DatabaseName;                 // not null
             var dbName      = syncDbName.IsNull() ? hubDbName : syncDbName; // not null
             syncContext.databaseName = dbName;
-            if (syncContext.authState.authExecuted) throw new InvalidOperationException("Expect AuthExecuted == false");
             syncContext.clientId = syncRequest.clientId;
             
-            await authenticator.Authenticate(syncRequest, syncContext).ConfigureAwait(false);
             syncContext.clientIdValidation = authenticator.ValidateClientId(clientController, syncContext);
             
             // todo check extracting validation to ValidateTasks()

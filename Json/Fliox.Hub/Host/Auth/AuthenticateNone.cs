@@ -14,7 +14,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
     /// </summary>
     public sealed class AuthenticateNone : Authenticator
     {
-        public override Task Authenticate(SyncRequest syncRequest, SyncContext syncContext) {
+        public override Task AuthenticateAsync(SyncRequest syncRequest, SyncContext syncContext) {
             User user;
             ref var userId = ref syncRequest.userId;
             if (userId.IsNull()) {

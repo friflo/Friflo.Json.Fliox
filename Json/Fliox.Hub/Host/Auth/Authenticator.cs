@@ -42,7 +42,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
         
         public    override  string                                  ToString() => $"users: {users.Count}";
 
-        public abstract Task    Authenticate    (SyncRequest syncRequest, SyncContext syncContext);
+        public abstract Task    AuthenticateAsync    (SyncRequest syncRequest, SyncContext syncContext);
         
         protected Authenticator () {
             registeredPredicates    = new Dictionary<string, AuthorizePredicate>();
@@ -83,7 +83,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
             throw new InvalidOperationException ("unexpected clientIdValidation state");
         }
         
-        public virtual Task SetUserOptions (User user, UserParam param) {
+        public virtual Task SetUserOptionsAsync (User user, UserParam param) {
             user.SetUserOptions(param);
             return Task.CompletedTask;
         }

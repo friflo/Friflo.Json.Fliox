@@ -21,7 +21,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
     /// The access to the user database itself requires also authentication by one of the predefined users:
     /// <see cref="UserStore.AuthenticationUser"/> or <see cref="UserStore.Server"/>.
     /// <br></br>
-    /// A <see cref="UserStore.AuthenticationUser"/> user is only able to <see cref="Authenticate"/> itself.
+    /// A <see cref="UserStore.AuthenticationUser"/> user is only able to <see cref="AuthenticateAsync"/> itself.
     /// A <see cref="UserStore.Server"/> user is able to read credentials and roles stored in a user database.
     /// </remarks>
     public sealed class UserDatabaseAuthenticator : Authenticator
@@ -48,7 +48,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
             };
         }
 
-        public override Task Authenticate(SyncRequest syncRequest, SyncContext syncContext) {
+        public override Task AuthenticateAsync(SyncRequest syncRequest, SyncContext syncContext) {
             ref var userId = ref syncRequest.userId;
             User user;
             if (userId.IsNull()) {

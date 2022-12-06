@@ -149,7 +149,7 @@ namespace Friflo.Json.Fliox.Hub.Host
                     return context.Error<UserResult>("command requires a Hub with an EventDispatcher");
                 }
                 var authenticator = context.Hub.Authenticator;
-                await authenticator.SetUserOptions(context.User, options).ConfigureAwait(false);
+                await authenticator.SetUserOptionsAsync(context.User, options).ConfigureAwait(false);
                 
                 eventDispatcher.UpdateSubUserGroups(user.userId, groups);
             }
