@@ -13,6 +13,7 @@ using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Hub.Remote;
 using Friflo.Json.Fliox.Mapper;
+using Friflo.Json.Fliox.Utils;
 
 #if !UNITY_5_3_OR_NEWER
 [assembly: CLSCompliant(true)]
@@ -123,7 +124,11 @@ namespace Friflo.Json.Fliox.Hub.Client
         private SyncRequest CreateSyncRequest(out SyncStore syncStore) {
             using (var pooled = ObjectMapper.Get()) {
                 return CreateSyncRequest(out syncStore, pooled.instance);
-            }          
+            }
+        }
+        
+        private static MemoryBuffer CreateMemoryBuffer() {
+            return new MemoryBuffer(false, MemoryBufferCapacity);  // cannot be reused as its buffer may be used by application
         }
 
         /// <summary>

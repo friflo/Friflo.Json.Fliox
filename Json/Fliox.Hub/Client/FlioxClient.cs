@@ -3,17 +3,18 @@
 
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Client.Event;
 using Friflo.Json.Fliox.Hub.Client.Internal;
 using Friflo.Json.Fliox.Hub.Client.Internal.Map;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.Event;
-using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Utils;
 using static System.Diagnostics.DebuggerBrowsableState;
 using Browse = System.Diagnostics.DebuggerBrowsableAttribute;
+
+// Note! Must not import
+// using System.Threading.Tasks;    =>   async methods must be placed in FlioxClient.execute.async.cs
 
 // ReSharper disable UseObjectOrCollectionInitializer
 namespace Friflo.Json.Fliox.Hub.Client
@@ -59,9 +60,15 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// <summary> If true the serialization of entities to JSON write null fields. Otherwise null fields are omitted </summary>
         [Browse(Never)] public      bool                        WriteNull   { set => SetWriteNull(value); }
         [Browse(Never)] internal    readonly   Type             type;
-        [Browse(Never)] internal    ObjectPool<ObjectMapper>    ObjectMapper    => _intern.pool.ObjectMapper;
-        [Browse(Never)] public      IHubLogger                  Logger          => _intern.hubLogger;
-        public override             string                      ToString()      => FormatToString();
+        [Browse(Never)] internal    ObjectPool<ObjectMapper>    ObjectMapper            => _intern.pool.ObjectMapper;
+        [Browse(Never)] public      IHubLogger                  Logger                  => _intern.hubLogger;
+        
+        /// <summary> Return the number of calls to <see cref="SyncTasks"/> and <see cref="TrySyncTasks"/> </summary>
+                        public      int                         GetSyncCount()          => _intern.syncCount;
+        /// <summary> Return the number of pending <see cref="SyncTasks"/> and <see cref="TrySyncTasks"/> calls </summary>
+                        public      int                         GetPendingSyncCount()   => _intern.pendingSyncs.Count;
+        
+        public override             string                      ToString()              => FormatToString();
         
         private const               int                         MemoryBufferCapacity = 1024;
         
@@ -108,49 +115,6 @@ namespace Friflo.Json.Fliox.Hub.Client
                 set.Reset();
             }
             _intern.Reset();
-        }
-        #endregion
-
-    #region - sync tasks
-        /// <summary> Return the number of calls to <see cref="SyncTasks"/> and <see cref="TrySyncTasks"/> </summary>
-        public  int     GetSyncCount()          => _intern.syncCount;
-        /// <summary> Return the number of pending <see cref="SyncTasks"/> and <see cref="TrySyncTasks"/> calls </summary>
-        public  int     GetPendingSyncCount()   => _intern.pendingSyncs.Count;
-
-        /// <summary> Specific characteristic: Method can run in parallel on any thread </summary>
-        private async Task<SyncResult> TrySyncAcknowledgeEvents() {
-            var syncRequest = CreateSyncRequestInstance(new List<SyncRequestTask>());
-            var buffer      = CreateMemoryBuffer();
-            var syncContext = new SyncContext(_intern.sharedEnv, _intern.eventReceiver, buffer, _intern.clientId);
-            var response    = await ExecuteRequestAsync(syncRequest, syncContext).ConfigureAwait(false);
-
-            var syncStore   = new SyncStore();  // create default (empty) SyncStore
-            var result      = HandleSyncResponse(syncRequest, response, syncStore);
-            syncContext.Release();
-            return result;
-        }
-        
-        private MemoryBuffer CreateMemoryBuffer() {
-            return new MemoryBuffer(false, MemoryBufferCapacity);  // cannot be reused as its buffer may be used by application
-        }
-        
-        /// <summary> Cancel execution of pending calls to <see cref="SyncTasks"/> and <see cref="TrySyncTasks"/> </summary>
-        public async Task CancelPendingSyncs() {
-            List<SyncContext>   pendingSyncs;
-            List<Task>          pendingTasks;
-            lock (_intern.pendingSyncs) {
-                var count       = _intern.pendingSyncs.Count;
-                pendingSyncs    = new List<SyncContext> (count);
-                pendingTasks    = new List<Task>        (count);
-                foreach (var pair in _intern.pendingSyncs) {
-                    pendingSyncs.Add(pair.Value);
-                    pendingTasks.Add(pair.Key);
-                }
-            }
-            foreach (var sync in pendingSyncs) {
-                sync.Cancel();
-            }
-            await Task.WhenAll(pendingTasks).ConfigureAwait(false);
         }
         #endregion
 

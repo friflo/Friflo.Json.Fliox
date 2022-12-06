@@ -51,6 +51,7 @@ namespace Friflo.Json.Fliox.Hub.Client
                 _intern.ackTimer?.Change(Timeout.Infinite, Timeout.Infinite);
                 _intern.ackTimerPending = false;
             }
+
             try {
                 var response = _intern.hub.ExecuteRequest(syncRequest, syncContext);
                 
