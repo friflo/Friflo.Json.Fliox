@@ -114,6 +114,10 @@ namespace Friflo.Json.Fliox.Hub.Host
         #endregion
 
     #region - public utils
+        /// <summary>Can be implemented used to merge entities synchronously for optimization</summary>
+        public virtual MergeEntitiesResult MergeEntities (MergeEntities mergeEntities, SyncContext syncContext)
+            => throw new NotSupportedException();
+        
         /// <summary>Apply the given <paramref name="mergeEntities"/> to the container entities</summary>
         /// <remarks>
         /// Default implementation to apply patches to entities.

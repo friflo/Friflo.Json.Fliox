@@ -29,18 +29,47 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         
         public   override   TaskType            TaskType => TaskType.merge;
         public   override   string              TaskName =>  $"container: '{container}'";
+        
+        private EntityContainer PrepareMerge(
+            EntityDatabase      database,
+            SyncContext         syncContext,
+            out TaskErrorResult error
+            )
+        {
+            if (container == null) {
+                error = MissingContainer();
+                return null;
+            }
+            if (patches == null) {
+                error = MissingField(nameof(patches));
+                return null;
+            }
+            containerCmp = new SmallString(container);
+            database.service.CustomizeMerge(this, syncContext);
+            error = null;
+            return database.GetOrCreateContainer(container);
+        }
 
         public override async Task<SyncTaskResult> ExecuteAsync(EntityDatabase database, SyncResponse response, SyncContext syncContext) {
-            if (container == null)
-                return MissingContainer();
-            if (patches == null)
-                return MissingField(nameof(patches));
-            containerCmp        = new SmallString(container);
-            var entityContainer = database.GetOrCreateContainer(container);
-            
-            database.service.CustomizeMerge(this, syncContext);
-            
+            var entityContainer = PrepareMerge(database, syncContext, out var error);
+            if (error != null) {
+                return error;
+            }
             var result = await entityContainer.MergeEntitiesAsync(this, syncContext).ConfigureAwait(false);
+            
+            if (result.Error != null) {
+                return TaskError(result.Error); 
+            }
+            return result;
+        }
+        
+        public override SyncTaskResult Execute(EntityDatabase database, SyncResponse response, SyncContext syncContext) {
+            var entityContainer = PrepareMerge(database, syncContext, out var error);
+            if (error != null) {
+                return error;
+            }
+            var result = entityContainer.MergeEntities(this, syncContext);
+            
             if (result.Error != null) {
                 return TaskError(result.Error); 
             }

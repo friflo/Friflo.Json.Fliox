@@ -161,11 +161,14 @@ namespace Friflo.Json.Fliox.Hub.Host
         }
         
         public override Task<MergeEntitiesResult> MergeEntitiesAsync (MergeEntities mergeEntities, SyncContext syncContext) {
-            return Task.FromResult(MergeEntitiesSync(mergeEntities, syncContext));
+            return Task.FromResult(MergeEntities(mergeEntities, syncContext));
         }
         
-        /// <summary> Optimized implementation </summary>
-        public MergeEntitiesResult MergeEntitiesSync (MergeEntities mergeEntities, SyncContext syncContext) {
+        /// <summary> Optimized merge implementation specific for <see cref="MemoryContainer"/> </summary>
+        public override MergeEntitiesResult MergeEntities (
+            MergeEntities   mergeEntities,
+            SyncContext     syncContext)
+        {
             var patches = mergeEntities.patches;
             if (!EntityUtils.GetKeysFromEntities(mergeEntities.keyName, patches, syncContext, out string keyError)) {
                 var error = new CommandError(TaskErrorResultType.InvalidTask, keyError);
