@@ -253,7 +253,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             
             response.AssertResponse(syncRequest);
             
-            await service.PostExecuteTasks(syncRequest, syncContext).ConfigureAwait(false);
+            service.PostExecuteTasks(syncRequest, syncContext);
             
             var dispatcher = EventDispatcher;
             if (dispatcher != null) {
