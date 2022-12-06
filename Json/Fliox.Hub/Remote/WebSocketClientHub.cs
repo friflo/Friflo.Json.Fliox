@@ -198,7 +198,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             }
         }
         
-        public override async Task<ExecuteSyncResult> ExecuteSync(SyncRequest syncRequest, SyncContext syncContext) {
+        public override async Task<ExecuteSyncResult> ExecuteRequestAsync(SyncRequest syncRequest, SyncContext syncContext) {
             var wsConn = GetWebsocketConnection();
             if (wsConn == null) {
                 wsConn = await Connect().ConfigureAwait(false);

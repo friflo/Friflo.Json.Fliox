@@ -135,7 +135,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                                 if (error != null) {
                                     response = JsonResponse.CreateError(mapper, error, ErrorResponseType.BadResponse, null);
                                 } else {
-                                    var syncResult = await remoteHost.localHub.ExecuteSync(syncRequest, syncContext).ConfigureAwait(false);
+                                    var syncResult = await remoteHost.localHub.ExecuteRequestAsync(syncRequest, syncContext).ConfigureAwait(false);
                     
                                     response = RemoteHost.CreateJsonResponse(syncResult, syncRequest.reqId, mapper);
                                 }

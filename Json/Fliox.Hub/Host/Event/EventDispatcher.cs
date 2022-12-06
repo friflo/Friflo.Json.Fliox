@@ -33,7 +33,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         /// </summary>
         Queue,
         /// <summary>
-        /// Events are instantaneously send to their targets when processing a request in <see cref="FlioxHub.ExecuteSync"/>.
+        /// Events are instantaneously send to their targets when processing a request in <see cref="FlioxHub.ExecuteRequestAsync"/>.
         /// </summary>
         Send
     }

@@ -19,7 +19,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         
         /// <summary>
         /// Inform about an unhandled exception in a <see cref="EntityContainer"/> implementation which need to be fixed.
-        /// More information at <see cref="FlioxHub.ExecuteSync"/>.
+        /// More information at <see cref="FlioxHub.ExecuteRequestAsync"/>.
         /// Maps to <see cref="TaskErrorResultType.UnhandledException"/>.
         /// </summary>
         UnhandledException,

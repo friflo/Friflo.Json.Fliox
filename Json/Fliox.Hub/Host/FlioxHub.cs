@@ -46,7 +46,7 @@ namespace Friflo.Json.Fliox.Hub.Host
     ///     <see cref="AddExtensionDB"/>.
     ///   </item>
     /// </list>
-    /// A <see cref="FlioxHub"/> instance handle <b>all</b> client requests by its <see cref="ExecuteSync"/> method. <br/>
+    /// A <see cref="FlioxHub"/> instance handle <b>all</b> client requests by its <see cref="ExecuteRequestAsync"/> method. <br/>
     /// A request is represented by a <see cref="SyncRequest"/> and its <see cref="SyncRequest.tasks"/> are executed
     /// on the given <see cref="SyncRequest.database"/>. <br/>
     /// If database == null the default <see cref="database"/> of <see cref="FlioxHub"/> is used.
@@ -99,7 +99,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// <summary>
         /// <see cref="ClientController"/> is used to create / add unique client ids to enable sending events to
         /// specific user clients.
-        /// It also enables monitoring execution statistics of <see cref="FlioxHub.ExecuteSync"/> 
+        /// It also enables monitoring execution statistics of <see cref="ExecuteRequestAsync"/> 
         /// </summary>
         public              ClientController    ClientController{ get => clientController; set => clientController = value ?? throw new ArgumentNullException(nameof(ClientController)); }
         
@@ -174,7 +174,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// All requests to a <see cref="FlioxHub"/> are handled by this method.
         /// By design this is the 'front door' all requests have to pass to get processed.
         /// <para>
-        ///   <see cref="ExecuteSync"/> catches exceptions thrown by a <see cref="SyncRequestTask"/> but 
+        ///   <see cref="ExecuteRequestAsync"/> catches exceptions thrown by a <see cref="SyncRequestTask"/> but 
         ///   this is only a fail safe mechanism.
         ///   Thrown exceptions need to be handled by proper error handling in the first place.
         ///
@@ -190,7 +190,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         ///   <para> 2. An issue in the namespace <see cref="Friflo.Json.Fliox.Hub.Protocol"/> which must to be fixed.</para> 
         /// </para>
         /// </remarks>
-        public virtual async Task<ExecuteSyncResult> ExecuteSync(SyncRequest syncRequest, SyncContext syncContext) {
+        public virtual async Task<ExecuteSyncResult> ExecuteRequestAsync(SyncRequest syncRequest, SyncContext syncContext) {
             syncContext.hub = this;
             var syncDbName  = new SmallString(syncRequest.database);        // is nullable
             var hubDbName   = syncContext.hub.DatabaseName;                 // not null

@@ -23,7 +23,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         }
 
         /// <summary>A class extending  <see cref="RemoteClientHub"/> must implement this method.</summary>
-        public abstract override Task<ExecuteSyncResult> ExecuteSync(SyncRequest syncRequest, SyncContext syncContext);
+        public abstract override Task<ExecuteSyncResult> ExecuteRequestAsync(SyncRequest syncRequest, SyncContext syncContext);
         
         public override void AddEventReceiver(in JsonKey clientId, EventReceiver eventReceiver) {
             eventReceivers.Add(clientId, eventReceiver);

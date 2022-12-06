@@ -16,7 +16,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs
             : base(new NoopDatabase(databaseName), env, hostName)
         { }
                 
-        public override Task<ExecuteSyncResult> ExecuteSync(SyncRequest syncRequest, SyncContext syncContext) {
+        public override Task<ExecuteSyncResult> ExecuteRequestAsync(SyncRequest syncRequest, SyncContext syncContext) {
             var result = new SyncResponse {
                 tasks       = new List<SyncTaskResult>()
             };

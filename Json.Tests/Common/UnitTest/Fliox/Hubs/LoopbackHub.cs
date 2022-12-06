@@ -32,13 +32,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs
             host.Dispose();
         }
         
-        public override async Task<ExecuteSyncResult> ExecuteSync(SyncRequest syncRequest, SyncContext syncContext) {
+        public override async Task<ExecuteSyncResult> ExecuteRequestAsync(SyncRequest syncRequest, SyncContext syncContext) {
             using (var pooledMapper = syncContext.ObjectMapper.Get()) {
                 var mapper          = pooledMapper.instance;
                 var requestJson     = RemoteUtils.CreateProtocolMessage(syncRequest, mapper);
                 var requestCopy     = RemoteUtils.ReadSyncRequest (mapper, requestJson, out var _);
 
-                var syncResponse    = await host.ExecuteSync(requestCopy, syncContext);
+                var syncResponse    = await host.ExecuteRequestAsync(requestCopy, syncContext);
                 
                 if (syncResponse.error != null) {
                     return syncResponse;

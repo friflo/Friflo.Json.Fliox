@@ -41,7 +41,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         /// </summary>
         /// <remarks>
         /// Unhandled exceptions in a <see cref="EntityContainer"/> implementations need to be fixed.<br/>
-        /// More information at <see cref="FlioxHub.ExecuteSync"/>.
+        /// More information at <see cref="FlioxHub.ExecuteRequestAsync"/>.
         /// </remarks>
         UnhandledException,
         /// <summary>General database error while task execution.<br/>

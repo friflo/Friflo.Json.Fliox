@@ -35,7 +35,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs
             }
         }
 
-        public override async Task<ExecuteSyncResult> ExecuteSync(SyncRequest syncRequest, SyncContext syncContext) {
+        public override async Task<ExecuteSyncResult> ExecuteRequestAsync(SyncRequest syncRequest, SyncContext syncContext) {
             foreach (var task in syncRequest.tasks) {
                 switch (task) {
                     case CreateEntities createEntities:
@@ -50,7 +50,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs
                         break;
                 }
             }
-            return await hub.ExecuteSync(syncRequest, syncContext);
+            return await hub.ExecuteRequestAsync(syncRequest, syncContext);
         }
 
         public WriteModifiers GetWriteModifiers(string container) {

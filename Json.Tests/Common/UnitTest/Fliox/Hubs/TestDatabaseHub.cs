@@ -63,7 +63,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs
             }
         }
 
-        public override async Task<ExecuteSyncResult> ExecuteSync(SyncRequest syncRequest, SyncContext syncContext) {
+        public override async Task<ExecuteSyncResult> ExecuteRequestAsync(SyncRequest syncRequest, SyncContext syncContext) {
             foreach (var task in syncRequest.tasks) {
                 if (task is SendCommand message) {
                     if (!syncErrors.TryGetValue(message.name, out var fcn))
@@ -72,7 +72,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs
                     return resp;
                 }
             }
-            var response = await base.ExecuteSync(syncRequest, syncContext);
+            var response = await base.ExecuteRequestAsync(syncRequest, syncContext);
             foreach (var pair in testDatabase.testContainers) {
                 TestContainer testContainer = pair.Value;
                 var result = response.success.FindContainer(testContainer.name);

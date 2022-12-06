@@ -17,7 +17,7 @@ namespace Friflo.Json.Fliox.Hub.Host
 {
     // ------------------------------------ SyncContext ------------------------------------
     /// <summary>
-    /// One <see cref="SyncContext"/> is created per <see cref="FlioxHub.ExecuteSync"/> call to enable
+    /// One <see cref="SyncContext"/> is created per <see cref="FlioxHub.ExecuteRequestAsync"/> call to enable
     /// multi threaded / concurrent handling of a <see cref="SyncRequest"/>.
     /// </summary>
     /// <remarks>
@@ -135,8 +135,8 @@ namespace Friflo.Json.Fliox.Hub.Host
     
     /// <summary>
     /// <see cref="SyncBuffers"/> can be used to minimize heap allocations by passing to <see cref="SyncContext"/> constructor. <br/>
-    /// <b>Note</b> The the caller of <see cref="FlioxHub.ExecuteSync"/> <b>must</b> ensure that only one call to
-    /// <see cref="FlioxHub.ExecuteSync"/> is running at a time.<br/>
+    /// <b>Note</b> The the caller of <see cref="FlioxHub.ExecuteRequestAsync"/> <b>must</b> ensure that only one call to
+    /// <see cref="FlioxHub.ExecuteRequestAsync"/> is running at a time.<br/>
     /// This requirement is fulfilled if request execution is stream based like <see cref="Remote.WebSocketHost"/>
     /// </summary>
     public readonly struct SyncBuffers
@@ -149,7 +149,7 @@ namespace Friflo.Json.Fliox.Hub.Host
     }
     
     /// <summary>
-    /// Contains the result of a <see cref="FlioxHub.ExecuteSync"/> call. <br/>
+    /// Contains the result of a <see cref="FlioxHub.ExecuteRequestAsync"/> call. <br/>
     /// After execution either <see cref="success"/> or <see cref="error"/> is set. Never both.
     /// </summary>
     public readonly struct ExecuteSyncResult {

@@ -23,7 +23,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
     /// <list type="bullet">
     ///   <item> create / add unique client ids by <see cref="FlioxHub.ClientController"/> </item>
     ///   <item> enables sending Push messages (events) for protocols supporting this like WebSocket's </item>
-    ///   <item> enables monitoring request / execution statistics of <see cref="FlioxHub.ExecuteSync"/> </item>
+    ///   <item> enables monitoring request / execution statistics of <see cref="FlioxHub.ExecuteRequestAsync"/> </item>
     /// </list>
     /// </remarks>
     public abstract class ClientController {

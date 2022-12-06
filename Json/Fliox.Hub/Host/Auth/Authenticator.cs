@@ -15,7 +15,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
 {
     /// <summary>
     /// Performs authentication and authorization by checking <see cref="SyncRequest.userId"/> and <see cref="SyncRequest.token"/>
-    /// in every <see cref="FlioxHub.ExecuteSync"/> call.
+    /// in every <see cref="FlioxHub.ExecuteRequestAsync"/> call.
     /// </summary>
     /// <remarks>
     /// <see cref="Authenticator"/> is mutable. Its <see cref="users"/> and <see cref="registeredPredicates"/> are subject to change.
