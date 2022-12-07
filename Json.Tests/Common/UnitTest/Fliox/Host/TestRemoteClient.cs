@@ -29,7 +29,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
         public static  void TestRemoteClient_UpsertMemory() {
             using (var sharedEnv = SharedEnv.Default) {
                 var cx = new ClientCx();
-                cx.database = new MemoryDatabase("test", smallValueSize: 1024);
+                cx.database = new MemoryDatabase("test", smallValueSize: 1024, type: MemoryType.NonConcurrent);
                 cx.hub      = new FlioxHub(cx.database, sharedEnv);
                 cx.client   = new GameClient(cx.hub);
                 
@@ -45,7 +45,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
                 }
                 var dif = GC.GetAllocatedBytesForCurrentThread() - start;
                 
-                var expected    = TestUtils.IsDebug() ? 648 : 648;  // Test Debug & Release
+                var expected    = TestUtils.IsDebug() ? 560 : 560;  // Test Debug & Release
                 AreEqual(expected, dif);
             }
         }
@@ -54,7 +54,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
         public static  void TestRemoteClient_ReadMemory() {
             using (var sharedEnv = SharedEnv.Default) {
                 var cx = new ClientCx();
-                cx.database = new MemoryDatabase("test", smallValueSize: 1024);
+                cx.database = new MemoryDatabase("test", smallValueSize: 1024, type: MemoryType.NonConcurrent);
                 cx.hub      = new FlioxHub(cx.database, sharedEnv);
                 cx.client   = new GameClient(cx.hub);
                 
