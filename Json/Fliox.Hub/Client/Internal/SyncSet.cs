@@ -83,10 +83,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
 
         // --- Create
         private CreateTask<T> CreateCreateTask() {
-            var upsert = set.createBuffer.Get();
-            if (upsert != null)
-                return upsert;
-            return new CreateTask<T>(new List<T>(), set, this);
+            return set.createBuffer.Get() ?? new CreateTask<T>(new List<T>(), set, this);
         }
         
         internal CreateTask<T> Create(T entity) {
@@ -118,10 +115,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
 
         // --- Upsert
         private UpsertTask<T> CreateUpsertTask() {
-            var upsert = set.upsertBuffer.Get();
-            if (upsert != null)
-                return upsert;
-            return new UpsertTask<T>(new List<T>(), set, this);
+            return set.upsertBuffer.Get() ?? new UpsertTask<T>(new List<T>(), set, this);
         }
         
         internal UpsertTask<T> Upsert(T entity) {
@@ -146,10 +140,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
 
         // --- Delete
         private DeleteTask<TKey, T> CreateDelete() {
-            var delete = set.deleteBuffer.Get();
-            if (delete != null)
-                return delete;
-            return new DeleteTask<TKey, T>(new List<TKey>(), this);
+            return set.deleteBuffer.Get() ?? new DeleteTask<TKey, T>(new List<TKey>(), this);
         }
         
         internal DeleteTask<TKey, T> Delete(TKey key) {
