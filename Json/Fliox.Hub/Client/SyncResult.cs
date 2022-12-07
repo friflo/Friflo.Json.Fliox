@@ -17,7 +17,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         public              IReadOnlyList<SyncFunction> Failed     => GetFailed();
         
         private  readonly   FlioxClient                 client;
-        internal readonly   List<SyncFunction>          functions;
+        private  readonly   List<SyncFunction>          functions;
         internal readonly   List<SyncFunction>          failed;
         private             ErrorResponse               errorResponse;
 
@@ -47,7 +47,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             errorResponse = null;
         }
         
-        internal IReadOnlyList<SyncFunction> GetFailed() {
+        private IReadOnlyList<SyncFunction> GetFailed() {
             if (failed != null)
                 return failed;
             return Array.Empty<SyncFunction>();

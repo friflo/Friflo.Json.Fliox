@@ -3,6 +3,7 @@
 
 using System;
 using Friflo.Json.Fliox.Hub.Host;
+using Friflo.Json.Tests.Common.UnitTest.Fliox.Client;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
 
@@ -26,7 +27,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
                     result.ReUse();
                 }
                 var dif = GC.GetAllocatedBytesForCurrentThread() - start;
-                AreEqual(1592, dif);
+                
+                var expected    = TestUtils.IsDebug() ? 1672 : 1592;  // Test Debug & Release
+                AreEqual(expected, dif);
             }
         }
     }
