@@ -7,26 +7,38 @@ using Friflo.Json.Tests.Common.UnitTest.Fliox.Client;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
 
+// ReSharper disable UseObjectOrCollectionInitializer
 namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
 {
     public static class TestRemoteClient
     {
+        private class ClientCx
+        {
+            // Add fields to avoid showing them in Rider > Debug > Variables. 
+            // If listed Rider calls their ToString() methods causing object instantiations (e.g. of string)
+            // which will be listed in Rider > Debug > Memory list
+            internal GameClient     client;
+            internal EntityDatabase database;
+            internal FlioxHub       hub;
+        }
+        
         [Test]
         public static  void TestRemoteHostReadRequest() {
             using (var sharedEnv = SharedEnv.Default) {
-                var database    = new MemoryDatabase("test", smallValueSize: 1024);
-                var hub         = new FlioxHub(database, sharedEnv);
-                var client      = new GameClient(hub);
+                var cx = new ClientCx();
+                cx.database = new MemoryDatabase("test", smallValueSize: 1024);
+                cx.hub         = new FlioxHub(cx.database, sharedEnv);
+                cx.client      = new GameClient(cx.hub);
                 
                 var player = new Player();
 
                 long start = 0;
                 for (int n = 0; n < 10; n++) {
                     start = GC.GetAllocatedBytesForCurrentThread();
-                    client.players.Upsert(player);
-                    var result = client.SyncTasksSynchronous();
+                    cx.client.players.Upsert(player);
+                    var result = cx.client.SyncTasksSynchronous();
                     
-                    result.ReUse(client);
+                    result.ReUse(cx.client);
                 }
                 var dif = GC.GetAllocatedBytesForCurrentThread() - start;
                 
