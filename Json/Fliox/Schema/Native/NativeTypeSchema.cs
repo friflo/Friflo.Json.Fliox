@@ -35,11 +35,14 @@ namespace Friflo.Json.Fliox.Schema.Native
         public  static  void                ClearCache () => Cache.Clear();
         public  static  NativeTypeSchema    Create     (Type rootType) {
             if (rootType == null) throw new ArgumentNullException(nameof(rootType));
-            if (!Cache.TryGetValue(rootType, out var schema)) {
-                schema = new NativeTypeSchema(rootType);
-                Cache.Add(rootType, schema);
+            var cache = Cache;
+            lock (cache) {
+                if (!cache.TryGetValue(rootType, out var schema)) {
+                    schema = new NativeTypeSchema(rootType);
+                    cache.Add(rootType, schema);
+                }
+                return schema;
             }
-            return schema;
         }
 
         private NativeTypeSchema (Type rootType)

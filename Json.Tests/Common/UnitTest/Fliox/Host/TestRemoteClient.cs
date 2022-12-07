@@ -28,6 +28,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
         [Test]
         public static  void TestRemoteClient_UpsertMemory() {
             using (var sharedEnv = SharedEnv.Default) {
+                // reusing sync instances give a 50% performance enhancement in Unity when using 8 threads
                 Parallel.For(0, 8, i => {
                     var cx = new ClientCx();
                     cx.database = new MemoryDatabase("test", smallValueSize: 1024, type: MemoryType.NonConcurrent);
