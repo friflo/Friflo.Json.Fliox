@@ -10,7 +10,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
         // --- containers
         public readonly EntitySet <int, Player>     players;
 
-        public GameClient(FlioxHub hub, string dbName = null) : base (hub, dbName, new TestRemoteOptions()) { }
+        public GameClient(FlioxHub hub, string dbName = null)
+            : base (hub, dbName, new ClientOptions (CreateEventReceiver))
+        { }
+        
+        private static EventReceiver CreateEventReceiver(FlioxHub hub, FlioxClient client) {
+            return new TestEventReceiver();
+        }
     }
         
     public class Player
@@ -24,11 +30,5 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
         public override bool    IsOpen()           => true;
         public override bool    IsRemoteTarget()   => true;
         public override void    SendEvent(EventMessage eventMessage, bool reusedEvent, in SendEventArgs args) { }
-    }
-    
-    public class TestRemoteOptions : ClientOptions {
-        public override EventReceiver CreateEventReceiver(FlioxHub hub, FlioxClient client) {
-            return new TestEventReceiver();
-        }
     }
 }

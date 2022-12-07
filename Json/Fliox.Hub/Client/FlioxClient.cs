@@ -99,7 +99,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             if (hub  == null)  throw new ArgumentNullException(nameof(hub));
             type                = GetType();
             options             = options ?? ClientOptions.Default;
-            var eventReceiver   = options.CreateEventReceiver(hub, this);
+            var eventReceiver   = options.createEventReceiver(hub, this);
             _intern             = new ClientIntern(this, hub, dbName, eventReceiver);
             std                 = new StdCommands  (this);
             hub.sharedEnv.sharedCache.AddRootType(type);
@@ -354,16 +354,23 @@ namespace Friflo.Json.Fliox.Hub.Client
         #endregion
     }
     
+    public delegate EventReceiver CreateEventReceiver (FlioxHub hub, FlioxClient client);
     /// <summary>
     /// <see cref="ClientOptions"/> can be passed to a <see cref="FlioxClient"/> constructor to customize
     /// general client behavior. <br/>
     /// For now its sole use case is to customize a client for testing purposes.
     /// </summary>
-    public class ClientOptions
+    public sealed class ClientOptions
     {
-        internal static readonly ClientOptions Default = new ClientOptions();
+        internal static readonly ClientOptions Default = new ClientOptions(DefaultCreateEventReceiver);
             
-        public virtual EventReceiver CreateEventReceiver (FlioxHub hub, FlioxClient client) {
+        public readonly  CreateEventReceiver    createEventReceiver;
+        
+        public ClientOptions(CreateEventReceiver createEventReceiver) {
+            this.createEventReceiver    = createEventReceiver;
+        }
+        
+        private static EventReceiver DefaultCreateEventReceiver (FlioxHub hub, FlioxClient client) {
             return hub.SupportPushEvents ? new ClientEventReceiver(client) : null;
         }        
     }
