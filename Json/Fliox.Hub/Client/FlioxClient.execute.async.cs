@@ -9,6 +9,7 @@ using Friflo.Json.Fliox.Hub.Client.Internal;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
+using Friflo.Json.Fliox.Utils;
 
 // Note!  Keep file in sync with:  FlioxClient.execute.sync.cs
 
@@ -88,10 +89,10 @@ namespace Friflo.Json.Fliox.Hub.Client
         
         /// <summary> Specific characteristic: Method can run in parallel on any thread </summary>
         private async Task<SyncResult> TrySyncAcknowledgeEvents() {
+            // cannot reuse request, context & buffer method can run on any thread
             var syncRequest = new SyncRequest { tasks = new List<SyncRequestTask>() };
             InitSyncRequest(syncRequest);
-            var buffer      = CreateMemoryBuffer();
-            // cannot reuse context: method can run on any thread
+            var buffer      = new MemoryBuffer(false, MemoryBufferCapacity);
             var syncContext = new SyncContext(_intern.sharedEnv, _intern.eventReceiver); 
             syncContext.SetMemoryBuffer(buffer);
             syncContext.clientId = _intern.clientId;
