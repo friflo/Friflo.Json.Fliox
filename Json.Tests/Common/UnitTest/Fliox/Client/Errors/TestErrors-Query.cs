@@ -105,8 +105,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             
             IsFalse(sync.Success);
             AreEqual("tasks: 16, failed: 5", sync.ToString());
-            AreEqual(16, sync.functions.Count);
-            AreEqual(5,  sync.failed.Count);
+            AreEqual(16, sync.Functions.Count);
+            AreEqual(5,  sync.Failed.Count);
             const string msg = @"SyncTasks() failed with task errors. Count: 5
 |- allArticles # EntityErrors ~ count: 2
 |   ReadError: articles [article-1], simulated read entity error
@@ -179,7 +179,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             var allArticles2 = articles.QueryAll()          .TaskName("allArticles2");
             
             var result = await store.TrySyncTasks();
-            AreEqual(1, result.failed.Count);
+            AreEqual(1, result.Failed.Count);
             IsFalse(allArticles2.Success);
             AreEqual(@"EntityErrors ~ count: 1
 | ReadError: articles [article-1], requested entity missing in response results", allArticles2.Error.ToString());

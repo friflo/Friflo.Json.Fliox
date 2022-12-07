@@ -1,34 +1,31 @@
-using Friflo.Json.Fliox.Hub.Client;
+// Copyright (c) Ullrich Praetz. All rights reserved.
+// See LICENSE file in the project root for full license information.
+
+using System;
 using Friflo.Json.Fliox.Hub.Host;
-using Friflo.Json.Fliox.Hub.Host.Event;
-using Friflo.Json.Fliox.Hub.Protocol;
+using NUnit.Framework;
 
 namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
 {
-    public class TestRemoteClient : FlioxClient
+    public static class TestRemoteClient
     {
-        // --- containers
-        public readonly EntitySet <int, Player>     players;
+        [Test]
+        public static  void TestRemoteHostReadRequest() {
+            using (var sharedEnv = SharedEnv.Default) { 
+                var cx = TestRemoteHost.PrepareRemoteHost(sharedEnv);
+                
+                var player = new Player();
 
-        public TestRemoteClient(FlioxHub hub, string dbName = null) : base (hub, dbName, new TestRemoteOptions()) { }
-    }
-        
-    public class Player
-    {
-        public int id;
-    }
-    
-    /// <summary> Used to test performance and memory usage of <see cref="EventDispatcher"/>.EnqueueSyncTasks() </summary>
-    public class TestEventReceiver : EventReceiver
-    {
-        public override bool    IsOpen()           => true;
-        public override bool    IsRemoteTarget()   => true;
-        public override void    SendEvent(EventMessage eventMessage, bool reusedEvent, in SendEventArgs args) { }
-    }
-    
-    public class TestRemoteOptions : ClientOptions {
-        public override EventReceiver CreateEventReceiver(FlioxHub hub, FlioxClient client) {
-            return new TestEventReceiver();
+                long start = 0;
+                for (int n = 0; n < 10; n++) {
+                    start = GC.GetAllocatedBytesForCurrentThread();
+                    cx.client.players.Upsert(player);
+                    var result = cx.client.SyncTasksSynchronous();
+                    result.ReUse();
+                }
+                var dif = GC.GetAllocatedBytesForCurrentThread() - start;
+                Console.WriteLine(dif);
+            }
         }
     }
 }

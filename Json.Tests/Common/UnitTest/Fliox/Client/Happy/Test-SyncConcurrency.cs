@@ -67,8 +67,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 
                 // by using AsyncDatabase SyncTasks() response handling is executed at WhenAll() instead synchronously in SyncTasks()
                 await Task.WhenAll(sync1, sync2);  // ------ sync point
-                AreEqual(1, sync1.Result.functions.Count);
-                AreEqual(2, sync2.Result.functions.Count);
+                AreEqual(1, sync1.Result.Functions.Count);
+                AreEqual(2, sync2.Result.Functions.Count);
             } {
                 var readCustomers1 = customers.Read();
                 var findPeter = readCustomers1.Find("customer-peter");
@@ -82,8 +82,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 
                 // by using AsyncDatabase SyncTasks() response handling is executed at WhenAll() instead synchronously in SyncTasks()
                 await Task.WhenAll(sync1, sync2);  // ------ sync point
-                AreEqual(2, sync1.Result.functions.Count);
-                AreEqual(3, sync2.Result.functions.Count);
+                AreEqual(2, sync1.Result.Functions.Count);
+                AreEqual(3, sync2.Result.Functions.Count);
 
                 AreEqual("Peter", findPeter.Result.name);
                 AreEqual("Paul",  findPaul.Result.name);

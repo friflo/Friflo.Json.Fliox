@@ -93,7 +93,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         private static async Task AutoConnectError (FlioxHub hub) {
             using (var client = new PocStore(hub) { UserId = "AutoConnectError", ClientId = "error-client"}) {
                 var syncError = await client.TrySyncTasks();
-                NotNull(syncError.failed);
+                NotNull(syncError.Failed);
                 StringAssert.StartsWith("Internal WebSocketException: Unable to connect to the remote server", syncError.Message);
                 
                 var sync1 = client.SyncTasks();

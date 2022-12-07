@@ -293,7 +293,7 @@ namespace Friflo.Json.Fliox.Hub.Client
                 finally {
                     var functions   = syncStore.functions;
                     var failed      = GetFailedFunctions(functions);
-                    syncResult      = new SyncResult(functions, failed, response.error);
+                    syncResult      = new SyncResult(this, functions, failed, response.error);
                     
                     foreach (var function in functions) {
                         var onSync  = function.OnSync;
@@ -313,7 +313,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             }
         }
         
-        private static IReadOnlyList<SyncFunction> GetFailedFunctions(List<SyncFunction> functions) {
+        private static List<SyncFunction> GetFailedFunctions(List<SyncFunction> functions) {
             // create failed array only if required
             var errorCount  = 0;
             foreach (var task in functions) {
@@ -322,14 +322,13 @@ namespace Friflo.Json.Fliox.Hub.Client
                 errorCount++;
             }
             if (errorCount == 0) {
-                return Array.Empty<SyncFunction>();
+                return null;
             }
-            var failed = new SyncFunction[errorCount];
-            int n = 0;
+            var failed = new List<SyncFunction>(errorCount);
             foreach (var task in functions) {
                 if (!task.State.Error.HasErrors)
                     continue;
-                failed[n++] = task;
+                failed.Add(task);
             }
             return failed;
         }

@@ -69,7 +69,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 // test: userId == null
                 var tasks = new ReadWriteTasks(nullUser, newArticle);
                 var sync = await nullUser.TrySyncTasks();
-                AreEqual(3, sync.failed.Count);
+                AreEqual(3, sync.Failed.Count);
                 AreEqual("PermissionDenied ~ not authorized. user authentication requires 'user' id", tasks.findArticle.Error.Message);
                 AreEqual("PermissionDenied ~ not authorized. user authentication requires 'user' id", tasks.upsertArticles.Error.Message);
             }
@@ -79,7 +79,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 
                 var tasks = new ReadWriteTasks(unknownUser, newArticle);
                 var sync = await unknownUser.TrySyncTasks();
-                AreEqual(3, sync.failed.Count);
+                AreEqual(3, sync.Failed.Count);
                 AreEqual("PermissionDenied ~ not authorized. user authentication requires 'token'", tasks.findArticle.Error.Message);
                 AreEqual("PermissionDenied ~ not authorized. user authentication requires 'token'", tasks.upsertArticles.Error.Message);
                 
@@ -89,7 +89,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                     
                 tasks = new ReadWriteTasks(unknownUser, newArticle);
                 sync = await unknownUser.TrySyncTasks();
-                AreEqual(3, sync.failed.Count);
+                AreEqual(3, sync.Failed.Count);
                 AreEqual("PermissionDenied ~ not authorized. Authentication failed", tasks.findArticle.Error.Message);
                 AreEqual("PermissionDenied ~ not authorized. Authentication failed", tasks.upsertArticles.Error.Message);
             }
@@ -105,7 +105,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 
                 var tasks = new ReadWriteTasks(mutateUser, newArticle);
                 var sync = await mutateUser.TrySyncTasks();
-                AreEqual(0, sync.failed.Count);
+                AreEqual(0, sync.Failed.Count);
                 IsTrue(tasks.Success);
                 
                 // test: same tasks, but changed token
@@ -115,7 +115,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 tasks = new ReadWriteTasks(mutateUser, newArticle);
                 sync = await mutateUser.TrySyncTasks();
                 
-                AreEqual(3, sync.failed.Count);
+                AreEqual(3, sync.Failed.Count);
                 AreEqual("PermissionDenied ~ not authorized. Authentication failed. user: test-operation", tasks.findArticle.Error.Message);
                 AreEqual("PermissionDenied ~ not authorized. Authentication failed. user: test-operation", tasks.upsertArticles.Error.Message);
                 
@@ -125,7 +125,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 
                 tasks = new ReadWriteTasks(mutateUser, newArticle);
                 sync = await mutateUser.TrySyncTasks();
-                AreEqual(3, sync.failed.Count);
+                AreEqual(3, sync.Failed.Count);
                 AreEqual("PermissionDenied ~ not authorized. user authentication requires 'token'", tasks.findArticle.Error.Message);
                 AreEqual("PermissionDenied ~ not authorized. user authentication requires 'token'", tasks.upsertArticles.Error.Message);
             }
@@ -136,7 +136,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 
                 var tasks = new ReadWriteTasks(readUser, newArticle);
                 var sync = await readUser.TrySyncTasks();
-                AreEqual(1, sync.failed.Count);
+                AreEqual(1, sync.Failed.Count);
                 AreEqual("PermissionDenied ~ not authorized. user: test-task", tasks.upsertArticles.Error.Message);
             }
             using (var readPredicate         = new PocStore(hub) { UserId = "test-predicate"}) {
@@ -146,7 +146,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 
                 _ = new ReadWriteTasks(readPredicate, newArticle);
                 var sync = await readPredicate.TrySyncTasks();
-                AreEqual(0, sync.failed.Count);
+                AreEqual(0, sync.Failed.Count);
             }
         }
         
@@ -170,7 +170,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
 
                 var articleChanges = mutateUser.articles.SubscribeChanges(Change.upsert, (changes, context) => { });
                 var sync = await mutateUser.TrySyncTasks();
-                AreEqual(0, sync.failed.Count);
+                AreEqual(0, sync.Failed.Count);
                 IsTrue(articleChanges.Success);
                 
                 var articleDeletes = mutateUser.articles.SubscribeChanges(Change.delete, (changes, context) => { });

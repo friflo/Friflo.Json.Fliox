@@ -56,6 +56,8 @@ namespace Friflo.Json.Fliox.Hub.Client
                 return State.Error.TaskError;
             throw new TaskNotSyncedException($"SyncTask.Error requires SyncTasks(). {GetLabel()}");
         } }
+        
+        protected internal virtual void ReUse() { }
 
         internal bool IsOk(string method, out Exception e) {
             if (State.IsExecuted()) {

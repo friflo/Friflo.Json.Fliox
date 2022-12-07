@@ -79,8 +79,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
                 
                 IsFalse(sync.Success);
                 AreEqualTrimStack("Internal SimulationException: simulated SyncException", sync.Message);
-                AreEqual(1, sync.failed.Count);
-                AreEqualTrimStack("SyncError ~ Internal SimulationException: simulated SyncException", sync.failed[0].Error.Message);
+                AreEqual(1, sync.Failed.Count);
+                AreEqualTrimStack("SyncError ~ Internal SimulationException: simulated SyncException", sync.Failed[0].Error.Message);
                 
                 AreEqualTrimStack("SyncError ~ Internal SimulationException: simulated SyncException", syncException.Error.Message);
             }

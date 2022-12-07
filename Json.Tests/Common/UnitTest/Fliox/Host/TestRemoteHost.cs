@@ -21,7 +21,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
 {
     public static class TestRemoteHost
     {
-        private class RemoteCx {
+        internal class RemoteCx {
             // Add fields to avoid showing them in Rider > Debug > Variables. 
             // If listed Rider calls their ToString() methods causing object instantiations (e.g. of string)
             // which will be listed in Rider > Debug > Memory list
@@ -29,6 +29,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
             internal            JsonValue               writeReq;
             internal            SyncContext             contextRead;
             internal            FlioxHub                hub;
+            internal            GameClient              client;
             internal            RemoteHost              remoteHost;
             internal            MemoryBuffer            memoryBuffer;
             internal            ObjectMapper            mapper;
@@ -86,7 +87,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
                 cx.hub.EventDispatcher = new EventDispatcher(EventDispatching.Queue, sharedEnv);
 
                 for (int n = 0; n < 2; n++) {
-                    var client  = new TestRemoteClient(cx.hub) { ClientId = $"client-{n}" };
+                    var client  = new GameClient(cx.hub) { ClientId = $"client-{n}" };
                     client.players.SubscribeChanges(Change.All, (changes, context) =>  {} );
                     client.SyncTasksSynchronous();
                 }
@@ -107,12 +108,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
             }
         }
 
-        private static RemoteCx PrepareRemoteHost (SharedEnv sharedEnv)
+        internal static RemoteCx PrepareRemoteHost (SharedEnv sharedEnv)
         {
             var cx = new RemoteCx();
             var typeStore       = sharedEnv.TypeStore;
             var database        = new MemoryDatabase("remote-memory", smallValueSize: 1024);
             cx.hub              = new FlioxHub(database, sharedEnv);
+            cx.client           = new GameClient(cx.hub);
             cx.remoteHost       = new RemoteHost(cx.hub, sharedEnv);
             cx.memoryBuffer     = new MemoryBuffer (true, 4 * 1024);
             cx.mapper           = new ObjectMapper(typeStore);
