@@ -46,15 +46,15 @@ namespace Friflo.Json.Fliox.Hub.Host
         internal  readonly  Pool                    pool;
         /// <summary>Is set for clients requests only. In other words - from the initiator of a <see cref="ProtocolRequest"/></summary>
         internal  readonly  EventReceiver           eventReceiver;
+        internal  readonly  SharedCache             sharedCache;
+        internal  readonly  SyncBuffers             syncBuffers;
         internal            AuthState               authState;
         internal            Action                  canceler = () => {};
         internal            FlioxHub                hub;
-        internal  readonly  SharedCache             sharedCache;
         internal            JsonKey                 clientId;
         internal            SmallString             databaseName;              // not null
         internal            ClientIdValidation      clientIdValidation;
-        internal  readonly  MemoryBuffer            memoryBuffer;
-        internal  readonly  SyncBuffers             syncBuffers;
+        private             MemoryBuffer            memoryBuffer;
 
         public override     string                  ToString() => GetString();
 
@@ -72,20 +72,27 @@ namespace Friflo.Json.Fliox.Hub.Host
             this.eventReceiver  = eventReceiver;
             this.sharedCache    = sharedEnv.sharedCache;
             this.memoryBuffer   = memoryBuffer ?? throw new ArgumentNullException(nameof(memoryBuffer));
-            memoryBuffer.Reset();
             this.syncBuffers    = syncBuffers;
+            memoryBuffer.Reset();
         }
         
-        /// <summary>Specific constructor if <see cref="clientId"/> is already available</summary>
-        public SyncContext (SharedEnv sharedEnv, EventReceiver eventReceiver, MemoryBuffer memoryBuffer, in JsonKey clientId) {
+        public SyncContext (SharedEnv sharedEnv, EventReceiver eventReceiver) {
             this.pool           = sharedEnv.Pool;
             this.eventReceiver  = eventReceiver;
             this.sharedCache    = sharedEnv.sharedCache;
-            this.memoryBuffer   = memoryBuffer ?? throw new ArgumentNullException(nameof(memoryBuffer));
-            memoryBuffer.Reset();
-            this.clientId       = clientId;
         }
         
+        public void Init (MemoryBuffer memoryBuffer) {
+            authState           = default;
+            canceler            = null;
+            hub                 = null;
+            clientId            = default;
+            databaseName        = default;
+            clientIdValidation  = default;
+            this.memoryBuffer   = memoryBuffer ?? throw new ArgumentNullException(nameof(memoryBuffer));
+            memoryBuffer.Reset();
+        }
+
         public void AuthenticationFailed(User user, string error, TaskAuthorizer taskAuthorizer, HubPermission hubPermission) {
             AssertAuthenticationParams(user, taskAuthorizer, hubPermission);
             authState.user              = user;

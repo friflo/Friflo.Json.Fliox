@@ -147,7 +147,7 @@ namespace Friflo.Json.Fliox.Hub.Host
                     EntityValue entry;
                     if (File.Exists(filePath)) {
                         try {
-                            var payload = await ReadText(filePath, buffer, syncContext.memoryBuffer).ConfigureAwait(false);
+                            var payload = await ReadText(filePath, buffer, syncContext.MemoryBuffer).ConfigureAwait(false);
                             entry = new EntityValue(key, payload);
                         } catch (Exception e) {
                             var error = CreateEntityError(EntityErrorType.ReadError, key, e);

@@ -76,7 +76,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             var entities    = new EntityValue [keys.Count];
             int index       = 0;
             foreach (var key in keys) {
-                TryGetValue(key, out JsonValue value, syncContext.memoryBuffer);
+                TryGetValue(key, out JsonValue value, syncContext.MemoryBuffer);
                 entities[index++]   = new EntityValue(key, value);
             }
             var result = new ReadEntitiesResult{entities = entities};
@@ -105,7 +105,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             var result = new QueryEntitiesResult();
             while (keyValueEnum.MoveNext()) {
                 var key     = keyValueEnum.Current;
-                TryGetValue(key, out JsonValue value, syncContext.memoryBuffer);
+                TryGetValue(key, out JsonValue value, syncContext.MemoryBuffer);
                 if (value.IsNull())
                     continue;
                 var filter  = filterContext.FilterEntity(key, value);
@@ -184,7 +184,7 @@ namespace Friflo.Json.Fliox.Hub.Host
                 var validator   = pooledValidator.instance;
                 foreach (var patch in patches)
                 {
-                    if (!TryGetValue(patch.key, out var target, syncContext.memoryBuffer)) {
+                    if (!TryGetValue(patch.key, out var target, syncContext.MemoryBuffer)) {
                         var error = new EntityError(EntityErrorType.PatchError, container, patch.key, "patch target not found");
                         AddEntityError(ref patchErrors, patch.key, error);
                         continue;

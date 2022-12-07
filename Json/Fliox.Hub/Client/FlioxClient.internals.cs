@@ -130,6 +130,13 @@ namespace Friflo.Json.Fliox.Hub.Client
         private static MemoryBuffer CreateMemoryBuffer() {
             return new MemoryBuffer(false, MemoryBufferCapacity);  // cannot be reused as its buffer may be used by application
         }
+        
+        private SyncContext CreateSyncContext(MemoryBuffer memoryBuffer) {
+            var syncContext = new SyncContext(_intern.sharedEnv, _intern.eventReceiver);
+            syncContext.Init(memoryBuffer);
+            syncContext.clientId = _intern.clientId;
+            return syncContext;
+        }
 
         /// <summary>
         /// Returning current <see cref="ClientIntern.syncStore"/> as <paramref name="syncStore"/> enables request handling
