@@ -7,6 +7,7 @@ using Friflo.Json.Fliox.Hub.Client.Internal;
 using Friflo.Json.Fliox.Hub.Client.Internal.KeyEntity;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
+using Friflo.Json.Fliox.Hub.Utils;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Mapper.Map;
 using Friflo.Json.Fliox.Transform;

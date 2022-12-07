@@ -3,7 +3,7 @@
 
 using System.Collections.Generic;
 
-namespace Friflo.Json.Fliox.Hub.Client.Internal
+namespace Friflo.Json.Fliox.Hub.Utils
 {
     internal struct InstanceBuffer<T> where T : class
     {
