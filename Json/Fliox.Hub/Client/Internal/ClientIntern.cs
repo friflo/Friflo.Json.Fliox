@@ -12,6 +12,7 @@ using Friflo.Json.Fliox.Hub.Client.Internal.Map;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.Event;
 using Friflo.Json.Fliox.Hub.Host.Utils;
+using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Hub.Remote;
 using Friflo.Json.Fliox.Mapper;
@@ -64,6 +65,11 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         internal            JsonKey                     userId;
         internal            JsonKey                     clientId;
         internal            string                      token;
+        
+        internal            InstanceBuffer<SyncStore>   syncStoreBuffer;
+        internal            InstanceBuffer<SyncRequest> syncRequestBuffer;
+        internal            InstanceBuffer<SyncResult>  syncResultBuffer;
+
 
         // --- create expensive / infrequently used objects on demand. Used method to avoid creation by debugger
         internal EntityProcessor        EntityProcessor()       => processor             ?? (processor             = new EntityProcessor());
@@ -128,6 +134,10 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             userId                      = new JsonKey();
             clientId                    = new JsonKey();
             token                       = null;
+            
+            syncStoreBuffer             = default;
+            syncRequestBuffer           = default;
+            syncResultBuffer            = default;
             
             InitEntitySets (client, entityInfos);
         }

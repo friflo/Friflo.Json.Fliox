@@ -144,7 +144,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             var diff = GC.GetAllocatedBytesForCurrentThread() - start;
             var platform    = Environment.OSVersion.Platform;
             var isWindows   = platform == PlatformID.Win32NT; 
-            var expected    = isWindows ? 1904 : 1904;  // Test Windows & Linux
+            var expected    = isWindows ? 1928 : 1928;  // Test Windows & Linux
             Console.WriteLine($"PocStore allocation. platform: {platform}, memory: {diff}");
             AreEqual(expected, diff);
         }
@@ -201,7 +201,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             var diff        = GC.GetAllocatedBytesForCurrentThread() - start;
             stopwatch.Stop();
             Console.WriteLine($"SyncTasks() count: {count}, ms: {stopwatch.ElapsedMilliseconds}");
-            var expected    = IsDebug() ? 1232 : 904;  // Test Debug & Release
+            var expected    = IsDebug() ? 1248 : 920;  // Test Debug & Release
             AreEqual(expected, diff);
         }
         
@@ -226,7 +226,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
                 await store.SyncTasks();
             }
             var diff = GC.GetAllocatedBytesForCurrentThread() - start;
-            var expected = IsDebug() ? Is.InRange(34472, 34480) : Is.InRange(31416, 31416); // Test Debug & Release
+            var expected = IsDebug() ? Is.InRange(34496, 34496) : Is.InRange(31424, 31432); // Test Debug & Release
             That(diff, expected);
         }
         

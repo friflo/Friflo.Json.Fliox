@@ -18,6 +18,14 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         internal void SetSyncSets(FlioxClient store) {
             SyncSets = store._intern.CreateSyncSets();
         }
+        
+        internal void ReUse() {
+            foreach (var function in functions) {
+                function.ReUse();
+            }
+            detectAllPatches?.Clear();
+            functions.Clear();
+        }
 
         internal DetectAllPatches CreateDetectAllPatchesTask() {
             var task = new DetectAllPatches();

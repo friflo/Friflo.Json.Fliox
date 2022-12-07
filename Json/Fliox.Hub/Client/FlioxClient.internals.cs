@@ -139,14 +139,17 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// <see cref="EventSubClient.sentEventsQueue"/>. This avoids resending already received events on reconnect. 
         /// </summary>
         private SyncRequest CreateSyncRequest(out SyncStore syncStore, ObjectMapper mapper) {
-            syncStore = _intern.syncStore;
-            _intern.syncStore = new SyncStore();
+            syncStore           = _intern.syncStore;
+            _intern.syncStore   = _intern.syncStoreBuffer.Get() ?? new SyncStore();
             
             syncStore.SetSyncSets(this);
             
-            var functions   = syncStore.functions;
-            var tasks       = new List<SyncRequestTask>(functions.Count);
-            var context = new CreateTaskContext (mapper);
+            var functions       = syncStore.functions;
+            var syncRequest     = _intern.syncRequestBuffer.Get() ?? new SyncRequest();
+            InitSyncRequest(syncRequest);
+            var tasks           = syncRequest.tasks ?? new List<SyncRequestTask>(functions.Count);
+            syncRequest.tasks   = tasks;
+            var context         = new CreateTaskContext (mapper);
             foreach (var function in functions) {
                 if (function is SyncTask task) {
                     var requestTask = task.CreateRequestTask(context);
@@ -157,18 +160,15 @@ namespace Friflo.Json.Fliox.Hub.Client
             foreach (var set in _intern.entitySets) {
                 set.ResetSync();
             }
-            return CreateSyncRequestInstance(tasks);
+            return syncRequest;
         }
         
-        private SyncRequest CreateSyncRequestInstance(List<SyncRequestTask> tasks) {
-            return new SyncRequest {
-                database    = _intern.database,
-                tasks       = tasks,
-                userId      = _intern.userId,
-                clientId    = _intern.clientId, 
-                token       = _intern.token,
-                eventAck    = _intern.lastEventSeq
-            };
+        private void InitSyncRequest(SyncRequest syncRequest) {
+            syncRequest.database    = _intern.database;
+            syncRequest.userId      = _intern.userId;
+            syncRequest.clientId    = _intern.clientId; 
+            syncRequest.token       = _intern.token;
+            syncRequest.eventAck    = _intern.lastEventSeq;
         }
 
         private static void CopyEntityErrorsToMap(List<EntityError> errors, string container, ref IDictionary<JsonKey, EntityError> errorMap) {
@@ -293,7 +293,8 @@ namespace Friflo.Json.Fliox.Hub.Client
                 finally {
                     var functions   = syncStore.functions;
                     var failed      = GetFailedFunctions(functions);
-                    syncResult      = new SyncResult(this, functions, failed, response.error);
+                    syncResult      = _intern.syncResultBuffer.Get() ?? new SyncResult(this);
+                    syncResult.Init(syncStore, syncRequest, functions, failed, response.error);
                     
                     foreach (var function in functions) {
                         var onSync  = function.OnSync;

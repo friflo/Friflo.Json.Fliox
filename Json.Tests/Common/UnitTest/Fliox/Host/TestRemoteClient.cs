@@ -13,22 +13,24 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
     {
         [Test]
         public static  void TestRemoteHostReadRequest() {
-            using (var sharedEnv = SharedEnv.Default) { 
-                var cx = TestRemoteHost.PrepareRemoteHost(sharedEnv);
+            using (var sharedEnv = SharedEnv.Default) {
+                var database    = new MemoryDatabase("test", smallValueSize: 1024);
+                var hub         = new FlioxHub(database, sharedEnv);
+                var client      = new GameClient(hub);
                 
                 var player = new Player();
 
                 long start = 0;
                 for (int n = 0; n < 10; n++) {
                     start = GC.GetAllocatedBytesForCurrentThread();
-                    cx.client.players.Upsert(player);
-                    var result = cx.client.SyncTasksSynchronous();
+                    client.players.Upsert(player);
+                    var result = client.SyncTasksSynchronous();
                     
-                    result.ReUse();
+                    result.ReUse(client);
                 }
                 var dif = GC.GetAllocatedBytesForCurrentThread() - start;
                 
-                var expected    = TestUtils.IsDebug() ? 1672 : 1592;  // Test Debug & Release
+                var expected    = TestUtils.IsDebug() ? 1280 : 1200;  // Test Debug & Release
                 AreEqual(expected, dif);
             }
         }

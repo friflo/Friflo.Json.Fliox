@@ -29,7 +29,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
             internal            JsonValue               writeReq;
             internal            SyncContext             contextRead;
             internal            FlioxHub                hub;
-            internal            GameClient              client;
             internal            RemoteHost              remoteHost;
             internal            MemoryBuffer            memoryBuffer;
             internal            ObjectMapper            mapper;
@@ -114,7 +113,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
             var typeStore       = sharedEnv.TypeStore;
             var database        = new MemoryDatabase("remote-memory", smallValueSize: 1024);
             cx.hub              = new FlioxHub(database, sharedEnv);
-            cx.client           = new GameClient(cx.hub);
             cx.remoteHost       = new RemoteHost(cx.hub, sharedEnv);
             cx.memoryBuffer     = new MemoryBuffer (true, 4 * 1024);
             cx.mapper           = new ObjectMapper(typeStore);

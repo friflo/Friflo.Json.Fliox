@@ -85,7 +85,8 @@ namespace Friflo.Json.Fliox.Hub.Client
         
         /// <summary> Specific characteristic: Method can run in parallel on any thread </summary>
         private async Task<SyncResult> TrySyncAcknowledgeEvents() {
-            var syncRequest = CreateSyncRequestInstance(new List<SyncRequestTask>());
+            var syncRequest = new SyncRequest { tasks = new List<SyncRequestTask>() };
+            InitSyncRequest(syncRequest);
             var buffer      = CreateMemoryBuffer();
             var syncContext = new SyncContext(_intern.sharedEnv, _intern.eventReceiver, buffer, _intern.clientId);
             var response    = await ExecuteRequestAsync(syncRequest, syncContext).ConfigureAwait(false);

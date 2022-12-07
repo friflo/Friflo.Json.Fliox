@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Friflo.Json.Fliox.Hub.Client.Internal;
 using Friflo.Json.Fliox.Hub.Protocol;
 
 namespace Friflo.Json.Fliox.Hub.Client
@@ -16,9 +17,11 @@ namespace Friflo.Json.Fliox.Hub.Client
         public              IReadOnlyList<SyncFunction> Functions  => functions;
         public              IReadOnlyList<SyncFunction> Failed     => GetFailed();
         
-        private  readonly   FlioxClient                 client;
-        private  readonly   List<SyncFunction>          functions;
-        internal readonly   List<SyncFunction>          failed;
+        internal readonly   FlioxClient                 client; // only set in DEBUG to avoid client not being collected by GC
+        private             SyncStore                   syncStore;
+        private             SyncRequest                 syncRequest;
+        private             List<SyncFunction>          functions;
+        internal            List<SyncFunction>          failed;
         private             ErrorResponse               errorResponse;
 
         public              bool                        Success     => failed == null && errorResponse == null;
@@ -26,25 +29,43 @@ namespace Friflo.Json.Fliox.Hub.Client
 
         public override     string                      ToString()  => $"tasks: {functions.Count}, failed: {failed.Count}";
         
-        internal SyncResult(
-            FlioxClient         client,
+        internal SyncResult(FlioxClient client) {
+#if DEBUG
+            this.client = client;
+#endif
+        }
+        
+        internal void Init (
+            SyncStore           syncStore,
+            SyncRequest         syncRequest,
             List<SyncFunction>  tasks,
             List<SyncFunction>  failed,
             ErrorResponse       errorResponse)
         {
-            this.client         = client;
+            this.syncStore      = syncStore;
+            this.syncRequest    = syncRequest;
             this.errorResponse  = errorResponse;
             this.functions      = tasks;
             this.failed         = failed;
         }
         
-        public void ReUse() {
-            foreach (var function in functions) {
-                function.ReUse();
-            }
-            functions.Clear();
-            failed?.Clear();
-            errorResponse = null;
+        public void ReUse(FlioxClient client) {
+#if DEBUG
+            if (client != this.client) throw new InvalidOperationException("passed syncResult created by different client");
+#endif
+        
+            syncStore.ReUse();
+            client._intern.syncStoreBuffer.Add(syncStore);
+            syncStore       = null;
+            
+            syncRequest.tasks.Clear();
+            client._intern.syncRequestBuffer.Add(syncRequest);
+            syncRequest     = null;
+
+            errorResponse   = null;
+            functions       = null;
+            failed          = null;
+            client._intern.syncResultBuffer.Add(this);
         }
         
         private IReadOnlyList<SyncFunction> GetFailed() {
