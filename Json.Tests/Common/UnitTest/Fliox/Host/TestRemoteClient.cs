@@ -2,6 +2,8 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
+using System.Threading.Tasks;
+using Friflo.Json.Fliox.Hub.Client;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Tests.Common.UnitTest.Fliox.Client;
 using NUnit.Framework;
@@ -20,6 +22,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
             internal GameClient     client;
             internal EntityDatabase database;
             internal FlioxHub       hub;
+            internal SyncResult     result;
         }
         
         [Test]
@@ -36,9 +39,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
                 for (int n = 0; n < 10; n++) {
                     start = GC.GetAllocatedBytesForCurrentThread();
                     cx.client.players.Upsert(player);
-                    var result = cx.client.SyncTasksSynchronous();
+                    cx.result = cx.client.SyncTasksSynchronous();
                     
-                    result.Reuse(cx.client);
+                    cx.result.Reuse(cx.client);
                 }
                 var dif = GC.GetAllocatedBytesForCurrentThread() - start;
                 
@@ -63,9 +66,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
                 for (int n = 0; n < 10; n++) {
                     start = GC.GetAllocatedBytesForCurrentThread();
                     cx.client.players.Read().Find(1);
-                    var result = cx.client.SyncTasksSynchronous();
+                    cx.result = cx.client.SyncTasksSynchronous();
                     
-                    result.Reuse(cx.client);
+                    cx.result.Reuse(cx.client);
                 }
                 var dif = GC.GetAllocatedBytesForCurrentThread() - start;
                 
