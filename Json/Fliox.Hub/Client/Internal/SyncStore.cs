@@ -19,9 +19,9 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             SyncSets = store._intern.CreateSyncSets();
         }
         
-        internal void ReUse() {
+        internal void Reuse() {
             foreach (var function in functions) {
-                function.ReUse();
+                function.Reuse();
             }
             detectAllPatches?.Clear();
             functions.Clear();

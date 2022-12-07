@@ -49,7 +49,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             this.entities.AddRange(entities);
         }
         
-        protected internal override void ReUse() {
+        protected internal override void Reuse() {
             entities.Clear();
             peers.Clear();
             state       = default;

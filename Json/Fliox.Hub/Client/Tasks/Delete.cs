@@ -39,7 +39,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             this.keys.AddRange(keys);
         }
 
-        protected internal override void ReUse() {
+        protected internal override void Reuse() {
             keys.Clear();
             state       = default;
             taskName    = null;

@@ -38,7 +38,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
                     cx.client.players.Upsert(player);
                     var result = cx.client.SyncTasksSynchronous();
                     
-                    result.ReUse(cx.client);
+                    result.Reuse(cx.client);
                 }
                 var dif = GC.GetAllocatedBytesForCurrentThread() - start;
                 
@@ -65,7 +65,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
                     cx.client.players.Read().Find(1);
                     var result = cx.client.SyncTasksSynchronous();
                     
-                    result.ReUse(cx.client);
+                    result.Reuse(cx.client);
                 }
                 var dif = GC.GetAllocatedBytesForCurrentThread() - start;
                 

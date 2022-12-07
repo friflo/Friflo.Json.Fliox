@@ -176,7 +176,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             return find;
         }
         
-        protected internal override void ReUse() {
+        protected internal override void Reuse() {
             result.Clear();
             findTasks.Clear();
             relations   = default;
