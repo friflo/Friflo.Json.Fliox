@@ -232,9 +232,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             return null;
         }
 
-        private static readonly IDictionary<string, SyncSet> EmptySynSet = new EmptyDictionary<string, SyncSet>();
-
-        internal IDictionary<string, SyncSet> CreateSyncSets() {
+        internal Dictionary<string, SyncSet> CreateSyncSets() {
             var count = 0;
             foreach (var set in entitySets) {
                 SyncSet syncSet = set.SyncSet;
@@ -243,7 +241,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 count++;
             }
             if (count == 0) {
-                return EmptySynSet;
+                return null;
             }
             // create Dictionary<,> only if required
             var syncSets = new Dictionary<string, SyncSet>(count);

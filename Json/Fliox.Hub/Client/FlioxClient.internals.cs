@@ -197,8 +197,10 @@ namespace Friflo.Json.Fliox.Hub.Client
             }
         }
 
+        private static readonly IDictionary<string, SyncSet> EmptySynSet = new EmptyDictionary<string, SyncSet>();
+
         private static void CopyEntityErrors(List<SyncRequestTask> tasks, List<SyncTaskResult> responseTasks, SyncStore syncStore) {
-            var syncSets = syncStore.SyncSets;
+            var syncSets = syncStore.SyncSets ?? EmptySynSet;
             
             for (int n = 0; n < tasks.Count; n++) {
                 var task            = tasks[n];
@@ -407,7 +409,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             List<ContainerEntities>                 containerResults,
             ObjectMapper                            mapper)
         {
-            var syncSets    = syncStore.SyncSets;
+            var syncSets    = syncStore.SyncSets ?? EmptySynSet;
             switch (task.TaskType) {
                 case TaskType.reserveKeys:
                     var reserveKeys =       (ReserveKeys)       task;

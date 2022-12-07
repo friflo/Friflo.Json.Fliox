@@ -8,7 +8,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
 {
     internal sealed class SyncStore
     {
-        internal    IDictionary<string,SyncSet> SyncSets { get; private set; }
+        internal    Dictionary<string,SyncSet>  SyncSets { get; private set; }
         
         internal readonly   List<SyncFunction>  functions           = new List<SyncFunction>();
         
@@ -24,12 +24,14 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 function.Reuse();
             }
             var syncSets = SyncSets;
-            foreach (var syncSet in syncSets) {
-                syncSet.Value.Reuse();
+            if (syncSets != null) {
+                foreach (var syncSet in syncSets) {
+                    syncSet.Value.Reuse();
+                }
+                syncSets.Clear();
             }
             detectAllPatches?.Clear();
             functions.Clear();
-            SyncSets.Clear();
         }
 
         internal DetectAllPatches CreateDetectAllPatchesTask() {
