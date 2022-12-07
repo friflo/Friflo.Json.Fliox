@@ -18,6 +18,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         private  readonly   EntitySetBase<T>    set;
         private  readonly   SyncSetBase<T>      syncSet;
         private  readonly   List<T>             entities;
+        private             UpsertEntities      upsertEntities;
 
         public   override   string              Details     => $"UpsertTask<{typeof(T).Name}> (entities: {entities.Count})";
         internal override   TaskType            TaskType    => TaskType.upsert;
@@ -50,6 +51,10 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
         
         protected internal override void Reuse() {
+            upsertEntities.entities.Clear();
+            upsertEntities.users?.Clear();
+            set.upsertEntitiesBuffer.Add(upsertEntities);
+                
             entities.Clear();
             peers.Clear();
             state       = default;
@@ -65,7 +70,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
         
         internal override SyncRequestTask CreateRequestTask(in CreateTaskContext context) {
-            return syncSet.UpsertEntities(this, context);
+            return upsertEntities = syncSet.UpsertEntities(this, context);
         }
 
     }

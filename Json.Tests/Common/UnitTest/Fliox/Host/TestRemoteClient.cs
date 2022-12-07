@@ -42,7 +42,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
                 }
                 var dif = GC.GetAllocatedBytesForCurrentThread() - start;
                 
-                var expected    = TestUtils.IsDebug() ? 1064 : 1024;  // Test Debug & Release
+                var expected    = TestUtils.IsDebug() ? 800 : 800;  // Test Debug & Release
                 AreEqual(expected, dif);
             }
         }

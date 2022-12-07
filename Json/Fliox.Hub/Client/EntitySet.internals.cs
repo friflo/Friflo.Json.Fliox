@@ -51,8 +51,9 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
     // --------------------------------------- EntitySetBase<T> ---------------------------------------
     public abstract class EntitySetBase<T> : EntitySet where T : class
     {
-        internal  InstanceBuffer<CreateTask<T>> createBuffer;
-        internal  InstanceBuffer<UpsertTask<T>> upsertBuffer;
+        internal  InstanceBuffer<CreateTask<T>>     createBuffer;
+        internal  InstanceBuffer<UpsertTask<T>>     upsertBuffer;
+        internal  InstanceBuffer<UpsertEntities>    upsertEntitiesBuffer;
         
         internal  abstract  SyncSetBase<T>  GetSyncSetBase  ();
         internal  abstract  Peer<T>         GetPeerById     (in JsonKey id);

@@ -234,20 +234,19 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             var writer              = context.mapper;
             writer.Pretty           = set.intern.writePretty;
             writer.WriteNullMembers = set.intern.writeNull;
-            var entries = new List<JsonEntity>(peers.Count);
-
+            var upsertEntities      = set.upsertEntitiesBuffer.Get() ?? new UpsertEntities();
+            var entities            = upsertEntities.entities ?? new List<JsonEntity>(peers.Count);
             foreach (var upsertPair in peers) {
                 var peer    = upsertPair.Value;
                 T entity    = peer.Entity;
                 var value   = writer.WriteAsValue(entity);
-                entries.Add(new JsonEntity(peer.id, value));
+                entities.Add(new JsonEntity(peer.id, value));
             }
-            return new UpsertEntities {
-                container   = set.name,
-                keyName     = SyncKeyName(set.GetKeyName()),
-                entities    = entries,
-                syncTask    = upsert  
-            };
+            upsertEntities.container   = set.name;
+            upsertEntities.keyName     = SyncKeyName(set.GetKeyName());
+            upsertEntities.entities    = entities;
+            upsertEntities.syncTask    = upsert;
+            return upsertEntities;
         }
 
         internal SyncRequestTask ReadEntities(ReadTask<TKey,T> read) {
