@@ -194,17 +194,20 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         }
         
         private ClientTypeInfo GetClientTypeInfo (Type clientType, EntityInfo[] entityInfos) {
-            if (ClientTypeCache.TryGetValue(clientType, out var result))
-                return result;
-            var mappers = new IEntitySetMapper[entityInfos.Length];
-            for (int n = 0; n < entityInfos.Length; n++) {
-                var entitySetType = entityInfos[n].entitySetType;
-                mappers[n] = (IEntitySetMapper)typeStore.GetTypeMapper(entitySetType);
+            var cache = ClientTypeCache;
+            lock (cache) {
+                if (cache.TryGetValue(clientType, out var result))
+                    return result;
+                var mappers = new IEntitySetMapper[entityInfos.Length];
+                for (int n = 0; n < entityInfos.Length; n++) {
+                    var entitySetType = entityInfos[n].entitySetType;
+                    mappers[n] = (IEntitySetMapper)typeStore.GetTypeMapper(entitySetType);
+                }
+                var error       = ValidateMappers(mappers, entityInfos);
+                var clientInfo  = new ClientTypeInfo (mappers, error);
+                cache.Add(clientType, clientInfo);
+                return clientInfo;
             }
-            var error       = ValidateMappers(mappers, entityInfos);
-            var clientInfo  = new ClientTypeInfo (mappers, error);
-            ClientTypeCache.Add(clientType, clientInfo);
-            return clientInfo;
         }
         
         // Validate [Relation(<container>)] fields / properties

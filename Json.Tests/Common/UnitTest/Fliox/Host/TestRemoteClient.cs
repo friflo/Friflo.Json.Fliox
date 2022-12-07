@@ -28,25 +28,27 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
         [Test]
         public static  void TestRemoteClient_UpsertMemory() {
             using (var sharedEnv = SharedEnv.Default) {
-                var cx = new ClientCx();
-                cx.database = new MemoryDatabase("test", smallValueSize: 1024, type: MemoryType.NonConcurrent);
-                cx.hub      = new FlioxHub(cx.database, sharedEnv);
-                cx.client   = new GameClient(cx.hub);
-                
-                var player = new Player { id = 1 };
-
-                long start = 0;
-                for (int n = 0; n < 10; n++) {
-                    start = GC.GetAllocatedBytesForCurrentThread();
-                    cx.client.players.Upsert(player);
-                    cx.result = cx.client.SyncTasksSynchronous();
+                Parallel.For(0, 8, i => {
+                    var cx = new ClientCx();
+                    cx.database = new MemoryDatabase("test", smallValueSize: 1024, type: MemoryType.NonConcurrent);
+                    cx.hub      = new FlioxHub(cx.database, sharedEnv);
+                    cx.client   = new GameClient(cx.hub);
                     
-                    cx.result.Reuse(cx.client);
-                }
-                var dif = GC.GetAllocatedBytesForCurrentThread() - start;
-                
-                var expected    = TestUtils.IsDebug() ? 344 : 344;  // Test Debug & Release
-                AreEqual(expected, dif);
+                    var player = new Player { id = 1 };
+
+                    long start = 0;
+                    for (int n = 0; n < 10; n++) {
+                        start = GC.GetAllocatedBytesForCurrentThread();
+                        cx.client.players.Upsert(player);
+                        cx.result = cx.client.SyncTasksSynchronous();
+                        
+                        cx.result.Reuse(cx.client);
+                    }
+                    var dif = GC.GetAllocatedBytesForCurrentThread() - start;
+                    
+                    var expected    = TestUtils.IsDebug() ? 344 : 344;  // Test Debug & Release
+                    AreEqual(expected, dif);
+                });
             }
         }
         

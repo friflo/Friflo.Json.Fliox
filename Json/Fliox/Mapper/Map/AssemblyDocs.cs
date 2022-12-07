@@ -23,9 +23,12 @@ namespace Friflo.Json.Fliox.Mapper.Map
             if (name == null)
                 return null;
             if (!assemblyDocs.TryGetValue(name, out var docs)) {
-                if (!AssemblyDocsCache.TryGetValue(name, out docs)) {
-                    docs = AssemblyDoc.Load(name, assembly);
-                    AssemblyDocsCache.Add(name, docs);
+                var cache = AssemblyDocsCache;
+                lock (cache) {
+                    if (!cache.TryGetValue(name, out docs)) {
+                        docs = AssemblyDoc.Load(name, assembly);
+                        cache.Add(name, docs);
+                    }
                 }
                 assemblyDocs[name] = docs;
             }
