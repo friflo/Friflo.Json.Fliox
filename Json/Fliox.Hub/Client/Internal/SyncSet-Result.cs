@@ -35,6 +35,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         internal  abstract  void    DeleteEntitiesResult    (DeleteEntities     task, SyncTaskResult result);
         internal  abstract  void    SubscribeChangesResult  (SubscribeChanges   task, SyncTaskResult result);
         
+        internal  abstract  void    Reuse  ();
+
         internal static string SyncKeyName (string keyName) {
             if (keyName == "id")
                 return null;
@@ -400,6 +402,11 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             }
             set.intern.subscription = task.changes.Count > 0 ? task : null;
             subscribeChanges.state.Executed = true;
+        }
+        
+        internal  override  void    Reuse  () {
+            tasks.Clear();
+            set.syncSetBuffer.Add(this);
         }
     }
 }

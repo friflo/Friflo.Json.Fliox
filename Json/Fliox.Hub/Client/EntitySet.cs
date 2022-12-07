@@ -61,7 +61,7 @@ namespace Friflo.Json.Fliox.Hub.Client
                         private             Dictionary<TKey, Peer<T>>   PeerMap()       => peerMap ?? (peerMap = SyncSet.CreateDictionary<TKey,Peer<T>>());
         /// <summary> Note! Must be called only from <see cref="LocalEntities{TKey,T}"/> to preserve maintainability </summary>
                         internal            Dictionary<TKey, Peer<T>>   GetPeers()      => peerMap;
-                        private             SyncSet<TKey, T>            GetSyncSet()    => syncSet ?? (syncSet = new SyncSet<TKey, T>(this));
+                        private             SyncSet<TKey, T>            GetSyncSet()    => syncSet ?? (syncSet = syncSetBuffer.Get() ?? new SyncSet<TKey, T>(this));
                         internal override   SyncSetBase<T>              GetSyncSetBase()=> syncSet;
                         public   override   string                      ToString()      => SetInfo.ToString();
 
@@ -77,6 +77,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         
         internal    InstanceBuffer<DeleteTask<TKey,T>>                  deleteBuffer;
         internal    InstanceBuffer<ReadTask<TKey, T>>                   readBuffer;
+        internal    InstanceBuffer<SyncSet<TKey,T>>                     syncSetBuffer;
 
         
         /// <summary> using a static class prevents noise in form of 'Static members' for class instances in Debugger </summary>

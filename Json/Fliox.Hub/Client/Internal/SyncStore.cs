@@ -23,8 +23,13 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             foreach (var function in functions) {
                 function.Reuse();
             }
+            var syncSets = SyncSets;
+            foreach (var syncSet in syncSets) {
+                syncSet.Value.Reuse();
+            }
             detectAllPatches?.Clear();
             functions.Clear();
+            SyncSets.Clear();
         }
 
         internal DetectAllPatches CreateDetectAllPatchesTask() {
