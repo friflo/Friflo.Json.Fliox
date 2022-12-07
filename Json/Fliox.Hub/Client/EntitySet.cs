@@ -75,6 +75,10 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// <summary> If true the serialization of entities to JSON write null fields. Otherwise null fields are omitted </summary>
         [Browse(Never)] public   override   bool                        WriteNull   { get => intern.writeNull;     set => intern.writeNull   = value; }
         
+        private   Stack<DeleteTask<TKey,T>> deleteBuffer;
+        internal  Stack<DeleteTask<TKey,T>> GetDeleteBuffer() =>  deleteBuffer ?? (deleteBuffer = new Stack<DeleteTask<TKey,T>>());
+
+        
         /// <summary> using a static class prevents noise in form of 'Static members' for class instances in Debugger </summary>
         private static class Static  {
             internal static  readonly       EntityKeyT<TKey, T>         EntityKeyTMap   = EntityKey.GetEntityKeyT<TKey, T>();

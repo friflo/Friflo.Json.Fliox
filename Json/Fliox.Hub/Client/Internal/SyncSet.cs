@@ -83,6 +83,13 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         }
 
         // --- Create
+        private CreateTask<T> CreateCreateTask() {
+            var buffer = set.GetCreateBuffer();
+            if (buffer == null || buffer.Count == 0)
+                return new CreateTask<T>(new List<T>(), set, this);
+            return buffer.Pop();
+        }
+        
         internal CreateTask<T> Create(T entity) {
             if (set.intern.autoIncrement) {
                 //  set.NewEntities().Add(entity);
@@ -91,7 +98,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 //  CreateTasks().Add(create1);
                 //  return create1;
             }
-            var create  = new CreateTask<T>(new List<T>{entity}, set, this);
+            var create  = CreateCreateTask();
+            create.Add(entity);
             var peer    = set.CreatePeer(entity);
             create.AddPeer(peer, PeerState.Create);
             tasks.Add(create);
@@ -99,7 +107,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         }
 
         internal CreateTask<T> CreateRange(ICollection<T> entities) {
-            var create = new CreateTask<T>(entities.ToList(), set, this);
+            var create  = CreateCreateTask();
+            create.AddRange(entities);
             foreach (var entity in entities) {
                 var peer = set.CreatePeer(entity);
                 create.AddPeer(peer, PeerState.Create);
@@ -109,8 +118,16 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         }
 
         // --- Upsert
+        private UpsertTask<T> CreateUpsertTask() {
+            var buffer = set.GetUpsertBuffer();
+            if (buffer == null || buffer.Count == 0)
+                return new UpsertTask<T>(new List<T>(), set, this);
+            return buffer.Pop();
+        }
+        
         internal UpsertTask<T> Upsert(T entity) {
-            var upsert  = new UpsertTask<T>(new List<T>{entity}, set, this);
+            var upsert  = CreateUpsertTask();
+            upsert.Add(entity);
             var peer    = set.CreatePeer(entity);
             upsert.AddPeer(peer, PeerState.Upsert);
             tasks.Add(upsert);
@@ -118,7 +135,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         }
 
         internal UpsertTask<T> UpsertRange(ICollection<T> entities) {
-            var upsert = new UpsertTask<T>(entities.ToList(), set, this);
+            var upsert  = CreateUpsertTask();
+            upsert.AddRange(entities);
             foreach (var entity in entities) {
                 var peer = set.CreatePeer(entity);
                 upsert.AddPeer(peer, PeerState.Upsert);
@@ -128,16 +146,23 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         }
 
         // --- Delete
+        private DeleteTask<TKey, T> CreateDelete() {
+            var buffer = set.GetDeleteBuffer();
+            if (buffer == null || buffer.Count == 0)
+                return new DeleteTask<TKey, T>(new List<TKey>(), this);
+            return buffer.Pop();
+        }
+        
         internal DeleteTask<TKey, T> Delete(TKey key) {
-            var keyList = new List<TKey>{ key };
-            var delete  = new DeleteTask<TKey, T>(keyList, this);
+            var delete  = CreateDelete();
+            delete.Add(key);
             tasks.Add(delete);
             return delete;
         }
 
         internal DeleteTask<TKey, T> DeleteRange(ICollection<TKey> keys) {
-            var keyList = keys.ToList();
-            var delete  = new DeleteTask<TKey, T>(keyList, this);
+            var delete = CreateDelete();
+            delete.AddRange(keys);
             tasks.Add(delete);
             return delete;
         }

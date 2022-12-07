@@ -52,7 +52,9 @@ namespace Friflo.Json.Fliox.Hub.Client
         protected internal override void ReUse() {
             entities.Clear();
             peers.Clear();
-            state = default;
+            state       = default;
+            taskName    = null;
+            set.GetUpsertBuffer().Push(this);
         }
         
         internal override void GetIds(List<JsonKey> ids) {

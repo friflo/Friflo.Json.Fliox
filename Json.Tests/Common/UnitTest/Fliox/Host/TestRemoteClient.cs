@@ -4,6 +4,7 @@
 using System;
 using Friflo.Json.Fliox.Hub.Host;
 using NUnit.Framework;
+using static NUnit.Framework.Assert;
 
 namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
 {
@@ -21,10 +22,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
                     start = GC.GetAllocatedBytesForCurrentThread();
                     cx.client.players.Upsert(player);
                     var result = cx.client.SyncTasksSynchronous();
+                    
                     result.ReUse();
                 }
                 var dif = GC.GetAllocatedBytesForCurrentThread() - start;
-                Console.WriteLine(dif);
+                AreEqual(1592, dif);
             }
         }
     }

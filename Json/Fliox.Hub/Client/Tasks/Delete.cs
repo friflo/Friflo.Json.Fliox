@@ -38,7 +38,14 @@ namespace Friflo.Json.Fliox.Hub.Client
         public void AddRange(ICollection<TKey> keys) {
             this.keys.AddRange(keys);
         }
-        
+
+        protected internal override void ReUse() {
+            keys.Clear();
+            state       = default;
+            taskName    = null;
+            syncSet.set.GetDeleteBuffer().Push(this);
+        }
+
         internal override SyncRequestTask CreateRequestTask(in CreateTaskContext context) {
             return syncSet.DeleteEntities(this);
         }

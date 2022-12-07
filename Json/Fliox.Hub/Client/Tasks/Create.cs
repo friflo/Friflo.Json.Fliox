@@ -64,6 +64,14 @@ namespace Friflo.Json.Fliox.Hub.Client
             }
             this.entities.AddRange(entities);
         }
+        
+        protected internal override void ReUse() {
+            entities.Clear();
+            peers.Clear();
+            state       = default;
+            taskName    = null;
+            set.GetCreateBuffer().Push(this);
+        }
 
         internal override void GetIds(List<JsonKey> ids) {
             foreach (var entity in entities) {
