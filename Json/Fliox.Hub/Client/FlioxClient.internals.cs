@@ -132,10 +132,15 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
         
         private SyncContext CreateSyncContext(MemoryBuffer memoryBuffer) {
-            var syncContext = new SyncContext(_intern.sharedEnv, _intern.eventReceiver);
-            syncContext.Init(memoryBuffer);
+            var syncContext = _intern.syncContextBuffer.Get() ?? new SyncContext(_intern.sharedEnv, _intern.eventReceiver); 
+            syncContext.SetMemoryBuffer(memoryBuffer);
             syncContext.clientId = _intern.clientId;
             return syncContext;
+        }
+        
+        private void ReuseSyncContext(SyncContext syncContext) {
+            _intern.syncContextBuffer.Add(syncContext);
+            syncContext.Init();
         }
 
         /// <summary>

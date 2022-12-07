@@ -12,6 +12,7 @@ using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 
 // Note!  Keep file in sync with:  FlioxClient.execute.sync.cs
 
+// ReSharper disable InconsistentlySynchronizedField
 namespace Friflo.Json.Fliox.Hub.Client
 {
     public partial class FlioxClient
@@ -27,6 +28,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             var syncContext = CreateSyncContext(buffer);
             var response    = await ExecuteRequestAsync(syncRequest, syncContext).ConfigureAwait(Static.OriginalContext);
             
+            ReuseSyncContext(syncContext);
             var result      = HandleSyncResponse(syncRequest, response, syncStore);
             if (!result.Success)
                 throw new SyncTasksException(response.error, result.failed);
@@ -45,6 +47,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             var syncContext = CreateSyncContext(buffer);
             var response    = await ExecuteRequestAsync(syncRequest, syncContext).ConfigureAwait(Static.OriginalContext);
 
+            ReuseSyncContext(syncContext);
             var result      = HandleSyncResponse(syncRequest, response, syncStore);
             syncContext.Release();
             return result;
@@ -88,7 +91,11 @@ namespace Friflo.Json.Fliox.Hub.Client
             var syncRequest = new SyncRequest { tasks = new List<SyncRequestTask>() };
             InitSyncRequest(syncRequest);
             var buffer      = CreateMemoryBuffer();
-            var syncContext = CreateSyncContext(buffer);
+            // cannot reuse context: method can run on any thread
+            var syncContext = new SyncContext(_intern.sharedEnv, _intern.eventReceiver); 
+            syncContext.SetMemoryBuffer(buffer);
+            syncContext.clientId = _intern.clientId;
+            
             var response    = await ExecuteRequestAsync(syncRequest, syncContext).ConfigureAwait(false);
 
             var syncStore   = new SyncStore();  // create default (empty) SyncStore

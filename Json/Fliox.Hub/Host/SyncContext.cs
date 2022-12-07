@@ -57,6 +57,17 @@ namespace Friflo.Json.Fliox.Hub.Host
         private             MemoryBuffer            memoryBuffer;
 
         public override     string                  ToString() => GetString();
+        
+        public void Init () {
+            data                = null;
+            authState           = default;
+            canceler            = null;
+            hub                 = null;
+            clientId            = default;
+            databaseName        = default;
+            clientIdValidation  = default;
+            memoryBuffer        = null;
+        }
 
         public SyncContext (SharedEnv sharedEnv, EventReceiver eventReceiver, MemoryBuffer memoryBuffer) {
             this.pool           = sharedEnv.Pool;
@@ -82,13 +93,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             this.sharedCache    = sharedEnv.sharedCache;
         }
         
-        public void Init (MemoryBuffer memoryBuffer) {
-            authState           = default;
-            canceler            = null;
-            hub                 = null;
-            clientId            = default;
-            databaseName        = default;
-            clientIdValidation  = default;
+        public void SetMemoryBuffer (MemoryBuffer memoryBuffer) {
             this.memoryBuffer   = memoryBuffer ?? throw new ArgumentNullException(nameof(memoryBuffer));
             memoryBuffer.Reset();
         }

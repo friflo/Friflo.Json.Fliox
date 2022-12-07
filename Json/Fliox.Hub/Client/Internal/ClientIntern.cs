@@ -69,6 +69,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         internal            InstanceBuffer<SyncStore>   syncStoreBuffer;
         internal            InstanceBuffer<SyncRequest> syncRequestBuffer;
         internal            InstanceBuffer<SyncResult>  syncResultBuffer;
+        internal            InstanceBuffer<SyncContext> syncContextBuffer;
 
 
         // --- create expensive / infrequently used objects on demand. Used method to avoid creation by debugger
@@ -138,6 +139,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             syncStoreBuffer             = default;
             syncRequestBuffer           = default;
             syncResultBuffer            = default;
+            syncContextBuffer           = default;
             
             InitEntitySets (client, entityInfos);
         }

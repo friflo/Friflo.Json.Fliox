@@ -27,8 +27,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
             using (var sharedEnv = SharedEnv.Default) {
                 var cx = new ClientCx();
                 cx.database = new MemoryDatabase("test", smallValueSize: 1024);
-                cx.hub         = new FlioxHub(cx.database, sharedEnv);
-                cx.client      = new GameClient(cx.hub);
+                cx.hub      = new FlioxHub(cx.database, sharedEnv);
+                cx.client   = new GameClient(cx.hub);
                 
                 var player = new Player();
 
@@ -42,7 +42,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
                 }
                 var dif = GC.GetAllocatedBytesForCurrentThread() - start;
                 
-                var expected    = TestUtils.IsDebug() ? 1280 : 1200;  // Test Debug & Release
+                var expected    = TestUtils.IsDebug() ? 1064 : 1024;  // Test Debug & Release
                 AreEqual(expected, dif);
             }
         }
