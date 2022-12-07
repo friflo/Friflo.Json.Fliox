@@ -70,7 +70,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             peers.Clear();
             state       = default;
             taskName    = null;
-            set.GetCreateBuffer().Push(this);
+            set.createBuffer.Add(this);
         }
 
         internal override void GetIds(List<JsonKey> ids) {

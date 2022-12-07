@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Friflo.Json.Fliox.Hub.Client.Internal.Key;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
@@ -84,10 +83,10 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
 
         // --- Create
         private CreateTask<T> CreateCreateTask() {
-            var buffer = set.GetCreateBuffer();
-            if (buffer == null || buffer.Count == 0)
-                return new CreateTask<T>(new List<T>(), set, this);
-            return buffer.Pop();
+            var upsert = set.createBuffer.Get();
+            if (upsert != null)
+                return upsert;
+            return new CreateTask<T>(new List<T>(), set, this);
         }
         
         internal CreateTask<T> Create(T entity) {
@@ -119,10 +118,10 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
 
         // --- Upsert
         private UpsertTask<T> CreateUpsertTask() {
-            var buffer = set.GetUpsertBuffer();
-            if (buffer == null || buffer.Count == 0)
-                return new UpsertTask<T>(new List<T>(), set, this);
-            return buffer.Pop();
+            var upsert = set.upsertBuffer.Get();
+            if (upsert != null)
+                return upsert;
+            return new UpsertTask<T>(new List<T>(), set, this);
         }
         
         internal UpsertTask<T> Upsert(T entity) {
@@ -147,10 +146,10 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
 
         // --- Delete
         private DeleteTask<TKey, T> CreateDelete() {
-            var buffer = set.GetDeleteBuffer();
-            if (buffer == null || buffer.Count == 0)
-                return new DeleteTask<TKey, T>(new List<TKey>(), this);
-            return buffer.Pop();
+            var delete = set.deleteBuffer.Get();
+            if (delete != null)
+                return delete;
+            return new DeleteTask<TKey, T>(new List<TKey>(), this);
         }
         
         internal DeleteTask<TKey, T> Delete(TKey key) {

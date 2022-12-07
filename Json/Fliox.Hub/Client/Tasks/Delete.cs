@@ -43,7 +43,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             keys.Clear();
             state       = default;
             taskName    = null;
-            syncSet.set.GetDeleteBuffer().Push(this);
+            syncSet.set.deleteBuffer.Add(this);
         }
 
         internal override SyncRequestTask CreateRequestTask(in CreateTaskContext context) {
