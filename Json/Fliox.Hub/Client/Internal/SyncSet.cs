@@ -40,7 +40,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
 
         // --- Read
         internal ReadTask<TKey, T> Read() {
-            var read = new ReadTask<TKey, T>(this);
+            var read = set.readBuffer.Get() ?? new ReadTask<TKey, T>(this);
             tasks.Add(read);
             return read;
         }

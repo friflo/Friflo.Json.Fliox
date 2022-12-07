@@ -176,6 +176,15 @@ namespace Friflo.Json.Fliox.Hub.Client
             return find;
         }
         
+        protected internal override void ReUse() {
+            result.Clear();
+            findTasks.Clear();
+            relations   = default;
+            state       = default;
+            taskName    = null;
+            set.readBuffer.Add(this);
+        }
+        
         internal override SyncRequestTask CreateRequestTask(in CreateTaskContext context) {
             return syncSet.ReadEntities(this);
         }

@@ -23,14 +23,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
         }
         
         [Test]
-        public static  void TestRemoteHostReadRequest() {
+        public static  void TestRemoteClient_UpsertMemory() {
             using (var sharedEnv = SharedEnv.Default) {
                 var cx = new ClientCx();
                 cx.database = new MemoryDatabase("test", smallValueSize: 1024);
                 cx.hub      = new FlioxHub(cx.database, sharedEnv);
                 cx.client   = new GameClient(cx.hub);
                 
-                var player = new Player();
+                var player = new Player { id = 1 };
 
                 long start = 0;
                 for (int n = 0; n < 10; n++) {
@@ -43,6 +43,33 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
                 var dif = GC.GetAllocatedBytesForCurrentThread() - start;
                 
                 var expected    = TestUtils.IsDebug() ? 1064 : 1024;  // Test Debug & Release
+                AreEqual(expected, dif);
+            }
+        }
+        
+        [Test]
+        public static  void TestRemoteClient_ReadMemory() {
+            using (var sharedEnv = SharedEnv.Default) {
+                var cx = new ClientCx();
+                cx.database = new MemoryDatabase("test", smallValueSize: 1024);
+                cx.hub      = new FlioxHub(cx.database, sharedEnv);
+                cx.client   = new GameClient(cx.hub);
+                
+                var player = new Player { id = 1 };
+                cx.client.players.Upsert(player);
+                cx.client.SyncTasksSynchronous();
+
+                long start = 0;
+                for (int n = 0; n < 10; n++) {
+                    start = GC.GetAllocatedBytesForCurrentThread();
+                    cx.client.players.Read().Find(1);
+                    var result = cx.client.SyncTasksSynchronous();
+                    
+                    result.ReUse(cx.client);
+                }
+                var dif = GC.GetAllocatedBytesForCurrentThread() - start;
+                
+                var expected    = TestUtils.IsDebug() ? 2832 : 2808;  // Test Debug & Release
                 AreEqual(expected, dif);
             }
         }
