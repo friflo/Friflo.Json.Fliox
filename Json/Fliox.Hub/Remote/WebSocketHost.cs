@@ -146,7 +146,6 @@ namespace Friflo.Json.Fliox.Hub.Remote
                             var errorMsg = ErrorResponse.ErrorFromException(e).ToString();
                             response = JsonResponse.CreateError(mapper, errorMsg, ErrorResponseType.Exception, null);
                         }
-                        syncContext.Release();
                         sendQueue.Enqueue(response.body); // Enqueue() copy the result.body array
                     }
                     continue;

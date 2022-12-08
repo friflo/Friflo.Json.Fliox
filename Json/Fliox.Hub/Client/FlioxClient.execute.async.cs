@@ -31,9 +31,9 @@ namespace Friflo.Json.Fliox.Hub.Client
             
             ReuseSyncContext(syncContext);
             var result      = HandleSyncResponse(syncRequest, response, syncStore, buffer);
-            if (!result.Success)
+            if (!result.Success) {
                 throw new SyncTasksException(response.error, result.failed);
-            syncContext.Release();
+            }
             return result;
         }
         
@@ -49,9 +49,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             var response    = await ExecuteRequestAsync(syncRequest, syncContext).ConfigureAwait(Static.OriginalContext);
 
             ReuseSyncContext(syncContext);
-            var result      = HandleSyncResponse(syncRequest, response, syncStore, buffer);
-            syncContext.Release();
-            return result;
+            return HandleSyncResponse(syncRequest, response, syncStore, buffer);
         }
         
         private async Task<ExecuteSyncResult> ExecuteRequestAsync(SyncRequest syncRequest, SyncContext syncContext) {
@@ -100,9 +98,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             var response    = await ExecuteRequestAsync(syncRequest, syncContext).ConfigureAwait(false);
 
             var syncStore   = new SyncStore();  // create default (empty) SyncStore
-            var result      = HandleSyncResponse(syncRequest, response, syncStore, buffer);
-            syncContext.Release();
-            return result;
+            return HandleSyncResponse(syncRequest, response, syncStore, buffer);
         }
         
         /// <summary> Cancel execution of pending calls to <see cref="SyncTasks"/> and <see cref="TrySyncTasks"/> </summary>

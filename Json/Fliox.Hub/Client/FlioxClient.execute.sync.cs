@@ -26,9 +26,9 @@ namespace Friflo.Json.Fliox.Hub.Client
             
             ReuseSyncContext(syncContext);
             var result      = HandleSyncResponse(syncRequest, response, syncStore, buffer);
-            if (!result.Success)
+            if (!result.Success) {
                 throw new SyncTasksException(response.error, result.failed);
-            syncContext.Release();
+            }
             return result;
         }
         
@@ -44,9 +44,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             var response    = ExecuteRequest(syncRequest, syncContext);
 
             ReuseSyncContext(syncContext);
-            var result      = HandleSyncResponse(syncRequest, response, syncStore, buffer);
-            syncContext.Release();
-            return result;
+            return HandleSyncResponse(syncRequest, response, syncStore, buffer);
         }
         
         private ExecuteSyncResult ExecuteRequest(SyncRequest syncRequest, SyncContext syncContext) {

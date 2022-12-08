@@ -139,9 +139,6 @@ namespace Friflo.Json.Fliox.Hub.Host
         internal void Cancel() {
             canceler(); // canceler.Invoke();
         }
-        
-        // todo remove
-        public void Release() { }
     }
     
     /// <summary>

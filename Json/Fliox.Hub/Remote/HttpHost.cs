@@ -164,8 +164,6 @@ namespace Friflo.Json.Fliox.Hub.Remote
                         var errorMsg = ErrorResponse.ErrorFromException(e).ToString();
                         response = JsonResponse.CreateError(mapper, errorMsg, ErrorResponseType.Exception, null);
                     }
-                
-                    syncContext.Release();
                     var body        = new JsonValue(response.body); // create copy => result.body array may change when the pooledMapper is reused
                     request.Write(body, "application/json", (int)response.status);
                     request.handled = true;
