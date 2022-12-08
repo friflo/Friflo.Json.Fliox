@@ -87,7 +87,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol
             get => containerSmall.value;
             set => containerSmall = new SmallString(value);
         }
-        [Ignore]   internal SmallString         containerSmall;
+        [Ignore]    public  SmallString         containerSmall;
         /// <summary>number of <see cref="entities"/> - not utilized by Protocol</summary>
         [DebugInfo] public  int?                count;
         /// <summary>

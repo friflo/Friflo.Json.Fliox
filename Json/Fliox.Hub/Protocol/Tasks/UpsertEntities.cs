@@ -24,7 +24,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
             get => containerSmall.value;
             set => containerSmall = new SmallString(value);
         }
-        [Ignore]   internal SmallString         containerSmall;
+        [Ignore]   public   SmallString         containerSmall;
         /// <summary>name of the primary key property in <see cref="entities"/></summary>
                    public   string              keyName;
         /// <summary>the <see cref="entities"/> which are upserted in the specified <see cref="container"/></summary>

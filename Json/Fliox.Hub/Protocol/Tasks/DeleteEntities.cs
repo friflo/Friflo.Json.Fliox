@@ -23,7 +23,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
             get => containerSmall.value;
             set => containerSmall = new SmallString(value);
         }
-        [Ignore]   internal SmallString         containerSmall;
+        [Ignore]    public  SmallString         containerSmall;
         /// <summary>list of <see cref="ids"/> requested for deletion</summary>
                     public  List<JsonKey>       ids;
         /// <summary>if true all entities in the specified <see cref="container"/> are deleted</summary>

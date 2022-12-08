@@ -22,8 +22,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
             get => containerSmall.value;
             set => containerSmall = new SmallString(value);
         }
-    
-        [Ignore]   internal SmallString         containerSmall;
+        [Ignore]    public  SmallString         containerSmall;
         /// <summary>name of the primary key property of the entity <see cref="patches"/></summary>
                     public  string              keyName;
         /// <summary>list of merge patches for each entity</summary>
