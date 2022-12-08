@@ -35,6 +35,10 @@ namespace Friflo.Json.Fliox.Hub.Client
             keys.Add(key);
         }
         
+        public void AddRange(List<TKey> keys) {
+            this.keys.AddRange(keys);
+        }
+        
         public void AddRange(ICollection<TKey> keys) {
             this.keys.AddRange(keys);
         }

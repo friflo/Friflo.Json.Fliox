@@ -92,22 +92,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         }
         
         // --- Delete
-        private DeleteTask<TKey, T> CreateDelete() {
+        internal DeleteTask<TKey, T> CreateDeleteTask() {
             return set.deleteBuffer.Get() ?? new DeleteTask<TKey, T>(new List<TKey>(), this);
-        }
-        
-        internal DeleteTask<TKey, T> Delete(TKey key) {
-            var delete  = CreateDelete();
-            delete.Add(key);
-            tasks.Add(delete);
-            return delete;
-        }
-
-        internal DeleteTask<TKey, T> DeleteRange(ICollection<TKey> keys) {
-            var delete = CreateDelete();
-            delete.AddRange(keys);
-            tasks.Add(delete);
-            return delete;
         }
 
         internal DeleteAllTask<TKey, T> DeleteAll() {

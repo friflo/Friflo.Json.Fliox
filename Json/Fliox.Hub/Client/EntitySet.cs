@@ -396,9 +396,12 @@ namespace Friflo.Json.Fliox.Hub.Client
             var key = GetEntityKey(entity);
             if (key == null)
                 throw new ArgumentException($"EntitySet.Delete() id must not be null. EntitySet: {name}");
-            var task = GetSyncSet().Delete(key);
-            intern.store.AddTask(task);
-            return task;
+            var sync    = GetSyncSet();
+            var delete  = sync.CreateDeleteTask();
+            delete.Add(key);
+            sync.tasks.Add(delete);
+            intern.store.AddTask(delete);
+            return delete;
         }
 
         /// <summary>
@@ -408,9 +411,12 @@ namespace Friflo.Json.Fliox.Hub.Client
         public DeleteTask<TKey, T> Delete(TKey key) {
             if (key == null)
                 throw new ArgumentException($"EntitySet.Delete() id must not be null. EntitySet: {name}");
-            var task = GetSyncSet().Delete(key);
-            intern.store.AddTask(task);
-            return task;
+            var sync    = GetSyncSet();
+            var delete  = sync.CreateDeleteTask();
+            delete.Add(key);
+            sync.tasks.Add(delete);
+            intern.store.AddTask(delete);
+            return delete;
         }
         
         /// <summary>
@@ -428,9 +434,30 @@ namespace Friflo.Json.Fliox.Hub.Client
             foreach (var key in keys) {
                 if (key == null) throw new ArgumentException($"EntitySet.DeleteRange() id must not be null. EntitySet: {name}");
             }
-            var task = GetSyncSet().DeleteRange(keys);
-            intern.store.AddTask(task);
-            return task;
+            var sync    = GetSyncSet();
+            var delete  = sync.CreateDeleteTask();
+            delete.AddRange(keys);
+            sync.tasks.Add(delete);
+            intern.store.AddTask(delete);
+            return delete;
+        }
+        
+        /// <summary>
+        /// Create a <see cref="DeleteTask{TKey,T}"/> to delete the entities with the passed <paramref name="keys"/> in the container
+        /// </summary>
+        /// <remarks> To execute the task call <see cref="FlioxClient.SyncTasks"/> </remarks>
+        public DeleteTask<TKey, T> DeleteRange(List<TKey> keys) {
+            if (keys == null)
+                throw new ArgumentException($"EntitySet.DeleteRange() ids must not be null. EntitySet: {name}");
+            foreach (var key in keys) {
+                if (key == null) throw new ArgumentException($"EntitySet.DeleteRange() id must not be null. EntitySet: {name}");
+            }
+            var sync    = GetSyncSet();
+            var delete  = sync.CreateDeleteTask();
+            delete.AddRange(keys);
+            sync.tasks.Add(delete);
+            intern.store.AddTask(delete);
+            return delete;
         }
         
         /// <summary>
@@ -443,9 +470,12 @@ namespace Friflo.Json.Fliox.Hub.Client
             foreach (var key in keys) {
                 if (key == null) throw new ArgumentException($"EntitySet.DeleteRange() id must not be null. EntitySet: {name}");
             }
-            var task = GetSyncSet().DeleteRange(keys);
-            intern.store.AddTask(task);
-            return task;
+            var sync    = GetSyncSet();
+            var delete  = sync.CreateDeleteTask();
+            delete.AddRange(keys);
+            sync.tasks.Add(delete);
+            intern.store.AddTask(delete);
+            return delete;
         }
         
         /// <summary>
