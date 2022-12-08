@@ -105,10 +105,17 @@ namespace Friflo.Json.Fliox.Hub.Remote
             return loopTask;
         }
         
+        /// <summary>
+        /// Currently using a single reused context. This is possible as this loop wait for completion of request execution.
+        /// This approach causes <b>head-of-line blocking</b> for each WebSocket client. <br/>
+        /// For an <b>out-of-order delivery</b> implementation individual <see cref="SyncContext"/>'s, <see cref="SyncBuffers"/>
+        /// and <see cref="MemoryBuffer"/>'s are needed. Heap allocations can be avoided by pooling these instances.
+        /// </summary>
         private async Task RunReceiveLoop(RemoteHost remoteHost, ObjectMapper mapper) {
             var memoryStream            = new MemoryStream();
             var buffer                  = new ArraySegment<byte>(new byte[8192]);
             var syncBuffers             = new SyncBuffers(new List<SyncRequestTask>());
+
             var syncContext             = new SyncContext(sharedEnv, this, syncBuffers); // reused context
             var memoryBuffer            = new MemoryBuffer(4 * 1024);
             // mapper.reader.InstancePool  = new InstancePool(typeStore);    // reused SyncRequest
