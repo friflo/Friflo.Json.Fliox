@@ -40,7 +40,9 @@ namespace Friflo.Json.Fliox.Hub.Host
         ///   <para> 2. An issue in the namespace <see cref="Friflo.Json.Fliox.Hub.Protocol"/> which must to be fixed.</para> 
         /// </para>
         /// </remarks>
-        public virtual async Task<ExecuteSyncResult> ExecuteRequestAsync(SyncRequest syncRequest, SyncContext syncContext) {
+        public virtual async Task<ExecuteSyncResult> ExecuteRequestAsync(SyncRequest syncRequest, SyncContext syncContext)
+        {
+            syncContext.request             = syncRequest;
             if (syncContext.authState.authExecuted) throw new InvalidOperationException("Expect AuthExecuted == false");
             await authenticator.AuthenticateAsync(syncRequest, syncContext).ConfigureAwait(false);
             
@@ -72,7 +74,7 @@ namespace Friflo.Json.Fliox.Hub.Host
                 return new ExecuteSyncResult($"tasks[{index}] == null", ErrorResponseType.BadRequest);
             }
             var   service = db.service;
-            service.PreExecuteTasks(syncRequest, syncContext);
+            service.PreExecuteTasks(syncContext);
 
             var tasks       = new List<SyncTaskResult>(requestTasks.Count);
             var response    = new SyncResponse { tasks = tasks, database = syncDbName.value };
@@ -104,7 +106,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             
             response.AssertResponse(syncRequest);
             
-            service.PostExecuteTasks(syncRequest, syncContext);
+            service.PostExecuteTasks(syncContext);
             
             var dispatcher = EventDispatcher;
             if (dispatcher != null) {

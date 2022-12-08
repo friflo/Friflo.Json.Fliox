@@ -36,7 +36,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         public              ObjectPool<ObjectMapper>    ObjectMapper    => pool.ObjectMapper;
         public              ObjectPool<EntityProcessor> EntityProcessor => pool.EntityProcessor;
         public              MemoryBuffer                MemoryBuffer    => memoryBuffer;
-        public              object                      data;
+        public              SyncRequest                 Request         => request;
 
         // --- internal / private by intention
         /// <summary>
@@ -54,18 +54,19 @@ namespace Friflo.Json.Fliox.Hub.Host
         internal            JsonKey                 clientId;
         internal            SmallString             databaseName;              // not null
         internal            ClientIdValidation      clientIdValidation;
+        internal            SyncRequest             request;
         private             MemoryBuffer            memoryBuffer;
 
         public override     string                  ToString() => GetString();
         
         public void Init () {
-            data                = null;
             authState           = default;
             canceler            = null;
             hub                 = null;
             clientId            = default;
             databaseName        = default;
             clientIdValidation  = default;
+            request             = null;
             memoryBuffer        = null;
         }
 

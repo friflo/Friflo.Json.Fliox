@@ -17,11 +17,11 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
     {
         internal ClusterDB clusterDB;
 
-        protected internal override void PreExecuteTasks(SyncRequest syncRequest, SyncContext syncContext) {
+        protected internal override void PreExecuteTasks(SyncContext syncContext) {
             var pool = syncContext.pool;
             using (var pooled  = pool.Type(() => new ClusterStore(clusterDB.clusterHub)).Get()) {
                 var cluster = pooled.instance;
-                var tasks = syncRequest.tasks;
+                var tasks = syncContext.request.tasks;
                 cluster.UpdateClusterDB  (clusterDB.hub, tasks);
                 
                 cluster.SyncTasksSynchronous();

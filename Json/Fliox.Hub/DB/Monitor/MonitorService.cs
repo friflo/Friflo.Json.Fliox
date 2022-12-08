@@ -19,12 +19,12 @@ namespace Friflo.Json.Fliox.Hub.DB.Monitor
             AddCommandHandler<ClearStats, ClearStatsResult> (nameof(ClearStats), ClearStats);
         }
         
-        protected internal override void PreExecuteTasks(SyncRequest syncRequest, SyncContext syncContext) {
+        protected internal override void PreExecuteTasks(SyncContext syncContext) {
             var pool = syncContext.pool;
             using (var pooled  = pool.Type(() => new MonitorStore(monitorDB.monitorHub)).Get()) {
                 var monitor = pooled.instance;
                 monitor.hostName = hub.hostName;
-                var tasks = syncRequest.tasks;
+                var tasks = syncContext.request.tasks;
                 if (MonitorDB.FindTask(nameof(MonitorStore.clients),  tasks)) monitor.UpdateClients  (hub, monitorDB.name.value);
                 if (MonitorDB.FindTask(nameof(MonitorStore.users),    tasks)) monitor.UpdateUsers    (hub.Authenticator, monitorDB.name.value);
                 if (MonitorDB.FindTask(nameof(MonitorStore.histories),tasks)) monitor.UpdateHistories(hub.hostStats.requestHistories);
