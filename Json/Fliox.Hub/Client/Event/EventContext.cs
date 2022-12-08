@@ -92,8 +92,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         public void ApplyChangesTo(FlioxClient client)
         {
             foreach (var entityChanges in processor.contextChanges) {
-                var container = entityChanges.Container;
-                if (!client._intern.TryGetSetByName(container, out var entitySet))
+                if (!client._intern.TryGetSetByName(entityChanges.ContainerSmall, out var entitySet))
                     continue;
                 entityChanges.ApplyChangesToInternal(entitySet);
             }

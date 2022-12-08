@@ -116,7 +116,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             _intern.syncStore.functions.Add(task);
         }
         
-        internal EntitySet GetEntitySet(SmallString name) {
+        internal EntitySet GetEntitySet(in SmallString name) {
             if (_intern.TryGetSetByName(name, out var entitySet))
                 return entitySet;
             throw new InvalidOperationException($"unknown EntitySet. name: {name}");

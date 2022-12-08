@@ -90,8 +90,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         private static readonly DirectEventProcessor                DefaultEventProcessor = new DirectEventProcessor();
 
        
-        internal EntitySet  GetSetByName    (SmallString name)                    => setByName[name];
-        internal bool       TryGetSetByName (SmallString name, out EntitySet set) => setByName.TryGetValue(name, out set);
+        internal EntitySet  GetSetByName    (in SmallString name)                    => setByName[name];
+        internal bool       TryGetSetByName (in SmallString name, out EntitySet set) => setByName.TryGetValue(name, out set);
 
         internal void SetSubscriptionProcessor(SubscriptionProcessor processor) {
             subscriptionProcessor?.Dispose();
