@@ -10,6 +10,7 @@ using Friflo.Json.Fliox.Hub.Host.Utils;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Transform;
 
+// ReSharper disable InconsistentNaming
 namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
 {
     // ----------------------------------- task -----------------------------------
@@ -19,8 +20,11 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     public sealed class UpsertEntities : SyncRequestTask
     {
         /// <summary>container name the <see cref="entities"/> are upserted - created or updated</summary>
-        [Required] public   string              container;
-        [Ignore]   internal SmallString         containerCmp;
+        [Required]  public  string              container {
+            get => containerSmall.value;
+            set => containerSmall = new SmallString(value);
+        }
+        [Ignore]   internal SmallString         containerSmall;
         /// <summary>name of the primary key property in <see cref="entities"/></summary>
                    public   string              keyName;
         /// <summary>the <see cref="entities"/> which are upserted in the specified <see cref="container"/></summary>
@@ -50,8 +54,6 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
                 error = InvalidTask(errorMsg);
                 return null;
             }
-            containerCmp = new SmallString(container);
-
             errorMsg = database.Schema?.ValidateEntities (container, entities, syncContext, EntityErrorType.WriteError, ref validationErrors);
             if (errorMsg != null) {
                 error = TaskError(new CommandError(TaskErrorResultType.ValidationError, errorMsg));

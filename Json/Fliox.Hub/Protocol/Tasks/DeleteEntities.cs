@@ -8,6 +8,7 @@ using Friflo.Json.Burst.Utils;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
 
+// ReSharper disable InconsistentNaming
 namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
 {
     // ----------------------------------- task -----------------------------------
@@ -18,8 +19,11 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     public sealed class DeleteEntities : SyncRequestTask
     {
         /// <summary>container name</summary>
-        [Required]  public  string              container;
-        [Ignore]   internal SmallString         containerCmp;
+        [Required]  public  string              container {
+            get => containerSmall.value;
+            set => containerSmall = new SmallString(value);
+        }
+        [Ignore]   internal SmallString         containerSmall;
         /// <summary>list of <see cref="ids"/> requested for deletion</summary>
                     public  List<JsonKey>       ids;
         /// <summary>if true all entities in the specified <see cref="container"/> are deleted</summary>
@@ -50,7 +54,6 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
                 error = MissingField($"[{nameof(ids)} | {nameof(all)}]");
                 return null;
             }
-            containerCmp    = new SmallString(container);
             error           = null;
             return database.GetOrCreateContainer(container);
         }

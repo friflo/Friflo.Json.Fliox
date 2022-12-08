@@ -11,6 +11,7 @@ using Friflo.Json.Fliox.Hub.Host.Utils;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Transform;
 
+// ReSharper disable InconsistentNaming
 namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
 {
     // ----------------------------------- task -----------------------------------
@@ -20,8 +21,11 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     public sealed class CreateEntities : SyncRequestTask
     {
         /// <summary>container name the <see cref="entities"/> are created</summary>
-        [Required]  public  string              container;
-        [Ignore]   internal SmallString         containerCmp;
+        [Required]  public  string              container {
+            get => containerSmall.value;
+            set => containerSmall = new SmallString(value);
+        }
+        [Ignore]   internal SmallString         containerSmall;
                     public  Guid?               reservedToken;
         /// <summary>name of the primary key property in <see cref="entities"/></summary>
                     public  string              keyName;
@@ -49,8 +53,6 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
                 error = InvalidTask(errorMsg);
                 return null;
             }
-            containerCmp = new SmallString(container);
-
             var entityContainer = database.GetOrCreateContainer(container);
             errorMsg = entityContainer.database.Schema?.ValidateEntities (container, entities, syncContext, EntityErrorType.WriteError, ref validationErrors);
             if (errorMsg != null) {

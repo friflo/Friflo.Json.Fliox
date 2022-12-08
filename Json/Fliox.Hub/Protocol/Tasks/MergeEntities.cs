@@ -8,6 +8,7 @@ using Friflo.Json.Burst.Utils;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
 
+// ReSharper disable InconsistentNaming
 namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
 {
     // ----------------------------------- task -----------------------------------
@@ -17,8 +18,12 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     public sealed class MergeEntities : SyncRequestTask
     {
         /// <summary>container name</summary>
-        [Required]  public  string              container;
-        [Ignore]   internal SmallString         containerCmp;
+        [Required]  public  string              container {
+            get => containerSmall.value;
+            set => containerSmall = new SmallString(value);
+        }
+    
+        [Ignore]   internal SmallString         containerSmall;
         /// <summary>name of the primary key property of the entity <see cref="patches"/></summary>
                     public  string              keyName;
         /// <summary>list of merge patches for each entity</summary>
@@ -44,7 +49,6 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
                 error = MissingField(nameof(patches));
                 return null;
             }
-            containerCmp = new SmallString(container);
             database.service.CustomizeMerge(this, syncContext);
             error = null;
             return database.GetOrCreateContainer(container);
