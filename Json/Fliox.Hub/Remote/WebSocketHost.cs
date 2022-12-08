@@ -109,7 +109,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             var memoryStream            = new MemoryStream();
             var buffer                  = new ArraySegment<byte>(new byte[8192]);
             var syncBuffers             = new SyncBuffers(new List<SyncRequestTask>());
-            var syncContext             = new SyncContext(sharedEnv, this, syncBuffers);
+            var syncContext             = new SyncContext(sharedEnv, this, syncBuffers); // reused context
             var memoryBuffer            = new MemoryBuffer(4 * 1024);
             // mapper.reader.InstancePool  = new InstancePool(typeStore);    // reused SyncRequest
             while (true) {

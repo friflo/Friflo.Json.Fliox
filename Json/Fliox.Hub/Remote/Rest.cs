@@ -452,7 +452,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 clientId    = new JsonKey(clientId) 
             };
             var hub         = context.hub;
-            syncContext     = new SyncContext(hub.sharedEnv, null, context.memoryBuffer);
+            syncContext     = new SyncContext(hub.sharedEnv, null, context.memoryBuffer); // new context per request
             return syncRequest;
         }
         
