@@ -12,18 +12,17 @@ namespace Friflo.Json.Fliox.Utils
     /// <remarks>
     /// Strategy to minimize heap allocations and GC pressure.
     /// <list type="bullet">
-    ///   <item>don't allocate any array if the <see cref="MemoryBuffer"/> is not reused</item>
-    ///   <item>store only a single <see cref="permanent"/> buffer if <see cref="MemoryBuffer"/> is reused</item>
+    ///   <item>don't allocate any array if the <see cref="MemoryBuffer"/> is not used</item>
     ///   <item>avoid allocation of 'large heap object' <see cref="buffer"/>'s which required a GEN2 collection</item>
     ///   <item>avoid allocated <see cref="buffer"/>'s having too many unused remaining bytes => quadruple capacity</item>
     /// </list>
     /// </remarks>
     public class MemoryBuffer : IDisposable
     {
-        private readonly    byte[]  permanent;
+        private             byte[]  startBuffer;
         private             byte[]  buffer;
         private             int     position;
-        private readonly    int     initialCapacity;
+        private readonly    int     startCapacity;
         private             int     capacity;
         // --- stats
         private             int     allocatedSize;
@@ -35,18 +34,17 @@ namespace Friflo.Json.Fliox.Utils
         private const       int     LargeHeapObjectSize = 84000;                    // large object size: 85_000. Use a size smaller than this
         private const       int     BigValueLength      = LargeHeapObjectSize / 4;  // all arrays with Length > this get an individual array allocated
 
-        public MemoryBuffer(bool reuse, int initialCapacity) {
-            this.initialCapacity    =
-            capacity                = initialCapacity;
-            permanent               = reuse ? new byte[initialCapacity] : null;
+        public MemoryBuffer(int startCapacity) {
+            this.startCapacity  =
+            capacity            = startCapacity;
         }
         
         public void Dispose() { }
         
         public void Reset() {
-            buffer          = permanent;
+            buffer          = startBuffer;
             position        = 0;
-            capacity        = initialCapacity;
+            capacity        = startCapacity;
             allocatedSize   = 0;
             allocatedCount  = 0;
         }
@@ -61,8 +59,9 @@ namespace Friflo.Json.Fliox.Utils
             }
             int start   = position;
             if (start + len <= capacity) {
+                // buffer == null  =>  MemoryBuffer was Reset()  =>  capacity == startCapacity
                 if (buffer == null) {
-                    buffer = new byte[capacity];
+                    buffer = startBuffer = new byte[startCapacity];
                 }
                 // add value to current buffer
                 Buffer.BlockCopy(value.Array, value.start, buffer, start, len);

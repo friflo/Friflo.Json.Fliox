@@ -128,7 +128,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
         
         private static MemoryBuffer CreateMemoryBuffer() {
-            return new MemoryBuffer(false, MemoryBufferCapacity);  // cannot be reused as its buffer may be used by application
+            return new MemoryBuffer(MemoryBufferCapacity);  // cannot be reused as its buffer may be used by application
         }
         
         private SyncContext CreateSyncContext(MemoryBuffer memoryBuffer) {
