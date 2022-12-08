@@ -38,6 +38,18 @@ namespace Friflo.Json.Fliox.Hub.Client
             entities.Add(entity);
         }
         
+        public void AddRange(List<T> entities) {
+            var n = 0;
+            foreach (var entity in entities) {
+                if (entity == null)
+                    throw new ArgumentException($"UpsertTask<{set.name}>.AddRange() entities[{n}] must not be null.");
+                n++;
+                var peer = set.CreatePeer(entity);
+                AddPeer(peer, PeerState.Upsert);
+            }
+            this.entities.AddRange(entities);
+        }
+        
         public void AddRange(ICollection<T> entities) {
             var n = 0;
             foreach (var entity in entities) {

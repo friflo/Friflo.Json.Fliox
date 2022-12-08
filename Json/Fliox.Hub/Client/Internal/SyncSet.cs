@@ -82,62 +82,15 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         }
 
         // --- Create
-        private CreateTask<T> CreateCreateTask() {
+        internal CreateTask<T> CreateCreateTask() {
             return set.createBuffer.Get() ?? new CreateTask<T>(new List<T>(), set, this);
-        }
-        
-        internal CreateTask<T> Create(T entity) {
-            if (set.intern.autoIncrement) {
-                //  set.NewEntities().Add(entity);
-                //  Autos().Add(entity);
-                //  var create1 = new CreateTask<T>(new List<T>{entity}, set, this);
-                //  CreateTasks().Add(create1);
-                //  return create1;
-            }
-            var create  = CreateCreateTask();
-            create.Add(entity);
-            var peer    = set.CreatePeer(entity);
-            create.AddPeer(peer, PeerState.Create);
-            tasks.Add(create);
-            return create;
-        }
-
-        internal CreateTask<T> CreateRange(ICollection<T> entities) {
-            var create  = CreateCreateTask();
-            create.AddRange(entities);
-            foreach (var entity in entities) {
-                var peer = set.CreatePeer(entity);
-                create.AddPeer(peer, PeerState.Create);
-            }
-            tasks.Add(create);
-            return create;
         }
 
         // --- Upsert
-        private UpsertTask<T> CreateUpsertTask() {
+        internal UpsertTask<T> CreateUpsertTask() {
             return set.upsertBuffer.Get() ?? new UpsertTask<T>(new List<T>(), set, this);
         }
         
-        internal UpsertTask<T> Upsert(T entity) {
-            var upsert  = CreateUpsertTask();
-            upsert.Add(entity);
-            var peer    = set.CreatePeer(entity);
-            upsert.AddPeer(peer, PeerState.Upsert);
-            tasks.Add(upsert);
-            return upsert;
-        }
-
-        internal UpsertTask<T> UpsertRange(ICollection<T> entities) {
-            var upsert  = CreateUpsertTask();
-            upsert.AddRange(entities);
-            foreach (var entity in entities) {
-                var peer = set.CreatePeer(entity);
-                upsert.AddPeer(peer, PeerState.Upsert);
-            }
-            tasks.Add(upsert);
-            return upsert;
-        }
-
         // --- Delete
         private DeleteTask<TKey, T> CreateDelete() {
             return set.deleteBuffer.Get() ?? new DeleteTask<TKey, T>(new List<TKey>(), this);

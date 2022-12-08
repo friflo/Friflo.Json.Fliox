@@ -281,9 +281,31 @@ namespace Friflo.Json.Fliox.Hub.Client
         public CreateTask<T> Create(T entity) {
             if (entity == null)
                 throw new ArgumentException($"EntitySet.Create() entity must not be null. EntitySet: {name}");
-            var task = GetSyncSet().Create(entity);
-            intern.store.AddTask(task);
-            return task;
+            var sync    = GetSyncSet();
+            var create  = sync.CreateCreateTask();
+            create.Add(entity);
+            sync.tasks.Add(create);
+            intern.store.AddTask(create);
+            return create;
+        }
+        
+        /// <summary>
+        /// Return a <see cref="CreateTask{T}"/> used to to create the given <paramref name="entities"/> in the container
+        /// </summary>
+        /// <remarks> To execute the task call <see cref="FlioxClient.SyncTasks"/> </remarks>
+        public CreateTask<T> CreateRange(List<T> entities) {
+            if (entities == null)
+                throw new ArgumentException($"EntitySet.CreateRange() entities must not be null. EntitySet: {name}");
+            foreach (var entity in entities) {
+                if (Static.EntityKeyTMap.IsEntityKeyNull(entity))
+                    throw new ArgumentException($"EntitySet.CreateRange() entity.id must not be null. EntitySet: {name}");
+            }
+            var sync    = GetSyncSet();
+            var create  = sync.CreateCreateTask();
+            create.AddRange(entities);
+            sync.tasks.Add(create);
+            intern.store.AddTask(create);
+            return create;
         }
         
         /// <summary>
@@ -292,14 +314,17 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// <remarks> To execute the task call <see cref="FlioxClient.SyncTasks"/> </remarks>
         public CreateTask<T> CreateRange(ICollection<T> entities) {
             if (entities == null)
-                throw new ArgumentException($"EntitySet.CreateRange() entity must not be null. EntitySet: {name}");
+                throw new ArgumentException($"EntitySet.CreateRange() entities must not be null. EntitySet: {name}");
             foreach (var entity in entities) {
                 if (Static.EntityKeyTMap.IsEntityKeyNull(entity))
                     throw new ArgumentException($"EntitySet.CreateRange() entity.id must not be null. EntitySet: {name}");
             }
-            var task = GetSyncSet().CreateRange(entities);
-            intern.store.AddTask(task);
-            return task;
+            var sync    = GetSyncSet();
+            var create  = sync.CreateCreateTask();
+            create.AddRange(entities);
+            sync.tasks.Add(create);
+            intern.store.AddTask(create);
+            return create;
         }
         #endregion
         
@@ -313,9 +338,31 @@ namespace Friflo.Json.Fliox.Hub.Client
                 throw new ArgumentException($"EntitySet.Upsert() entity must not be null. EntitySet: {name}");
             if (Static.EntityKeyTMap.IsEntityKeyNull(entity))
                 throw new ArgumentException($"EntitySet.Upsert() entity.id must not be null. EntitySet: {name}");
-            var task = GetSyncSet().Upsert(entity);
-            intern.store.AddTask(task);
-            return task;
+            var sync    = GetSyncSet();
+            var upsert  = sync.CreateUpsertTask();
+            upsert.Add(entity);
+            sync.tasks.Add(upsert);
+            intern.store.AddTask(upsert);
+            return upsert;
+        }
+        
+        /// <summary>
+        /// Create a <see cref="UpsertTask{T}"/> used to upsert the given <paramref name="entities"/> in the container
+        /// </summary>
+        /// <remarks> To execute the task call <see cref="FlioxClient.SyncTasks"/> </remarks>
+        public UpsertTask<T> UpsertRange(List<T> entities) {
+            if (entities == null)
+                throw new ArgumentException($"EntitySet.UpsertRange() entities must not be null. EntitySet: {name}");
+            foreach (var entity in entities) {
+                if (Static.EntityKeyTMap.IsEntityKeyNull(entity))
+                    throw new ArgumentException($"EntitySet.UpsertRange() entity.id must not be null. EntitySet: {name}");
+            }
+            var sync    = GetSyncSet();
+            var upsert  = sync.CreateUpsertTask();
+            upsert.AddRange(entities);
+            sync.tasks.Add(upsert);
+            intern.store.AddTask(upsert);
+            return upsert;
         }
         
         /// <summary>
@@ -324,14 +371,17 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// <remarks> To execute the task call <see cref="FlioxClient.SyncTasks"/> </remarks>
         public UpsertTask<T> UpsertRange(ICollection<T> entities) {
             if (entities == null)
-                throw new ArgumentException($"EntitySet.UpsertRange() entity must not be null. EntitySet: {name}");
+                throw new ArgumentException($"EntitySet.UpsertRange() entities must not be null. EntitySet: {name}");
             foreach (var entity in entities) {
                 if (Static.EntityKeyTMap.IsEntityKeyNull(entity))
                     throw new ArgumentException($"EntitySet.UpsertRange() entity.id must not be null. EntitySet: {name}");
             }
-            var task = GetSyncSet().UpsertRange(entities);
-            intern.store.AddTask(task);
-            return task;
+            var sync    = GetSyncSet();
+            var upsert  = sync.CreateUpsertTask();
+            upsert.AddRange(entities);
+            sync.tasks.Add(upsert);
+            intern.store.AddTask(upsert);
+            return upsert;
         }
         #endregion
         

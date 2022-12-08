@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Client;
 using Friflo.Json.Fliox.Hub.Host;
@@ -41,12 +42,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
             cx.hub      = new FlioxHub(cx.database, sharedEnv);
             cx.client   = new GameClient(cx.hub);
             
-            var player = new Player { id = 1 };
+            var player  = new Player { id = 1 };
+            var players = new List<Player>{player}; 
 
             long start = 0;
             for (int n = 0; n < 10; n++) {
                 start = GC.GetAllocatedBytesForCurrentThread();
-                cx.client.players.Upsert(player);
+                cx.client.players.UpsertRange(players);
                 cx.result = cx.client.SyncTasksSynchronous();
                 
                 cx.result.Reuse(cx.client);
