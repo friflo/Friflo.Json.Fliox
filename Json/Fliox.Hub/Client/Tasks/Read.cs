@@ -149,7 +149,7 @@ namespace Friflo.Json.Fliox.Hub.Client
 
         public Find<TKey, T> Find(TKey key) {
             if (key == null)
-                throw new ArgumentException($"ReadTask.Find() id must not be null. EntitySet: {set.name}");
+                throw new ArgumentException($"ReadTask.Find() key must not be null. EntitySet: {set.name}");
             if (State.IsExecuted())
                 throw AlreadySyncedError();
             result.Add(key, null);
@@ -161,13 +161,13 @@ namespace Friflo.Json.Fliox.Hub.Client
         
         public FindRange<TKey, T> FindRange(ICollection<TKey> keys) {
             if (keys == null)
-                throw new ArgumentException($"ReadTask.FindRange() ids must not be null. EntitySet: {set.name}");
+                throw new ArgumentException($"ReadTask.FindRange() keys must not be null. EntitySet: {set.name}");
             if (State.IsExecuted())
                 throw AlreadySyncedError();
             result.EnsureCapacity(result.Count + keys.Count);
             foreach (var id in keys) {
                 if (id == null)
-                    throw new ArgumentException($"ReadTask.FindRange() id must not be null. EntitySet: {set.name}");
+                    throw new ArgumentException($"ReadTask.FindRange() key must not be null. EntitySet: {set.name}");
                 result.TryAdd(id, null);
             }
             var find = new FindRange<TKey, T>(keys);
