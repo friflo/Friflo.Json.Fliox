@@ -110,6 +110,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             var buffer                  = new ArraySegment<byte>(new byte[8192]);
             var syncBuffers             = new SyncBuffers(new List<SyncRequestTask>());
             var syncContext             = new SyncContext(sharedEnv, this, syncBuffers);
+            var memoryBuffer            = new MemoryBuffer(4 * 1024);
             // mapper.reader.InstancePool  = new InstancePool(typeStore);    // reused SyncRequest
             while (true) {
                 var state = webSocket.State;
@@ -125,31 +126,28 @@ namespace Friflo.Json.Fliox.Hub.Remote
                     
                     if (wsResult.MessageType == WebSocketMessageType.Text) {
                         var requestContent  = new JsonValue(memoryStream.GetBuffer(), (int)memoryStream.Position);
-                        using (var pooledBuffer = remoteHost.sharedEnv.MemoryBuffer.Get())
-                        {
-                            syncContext.Init();
-                            syncContext.SetMemoryBuffer(pooledBuffer.instance);
-                            mapper.reader.InstancePool?.Reuse();
-                            // inlined ExecuteJsonRequest() to avoid async call:
-                            // JsonResponse response = await remoteHost.ExecuteJsonRequest(mapper, requestContent, syncContext).ConfigureAwait(false);
-                            JsonResponse response;
-                            try {
-                                var syncRequest = RemoteUtils.ReadSyncRequest(mapper, requestContent, out string error);
-                                if (error != null) {
-                                    response = JsonResponse.CreateError(mapper, error, ErrorResponseType.BadResponse, null);
-                                } else {
-                                    var syncResult = await remoteHost.localHub.ExecuteRequestAsync(syncRequest, syncContext).ConfigureAwait(false);
-                    
-                                    response = RemoteHost.CreateJsonResponse(syncResult, syncRequest.reqId, mapper);
-                                }
+                        syncContext.Init();
+                        syncContext.SetMemoryBuffer(memoryBuffer);
+                        mapper.reader.InstancePool?.Reuse();
+                        // inlined ExecuteJsonRequest() to avoid async call:
+                        // JsonResponse response = await remoteHost.ExecuteJsonRequest(mapper, requestContent, syncContext).ConfigureAwait(false);
+                        JsonResponse response;
+                        try {
+                            var syncRequest = RemoteUtils.ReadSyncRequest(mapper, requestContent, out string error);
+                            if (error != null) {
+                                response = JsonResponse.CreateError(mapper, error, ErrorResponseType.BadResponse, null);
+                            } else {
+                                var syncResult = await remoteHost.localHub.ExecuteRequestAsync(syncRequest, syncContext).ConfigureAwait(false);
+                
+                                response = RemoteHost.CreateJsonResponse(syncResult, syncRequest.reqId, mapper);
                             }
-                            catch (Exception e) {
-                                var errorMsg = ErrorResponse.ErrorFromException(e).ToString();
-                                response = JsonResponse.CreateError(mapper, errorMsg, ErrorResponseType.Exception, null);
-                            }
-                            syncContext.Release();
-                            sendQueue.Enqueue(response.body); // Enqueue() copy the result.body array
                         }
+                        catch (Exception e) {
+                            var errorMsg = ErrorResponse.ErrorFromException(e).ToString();
+                            response = JsonResponse.CreateError(mapper, errorMsg, ErrorResponseType.Exception, null);
+                        }
+                        syncContext.Release();
+                        sendQueue.Enqueue(response.body); // Enqueue() copy the result.body array
                     }
                     continue;
                 }
