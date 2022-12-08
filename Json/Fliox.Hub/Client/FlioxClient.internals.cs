@@ -307,7 +307,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             SyncRequest         syncRequest,
             ExecuteSyncResult   response,
             SyncStore           syncStore,
-            MemoryBuffer        memoryBuffer)       
+            MemoryBuffer        memoryBuffer)
         {
             using (var pooled = ObjectMapper.Get()) {
                 SyncResult syncResult;
@@ -319,7 +319,7 @@ namespace Friflo.Json.Fliox.Hub.Client
                     var functions   = syncStore.functions;
                     var failed      = GetFailedFunctions(functions);
                     syncResult      = _intern.syncResultBuffer.Get() ?? new SyncResult(this);
-                    syncResult.Init(syncStore, syncRequest, memoryBuffer, functions, failed, response.error);
+                    syncResult.Init(syncRequest, syncStore, memoryBuffer, functions, failed, response.error);
                     
                     foreach (var function in functions) {
                         var onSync  = function.OnSync;

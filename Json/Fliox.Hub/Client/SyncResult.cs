@@ -19,8 +19,8 @@ namespace Friflo.Json.Fliox.Hub.Client
         public              IReadOnlyList<SyncFunction> Failed     => GetFailed();
         
         private  readonly   FlioxClient                 client; // only set in DEBUG to avoid client not being collected by GC
-        private             SyncStore                   syncStore;
         private             SyncRequest                 syncRequest;
+        private             SyncStore                   syncStore;
         private             MemoryBuffer                memoryBuffer;
         private             List<SyncFunction>          functions;
         internal            List<SyncFunction>          failed;
@@ -38,15 +38,15 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
         
         internal void Init (
-            SyncStore           syncStore,
             SyncRequest         syncRequest,
+            SyncStore           syncStore,
             MemoryBuffer        memoryBuffer,
             List<SyncFunction>  tasks,
             List<SyncFunction>  failed,
             ErrorResponse       errorResponse)
         {
-            this.syncStore      = syncStore;
             this.syncRequest    = syncRequest;
+            this.syncStore      = syncStore;
             this.memoryBuffer   = memoryBuffer;
             this.functions      = tasks;
             this.failed         = failed;
@@ -55,7 +55,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         
         public void Reuse(FlioxClient client) {
 #if DEBUG
-            if (client != this.client) throw new InvalidOperationException("passed syncResult created by different client");
+            if (client != this.client) throw new InvalidOperationException("SyncResult was created by different client");
 #endif
             syncStore.Reuse();
             client._intern.syncStoreBuffer.Add(syncStore);
