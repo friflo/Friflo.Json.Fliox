@@ -35,7 +35,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
             private readonly    List<SyncRequestTask>   eventTasks = new List<SyncRequestTask>(); 
             
             internal SyncContext CreateSyncContext() {
-                return new SyncContext (remoteHost.sharedEnv, null, memoryBuffer, new SyncBuffers(eventTasks));
+                var syncContext = new SyncContext (remoteHost.sharedEnv, null, new SyncBuffers(eventTasks));
+                syncContext.SetMemoryBuffer(memoryBuffer);
+                return syncContext;
             }
         }
         

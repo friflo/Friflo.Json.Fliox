@@ -79,13 +79,11 @@ namespace Friflo.Json.Fliox.Hub.Host
         }
         
         /// <summary>Special constructor used to minimize heap allocation. <b>Note</b> <see cref="SyncBuffers"/> </summary>
-        public SyncContext (SharedEnv sharedEnv, EventReceiver eventReceiver, MemoryBuffer memoryBuffer, in SyncBuffers syncBuffers) {
+        public SyncContext (SharedEnv sharedEnv, EventReceiver eventReceiver, in SyncBuffers syncBuffers) {
             this.pool           = sharedEnv.Pool;
             this.eventReceiver  = eventReceiver;
             this.sharedCache    = sharedEnv.sharedCache;
-            this.memoryBuffer   = memoryBuffer ?? throw new ArgumentNullException(nameof(memoryBuffer));
             this.syncBuffers    = syncBuffers;
-            memoryBuffer.Reset();
         }
         
         public SyncContext (SharedEnv sharedEnv, EventReceiver eventReceiver) {
