@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Text;
 using Friflo.Json.Fliox.Hub.Client.Internal;
 using Friflo.Json.Fliox.Hub.Protocol;
+using Friflo.Json.Fliox.Utils;
 
 namespace Friflo.Json.Fliox.Hub.Client
 {
@@ -20,6 +21,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         private  readonly   FlioxClient                 client; // only set in DEBUG to avoid client not being collected by GC
         private             SyncStore                   syncStore;
         private             SyncRequest                 syncRequest;
+        private             MemoryBuffer                memoryBuffer;
         private             List<SyncFunction>          functions;
         internal            List<SyncFunction>          failed;
         private             ErrorResponse               errorResponse;
@@ -38,15 +40,17 @@ namespace Friflo.Json.Fliox.Hub.Client
         internal void Init (
             SyncStore           syncStore,
             SyncRequest         syncRequest,
+            MemoryBuffer        memoryBuffer,
             List<SyncFunction>  tasks,
             List<SyncFunction>  failed,
             ErrorResponse       errorResponse)
         {
             this.syncStore      = syncStore;
             this.syncRequest    = syncRequest;
-            this.errorResponse  = errorResponse;
+            this.memoryBuffer   = memoryBuffer;
             this.functions      = tasks;
             this.failed         = failed;
+            this.errorResponse  = errorResponse;
         }
         
         public void Reuse(FlioxClient client) {
@@ -60,6 +64,9 @@ namespace Friflo.Json.Fliox.Hub.Client
             syncRequest.tasks.Clear();
             client._intern.syncRequestBuffer.Add(syncRequest);
             syncRequest     = null;
+
+            client._intern.memoryBufferPool.Add(memoryBuffer);
+            memoryBuffer    = null;
 
             errorResponse   = null;
             functions       = null;

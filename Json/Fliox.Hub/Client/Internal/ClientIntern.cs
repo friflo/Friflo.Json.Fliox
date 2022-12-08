@@ -19,6 +19,7 @@ using Friflo.Json.Fliox.Hub.Utils;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Mapper.Diff;
 using Friflo.Json.Fliox.Mapper.Map;
+using Friflo.Json.Fliox.Utils;
 using static System.Diagnostics.DebuggerBrowsableState;
 
 namespace Friflo.Json.Fliox.Hub.Client.Internal
@@ -69,6 +70,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         
         internal            InstanceBuffer<SyncStore>   syncStoreBuffer;
         internal            InstanceBuffer<SyncRequest> syncRequestBuffer;
+        internal            InstanceBuffer<MemoryBuffer>memoryBufferPool;
         internal            InstanceBuffer<SyncResult>  syncResultBuffer;
         internal            InstanceBuffer<SyncContext> syncContextBuffer;
 
@@ -139,6 +141,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             
             syncStoreBuffer             = default;
             syncRequestBuffer           = default;
+            memoryBufferPool            = default;
             syncResultBuffer            = default;
             syncContextBuffer           = default;
             

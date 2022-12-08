@@ -127,8 +127,14 @@ namespace Friflo.Json.Fliox.Hub.Client
             }
         }
         
-        private static MemoryBuffer CreateMemoryBuffer() {
-            return new MemoryBuffer(MemoryBufferCapacity);  // cannot be reused as its buffer may be used by application
+        /// <summary>
+        /// By default a new <see cref="MemoryBuffer"/> is created as its array may be used by the application
+        /// at any time later. <br/>
+        /// It returns a pooled <see cref="MemoryBuffer"/> only if the application calls <see cref="SyncResult.Reuse"/>
+        /// indicating its safe to do so.
+        /// </summary>
+        private MemoryBuffer CreateMemoryBuffer() {
+            return _intern.memoryBufferPool.Get() ?? new MemoryBuffer(MemoryBufferCapacity);
         }
         
         private SyncContext CreateSyncContext(MemoryBuffer memoryBuffer) {
@@ -297,7 +303,12 @@ namespace Friflo.Json.Fliox.Hub.Client
             }
         }
         
-        private SyncResult HandleSyncResponse(SyncRequest syncRequest, ExecuteSyncResult response, SyncStore syncStore) {
+        private SyncResult HandleSyncResponse(
+            SyncRequest         syncRequest,
+            ExecuteSyncResult   response,
+            SyncStore           syncStore,
+            MemoryBuffer        memoryBuffer)       
+        {
             using (var pooled = ObjectMapper.Get()) {
                 SyncResult syncResult;
                 try {
@@ -308,7 +319,7 @@ namespace Friflo.Json.Fliox.Hub.Client
                     var functions   = syncStore.functions;
                     var failed      = GetFailedFunctions(functions);
                     syncResult      = _intern.syncResultBuffer.Get() ?? new SyncResult(this);
-                    syncResult.Init(syncStore, syncRequest, functions, failed, response.error);
+                    syncResult.Init(syncStore, syncRequest, memoryBuffer, functions, failed, response.error);
                     
                     foreach (var function in functions) {
                         var onSync  = function.OnSync;

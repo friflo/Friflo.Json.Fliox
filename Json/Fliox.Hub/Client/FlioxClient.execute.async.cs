@@ -30,7 +30,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             var response    = await ExecuteRequestAsync(syncRequest, syncContext).ConfigureAwait(Static.OriginalContext);
             
             ReuseSyncContext(syncContext);
-            var result      = HandleSyncResponse(syncRequest, response, syncStore);
+            var result      = HandleSyncResponse(syncRequest, response, syncStore, buffer);
             if (!result.Success)
                 throw new SyncTasksException(response.error, result.failed);
             syncContext.Release();
@@ -49,7 +49,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             var response    = await ExecuteRequestAsync(syncRequest, syncContext).ConfigureAwait(Static.OriginalContext);
 
             ReuseSyncContext(syncContext);
-            var result      = HandleSyncResponse(syncRequest, response, syncStore);
+            var result      = HandleSyncResponse(syncRequest, response, syncStore, buffer);
             syncContext.Release();
             return result;
         }
@@ -100,7 +100,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             var response    = await ExecuteRequestAsync(syncRequest, syncContext).ConfigureAwait(false);
 
             var syncStore   = new SyncStore();  // create default (empty) SyncStore
-            var result      = HandleSyncResponse(syncRequest, response, syncStore);
+            var result      = HandleSyncResponse(syncRequest, response, syncStore, buffer);
             syncContext.Release();
             return result;
         }
