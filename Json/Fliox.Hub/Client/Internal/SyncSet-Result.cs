@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using Friflo.Json.Burst.Utils;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
@@ -267,7 +268,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             for (int n = 0; n < references.Count; n++) {
                 References              reference    = references[n];
                 ReferencesResult        refResult    = referencesResult[n];
-                EntitySet               refContainer = set.intern.store._intern.GetSetByName(reference.container);
+                var referenceContainer               = new SmallString(reference.container);
+                EntitySet               refContainer = set.intern.store._intern.GetSetByName(referenceContainer);
                 ReadRelationsFunction   subRelation  = relations[reference.selector];
                 if (refResult.error != null) {
                     var taskError       = new TaskErrorResult (TaskErrorResultType.DatabaseError, refResult.error);

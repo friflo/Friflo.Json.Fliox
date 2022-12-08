@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using Friflo.Json.Burst.Utils;
 using Friflo.Json.Fliox.Hub.Client.Internal;
 using Friflo.Json.Fliox.Hub.Client.Internal.KeyEntity;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
@@ -15,12 +16,15 @@ using static System.Diagnostics.DebuggerBrowsableState;
 
 // EntitySet & EntitySetBase<T> are not intended as a public API.
 // These classes are declared here to simplify navigation to EntitySet<TKey, T>.
+
+// ReSharper disable InconsistentNaming
 namespace Friflo.Json.Fliox.Hub.Client.Internal
 {
     // --------------------------------------- EntitySet ---------------------------------------
     public abstract class EntitySet
     {
-        [DebuggerBrowsable(Never)] public   readonly  string          name;
+        [DebuggerBrowsable(Never)] public             string          name => nameSmall.value;
+        [DebuggerBrowsable(Never)] public   readonly  SmallString     nameSmall;
         [DebuggerBrowsable(Never)] internal           ChangeCallback  changeCallback;
 
         internal  abstract  SyncSet     SyncSet     { get; }
@@ -45,7 +49,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         public static       void                GetRawEntities(EntitySet entitySet, List<object> result) => entitySet.GetRawEntities(result);
 
         protected EntitySet(string name) {
-            this.name = name;
+            this.nameSmall = new SmallString(name);
         }
     }
     

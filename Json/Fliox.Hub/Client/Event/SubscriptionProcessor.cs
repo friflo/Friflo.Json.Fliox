@@ -115,7 +115,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             var entities = create.entities;
             if (entities.Count == 0)
                 return;
-            var set = client.GetEntitySet(create.container);
+            var set = client.GetEntitySet(create.containerSmall);
             if (set.GetSubscription() == null) {
                 return;
             }
@@ -130,7 +130,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             var entities = upsert.entities;
             if (entities.Count == 0)
                 return;
-            var set = client.GetEntitySet(upsert.container);
+            var set = client.GetEntitySet(upsert.containerSmall);
             if (set.GetSubscription() == null) {
                 return;
             }
@@ -145,7 +145,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             var ids = delete.ids;
             if (ids.Count == 0)
                 return;
-            var set = client.GetEntitySet(delete.container);
+            var set = client.GetEntitySet(delete.containerSmall);
             if (set.GetSubscription() == null) {
                 return;
             }
@@ -159,7 +159,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             var patches = patchEntities.patches;
             if (patches.Count == 0)
                 return;
-            var set = client.GetEntitySet(patchEntities.container);
+            var set = client.GetEntitySet(patchEntities.containerSmall);
             if (set.GetSubscription() == null) {
                 return;
             }
