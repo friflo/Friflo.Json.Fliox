@@ -159,6 +159,23 @@ namespace Friflo.Json.Fliox.Hub.Client
             return find;
         }
         
+        public FindRange<TKey, T> FindRange(List<TKey> keys) {
+            if (keys == null)
+                throw new ArgumentException($"ReadTask.FindRange() keys must not be null. EntitySet: {set.name}");
+            if (State.IsExecuted())
+                throw AlreadySyncedError();
+            result.EnsureCapacity(result.Count + keys.Count);
+            foreach (var id in keys) {
+                if (id == null)
+                    throw new ArgumentException($"ReadTask.FindRange() key must not be null. EntitySet: {set.name}");
+                result.TryAdd(id, null);
+            }
+            var find = new FindRange<TKey, T>(keys);
+            findTasks.Add(find);
+            set.intern.store.AddFunction(find);
+            return find;
+        }
+        
         public FindRange<TKey, T> FindRange(ICollection<TKey> keys) {
             if (keys == null)
                 throw new ArgumentException($"ReadTask.FindRange() keys must not be null. EntitySet: {set.name}");
