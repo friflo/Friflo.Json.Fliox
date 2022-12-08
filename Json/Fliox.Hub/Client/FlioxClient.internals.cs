@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Friflo.Json.Burst.Utils;
 using Friflo.Json.Fliox.Hub.Client.Internal;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.Event;
@@ -116,7 +115,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             _intern.syncStore.functions.Add(task);
         }
         
-        internal EntitySet GetEntitySet(in SmallString name) {
+        internal EntitySet GetEntitySet(string name) {
             if (_intern.TryGetSetByName(name, out var entitySet))
                 return entitySet;
             throw new InvalidOperationException($"unknown EntitySet. name: {name}");
@@ -259,7 +258,8 @@ namespace Friflo.Json.Fliox.Hub.Client
             }
             var processor = _intern.EntityProcessor();
             foreach (var container in containers) {
-                if (!_intern.TryGetSetByName(container.containerSmall, out EntitySet set)) {
+                string name         = container.container;
+                if (!_intern.TryGetSetByName(name, out EntitySet set)) {
                     continue;
                 }
                 var keyName         = set.GetKeyName();
@@ -385,7 +385,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             var containers = syncResponse.containers;
             if (containers != null) {
                 foreach (var containerEntities in containers) {
-                    EntitySet set = _intern.GetSetByName(containerEntities.containerSmall);
+                    EntitySet set = _intern.GetSetByName(containerEntities.container);
                     set.SyncPeerEntityMap(containerEntities.entityMap, mapper);
                 }
             }

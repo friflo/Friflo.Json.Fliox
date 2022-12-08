@@ -7,7 +7,6 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Friflo.Json.Burst.Utils;
 using Friflo.Json.Fliox.Hub.Client.Event;
 using Friflo.Json.Fliox.Hub.Client.Internal.Map;
 using Friflo.Json.Fliox.Hub.Host;
@@ -33,8 +32,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         internal readonly   Pool                        pool;
         internal readonly   SharedEnv                   sharedEnv;
         internal readonly   IHubLogger                  hubLogger;
-        internal            string                      database => databaseSmall.value;
-        internal readonly   SmallString                 databaseSmall;
+        internal readonly   string                      database;
         /// <summary>is null if <see cref="FlioxHub.SupportPushEvents"/> == false</summary> 
         internal readonly   EventReceiver               eventReceiver;
         
@@ -43,7 +41,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         private             JsonMergeWriter                         mergeWriter;    // create on demand
         private             EntityProcessor                         processor;      // create on demand
         internal readonly   EntitySet[]                             entitySets;
-        private  readonly   Dictionary<SmallString, EntitySet>      setByName;
+        private  readonly   Dictionary<string, EntitySet>           setByName;
         
         [DebuggerBrowsable(Never)]
         internal            Dictionary<string, MessageSubscriber>   subscriptions;          // create on demand - only used for subscriptions
@@ -90,8 +88,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         private static readonly DirectEventProcessor                DefaultEventProcessor = new DirectEventProcessor();
 
        
-        internal EntitySet  GetSetByName    (in SmallString name)                    => setByName[name];
-        internal bool       TryGetSetByName (in SmallString name, out EntitySet set) => setByName.TryGetValue(name, out set);
+        internal EntitySet  GetSetByName    (string name)                    => setByName[name];
+        internal bool       TryGetSetByName (string name, out EntitySet set) => setByName.TryGetValue(name, out set);
 
         internal void SetSubscriptionProcessor(SubscriptionProcessor processor) {
             subscriptionProcessor?.Dispose();
@@ -112,8 +110,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             this.pool               = sharedEnv.Pool;
             this.hubLogger          = sharedEnv.hubLogger;
             this.hub                = hub;
-            var databaseName        = database ?? (hub is RemoteClientHub remoteHub ? remoteHub.DatabaseName.value : null);
-            databaseSmall           = new SmallString(databaseName);
+            this.database           = database ?? (hub is RemoteClientHub remoteHub ? remoteHub.DatabaseName.value : null);
             this.eventReceiver      = eventReceiver;
             
             // --- readonly / private - owned
@@ -121,7 +118,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             mergeWriter             = null;
             processor               = null;
             entitySets              = new EntitySet[entityInfos.Length];
-            setByName               = new Dictionary<SmallString, EntitySet>(entityInfos.Length, SmallString.Equality);
+            setByName               = new Dictionary<string, EntitySet>(entityInfos.Length);
             subscriptions           = null; 
             subscriptionsPrefix     = null; 
             pendingSyncs            = new Dictionary<Task, SyncContext>();
@@ -189,9 +186,9 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             var mappers = clientTypeInfo.entitySetMappers;
             for (int n = 0; n < entityInfos.Length; n++) {
                 var entityInfo  = entityInfos[n];
-                var name        = new SmallString(entityInfo.container);
+                var name        = entityInfo.container;
                 var setMapper   = mappers[n];
-                var entitySet   = setMapper.CreateEntitySet(name.value);
+                var entitySet   = setMapper.CreateEntitySet(name);
                 entitySet.Init(client);
                 entitySets[n]   = entitySet;
                 setByName[name] = entitySet;

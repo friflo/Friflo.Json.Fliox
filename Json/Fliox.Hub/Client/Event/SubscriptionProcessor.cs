@@ -83,7 +83,8 @@ namespace Friflo.Json.Fliox.Hub.Client
             
             // --- invoke changes handlers
             foreach (var change in contextChanges) {
-                client._intern.TryGetSetByName(change.ContainerSmall, out EntitySet set);
+                var container = change.Container;
+                client._intern.TryGetSetByName(container, out EntitySet set);
                 set.changeCallback?.InvokeCallback(change, eventContext);
             }
             if (contextChanges.Count > 0) {
@@ -114,7 +115,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             var entities = create.entities;
             if (entities.Count == 0)
                 return;
-            var set = client.GetEntitySet(create.containerSmall);
+            var set = client.GetEntitySet(create.container);
             if (set.GetSubscription() == null) {
                 return;
             }
@@ -129,7 +130,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             var entities = upsert.entities;
             if (entities.Count == 0)
                 return;
-            var set = client.GetEntitySet(upsert.containerSmall);
+            var set = client.GetEntitySet(upsert.container);
             if (set.GetSubscription() == null) {
                 return;
             }
@@ -144,7 +145,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             var ids = delete.ids;
             if (ids.Count == 0)
                 return;
-            var set = client.GetEntitySet(delete.containerSmall);
+            var set = client.GetEntitySet(delete.container);
             if (set.GetSubscription() == null) {
                 return;
             }
@@ -158,7 +159,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             var patches = patchEntities.patches;
             if (patches.Count == 0)
                 return;
-            var set = client.GetEntitySet(patchEntities.containerSmall);
+            var set = client.GetEntitySet(patchEntities.container);
             if (set.GetSubscription() == null) {
                 return;
             }
