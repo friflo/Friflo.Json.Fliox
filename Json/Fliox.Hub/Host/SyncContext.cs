@@ -12,6 +12,8 @@ using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Utils;
+using static System.Diagnostics.DebuggerBrowsableState;
+using Browse = System.Diagnostics.DebuggerBrowsableAttribute;
 
 namespace Friflo.Json.Fliox.Hub.Host
 {
@@ -38,26 +40,25 @@ namespace Friflo.Json.Fliox.Hub.Host
         public              MemoryBuffer                MemoryBuffer    => memoryBuffer;
         public              SyncRequest                 Request         => request;
 
+        public override     string                      ToString()      => GetString();
         // --- internal / private by intention
         /// <summary>
         /// Note!  Keep <see cref="pool"/> internal
         /// Its <see cref="ObjectPool{T}"/> instances can be made public as properties if required
         /// </summary>
-        internal  readonly  Pool                    pool;
+        [Browse(Never)] internal  readonly  Pool                pool;
         /// <summary>Is set for clients requests only. In other words - from the initiator of a <see cref="ProtocolRequest"/></summary>
-        internal  readonly  EventReceiver           eventReceiver;
-        internal  readonly  SharedCache             sharedCache;
-        internal  readonly  SyncBuffers             syncBuffers;
-        internal            AuthState               authState;
-        internal            Action                  canceler = () => {};
-        internal            FlioxHub                hub;
-        internal            JsonKey                 clientId;
-        internal            SmallString             databaseName;              // not null
-        internal            ClientIdValidation      clientIdValidation;
-        internal            SyncRequest             request;
-        private             MemoryBuffer            memoryBuffer;
-
-        public override     string                  ToString() => GetString();
+        [Browse(Never)] internal  readonly  EventReceiver       eventReceiver;
+        [Browse(Never)] internal  readonly  SharedCache         sharedCache;
+        [Browse(Never)] internal  readonly  SyncBuffers         syncBuffers;
+        [Browse(Never)] internal            AuthState           authState;
+        [Browse(Never)] internal            Action              canceler = () => {};
+        [Browse(Never)] internal            FlioxHub            hub;
+        [Browse(Never)] internal            JsonKey             clientId;
+        [Browse(Never)] internal            SmallString         databaseName;              // not null
+        [Browse(Never)] internal            ClientIdValidation  clientIdValidation;
+        [Browse(Never)] internal            SyncRequest         request;
+        [Browse(Never)] private             MemoryBuffer        memoryBuffer;
         
         public void Init () {
             authState           = default;
