@@ -4,8 +4,6 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Friflo.Json.Fliox.Hub.Host.Auth;
-using Friflo.Json.Fliox.Hub.Host.Event;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 
@@ -84,25 +82,7 @@ namespace Friflo.Json.Fliox.Hub.Host
                     Logger.Log(HubLog.Error, message, e);
                 }
             }
-            hostStats.Update(syncRequest);
-            UpdateRequestStats(db.name, syncRequest, syncContext);
-
-            // - Note: Only relevant for Push messages when using a bidirectional protocol like WebSocket
-            // As a client is required to use response.clientId it is set to null if given clientId was invalid.
-            // So next request will create a new valid client id.
-            response.clientId = syncContext.clientIdValidation == ClientIdValidation.Invalid ? new JsonKey() : syncContext.clientId;
-            
-            response.AssertResponse(syncRequest);
-            
-            service.PostExecuteTasks(syncContext);
-            
-            var dispatcher = EventDispatcher;
-            if (dispatcher != null) {
-                dispatcher.EnqueueSyncTasks(syncRequest, syncContext);
-                if (dispatcher.dispatching == EventDispatching.Send) {
-                    dispatcher.SendQueuedEvents(); // use only for testing
-                }
-            }
+            PostExecute(syncRequest, response, syncContext);
             return new ExecuteSyncResult(response);
         }
     }
