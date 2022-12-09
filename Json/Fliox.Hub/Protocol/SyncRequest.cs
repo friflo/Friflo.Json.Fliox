@@ -3,6 +3,7 @@
 
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 
 namespace Friflo.Json.Fliox.Hub.Protocol
@@ -39,6 +40,10 @@ namespace Friflo.Json.Fliox.Hub.Protocol
                     public  string                  database;
         /// <summary>optional JSON value - can be used to describe a request</summary>
                     public  JsonValue               info;
+        
+        [Ignore]   internal ExecutionType           executionType;
+        [Ignore]   internal string                  error;
+        [Ignore]   internal EntityDatabase          db;
         
         internal override   MessageType             MessageType => MessageType.sync;
     }

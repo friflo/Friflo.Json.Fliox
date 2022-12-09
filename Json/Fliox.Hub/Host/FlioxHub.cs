@@ -15,6 +15,7 @@ using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Hub.Utils;
 using static System.Diagnostics.DebuggerBrowsableState;
+using static Friflo.Json.Fliox.Hub.Host.ExecutionType;
 
 // Note! Must not import
 // using System.Threading.Tasks;    =>   only FlioxHub.execute.async.cs contains a single async method
@@ -168,7 +169,50 @@ namespace Friflo.Json.Fliox.Hub.Host
         #endregion
 
     #region - sync request execution
-
+        /// <summary>
+        /// Before execution of a <see cref="SyncRequest"/> with <see cref="ExecuteRequestAsync"/> or <see cref="ExecuteRequest"/> 
+        /// the <see cref="SyncRequest"/> must be initialized. <br/>
+        /// If the request can be executed synchronously the method returns <see cref="ExecutionType.Synchronous"/><br/>
+        /// Doing so avoids creation of a redundant <see cref="System.Threading.Tasks.Task"/> instance.  
+        /// </summary>
+        public ExecutionType InitSyncRequest(SyncRequest syncRequest) {
+            if (syncRequest.executionType != None) {
+                return syncRequest.executionType;
+            }
+            var isSyncRequest       = authenticator.IsSynchronous;
+            var db                  = database;
+            var syncRequestDatabase = syncRequest.database; 
+            if (syncRequestDatabase != null) {
+                if (syncRequestDatabase != database.name.value) {
+                    var dbName  = new SmallString(syncRequestDatabase);
+                    if (!extensionDbs.TryGetValue(dbName, out db)) {
+                        syncRequest.error = $"database not found: '{syncRequestDatabase}'";
+                        return syncRequest.executionType = Error;
+                    }
+                }
+            }
+            syncRequest.db  = db;
+            var tasks       = syncRequest.tasks;
+            if (tasks == null) {
+                syncRequest.error = "missing field: tasks (array)";
+                return syncRequest.executionType = Error;
+            }
+            var taskCount   = tasks.Count;
+            for (int index = 0; index < taskCount; index++) {
+                var task = tasks[index];
+                if (task == null) {
+                    syncRequest.error = $"tasks[{index}] == null";
+                    return syncRequest.executionType = Error;
+                }
+                task.index      = index;
+                // todo may validate tasks in PreExecute()
+                var isSyncTask  = task.PreExecute(db);
+                isSyncRequest   = isSyncRequest && isSyncTask;
+            }
+            var executionType = isSyncRequest ? Synchronous : Asynchronous;
+            syncRequest.error = null;
+            return syncRequest.executionType = executionType;
+        }
         
         private static TaskErrorResult TaskExceptionError (Exception e) {
             var exceptionName   = e.GetType().Name;

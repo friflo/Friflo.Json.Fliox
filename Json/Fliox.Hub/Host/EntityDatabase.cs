@@ -84,23 +84,6 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// <summary>name of the storage type. E.g. <c>in-memory, file-system, remote, Cosmos, ...</c></summary>
         public   abstract   string              StorageType  { get; }
         
-        /// <summary>
-        /// return true to execute <paramref name="task"/> synchronous. <br/>
-        /// return false to execute task asynchronous
-        /// </summary>
-        public virtual bool PreExecute(SyncRequestTask task)
-        {
-            switch (task.TaskType) {
-                case TaskType.message:
-                case TaskType.command:
-                    return ((SyncMessageTask)task).PreExecute(service);
-                case TaskType.subscribeChanges:
-                case TaskType.subscribeMessage:
-                    return true;
-            }
-            return false;
-        }
-
         #endregion
         
     #region - initialize
@@ -124,6 +107,12 @@ namespace Friflo.Json.Fliox.Hub.Host
         #endregion
         
     #region - general public methods
+        /// <summary>
+        /// return true to execute given <paramref name="task"/> synchronous. <br/>
+        /// return false to execute the <paramref name="task"/> asynchronous
+        /// </summary>
+        public   virtual    bool                IsSyncTask(SyncRequestTask task) => false;
+    
         /// <summary>Create a container with the given <paramref name="name"/> in the database</summary>
         public abstract EntityContainer CreateContainer     (string name, EntityDatabase database);
         

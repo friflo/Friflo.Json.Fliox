@@ -31,6 +31,16 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         public   override   TaskType            TaskType => TaskType.read;
         public   override   string              TaskName =>  $"container: '{container}'";
         
+        public override bool PreExecute(EntityDatabase database) {
+            if (references != null) {
+                executionType   = ExecutionType.Asynchronous;
+                return false;
+            }
+            var isSync      = database.IsSyncTask(this);
+            executionType   = isSync ? ExecutionType.Synchronous : ExecutionType.Asynchronous;
+            return isSync;
+        }
+        
         private EntityContainer PrepareRead(
             EntityDatabase          database,
             out TaskErrorResult     error)

@@ -37,7 +37,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs
                 var mapper          = pooledMapper.instance;
                 var requestJson     = RemoteUtils.CreateProtocolMessage(syncRequest, mapper);
                 var requestCopy     = RemoteUtils.ReadSyncRequest (mapper, requestJson, out var _);
-
+                host.InitSyncRequest(requestCopy);
                 var syncResponse    = await host.ExecuteRequestAsync(requestCopy, syncContext);
                 
                 if (syncResponse.error != null) {

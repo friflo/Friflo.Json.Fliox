@@ -48,40 +48,23 @@ namespace Friflo.Json.Fliox.Hub.Host
             } else {
                 throw new NotSupportedException("Authenticator supports only asynchronous authentication");
             }
-            syncContext.hub = this;
-            var syncDbName  = new SmallString(syncRequest.database);        // is nullable
-            var hubDbName   = syncContext.hub.DatabaseName;                 // not null
-            var dbName      = syncDbName.IsNull() ? hubDbName : syncDbName; // not null
-            syncContext.databaseName        = dbName;
+            if (syncRequest.error != null) {
+                return new ExecuteSyncResult (syncRequest.error, ErrorResponseType.BadRequest); 
+            }
+            syncContext.hub                 = this;
+            var db                          = syncRequest.db;
+            syncContext.databaseName        = db.name;
             syncContext.clientId            = syncRequest.clientId;
             syncContext.clientIdValidation  = authenticator.ValidateClientId(clientController, syncContext);
             
-            // todo check extracting validation to ValidateTasks()
-            var requestTasks = syncRequest.tasks;
-            if (requestTasks == null) {
-                return new ExecuteSyncResult ("missing field: tasks (array)", ErrorResponseType.BadRequest);
-            }
-            var taskCount = requestTasks.Count;
-            EntityDatabase db = database;
-            if (!dbName.IsEqual(hubDbName)) {
-                if (!extensionDbs.TryGetValue(dbName, out db))
-                    return new ExecuteSyncResult($"database not found: '{syncRequest.database}'", ErrorResponseType.BadRequest);
-            }
-            for (int index = 0; index < taskCount; index++) {
-                var task = requestTasks[index];
-                if (task != null) {
-                    task.index          = index;
-                    task.isSynchronous    = db.PreExecute(task);
-                    if (!task.isSynchronous) throw new InvalidOperationException($"Can only execute synchronous tasks. task {task.TaskType} {task}");
-                    continue;
-                }
-                return new ExecuteSyncResult($"tasks[{index}] == null", ErrorResponseType.BadRequest);
-            }
-            var   service = db.service;
+            var service         = db.service;
+            var requestTasks    = syncRequest.tasks;
+            var taskCount       = requestTasks.Count;
+
             service.PreExecuteTasks(syncContext);
 
             var tasks       = new List<SyncTaskResult>(taskCount);
-            var response    = new SyncResponse { tasks = tasks, database = syncDbName.value };
+            var response    = new SyncResponse { tasks = tasks, database = syncRequest.database };
             
             // ------------------------ loop through all given tasks and execute them ------------------------
             for (int index = 0; index < taskCount; index++) {
@@ -92,12 +75,12 @@ namespace Friflo.Json.Fliox.Hub.Host
                     tasks.Add(result);
                 } catch (Exception e) {
                     tasks.Add(TaskExceptionError(e)); // Note!  Should not happen - see documentation of this method.
-                    var message = GetLogMessage(dbName.value, syncRequest.userId, index, task);
+                    var message = GetLogMessage(db.name.value, syncRequest.userId, index, task);
                     Logger.Log(HubLog.Error, message, e);
                 }
             }
             hostStats.Update(syncRequest);
-            UpdateRequestStats(dbName, syncRequest, syncContext);
+            UpdateRequestStats(db.name, syncRequest, syncContext);
 
             // - Note: Only relevant for Push messages when using a bidirectional protocol like WebSocket
             // As a client is required to use response.clientId it is set to null if given clientId was invalid.

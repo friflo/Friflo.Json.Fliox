@@ -183,4 +183,11 @@ namespace Friflo.Json.Fliox.Hub.Host
 
         public override string ToString() => success != null ? success.ToString() : error.ToString();
     }
+    
+    public enum ExecutionType {
+        None,
+        Error,
+        Synchronous,
+        Asynchronous
+    }
 }

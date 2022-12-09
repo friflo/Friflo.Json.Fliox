@@ -60,7 +60,9 @@ namespace Friflo.Json.Fliox.Hub.Client
             }
             Task<ExecuteSyncResult> task = null;
             try {
+                _intern.hub.InitSyncRequest(syncRequest);
                 task = _intern.hub.ExecuteRequestAsync(syncRequest, syncContext);
+                
                 lock (_intern.pendingSyncs) {
                     _intern.pendingSyncs.Add(task, syncContext);
                 }

@@ -55,6 +55,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             }
 
             try {
+                _intern.hub.InitSyncRequest(syncRequest);
                 var response = _intern.hub.ExecuteRequest(syncRequest, syncContext);
                 
                 // The Hub returns a client id if the client didn't provide one and one of its task require one. 

@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using Friflo.Json.Fliox.Hub.Host.Utils;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
+using static Friflo.Json.Fliox.Hub.Protocol.Tasks.TaskType;
 
 namespace Friflo.Json.Fliox.Hub.Host
 {
@@ -61,21 +62,15 @@ namespace Friflo.Json.Fliox.Hub.Host
             return new MemoryContainer(name, database, containerType, pretty, smallValueSize);
         }
         
-        public override bool PreExecute(SyncRequestTask task) {
+        public override bool IsSyncTask(SyncRequestTask task) {
             switch (task.TaskType) {
-                case TaskType.create:
-                case TaskType.upsert:
-                case TaskType.merge:
-                case TaskType.delete:
-                    return true;
-                case  TaskType.read:
-                    var read = (ReadEntities)task;
-                    return read.references == null;
-                case TaskType.message:
-                case TaskType.command:
-                    return ((SyncMessageTask)task).PreExecute(service);
-                case TaskType.subscribeChanges:
-                case TaskType.subscribeMessage:
+                case create:
+                case upsert:
+                case merge:
+                case delete:
+                case read:
+                case subscribeChanges:
+                case subscribeMessage:
                     return true;
             }
             return false;

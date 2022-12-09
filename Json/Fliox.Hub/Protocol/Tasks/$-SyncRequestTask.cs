@@ -33,22 +33,28 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     [PolymorphType(typeof(ReserveKeys),             "reserveKeys")]
     public abstract class SyncRequestTask
     {
-                    public     JsonValue    info;
-        [Ignore]    internal   int          index;
+                    public     JsonValue        info;
+        [Ignore]    internal   int              index;
         /// <summary>true if task can be executed synchronous. Otherwise false</summary>
-        [Ignore]    internal   bool         isSynchronous;
+        [Ignore]    internal   ExecutionType    executionType;
         /// <summary>cached JSON of this <see cref="SyncRequestTask"/> instance serialized as JSON</summary>
-        [Ignore]    internal   JsonValue?   json;
-        [Ignore]    internal   SyncTask     syncTask;
+        [Ignore]    internal   JsonValue?       json;
+        [Ignore]    internal   SyncTask         syncTask;
         
         public      abstract   Task<SyncTaskResult> ExecuteAsync(EntityDatabase database, SyncResponse response, SyncContext syncContext);
         // todo make abstract when SyncRequestTask are implemented
         public      virtual    SyncTaskResult       Execute     (EntityDatabase database, SyncResponse response, SyncContext syncContext) => throw new NotImplementedException();
         
-        public      abstract   TaskType     TaskType { get; }
-        public      abstract   string       TaskName { get; }
+        public      abstract   TaskType         TaskType { get; }
+        public      abstract   string           TaskName { get; }
 
-        public      override   string       ToString() => TaskName;
+        public      override   string           ToString() => TaskName;
+        
+        public virtual bool PreExecute(EntityDatabase database) {
+            var isSync      = database.IsSyncTask(this);
+            executionType   = isSync ? ExecutionType.Synchronous : ExecutionType.Asynchronous;
+            return isSync;
+        }
 
         internal static TaskErrorResult TaskError(CommandError error) {
             return new TaskErrorResult (error.type, error.message);   

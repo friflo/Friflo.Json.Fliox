@@ -36,12 +36,18 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         /// return true to execute this task synchronous. <br/>
         /// return false to execute task asynchronous
         /// </summary>
-        public bool PreExecute(DatabaseService service) {
-            if (name == null)
-                return true;    // true => execute error synchronously. error: missing field: {name}
-            if (service.TryGetMessage(name, out callback))
-                return callback.IsSynchronous;
-            return true;        // true => execute error synchronously. error: no command handler for: '{name}'
+        public override bool PreExecute(EntityDatabase database) {
+            if (name == null) {
+                executionType = ExecutionType.Synchronous; // execute error synchronously. error: missing field: {name}
+                return true; 
+            }
+            if (database.service.TryGetMessage(name, out callback)) {
+                var isSync = callback.IsSynchronous;
+                executionType = isSync ? ExecutionType.Synchronous : ExecutionType.Asynchronous;
+                return isSync;
+            }
+            executionType = ExecutionType.Synchronous; // execute error synchronously. error: no command handler for: '{name}'
+            return true;
         }
 
         public   override   string          TaskName => $"name: '{name}'";
