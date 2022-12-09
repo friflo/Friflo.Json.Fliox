@@ -79,8 +79,5 @@ namespace Friflo.Json.Fliox.Hub.Client
                 return new ExecuteSyncResult(errorMsg, ErrorResponseType.Exception);
             }
         }
-        
-        // -------- end of sync / sync similarity --------
-
     }
 }
