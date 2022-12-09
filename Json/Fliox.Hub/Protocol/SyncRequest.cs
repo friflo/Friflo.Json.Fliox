@@ -4,6 +4,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Friflo.Json.Fliox.Hub.Host;
+using Friflo.Json.Fliox.Hub.Host.Auth;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 
 namespace Friflo.Json.Fliox.Hub.Protocol
@@ -44,6 +45,8 @@ namespace Friflo.Json.Fliox.Hub.Protocol
         [Ignore]   internal ExecutionType           executionType;
         [Ignore]   internal string                  error;
         [Ignore]   internal EntityDatabase          db;
+        [Ignore]   internal PreAuthType             preAuthType;
+        [Ignore]   internal User                    preAuthUser;
         
         internal override   MessageType             MessageType => MessageType.sync;
     }

@@ -134,22 +134,16 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
 
         private const string InvalidUserToken = "Authentication failed";
         
+        /// <summary><see cref="Authenticate"/> can run synchronous if already successful authenticated</summary>
         public override bool IsSynchronous(SyncRequest syncRequest) {
-            return false;
+            var preAuthType = syncRequest.preAuthType = PreAuth(syncRequest, out syncRequest.preAuthUser);
+            return preAuthType == PreAuthType.Success;
         }
         
-        /* public override void Authenticate (SyncRequest syncRequest, SyncContext syncContext) {
-            
-        } */
-        
-        private enum PreAuthType
-        {
-            None,
-            MissingUserId,
-            MissingToken,
-            Unknown,
-            Failed,
-            Success,
+        public override void Authenticate (SyncRequest syncRequest, SyncContext syncContext) {
+            if (syncRequest.preAuthType != PreAuthType.Success) throw new InvalidOperationException("expect successful PreAuth()");
+            var user = syncRequest.preAuthUser;
+            syncContext.AuthenticationSucceed(user, user.taskAuthorizer, user.hubPermission);
         }
         
         private PreAuthType PreAuth(SyncRequest syncRequest, out User user) {
@@ -174,7 +168,8 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
 
         public override async Task AuthenticateAsync(SyncRequest syncRequest, SyncContext syncContext)
         {
-            var type = PreAuth(syncRequest, out User user);
+            var type = syncRequest.preAuthType;
+            var user = syncRequest.preAuthUser;
             switch (type) {
                 case PreAuthType.MissingUserId:
                     syncContext.AuthenticationFailed(anonymousUser, "user authentication requires 'user' id", AnonymousTaskAuthorizer, AnonymousHubPermission);

@@ -75,6 +75,16 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
             return result;
         }
     }
+        
+    internal enum PreAuthType
+    {
+        None,
+        MissingUserId,
+        MissingToken,
+        Unknown,
+        Failed,
+        Success,
+    }
     
     internal struct Empty { }
 }
