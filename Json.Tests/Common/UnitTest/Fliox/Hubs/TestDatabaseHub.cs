@@ -62,6 +62,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs
                 container.queryErrors.Clear();
             }
         }
+        
+        public override ExecutionType InitSyncRequest(SyncRequest syncRequest) {
+            base.InitSyncRequest(syncRequest);
+            return ExecutionType.Asynchronous;
+        }
 
         public override async Task<ExecuteSyncResult> ExecuteRequestAsync(SyncRequest syncRequest, SyncContext syncContext) {
             foreach (var task in syncRequest.tasks) {

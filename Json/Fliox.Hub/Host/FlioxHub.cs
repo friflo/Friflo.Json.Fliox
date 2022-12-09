@@ -175,7 +175,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// If the request can be executed synchronously the method returns <see cref="ExecutionType.Synchronous"/><br/>
         /// Doing so avoids creation of a redundant <see cref="System.Threading.Tasks.Task"/> instance.  
         /// </summary>
-        public ExecutionType InitSyncRequest(SyncRequest syncRequest) {
+        public virtual ExecutionType InitSyncRequest(SyncRequest syncRequest) {
             if (syncRequest.executionType != None) {
                 return syncRequest.executionType;
             }

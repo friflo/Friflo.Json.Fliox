@@ -19,11 +19,16 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// As an alternative use <see cref="TrySyncTasks"/> to execute tasks which does not throw an exception. <br/>
         /// The method can be called without awaiting the result of a previous call. </remarks>
         public SyncResult SyncTasksSynchronous() {
-            var syncRequest = CreateSyncRequest(out SyncStore syncStore);
-            var buffer      = CreateMemoryBuffer();
-            var syncContext = CreateSyncContext(buffer);
-            var response    = ExecuteRequest(syncRequest, syncContext);
-            
+            var syncRequest     = CreateSyncRequest(out SyncStore syncStore);
+            var buffer          = CreateMemoryBuffer();
+            var syncContext     = CreateSyncContext(buffer);
+            var executionType   = _intern.hub.InitSyncRequest(syncRequest);
+            ExecuteSyncResult response;
+            if (executionType == ExecutionType.Synchronous) {
+                response    = ExecuteRequest(syncRequest, syncContext);
+            } else {
+                throw new InvalidOperationException(syncRequest.error); 
+            }
             ReuseSyncContext(syncContext);
             var result      = HandleSyncResponse(syncRequest, response, syncStore, buffer);
             if (!result.Success) {
@@ -38,11 +43,16 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// In performance critical application this method should be used instead of <see cref="SyncTasks"/> as throwing exceptions is expensive. <br/> 
         /// The method can be called without awaiting the result of a previous call. </remarks>
         public SyncResult TrySyncTasksSynchronous() {
-            var syncRequest = CreateSyncRequest(out SyncStore syncStore);
-            var buffer      = CreateMemoryBuffer();
-            var syncContext = CreateSyncContext(buffer);
-            var response    = ExecuteRequest(syncRequest, syncContext);
-
+            var syncRequest     = CreateSyncRequest(out SyncStore syncStore);
+            var buffer          = CreateMemoryBuffer();
+            var syncContext     = CreateSyncContext(buffer);
+            var executionType   = _intern.hub.InitSyncRequest(syncRequest);
+            ExecuteSyncResult response;
+            if (executionType == ExecutionType.Synchronous) {
+                response    = ExecuteRequest(syncRequest, syncContext);
+            } else {
+                throw new InvalidOperationException(syncRequest.error); 
+            }
             ReuseSyncContext(syncContext);
             return HandleSyncResponse(syncRequest, response, syncStore, buffer);
         }
@@ -55,7 +65,6 @@ namespace Friflo.Json.Fliox.Hub.Client
             }
 
             try {
-                _intern.hub.InitSyncRequest(syncRequest);
                 var response = _intern.hub.ExecuteRequest(syncRequest, syncContext);
                 
                 // The Hub returns a client id if the client didn't provide one and one of its task require one. 
@@ -70,5 +79,8 @@ namespace Friflo.Json.Fliox.Hub.Client
                 return new ExecuteSyncResult(errorMsg, ErrorResponseType.Exception);
             }
         }
+        
+        // -------- end of sync / sync similarity --------
+
     }
 }

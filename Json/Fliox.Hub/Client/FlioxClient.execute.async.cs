@@ -13,6 +13,7 @@ using Friflo.Json.Fliox.Utils;
 
 // Note!  Keep file in sync with:  FlioxClient.execute.sync.cs
 
+// ReSharper disable MethodHasAsyncOverload
 // ReSharper disable InconsistentlySynchronizedField
 namespace Friflo.Json.Fliox.Hub.Client
 {
@@ -24,11 +25,16 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// As an alternative use <see cref="TrySyncTasks"/> to execute tasks which does not throw an exception. <br/>
         /// The method can be called without awaiting the result of a previous call. </remarks>
         public async Task<SyncResult> SyncTasks() {
-            var syncRequest = CreateSyncRequest(out SyncStore syncStore);
-            var buffer      = CreateMemoryBuffer();
-            var syncContext = CreateSyncContext(buffer);
-            var response    = await ExecuteRequestAsync(syncRequest, syncContext).ConfigureAwait(Static.OriginalContext);
-            
+            var syncRequest     = CreateSyncRequest(out SyncStore syncStore);
+            var buffer          = CreateMemoryBuffer();
+            var syncContext     = CreateSyncContext(buffer);
+            var executionType   = _intern.hub.InitSyncRequest(syncRequest);
+            ExecuteSyncResult response;
+            if (executionType == ExecutionType.Synchronous) {
+                response    = ExecuteRequest(syncRequest, syncContext);
+            } else {
+                response    = await ExecuteRequestAsync(syncRequest, syncContext).ConfigureAwait(Static.OriginalContext);
+            }
             ReuseSyncContext(syncContext);
             var result      = HandleSyncResponse(syncRequest, response, syncStore, buffer);
             if (!result.Success) {
@@ -43,11 +49,16 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// In performance critical application this method should be used instead of <see cref="SyncTasks"/> as throwing exceptions is expensive. <br/> 
         /// The method can be called without awaiting the result of a previous call. </remarks>
         public async Task<SyncResult> TrySyncTasks() {
-            var syncRequest = CreateSyncRequest(out SyncStore syncStore);
-            var buffer      = CreateMemoryBuffer();
-            var syncContext = CreateSyncContext(buffer);
-            var response    = await ExecuteRequestAsync(syncRequest, syncContext).ConfigureAwait(Static.OriginalContext);
-
+            var syncRequest     = CreateSyncRequest(out SyncStore syncStore);
+            var buffer          = CreateMemoryBuffer();
+            var syncContext     = CreateSyncContext(buffer);
+            var executionType   = _intern.hub.InitSyncRequest(syncRequest);
+            ExecuteSyncResult response;
+            if (executionType == ExecutionType.Synchronous) {
+                response    = ExecuteRequest(syncRequest, syncContext);
+            } else {
+                response    = await ExecuteRequestAsync(syncRequest, syncContext).ConfigureAwait(Static.OriginalContext);
+            }
             ReuseSyncContext(syncContext);
             return HandleSyncResponse(syncRequest, response, syncStore, buffer);
         }
@@ -60,7 +71,6 @@ namespace Friflo.Json.Fliox.Hub.Client
             }
             Task<ExecuteSyncResult> task = null;
             try {
-                _intern.hub.InitSyncRequest(syncRequest);
                 task = _intern.hub.ExecuteRequestAsync(syncRequest, syncContext);
                 
                 lock (_intern.pendingSyncs) {
@@ -87,16 +97,18 @@ namespace Friflo.Json.Fliox.Hub.Client
             }
         }
         
+        // -------- end of sync / sync similarity --------
+        
         /// <summary> Specific characteristic: Method can run in parallel on any thread </summary>
         private async Task<SyncResult> TrySyncAcknowledgeEvents() {
             // cannot reuse request, context & buffer method can run on any thread
             var syncRequest = new SyncRequest { tasks = new List<SyncRequestTask>() };
-            InitSyncRequest(syncRequest);
             var buffer      = new MemoryBuffer(MemoryBufferCapacity);
             var syncContext = new SyncContext(_intern.sharedEnv, _intern.eventReceiver); 
             syncContext.SetMemoryBuffer(buffer);
             syncContext.clientId = _intern.clientId;
             
+            InitSyncRequest(syncRequest);
             var response    = await ExecuteRequestAsync(syncRequest, syncContext).ConfigureAwait(false);
 
             var syncStore   = new SyncStore();  // create default (empty) SyncStore

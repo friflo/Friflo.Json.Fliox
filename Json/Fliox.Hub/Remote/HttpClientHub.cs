@@ -35,6 +35,11 @@ namespace Friflo.Json.Fliox.Hub.Remote
         
         public override bool SupportPushEvents => false;
         
+        public override ExecutionType InitSyncRequest(SyncRequest syncRequest) {
+            base.InitSyncRequest(syncRequest);
+            return ExecutionType.Asynchronous;
+        }
+        
         public override async Task<ExecuteSyncResult> ExecuteRequestAsync(SyncRequest syncRequest, SyncContext syncContext)
         {
             using (var pooledMapper = syncContext.ObjectMapper.Get()) {
