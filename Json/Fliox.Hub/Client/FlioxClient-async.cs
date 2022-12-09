@@ -8,7 +8,7 @@ using Friflo.Json.Fliox.Hub.Client.Internal;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Protocol;
 
-// Note!  Keep file in sync with:  FlioxClient.execute.sync.cs
+// Note!  Keep file in sync with:  FlioxClient-sync.cs
 
 // ReSharper disable MethodHasAsyncOverload
 // ReSharper disable InconsistentlySynchronizedField

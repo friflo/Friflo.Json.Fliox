@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 
-// Note!  Keep file in sync with:  FlioxHub.execute.sync.cs
+// Note!  Keep file in sync with:  FlioxHub-sync.cs
 
 // ReSharper disable MethodHasAsyncOverload
 namespace Friflo.Json.Fliox.Hub.Host

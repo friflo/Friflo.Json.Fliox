@@ -3,10 +3,11 @@
 
 using System;
 using System.Collections.Generic;
+// using System.Threading.Tasks; intentionally not used in sync version
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 
-// Note!  Keep file in sync with:  FlioxHub.execute.async.cs
+// Note!  Keep file in sync with:  FlioxHub-async.cs
 
 // ReSharper disable MethodHasAsyncOverload
 namespace Friflo.Json.Fliox.Hub.Host
