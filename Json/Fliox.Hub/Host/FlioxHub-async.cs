@@ -43,7 +43,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         {
             syncContext.request             = syncRequest;
             if (syncContext.authState.authExecuted) throw new InvalidOperationException("Expect AuthExecuted == false");
-            if (authenticator.IsSynchronous) {
+            if (authenticator.IsSynchronous(syncRequest)) {
                 authenticator.Authenticate(syncRequest, syncContext);
             } else {
                 await authenticator.AuthenticateAsync(syncRequest, syncContext).ConfigureAwait(false);

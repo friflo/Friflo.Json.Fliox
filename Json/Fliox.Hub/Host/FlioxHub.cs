@@ -179,7 +179,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             if (syncRequest.executionType != None) {
                 return syncRequest.executionType;
             }
-            var isSyncRequest       = authenticator.IsSynchronous;
+            var isSyncRequest       = authenticator.IsSynchronous(syncRequest);
             var db                  = database;
             var syncRequestDatabase = syncRequest.database; 
             if (syncRequestDatabase != null) {

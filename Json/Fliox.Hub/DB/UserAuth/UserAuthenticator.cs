@@ -134,26 +134,63 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
 
         private const string InvalidUserToken = "Authentication failed";
         
-        public override async Task AuthenticateAsync(SyncRequest syncRequest, SyncContext syncContext)
+        public override bool IsSynchronous(SyncRequest syncRequest) {
+            return false;
+        }
+        
+        /* public override void Authenticate (SyncRequest syncRequest, SyncContext syncContext) {
+            
+        } */
+        
+        private enum PreAuthType
         {
+            None,
+            MissingUserId,
+            MissingToken,
+            Unknown,
+            Failed,
+            Success,
+        }
+        
+        private PreAuthType PreAuth(SyncRequest syncRequest, out User user) {
             var userId = syncRequest.userId;
             if (userId.IsNull()) {
-                syncContext.AuthenticationFailed(anonymousUser, "user authentication requires 'user' id", AnonymousTaskAuthorizer, AnonymousHubPermission );
-                return;
+                user = null;
+                return PreAuthType.MissingUserId;
             }
             var token = syncRequest.token;
             if (token == null) {
-                syncContext.AuthenticationFailed(anonymousUser, "user authentication requires 'token'", AnonymousTaskAuthorizer, AnonymousHubPermission);
-                return;
+                user = null;
+                return PreAuthType.MissingToken;
             }
-            if (users.TryGetValue(userId, out User user)) {
+            if (users.TryGetValue(userId, out user)) {
                 if (user.token != token) {
+                    return PreAuthType.Failed;
+                }
+                return PreAuthType.Success;
+            }
+            return PreAuthType.Unknown;
+        }
+
+        public override async Task AuthenticateAsync(SyncRequest syncRequest, SyncContext syncContext)
+        {
+            var type = PreAuth(syncRequest, out User user);
+            switch (type) {
+                case PreAuthType.MissingUserId:
+                    syncContext.AuthenticationFailed(anonymousUser, "user authentication requires 'user' id", AnonymousTaskAuthorizer, AnonymousHubPermission);
+                    return;
+                case PreAuthType.MissingToken:
+                    syncContext.AuthenticationFailed(anonymousUser, "user authentication requires 'token'", AnonymousTaskAuthorizer, AnonymousHubPermission);
+                    return;
+                case PreAuthType.Failed:
                     syncContext.AuthenticationFailed(user, InvalidUserToken, AnonymousTaskAuthorizer, AnonymousHubPermission);
                     return;
-                }
-                syncContext.AuthenticationSucceed(user, user.taskAuthorizer, user.hubPermission);
-                return;
+                case PreAuthType.Success:
+                    syncContext.AuthenticationSucceed(user, user.taskAuthorizer, user.hubPermission);
+                    return;
             }
+            var userId  = syncRequest.userId;
+            var token   = syncRequest.token;
             var command = new Credentials { userId = userId, token = token };
             
             // Note 1: UserStore could be created in smaller scope
