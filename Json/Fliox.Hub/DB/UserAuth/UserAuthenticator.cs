@@ -132,57 +132,72 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
             }
         }
 
-        private const string InvalidUserToken = "Authentication failed";
-        
-        /// <summary><see cref="Authenticate"/> can run synchronous if already successful authenticated</summary>
+        // --- Authenticator 
+        /// <summary>
+        /// <see cref="Authenticate"/> can run synchronous if already successful authenticated or a general
+        /// authentication error occured.
+        /// </summary>
         public override bool IsSynchronous(SyncRequest syncRequest) {
-            var preAuthType = syncRequest.preAuthType = PreAuth(syncRequest, out syncRequest.preAuthUser);
-            return preAuthType == PreAuthType.Success;
+            return PreAuth(syncRequest, out syncRequest.preAuthType, out syncRequest.preAuthUser);
         }
         
         public override void Authenticate (SyncRequest syncRequest, SyncContext syncContext) {
-            if (syncRequest.preAuthType != PreAuthType.Success) throw new InvalidOperationException("expect successful PreAuth()");
-            var user = syncRequest.preAuthUser;
-            syncContext.AuthenticationSucceed(user, user.taskAuthorizer, user.hubPermission);
+            bool isSync = AuthenticateSynchronous(syncRequest.preAuthType, syncRequest.preAuthUser, syncContext);
+            if (isSync)
+                return;
+            throw new InvalidOperationException("authentication cannot be executed synchronously");
         }
         
-        private PreAuthType PreAuth(SyncRequest syncRequest, out User user) {
-            var userId = syncRequest.userId;
-            if (userId.IsNull()) {
+        /// <summary>returns true if authentication can be executed synchronously</summary>
+        private bool PreAuth(SyncRequest syncRequest, out PreAuthType type, out User user) {
+            if (syncRequest.userId.IsNull()) {
                 user = null;
-                return PreAuthType.MissingUserId;
+                type = PreAuthType.MissingUserId;
+                return true;
             }
-            var token = syncRequest.token;
-            if (token == null) {
+            if (syncRequest.token == null) {
                 user = null;
-                return PreAuthType.MissingToken;
+                type = PreAuthType.MissingToken;
+                return true;
             }
-            if (users.TryGetValue(userId, out user)) {
-                if (user.token != token) {
-                    return PreAuthType.Failed;
+            if (users.TryGetValue(syncRequest.userId, out user)) {
+                if (user.token != syncRequest.token) {
+                    type = PreAuthType.Failed;
+                    return false;
                 }
-                return PreAuthType.Success;
+                type = PreAuthType.Success;
+                return true;
             }
-            return PreAuthType.Unknown;
+            type = PreAuthType.Unknown;
+            return false;
+        }
+        
+        private const string InvalidUserToken = "Authentication failed";
+        
+        private bool AuthenticateSynchronous(PreAuthType type, User user, SyncContext syncContext) {
+            switch (type) {
+                case PreAuthType.MissingUserId:
+                    syncContext.AuthenticationFailed(anonymousUser, "user authentication requires 'user' id", AnonymousTaskAuthorizer, AnonymousHubPermission);
+                    return true;
+                case PreAuthType.MissingToken:
+                    syncContext.AuthenticationFailed(anonymousUser, "user authentication requires 'token'", AnonymousTaskAuthorizer, AnonymousHubPermission);
+                    return true;
+                case PreAuthType.Failed:
+                    syncContext.AuthenticationFailed(user, InvalidUserToken, AnonymousTaskAuthorizer, AnonymousHubPermission);
+                    return true;
+                case PreAuthType.Success:
+                    syncContext.AuthenticationSucceed(user, user.taskAuthorizer, user.hubPermission);
+                    return true;
+            }
+            return false;
         }
 
         public override async Task AuthenticateAsync(SyncRequest syncRequest, SyncContext syncContext)
         {
             var type = syncRequest.preAuthType;
             var user = syncRequest.preAuthUser;
-            switch (type) {
-                case PreAuthType.MissingUserId:
-                    syncContext.AuthenticationFailed(anonymousUser, "user authentication requires 'user' id", AnonymousTaskAuthorizer, AnonymousHubPermission);
-                    return;
-                case PreAuthType.MissingToken:
-                    syncContext.AuthenticationFailed(anonymousUser, "user authentication requires 'token'", AnonymousTaskAuthorizer, AnonymousHubPermission);
-                    return;
-                case PreAuthType.Failed:
-                    syncContext.AuthenticationFailed(user, InvalidUserToken, AnonymousTaskAuthorizer, AnonymousHubPermission);
-                    return;
-                case PreAuthType.Success:
-                    syncContext.AuthenticationSucceed(user, user.taskAuthorizer, user.hubPermission);
-                    return;
+            if (AuthenticateSynchronous(type, user, syncContext)) {
+                return;
             }
             var userId  = syncRequest.userId;
             var token   = syncRequest.token;
