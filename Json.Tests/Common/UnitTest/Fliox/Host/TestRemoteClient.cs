@@ -30,12 +30,18 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
         public static  void TestRemoteClient_UpsertMemoryParallel() {
             // reusing sync instances give a 50% performance enhancement in Unity when using 8 threads
             Parallel.For(0, 8, i => {
-                TestRemoteClient_UpsertMemory();
+                UpsertMemory();
             });
         }
         
         [Test]
         public static  void TestRemoteClient_UpsertMemory() {
+            var dif = UpsertMemory();
+            var expected    = TestUtils.IsDebug() ? 288 : 288;  // Test Debug & Release
+            AreEqual(expected, dif);
+        }
+        
+        private static long UpsertMemory() {
             var sharedEnv = SharedEnv.Default;
             var cx = new ClientCx();
             cx.database = new MemoryDatabase("test", smallValueSize: 1024, type: MemoryType.NonConcurrent);
@@ -53,21 +59,23 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
                 
                 cx.result.Reuse(cx.client);
             }
-            var dif = GC.GetAllocatedBytesForCurrentThread() - start;
-            
-            var expected    = TestUtils.IsDebug() ? 288 : 288;  // Test Debug & Release
-            AreEqual(expected, dif);
+            return GC.GetAllocatedBytesForCurrentThread() - start;
         }
         
         [Test]
         public static  void TestRemoteClient_ReadMemoryParallel() {
             Parallel.For(0, 8, i => {
-                TestRemoteClient_ReadMemory();
+                ReadMemory();
             });
         }
         
         [Test]
         public static  void TestRemoteClient_ReadMemory() {
+            var dif         = ReadMemory();
+            var expected    = TestUtils.IsDebug() ? 1360 : 1336;  // Test Debug & Release
+            AreEqual(expected, dif);        }
+        
+        private static  long ReadMemory() {
             var sharedEnv = SharedEnv.Default;
             var cx = new ClientCx();
             cx.database = new MemoryDatabase("test", smallValueSize: 1024, type: MemoryType.NonConcurrent);
@@ -86,10 +94,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
                 
                 cx.result.Reuse(cx.client);
             }
-            var dif = GC.GetAllocatedBytesForCurrentThread() - start;
-            
-            var expected    = TestUtils.IsDebug() ? 1360 : 1336;  // Test Debug & Release
-            AreEqual(expected, dif);
+            return GC.GetAllocatedBytesForCurrentThread() - start;
         }
     }
 }
