@@ -44,8 +44,11 @@ namespace Friflo.Json.Fliox.Hub.Host
         {
             syncContext.request             = syncRequest;
             if (syncContext.authState.authExecuted) throw new InvalidOperationException("Expect AuthExecuted == false");
-            await authenticator.AuthenticateAsync(syncRequest, syncContext).ConfigureAwait(false);
-            
+            if (authenticator.IsSynchronous) {
+                authenticator.Authenticate(syncRequest, syncContext);
+            } else {
+                await authenticator.AuthenticateAsync(syncRequest, syncContext).ConfigureAwait(false);
+            }
             syncContext.hub = this;
             var syncDbName  = new SmallString(syncRequest.database);        // is nullable
             var hubDbName   = syncContext.hub.DatabaseName;                 // not null
@@ -59,16 +62,17 @@ namespace Friflo.Json.Fliox.Hub.Host
             if (requestTasks == null) {
                 return new ExecuteSyncResult ("missing field: tasks (array)", ErrorResponseType.BadRequest);
             }
+            var taskCount = requestTasks.Count;
             EntityDatabase db = database;
             if (!dbName.IsEqual(hubDbName)) {
                 if (!extensionDbs.TryGetValue(dbName, out db))
                     return new ExecuteSyncResult($"database not found: '{syncRequest.database}'", ErrorResponseType.BadRequest);
             }
-            for (int index = 0; index < requestTasks.Count; index++) {
+            for (int index = 0; index < taskCount; index++) {
                 var task = requestTasks[index];
                 if (task != null) {
                     task.index          = index;
-                    task.synchronous    = db.PreExecute(task);
+                    task.isSynchronous  = db.PreExecute(task);
                     continue;
                 }
                 return new ExecuteSyncResult($"tasks[{index}] == null", ErrorResponseType.BadRequest);
@@ -76,15 +80,16 @@ namespace Friflo.Json.Fliox.Hub.Host
             var   service = db.service;
             service.PreExecuteTasks(syncContext);
 
-            var tasks       = new List<SyncTaskResult>(requestTasks.Count);
+            var tasks       = new List<SyncTaskResult>(taskCount);
             var response    = new SyncResponse { tasks = tasks, database = syncDbName.value };
             
             // ------------------------ loop through all given tasks and execute them ------------------------
-            for (int index = 0; index < requestTasks.Count; index++) {
+            for (int index = 0; index < taskCount; index++) {
                 var task = requestTasks[index];
                 try {
+                    // Execute task synchronous or asynchronous.
                     SyncTaskResult result;
-                    if (task.synchronous) {
+                    if (task.isSynchronous) {
                         result = service.ExecuteTask(task, db, response, syncContext);
                     } else {
                         result = await service.ExecuteTaskAsync(task, db, response, syncContext).ConfigureAwait(false);

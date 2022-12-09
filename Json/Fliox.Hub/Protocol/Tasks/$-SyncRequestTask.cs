@@ -35,7 +35,8 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     {
                     public     JsonValue    info;
         [Ignore]    internal   int          index;
-        [Ignore]    internal   bool         synchronous;
+        /// <summary>true if task can be executed synchronous. Otherwise false</summary>
+        [Ignore]    internal   bool         isSynchronous;
         /// <summary>cached JSON of this <see cref="SyncRequestTask"/> instance serialized as JSON</summary>
         [Ignore]    internal   JsonValue?   json;
         [Ignore]    internal   SyncTask     syncTask;

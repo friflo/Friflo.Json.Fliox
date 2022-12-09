@@ -53,6 +53,8 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
             return Task.CompletedTask;
         }
         
+        public override bool IsSynchronous => true;
+        
         public override void Authenticate(SyncRequest syncRequest, SyncContext syncContext) {
             ref var userId = ref syncRequest.userId;
             User user;

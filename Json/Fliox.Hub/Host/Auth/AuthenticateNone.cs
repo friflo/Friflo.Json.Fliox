@@ -19,6 +19,8 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
             return Task.CompletedTask;
         }
         
+        public override bool IsSynchronous => true;
+        
         public override void Authenticate(SyncRequest syncRequest, SyncContext syncContext) {
             User user;
             ref var userId = ref syncRequest.userId;

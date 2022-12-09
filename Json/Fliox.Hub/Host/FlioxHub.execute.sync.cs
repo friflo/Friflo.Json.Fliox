@@ -7,7 +7,6 @@ using Friflo.Json.Burst.Utils;
 using Friflo.Json.Fliox.Hub.Host.Auth;
 using Friflo.Json.Fliox.Hub.Host.Event;
 using Friflo.Json.Fliox.Hub.Protocol;
-using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 
 // Note!  Keep file in sync with:  FlioxHub.execute.async.cs
@@ -35,8 +34,8 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// <para>
         ///   An exception can have two different reasons:
         ///   <para> 1. The implementation of an <see cref="EntityContainer"/> is missing a proper error handling.
-        ///          A proper error handling requires to set a meaningful <see cref="CommandError"/> to
-        ///          <see cref="ICommandResult.Error"/></para>
+        ///          A proper error handling requires to set a meaningful <see cref="Protocol.Models.CommandError"/> to
+        ///          <see cref="Protocol.Models.ICommandResult.Error"/></para>
         ///   <para> 2. An issue in the namespace <see cref="Friflo.Json.Fliox.Hub.Protocol"/> which must to be fixed.</para> 
         /// </para>
         /// </remarks>
@@ -44,8 +43,11 @@ namespace Friflo.Json.Fliox.Hub.Host
         {
             syncContext.request             = syncRequest;
             if (syncContext.authState.authExecuted) throw new InvalidOperationException("Expect AuthExecuted == false");
-            authenticator.Authenticate(syncRequest, syncContext);
-            
+            if (authenticator.IsSynchronous) {
+                authenticator.Authenticate(syncRequest, syncContext);
+            } else {
+                throw new NotSupportedException("Authenticator supports only asynchronous authentication");
+            }
             syncContext.hub = this;
             var syncDbName  = new SmallString(syncRequest.database);        // is nullable
             var hubDbName   = syncContext.hub.DatabaseName;                 // not null
@@ -59,17 +61,18 @@ namespace Friflo.Json.Fliox.Hub.Host
             if (requestTasks == null) {
                 return new ExecuteSyncResult ("missing field: tasks (array)", ErrorResponseType.BadRequest);
             }
+            var taskCount = requestTasks.Count;
             EntityDatabase db = database;
             if (!dbName.IsEqual(hubDbName)) {
                 if (!extensionDbs.TryGetValue(dbName, out db))
                     return new ExecuteSyncResult($"database not found: '{syncRequest.database}'", ErrorResponseType.BadRequest);
             }
-            for (int index = 0; index < requestTasks.Count; index++) {
+            for (int index = 0; index < taskCount; index++) {
                 var task = requestTasks[index];
                 if (task != null) {
                     task.index          = index;
-                    task.synchronous    = db.PreExecute(task);
-                    if (!task.synchronous) throw new InvalidOperationException($"Can only execute synchronous tasks. task {task.TaskType} {task}");
+                    task.isSynchronous    = db.PreExecute(task);
+                    if (!task.isSynchronous) throw new InvalidOperationException($"Can only execute synchronous tasks. task {task.TaskType} {task}");
                     continue;
                 }
                 return new ExecuteSyncResult($"tasks[{index}] == null", ErrorResponseType.BadRequest);
@@ -77,13 +80,14 @@ namespace Friflo.Json.Fliox.Hub.Host
             var   service = db.service;
             service.PreExecuteTasks(syncContext);
 
-            var tasks       = new List<SyncTaskResult>(requestTasks.Count);
+            var tasks       = new List<SyncTaskResult>(taskCount);
             var response    = new SyncResponse { tasks = tasks, database = syncDbName.value };
             
             // ------------------------ loop through all given tasks and execute them ------------------------
-            for (int index = 0; index < requestTasks.Count; index++) {
+            for (int index = 0; index < taskCount; index++) {
                 var task = requestTasks[index];
                 try {
+                    // Execute task synchronous. If task requires asynchronous execution exception is thrown above
                     SyncTaskResult result = service.ExecuteTask(task, db, response, syncContext);
                     tasks.Add(result);
                 } catch (Exception e) {
