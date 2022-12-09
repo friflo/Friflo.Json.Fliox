@@ -52,7 +52,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         
         public virtual bool PreExecute(EntityDatabase database) {
             var isSync      = database.IsSyncTask(this);
-            executionType   = isSync ? ExecutionType.Synchronous : ExecutionType.Asynchronous;
+            executionType   = isSync ? ExecutionType.Sync : ExecutionType.Async;
             return isSync;
         }
 

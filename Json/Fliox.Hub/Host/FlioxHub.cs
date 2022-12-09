@@ -172,7 +172,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// <summary>
         /// Before execution of a <see cref="SyncRequest"/> with <see cref="ExecuteRequestAsync"/> or <see cref="ExecuteRequest"/> 
         /// the <see cref="SyncRequest"/> must be initialized. <br/>
-        /// If the request can be executed synchronously the method returns <see cref="ExecutionType.Synchronous"/><br/>
+        /// If the request can be executed synchronously the method returns <see cref="ExecutionType.Sync"/><br/>
         /// Doing so avoids creation of a redundant <see cref="System.Threading.Tasks.Task"/> instance.  
         /// </summary>
         public virtual ExecutionType InitSyncRequest(SyncRequest syncRequest) {
@@ -209,7 +209,7 @@ namespace Friflo.Json.Fliox.Hub.Host
                 var isSyncTask  = task.PreExecute(db);
                 isSyncRequest   = isSyncRequest && isSyncTask;
             }
-            var executionType = isSyncRequest ? Synchronous : Asynchronous;
+            var executionType = isSyncRequest ? Sync : Async;
             syncRequest.error = null;
             return syncRequest.executionType = executionType;
         }

@@ -11,6 +11,7 @@ using Friflo.Json.Fliox.Schema.Language;
 using Friflo.Json.Fliox.Schema.Native;
 using Friflo.Json.Fliox.Transform;
 
+// ReSharper disable MethodHasAsyncOverload
 namespace Friflo.Json.Fliox.Hub.Remote
 {
     /// <summary>
@@ -155,9 +156,14 @@ namespace Friflo.Json.Fliox.Hub.Remote
                         if (error != null) {
                             response = JsonResponse.CreateError(mapper, error, ErrorResponseType.BadResponse, null);
                         } else {
-                            localHub.InitSyncRequest(syncRequest);
-                            var syncResult = await localHub.ExecuteRequestAsync(syncRequest, syncContext).ConfigureAwait(false);
-                    
+                            var hub         = localHub;
+                            var execution   = hub.InitSyncRequest(syncRequest);
+                            ExecuteSyncResult syncResult;
+                            if (execution == ExecutionType.Sync) {
+                                syncResult  =       hub.ExecuteRequest(syncRequest, syncContext);
+                            } else {
+                                syncResult  = await hub.ExecuteRequestAsync(syncRequest, syncContext).ConfigureAwait(false);
+                            }
                             response = CreateJsonResponse(syncResult, syncRequest.reqId, mapper);
                         }
                     }

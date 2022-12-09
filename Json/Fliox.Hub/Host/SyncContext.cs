@@ -187,7 +187,7 @@ namespace Friflo.Json.Fliox.Hub.Host
     public enum ExecutionType {
         None,
         Error,
-        Synchronous,
-        Asynchronous
+        Sync,
+        Async
     }
 }

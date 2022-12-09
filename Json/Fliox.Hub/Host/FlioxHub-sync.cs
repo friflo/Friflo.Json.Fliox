@@ -37,7 +37,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         ///   <para> 2. An issue in the namespace <see cref="Friflo.Json.Fliox.Hub.Protocol"/> which must to be fixed.</para> 
         /// </para>
         /// </remarks>
-        internal ExecuteSyncResult ExecuteRequest(SyncRequest syncRequest, SyncContext syncContext)
+        public ExecuteSyncResult ExecuteRequest(SyncRequest syncRequest, SyncContext syncContext)
         {
             syncContext.request             = syncRequest;
             if (syncContext.authState.authExecuted) throw new InvalidOperationException("Expect AuthExecuted == false");

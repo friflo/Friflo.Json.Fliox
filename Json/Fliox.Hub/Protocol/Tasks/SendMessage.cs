@@ -38,15 +38,15 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         /// </summary>
         public override bool PreExecute(EntityDatabase database) {
             if (name == null) {
-                executionType = ExecutionType.Synchronous; // execute error synchronously. error: missing field: {name}
+                executionType = ExecutionType.Sync; // execute error synchronously. error: missing field: {name}
                 return true; 
             }
             if (database.service.TryGetMessage(name, out callback)) {
                 var isSync = callback.IsSynchronous;
-                executionType = isSync ? ExecutionType.Synchronous : ExecutionType.Asynchronous;
+                executionType = isSync ? ExecutionType.Sync : ExecutionType.Async;
                 return isSync;
             }
-            executionType = ExecutionType.Synchronous; // execute error synchronously. error: no command handler for: '{name}'
+            executionType = ExecutionType.Sync; // execute error synchronously. error: no command handler for: '{name}'
             return true;
         }
 

@@ -200,7 +200,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         
         public override ExecutionType InitSyncRequest(SyncRequest syncRequest) {
             base.InitSyncRequest(syncRequest);
-            return ExecutionType.Asynchronous;
+            return ExecutionType.Async;
         }
         
         public override async Task<ExecuteSyncResult> ExecuteRequestAsync(SyncRequest syncRequest, SyncContext syncContext) {

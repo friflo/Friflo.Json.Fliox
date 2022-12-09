@@ -11,6 +11,9 @@ using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Mapper;
 
+// ReSharper disable MethodHasAsyncOverload
+// ReSharper disable InlineTemporaryVariable
+
 // Note! - Must not have any dependency to System.Net or System.Net.Http (or other HTTP stuff)
 namespace Friflo.Json.Fliox.Hub.Remote
 {
@@ -52,9 +55,14 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 if (error != null) {
                     response = JsonResponse.CreateError(mapper, error, ErrorResponseType.BadResponse, null);
                 } else {
-                    localHub.InitSyncRequest(syncRequest);
-                    var syncResult = await localHub.ExecuteRequestAsync(syncRequest, syncContext).ConfigureAwait(false);
-                
+                    var hub         = localHub;
+                    var execution   = hub.InitSyncRequest(syncRequest);
+                    ExecuteSyncResult syncResult;
+                    if (execution == ExecutionType.Sync) {
+                        syncResult  =       hub.ExecuteRequest(syncRequest, syncContext);
+                    } else {
+                        syncResult  = await hub.ExecuteRequestAsync(syncRequest, syncContext).ConfigureAwait(false);
+                    }
                     response = CreateJsonResponse(syncResult, syncRequest.reqId, mapper);
                 }
             }

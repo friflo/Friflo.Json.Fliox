@@ -33,11 +33,11 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         
         public override bool PreExecute(EntityDatabase database) {
             if (references != null) {
-                executionType   = ExecutionType.Asynchronous;
+                executionType   = ExecutionType.Async;
                 return false;
             }
             var isSync      = database.IsSyncTask(this);
-            executionType   = isSync ? ExecutionType.Synchronous : ExecutionType.Asynchronous;
+            executionType   = isSync ? ExecutionType.Sync : ExecutionType.Async;
             return isSync;
         }
         

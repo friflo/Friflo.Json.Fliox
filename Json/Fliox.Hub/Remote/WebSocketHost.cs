@@ -17,6 +17,7 @@ using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Utils;
 
+// ReSharper disable MethodHasAsyncOverload
 namespace Friflo.Json.Fliox.Hub.Remote
 {
     // [Things I Wish Someone Told Me About ASP.NET Core WebSockets | codetinkerer.com] https://www.codetinkerer.com/2018/06/05/aspnet-core-websockets.html
@@ -144,9 +145,14 @@ namespace Friflo.Json.Fliox.Hub.Remote
                             if (error != null) {
                                 response = JsonResponse.CreateError(mapper, error, ErrorResponseType.BadResponse, null);
                             } else {
-                                remoteHost.localHub.InitSyncRequest(syncRequest);
-                                var syncResult = await remoteHost.localHub.ExecuteRequestAsync(syncRequest, syncContext).ConfigureAwait(false);
-                
+                                var hub         = remoteHost.localHub;
+                                var execution   = hub.InitSyncRequest(syncRequest);
+                                ExecuteSyncResult syncResult;
+                                if (execution == ExecutionType.Sync) {
+                                    syncResult  =       hub.ExecuteRequest(syncRequest, syncContext);
+                                } else {
+                                    syncResult  = await hub.ExecuteRequestAsync(syncRequest, syncContext).ConfigureAwait(false);
+                                }
                                 response = RemoteHost.CreateJsonResponse(syncResult, syncRequest.reqId, mapper);
                             }
                         }
