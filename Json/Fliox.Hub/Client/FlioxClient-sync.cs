@@ -3,12 +3,15 @@
 
 using System;
 using System.Threading;
+// using System.Threading.Tasks; intentionally not used in sync version
 using Friflo.Json.Fliox.Hub.Client.Internal;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Protocol;
 
 // Note!  Keep file in sync with:  FlioxClient.execute.async.cs
 
+//
+//
 namespace Friflo.Json.Fliox.Hub.Client
 {
     public partial class FlioxClient
@@ -63,18 +66,30 @@ namespace Friflo.Json.Fliox.Hub.Client
                 _intern.ackTimer?.Change(Timeout.Infinite, Timeout.Infinite);
                 _intern.ackTimerPending = false;
             }
-
+            // Task<ExecuteSyncResult> task = null; not required
             try {
                 var response = _intern.hub.ExecuteRequest(syncRequest, syncContext);
+                
+                // add to pendingSyncs for counting and canceling
+                // lock (_intern.pendingSyncs) not required
+                //
+                //
+                //
                 
                 // The Hub returns a client id if the client didn't provide one and one of its task require one. 
                 var success = response.success;
                 if (_intern.clientId.IsNull() && success != null && !success.clientId.IsNull()) {
                     SetClientId(success.clientId);
                 }
+                // lock (_intern.pendingSyncs) not required
+                //
+                //
                 return response;
             }
             catch (Exception e) {
+                // lock (_intern.pendingSyncs) not required
+                //
+                //
                 var errorMsg = ErrorResponse.ErrorFromException(e).ToString();
                 return new ExecuteSyncResult(errorMsg, ErrorResponseType.Exception);
             }

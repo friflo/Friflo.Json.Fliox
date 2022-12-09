@@ -70,6 +70,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             try {
                 task = _intern.hub.ExecuteRequestAsync(syncRequest, syncContext);
                 
+                // add to pendingSyncs for counting and canceling
                 lock (_intern.pendingSyncs) {
                     _intern.pendingSyncs.Add(task, syncContext);
                 }
