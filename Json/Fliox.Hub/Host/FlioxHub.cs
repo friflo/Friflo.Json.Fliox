@@ -232,12 +232,14 @@ namespace Friflo.Json.Fliox.Hub.Host
             db.service.PostExecuteTasks(syncContext);
             
             var dispatcher = EventDispatcher;
-            if (dispatcher == null)
-                return;
-            dispatcher.EnqueueSyncTasks(syncRequest, syncContext);
-            if (dispatcher.dispatching == EventDispatching.Send) {
-                dispatcher.SendQueuedEvents(); // use only for testing
+            if (dispatcher != null) {
+                dispatcher.EnqueueSyncTasks(syncRequest, syncContext);
+                if (dispatcher.dispatching == EventDispatching.Send) {
+                    dispatcher.SendQueuedEvents(); // use only for testing
+                }
             }
+            // Clear intern references which are not used anymore at this point.
+            syncRequest.intern = default;
         }
         
         private static TaskErrorResult TaskExceptionError (Exception e) {
