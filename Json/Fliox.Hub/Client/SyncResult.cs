@@ -18,7 +18,6 @@ namespace Friflo.Json.Fliox.Hub.Client
         public              IReadOnlyList<SyncFunction> Functions  => functions;
         public              IReadOnlyList<SyncFunction> Failed     => GetFailed();
         
-        private  readonly   FlioxClient                 client; // only set in DEBUG to avoid client not being collected by GC
         private             SyncRequest                 syncRequest;
         private             SyncStore                   syncStore;
         private             MemoryBuffer                memoryBuffer;
@@ -30,6 +29,10 @@ namespace Friflo.Json.Fliox.Hub.Client
         public              string                      Message     => GetMessage(errorResponse, failed);
 
         public override     string                      ToString()  => $"tasks: {functions.Count}, failed: {failed.Count}";
+
+#pragma warning disable CS0169
+        private  readonly   FlioxClient                 client; // only set in DEBUG to avoid client not being collected by GC
+#pragma warning restore CS0169
         
         internal SyncResult(FlioxClient client) {
 #if DEBUG
