@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 using Friflo.Json.Burst.Utils;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
+using static System.Diagnostics.DebuggerBrowsableState;
+using Browse = System.Diagnostics.DebuggerBrowsableAttribute;
 
 // ReSharper disable InconsistentNaming
 namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
@@ -23,6 +25,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
             set => containerSmall = new SmallString(value);
         }
     
+        [Browse(Never)]
         [Ignore]   internal SmallString         containerSmall;
         /// <summary>name of the primary key property of the entity <see cref="patches"/></summary>
                     public  string              keyName;
