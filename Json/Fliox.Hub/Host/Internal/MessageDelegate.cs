@@ -75,14 +75,14 @@ namespace Friflo.Json.Fliox.Hub.Host.Internal
         }
     }
     
-    // ----------------------------------- MessageAsyncDelegate<> -----------------------------------
-    internal sealed class MessageAsyncDelegate<TParam> : MessageDelegate
+    // ----------------------------------- MessageDelegateAsync<> -----------------------------------
+    internal sealed class MessageDelegateAsync<TParam> : MessageDelegate
     {
         private  readonly   HostMessageHandlerAsync<TParam>     handler;
         internal override   MsgType                             MsgType         => MsgType.Message;
         internal override   bool                                IsSynchronous   => false;
 
-        internal MessageAsyncDelegate (string name, HostMessageHandlerAsync<TParam> handler) : base(name) {
+        internal MessageDelegateAsync (string name, HostMessageHandlerAsync<TParam> handler) : base(name) {
             this.handler    = handler;
         }
         
@@ -129,15 +129,15 @@ namespace Friflo.Json.Fliox.Hub.Host.Internal
         }
     }
     
-    // ----------------------------------- CommandAsyncDelegate<,> -----------------------------------
-    internal sealed class CommandAsyncDelegate<TParam, TResult> : MessageDelegate
+    // ----------------------------------- CommandDelegateAsync<,> -----------------------------------
+    internal sealed class CommandDelegateAsync<TParam, TResult> : MessageDelegate
     {
         private  readonly   HostCommandHandler<TParam, Task<TResult>>   handler;
 
         internal override   MsgType                                     MsgType         => MsgType.Command;
         internal override   bool                                        IsSynchronous   => false;
 
-        internal CommandAsyncDelegate (string name, HostCommandHandler<TParam, Task<TResult>> handler) : base(name) {
+        internal CommandDelegateAsync (string name, HostCommandHandler<TParam, Task<TResult>> handler) : base(name) {
             this.handler    = handler;
         }
         

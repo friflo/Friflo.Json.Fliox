@@ -123,7 +123,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// message handler methods can be static or instance methods.
         /// </summary>
         protected void AddMessageHandlerAsync<TParam> (string name, HostMessageHandlerAsync<TParam> handler) {
-            var message = new MessageAsyncDelegate<TParam>(name, handler);
+            var message = new MessageDelegateAsync<TParam>(name, handler);
             handlers.Add(name, message);
         }
         
@@ -147,7 +147,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// command handler methods can be static or instance methods.
         /// </summary>
         protected void AddCommandHandlerAsync<TParam, TResult> (string name, HostCommandHandler<TParam, Task<TResult>> handler) {
-            var command = new CommandAsyncDelegate<TParam, TResult>(name, handler);
+            var command = new CommandDelegateAsync<TParam, TResult>(name, handler);
             handlers.Add(name, command);
         }
        
@@ -229,7 +229,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             // is return type of command handler of type: Task<TResult> ?  (==  is async command handler)
             if (handler.resultTaskType != null) {
                 genericArgs[1] = handler.resultTaskType;
-                instance = TypeMapperUtils.CreateGenericInstance(typeof(CommandAsyncDelegate<,>), genericArgs, constructorParams);
+                instance = TypeMapperUtils.CreateGenericInstance(typeof(CommandDelegateAsync<,>), genericArgs, constructorParams);
             } else {
                 instance = TypeMapperUtils.CreateGenericInstance(typeof(CommandDelegate<,>),      genericArgs, constructorParams);    
             }
