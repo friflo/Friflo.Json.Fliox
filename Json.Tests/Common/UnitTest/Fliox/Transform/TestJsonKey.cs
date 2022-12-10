@@ -10,10 +10,10 @@ using static NUnit.Framework.Assert;
 
 namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
 {
-    public class TestJsonKey
+    public static class TestJsonKey
     {
         [Test]
-        public void JsonKeyTests () {
+        public static void JsonKeyTests () {
             {
                 var sb = new StringBuilder();
                 var key = new JsonKey (123);
@@ -30,7 +30,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 key.AppendTo(sb);
                 AreEqual ("abc", sb.ToString());
             }
-
+        }
+        
+        [Test]
+        public static void JsonKeyTests_Guid () {
+            var guidStr = "11111111-2222-3333-4444-555555555555";
+            var guidSrc = new Guid(guidStr);
+            var guidKey = new JsonKey (guidSrc);
+            var guidDst = guidKey.AsGuid();
+            AreEqual(guidSrc, guidDst);
         }
     }
 }

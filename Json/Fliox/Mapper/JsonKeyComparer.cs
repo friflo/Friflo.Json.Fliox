@@ -24,7 +24,7 @@ namespace Friflo.Json.Fliox.Mapper
                 case JsonKeyType.String:
                     return string.Compare(x.str, y.str, StringComparison.InvariantCulture);
                 case JsonKeyType.Guid:
-                    return x.guid.CompareTo(y.guid);
+                    return x.Guid.CompareTo(y.Guid);
                 default:
                     throw new InvalidOperationException("Invalid IdType"); 
             }
@@ -40,7 +40,7 @@ namespace Friflo.Json.Fliox.Mapper
             switch (x.type) {
                 case JsonKeyType.Long:      return x.lng  == y.lng;
                 case JsonKeyType.String:    return x.str  == y.str;
-                case JsonKeyType.Guid:      return x.guid == y.guid;
+                case JsonKeyType.Guid:      return x.lng  == y.lng && x.lng2 == y.lng2;
                 default:
                     throw new InvalidOperationException("Invalid IdType"); 
             }
@@ -50,7 +50,7 @@ namespace Friflo.Json.Fliox.Mapper
             switch (jsonKey.type) {
                 case JsonKeyType.Long:      return jsonKey.lng. GetHashCode();
                 case JsonKeyType.String:    return jsonKey.str. GetHashCode();
-                case JsonKeyType.Guid:      return jsonKey.guid.GetHashCode();
+                case JsonKeyType.Guid:      return jsonKey.lng. GetHashCode() ^ jsonKey.lng2.GetHashCode();
                 default:
                     throw new InvalidOperationException("Invalid IdType"); 
             }

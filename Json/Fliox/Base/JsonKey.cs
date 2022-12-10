@@ -6,6 +6,8 @@ using System.Text;
 using Friflo.Json.Burst;
 using Friflo.Json.Burst.Utils;
 using Friflo.Json.Fliox.Mapper;
+using static System.Diagnostics.DebuggerBrowsableState;
+using Browse = System.Diagnostics.DebuggerBrowsableAttribute;
 
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox
@@ -13,11 +15,14 @@ namespace Friflo.Json.Fliox
     public readonly struct JsonKey
     {
         internal readonly       JsonKeyType type;
-        internal readonly       string      str; // todo could be mutable to cache ToString() results got lng & guid
-        internal readonly       long        lng;
-        internal readonly       Guid        guid;
+        internal readonly       string      str;
+        internal readonly       long        lng;    // also used as lower 64 bit for Guid
+        [Browse(Never)]
+        internal readonly       long        lng2;   // higher 64 bit for Guid
         
-        public                  JsonKeyType Type        => type;
+        public                  JsonKeyType Type    => type;
+        internal                Guid        Guid    => GuidUtils.LongLongToGuid(lng, lng2);
+
         public   override       string      ToString()  { var value = AsString(); return value ?? "null"; }
 
         public static readonly  JsonKeyComparer         Comparer = new JsonKeyComparer();
@@ -27,79 +32,87 @@ namespace Friflo.Json.Fliox
         /// Calling this constructor should be the last option as it may force a string creation. <br/>
         /// Use alternative constructors if using a specific key type like <see cref="long"/> or <see cref="Guid"/>.
         /// </summary>
-        public JsonKey (string str)
+        public JsonKey (string value)
         {
-            if (str == null) {
-                type        = JsonKeyType.Null;
-                this.str    = null;
-                lng         = 0;
-                guid        = new Guid();
+            if (value == null) {
+                type    = JsonKeyType.Null;
+                str     = null;
+                lng     = 0;
+                lng2    = 0;
                 return;
             }
-            if (long.TryParse(str, out long result)) {
-                this.type   = JsonKeyType.Long;
-                this.str    = str;
-                this.lng    = result;
-                guid        = new Guid();
+            if (long.TryParse(value, out long result)) {
+                type    = JsonKeyType.Long;
+                str     = null;
+                lng     = result;
+                lng2    = 0;
                 return;
             }
-            if (Guid.TryParse(str, out guid)) {
-                type   = JsonKeyType.Guid;
-            } else {
-                type   = JsonKeyType.String;
+            if (Guid.TryParse(value, out var guid)) {
+                type    = JsonKeyType.Guid;
+                str     = null;
+                GuidUtils.GuidToLongLong(guid, out lng, out lng2);
+                return;
             }
-            this.str    = str;
-            this.lng    = 0;
+            type    = JsonKeyType.String;
+            str     = value;
+            lng     = 0;
+            lng2    = 0;
         }
         
         public JsonKey (ref Bytes bytes, ref ValueParser valueParser) {
             if (bytes.IsIntegral()) {
-                this.type   = JsonKeyType.Long;
-                this.str    = null;
+                type    = JsonKeyType.Long;
+                str     = null;
                 var error = new Bytes();
-                this.lng    = valueParser.ParseLong(ref bytes, ref error, out bool success);
+                lng     = valueParser.ParseLong(ref bytes, ref error, out bool success);
                 if (!success)
                     throw new InvalidOperationException("expect a valid integral type");
-                guid        = new Guid();
+                lng2    = 0;
                 return;
             }
-            if (bytes.TryParseGuid(out guid, out string temp)) { // temp not null in Unity. Otherwise null
+            if (bytes.TryParseGuid(out var guid, out string temp)) { // temp not null in Unity. Otherwise null
                 type    = JsonKeyType.Guid;
                 str     = temp;
-            } else {
-                type    = JsonKeyType.String;
-                str     = temp ?? bytes.AsString();
+                GuidUtils.GuidToLongLong(guid, out lng, out lng2);
+                return;
             }
-            this.lng    = 0;
+            type    = JsonKeyType.String;
+            str     = temp ?? bytes.AsString();
+            lng     = 0;
+            lng2    = 0;
         }
 
-        public JsonKey (long lng) {
-            this.type   = JsonKeyType.Long;
-            this.str    = null;
-            this.lng    = lng;
-            this.guid   = new Guid();
+        public JsonKey (long value) {
+            type    = JsonKeyType.Long;
+            str     = null;
+            lng     = value;
+            lng2    = 0;
         }
         
-        public JsonKey (long? lng) {
-            this.type   = lng.HasValue ? JsonKeyType.Long : JsonKeyType.Null;
-            this.str    = null;
-            this.lng    = lng ?? 0;
-            this.guid   = new Guid();
+        public JsonKey (long? value) {
+            type    = value.HasValue ? JsonKeyType.Long : JsonKeyType.Null;
+            str     = null;
+            lng     = value ?? 0;
+            lng2    = 0;
         }
         
         public JsonKey (in Guid guid) {
-            this.type   = JsonKeyType.Guid;
-            this.str    = null;
-            this.lng    = 0;
-            this.guid   = guid;
+            type    = JsonKeyType.Guid;
+            str     = null;
+            GuidUtils.GuidToLongLong(guid, out lng, out lng2);
         }
         
         public JsonKey (in Guid? guid) {
             var hasValue= guid.HasValue;
             type        = hasValue ? JsonKeyType.Guid : JsonKeyType.Null;
             str         = null; // hasValue ? guid.ToString() : null;
-            lng         = 0;
-            this.guid   = hasValue ? guid.Value : new Guid();
+            if (hasValue) {
+                GuidUtils.GuidToLongLong(guid.Value, out lng, out lng2);
+                return;
+            }
+            lng     = 0;
+            lng2    = 0;
         }
         
     /*  public JsonKey (in JsonKey? jsonKey) {
@@ -135,7 +148,7 @@ namespace Friflo.Json.Fliox
             switch (type) {
                 case JsonKeyType.Long:      return lng  == other.lng;
                 case JsonKeyType.String:    return str  == other.str;
-                case JsonKeyType.Guid:      return guid == other.guid;
+                case JsonKeyType.Guid:      return lng  == other.lng && lng2 == other.lng2;
                 case JsonKeyType.Null:      return true;
                 default:
                     throw new InvalidOperationException("Invalid IdType"); 
@@ -155,7 +168,7 @@ namespace Friflo.Json.Fliox
             switch (type) {
                 case JsonKeyType.Long:      return str ?? lng. ToString();
                 case JsonKeyType.String:    return str;
-                case JsonKeyType.Guid:      return str ?? guid.ToString();
+                case JsonKeyType.Guid:      return str ?? Guid.ToString();
                 case JsonKeyType.Null:      return null;
                 default:
                     throw new InvalidOperationException($"unexpected type in JsonKey.AsString(). type: {type}");
@@ -168,12 +181,10 @@ namespace Friflo.Json.Fliox
             throw new InvalidOperationException($"cannot return JsonKey as long. {AsString()}");
         }
         
-        public Guid AsGuid() {
-            return guid;
-        }
+        public Guid AsGuid() => Guid;
         
         public Guid? AsGuidNullable() {
-            return type == JsonKeyType.Guid ? guid : default; 
+            return type == JsonKeyType.Guid ? Guid : default; 
         }
         
         public void AppendTo(ref Bytes dest, ref ValueFormat valueFormat) {
@@ -185,7 +196,7 @@ namespace Friflo.Json.Fliox
                     dest.AppendString(str);
                     break;
                 case JsonKeyType.Guid:
-                    dest.AppendGuid(guid);
+                    dest.AppendGuid(Guid);
                     break;
                 default:
                     throw new InvalidOperationException($"unexpected type in JsonKey.AppendTo()");
@@ -202,11 +213,11 @@ namespace Friflo.Json.Fliox
                     break;
                 case JsonKeyType.Guid:
 #if UNITY_5_3_OR_NEWER
-                    var guidStr = guid.ToString();
+                    var guidStr = Guid.ToString();
                     sb.Append(guidStr);
 #else
                     Span<char> span = stackalloc char[Bytes.MinGuidLength];
-                    if (!guid.TryFormat(span, out int charsWritten))
+                    if (!Guid.TryFormat(span, out int charsWritten))
                         throw new InvalidOperationException("AppendGuid() failed");
                     if (charsWritten != Bytes.MinGuidLength)
                         throw new InvalidOperationException($"Unexpected Guid length. Was: {charsWritten}");

@@ -154,7 +154,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
                     WriteString(value.str);
                     break;
                 case JsonKeyType.Guid:
-                    WriteGuid(value.guid);
+                    WriteGuid(value.Guid);
                     break;
             }
         }
