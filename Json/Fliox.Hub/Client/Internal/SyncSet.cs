@@ -141,7 +141,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             return new ReserveKeys {
                 container   = set.name,
                 count       = reserveKeys.count,
-                syncTask    = reserveKeys
+                intern      = new SyncTaskIntern(reserveKeys)
             };
         }
 
@@ -163,7 +163,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 keyName         = SyncKeyName(set.GetKeyName()),
                 entities        = entries,
                 reservedToken   = new Guid(), // todo
-                syncTask        = create
+                intern          = new SyncTaskIntern(create)
             };
 
         }
@@ -181,10 +181,10 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 var value   = writer.WriteAsValue(entity);
                 entities.Add(new JsonEntity(peer.id, value));
             }
-            upsertEntities.container   = set.name;
-            upsertEntities.keyName     = SyncKeyName(set.GetKeyName());
-            upsertEntities.entities    = entities;
-            upsertEntities.syncTask    = upsert;
+            upsertEntities.container        = set.name;
+            upsertEntities.keyName          = SyncKeyName(set.GetKeyName());
+            upsertEntities.entities         = entities;
+            upsertEntities.intern.syncTask  = upsert;
             return upsertEntities;
         }
 
@@ -205,7 +205,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 isIntKey    = IsIntKey(set.IsIntKey()),
                 ids         = ids,
                 references  = references,
-                syncTask    = read
+                intern      = new SyncTaskIntern(read)
             };
         }
 
@@ -227,7 +227,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 limit       = query.limit,
                 maxCount    = query.maxCount,
                 cursor      = query.cursor,
-                syncTask    = query 
+                intern      = new SyncTaskIntern(query)    
             };
         }
 
@@ -240,7 +240,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             //  isIntKey    = IsIntKey(set.IsIntKey()),
                 filterTree  = filterTree,
                 filter      = aggregate.filterLinq,
-                syncTask    = aggregate 
+                intern      = new SyncTaskIntern(aggregate)
             };
         }
         
@@ -253,7 +253,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             return new CloseCursors {
                 container   = set.name,
                 cursors     = closeCursor.cursors,
-                syncTask    = closeCursor 
+                intern      = new SyncTaskIntern(closeCursor) 
             };
         }
         
@@ -270,7 +270,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 container   = set.name,
                 keyName     = SyncKeyName(set.GetKeyName()),
                 patches     = list,
-                syncTask    = detectPatches
+                intern      = new SyncTaskIntern(detectPatches) 
             };
         }
 
@@ -284,7 +284,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             return new DeleteEntities {
                 container   = set.name,
                 ids         = ids,
-                syncTask    = deleteTask 
+                intern      = new SyncTaskIntern(deleteTask) 
             };
         }
 
@@ -292,7 +292,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
            return new DeleteEntities {
                 container   = set.name,
                 all         = true,
-                syncTask    = deleteTask 
+                intern      = new SyncTaskIntern(deleteTask) 
             };
         }
 
@@ -302,7 +302,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 container   = set.name,
                 filter      = filter,
                 changes     = sub.changes,
-                syncTask    = sub 
+                intern      = new SyncTaskIntern(sub) 
             };
         }
 

@@ -73,7 +73,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             return new DeleteEntities {
                 container   = syncSet.set.name,
                 all         = true,
-                syncTask    = this 
+                intern      = new SyncTaskIntern(this) 
             };
         }
     }

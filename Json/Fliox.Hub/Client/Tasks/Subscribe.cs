@@ -95,7 +95,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
         
         internal override SyncRequestTask CreateRequestTask(in CreateTaskContext context) {
-            return new SubscribeMessage{ name = name, remove = remove, syncTask = this };
+            return new SubscribeMessage{ name = name, remove = remove, intern = new SyncTaskIntern(this) };
         }
     }
 }

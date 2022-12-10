@@ -58,7 +58,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             return new SendMessage {
                 name        = name,
                 param       = param,
-                syncTask    = this,
+                intern      = new SyncTaskIntern(this),
                 users       = targets?.users,
                 clients     = targets?.clients,
                 groups      = targets?.groups
@@ -140,7 +140,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             return new SendCommand {
                 name        = name,
                 param       = param,
-                syncTask    = this,
+                intern      = new SyncTaskIntern(this),
                 users       = targets?.users,
                 clients     = targets?.clients,
                 groups      = targets?.groups,

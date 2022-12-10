@@ -70,7 +70,7 @@ namespace Friflo.Json.Fliox.Hub.Host
                 try {
                     // Execute task synchronous or asynchronous.
                     SyncTaskResult result;
-                    if (task.executionType == ExecutionType.Sync) {
+                    if (task.intern.executionType == ExecutionType.Sync) {
                         result = service.ExecuteTask(task, db, response, syncContext);
                     } else {
                         result = await service.ExecuteTaskAsync(task, db, response, syncContext).ConfigureAwait(false);

@@ -65,7 +65,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
     internal partial class SyncSet<TKey, T>
     {
         internal override void ReserveKeysResult (ReserveKeys task, SyncTaskResult result) {
-            var reserve = (ReserveKeysTask<TKey, T>)task.syncTask;
+            var reserve = (ReserveKeysTask<TKey, T>)task.intern.syncTask;
             if (result is TaskErrorResult taskError) {
                 reserve.state.SetError(new TaskErrorInfo(taskError));
                 return;
@@ -90,7 +90,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         /// In case of a <see cref="TaskErrorResult"/> add entity errors to <see cref="SyncSet.errorsCreate"/> for all
         /// <see cref="WriteTask{T}.peers"/> to enable setting <see cref="DetectPatchesTask"/> to error state via <see cref="DetectPatchesTask{TKey,T}.SetResult"/>. 
         internal override void CreateEntitiesResult(CreateEntities task, SyncTaskResult result, ObjectMapper mapper) {
-            var createTask = (CreateTask<T>)task.syncTask;
+            var createTask = (CreateTask<T>)task.intern.syncTask;
             CreateUpsertEntitiesResult(task.entities, result, createTask, errorsCreate, mapper);
             var creates = createTask.peers;
             if (result is TaskErrorResult taskError) {
@@ -109,7 +109,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         }
 
         internal override void UpsertEntitiesResult(UpsertEntities task, SyncTaskResult result, ObjectMapper mapper) {
-            var upsertTask = (UpsertTask<T>)task.syncTask;
+            var upsertTask = (UpsertTask<T>)task.intern.syncTask;
             CreateUpsertEntitiesResult(task.entities, result, upsertTask, errorsUpsert, mapper);
         }
 
@@ -155,7 +155,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         }
 
         internal override void ReadEntitiesResult(ReadEntities task, SyncTaskResult result, ContainerEntities readEntities) {
-            var readTask    = (ReadTask<TKey,T>)task.syncTask;
+            var readTask    = (ReadTask<TKey,T>)task.intern.syncTask;
             if (result is TaskErrorResult taskError) {
                 SetReadTaskError(readTask, taskError);
                 return;
@@ -223,7 +223,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         }
         
         internal override void QueryEntitiesResult(QueryEntities task, SyncTaskResult result, ContainerEntities queryEntities) {
-            var query   = (QueryTask<TKey, T>)task.syncTask;
+            var query   = (QueryTask<TKey, T>)task.intern.syncTask;
             if (result is TaskErrorResult taskError) {
                 var taskErrorInfo = new TaskErrorInfo(taskError);
                 query.state.SetError(taskErrorInfo);
@@ -301,7 +301,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         }
         
         internal override void AggregateEntitiesResult (AggregateEntities task, SyncTaskResult result) {
-            var aggregate   = (AggregateTask)task.syncTask;
+            var aggregate   = (AggregateTask)task.intern.syncTask;
             if (result is TaskErrorResult taskError) {
                 // todo set error
                 return;
@@ -312,7 +312,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         }
         
         internal override void CloseCursorsResult (CloseCursors task, SyncTaskResult result) {
-            var closeCursor   = (CloseCursorsTask)task.syncTask;
+            var closeCursor   = (CloseCursorsTask)task.intern.syncTask;
             if (result is TaskErrorResult taskError) {
                 // todo set error
                 return;
@@ -329,7 +329,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         /// </summary> 
         internal override void PatchEntitiesResult(MergeEntities task, SyncTaskResult result) {
             // task is a DetectPatchesTask<T>
-            var detectPatches   = task.syncTask as DetectPatchesTask<TKey,T>;
+            var detectPatches   = task.intern.syncTask as DetectPatchesTask<TKey,T>;
             // ReSharper disable once PossibleNullReferenceException
             var patches         = detectPatches.patches;
             if (result is TaskErrorResult taskError)
@@ -365,11 +365,11 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         }
 
         internal override void DeleteEntitiesResult(DeleteEntities task, SyncTaskResult result) {
-            if (task.syncTask is DeleteAllTask<TKey,T> deleteAllTask) {
+            if (task.intern.syncTask is DeleteAllTask<TKey,T> deleteAllTask) {
                 deleteAllTask.state.Executed = true;
                 return;
             }
-            var deleteTask   = (DeleteTask<TKey,T>)task.syncTask;
+            var deleteTask   = (DeleteTask<TKey,T>)task.intern.syncTask;
             if (result is TaskErrorResult taskError) {
                 deleteTask.state.SetError(new TaskErrorInfo(taskError));
                 return;
@@ -395,7 +395,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         }
         
         internal override void SubscribeChangesResult (SubscribeChanges task, SyncTaskResult result) {
-            var subscribeChanges   = (SubscribeChangesTask<T>)task.syncTask;
+            var subscribeChanges   = (SubscribeChangesTask<T>)task.intern.syncTask;
             if (result is TaskErrorResult taskError) {
                 subscribeChanges.state.SetError(new TaskErrorInfo(taskError));
                 return;

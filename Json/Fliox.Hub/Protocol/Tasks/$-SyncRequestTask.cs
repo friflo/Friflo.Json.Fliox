@@ -33,13 +33,9 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     [PolymorphType(typeof(ReserveKeys),             "reserveKeys")]
     public abstract class SyncRequestTask
     {
-                    public     JsonValue        info;
-        [Ignore]    internal   int              index;
-        /// <summary>true if task can be executed synchronous. Otherwise false</summary>
-        [Ignore]    internal   ExecutionType    executionType;
-        /// <summary>cached JSON of this <see cref="SyncRequestTask"/> instance serialized as JSON</summary>
-        [Ignore]    internal   JsonValue?       json;
-        [Ignore]    internal   SyncTask         syncTask;
+                    public      JsonValue       info;
+        [Ignore]    internal    SyncTaskIntern  intern;
+
         
         public      abstract   Task<SyncTaskResult> ExecuteAsync(EntityDatabase database, SyncResponse response, SyncContext syncContext);
         // todo make abstract when SyncRequestTask are implemented
@@ -51,8 +47,8 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         public      override   string           ToString() => TaskName;
         
         public virtual bool PreExecute(EntityDatabase database) {
-            var isSync      = database.IsSyncTask(this);
-            executionType   = isSync ? ExecutionType.Sync : ExecutionType.Async;
+            var isSync              = database.IsSyncTask(this);
+            intern.executionType    = isSync ? ExecutionType.Sync : ExecutionType.Async;
             return isSync;
         }
 
@@ -104,6 +100,26 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
             }
             error = null;
             return true;
+        }
+    }
+    
+    /// <summary>
+    /// Contain fields assigned in <see cref="FlioxHub.InitSyncRequest"/> by using the public fields of the <see cref="SyncRequestTask"/>
+    /// </summary>
+    internal struct SyncTaskIntern
+    {
+        internal    int             index;
+        /// <summary>true if task can be executed synchronous. Otherwise false</summary>
+        internal    ExecutionType   executionType;
+        /// <summary>cached JSON of this <see cref="SyncRequestTask"/> instance serialized as JSON</summary>
+        internal    JsonValue?      json;
+        internal    SyncTask        syncTask;
+        
+        internal SyncTaskIntern(SyncTask syncTask) {
+            this.syncTask   = syncTask;
+            index           = 0;
+            executionType   = default;
+            json            = default;
         }
     }
 }

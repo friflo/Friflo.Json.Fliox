@@ -204,10 +204,10 @@ namespace Friflo.Json.Fliox.Hub.Host
                     syncRequest.intern.error = $"tasks[{index}] == null";
                     return syncRequest.intern.executionType = Error;
                 }
-                task.index      = index;
+                task.intern.index   = index;
                 // todo may validate tasks in PreExecute()
-                var isSyncTask  = task.PreExecute(db);
-                isSyncRequest   = isSyncRequest && isSyncTask;
+                var isSyncTask      = task.PreExecute(db);
+                isSyncRequest       = isSyncRequest && isSyncTask;
             }
             var executionType = isSyncRequest ? Sync : Async;
             syncRequest.intern.error = null;

@@ -387,12 +387,12 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             syncEvent.tasksJson = tasksJson;
             for (int n = 0; n < tasks.Count; n++) {
                 var task = tasks[n];
-                if (task.json == null) {
+                if (task.intern.json == null) {
                     // create an individual byte array.
                     // This is necessary as multiple arrays are queued and by this cannot be reused.
-                    task.json = writer.WriteAsValue(task);
+                    task.intern.json = writer.WriteAsValue(task);
                 }
-                tasksJson[n] = task.json.Value;
+                tasksJson[n] = task.intern.json.Value;
             }
             tasks.Clear(); // is necessary as tasks List<> may be reused
             syncEvent.tasks = null;
