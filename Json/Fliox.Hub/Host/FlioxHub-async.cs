@@ -42,7 +42,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             syncContext.request             = syncRequest;
             if (syncContext.authState.authExecuted) throw new InvalidOperationException("Expect AuthExecuted == false");
             if (authenticator.IsSynchronous(syncRequest)) {
-                authenticator.Authenticate(syncRequest, syncContext);
+                      authenticator.Authenticate     (syncRequest, syncContext);
             } else {
                 await authenticator.AuthenticateAsync(syncRequest, syncContext).ConfigureAwait(false);
             }
@@ -71,9 +71,9 @@ namespace Friflo.Json.Fliox.Hub.Host
                     // Execute task synchronous or asynchronous.
                     SyncTaskResult result;
                     if (task.intern.executionType == ExecutionType.Sync) {
-                        result = service.ExecuteTask(task, db, response, syncContext);
+                        result =       service.ExecuteTask      (task, db, response, syncContext);
                     } else {
-                        result = await service.ExecuteTaskAsync(task, db, response, syncContext).ConfigureAwait(false);
+                        result = await service.ExecuteTaskAsync (task, db, response, syncContext).ConfigureAwait(false);
                     }
                     tasks.Add(result);
                 } catch (Exception e) {

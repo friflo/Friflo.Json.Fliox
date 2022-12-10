@@ -92,9 +92,9 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                     var execution   = hub.InitSyncRequest(syncRequest);
                     ExecuteSyncResult syncResult;
                     if (execution == ExecutionType.Sync) {
-                        syncResult  =       hub.ExecuteRequest(syncRequest, syncContext);
+                        syncResult  =       hub.ExecuteRequest      (syncRequest, syncContext);
                     } else {
-                        syncResult  = await hub.ExecuteRequestAsync(syncRequest, syncContext).ConfigureAwait(false);
+                        syncResult  = await hub.ExecuteRequestAsync (syncRequest, syncContext).ConfigureAwait(false);
                     }
                     
                     if (syncResult.error != null) {
