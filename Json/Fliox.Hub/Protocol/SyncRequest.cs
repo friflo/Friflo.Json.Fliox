@@ -42,12 +42,19 @@ namespace Friflo.Json.Fliox.Hub.Protocol
         /// <summary>optional JSON value - can be used to describe a request</summary>
                     public  JsonValue               info;
         
-        [Ignore]   internal ExecutionType           executionType;
-        [Ignore]   internal string                  error;
-        [Ignore]   internal EntityDatabase          db;
-        [Ignore]   internal PreAuthType             preAuthType;
-        [Ignore]   internal User                    preAuthUser;
+        [Ignore]   internal SyncRequestIntern       intern;
         
         internal override   MessageType             MessageType => MessageType.sync;
+    }
+    
+    /// <summary>
+    /// Contain fields assigned in <see cref="FlioxHub.InitSyncRequest"/> by using the public fields of the <see cref="SyncRequest"/>
+    /// </summary>
+    internal struct SyncRequestIntern {
+        internal    ExecutionType   executionType;
+        internal    string          error;
+        internal    EntityDatabase  db;
+        internal    PreAuthType     preAuthType;
+        internal    User            preAuthUser;
     }
 }

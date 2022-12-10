@@ -138,11 +138,11 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
         /// authentication error occured.
         /// </summary>
         public override bool IsSynchronous(SyncRequest syncRequest) {
-            return PreAuth(syncRequest, out syncRequest.preAuthType, out syncRequest.preAuthUser);
+            return PreAuth(syncRequest, out syncRequest.intern.preAuthType, out syncRequest.intern.preAuthUser);
         }
         
         public override void Authenticate (SyncRequest syncRequest, SyncContext syncContext) {
-            bool isSync = AuthenticateSynchronous(syncRequest.preAuthType, syncRequest.preAuthUser, syncContext);
+            bool isSync = AuthenticateSynchronous(syncRequest.intern.preAuthType, syncRequest.intern.preAuthUser, syncContext);
             if (isSync)
                 return;
             throw new InvalidOperationException("authentication cannot be executed synchronously");
@@ -194,8 +194,8 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
 
         public override async Task AuthenticateAsync(SyncRequest syncRequest, SyncContext syncContext)
         {
-            var type = syncRequest.preAuthType;
-            var user = syncRequest.preAuthUser;
+            var type = syncRequest.intern.preAuthType;
+            var user = syncRequest.intern.preAuthUser;
             if (AuthenticateSynchronous(type, user, syncContext)) {
                 return;
             }

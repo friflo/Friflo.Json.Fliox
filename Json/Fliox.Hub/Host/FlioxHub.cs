@@ -176,8 +176,8 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// Doing so avoids creation of a redundant <see cref="System.Threading.Tasks.Task"/> instance.  
         /// </summary>
         public virtual ExecutionType InitSyncRequest(SyncRequest syncRequest) {
-            if (syncRequest.executionType != None) {
-                return syncRequest.executionType;
+            if (syncRequest.intern.executionType != None) {
+                return syncRequest.intern.executionType;
             }
             var isSyncRequest       = authenticator.IsSynchronous(syncRequest);
             var db                  = database;
@@ -186,23 +186,23 @@ namespace Friflo.Json.Fliox.Hub.Host
                 if (syncRequestDatabase != database.name.value) {
                     var dbName  = new SmallString(syncRequestDatabase);
                     if (!extensionDbs.TryGetValue(dbName, out db)) {
-                        syncRequest.error = $"database not found: '{syncRequestDatabase}'";
-                        return syncRequest.executionType = Error;
+                        syncRequest.intern.error = $"database not found: '{syncRequestDatabase}'";
+                        return syncRequest.intern.executionType = Error;
                     }
                 }
             }
-            syncRequest.db  = db;
-            var tasks       = syncRequest.tasks;
+            syncRequest.intern.db   = db;
+            var tasks               = syncRequest.tasks;
             if (tasks == null) {
-                syncRequest.error = "missing field: tasks (array)";
-                return syncRequest.executionType = Error;
+                syncRequest.intern.error = "missing field: tasks (array)";
+                return syncRequest.intern.executionType = Error;
             }
             var taskCount   = tasks.Count;
             for (int index = 0; index < taskCount; index++) {
                 var task = tasks[index];
                 if (task == null) {
-                    syncRequest.error = $"tasks[{index}] == null";
-                    return syncRequest.executionType = Error;
+                    syncRequest.intern.error = $"tasks[{index}] == null";
+                    return syncRequest.intern.executionType = Error;
                 }
                 task.index      = index;
                 // todo may validate tasks in PreExecute()
@@ -210,8 +210,8 @@ namespace Friflo.Json.Fliox.Hub.Host
                 isSyncRequest   = isSyncRequest && isSyncTask;
             }
             var executionType = isSyncRequest ? Sync : Async;
-            syncRequest.error = null;
-            return syncRequest.executionType = executionType;
+            syncRequest.intern.error = null;
+            return syncRequest.intern.executionType = executionType;
         }
         
         /// <summary>
@@ -219,7 +219,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// </summary>
         private void PostExecute(SyncRequest syncRequest, SyncResponse response, SyncContext syncContext) {
             hostStats.Update(syncRequest);
-            var db = syncRequest.db;
+            var db = syncRequest.intern.db;
             UpdateRequestStats(db.name, syncRequest, syncContext);
 
             // - Note: Only relevant for Push messages when using a bidirectional protocol like WebSocket

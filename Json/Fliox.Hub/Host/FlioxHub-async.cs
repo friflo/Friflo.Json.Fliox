@@ -46,11 +46,11 @@ namespace Friflo.Json.Fliox.Hub.Host
             } else {
                 await authenticator.AuthenticateAsync(syncRequest, syncContext).ConfigureAwait(false);
             }
-            if (syncRequest.error != null) {
-                return new ExecuteSyncResult (syncRequest.error, ErrorResponseType.BadRequest); 
+            if (syncRequest.intern.error != null) {
+                return new ExecuteSyncResult (syncRequest.intern.error, ErrorResponseType.BadRequest); 
             }
             syncContext.hub                 = this;
-            var db                          = syncRequest.db;
+            var db                          = syncRequest.intern.db;
             syncContext.databaseName        = db.name;
             syncContext.clientId            = syncRequest.clientId;
             syncContext.clientIdValidation  = authenticator.ValidateClientId(clientController, syncContext);

@@ -30,7 +30,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             if (executionType == ExecutionType.Sync) {
                 response    = ExecuteRequest(syncRequest, syncContext);
             } else {
-                throw new InvalidOperationException(syncRequest.error); 
+                throw new InvalidOperationException(syncRequest.intern.error); 
             }
             ReuseSyncContext(syncContext);
             var result      = HandleSyncResponse(syncRequest, response, syncStore, buffer);
@@ -54,7 +54,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             if (executionType == ExecutionType.Sync) {
                 response    = ExecuteRequest(syncRequest, syncContext);
             } else {
-                throw new InvalidOperationException(syncRequest.error); 
+                throw new InvalidOperationException(syncRequest.intern.error); 
             }
             ReuseSyncContext(syncContext);
             return HandleSyncResponse(syncRequest, response, syncStore, buffer);

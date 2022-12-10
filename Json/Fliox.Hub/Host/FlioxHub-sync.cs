@@ -46,11 +46,11 @@ namespace Friflo.Json.Fliox.Hub.Host
             } else {
                 throw new NotSupportedException("Authenticator supports only asynchronous authentication");
             }
-            if (syncRequest.error != null) {
-                return new ExecuteSyncResult (syncRequest.error, ErrorResponseType.BadRequest); 
+            if (syncRequest.intern.error != null) {
+                return new ExecuteSyncResult (syncRequest.intern.error, ErrorResponseType.BadRequest); 
             }
             syncContext.hub                 = this;
-            var db                          = syncRequest.db;
+            var db                          = syncRequest.intern.db;
             syncContext.databaseName        = db.name;
             syncContext.clientId            = syncRequest.clientId;
             syncContext.clientIdValidation  = authenticator.ValidateClientId(clientController, syncContext);
