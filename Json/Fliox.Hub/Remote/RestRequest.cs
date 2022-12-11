@@ -114,15 +114,15 @@ namespace Friflo.Json.Fliox.Hub.Remote
         
         private string GetString() {
             switch (type) {
-                case RestRequestType.command:   return $"command {message} {value}";
-                case RestRequestType.message:   return $"message {message} {value}";
+                case RestRequestType.command:   return $"command {database} {message}({value})";
+                case RestRequestType.message:   return $"message {database} {message}({value})";
                 
-                case RestRequestType.read:      return $"read {database} {container}";
-                case RestRequestType.query:     return $"query {database} {container}";
-                case RestRequestType.readOne:   return $"readOne {database} {container} {id}";
-                case RestRequestType.delete:    return $"delete {database} {container}";
-                case RestRequestType.write:     return $"write {database} {container}";
-                case RestRequestType.merge:     return $"merge {database} {container}";
+                case RestRequestType.read:      return $"read {database}/{container}";
+                case RestRequestType.query:     return $"query {database}/{container}";
+                case RestRequestType.readOne:   return $"readOne {database}/{container}/{id}";
+                case RestRequestType.delete:    return $"delete {database}/{container}";
+                case RestRequestType.write:     return $"write {database}/{container}";
+                case RestRequestType.merge:     return $"merge {database}/{container}";
 
                 case RestRequestType.error:     return $"error {errorStatus} {errorType} {errorType}";
             }
