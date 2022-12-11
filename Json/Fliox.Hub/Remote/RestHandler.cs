@@ -26,7 +26,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 return new RestRequest(errorType, message, statusCode);
             }
             
-            internal static RestRequest GetRestRequest(RequestContext context, JsonValue body)
+            internal static RestRequest GetRestRequest(RequestContext context, in JsonValue body)
             {
                 var route = context.route;
                 if (route.Length == RestBase.Length) {
