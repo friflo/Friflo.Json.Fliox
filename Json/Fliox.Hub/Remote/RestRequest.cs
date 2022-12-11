@@ -110,8 +110,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 case RestRequestType.message:   return $"message {message} {value}";
                 
                 case RestRequestType.read:      return $"read {database} {container}";
-                case RestRequestType.query:     return $"read {database} {container}";
-                case RestRequestType.readOne:   return $"readOne {database} {container}";
+                case RestRequestType.query:     return $"query {database} {container}";
+                case RestRequestType.readOne:   return $"readOne {database} {container} {id}";
                 case RestRequestType.delete:    return $"delete {database} {container}";
                 case RestRequestType.write:     return $"write {database} {container}";
                 case RestRequestType.merge:     return $"merge {database} {container}";
