@@ -10,6 +10,8 @@ using Friflo.Json.Fliox.Schema.JSON;
 using Friflo.Json.Fliox.Schema.Language;
 using Friflo.Json.Fliox.Schema.Native;
 using Friflo.Json.Fliox.Transform;
+using static Friflo.Json.Fliox.Hub.Remote.RestRequestType;
+using static Friflo.Json.Fliox.Hub.Remote.Rest;
 
 // ReSharper disable MethodHasAsyncOverload
 namespace Friflo.Json.Fliox.Hub.Remote
@@ -182,9 +184,30 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 request.handled = true;
                 return;
             }
-            if (restHandler.IsMatch(request)) {
-                await restHandler.HandleRequest(request).ConfigureAwait(false);
-                request.handled = true;
+            if (restHandler.IsMatch(request))
+            {
+                JsonValue body = default; 
+                if (request.method == "POST" || request.method == "PUT" || request.method == "PATCH") {
+                    body = await JsonValue.ReadToEndAsync(request.body, request.contentLength).ConfigureAwait(false);
+                }
+                await restHandler.HandleRequest(request, body);
+                if (false) {
+                var rr = restHandler.GetRestRequest(request); // rr looks russian :D
+                // execute REST request from here instead extracting to a method to avoid additional async call
+                switch (rr.type) {
+                    // --- message / command
+                    case command: await Message         (request, rr.database, rr.message, rr.value);                           break;
+                    case message: await Command         (request, rr.database, rr.message, rr.value);                           break;
+                    // --- container operations
+                    case read:    await GetEntitiesById (request, rr.database, rr.container, rr.keys);                          break;
+                    case delete:  await DeleteEntities  (request, rr.database, rr.container, rr.keys);                          break;
+                    case query:   await QueryEntities   (request, rr.database, rr.container, rr.queryParams);                   break;
+                    case readOne: await GetEntity       (request, rr.database, rr.container, rr.id);                            break;
+                    case write:   await PutEntities     (request, rr.database, rr.container, rr.id, rr.value, rr.queryParams);  break;
+                    case merge:   await MergeEntities   (request, rr.database, rr.container, rr.id, rr.value, rr.queryParams);  break;
+                }
+                }
+                request.handled = true; 
                 return;
             }
             foreach (var handler in customHandlers) {

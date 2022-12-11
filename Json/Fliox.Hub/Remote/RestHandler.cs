@@ -12,7 +12,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
 {
     internal static partial class Rest {
         
-        internal sealed class RestHandler : IRequestHandler
+        internal sealed class RestHandler
         {
             private const   string      RestBase = "/rest";
             
@@ -21,8 +21,12 @@ namespace Friflo.Json.Fliox.Hub.Remote
             public bool IsMatch(RequestContext context) {
                 return RequestContext.IsBasePath(RestBase, context.route);
             }
-                
-            public async Task HandleRequest(RequestContext context) {
+            
+            internal RestRequest GetRestRequest(RequestContext context) {
+                return default;
+            }
+
+            internal async Task HandleRequest(RequestContext context, JsonValue body) {
                 var route = context.route;
                 if (route.Length == RestBase.Length) {
                     // --------------    GET            /rest
@@ -55,7 +59,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                         database = null;
                     JsonValue param;
                     if (isPost) {
-                        param = await JsonValue.ReadToEndAsync(context.body, context.contentLength).ConfigureAwait(false);
+                        param = body;
                     } else {
                         var queryValue = queryParams["param"];
                         param = new JsonValue(queryValue);
@@ -100,7 +104,6 @@ namespace Friflo.Json.Fliox.Hub.Remote
                     JsonKey[] keys;
                     using (var pooled = pool.ObjectMapper.Get()) {
                         var reader  = pooled.instance.reader;
-                        var body    = await JsonValue.ReadToEndAsync(context.body, context.contentLength).ConfigureAwait(false);
                         keys        = reader.Read<JsonKey[]>(body);
                         if (reader.Error.ErrSet) {
                             context.WriteError("invalid id list", reader.Error.ToString(), 400);
@@ -160,19 +163,12 @@ namespace Friflo.Json.Fliox.Hub.Remote
                         context.WriteError("invalid PUT", "expect: /database/container or /database/container/id", 400);
                         return;
                     }
-                    var value = await JsonValue.ReadToEndAsync(context.body, context.contentLength).ConfigureAwait(false);
-                    if (!IsValidJson(pool, value, out string error)) {
+                    if (!IsValidJson(pool, body, out string error)) {
                         context.WriteError("PUT failed", error, 400);
                         return;
                     }
-                    var keyName     = queryParams["keyName"];
                     var resource2   = res.length == 3 ? res.id : null;
-                    if (!HasQueryKey(queryParams, "create", out bool create, out error)) {
-                        context.WriteError("PUT failed", error, 400);
-                        return;
-                    }
-                    var type        = create ? TaskType.create : TaskType.upsert;
-                    await PutEntities(context, res.database, res.container, resource2, keyName, value, type).ConfigureAwait(false);
+                    await PutEntities(context, res.database, res.container, resource2, body, queryParams).ConfigureAwait(false);
                     return;
                 }
                 // ------------------    PATCH          /rest/database/container/id
@@ -181,14 +177,12 @@ namespace Friflo.Json.Fliox.Hub.Remote
                         context.WriteError("invalid PATCH", "expect: /database/container or /database/container/id", 400);
                         return;
                     }
-                    var patch = await JsonValue.ReadToEndAsync(context.body, context.contentLength).ConfigureAwait(false);
-                    if (!IsValidJson(pool, patch, out string error)) {
+                    if (!IsValidJson(pool, body, out string error)) {
                         context.WriteError("PATCH failed", error, 400);
                         return;
                     }
-                    var keyName     = queryParams["keyName"];
-                    var resource2   = res.length == 3 ? res.id : null;
-                    await MergeEntities(context, res.database, res.container, resource2, keyName, patch).ConfigureAwait(false);
+                    var resource2   = res.length == 3 ? res.id : null; // id
+                    await MergeEntities(context, res.database, res.container, resource2, body, queryParams).ConfigureAwait(false);
                     return;
                 }
                 context.WriteError("invalid path/method", route, 400);
