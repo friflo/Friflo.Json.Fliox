@@ -132,42 +132,43 @@ namespace Friflo.Json.Fliox.Hub.Remote
                     }
                     while(!wsResult.EndOfMessage);
                     
-                    if (wsResult.MessageType == WebSocketMessageType.Text) {
-                        var requestContent  = new JsonValue(memoryStream.GetBuffer(), (int)memoryStream.Position);
-                        syncContext.Init();
-                        syncContext.SetMemoryBuffer(memoryBuffer);
-                        mapper.reader.InstancePool?.Reuse();
-                        // inlined ExecuteJsonRequest() to avoid async call:
-                        // JsonResponse response = await remoteHost.ExecuteJsonRequest(mapper, requestContent, syncContext).ConfigureAwait(false);
-                        JsonResponse response;
-                        try {
-                            var syncRequest = RemoteUtils.ReadSyncRequest(mapper, requestContent, out string error);
-                            if (error != null) {
-                                response = JsonResponse.CreateError(mapper, error, ErrorResponseType.BadResponse, null);
-                            } else {
-                                var hub         = remoteHost.localHub;
-                                var execution   = hub.InitSyncRequest(syncRequest);
-                                ExecuteSyncResult syncResult;
-                                if (execution == ExecutionType.Sync) {
-                                    syncResult  =       hub.ExecuteRequest      (syncRequest, syncContext);
-                                } else {
-                                    syncResult  = await hub.ExecuteRequestAsync (syncRequest, syncContext).ConfigureAwait(false);
-                                }
-                                response = RemoteHost.CreateJsonResponse(syncResult, syncRequest.reqId, mapper);
-                            }
-                        }
-                        catch (Exception e) {
-                            var errorMsg = ErrorResponse.ErrorFromException(e).ToString();
-                            response = JsonResponse.CreateError(mapper, errorMsg, ErrorResponseType.Exception, null);
-                        }
-                        sendQueue.Enqueue(response.body); // Enqueue() copy the result.body array
+                    if (wsResult.MessageType != WebSocketMessageType.Text) {
+                        continue;
                     }
+                    var requestContent  = new JsonValue(memoryStream.GetBuffer(), (int)memoryStream.Position);
+                    syncContext.Init();
+                    syncContext.SetMemoryBuffer(memoryBuffer);
+                    mapper.reader.InstancePool?.Reuse();
+                    // inlined ExecuteJsonRequest() to avoid async call:
+                    // JsonResponse response = await remoteHost.ExecuteJsonRequest(mapper, requestContent, syncContext).ConfigureAwait(false);
+                    JsonResponse response;
+                    try {
+                        var syncRequest = RemoteUtils.ReadSyncRequest(mapper, requestContent, out string error);
+                        if (error != null) {
+                            response = JsonResponse.CreateError(mapper, error, ErrorResponseType.BadResponse, null);
+                        } else {
+                            var hub         = remoteHost.localHub;
+                            var execution   = hub.InitSyncRequest(syncRequest);
+                            ExecuteSyncResult syncResult;
+                            if (execution == ExecutionType.Sync) {
+                                syncResult  =       hub.ExecuteRequest      (syncRequest, syncContext);
+                            } else {
+                                syncResult  = await hub.ExecuteRequestAsync (syncRequest, syncContext).ConfigureAwait(false);
+                            }
+                            response = RemoteHost.CreateJsonResponse(syncResult, syncRequest.reqId, mapper);
+                        }
+                    }
+                    catch (Exception e) {
+                        var errorMsg = ErrorResponse.ErrorFromException(e).ToString();
+                        response = JsonResponse.CreateError(mapper, errorMsg, ErrorResponseType.Exception, null);
+                    }
+                    sendQueue.Enqueue(response.body); // Enqueue() copy the result.body array
                     continue;
                 }
                 // Logger.Log(HubLog.Info, $"receive loop finished. WebSocket state: {state}, remote: {remoteEndPoint}");
                 if (state == WebSocketState.CloseReceived) {
                     var description = webSocket.CloseStatusDescription;
-                    await webSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, description, CancellationToken.None).ConfigureAwait(false);    
+                    await webSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, description, CancellationToken.None).ConfigureAwait(false);
                 }
                 return;
             }
