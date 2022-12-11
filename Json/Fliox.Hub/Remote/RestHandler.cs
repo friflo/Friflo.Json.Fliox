@@ -32,15 +32,15 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 if (route.Length == RestBase.Length) {
                     // --------------    GET            /rest
                     if (context.method == "GET") { 
-                        return new RestRequest(RestRequestType.command, "cluster", Std.HostCluster, new JsonValue());
+                        return new RestRequest(command, "cluster", Std.HostCluster, new JsonValue());
                     }
                     return Error("invalid request", "access to root only applicable with GET", 400);
                 }
                 var pool            = context.Pool;
                 var method          = context.method;
                 var queryParams     = HttpUtility.ParseQueryString(context.query);
-                var command         = queryParams["command"];   // todo rename -> commandName
-                var message         = queryParams["message"];   // todo rename -> messageName
+                var commandName     = queryParams["command"];
+                var messageName     = queryParams["message"];
                 var isGet           = method == "GET";
                 var isPost          = method == "POST";
                 var resourcePath    = route.Substring(RestBase.Length + 1);
@@ -48,9 +48,9 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 
                 // ------------------    GET            /rest/database?command=...   /database?message=...
                 //                       POST           /rest/database?command=...   /database?message=...
-                if ((command != null || message != null) && (isGet || isPost)) {
+                if ((commandName != null || messageName != null) && (isGet || isPost)) {
                     if (res.length != 1) {
-                        return Error(GetErrorType(command), $"messages & commands operate on database. was: {resourcePath}", 400);
+                        return Error(GetErrorType(commandName), $"messages & commands operate on database. was: {resourcePath}", 400);
                     }
                     var database = res.database;
                     if (database == context.hub.DatabaseName.value)
@@ -67,13 +67,13 @@ namespace Friflo.Json.Fliox.Hub.Remote
                         param = new JsonValue();
                     } else {
                         if (!IsValidJson(pool, param, out string error)) {
-                            return Error(GetErrorType(command), $"invalid param - {error}", 400);
+                            return Error(GetErrorType(commandName), $"invalid param - {error}", 400);
                         }
                     }
-                    if (command != null) {
-                        return new RestRequest(RestRequestType.command, database, command, param);
+                    if (commandName != null) {
+                        return new RestRequest(command, database, commandName, param);
                     }
-                    return new RestRequest(RestRequestType.message, database, message, param);
+                    return new RestRequest(message, database, messageName, param);
                 }
 
                 if (res.error != null) {
@@ -111,7 +111,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 if (isGet) {
                     // --------------    GET            /rest/database
                     if (res.length == 1) {
-                        return new RestRequest(RestRequestType.command, res.database, Std.Containers, new JsonValue());
+                        return new RestRequest(command, res.database, Std.Containers, new JsonValue());
                     }
                     // --------------    GET            /rest/database/container
                     if (res.length == 2) {
