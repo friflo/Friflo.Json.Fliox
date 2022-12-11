@@ -49,7 +49,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         public   readonly   string                  endpoint; 
         internal readonly   string                  endpointRoot;
         private  readonly   SchemaHandler           schemaHandler   = new SchemaHandler();
-        private  readonly   Rest.RestHandler        restHandler     = new Rest.RestHandler();
+        private  readonly   RestHandler             restHandler     = new RestHandler();
         private  readonly   List<IRequestHandler>   customHandlers  = new List<IRequestHandler>();
         private  readonly   List<string>            hubRoutes;
         
@@ -184,8 +184,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 request.handled = true;
                 return;
             }
-            if (restHandler.IsMatch(request))
-            {
+            if (restHandler.IsMatch(request)) {
                 JsonValue body = default; 
                 if (request.method == "POST" || request.method == "PUT" || request.method == "PATCH") {
                     body = await JsonValue.ReadToEndAsync(request.body, request.contentLength).ConfigureAwait(false);
@@ -193,6 +192,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 var rr = RestHandler.GetRestRequest(request, body); // rr looks russian :D
                 // execute REST request from here instead extracting to a method to avoid additional async call
                 switch (rr.type) {
+                    // --- error
+                    case error:   request.WriteError    (rr.errorType, rr.errorMessage, rr.errorStatus);                        break;
                     // --- message / command
                     case command: await Command         (request, rr.database, rr.message, rr.value);                           break;
                     case message: await Message         (request, rr.database, rr.message, rr.value);                           break;
@@ -203,8 +204,6 @@ namespace Friflo.Json.Fliox.Hub.Remote
                     case write:   await PutEntities     (request, rr.database, rr.container, rr.id, rr.value, rr.queryParams);  break;
                     case merge:   await MergeEntities   (request, rr.database, rr.container, rr.id, rr.value, rr.queryParams);  break;
                     case delete:  await DeleteEntities  (request, rr.database, rr.container, rr.keys);                          break;
-                    //
-                    case error:   request.WriteError(rr.errorType, rr.errorMessage, rr.errorStatus);                            break;
                 }
                 request.handled = true; 
                 return;

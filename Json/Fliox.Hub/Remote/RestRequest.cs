@@ -12,7 +12,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         // message / command
         command,
         message,
-        // --- container
+        // --- container operation
         read,
         readOne,
         query,
@@ -44,12 +44,14 @@ namespace Friflo.Json.Fliox.Hub.Remote
 
         public    override  string              ToString() => GetString();
 
-        // message / command
-        internal RestRequest(RestRequestType type, string database, string message, in JsonValue value) {
+        /// <summary>
+        /// create request specific for <see cref="RestRequestType.message"/> and <see cref="RestRequestType.command"/>
+        /// </summary>
+        internal RestRequest(RestRequestType type, string database, string name, in JsonValue value) {
             this.type           = type;
             this.database       = database;
                  container      = null;
-            this.message        = message;
+            this.message        = name;
             this.value          = value;
                  id             = null;
                  errorType      = null;
@@ -59,7 +61,9 @@ namespace Friflo.Json.Fliox.Hub.Remote
                  queryParams    = null;
         }
         
-        // container operation
+        /// <summary>
+        /// create request for a database container operation
+        /// </summary>
         internal RestRequest(RestRequestType type, string database, string container, JsonKey[] keys) {
             this.type           = type;
             this.database       = database;
@@ -74,7 +78,9 @@ namespace Friflo.Json.Fliox.Hub.Remote
                  queryParams     = null;
         }
         
-        // container operation
+        /// <summary>
+        /// create request for a database container operation
+        /// </summary>
         internal RestRequest(RestRequestType type, string database, string container, string id, in JsonValue value, NameValueCollection queryParams) {
             this.type           = type;
             this.database       = database;
@@ -89,7 +95,9 @@ namespace Friflo.Json.Fliox.Hub.Remote
             this.queryParams    = queryParams;
         }
         
-        // error
+        /// <summary>
+        /// create request for <see cref="RestRequestType.error"/>'s
+        /// </summary>
         internal RestRequest(string errorType, string errorMessage, int errorStatus) {
                  type           = RestRequestType.error;
                  database       = null;

@@ -22,10 +22,6 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 return RequestContext.IsBasePath(RestBase, context.route);
             }
             
-            private static RestRequest Error(string errorType, string message, int statusCode) {
-                return new RestRequest(errorType, message, statusCode);
-            }
-            
             internal static RestRequest GetRestRequest(RequestContext context, in JsonValue body)
             {
                 var route = context.route;
@@ -34,7 +30,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                     if (context.method == "GET") { 
                         return new RestRequest(command, "cluster", Std.HostCluster, new JsonValue());
                     }
-                    return Error("invalid request", "access to root only applicable with GET", 400);
+                    return new RestRequest("invalid request", "access to root only applicable with GET", 400);
                 }
                 var pool            = context.Pool;
                 var method          = context.method;
@@ -50,7 +46,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 //                       POST           /rest/database?command=...   /database?message=...
                 if ((commandName != null || messageName != null) && (isGet || isPost)) {
                     if (res.length != 1) {
-                        return Error(GetErrorType(commandName), $"messages & commands operate on database. was: {resourcePath}", 400);
+                        return new RestRequest(GetErrorType(commandName), $"messages & commands operate on database. was: {resourcePath}", 400);
                     }
                     var database = res.database;
                     if (database == context.hub.DatabaseName.value)
@@ -67,7 +63,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                         param = new JsonValue();
                     } else {
                         if (!IsValidJson(pool, param, out string error)) {
-                            return Error(GetErrorType(commandName), $"invalid param - {error}", 400);
+                            return new RestRequest(GetErrorType(commandName), $"invalid param - {error}", 400);
                         }
                     }
                     if (commandName != null) {
@@ -77,7 +73,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 }
 
                 if (res.error != null) {
-                    return Error("invalid path /database/container/id", res.error, 400);
+                    return new RestRequest("invalid path /database/container/id", res.error, 400);
                 }
                 
                 // ------------------    POST           /rest/database/container/bulk-get
@@ -92,14 +88,14 @@ namespace Friflo.Json.Fliox.Hub.Remote
                         case "bulk-delete":
                             break;
                         default:
-                            return Error($"post failed", $"invalid container operation: {bulk}", 400);
+                            return new RestRequest($"post failed", $"invalid container operation: {bulk}", 400);
                     }
                     JsonKey[] keys;
                     using (var pooled = pool.ObjectMapper.Get()) {
                         var reader  = pooled.instance.reader;
                         keys        = reader.Read<JsonKey[]>(body);
                         if (reader.Error.ErrSet) {
-                            return Error("invalid id list", reader.Error.ToString(), 400);
+                            return new RestRequest("invalid id list", reader.Error.ToString(), 400);
                         }
                     }
                     if (getEntities) {
@@ -127,7 +123,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                     if (res.length == 3) {
                         return new RestRequest(readOne, res.database, res.container, res.id, default, null);
                     }
-                    return Error("invalid request", "expect: /database/container/id", 400);
+                    return new RestRequest("invalid request", "expect: /database/container/id", 400);
                 }
                 
                 var isDelete = method == "DELETE";
@@ -137,16 +133,16 @@ namespace Friflo.Json.Fliox.Hub.Remote
                         var keys = new [] { new JsonKey(res.id) };
                         return new RestRequest(delete, res.database, res.container, keys);
                     }
-                    return Error("invalid request", "expect: /database/container/id", 400);
+                    return new RestRequest("invalid request", "expect: /database/container/id", 400);
                 }
                 // ------------------    PUT            /rest/database/container        ?create
                 //                       PUT            /rest/database/container/id     ?create
                 if (method == "PUT") {
                     if (res.length != 2 && res.length != 3) {
-                        return Error("invalid PUT", "expect: /database/container or /database/container/id", 400);
+                        return new RestRequest("invalid PUT", "expect: /database/container or /database/container/id", 400);
                     }
                     if (!IsValidJson(pool, body, out string error)) {
-                        return Error("PUT failed", error, 400);
+                        return new RestRequest("PUT failed", error, 400);
                     }
                     var resource2   = res.length == 3 ? res.id : null;
                     return new RestRequest(write, res.database, res.container, resource2, body, queryParams);
@@ -154,15 +150,15 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 // ------------------    PATCH          /rest/database/container/id
                 if (method == "PATCH") {
                     if (res.length != 2 && res.length != 3) {
-                        return Error("invalid PATCH", "expect: /database/container or /database/container/id", 400);
+                        return new RestRequest("invalid PATCH", "expect: /database/container or /database/container/id", 400);
                     }
                     if (!IsValidJson(pool, body, out string error)) {
-                        return Error("PATCH failed", error, 400);
+                        return new RestRequest("PATCH failed", error, 400);
                     }
                     var resource2   = res.length == 3 ? res.id : null; // id
                     return new RestRequest(merge, res.database, res.container, resource2, body, queryParams);
                 }
-                return Error("invalid path/method", route, 400);
+                return new RestRequest("invalid path/method", route, 400);
             }
         }
     }
