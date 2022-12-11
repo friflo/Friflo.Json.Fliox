@@ -184,7 +184,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 request.handled = true;
                 return;
             }
-            if (restHandler.IsMatch(request)) {
+            if (RestHandler.IsMatch(request)) {
                 JsonValue body = default; 
                 if (request.method == "POST" || request.method == "PUT" || request.method == "PATCH") {
                     body = await JsonValue.ReadToEndAsync(request.body, request.contentLength).ConfigureAwait(false);

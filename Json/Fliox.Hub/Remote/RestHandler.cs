@@ -18,7 +18,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             
             public          string[]    Routes => new []{ RestBase };
             
-            public bool IsMatch(RequestContext context) {
+            internal static bool IsMatch(RequestContext context) {
                 return RequestContext.IsBasePath(RestBase, context.route);
             }
             
