@@ -3,28 +3,28 @@
 
 using System.Collections.Specialized;
 
+// ReSharper disable InconsistentNaming
 namespace Friflo.Json.Fliox.Hub.Remote
 {
     internal enum RestRequestType
     {
         error,
+        // message / command
         command,
         message,
+        // --- container
         read,
-        delete,
-        query,
         readOne,
+        query,
         write,
-        merge
+        merge,
+        delete
     }
     
     internal readonly struct RestRequest
     {
         internal  readonly  RestRequestType     type;
         // --- path
-        internal  readonly  int                 length;
-        private   readonly  string              path;
-        
         internal  readonly  string              database;
         internal  readonly  string              container;
         internal  readonly  string              id;
@@ -41,37 +41,84 @@ namespace Friflo.Json.Fliox.Hub.Remote
         internal  readonly  JsonKey[]           keys;
         
         internal  readonly  NameValueCollection queryParams;
-        
+
+        public    override  string              ToString() => GetString();
+
+        // message / command
         internal RestRequest(RestRequestType type, string database, string message, in JsonValue value) {
-            this.type       = type;
-            length          = 2;
-            path            = "/";
-            this.database   = database;
-            container       = null;
-            this.message    = message;
-            this.value      = value;
-            id              = null;
-            errorType       = null;
-            errorMessage    = null;
-            errorStatus     = 0;
-            keys            = null;
-            queryParams     = null;
+            this.type           = type;
+            this.database       = database;
+                 container      = null;
+            this.message        = message;
+            this.value          = value;
+                 id             = null;
+                 errorType      = null;
+                 errorMessage   = null;
+                 errorStatus    = 0;
+                 keys           = null;
+                 queryParams    = null;
         }
         
+        // container operation
+        internal RestRequest(RestRequestType type, string database, string container, JsonKey[] keys) {
+            this.type           = type;
+            this.database       = database;
+            this.container      = container;
+                 message        = null;
+                 value          = default;
+                 id             = null;
+                 errorType      = null;
+                 errorMessage   = null;
+                 errorStatus    = 0;
+            this.keys           = keys;
+                 queryParams     = null;
+        }
+        
+        // container operation
+        internal RestRequest(RestRequestType type, string database, string container, string id, in JsonValue value, NameValueCollection queryParams) {
+            this.type           = type;
+            this.database       = database;
+            this.container      = container;
+                 message        = null;
+            this.value          = value;
+            this.id             = id;
+                 errorType      = null;
+                 errorMessage   = null;
+                 errorStatus    = 0;
+                 keys           = null;
+            this.queryParams    = queryParams;
+        }
+        
+        // error
         internal RestRequest(string errorType, string errorMessage, int errorStatus) {
-            type                = RestRequestType.error;
-            length              = 0;
-            path                = "/";
-            database            = null;
-            container           = null;
-            message             = null;
-            value               = default;
-            id                  = null;
+                 type           = RestRequestType.error;
+                 database       = null;
+                 container      = null;
+                 message        = null;
+                 value          = default;
+                 id             = null;
             this.errorType      = errorType;
             this.errorMessage   = errorMessage;
             this.errorStatus    = errorStatus;
-            keys                = null;
-            queryParams         = null;
+                 keys           = null;
+                 queryParams    = null;
+        }
+        
+        private string GetString() {
+            switch (type) {
+                case RestRequestType.command:   return $"command {message} {value}";
+                case RestRequestType.message:   return $"message {message} {value}";
+                
+                case RestRequestType.read:      return $"read {database} {container}";
+                case RestRequestType.query:     return $"read {database} {container}";
+                case RestRequestType.readOne:   return $"readOne {database} {container}";
+                case RestRequestType.delete:    return $"delete {database} {container}";
+                case RestRequestType.write:     return $"write {database} {container}";
+                case RestRequestType.merge:     return $"merge {database} {container}";
+
+                case RestRequestType.error:     return $"error {errorStatus} {errorType} {errorType}";
+            }
+            return null;
         }
     }
 }

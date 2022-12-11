@@ -2,11 +2,11 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
-using System.Threading.Tasks;
 using System.Web;
 using Friflo.Json.Fliox.Hub.Client;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
+using static Friflo.Json.Fliox.Hub.Remote.RestRequestType;
 
 namespace Friflo.Json.Fliox.Hub.Remote
 {
@@ -22,26 +22,25 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 return RequestContext.IsBasePath(RestBase, context.route);
             }
             
-            internal RestRequest GetRestRequest(RequestContext context) {
-                return default;
+            private static RestRequest Error(string errorType, string message, int statusCode) {
+                return new RestRequest(errorType, message, statusCode);
             }
-
-            internal async Task HandleRequest(RequestContext context, JsonValue body) {
+            
+            internal static RestRequest GetRestRequest(RequestContext context, JsonValue body)
+            {
                 var route = context.route;
                 if (route.Length == RestBase.Length) {
                     // --------------    GET            /rest
                     if (context.method == "GET") { 
-                        await Command(context, "cluster", Std.HostCluster, new JsonValue()).ConfigureAwait(false); 
-                        return;
+                        return new RestRequest(RestRequestType.command, "cluster", Std.HostCluster, new JsonValue());
                     }
-                    context.WriteError("invalid request", "access to root only applicable with GET", 400);
-                    return;
+                    return Error("invalid request", "access to root only applicable with GET", 400);
                 }
                 var pool            = context.Pool;
                 var method          = context.method;
                 var queryParams     = HttpUtility.ParseQueryString(context.query);
-                var command         = queryParams["command"];
-                var message         = queryParams["message"];
+                var command         = queryParams["command"];   // todo rename -> commandName
+                var message         = queryParams["message"];   // todo rename -> messageName
                 var isGet           = method == "GET";
                 var isPost          = method == "POST";
                 var resourcePath    = route.Substring(RestBase.Length + 1);
@@ -51,8 +50,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 //                       POST           /rest/database?command=...   /database?message=...
                 if ((command != null || message != null) && (isGet || isPost)) {
                     if (res.length != 1) {
-                        context.WriteError(GetErrorType(command), $"messages & commands operate on database. was: {resourcePath}", 400);
-                        return;
+                        return Error(GetErrorType(command), $"messages & commands operate on database. was: {resourcePath}", 400);
                     }
                     var database = res.database;
                     if (database == context.hub.DatabaseName.value)
@@ -69,21 +67,17 @@ namespace Friflo.Json.Fliox.Hub.Remote
                         param = new JsonValue();
                     } else {
                         if (!IsValidJson(pool, param, out string error)) {
-                            context.WriteError(GetErrorType(command), $"invalid param - {error}", 400);
-                            return;
+                            return Error(GetErrorType(command), $"invalid param - {error}", 400);
                         }
                     }
                     if (command != null) {
-                        await Command(context, database, command, param).ConfigureAwait(false); 
-                        return;
+                        return new RestRequest(RestRequestType.command, database, command, param);
                     }
-                    await Message(context, database, message, param).ConfigureAwait(false);
-                    return;
+                    return new RestRequest(RestRequestType.message, database, message, param);
                 }
 
                 if (res.error != null) {
-                    context.WriteError("invalid path /database/container/id", res.error, 400);
-                    return;
+                    return Error("invalid path /database/container/id", res.error, 400);
                 }
                 
                 // ------------------    POST           /rest/database/container/bulk-get
@@ -98,31 +92,26 @@ namespace Friflo.Json.Fliox.Hub.Remote
                         case "bulk-delete":
                             break;
                         default:
-                            context.WriteError($"post failed", $"invalid container operation: {bulk}", 400);
-                            return;
+                            return Error($"post failed", $"invalid container operation: {bulk}", 400);
                     }
                     JsonKey[] keys;
                     using (var pooled = pool.ObjectMapper.Get()) {
                         var reader  = pooled.instance.reader;
                         keys        = reader.Read<JsonKey[]>(body);
                         if (reader.Error.ErrSet) {
-                            context.WriteError("invalid id list", reader.Error.ToString(), 400);
-                            return;
+                            return Error("invalid id list", reader.Error.ToString(), 400);
                         }
                     }
                     if (getEntities) {
-                        await GetEntitiesById (context, res.database, res.container, keys).ConfigureAwait(false);
-                        return;
+                        return new RestRequest(read, res.database, res.container, keys);
                     }
-                    await DeleteEntities(context, res.database, res.container, keys).ConfigureAwait(false);
-                    return;
+                    return new RestRequest(delete, res.database, res.container, keys);
                 }
                 
                 if (isGet) {
                     // --------------    GET            /rest/database
                     if (res.length == 1) {
-                        await Command(context, res.database, Std.Containers, new JsonValue()).ConfigureAwait(false); 
-                        return;
+                        return new RestRequest(RestRequestType.command, res.database, Std.Containers, new JsonValue());
                     }
                     // --------------    GET            /rest/database/container
                     if (res.length == 2) {
@@ -130,19 +119,15 @@ namespace Friflo.Json.Fliox.Hub.Remote
                         if (idsParam != null) {
                             var ids     = idsParam == "" ? Array.Empty<string>() : idsParam.Split(',');
                             var keys    = GetKeysFromIds(ids);
-                            await GetEntitiesById (context, res.database, res.container, keys).ConfigureAwait(false);
-                            return;
+                            return new RestRequest(read, res.database, res.container, keys);
                         }
-                        await QueryEntities(context, res.database, res.container, queryParams).ConfigureAwait(false);
-                        return;
+                        return new RestRequest(query, res.database, res.container, null, default, queryParams);
                     }
                     // --------------    GET            /rest/database/container/id
                     if (res.length == 3) {
-                        await GetEntity(context, res.database, res.container, res.id).ConfigureAwait(false);    
-                        return;
+                        return new RestRequest(readOne, res.database, res.container, res.id, default, null);
                     }
-                    context.WriteError("invalid request", "expect: /database/container/id", 400);
-                    return;
+                    return Error("invalid request", "expect: /database/container/id", 400);
                 }
                 
                 var isDelete = method == "DELETE";
@@ -150,42 +135,34 @@ namespace Friflo.Json.Fliox.Hub.Remote
                     // --------------    DELETE         /rest/database/container/id
                     if (res.length == 3) {
                         var keys = new [] { new JsonKey(res.id) };
-                        await DeleteEntities(context, res.database, res.container, keys).ConfigureAwait(false);
-                        return;
+                        return new RestRequest(delete, res.database, res.container, keys);
                     }
-                    context.WriteError("invalid request", "expect: /database/container/id", 400);
-                    return;
+                    return Error("invalid request", "expect: /database/container/id", 400);
                 }
                 // ------------------    PUT            /rest/database/container        ?create
                 //                       PUT            /rest/database/container/id     ?create
                 if (method == "PUT") {
                     if (res.length != 2 && res.length != 3) {
-                        context.WriteError("invalid PUT", "expect: /database/container or /database/container/id", 400);
-                        return;
+                        return Error("invalid PUT", "expect: /database/container or /database/container/id", 400);
                     }
                     if (!IsValidJson(pool, body, out string error)) {
-                        context.WriteError("PUT failed", error, 400);
-                        return;
+                        return Error("PUT failed", error, 400);
                     }
                     var resource2   = res.length == 3 ? res.id : null;
-                    await PutEntities(context, res.database, res.container, resource2, body, queryParams).ConfigureAwait(false);
-                    return;
+                    return new RestRequest(write, res.database, res.container, resource2, body, queryParams);
                 }
                 // ------------------    PATCH          /rest/database/container/id
                 if (method == "PATCH") {
                     if (res.length != 2 && res.length != 3) {
-                        context.WriteError("invalid PATCH", "expect: /database/container or /database/container/id", 400);
-                        return;
+                        return Error("invalid PATCH", "expect: /database/container or /database/container/id", 400);
                     }
                     if (!IsValidJson(pool, body, out string error)) {
-                        context.WriteError("PATCH failed", error, 400);
-                        return;
+                        return Error("PATCH failed", error, 400);
                     }
                     var resource2   = res.length == 3 ? res.id : null; // id
-                    await MergeEntities(context, res.database, res.container, resource2, body, queryParams).ConfigureAwait(false);
-                    return;
+                    return new RestRequest(merge, res.database, res.container, resource2, body, queryParams);
                 }
-                context.WriteError("invalid path/method", route, 400);
+                return Error("invalid path/method", route, 400);
             }
         }
     }
