@@ -63,7 +63,8 @@ namespace DemoHub
                     await context.Response.WriteAsync("redirect");
                 });
                 endpoints.Map("/fliox/{*path}", async context => {
-                    await context.HandleFlioxRequest(httpHost).ConfigureAwait(false);
+                    var requestContext = await context.ExecuteFlioxRequest(httpHost).ConfigureAwait(false);
+                    await context.WriteFlioxResponse(requestContext).ConfigureAwait(false);
                 });
             });
         }
