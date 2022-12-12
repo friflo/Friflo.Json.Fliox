@@ -7,7 +7,13 @@ using Friflo.Json.Burst;
 
 namespace Friflo.Json.Fliox.Transform.Tree
 {
-    // Could be a struct but this requires replacing the whole node to update field next
+    /// <summary>
+    /// A node in a <see cref="JsonAst"/> represents either a number, a string, a boolean, an object, an array or null.<br/>
+    /// The values of primitives like number, string and boolean ar available via <see cref="value"/><br/>
+    /// The member name of object members is available via <see cref="key"/><br/>
+    /// The fields <see cref="child"/> and <see cref="next"/> are indices to <see cref="JsonAst.Nodes"/>
+    /// to access the first child or the next sibling node.
+    /// </summary>
     public struct JsonAstNode {
         public              int         Next => next;
         

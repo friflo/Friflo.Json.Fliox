@@ -9,7 +9,7 @@ using Friflo.Json.Burst;
 namespace Friflo.Json.Fliox.Transform.Tree
 {
     /// <summary>
-    /// A tree representation of a <see cref="JsonValue"/> as a tree.<br/>
+    /// Representation of a <see cref="JsonValue"/> as a tree.<br/>
     /// Its <see cref="Nodes"/> are reused to avoid heap allocations when creating trees from multiple JSON values.<br/>
     /// <br/>
     /// A <see cref="JsonAst"/> enables iteration of JSON object members without reading the entire JSON value. <br/>
