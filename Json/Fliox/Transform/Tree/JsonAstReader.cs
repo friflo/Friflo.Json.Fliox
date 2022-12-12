@@ -8,6 +8,10 @@ using static Friflo.Json.Burst.JsonEvent;
 
 namespace Friflo.Json.Fliox.Transform.Tree
 {
+    /// <summary>
+    /// Used to create a tree representation - a <see cref="JsonAst"/> - for a given <see cref="JsonValue"/>
+    /// by using <see cref="CreateAst"/>
+    /// </summary>
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif

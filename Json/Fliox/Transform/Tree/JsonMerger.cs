@@ -8,6 +8,15 @@ using static Friflo.Json.Burst.JsonEvent;
 
 namespace Friflo.Json.Fliox.Transform.Tree
 {
+    /// <summary>
+    /// Used to merge / patch two given <see cref="JsonValue"/>'s efficiently. <br/>
+    /// Implements [RFC 7386: JSON Merge Patch] https://www.rfc-editor.org/rfc/rfc7386 <br/>
+    /// <br/>
+    /// First it creates two tree representations of both given <see cref="JsonValue"/>'s <br/>
+    /// Both trees are then traversed in step to find their differences.
+    /// Based on their equalities and differences the resulting JSON value is created.<br/>
+    /// Reusing a <see cref="JsonMerger"/> instance typically result in processing without any heap allocations.
+    /// </summary>
     public class JsonMerger : IDisposable
     {
         public              string              Error { get; private set; }
