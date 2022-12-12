@@ -32,7 +32,7 @@ namespace Friflo.Json.Fliox.Hub.Cosmos
             return responseFeed.Documents;
         }
         
-        public static void WriteJson(MemoryStream memory, JsonValue json) {
+        public static void WriteJson(MemoryStream memory, in JsonValue json) {
             memory.SetLength(0);
             memory.Write(json);
             memory.Flush();

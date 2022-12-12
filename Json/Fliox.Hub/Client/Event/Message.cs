@@ -28,7 +28,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// <summary>message name</summary>
         string              Name        { get; }
         /// <summary>raw message parameter as JSON</summary>
-        JsonValue           RawParam   { get; }
+        JsonValue           RawParam    { get; }
         
         /// <summary>
         /// Read the <see cref="RawParam"/> as the given type <typeparamref name="TParam"/>.

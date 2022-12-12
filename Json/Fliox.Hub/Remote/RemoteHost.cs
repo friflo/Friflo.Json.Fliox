@@ -75,7 +75,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         
         public JsonResponse ExecuteJsonRequest(
             ObjectMapper    mapper,
-            JsonValue       jsonRequest,
+            in JsonValue    jsonRequest,
             SyncContext     syncContext)
         {
             // used response assignment instead of return in each branch to provide copy/paste code to avoid an async call in caller

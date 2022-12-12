@@ -109,7 +109,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             context.WriteError("invalid request", context.ToString(), 400);
         }
         
-        private static GqlRequest ReadRequestBody(ObjectMapper mapper, JsonValue body, out string error) {
+        private static GqlRequest ReadRequestBody(ObjectMapper mapper, in JsonValue body, out string error) {
             var reader  = mapper.reader;
             var result = reader.Read<GqlRequest>(body);
             if (reader.Error.ErrSet) {

@@ -11,7 +11,7 @@ namespace Friflo.Json.Fliox.Mapper.Diff
     /// <summary>
     /// Create the a JSON patch value by the given <see cref="DiffNode"/>. <br/>
     /// The JSON patch result is intended to be merged (assigned) into a given object
-    /// by using <see cref="ObjectReader.ReadTo{T}(JsonValue,T, bool)"/>
+    /// by using <see cref="ObjectReader.ReadTo{T}(Friflo.Json.Burst.Bytes,T,bool)"/>
     /// </summary>
     public sealed class JsonMergeWriter : IDisposable
     {

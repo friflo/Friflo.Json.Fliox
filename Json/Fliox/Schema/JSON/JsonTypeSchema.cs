@@ -228,7 +228,7 @@ namespace Friflo.Json.Fliox.Schema.JSON
         
         private static TypeDef FindTypeFromJson (
             FieldType           field,
-            JsonValue           jsonArray,
+            in JsonValue        jsonArray,
             FieldType           items,
             in JsonTypeContext  context,
             ref FieldAttributes attr)

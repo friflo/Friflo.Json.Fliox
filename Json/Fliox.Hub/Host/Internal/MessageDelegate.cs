@@ -43,7 +43,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Internal
         internal  virtual   Task<InvokeResult> InvokeDelegateAsync(SyncRequestTask task, string messageName, JsonValue messageValue, SyncContext syncContext)
             => throw new InvalidOperationException("expect asynchronous implementation");
         
-        internal  virtual        InvokeResult  InvokeDelegate     (SyncRequestTask task, string messageName, JsonValue messageValue, SyncContext syncContext)
+        internal  virtual        InvokeResult  InvokeDelegate     (SyncRequestTask task, string messageName, in JsonValue messageValue, SyncContext syncContext)
             => throw new InvalidOperationException("expect synchronous implementation");
         
         protected MessageDelegate (string name) {
@@ -62,7 +62,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Internal
             this.handler    = handler;
         }
         
-        internal override InvokeResult InvokeDelegate(SyncRequestTask task, string messageName, JsonValue messageValue, SyncContext syncContext) {
+        internal override InvokeResult InvokeDelegate(SyncRequestTask task, string messageName, in JsonValue messageValue, SyncContext syncContext) {
             var cmd     = new MessageContext(task, messageName,  syncContext);
             var param   = new Param<TValue> (messageValue, syncContext); 
             handler(param, cmd);
@@ -110,7 +110,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Internal
             this.handler    = handler;
         }
         
-        internal override InvokeResult InvokeDelegate(SyncRequestTask task, string messageName, JsonValue messageValue, SyncContext syncContext) {
+        internal override InvokeResult InvokeDelegate(SyncRequestTask task, string messageName, in JsonValue messageValue, SyncContext syncContext) {
             var cmd     = new MessageContext(task, messageName,  syncContext);
             var param   = new Param<TValue> (messageValue, syncContext); 
             TResult result  = handler(param, cmd);

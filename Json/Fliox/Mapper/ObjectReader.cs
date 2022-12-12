@@ -38,11 +38,11 @@ namespace Friflo.Json.Fliox.Mapper
         
         //
         // --- Utf8Array
-        T       Read<T>     (JsonValue utf8Array);
-        object  ReadObject  (JsonValue utf8Array, Type type);
+        T       Read<T>     (in JsonValue utf8Array);
+        object  ReadObject  (in JsonValue utf8Array, Type type);
 
-        T       ReadTo<T>   (JsonValue utf8Array, T         obj, bool setMissingFields);
-        object  ReadToObject(JsonValue utf8Array, object    obj, bool setMissingFields);
+        T       ReadTo<T>   (in JsonValue utf8Array, T         obj, bool setMissingFields);
+        object  ReadToObject(in JsonValue utf8Array, object    obj, bool setMissingFields);
     }
     
 #if !UNITY_5_3_OR_NEWER
@@ -218,21 +218,21 @@ namespace Friflo.Json.Fliox.Mapper
         
         // --------------- JsonValue ---------------
         // --- Read()
-        public T Read<T>(JsonValue json) {
+        public T Read<T>(in JsonValue json) {
             InitJsonReaderArray(json, false);
             T result = ReadStart<T>(default);
             JsonBurstError();
             return result;
         }
         
-        public object ReadObject(JsonValue json, Type type) {
+        public object ReadObject(in JsonValue json, Type type) {
             InitJsonReaderArray(json, false);
             Var result = ReadStart(type);
             JsonBurstError();
             return result.ToObject();
         }
         
-        internal Var ReadObjectVar(JsonValue json, Type type) {
+        internal Var ReadObjectVar(in JsonValue json, Type type) {
             InitJsonReaderArray(json, false);
             Var result = ReadStart(type);
             JsonBurstError();
@@ -240,14 +240,14 @@ namespace Friflo.Json.Fliox.Mapper
         }
 
         // --- ReadTo()
-        public T ReadTo<T>(JsonValue json, T obj, bool setMissingFields)  {
+        public T ReadTo<T>(in JsonValue json, T obj, bool setMissingFields)  {
             InitJsonReaderArray(json, setMissingFields);
             T result = ReadToStart(obj);
             JsonBurstError();
             return result;
         }
 
-        public object ReadToObject(JsonValue json, object obj, bool setMissingFields)  {
+        public object ReadToObject(in JsonValue json, object obj, bool setMissingFields)  {
             InitJsonReaderArray(json, setMissingFields);
             object result = ReadToStart(obj);
             JsonBurstError();
