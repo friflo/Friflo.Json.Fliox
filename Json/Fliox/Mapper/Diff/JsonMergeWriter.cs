@@ -9,8 +9,9 @@ using static Friflo.Json.Fliox.Mapper.Diff.DiffType;
 namespace Friflo.Json.Fliox.Mapper.Diff
 {
     /// <summary>
-    /// Create the a JSON value by the given <see cref="DiffNode"/>. <br/>
-    /// The JSON result is intended to be merged (assigned) into a given object by using <see cref="ObjectReader.ReadTo{T}(JsonValue,T, bool)"/>
+    /// Create the a JSON patch value by the given <see cref="DiffNode"/>. <br/>
+    /// The JSON patch result is intended to be merged (assigned) into a given object
+    /// by using <see cref="ObjectReader.ReadTo{T}(JsonValue,T, bool)"/>
     /// </summary>
     public sealed class JsonMergeWriter : IDisposable
     {
