@@ -124,7 +124,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 case RestRequestType.write:     return $"write {database}/{container}";
                 case RestRequestType.merge:     return $"merge {database}/{container}";
 
-                case RestRequestType.error:     return $"error {errorStatus} {errorType} {errorType}";
+                case RestRequestType.error:     return $"error {errorStatus}: {errorType} > {errorMessage}";
             }
             return null;
         }
