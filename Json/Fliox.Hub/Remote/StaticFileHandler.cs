@@ -130,6 +130,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 context.WriteError("list directory", msg, 404);
                 return;
             }
+            Array.Sort(fileNames);
             using (var mapper = context.Pool.ObjectMapper.Get()) {
                 var writer      = mapper.instance.writer;
                 writer.Pretty   = true;
