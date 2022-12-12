@@ -5,7 +5,11 @@
       "task":       "upsert",
       "container":  "articles",
       "entities": [
-        { "id": "new-article", "name":"New Article S10"}
+        {
+          "id":       1,
+          "name":     "New Article S10",
+          "producer": 15
+        }
       ]
     }
   ],

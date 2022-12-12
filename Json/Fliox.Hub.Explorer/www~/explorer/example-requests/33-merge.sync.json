@@ -6,7 +6,7 @@
       "container":  "articles",
       "patches": [
         {
-          "id": "new-article",
+          "id":   1,
           "name": "patched Name"
         }
       ]

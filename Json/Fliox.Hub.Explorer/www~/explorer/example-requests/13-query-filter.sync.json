@@ -4,11 +4,15 @@
     {
       "task":       "query",
       "container":  "articles",
-      "filter":     "o.name == 'Smartphone'",
+      "filter":     "o => o.name == 'Smartphone'",
       "filterTree": {
-        "op"    : "equal",
-        "left"  : { "op": "field" , "name":  "o.name"     },
-        "right" : { "op": "string", "value": "Smartphone" }
+        "op":  "filter",
+        "arg": "o",
+        "body": {
+          "op"    : "equal",
+          "left"  : { "op": "field" , "name":  "o.name" },
+          "right" : { "op": "string", "value": "Smartphone" }
+        }
       }
     }
   ],

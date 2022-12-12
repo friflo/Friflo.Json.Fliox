@@ -1,17 +1,20 @@
 {
-  "msg": "sync",
-  "tasks": [
-    {
-      "task":       "create",
-      "container":  "articles",
-      "entities": [
-        { "id": "new-article", "name":"New Article S10"}
-      ]
-    }
-  ],
-  "info": [
-      "create an article in the given container",
-      "return an error if entity already exist"
-  ]
+    "msg": "sync",
+    "tasks": [
+      {
+        "task":       "create",
+        "container":  "articles",
+        "entities": [
+          {
+            "id":       1,
+            "name":     "New Article S10",
+            "producer": 15
+          }
+        ]
+      }
+    ],
+    "info": [
+        "create an article in the given container",
+        "return an error if entity already exist"
+    ]
 }
-  

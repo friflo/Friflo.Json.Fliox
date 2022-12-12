@@ -4,7 +4,7 @@
     {
       "task":       "subscribeChanges",
       "container":  "articles", 
-      "changes": ["create", "upsert", "delete", "patch"]
+      "changes": ["create", "upsert", "delete", "merge"]
     }
   ],
   "info":[

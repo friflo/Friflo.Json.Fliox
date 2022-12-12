@@ -5,7 +5,7 @@
       "task":       "aggregate",
       "type":       "count",
       "container":  "articles",
-      "filter":     "o.name == 'Smartphone'"
+      "filter":     "o => o.name == 'Smartphone'"
     }
   ],
   "info": [

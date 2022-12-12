@@ -4,7 +4,7 @@
     {
       "task":       "delete",
       "container":  "articles",
-      "ids": ["new-article"]
+      "ids": ["1"]
     }
   ],
   "info":   "delete an article in the given container"
