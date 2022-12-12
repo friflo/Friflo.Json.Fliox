@@ -36,7 +36,8 @@ public static class StartupAsp6
             await context.Response.WriteAsync("redirect");
         });
         app.Map("/fliox/{*path}", async context =>  {
-            await context.HandleFlioxRequest(httpHost).ConfigureAwait(false);
+            var requestContext = await context.ExecuteFlioxRequest(httpHost).ConfigureAwait(false);
+            await context.WriteFlioxResponse(requestContext).ConfigureAwait(false);
         });
         
         // use app.Start() / app.WaitForShutdown() instead of app.Run() to get startPage
