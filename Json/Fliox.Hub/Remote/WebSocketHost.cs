@@ -83,27 +83,31 @@ namespace Friflo.Json.Fliox.Hub.Remote
         private Task RunSendLoop() {
             var loopTask = Task.Run(async () => {
                 try {
-                    while (true) {
-                        var remoteEvent = await sendQueue.DequeMessages(messages).ConfigureAwait(false);
-                        foreach (var message in messages) {
-                            if (LogMessage) {
-                                var msg = RegExLineFeed.Replace(message.AsString(), "");
-                                Logger.Log(HubLog.Info, msg);
-                            }
-                            var arraySegment = message.AsArraySegment();
-                            // if (sendMessage.Count > 100000) Console.WriteLine($"SendLoop. size: {sendMessage.Count}");
-                            await webSocket.SendAsync(arraySegment, WebSocketMessageType.Text, true, CancellationToken.None).ConfigureAwait(false);
-                        }
-                        if (remoteEvent == MessageBufferEvent.Closed) {
-                            return;
-                        }
-                    }
+                    await SendLoop();
                 } catch (Exception e) {
                     var msg = GetExceptionMessage("WebSocketHost.SendLoop()", remoteEndPoint, e);
                     Logger.Log(HubLog.Info, msg);
                 }
             });
             return loopTask;
+        }
+        
+        private async Task SendLoop() {
+            while (true) {
+                var remoteEvent = await sendQueue.DequeMessages(messages).ConfigureAwait(false);
+                foreach (var message in messages) {
+                    if (LogMessage) {
+                        var msg = RegExLineFeed.Replace(message.AsString(), "");
+                        Logger.Log(HubLog.Info, msg);
+                    }
+                    var arraySegment = message.AsArraySegment();
+                    // if (sendMessage.Count > 100000) Console.WriteLine($"SendLoop. size: {sendMessage.Count}");
+                    await webSocket.SendAsync(arraySegment, WebSocketMessageType.Text, true, CancellationToken.None).ConfigureAwait(false);
+                }
+                if (remoteEvent == MessageBufferEvent.Closed) {
+                    return;
+                }
+            }
         }
         
         /// <summary>
