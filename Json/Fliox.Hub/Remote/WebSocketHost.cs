@@ -77,21 +77,18 @@ namespace Friflo.Json.Fliox.Hub.Remote
         private  static readonly   Regex   RegExLineFeed   = new Regex(@"\s+");
         private  static readonly   bool    LogMessage      = false;
         
+        private async Task RunSendLoop() {
+            try {
+                await SendLoop();
+            } catch (Exception e) {
+                var msg = GetExceptionMessage("WebSocketHost.SendLoop()", remoteEndPoint, e);
+                Logger.Log(HubLog.Info, msg);
+            }
+        }
+        
         // Send queue (sendWriter / sendReader) is required  to prevent having more than one WebSocket.SendAsync() call outstanding.
         // Otherwise:
         // System.InvalidOperationException: There is already one outstanding 'SendAsync' call for this WebSocket instance. ReceiveAsync and SendAsync can be called simultaneously, but at most one outstanding operation for each of them is allowed at the same time. 
-        private Task RunSendLoop() {
-            var loopTask = Task.Run(async () => {
-                try {
-                    await SendLoop();
-                } catch (Exception e) {
-                    var msg = GetExceptionMessage("WebSocketHost.SendLoop()", remoteEndPoint, e);
-                    Logger.Log(HubLog.Info, msg);
-                }
-            });
-            return loopTask;
-        }
-        
         private async Task SendLoop() {
             while (true) {
                 var remoteEvent = await sendQueue.DequeMessages(messages).ConfigureAwait(false);
