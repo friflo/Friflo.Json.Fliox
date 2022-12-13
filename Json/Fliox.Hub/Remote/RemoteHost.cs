@@ -157,7 +157,10 @@ namespace Friflo.Json.Fliox.Hub.Remote
         }
     }
     
-    /// <summary>Time values are retrieved with <see cref="Stopwatch.GetTimestamp"/></summary>
+    /// <summary>
+    /// Time values are the difference of two timestamps: endTime - startTime <br/>
+    /// timestamps are used from <see cref="Stopwatch.GetTimestamp"/>
+    /// </summary>
     public sealed class HostMetrics {
         /// <summary> accumulated request count of all WebSocket's </summary>
         public int  websocketRequestCount;
