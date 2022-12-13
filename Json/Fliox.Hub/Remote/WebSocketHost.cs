@@ -78,6 +78,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
         private  static readonly   bool    LogMessage      = false;
         
         private async Task RunSendLoop() {
+            // SendLoop is I/O bound no need to encapsulate in
+            // return Task.Run(async () => { ... });
             try {
                 await SendLoop();
             } catch (Exception e) {
