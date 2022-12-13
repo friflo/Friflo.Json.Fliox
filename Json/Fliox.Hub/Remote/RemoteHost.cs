@@ -19,8 +19,9 @@ namespace Friflo.Json.Fliox.Hub.Remote
 {
     public class RemoteHost : IDisposable, ILogSource
     {
-        public   readonly   FlioxHub    localHub;
-        public   readonly   SharedEnv   sharedEnv;
+        public   readonly   FlioxHub        localHub;
+        public   readonly   SharedEnv       sharedEnv;
+        public   readonly   HostMetrics     metrics = new HostMetrics();
         
         /// Only set to true for testing. It avoids an early out at <see cref="EventSubClient.SendEvents"/> 
         public              bool        fakeOpenClosedSockets;
@@ -154,5 +155,15 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 }
             }
         }
+    }
+    
+    /// <summary>Time values are retrieved with <see cref="Stopwatch.GetTimestamp"/></summary>
+    public sealed class HostMetrics {
+        /// <summary> accumulated request count of all WebSocket's </summary>
+        public int  websocketRequestCount;
+        /// <summary> accumulated read request time of all WebSocket's </summary>
+        public long websocketRequestReadTime;
+        /// <summary> accumulated request execution time of all WebSocket's </summary>
+        public long websocketRequestExecuteTime;
     }
 }

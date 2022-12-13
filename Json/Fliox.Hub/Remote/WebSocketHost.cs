@@ -34,12 +34,19 @@ namespace Friflo.Json.Fliox.Hub.Remote
         private  readonly   SharedEnv                           sharedEnv;
         private  readonly   IPEndPoint                          remoteEndPoint;
         private  readonly   TypeStore                           typeStore;
+        private  readonly   HostMetrics                         hostMetrics;
         
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         public              IHubLogger                          Logger { get; }
 
         
-        private WebSocketHost (SharedEnv env, WebSocket webSocket, IPEndPoint remoteEndPoint, bool fakeOpenClosedSocket) {
+        private WebSocketHost (
+            SharedEnv       env,
+            WebSocket       webSocket,
+            IPEndPoint      remoteEndPoint,
+            bool            fakeOpenClosedSocket,
+            HostMetrics     hostMetrics)
+        {
             pool                        = env.Pool;
             sharedEnv                   = env;
             Logger                      = env.hubLogger;
@@ -47,6 +54,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             this.webSocket              = webSocket;
             this.remoteEndPoint         = remoteEndPoint;
             this.fakeOpenClosedSocket   = fakeOpenClosedSocket;
+            this.hostMetrics          = hostMetrics;
             
             sendQueue                   = new MessageBufferQueue();
             messages                    = new List<MessageBuffer>();
@@ -157,7 +165,11 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 // JsonResponse response = await remoteHost.ExecuteJsonRequest(mapper, requestContent, syncContext).ConfigureAwait(false);
                 JsonResponse response;
                 try {
+                    Interlocked.Increment(ref hostMetrics.websocketRequestCount);
+                    var t1 = Stopwatch.GetTimestamp();
                     var syncRequest = RemoteUtils.ReadSyncRequest(mapper, requestContent, out string error);
+                    var t2 = Stopwatch.GetTimestamp();
+                    
                     if (error != null) {
                         response = JsonResponse.CreateError(mapper, error, ErrorResponseType.BadResponse, null);
                     } else {
@@ -171,6 +183,10 @@ namespace Friflo.Json.Fliox.Hub.Remote
                         }
                         response = RemoteHost.CreateJsonResponse(syncResult, syncRequest.reqId, mapper);
                     }
+                    var t3 = Stopwatch.GetTimestamp();
+                    
+                    Interlocked.Add(ref hostMetrics.websocketRequestReadTime,     t2 - t1);
+                    Interlocked.Add(ref hostMetrics.websocketRequestExecuteTime,  t3 - t2);
                 }
                 catch (Exception e) {
                     var errorMsg = ErrorResponse.ErrorFromException(e).ToString();
@@ -185,9 +201,12 @@ namespace Friflo.Json.Fliox.Hub.Remote
         /// The loops are executed until the WebSocket is closed or disconnected. <br/>
         /// The method <b>don't</b> throw exception. WebSocket exceptions are catched and written to <see cref="Logger"/> <br/>
         /// </summary>
-        public static async Task SendReceiveMessages(WebSocket websocket, IPEndPoint remoteEndPoint, RemoteHost remoteHost)
+        public static async Task SendReceiveMessages(
+            WebSocket   websocket,
+            IPEndPoint  remoteEndPoint,
+            RemoteHost  remoteHost)
         {
-            var  target     = new WebSocketHost(remoteHost.sharedEnv, websocket, remoteEndPoint, remoteHost.fakeOpenClosedSockets);
+            var  target     = new WebSocketHost(remoteHost.sharedEnv, websocket, remoteEndPoint, remoteHost.fakeOpenClosedSockets, remoteHost.metrics);
             Task sendLoop   = null;
             try {
                 sendLoop = target.RunSendLoop();
