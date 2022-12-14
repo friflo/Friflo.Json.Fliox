@@ -353,18 +353,17 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         
         /// <summary>
         /// Loop execute only I/O calls no need to wrap in
-        /// return Task.Run(async () => { ... });   // todo remove Task.Run(()
+        /// return Task.Run(async () => { ... });
         /// </summary>
-        private Task RunSendEventLoop(IDataChannelReader<EventSubClient> clientEventReader) {
-            return Task.Run(async () => { 
-                try {
-                    await SendEventLoop(clientEventReader);
-                } catch (Exception e) {
-                    var message = "ClientEventLoop() failed";
-                    sharedEnv.Logger.Log(HubLog.Error, message, e);
-                    Debug.Fail(message, e.Message);
-                }
-            });
+        /// <seealso cref="WebSocketHost.RunReceiveMessageLoop"/>
+        private async Task RunSendEventLoop(IDataChannelReader<EventSubClient> clientEventReader) {
+            try {
+                await SendEventLoop(clientEventReader);
+            } catch (Exception e) {
+                var message = "RunSendEventLoop() failed";
+                sharedEnv.Logger.Log(HubLog.Error, message, e);
+                Debug.Fail(message, e.Message);
+            }
         }
         
         private async Task SendEventLoop(IDataChannelReader<EventSubClient> clientEventReader) {

@@ -89,11 +89,12 @@ namespace Friflo.Json.Fliox.Hub.Remote
         /// Loop execute only I/O calls no need to wrap in
         /// return Task.Run(async () => { ... });
         /// </summary>
+        /// <seealso cref="WebSocketHost.RunReceiveMessageLoop"/>
         private async Task RunSendMessageLoop() {
             try {
                 await SendMessageLoop();
             } catch (Exception e) {
-                var msg = GetExceptionMessage("WebSocketHost.SendLoop()", remoteEndPoint, e);
+                var msg = GetExceptionMessage("RunSendMessageLoop()", remoteEndPoint, e);
                 Logger.Log(HubLog.Info, msg);
             }
         }
