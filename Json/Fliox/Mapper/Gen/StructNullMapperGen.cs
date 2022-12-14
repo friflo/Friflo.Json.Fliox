@@ -10,13 +10,13 @@ using Friflo.Json.Fliox.Mapper.Map.Object.Reflect;
 
 namespace Friflo.Json.Fliox.Mapper.Gen
 {
-    internal class StructNullMapperGen<T> : ClassMapper<T?> where T : struct {
+    internal sealed class StructNullMapperGen<T> : ClassMapper<T?> where T : struct {
         
         private readonly WriteDelegate<T>       write;
         private readonly ReadFieldDelegate<T>   readField;
         public  override bool                   IsNull(ref T? value) => !value.HasValue;
 
-        protected StructNullMapperGen (
+        internal StructNullMapperGen (
             StoreConfig             config,
             Type                    type,
             ConstructorInfo         constructor,

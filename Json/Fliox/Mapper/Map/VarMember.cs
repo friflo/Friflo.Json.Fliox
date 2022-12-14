@@ -30,7 +30,7 @@ public partial struct Var
 
 
     // --- integer
-    private class MemberInt8<T> : Member {
+    private sealed class MemberInt8<T> : Member {
         private     readonly    Func  <T, byte>     getter;
         private     readonly    Action<T, byte>     setter;
         internal    override    Var                 GetVar (object obj)                 => new Var(getter((T)obj));
@@ -42,7 +42,7 @@ public partial struct Var
         }
     }
     
-    private class MemberInt16<T> : Member {
+    private sealed class MemberInt16<T> : Member {
         private     readonly    Func  <T, short>    getter;
         private     readonly    Action<T, short>    setter;
         internal    override    Var                 GetVar (object obj)                 => new Var(getter((T)obj));
@@ -54,7 +54,7 @@ public partial struct Var
         }
     }
     
-    private class MemberInt32<T> : Member {
+    private sealed class MemberInt32<T> : Member {
         private     readonly    Func  <T, int>      getter;
         private     readonly    Action<T, int>      setter;
         internal    override    Var                 GetVar (object obj)                 => new Var(getter((T)obj));
@@ -66,7 +66,7 @@ public partial struct Var
         }
     }
     
-    private class MemberInt64<T> : Member {
+    private sealed class MemberInt64<T> : Member {
         private     readonly    Func  <T, long>     getter;
         private     readonly    Action<T, long>     setter;
         internal    override    Var                 GetVar (object obj)                 => new Var(getter((T)obj));
@@ -79,7 +79,7 @@ public partial struct Var
     }
     
     // --- integer nullable
-    private class MemberInt8Null<T> : Member {
+    private sealed class MemberInt8Null<T> : Member {
         private     readonly    Func  <T, byte?>    getter;
         private     readonly    Action<T, byte?>    setter;
         internal    override    Var                 GetVar (object obj)                 => new Var(getter((T)obj));
@@ -91,7 +91,7 @@ public partial struct Var
         }
     }
     
-    private class MemberInt16Null<T> : Member {
+    private sealed class MemberInt16Null<T> : Member {
         private     readonly    Func  <T, short?>   getter;
         private     readonly    Action<T, short?>   setter;
         internal    override    Var                 GetVar (object obj)                 => new Var(getter((T)obj));
@@ -103,7 +103,7 @@ public partial struct Var
         }
     }
     
-    private class MemberInt32Null<T> : Member {
+    private sealed class MemberInt32Null<T> : Member {
         private     readonly    Func  <T, int?>     getter;
         private     readonly    Action<T, int?>     setter;
         internal    override    Var                 GetVar (object obj)                 => new Var(getter((T)obj));
@@ -115,7 +115,7 @@ public partial struct Var
         }
     }
     
-    private class MemberInt64Null<T> : Member {
+    private sealed class MemberInt64Null<T> : Member {
         private     readonly    Func  <T, long?>    getter;
         private     readonly    Action<T, long?>    setter;
         internal    override    Var                 GetVar (object obj)                 => new Var(getter((T)obj));
@@ -128,7 +128,7 @@ public partial struct Var
     }
     
     // --- float (32 bit) ---
-    private class MemberFlt<T> : Member {
+    private sealed class MemberFlt<T> : Member {
         private     readonly    Func  <T, float>    getter;
         private     readonly    Action<T, float>    setter;
         internal    override    Var                 GetVar (object obj)                 => new Var(getter((T)obj));
@@ -140,7 +140,7 @@ public partial struct Var
         }
     }
     
-    private class MemberFltNull<T> : Member {
+    private sealed class MemberFltNull<T> : Member {
         private     readonly    Func  <T, float?>   getter;
         private     readonly    Action<T, float?>   setter;
         internal    override    Var                 GetVar (object obj)                 => new Var(getter((T)obj));
@@ -153,7 +153,7 @@ public partial struct Var
     }
     
     // --- double (64 bit) ---
-    private class MemberDbl<T> : Member {
+    private sealed class MemberDbl<T> : Member {
         private     readonly    Func  <T, double>   getter;
         private     readonly    Action<T, double>   setter;
         internal    override    Var                 GetVar (object obj)                 => new Var(getter((T)obj));
@@ -165,7 +165,7 @@ public partial struct Var
         }
     }
     
-    private class MemberDblNull<T> : Member {
+    private sealed class MemberDblNull<T> : Member {
         private     readonly    Func  <T, double?>  getter;
         private     readonly    Action<T, double?>  setter;
         internal    override    Var                 GetVar (object obj)                 => new Var(getter((T)obj));
@@ -178,7 +178,7 @@ public partial struct Var
     }
     
     // --- bool ---
-    private class MemberBool<T> : Member {
+    private sealed class MemberBool<T> : Member {
         private     readonly    Func  <T, bool>     getter;
         private     readonly    Action<T, bool>     setter;
         internal    override    Var                 GetVar (object obj)                 => new Var(getter((T)obj));
@@ -190,7 +190,7 @@ public partial struct Var
         }
     }
     
-    private class MemberBoolNull<T> : Member {
+    private sealed class MemberBoolNull<T> : Member {
         private     readonly    Func  <T, bool?>    getter;
         private     readonly    Action<T, bool?>    setter;
         internal    override    Var                 GetVar (object obj)                 => new Var(getter((T)obj));
@@ -203,7 +203,7 @@ public partial struct Var
     }
     
     // --- char ---
-    private class MemberChar<T> : Member {
+    private sealed class MemberChar<T> : Member {
         private     readonly    Func  <T, char>     getter;
         private     readonly    Action<T, char>     setter;
         internal    override    Var                 GetVar (object obj)                 => new Var(getter((T)obj));
@@ -215,7 +215,7 @@ public partial struct Var
         }
     }
     
-    private class MemberCharNull<T> : Member {
+    private sealed class MemberCharNull<T> : Member {
         private     readonly    Func  <T, char?>    getter;
         private     readonly    Action<T, char?>    setter;
         internal    override    Var                 GetVar (object obj)                 => new Var(getter((T)obj));

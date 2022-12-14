@@ -51,7 +51,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
     }
     
     // ---------------------------------------------------------------------------- double
-    internal class DoubleMatcher : ITypeMatcher {
+    internal sealed class DoubleMatcher : ITypeMatcher {
         public static readonly DoubleMatcher Instance = new DoubleMatcher();
 
         public TypeMapper MatchTypeMapper(Type type, StoreConfig config) {
@@ -62,7 +62,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
             return null;
         }
     }
-    internal class DoubleMapper : TypeMapper<double> {
+    internal sealed class DoubleMapper : TypeMapper<double> {
         public override string  DataTypeName()              => "double";
         public override bool    IsNull(ref double value)    => false;
         
@@ -82,7 +82,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
             return reader.parser.ValueAsDoubleStd(out success);
         }
     }
-    internal class NullableDoubleMapper : TypeMapper<double?> {
+    internal sealed class NullableDoubleMapper : TypeMapper<double?> {
         public override string  DataTypeName()              => "double?";
         public override bool    IsNull(ref double? value)   => !value.HasValue;
         
@@ -104,7 +104,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
     }
 
     // ---------------------------------------------------------------------------- float
-    internal class FloatMatcher : ITypeMatcher {
+    internal sealed class FloatMatcher : ITypeMatcher {
         public static readonly FloatMatcher Instance = new FloatMatcher();
 
         public TypeMapper MatchTypeMapper(Type type, StoreConfig config) {
@@ -115,7 +115,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
             return null;
         }
     }
-    internal class FloatMapper : TypeMapper<float> {
+    internal sealed class FloatMapper : TypeMapper<float> {
         public override string  DataTypeName()          => "float";
         public override bool    IsNull(ref float value) => false;
 
@@ -135,7 +135,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
             return reader.parser.ValueAsFloatStd(out success);
         }
     }
-    internal class NullableFloatMapper : TypeMapper<float?> {
+    internal sealed class NullableFloatMapper : TypeMapper<float?> {
         public override string  DataTypeName()              => "float?";
         public override bool    IsNull(ref float? value)    => !value.HasValue;
 
@@ -157,7 +157,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
     }
 
     // ---------------------------------------------------------------------------- long
-    internal class LongMatcher : ITypeMatcher {
+    internal sealed class LongMatcher : ITypeMatcher {
         public static readonly LongMatcher Instance = new LongMatcher();
                 
         public TypeMapper MatchTypeMapper(Type type, StoreConfig config) {
@@ -168,7 +168,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
             return null;
         }
     }
-    internal class LongMapper : TypeMapper<long> {
+    internal sealed class LongMapper : TypeMapper<long> {
         public override string  DataTypeName()          => "long";
         public override bool    IsNull(ref long value)  => false;
 
@@ -188,7 +188,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
             return reader.parser.ValueAsLong(out success);
         }
     }
-    internal class NullableLongMapper : TypeMapper<long?> {
+    internal sealed class NullableLongMapper : TypeMapper<long?> {
         public override string  DataTypeName()          => "long?";
         public override bool    IsNull(ref long? value) => !value.HasValue;
 
@@ -210,7 +210,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
     }
     
     // ---------------------------------------------------------------------------- int
-    internal class IntMatcher : ITypeMatcher {
+    internal sealed class IntMatcher : ITypeMatcher {
         public static readonly IntMatcher Instance = new IntMatcher();
 
         public TypeMapper MatchTypeMapper(Type type, StoreConfig config) {
@@ -221,7 +221,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
             return null;
         }
     }
-    internal class IntMapper : TypeMapper<int> {
+    internal sealed class IntMapper : TypeMapper<int> {
         public override string  DataTypeName()          => "int";
         public override bool    IsNull(ref int value)   => false;
 
@@ -241,7 +241,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
             return reader.parser.ValueAsInt(out success);
         }
     }
-    internal class NullableIntMapper : TypeMapper<int?> {
+    internal sealed class NullableIntMapper : TypeMapper<int?> {
         public override string  DataTypeName()          => "int?";
         public override bool    IsNull(ref int? value)  => !value.HasValue;
 
@@ -263,7 +263,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
     }
     
     // ---------------------------------------------------------------------------- short
-    internal class ShortMatcher : ITypeMatcher {
+    internal sealed class ShortMatcher : ITypeMatcher {
         public static readonly ShortMatcher Instance = new ShortMatcher();
 
         public TypeMapper MatchTypeMapper(Type type, StoreConfig config) {
@@ -274,7 +274,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
             return null;
         }
     }
-    internal class ShortMapper : TypeMapper<short> {
+    internal sealed class ShortMapper : TypeMapper<short> {
         public override string  DataTypeName()          => "short";
         public override bool    IsNull(ref short value) => false;
         
@@ -294,7 +294,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
             return reader.parser.ValueAsShort(out success);
         }
     }
-    internal class NullableShortMapper : TypeMapper<short?> {
+    internal sealed class NullableShortMapper : TypeMapper<short?> {
         public override string  DataTypeName()              => "short?";
         public override bool    IsNull(ref short? value)    => !value.HasValue;
         
@@ -317,7 +317,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
     
     
     // ---------------------------------------------------------------------------- byte
-    internal class ByteMatcher : ITypeMatcher {
+    internal sealed class ByteMatcher : ITypeMatcher {
         public static readonly ByteMatcher Instance = new ByteMatcher();
 
         public TypeMapper MatchTypeMapper(Type type, StoreConfig config) {
@@ -328,7 +328,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
             return null;
         }
     }
-    internal class ByteMapper : TypeMapper<byte> {
+    internal sealed class ByteMapper : TypeMapper<byte> {
         public override string  DataTypeName()          => "byte";
         public override bool    IsNull(ref byte value)  => false;
 
@@ -348,7 +348,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
             return reader.parser.ValueAsByte(out success);
         }
     }
-    internal class NullableByteMapper : TypeMapper<byte?> {
+    internal sealed class NullableByteMapper : TypeMapper<byte?> {
         public override string  DataTypeName()          => "byte?";
         public override bool    IsNull(ref byte? value) => !value.HasValue;
 
@@ -370,7 +370,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
     }
     
     // ---------------------------------------------------------------------------- bool
-    internal class BoolMatcher : ITypeMatcher {
+    internal sealed class BoolMatcher : ITypeMatcher {
         public static readonly BoolMatcher Instance = new BoolMatcher();
 
         public TypeMapper MatchTypeMapper(Type type, StoreConfig config) {
@@ -382,7 +382,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
         }
     }
     
-    internal class BoolMapper : TypeMapper<bool> {
+    internal sealed class BoolMapper : TypeMapper<bool> {
         public override string  DataTypeName()          => "bool";
         public override bool    IsNull(ref bool value)  => false;
         
@@ -402,7 +402,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
             return reader.parser.ValueAsBool(out success);
         }
     }
-    internal class NullableBoolMapper : TypeMapper<bool?> {
+    internal sealed class NullableBoolMapper : TypeMapper<bool?> {
         public override string  DataTypeName()          => "bool?";
         public override bool    IsNull(ref bool? value) => !value.HasValue;
         

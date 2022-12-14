@@ -8,7 +8,7 @@ using Friflo.Json.Fliox.Mapper.Utils;
 namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
 {
     // --- fields
-    internal class MemberField : Var.Member {
+    internal sealed class MemberField : Var.Member {
         private  readonly   VarType     varType;
         private  readonly   FieldInfo   field;
         
@@ -34,7 +34,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
     }
     
     // --- properties
-    internal class MemberProperty : Var.Member {
+    internal sealed class MemberProperty : Var.Member {
         private  readonly   VarType                 varType;
         private  readonly   Func<object, object>    getLambda;
         private  readonly   Action<object, object>  setLambda;

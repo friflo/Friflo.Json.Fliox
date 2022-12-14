@@ -6,7 +6,7 @@ using Friflo.Json.Fliox.Mapper.Utils;
 
 namespace Friflo.Json.Fliox.Mapper
 {
-    public class ObjectTools
+    public sealed class ObjectTools
     {
         private readonly TypeCache typeCache;
         

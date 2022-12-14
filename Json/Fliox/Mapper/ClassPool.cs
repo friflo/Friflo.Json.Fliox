@@ -9,7 +9,7 @@ namespace Friflo.Json.Fliox.Mapper
     /// <summary>
     /// A pool for class instances of reference types.
     /// </summary>
-    public class ClassPools
+    public sealed class ClassPools
     {
         internal            int             version;
         internal  readonly  TypeStore       typeStore;
