@@ -33,6 +33,10 @@ namespace Friflo.Json.Fliox.Mapper
 #endif
         }
         
+        /// <summary>
+        /// Make pooled class instances available for reuse.<br/>
+        /// These instances were created when using the <see cref="InstancePool"/> in a previous <see cref="Reuse"/> cycle.
+        /// </summary>
         public void Reuse() {
             version++;
             bufferPos = 0;
