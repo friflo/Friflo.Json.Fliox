@@ -11,7 +11,7 @@ namespace Friflo.Json.Fliox.Mapper
     /// A pool for class instances of all types defined in a <see cref="TypeStore"/>.<br/>
     /// Pooled instances are reused when deserializing JSON using an <see cref="ObjectReader"/>
     /// </summary>
-    public class InstancePool
+    public sealed class InstancePool
     {
         private             ClassPoolIntern<object>[]   pools;
         private             int                         poolCount;

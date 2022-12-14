@@ -6,7 +6,7 @@ using System;
 // ReSharper disable ConvertToAutoPropertyWithPrivateSetter
 namespace Friflo.Json.Fliox.Utils
 {
-    public class StreamBuffer
+    public sealed class StreamBuffer
     {
         private     int     capacity;
         private     int     position;

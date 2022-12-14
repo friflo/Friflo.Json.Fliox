@@ -17,7 +17,7 @@ namespace Friflo.Json.Fliox.Utils
     ///   <item>avoid allocated <see cref="buffer"/>'s having too many unused remaining bytes => quadruple capacity</item>
     /// </list>
     /// </remarks>
-    public class MemoryBuffer : IDisposable
+    public sealed class MemoryBuffer : IDisposable
     {
         private             byte[]  startBuffer;
         private             byte[]  buffer;

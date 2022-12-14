@@ -17,7 +17,7 @@ namespace Friflo.Json.Fliox.Transform.Tree
     /// Based on their equalities and differences the resulting JSON value is created.<br/>
     /// Reusing a <see cref="JsonMerger"/> instance typically result in processing without any heap allocations.
     /// </summary>
-    public class JsonMerger : IDisposable
+    public sealed class JsonMerger : IDisposable
     {
         public              string              Error { get; private set; }
         public              bool                WriteNullMembers {

@@ -18,7 +18,7 @@ namespace Friflo.Json.Fliox.Utils
     /// One buffer is used to store newly enqueued messages. <br/>
     /// The other buffer is used to read dequeued messages. <br/> 
     /// </summary>
-    public class MessageBufferQueue : IDisposable
+    public sealed class MessageBufferQueue : IDisposable
     {
         private             byte[]          buffer0;
         private             int             buffer0Pos;

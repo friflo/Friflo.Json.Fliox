@@ -48,7 +48,7 @@ namespace Friflo.Json.Fliox.Mapper
     } 
 
     /// <summary> Contain pooled instances of a specific type </summary>
-    public class ClassPool<T> : ClassPool where T : class, new() // constraint class is not necessary but improves new T() calls.
+    public sealed class ClassPool<T> : ClassPool where T : class, new() // constraint class is not necessary but improves new T() calls.
     {
         private  readonly   ClassPools          pools;
         private  readonly   TypeMapper<T>       mapper;

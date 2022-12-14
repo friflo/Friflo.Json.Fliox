@@ -7,7 +7,7 @@ using System.Collections.Generic;
 // ReSharper disable ConvertToAutoPropertyWithPrivateSetter
 namespace Friflo.Json.Fliox.Utils
 {
-    public class Deque<T>
+    public sealed class Deque<T>
     {
         private         int     count;
         private         int     first;

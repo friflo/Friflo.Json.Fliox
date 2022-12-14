@@ -17,7 +17,7 @@ namespace Friflo.Json.Fliox.Transform.Tree
     /// Two <see cref="JsonAst"/> instances are used by <see cref="JsonMerger"/> for efficient patching
     /// of a given JSON value with a second JSON patch value. 
     /// </summary>
-    public class JsonAst
+    public sealed class JsonAst
     {
         internal    JsonAstIntern       intern; // ast state / result
         // --- public API

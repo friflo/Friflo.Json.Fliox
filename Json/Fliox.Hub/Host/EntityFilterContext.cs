@@ -21,7 +21,7 @@ namespace Friflo.Json.Fliox.Hub.Host
     }
     
     /// Default implementation. Performs a full table scan! Act as reference and is okay for small data sets
-    public class EntityFilterContext : IDisposable
+    public sealed class EntityFilterContext : IDisposable
     {
         public              List<EntityValue>       Result              => result;
         
