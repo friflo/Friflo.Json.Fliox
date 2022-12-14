@@ -27,8 +27,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Utils
             queue.Enqueue(msg1);
             queue.Enqueue(msg2);
             
-            var messages = new List<MessageBuffer>();
-            var ev = await queue.DequeMessages(messages);
+            var messages    = new List<JsonValue>();
+            var ev          = await queue.DequeMessages(messages);
             
             queue.Enqueue(msg3);
 
@@ -53,7 +53,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Utils
             queue.Enqueue(msg1);
             queue.Close();
             
-            var messages    = new List<MessageBuffer>();
+            var messages    = new List<JsonValue>();
             var ev          = await queue.DequeMessages(messages);
             
             AreEqual(1, messages.Count);
@@ -65,7 +65,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Utils
         public async Task TestMessageBufferWait() {
             var queue = new MessageBufferQueue(2);
             
-            var messages = new List<MessageBuffer>();
+            var messages = new List<JsonValue>();
             var waitTask = queue.DequeMessages(messages);
             
             var msg1 = new JsonValue("msg-1");
@@ -112,7 +112,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Utils
             int messageIndex    = 0;
             int dequeCount      = 0;
             while (true) {
-                var messages    = new List<MessageBuffer>();
+                var messages    = new List<JsonValue>();
                 var ev          = await queue.DequeMessages(messages);
                 dequeCount++;
                 // Console.WriteLine($"{count} - messages: {messages.Count}");

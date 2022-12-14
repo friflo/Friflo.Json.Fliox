@@ -3,29 +3,11 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace Friflo.Json.Fliox.Utils
 {
-    public readonly struct MessageBuffer
-    {
-        private  readonly   byte[]  buffer;
-        private  readonly   int     start;
-        private  readonly   int     len;
-        
-        public   override   string  ToString()      => AsString();
-        public              string  AsString()      => buffer == null ? "null" : Encoding.UTF8.GetString(buffer, start, len);
-        public  ArraySegment<byte>  AsArraySegment()=> new ArraySegment<byte>(buffer, start, len);
-        
-        internal MessageBuffer(byte[] buffer, int start, int len) {
-            this.buffer = buffer;
-            this.start  = start;
-            this.len    = len;
-        }
-    }
-    
     public enum MessageBufferEvent {
         Closed      = 1,
         NewMessage  = 2,
@@ -38,26 +20,26 @@ namespace Friflo.Json.Fliox.Utils
     /// </summary>
     public class MessageBufferQueue : IDisposable
     {
-        private             byte[]                  buffer0;
-        private             int                     buffer0Pos;
-        private             byte[]                  buffer1;
-        private             int                     buffer1Pos;
+        private             byte[]          buffer0;
+        private             int             buffer0Pos;
+        private             byte[]          buffer1;
+        private             int             buffer1Pos;
         
-        private             int                     writeBuffer; // 0 or 1
+        private             int             writeBuffer; // 0 or 1
         
-        private             byte[]                  Buffer         => writeBuffer == 0 ? buffer0 : buffer1;
-        private             int                     GetBufferPos() => writeBuffer == 0 ? buffer0Pos : buffer1Pos;
-        private             void                    SetBufferPos(int pos) { if (writeBuffer == 0) buffer0Pos = pos; else buffer1Pos = pos; }
+        private             byte[]          Buffer          => writeBuffer == 0 ? buffer0 : buffer1;
+        private             int             GetBufferPos()  => writeBuffer == 0 ? buffer0Pos : buffer1Pos;
+        private             void            SetBufferPos(int pos) { if (writeBuffer == 0) buffer0Pos = pos; else buffer1Pos = pos; }
 
-        private  readonly   List<MessageBuffer>     queue;
+        private  readonly   List<JsonValue> queue;
         
-        private             bool                    closed;
-        private  readonly   SemaphoreSlim           messageAvailable;
+        private             bool            closed;
+        private  readonly   SemaphoreSlim   messageAvailable;
         
         public MessageBufferQueue(int capacity = 128) {
             buffer0             = new byte[capacity];
             buffer1             = new byte[capacity];
-            queue               = new List<MessageBuffer>();
+            queue               = new List<JsonValue>();
             
             messageAvailable    = new SemaphoreSlim(0, 1);
         }
@@ -94,7 +76,7 @@ namespace Friflo.Json.Fliox.Utils
                     bufferPos = 0;
                 }
                 System.Buffer.BlockCopy(data, start, buffer, bufferPos, len);
-                var message = new MessageBuffer(buffer, bufferPos, len);
+                var message = new JsonValue(buffer, bufferPos, len);
                 queue.Add(message);
                 SetBufferPos(bufferPos + len);
             }
@@ -104,7 +86,7 @@ namespace Friflo.Json.Fliox.Utils
             }
         }
         
-        public async Task<MessageBufferEvent> DequeMessages(List<MessageBuffer> messages)
+        public async Task<MessageBufferEvent> DequeMessages(List<JsonValue> messages)
         {
             messages.Clear();
             await messageAvailable.WaitAsync().ConfigureAwait(false);

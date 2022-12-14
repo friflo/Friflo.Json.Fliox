@@ -28,7 +28,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         private  readonly   bool                fakeOpenClosedSocket;
 
         private  readonly   MessageBufferQueue  sendQueue;
-        private  readonly   List<MessageBuffer> messages;
+        private  readonly   List<JsonValue>     messages;
         
         private  readonly   FlioxHub            hub;
         private  readonly   Pool                pool;
@@ -58,7 +58,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             this.hostMetrics            = remoteHost.metrics;
             
             sendQueue                   = new MessageBufferQueue();
-            messages                    = new List<MessageBuffer>();
+            messages                    = new List<JsonValue>();
         }
 
         public void Dispose() {
