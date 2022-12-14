@@ -124,8 +124,12 @@ namespace Friflo.Json.Fliox.Hub.Remote
         /// Loop execute I/O calls and is CPU-bound (parse request, execute request, create response)
         /// todo should use: return Task.Run(async () => { ... });
         /// <br/>
-        /// See: https://blog.stephencleary.com/2013/10/taskrun-etiquette-and-proper-usage.html <br/>
-        /// See: https://blog.stephencleary.com/2013/11/taskrun-etiquette-examples-even-in.html
+        /// See. [Should I expose asynchronous wrappers for synchronous methods? - .NET Parallel Programming]
+        ///         https://devblogs.microsoft.com/pfxteam/should-i-expose-asynchronous-wrappers-for-synchronous-methods
+        /// See: [Task.Run Etiquette Examples: Even in the Complex Case, Don't Use Task.Run in the Implementation]
+        ///         https://blog.stephencleary.com/2013/11/taskrun-etiquette-examples-even-in.html
+        /// See: [Task.Run Etiquette and Proper Usage]
+        ///         https://blog.stephencleary.com/2013/10/taskrun-etiquette-and-proper-usage.html
         /// </summary>
         private async Task RunReceiveMessageLoop(FlioxHub hub) {
             using (var pooledMapper = pool.ObjectMapper.Get()) {
