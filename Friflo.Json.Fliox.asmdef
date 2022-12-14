@@ -1,7 +1,6 @@
 {
     "name": "Friflo.Json.Fliox",
     "references": [
-        "Unity.Collections",
         "Unity.Burst"
     ],
     "includePlatforms": [],

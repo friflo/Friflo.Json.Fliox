@@ -3,9 +3,7 @@
     "references": [
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner",
-        "Unity.Entities",
         "Unity.Burst",
-        "Unity.Collections",
         "Friflo.Json.Fliox",
 		"Friflo.Json.Tests"
     ],
