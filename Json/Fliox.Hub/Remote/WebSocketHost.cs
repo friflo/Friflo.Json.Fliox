@@ -121,13 +121,15 @@ namespace Friflo.Json.Fliox.Hub.Remote
         }
         
         /// <summary>
-        /// Loop execute I/O calls and is CPU-bound (parse request, execute request, create response)
-        /// todo should use: return Task.Run(async () => { ... });
+        /// Loop execute I/O calls and is CPU-bound (parse request, execute request, create response) <br/>
+        /// As recommended in [... Don't Use Task.Run in the Implementation] <br/>
+        /// "They concluded that the best solution is to use an asynchronous signature
+        /// but document the method clearly so that its CPU-bound nature will not be surprising" <br/>
         /// <br/>
         /// See. [Should I expose asynchronous wrappers for synchronous methods? - .NET Parallel Programming]
-        ///         https://devblogs.microsoft.com/pfxteam/should-i-expose-asynchronous-wrappers-for-synchronous-methods
+        ///         https://devblogs.microsoft.com/pfxteam/should-i-expose-asynchronous-wrappers-for-synchronous-methods <br/>
         /// See: [Task.Run Etiquette Examples: Even in the Complex Case, Don't Use Task.Run in the Implementation]
-        ///         https://blog.stephencleary.com/2013/11/taskrun-etiquette-examples-even-in.html
+        ///         https://blog.stephencleary.com/2013/11/taskrun-etiquette-examples-even-in.html <br/>
         /// See: [Task.Run Etiquette and Proper Usage]
         ///         https://blog.stephencleary.com/2013/10/taskrun-etiquette-and-proper-usage.html
         /// </summary>
