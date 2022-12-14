@@ -165,7 +165,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 // JsonResponse response = await remoteHost.ExecuteJsonRequest(mapper, requestContent, syncContext).ConfigureAwait(false);
                 JsonResponse response;
                 try {
-                    Interlocked.Increment(ref hostMetrics.websocketRequestCount);
+                    Interlocked.Increment(ref hostMetrics.webSocket.receivedCount);
                     var t1 = Stopwatch.GetTimestamp();
                     var syncRequest = RemoteUtils.ReadSyncRequest(mapper, requestContent, out string error);
                     var t2 = Stopwatch.GetTimestamp();
@@ -185,8 +185,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
                     }
                     var t3 = Stopwatch.GetTimestamp();
                     
-                    Interlocked.Add(ref hostMetrics.websocketRequestReadTime,     t2 - t1);
-                    Interlocked.Add(ref hostMetrics.websocketRequestExecuteTime,  t3 - t2);
+                    Interlocked.Add(ref hostMetrics.webSocket.requestReadTime,     t2 - t1);
+                    Interlocked.Add(ref hostMetrics.webSocket.requestExecuteTime,  t3 - t2);
                 }
                 catch (Exception e) {
                     var errorMsg = ErrorResponse.ErrorFromException(e).ToString();
