@@ -23,38 +23,39 @@ namespace Friflo.Json.Fliox.Hub.Remote
     // [Things I Wish Someone Told Me About ASP.NET Core WebSockets | codetinkerer.com] https://www.codetinkerer.com/2018/06/05/aspnet-core-websockets.html
     public sealed class WebSocketHost : EventReceiver, IDisposable, ILogSource
     {
-        private  readonly   WebSocket                           webSocket;
+        private  readonly   WebSocket           webSocket;
         /// Only set to true for testing. It avoids an early out at <see cref="EventSubClient.SendEvents"/> 
-        private  readonly   bool                                fakeOpenClosedSocket;
+        private  readonly   bool                fakeOpenClosedSocket;
 
-        private  readonly   MessageBufferQueue                  sendQueue;
-        private  readonly   List<MessageBuffer>                 messages;
+        private  readonly   MessageBufferQueue  sendQueue;
+        private  readonly   List<MessageBuffer> messages;
         
-        private  readonly   Pool                                pool;
-        private  readonly   SharedEnv                           sharedEnv;
-        private  readonly   IPEndPoint                          remoteEndPoint;
-        private  readonly   TypeStore                           typeStore;
-        private  readonly   HostMetrics                         hostMetrics;
+        private  readonly   FlioxHub            hub;
+        private  readonly   Pool                pool;
+        private  readonly   SharedEnv           sharedEnv;
+        private  readonly   IPEndPoint          remoteEndPoint;
+        private  readonly   TypeStore           typeStore;
+        private  readonly   HostMetrics         hostMetrics;
         
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         public              IHubLogger                          Logger { get; }
 
         
         private WebSocketHost (
-            SharedEnv       env,
+            RemoteHost      remoteHost,
             WebSocket       webSocket,
-            IPEndPoint      remoteEndPoint,
-            bool            fakeOpenClosedSocket,
-            HostMetrics     hostMetrics)
+            IPEndPoint      remoteEndPoint)
         {
+            var env                     = remoteHost.sharedEnv;
+            hub                         = remoteHost.localHub;
             pool                        = env.Pool;
             sharedEnv                   = env;
             Logger                      = env.hubLogger;
             typeStore                   = env.TypeStore;
             this.webSocket              = webSocket;
             this.remoteEndPoint         = remoteEndPoint;
-            this.fakeOpenClosedSocket   = fakeOpenClosedSocket;
-            this.hostMetrics          = hostMetrics;
+            this.fakeOpenClosedSocket   = remoteHost.fakeOpenClosedSockets;
+            this.hostMetrics            = remoteHost.metrics;
             
             sendQueue                   = new MessageBufferQueue();
             messages                    = new List<MessageBuffer>();
@@ -135,9 +136,9 @@ namespace Friflo.Json.Fliox.Hub.Remote
         /// See: [Task.Run Etiquette and Proper Usage]
         ///         https://blog.stephencleary.com/2013/10/taskrun-etiquette-and-proper-usage.html
         /// </summary>
-        private async Task RunReceiveMessageLoop(FlioxHub hub) {
+        private async Task RunReceiveMessageLoop() {
             using (var pooledMapper = pool.ObjectMapper.Get()) {
-                await ReceiveMessageLoop(hub, pooledMapper.instance).ConfigureAwait(false);
+                await ReceiveMessageLoop(pooledMapper.instance).ConfigureAwait(false);
             }
         }
         
@@ -147,7 +148,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         /// For an <b>out-of-order delivery</b> implementation individual <see cref="SyncContext"/>'s, <see cref="SyncBuffers"/>
         /// and <see cref="MemoryBuffer"/>'s are needed. Heap allocations can be avoided by pooling these instances.
         /// </summary>
-        private async Task ReceiveMessageLoop(FlioxHub hub, ObjectMapper mapper) {
+        private async Task ReceiveMessageLoop(ObjectMapper mapper) {
             var memoryStream            = new MemoryStream();
             var buffer                  = new ArraySegment<byte>(new byte[8192]);
             var syncBuffers             = new SyncBuffers(new List<SyncRequestTask>());
@@ -229,12 +230,12 @@ namespace Friflo.Json.Fliox.Hub.Remote
             IPEndPoint  remoteEndPoint,
             RemoteHost  remoteHost)
         {
-            var  target     = new WebSocketHost(remoteHost.sharedEnv, websocket, remoteEndPoint, remoteHost.fakeOpenClosedSockets, remoteHost.metrics);
+            var  target     = new WebSocketHost(remoteHost, websocket, remoteEndPoint);
             Task sendLoop   = null;
             try {
                 sendLoop = target.RunSendMessageLoop();
 
-                await target.RunReceiveMessageLoop(remoteHost.localHub).ConfigureAwait(false);
+                await target.RunReceiveMessageLoop().ConfigureAwait(false);
 
                 target.sendQueue.Close();
             }
