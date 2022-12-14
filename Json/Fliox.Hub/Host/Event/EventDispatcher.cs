@@ -101,7 +101,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                 var channel             = DataChannelSlim<EventSubClient>.CreateUnbounded(true, true);
                 clientEventWriter       = channel.Writer;
                 var clientEventReader   = channel.Reader;
-                clientEventLoop         = ClientEventLoop(clientEventReader);
+                clientEventLoop         = RunSendEventLoop(clientEventReader);
             }
         }
 
@@ -351,28 +351,34 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             Debug.Fail("NewClientEvent() - clientEventWriter.TryWrite() failed");
         }
         
-        private Task ClientEventLoop(IDataChannelReader<EventSubClient> clientEventReader) {
-            var logger      = sharedEnv.Logger;
-            var loopTask    = Task.Run(async () =>
-            {
-                var args = new SendEventArgs(mapper, eventMessage, eventBuffer);
+        /// <summary>
+        /// Loop execute only I/O calls no need to wrap in
+        /// return Task.Run(async () => { ... });   // todo remove Task.Run(()
+        /// </summary>
+        private Task RunSendEventLoop(IDataChannelReader<EventSubClient> clientEventReader) {
+            return Task.Run(async () => { 
                 try {
-                    while (true) {
-                        var client = await clientEventReader.ReadAsync().ConfigureAwait(false);
-                        if (client != null) {
-                            client.SendEvents(args);
-                            continue;
-                        }
-                        logger.Log(HubLog.Info, $"ClientEventLoop() returns");
-                        return;
-                    }
+                    await SendEventLoop(clientEventReader);
                 } catch (Exception e) {
                     var message = "ClientEventLoop() failed";
-                    logger.Log(HubLog.Error, message, e);
+                    sharedEnv.Logger.Log(HubLog.Error, message, e);
                     Debug.Fail(message, e.Message);
                 }
             });
-            return loopTask;
+        }
+        
+        private async Task SendEventLoop(IDataChannelReader<EventSubClient> clientEventReader) {
+            var logger  = sharedEnv.Logger;
+            var args    = new SendEventArgs(mapper, eventMessage, eventBuffer);
+            while (true) {
+                var client = await clientEventReader.ReadAsync().ConfigureAwait(false);
+                if (client != null) {
+                    client.SendEvents(args);
+                    continue;
+                }
+                logger.Log(HubLog.Info, $"ClientEventLoop() returns");
+                return;
+            }
         }
 
         // --------------------------- serialize remote event optimization ---------------------------

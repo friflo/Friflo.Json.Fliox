@@ -85,11 +85,13 @@ namespace Friflo.Json.Fliox.Hub.Remote
         private  static readonly   Regex   RegExLineFeed   = new Regex(@"\s+");
         private  static readonly   bool    LogMessage      = false;
         
-        private async Task RunSendLoop() {
-            // SendLoop is I/O bound no need to encapsulate in
-            // return Task.Run(async () => { ... });
+        /// <summary>
+        /// Loop execute only I/O calls no need to wrap in
+        /// return Task.Run(async () => { ... });
+        /// </summary>
+        private async Task RunSendMessageLoop() {
             try {
-                await SendLoop();
+                await SendMessageLoop();
             } catch (Exception e) {
                 var msg = GetExceptionMessage("WebSocketHost.SendLoop()", remoteEndPoint, e);
                 Logger.Log(HubLog.Info, msg);
@@ -99,7 +101,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         // Send queue (sendWriter / sendReader) is required  to prevent having more than one WebSocket.SendAsync() call outstanding.
         // Otherwise:
         // System.InvalidOperationException: There is already one outstanding 'SendAsync' call for this WebSocket instance. ReceiveAsync and SendAsync can be called simultaneously, but at most one outstanding operation for each of them is allowed at the same time. 
-        private async Task SendLoop() {
+        private async Task SendMessageLoop() {
             while (true) {
                 var remoteEvent = await sendQueue.DequeMessages(messages).ConfigureAwait(false);
                 foreach (var message in messages) {
@@ -118,12 +120,25 @@ namespace Friflo.Json.Fliox.Hub.Remote
         }
         
         /// <summary>
+        /// Loop execute I/O calls and is CPU-bound (parse request, execute request, create response)
+        /// todo should use: return Task.Run(async () => { ... });
+        /// <br/>
+        /// See: https://blog.stephencleary.com/2013/10/taskrun-etiquette-and-proper-usage.html <br/>
+        /// See: https://blog.stephencleary.com/2013/11/taskrun-etiquette-examples-even-in.html
+        /// </summary>
+        private async Task RunReceiveMessageLoop(FlioxHub hub) {
+            using (var pooledMapper = pool.ObjectMapper.Get()) {
+                await ReceiveMessageLoop(hub, pooledMapper.instance).ConfigureAwait(false);
+            }
+        }
+        
+        /// <summary>
         /// Currently using a single reused context. This is possible as this loop wait for completion of request execution.
         /// This approach causes <b>head-of-line blocking</b> for each WebSocket client. <br/>
         /// For an <b>out-of-order delivery</b> implementation individual <see cref="SyncContext"/>'s, <see cref="SyncBuffers"/>
         /// and <see cref="MemoryBuffer"/>'s are needed. Heap allocations can be avoided by pooling these instances.
         /// </summary>
-        private async Task RunReceiveLoop(RemoteHost remoteHost, ObjectMapper mapper) {
+        private async Task ReceiveMessageLoop(FlioxHub hub, ObjectMapper mapper) {
             var memoryStream            = new MemoryStream();
             var buffer                  = new ArraySegment<byte>(new byte[8192]);
             var syncBuffers             = new SyncBuffers(new List<SyncRequestTask>());
@@ -173,7 +188,6 @@ namespace Friflo.Json.Fliox.Hub.Remote
                     if (error != null) {
                         response = JsonResponse.CreateError(mapper, error, ErrorResponseType.BadResponse, null);
                     } else {
-                        var hub         = remoteHost.localHub;
                         var execution   = hub.InitSyncRequest(syncRequest);
                         ExecuteSyncResult syncResult;
                         if (execution == ExecutionType.Sync) {
@@ -209,11 +223,9 @@ namespace Friflo.Json.Fliox.Hub.Remote
             var  target     = new WebSocketHost(remoteHost.sharedEnv, websocket, remoteEndPoint, remoteHost.fakeOpenClosedSockets, remoteHost.metrics);
             Task sendLoop   = null;
             try {
-                sendLoop = target.RunSendLoop();
+                sendLoop = target.RunSendMessageLoop();
 
-                using (var pooledMapper = target.pool.ObjectMapper.Get()) {
-                    await target.RunReceiveLoop(remoteHost, pooledMapper.instance).ConfigureAwait(false);
-                }
+                await target.RunReceiveMessageLoop(remoteHost.localHub).ConfigureAwait(false);
 
                 target.sendQueue.Close();
             }
