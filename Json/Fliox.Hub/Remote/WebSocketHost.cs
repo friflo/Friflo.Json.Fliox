@@ -90,6 +90,12 @@ namespace Friflo.Json.Fliox.Hub.Remote
         /// Loop is purely I/O bound => don't wrap in
         /// return Task.Run(async () => { ... });
         /// </summary>
+        /// <remarks>
+        /// A send loop reading from a queue is required as message can be sent from two different sources <br/>
+        /// 1. response messages created in <see cref="ReceiveMessageLoop"/> <br/>
+        /// 2. event messages send to <see cref="EventSubClient"/>'s <br/>
+        /// The loop ensures a WebSocket.SendAsync() is called only once at a time.
+        /// </remarks>
         /// <seealso cref="WebSocketHost.RunReceiveMessageLoop"/>
         private async Task RunSendMessageLoop() {
             try {
