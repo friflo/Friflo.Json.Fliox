@@ -107,7 +107,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 throw;
             }
             try {
-                _ = ReceiveLoop(wsConn);
+                _ = ReceiveMessageLoop(wsConn);
             } catch (Exception e) {
                 Debug.Fail("ReceiveLoop() failed", e.Message);
             }
@@ -125,42 +125,52 @@ namespace Friflo.Json.Fliox.Hub.Remote
             await wsConn.websocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "", CancellationToken.None).ConfigureAwait(false);
         }
 
-        private async Task ReceiveLoop(WebSocketConnection wsConn) {
-            var buffer  = new ArraySegment<byte>(new byte[8192]);
-            var ws      = wsConn.websocket;
-            using (var memoryStream = new MemoryStream()) {
-                while (true) {
-                    memoryStream.Position = 0;
-                    memoryStream.SetLength(0);
-                    try {
-                        WebSocketReceiveResult wsResult;
-                        do {
-                            if (ws.State != WebSocketState.Open) {
-                                // Logger.Log(HubLog.Info, $"Pre-ReceiveAsync. State: {ws.State}");
-                                return;
-                            }
-                            wsResult = await ws.ReceiveAsync(buffer, cancellationToken.Token).ConfigureAwait(false);
-                            memoryStream.Write(buffer.Array, buffer.Offset, wsResult.Count);
-                        }
-                        while(!wsResult.EndOfMessage);
-
+        /// <summary>
+        /// In contrast to <see cref="WebSocketHost"/> the <see cref="WebSocketClientHub"/> has no SendMessageLoop() <br/>
+        /// This is possible because WebSocket messages are only response messages created in <see cref="OnReceive"/>. <br/>
+        /// As <see cref="OnReceive"/> is called sequentially in the loop, WebSocket.SendAsync() is called only once at any time.
+        /// Infos: <br/>
+        /// - A blocking WebSocket.SendAsync() call does not block WebSocket.ReceiveAsync() <br/>
+        /// - The created <see cref="WebsocketRequest.response"/>'s act as a queue. <br/>
+        /// </summary>
+        private async Task ReceiveMessageLoop(WebSocketConnection wsConn) {
+            var buffer          = new ArraySegment<byte>(new byte[8192]);
+            var ws              = wsConn.websocket;
+            var memoryStream    = new MemoryStream();
+            while (true)
+            {
+                memoryStream.Position = 0;
+                memoryStream.SetLength(0);
+                try {
+                    WebSocketReceiveResult wsResult;
+                    do {
                         if (ws.State != WebSocketState.Open) {
-                            // Logger.Log(HubLog.Info, $"Post-ReceiveAsync. State: {ws.State}");
+                            // Logger.Log(HubLog.Info, $"Pre-ReceiveAsync. State: {ws.State}");
                             return;
                         }
-                        var messageType = wsResult.MessageType;
-                        if (messageType != WebSocketMessageType.Text) {
-                            Logger.Log(HubLog.Error, $"Expect WebSocket message type text. type: {messageType} {endpoint}");
-                            continue;
-                        }
-                        var requestContent  = new JsonValue(memoryStream.GetBuffer(), (int)memoryStream.Position);
-                        OnReceive (wsConn, requestContent);
-                    } catch (Exception e) {
-                        Logger.Log(HubLog.Error, e.Message);
-                        foreach (var pair in wsConn.requests) {
-                            var request = pair.Value;
-                            request.response.SetCanceled();
-                        }
+                        wsResult = await ws.ReceiveAsync(buffer, cancellationToken.Token).ConfigureAwait(false);
+                        memoryStream.Write(buffer.Array, buffer.Offset, wsResult.Count);
+                    }
+                    while(!wsResult.EndOfMessage);
+
+                    if (ws.State != WebSocketState.Open) {
+                        // Logger.Log(HubLog.Info, $"Post-ReceiveAsync. State: {ws.State}");
+                        return;
+                    }
+                    var messageType = wsResult.MessageType;
+                    if (messageType != WebSocketMessageType.Text) {
+                        Logger.Log(HubLog.Error, $"Expect WebSocket message type text. type: {messageType} {endpoint}");
+                        continue;
+                    }
+                    var requestContent  = new JsonValue(memoryStream.GetBuffer(), (int)memoryStream.Position);
+                    OnReceive (wsConn, requestContent);
+                }
+                catch (Exception e)
+                {
+                    Logger.Log(HubLog.Error, e.Message);
+                    foreach (var pair in wsConn.requests) {
+                        var request = pair.Value;
+                        request.response.SetCanceled();
                     }
                 }
             }
@@ -184,6 +194,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                                 throw new InvalidOperationException($"Expect corresponding request to response. id: {id}");
                             }
                             request.response.SetResult(resp);
+                            // response is awaited in ExecuteRequestAsync()
                             return;
                         case EventMessage ev:
                             OnReceiveEvent(ev);
