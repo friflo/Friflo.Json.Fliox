@@ -86,7 +86,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         private  static readonly   bool    LogMessage      = false;
         
         /// <summary>
-        /// Loop execute only I/O calls no need to wrap in
+        /// Loop is purely I/O bound => don't wrap in
         /// return Task.Run(async () => { ... });
         /// </summary>
         /// <seealso cref="WebSocketHost.RunReceiveMessageLoop"/>
@@ -121,7 +121,9 @@ namespace Friflo.Json.Fliox.Hub.Remote
         }
         
         /// <summary>
-        /// Loop execute I/O calls and is CPU-bound (parse request, execute request, create response) <br/>
+        /// Loop is I/O bound and CPU bound (parse request, execute request, create response) => don't wrap in
+        /// return Task.Run(async () => { ... });
+        /// <br/>
         /// As recommended in [... Don't Use Task.Run in the Implementation] <br/>
         /// "They concluded that the best solution is to use an asynchronous signature
         /// but document the method clearly so that its CPU-bound nature will not be surprising" <br/>

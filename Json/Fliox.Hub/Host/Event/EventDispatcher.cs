@@ -352,7 +352,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         }
         
         /// <summary>
-        /// Loop execute only I/O calls no need to wrap in
+        /// Loop is purely I/O bound => don't wrap in
         /// return Task.Run(async () => { ... });
         /// </summary>
         /// <seealso cref="WebSocketHost.RunReceiveMessageLoop"/>
