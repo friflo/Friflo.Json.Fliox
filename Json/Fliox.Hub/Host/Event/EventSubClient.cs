@@ -86,7 +86,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             return true;
         }
         
-        internal void EnqueueEvent(ref SyncEvent ev) {
+        internal void EnqueueEvent(ref SyncEvent ev) {  // todo use serialized events instead
             lock (unsentEventsDeque) {
                 ev.seq = ++eventCounter;
                 unsentEventsDeque.AddTail(ev);
@@ -163,7 +163,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             }
             var eventMessage = args.eventMessage;
             // Trace.WriteLine("--- SendEvents");
-            while (DequeueEvents(eventMessage.events)) {
+            while (DequeueEvents(eventMessage.events)) { // todo use serialized events instead
                 // var msg = $"DequeueEvent {ev.seq}";
                 // Trace.WriteLine(msg);
                 // Console.WriteLine(msg);
