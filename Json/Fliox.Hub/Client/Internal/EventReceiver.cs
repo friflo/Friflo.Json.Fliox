@@ -3,7 +3,7 @@
 
 using System;
 using Friflo.Json.Fliox.Hub.Host.Event;
-using Friflo.Json.Fliox.Hub.Protocol;
+using Friflo.Json.Fliox.Hub.Remote;
 
 namespace Friflo.Json.Fliox.Hub.Client.Internal
 {
@@ -19,11 +19,11 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         public override bool    IsRemoteTarget ()   => false;
         public override bool    IsOpen ()           => true;
 
-        public override void    SendEvent(EventMessage eventMessage, bool reusedEvent, in SendEventArgs args) {
+        public override void    SendEvent(in RemoteEvent eventMessage) {
             if (!eventMessage.dstClientId.IsEqual(client._intern.clientId))
                 throw new InvalidOperationException("Expect ProtocolEvent.dstId == FlioxClient.clientId");
             
-            client._intern.eventProcessor.EnqueueEvent(client, eventMessage, reusedEvent);
+            client._intern.eventProcessor.EnqueueEvent(client, eventMessage.message);
         }
     }
 }

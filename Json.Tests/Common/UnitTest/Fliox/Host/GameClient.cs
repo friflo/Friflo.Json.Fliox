@@ -1,7 +1,7 @@
 using Friflo.Json.Fliox.Hub.Client;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.Event;
-using Friflo.Json.Fliox.Hub.Protocol;
+using Friflo.Json.Fliox.Hub.Remote;
 
 namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
 {
@@ -29,6 +29,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
     {
         public override bool    IsOpen()           => true;
         public override bool    IsRemoteTarget()   => true;
-        public override void    SendEvent(EventMessage eventMessage, bool reusedEvent, in SendEventArgs args) { }
+        public override void    SendEvent(in RemoteEvent eventMessage) { }
     }
 }

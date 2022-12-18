@@ -37,9 +37,10 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         internal readonly   EventReceiver               eventReceiver;
         
         // --- readonly / private - owned
-        private             ObjectDiffer                            objectDiffer;  // create on demand
+        private             ObjectDiffer                            objectDiffer;   // create on demand
         private             JsonMergeWriter                         mergeWriter;    // create on demand
         private             EntityProcessor                         processor;      // create on demand
+        private             ObjectMapper                            objectMapper;   // create on demand
         internal readonly   EntitySet[]                             entitySets;
         private  readonly   Dictionary<string, EntitySet>           setByName;
         
@@ -79,6 +80,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         internal EntityProcessor        EntityProcessor()       => processor             ?? (processor             = new EntityProcessor());
         internal ObjectDiffer           ObjectDiffer()          => objectDiffer          ?? (objectDiffer          = new ObjectDiffer(typeStore));
         internal JsonMergeWriter        JsonMergeWriter()       => mergeWriter           ?? (mergeWriter           = new JsonMergeWriter(typeStore));
+        internal ObjectMapper           ObjectMapper()          => objectMapper          ?? (objectMapper          = new ObjectMapper(typeStore));
+
         internal SubscriptionProcessor  SubscriptionProcessor() => subscriptionProcessor ?? (subscriptionProcessor = new SubscriptionProcessor());
         internal List<JsonKey>          IdsBuf()                => idsBuf                ?? (idsBuf                = new List<JsonKey>());
 
@@ -117,6 +120,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             objectDiffer            = null;
             mergeWriter             = null;
             processor               = null;
+            objectMapper            = null;
             entitySets              = new EntitySet[entityInfos.Length];
             setByName               = new Dictionary<string, EntitySet>(entityInfos.Length);
             subscriptions           = null; 
@@ -163,6 +167,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             processor?.Dispose();
             objectDiffer?.Dispose();
             mergeWriter?.Dispose();
+            objectMapper?.Dispose();
         }
         
         internal void Reset () {

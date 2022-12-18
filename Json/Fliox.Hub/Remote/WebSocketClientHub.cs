@@ -108,9 +108,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 throw;
             }
             try {
-                using (var pooledMapper = sharedEnv.Pool.ObjectMapper.Get()) {
-                    _ = ReceiveMessageLoop(wsConn, pooledMapper.instance).ConfigureAwait(false);
-                }
+                _ = RunReceiveMessageLoop(wsConn).ConfigureAwait(false);
             } catch (Exception e) {
                 Debug.Fail("ReceiveLoop() failed", e.Message);
             }
@@ -126,6 +124,12 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 wsConnection = null;
             }
             await wsConn.websocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "", CancellationToken.None).ConfigureAwait(false);
+        }
+        
+        private async Task RunReceiveMessageLoop(WebSocketConnection wsConn) {
+            using (var pooledMapper = sharedEnv.Pool.ObjectMapper.Get()) {
+                await ReceiveMessageLoop(wsConn, pooledMapper.instance).ConfigureAwait(false);
+            }
         }
 
         /// <summary>
@@ -182,7 +186,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         
         private void OnReceive(WebSocketConnection wsConn, in JsonValue messageJson, ObjectMapper mapper) {
             // if (messageJson.Length > 100000) Console.WriteLine($"OnReceive. size: {messageJson.Length}");
-            ProtocolMessage message = RemoteUtils.ReadProtocolMessage (messageJson, mapper, out _);
+            var message = RemoteUtils.ReadClientMessage(messageJson, mapper, out _);
             switch (message) {
                 case null:
                     break; // errors are ignored. 
@@ -197,7 +201,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
                     request.response.SetResult(resp);
                     // response is awaited in ExecuteRequestAsync()
                     return;
-                case EventMessage ev:
+                case ClientEventMessage eventMessage:
+                    var ev = new RemoteEvent (eventMessage.dstClientId, messageJson);
                     OnReceiveEvent(ev);
                     break;
             }

@@ -155,7 +155,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                     var message = $"custom request failed - {e.GetType().Name}: {e.Message}";
                     LogException(message, e);
                 }
-            });
+            }).ConfigureAwait(false);
         }
         
         public async Task ExecuteRequest(HttpListenerContext context) {

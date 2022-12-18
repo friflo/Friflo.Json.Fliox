@@ -4,7 +4,6 @@
 using System;
 using System.Collections.Concurrent;
 using System.Threading;
-using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Threading;
 
 // ReSharper disable once CheckNamespace
@@ -19,7 +18,7 @@ namespace Friflo.Json.Fliox.Hub.Client
     /// </remarks>
     public abstract class EventProcessor
     {
-        public abstract void EnqueueEvent(FlioxClient client, EventMessage eventMessage, bool reusedEvent);
+        public abstract void EnqueueEvent(FlioxClient client, in JsonValue eventMessage);
     }
     
     /// <summary>
@@ -30,7 +29,7 @@ namespace Friflo.Json.Fliox.Hub.Client
     /// </remarks>
     public sealed class DirectEventProcessor : EventProcessor
     {
-        public override void EnqueueEvent(FlioxClient client, EventMessage eventMessage, bool reusedEvent) {
+        public override void EnqueueEvent(FlioxClient client, in JsonValue eventMessage) {
             client.ProcessEvents(eventMessage);
         }
     }
@@ -76,8 +75,8 @@ namespace Friflo.Json.Fliox.Hub.Client
 This is typically the case in console applications or unit tests. 
 Consider running application / test withing SingleThreadSynchronizationContext.Run()";
         
-        public override void EnqueueEvent(FlioxClient client, EventMessage eventMessage, bool reusedEvent) {
-            var ev = reusedEvent ? EventMessage.Clone(eventMessage) : eventMessage;
+        public override void EnqueueEvent(FlioxClient client, in JsonValue eventMessage) {
+            var ev = new JsonValue(eventMessage); // todo use MessageBufferQueue instead of creating a copy #RAW_EV
             synchronizationContext.Post(delegate {
                 client.ProcessEvents(ev);
             }, null);
@@ -99,8 +98,8 @@ Consider running application / test withing SingleThreadSynchronizationContext.R
 
         public QueuingEventProcessor() { }
         
-        public override void EnqueueEvent(FlioxClient client, EventMessage eventMessage, bool reusedEvent) {
-            var ev = reusedEvent ? EventMessage.Clone(eventMessage) : eventMessage;
+        public override void EnqueueEvent(FlioxClient client, in JsonValue eventMessage) {
+            var ev = new JsonValue (eventMessage); // todo use MessageBufferQueue instead of creating a copy #RAW_EV
             eventQueue.Enqueue(new QueuedMessage(client, ev));
         }
         
@@ -117,9 +116,9 @@ Consider running application / test withing SingleThreadSynchronizationContext.R
         private readonly struct QueuedMessage
         {
             internal  readonly  FlioxClient     client;
-            internal  readonly  EventMessage    eventMessage;
+            internal  readonly  JsonValue       eventMessage;
             
-            internal QueuedMessage(FlioxClient client, EventMessage eventMessage) {
+            internal QueuedMessage(FlioxClient client, in JsonValue eventMessage) {
                 this.client         = client;
                 this.eventMessage   = eventMessage;
             }

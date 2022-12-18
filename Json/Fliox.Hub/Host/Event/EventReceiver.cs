@@ -11,7 +11,8 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
     public abstract class EventReceiver {
         public abstract bool    IsOpen ();
         public abstract bool    IsRemoteTarget ();
-        public abstract void    SendEvent(EventMessage eventMessage, bool reusedEvent, in SendEventArgs args);
+        /// <summary>Send a serialized <see cref="EventMessage"/> to the receiver</summary>
+        public abstract void    SendEvent(in RemoteEvent eventMessage);
     }
     
     /// <summary>

@@ -73,7 +73,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             this.processor  = processor;
         }
         
-        internal void Init(FlioxClient client, SyncEvent ev) {
+        internal void Init(FlioxClient client, in SyncEvent ev) {
             Client  = client;
             this.ev = ev;
         }

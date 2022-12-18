@@ -51,7 +51,6 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         private  readonly   SharedEnv                                       sharedEnv;
         private  readonly   JsonEvaluator                                   jsonEvaluator;
         private  readonly   List<RemoteSyncEvent>                           eventBuffer;
-        private  readonly   ObjectMapper                                    mapper;
         private  readonly   EventMessage                                    eventMessage;
         //
         /// key: <see cref="EventSubClient.clientId"/>
@@ -94,7 +93,6 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             sendClients         = new ConcurrentDictionary<JsonKey, EventSubClient>(JsonKey.Equality);
             subUsers            = new ConcurrentDictionary<JsonKey, EventSubUser>(JsonKey.Equality);
             eventBuffer         = new List<RemoteSyncEvent>();
-            mapper              = new ObjectMapper(sharedEnv.TypeStore);
             eventMessage        = new EventMessage { events = new List<SyncEvent>() };
             this.dispatching    = dispatching;
             if (dispatching == EventDispatching.QueueSend) {
@@ -106,7 +104,6 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         }
 
         public void Dispose() {
-            mapper.Dispose();
             jsonEvaluator.Dispose();
         }
         
@@ -127,7 +124,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             if (dispatching != EventDispatching.QueueSend)
                 return;
             StopQueue();
-            await clientEventLoop;
+            await clientEventLoop.ConfigureAwait(false);
         }
         
         private void StopQueue() {
@@ -254,10 +251,12 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             if (dispatching == EventDispatching.QueueSend) {
                 throw new InvalidOperationException($"must not be called if using {nameof(EventDispatcher)}.{EventDispatching.QueueSend}");
             }
-            var args = new SendEventArgs (mapper, eventMessage, eventBuffer);
-            foreach (var pair in subClients) {
-                var subClient = pair.Value;
-                subClient.SendEvents(args);
+            using (var pooleMapper = sharedEnv.Pool.ObjectMapper.Get()) {
+                var args = new SendEventArgs (pooleMapper.instance, eventMessage, eventBuffer);
+                foreach (var pair in subClients) {
+                    var subClient = pair.Value;
+                    subClient.SendEvents(args);
+                }
             }
         }
         
@@ -358,7 +357,9 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         /// <seealso cref="WebSocketHost.RunReceiveMessageLoop"/>
         private async Task RunSendEventLoop(IDataChannelReader<EventSubClient> clientEventReader) {
             try {
-                await SendEventLoop(clientEventReader);
+                using (var mapper = new ObjectMapper(sharedEnv.TypeStore)) {
+                    await SendEventLoop(clientEventReader, mapper).ConfigureAwait(false);
+                }
             } catch (Exception e) {
                 var message = "RunSendEventLoop() failed";
                 sharedEnv.Logger.Log(HubLog.Error, message, e);
@@ -366,7 +367,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             }
         }
         
-        private async Task SendEventLoop(IDataChannelReader<EventSubClient> clientEventReader) {
+        private async Task SendEventLoop(IDataChannelReader<EventSubClient> clientEventReader, ObjectMapper mapper) {
             var logger  = sharedEnv.Logger;
             var args    = new SendEventArgs(mapper, eventMessage, eventBuffer);
             while (true) {

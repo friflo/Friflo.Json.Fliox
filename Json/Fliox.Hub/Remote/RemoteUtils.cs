@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using Friflo.Json.Fliox.Hub.Host.Event;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Mapper;
@@ -51,12 +52,13 @@ namespace Friflo.Json.Fliox.Hub.Remote
         /// </summary>
         public static JsonValue CreateProtocolEvent (
             EventMessage        eventMessage,
+            bool                serializedEvents,
             in SendEventArgs    args)
         {
             var mapper              = args.mapper;
             mapper.Pretty           = true;
             mapper.WriteNullMembers = false;
-            if (!EventDispatcher.SerializeRemoteEvents) {
+            if (!serializedEvents) {
                 var ev = mapper.writer.WriteAsBytes(eventMessage);
                 return new JsonValue(ev);
             }
@@ -117,6 +119,54 @@ namespace Friflo.Json.Fliox.Hub.Remote
             }
             error = null;
             return message;
+        }
+        
+        /// <summary>
+        /// Used to parse messages sent to a client
+        /// </summary>
+        internal static IClientMessage ReadClientMessage (
+            in JsonValue    jsonMessage,
+            ObjectMapper    mapper,
+            out string      error)
+        {
+            ObjectReader reader = mapper.reader;
+            var message         = reader.Read<IClientMessage>(jsonMessage);
+            if (reader.Error.ErrSet) {
+                error = reader.Error.msg.ToString();
+                return null;
+            }
+            error = null;
+            return message;
+        }
+    }
+    
+    [Discriminator("msg", "event type")] 
+    [PolymorphType(typeof(ClientEventMessage),  "ev")]
+    [PolymorphType(typeof(SyncResponse),        "resp")]
+    internal interface IClientMessage { }
+    
+    /// <summary>
+    /// Used to identify a <see cref="EventMessage"/> by its discriminator and read its <see cref="ProtocolEvent.dstClientId"/><br/>
+    /// Every other member is skipped as the entire JSON message is passed as a <see cref="RemoteEvent.message"/> to an
+    /// <see cref="EventReceiver"/>
+    /// </summary>
+    internal sealed class ClientEventMessage : IClientMessage
+    {
+        /** map to <see cref="ProtocolEvent.dstClientId"/> */
+        [Serialize                    ("clt")]
+        [Required]  public  JsonKey     dstClientId;
+    }
+    
+    public readonly struct RemoteEvent
+    {
+        /// <summary>the <see cref="ProtocolEvent.dstClientId"/> of the <see cref="message"/></summary>
+        public  readonly    JsonKey     dstClientId;
+        /// <summary>serialized <see cref="EventMessage"/></summary>
+        public  readonly    JsonValue   message;
+        
+        public RemoteEvent(in JsonKey dstClientId, in JsonValue message) {
+            this.dstClientId    = dstClientId;
+            this.message        = message;
         }
     }
 }

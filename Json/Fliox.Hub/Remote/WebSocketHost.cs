@@ -73,10 +73,9 @@ namespace Friflo.Json.Fliox.Hub.Remote
             return webSocket.State == WebSocketState.Open;
         }
 
-        public override void SendEvent(EventMessage eventMessage, bool reusedEvent, in SendEventArgs args) {
+        public override void SendEvent(in RemoteEvent eventMessage) {
             try {
-                var bytesEvent  = RemoteUtils.CreateProtocolEvent(eventMessage, args);
-                sendQueue.Enqueue(bytesEvent);
+                sendQueue.Enqueue(eventMessage.message);
             }
             catch (Exception e) {
                Logger.Log(HubLog.Error, "WebSocketHost.SendEvent", e);

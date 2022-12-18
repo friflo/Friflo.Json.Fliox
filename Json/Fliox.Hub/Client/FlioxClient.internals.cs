@@ -55,8 +55,23 @@ namespace Friflo.Json.Fliox.Hub.Client
             }
         }
         
-        internal void ProcessEvents(EventMessage eventMessage) {
-            var processor   = _intern.SubscriptionProcessor();
+        /// <summary>
+        /// Process the <see cref="EventMessage.events"/> of the passed serialized <see cref="EventMessage"/>
+        /// </summary>
+        /// <remarks>
+        /// This method is not reentrant.
+        /// The calling <see cref="EventProcessor"/> ensures this method is called sequentially.
+        /// </remarks>
+        internal void ProcessEvents(in JsonValue rawEventMessage) {
+            var mapper          = _intern.ObjectMapper();
+            var reader          = mapper.reader;
+            var eventMessage    = reader.Read<EventMessage>(rawEventMessage);
+            if (reader.Error.ErrSet) {
+                var error = reader.Error.msg.AsString();
+                Logger.Log(HubLog.Error, error);
+                return;
+            }
+            var processor       = _intern.SubscriptionProcessor();
             // Console.WriteLine($"----- ProcessEvent. events: {eventMessages.events.Length}");
             foreach (var ev in eventMessage.events) {
                 // Skip already received events

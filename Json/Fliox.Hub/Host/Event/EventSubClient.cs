@@ -8,6 +8,7 @@ using System.Diagnostics;
 using System.Linq;
 using Friflo.Json.Burst.Utils;
 using Friflo.Json.Fliox.Hub.Protocol;
+using Friflo.Json.Fliox.Hub.Remote;
 using Friflo.Json.Fliox.Utils;
 using static System.Diagnostics.DebuggerBrowsableState;
 
@@ -168,12 +169,14 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                 // Trace.WriteLine(msg);
                 // Console.WriteLine(msg);
                 try {
+                    eventMessage.dstClientId = clientId;
                     // Console.WriteLine($"--- SendEvents: {events.Length}");
                     // In case the event target is remote connection it is not guaranteed that the event arrives.
                     // The remote target may already be disconnected and this is still not know when sending the event.
-                    eventMessage.dstClientId = clientId;
-                    // using single instance of eventMessage => reusedEvent: true  
-                    receiver.SendEvent(eventMessage, true, args);
+                    var serializedEvents = EventDispatcher.SerializeRemoteEvents && SerializeEvents;
+                    var rawEvent         = RemoteUtils.CreateProtocolEvent(eventMessage, serializedEvents, args);    
+                    var clientEvent      = new RemoteEvent(clientId, rawEvent);
+                    receiver.SendEvent(clientEvent);
                 }
                 catch (Exception e) {
                     var message = "SendEvents failed";
