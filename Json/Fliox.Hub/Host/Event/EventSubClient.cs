@@ -41,9 +41,9 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         
         /// lock (<see cref="unsentEventsDeque"/>) {
         private             int                                 eventCounter;
-        /// contains all events not yet sent. 
+        /// <summary>contains all <see cref="SyncEvent"/>'s not yet sent.</summary> 
         private  readonly   Deque<SyncEvent>                    unsentEventsDeque   = new Deque<SyncEvent>();
-        /// contains all events which are sent but not acknowledged
+        /// <summary>contains all <see cref="SyncEvent"/>'s which are sent but not acknowledged</summary>
         private  readonly   Queue<SyncEvent>                    sentEventsQueue     = new Queue<SyncEvent>();
         // }
         

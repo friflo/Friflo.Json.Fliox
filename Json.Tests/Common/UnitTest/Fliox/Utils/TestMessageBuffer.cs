@@ -18,7 +18,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Utils
     {
         [Test]
         public async Task TestMessageBufferQueue() {
-            var queue = new MessageBufferQueue(5);
+            var queue = new MessageBufferQueueAsync(5);
             
             var msg1 = new JsonValue("msg-1");
             var msg2 = new JsonValue("msg-2");
@@ -28,7 +28,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Utils
             queue.Enqueue(msg2);
             
             var messages    = new List<JsonValue>();
-            var ev          = await queue.DequeMessages(messages);
+            var ev          = await queue.DequeMessagesAsync(messages);
             
             queue.Enqueue(msg3);
 
@@ -37,7 +37,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Utils
             AreEqual("msg-2", messages[1].AsString());
             AreEqual(MessageBufferEvent.NewMessage, ev);
             
-            ev = await queue.DequeMessages(messages);
+            ev = await queue.DequeMessagesAsync(messages);
             
             AreEqual(1, messages.Count);
             AreEqual("msg-3", messages[0].AsString());
@@ -46,7 +46,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Utils
         
         [Test]
         public async Task TestMessageBufferQueueClose() {
-            var queue = new MessageBufferQueue(2);
+            var queue = new MessageBufferQueueAsync(2);
             
             var msg1 = new JsonValue("msg-1");
             
@@ -54,7 +54,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Utils
             queue.Close();
             
             var messages    = new List<JsonValue>();
-            var ev          = await queue.DequeMessages(messages);
+            var ev          = await queue.DequeMessagesAsync(messages);
             
             AreEqual(1, messages.Count);
             AreEqual("msg-1", messages[0].AsString());
@@ -63,10 +63,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Utils
         
         [Test]
         public async Task TestMessageBufferWait() {
-            var queue = new MessageBufferQueue(2);
+            var queue = new MessageBufferQueueAsync(2);
             
             var messages = new List<JsonValue>();
-            var waitTask = queue.DequeMessages(messages);
+            var waitTask = queue.DequeMessagesAsync(messages);
             
             var msg1 = new JsonValue("msg-1");
             var msg2 = new JsonValue("msg-2");
@@ -84,7 +84,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Utils
         
         [Test]
         public async Task TestMessageBufferConcurrent() {
-            var queue       = new MessageBufferQueue(2);
+            var queue       = new MessageBufferQueueAsync(2);
             var duration    = 10;
             var bulkSize    = 1000;
             
@@ -113,7 +113,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Utils
             int dequeCount      = 0;
             while (true) {
                 var messages    = new List<JsonValue>();
-                var ev          = await queue.DequeMessages(messages);
+                var ev          = await queue.DequeMessagesAsync(messages);
                 dequeCount++;
                 // Console.WriteLine($"{count} - messages: {messages.Count}");
                 foreach (var msg in messages) {

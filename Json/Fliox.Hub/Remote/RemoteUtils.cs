@@ -82,6 +82,31 @@ namespace Friflo.Json.Fliox.Hub.Remote
             return new JsonValue(result);
         }
         
+        /// <summary>
+        /// <b>Attention</b> returned <see cref="JsonValue"/> is <b>only</b> valid until the passed <paramref name="writer"/> in  is reused
+        /// </summary>
+        public static JsonValue SerializeSyncEvent (
+            in SyncEvent        syncEvent,
+            bool                serializedEvents,
+            ObjectWriter        writer)       
+        {
+            writer.Pretty           = true;
+            writer.WriteNullMembers = false;
+            if (!serializedEvents) {
+                var ev = writer.WriteAsBytes(syncEvent);
+                return new JsonValue(ev);
+            }
+            var remoteEv = new RemoteSyncEvent {
+                seq         = syncEvent.seq,
+                src         = syncEvent.srcUserId,
+                db          = syncEvent.db,
+                isOrigin    = syncEvent.isOrigin,
+                tasks       = syncEvent.tasksJson
+            };
+            var result = writer.WriteAsBytes(remoteEv);
+            return new JsonValue(result);
+        }
+        
         public static SyncRequest ReadSyncRequest (
             ObjectMapper    mapper,
             in JsonValue    jsonMessage,

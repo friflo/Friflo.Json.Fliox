@@ -3,8 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Friflo.Json.Fliox.Utils
 {
@@ -18,7 +16,7 @@ namespace Friflo.Json.Fliox.Utils
     /// One buffer is used to store newly enqueued messages. <br/>
     /// The other buffer is used to read dequeued messages. <br/> 
     /// </summary>
-    public sealed class MessageBufferQueue : IDisposable
+    public sealed class MessageBufferQueue 
     {
         private             byte[]          buffer0;
         private             int             buffer0Pos;
@@ -30,22 +28,18 @@ namespace Friflo.Json.Fliox.Utils
         private             byte[]          Buffer          => writeBuffer == 0 ? buffer0 : buffer1;
         private             int             GetBufferPos()  => writeBuffer == 0 ? buffer0Pos : buffer1Pos;
         private             void            SetBufferPos(int pos) { if (writeBuffer == 0) buffer0Pos = pos; else buffer1Pos = pos; }
+        
+        public              int             Count           => queue.Count;
 
         private  readonly   List<JsonValue> queue;
         
         private             bool            closed;
-        private  readonly   SemaphoreSlim   messageAvailable;
+
         
         public MessageBufferQueue(int capacity = 128) {
             buffer0             = new byte[capacity];
             buffer1             = new byte[capacity];
             queue               = new List<JsonValue>();
-            
-            messageAvailable    = new SemaphoreSlim(0, 1);
-        }
-
-        public void Dispose() {
-            messageAvailable.Dispose();
         }
         
         public void Enqueue(in JsonValue data) {
@@ -56,62 +50,52 @@ namespace Friflo.Json.Fliox.Utils
         }
 
         private void Enqueue(byte[] data, int start, int len) {
-            lock (queue) {
-                if (closed) {
-                    throw new InvalidOperationException("MessageBufferQueue already closed");
-                }
-                var buffer          = Buffer;
-                var bufferLen       = buffer.Length;
-                var bufferPos       = GetBufferPos();
-                var remaining       = bufferLen - bufferPos;
-                if (len > remaining) {
-                    bufferLen   = Math.Max(2 * bufferLen, len);
-                    buffer      = new byte[bufferLen];
-                    if (writeBuffer == 0) {
-                        buffer0 = buffer;
-                    } else {
-                        buffer1 = buffer;
-                    }
-                    SetBufferPos(0);
-                    bufferPos = 0;
-                }
-                System.Buffer.BlockCopy(data, start, buffer, bufferPos, len);
-                var message = new JsonValue(buffer, bufferPos, len);
-                queue.Add(message);
-                SetBufferPos(bufferPos + len);
+            if (closed) {
+                throw new InvalidOperationException("MessageBufferQueue already closed");
             }
-            // send event _after_ adding message to queue
-            if (messageAvailable.CurrentCount == 0) {
-                messageAvailable.Release();
+            var buffer          = Buffer;
+            var bufferLen       = buffer.Length;
+            var bufferPos       = GetBufferPos();
+            var remaining       = bufferLen - bufferPos;
+            if (len > remaining) {
+                bufferLen   = Math.Max(2 * bufferLen, len);
+                buffer      = new byte[bufferLen];
+                if (writeBuffer == 0) {
+                    buffer0 = buffer;
+                } else {
+                    buffer1 = buffer;
+                }
+                SetBufferPos(0);
+                bufferPos = 0;
             }
+            System.Buffer.BlockCopy(data, start, buffer, bufferPos, len);
+            var message = new JsonValue(buffer, bufferPos, len);
+            queue.Add(message);
+            SetBufferPos(bufferPos + len);
         }
         
-        public async Task<MessageBufferEvent> DequeMessages(List<JsonValue> messages)
+        public MessageBufferEvent DequeMessages(List<JsonValue> messages)
         {
             messages.Clear();
-            await messageAvailable.WaitAsync().ConfigureAwait(false);
 
-            lock (queue) {
-                // swap read & write buffer.
-                writeBuffer = writeBuffer == 0 ? 1 : 0;
-                // newly enqueued messages are written to the head of the write buffer
-                SetBufferPos(0);
-                foreach (var message in queue) {
-                    messages.Add(message);                    
-                }
-                queue.Clear();
-
-                return closed ? MessageBufferEvent.Closed : MessageBufferEvent.NewMessage;
+            // swap read & write buffer.
+            writeBuffer = writeBuffer == 0 ? 1 : 0;
+            // newly enqueued messages are written to the head of the write buffer
+            SetBufferPos(0);
+            foreach (var message in queue) {
+                messages.Add(message);                    
             }
+            queue.Clear();
+            return closed ? MessageBufferEvent.Closed : MessageBufferEvent.NewMessage;
+        }
+        
+        public void Clear() {
+            SetBufferPos(0);
+            queue.Clear();
         }
         
         public void Close() {
-            lock (queue) {
-                closed = true;
-                if (messageAvailable.CurrentCount == 0) {
-                    messageAvailable.Release();
-                }
-            }
+            closed = true;
         }
     }
 }
