@@ -13,9 +13,11 @@ namespace Friflo.Json.Fliox.Utils
     
     public readonly struct MessageItem<T>
     {
-        public readonly JsonValue value;
-        public readonly T         meta;
-        
+        public  readonly    JsonValue   value;
+        public  readonly    T           meta;
+
+        public  override    string      ToString() => value.AsString();
+
         internal MessageItem (in JsonValue value, T meta) {
             this.value  = value;
             this.meta   = meta;
@@ -50,7 +52,9 @@ namespace Friflo.Json.Fliox.Utils
         
         private             bool            closed;
 
+        public   override   string          ToString()      => $"Count {queue.Count}";
         
+
         public MessageBufferQueue(int capacity = 128) {
             buffer0 = new byte[capacity];
             buffer1 = new byte[capacity];
@@ -58,19 +62,20 @@ namespace Friflo.Json.Fliox.Utils
         }
         
         public void AddHead(in JsonValue value, in TMeta meta = default) {
-            if (closed) {
-                throw new InvalidOperationException("MessageBufferQueue already closed");
-            }
+            if (closed) throw new InvalidOperationException("MessageBufferQueue already closed");
             var message = CreateMessageValue(value);
             queue.AddHead(new MessageItem<TMeta>(message, meta));
         }
         
         public void AddTail(in JsonValue value, in TMeta meta = default) {
-            if (closed) {
-                throw new InvalidOperationException("MessageBufferQueue already closed");
-            }
+            if (closed) throw new InvalidOperationException("MessageBufferQueue already closed");
             var message = CreateMessageValue(value);
             queue.AddTail(new MessageItem<TMeta>(message, meta));
+        }
+        
+        public MessageItem<TMeta> RemoveHead() {
+            if (closed) throw new InvalidOperationException("MessageBufferQueue already closed");
+            return queue.RemoveHead();
         }
         
         private JsonValue CreateMessageValue(in JsonValue value) {
@@ -119,6 +124,42 @@ namespace Friflo.Json.Fliox.Utils
         
         public void Close() {
             closed = true;
+        }
+        
+        public Enumerator GetEnumerator() {
+            return new Enumerator(this);
+        }
+        
+        // ---------------------------------------- Enumerator<T> ----------------------------------------
+        public struct Enumerator
+        {
+            private readonly    MessageItem<TMeta>[]    items;
+            private readonly    int                     capacity;
+            private             int                     remaining;
+            private             int                     next;
+            private             int                     current;
+            
+            internal Enumerator (MessageBufferQueue<TMeta> deque) {
+                var queue   = deque.queue;
+                items       = queue.Array;
+                capacity    = queue.Capacity;
+                remaining   = queue.Count;
+                next        = queue.First;
+                current     = -1;
+            }
+            
+            public bool MoveNext() {
+                if (remaining > 0) {
+                    current = next;
+                    next    = (next + 1) % capacity;
+                    remaining--;
+                    return true;
+                }
+                current = -1;
+                return false;
+            }
+        
+            public MessageItem<TMeta> Current => current != -1 ? items[current] : throw new InvalidOperationException("invalid enumerator");
         }
     }
 }

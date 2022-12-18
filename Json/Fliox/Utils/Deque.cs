@@ -14,8 +14,12 @@ namespace Friflo.Json.Fliox.Utils
         private         int     capacity;
         private         T[]     array;
         
-        public          int     Count => count;
-        private         T[]     Items => ToArray();
+        public          int     Count       => count;
+        private         T[]     Items       => ToArray();
+        
+        internal        T[]     Array       => array;
+        internal        int     Capacity    => capacity;
+        internal        int     First       => first;
 
         public override string  ToString() => $"Count: {count}";
 
