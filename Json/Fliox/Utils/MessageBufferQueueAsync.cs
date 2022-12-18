@@ -12,7 +12,7 @@ namespace Friflo.Json.Fliox.Utils
     /// Asynchronous version of <see cref="MessageBufferQueue{T}"/> used to support
     /// awaiting new messages asynchronous with <see cref="DequeMessagesAsync"/> 
     /// </summary>
-    public class MessageBufferQueueAsync<TMeta> : IDisposable
+    public sealed class MessageBufferQueueAsync<TMeta> : IDisposable
     {
         private  readonly   MessageBufferQueue<TMeta>   queue;
         private  readonly   SemaphoreSlim               messageAvailable;
