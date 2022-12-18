@@ -37,6 +37,7 @@ namespace Friflo.Json.Fliox.Utils
         }
         
         public async Task<MessageBufferEvent> DequeMessagesAsync(List<MessageItem<TMeta>> messages) {
+            messages.Clear();
             await messageAvailable.WaitAsync().ConfigureAwait(false);
 
             lock (queue) {
@@ -47,9 +48,9 @@ namespace Friflo.Json.Fliox.Utils
         public void Close() {
             lock (queue) {
                 queue.Close();
-            }
-            if (messageAvailable.CurrentCount == 0) {
-                messageAvailable.Release();
+                if (messageAvailable.CurrentCount == 0) {
+                    messageAvailable.Release();
+                }
             }
         }
     }
