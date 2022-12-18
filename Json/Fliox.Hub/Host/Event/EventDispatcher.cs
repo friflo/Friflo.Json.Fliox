@@ -337,7 +337,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                     if (serializeEvents) {
                         SerializeRemoteEvent(ref syncEvent, eventTasks, writer);
                     }
-                    subClient.EnqueueEvent(ref syncEvent);
+                    subClient.EnqueueEvent(ref syncEvent, serializeEvents, writer);
                 }
             }
         }

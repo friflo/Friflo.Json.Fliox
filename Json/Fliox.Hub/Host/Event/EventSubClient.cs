@@ -9,6 +9,7 @@ using System.Linq;
 using Friflo.Json.Burst.Utils;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Remote;
+using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Utils;
 using static System.Diagnostics.DebuggerBrowsableState;
 
@@ -87,9 +88,10 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             return true;
         }
         
-        internal void EnqueueEvent(ref SyncEvent ev) {  // todo use serialized events instead
+        internal void EnqueueEvent(ref SyncEvent ev, bool serializedEvents, ObjectWriter writer) {  // todo use serialized events instead
             lock (unsentEventsDeque) {
                 ev.seq = ++eventCounter;
+                var rawEvent = RemoteUtils.SerializeSyncEvent(ev, serializedEvents, writer);
                 unsentEventsDeque.AddTail(ev);
             }
             // Signal new event. Need to be signaled after adding event to queue. No reason to execute this in the lock. 
