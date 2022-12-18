@@ -75,7 +75,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
 
         public override void SendEvent(in RemoteEvent eventMessage) {
             try {
-                sendQueue.Enqueue(eventMessage.message);
+                sendQueue.AddTail(eventMessage.message);
             }
             catch (Exception e) {
                Logger.Log(HubLog.Error, "WebSocketHost.SendEvent", e);
@@ -221,7 +221,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                     var errorMsg = ErrorResponse.ErrorFromException(e).ToString();
                     response = JsonResponse.CreateError(mapper, errorMsg, ErrorResponseType.Exception, null);
                 }
-                sendQueue.Enqueue(response.body); // Enqueue() copy the result.body array
+                sendQueue.AddTail(response.body); // Enqueue() copy the result.body array
             }
         }
         

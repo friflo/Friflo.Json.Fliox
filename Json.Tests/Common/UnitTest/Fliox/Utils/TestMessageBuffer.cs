@@ -24,13 +24,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Utils
             var msg2 = new JsonValue("msg-2");
             var msg3 = new JsonValue("msg-3");
             
-            queue.Enqueue(msg1);
-            queue.Enqueue(msg2);
+            queue.AddTail(msg1);
+            queue.AddTail(msg2);
             
             var messages    = new List<MessageItem<VoidMeta>>();
             var ev          = await queue.DequeMessagesAsync(messages);
             
-            queue.Enqueue(msg3);
+            queue.AddTail(msg3);
 
             AreEqual(2, messages.Count);
             AreEqual("msg-1", messages[0].value.AsString());
@@ -50,7 +50,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Utils
             
             var msg1 = new JsonValue("msg-1");
             
-            queue.Enqueue(msg1);
+            queue.AddTail(msg1);
             queue.Close();
             
             var messages    = new List<MessageItem<VoidMeta>>();
@@ -71,11 +71,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Utils
             var msg1 = new JsonValue("msg-1");
             var msg2 = new JsonValue("msg-2");
             
-            queue.Enqueue(msg1);
+            queue.AddTail(msg1);
             
             var ev = await waitTask;
             
-            queue.Enqueue(msg2);
+            queue.AddTail(msg2);
             
             AreEqual(1, messages.Count);
             AreEqual("msg-1", messages[0].value.AsString());
@@ -97,7 +97,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Utils
                     for (int n = 0; n < duration; n++) {
                         for (int i = 0; i < bulkSize; i++) {
                             var msg = new JsonValue($"{index++}");
-                            queue.Enqueue(msg);
+                            queue.AddTail(msg);
                         }
                         while (stopwatch.ElapsedMilliseconds < n) { }
                     }

@@ -26,9 +26,9 @@ namespace Friflo.Json.Fliox.Utils
             messageAvailable.Dispose();
         }
         
-        public void Enqueue(in JsonValue data, in TMeta meta = default) {
+        public void AddTail(in JsonValue data, in TMeta meta = default) {
             lock (queue) {
-                queue.Enqueue(data, meta);
+                queue.AddTail(data, meta);
             }
             // send event _after_ adding message to queue
             if (messageAvailable.CurrentCount == 0) {

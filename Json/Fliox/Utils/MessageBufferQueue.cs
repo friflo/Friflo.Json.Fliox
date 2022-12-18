@@ -46,23 +46,23 @@ namespace Friflo.Json.Fliox.Utils
         
         public              int             Count           => queue.Count;
 
-        private  readonly   List<MessageItem<TMeta>> queue;
+        private  readonly   Deque<MessageItem<TMeta>> queue;
         
         private             bool            closed;
 
         
         public MessageBufferQueue(int capacity = 128) {
-            buffer0             = new byte[capacity];
-            buffer1             = new byte[capacity];
-            queue               = new List<MessageItem<TMeta>>();
+            buffer0 = new byte[capacity];
+            buffer1 = new byte[capacity];
+            queue   = new Deque<MessageItem<TMeta>>(capacity);
         }
         
-        public void Enqueue(in JsonValue value, in TMeta meta = default) {
+        public void AddTail(in JsonValue value, in TMeta meta = default) {
             if (closed) {
                 throw new InvalidOperationException("MessageBufferQueue already closed");
             }
             var message = CreateMessageValue(value);
-            queue.Add(new MessageItem<TMeta>(message, meta));
+            queue.AddTail(new MessageItem<TMeta>(message, meta));
         }
         
         private JsonValue CreateMessageValue(in JsonValue value) {
