@@ -57,17 +57,18 @@ namespace Friflo.Json.Fliox.Utils
             queue               = new List<MessageItem<TMeta>>();
         }
         
-        public void Enqueue(in JsonValue value, in TMeta meta) {
-            var array   = value.Array;
-            var start   = value.start;
-            var len     = value.Count;
-            Enqueue(array, start, len, meta);
-        }
-
-        private void Enqueue(byte[] data, int start, int len, in TMeta meta) {
+        public void Enqueue(in JsonValue value, in TMeta meta = default) {
             if (closed) {
                 throw new InvalidOperationException("MessageBufferQueue already closed");
             }
+            var message = CreateMessageValue(value);
+            queue.Add(new MessageItem<TMeta>(message, meta));
+        }
+        
+        private JsonValue CreateMessageValue(in JsonValue value) {
+            byte[] data         = value.Array;
+            int start           = value.start;
+            int len             = value.Count;
             var buffer          = Buffer;
             var bufferLen       = buffer.Length;
             var bufferPos       = GetBufferPos();
@@ -84,9 +85,8 @@ namespace Friflo.Json.Fliox.Utils
                 bufferPos = 0;
             }
             System.Buffer.BlockCopy(data, start, buffer, bufferPos, len);
-            var message = new JsonValue(buffer, bufferPos, len);
-            queue.Add(new MessageItem<TMeta>(message, meta));
             SetBufferPos(bufferPos + len);
+            return new JsonValue(buffer, bufferPos, len);
         }
         
         public MessageBufferEvent DequeMessages(List<MessageItem<TMeta>> messages)
