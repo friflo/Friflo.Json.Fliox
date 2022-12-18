@@ -9,16 +9,16 @@ using System.Threading.Tasks;
 namespace Friflo.Json.Fliox.Utils
 {
     /// <summary>
-    /// Asynchronous version of <see cref="MessageBufferQueue"/> used to support
+    /// Asynchronous version of <see cref="MessageBufferQueue{T}"/> used to support
     /// awaiting new messages asynchronous with <see cref="DequeMessagesAsync"/> 
     /// </summary>
-    public class MessageBufferQueueAsync : IDisposable
+    public class MessageBufferQueueAsync<TMeta> : IDisposable
     {
-        private  readonly   MessageBufferQueue  queue;
-        private  readonly   SemaphoreSlim       messageAvailable;
+        private  readonly   MessageBufferQueue<TMeta>   queue;
+        private  readonly   SemaphoreSlim               messageAvailable;
         
         public MessageBufferQueueAsync(int capacity = 128) {
-            queue               = new MessageBufferQueue(capacity);
+            queue               = new MessageBufferQueue<TMeta>(capacity);
             messageAvailable    = new SemaphoreSlim(0, 1);
         }
         
@@ -26,9 +26,9 @@ namespace Friflo.Json.Fliox.Utils
             messageAvailable.Dispose();
         }
         
-        public void Enqueue(in JsonValue data) {
+        public void Enqueue(in JsonValue data, in TMeta meta = default) {
             lock (queue) {
-                queue.Enqueue(data);
+                queue.Enqueue(data, meta);
             }
             // send event _after_ adding message to queue
             if (messageAvailable.CurrentCount == 0) {
@@ -36,7 +36,7 @@ namespace Friflo.Json.Fliox.Utils
             }
         }
         
-        public async Task<MessageBufferEvent> DequeMessagesAsync(List<JsonValue> messages) {
+        public async Task<MessageBufferEvent> DequeMessagesAsync(List<MessageItem<TMeta>> messages) {
             await messageAvailable.WaitAsync().ConfigureAwait(false);
 
             lock (queue) {

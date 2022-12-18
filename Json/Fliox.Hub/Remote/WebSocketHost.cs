@@ -27,8 +27,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
         /// Only set to true for testing. It avoids an early out at <see cref="EventSubClient.SendEvents"/> 
         private  readonly   bool                    fakeOpenClosedSocket;
 
-        private  readonly   MessageBufferQueueAsync sendQueue;
-        private  readonly   List<JsonValue>         messages;
+        private  readonly   MessageBufferQueueAsync<VoidMeta> sendQueue;
+        private  readonly   List<MessageItem<VoidMeta>>       messages;
         
         private  readonly   FlioxHub                hub;
         private  readonly   Pool                    pool;
@@ -57,8 +57,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
             this.fakeOpenClosedSocket   = remoteHost.fakeOpenClosedSockets;
             this.hostMetrics            = remoteHost.metrics;
             
-            sendQueue                   = new MessageBufferQueueAsync();
-            messages                    = new List<JsonValue>();
+            sendQueue                   = new MessageBufferQueueAsync<VoidMeta>();
+            messages                    = new List<MessageItem<VoidMeta>>();
         }
 
         public void Dispose() {
@@ -113,10 +113,10 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 var remoteEvent = await sendQueue.DequeMessagesAsync(messages).ConfigureAwait(false);
                 foreach (var message in messages) {
                     if (LogMessage) {
-                        var msg = RegExLineFeed.Replace(message.AsString(), "");
+                        var msg = RegExLineFeed.Replace(message.value.AsString(), "");
                         Logger.Log(HubLog.Info, msg);
                     }
-                    var arraySegment = message.AsArraySegment();
+                    var arraySegment = message.value.AsArraySegment();
                     // if (sendMessage.Count > 100000) Console.WriteLine($"SendLoop. size: {sendMessage.Count}");
                     await webSocket.SendAsync(arraySegment, WebSocketMessageType.Text, true, CancellationToken.None).ConfigureAwait(false);
                 }

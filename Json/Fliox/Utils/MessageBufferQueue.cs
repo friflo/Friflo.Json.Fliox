@@ -11,12 +11,27 @@ namespace Friflo.Json.Fliox.Utils
         NewMessage  = 2,
     }
     
+    public readonly struct MessageItem<T>
+    {
+        public readonly JsonValue value;
+        public readonly T         meta;
+        
+        internal MessageItem (in JsonValue value, T meta) {
+            this.value  = value;
+            this.meta   = meta;
+        }
+    }
+    
+    public readonly struct VoidMeta { }
+
     /// <summary>
     /// A queue to store messages using double buffering to avoid frequent allocations of byte arrays for each message. <br/>
     /// One buffer is used to store newly enqueued messages. <br/>
-    /// The other buffer is used to read dequeued messages. <br/> 
+    /// The other buffer is used to read dequeued messages. <br/>
     /// </summary>
-    public sealed class MessageBufferQueue 
+    /// <typeparam name="TMeta">type of the meta data associated to each message.
+    /// Use <see cref="VoidMeta"/> if no associated is required</typeparam>
+    public sealed class MessageBufferQueue<TMeta>
     {
         private             byte[]          buffer0;
         private             int             buffer0Pos;
@@ -31,7 +46,7 @@ namespace Friflo.Json.Fliox.Utils
         
         public              int             Count           => queue.Count;
 
-        private  readonly   List<JsonValue> queue;
+        private  readonly   List<MessageItem<TMeta>> queue;
         
         private             bool            closed;
 
@@ -39,17 +54,17 @@ namespace Friflo.Json.Fliox.Utils
         public MessageBufferQueue(int capacity = 128) {
             buffer0             = new byte[capacity];
             buffer1             = new byte[capacity];
-            queue               = new List<JsonValue>();
+            queue               = new List<MessageItem<TMeta>>();
         }
         
-        public void Enqueue(in JsonValue data) {
-            var array   = data.Array;
-            var start   = data.start;
-            var len     = data.Count;
-            Enqueue(array, start, len);
+        public void Enqueue(in JsonValue value, in TMeta meta) {
+            var array   = value.Array;
+            var start   = value.start;
+            var len     = value.Count;
+            Enqueue(array, start, len, meta);
         }
 
-        private void Enqueue(byte[] data, int start, int len) {
+        private void Enqueue(byte[] data, int start, int len, in TMeta meta) {
             if (closed) {
                 throw new InvalidOperationException("MessageBufferQueue already closed");
             }
@@ -70,11 +85,11 @@ namespace Friflo.Json.Fliox.Utils
             }
             System.Buffer.BlockCopy(data, start, buffer, bufferPos, len);
             var message = new JsonValue(buffer, bufferPos, len);
-            queue.Add(message);
+            queue.Add(new MessageItem<TMeta>(message, meta));
             SetBufferPos(bufferPos + len);
         }
         
-        public MessageBufferEvent DequeMessages(List<JsonValue> messages)
+        public MessageBufferEvent DequeMessages(List<MessageItem<TMeta>> messages)
         {
             messages.Clear();
 
