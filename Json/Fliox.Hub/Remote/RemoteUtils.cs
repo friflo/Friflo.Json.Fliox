@@ -13,9 +13,9 @@ namespace Friflo.Json.Fliox.Hub.Remote
     /// <summary> Reflect the shape of a <see cref="EventMessage"/> </summary>
     public struct RemoteEventMessage
     {
-        /** map to <see cref="ProtocolEvent"/> discriminator */ public  string                  msg;
-        /** map to <see cref="ProtocolEvent.dstClientId"/> */   public  JsonKey                 clt;
-        /** map to <see cref="EventMessage.events"/> */         public  List<RemoteSyncEvent>   events;
+        /** map to <see cref="ProtocolEvent"/> discriminator */ public  string          msg;
+        /** map to <see cref="ProtocolEvent.dstClientId"/> */   public  JsonKey         clt;
+        /** map to <see cref="EventMessage.events"/> */         public  List<JsonValue> events;
     }
     
     /// <summary> Reflect the shape of a <see cref="SyncEvent"/> </summary>
@@ -48,37 +48,18 @@ namespace Friflo.Json.Fliox.Hub.Remote
         }
         
         /// <summary>
+        /// Creates a serialized <see cref="EventMessage"/><br/>
         /// <b>Attention</b> returned <see cref="JsonValue"/> is <b>only</b> valid until the passed <paramref name="args"/> mapper in  is reused
         /// </summary>
         public static JsonValue CreateProtocolEvent (
-            EventMessage        eventMessage,
-            bool                serializedEvents,
-            in SendEventArgs    args)
+            List<JsonValue>     events,
+            in JsonKey          dstClientId,
+            ObjectMapper        mapper)   
         {
-            var mapper              = args.mapper;
             mapper.Pretty           = true;
             mapper.WriteNullMembers = false;
-            if (!serializedEvents) {
-                var ev = mapper.writer.WriteAsBytes(eventMessage);
-                return new JsonValue(ev);
-            }
-            var remoteEventMessage      = new RemoteEventMessage { msg = "ev", clt = eventMessage.dstClientId };
-            var events                  = eventMessage.events;
-            var remoteEvents            = args.eventBuffer;
-            remoteEvents.Clear();
-            remoteEventMessage.events   = remoteEvents;
-            for (int n = 0; n < events.Count; n++) {
-                var ev = events[n];
-                var remoteEv = new RemoteSyncEvent {
-                    seq         = ev.seq,
-                    src         = ev.srcUserId,
-                    db          = ev.db,
-                    isOrigin    = ev.isOrigin,
-                    tasks       = ev.tasksJson,
-                };
-                remoteEvents.Add(remoteEv);
-            }
-            var result = mapper.writer.WriteAsBytes(remoteEventMessage);
+            var remoteEventMessage  = new RemoteEventMessage { msg = "ev", clt = dstClientId, events = events };
+            var result              = mapper.writer.WriteAsBytes(remoteEventMessage);
             return new JsonValue(result);
         }
         

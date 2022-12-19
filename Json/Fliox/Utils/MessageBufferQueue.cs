@@ -23,8 +23,9 @@ namespace Friflo.Json.Fliox.Utils
             var metaStr = meta.ToString();
             if (metaStr?.Length > 0) {
                 var sb = new StringBuilder();
+                sb.Append("meta: ");
                 sb.Append(metaStr);
-                sb.Append("  ");
+                sb.Append("  value: ");
                 sb.Append(value.AsString());
                 return sb.ToString();
             }
@@ -81,6 +82,11 @@ namespace Friflo.Json.Fliox.Utils
 
         public MessageBufferQueue(int capacity = 4) {
             deque   = new Deque<MessageItem<TMeta>>(capacity);
+        }
+        
+        public MessageItem<TMeta> GetHead() {
+            if (Count == 0) throw new InvalidOperationException("MessageBufferQueue is empty");
+            return deque.Array[deque.First];
         }
         
         public void AddHead(in JsonValue value, in TMeta meta = default) {

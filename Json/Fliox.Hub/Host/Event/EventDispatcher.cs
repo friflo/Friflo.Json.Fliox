@@ -50,8 +50,8 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
     {
         private  readonly   SharedEnv                                       sharedEnv;
         private  readonly   JsonEvaluator                                   jsonEvaluator;
-        private  readonly   List<RemoteSyncEvent>                           eventBuffer;
-        private  readonly   EventMessage                                    eventMessage;
+        /// <summary>buffer for serialized <see cref="SyncEvent"/>'s to avoid frequent allocations</summary>
+        private  readonly   List<JsonValue>                                 eventsBuffer;
         //
         /// key: <see cref="EventSubClient.clientId"/>
         [DebuggerBrowsable(Never)]
@@ -92,8 +92,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             subClients          = new ConcurrentDictionary<JsonKey, EventSubClient>(JsonKey.Equality);
             sendClients         = new ConcurrentDictionary<JsonKey, EventSubClient>(JsonKey.Equality);
             subUsers            = new ConcurrentDictionary<JsonKey, EventSubUser>(JsonKey.Equality);
-            eventBuffer         = new List<RemoteSyncEvent>();
-            eventMessage        = new EventMessage { events = new List<SyncEvent>() };
+            eventsBuffer        = new List<JsonValue>();
             this.dispatching    = dispatching;
             if (dispatching == EventDispatching.QueueSend) {
                 var channel             = DataChannelSlim<EventSubClient>.CreateUnbounded(true, true);
@@ -252,10 +251,9 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                 throw new InvalidOperationException($"must not be called if using {nameof(EventDispatcher)}.{EventDispatching.QueueSend}");
             }
             using (var pooleMapper = sharedEnv.Pool.ObjectMapper.Get()) {
-                var args = new SendEventArgs (pooleMapper.instance, eventMessage, eventBuffer);
                 foreach (var pair in subClients) {
                     var subClient = pair.Value;
-                    subClient.SendEvents(args);
+                    subClient.SendEvents(pooleMapper.instance, eventsBuffer);
                 }
             }
         }
@@ -369,11 +367,10 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         
         private async Task SendEventLoop(IDataChannelReader<EventSubClient> clientEventReader, ObjectMapper mapper) {
             var logger  = sharedEnv.Logger;
-            var args    = new SendEventArgs(mapper, eventMessage, eventBuffer);
             while (true) {
                 var client = await clientEventReader.ReadAsync().ConfigureAwait(false);
                 if (client != null) {
-                    client.SendEvents(args);
+                    client.SendEvents(mapper, eventsBuffer);
                     continue;
                 }
                 logger.Log(HubLog.Info, $"ClientEventLoop() returns");
@@ -382,7 +379,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         }
 
         // --------------------------- serialize remote event optimization ---------------------------
-        internal static bool SerializeRemoteEvents = true; // set to false for development
+        private static bool SerializeRemoteEvents = true; // set to false for development
 
         /// Optimization: For remote connections the tasks are serialized to <see cref="SyncEvent.tasksJson"/>.
         /// Benefits of doing this:
