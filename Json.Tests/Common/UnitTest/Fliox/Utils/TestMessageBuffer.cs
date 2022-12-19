@@ -1,6 +1,7 @@
 // Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 using Friflo.Json.Fliox;
 using Friflo.Json.Fliox.Utils;
@@ -59,6 +60,26 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Utils
                 }
                 AreEqual(0, count);
             }
+        }
+        
+        [Test]
+        public void TestMessageBuffer_ClearAlloc() {
+            var queue = new MessageBufferQueue<int>(5);
+            var msg1 = new JsonValue("msg-1");
+            var msg2 = new JsonValue("msg-2");
+            
+            long start = -1;
+            for (int n = 0; n < 10; n++) {
+                if (n == 2) {
+                    start = GC.GetAllocatedBytesForCurrentThread();
+                }
+                queue.AddTail(msg1, 1);
+                queue.AddHead(msg2, 2);
+                queue.Clear();
+                if (queue.Count != 0) throw new InvalidCastException("Expect Count == 0");
+            }
+            var dif  = GC.GetAllocatedBytesForCurrentThread() - start;
+            AreEqual(0, dif);
         }
     }
 }
