@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Text;
 
 namespace Friflo.Json.Fliox.Utils
 {
@@ -16,7 +17,19 @@ namespace Friflo.Json.Fliox.Utils
         public  readonly    JsonValue   value;
         public  readonly    T           meta;
 
-        public  override    string      ToString() => value.AsString();
+        public  override    string      ToString() => GetString();
+        
+        private string GetString() {
+            var metaStr = meta.ToString();
+            if (metaStr?.Length > 0) {
+                var sb = new StringBuilder();
+                sb.Append(metaStr);
+                sb.Append("  ");
+                sb.Append(value.AsString());
+                return sb.ToString();
+            }
+            return value.AsString();
+        }
 
         internal MessageItem (in JsonValue value, T meta) {
             this.value  = value;
@@ -24,7 +37,9 @@ namespace Friflo.Json.Fliox.Utils
         }
     }
     
-    public readonly struct VoidMeta { }
+    public readonly struct VoidMeta {
+        public override string ToString() => "";
+    }
 
     /// <summary>
     /// A queue to store messages using double buffering to avoid frequent allocations of byte arrays for each message. <br/>
@@ -46,36 +61,36 @@ namespace Friflo.Json.Fliox.Utils
         private             int             GetBufferPos()  => writeBuffer == 0 ? buffer0Pos : buffer1Pos;
         private             void            SetBufferPos(int pos) { if (writeBuffer == 0) buffer0Pos = pos; else buffer1Pos = pos; }
         
-        public              int             Count           => queue.Count;
+        public              int             Count           => deque.Count;
 
-        private  readonly   Deque<MessageItem<TMeta>> queue;
+        private  readonly   Deque<MessageItem<TMeta>> deque;
         
         private             bool            closed;
 
-        public   override   string          ToString()      => $"Count {queue.Count}";
+        public   override   string          ToString()      => $"Count {deque.Count}";
         
 
         public MessageBufferQueue(int capacity = 128) {
             buffer0 = new byte[capacity];
             buffer1 = new byte[capacity];
-            queue   = new Deque<MessageItem<TMeta>>(4);
+            deque   = new Deque<MessageItem<TMeta>>(4);
         }
         
         public void AddHead(in JsonValue value, in TMeta meta = default) {
             if (closed) throw new InvalidOperationException("MessageBufferQueue already closed");
             var message = CreateMessageValue(value);
-            queue.AddHead(new MessageItem<TMeta>(message, meta));
+            deque.AddHead(new MessageItem<TMeta>(message, meta));
         }
         
         public void AddTail(in JsonValue value, in TMeta meta = default) {
             if (closed) throw new InvalidOperationException("MessageBufferQueue already closed");
             var message = CreateMessageValue(value);
-            queue.AddTail(new MessageItem<TMeta>(message, meta));
+            deque.AddTail(new MessageItem<TMeta>(message, meta));
         }
         
         public MessageItem<TMeta> RemoveHead() {
             if (closed) throw new InvalidOperationException("MessageBufferQueue already closed");
-            return queue.RemoveHead();
+            return deque.RemoveHead();
         }
         
         private JsonValue CreateMessageValue(in JsonValue value) {
@@ -110,16 +125,16 @@ namespace Friflo.Json.Fliox.Utils
             writeBuffer = writeBuffer == 0 ? 1 : 0;
             // newly enqueued messages are written to the head of the write buffer
             SetBufferPos(0);
-            foreach (var message in queue) {
+            foreach (var message in deque) {
                 messages.Add(message);                    
             }
-            queue.Clear();
+            deque.Clear();
             return closed ? MessageBufferEvent.Closed : MessageBufferEvent.NewMessage;
         }
         
         public void Clear() {
             SetBufferPos(0);
-            queue.Clear();
+            deque.Clear();
         }
         
         public void Close() {
@@ -139,12 +154,12 @@ namespace Friflo.Json.Fliox.Utils
             private             int                     next;
             private             int                     current;
             
-            internal Enumerator (MessageBufferQueue<TMeta> deque) {
-                var queue   = deque.queue;
-                items       = queue.Array;
-                capacity    = queue.Capacity;
-                remaining   = queue.Count;
-                next        = queue.First;
+            internal Enumerator (MessageBufferQueue<TMeta> queue) {
+                var deque   = queue.deque;
+                items       = deque.Array;
+                capacity    = deque.Capacity;
+                remaining   = deque.Count;
+                next        = deque.First;
                 current     = -1;
             }
             

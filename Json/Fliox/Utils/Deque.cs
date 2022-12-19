@@ -3,25 +3,27 @@
 
 using System;
 using System.Collections.Generic;
+using static System.Diagnostics.DebuggerBrowsableState;
+using Browse = System.Diagnostics.DebuggerBrowsableAttribute;
 
 // ReSharper disable ConvertToAutoPropertyWithPrivateSetter
 namespace Friflo.Json.Fliox.Utils
 {
     public sealed class Deque<T>
     {
-        private         int     count;
-        private         int     first;
-        private         int     capacity;
-        private         T[]     array;
+        [Browse(Never)] private     int     count;
+        [Browse(Never)] private     int     first;
+        [Browse(Never)] private     int     capacity;
+        [Browse(Never)] private     T[]     array;
         
-        public          int     Count       => count;
-        private         T[]     Items       => ToArray();
+                        public      int     Count       => count;
+                        private     T[]     Items       => ToArray();
         
-        internal        T[]     Array       => array;
-        internal        int     Capacity    => capacity;
-        internal        int     First       => first;
-
-        public override string  ToString() => $"Count: {count}";
+                        internal    T[]     Array       => array;
+                        internal    int     Capacity    => capacity;
+                        internal    int     First       => first;
+                        
+        public override             string  ToString()  => $"Count: {count}";
 
         public Deque(int capacity = 4) {
             this.capacity   = capacity;

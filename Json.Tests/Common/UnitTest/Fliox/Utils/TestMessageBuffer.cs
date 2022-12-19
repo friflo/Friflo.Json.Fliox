@@ -52,6 +52,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Utils
             AreEqual(1, messages.Count);
             AreEqual("msg-3", messages[0].value.AsString());
             AreEqual(MessageBufferEvent.NewMessage, ev);
+            {
+                int count = 0;
+                foreach (var _ in queue) {
+                    count++;
+                }
+                AreEqual(0, count);
+            }
         }
     }
 }
