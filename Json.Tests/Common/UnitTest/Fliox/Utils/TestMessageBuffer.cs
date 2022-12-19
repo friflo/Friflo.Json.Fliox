@@ -75,7 +75,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Utils
                 }
                 queue.AddTail(msg1, 1);
                 queue.AddHead(msg2, 2);
-                queue.Clear(false);
+                queue.Clear();
                 if (queue.Count != 0) throw new InvalidCastException("Expect Count == 0");
             }
             var dif  = GC.GetAllocatedBytesForCurrentThread() - start;

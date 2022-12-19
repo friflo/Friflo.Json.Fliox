@@ -50,7 +50,7 @@ namespace Friflo.Json.Fliox.Utils
     /// 1. One buffer is used to store the bytes of new messages. <br/>
     /// 2. The other buffer store the bytes of dequeued messages. <br/>
     /// <b>Note</b>
-    /// Dequeued messages are valid until the next call of <see cref="DequeMessages"/> or <see cref="Clear"/> <br/>
+    /// Dequeued messages are valid until the next call of <see cref="DequeMessages"/><br/>
     /// The buffers are swapped when calling one of these methods.
     /// </remarks>
     /// <typeparam name="TMeta">
@@ -148,11 +148,7 @@ namespace Friflo.Json.Fliox.Utils
             return closed ? MessageBufferEvent.Closed : MessageBufferEvent.NewMessage;
         }
         
-        public void Clear(bool swapBuffers) {
-            if (swapBuffers) {
-                // swap read & write buffer.
-                writeBuffer = writeBuffer == 0 ? 1 : 0;
-            }
+        public void Clear() {
             // newly enqueued messages are written to the head of the write buffer
             SetBufferPos(0);
             deque.Clear();
