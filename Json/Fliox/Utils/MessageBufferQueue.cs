@@ -76,13 +76,11 @@ namespace Friflo.Json.Fliox.Utils
         
         private             bool            closed;
 
-        public   override   string          ToString()      => $"Count {deque.Count}";
+        public   override   string          ToString()      => $"Count = {deque.Count}";
         
 
-        public MessageBufferQueue(int capacity = 128) {
-            buffer0 = new byte[capacity];
-            buffer1 = new byte[capacity];
-            deque   = new Deque<MessageItem<TMeta>>(4);
+        public MessageBufferQueue(int capacity = 4) {
+            deque   = new Deque<MessageItem<TMeta>>(capacity);
         }
         
         public void AddHead(in JsonValue value, in TMeta meta = default) {
@@ -116,7 +114,7 @@ namespace Friflo.Json.Fliox.Utils
         private JsonValue CreateMessageValue(in JsonValue value) {
             int len             = value.Count;
             var buffer          = Buffer;
-            var bufferLen       = buffer.Length;
+            var bufferLen       = buffer?.Length ?? 0;
             var bufferPos       = GetBufferPos();
             var remaining       = bufferLen - bufferPos;
             if (len > remaining) {
@@ -150,9 +148,11 @@ namespace Friflo.Json.Fliox.Utils
             return closed ? MessageBufferEvent.Closed : MessageBufferEvent.NewMessage;
         }
         
-        public void Clear() {
-            // swap read & write buffer.
-            writeBuffer = writeBuffer == 0 ? 1 : 0;
+        public void Clear(bool swapBuffers) {
+            if (swapBuffers) {
+                // swap read & write buffer.
+                writeBuffer = writeBuffer == 0 ? 1 : 0;
+            }
             // newly enqueued messages are written to the head of the write buffer
             SetBufferPos(0);
             deque.Clear();

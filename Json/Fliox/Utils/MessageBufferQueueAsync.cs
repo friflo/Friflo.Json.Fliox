@@ -16,8 +16,10 @@ namespace Friflo.Json.Fliox.Utils
     {
         private  readonly   MessageBufferQueue<TMeta>   queue;
         private  readonly   SemaphoreSlim               messageAvailable;
-        
-        public MessageBufferQueueAsync(int capacity = 128) {
+
+        public   override   string                      ToString() => $"Count = {queue.Count}";
+
+        public MessageBufferQueueAsync(int capacity = 4) {
             queue               = new MessageBufferQueue<TMeta>(capacity);
             messageAvailable    = new SemaphoreSlim(0, 1);
         }
