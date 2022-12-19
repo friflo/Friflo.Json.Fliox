@@ -125,13 +125,17 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             changeSubs[oldLen]  = changeSub;
         }
 
-        internal  List<SyncRequestTask> AddEventTasks(
-            List<SyncRequestTask>   tasks,
-            EventSubClient          subClient,
-            List<SyncRequestTask>   eventTasks,
-            JsonEvaluator           jsonEvaluator)
+        /// <summary>
+        /// Create <paramref name="eventTasks"/> for all <paramref name="tasks"/> the <paramref name="subClient"/> subscribed.<br/> 
+        /// Return true if <paramref name="eventTasks"/> were created. Otherwise false.
+        /// </summary>
+        internal  bool CreateEventTasks(
+            List<SyncRequestTask>       tasks,
+            EventSubClient              subClient,
+            ref List<SyncRequestTask>   eventTasks,
+            JsonEvaluator               jsonEvaluator)
         {
-            List<SyncRequestTask> addedTasks = null;
+            bool addedTasks = false;
             foreach (var task in tasks) {
                 switch (task.TaskType) {
                     case TaskType.create:
@@ -140,11 +144,11 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                     case TaskType.merge: {
                         var changeSubsLength = changeSubs.Length;
                         for (int n = 0; n < changeSubsLength; n++) {
-                            var taskResult = FilterUtils.FilterChanges(subClient, task, changeSubs[n], jsonEvaluator);
-                            if (taskResult == null)
+                            var writeTask = FilterUtils.FilterChanges(subClient, task, changeSubs[n], jsonEvaluator);
+                            if (writeTask == null)
                                 continue;
-                            AddTask(ref eventTasks, taskResult, tasks);
-                            addedTasks = eventTasks;
+                            AddTask(writeTask, ref eventTasks);
+                            addedTasks = true;
                         }
                         break;
                     }
@@ -159,20 +163,20 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                         messageTask.users   = null;
                         messageTask.clients = null;
                         messageTask.groups  = null;
-                        AddTask(ref eventTasks, messageTask, tasks);
-                        addedTasks = eventTasks;
+                        AddTask(messageTask, ref eventTasks);
+                        addedTasks = true;
                     break;
                 }
             }
             return addedTasks;
         }
         
-        private static List<SyncRequestTask> AddTask(ref List<SyncRequestTask> eventTasks, SyncRequestTask task, List<SyncRequestTask> tasks) {
+        /// <summary>Add the <paramref name="task"/> to the <paramref name="eventTasks"/></summary>
+        private static void AddTask(SyncRequestTask task, ref List<SyncRequestTask> eventTasks) {
             if (eventTasks == null) {
-                eventTasks = new List<SyncRequestTask>(tasks.Count);
+                eventTasks = new List<SyncRequestTask>();
             }
             eventTasks.Add(task);
-            return eventTasks;
         }
         
         private static bool IsEventTarget (EventSubClient subClient, SyncMessageTask messageTask)

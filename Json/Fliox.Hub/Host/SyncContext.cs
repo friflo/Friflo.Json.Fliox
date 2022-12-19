@@ -151,9 +151,11 @@ namespace Friflo.Json.Fliox.Hub.Host
     public readonly struct SyncBuffers
     {
         internal readonly List<SyncRequestTask> eventTasks;
+        internal readonly List<JsonValue>       tasksJson;
         
-        public SyncBuffers (List<SyncRequestTask> eventTasks) {
-            this.eventTasks   = eventTasks;
+        public SyncBuffers (List<SyncRequestTask> eventTasks, List<JsonValue> tasksJson) {
+            this.eventTasks     = eventTasks;
+            this.tasksJson      = tasksJson;
         }
     }
     

@@ -21,11 +21,11 @@ namespace Friflo.Json.Fliox.Hub.Remote
     /// <summary> Reflect the shape of a <see cref="SyncEvent"/> </summary>
     public struct RemoteSyncEvent
     {
-        /** map to <see cref="SyncEvent.seq"/> */               public  int         seq; 
-        /** map to <see cref="SyncEvent.srcUserId"/> */         public  JsonKey     src;
-        /** map to <see cref="SyncEvent.db"/> */                public  string      db;
-        /** map to <see cref="SyncEvent.isOrigin"/> */          public  bool?       isOrigin;
-        /** map to <see cref="SyncEvent.tasks"/> */             public  JsonValue[] tasks;
+        /** map to <see cref="SyncEvent.seq"/> */               public  int             seq; 
+        /** map to <see cref="SyncEvent.srcUserId"/> */         public  JsonKey         src;
+        /** map to <see cref="SyncEvent.db"/> */                public  string          db;
+        /** map to <see cref="SyncEvent.isOrigin"/> */          public  bool?           isOrigin;
+        /** map to <see cref="SyncEvent.tasks"/> */             public  List<JsonValue> tasks;
     }
     
     /// <summary>
@@ -49,17 +49,17 @@ namespace Friflo.Json.Fliox.Hub.Remote
         
         /// <summary>
         /// Creates a serialized <see cref="EventMessage"/><br/>
-        /// <b>Attention</b> returned <see cref="JsonValue"/> is <b>only</b> valid until the passed <paramref name="args"/> mapper in  is reused
+        /// <b>Attention</b> returned <see cref="JsonValue"/> is <b>only</b> valid until the passed <paramref name="writer"/> is reused
         /// </summary>
         public static JsonValue CreateProtocolEvent (
             List<JsonValue>     events,
             in JsonKey          dstClientId,
-            ObjectMapper        mapper)   
+            ObjectWriter        writer)   
         {
-            mapper.Pretty           = true;
-            mapper.WriteNullMembers = false;
+            writer.Pretty           = true;
+            writer.WriteNullMembers = false;
             var remoteEventMessage  = new RemoteEventMessage { msg = "ev", clt = dstClientId, events = events };
-            var result              = mapper.writer.WriteAsBytes(remoteEventMessage);
+            var result              = writer.WriteAsBytes(remoteEventMessage);
             return new JsonValue(result);
         }
         
@@ -68,15 +68,10 @@ namespace Friflo.Json.Fliox.Hub.Remote
         /// </summary>
         public static JsonValue SerializeSyncEvent (
             in SyncEvent        syncEvent,
-            bool                serializedEvents,
             ObjectWriter        writer)       
         {
             writer.Pretty           = true;
             writer.WriteNullMembers = false;
-            if (!serializedEvents) {
-                var ev = writer.WriteAsBytes(syncEvent);
-                return new JsonValue(ev);
-            }
             var remoteEv = new RemoteSyncEvent {
                 seq         = syncEvent.seq,
                 src         = syncEvent.srcUserId,

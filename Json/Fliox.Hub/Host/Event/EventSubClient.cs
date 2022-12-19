@@ -55,11 +55,6 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         internal            int                                 Seq                 => eventCounter;
         /// <summary> number of events stored for a client not yet acknowledged by the client </summary>
         internal            int                                 QueuedEventsCount   => unsentEventsDeque.Count + sentEventsQueue.Count;
-        /// <summary>
-        /// <b>true</b>  if eventReceiver is null or a remote target (WebSocket). <br/>
-        /// <b>false</b> if the eventReceiver is provided by a FlioxClient (in process) 
-        /// </summary>
-        internal            bool                                SerializeEvents     => eventReceiver?.IsRemoteTarget() ?? true;
         
         public   override   string                              ToString()          => $"client: '{clientId.AsString()}'";
         
@@ -90,11 +85,12 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             return true;
         }
         
-        internal void EnqueueEvent(ref SyncEvent ev, bool serializedEvents, ObjectWriter writer) {
+        /// <summary>Serialize the <paramref name="syncEvent"/> to a message and enqueue the message for sending</summary>
+        internal void EnqueueEvent(ref SyncEvent syncEvent, ObjectWriter writer) {
             lock (unsentEventsDeque) {
-                ev.seq = ++eventCounter;
-                var rawEvent = RemoteUtils.SerializeSyncEvent(ev, serializedEvents, writer);
-                unsentEventsDeque.AddTail(rawEvent, ev.seq);
+                syncEvent.seq = ++eventCounter;
+                var rawEvent = RemoteUtils.SerializeSyncEvent(syncEvent, writer);
+                unsentEventsDeque.AddTail(rawEvent, syncEvent.seq);
             }
             // Signal new event. Need to be signaled after adding event to queue. No reason to execute this in the lock. 
             if (dispatcher != null) {
@@ -155,7 +151,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             }
         }
         
-        internal void SendEvents (ObjectMapper mapper, List<JsonValue> events) {
+        internal void SendEvents (ObjectWriter writer, List<JsonValue> events) {
             var receiver = eventReceiver;
             // early out in case the target is a remote connection which already closed.
             if (receiver == null || !receiver.IsOpen()) {
@@ -175,7 +171,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                     // Console.WriteLine($"--- SendEvents: {events.Length}");
                     // In case the event target is remote connection it is not guaranteed that the event arrives.
                     // The remote target may already be disconnected and this is still not know when sending the event.
-                    var rawEventMessage = RemoteUtils.CreateProtocolEvent(events, clientId, mapper);
+                    var rawEventMessage = RemoteUtils.CreateProtocolEvent(events, clientId, writer);
                     var clientEvent     = new RemoteEvent(clientId, rawEventMessage);
                     receiver.SendEvent(clientEvent);
                 }

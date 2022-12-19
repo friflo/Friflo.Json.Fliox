@@ -32,10 +32,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
             internal            RemoteHost              remoteHost;
             internal            MemoryBuffer            memoryBuffer;
             internal            ObjectMapper            mapper;
-            private readonly    List<SyncRequestTask>   eventTasks = new List<SyncRequestTask>(); 
+            private readonly    List<SyncRequestTask>   eventTasks = new List<SyncRequestTask>();
+            private readonly    List<JsonValue>         jsonTasks  = new List<JsonValue>(); 
             
             internal SyncContext CreateSyncContext() {
-                return new SyncContext (remoteHost.sharedEnv, null, new SyncBuffers(eventTasks));
+                return new SyncContext (remoteHost.sharedEnv, null, new SyncBuffers(eventTasks, jsonTasks));
             }
         }
         
@@ -107,7 +108,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
                     dif = GC.GetAllocatedBytesForCurrentThread() - start;
                     if (response.status != JsonResponseStatus.Ok)   Fail("Expect OK");
                 }
-                var expect = TestUtils.IsDebug() ? 616 : 616;
+                var expect = TestUtils.IsDebug() ? 536 : 536;
                 AreEqual(expect, dif);
             }
         }

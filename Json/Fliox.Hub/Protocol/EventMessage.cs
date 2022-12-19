@@ -62,7 +62,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol
                     public      List<SyncRequestTask>   tasks;
 
         /// Used for optimization. Either <see cref="tasks"/> or <see cref="tasksJson"/> is set
-        [Ignore]    internal    JsonValue[]             tasksJson;
+        [Ignore]    internal    List<JsonValue>         tasksJson;
         
         public   override       string                  ToString()  => GetEventInfo().ToString();
         

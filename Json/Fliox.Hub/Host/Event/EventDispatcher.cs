@@ -251,9 +251,10 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                 throw new InvalidOperationException($"must not be called if using {nameof(EventDispatcher)}.{EventDispatching.QueueSend}");
             }
             using (var pooleMapper = sharedEnv.Pool.ObjectMapper.Get()) {
+                var writer = pooleMapper.instance.writer;
                 foreach (var pair in subClients) {
                     var subClient = pair.Value;
-                    subClient.SendEvents(pooleMapper.instance, eventsBuffer);
+                    subClient.SendEvents(writer, eventsBuffer);
                 }
             }
         }
@@ -298,7 +299,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         }
         
         /// <summary>
-        /// Create <see cref="SyncEvent"/>'s for the passed <see cref="SyncRequest.tasks"/> for
+        /// Create serialized <see cref="SyncEvent"/>'s for the passed <see cref="SyncRequest.tasks"/> for
         /// all <see cref="EventSubClient"/>'s having matching <see cref="DatabaseSubs"/>
         /// </summary>
         internal void EnqueueSyncTasks (SyncRequest syncRequest, SyncContext syncContext) {
@@ -308,36 +309,59 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             if (sendClients.IsEmpty || !HasSubscribableTask(syncTasks)) {
                 return; // early out
             }
+            var database  = syncContext.databaseName;
+            var syncEvent = new SyncEvent {
+                srcUserId   = syncRequest.userId,
+                db          = database.value,
+                tasks       = syncContext.syncBuffers.eventTasks,
+                tasksJson   = syncContext.syncBuffers.tasksJson
+            };
             using (var pooled = syncContext.ObjectMapper.Get()) {
                 ObjectWriter writer     = pooled.instance.writer;
-                var database            = syncContext.databaseName;
                 writer.Pretty           = false;    // write sub's as one liner
                 writer.WriteNullMembers = false;
-                
+
                 foreach (var pair in sendClients) {
                     EventSubClient subClient = pair.Value;
                     if (!subClient.queueEvents && !subClient.Connected) {
                         sendClients.TryRemove(subClient.clientId, out _);
                         continue;
                     }
-                    if (!subClient.databaseSubs.TryGetValue(database, out var databaseSubs))
+                    if (!subClient.databaseSubs.TryGetValue(database, out var databaseSubs)) {
                         continue;
-                    
-                    var serializeEvents = SerializeRemoteEvents && subClient.SerializeEvents;
-                    var buffer          = serializeEvents ? syncContext.syncBuffers.eventTasks : null;                    
-                    var eventTasks      = databaseSubs.AddEventTasks(syncTasks, subClient, buffer, jsonEvaluator);
-                    if (eventTasks == null)
-                        continue;
-                    // mark change events for (change) tasks which are sent by the client itself
-                    bool?   isOrigin    = syncContext.clientId.IsEqual(subClient.clientId) ? true : (bool?)null;
-                    var syncEvent = new SyncEvent { db = database.value, tasks = eventTasks, srcUserId = syncRequest.userId, isOrigin = isOrigin };
-                    
-                    if (serializeEvents) {
-                        SerializeRemoteEvent(ref syncEvent, eventTasks, writer);
                     }
-                    subClient.EnqueueEvent(ref syncEvent, serializeEvents, writer);
+                    if (!databaseSubs.CreateEventTasks(syncTasks, subClient, ref syncEvent.tasks, jsonEvaluator)) {
+                        continue;
+                    }
+                    // mark change events for (change) tasks which are sent by the client itself
+                    syncEvent.isOrigin  = syncContext.clientId.IsEqual(subClient.clientId) ? true : (bool?)null;
+                    
+                    SerializeEventTasks (syncEvent.tasks, ref syncEvent.tasksJson, writer);
+                    subClient.EnqueueEvent  (ref syncEvent, writer);
                 }
             }
+        }
+        
+        /// <summary>Serialize the passed <paramref name="tasks"/> to <paramref name="tasksJson"/></summary>
+        /// <remarks>
+        /// Optimization:<br/>
+        /// - serialize a task only once for multiple targets<br/>
+        /// - store only a single byte[] for a task instead of a complex SyncRequestTask which is not used anymore<br/>
+        /// </remarks>
+        private static void SerializeEventTasks(List<SyncRequestTask> tasks, ref List<JsonValue> tasksJson, ObjectWriter writer) {
+            if (tasksJson == null) {
+                tasksJson = new List<JsonValue>();
+            }
+            tasksJson.Clear();
+            foreach (var task in tasks) {
+                if (task.intern.json == null) {
+                    // create an individual byte array.
+                    // This is necessary as multiple arrays are queued and by this cannot be reused.
+                    task.intern.json = writer.WriteAsValue(task); // todo remove create an individual byte array
+                }
+                tasksJson.Add(task.intern.json.Value);
+            }
+            tasks.Clear(); // is necessary as tasks List<> may be reused
         }
         
         // ------------------------------- send client events -------------------------------
@@ -356,7 +380,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         private async Task RunSendEventLoop(IDataChannelReader<EventSubClient> clientEventReader) {
             try {
                 using (var mapper = new ObjectMapper(sharedEnv.TypeStore)) {
-                    await SendEventLoop(clientEventReader, mapper).ConfigureAwait(false);
+                    await SendEventLoop(clientEventReader, mapper.writer).ConfigureAwait(false);
                 }
             } catch (Exception e) {
                 var message = "RunSendEventLoop() failed";
@@ -365,40 +389,17 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             }
         }
         
-        private async Task SendEventLoop(IDataChannelReader<EventSubClient> clientEventReader, ObjectMapper mapper) {
+        private async Task SendEventLoop(IDataChannelReader<EventSubClient> clientEventReader, ObjectWriter writer) {
             var logger  = sharedEnv.Logger;
             while (true) {
                 var client = await clientEventReader.ReadAsync().ConfigureAwait(false);
                 if (client != null) {
-                    client.SendEvents(mapper, eventsBuffer);
+                    client.SendEvents(writer, eventsBuffer);
                     continue;
                 }
                 logger.Log(HubLog.Info, $"ClientEventLoop() returns");
                 return;
             }
-        }
-
-        // --------------------------- serialize remote event optimization ---------------------------
-        private static bool SerializeRemoteEvents = true; // set to false for development
-
-        /// Optimization: For remote connections the tasks are serialized to <see cref="SyncEvent.tasksJson"/>.
-        /// Benefits of doing this:
-        /// - serialize a task only once for multiple targets
-        /// - storing only a single byte[] for a task instead of a complex SyncRequestTask which is not used anymore
-        private static void SerializeRemoteEvent(ref SyncEvent syncEvent, List<SyncRequestTask> tasks, ObjectWriter writer) {
-            var tasksJson = new JsonValue [tasks.Count];
-            syncEvent.tasksJson = tasksJson;
-            for (int n = 0; n < tasks.Count; n++) {
-                var task = tasks[n];
-                if (task.intern.json == null) {
-                    // create an individual byte array.
-                    // This is necessary as multiple arrays are queued and by this cannot be reused.
-                    task.intern.json = writer.WriteAsValue(task);
-                }
-                tasksJson[n] = task.intern.json.Value;
-            }
-            tasks.Clear(); // is necessary as tasks List<> may be reused
-            syncEvent.tasks = null;
         }
     }
 }
