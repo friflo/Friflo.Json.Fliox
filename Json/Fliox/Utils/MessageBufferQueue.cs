@@ -91,6 +91,17 @@ namespace Friflo.Json.Fliox.Utils
             deque.AddHead(new MessageItem<TMeta>(message, meta));
         }
         
+        public void AddHeadQueue(MessageBufferQueue<TMeta> messages) {
+            deque.ReserveHead(messages.Count);
+            int index       = deque.First;
+            var array       = deque.Array;
+            foreach (var message in messages) {
+                var value       = CreateMessageValue(message.value);
+                array[index]    = new MessageItem<TMeta>(value, message.meta);
+                index           = (index + 1) % deque.Capacity;
+            }
+        }
+        
         public void AddTail(in JsonValue value, in TMeta meta = default) {
             if (closed) throw new InvalidOperationException("MessageBufferQueue already closed");
             var message = CreateMessageValue(value);

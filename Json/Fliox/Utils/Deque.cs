@@ -75,15 +75,20 @@ namespace Friflo.Json.Fliox.Utils
         }
         
         public void AddHeadQueue(Queue<T> queue) {
-            var newCount    = count + queue.Count;
-            if (newCount > capacity) {
-                Resize(newCount);
-            }
-            int index = first = (first + capacity - queue.Count) % capacity;
+            ReserveHead(queue.Count);
+            int index = first;
             foreach (var item in queue) {
                 array[index]    = item;
                 index           = (index + 1) % capacity;
             }
+        }
+        
+        internal void ReserveHead(int length) {
+            var newCount    = count + length;
+            if (newCount > capacity) {
+                Resize(newCount);
+            }
+            first = (first + capacity - length) % capacity;
             count = newCount;
         }
         

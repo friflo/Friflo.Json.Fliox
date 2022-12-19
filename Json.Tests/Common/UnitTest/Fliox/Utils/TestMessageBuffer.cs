@@ -81,5 +81,30 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Utils
             var dif  = GC.GetAllocatedBytesForCurrentThread() - start;
             AreEqual(0, dif);
         }
+        
+        [Test]
+        public void TestMessageBuffer_AddHeadQueue() {
+            var queue = new MessageBufferQueue<int>(5);
+            var msg3 = new JsonValue("msg-3");
+            var msg4 = new JsonValue("msg-4");
+            queue.AddTail(msg3, 3);
+            queue.AddTail(msg4, 4);
+            
+            var prepend = new MessageBufferQueue<int>(5);
+            var msg1 = new JsonValue("msg-1");
+            var msg2 = new JsonValue("msg-2");
+            
+            prepend.AddTail(msg1, 1);
+            prepend.AddTail(msg2, 2);
+            
+            queue.AddHeadQueue(prepend);
+
+            int count = 0;
+            foreach (var message in queue) {
+                count++;
+                AreEqual(count, message.meta);
+            }
+            AreEqual(4, count);
+        }
     }
 }
