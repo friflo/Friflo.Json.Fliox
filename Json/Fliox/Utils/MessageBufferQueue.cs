@@ -42,12 +42,21 @@ namespace Friflo.Json.Fliox.Utils
     }
 
     /// <summary>
-    /// A queue to store messages using double buffering to avoid frequent allocations of byte arrays for each message. <br/>
-    /// One buffer is used to store newly enqueued messages. <br/>
-    /// The other buffer is used to read dequeued messages. <br/>
+    /// A queue used to store <see cref="JsonValue"/> messages using double buffering to avoid frequent allocations
+    /// of byte[] instances for each message.
     /// </summary>
-    /// <typeparam name="TMeta">type of the meta data associated to each message.
-    /// Use <see cref="VoidMeta"/> if no associated is required</typeparam>
+    /// <remarks>
+    /// To avoid frequent byte[] allocations it utilizes two byte[] buffers.<br/>
+    /// 1. One buffer is used to store the bytes of new messages. <br/>
+    /// 2. The other buffer store the bytes of dequeued messages. <br/>
+    /// <b>Note</b>
+    /// Dequeued messages are valid until the next call of <see cref="DequeMessages"/> or <see cref="Clear"/> <br/>
+    /// The buffers are swapped when calling one of these methods.
+    /// </remarks>
+    /// <typeparam name="TMeta">
+    /// Type of the meta data associated to each message.
+    /// Use <see cref="VoidMeta"/> if no associated meta data is required
+    /// </typeparam>
     public sealed class MessageBufferQueue<TMeta>
     {
         private             byte[]          buffer0;
@@ -94,8 +103,6 @@ namespace Friflo.Json.Fliox.Utils
         }
         
         private JsonValue CreateMessageValue(in JsonValue value) {
-            byte[] data         = value.Array;
-            int start           = value.start;
             int len             = value.Count;
             var buffer          = Buffer;
             var bufferLen       = buffer.Length;
@@ -112,7 +119,7 @@ namespace Friflo.Json.Fliox.Utils
                 SetBufferPos(0);
                 bufferPos = 0;
             }
-            System.Buffer.BlockCopy(data, start, buffer, bufferPos, len);
+            System.Buffer.BlockCopy(value.Array, value.start, buffer, bufferPos, len);
             SetBufferPos(bufferPos + len);
             return new JsonValue(buffer, bufferPos, len);
         }
@@ -133,6 +140,9 @@ namespace Friflo.Json.Fliox.Utils
         }
         
         public void Clear() {
+            // swap read & write buffer.
+            writeBuffer = writeBuffer == 0 ? 1 : 0;
+            // newly enqueued messages are written to the head of the write buffer
             SetBufferPos(0);
             deque.Clear();
         }
