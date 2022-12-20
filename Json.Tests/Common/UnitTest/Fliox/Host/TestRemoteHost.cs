@@ -33,11 +33,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
             internal            RemoteHost              remoteHost;
             internal            MemoryBuffer            memoryBuffer;
             internal            ObjectMapper            mapper;
+            internal            SyncPools               syncPools;
             private readonly    List<SyncRequestTask>   eventTasks = new List<SyncRequestTask>();
-            private readonly    List<JsonValue>         jsonTasks  = new List<JsonValue>(); 
+            private readonly    List<JsonValue>         jsonTasks  = new List<JsonValue>();
             
             internal SyncContext CreateSyncContext() {
-                return new SyncContext (remoteHost.sharedEnv, null, new SyncBuffers(eventTasks, jsonTasks));
+                return new SyncContext (remoteHost.sharedEnv, null, new SyncBuffers(eventTasks, jsonTasks, syncPools));
             }
         }
         
@@ -57,7 +58,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
                     dif = GC.GetAllocatedBytesForCurrentThread() - start;
                     if (response.status != JsonResponseStatus.Ok)   Fail("Expect OK");
                 }
-                var expect = TestUtils.IsDebug() ? 936 : 936;
+                var expect = TestUtils.IsDebug() ? 776 : 776;
                 AreEqual(expect, dif);
             }
         }
@@ -79,7 +80,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
                     dif = GC.GetAllocatedBytesForCurrentThread() - start;
                     if (response.status != JsonResponseStatus.Ok)   Fail("Expect OK");
                 }
-                var expect = TestUtils.IsDebug() ? 272 : 272;
+                var expect = TestUtils.IsDebug() ? 112 : 112;
                 AreEqual(expect, dif);
             }
         }
@@ -109,7 +110,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
                     dif = GC.GetAllocatedBytesForCurrentThread() - start;
                     if (response.status != JsonResponseStatus.Ok)   Fail("Expect OK");
                 }
-                var expect = TestUtils.IsDebug() ? 448 : 448;
+                var expect = TestUtils.IsDebug() ? 288 : 288;
                 AreEqual(expect, dif);
             }
         }
@@ -125,6 +126,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
             cx.mapper           = new ObjectMapper(typeStore);
             cx.mapper.WriteNullMembers      = false;
             cx.mapper.reader.InstancePool   = new ReaderInstancePool(typeStore);
+            cx.syncPools        = new SyncPools(typeStore);
 
             // -- create request with upsert task
             var syncWrite = new SyncRequest {

@@ -11,6 +11,7 @@ using Friflo.Json.Fliox.Hub.Host.Utils;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Mapper;
+using Friflo.Json.Fliox.Pools;
 using Friflo.Json.Fliox.Utils;
 using static System.Diagnostics.DebuggerBrowsableState;
 using Browse = System.Diagnostics.DebuggerBrowsableAttribute;
@@ -152,10 +153,25 @@ namespace Friflo.Json.Fliox.Hub.Host
     {
         internal readonly List<SyncRequestTask> eventTasks;
         internal readonly List<JsonValue>       tasksJson;
+        internal readonly SyncPools             pools;
         
-        public SyncBuffers (List<SyncRequestTask> eventTasks, List<JsonValue> tasksJson) {
-            this.eventTasks     = eventTasks;
-            this.tasksJson      = tasksJson;
+        public SyncBuffers (List<SyncRequestTask> eventTasks, List<JsonValue> tasksJson, SyncPools syncPools) {
+            this.eventTasks = eventTasks;
+            this.tasksJson  = tasksJson;
+            this.pools      = syncPools;
+        }
+    }
+    
+    public sealed class SyncPools
+    {
+        internal readonly InstancePools                         pools;
+        internal readonly InstancePool<List<SyncTaskResult>>    taskResultsPool;
+        internal readonly InstancePool<SyncResponse>            responsePool;
+        
+        public SyncPools(TypeStore typeStore) {
+            pools           = new InstancePools(typeStore);
+            taskResultsPool = new InstancePool<List<SyncTaskResult>>(pools);
+            responsePool    = new InstancePool<SyncResponse>        (pools);
         }
     }
     

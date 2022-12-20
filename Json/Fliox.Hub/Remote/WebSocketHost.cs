@@ -157,7 +157,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
         private async Task ReceiveMessageLoop(ObjectMapper mapper) {
             var memoryStream            = new MemoryStream();
             var buffer                  = new ArraySegment<byte>(new byte[8192]);
-            var syncBuffers             = new SyncBuffers(new List<SyncRequestTask>(), new List<JsonValue>());
+            var syncPools               = new SyncPools(typeStore);
+            var syncBuffers             = new SyncBuffers(new List<SyncRequestTask>(), new List<JsonValue>(), syncPools);
             var syncContext             = new SyncContext(sharedEnv, this, syncBuffers); // reused context
             var memoryBuffer            = new MemoryBuffer(4 * 1024);
             // using an instance pool for reading syncRequest and its dependencies is possible as their references

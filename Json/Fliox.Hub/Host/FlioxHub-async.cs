@@ -2,7 +2,6 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
@@ -61,8 +60,9 @@ namespace Friflo.Json.Fliox.Hub.Host
 
             service.PreExecuteTasks(syncContext);
 
-            var tasks       = new List<SyncTaskResult>(taskCount);
-            var response    = new SyncResponse { tasks = tasks, database = syncRequest.database };
+            var response        = CreateResponse(syncContext);
+            response.database   = syncRequest.database;
+            var tasks           = response.tasks;
             
             // ------------------------ loop through all given tasks and execute them ------------------------
             for (int index = 0; index < taskCount; index++) {

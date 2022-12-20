@@ -214,6 +214,27 @@ namespace Friflo.Json.Fliox.Hub.Host
             return syncRequest.intern.executionType = executionType;
         }
         
+        private static SyncResponse CreateResponse(SyncContext syncContext) {
+            var pools = syncContext.syncBuffers.pools;
+            if (pools == null) {
+                return new SyncResponse {
+                    tasks  = new List<SyncTaskResult>(syncContext.request.tasks.Count)
+                };
+            }
+            pools.pools.Reuse();
+            var tasks           = pools.taskResultsPool.Create();
+            tasks.Clear();
+            var response        = pools.responsePool.Create();
+            // --- ProtocolResponse
+            response.reqId      = null;
+            response.clientId   = default;
+            // --- SyncResponse
+            response.tasks      = tasks;
+            response.containers = null;
+            response.info       = default;
+            return response;
+        }
+        
         /// <summary>
         /// Execute at the end of <see cref="ExecuteRequestAsync"/> and <see cref="ExecuteRequest"/>
         /// </summary>
