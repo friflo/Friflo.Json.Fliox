@@ -96,9 +96,12 @@ namespace Friflo.Json.Fliox.Hub.Remote
             }
             if (message is SyncRequest syncRequest) {
                 var instancePool = reader.InstancePool;
-                // reset cached task.json created by SerializeRemoteEvent()
+                // reset intern fields
                 if (instancePool != null) {
-                    foreach (var task in syncRequest.tasks) { task.intern.json = null; }
+                    syncRequest.intern = default;
+                    foreach (var task in syncRequest.tasks) {
+                        task.intern = default;
+                    }
                 }
                 error = null;
                 return syncRequest;

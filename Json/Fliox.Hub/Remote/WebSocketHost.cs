@@ -159,7 +159,9 @@ namespace Friflo.Json.Fliox.Hub.Remote
             var syncBuffers             = new SyncBuffers(new List<SyncRequestTask>(), new List<JsonValue>());
             var syncContext             = new SyncContext(sharedEnv, this, syncBuffers); // reused context
             var memoryBuffer            = new MemoryBuffer(4 * 1024);
-            // mapper.reader.InstancePool  = new InstancePool(typeStore);    // reused SyncRequest
+            // using an instance pool for reading syncRequest and its dependencies is possible as their references
+            // are only used within this method scope.
+            mapper.reader.InstancePool  = new InstancePool(typeStore);
             while (true) {
                 var state = webSocket.State;
                 if (state == WebSocketState.CloseReceived) {

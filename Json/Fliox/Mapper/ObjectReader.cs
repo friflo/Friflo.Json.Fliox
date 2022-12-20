@@ -125,14 +125,14 @@ namespace Friflo.Json.Fliox.Mapper
         // --------------- Bytes ---------------
         // --- Read()
         public T Read<T>(Bytes utf8Bytes) {
-            InitJsonReaderBytes(ref utf8Bytes, false);
+            InitJsonReaderBytes(ref utf8Bytes, InstancePool != null);
             T result =  ReadStart<T>(default);
             JsonBurstError();
             return result;
         }
         
         public object ReadObject(Bytes utf8Bytes, Type type) {
-            InitJsonReaderBytes(ref utf8Bytes, false);
+            InitJsonReaderBytes(ref utf8Bytes, InstancePool != null);
             Var result = ReadStart(type);
             JsonBurstError();
             return result.ToObject();
@@ -156,14 +156,14 @@ namespace Friflo.Json.Fliox.Mapper
         // --------------- Stream ---------------
         // --- Read()
         public T Read<T>(Stream utf8Stream) {
-            InitJsonReaderStream(utf8Stream, false);
+            InitJsonReaderStream(utf8Stream, InstancePool != null);
             T result = ReadStart<T>(default);
             JsonBurstError();
             return result;
         }
         
         public object ReadObject(Stream utf8Stream, Type type) {
-            InitJsonReaderStream(utf8Stream, false);
+            InitJsonReaderStream(utf8Stream, InstancePool != null);
             Var result = ReadStart(type);
             JsonBurstError();
             return result.ToObject();
@@ -187,14 +187,14 @@ namespace Friflo.Json.Fliox.Mapper
         // --------------- string ---------------
         // --- Read()
         public T Read<T>(string json) {
-            InitJsonReaderString(json, false);
+            InitJsonReaderString(json, InstancePool != null);
             T result = ReadStart<T>(default);
             JsonBurstError();
             return result;
         }
         
         public object ReadObject(string json, Type type) {
-            InitJsonReaderString(json, false);
+            InitJsonReaderString(json, InstancePool != null);
             Var result = ReadStart(type);
             JsonBurstError();
             return result.ToObject();
@@ -219,21 +219,21 @@ namespace Friflo.Json.Fliox.Mapper
         // --------------- JsonValue ---------------
         // --- Read()
         public T Read<T>(in JsonValue json) {
-            InitJsonReaderArray(json, false);
+            InitJsonReaderArray(json, InstancePool != null);
             T result = ReadStart<T>(default);
             JsonBurstError();
             return result;
         }
         
         public object ReadObject(in JsonValue json, Type type) {
-            InitJsonReaderArray(json, false);
+            InitJsonReaderArray(json, InstancePool != null);
             Var result = ReadStart(type);
             JsonBurstError();
             return result.ToObject();
         }
         
         internal Var ReadObjectVar(in JsonValue json, Type type) {
-            InitJsonReaderArray(json, false);
+            InitJsonReaderArray(json, InstancePool != null);
             Var result = ReadStart(type);
             JsonBurstError();
             return result;

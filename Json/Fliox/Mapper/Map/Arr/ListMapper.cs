@@ -94,11 +94,12 @@ namespace Friflo.Json.Fliox.Mapper.Map.Arr
             
             var list = slot;
             int startLen = 0;
-            if (list == null)
+            if (list == null || reader.instancePool != null) {
                 list = (List<TElm>) CreateInstance(reader.instancePool);
-            else
+                list.Clear();
+            } else {
                 startLen = list.Count;
-            
+            }
             int index = 0;
 
             while (true) {

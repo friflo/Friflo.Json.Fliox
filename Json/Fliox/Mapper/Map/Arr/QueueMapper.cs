@@ -102,10 +102,12 @@ namespace Friflo.Json.Fliox.Mapper.Map.Arr
                 return default;
             
             var queue = slot;
-            if (queue == null)
+            if (queue == null || reader.instancePool != null) {
                 queue = (TCol) CreateInstance(reader.instancePool);
-            else
                 queue.Clear();
+            } else {
+                queue.Clear();
+            }
 
             while (true) {
                 JsonEvent ev = reader.parser.NextEvent();

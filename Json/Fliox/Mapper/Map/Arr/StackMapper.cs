@@ -102,11 +102,12 @@ namespace Friflo.Json.Fliox.Mapper.Map.Arr
                 return default;
             
             var stack = slot;
-            if (stack == null)
+            if (stack == null || reader.instancePool != null) {
                 stack = (TCol) CreateInstance(reader.instancePool);
-            else
                 stack.Clear();
-
+            } else {
+                stack.Clear();
+            }
             while (true) {
                 JsonEvent ev = reader.parser.NextEvent();
                 switch (ev) {
