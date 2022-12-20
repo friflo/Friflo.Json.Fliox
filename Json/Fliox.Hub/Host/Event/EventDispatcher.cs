@@ -49,6 +49,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
     /// </remarks>
     public sealed class EventDispatcher : IDisposable
     {
+    #region - members
         private  readonly   SharedEnv                                       sharedEnv;
         private  readonly   JsonEvaluator                                   jsonEvaluator;
         /// <summary>buffer for serialized <see cref="SyncEvent"/>'s to avoid frequent allocations</summary>
@@ -86,7 +87,9 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         public   override   string                                          ToString() => $"subscribers: {subClients.Count}";
 
         private const string MissingEventReceiver = "subscribing events requires an eventReceiver. E.g a WebSocket as a target for push events.";
+    #endregion
 
+    #region - initialize
         public EventDispatcher (EventDispatching dispatching, SharedEnv env = null) {
             sharedEnv           = env ?? SharedEnv.Default;
             jsonEvaluator       = new JsonEvaluator();
@@ -131,8 +134,9 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             NewClientEvent(null);
             clientEventWriter.Complete();
         }
+    #endregion
         
-        // -------------------------------- add / remove subscriptions --------------------------------
+    #region - add / remove subscritions
         internal bool SubscribeMessage(
             in SmallString      database,
             SubscribeMessage    subscribe,
@@ -245,8 +249,9 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                 subUser.groups.UnionWith(groups);
             }
         }
+    #endregion
 
-        // -------------------------- event distribution --------------------------------
+    #region - event distribution
         public void SendQueuedEvents() {
             if (dispatching == EventDispatching.QueueSend) {
                 throw new InvalidOperationException($"must not be called if using {nameof(EventDispatcher)}.{EventDispatching.QueueSend}");
@@ -370,8 +375,9 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             }
             tasks.Clear(); // is necessary as tasks List<> may be reused
         }
+    #endregion
         
-        // ------------------------------- send client events -------------------------------
+    #region - misc
         internal void NewClientEvent(EventSubClient client) {
             bool success = clientEventWriter.TryWrite(client);
             if (success)
@@ -408,5 +414,6 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                 return;
             }
         }
+    #endregion
     }
 }
