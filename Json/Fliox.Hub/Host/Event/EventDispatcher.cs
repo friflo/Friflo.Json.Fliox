@@ -317,6 +317,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             }
             var memoryBuffer    = syncContext.MemoryBuffer;
             var database        = syncContext.databaseName;
+            // reused syncEvent to create a serialized SyncEvent for every EventSubClient
             var syncEvent       = new SyncEvent {
                 srcUserId   = syncRequest.userId,
                 db          = database.value,
