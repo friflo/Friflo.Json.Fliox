@@ -72,6 +72,11 @@ namespace Friflo.Json.Burst
         
         private static bool _enableLeakDetection;
         
+        /// <summary>
+        /// Only used to know previous calls of <see cref="TrackAllocation"/><br/>
+        /// Tracking became obsolete since dropping support of JSON_BURST
+        /// </summary>
+        public static void TrackAllocationObsolete(object resource) { }
         public static void TrackAllocation(object resource) {
             if (!_enableLeakDetection)
                 return;
@@ -86,7 +91,12 @@ namespace Friflo.Json.Burst
                 Allocations.Add(allocation, allocation);
             }
         }
-
+        
+        /// <summary>
+        /// Only used to know previous calls of <see cref="UntrackAllocation"/><br/>
+        /// Tracking became obsolete since dropping support of JSON_BURST
+        /// </summary>
+        public static void UntrackAllocationObsolete(object resource) { }
         public static void UntrackAllocation(object resource) {
             if (!_enableLeakDetection)
                 return;

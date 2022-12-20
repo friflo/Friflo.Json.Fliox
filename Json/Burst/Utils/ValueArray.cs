@@ -34,7 +34,7 @@ namespace Friflo.Json.Burst.Utils
 
         public ValueArray(int size) {
             array = new T[size];
-            DebugUtils.TrackAllocation(array);
+            DebugUtils.TrackAllocationObsolete(array);
         }
         
         public int Length {
@@ -44,7 +44,7 @@ namespace Friflo.Json.Burst.Utils
         public void Dispose() {
             if (array == null)
                 throw new InvalidOperationException("Friflo.Json.Burst.Utils.ValueArray has been disposed. Mimic NativeArray behavior");
-            DebugUtils.UntrackAllocation(array);
+            DebugUtils.UntrackAllocationObsolete(array);
             array = null;
         }
         

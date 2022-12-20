@@ -47,7 +47,7 @@ namespace Friflo.Json.Burst
         public void Dispose() {
             if (!IsCreated())
                 return;
-            DebugUtils.UntrackAllocation(buffer);
+            DebugUtils.UntrackAllocationObsolete(buffer);
             buffer = null;
         }
         
@@ -118,7 +118,7 @@ namespace Friflo.Json.Burst
         /// was previous in <see cref="ByteList"/> constructor
         private static byte[] AllocateBuffer(int size) {
             var result = new byte [size];
-            DebugUtils.TrackAllocation(result);
+            DebugUtils.TrackAllocationObsolete(result);
             return result;
         }
         
@@ -129,8 +129,8 @@ namespace Friflo.Json.Burst
             Buffer.BlockCopy (buffer, 0, newArr, 0, len);
             //  for (int i = 0; i < len; i++)
             //      newArr[i] = array[i];
-            DebugUtils.UntrackAllocation(buffer);
-            DebugUtils.TrackAllocation(newArr);
+            DebugUtils.UntrackAllocationObsolete(buffer);
+            DebugUtils.TrackAllocationObsolete(newArr);
             buffer = newArr;
         }
 

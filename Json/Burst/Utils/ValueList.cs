@@ -60,7 +60,7 @@ namespace Friflo.Json.Burst.Utils
         public ValueList(int size, AllocType allocType) {
             array = new T[size];
             len = 0;
-            DebugUtils.TrackAllocation(array);
+            DebugUtils.TrackAllocationObsolete(array);
         }
  
         // public int Length => len;
@@ -100,15 +100,15 @@ namespace Friflo.Json.Burst.Utils
             // Buffer.BlockCopy (array, 0, newArr, 0, len);
             for (int i = 0; i < len; i++)
                 newArr[i] = array[i];
-            DebugUtils.UntrackAllocation(array);
-            DebugUtils.TrackAllocation(newArr);
+            DebugUtils.UntrackAllocationObsolete(array);
+            DebugUtils.TrackAllocationObsolete(newArr);
             array = newArr;
         }
 
         public void Dispose() {
             if (array == null)
                 throw new InvalidOperationException("Friflo.Json.Burst.Utils.ValueList has been disposed. Mimic NativeArray behavior");
-            DebugUtils.UntrackAllocation(array);
+            DebugUtils.UntrackAllocationObsolete(array);
             array = null;
         }
         

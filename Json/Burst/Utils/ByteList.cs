@@ -48,7 +48,7 @@ namespace Friflo.Json.Burst.Utils
         // ReSharper disable once UnusedParameter.Local
         public ByteList(int size, AllocType allocType) {
             array = new byte[size];
-            DebugUtils.TrackAllocation(array);
+            DebugUtils.TrackAllocationObsolete(array);
         }
         
  /*       public byte this[int index]
@@ -70,15 +70,15 @@ namespace Friflo.Json.Burst.Utils
             Buffer.BlockCopy (array, 0, newArr, 0, len);
             //  for (int i = 0; i < len; i++)
             //      newArr[i] = array[i];
-            DebugUtils.UntrackAllocation(array);
-            DebugUtils.TrackAllocation(newArr);
+            DebugUtils.UntrackAllocationObsolete(array);
+            DebugUtils.TrackAllocationObsolete(newArr);
             array = newArr;
         }
 
         public void Dispose() {
             if (array == null)
                 throw new InvalidOperationException("Friflo.Json.Burst.Utils.ByteList has been disposed. Mimic NativeArray behavior");
-            DebugUtils.UntrackAllocation(array);
+            DebugUtils.UntrackAllocationObsolete(array);
             array = null;
         }
         
