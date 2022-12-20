@@ -3,6 +3,7 @@
 using System;
 using Friflo.Json.Burst;
 using Friflo.Json.Burst.Utils;
+using Friflo.Json.Fliox.Mapper.Pools;
 using Friflo.Json.Fliox.Mapper.Utils;
 
 namespace Friflo.Json.Fliox.Mapper.Map
@@ -29,7 +30,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
         public              char[]              charBuf;
         public   readonly   TypeCache           typeCache;
         public              Utf8JsonWriterStub  jsonWriterStub;
-        public              InstancePool        instancePool;
+        public              ReaderInstancePool  instancePool;
         
         public              IErrorHandler       ErrorHandler {
             get => parser.error.errorHandler;

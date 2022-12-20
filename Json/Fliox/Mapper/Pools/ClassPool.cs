@@ -4,7 +4,7 @@
 using System.Collections.Generic;
 using Friflo.Json.Fliox.Mapper.Map;
 
-namespace Friflo.Json.Fliox.Mapper
+namespace Friflo.Json.Fliox.Mapper.Pools
 {
     /// <summary>
     /// A pool for class instances of reference types.

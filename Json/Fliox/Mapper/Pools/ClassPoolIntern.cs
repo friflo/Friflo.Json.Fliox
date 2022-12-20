@@ -4,7 +4,7 @@
 using System;
 using Friflo.Json.Fliox.Mapper.Map;
 
-namespace Friflo.Json.Fliox.Mapper
+namespace Friflo.Json.Fliox.Mapper.Pools
 {
     /// <summary> Contain pooled instances of a specific type </summary>
     internal struct ClassPoolIntern<T>

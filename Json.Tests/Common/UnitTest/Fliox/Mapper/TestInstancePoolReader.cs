@@ -8,6 +8,7 @@ using Friflo.Json.Fliox;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Mapper;
+using Friflo.Json.Fliox.Mapper.Pools;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
 
@@ -51,7 +52,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
             var json = mapper.WriteAsValue<ProtocolMessage>(syncRequest);
             
             var reader          = mapper.reader;
-            var pool            = new InstancePool(typeStore);
+            var pool            = new ReaderInstancePool(typeStore);
             reader.InstancePool = pool;
             long start = 0;
             for (int n = 0; n < Count; n++) {

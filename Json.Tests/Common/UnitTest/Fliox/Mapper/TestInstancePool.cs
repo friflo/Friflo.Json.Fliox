@@ -8,6 +8,7 @@ using Friflo.Json.Fliox;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Mapper;
+using Friflo.Json.Fliox.Mapper.Pools;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
 
@@ -61,7 +62,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
         
         private static void TestPoolInternal(TypeStore typeStore)
         {
-            var pool                    = new InstancePool(typeStore);
+            var pool                    = new ReaderInstancePool(typeStore);
             var syncRequestMapper       = typeStore.GetTypeMapper<SyncRequest>();
             var syncRequestTasksMapper  = typeStore.GetTypeMapper<List<SyncRequestTask>>();
             var upsertMapper            = typeStore.GetTypeMapper<UpsertEntities>();

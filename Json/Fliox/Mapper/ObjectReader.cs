@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.IO;
 using Friflo.Json.Burst;
 using Friflo.Json.Fliox.Mapper.Map;
+using Friflo.Json.Fliox.Mapper.Pools;
 using Friflo.Json.Fliox.Mapper.Utils;
 
 namespace Friflo.Json.Fliox.Mapper
@@ -72,7 +73,7 @@ namespace Friflo.Json.Fliox.Mapper
             set => intern.ErrorHandler = value;
         }
         
-        public              InstancePool        InstancePool {
+        public              ReaderInstancePool  InstancePool {
             get => intern.instancePool;
             set => intern.instancePool = value;
         }

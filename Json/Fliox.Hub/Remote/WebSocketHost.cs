@@ -15,6 +15,7 @@ using Friflo.Json.Fliox.Hub.Host.Event;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Mapper;
+using Friflo.Json.Fliox.Mapper.Pools;
 using Friflo.Json.Fliox.Utils;
 
 // ReSharper disable MethodHasAsyncOverload
@@ -161,7 +162,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             var memoryBuffer            = new MemoryBuffer(4 * 1024);
             // using an instance pool for reading syncRequest and its dependencies is possible as their references
             // are only used within this method scope.
-            mapper.reader.InstancePool  = new InstancePool(typeStore);
+            mapper.reader.InstancePool  = new ReaderInstancePool(typeStore);
             while (true) {
                 var state = webSocket.State;
                 if (state == WebSocketState.CloseReceived) {

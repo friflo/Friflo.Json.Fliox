@@ -11,6 +11,7 @@ using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Hub.Remote;
 using Friflo.Json.Fliox.Mapper;
+using Friflo.Json.Fliox.Mapper.Pools;
 using Friflo.Json.Fliox.Utils;
 using Friflo.Json.Tests.Common.UnitTest.Fliox.Client;
 using NUnit.Framework;
@@ -122,8 +123,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
             cx.remoteHost       = new RemoteHost(cx.hub, sharedEnv);
             cx.memoryBuffer     = new MemoryBuffer (4 * 1024);
             cx.mapper           = new ObjectMapper(typeStore);
-            cx.mapper.WriteNullMembers = false;
-            cx.mapper.reader.InstancePool = new InstancePool(typeStore);
+            cx.mapper.WriteNullMembers      = false;
+            cx.mapper.reader.InstancePool   = new ReaderInstancePool(typeStore);
 
             // -- create request with upsert task
             var syncWrite = new SyncRequest {

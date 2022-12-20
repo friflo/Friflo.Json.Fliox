@@ -5,13 +5,13 @@ using System;
 using Friflo.Json.Burst;
 using Friflo.Json.Fliox.Mapper.Map;
 
-namespace Friflo.Json.Fliox.Mapper
+namespace Friflo.Json.Fliox.Mapper.Pools
 {
     /// <summary>
     /// A pool for class instances of all types defined in a <see cref="TypeStore"/>.<br/>
     /// Pooled instances are reused when deserializing JSON using an <see cref="ObjectReader"/>
     /// </summary>
-    public sealed class InstancePool
+    public sealed class ReaderInstancePool
     {
         private             ClassPoolIntern<object>[]   pools;
         private             int                         poolCount;
@@ -25,7 +25,7 @@ namespace Friflo.Json.Fliox.Mapper
 
         public   override   string                      ToString() => GetString();
         
-        public InstancePool(TypeStore typeStore) {
+        public ReaderInstancePool(TypeStore typeStore) {
             pools           = Array.Empty<ClassPoolIntern<object>>();
             buffer          = new byte[128];
 #if DEBUG
@@ -35,7 +35,7 @@ namespace Friflo.Json.Fliox.Mapper
         
         /// <summary>
         /// Make pooled class instances available for reuse.<br/>
-        /// These instances were created when using the <see cref="InstancePool"/> in a previous <see cref="Reuse"/> cycle.
+        /// These instances were created when using the <see cref="ReaderInstancePool"/> in a previous <see cref="Reuse"/> cycle.
         /// </summary>
         public void Reuse() {
             version++;

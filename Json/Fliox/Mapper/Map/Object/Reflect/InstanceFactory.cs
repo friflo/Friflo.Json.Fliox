@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Friflo.Json.Burst;
+using Friflo.Json.Fliox.Mapper.Pools;
 
 namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
 {
@@ -85,7 +86,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
             }
         }
 
-        internal object CreateInstance(InstancePool instancePool, Type type) {
+        internal object CreateInstance(ReaderInstancePool instancePool, Type type) {
             if (isAbstract)
                 throw new InvalidOperationException($"type requires concrete types by [InstanceType()] or [PolymorphType()] on: {type.Name}");
             if (instancePool == null)
@@ -93,7 +94,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
             return instancePool.CreateObject(instanceMapper);
         }
         
-        internal object CreatePolymorph(InstancePool instancePool, ref Bytes name, object obj, out TypeMapper mapper) {
+        internal object CreatePolymorph(ReaderInstancePool instancePool, ref Bytes name, object obj, out TypeMapper mapper) {
             var key = new BytesHash (name);
             if (!mapperByName.TryGetValue(key, out mapper))
                 return null;
