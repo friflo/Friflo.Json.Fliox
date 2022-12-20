@@ -8,7 +8,7 @@ using Friflo.Json.Fliox;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Mapper;
-using Friflo.Json.Fliox.Mapper.Pools;
+using Friflo.Json.Fliox.Pools;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
 

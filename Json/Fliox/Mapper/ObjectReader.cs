@@ -5,8 +5,8 @@ using System.Diagnostics;
 using System.IO;
 using Friflo.Json.Burst;
 using Friflo.Json.Fliox.Mapper.Map;
-using Friflo.Json.Fliox.Mapper.Pools;
 using Friflo.Json.Fliox.Mapper.Utils;
+using Friflo.Json.Fliox.Pools;
 
 namespace Friflo.Json.Fliox.Mapper
 {

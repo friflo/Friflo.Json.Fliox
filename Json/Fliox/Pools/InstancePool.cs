@@ -3,7 +3,7 @@
 
 using Friflo.Json.Fliox.Mapper.Map;
 
-namespace Friflo.Json.Fliox.Mapper.Pools
+namespace Friflo.Json.Fliox.Pools
 {
     public abstract class InstancePool
     {
@@ -13,9 +13,10 @@ namespace Friflo.Json.Fliox.Mapper.Pools
     } 
 
     /// <summary> Contain pooled instances of a specific type </summary>
+    /// <remarks> <see cref="InstancePool{T}"/> is not thread safe </remarks>
     public sealed class InstancePool<T> : InstancePool where T : class, new() // constraint class is not necessary but improves new T() calls.
     {
-        private  readonly   ClassPools      pools;
+        private  readonly   InstancePools   pools;
         private  readonly   TypeMapper<T>   mapper;
         private             PoolIntern<T>   pool;
         
@@ -24,7 +25,7 @@ namespace Friflo.Json.Fliox.Mapper.Pools
         internal  override  int             Count       => pool.count;
         public    override  string          ToString()  => pool.GetString();
         
-        public InstancePool(ClassPools pools) {
+        public InstancePool(InstancePools pools) {
             this.pools  = pools;
             pools.pools.Add(this);
             mapper      = pools.typeStore.GetTypeMapper<T>();

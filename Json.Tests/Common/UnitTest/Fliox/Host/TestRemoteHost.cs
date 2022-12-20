@@ -11,7 +11,7 @@ using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Hub.Remote;
 using Friflo.Json.Fliox.Mapper;
-using Friflo.Json.Fliox.Mapper.Pools;
+using Friflo.Json.Fliox.Pools;
 using Friflo.Json.Fliox.Utils;
 using Friflo.Json.Tests.Common.UnitTest.Fliox.Client;
 using NUnit.Framework;

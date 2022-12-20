@@ -3,14 +3,18 @@
 
 using System;
 using Friflo.Json.Burst;
+using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Mapper.Map;
 
-namespace Friflo.Json.Fliox.Mapper.Pools
+namespace Friflo.Json.Fliox.Pools
 {
     /// <summary>
     /// A pool for class instances of all types defined in a <see cref="TypeStore"/>.<br/>
-    /// Pooled instances are reused when deserializing JSON using an <see cref="ObjectReader"/>
+    /// By assigning to <see cref="ObjectReader.InstancePool"/> pooled instances are reused when deserializing JSON
+    /// with <see cref="ObjectReader"/> <b>Read()</b> methods.<br/>
+    /// The pool is not utilized when using the <see cref="ObjectReader"/> <b>ReadTo()</b> methods.
     /// </summary>
+    /// <remarks> <see cref="ReaderInstancePool"/> is not thread safe </remarks>
     public sealed class ReaderInstancePool
     {
         private             PoolIntern<object>[]    pools;

@@ -7,7 +7,7 @@ using Friflo.Json.Fliox.Mapper.Access;
 using Friflo.Json.Fliox.Mapper.Diff;
 using Friflo.Json.Fliox.Mapper.Map.Object.Reflect;
 using Friflo.Json.Fliox.Mapper.Map.Utils;
-using Friflo.Json.Fliox.Mapper.Pools;
+using Friflo.Json.Fliox.Pools;
 using Friflo.Json.Fliox.Transform.Select;
 
 using Invalid = System.InvalidOperationException;

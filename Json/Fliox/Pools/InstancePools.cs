@@ -2,20 +2,20 @@
 // See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
+using Friflo.Json.Fliox.Mapper;
 
-namespace Friflo.Json.Fliox.Mapper.Pools
+namespace Friflo.Json.Fliox.Pools
 {
-    /// <summary>
-    /// A pool for class instances of reference types.
-    /// </summary>
-    public sealed class ClassPools
+    /// <summary> A pool for class instances of reference types. </summary>
+    /// <remarks> <see cref="InstancePools"/> is not thread safe </remarks>
+    public sealed class InstancePools
     {
-        internal            int             version;
-        internal  readonly  TypeStore       typeStore;
-        internal  readonly  List<InstancePool> pools;
-        public    override  string          ToString() => GetString();
+        internal            int                 version;
+        internal  readonly  TypeStore           typeStore;
+        internal  readonly  List<InstancePool>  pools;
+        public    override  string              ToString() => GetString();
 
-        public ClassPools(TypeStore typeStore) {
+        public InstancePools(TypeStore typeStore) {
             this.typeStore  = typeStore;
             pools           = new List<InstancePool>();
         }

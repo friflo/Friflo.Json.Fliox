@@ -3,8 +3,8 @@
 using System;
 using Friflo.Json.Burst;
 using Friflo.Json.Burst.Utils;
-using Friflo.Json.Fliox.Mapper.Pools;
 using Friflo.Json.Fliox.Mapper.Utils;
+using Friflo.Json.Fliox.Pools;
 
 namespace Friflo.Json.Fliox.Mapper.Map
 {
