@@ -72,6 +72,7 @@ namespace Friflo.Json.Burst
         
         private static bool _enableLeakDetection;
         
+        
         /// <summary>
         /// Only used to know previous calls of <see cref="TrackAllocation"/><br/>
         /// Tracking became obsolete since dropping support of JSON_BURST
