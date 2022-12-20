@@ -14,6 +14,7 @@ using Friflo.Json.Fliox.Hub.Remote;
 using Friflo.Json.Fliox.Hub.Threading;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Transform;
+using Friflo.Json.Fliox.Utils;
 using static System.Diagnostics.DebuggerBrowsableState;
 
 namespace Friflo.Json.Fliox.Hub.Host.Event
@@ -309,8 +310,9 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             if (sendClients.IsEmpty || !HasSubscribableTask(syncTasks)) {
                 return; // early out
             }
-            var database  = syncContext.databaseName;
-            var syncEvent = new SyncEvent {
+            var memoryBuffer    = syncContext.MemoryBuffer;
+            var database        = syncContext.databaseName;
+            var syncEvent       = new SyncEvent {
                 srcUserId   = syncRequest.userId,
                 db          = database.value,
                 tasks       = syncContext.syncBuffers.eventTasks,
@@ -336,7 +338,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                     // mark change events for (change) tasks which are sent by the client itself
                     syncEvent.isOrigin  = syncContext.clientId.IsEqual(subClient.clientId) ? true : (bool?)null;
                     
-                    SerializeEventTasks (syncEvent.tasks, ref syncEvent.tasksJson, writer);
+                    SerializeEventTasks (syncEvent.tasks, ref syncEvent.tasksJson, writer, memoryBuffer);
                     subClient.EnqueueEvent  (ref syncEvent, writer);
                 }
             }
@@ -348,16 +350,21 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         /// - serialize a task only once for multiple targets<br/>
         /// - store only a single byte[] for a task instead of a complex SyncRequestTask which is not used anymore<br/>
         /// </remarks>
-        private static void SerializeEventTasks(List<SyncRequestTask> tasks, ref List<JsonValue> tasksJson, ObjectWriter writer) {
+        private static void SerializeEventTasks(
+                List<SyncRequestTask>   tasks,
+            ref List<JsonValue>         tasksJson,
+                ObjectWriter            writer,
+                MemoryBuffer            memoryBuffer)
+        {
             if (tasksJson == null) {
                 tasksJson = new List<JsonValue>();
             }
             tasksJson.Clear();
             foreach (var task in tasks) {
                 if (task.intern.json == null) {
-                    // create an individual byte array.
-                    // This is necessary as multiple arrays are queued and by this cannot be reused.
-                    task.intern.json = writer.WriteAsValue(task); // todo remove create an individual byte array
+                    var serializedTask  = new JsonValue(writer.WriteAsBytes(task));
+                    serializedTask      = memoryBuffer.Add(serializedTask); // avoid byte[] allocation
+                    task.intern.json    = serializedTask;
                 }
                 tasksJson.Add(task.intern.json.Value);
             }

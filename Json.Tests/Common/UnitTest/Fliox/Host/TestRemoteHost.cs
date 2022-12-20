@@ -108,12 +108,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
                     dif = GC.GetAllocatedBytesForCurrentThread() - start;
                     if (response.status != JsonResponseStatus.Ok)   Fail("Expect OK");
                 }
-                var expect = TestUtils.IsDebug() ? 536 : 536;
+                var expect = TestUtils.IsDebug() ? 448 : 448;
                 AreEqual(expect, dif);
             }
         }
 
-        internal static RemoteCx PrepareRemoteHost (SharedEnv sharedEnv)
+        private static RemoteCx PrepareRemoteHost (SharedEnv sharedEnv)
         {
             var cx = new RemoteCx();
             var typeStore       = sharedEnv.TypeStore;
