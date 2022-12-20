@@ -13,12 +13,12 @@ namespace Friflo.Json.Fliox.Mapper.Pools
     {
         internal            int             version;
         internal  readonly  TypeStore       typeStore;
-        internal  readonly  List<ClassPool> pools;
+        internal  readonly  List<InstancePool> pools;
         public    override  string          ToString() => GetString();
 
         public ClassPools(TypeStore typeStore) {
             this.typeStore  = typeStore;
-            pools           = new List<ClassPool>();
+            pools           = new List<InstancePool>();
         }
 
         public void Reuse() {
@@ -40,7 +40,7 @@ namespace Friflo.Json.Fliox.Mapper.Pools
         }
     }
     
-    public abstract class ClassPool
+    public abstract class InstancePool
     {
         internal  abstract  int     Used    { get; }
         internal  abstract  int     Version { get; }
@@ -48,7 +48,7 @@ namespace Friflo.Json.Fliox.Mapper.Pools
     } 
 
     /// <summary> Contain pooled instances of a specific type </summary>
-    public sealed class ClassPool<T> : ClassPool where T : class, new() // constraint class is not necessary but improves new T() calls.
+    public sealed class InstancePool<T> : InstancePool where T : class, new() // constraint class is not necessary but improves new T() calls.
     {
         private  readonly   ClassPools          pools;
         private  readonly   TypeMapper<T>       mapper;
@@ -59,7 +59,7 @@ namespace Friflo.Json.Fliox.Mapper.Pools
         internal  override  int                 Count       => pool.count;
         public    override  string              ToString()  => pool.GetString();
         
-        public ClassPool(ClassPools pools) {
+        public InstancePool(ClassPools pools) {
             this.pools  = pools;
             pools.pools.Add(this);
             mapper      = pools.typeStore.GetTypeMapper<T>();
