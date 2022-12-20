@@ -7,7 +7,7 @@ using Friflo.Json.Fliox.Mapper.Map;
 namespace Friflo.Json.Fliox.Mapper.Pools
 {
     /// <summary> Contain pooled instances of a specific type </summary>
-    internal struct ClassPoolIntern<T>
+    internal struct PoolIntern<T>
     {
         internal    T[]         objects;
         internal    int         used;
@@ -16,7 +16,7 @@ namespace Friflo.Json.Fliox.Mapper.Pools
 
         public override string  ToString() => GetString();
 
-        internal ClassPoolIntern(T[] objects) {
+        internal PoolIntern(T[] objects) {
             this.objects    = objects;
             used            =  0;
             count           =  0;

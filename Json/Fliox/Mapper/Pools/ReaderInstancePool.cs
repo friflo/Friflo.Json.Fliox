@@ -13,20 +13,20 @@ namespace Friflo.Json.Fliox.Mapper.Pools
     /// </summary>
     public sealed class ReaderInstancePool
     {
-        private             ClassPoolIntern<object>[]   pools;
-        private             int                         poolCount;
-        private             int                         version;
-        private             byte[]                      buffer;
-        private             int                         bufferPos;
+        private             PoolIntern<object>[]    pools;
+        private             int                     poolCount;
+        private             int                     version;
+        private             byte[]                  buffer;
+        private             int                     bufferPos;
 #if DEBUG
-        private readonly    TypeStore                   typeStore;
+        private readonly    TypeStore               typeStore;
 #endif
-        private const       int                         BufferMax = 16 * 1024;
+        private const       int                     BufferMax = 16 * 1024;
 
-        public   override   string                      ToString() => GetString();
+        public   override   string                  ToString() => GetString();
         
         public ReaderInstancePool(TypeStore typeStore) {
-            pools           = Array.Empty<ClassPoolIntern<object>>();
+            pools           = Array.Empty<PoolIntern<object>>();
             buffer          = new byte[128];
 #if DEBUG
             this.typeStore  = typeStore;
@@ -80,9 +80,9 @@ namespace Friflo.Json.Fliox.Mapper.Pools
             var count           = poolCount;
             var classId         = mapper.classId;
             poolCount           = Math.Max(classId + 1, count);
-            var newPool         = new ClassPoolIntern<object>(new object[4]) { version = version };
+            var newPool         = new PoolIntern<object>(new object[4]) { version = version };
             var instance        = newPool.Create(mapper.NewInstance);
-            var newPools        = new ClassPoolIntern<object>[poolCount];
+            var newPools        = new PoolIntern<object>[poolCount];
             for (int n = 0; n < count; n++) {
                 newPools[n] = pools[n];
             }
