@@ -62,10 +62,10 @@ class DatabaseSub {
     }
 }
 class SubEvent {
-    constructor(msg, ev) {
+    constructor(msg, ev, seq) {
         this.msg = SubEvent.internName(msg);
         this.db = SubEvent.internName(ev.db);
-        this.seq = ev.seq;
+        this.seq = seq;
         this.src = SubEvent.internName(ev.src);
         const messages = [];
         const containers = [];
@@ -206,7 +206,7 @@ export class Events {
     clearAllEvents() {
         app.eventsEditor.setValue("");
     }
-    static event2String(ev, format) {
+    static event2String(ev, seq, format) {
         if (!format) {
             return JSON.stringify(ev, null, 4);
         }
@@ -252,7 +252,7 @@ export class Events {
         }
         const tasks = tasksJson.join(",\n        ");
         return `{
-    ${firstKV("seq", ev.seq)}${KV("src", ev.src)}${KV("db", ev.db)}${KV("isOrigin", ev.isOrigin)},
+    ${firstKV("seq", seq)}${KV("src", ev.src)}${KV("db", ev.db)}${KV("isOrigin", ev.isOrigin)},
     "tasks": [
         ${tasks}
     ]
@@ -269,9 +269,9 @@ export class Events {
         const pos = editor.getModel().getPositionAt(filterResult.lastLog);
         editor.revealPositionNearTop(pos);
     }
-    addSubscriptionEvent(ev) {
-        const evStr = Events.event2String(ev, prettifyEvents.checked);
-        const msg = new SubEvent(evStr, ev);
+    addSubscriptionEvent(ev, seq) {
+        const evStr = Events.event2String(ev, seq, prettifyEvents.checked);
+        const msg = new SubEvent(evStr, ev, seq);
         this.subEvents.push(msg);
         this.updateUI(ev);
         if (!this.filter.match(msg))

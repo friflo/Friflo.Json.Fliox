@@ -25,20 +25,19 @@ export class Playground {
             socketStatus.innerText = "closed (code: " + e.code + ")";
             responseState.innerText = "";
         };
-        this.wsClient.onEvents = (eventMessages) => {
-            const events = eventMessages.events;
+        this.wsClient.onEvents = (eventMessage) => {
+            const events = eventMessage.events;
             this.eventCount += events.length;
             const countStr = String(this.eventCount);
             subscriptionCount.innerText = countStr;
             eventCount.innerText = countStr;
+            const seq = eventMessage.seq;
             for (const ev of events) {
-                app.events.addSubscriptionEvent(ev);
+                app.events.addSubscriptionEvent(ev, seq);
             }
-            const lastEv = events[events.length - 1];
-            const subSeq = lastEv.seq;
             // multiple clients can use the same WebSocket. Use the latest
-            subscriptionSeq.innerText = subSeq ? String(subSeq) : " - ";
-            ackElement.innerText = subSeq ? String(subSeq) : " - ";
+            subscriptionSeq.innerText = seq ? String(seq) : " - ";
+            ackElement.innerText = seq ? String(seq) : " - ";
         };
     }
     getClientId() { var _a; return (_a = this.wsClient) === null || _a === void 0 ? void 0 : _a.clt; }

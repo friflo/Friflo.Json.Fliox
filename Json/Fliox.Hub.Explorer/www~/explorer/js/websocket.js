@@ -75,9 +75,7 @@ export class WebSocketClient {
                         break;
                     }
                     case "ev": {
-                        const events = message.events;
-                        const lastEv = events[events.length - 1];
-                        this.lastEventSeq = lastEv.seq;
+                        this.lastEventSeq = message.seq;
                         this.onEvents(message);
                         if (!this.ackTimePending) {
                             this.ackTimePending = true;

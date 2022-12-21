@@ -105,10 +105,10 @@ class SubEvent {
         return name;
     }
 
-    constructor(msg: string, ev: SyncEvent) {
+    constructor(msg: string, ev: SyncEvent, seq: number) {
         this.msg                    = SubEvent.internName(msg);
         this.db                     = SubEvent.internName(ev.db);
-        this.seq                    = ev.seq;
+        this.seq                    = seq;
         this.src                    = SubEvent.internName(ev.src);
         const messages:   string[]  = []; 
         const containers: string[]  = [];
@@ -252,7 +252,7 @@ export class Events
         app.eventsEditor.setValue("");
     }
 
-    private static event2String (ev: SyncEvent, format: boolean) : string {
+    private static event2String (ev: SyncEvent, seq: number, format: boolean) : string {
         if (!format) {
             return JSON.stringify(ev, null, 4);
         }
@@ -298,7 +298,7 @@ export class Events
         }
         const tasks = tasksJson.join(",\n        ");
         return `{
-    ${firstKV("seq", ev.seq)}${KV("src", ev.src)}${KV("db", ev.db)}${KV("isOrigin", ev.isOrigin)},
+    ${firstKV("seq", seq)}${KV("src", ev.src)}${KV("db", ev.db)}${KV("isOrigin", ev.isOrigin)},
     "tasks": [
         ${tasks}
     ]
@@ -318,9 +318,9 @@ export class Events
         editor.revealPositionNearTop(pos);
     }
 
-    public addSubscriptionEvent(ev: SyncEvent) : void {
-        const evStr     = Events.event2String (ev, prettifyEvents.checked);
-        const msg       = new SubEvent(evStr, ev);
+    public addSubscriptionEvent(ev: SyncEvent, seq: number) : void {
+        const evStr     = Events.event2String (ev, seq, prettifyEvents.checked);
+        const msg       = new SubEvent(evStr, ev, seq);
         this.subEvents.push (msg);
         this.updateUI(ev);
 
