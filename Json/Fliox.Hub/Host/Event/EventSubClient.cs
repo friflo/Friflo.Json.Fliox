@@ -84,11 +84,10 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             return true;
         }
         
-        /// <summary>Serialize the <paramref name="syncEvent"/> to a message and enqueue the message for sending</summary>
-        internal void EnqueueEvent(in SyncEvent syncEvent, ObjectWriter writer) {
+        /// <summary>Enqueue serialized <see cref="SyncEvent"/> for sending</summary>
+        internal void EnqueueEvent(in JsonValue rawSyncEvent) {
             lock (unsentEventsDeque) {
-                var rawEvent = RemoteUtils.SerializeSyncEvent(syncEvent, writer);
-                unsentEventsDeque.AddTail(rawEvent);
+                unsentEventsDeque.AddTail(rawSyncEvent);
             }
             // Signal new event. Need to be signaled after adding event to queue. No reason to execute this in the lock. 
             if (dispatcher != null) {
