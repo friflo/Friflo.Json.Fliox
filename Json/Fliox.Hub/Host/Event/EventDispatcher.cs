@@ -283,8 +283,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             }
             using (var pooleMapper = sharedEnv.Pool.ObjectMapper.Get()) {
                 var writer = pooleMapper.instance.writer;
-                foreach (var pair in subClients) {
-                    var subClient = pair.Value;
+                foreach (var subClient in sendClients) {
                     subClient.SendEvents(writer, eventsBuffer);
                 }
             }

@@ -110,7 +110,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
                     dif = GC.GetAllocatedBytesForCurrentThread() - start;
                     if (response.status != JsonResponseStatus.Ok)   Fail("Expect OK");
                 }
-                var expect = TestUtils.IsDebug() ? 200 : 200;
+                var expect = TestUtils.IsDebug() ? 112 : 112;
                 AreEqual(expect, dif);
             }
         }
