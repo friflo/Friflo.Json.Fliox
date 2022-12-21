@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
+using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Hub.Remote;
@@ -70,6 +71,26 @@ namespace Friflo.Json.Fliox.Hub.Protocol
                 var msg = $"Expect response.task.Count == request.task.Count: expect: {expect}, actual: {actual}"; 
                 throw new InvalidOperationException(msg);
             }
+        }
+        
+        internal static SyncResponse Create(SyncContext syncContext, int taskCapacity) {
+            var syncPools = syncContext.syncPools;
+            if (syncPools == null) {
+                return new SyncResponse {
+                    tasks  = new List<SyncTaskResult>(taskCapacity)
+                };
+            }
+            var tasks           = syncPools.taskResultsPool.Create();
+            tasks.Clear();
+            var response        = syncPools.responsePool.Create();
+            // --- ProtocolResponse
+            response.reqId      = null;
+            response.clientId   = default;
+            // --- SyncResponse
+            response.tasks      = tasks;
+            response.containers = null;
+            response.info       = default;
+            return response;
         }
     }
     

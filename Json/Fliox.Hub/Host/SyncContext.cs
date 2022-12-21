@@ -52,6 +52,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         [Browse(Never)] internal  readonly  EventReceiver       eventReceiver;
         [Browse(Never)] internal  readonly  SharedCache         sharedCache;
         [Browse(Never)] internal  readonly  SyncBuffers         syncBuffers;
+        [Browse(Never)] internal  readonly  SyncPools           syncPools;
         [Browse(Never)] internal            AuthState           authState;
         [Browse(Never)] internal            Action              canceler = () => {};
         [Browse(Never)] internal            FlioxHub            hub;
@@ -81,11 +82,12 @@ namespace Friflo.Json.Fliox.Hub.Host
         }
         
         /// <summary>Special constructor used to minimize heap allocation. <b>Note</b> <see cref="SyncBuffers"/> </summary>
-        public SyncContext (SharedEnv sharedEnv, EventReceiver eventReceiver, in SyncBuffers syncBuffers) {
+        public SyncContext (SharedEnv sharedEnv, EventReceiver eventReceiver, in SyncBuffers syncBuffers, SyncPools syncPools) {
             this.pool           = sharedEnv.Pool;
             this.eventReceiver  = eventReceiver;
             this.sharedCache    = sharedEnv.sharedCache;
             this.syncBuffers    = syncBuffers;
+            this.syncPools      = syncPools;
         }
         
         public SyncContext (SharedEnv sharedEnv, EventReceiver eventReceiver) {
@@ -153,25 +155,29 @@ namespace Friflo.Json.Fliox.Hub.Host
     {
         internal readonly List<SyncRequestTask> eventTasks;
         internal readonly List<JsonValue>       tasksJson;
-        internal readonly SyncPools             pools;
         
-        public SyncBuffers (List<SyncRequestTask> eventTasks, List<JsonValue> tasksJson, SyncPools syncPools) {
+        public SyncBuffers (List<SyncRequestTask> eventTasks, List<JsonValue> tasksJson) {
             this.eventTasks = eventTasks;
             this.tasksJson  = tasksJson;
-            this.pools      = syncPools;
         }
     }
     
     public sealed class SyncPools
     {
-        internal readonly InstancePools                         pools;
+        private  readonly InstancePools                         pools;
         internal readonly InstancePool<List<SyncTaskResult>>    taskResultsPool;
         internal readonly InstancePool<SyncResponse>            responsePool;
+        internal readonly InstancePool<UpsertEntitiesResult>    upsertResultPool;
         
         public SyncPools(TypeStore typeStore) {
-            pools           = new InstancePools(typeStore);
-            taskResultsPool = new InstancePool<List<SyncTaskResult>>(pools);
-            responsePool    = new InstancePool<SyncResponse>        (pools);
+            pools               = new InstancePools(typeStore);
+            taskResultsPool     = new InstancePool<List<SyncTaskResult>>(pools);
+            responsePool        = new InstancePool<SyncResponse>        (pools);
+            upsertResultPool    = new InstancePool<UpsertEntitiesResult>(pools);
+        }
+        
+        public void Reuse() {
+            pools.Reuse();
         }
     }
     

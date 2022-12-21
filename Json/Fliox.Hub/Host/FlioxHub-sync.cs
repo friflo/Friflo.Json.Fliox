@@ -60,7 +60,9 @@ namespace Friflo.Json.Fliox.Hub.Host
 
             service.PreExecuteTasks(syncContext);
             
-            var response        = CreateResponse(syncContext);
+            syncContext.syncPools?.Reuse();
+
+            var response        = SyncResponse.Create(syncContext, taskCount);
             response.database   = syncRequest.database;
             var tasks           = response.tasks;
 

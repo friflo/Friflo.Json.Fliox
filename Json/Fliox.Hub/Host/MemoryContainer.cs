@@ -64,7 +64,7 @@ namespace Friflo.Json.Fliox.Hub.Host
                 var entity              = entities[n];
                 PutValue(entity);
             }
-            return new UpsertEntitiesResult();
+            return UpsertEntitiesResult.Create(syncContext);
         }
 
         public override Task<ReadEntitiesResult> ReadEntitiesAsync(ReadEntities command, SyncContext syncContext) {

@@ -158,8 +158,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
             var memoryStream            = new MemoryStream();
             var buffer                  = new ArraySegment<byte>(new byte[8192]);
             var syncPools               = new SyncPools(typeStore);
-            var syncBuffers             = new SyncBuffers(new List<SyncRequestTask>(), new List<JsonValue>(), syncPools);
-            var syncContext             = new SyncContext(sharedEnv, this, syncBuffers); // reused context
+            var syncBuffers             = new SyncBuffers(new List<SyncRequestTask>(), new List<JsonValue>());
+            var syncContext             = new SyncContext(sharedEnv, this, syncBuffers, syncPools); // reused context
             var memoryBuffer            = new MemoryBuffer(4 * 1024);
             // using an instance pool for reading syncRequest and its dependencies is possible as their references
             // are only used within this method scope.

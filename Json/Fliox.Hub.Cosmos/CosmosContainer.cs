@@ -72,7 +72,7 @@ namespace Friflo.Json.Fliox.Hub.Cosmos
                     }
                 }
             }
-            return new UpsertEntitiesResult();
+            return UpsertEntitiesResult.Create(syncContext);
         }
 
         public override async Task<ReadEntitiesResult> ReadEntitiesAsync(ReadEntities command, SyncContext syncContext) {
