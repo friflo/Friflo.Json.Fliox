@@ -64,9 +64,11 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         /// <summary> Subset of <see cref="subClients"/> eligible for sending events. Either they
         /// are <see cref="EventSubClient.Connected"/> or they <see cref="EventSubClient.queueEvents"/> </summary> 
         [DebuggerBrowsable(Never)]
-        private  readonly   ConcurrentDictionary<JsonKey, EventSubClient>   sendClients;
-        // ReSharper disable once UnusedMember.Local - expose Dictionary as list in Debugger
-        private             ICollection<EventSubClient>                     SendClients  => subClients.Values;
+        private  readonly   Dictionary<JsonKey, EventSubClient>             sendClientsMap;
+        /// <summary> Array of <see cref="EventSubClient"/>'s stored in <see cref="sendClientsMap"/><br/>
+        /// Is updated whenever <see cref="sendClientsMap"/> is modified. Enables enumerating clients without heap allocation.
+        /// This would be the case if sendClientsMap is a <see cref="ConcurrentDictionary{TKey,TValue}"/></summary>
+        private             EventSubClient[]                                sendClients = Array.Empty<EventSubClient>();
         //
         [DebuggerBrowsable(Never)]
         private  readonly   ConcurrentDictionary<JsonKey, EventSubUser>     subUsers;
@@ -94,7 +96,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             sharedEnv           = env ?? SharedEnv.Default;
             jsonEvaluator       = new JsonEvaluator();
             subClients          = new ConcurrentDictionary<JsonKey, EventSubClient>(JsonKey.Equality);
-            sendClients         = new ConcurrentDictionary<JsonKey, EventSubClient>(JsonKey.Equality);
+            sendClientsMap      = new Dictionary<JsonKey, EventSubClient>          (JsonKey.Equality);
             subUsers            = new ConcurrentDictionary<JsonKey, EventSubUser>(JsonKey.Equality);
             eventsBuffer        = new List<JsonValue>();
             this.dispatching    = dispatching;
@@ -209,7 +211,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             subClients.TryGetValue(clientId, out EventSubClient subClient);
             if (subClient != null) {
                 // add to sendClients as the client could have been removed meanwhile caused by a disconnect
-                sendClients.TryAdd(clientId, subClient);
+                AddSendClient(subClient);
                 return subClient;
             }
             if (!subUsers.TryGetValue(user.userId, out var subUser)) {
@@ -222,7 +224,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                 subClient.UpdateTarget(eventReceiver);
             }
             subClients. TryAdd(clientId, subClient);
-            sendClients.TryAdd(clientId, subClient);
+            AddSendClient(subClient);
             subUser.clients.TryAdd(subClient, true);
             return subClient;
         }
@@ -230,6 +232,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         /// <summary>
         /// Don't remove empty subClient as the state of <see cref="EventSubClient.eventCounter"/> need to be preserved.
         /// </summary>
+        // ReSharper disable once UnusedParameter.Local
         private void RemoveEmptySubClient(EventSubClient subClient) {
             /* if (subClient.SubCount > 0)
                 return;
@@ -239,6 +242,28 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             if (user.clients.Count == 0) {
                 subUsers.TryRemove(user.userId, out _);
             } */
+        }
+        private void AddSendClient(EventSubClient subClient) {
+            lock (sendClientsMap) {
+                sendClientsMap.TryAdd(subClient.clientId, subClient);
+                sendClients = CreateSendClients(sendClientsMap);
+            }
+        }
+        
+        private void RemoveSendClient(EventSubClient subClient) {
+            lock (sendClientsMap) {
+                sendClientsMap.Remove(subClient.clientId);
+                sendClients = CreateSendClients(sendClientsMap);
+            }
+        }
+        
+        private static EventSubClient[] CreateSendClients(Dictionary<JsonKey, EventSubClient> sendClientsMap) {
+            var clients = new EventSubClient[sendClientsMap.Count];
+            var index = 0;
+            foreach (var pair in sendClientsMap) {
+                clients[index++] = pair.Value;
+            }
+            return clients;
         }
         
         internal void UpdateSubUserGroups(in JsonKey userId, IReadOnlyCollection<String> groups) {
@@ -276,7 +301,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             if (eventReceiver != null && eventReceiver.IsRemoteTarget()) {
                 if (subClient.UpdateTarget (eventReceiver)) {
                     // remote client is using a new connection (WebSocket) so add to sendClients again
-                    sendClients.TryAdd(subClient.clientId, subClient);
+                    AddSendClient(subClient);
                 }
             }
             
@@ -312,7 +337,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             var syncTasks = syncRequest.tasks;
             ProcessSubscriber (syncRequest, syncContext);
 
-            if (sendClients.IsEmpty || !HasSubscribableTask(syncTasks)) {
+            if (sendClients.Length == 0 || !HasSubscribableTask(syncTasks)) {
                 return; // early out
             }
             var memoryBuffer    = syncContext.MemoryBuffer;
@@ -329,10 +354,9 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                 writer.Pretty           = false;    // write sub's as one liner
                 writer.WriteNullMembers = false;
 
-                foreach (var pair in sendClients) {
-                    EventSubClient subClient = pair.Value;
+                foreach (var subClient in sendClients) {
                     if (!subClient.queueEvents && !subClient.Connected) {
-                        sendClients.TryRemove(subClient.clientId, out _);
+                        RemoveSendClient(subClient);
                         continue;
                     }
                     if (!subClient.databaseSubs.TryGetValue(database, out var databaseSubs)) {
