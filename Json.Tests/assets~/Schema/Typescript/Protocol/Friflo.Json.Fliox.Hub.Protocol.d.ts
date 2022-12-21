@@ -179,6 +179,11 @@ export class EventMessage extends ProtocolEvent {
     /** message type */
     msg     : "ev";
     /**
+     * Increasing event sequence number starting with 1 for a specific target client **dstClientId**.
+     * Each target client (subscriber) has its own sequence.
+     */
+    seq     : int32;
+    /**
      * Each **SyncEvent** corresponds to a **SyncRequest** and contains the subscribed
      * messages and container changes in its **tasks** field
      */
@@ -190,11 +195,6 @@ export class EventMessage extends ProtocolEvent {
  * messages and container changes in its **tasks** field
  */
 export class SyncEvent {
-    /**
-     * Increasing event sequence number starting with 1 for a specific target client **dstClientId**.
-     * Each target client (subscriber) has its own sequence.
-     */
-    seq       : int32;
     /**
      * The user which caused the event. Specifically the user which made a database change or sent a message / command.
      * The user client is not preserved by en extra property as a use case for this is not obvious.

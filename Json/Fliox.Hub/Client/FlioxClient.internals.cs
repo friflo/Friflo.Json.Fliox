@@ -71,15 +71,14 @@ namespace Friflo.Json.Fliox.Hub.Client
                 Logger.Log(HubLog.Error, error);
                 return;
             }
-            var processor       = _intern.SubscriptionProcessor();
-            // Console.WriteLine($"----- ProcessEvent. events: {eventMessages.events.Length}");
-            foreach (var ev in eventMessage.events) {
-                // Skip already received events
-                if (_intern.lastEventSeq >= ev.seq)
-                    continue; // could also break as all subsequent events 
-            
-                _intern.lastEventSeq = ev.seq;                
-                processor.ProcessEvent(this, ev);
+            // Skip already received events
+            if (_intern.lastEventSeq < eventMessage.seq) {
+                _intern.lastEventSeq = eventMessage.seq;   
+                var processor = _intern.SubscriptionProcessor();
+                // Console.WriteLine($"----- ProcessEvent. events: {eventMessages.events.Length}");
+                foreach (var ev in eventMessage.events) {
+                    processor.ProcessEvent(this, ev, eventMessage.seq);
+                }
             }
             if (_intern.ackTimer == null) {
                 _intern.ackTimer = new Timer(AcknowledgeEvents);

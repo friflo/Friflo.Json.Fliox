@@ -95,13 +95,17 @@ namespace Friflo.Json.Fliox.Utils
             deque.AddHead(new MessageItem<TMeta>(message, meta));
         }
         
-        public void AddHeadQueue(MessageBufferQueue<TMeta> messages) {
+        /// <summary>
+        /// Prepend the passed <paramref name="messages"/> in their order to the head of the <see cref="MessageBufferQueue{TMeta}"/><br/>
+        /// <see cref="TMeta"/> data is ignored
+        /// </summary>
+        public void AddHeadQueue<TMetaOther>(MessageBufferQueue<TMetaOther> messages) {
             deque.ReserveHead(messages.Count);
             int index       = deque.First;
             var array       = deque.Array;
             foreach (var message in messages) {
                 var value       = CreateMessageValue(message.value);
-                array[index]    = new MessageItem<TMeta>(value, message.meta);
+                array[index]    = new MessageItem<TMeta>(value, default);
                 index           = (index + 1) % deque.Capacity;
             }
         }

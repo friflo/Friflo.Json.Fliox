@@ -402,6 +402,7 @@
         "EventMessage": {
             "properties": {
                 "clt":    { "type": "string" },
+                "seq":    { "type": "int32" },
                 "events": { "elements": { "ref":  "SyncEvent" }, "nullable": true }
             }
         },
@@ -416,7 +417,6 @@
         },
         "SyncEvent": {
             "properties": {
-                "seq":      { "type": "int32" },
                 "src":      { "type": "string" },
                 "isOrigin": { "type": "boolean", "nullable": true },
                 "db":       { "type": "string" },

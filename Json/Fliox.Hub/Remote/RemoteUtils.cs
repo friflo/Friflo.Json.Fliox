@@ -15,13 +15,13 @@ namespace Friflo.Json.Fliox.Hub.Remote
     {
         /** map to <see cref="ProtocolEvent"/> discriminator */ public  string          msg;
         /** map to <see cref="ProtocolEvent.dstClientId"/> */   public  JsonKey         clt;
+        /** map to <see cref="EventMessage.seq"/> */            public  int             seq;
         /** map to <see cref="EventMessage.events"/> */         public  List<JsonValue> events;
     }
     
     /// <summary> Reflect the shape of a <see cref="SyncEvent"/> </summary>
     public struct RemoteSyncEvent
     {
-        /** map to <see cref="SyncEvent.seq"/> */               public  int             seq; 
         /** map to <see cref="SyncEvent.srcUserId"/> */         public  JsonKey         src;
         /** map to <see cref="SyncEvent.db"/> */                public  string          db;
         /** map to <see cref="SyncEvent.isOrigin"/> */          public  bool?           isOrigin;
@@ -54,11 +54,12 @@ namespace Friflo.Json.Fliox.Hub.Remote
         public static JsonValue CreateProtocolEvent (
             List<JsonValue>     events,
             in JsonKey          dstClientId,
+            int                 seq,
             ObjectWriter        writer)   
         {
             writer.Pretty           = true;
             writer.WriteNullMembers = false;
-            var remoteEventMessage  = new RemoteEventMessage { msg = "ev", clt = dstClientId, events = events };
+            var remoteEventMessage  = new RemoteEventMessage { msg = "ev", clt = dstClientId, seq = seq, events = events };
             var result              = writer.WriteAsBytes(remoteEventMessage);
             return new JsonValue(result);
         }
@@ -73,7 +74,6 @@ namespace Friflo.Json.Fliox.Hub.Remote
             writer.Pretty           = true;
             writer.WriteNullMembers = false;
             var remoteEv = new RemoteSyncEvent {
-                seq         = syncEvent.seq,
                 src         = syncEvent.srcUserId,
                 db          = syncEvent.db,
                 isOrigin    = syncEvent.isOrigin,

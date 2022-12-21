@@ -7,16 +7,14 @@ namespace Gen.Friflo.Json.Fliox.Hub.Remote
 {
     static class Gen_RemoteSyncEvent
     {
-        private const int Gen_seq = 0;
-        private const int Gen_src = 1;
-        private const int Gen_db = 2;
-        private const int Gen_isOrigin = 3;
-        private const int Gen_tasks = 4;
+        private const int Gen_src = 0;
+        private const int Gen_db = 1;
+        private const int Gen_isOrigin = 2;
+        private const int Gen_tasks = 3;
 
         private static bool ReadField (ref RemoteSyncEvent obj, PropField field, ref Reader reader) {
             bool success;
             switch (field.genIndex) {
-                case Gen_seq:      obj.seq      = reader.ReadInt32       (field, out success);  return success;
                 case Gen_src:      obj.src      = reader.ReadJsonKey     (field, out success);  return success;
                 case Gen_db:       obj.db       = reader.ReadString      (field, obj.db,       out success);  return success;
                 case Gen_isOrigin: obj.isOrigin = reader.ReadBooleanNull (field, out success);  return success;
@@ -26,7 +24,6 @@ namespace Gen.Friflo.Json.Fliox.Hub.Remote
         }
 
         private static void Write(ref RemoteSyncEvent obj, PropField[] fields, ref Writer writer, ref bool firstMember) {
-            writer.WriteInt32       (fields[Gen_seq],      obj.seq,      ref firstMember);
             writer.WriteJsonKey     (fields[Gen_src],      obj.src,      ref firstMember);
             writer.WriteString      (fields[Gen_db],       obj.db,       ref firstMember);
             writer.WriteBooleanNull (fields[Gen_isOrigin], obj.isOrigin, ref firstMember);

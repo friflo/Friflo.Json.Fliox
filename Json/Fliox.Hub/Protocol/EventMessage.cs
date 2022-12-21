@@ -17,6 +17,11 @@ namespace Friflo.Json.Fliox.Hub.Protocol
     public sealed class EventMessage : ProtocolEvent
     {
         /// <summary>
+        /// Increasing event sequence number starting with 1 for a specific target client <see cref="ProtocolEvent.dstClientId"/>.
+        /// Each target client (subscriber) has its own sequence.
+        /// </summary>
+        public                  int                 seq;
+        /// <summary>
         /// Each <see cref="SyncEvent"/> corresponds to a <see cref="SyncRequest"/> and contains the subscribed
         /// messages and container changes in its <see cref="SyncEvent.tasks"/> field
         /// </summary>
@@ -31,11 +36,6 @@ namespace Friflo.Json.Fliox.Hub.Protocol
     /// </summary>
     public struct SyncEvent
     {
-        /// <summary>
-        /// Increasing event sequence number starting with 1 for a specific target client <see cref="ProtocolEvent.dstClientId"/>.
-        /// Each target client (subscriber) has its own sequence.
-        /// </summary>
-                    public      int                     seq;
         /// <summary>
         /// The user which caused the event. Specifically the user which made a database change or sent a message / command.
         /// The user client is not preserved by en extra property as a use case for this is not obvious.

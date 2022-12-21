@@ -44,8 +44,8 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// methods like <see cref="EntitySet{TKey,T}.SubscribeChanges"/>, <see cref="FlioxClient.SubscribeAllChanges"/> or
         /// <see cref="FlioxClient.SubscribeMessage"/>.
         /// </summary>
-        public void ProcessEvent(FlioxClient client, in SyncEvent ev) {
-            eventContext.Init(client, ev);
+        public void ProcessEvent(FlioxClient client, in SyncEvent ev, int seq) {
+            eventContext.Init(client, ev, seq);
             if (client._intern.disposed)  // store may already be disposed
                 return;
             if (objectMapper == null) {

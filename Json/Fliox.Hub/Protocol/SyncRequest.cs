@@ -29,7 +29,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol
                     public  string                  token;
         /// <summary>
         /// <see cref="eventAck"/> is used to ensure (change) events are delivered reliable.
-        /// A client set <see cref="eventAck"/> to the last received <see cref="SyncEvent.seq"/> in case
+        /// A client set <see cref="eventAck"/> to the last received <see cref="EventMessage.seq"/> in case
         /// it has subscribed to database changes by a <see cref="SubscribeChanges"/> task.
         /// Otherwise <see cref="eventAck"/> is null.
         /// </summary>

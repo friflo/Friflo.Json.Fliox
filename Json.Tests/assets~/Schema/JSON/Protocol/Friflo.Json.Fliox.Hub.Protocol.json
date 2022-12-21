@@ -94,11 +94,13 @@
             "properties": {
                 "msg":    { "enum": ["ev"] },
                 "clt":    { "type": "string", "description": "The target client the event is sent to. This enables sharing a single (WebSocket) connection by multiple clients.\nIn many scenarios this property is redundant as every client uses a WebSocket exclusively." },
+                "seq":    { "$ref": "./Standard.json#/definitions/int32", "description": "Increasing event sequence number starting with 1 for a specific target client <b>dstClientId</b>.\nEach target client (subscriber) has its own sequence." },
                 "events": { "type": ["array", "null"], "items": { "$ref": "#/definitions/SyncEvent" }, "description": "Each <b>SyncEvent</b> corresponds to a <b>SyncRequest</b> and contains the subscribed\nmessages and container changes in its <b>tasks</b> field" }
             },
             "required": [
                 "msg",
-                "clt"
+                "clt",
+                "seq"
             ],
             "additionalProperties": false
         },
@@ -107,14 +109,12 @@
             "isStruct": true,
             "description": "A <b>SyncEvent</b> corresponds to a <b>SyncRequest</b> and contains the subscribed\nmessages and container changes in its <b>tasks</b> field",
             "properties": {
-                "seq":      { "$ref": "./Standard.json#/definitions/int32", "description": "Increasing event sequence number starting with 1 for a specific target client <b>dstClientId</b>.\nEach target client (subscriber) has its own sequence." },
                 "src":      { "type": "string", "description": "The user which caused the event. Specifically the user which made a database change or sent a message / command.\nThe user client is not preserved by en extra property as a use case for this is not obvious." },
                 "isOrigin": { "type": ["boolean", "null"], "description": "Is true if the receiving client is the origin of the event" },
                 "db":       { "type": "string", "description": "The database the <b>tasks</b> refer to" },
                 "tasks":    { "type": ["array", "null"], "items": { "$ref": "./Friflo.Json.Fliox.Hub.Protocol.Tasks.json#/definitions/SyncRequestTask" }, "description": "Contains the events an application subscribed. These are:<br/><b>CreateEntities</b>, \n<b>UpsertEntities</b>, \n<b>DeleteEntities</b>,\n<b>SendMessage</b>, \n<b>SendCommand</b>" }
             },
             "required": [
-                "seq",
                 "src",
                 "db"
             ],

@@ -48,7 +48,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// <summary> user id sending the <see cref="Messages"/> and causing the <see cref="Changes"/>  </summary>
         public              JsonKey                 SrcUserId       => ev.srcUserId;
         /// <summary> incrementing sequence number of a received event </summary>
-        public              int                     EventSeq        => ev.seq;
+        public              int                     EventSeq        => seq;
         /// <summary> number of received events </summary>
         public              int                     EventCount      => processor.EventCount;
         /// <summary> return the <see cref="Messages"/> sent by a user </summary>
@@ -68,14 +68,16 @@ namespace Friflo.Json.Fliox.Hub.Client
         [DebuggerBrowsable(Never)] public           IHubLogger              Logger => Client.Logger;
         [DebuggerBrowsable(Never)] private readonly SubscriptionProcessor   processor;
         [DebuggerBrowsable(Never)] private          SyncEvent               ev;
+        [DebuggerBrowsable(Never)] private          int                     seq;
 
         internal EventContext(SubscriptionProcessor processor) {
             this.processor  = processor;
         }
         
-        internal void Init(FlioxClient client, in SyncEvent ev) {
-            Client  = client;
-            this.ev = ev;
+        internal void Init(FlioxClient client, in SyncEvent ev, int seq) {
+            Client      = client;
+            this.ev     = ev;
+            this.seq    = seq;
         }
         
         /// <summary>

@@ -65,8 +65,17 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema
         }
         
         [Test]
-        public static void CS_Optimize_FlioxHub_RemoteUtils () {
+        public static void CS_Optimize_FlioxHub_RemoteEventMessage () {
             var typeSchema  = NativeTypeSchema.Create(typeof(RemoteEventMessage));
+            var generator   = new Generator(typeSchema, ".cs");
+            CSharpOptimizeGenerator.Generate(generator);
+            var basePath = Path.GetFullPath(CommonUtils.GetBasePath() + "../Json/"); 
+            generator.WriteFiles(basePath + "Fliox.Hub/Gen", false);
+        }
+        
+        [Test]
+        public static void CS_Optimize_FlioxHub_RemoteSyncEvent () {
+            var typeSchema  = NativeTypeSchema.Create(typeof(RemoteSyncEvent));
             var generator   = new Generator(typeSchema, ".cs");
             CSharpOptimizeGenerator.Generate(generator);
             var basePath = Path.GetFullPath(CommonUtils.GetBasePath() + "../Json/"); 

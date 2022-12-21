@@ -42,11 +42,10 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         
         /// lock (<see cref="unsentEventsDeque"/>) {
         private             int                                 eventCounter;
-        /// <summary>contains all serialized <see cref="SyncEvent"/>'s not yet sent.
-        /// TMeta is <see cref="SyncEvent.seq"/> </summary> 
-        private  readonly   MessageBufferQueue<int>             unsentEventsDeque   = new MessageBufferQueue<int>();
+        /// <summary>contains all serialized <see cref="SyncEvent"/>'s not yet sent.</summary> 
+        private  readonly   MessageBufferQueue<VoidMeta>        unsentEventsDeque   = new MessageBufferQueue<VoidMeta>();
         /// <summary>contains all serialized <see cref="SyncEvent"/>'s which are sent but not acknowledged.
-        /// TMeta is <see cref="SyncEvent.seq"/></summary>
+        /// TMeta is <see cref="EventMessage.seq"/></summary>
         private  readonly   MessageBufferQueue<int>             sentEventsQueue     = new MessageBufferQueue<int>();
         // }
         
@@ -88,9 +87,8 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         /// <summary>Serialize the <paramref name="syncEvent"/> to a message and enqueue the message for sending</summary>
         internal void EnqueueEvent(ref SyncEvent syncEvent, ObjectWriter writer) {
             lock (unsentEventsDeque) {
-                syncEvent.seq = ++eventCounter;
                 var rawEvent = RemoteUtils.SerializeSyncEvent(syncEvent, writer);
-                unsentEventsDeque.AddTail(rawEvent, syncEvent.seq);
+                unsentEventsDeque.AddTail(rawEvent);
             }
             // Signal new event. Need to be signaled after adding event to queue. No reason to execute this in the lock. 
             if (dispatcher != null) {
@@ -98,20 +96,22 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             }
         }
         
-        private bool DequeueEvents(List<JsonValue> events) {
+        private bool DequeueEvents(List<JsonValue> events, out int seq) {
             var deque = unsentEventsDeque;
             events.Clear();
             lock (deque) {
                 var count = deque.Count;
                 if (count == 0) {
+                    seq = -1;
                     return false;
                 }
+                seq = ++eventCounter;
                 if (count > 100) count = 100;
                 for (int n = 0; n < count; n++) {
                     var ev = deque.RemoveHead();
                     events.Add(ev.value);
                     if (queueEvents) {
-                        sentEventsQueue.AddTail(ev.value, ev.meta);
+                        sentEventsQueue.AddTail(ev.value, seq);
                     }
                 } 
                 return true;
@@ -163,7 +163,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                 return;
             }
             // Trace.WriteLine("--- SendEvents");
-            while (DequeueEvents(events)) {
+            while (DequeueEvents(events, out int seq )) {
                 // var msg = $"DequeueEvent {ev.seq}";
                 // Trace.WriteLine(msg);
                 // Console.WriteLine(msg);
@@ -171,7 +171,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                     // Console.WriteLine($"--- SendEvents: {events.Length}");
                     // In case the event target is remote connection it is not guaranteed that the event arrives.
                     // The remote target may already be disconnected and this is still not know when sending the event.
-                    var rawEventMessage = RemoteUtils.CreateProtocolEvent(events, clientId, writer);
+                    var rawEventMessage = RemoteUtils.CreateProtocolEvent(events, clientId, seq, writer);
                     var clientEvent     = new RemoteEvent(clientId, rawEventMessage);
                     receiver.SendEvent(clientEvent);
                 }

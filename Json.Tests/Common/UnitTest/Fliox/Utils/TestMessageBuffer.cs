@@ -102,7 +102,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Utils
             int count = 0;
             foreach (var message in queue) {
                 count++;
-                AreEqual(count, message.meta);
+                AreEqual($"msg-{count}", message.value.AsString());
             }
             AreEqual(4, count);
         }
