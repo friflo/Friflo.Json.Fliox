@@ -71,7 +71,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
                     return new TaskErrorResult (TaskErrorResultType.CommandError, result.error);
                 }
             }
-            return new SendMessageResult();
+            return SendMessageResult.Create(syncContext);
         }
         
         public override SyncTaskResult Execute(EntityDatabase database, SyncResponse response, SyncContext syncContext) {
@@ -83,7 +83,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
                     return new TaskErrorResult (TaskErrorResultType.CommandError, result.error);
                 }
             }
-            return new SendMessageResult();
+            return SendMessageResult.Create(syncContext);
         }
     }
 
@@ -99,5 +99,9 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     public sealed class SendMessageResult : SyncMessageResult
     {
         internal override   TaskType        TaskType => TaskType.message;
+        
+        public static SyncMessageResult Create(SyncContext syncContext) {
+            return syncContext.syncPools?.messageResultPool.Create() ?? new SendMessageResult();
+        }
     }
 }

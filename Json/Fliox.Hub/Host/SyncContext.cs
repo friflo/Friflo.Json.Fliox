@@ -168,12 +168,14 @@ namespace Friflo.Json.Fliox.Hub.Host
         internal readonly InstancePool<List<SyncTaskResult>>    taskResultsPool;
         internal readonly InstancePool<SyncResponse>            responsePool;
         internal readonly InstancePool<UpsertEntitiesResult>    upsertResultPool;
+        internal readonly InstancePool<SendMessageResult>       messageResultPool;
         
         public SyncPools(TypeStore typeStore) {
             pools               = new InstancePools(typeStore);
             taskResultsPool     = new InstancePool<List<SyncTaskResult>>(pools);
             responsePool        = new InstancePool<SyncResponse>        (pools);
             upsertResultPool    = new InstancePool<UpsertEntitiesResult>(pools);
+            messageResultPool   = new InstancePool<SendMessageResult>   (pools);
         }
         
         public void Reuse() {
