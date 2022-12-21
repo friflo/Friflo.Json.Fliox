@@ -254,7 +254,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                     AreEqual("articles - creates: 1, upserts: 4, deletes: 0, merges: 0", articleChanges.ToString());
                     AreEqual("producers - creates: 1, upserts: 0, deletes: 0, merges: 0", producerChanges.ToString());
                     break;
-                case 9:
+                case 8:
                     AreEqual(6, eventInfo.Count);
                     AreEqual(5, eventInfo.messages);
                     AreEqual(1, eventInfo.changes.upserts);
