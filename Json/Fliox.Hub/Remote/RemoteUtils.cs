@@ -158,7 +158,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
     {
         /** map to <see cref="ProtocolEvent.dstClientId"/> */
         [Serialize                    ("clt")]
-        [Required]  public  JsonKey     dstClientId;
+        [Required]  public  JsonKey     dstClientId = default; // default => avoid warning [CS0649] 'dstClientId' is never assigned
     }
     
     public readonly struct RemoteEvent

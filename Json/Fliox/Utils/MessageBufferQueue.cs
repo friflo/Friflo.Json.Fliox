@@ -97,7 +97,7 @@ namespace Friflo.Json.Fliox.Utils
         
         /// <summary>
         /// Prepend the passed <paramref name="messages"/> in their order to the head of the <see cref="MessageBufferQueue{TMeta}"/><br/>
-        /// <see cref="TMeta"/> data is ignored
+        /// Meta data is ignored.
         /// </summary>
         public void AddHeadQueue<TMetaOther>(MessageBufferQueue<TMetaOther> messages) {
             deque.ReserveHead(messages.Count);

@@ -85,7 +85,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         }
         
         /// <summary>Serialize the <paramref name="syncEvent"/> to a message and enqueue the message for sending</summary>
-        internal void EnqueueEvent(ref SyncEvent syncEvent, ObjectWriter writer) {
+        internal void EnqueueEvent(in SyncEvent syncEvent, ObjectWriter writer) {
             lock (unsentEventsDeque) {
                 var rawEvent = RemoteUtils.SerializeSyncEvent(syncEvent, writer);
                 unsentEventsDeque.AddTail(rawEvent);

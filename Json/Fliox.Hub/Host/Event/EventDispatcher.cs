@@ -368,7 +368,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                     syncEvent.isOrigin  = syncContext.clientId.IsEqual(subClient.clientId) ? true : (bool?)null;
                     
                     SerializeEventTasks (syncEvent.tasks, ref syncEvent.tasksJson, writer, memoryBuffer);
-                    subClient.EnqueueEvent  (ref syncEvent, writer);
+                    subClient.EnqueueEvent  (syncEvent, writer);
                 }
             }
         }
