@@ -52,7 +52,10 @@ namespace Friflo.Json.Fliox.Utils
     /// 2. The other buffer store the bytes of dequeued messages. <br/>
     /// <b>Note</b>
     /// Dequeued messages are valid until the next call of <see cref="DequeMessages"/><br/>
-    /// The buffers are swapped when calling one of these methods.
+    /// The buffers are swapped when calling <see cref="DequeMessages"/>.<br/>
+    /// <b>Note</b>
+    /// <see cref="MessageBufferQueue{TMeta}"/> is not thread safe<br/>
+    /// <br/>
     /// </remarks>
     /// <typeparam name="TMeta">
     /// Type of the meta data associated to each message.
@@ -89,36 +92,23 @@ namespace Friflo.Json.Fliox.Utils
             return deque.Array[deque.First];
         }
         
+        public MessageItem<TMeta> RemoveHead() {
+            if (closed) throw new InvalidOperationException("MessageBufferQueue already closed");
+            return deque.RemoveHead();
+        }
+
+        /// <summary>Add add copy of the given <paramref name="value"/> to the head of the queue</summary>
         public void AddHead(in JsonValue value, in TMeta meta = default) {
             if (closed) throw new InvalidOperationException("MessageBufferQueue already closed");
             var message = CreateMessageValue(value);
             deque.AddHead(new MessageItem<TMeta>(message, meta));
         }
         
-        /// <summary>
-        /// Prepend the passed <paramref name="messages"/> in their order to the head of the <see cref="MessageBufferQueue{TMeta}"/><br/>
-        /// Meta data is ignored.
-        /// </summary>
-        public void AddHeadQueue<TMetaOther>(MessageBufferQueue<TMetaOther> messages) {
-            deque.ReserveHead(messages.Count);
-            int index       = deque.First;
-            var array       = deque.Array;
-            foreach (var message in messages) {
-                var value       = CreateMessageValue(message.value);
-                array[index]    = new MessageItem<TMeta>(value, default);
-                index           = (index + 1) % deque.Capacity;
-            }
-        }
-        
+        /// <summary>Add add copy of the given <paramref name="value"/> to the tail of the queue</summary>
         public void AddTail(in JsonValue value, in TMeta meta = default) {
             if (closed) throw new InvalidOperationException("MessageBufferQueue already closed");
             var message = CreateMessageValue(value);
             deque.AddTail(new MessageItem<TMeta>(message, meta));
-        }
-        
-        public MessageItem<TMeta> RemoveHead() {
-            if (closed) throw new InvalidOperationException("MessageBufferQueue already closed");
-            return deque.RemoveHead();
         }
         
         private JsonValue CreateMessageValue(in JsonValue value) {
@@ -143,7 +133,11 @@ namespace Friflo.Json.Fliox.Utils
             return new JsonValue(buffer, bufferPos, len);
         }
         
-        public MessageBufferEvent DequeMessages(List<MessageItem<TMeta>> messages)
+        /// <summary>
+        /// Dequeue all queued messages <br/>
+        /// The returned <paramref name="messages"/> are valid until the next <see cref="DequeMessages"/> call.
+        /// </summary>
+        public MessageBufferEvent DequeMessages(List<JsonValue> messages)
         {
             messages.Clear();
 
@@ -152,7 +146,7 @@ namespace Friflo.Json.Fliox.Utils
             // newly enqueued messages are written to the head of the write buffer
             SetBufferPos(0);
             foreach (var message in deque) {
-                messages.Add(message);                    
+                messages.Add(message.value);                    
             }
             deque.Clear();
             return closed ? MessageBufferEvent.Closed : MessageBufferEvent.NewMessage;

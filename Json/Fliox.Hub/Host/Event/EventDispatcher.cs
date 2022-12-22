@@ -53,7 +53,8 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         private  readonly   SharedEnv                                       sharedEnv;
         private  readonly   JsonEvaluator                                   jsonEvaluator;
         /// <summary>buffer for serialized <see cref="SyncEvent"/>'s to avoid frequent allocations</summary>
-        private  readonly   List<JsonValue>                                 eventsBuffer;
+        private  readonly   List<JsonValue>                                 syncEventBuffer;
+        private  readonly   List<JsonValue>                                 eventMessageBuffer;
         //
         /// key: <see cref="EventSubClient.clientId"/>
         [DebuggerBrowsable(Never)]
@@ -98,7 +99,8 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             subClients          = new ConcurrentDictionary<JsonKey, EventSubClient>(JsonKey.Equality);
             sendClientsMap      = new Dictionary<JsonKey, EventSubClient>          (JsonKey.Equality);
             subUsers            = new ConcurrentDictionary<JsonKey, EventSubUser>(JsonKey.Equality);
-            eventsBuffer        = new List<JsonValue>();
+            syncEventBuffer     = new List<JsonValue>();
+            eventMessageBuffer  = new List<JsonValue>();
             this.dispatching    = dispatching;
             if (dispatching == EventDispatching.QueueSend) {
                 var channel             = DataChannelSlim<EventSubClient>.CreateUnbounded(true, true);
@@ -284,7 +286,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             using (var pooleMapper = sharedEnv.Pool.ObjectMapper.Get()) {
                 var writer = pooleMapper.instance.writer;
                 foreach (var subClient in sendClients) {
-                    subClient.SendEvents(writer, eventsBuffer);
+                    subClient.SendEvents(writer, eventMessageBuffer, syncEventBuffer);
                 }
             }
         }
@@ -310,7 +312,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             if (!syncContext.authState.hubPermission.queueEvents)
                  return;
             int value =  eventAck.Value;
-            subClient.AcknowledgeEvents(value);
+            subClient.AcknowledgeEventMessages(value);
         }
         
         private static bool HasSubscribableTask(List<SyncRequestTask> tasks) {
@@ -432,7 +434,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             while (true) {
                 var client = await clientEventReader.ReadAsync().ConfigureAwait(false);
                 if (client != null) {
-                    client.SendEvents(writer, eventsBuffer);
+                    client.SendEvents(writer, eventMessageBuffer, syncEventBuffer);
                     continue;
                 }
                 logger.Log(HubLog.Info, $"ClientEventLoop() returns");

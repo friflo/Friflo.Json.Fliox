@@ -31,7 +31,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Utils
                 }
                 AreEqual(2, count);
             }
-            var messages    = new List<MessageItem<VoidMeta>>();
+            var messages    = new List<JsonValue>();
             var ev          = queue.DequeMessages(messages);
             
             queue.AddTail(msg3);
@@ -44,14 +44,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Utils
                 AreEqual(1, count);
             }
             AreEqual(2, messages.Count);
-            AreEqual("msg-1", messages[0].value.AsString());
-            AreEqual("msg-2", messages[1].value.AsString());
+            AreEqual("msg-1", messages[0].AsString());
+            AreEqual("msg-2", messages[1].AsString());
             AreEqual(MessageBufferEvent.NewMessage, ev);
 
             ev = queue.DequeMessages(messages);
             
             AreEqual(1, messages.Count);
-            AreEqual("msg-3", messages[0].value.AsString());
+            AreEqual("msg-3", messages[0].AsString());
             AreEqual(MessageBufferEvent.NewMessage, ev);
             {
                 int count = 0;
@@ -80,31 +80,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Utils
             }
             var dif  = GC.GetAllocatedBytesForCurrentThread() - start;
             AreEqual(0, dif);
-        }
-        
-        [Test]
-        public void TestMessageBuffer_AddHeadQueue() {
-            var queue = new MessageBufferQueue<int>(5);
-            var msg3 = new JsonValue("msg-3");
-            var msg4 = new JsonValue("msg-4");
-            queue.AddTail(msg3, 3);
-            queue.AddTail(msg4, 4);
-            
-            var prepend = new MessageBufferQueue<int>(5);
-            var msg1 = new JsonValue("msg-1");
-            var msg2 = new JsonValue("msg-2");
-            
-            prepend.AddTail(msg1, 1);
-            prepend.AddTail(msg2, 2);
-            
-            queue.AddHeadQueue(prepend);
-
-            int count = 0;
-            foreach (var message in queue) {
-                count++;
-                AreEqual($"msg-{count}", message.value.AsString());
-            }
-            AreEqual(4, count);
         }
     }
 }

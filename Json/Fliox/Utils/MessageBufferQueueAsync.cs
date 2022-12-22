@@ -17,7 +17,7 @@ namespace Friflo.Json.Fliox.Utils
         private  readonly   MessageBufferQueue<TMeta>   queue;
         private  readonly   SemaphoreSlim               messageAvailable;
 
-        public   override   string                      ToString() => $"Count = {queue.Count}";
+        public   override   string                      ToString() => GetString();
 
         public MessageBufferQueueAsync(int capacity = 4) {
             queue               = new MessageBufferQueue<TMeta>(capacity);
@@ -38,7 +38,7 @@ namespace Friflo.Json.Fliox.Utils
             }
         }
         
-        public async Task<MessageBufferEvent> DequeMessagesAsync(List<MessageItem<TMeta>> messages) {
+        public async Task<MessageBufferEvent> DequeMessagesAsync(List<JsonValue> messages) {
             messages.Clear();
             await messageAvailable.WaitAsync().ConfigureAwait(false);
 
@@ -53,6 +53,12 @@ namespace Friflo.Json.Fliox.Utils
                 if (messageAvailable.CurrentCount == 0) {
                     messageAvailable.Release();
                 }
+            }
+        }
+        
+        private string GetString() {
+            lock (queue) {
+                return $"Count = {queue.Count}";
             }
         }
     }

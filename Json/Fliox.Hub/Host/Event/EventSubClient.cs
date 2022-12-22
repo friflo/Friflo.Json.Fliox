@@ -40,20 +40,22 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         
         internal            int                                 SubCount    => databaseSubs.Sum(sub => sub.Value.SubCount); 
         
-        /// lock (<see cref="unsentEventsDeque"/>) {
+        /// lock (<see cref="unsentSyncEvents"/>) {
         private             int                                 eventCounter;
-        /// <summary>contains all serialized <see cref="SyncEvent"/>'s not yet sent.</summary> 
-        private  readonly   MessageBufferQueue<VoidMeta>        unsentEventsDeque   = new MessageBufferQueue<VoidMeta>();
-        /// <summary>contains all serialized <see cref="SyncEvent"/>'s which are sent but not acknowledged.
+        /// <summary>Contains all serialized <see cref="SyncEvent"/>'s not yet sent.</summary>
+        private  readonly   MessageBufferQueue<VoidMeta>        unsentSyncEvents    = new MessageBufferQueue<VoidMeta>();
+        /// <summary>Contains all serialized <see cref="EventMessage"/>'s which are sent but not acknowledged.
         /// TMeta is <see cref="EventMessage.seq"/></summary>
-        private  readonly   MessageBufferQueue<int>             sentEventsQueue     = new MessageBufferQueue<int>();
+        private  readonly   MessageBufferQueue<int>             sentEventMessages   = new MessageBufferQueue<int>();
+        /// <summary>Set to true if <see cref="sentEventMessages"/> need to be resend</summary>
+        private             bool                                resendEventMessages;
         // }
         
         private  readonly   EventDispatcher                     dispatcher;
 
         internal            int                                 Seq                 => eventCounter;
         /// <summary> number of events stored for a client not yet acknowledged by the client </summary>
-        internal            int                                 QueuedEventsCount   => unsentEventsDeque.Count + sentEventsQueue.Count;
+        internal            int                                 QueuedEventsCount   => unsentSyncEvents.Count + sentEventMessages.Count;
         
         public   override   string                              ToString()          => $"client: '{clientId.AsString()}'";
         
@@ -86,8 +88,8 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         
         /// <summary>Enqueue serialized <see cref="SyncEvent"/> for sending</summary>
         internal void EnqueueEvent(in JsonValue rawSyncEvent) {
-            lock (unsentEventsDeque) {
-                unsentEventsDeque.AddTail(rawSyncEvent);
+            lock (unsentSyncEvents) {
+                unsentSyncEvents.AddTail(rawSyncEvent);
             }
             // Signal new event. Need to be signaled after adding event to queue. No reason to execute this in the lock. 
             if (dispatcher != null) {
@@ -95,37 +97,64 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             }
         }
         
-        private bool DequeueEvents(List<JsonValue> events, out int seq) {
-            var deque = unsentEventsDeque;
-            events.Clear();
-            lock (deque) {
-                var count = deque.Count;
-                if (count == 0) {
-                    seq = -1;
-                    return false;
+        private bool DequeueEventMessages(
+            List<JsonValue>     eventMessages,
+            List<JsonValue>     syncEvents,
+            ObjectWriter        writer)
+        {
+            syncEvents.Clear();
+            eventMessages.Clear();
+            lock (unsentSyncEvents) {
+                // resend EventMessage's in case of a reconnect and sent EventMessage's are queued.
+                // reconnects should typically occur rarely   
+                if (resendEventMessages) {
+                    resendEventMessages = false;
+                    // must be copied -> the byte[]'s in sentEventMessages may change outside lock
+                    CopyEventMessages(eventMessages, sentEventMessages);
                 }
-                seq = ++eventCounter;
-                if (count > 100) count = 100;
-                for (int n = 0; n < count; n++) {
-                    var ev = deque.RemoveHead();
-                    events.Add(ev.value);
-                    if (queueEvents) {
-                        sentEventsQueue.AddTail(ev.value, seq);
+                var syncEventCount = unsentSyncEvents.Count;
+                if (syncEventCount > 0) {
+                    unsentSyncEvents.DequeMessages(syncEvents);
+                }
+            }
+            if (syncEvents.Count > 0) {
+                int seq = ++eventCounter;
+                // access to syncEvents is valid. DequeMessages() is called sequentially
+                var eventMessage = RemoteUtils.CreateEventMessage(syncEvents, clientId, seq, writer);
+                eventMessages.Add(eventMessage);
+                if (queueEvents) {
+                    lock (unsentSyncEvents) {
+                        sentEventMessages.AddTail(eventMessage, seq);
                     }
-                } 
-                return true;
+                }
+            }
+            return eventMessages.Count > 0;
+        }
+        
+        private static void CopyEventMessages(List<JsonValue> eventMessages, MessageBufferQueue<int> sentEventMessages) {
+            var sumCount = 0;
+            foreach (var eventMessage in sentEventMessages) {
+                sumCount += eventMessage.value.Count;
+            }
+            var array = new byte[sumCount];
+            var offset = 0;
+            foreach (var eventMessage in sentEventMessages) {
+                var value   = eventMessage.value;
+                var copy    = new JsonValue(value, array, offset);
+                offset     += value.Count;
+                eventMessages.Add (copy);
             }
         }
         
         /// <summary>
-        /// Remove all acknowledged events from <see cref="sentEventsQueue"/>
+        /// Remove all acknowledged serialized <see cref="EventMessage"/>' from <see cref="sentEventMessages"/>
         /// </summary>
-        internal void AcknowledgeEvents(int eventAck) {
-            lock (unsentEventsDeque) {
-                while (sentEventsQueue.Count > 0) {
-                    var ev = sentEventsQueue.GetHead();
+        internal void AcknowledgeEventMessages(int eventAck) {
+            lock (unsentSyncEvents) {
+                while (sentEventMessages.Count > 0) {
+                    var ev = sentEventMessages.GetHead();
                     if (ev.meta <= eventAck) {
-                        sentEventsQueue.RemoveHead();
+                        sentEventMessages.RemoveHead();
                         continue;
                     }
                     break; 
@@ -134,15 +163,13 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         }
 
         /// <summary>
-        /// Prepend all not acknowledged events to <see cref="unsentEventsDeque"/> in their original order
+        /// Prepend all not acknowledged events to <see cref="unsentSyncEvents"/> in their original order
         /// and trigger sending the events stored in the deque.
         /// </summary>
         private void SendUnacknowledgedEvents() {
-            var deque = unsentEventsDeque;
-            lock (deque) {
-                deque.AddHeadQueue(sentEventsQueue);
-                sentEventsQueue.Clear();
-                if (dispatcher != null && deque.Count > 0) {
+            lock (unsentSyncEvents) {
+                if (dispatcher != null && sentEventMessages.Count > 0) {
+                    resendEventMessages = true;
                     // Console.WriteLine($"unsentEventsQueue: {unsentEventsQueue.Count}");
                     // Trace.WriteLine($"*** SendUnacknowledgedEvents. Count: {unsentEventsQueue.Count}");
                     dispatcher.NewClientEvent(this);
@@ -150,19 +177,19 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             }
         }
         
-        internal void SendEvents (ObjectWriter writer, List<JsonValue> events) {
+        internal void SendEvents (ObjectWriter writer, List<JsonValue> eventMessages, List<JsonValue> syncEvents) {
             var receiver = eventReceiver;
             // early out in case the target is a remote connection which already closed.
             if (receiver == null || !receiver.IsOpen()) {
                 if (queueEvents)
                     return;
-                lock (unsentEventsDeque) {
-                    unsentEventsDeque.Clear();
+                lock (unsentSyncEvents) {
+                    unsentSyncEvents.Clear();
                 }
                 return;
             }
             // Trace.WriteLine("--- SendEvents");
-            while (DequeueEvents(events, out int seq )) {
+            while (DequeueEventMessages(eventMessages, syncEvents, writer)) {
                 // var msg = $"DequeueEvent {ev.seq}";
                 // Trace.WriteLine(msg);
                 // Console.WriteLine(msg);
@@ -170,9 +197,10 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                     // Console.WriteLine($"--- SendEvents: {events.Length}");
                     // In case the event target is remote connection it is not guaranteed that the event arrives.
                     // The remote target may already be disconnected and this is still not know when sending the event.
-                    var rawEventMessage = RemoteUtils.CreateProtocolEvent(events, clientId, seq, writer);
-                    var clientEvent     = new RemoteEvent(clientId, rawEventMessage);
-                    receiver.SendEvent(clientEvent);
+                    foreach (var eventMessage in eventMessages) {
+                        var clientEvent     = new RemoteEvent(clientId, eventMessage);
+                        receiver.SendEvent(clientEvent);
+                    }
                 }
                 catch (Exception e) {
                     var message = "SendEvents failed";

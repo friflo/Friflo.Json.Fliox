@@ -27,20 +27,20 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Utils
             queue.AddTail(msg1);
             queue.AddTail(msg2);
             
-            var messages    = new List<MessageItem<VoidMeta>>();
+            var messages    = new List<JsonValue>();
             var ev          = await queue.DequeMessagesAsync(messages);
             
             queue.AddTail(msg3);
 
             AreEqual(2, messages.Count);
-            AreEqual("msg-1", messages[0].value.AsString());
-            AreEqual("msg-2", messages[1].value.AsString());
+            AreEqual("msg-1", messages[0].AsString());
+            AreEqual("msg-2", messages[1].AsString());
             AreEqual(MessageBufferEvent.NewMessage, ev);
             
             ev = await queue.DequeMessagesAsync(messages);
             
             AreEqual(1, messages.Count);
-            AreEqual("msg-3", messages[0].value.AsString());
+            AreEqual("msg-3", messages[0].AsString());
             AreEqual(MessageBufferEvent.NewMessage, ev);
         }
         
@@ -53,11 +53,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Utils
             queue.AddTail(msg1);
             queue.Close();
             
-            var messages    = new List<MessageItem<VoidMeta>>();
+            var messages    = new List<JsonValue>();
             var ev          = await queue.DequeMessagesAsync(messages);
             
             AreEqual(1, messages.Count);
-            AreEqual("msg-1", messages[0].value.AsString());
+            AreEqual("msg-1", messages[0].AsString());
             AreEqual(MessageBufferEvent.Closed, ev);
         }
         
@@ -65,7 +65,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Utils
         public async Task TestMessageBufferQueueAsyncWait() {
             var queue = new MessageBufferQueueAsync<VoidMeta>(2);
             
-            var messages = new List<MessageItem<VoidMeta>>();
+            var messages = new List<JsonValue>();
             var waitTask = queue.DequeMessagesAsync(messages);
             
             var msg1 = new JsonValue("msg-1");
@@ -78,7 +78,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Utils
             queue.AddTail(msg2);
             
             AreEqual(1, messages.Count);
-            AreEqual("msg-1", messages[0].value.AsString());
+            AreEqual("msg-1", messages[0].AsString());
             AreEqual(MessageBufferEvent.NewMessage, ev);
         }
         
@@ -112,12 +112,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Utils
             int messageIndex    = 0;
             int dequeCount      = 0;
             while (true) {
-                var messages    = new List<MessageItem<VoidMeta>>();
+                var messages    = new List<JsonValue>();
                 var ev          = await queue.DequeMessagesAsync(messages);
                 dequeCount++;
                 // Console.WriteLine($"{count} - messages: {messages.Count}");
                 foreach (var msg in messages) {
-                    int.TryParse(msg.value.AsString(), out int value);
+                    int.TryParse(msg.AsString(), out int value);
                     if (value != messageIndex) throw  new InvalidOperationException($"Expect {messageIndex}, was {value}");
                     messageIndex++;
                 }

@@ -51,7 +51,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         /// Creates a serialized <see cref="EventMessage"/><br/>
         /// <b>Attention</b> returned <see cref="JsonValue"/> is <b>only</b> valid until the passed <paramref name="writer"/> is reused
         /// </summary>
-        public static JsonValue CreateProtocolEvent (
+        public static JsonValue CreateEventMessage (
             List<JsonValue>     events,
             in JsonKey          dstClientId,
             int                 seq,

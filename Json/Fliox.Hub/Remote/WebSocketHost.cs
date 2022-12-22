@@ -29,7 +29,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         private  readonly   bool                    fakeOpenClosedSocket;
 
         private  readonly   MessageBufferQueueAsync<VoidMeta> sendQueue;
-        private  readonly   List<MessageItem<VoidMeta>>       messages;
+        private  readonly   List<JsonValue>         messages;
         
         private  readonly   FlioxHub                hub;
         private  readonly   Pool                    pool;
@@ -59,7 +59,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             this.hostMetrics            = remoteHost.metrics;
             
             sendQueue                   = new MessageBufferQueueAsync<VoidMeta>();
-            messages                    = new List<MessageItem<VoidMeta>>();
+            messages                    = new List<JsonValue>();
         }
 
         public void Dispose() {
@@ -114,10 +114,10 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 var remoteEvent = await sendQueue.DequeMessagesAsync(messages).ConfigureAwait(false);
                 foreach (var message in messages) {
                     if (LogMessage) {
-                        var msg = RegExLineFeed.Replace(message.value.AsString(), "");
+                        var msg = RegExLineFeed.Replace(message.AsString(), "");
                         Logger.Log(HubLog.Info, msg);
                     }
-                    var arraySegment = message.value.AsArraySegment();
+                    var arraySegment = message.AsArraySegment();
                     // if (sendMessage.Count > 100000) Console.WriteLine($"SendLoop. size: {sendMessage.Count}");
                     await webSocket.SendAsync(arraySegment, WebSocketMessageType.Text, true, CancellationToken.None).ConfigureAwait(false);
                 }
