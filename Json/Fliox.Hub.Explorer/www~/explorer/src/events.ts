@@ -298,7 +298,7 @@ export class Events
         }
         const tasks = tasksJson.join(",\n        ");
         return `{
-    ${firstKV("seq", seq)}${KV("src", ev.src)}${KV("db", ev.db)}${KV("isOrigin", ev.isOrigin)},
+    ${firstKV("_seq", seq)}${KV("src", ev.src)}${KV("db", ev.db)}${KV("isOrigin", ev.isOrigin)},
     "tasks": [
         ${tasks}
     ]

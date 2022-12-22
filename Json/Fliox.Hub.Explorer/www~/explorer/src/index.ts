@@ -734,10 +734,11 @@ export class App {
             if (!protocolSchema) {
                 throw "Friflo.Json.Fliox.Hub.Protocol.json schema not found";
             }
-            const syncEventDef = (protocolSchema as any).schema.definitions["SyncEvent"];
+            const syncEventDef: JsonType = (protocolSchema as any).schema.definitions["SyncEvent"];
             if (!syncEventDef) {
                 throw "SyncEvent schema not found";
             }
+            syncEventDef.properties["_seq"] = { type: "number", description: "seq of containing EventMessage - not part of Protocol", _resolvedDef: null };
             const uri = "http://protocol/json-schema/Friflo.Json.Fliox.Hub.Protocol.json#definitions/SyncEvent";
                 const syncEventSchema : MonacoSchema = {
                 schema:    syncEventDef,
