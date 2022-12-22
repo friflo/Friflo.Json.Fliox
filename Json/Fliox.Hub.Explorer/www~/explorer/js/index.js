@@ -632,7 +632,8 @@ export class App {
             if (!syncEventDef) {
                 throw "SyncEvent schema not found";
             }
-            syncEventDef.properties["_seq"] = { type: "number", description: "seq of containing EventMessage - not part of Protocol", _resolvedDef: null };
+            const description = "seq of containing EventMessage.\n_seq is not a member of SyncEvent in the Protocol - added only for filtering";
+            syncEventDef.properties["_seq"] = { type: "number", description: description, _resolvedDef: null };
             const uri = "http://protocol/json-schema/Friflo.Json.Fliox.Hub.Protocol.json#definitions/SyncEvent";
             const syncEventSchema = {
                 schema: syncEventDef,
