@@ -87,9 +87,9 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         }
         
         /// <summary>Enqueue serialized <see cref="SyncEvent"/> for sending</summary>
-        internal void EnqueueEvent(in JsonValue rawSyncEvent) {
+        internal void EnqueueEvent(in JsonValue syncEvent) {
             lock (unsentSyncEvents) {
-                unsentSyncEvents.AddTail(rawSyncEvent);
+                unsentSyncEvents.AddTail(syncEvent);
             }
             // Signal new event. Need to be signaled after adding event to queue. No reason to execute this in the lock. 
             if (dispatcher != null) {

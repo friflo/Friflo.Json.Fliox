@@ -52,14 +52,14 @@ namespace Friflo.Json.Fliox.Hub.Remote
         /// <b>Attention</b> returned <see cref="JsonValue"/> is <b>only</b> valid until the passed <paramref name="writer"/> is reused
         /// </summary>
         public static JsonValue CreateEventMessage (
-            List<JsonValue>     events,
+            List<JsonValue>     syncEvents,
             in JsonKey          dstClientId,
             int                 seq,
             ObjectWriter        writer)   
         {
             writer.Pretty           = true;
             writer.WriteNullMembers = false;
-            var remoteEventMessage  = new RemoteEventMessage { msg = "ev", clt = dstClientId, seq = seq, events = events };
+            var remoteEventMessage  = new RemoteEventMessage { msg = "ev", clt = dstClientId, seq = seq, events = syncEvents };
             var result              = writer.WriteAsBytes(remoteEventMessage);
             return new JsonValue(result);
         }
