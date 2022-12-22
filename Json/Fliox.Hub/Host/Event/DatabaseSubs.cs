@@ -7,9 +7,23 @@ using Friflo.Json.Burst.Utils;
 using Friflo.Json.Fliox.Hub.DB.Cluster;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Transform;
+using static Friflo.Json.Fliox.Hub.Host.Event.CreateTasksResult;
 
 namespace Friflo.Json.Fliox.Hub.Host.Event
 {
+    /// <summary>
+    /// Used for optimization to serialize a <see cref="Protocol.SyncEvent"/> only once in case all given
+    /// task are subscribed.
+    /// </summary>
+    [Flags]
+    internal enum CreateTasksResult {
+        /// no tasks added
+        None        = 0,
+        /// added subscribed tasks
+        AddedTasks  = 1,
+        /// returned tasks are a subset of all tasks
+        TasksSubset = 2,
+    }
     /// <summary>
     /// Contain all subscriptions to entity changes and messages for a specific <see cref="database"/>. <br/>
     /// A <see cref="EventSubClient"/> has a single <see cref="DatabaseSubs"/> instance for each database.
@@ -129,13 +143,13 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         /// Create <paramref name="eventTasks"/> for all <paramref name="tasks"/> the <paramref name="subClient"/> subscribed.<br/> 
         /// Return true if <paramref name="eventTasks"/> were created. Otherwise false.
         /// </summary>
-        internal  bool CreateEventTasks(
+        internal  CreateTasksResult CreateEventTasks(
             List<SyncRequestTask>       tasks,
             EventSubClient              subClient,
             ref List<SyncRequestTask>   eventTasks,
             JsonEvaluator               jsonEvaluator)
         {
-            bool addedTasks = false;
+            var result = None;
             foreach (var task in tasks) {
                 switch (task.TaskType) {
                     case TaskType.create:
@@ -145,30 +159,36 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                         var changeSubsLength = changeSubs.Length;
                         for (int n = 0; n < changeSubsLength; n++) {
                             var writeTask = FilterUtils.FilterChanges(subClient, task, changeSubs[n], jsonEvaluator);
-                            if (writeTask == null)
+                            if (writeTask == null) {
+                                result |= TasksSubset;
                                 continue;
+                            }
                             AddTask(writeTask, ref eventTasks);
-                            addedTasks = true;
+                            result |= writeTask == task ? AddedTasks : AddedTasks | TasksSubset;
                         }
                         break;
                     }
                     case TaskType.message:
                     case TaskType.command:
                         var messageTask = (SyncMessageTask)task;
-                        if (!IsEventTarget(subClient, messageTask))
+                        if (!IsEventTarget(subClient, messageTask)) {
+                            result |= TasksSubset;
                             continue;
-                        if (!FilterMessage(messageTask.name))
+                        }
+                        if (!FilterMessage(messageTask.name)) {
+                            result |= TasksSubset;
                             continue;
+                        }
                         // don't leak userId's & clientId's to subscribed clients
                         messageTask.users   = null;
                         messageTask.clients = null;
                         messageTask.groups  = null;
                         AddTask(messageTask, ref eventTasks);
-                        addedTasks = true;
+                        result |= AddedTasks;
                     break;
                 }
             }
-            return addedTasks;
+            return result;
         }
         
         /// <summary>Add the <paramref name="task"/> to the <paramref name="eventTasks"/></summary>

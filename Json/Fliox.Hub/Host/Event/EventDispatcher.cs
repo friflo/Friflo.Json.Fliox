@@ -16,6 +16,7 @@ using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Transform;
 using Friflo.Json.Fliox.Utils;
 using static System.Diagnostics.DebuggerBrowsableState;
+using static Friflo.Json.Fliox.Hub.Host.Event.CreateTasksResult;
 
 namespace Friflo.Json.Fliox.Hub.Host.Event
 {
@@ -354,6 +355,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                 ObjectWriter writer     = pooled.instance.writer;
                 writer.Pretty           = false;    // write sub's as one liner
                 writer.WriteNullMembers = false;
+                var allTasks            = new JsonValue();
 
                 foreach (var subClient in sendClients) {
                     if (!subClient.queueEvents && !subClient.Connected) {
@@ -363,14 +365,26 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                     if (!subClient.databaseSubs.TryGetValue(database, out var databaseSubs)) {
                         continue;
                     }
-                    if (!databaseSubs.CreateEventTasks(syncTasks, subClient, ref syncEvent.tasks, jsonEvaluator)) {
+                    var createTasks = databaseSubs.CreateEventTasks(syncTasks, subClient, ref syncEvent.tasks, jsonEvaluator);
+                    if ((createTasks & AddedTasks) == 0) {
                         continue;
                     }
                     // mark change events for (change) tasks which are sent by the client itself
-                    syncEvent.isOrigin  = syncContext.clientId.IsEqual(subClient.clientId) ? true : (bool?)null;
+                    var isOrigin    = syncContext.clientId.IsEqual(subClient.clientId) ? true : (bool?)null;
+                    syncEvent.isOrigin  = isOrigin;
                     
                     SerializeEventTasks(syncEvent.tasks, ref syncEvent.tasksJson, writer, memoryBuffer);
-                    var rawSyncEvent = RemoteUtils.SerializeSyncEvent(syncEvent, writer);
+                    
+                    JsonValue rawSyncEvent;
+                    if ((createTasks & TasksSubset) == 0 && isOrigin == null) {
+                        if (allTasks.IsNull()) {
+                            rawSyncEvent = allTasks = RemoteUtils.SerializeSyncEvent(syncEvent, writer);
+                        } else {
+                            rawSyncEvent = allTasks;
+                        }
+                    } else {
+                        rawSyncEvent = RemoteUtils.SerializeSyncEvent(syncEvent, writer);
+                    }
                     subClient.EnqueueEvent(rawSyncEvent);
                 }
             }
