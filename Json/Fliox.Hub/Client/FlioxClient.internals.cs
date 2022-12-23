@@ -65,9 +65,8 @@ namespace Friflo.Json.Fliox.Hub.Client
         internal void ProcessEvents(in JsonValue rawEventMessage) {
             var mapper          = _intern.ObjectMapper();
             var reader          = mapper.reader;
-            var instancePool    = _intern.InstancePool();
-            instancePool.Reuse();
-            reader.InstancePool = instancePool;
+            reader.InstancePool = _intern.InstancePool();
+            reader.InstancePool.Reuse();
             var eventMessage    = reader.Read<EventMessage>(rawEventMessage);
             if (reader.Error.ErrSet) {
                 var error = reader.Error.msg.AsString();
