@@ -23,7 +23,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         internal abstract   bool        IsIntKey    { get; }
         internal abstract   SubRelations SubRelations     { get; }
         
-        internal abstract void    SetResult (EntitySet set, HashSet<JsonKey> ids);
+        internal abstract void    SetResult (EntitySet set, List<JsonKey> ids);
     }
     
     public abstract class ReadRelationsFunction<T> : ReadRelationsFunction, IReadRelationsTask<T> where T : class
@@ -105,7 +105,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             this.IsIntKey   = isIntKey;
         }
 
-        internal override void SetResult(EntitySet set, HashSet<JsonKey> ids) {
+        internal override void SetResult(EntitySet set, List<JsonKey> ids) {
             var entitySet = (EntitySetBase<T>) set;
             result = new List<T>(ids.Count);
             var entityErrorInfo = new TaskErrorInfo();

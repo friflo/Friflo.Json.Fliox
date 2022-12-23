@@ -268,7 +268,7 @@ namespace Friflo.Json.Fliox.Hub.Host
                 selectors.Add(reference.selector);
                 var referenceResult = new ReferencesResult {
                     container   = reference.container,
-                    ids         = new HashSet<JsonKey>(JsonKey.Equality)
+                    ids         = new List<JsonKey>()
                 };
                 referenceResults.Add(referenceResult);
             }
@@ -297,7 +297,15 @@ namespace Friflo.Json.Fliox.Hub.Host
                         var entityRefs      = selectorResults[n].AsJsonKeys();
                         var referenceResult = referenceResults[n];
                         var ids             = referenceResult.ids;
-                        ids.UnionWith(entityRefs);  // TAG_PERF (count & combine)
+                        var set             = new HashSet<JsonKey>(ids.Count, JsonKey.Equality);
+                        foreach (var id in ids) {
+                            set.Add(id);
+                        }
+                        set.UnionWith(entityRefs);
+                        ids.Clear();
+                        foreach (var id in set) {
+                            ids.Add(id);
+                        }
                         if (ids.Count > 0) {
                             referenceResult.count = ids.Count;     
                         }
