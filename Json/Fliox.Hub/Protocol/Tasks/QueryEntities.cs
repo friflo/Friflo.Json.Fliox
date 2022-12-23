@@ -129,7 +129,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
             containerResult.AddEntities(entities);
 
             result.container    = container;
-            var ids             = new HashSet<JsonKey>(JsonKey.Equality); // TAG_PERF
+            var ids             = new List<JsonKey>(entities.Length);
             foreach (var entity in entities) {
                 ids.Add(entity.key);
             }
@@ -153,7 +153,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
                     public  string                  cursor;
         /// <summary>number of <see cref="ids"/> - not utilized by Protocol</summary>
         [DebugInfo] public  int?                    count;
-        [Required]  public  HashSet<JsonKey>        ids = new HashSet<JsonKey>(JsonKey.Equality);
+        [Required]  public  List<JsonKey>           ids;
                     public  List<ReferencesResult>  references;
                         
         [Ignore]    public  EntityValue[]           entities;
