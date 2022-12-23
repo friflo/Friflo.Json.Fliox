@@ -30,7 +30,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
     
     /// <summary>
     /// <b>Attention</b> all <c>Create</c> methods return a <see cref="JsonValue"/> which are only valid until the
-    /// passed <see cref="ObjectMapper"/> it reused 
+    /// passed <see cref="ObjectReader"/> it reused 
     /// </summary>
     public static class RemoteUtils
     {
@@ -111,10 +111,9 @@ namespace Friflo.Json.Fliox.Hub.Remote
         
         public static ProtocolMessage ReadProtocolMessage (
             in JsonValue    jsonMessage,
-            ObjectMapper    mapper,
+            ObjectReader    reader,
             out string      error)
         {
-            ObjectReader reader = mapper.reader;
             var message         = reader.Read<ProtocolMessage>(jsonMessage);
             if (reader.Error.ErrSet) {
                 error = reader.Error.msg.ToString();
@@ -129,11 +128,11 @@ namespace Friflo.Json.Fliox.Hub.Remote
         /// </summary>
         internal static IClientMessage ReadClientMessage (
             in JsonValue    jsonMessage,
-            ObjectMapper    mapper,
+            ObjectReader    reader,
             out string      error)
         {
-            ObjectReader reader = mapper.reader;
-            var message         = reader.Read<IClientMessage>(jsonMessage);
+            // reader.InstancePool.Reuse();
+            var message = reader.Read<IClientMessage>(jsonMessage);
             if (reader.Error.ErrSet) {
                 error = reader.Error.msg.ToString();
                 return null;

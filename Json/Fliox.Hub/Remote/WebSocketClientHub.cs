@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Mapper;
+using Friflo.Json.Fliox.Pools;
 
 namespace Friflo.Json.Fliox.Hub.Remote
 {
@@ -127,8 +128,11 @@ namespace Friflo.Json.Fliox.Hub.Remote
         }
         
         private async Task RunReceiveMessageLoop(WebSocketConnection wsConn) {
+            var instancePool = new ReaderInstancePool(sharedEnv.TypeStore);
             using (var pooledMapper = sharedEnv.Pool.ObjectMapper.Get()) {
-                await ReceiveMessageLoop(wsConn, pooledMapper.instance).ConfigureAwait(false);
+                var reader          = pooledMapper.instance.reader;
+                // reader.InstancePool = instancePool;
+                await ReceiveMessageLoop(wsConn, reader).ConfigureAwait(false);
             }
         }
 
@@ -140,7 +144,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         /// - A blocking WebSocket.SendAsync() call does not block WebSocket.ReceiveAsync() <br/>
         /// - The created <see cref="WebsocketRequest.response"/>'s act as a queue. <br/>
         /// </summary>
-        private async Task ReceiveMessageLoop(WebSocketConnection wsConn, ObjectMapper mapper) {
+        private async Task ReceiveMessageLoop(WebSocketConnection wsConn, ObjectReader reader) {
             var buffer          = new ArraySegment<byte>(new byte[8192]);
             var ws              = wsConn.websocket;
             var memoryStream    = new MemoryStream();
@@ -170,7 +174,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                         continue;
                     }
                     var requestContent  = new JsonValue(memoryStream.GetBuffer(), (int)memoryStream.Position);
-                    OnReceive (wsConn, requestContent, mapper);
+                    OnReceive (wsConn, requestContent, reader);
                 }
                 catch (Exception e)
                 {
@@ -184,9 +188,9 @@ namespace Friflo.Json.Fliox.Hub.Remote
             }
         }
         
-        private void OnReceive(WebSocketConnection wsConn, in JsonValue messageJson, ObjectMapper mapper) {
+        private void OnReceive(WebSocketConnection wsConn, in JsonValue messageJson, ObjectReader reader) {
             // if (messageJson.Length > 100000) Console.WriteLine($"OnReceive. size: {messageJson.Length}");
-            var message = RemoteUtils.ReadClientMessage(messageJson, mapper, out _);
+            var message = RemoteUtils.ReadClientMessage(messageJson, reader, out _);
             switch (message) {
                 case null:
                     break; // errors are ignored. 
