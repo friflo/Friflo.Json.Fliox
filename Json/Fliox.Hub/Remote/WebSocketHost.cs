@@ -201,11 +201,11 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 try {
                     Interlocked.Increment(ref hostMetrics.webSocket.receivedCount);
                     var t1 = Stopwatch.GetTimestamp();
-                    var syncRequest = RemoteUtils.ReadSyncRequest(mapper, requestContent, out string error);
+                    var syncRequest = RemoteUtils.ReadSyncRequest(mapper.reader, requestContent, out string error);
                     var t2 = Stopwatch.GetTimestamp();
                     
                     if (error != null) {
-                        response = JsonResponse.CreateError(mapper, error, ErrorResponseType.BadResponse, null);
+                        response = JsonResponse.CreateError(mapper.writer, error, ErrorResponseType.BadResponse, null);
                     } else {
                         var execution   = hub.InitSyncRequest(syncRequest);
                         ExecuteSyncResult syncResult;
@@ -214,7 +214,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                         } else {
                             syncResult  = await hub.ExecuteRequestAsync (syncRequest, syncContext).ConfigureAwait(false);
                         }
-                        response = RemoteHost.CreateJsonResponse(syncResult, syncRequest.reqId, mapper);
+                        response = RemoteHost.CreateJsonResponse(syncResult, syncRequest.reqId, mapper.writer);
                     }
                     var t3 = Stopwatch.GetTimestamp();
                     
@@ -223,7 +223,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 }
                 catch (Exception e) {
                     var errorMsg = ErrorResponse.ErrorFromException(e).ToString();
-                    response = JsonResponse.CreateError(mapper, errorMsg, ErrorResponseType.Exception, null);
+                    response = JsonResponse.CreateError(mapper.writer, errorMsg, ErrorResponseType.Exception, null);
                 }
                 sendQueue.AddTail(response.body); // Enqueue() copy the result.body array
             }

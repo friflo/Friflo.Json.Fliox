@@ -52,9 +52,9 @@ namespace Friflo.Json.Fliox.Hub.Remote
             // used response assignment instead of return in each branch to provide copy/paste code to avoid an async call in caller
             JsonResponse response;
             try {
-                var syncRequest = RemoteUtils.ReadSyncRequest(mapper, jsonRequest, out string error);
+                var syncRequest = RemoteUtils.ReadSyncRequest(mapper.reader, jsonRequest, out string error);
                 if (error != null) {
-                    response = JsonResponse.CreateError(mapper, error, ErrorResponseType.BadResponse, null);
+                    response = JsonResponse.CreateError(mapper.writer, error, ErrorResponseType.BadResponse, null);
                 } else {
                     var hub         = localHub;
                     var execution   = hub.InitSyncRequest(syncRequest);
@@ -64,12 +64,12 @@ namespace Friflo.Json.Fliox.Hub.Remote
                     } else {
                         syncResult  = await hub.ExecuteRequestAsync (syncRequest, syncContext).ConfigureAwait(false);
                     }
-                    response = CreateJsonResponse(syncResult, syncRequest.reqId, mapper);
+                    response = CreateJsonResponse(syncResult, syncRequest.reqId, mapper.writer);
                 }
             }
             catch (Exception e) {
                 var errorMsg = ErrorResponse.ErrorFromException(e).ToString();
-                response = JsonResponse.CreateError(mapper, errorMsg, ErrorResponseType.Exception, null);
+                response = JsonResponse.CreateError(mapper.writer, errorMsg, ErrorResponseType.Exception, null);
             }
             return response;
         }
@@ -82,31 +82,31 @@ namespace Friflo.Json.Fliox.Hub.Remote
             // used response assignment instead of return in each branch to provide copy/paste code to avoid an async call in caller
             JsonResponse response;
             try {
-                var syncRequest = RemoteUtils.ReadSyncRequest(mapper, jsonRequest, out string error);
+                var syncRequest = RemoteUtils.ReadSyncRequest(mapper.reader, jsonRequest, out string error);
                 if (error != null) {
-                    response = JsonResponse.CreateError(mapper, error, ErrorResponseType.BadResponse, null);
+                    response = JsonResponse.CreateError(mapper.writer, error, ErrorResponseType.BadResponse, null);
                 } else {
                     localHub.InitSyncRequest(syncRequest);
                     var syncResult = localHub.ExecuteRequest(syncRequest, syncContext);
                 
-                    response = CreateJsonResponse(syncResult, syncRequest.reqId, mapper);
+                    response = CreateJsonResponse(syncResult, syncRequest.reqId, mapper.writer);
                 }
             }
             catch (Exception e) {
                 var errorMsg = ErrorResponse.ErrorFromException(e).ToString();
-                response = JsonResponse.CreateError(mapper, errorMsg, ErrorResponseType.Exception, null);
+                response = JsonResponse.CreateError(mapper.writer, errorMsg, ErrorResponseType.Exception, null);
             }
             return response;
         }
         
-        public static JsonResponse CreateJsonResponse(in ExecuteSyncResult response, in int? reqId, ObjectMapper mapper) {
+        public static JsonResponse CreateJsonResponse(in ExecuteSyncResult response, in int? reqId, ObjectWriter writer) {
             var responseError = response.error;
             if (responseError != null) {
-                return JsonResponse.CreateError(mapper, responseError.message, responseError.type, reqId);
+                return JsonResponse.CreateError(writer, responseError.message, responseError.type, reqId);
             }
             SetContainerResults(response.success);
             response.Result.reqId   = reqId;
-            JsonValue jsonResponse  = RemoteUtils.CreateProtocolMessage(response.Result, mapper);
+            JsonValue jsonResponse  = RemoteUtils.CreateProtocolMessage(response.Result, writer);
             return new JsonResponse(jsonResponse, JsonResponseStatus.Ok);
         }
         

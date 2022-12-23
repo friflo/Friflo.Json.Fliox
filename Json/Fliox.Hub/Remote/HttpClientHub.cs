@@ -44,7 +44,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         {
             using (var pooledMapper = syncContext.ObjectMapper.Get()) {
                 var mapper          = pooledMapper.instance;
-                var jsonRequest     = RemoteUtils.CreateProtocolMessage(syncRequest, mapper);
+                var jsonRequest     = RemoteUtils.CreateProtocolMessage(syncRequest, mapper.writer);
                 var content         = jsonRequest.AsByteArrayContent();
                 content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
                 // body.Headers.ContentEncoding = new string[]{"charset=utf-8"};

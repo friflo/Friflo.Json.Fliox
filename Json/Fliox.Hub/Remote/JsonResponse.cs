@@ -28,14 +28,13 @@ namespace Friflo.Json.Fliox.Hub.Remote
         }
         
         /// <summary>
-        /// <b>Attention</b> returned <see cref="JsonResponse"/> is <b>only</b> valid until the passed <paramref name="mapper"/> is reused
+        /// <b>Attention</b> returned <see cref="JsonResponse"/> is <b>only</b> valid until the passed <paramref name="writer"/> is reused
         /// </summary>
-        public static JsonResponse CreateError(ObjectMapper mapper, string message, ErrorResponseType type, int? reqId)
+        public static JsonResponse CreateError(ObjectWriter writer, string message, ErrorResponseType type, int? reqId)
         {
             var status          = type == ErrorResponseType.Exception ? JsonResponseStatus.Exception : JsonResponseStatus.Error;
             var errorResponse   = new ErrorResponse { message = message, type = type, reqId = reqId };
 
-            ObjectWriter writer     = mapper.writer;
             writer.Pretty           = true;
             writer.WriteNullMembers = false;
             var body                = writer.WriteAsBytes<ProtocolMessage>(errorResponse);

@@ -35,15 +35,15 @@ namespace Friflo.Json.Fliox.Hub.Remote
     public static class RemoteUtils
     {
         /// <summary>
-        /// <b>Attention</b> returned <see cref="JsonValue"/> is <b>only</b> valid until the passed <paramref name="mapper"/> is reused
+        /// <b>Attention</b> returned <see cref="JsonValue"/> is <b>only</b> valid until the passed <paramref name="writer"/> is reused
         /// </summary>
         public static JsonValue CreateProtocolMessage (
             ProtocolMessage message,
-            ObjectMapper    mapper)
+            ObjectWriter    writer)
         {
-            mapper.Pretty           = true;
-            mapper.WriteNullMembers = false;
-            var result              = mapper.writer.WriteAsBytes(message);
+            writer.Pretty           = true;
+            writer.WriteNullMembers = false;
+            var result              = writer.WriteAsBytes(message);
             return new JsonValue(result);
         }
         
@@ -84,11 +84,10 @@ namespace Friflo.Json.Fliox.Hub.Remote
         }
         
         public static SyncRequest ReadSyncRequest (
-            ObjectMapper    mapper,
+            ObjectReader    reader,
             in JsonValue    jsonMessage,
             out string      error)
         {
-            var reader  = mapper.reader;
             var message = reader.Read<ProtocolMessage>(jsonMessage);
             if (reader.Error.ErrSet) {
                 error = reader.Error.GetMessage();

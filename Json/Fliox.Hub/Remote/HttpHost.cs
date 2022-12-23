@@ -154,9 +154,9 @@ namespace Friflo.Json.Fliox.Hub.Remote
                     // JsonResponse response  = await ExecuteJsonRequest(mapper, requestContent, syncContext).ConfigureAwait(false);
                     JsonResponse response;
                     try {
-                        var syncRequest = RemoteUtils.ReadSyncRequest(mapper, requestContent, out string error);
+                        var syncRequest = RemoteUtils.ReadSyncRequest(mapper.reader, requestContent, out string error);
                         if (error != null) {
-                            response = JsonResponse.CreateError(mapper, error, ErrorResponseType.BadResponse, null);
+                            response = JsonResponse.CreateError(mapper.writer, error, ErrorResponseType.BadResponse, null);
                         } else {
                             var hub         = localHub;
                             var execution   = hub.InitSyncRequest(syncRequest);
@@ -166,12 +166,12 @@ namespace Friflo.Json.Fliox.Hub.Remote
                             } else {
                                 syncResult  = await hub.ExecuteRequestAsync (syncRequest, syncContext).ConfigureAwait(false);
                             }
-                            response = CreateJsonResponse(syncResult, syncRequest.reqId, mapper);
+                            response = CreateJsonResponse(syncResult, syncRequest.reqId, mapper.writer);
                         }
                     }
                     catch (Exception e) {
                         var errorMsg = ErrorResponse.ErrorFromException(e).ToString();
-                        response = JsonResponse.CreateError(mapper, errorMsg, ErrorResponseType.Exception, null);
+                        response = JsonResponse.CreateError(mapper.writer, errorMsg, ErrorResponseType.Exception, null);
                     }
                     var body        = new JsonValue(response.body); // create copy => result.body array may change when the pooledMapper is reused
                     request.Write(body, "application/json", (int)response.status);

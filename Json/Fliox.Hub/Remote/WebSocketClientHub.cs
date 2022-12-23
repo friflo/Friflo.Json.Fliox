@@ -224,7 +224,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             try {
                 using (var pooledMapper = syncContext.ObjectMapper.Get()) {
                     var mapper      = pooledMapper.instance;
-                    var jsonRequest = RemoteUtils.CreateProtocolMessage(syncRequest, mapper);
+                    var jsonRequest = RemoteUtils.CreateProtocolMessage(syncRequest, mapper.writer);
                     // request need to be queued _before_ sending it to be prepared for handling the response.
                     var wsRequest   = new WebsocketRequest(syncContext, cancellationToken);
                     wsConn.requests.TryAdd(sendReqId, wsRequest);
