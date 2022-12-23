@@ -114,7 +114,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                 }
                 var syncEventCount = unsentSyncEvents.Count;
                 if (syncEventCount > 0) {
-                    unsentSyncEvents.DequeMessages(syncEvents);
+                    unsentSyncEvents.DequeMessageValues(syncEvents);
                 }
             }
             if (syncEvents.Count > 0) {

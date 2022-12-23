@@ -2,9 +2,10 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Threading;
 using Friflo.Json.Fliox.Hub.Threading;
+using Friflo.Json.Fliox.Utils;
 
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.Client
@@ -58,7 +59,9 @@ namespace Friflo.Json.Fliox.Hub.Client
     /// </remarks>
     public sealed class SynchronizationContextProcessor : EventProcessor
     {
-        private  readonly   SynchronizationContext  synchronizationContext;
+        private  readonly   SynchronizationContext          synchronizationContext;
+        private  readonly   MessageBufferQueue<FlioxClient> messageQueue    = new MessageBufferQueue<FlioxClient>();
+        private  readonly   List<MessageItem<FlioxClient>>  messages        = new List<MessageItem<FlioxClient>>(); 
         
 
         public SynchronizationContextProcessor(SynchronizationContext synchronizationContext) {
@@ -76,11 +79,20 @@ This is typically the case in console applications or unit tests.
 Consider running application / test withing SingleThreadSynchronizationContext.Run()";
         
         public override void EnqueueEvent(FlioxClient client, in JsonValue eventMessage) {
-            var ev = new JsonValue(eventMessage); // todo use MessageBufferQueue instead of creating a copy #RAW_EV
-            synchronizationContext.Post(delegate {
-                client.ProcessEvents(ev);
-            }, null);
+            lock (messageQueue) {
+                messageQueue.AddTail(eventMessage, client);
+            }
+            synchronizationContext.Post(ProcessEvents, null);
         }
+        
+        private void ProcessEvents(object obj) {
+            lock (messageQueue) {
+                messageQueue.DequeMessages(messages);
+            }
+            foreach (var message in messages) {
+                message.meta.ProcessEvents(message.value);
+            }
+        } 
     }
     
     /// <summary>
@@ -94,33 +106,27 @@ Consider running application / test withing SingleThreadSynchronizationContext.R
     /// </remarks>
     public sealed class QueuingEventProcessor : EventProcessor
     {
-        private readonly    ConcurrentQueue <QueuedMessage>      eventQueue = new ConcurrentQueue <QueuedMessage> ();
+        private  readonly   MessageBufferQueue<FlioxClient> messageQueue    = new MessageBufferQueue<FlioxClient>();
+        private  readonly   List<MessageItem<FlioxClient>>  messages        = new List<MessageItem<FlioxClient>>(); 
 
         public QueuingEventProcessor() { }
         
         public override void EnqueueEvent(FlioxClient client, in JsonValue eventMessage) {
-            var ev = new JsonValue (eventMessage); // todo use MessageBufferQueue instead of creating a copy #RAW_EV
-            eventQueue.Enqueue(new QueuedMessage(client, ev));
+            lock (messageQueue) {
+                messageQueue.AddTail(eventMessage, client);
+            }
         }
         
         /// <summary>
         /// Need to be called frequently by application to process subscription events.
         /// </summary>
         public void ProcessEvents() {
-            while (eventQueue.TryDequeue(out QueuedMessage queuedMessage)) {
-                var client      = queuedMessage.client;
-                client.ProcessEvents(queuedMessage.eventMessage);
+            lock (messageQueue) {
+                messageQueue.DequeMessages(messages);
             }
-        }
-
-        private readonly struct QueuedMessage
-        {
-            internal  readonly  FlioxClient     client;
-            internal  readonly  JsonValue       eventMessage;
-            
-            internal QueuedMessage(FlioxClient client, in JsonValue eventMessage) {
-                this.client         = client;
-                this.eventMessage   = eventMessage;
+            foreach (var message in messages) {
+                var client = message.meta;
+                client.ProcessEvents(message.value);
             }
         }
     }

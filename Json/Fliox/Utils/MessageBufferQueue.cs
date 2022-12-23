@@ -51,8 +51,8 @@ namespace Friflo.Json.Fliox.Utils
     /// 1. One buffer is used to store the bytes of new messages. <br/>
     /// 2. The other buffer store the bytes of dequeued messages. <br/>
     /// <b>Note</b>
-    /// Dequeued messages are valid until the next call of <see cref="DequeMessages"/><br/>
-    /// The buffers are swapped when calling <see cref="DequeMessages"/>.<br/>
+    /// Dequeued messages are valid until the next call of <see cref="DequeMessageValues"/><br/>
+    /// The buffers are swapped when calling <see cref="DequeMessageValues"/>.<br/>
     /// <b>Note</b>
     /// <see cref="MessageBufferQueue{TMeta}"/> is not thread safe<br/>
     /// <br/>
@@ -134,10 +134,11 @@ namespace Friflo.Json.Fliox.Utils
         }
         
         /// <summary>
-        /// Dequeue all queued messages <br/>
-        /// The returned <paramref name="messages"/> are valid until the next <see cref="DequeMessages"/> call.
+        /// Dequeue all queued message value<br/> 
+        /// The returned <paramref name="messages"/> are valid until the next <see cref="DequeMessageValues"/> call.<br/>
+        /// Similar to <see cref="DequeMessages"/> but return only <see cref="JsonValue"/>'s
         /// </summary>
-        public MessageBufferEvent DequeMessages(List<JsonValue> messages)
+        public MessageBufferEvent DequeMessageValues(List<JsonValue> messages)
         {
             messages.Clear();
 
@@ -147,6 +148,26 @@ namespace Friflo.Json.Fliox.Utils
             SetBufferPos(0);
             foreach (var message in deque) {
                 messages.Add(message.value);                    
+            }
+            deque.Clear();
+            return closed ? MessageBufferEvent.Closed : MessageBufferEvent.NewMessage;
+        }
+        
+        /// <summary>
+        /// Dequeue all queued messages <br/>
+        /// The returned <paramref name="messages"/> are valid until the next <see cref="DequeMessages"/> call.<br/>
+        /// Similar to <see cref="DequeMessageValues"/> but return <see cref="JsonValue"/>'s and associated meta data.
+        /// </summary>
+        public MessageBufferEvent DequeMessages(List<MessageItem<TMeta>> messages)
+        {
+            messages.Clear();
+
+            // swap read & write buffer.
+            writeBuffer = writeBuffer == 0 ? 1 : 0;
+            // newly enqueued messages are written to the head of the write buffer
+            SetBufferPos(0);
+            foreach (var message in deque) {
+                messages.Add(message);                    
             }
             deque.Clear();
             return closed ? MessageBufferEvent.Closed : MessageBufferEvent.NewMessage;

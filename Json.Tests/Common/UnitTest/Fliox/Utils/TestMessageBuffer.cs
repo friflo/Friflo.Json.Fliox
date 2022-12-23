@@ -32,7 +32,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Utils
                 AreEqual(2, count);
             }
             var messages    = new List<JsonValue>();
-            var ev          = queue.DequeMessages(messages);
+            var ev          = queue.DequeMessageValues(messages);
             
             queue.AddTail(msg3);
             {
@@ -48,7 +48,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Utils
             AreEqual("msg-2", messages[1].AsString());
             AreEqual(MessageBufferEvent.NewMessage, ev);
 
-            ev = queue.DequeMessages(messages);
+            ev = queue.DequeMessageValues(messages);
             
             AreEqual(1, messages.Count);
             AreEqual("msg-3", messages[0].AsString());

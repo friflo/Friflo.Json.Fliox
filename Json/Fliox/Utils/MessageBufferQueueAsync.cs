@@ -43,7 +43,7 @@ namespace Friflo.Json.Fliox.Utils
             await messageAvailable.WaitAsync().ConfigureAwait(false);
 
             lock (queue) {
-                return queue.DequeMessages(messages);    
+                return queue.DequeMessageValues(messages);    
             }
         }
 
