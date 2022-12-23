@@ -314,7 +314,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object
                 return reader.ErrorMsg<TypeMapper<T>>($"Expect discriminator '{discriminator}': '...' as first JSON member for type: ", classType.type.Name, out success);
             }
             if (classType.IsNull(ref obj))
-                obj = (T) classType.NewInstance();
+                obj = (T) classType.CreateInstance(reader.instancePool);
             success = true;
             return null;
         }
