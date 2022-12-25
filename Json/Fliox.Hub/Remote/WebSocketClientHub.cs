@@ -2,34 +2,29 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.IO;
 using System.Net.WebSockets;
 using System.Threading;
 using System.Threading.Tasks;
+using Friflo.Json.Burst;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Mapper;
-using Friflo.Json.Fliox.Pools;
 
 namespace Friflo.Json.Fliox.Hub.Remote
 {
     /// <summary>
-    /// Each <see cref="WebSocketConnection"/> store its send <see cref="requests"/> to map a 
-    /// received <see cref="ProtocolResponse"/>'s to its related <see cref="SyncRequest"/>
+    /// Each <see cref="WebSocketConnection"/> store its send requests in the <see cref="requestMap"/>
+    /// to map received response messages to its related <see cref="SyncRequest"/>
     /// </summary>
     internal sealed class WebSocketConnection
     {
-        internal  readonly  ClientWebSocket                             websocket;
-        internal  readonly  ConcurrentDictionary<int, WebsocketRequest> requests;
-        
-        internal WebSocketConnection() {
-            websocket   = new ClientWebSocket();
-            requests    = new ConcurrentDictionary<int, WebsocketRequest>();
-        }
+        internal  readonly  ClientWebSocket     websocket   = new ClientWebSocket();
+        internal  readonly  RemoteRequestMap    requestMap  = new RemoteRequestMap();
     }
-    
+
+
     /// <summary>
     /// A <see cref="FlioxHub"/> accessed remotely  using a <see cref="WebSocket"/> connection
     /// </summary>
@@ -128,23 +123,21 @@ namespace Friflo.Json.Fliox.Hub.Remote
         }
         
         private async Task RunReceiveMessageLoop(WebSocketConnection wsConn) {
-            var instancePool = new ReaderInstancePool(sharedEnv.TypeStore);
-            using (var pooledMapper = sharedEnv.Pool.ObjectMapper.Get()) {
-                var reader          = pooledMapper.instance.reader;
-                // reader.InstancePool = instancePool;
-                await ReceiveMessageLoop(wsConn, reader).ConfigureAwait(false);
+            using (var mapper = new ObjectMapper(sharedEnv.TypeStore)) {
+                await ReceiveMessageLoop(wsConn, mapper.reader).ConfigureAwait(false);
             }
         }
 
         /// <summary>
         /// In contrast to <see cref="WebSocketHost"/> the <see cref="WebSocketClientHub"/> has no SendMessageLoop() <br/>
-        /// This is possible because WebSocket messages are only response messages created in <see cref="OnReceive"/>. <br/>
-        /// As <see cref="OnReceive"/> is called sequentially in the loop, WebSocket.SendAsync() is called only once at any time.
+        /// This is possible because WebSocket messages are only response messages created in this loop. <br/>
+        /// As <see cref="ReceiveMessageLoop"/> is called sequentially in the loop, WebSocket.SendAsync() is called only once at any time.
         /// Infos: <br/>
         /// - A blocking WebSocket.SendAsync() call does not block WebSocket.ReceiveAsync() <br/>
-        /// - The created <see cref="WebsocketRequest.response"/>'s act as a queue. <br/>
+        /// - The created <see cref="RemoteRequest.response"/>'s act as a queue. <br/>
         /// </summary>
         private async Task ReceiveMessageLoop(WebSocketConnection wsConn, ObjectReader reader) {
+            var parser          = new Utf8JsonParser();
             var buffer          = new ArraySegment<byte>(new byte[8192]);
             var ws              = wsConn.websocket;
             var memoryStream    = new MemoryStream();
@@ -153,6 +146,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 memoryStream.Position = 0;
                 memoryStream.SetLength(0);
                 try {
+                    // --- read complete WebSocket message
                     WebSocketReceiveResult wsResult;
                     do {
                         if (ws.State != WebSocketState.Open) {
@@ -168,47 +162,39 @@ namespace Friflo.Json.Fliox.Hub.Remote
                         // Logger.Log(HubLog.Info, $"Post-ReceiveAsync. State: {ws.State}");
                         return;
                     }
-                    var messageType = wsResult.MessageType;
-                    if (messageType != WebSocketMessageType.Text) {
-                        Logger.Log(HubLog.Error, $"Expect WebSocket message type text. type: {messageType} {endpoint}");
+                    if (wsResult.MessageType != WebSocketMessageType.Text) {
+                        Logger.Log(HubLog.Error, $"Expect WebSocket message type text. type: {wsResult.MessageType} {endpoint}");
                         continue;
                     }
-                    var requestContent  = new JsonValue(memoryStream.GetBuffer(), (int)memoryStream.Position);
-                    OnReceive (wsConn, requestContent, reader);
+                    // --- determine message type
+                    var message     = new JsonValue(memoryStream.GetBuffer(), (int)memoryStream.Position);
+                    var messageHead = RemoteUtils.ReadMessageHead(ref parser, message);
+                    
+                    // --- handle either response or event message
+                    switch (messageHead.type) {
+                        case MessageType.resp:
+                        case MessageType.error:
+                            if (!messageHead.reqId.HasValue)
+                                throw new InvalidOperationException($"missing reqId in response:\n{message}");
+                            var id = messageHead.reqId.Value;
+                            if (!wsConn.requestMap.Remove(id, out RemoteRequest request)) {
+                                throw new InvalidOperationException($"reqId not found. id: {id}");
+                            }
+                            var response = reader.Read<ProtocolResponse>(message);
+                            request.response.SetResult(response);
+                            break;
+                        case MessageType.ev:
+                            var remoteEvent = new RemoteEvent (messageHead.dstClientId, message);
+                            OnReceiveEvent(remoteEvent);
+                            break;
+                    }
                 }
                 catch (Exception e)
                 {
                     var message = $"WebSocketClientHub receive error: {e.Message}";
                     Logger.Log(HubLog.Error, message, e);
-                    foreach (var pair in wsConn.requests) {
-                        var request = pair.Value;
-                        request.response.SetCanceled();
-                    }
+                    wsConn.requestMap.CancelRequests();
                 }
-            }
-        }
-        
-        private void OnReceive(WebSocketConnection wsConn, in JsonValue messageJson, ObjectReader reader) {
-            // if (messageJson.Length > 100000) Console.WriteLine($"OnReceive. size: {messageJson.Length}");
-            var message = RemoteUtils.ReadClientMessage(messageJson, reader, out _);
-            switch (message) {
-                case null:
-                    break; // errors are ignored. 
-                case ProtocolResponse resp:
-                    var responseReqId = resp.reqId;
-                    if (!responseReqId.HasValue)
-                        throw new InvalidOperationException($"WebSocketClientDatabase requires reqId in response:\n{messageJson}");
-                    var id = responseReqId.Value;
-                    if (!wsConn.requests.TryRemove(id, out WebsocketRequest request)) {
-                        throw new InvalidOperationException($"Expect corresponding request to response. id: {id}");
-                    }
-                    request.response.SetResult(resp);
-                    // response is awaited in ExecuteRequestAsync()
-                    return;
-                case ClientEventMessage eventMessage:
-                    var ev = new RemoteEvent (eventMessage.dstClientId, messageJson);
-                    OnReceiveEvent(ev);
-                    break;
             }
         }
         
@@ -228,11 +214,11 @@ namespace Friflo.Json.Fliox.Hub.Remote
             try {
                 using (var pooledMapper = syncContext.ObjectMapper.Get()) {
                     var mapper      = pooledMapper.instance;
-                    var jsonRequest = RemoteUtils.CreateProtocolMessage(syncRequest, mapper.writer);
+                    var rawRequest  = RemoteUtils.CreateProtocolMessage(syncRequest, mapper.writer);
                     // request need to be queued _before_ sending it to be prepared for handling the response.
-                    var wsRequest   = new WebsocketRequest(syncContext, cancellationToken);
-                    wsConn.requests.TryAdd(sendReqId, wsRequest);
-                    var buffer      = jsonRequest.AsArraySegment();
+                    var wsRequest   = new RemoteRequest(syncContext, cancellationToken);
+                    wsConn.requestMap.Add(sendReqId, wsRequest);
+                    var buffer      = rawRequest.AsArraySegment();
 
                     // --- Send message
                     await wsConn.websocket.SendAsync(buffer, WebSocketMessageType.Text, true, CancellationToken.None).ConfigureAwait(false);
@@ -256,18 +242,6 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 var msg = error.ToString();
                 return new ExecuteSyncResult(msg, ErrorResponseType.Exception);
             }
-        }
-    }
-    
-    internal readonly struct WebsocketRequest
-    {
-        internal readonly   TaskCompletionSource<ProtocolResponse>  response;          
-        
-        internal WebsocketRequest(SyncContext syncContext, CancellationTokenSource cancellationToken) {
-            response            = new TaskCompletionSource<ProtocolResponse>();
-            syncContext.canceler = () => {
-                cancellationToken.Cancel();
-            };
         }
     }
 }

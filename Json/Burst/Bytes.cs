@@ -269,19 +269,9 @@ namespace Friflo.Json.Burst
 #endif
         public bool IsEqual(in Bytes value)
         {
-            int len = end - start;
-            if (len != value.end - value.start)
-                return false;
-            var     str     = buffer;
-            int     valEnd  = start + len;
-            int     i2      = value.start;
-            var     str2    = value.buffer;
-            for (int i = start; i < valEnd; i++ )
-            {
-                if (str[i] != str2[i2++])
-                    return false;
-            }
-            return true;
+            var span  = new ReadOnlySpan<byte>(buffer, start, end - start);
+            var other = new ReadOnlySpan<byte>(value.buffer, value.start, value.end - value.start);
+            return span.SequenceEqual(other);
         }
 
         public bool IsEqualString (string str) {

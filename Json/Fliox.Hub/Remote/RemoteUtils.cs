@@ -1,9 +1,9 @@
 // Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using Friflo.Json.Fliox.Hub.Host.Event;
+using Friflo.Json.Burst;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Mapper;
 
@@ -124,40 +124,83 @@ namespace Friflo.Json.Fliox.Hub.Remote
         }
         
         /// <summary>
-        /// Used to parse messages sent to a client
+        /// Parse the header of the given <paramref name="rawMessage"/> object.<br/>
+        /// The returned <see cref="MessageHead.type"/> enables the caller further processing.<br/>
+        /// Parsing stops when the required members are read.
         /// </summary>
-        internal static IClientMessage ReadClientMessage (
-            in JsonValue    jsonMessage,
-            ObjectReader    reader,
-            out string      error)
+        internal static MessageHead ReadMessageHead(ref Utf8JsonParser parser, in JsonValue rawMessage)
         {
-            // reader.InstancePool.Reuse();
-            var message = reader.Read<IClientMessage>(jsonMessage);
-            if (reader.Error.ErrSet) {
-                error = reader.Error.msg.ToString();
-                return null;
+            parser.InitParser(rawMessage);
+            var ev = parser.NextEvent();
+            if (ev != JsonEvent.ObjectStart) {
+                return default;
             }
-            error = null;
-            return message;
+            MessageHead result = default;
+            
+            while (true) {
+                ev = parser.NextEvent();
+                switch (ev) {
+                    case JsonEvent.ValueNull:
+                    case JsonEvent.ValueBool:
+                        continue;
+                    case JsonEvent.ObjectStart:
+                    case JsonEvent.ArrayStart:
+                        return result; // return as objects and arrays are not a header anymore
+                    case JsonEvent.ObjectEnd:
+                    case JsonEvent.ArrayEnd:
+                        throw new InvalidOperationException("unexpected state");
+                    case JsonEvent.ValueString:
+                        if (parser.key.IsEqual(msg)) {
+                            var key     = new BytesHash (parser.value);
+                            MessageTypes.TryGetValue(key, out result.type);
+                            continue;
+                        }
+                        if (parser.key.IsEqual(clt)) {
+                            result.dstClientId  = new JsonKey(parser.value.AsString()); // cache client id string
+                            return result;
+                        }
+                        continue;
+                    case JsonEvent.ValueNumber:
+                        if (parser.key.IsEqual(req)) {
+                            result.reqId        = parser.ValueAsInt(out bool _);
+                            return result;
+                        }
+                        if (parser.key.IsEqual(clt)) {
+                            var id = parser.ValueAsLong(out _);
+                            result.dstClientId  = new JsonKey(id);
+                            return result;
+                        }
+                        continue;
+                    case JsonEvent.Error:
+                        return default;
+                }
+            }
         }
+        
+        private static Dictionary<BytesHash, MessageType> CreateMessageTypes() {
+            var map = new Dictionary<BytesHash, MessageType>(BytesHash.Equality) {
+                { new BytesHash(new Bytes("ev")),       MessageType.ev   },
+                { new BytesHash(new Bytes("sync")),     MessageType.sync },
+                { new BytesHash(new Bytes("resp")),     MessageType.resp },
+                { new BytesHash(new Bytes("error")),    MessageType.error }
+            };
+            return map;
+        }
+        
+        private static readonly Dictionary<BytesHash, MessageType>  MessageTypes = CreateMessageTypes();  
+        
+        // ReSharper disable InconsistentNaming
+        private static readonly     Bytes   msg         = new Bytes("msg");
+        private static readonly     Bytes   clt         = new Bytes("clt");
+        private static readonly     Bytes   req         = new Bytes("req");
     }
     
-    [Discriminator("msg", "event type")] 
-    [PolymorphType(typeof(ClientEventMessage),  "ev")]
-    [PolymorphType(typeof(SyncResponse),        "resp")]
-    internal interface IClientMessage { }
-    
-    /// <summary>
-    /// Used to identify a <see cref="EventMessage"/> by its discriminator and read its <see cref="ProtocolEvent.dstClientId"/><br/>
-    /// Every other member is skipped as the entire JSON message is passed as a <see cref="RemoteEvent.message"/> to an
-    /// <see cref="EventReceiver"/>
-    /// </summary>
-    internal sealed class ClientEventMessage : IClientMessage
+    internal struct MessageHead
     {
-        /** map to <see cref="ProtocolEvent.dstClientId"/> */
-        [Serialize                    ("clt")]
-        [Required]  public  JsonKey     dstClientId = default; // default => avoid warning [CS0649] 'dstClientId' is never assigned
-    }
+        internal    MessageType type;
+        internal    JsonKey     dstClientId;
+        internal    int?        reqId;
+    } 
     
     public readonly struct RemoteEvent
     {

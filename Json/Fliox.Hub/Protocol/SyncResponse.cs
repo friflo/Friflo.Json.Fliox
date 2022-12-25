@@ -17,7 +17,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol
     /// <summary>
     /// A <see cref="SyncResponse"/> is the response of <see cref="SyncRequest"/> executed by a <see cref="Host.FlioxHub"/>
     /// </summary>
-    public sealed class SyncResponse : ProtocolResponse, IClientMessage
+    public sealed class SyncResponse : ProtocolResponse
     {
         /// <summary>for debugging - not used by Protocol</summary>
                     public  string                                  database;

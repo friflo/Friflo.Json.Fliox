@@ -124,6 +124,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol
     /// </summary>
     public enum MessageType
     {
+        None,
         /// <summary>event message - send from host to clients with subscriptions</summary>
         ev,
         /// <summary>request - send from a client to a host</summary>
