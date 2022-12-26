@@ -37,7 +37,6 @@ namespace Friflo.Json.Fliox.Hub.Client
         internal readonly   FilterOperation filter;
         internal readonly   string          filterLinq; // use as string identifier of a filter 
         internal            List<T>         result;
-        internal            IReadOnlyCollection<JsonKey>        ids;
         internal            Dictionary<JsonKey, EntityValue>    entities;
         internal            string          resultCursor;
         private  readonly   FlioxClient     store;
@@ -66,10 +65,9 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
 
         private List<JsonValue> GetRawValues() {
-            var jsonResult = new List<JsonValue> (ids.Count);
-            foreach (var id in ids) {
-                var entity = entities[id];
-                jsonResult.Add(entity.Json);
+            var jsonResult = new List<JsonValue> (entities.Count);
+            foreach (var pair in entities) {
+                jsonResult.Add(pair.Value.Json);
             }
             return jsonResult;
         }
