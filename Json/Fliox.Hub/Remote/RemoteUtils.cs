@@ -201,17 +201,4 @@ namespace Friflo.Json.Fliox.Hub.Remote
         internal    JsonKey     dstClientId;
         internal    int?        reqId;
     } 
-    
-    public readonly struct RemoteEvent
-    {
-        /// <summary>the <see cref="ProtocolEvent.dstClientId"/> of the <see cref="message"/></summary>
-        public  readonly    JsonKey     dstClientId;
-        /// <summary>serialized <see cref="EventMessage"/></summary>
-        public  readonly    JsonValue   message;
-        
-        public RemoteEvent(in JsonKey dstClientId, in JsonValue message) {
-            this.dstClientId    = dstClientId;
-            this.message        = message;
-        }
-    }
 }

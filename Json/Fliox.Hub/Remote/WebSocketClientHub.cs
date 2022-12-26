@@ -9,6 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Friflo.Json.Burst;
 using Friflo.Json.Fliox.Hub.Host;
+using Friflo.Json.Fliox.Hub.Host.Event;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Mapper;
 
@@ -184,8 +185,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
                             request.response.SetResult(response);
                             break;
                         case MessageType.ev:
-                            var remoteEvent = new RemoteEvent (messageHead.dstClientId, message);
-                            OnReceiveEvent(remoteEvent);
+                            var clientEvent = new ClientEvent (messageHead.dstClientId, message);
+                            OnReceiveEvent(clientEvent);
                             break;
                     }
                 }

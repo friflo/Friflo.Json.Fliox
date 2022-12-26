@@ -29,6 +29,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
     {
         public override bool    IsOpen()           => true;
         public override bool    IsRemoteTarget()   => true;
-        public override void    SendEvent(in RemoteEvent eventMessage) { }
+        public override void    SendEvent(in ClientEvent clientEvent) { }
     }
 }

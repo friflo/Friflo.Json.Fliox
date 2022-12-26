@@ -198,7 +198,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                     // In case the event target is remote connection it is not guaranteed that the event arrives.
                     // The remote target may already be disconnected and this is still not know when sending the event.
                     foreach (var eventMessage in eventMessages) {
-                        var clientEvent     = new RemoteEvent(clientId, eventMessage);
+                        var clientEvent     = new ClientEvent(clientId, eventMessage);
                         receiver.SendEvent(clientEvent);
                     }
                 }
