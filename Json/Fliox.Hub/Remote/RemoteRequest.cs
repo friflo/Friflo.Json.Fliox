@@ -6,15 +6,19 @@ using System.Threading;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Protocol;
+using Friflo.Json.Fliox.Pools;
 
 namespace Friflo.Json.Fliox.Hub.Remote
 {
     internal readonly struct RemoteRequest
     {
-        internal readonly   TaskCompletionSource<ProtocolResponse>  response;          
+        internal readonly   TaskCompletionSource<ProtocolResponse>  response;
+        internal readonly   ReaderInstancePool                      responseInstancePool;   
         
         internal RemoteRequest(SyncContext syncContext, CancellationTokenSource cancellationToken) {
-            response            = new TaskCompletionSource<ProtocolResponse>();
+            response                = new TaskCompletionSource<ProtocolResponse>();
+            responseInstancePool    = syncContext.responseInstancePool; 
+            
             syncContext.canceler = () => {
                 cancellationToken.Cancel();
             };

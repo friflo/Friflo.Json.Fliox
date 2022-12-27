@@ -28,21 +28,22 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
     internal struct ClientIntern
     {
         // --- readonly
-        internal readonly   FlioxHub                    hub;
-        internal readonly   TypeStore                   typeStore;
-        internal readonly   Pool                        pool;
-        internal readonly   SharedEnv                   sharedEnv;
-        internal readonly   IHubLogger                  hubLogger;
-        internal readonly   string                      database;
+        internal readonly   FlioxHub                        hub;
+        internal readonly   TypeStore                       typeStore;
+        internal readonly   Pool                            pool;
+        internal readonly   SharedEnv                       sharedEnv;
+        internal readonly   IHubLogger                      hubLogger;
+        internal readonly   string                          database;
         /// <summary>is null if <see cref="FlioxHub.SupportPushEvents"/> == false</summary> 
-        internal readonly   EventReceiver               eventReceiver;
-        
+        internal readonly   EventReceiver                   eventReceiver;
+        internal readonly   ObjectPool<ReaderInstancePool>  responseReaderPool;
+
         // --- readonly / private - owned
-        private             ObjectDiffer                            objectDiffer;   // create on demand
-        private             JsonMergeWriter                         mergeWriter;    // create on demand
-        private             EntityProcessor                         processor;      // create on demand
-        private             ObjectMapper                            objectMapper;   // create on demand
-        private             ReaderInstancePool                      instancePool;   // create on demand
+        private             ObjectDiffer                    objectDiffer;       // create on demand
+        private             JsonMergeWriter                 mergeWriter;        // create on demand
+        private             EntityProcessor                 processor;          // create on demand
+        private             ObjectMapper                    objectMapper;       // create on demand
+        private             ReaderInstancePool              eventReaderPool;    // create on demand
         
         internal readonly   EntitySet[]                             entitySets;
         private  readonly   Dictionary<string, EntitySet>           setByName;
@@ -84,7 +85,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         internal ObjectDiffer           ObjectDiffer()          => objectDiffer          ?? (objectDiffer          = new ObjectDiffer(typeStore));
         internal JsonMergeWriter        JsonMergeWriter()       => mergeWriter           ?? (mergeWriter           = new JsonMergeWriter(typeStore));
         internal ObjectMapper           ObjectMapper()          => objectMapper          ?? (objectMapper          = new ObjectMapper(typeStore));
-        internal ReaderInstancePool     InstancePool()          => instancePool          ?? (instancePool          = new ReaderInstancePool(typeStore));
+        internal ReaderInstancePool     EventReaderPool()       => eventReaderPool       ?? (eventReaderPool       = new ReaderInstancePool(typeStore));
 
         internal SubscriptionProcessor  SubscriptionProcessor() => subscriptionProcessor ?? (subscriptionProcessor = new SubscriptionProcessor());
         internal List<JsonKey>          IdsBuf()                => idsBuf                ?? (idsBuf                = new List<JsonKey>());
@@ -119,13 +120,14 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             this.hub                = hub;
             this.database           = database ?? (hub is RemoteClientHub remoteHub ? remoteHub.DatabaseName.value : null);
             this.eventReceiver      = eventReceiver;
+            responseReaderPool      = hub.GetResponseReaderPool();
             
             // --- readonly / private - owned
             objectDiffer            = null;
             mergeWriter             = null;
             processor               = null;
             objectMapper            = null;
-            instancePool            = null;
+            eventReaderPool         = null;
             entitySets              = new EntitySet[entityInfos.Length];
             setByName               = new Dictionary<string, EntitySet>(entityInfos.Length);
             subscriptions           = null; 

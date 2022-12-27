@@ -32,11 +32,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs
             host.Dispose();
         }
         
-        public override ExecutionType InitSyncRequest(SyncRequest syncRequest) {
-            base.InitSyncRequest(syncRequest);
-            return ExecutionType.Async;
-        }
-        
         public override async Task<ExecuteSyncResult> ExecuteRequestAsync(SyncRequest syncRequest, SyncContext syncContext) {
             using (var pooledMapper = syncContext.ObjectMapper.Get()) {
                 var mapper          = pooledMapper.instance;

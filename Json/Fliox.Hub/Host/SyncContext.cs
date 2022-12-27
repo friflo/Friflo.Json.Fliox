@@ -60,17 +60,19 @@ namespace Friflo.Json.Fliox.Hub.Host
         [Browse(Never)] internal            SmallString         databaseName;              // not null
         [Browse(Never)] internal            ClientIdValidation  clientIdValidation;
         [Browse(Never)] internal            SyncRequest         request;
+        [Browse(Never)] internal            ReaderInstancePool  responseInstancePool;   
         [Browse(Never)] private             MemoryBuffer        memoryBuffer;
         
         public void Init () {
-            authState           = default;
-            canceler            = null;
-            hub                 = null;
-            clientId            = default;
-            databaseName        = default;
-            clientIdValidation  = default;
-            request             = null;
-            memoryBuffer        = null;
+            authState               = default;
+            canceler                = null;
+            hub                     = null;
+            clientId                = default;
+            databaseName            = default;
+            clientIdValidation      = default;
+            request                 = null;
+            memoryBuffer            = null;
+            responseInstancePool    = null;
         }
 
         public SyncContext (SharedEnv sharedEnv, EventReceiver eventReceiver, MemoryBuffer memoryBuffer) {

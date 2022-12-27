@@ -65,8 +65,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         internal void ProcessEvents(in JsonValue rawEventMessage) {
             var mapper          = _intern.ObjectMapper();
             var reader          = mapper.reader;
-            reader.InstancePool = _intern.InstancePool();
-            reader.InstancePool.Reuse();
+            reader.InstancePool = _intern.EventReaderPool().Reuse();
             var eventMessage    = reader.Read<EventMessage>(rawEventMessage);
             if (reader.Error.ErrSet) {
                 var error = reader.Error.msg.AsString();
@@ -156,11 +155,13 @@ namespace Friflo.Json.Fliox.Hub.Client
         private SyncContext CreateSyncContext(MemoryBuffer memoryBuffer) {
             var syncContext = _intern.syncContextBuffer.Get() ?? new SyncContext(_intern.sharedEnv, _intern.eventReceiver); 
             syncContext.SetMemoryBuffer(memoryBuffer);
-            syncContext.clientId = _intern.clientId;
+            syncContext.clientId                = _intern.clientId;
+            syncContext.responseInstancePool    = _intern.responseReaderPool?.Get().instance.Reuse();
             return syncContext;
         }
         
         private void ReuseSyncContext(SyncContext syncContext) {
+            _intern.responseReaderPool?.Return(syncContext.responseInstancePool);
             _intern.syncContextBuffer.Add(syncContext);
             syncContext.Init();
         }

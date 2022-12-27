@@ -32,8 +32,8 @@ namespace Friflo.Json.Fliox.Hub.Client
             } else {
                 response    = await ExecuteRequestAsync(syncRequest, syncContext).ConfigureAwait(Static.OriginalContext);
             }
-            ReuseSyncContext(syncContext);
             var result      = HandleSyncResponse(syncRequest, response, syncStore, buffer);
+            ReuseSyncContext(syncContext);
             if (!result.Success) {
                 throw new SyncTasksException(response.error, result.failed);
             }
@@ -56,8 +56,9 @@ namespace Friflo.Json.Fliox.Hub.Client
             } else {
                 response    = await ExecuteRequestAsync(syncRequest, syncContext).ConfigureAwait(Static.OriginalContext);
             }
+            var result = HandleSyncResponse(syncRequest, response, syncStore, buffer);
             ReuseSyncContext(syncContext);
-            return HandleSyncResponse(syncRequest, response, syncStore, buffer);
+            return result;
         }
         
         private async Task<ExecuteSyncResult> ExecuteRequestAsync(SyncRequest syncRequest, SyncContext syncContext) {

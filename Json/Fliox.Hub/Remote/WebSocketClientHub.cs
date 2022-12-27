@@ -181,7 +181,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
                             if (!wsConn.requestMap.Remove(id, out RemoteRequest request)) {
                                 throw new InvalidOperationException($"reqId not found. id: {id}");
                             }
-                            var response = reader.Read<ProtocolResponse>(message);
+                            reader.InstancePool = request.responseInstancePool;
+                            var response        = reader.Read<ProtocolResponse>(message);
                             request.response.SetResult(response);
                             break;
                         case MessageType.ev:
@@ -197,11 +198,6 @@ namespace Friflo.Json.Fliox.Hub.Remote
                     wsConn.requestMap.CancelRequests();
                 }
             }
-        }
-        
-        public override ExecutionType InitSyncRequest(SyncRequest syncRequest) {
-            base.InitSyncRequest(syncRequest);
-            return ExecutionType.Async;
         }
         
         public override async Task<ExecuteSyncResult> ExecuteRequestAsync(SyncRequest syncRequest, SyncContext syncContext) {

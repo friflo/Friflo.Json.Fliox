@@ -15,7 +15,7 @@ namespace Friflo.Json.Fliox.Pools
     /// The pool is not utilized when using the <see cref="ObjectReader"/> <b>ReadTo()</b> methods.
     /// </summary>
     /// <remarks> <see cref="ReaderInstancePool"/> is not thread safe </remarks>
-    public sealed class ReaderInstancePool
+    public sealed class ReaderInstancePool : IDisposable
     {
         private             PoolIntern<object>[]    pools;
         private             int                     poolCount;
@@ -36,14 +36,17 @@ namespace Friflo.Json.Fliox.Pools
             this.typeStore  = typeStore;
 #endif
         }
-        
+
+        public void Dispose() { }
+
         /// <summary>
         /// Make pooled class instances available for reuse.<br/>
         /// These instances were created when using the <see cref="ReaderInstancePool"/> in a previous <see cref="Reuse"/> cycle.
         /// </summary>
-        public void Reuse() {
+        public ReaderInstancePool Reuse() {
             version++;
             bufferPos = 0;
+            return this;
         }
         
         public T Create<T>(TypeMapper<T> mapper) {

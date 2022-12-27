@@ -14,6 +14,8 @@ using Friflo.Json.Fliox.Hub.Host.Stats;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Hub.Utils;
+using Friflo.Json.Fliox.Pools;
+using Friflo.Json.Fliox.Utils;
 using static System.Diagnostics.DebuggerBrowsableState;
 using static Friflo.Json.Fliox.Hub.Host.ExecutionType;
 
@@ -160,6 +162,11 @@ namespace Friflo.Json.Fliox.Hub.Host
             var version     = typeof(FlioxHub).Assembly.GetName().Version;
             return version == null ? "-.-.-" : $"{version.Major}.{version.Minor}.{version.Build}";
         }
+        
+        /// <summary>
+        /// Optimization for Unity to avoid heap allocations of <see cref="SyncResponse"/> instances and its dependencies
+        /// </summary>
+        internal virtual  ObjectPool<ReaderInstancePool> GetResponseReaderPool() => null;
         
         #endregion
         
