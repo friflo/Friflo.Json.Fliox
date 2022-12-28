@@ -21,16 +21,16 @@ data class CreateEntities (
               @Serializable(with = UUIDSerializer::class)
               val reservedToken : UUID? = null,
               val keyName       : String? = null,
-              val entities      : List<JsonElement>,
+              val set           : List<JsonElement>,
 ) : SyncRequestTask()
 
 @Serializable
 @SerialName("upsert")
 data class UpsertEntities (
-    override  val info     : JsonElement? = null,
-              val cont     : String,
-              val keyName  : String? = null,
-              val entities : List<JsonElement>,
+    override  val info    : JsonElement? = null,
+              val cont    : String,
+              val keyName : String? = null,
+              val set     : List<JsonElement>,
 ) : SyncRequestTask()
 
 @Serializable
@@ -79,7 +79,7 @@ data class MergeEntities (
     override  val info    : JsonElement? = null,
               val cont    : String,
               val keyName : String? = null,
-              val patches : List<JsonElement>,
+              val set     : List<JsonElement>,
 ) : SyncRequestTask()
 
 @Serializable

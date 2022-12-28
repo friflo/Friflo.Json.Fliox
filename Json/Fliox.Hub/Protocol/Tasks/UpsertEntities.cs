@@ -32,6 +32,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         /// <summary>name of the primary key property in <see cref="entities"/></summary>
                    public   string              keyName;
         /// <summary>the <see cref="entities"/> which are upserted in the specified <see cref="container"/></summary>
+        [Serialize                            ("set")]
         [Required] public   List<JsonEntity>    entities;
         
         /// <summary>if set the Hub forward the Upsert as an event only to given <see cref="users"/></summary>

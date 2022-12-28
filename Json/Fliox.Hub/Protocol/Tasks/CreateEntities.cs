@@ -34,6 +34,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         /// <summary>name of the primary key property in <see cref="entities"/></summary>
                     public  string              keyName;
         /// <summary>the <see cref="entities"/> which are created in the specified <see cref="container"/></summary>
+        [Serialize                            ("set")]
         [Required]  public  List<JsonEntity>    entities;
                         
         public   override   TaskType            TaskType => TaskType.create;

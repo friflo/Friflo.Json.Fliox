@@ -6,68 +6,68 @@ var exampleSync: ProtocolMessage_Union =
     msg: "sync",
     tasks: [
         {
-            "task":         "message",
-            "name":         "DbEcho",
-            "param":        { "some": "data" }
+            "task": "message",
+            "name": "DbEcho",
+            "param": { "some": "data" }
         },
         {
-            "task":         "read",
-            "container":    "Article",            
+            "task": "read",
+            "cont": "Article",            
             "ids": ["article-galaxy", "article-ipad"]            
         },
         {
-            "task":         "read",
-            "container":    "Order",
+            "task": "read",
+            "cont": "Order",
             "ids": ["order-1"],
             "references": [
                 {
                     "selector": ".customer",
-                    "container": "Customer"
+                    "cont": "Customer"
                 }
             ]
         },
         {
             "task": "query",
-            "container": "Article"
+            "cont": "Article"
         },
         {
-            "task":         "query",
-            "container":    "Article",
-            "filter":       ".name == 'Smartphone'"
+            "task": "query",
+            "cont": "Article",
+            "filter": ".name == 'Smartphone'"
         },
         {
-            "task":         "query",
-            "container":    "Article",
+            "task": "query",
+            "cont": "Article",
             "references": [
                 {
                     "selector": ".producer",
-                    "container": "Producer",
+                    "cont": "Producer",
                     "references": [
                         {
                             "selector": ".employees[*]",
-                            "container": "Employee"
+                            "cont": "Employee"
                         }
                     ]
                 }
             ]
         },
         {
-            "task":         "create",
-            "container":    "Article",
-            "keyName":      "id",
-            "entities": [
+            "task": "create",
+            "cont": "Article",
+            "keyName": "id",
+            "set": [
                 { "id": "new-article", "name":"New Article S10" }
             ]
         },
         {
-            "task":         "delete",
-            "container":    "Article",
+            "task": "delete",
+            "cont": "Article",
             "ids": ["new-article"]
         },
         {
-            "task":         "merge",
-            "container":    "Article",
-            "patches": [
+            "task": "merge",
+            "cont": "Article",
+            "set": [
                 {
                     "id": "new-article",
                     "name": null
@@ -75,13 +75,13 @@ var exampleSync: ProtocolMessage_Union =
             ]
         },
         {
-            "task":         "subscribeMessage",
-            "name":         "*",
-            "remove":   false
+            "task": "subscribeMessage",
+            "name": "*",
+            "remove": false
         },
         {
             "task":         "subscribeChanges",
-            "container":    "Article", 
+            "cont":    "Article", 
             "changes": ["create", "upsert", "delete", "merge"]
         }
     ]

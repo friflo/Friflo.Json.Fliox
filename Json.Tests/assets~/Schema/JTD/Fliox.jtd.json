@@ -62,15 +62,15 @@
                 "cont":          { "type": "string" },
                 "reservedToken": { "ref":  "Guid", "nullable": true },
                 "keyName":       { "type": "string", "nullable": true },
-                "entities":      { "elements": {  } }
+                "set":           { "elements": {  } }
             }
         },
         "UpsertEntities": {
             "properties": {
-                "info":     { "nullable": true },
-                "cont":     { "type": "string" },
-                "keyName":  { "type": "string", "nullable": true },
-                "entities": { "elements": {  } }
+                "info":    { "nullable": true },
+                "cont":    { "type": "string" },
+                "keyName": { "type": "string", "nullable": true },
+                "set":     { "elements": {  } }
             }
         },
         "ReadEntities": {
@@ -125,7 +125,7 @@
                 "info":    { "nullable": true },
                 "cont":    { "type": "string" },
                 "keyName": { "type": "string", "nullable": true },
-                "patches": { "elements": {  } }
+                "set":     { "elements": {  } }
             }
         },
         "DeleteEntities": {
@@ -379,7 +379,7 @@
             "properties": {
                 "cont":     { "type": "string" },
                 "count":    { "type": "int32", "nullable": true },
-                "entities": { "elements": {  } },
+                "set":      { "elements": {  } },
                 "notFound": { "elements": { "type": "string" }, "nullable": true },
                 "errors":   { "elements": { "ref":  "EntityError" }, "nullable": true }
             }

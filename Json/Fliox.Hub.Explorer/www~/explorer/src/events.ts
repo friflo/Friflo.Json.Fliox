@@ -268,9 +268,9 @@ export class Events
                 }
                 case "create":
                 case "upsert": {
-                    const entities      = task.entities.map(entity => JSON.stringify(entity));
+                    const entities      = task.set.map(entity => JSON.stringify(entity));
                     const entitiesJson  = entities.join(",\n            ");
-                    const json = `{"task":"${task.task}"${KV("cont", task.cont)}${KV("keyName", task.keyName)}, "entities":[
+                    const json = `{"task":"${task.task}"${KV("cont", task.cont)}${KV("keyName", task.keyName)}, "set":[
             ${entitiesJson}
         ]}`;
                     tasksJson.push(json);
@@ -286,9 +286,9 @@ export class Events
                     break;
                 }
                 case "merge": {
-                    const patches       = task.patches.map(patch => JSON.stringify(patch));
+                    const patches       = task.set.map(patch => JSON.stringify(patch));
                     const patchesJson   = patches.join(",\n            ");
-                    const json = `{"task":"${task.task}"${KV("container", task.cont)}, "patches":[
+                    const json = `{"task":"${task.task}"${KV("cont", task.cont)}, "set":[
             ${patchesJson}
         ]}`;
                     tasksJson.push(json);
@@ -386,7 +386,7 @@ export class Events
                 case "upsert": 
                 case "create": {
                     const containerSub = databaseSub.containerSubs[task.cont];
-                    containerSub.creates += task.entities.length;
+                    containerSub.creates += task.set.length;
                     this.uiContainerText(ev.db, task.cont, containerSub, "event");
                     break;
                 }
@@ -398,7 +398,7 @@ export class Events
                 }
                 case "merge": {
                     const containerSub = databaseSub.containerSubs[task.cont];
-                    containerSub.patches += task.patches.length;
+                    containerSub.patches += task.set.length;
                     this.uiContainerText(ev.db, task.cont, containerSub, "event");
                     break;
                 }

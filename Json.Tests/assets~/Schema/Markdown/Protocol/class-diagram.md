@@ -48,7 +48,7 @@ SyncResponse *-- "0..*" ContainerEntities : containers
 class ContainerEntities {
     cont      : string
     count?    : int32
-    entities  : any[]
+    set       : any[]
     notFound? : string[]
     errors?   : EntityError[]
 }
@@ -139,15 +139,15 @@ class CreateEntities {
     cont           : string
     reservedToken? : Guid
     keyName?       : string
-    entities       : any[]
+    set            : any[]
 }
 
 SyncRequestTask <|-- UpsertEntities
 class UpsertEntities {
-    task      : "upsert"
-    cont      : string
-    keyName?  : string
-    entities  : any[]
+    task     : "upsert"
+    cont     : string
+    keyName? : string
+    set      : any[]
 }
 
 SyncRequestTask <|-- ReadEntities
@@ -197,7 +197,7 @@ class MergeEntities {
     task     : "merge"
     cont     : string
     keyName? : string
-    patches  : any[]
+    set      : any[]
 }
 
 SyncRequestTask <|-- DeleteEntities

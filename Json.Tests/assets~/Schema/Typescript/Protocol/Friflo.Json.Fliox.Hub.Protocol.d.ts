@@ -132,7 +132,7 @@ export class ContainerEntities {
      * all **entities** from the **container** resulting from
      * **ReadEntities** and **QueryEntities** tasks of a **SyncRequest**
      */
-    entities  : any[];
+    set       : any[];
     /** list of entities not found by **ReadEntities** tasks */
     notFound? : string[] | null;
     /** list of entity errors read from **container** */

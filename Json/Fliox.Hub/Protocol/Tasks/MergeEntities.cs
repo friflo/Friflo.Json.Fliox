@@ -31,6 +31,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         /// <summary>name of the primary key property of the entity <see cref="patches"/></summary>
                     public  string              keyName;
         /// <summary>list of merge patches for each entity</summary>
+        [Serialize                            ("set")]
         [Required]  public  List<JsonEntity>    patches;
         
         /// <summary>if set the Hub forward the Merge as an event only to given <see cref="users"/></summary>

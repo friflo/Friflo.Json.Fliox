@@ -112,6 +112,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol
         /// <see cref="ReadEntities"/> and <see cref="QueryEntities"/> tasks of a <see cref="SyncRequest"/>
         /// </summary>
         /// Required only by <see cref="RemoteHost"/> for serialization
+        [Serialize                            ("set")]
         [Required]  public  List<JsonValue>     entities;
         /// <summary>list of entities not found by <see cref="ReadEntities"/> tasks</summary>
         /// Required only by <see cref="RemoteHost"/> for serialization

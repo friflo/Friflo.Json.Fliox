@@ -57,19 +57,19 @@ export class CreateEntities extends SyncRequestTask {
     /** name of the primary key property in **entities** */
     keyName?       : string | null;
     /** the **entities** which are created in the specified **container** */
-    entities       : any[];
+    set            : any[];
 }
 
 /** Upsert the given **entities** in the specified **container** */
 export class UpsertEntities extends SyncRequestTask {
     /** task type */
-    task      : "upsert";
+    task     : "upsert";
     /** container name the **entities** are upserted - created or updated */
-    cont      : string;
+    cont     : string;
     /** name of the primary key property in **entities** */
-    keyName?  : string | null;
+    keyName? : string | null;
     /** the **entities** which are upserted in the specified **container** */
-    entities  : any[];
+    set      : any[];
 }
 
 /**
@@ -158,7 +158,7 @@ export class MergeEntities extends SyncRequestTask {
     /** name of the primary key property of the entity **patches** */
     keyName? : string | null;
     /** list of merge patches for each entity */
-    patches  : any[];
+    set      : any[];
 }
 
 /**

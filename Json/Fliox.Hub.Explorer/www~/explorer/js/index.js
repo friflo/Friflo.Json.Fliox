@@ -340,9 +340,9 @@ export class App {
         for (const container of content.containers) {
             containerMap[container.cont] = container;
         }
-        const dbContainers = containerMap["containers"].entities;
-        const dbMessages = containerMap["messages"].entities;
-        const dbSchemas = containerMap["schemas"].entities;
+        const dbContainers = containerMap["containers"].set;
+        const dbMessages = containerMap["messages"].set;
+        const dbSchemas = containerMap["schemas"].set;
         //
         const name = this.hostInfo.projectName;
         const hostVersion = this.hostInfo.hostVersion;
