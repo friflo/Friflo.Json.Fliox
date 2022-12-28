@@ -383,7 +383,7 @@ export class App {
         this.hostInfo       = hubInfoResult.result              as HostInfo;
         const containerMap: { [key: string]: ContainerEntities} = {};
         for (const container of content.containers) {
-            containerMap[container.container] = container;
+            containerMap[container.cont] = container;
         }
         const dbContainers  = containerMap["containers"].entities   as DbContainers[];
         const dbMessages    = containerMap["messages"].entities     as DbMessages[];

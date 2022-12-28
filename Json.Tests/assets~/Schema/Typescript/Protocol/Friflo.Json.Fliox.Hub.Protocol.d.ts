@@ -125,18 +125,18 @@ export class SyncResponse extends ProtocolResponse {
  */
 export class ContainerEntities {
     /** container name the of the returned **entities** */
-    container  : string;
+    cont      : string;
     /** number of **entities** - not utilized by Protocol */
-    count?     : int32 | null;
+    count?    : int32 | null;
     /**
      * all **entities** from the **container** resulting from
      * **ReadEntities** and **QueryEntities** tasks of a **SyncRequest**
      */
-    entities   : any[];
+    entities  : any[];
     /** list of entities not found by **ReadEntities** tasks */
-    notFound?  : string[] | null;
+    notFound? : string[] | null;
     /** list of entity errors read from **container** */
-    errors?    : EntityError[] | null;
+    errors?   : EntityError[] | null;
 }
 
 /** **ErrorResponse** is returned for a **SyncRequest** in case the whole requests failed */

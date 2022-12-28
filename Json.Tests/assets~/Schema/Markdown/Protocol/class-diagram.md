@@ -46,11 +46,11 @@ SyncResponse *-- "0..*" SyncTaskResult : tasks
 SyncResponse *-- "0..*" ContainerEntities : containers
 
 class ContainerEntities {
-    container  : string
-    count?     : int32
-    entities   : any[]
-    notFound?  : string[]
-    errors?    : EntityError[]
+    cont      : string
+    count?    : int32
+    entities  : any[]
+    notFound? : string[]
+    errors?   : EntityError[]
 }
 ContainerEntities *-- "0..*" EntityError : errors
 

@@ -338,7 +338,7 @@ export class App {
         this.hostInfo = hubInfoResult.result;
         const containerMap = {};
         for (const container of content.containers) {
-            containerMap[container.container] = container;
+            containerMap[container.cont] = container;
         }
         const dbContainers = containerMap["containers"].entities;
         const dbMessages = containerMap["messages"].entities;

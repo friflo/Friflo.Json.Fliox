@@ -103,6 +103,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol
     {
         /// <summary>container name the of the returned <see cref="entities"/> </summary>
         /// Required only by <see cref="RemoteHost"/> for serialization
+        [Serialize                            ("cont")]
         [Required]  public  string              container;
         /// <summary>number of <see cref="entities"/> - not utilized by Protocol</summary>
         [DebugInfo] public  int?                count;

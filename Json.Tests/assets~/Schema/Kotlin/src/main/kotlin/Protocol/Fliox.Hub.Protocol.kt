@@ -52,11 +52,11 @@ abstract class ProtocolResponse  : ProtocolMessage() {
 
 @Serializable
 data class ContainerEntities (
-              val container : String,
-              val count     : Int? = null,
-              val entities  : List<JsonElement>,
-              val notFound  : List<String>? = null,
-              val errors    : List<EntityError>? = null,
+              val cont     : String,
+              val count    : Int? = null,
+              val entities : List<JsonElement>,
+              val notFound : List<String>? = null,
+              val errors   : List<EntityError>? = null,
 )
 
 @Serializable

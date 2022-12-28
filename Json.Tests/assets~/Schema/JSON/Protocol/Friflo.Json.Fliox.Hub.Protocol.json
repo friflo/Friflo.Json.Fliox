@@ -45,14 +45,14 @@
             "type": "object",
             "description": "Used by <b>SyncResponse</b> to return the <b>entities</b> as results\nfrom <b>tasks</b> of a <b>SyncRequest</b>",
             "properties": {
-                "container": { "type": "string", "description": "container name the of the returned <b>entities</b>" },
-                "count":     { "oneOf": [{ "$ref": "./Standard.json#/definitions/int32" }, {"type": "null"}], "description": "number of <b>entities</b> - not utilized by Protocol" },
-                "entities":  { "type": "array", "items": {  }, "description": "all <b>entities</b> from the <b>container</b> resulting from\n<b>ReadEntities</b> and <b>QueryEntities</b> tasks of a <b>SyncRequest</b>" },
-                "notFound":  { "type": ["array", "null"], "items": { "type": "string" }, "description": "list of entities not found by <b>ReadEntities</b> tasks" },
-                "errors":    { "type": ["array", "null"], "items": { "$ref": "./Friflo.Json.Fliox.Hub.Protocol.Models.json#/definitions/EntityError" }, "description": "list of entity errors read from <b>container</b>" }
+                "cont":     { "type": "string", "description": "container name the of the returned <b>entities</b>" },
+                "count":    { "oneOf": [{ "$ref": "./Standard.json#/definitions/int32" }, {"type": "null"}], "description": "number of <b>entities</b> - not utilized by Protocol" },
+                "entities": { "type": "array", "items": {  }, "description": "all <b>entities</b> from the <b>container</b> resulting from\n<b>ReadEntities</b> and <b>QueryEntities</b> tasks of a <b>SyncRequest</b>" },
+                "notFound": { "type": ["array", "null"], "items": { "type": "string" }, "description": "list of entities not found by <b>ReadEntities</b> tasks" },
+                "errors":   { "type": ["array", "null"], "items": { "$ref": "./Friflo.Json.Fliox.Hub.Protocol.Models.json#/definitions/EntityError" }, "description": "list of entity errors read from <b>container</b>" }
             },
             "required": [
-                "container",
+                "cont",
                 "entities"
             ],
             "additionalProperties": false
