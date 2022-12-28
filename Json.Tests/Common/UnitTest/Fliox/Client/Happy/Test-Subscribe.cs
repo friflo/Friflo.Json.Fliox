@@ -62,7 +62,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             store.SubscriptionEventHandler += subscriber.OnEvent;
             store.std.Client(new ClientParam { queueEvents = true });
             var subscriptions   = store.SubscribeAllChanges(Change.All, context => {
-                AreEqual("createStore", context.SrcUserId.AsString());
+                AreEqual("createStore", context.UserId.AsString());
                 foreach (var changes in context.Changes) {
                     subscriber.countAllChanges += changes.Count;
                 }
@@ -180,7 +180,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             
         /// All tests using <see cref="PocStoreSubscriber"/> are required to use "createStore" as userId
         public void OnEvent (EventContext context) {
-            AreEqual("createStore", context.SrcUserId.ToString());
+            AreEqual("createStore", context.UserId.ToString());
             EventCount  = context.EventCount;
             IsOrigin    = context.IsOrigin;
             

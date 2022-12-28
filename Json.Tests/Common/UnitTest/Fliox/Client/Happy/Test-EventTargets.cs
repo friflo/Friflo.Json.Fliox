@@ -35,7 +35,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                     int eventCount      = 0;
                     client1.SubscribeMessage("*", (message, context) => { eventCount++; });
                     client1.SubscriptionEventHandler = context => {
-                        AreEqual("user-1", context.SrcUserId.ToString());
+                        AreEqual("user-1", context.UserId.ToString());
                         var expect = new [] { "msg-1", "msg-2", "msg-3", "msg-4", "msg-5", "msg-6", "msg-7", "msg-8", "msg-9", "msg-10", "Command1" };
                         var actual = context.Messages.Select(msg => msg.Name);
                         AreEqual(expect, actual);

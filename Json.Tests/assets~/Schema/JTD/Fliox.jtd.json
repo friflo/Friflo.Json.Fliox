@@ -417,7 +417,7 @@
         },
         "SyncEvent": {
             "properties": {
-                "src":      { "type": "string" },
+                "usr":      { "type": "string" },
                 "isOrigin": { "type": "boolean", "nullable": true },
                 "db":       { "type": "string" },
                 "tasks":    { "elements": { "ref":  "SyncRequestTask" }, "nullable": true }

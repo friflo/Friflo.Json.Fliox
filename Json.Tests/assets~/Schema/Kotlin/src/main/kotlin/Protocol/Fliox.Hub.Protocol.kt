@@ -90,7 +90,7 @@ abstract class ProtocolEvent  : ProtocolMessage() {
 
 @Serializable
 data class SyncEvent (
-              val src      : String,
+              val usr      : String,
               val isOrigin : Boolean? = null,
               val db       : String,
               val tasks    : List<SyncRequestTask>? = null,

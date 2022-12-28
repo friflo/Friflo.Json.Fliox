@@ -85,7 +85,7 @@ class EventMessage {
 EventMessage *-- "0..*" SyncEvent : events
 
 class SyncEvent {
-    src       : string
+    usr       : string
     isOrigin? : boolean
     db        : string
     tasks?    : SyncRequestTask[]
