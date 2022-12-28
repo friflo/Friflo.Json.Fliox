@@ -2,8 +2,8 @@
   "msg": "sync",
   "tasks": [
     {
-      "task":       "query",
-      "container":  "articles",
+      "task": "query",
+      "cont": "articles",
       "maxCount":   5,
       "cursor":     null
     }

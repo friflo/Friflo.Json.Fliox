@@ -2,13 +2,13 @@
   "msg": "sync",
   "tasks": [
     {
-      "task":       "read",
-      "container":  "orders",
+      "task": "read",
+      "cont": "orders",
       "ids":        ["14"],
       "references": [
         {
           "selector": ".customer",
-          "container": "customers"
+          "cont":     "customers"
         }
       ]
     }

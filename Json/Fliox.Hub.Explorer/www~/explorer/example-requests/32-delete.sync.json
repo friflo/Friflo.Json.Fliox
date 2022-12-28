@@ -2,8 +2,8 @@
   "msg": "sync",
   "tasks": [
     {
-      "task":       "delete",
-      "container":  "articles",
+      "task": "delete",
+      "cont": "articles",
       "ids": ["1"]
     }
   ],

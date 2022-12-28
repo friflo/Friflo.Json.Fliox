@@ -2,8 +2,8 @@
   "msg": "sync",
   "tasks": [
     {
-      "task":       "read",
-      "container":  "articles",
+      "task": "read",
+      "cont": "articles",
       "ids": [
         "article-galaxy"
       ]

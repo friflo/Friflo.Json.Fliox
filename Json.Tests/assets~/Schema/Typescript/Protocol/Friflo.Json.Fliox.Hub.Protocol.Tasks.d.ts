@@ -334,7 +334,7 @@ export class QueryEntitiesResult extends SyncTaskResult {
     /** task result type */
     task        : "query";
     /** container name - not utilized by Protocol */
-    container?  : string | null;
+    cont?       : string | null;
     cursor?     : string | null;
     /** number of **ids** - not utilized by Protocol */
     count?      : int32 | null;
@@ -345,10 +345,10 @@ export class QueryEntitiesResult extends SyncTaskResult {
 /** Result of a **AggregateEntities** task */
 export class AggregateEntitiesResult extends SyncTaskResult {
     /** task result type */
-    task       : "aggregate";
+    task   : "aggregate";
     /** container name - not utilized by Protocol */
-    container? : string | null;
-    value?     : double | null;
+    cont?  : string | null;
+    value? : double | null;
 }
 
 /** Result of a **MergeEntities** task */

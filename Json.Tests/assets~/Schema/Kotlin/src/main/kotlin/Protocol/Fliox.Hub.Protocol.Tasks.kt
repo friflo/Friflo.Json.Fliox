@@ -189,7 +189,7 @@ data class ReadEntitiesResult (
 @Serializable
 @SerialName("query")
 data class QueryEntitiesResult (
-              val container  : String? = null,
+              val cont       : String? = null,
               val cursor     : String? = null,
               val count      : Int? = null,
               val ids        : List<String>,
@@ -199,8 +199,8 @@ data class QueryEntitiesResult (
 @Serializable
 @SerialName("aggregate")
 data class AggregateEntitiesResult (
-              val container : String? = null,
-              val value     : Double? = null,
+              val cont  : String? = null,
+              val value : Double? = null,
 ) : SyncTaskResult()
 
 @Serializable

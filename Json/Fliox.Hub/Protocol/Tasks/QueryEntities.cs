@@ -150,6 +150,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     public sealed class QueryEntitiesResult : SyncTaskResult, ICommandResult
     {
         /// <summary>container name - not utilized by Protocol</summary>
+        [Serialize                                ("cont")]
         [DebugInfo] public  string                  container;
                     public  string                  cursor;
         /// <summary>number of <see cref="ids"/> - not utilized by Protocol</summary>

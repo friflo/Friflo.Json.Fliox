@@ -69,6 +69,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     public sealed class AggregateEntitiesResult : SyncTaskResult, ICommandResult
     {
         /// <summary>container name - not utilized by Protocol</summary>
+        [Serialize                            ("cont")]
         [DebugInfo]     public  string          container;
                         public  double?         value;      // set if not using groupBy
         [Ignore]        public  CommandError    Error { get; set; }

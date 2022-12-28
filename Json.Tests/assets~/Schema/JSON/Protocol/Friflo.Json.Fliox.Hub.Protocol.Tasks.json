@@ -380,7 +380,7 @@
             "description": "Result of a <b>QueryEntities</b> task",
             "properties": {
                 "task":       { "enum": ["query"] },
-                "container":  { "type": ["string", "null"], "description": "container name - not utilized by Protocol" },
+                "cont":       { "type": ["string", "null"], "description": "container name - not utilized by Protocol" },
                 "cursor":     { "type": ["string", "null"] },
                 "count":      { "oneOf": [{ "$ref": "./Standard.json#/definitions/int32" }, {"type": "null"}], "description": "number of <b>ids</b> - not utilized by Protocol" },
                 "ids":        { "type": "array", "items": { "type": "string" } },
@@ -397,9 +397,9 @@
             "extends": { "$ref": "#/definitions/SyncTaskResult" },
             "description": "Result of a <b>AggregateEntities</b> task",
             "properties": {
-                "task":      { "enum": ["aggregate"] },
-                "container": { "type": ["string", "null"], "description": "container name - not utilized by Protocol" },
-                "value":     { "oneOf": [{ "$ref": "./Standard.json#/definitions/double" }, {"type": "null"}] }
+                "task":  { "enum": ["aggregate"] },
+                "cont":  { "type": ["string", "null"], "description": "container name - not utilized by Protocol" },
+                "value": { "oneOf": [{ "$ref": "./Standard.json#/definitions/double" }, {"type": "null"}] }
             },
             "required": [
                 "task"

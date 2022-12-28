@@ -2,16 +2,16 @@
   "msg": "sync",
   "tasks": [
     {
-      "task":       "query",
-      "container":  "articles",
+      "task": "query",
+      "cont": "articles",
       "references": [
         {
           "selector": ".producer",
-          "container": "producers",
+          "cont":     "producers",
           "references": [
             {
               "selector": ".employees[*]",
-              "container": "employees"
+              "cont":     "employees"
             }
           ]
         }

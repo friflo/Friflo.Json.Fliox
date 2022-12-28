@@ -2,9 +2,9 @@
   "msg": "sync",
   "tasks": [
     {
-      "task":       "reserveKeys",
-      "container":  "articles",
-      "count":        10
+      "task":   "reserveKeys",
+      "cont":   "articles",
+      "count":  10
     }
   ],
   "info": [

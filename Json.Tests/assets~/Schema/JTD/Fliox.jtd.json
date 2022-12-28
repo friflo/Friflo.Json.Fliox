@@ -289,7 +289,7 @@
         },
         "QueryEntitiesResult": {
             "properties": {
-                "container":  { "type": "string", "nullable": true },
+                "cont":       { "type": "string", "nullable": true },
                 "cursor":     { "type": "string", "nullable": true },
                 "count":      { "type": "int32", "nullable": true },
                 "ids":        { "elements": { "type": "string" } },
@@ -298,8 +298,8 @@
         },
         "AggregateEntitiesResult": {
             "properties": {
-                "container": { "type": "string", "nullable": true },
-                "value":     { "type": "double", "nullable": true }
+                "cont":  { "type": "string", "nullable": true },
+                "value": { "type": "double", "nullable": true }
             }
         },
         "MergeEntitiesResult": {

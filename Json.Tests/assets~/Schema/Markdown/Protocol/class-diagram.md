@@ -295,7 +295,7 @@ ReadEntitiesResult *-- "0..*" ReferencesResult : references
 SyncTaskResult <|-- QueryEntitiesResult
 class QueryEntitiesResult {
     task        : "query"
-    container?  : string
+    cont?       : string
     cursor?     : string
     count?      : int32
     ids         : string[]
@@ -305,9 +305,9 @@ QueryEntitiesResult *-- "0..*" ReferencesResult : references
 
 SyncTaskResult <|-- AggregateEntitiesResult
 class AggregateEntitiesResult {
-    task       : "aggregate"
-    container? : string
-    value?     : double
+    task   : "aggregate"
+    cont?  : string
+    value? : double
 }
 
 SyncTaskResult <|-- MergeEntitiesResult

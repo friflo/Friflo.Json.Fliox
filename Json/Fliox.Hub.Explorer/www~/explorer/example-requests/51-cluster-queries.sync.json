@@ -2,8 +2,8 @@
   "msg": "sync",
   "database": "cluster",
   "tasks": [
-    { "task": "query", "container": "containers" },
-    { "task": "query", "container": "commands"   }
+    { "task": "query", "cont": "containers" },
+    { "task": "query", "cont": "commands"   }
   ],
   "info": [
     "list all hosted databases, their containers & commands"

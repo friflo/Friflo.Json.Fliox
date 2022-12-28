@@ -2,8 +2,8 @@
   "msg": "sync",
   "tasks": [
     {
-      "task":       "subscribeChanges",
-      "container":  "articles", 
+      "task":   "subscribeChanges",
+      "cont":   "articles", 
       "changes": ["create", "upsert", "delete", "merge"]
     }
   ],

@@ -2,9 +2,9 @@
   "msg": "sync",
   "tasks": [
     {
-      "task":       "aggregate",
-      "type":       "count",
-      "container":  "articles"
+      "task": "aggregate",
+      "type": "count",
+      "cont": "articles"
     }
   ],
   "info": [

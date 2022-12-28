@@ -2,8 +2,8 @@
   "msg": "sync",
   "tasks": [
     {
-      "task":       "closeCursors",
-      "container":  "articles",
+      "task": "closeCursors",
+      "cont": "articles",
       "cursors":    null
     }
   ],

@@ -2,8 +2,8 @@
     "msg": "sync",
     "tasks": [
       {
-        "task":       "create",
-        "container":  "articles",
+        "task": "create",
+        "cont": "articles",
         "entities": [
           {
             "id":       1,
