@@ -347,7 +347,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             foreach (var task in syncTasks) { task.intern.json = null; }
             // reused syncEvent to create a serialized SyncEvent for every EventSubClient
             var syncEvent       = new SyncEvent {
-                srcUserId   = syncRequest.userId,
+                userId   = syncRequest.userId,
                 db          = database.value,
                 tasks       = syncContext.syncBuffers.eventTasks,
                 tasksJson   = syncContext.syncBuffers.tasksJson

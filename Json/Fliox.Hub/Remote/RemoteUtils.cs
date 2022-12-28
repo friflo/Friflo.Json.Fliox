@@ -22,7 +22,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
     /// <summary> Reflect the shape of a <see cref="SyncEvent"/> </summary>
     public struct RemoteSyncEvent
     {
-        /** map to <see cref="SyncEvent.srcUserId"/> */         public  JsonKey         src;
+        /** map to <see cref="SyncEvent.userId"/> */            public  JsonKey         usr;
         /** map to <see cref="SyncEvent.db"/> */                public  string          db;
         /** map to <see cref="SyncEvent.isOrigin"/> */          public  bool?           isOrigin;
         /** map to <see cref="SyncEvent.tasks"/> */             public  List<JsonValue> tasks;
@@ -74,7 +74,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             writer.Pretty           = true;
             writer.WriteNullMembers = false;
             var remoteEv = new RemoteSyncEvent {
-                src         = syncEvent.srcUserId,
+                usr         = syncEvent.userId,
                 db          = syncEvent.db,
                 isOrigin    = syncEvent.isOrigin,
                 tasks       = syncEvent.tasksJson

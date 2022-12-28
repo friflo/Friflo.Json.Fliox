@@ -33,7 +33,7 @@ namespace Friflo.Json.Fliox.Hub.Client
     /// of <see cref="FlioxClient"/> or <see cref="EntitySet{TKey,T}"/>.<br/>
     /// The event context provide the following event data.
     /// <list type="bullet">
-    ///   <item> The <see cref="SrcUserId"/> - the origin of the event</item>
+    ///   <item> The <see cref="UserId"/> - the origin of the event</item>
     ///   <item> The <see cref="Messages"/> send by a user </item>
     ///   <item> The container <see cref="Changes"/> made by a user. <br/>
     ///   Use <see cref="GetChanges{TKey,T}"/> to get typed container changes.
@@ -46,7 +46,7 @@ namespace Friflo.Json.Fliox.Hub.Client
     public sealed class EventContext : ILogSource
     {
         /// <summary> user id sending the <see cref="Messages"/> and causing the <see cref="Changes"/>  </summary>
-        public              JsonKey                 SrcUserId       => ev.srcUserId;
+        public              JsonKey                 UserId          => ev.userId;
         /// <summary> incrementing sequence number of a received event </summary>
         public              int                     EventSeq        => seq;
         /// <summary> number of received events </summary>
@@ -63,7 +63,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// <summary> is private to be exposed only in Debugger </summary>
         private             FlioxClient             Client          { get; set; }
         
-        public  override    string                  ToString()      => $"source user: {ev.srcUserId}";
+        public  override    string                  ToString()      => $"source user: {ev.userId}";
         
         [DebuggerBrowsable(Never)] public           IHubLogger              Logger => Client.Logger;
         [DebuggerBrowsable(Never)] private readonly SubscriptionProcessor   processor;
