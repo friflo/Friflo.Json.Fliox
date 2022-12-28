@@ -119,7 +119,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
             this.syncTask   = syncTask;
             index           = 0;
             executionType   = default;
-            json            = default;
+            json            = null;
         }
     }
 }

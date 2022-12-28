@@ -344,6 +344,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             }
             var memoryBuffer    = syncContext.MemoryBuffer;
             var database        = syncContext.databaseName;
+            foreach (var task in syncTasks) { task.intern.json = null; }
             // reused syncEvent to create a serialized SyncEvent for every EventSubClient
             var syncEvent       = new SyncEvent {
                 srcUserId   = syncRequest.userId,
@@ -388,6 +389,8 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                     subClient.EnqueueEvent(rawSyncEvent);
                 }
             }
+            // clear cached serialized tasks -> enable GC collect byte[]'s
+            foreach (var task in syncTasks) { task.intern.json = null; }
         }
         
         /// <summary>Serialize the passed <paramref name="tasks"/> to <paramref name="tasksJson"/></summary>

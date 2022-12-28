@@ -94,14 +94,6 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 return null;
             }
             if (message is SyncRequest syncRequest) {
-                var instancePool = reader.InstancePool;
-                // reset intern fields
-                if (instancePool != null) {
-                    syncRequest.intern = default;
-                    foreach (var task in syncRequest.tasks) {
-                        task.intern = default;
-                    }
-                }
                 error = null;
                 return syncRequest;
             }
