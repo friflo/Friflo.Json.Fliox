@@ -4,7 +4,7 @@
     {
       "task":   "merge",
       "cont":   "articles",
-      "patches": [
+      "set": [
         {
           "id":   1,
           "name": "patched Name"

@@ -4,7 +4,7 @@
       {
         "task": "create",
         "cont": "articles",
-        "entities": [
+        "set": [
           {
             "id":       1,
             "name":     "New Article S10",
