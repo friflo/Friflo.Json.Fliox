@@ -417,10 +417,10 @@
         },
         "SyncEvent": {
             "properties": {
-                "usr":      { "type": "string" },
-                "isOrigin": { "type": "boolean", "nullable": true },
-                "db":       { "type": "string" },
-                "tasks":    { "elements": { "ref":  "SyncRequestTask" }, "nullable": true }
+                "usr":   { "type": "string" },
+                "clt":   { "type": "string", "nullable": true },
+                "db":    { "type": "string" },
+                "tasks": { "elements": { "ref":  "SyncRequestTask" }, "nullable": true }
             }
         }
     }

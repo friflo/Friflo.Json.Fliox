@@ -59,7 +59,9 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// <summary> return the number of <see cref="Messages"/> and <see cref="Changes"/> of the subscription event </summary>
         public              EventInfo               EventInfo       => ev.GetEventInfo();
         /// <summary> is true if the client is the origin of the event </summary>
-        public              bool                    IsOrigin        => ev.isOrigin == true;
+        public              bool                    IsOrigin        => ev.clt.IsEqual(Client._intern.clientId);
+        /// <summary> is true if the client is the origin of the event </summary>
+        public              JsonKey                 SrcClient       => ev.clt;
         /// <summary> is private to be exposed only in Debugger </summary>
         private             FlioxClient             Client          { get; set; }
         

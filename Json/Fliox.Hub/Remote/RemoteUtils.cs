@@ -24,7 +24,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
     {
         /** map to <see cref="SyncEvent.userId"/> */            public  JsonKey         usr;
         /** map to <see cref="SyncEvent.db"/> */                public  string          db;
-        /** map to <see cref="SyncEvent.isOrigin"/> */          public  bool?           isOrigin;
+        /** map to <see cref="SyncEvent.clt"/> */               public  JsonKey         clt;
         /** map to <see cref="SyncEvent.tasks"/> */             public  List<JsonValue> tasks;
     }
     
@@ -76,7 +76,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             var remoteEv = new RemoteSyncEvent {
                 usr         = syncEvent.userId,
                 db          = syncEvent.db,
-                isOrigin    = syncEvent.isOrigin,
+                clt         = syncEvent.clt,
                 tasks       = syncEvent.tasksJson
             };
             var result = writer.WriteAsBytes(remoteEv);

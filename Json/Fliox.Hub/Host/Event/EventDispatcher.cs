@@ -370,9 +370,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                     if ((createTasks & AddedTasks) == 0) {
                         continue;
                     }
-                    // mark change events for (change) tasks which are sent by the client itself
-                    var isOrigin    = syncContext.clientId.IsEqual(subClient.clientId) ? true : (bool?)null;
-                    syncEvent.isOrigin  = isOrigin;
+                    syncEvent.clt  = syncContext.clientId;
                     
                     SerializeEventTasks(syncEvent.tasks, ref syncEvent.tasksJson, writer, memoryBuffer);
                     

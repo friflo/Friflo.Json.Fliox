@@ -9,25 +9,25 @@ namespace Gen.Friflo.Json.Fliox.Hub.Remote
     {
         private const int Gen_usr = 0;
         private const int Gen_db = 1;
-        private const int Gen_isOrigin = 2;
+        private const int Gen_clt = 2;
         private const int Gen_tasks = 3;
 
         private static bool ReadField (ref RemoteSyncEvent obj, PropField field, ref Reader reader) {
             bool success;
             switch (field.genIndex) {
-                case Gen_usr:      obj.usr      = reader.ReadJsonKey     (field, out success);  return success;
-                case Gen_db:       obj.db       = reader.ReadString      (field, obj.db,       out success);  return success;
-                case Gen_isOrigin: obj.isOrigin = reader.ReadBooleanNull (field, out success);  return success;
-                case Gen_tasks:    obj.tasks    = reader.ReadClass       (field, obj.tasks,    out success);  return success;
+                case Gen_usr:   obj.usr   = reader.ReadJsonKey (field, out success);  return success;
+                case Gen_db:    obj.db    = reader.ReadString  (field, obj.db,    out success);  return success;
+                case Gen_clt:   obj.clt   = reader.ReadJsonKey (field, out success);  return success;
+                case Gen_tasks: obj.tasks = reader.ReadClass   (field, obj.tasks, out success);  return success;
             }
             return false;
         }
 
         private static void Write(ref RemoteSyncEvent obj, PropField[] fields, ref Writer writer, ref bool firstMember) {
-            writer.WriteJsonKey     (fields[Gen_usr],      obj.usr,      ref firstMember);
-            writer.WriteString      (fields[Gen_db],       obj.db,       ref firstMember);
-            writer.WriteBooleanNull (fields[Gen_isOrigin], obj.isOrigin, ref firstMember);
-            writer.WriteClass       (fields[Gen_tasks],    obj.tasks,    ref firstMember);
+            writer.WriteJsonKey (fields[Gen_usr],   obj.usr,   ref firstMember);
+            writer.WriteString  (fields[Gen_db],    obj.db,    ref firstMember);
+            writer.WriteJsonKey (fields[Gen_clt],   obj.clt,   ref firstMember);
+            writer.WriteClass   (fields[Gen_tasks], obj.tasks, ref firstMember);
         }
     }
 }

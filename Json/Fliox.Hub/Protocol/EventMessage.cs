@@ -38,15 +38,15 @@ namespace Friflo.Json.Fliox.Hub.Protocol
     {
         /// <summary>
         /// The user which caused the event. Specifically the user which made a database change or sent a message / command.
-        /// The user client is not preserved by en extra property as a use case for this is not obvious.
         /// </summary>
         [Serialize                                    ("usr")]
         [Required]  public      JsonKey                 userId;
         
         /// <summary>
-        /// Is true if the receiving client is the origin of the event
+        /// The client which caused the event. Specifically the client which made a database change or sent a message / command.
         /// </summary>
-                    public      bool?                   isOrigin;
+        [Serialize                                    ("clt")]
+                    public      JsonKey                 clt;
         
         /// <summary>The database the <see cref="tasks"/> refer to</summary>
         [Required]  public      string                  db;
