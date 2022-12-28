@@ -6,7 +6,7 @@ export class References {
     /** the field path used as a reference to an entity in the specified **container** */
     selector    : string;
     /** the **container** storing the entities referenced by the specified **selector** */
-    container   : string;
+    cont        : string;
     keyName?    : string | null;
     isIntKey?   : boolean | null;
     references? : References[] | null;
@@ -47,7 +47,7 @@ export type EntityErrorType =
 export class ReferencesResult {
     error?      : string | null;
     /** container name - not utilized by Protocol */
-    container?  : string | null;
+    cont?       : string | null;
     /** number of **ids** - not utilized by Protocol */
     count?      : int32 | null;
     ids         : string[];

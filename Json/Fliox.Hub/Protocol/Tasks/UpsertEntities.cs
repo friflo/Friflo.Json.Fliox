@@ -22,6 +22,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     public sealed class UpsertEntities : SyncRequestTask
     {
         /// <summary>container name the <see cref="entities"/> are upserted - created or updated</summary>
+        [Serialize                            ("cont")]
         [Required]  public  string              container {
             get => containerSmall.value;
             set => containerSmall = new SmallString(value);

@@ -8,7 +8,7 @@ POST {{base}}/
   "tasks": [
     {
       "task":       "subscribeChanges",
-      "container":  "articles", 
+      "cont":       "articles", 
       "changes": ["create", "upsert", "delete", "merge"]
     }
   ],

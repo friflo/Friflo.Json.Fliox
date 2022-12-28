@@ -21,6 +21,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Models
         /// <summary>the field path used as a reference to an entity in the specified <see cref="container"/></summary>
         [Required]  public  string              selector; // e.g. ".items[*].article"
         /// <summary>the <see cref="container"/> storing the entities referenced by the specified <see cref="selector"/></summary>
+        [Serialize                            ("cont")]
         [Required]  public  string              container;
                     public  string              keyName;
                     public  bool?               isIntKey;
@@ -32,6 +33,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Models
     {
                     public  string                  error;
         /// <summary>container name - not utilized by Protocol</summary>
+        [Serialize                                ("cont")]
         [DebugInfo] public  string                  container;
         /// <summary>number of <see cref="ids"/> - not utilized by Protocol</summary>
         [DebugInfo] public  int?                    count;

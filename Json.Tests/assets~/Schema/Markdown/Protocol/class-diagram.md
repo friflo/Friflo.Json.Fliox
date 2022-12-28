@@ -94,7 +94,7 @@ SyncEvent *-- "0..*" SyncRequestTask : tasks
 
 class References {
     selector    : string
-    container   : string
+    cont        : string
     keyName?    : string
     isIntKey?   : boolean
     references? : References[]
@@ -121,7 +121,7 @@ class EntityErrorType:::cssEnum {
 
 class ReferencesResult {
     error?      : string
-    container?  : string
+    cont?       : string
     count?      : int32
     ids         : string[]
     references? : ReferencesResult[]
@@ -136,7 +136,7 @@ class SyncRequestTask {
 SyncRequestTask <|-- CreateEntities
 class CreateEntities {
     task           : "create"
-    container      : string
+    cont           : string
     reservedToken? : Guid
     keyName?       : string
     entities       : any[]
@@ -144,16 +144,16 @@ class CreateEntities {
 
 SyncRequestTask <|-- UpsertEntities
 class UpsertEntities {
-    task       : "upsert"
-    container  : string
-    keyName?   : string
-    entities   : any[]
+    task      : "upsert"
+    cont      : string
+    keyName?  : string
+    entities  : any[]
 }
 
 SyncRequestTask <|-- ReadEntities
 class ReadEntities {
     task        : "read"
-    container   : string
+    cont        : string
     keyName?    : string
     isIntKey?   : boolean
     ids         : string[]
@@ -164,7 +164,7 @@ ReadEntities *-- "0..*" References : references
 SyncRequestTask <|-- QueryEntities
 class QueryEntities {
     task        : "query"
-    container   : string
+    cont        : string
     keyName?    : string
     isIntKey?   : boolean
     filterTree? : any
@@ -179,7 +179,7 @@ QueryEntities *-- "0..*" References : references
 SyncRequestTask <|-- AggregateEntities
 class AggregateEntities {
     task        : "aggregate"
-    container   : string
+    cont        : string
     type        : AggregateType
     filterTree? : any
     filter?     : string
@@ -194,18 +194,18 @@ class AggregateType:::cssEnum {
 
 SyncRequestTask <|-- MergeEntities
 class MergeEntities {
-    task       : "merge"
-    container  : string
-    keyName?   : string
-    patches    : any[]
+    task     : "merge"
+    cont     : string
+    keyName? : string
+    patches  : any[]
 }
 
 SyncRequestTask <|-- DeleteEntities
 class DeleteEntities {
-    task       : "delete"
-    container  : string
-    ids?       : string[]
-    all?       : boolean
+    task  : "delete"
+    cont  : string
+    ids?  : string[]
+    all?  : boolean
 }
 
 SyncRequestTask <|-- SyncMessageTask
@@ -230,17 +230,17 @@ class SendCommand {
 
 SyncRequestTask <|-- CloseCursors
 class CloseCursors {
-    task       : "closeCursors"
-    container  : string
-    cursors?   : string[]
+    task     : "closeCursors"
+    cont     : string
+    cursors? : string[]
 }
 
 SyncRequestTask <|-- SubscribeChanges
 class SubscribeChanges {
-    task       : "subscribeChanges"
-    container  : string
-    changes    : EntityChange[]
-    filter?    : string
+    task     : "subscribeChanges"
+    cont     : string
+    changes  : EntityChange[]
+    filter?  : string
 }
 SubscribeChanges *-- "0..*" EntityChange : changes
 
@@ -262,9 +262,9 @@ class SubscribeMessage {
 
 SyncRequestTask <|-- ReserveKeys
 class ReserveKeys {
-    task       : "reserveKeys"
-    container  : string
-    count      : int32
+    task   : "reserveKeys"
+    cont   : string
+    count  : int32
 }
 
 class SyncTaskResult {

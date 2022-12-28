@@ -21,6 +21,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     public sealed class DeleteEntities : SyncRequestTask
     {
         /// <summary>container name</summary>
+        [Serialize                            ("cont")]
         [Required]  public  string              container {
             get => containerSmall.value;
             set => containerSmall = new SmallString(value);

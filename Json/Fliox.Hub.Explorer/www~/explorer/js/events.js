@@ -81,7 +81,7 @@ class SubEvent {
                 case "upsert":
                 case "delete":
                 case "merge": {
-                    const containerName = SubEvent.internName(task.container);
+                    const containerName = SubEvent.internName(task.cont);
                     containers.push(containerName);
                     break;
                 }
@@ -224,7 +224,7 @@ export class Events {
                 case "upsert": {
                     const entities = task.entities.map(entity => JSON.stringify(entity));
                     const entitiesJson = entities.join(",\n            ");
-                    const json = `{"task":"${task.task}"${KV("container", task.container)}${KV("keyName", task.keyName)}, "entities":[
+                    const json = `{"task":"${task.task}"${KV("cont", task.cont)}${KV("keyName", task.keyName)}, "entities":[
             ${entitiesJson}
         ]}`;
                     tasksJson.push(json);
@@ -233,7 +233,7 @@ export class Events {
                 case "delete": {
                     const ids = task.ids.map(entity => JSON.stringify(entity));
                     const idsJson = ids.join(",\n            ");
-                    const json = `{"task":"${task.task}"${KV("container", task.container)}, "ids":[
+                    const json = `{"task":"${task.task}"${KV("cont", task.cont)}, "ids":[
             ${idsJson}
         ]}`;
                     tasksJson.push(json);
@@ -242,7 +242,7 @@ export class Events {
                 case "merge": {
                     const patches = task.patches.map(patch => JSON.stringify(patch));
                     const patchesJson = patches.join(",\n            ");
-                    const json = `{"task":"${task.task}"${KV("container", task.container)}, "patches":[
+                    const json = `{"task":"${task.task}"${KV("container", task.cont)}, "patches":[
             ${patchesJson}
         ]}`;
                     tasksJson.push(json);
@@ -330,21 +330,21 @@ export class Events {
                 }
                 case "upsert":
                 case "create": {
-                    const containerSub = databaseSub.containerSubs[task.container];
+                    const containerSub = databaseSub.containerSubs[task.cont];
                     containerSub.creates += task.entities.length;
-                    this.uiContainerText(ev.db, task.container, containerSub, "event");
+                    this.uiContainerText(ev.db, task.cont, containerSub, "event");
                     break;
                 }
                 case "delete": {
-                    const containerSub = databaseSub.containerSubs[task.container];
+                    const containerSub = databaseSub.containerSubs[task.cont];
                     containerSub.deletes += task.ids.length;
-                    this.uiContainerText(ev.db, task.container, containerSub, "event");
+                    this.uiContainerText(ev.db, task.cont, containerSub, "event");
                     break;
                 }
                 case "merge": {
-                    const containerSub = databaseSub.containerSubs[task.container];
+                    const containerSub = databaseSub.containerSubs[task.cont];
                     containerSub.patches += task.patches.length;
-                    this.uiContainerText(ev.db, task.container, containerSub, "event");
+                    this.uiContainerText(ev.db, task.cont, containerSub, "event");
                     break;
                 }
             }
@@ -382,7 +382,7 @@ export class Events {
             this.uiContainerSubscribed(databaseName, containerName, false);
             this.uiContainerText(databaseName, containerName, containerSub, null);
         }
-        const subscribeChanges = { task: "subscribeChanges", changes: changes, container: containerName };
+        const subscribeChanges = { task: "subscribeChanges", changes: changes, cont: containerName };
         const syncRequest = { msg: "sync", database: databaseName, tasks: [subscribeChanges] };
         const err = await this.sendSubscriptionRequest(syncRequest);
         if (err) {

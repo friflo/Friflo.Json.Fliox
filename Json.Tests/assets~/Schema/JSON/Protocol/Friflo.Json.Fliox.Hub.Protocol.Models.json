@@ -7,14 +7,14 @@
             "description": "<b>References</b> are used to return entities referenced by fields of entities returned by read and query tasks.<br/><b>References</b> can be nested to return referenced entities of referenced entities.",
             "properties": {
                 "selector":   { "type": "string", "description": "the field path used as a reference to an entity in the specified <b>container</b>" },
-                "container":  { "type": "string", "description": "the <b>container</b> storing the entities referenced by the specified <b>selector</b>" },
+                "cont":       { "type": "string", "description": "the <b>container</b> storing the entities referenced by the specified <b>selector</b>" },
                 "keyName":    { "type": ["string", "null"] },
                 "isIntKey":   { "type": ["boolean", "null"] },
                 "references": { "type": ["array", "null"], "items": { "$ref": "#/definitions/References" } }
             },
             "required": [
                 "selector",
-                "container"
+                "cont"
             ],
             "additionalProperties": false
         },
@@ -54,7 +54,7 @@
             "type": "object",
             "properties": {
                 "error":      { "type": ["string", "null"] },
-                "container":  { "type": ["string", "null"], "description": "container name - not utilized by Protocol" },
+                "cont":       { "type": ["string", "null"], "description": "container name - not utilized by Protocol" },
                 "count":      { "oneOf": [{ "$ref": "./Standard.json#/definitions/int32" }, {"type": "null"}], "description": "number of <b>ids</b> - not utilized by Protocol" },
                 "ids":        { "type": "array", "items": { "type": "string" } },
                 "references": { "type": ["array", "null"], "items": { "$ref": "#/definitions/ReferencesResult" } }

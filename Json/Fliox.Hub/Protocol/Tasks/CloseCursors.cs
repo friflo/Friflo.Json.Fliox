@@ -16,6 +16,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     public sealed class CloseCursors : SyncRequestTask
     {
         /// <summary>container name</summary>
+        [Serialize                        ("cont")]
         [Required]  public  string          container;
         /// <summary>list of <see cref="cursors"/></summary>
                     public  List<string>    cursors;

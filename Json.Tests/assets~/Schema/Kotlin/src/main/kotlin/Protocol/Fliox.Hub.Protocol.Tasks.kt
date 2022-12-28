@@ -17,7 +17,7 @@ abstract class SyncRequestTask  {
 @SerialName("create")
 data class CreateEntities (
     override  val info          : JsonElement? = null,
-              val container     : String,
+              val cont          : String,
               @Serializable(with = UUIDSerializer::class)
               val reservedToken : UUID? = null,
               val keyName       : String? = null,
@@ -27,17 +27,17 @@ data class CreateEntities (
 @Serializable
 @SerialName("upsert")
 data class UpsertEntities (
-    override  val info      : JsonElement? = null,
-              val container : String,
-              val keyName   : String? = null,
-              val entities  : List<JsonElement>,
+    override  val info     : JsonElement? = null,
+              val cont     : String,
+              val keyName  : String? = null,
+              val entities : List<JsonElement>,
 ) : SyncRequestTask()
 
 @Serializable
 @SerialName("read")
 data class ReadEntities (
     override  val info       : JsonElement? = null,
-              val container  : String,
+              val cont       : String,
               val keyName    : String? = null,
               val isIntKey   : Boolean? = null,
               val ids        : List<String>,
@@ -48,7 +48,7 @@ data class ReadEntities (
 @SerialName("query")
 data class QueryEntities (
     override  val info       : JsonElement? = null,
-              val container  : String,
+              val cont       : String,
               val keyName    : String? = null,
               val isIntKey   : Boolean? = null,
               val filterTree : JsonElement? = null,
@@ -63,7 +63,7 @@ data class QueryEntities (
 @SerialName("aggregate")
 data class AggregateEntities (
     override  val info       : JsonElement? = null,
-              val container  : String,
+              val cont       : String,
               val type       : AggregateType,
               val filterTree : JsonElement? = null,
               val filter     : String? = null,
@@ -76,19 +76,19 @@ enum class AggregateType {
 @Serializable
 @SerialName("merge")
 data class MergeEntities (
-    override  val info      : JsonElement? = null,
-              val container : String,
-              val keyName   : String? = null,
-              val patches   : List<JsonElement>,
+    override  val info    : JsonElement? = null,
+              val cont    : String,
+              val keyName : String? = null,
+              val patches : List<JsonElement>,
 ) : SyncRequestTask()
 
 @Serializable
 @SerialName("delete")
 data class DeleteEntities (
-    override  val info      : JsonElement? = null,
-              val container : String,
-              val ids       : List<String>? = null,
-              val all       : Boolean? = null,
+    override  val info : JsonElement? = null,
+              val cont : String,
+              val ids  : List<String>? = null,
+              val all  : Boolean? = null,
 ) : SyncRequestTask()
 
 @Serializable
@@ -126,18 +126,18 @@ data class SendCommand (
 @Serializable
 @SerialName("closeCursors")
 data class CloseCursors (
-    override  val info      : JsonElement? = null,
-              val container : String,
-              val cursors   : List<String>? = null,
+    override  val info    : JsonElement? = null,
+              val cont    : String,
+              val cursors : List<String>? = null,
 ) : SyncRequestTask()
 
 @Serializable
 @SerialName("subscribeChanges")
 data class SubscribeChanges (
-    override  val info      : JsonElement? = null,
-              val container : String,
-              val changes   : List<EntityChange>,
-              val filter    : String? = null,
+    override  val info    : JsonElement? = null,
+              val cont    : String,
+              val changes : List<EntityChange>,
+              val filter  : String? = null,
 ) : SyncRequestTask()
 
 enum class EntityChange {
@@ -158,9 +158,9 @@ data class SubscribeMessage (
 @Serializable
 @SerialName("reserveKeys")
 data class ReserveKeys (
-    override  val info      : JsonElement? = null,
-              val container : String,
-              val count     : Int,
+    override  val info  : JsonElement? = null,
+              val cont  : String,
+              val count : Int,
 ) : SyncRequestTask()
 
 @Serializable

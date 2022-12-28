@@ -19,6 +19,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     public sealed class QueryEntities : SyncRequestTask
     {
         /// <summary>container name</summary>
+        [Serialize                            ("cont")]
         [Required]  public  string              container;
         /// <summary>name of the primary key property of the returned entities</summary>
                     public  string              keyName;

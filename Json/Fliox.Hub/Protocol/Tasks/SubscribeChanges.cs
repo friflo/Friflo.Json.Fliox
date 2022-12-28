@@ -17,6 +17,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     public sealed class SubscribeChanges : SyncRequestTask
     {
         /// <summary>container name</summary>
+        [Serialize                                ("cont")]
         [Required]  public      string              container;
         /// <summary>subscribe to entity <see cref="changes"/> of the given <see cref="container"/></summary>
         [Required]  public      List<EntityChange>  changes;

@@ -367,9 +367,9 @@ export class App {
     private async loadCluster () {
         const tasks: SyncRequestTask_Union[] = [
             { "task": "command","name": "std.Host" },
-            { "task": "query",  "container": "containers"},
-            { "task": "query",  "container": "messages"},
-            { "task": "query",  "container": "schemas"},
+            { "task": "query",  "cont": "containers"},
+            { "task": "query",  "cont": "messages"},
+            { "task": "query",  "cont": "schemas"},
         ];
         clusterExplorer.innerHTML = 'read databases <span class="spinner"></span>';
         const response  = await App.postRequestTasks("cluster", tasks, null);

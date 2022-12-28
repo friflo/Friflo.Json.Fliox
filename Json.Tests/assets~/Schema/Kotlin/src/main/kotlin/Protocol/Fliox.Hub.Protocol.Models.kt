@@ -7,7 +7,7 @@ import CustomSerializer.*
 @Serializable
 data class References (
               val selector   : String,
-              val container  : String,
+              val cont       : String,
               val keyName    : String? = null,
               val isIntKey   : Boolean? = null,
               val references : List<References>? = null,
@@ -32,7 +32,7 @@ enum class EntityErrorType {
 @Serializable
 data class ReferencesResult (
               val error      : String? = null,
-              val container  : String? = null,
+              val cont       : String? = null,
               val count      : Int? = null,
               val ids        : List<String>,
               val references : List<ReferencesResult>? = null,

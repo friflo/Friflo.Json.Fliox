@@ -52,7 +52,7 @@ export class CreateEntities extends SyncRequestTask {
     /** task type */
     task           : "create";
     /** container name the **entities** are created */
-    container      : string;
+    cont           : string;
     reservedToken? : Guid | null;
     /** name of the primary key property in **entities** */
     keyName?       : string | null;
@@ -63,13 +63,13 @@ export class CreateEntities extends SyncRequestTask {
 /** Upsert the given **entities** in the specified **container** */
 export class UpsertEntities extends SyncRequestTask {
     /** task type */
-    task       : "upsert";
+    task      : "upsert";
     /** container name the **entities** are upserted - created or updated */
-    container  : string;
+    cont      : string;
     /** name of the primary key property in **entities** */
-    keyName?   : string | null;
+    keyName?  : string | null;
     /** the **entities** which are upserted in the specified **container** */
-    entities   : any[];
+    entities  : any[];
 }
 
 /**
@@ -81,7 +81,7 @@ export class ReadEntities extends SyncRequestTask {
     /** task type */
     task        : "read";
     /** container name */
-    container   : string;
+    cont        : string;
     /** name of the primary key property of the returned entities */
     keyName?    : string | null;
     isIntKey?   : boolean | null;
@@ -99,7 +99,7 @@ export class QueryEntities extends SyncRequestTask {
     /** task type */
     task        : "query";
     /** container name */
-    container   : string;
+    cont        : string;
     /** name of the primary key property of the returned entities */
     keyName?    : string | null;
     isIntKey?   : boolean | null;
@@ -129,7 +129,7 @@ export class AggregateEntities extends SyncRequestTask {
     /** task type */
     task        : "aggregate";
     /** container name */
-    container   : string;
+    cont        : string;
     /** aggregation type - e.g. count */
     type        : AggregateType;
     /**
@@ -152,13 +152,13 @@ export type AggregateType =
 /** Merge entities by id in the given **container**   */
 export class MergeEntities extends SyncRequestTask {
     /** task type */
-    task       : "merge";
+    task     : "merge";
     /** container name */
-    container  : string;
+    cont     : string;
     /** name of the primary key property of the entity **patches** */
-    keyName?   : string | null;
+    keyName? : string | null;
     /** list of merge patches for each entity */
-    patches    : any[];
+    patches  : any[];
 }
 
 /**
@@ -167,13 +167,13 @@ export class MergeEntities extends SyncRequestTask {
  */
 export class DeleteEntities extends SyncRequestTask {
     /** task type */
-    task       : "delete";
+    task  : "delete";
     /** container name */
-    container  : string;
+    cont  : string;
     /** list of **ids** requested for deletion */
-    ids?       : string[] | null;
+    ids?  : string[] | null;
     /** if true all entities in the specified **container** are deleted */
-    all?       : boolean | null;
+    all?  : boolean | null;
 }
 
 /**
@@ -218,26 +218,26 @@ export class SendCommand extends SyncMessageTask {
 /** Close the **cursors** of the given **container** */
 export class CloseCursors extends SyncRequestTask {
     /** task type */
-    task       : "closeCursors";
+    task     : "closeCursors";
     /** container name */
-    container  : string;
+    cont     : string;
     /** list of **cursors** */
-    cursors?   : string[] | null;
+    cursors? : string[] | null;
 }
 
 /** Subscribe to specific **changes** of the specified **container** using the given **filter** */
 export class SubscribeChanges extends SyncRequestTask {
     /** task type */
-    task       : "subscribeChanges";
+    task     : "subscribeChanges";
     /** container name */
-    container  : string;
+    cont     : string;
     /** subscribe to entity **changes** of the given **container** */
-    changes    : EntityChange[];
+    changes  : EntityChange[];
     /**
      * subscription filter as a [Lambda expression](https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/operators/lambda-expressions) (infix notation)
      * returning a boolean value. E.g. o.name == 'Smartphone'
      */
-    filter?    : string | null;
+    filter?  : string | null;
 }
 
 /** Filter type used to specify the type of an entity change */
@@ -264,9 +264,9 @@ export class SubscribeMessage extends SyncRequestTask {
 /** WIP */
 export class ReserveKeys extends SyncRequestTask {
     /** task type */
-    task       : "reserveKeys";
-    container  : string;
-    count      : int32;
+    task   : "reserveKeys";
+    cont   : string;
+    count  : int32;
 }
 
 export type SyncTaskResult_Union =

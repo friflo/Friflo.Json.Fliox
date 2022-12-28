@@ -59,7 +59,7 @@
         "CreateEntities": {
             "properties": {
                 "info":          { "nullable": true },
-                "container":     { "type": "string" },
+                "cont":          { "type": "string" },
                 "reservedToken": { "ref":  "Guid", "nullable": true },
                 "keyName":       { "type": "string", "nullable": true },
                 "entities":      { "elements": {  } }
@@ -67,16 +67,16 @@
         },
         "UpsertEntities": {
             "properties": {
-                "info":      { "nullable": true },
-                "container": { "type": "string" },
-                "keyName":   { "type": "string", "nullable": true },
-                "entities":  { "elements": {  } }
+                "info":     { "nullable": true },
+                "cont":     { "type": "string" },
+                "keyName":  { "type": "string", "nullable": true },
+                "entities": { "elements": {  } }
             }
         },
         "ReadEntities": {
             "properties": {
                 "info":       { "nullable": true },
-                "container":  { "type": "string" },
+                "cont":       { "type": "string" },
                 "keyName":    { "type": "string", "nullable": true },
                 "isIntKey":   { "type": "boolean", "nullable": true },
                 "ids":        { "elements": { "type": "string" } },
@@ -86,7 +86,7 @@
         "References": {
             "properties": {
                 "selector":   { "type": "string" },
-                "container":  { "type": "string" },
+                "cont":       { "type": "string" },
                 "keyName":    { "type": "string", "nullable": true },
                 "isIntKey":   { "type": "boolean", "nullable": true },
                 "references": { "elements": { "ref":  "References" }, "nullable": true }
@@ -95,7 +95,7 @@
         "QueryEntities": {
             "properties": {
                 "info":       { "nullable": true },
-                "container":  { "type": "string" },
+                "cont":       { "type": "string" },
                 "keyName":    { "type": "string", "nullable": true },
                 "isIntKey":   { "type": "boolean", "nullable": true },
                 "filterTree": { "nullable": true },
@@ -109,7 +109,7 @@
         "AggregateEntities": {
             "properties": {
                 "info":       { "nullable": true },
-                "container":  { "type": "string" },
+                "cont":       { "type": "string" },
                 "type":       { "ref":  "AggregateType" },
                 "filterTree": { "nullable": true },
                 "filter":     { "type": "string", "nullable": true }
@@ -122,18 +122,18 @@
         },
         "MergeEntities": {
             "properties": {
-                "info":      { "nullable": true },
-                "container": { "type": "string" },
-                "keyName":   { "type": "string", "nullable": true },
-                "patches":   { "elements": {  } }
+                "info":    { "nullable": true },
+                "cont":    { "type": "string" },
+                "keyName": { "type": "string", "nullable": true },
+                "patches": { "elements": {  } }
             }
         },
         "DeleteEntities": {
             "properties": {
-                "info":      { "nullable": true },
-                "container": { "type": "string" },
-                "ids":       { "elements": { "type": "string" }, "nullable": true },
-                "all":       { "type": "boolean", "nullable": true }
+                "info": { "nullable": true },
+                "cont": { "type": "string" },
+                "ids":  { "elements": { "type": "string" }, "nullable": true },
+                "all":  { "type": "boolean", "nullable": true }
             }
         },
         "SendMessage": {
@@ -168,17 +168,17 @@
         },
         "CloseCursors": {
             "properties": {
-                "info":      { "nullable": true },
-                "container": { "type": "string" },
-                "cursors":   { "elements": { "type": "string" }, "nullable": true }
+                "info":    { "nullable": true },
+                "cont":    { "type": "string" },
+                "cursors": { "elements": { "type": "string" }, "nullable": true }
             }
         },
         "SubscribeChanges": {
             "properties": {
-                "info":      { "nullable": true },
-                "container": { "type": "string" },
-                "changes":   { "elements": { "ref":  "EntityChange" } },
-                "filter":    { "type": "string", "nullable": true }
+                "info":    { "nullable": true },
+                "cont":    { "type": "string" },
+                "changes": { "elements": { "ref":  "EntityChange" } },
+                "filter":  { "type": "string", "nullable": true }
             }
         },
         "EntityChange": {
@@ -198,9 +198,9 @@
         },
         "ReserveKeys": {
             "properties": {
-                "info":      { "nullable": true },
-                "container": { "type": "string" },
-                "count":     { "type": "int32" }
+                "info":  { "nullable": true },
+                "cont":  { "type": "string" },
+                "count": { "type": "int32" }
             }
         },
         "SyncResponse": {
@@ -281,7 +281,7 @@
         "ReferencesResult": {
             "properties": {
                 "error":      { "type": "string", "nullable": true },
-                "container":  { "type": "string", "nullable": true },
+                "cont":       { "type": "string", "nullable": true },
                 "count":      { "type": "int32", "nullable": true },
                 "ids":        { "elements": { "type": "string" } },
                 "references": { "elements": { "ref":  "ReferencesResult" }, "nullable": true }

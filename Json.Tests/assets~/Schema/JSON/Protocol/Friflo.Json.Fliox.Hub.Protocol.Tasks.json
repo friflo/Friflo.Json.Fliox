@@ -35,14 +35,14 @@
             "properties": {
                 "task":          { "enum": ["create"] },
                 "info":          {  },
-                "container":     { "type": "string", "description": "container name the <b>entities</b> are created" },
+                "cont":          { "type": "string", "description": "container name the <b>entities</b> are created" },
                 "reservedToken": { "oneOf": [{ "$ref": "./Standard.json#/definitions/Guid" }, {"type": "null"}] },
                 "keyName":       { "type": ["string", "null"], "description": "name of the primary key property in <b>entities</b>" },
                 "entities":      { "type": "array", "items": {  }, "description": "the <b>entities</b> which are created in the specified <b>container</b>" }
             },
             "required": [
                 "task",
-                "container",
+                "cont",
                 "entities"
             ],
             "additionalProperties": false
@@ -52,15 +52,15 @@
             "extends": { "$ref": "#/definitions/SyncRequestTask" },
             "description": "Upsert the given <b>entities</b> in the specified <b>container</b>",
             "properties": {
-                "task":      { "enum": ["upsert"] },
-                "info":      {  },
-                "container": { "type": "string", "description": "container name the <b>entities</b> are upserted - created or updated" },
-                "keyName":   { "type": ["string", "null"], "description": "name of the primary key property in <b>entities</b>" },
-                "entities":  { "type": "array", "items": {  }, "description": "the <b>entities</b> which are upserted in the specified <b>container</b>" }
+                "task":     { "enum": ["upsert"] },
+                "info":     {  },
+                "cont":     { "type": "string", "description": "container name the <b>entities</b> are upserted - created or updated" },
+                "keyName":  { "type": ["string", "null"], "description": "name of the primary key property in <b>entities</b>" },
+                "entities": { "type": "array", "items": {  }, "description": "the <b>entities</b> which are upserted in the specified <b>container</b>" }
             },
             "required": [
                 "task",
-                "container",
+                "cont",
                 "entities"
             ],
             "additionalProperties": false
@@ -72,7 +72,7 @@
             "properties": {
                 "task":       { "enum": ["read"] },
                 "info":       {  },
-                "container":  { "type": "string", "description": "container name" },
+                "cont":       { "type": "string", "description": "container name" },
                 "keyName":    { "type": ["string", "null"], "description": "name of the primary key property of the returned entities" },
                 "isIntKey":   { "type": ["boolean", "null"] },
                 "ids":        { "type": "array", "items": { "type": "string" }, "description": "list of requested entity <b>ids</b>" },
@@ -80,7 +80,7 @@
             },
             "required": [
                 "task",
-                "container",
+                "cont",
                 "ids"
             ],
             "additionalProperties": false
@@ -92,7 +92,7 @@
             "properties": {
                 "task":       { "enum": ["query"] },
                 "info":       {  },
-                "container":  { "type": "string", "description": "container name" },
+                "cont":       { "type": "string", "description": "container name" },
                 "keyName":    { "type": ["string", "null"], "description": "name of the primary key property of the returned entities" },
                 "isIntKey":   { "type": ["boolean", "null"] },
                 "filterTree": { "description": "query filter as JSON tree. <br/>\nIs used in favour of <b>filter</b> as its serialization is more performant" },
@@ -104,7 +104,7 @@
             },
             "required": [
                 "task",
-                "container"
+                "cont"
             ],
             "additionalProperties": false
         },
@@ -115,14 +115,14 @@
             "properties": {
                 "task":       { "enum": ["aggregate"] },
                 "info":       {  },
-                "container":  { "type": "string", "description": "container name" },
+                "cont":       { "type": "string", "description": "container name" },
                 "type":       { "$ref": "#/definitions/AggregateType", "description": "aggregation type - e.g. count" },
                 "filterTree": { "description": "aggregation filter as JSON tree. <br/>\nIs used in favour of <b>filter</b> as its serialization is more performant" },
                 "filter":     { "type": ["string", "null"], "description": "aggregation filter as a <a href='https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/operators/lambda-expressions'>Lambda expression</a>\nreturning a boolean value. E.g.<br/><code>o => o.name == 'Smartphone'</code>" }
             },
             "required": [
                 "task",
-                "container",
+                "cont",
                 "type"
             ],
             "additionalProperties": false
@@ -141,15 +141,15 @@
             "extends": { "$ref": "#/definitions/SyncRequestTask" },
             "description": "Merge entities by id in the given <b>container</b><br/>",
             "properties": {
-                "task":      { "enum": ["merge"] },
-                "info":      {  },
-                "container": { "type": "string", "description": "container name" },
-                "keyName":   { "type": ["string", "null"], "description": "name of the primary key property of the entity <b>patches</b>" },
-                "patches":   { "type": "array", "items": {  }, "description": "list of merge patches for each entity" }
+                "task":    { "enum": ["merge"] },
+                "info":    {  },
+                "cont":    { "type": "string", "description": "container name" },
+                "keyName": { "type": ["string", "null"], "description": "name of the primary key property of the entity <b>patches</b>" },
+                "patches": { "type": "array", "items": {  }, "description": "list of merge patches for each entity" }
             },
             "required": [
                 "task",
-                "container",
+                "cont",
                 "patches"
             ],
             "additionalProperties": false
@@ -159,15 +159,15 @@
             "extends": { "$ref": "#/definitions/SyncRequestTask" },
             "description": "Delete entities by id in the given <b>container</b><br/>\nThe entities which will be deleted are listed in <b>ids</b>",
             "properties": {
-                "task":      { "enum": ["delete"] },
-                "info":      {  },
-                "container": { "type": "string", "description": "container name" },
-                "ids":       { "type": ["array", "null"], "items": { "type": "string" }, "description": "list of <b>ids</b> requested for deletion" },
-                "all":       { "type": ["boolean", "null"], "description": "if true all entities in the specified <b>container</b> are deleted" }
+                "task": { "enum": ["delete"] },
+                "info": {  },
+                "cont": { "type": "string", "description": "container name" },
+                "ids":  { "type": ["array", "null"], "items": { "type": "string" }, "description": "list of <b>ids</b> requested for deletion" },
+                "all":  { "type": ["boolean", "null"], "description": "if true all entities in the specified <b>container</b> are deleted" }
             },
             "required": [
                 "task",
-                "container"
+                "cont"
             ],
             "additionalProperties": false
         },
@@ -232,14 +232,14 @@
             "extends": { "$ref": "#/definitions/SyncRequestTask" },
             "description": "Close the <b>cursors</b> of the given <b>container</b>",
             "properties": {
-                "task":      { "enum": ["closeCursors"] },
-                "info":      {  },
-                "container": { "type": "string", "description": "container name" },
-                "cursors":   { "type": ["array", "null"], "items": { "type": "string" }, "description": "list of <b>cursors</b>" }
+                "task":    { "enum": ["closeCursors"] },
+                "info":    {  },
+                "cont":    { "type": "string", "description": "container name" },
+                "cursors": { "type": ["array", "null"], "items": { "type": "string" }, "description": "list of <b>cursors</b>" }
             },
             "required": [
                 "task",
-                "container"
+                "cont"
             ],
             "additionalProperties": false
         },
@@ -248,15 +248,15 @@
             "extends": { "$ref": "#/definitions/SyncRequestTask" },
             "description": "Subscribe to specific <b>changes</b> of the specified <b>container</b> using the given <b>filter</b>",
             "properties": {
-                "task":      { "enum": ["subscribeChanges"] },
-                "info":      {  },
-                "container": { "type": "string", "description": "container name" },
-                "changes":   { "type": "array", "items": { "$ref": "#/definitions/EntityChange" }, "description": "subscribe to entity <b>changes</b> of the given <b>container</b>" },
-                "filter":    { "type": ["string", "null"], "description": "subscription filter as a <a href='https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/operators/lambda-expressions'>Lambda expression</a> (infix notation)\nreturning a boolean value. E.g. <c>o.name == 'Smartphone'</c>" }
+                "task":    { "enum": ["subscribeChanges"] },
+                "info":    {  },
+                "cont":    { "type": "string", "description": "container name" },
+                "changes": { "type": "array", "items": { "$ref": "#/definitions/EntityChange" }, "description": "subscribe to entity <b>changes</b> of the given <b>container</b>" },
+                "filter":  { "type": ["string", "null"], "description": "subscription filter as a <a href='https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/operators/lambda-expressions'>Lambda expression</a> (infix notation)\nreturning a boolean value. E.g. <c>o.name == 'Smartphone'</c>" }
             },
             "required": [
                 "task",
-                "container",
+                "cont",
                 "changes"
             ],
             "additionalProperties": false
@@ -297,14 +297,14 @@
             "extends": { "$ref": "#/definitions/SyncRequestTask" },
             "description": "WIP",
             "properties": {
-                "task":      { "enum": ["reserveKeys"] },
-                "info":      {  },
-                "container": { "type": "string" },
-                "count":     { "$ref": "./Standard.json#/definitions/int32" }
+                "task":  { "enum": ["reserveKeys"] },
+                "info":  {  },
+                "cont":  { "type": "string" },
+                "count": { "$ref": "./Standard.json#/definitions/int32" }
             },
             "required": [
                 "task",
-                "container",
+                "cont",
                 "count"
             ],
             "additionalProperties": false

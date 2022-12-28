@@ -18,6 +18,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     public sealed class AggregateEntities : SyncRequestTask
     {
         /// <summary>container name</summary>
+        [Serialize                                ("cont")]
         [Required]  public      string              container;
         /// <summary>aggregation type - e.g. count </summary>
                     public      AggregateType       type;

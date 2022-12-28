@@ -23,6 +23,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     public sealed class CreateEntities : SyncRequestTask
     {
         /// <summary>container name the <see cref="entities"/> are created</summary>
+        [Serialize                            ("cont")]
         [Required]  public  string              container {
             get => containerSmall.value;
             set => containerSmall = new SmallString(value);
