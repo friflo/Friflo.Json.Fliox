@@ -85,14 +85,14 @@ class SubEvent {
     readonly    db:         string;
     readonly    msg:        string;
     readonly    seq:        number;
-    readonly    src:        string;
+    readonly    usr:        string;
     readonly    messages:   string[];
     readonly    containers: string[];
 
     public filterSeqSrc(users: string[], seqStart: number, seqEnd: number) : boolean {
         return  (this.seq >= seqStart)  && 
                 (this.seq <= seqEnd)    &&
-                (users == null || users.includes(this.src));
+                (users == null || users.includes(this.usr));
     }
 
     private static readonly  internNames : { [name: string]: string} = {};
@@ -109,7 +109,7 @@ class SubEvent {
         this.msg                    = SubEvent.internName(msg);
         this.db                     = SubEvent.internName(ev.db);
         this.seq                    = seq;
-        this.src                    = SubEvent.internName(ev.src);
+        this.usr                    = SubEvent.internName(ev.usr);
         const messages:   string[]  = []; 
         const containers: string[]  = [];
         for (const task of ev.tasks) {
@@ -298,7 +298,7 @@ export class Events
         }
         const tasks = tasksJson.join(",\n        ");
         return `{
-    ${firstKV("_seq", seq)}${KV("src", ev.src)}${KV("db", ev.db)}${KV("isOrigin", ev.isOrigin)},
+    ${firstKV("_seq", seq)}${KV("usr", ev.usr)}${KV("db", ev.db)}${KV("clt", ev.clt)},
     "tasks": [
         ${tasks}
     ]

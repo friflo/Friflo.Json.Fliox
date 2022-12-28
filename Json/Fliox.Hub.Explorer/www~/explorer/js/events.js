@@ -66,7 +66,7 @@ class SubEvent {
         this.msg = SubEvent.internName(msg);
         this.db = SubEvent.internName(ev.db);
         this.seq = seq;
-        this.src = SubEvent.internName(ev.src);
+        this.usr = SubEvent.internName(ev.usr);
         const messages = [];
         const containers = [];
         for (const task of ev.tasks) {
@@ -97,7 +97,7 @@ class SubEvent {
     filterSeqSrc(users, seqStart, seqEnd) {
         return (this.seq >= seqStart) &&
             (this.seq <= seqEnd) &&
-            (users == null || users.includes(this.src));
+            (users == null || users.includes(this.usr));
     }
     static internName(name) {
         const intern = SubEvent.internNames[name];
@@ -252,7 +252,7 @@ export class Events {
         }
         const tasks = tasksJson.join(",\n        ");
         return `{
-    ${firstKV("_seq", seq)}${KV("src", ev.src)}${KV("db", ev.db)}${KV("isOrigin", ev.isOrigin)},
+    ${firstKV("_seq", seq)}${KV("usr", ev.usr)}${KV("db", ev.db)}${KV("clt", ev.clt)},
     "tasks": [
         ${tasks}
     ]
