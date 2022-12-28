@@ -4,6 +4,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
+using Friflo.Json.Fliox.Hub.Host.Event;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 
 // ReSharper disable InconsistentNaming
@@ -37,13 +38,16 @@ namespace Friflo.Json.Fliox.Hub.Protocol
     public struct SyncEvent
     {
         /// <summary>
-        /// The user which caused the event. Specifically the user which made a database change or sent a message / command.
+        /// The user which caused the event. Specifically the user which made a database change or sent a message / command.<br/>
+        /// By default it is set always. If not required set <see cref="EventDispatcher.SendUserIds"/> to false.
         /// </summary>
         [Serialize                                    ("usr")]
-        [Required]  public      JsonKey                 userId;
+                    public      JsonKey                 usr;
         
         /// <summary>
-        /// The client which caused the event. Specifically the client which made a database change or sent a message / command.
+        /// The client which caused the event. Specifically the client which made a database change or sent a message / command.<br/>
+        /// By default it set only if the subscriber is the origin of the event to enable ignoring the event.<br/>
+        /// It is set in any case if <see cref="EventDispatcher.SendClientIds"/> is true.
         /// </summary>
         [Serialize                                    ("clt")]
                     public      JsonKey                 clt;

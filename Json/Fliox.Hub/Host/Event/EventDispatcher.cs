@@ -51,6 +51,8 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
     public sealed class EventDispatcher : IDisposable
     {
     #region - members
+        public              bool                                            SendUserIds    { get; set; } = true;
+        public              bool                                            SendClientIds  { get; set; } = false;
         private  readonly   SharedEnv                                       sharedEnv;
         private  readonly   JsonEvaluator                                   jsonEvaluator;
         /// <summary>buffer for serialized <see cref="SyncEvent"/>'s to avoid frequent allocations</summary>
@@ -347,11 +349,13 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             foreach (var task in syncTasks) { task.intern.json = null; }
             // reused syncEvent to create a serialized SyncEvent for every EventSubClient
             var syncEvent       = new SyncEvent {
-                userId   = syncRequest.userId,
-                db          = database.value,
-                tasks       = syncContext.syncBuffers.eventTasks,
-                tasksJson   = syncContext.syncBuffers.tasksJson
+                db                  = database.value,
+                tasks               = syncContext.syncBuffers.eventTasks,
+                tasksJson           = syncContext.syncBuffers.tasksJson
             };
+            if (SendUserIds) {
+                syncEvent.usr    = syncRequest.userId;
+            }
             using (var pooled = syncContext.ObjectMapper.Get()) {
                 ObjectWriter writer     = pooled.instance.writer;
                 writer.Pretty           = false;    // write sub's as one liner
@@ -370,11 +374,10 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                     if ((createTasks & AddedTasks) == 0) {
                         continue;
                     }
-                    syncEvent.clt  = syncContext.clientId;
-                    
                     SerializeEventTasks(syncEvent.tasks, ref syncEvent.tasksJson, writer, memoryBuffer);
-                    
-                    JsonValue rawSyncEvent = RemoteUtils.SerializeSyncEvent(syncEvent, writer);
+                    bool sendClientId       = SendClientIds || syncContext.clientId.IsEqual(subClient.clientId);
+                    syncEvent.clt           = sendClientId ? syncContext.clientId : default;
+                    JsonValue rawSyncEvent  = RemoteUtils.SerializeSyncEvent(syncEvent, writer);
                     /* if ((createTasks & TasksSubset) == 0 && isOrigin == null) {
                         if (allTasks.IsNull()) {
                             rawSyncEvent = allTasks = RemoteUtils.SerializeSyncEvent(syncEvent, writer);

@@ -417,7 +417,7 @@
         },
         "SyncEvent": {
             "properties": {
-                "usr":   { "type": "string" },
+                "usr":   { "type": "string", "nullable": true },
                 "clt":   { "type": "string", "nullable": true },
                 "db":    { "type": "string" },
                 "tasks": { "elements": { "ref":  "SyncRequestTask" }, "nullable": true }

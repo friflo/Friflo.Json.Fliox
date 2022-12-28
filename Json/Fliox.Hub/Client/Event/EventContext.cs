@@ -46,7 +46,7 @@ namespace Friflo.Json.Fliox.Hub.Client
     public sealed class EventContext : ILogSource
     {
         /// <summary> user id sending the <see cref="Messages"/> and causing the <see cref="Changes"/>  </summary>
-        public              JsonKey                 UserId          => ev.userId;
+        public              JsonKey                 UserId          => ev.usr;
         /// <summary> incrementing sequence number of a received event </summary>
         public              int                     EventSeq        => seq;
         /// <summary> number of received events </summary>
@@ -65,7 +65,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// <summary> is private to be exposed only in Debugger </summary>
         private             FlioxClient             Client          { get; set; }
         
-        public  override    string                  ToString()      => $"source user: {ev.userId}";
+        public  override    string                  ToString()      => $"source user: {ev.usr}";
         
         [DebuggerBrowsable(Never)] public           IHubLogger              Logger => Client.Logger;
         [DebuggerBrowsable(Never)] private readonly SubscriptionProcessor   processor;
