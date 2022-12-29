@@ -359,7 +359,6 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                 ObjectWriter writer     = pooled.instance.writer;
                 writer.Pretty           = false;    // write sub's as one liner
                 writer.WriteNullMembers = false;
-                // var allTasks            = new JsonValue();
 
                 foreach (var subClient in sendClients) {
                     if (!subClient.queueEvents && !subClient.Connected) {
@@ -376,15 +375,6 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                     bool sendClientId       = SendClientIds || syncContext.clientId.IsEqual(subClient.clientId);
                     syncEvent.clt           = sendClientId ? syncContext.clientId : default;
                     JsonValue rawSyncEvent  = RemoteUtils.SerializeSyncEvent(syncEvent, writer);
-                    /* if ((createTasks & TasksSubset) == 0 && isOrigin == null) {
-                        if (allTasks.IsNull()) {
-                            rawSyncEvent = allTasks = RemoteUtils.SerializeSyncEvent(syncEvent, writer);
-                        } else {
-                            rawSyncEvent = allTasks;
-                        }
-                    } else {
-                        rawSyncEvent = RemoteUtils.SerializeSyncEvent(syncEvent, writer);
-                    } */
                     subClient.EnqueueEvent(rawSyncEvent);
                 }
             }
