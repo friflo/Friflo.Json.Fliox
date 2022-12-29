@@ -16,7 +16,6 @@ using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Transform;
 using Friflo.Json.Fliox.Utils;
 using static System.Diagnostics.DebuggerBrowsableState;
-using static Friflo.Json.Fliox.Hub.Host.Event.CreateTasksResult;
 
 namespace Friflo.Json.Fliox.Hub.Host.Event
 {
@@ -370,8 +369,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                     if (!subClient.databaseSubs.TryGetValue(database, out var databaseSubs)) {
                         continue;
                     }
-                    var createTasks = databaseSubs.CreateEventTasks(syncTasks, subClient, ref syncEvent.tasks, jsonEvaluator);
-                    if ((createTasks & AddedTasks) == 0) {
+                    if (!databaseSubs.CreateEventTasks(syncTasks, subClient, ref syncEvent.tasks, jsonEvaluator)) {
                         continue;
                     }
                     SerializeEventTasks(syncEvent.tasks, ref syncEvent.tasksJson, writer, memoryBuffer);
