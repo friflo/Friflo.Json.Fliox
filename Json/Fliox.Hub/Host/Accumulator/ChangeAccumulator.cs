@@ -36,19 +36,46 @@ namespace Friflo.Json.Fliox.Hub.Host.Accumulator
         internal void AddTask(SyncRequestTask task)
         {
             switch (task.TaskType) {
+                case TaskType.create:
+                    lock (changes) {
+                        var create = (CreateEntities)task;
+                        if (!containers.TryGetValue(create.containerSmall, out var container)) {
+                            container = AddContainer(create.containerSmall);
+                        }
+                        foreach (var entity in create.entities) {
+                            changes.AddTail(entity.value, new ValueChange(container, TaskType.create));
+                        }
+                        break;
+                    }
                 case TaskType.upsert:
                     lock (changes) {
-                        var upsert = (UpsertEntities)task;
-                        foreach (var entity in upsert.entities) {
-                            if (!containers.TryGetValue(upsert.containerSmall, out var container)) {
-                                container = new ContainerChanges(upsert.containerSmall);
-                                containers.Add(upsert.containerSmall, container);
-                            }
-                            changes.AddTail(entity.value, new ValueChange(TaskType.upsert, container));
+                        var create = (UpsertEntities)task;
+                        if (!containers.TryGetValue(create.containerSmall, out var container)) {
+                            container = AddContainer(create.containerSmall);
+                        }
+                        foreach (var entity in create.entities) {
+                            changes.AddTail(entity.value, new ValueChange(container, TaskType.upsert));
+                        }
+                        break;
+                    }
+                case TaskType.merge:
+                    lock (changes) {
+                        var merge = (MergeEntities)task;
+                        if (!containers.TryGetValue(merge.containerSmall, out var container)) {
+                            container = AddContainer(merge.containerSmall);
+                        }
+                        foreach (var entity in merge.patches) {
+                            changes.AddTail(entity.value, new ValueChange(container, TaskType.merge));
                         }
                         break;
                     }
             }
+        }
+        
+        private ContainerChanges AddContainer(in SmallString name) {
+            var container = new ContainerChanges(name);
+            containers.Add(name, container);
+            return container;
         }
 
         internal void AccumulateEvents(EventSubClient[] subClients, ObjectWriter writer)

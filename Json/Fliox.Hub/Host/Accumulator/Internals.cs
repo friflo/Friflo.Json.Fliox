@@ -23,8 +23,8 @@ namespace Friflo.Json.Fliox.Hub.Host.Accumulator
     internal readonly struct ValueChange {
         internal readonly TaskType          taskType;
         internal readonly ContainerChanges  container;
-        
-        internal ValueChange(TaskType taskType, ContainerChanges container) {
+
+        internal ValueChange(ContainerChanges container, TaskType taskType) {
             this.taskType   = taskType;
             this.container  = container;
         }
