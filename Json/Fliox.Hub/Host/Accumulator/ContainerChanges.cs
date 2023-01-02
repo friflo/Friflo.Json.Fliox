@@ -3,7 +3,10 @@
 
 using System.Collections.Generic;
 using Friflo.Json.Burst.Utils;
+using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
+using Friflo.Json.Fliox.Hub.Remote;
+using Friflo.Json.Fliox.Mapper;
 
 namespace Friflo.Json.Fliox.Hub.Host.Accumulator
 {
@@ -87,6 +90,18 @@ namespace Friflo.Json.Fliox.Hub.Host.Accumulator
                     break;
                 }
             }
+        }
+        
+        internal JsonValue CreateSyncEventAllTasks(SyncEvent syncEvent, ObjectWriter writer)
+        {
+            if (rawTasks.Count == 0) {
+                return default;
+            }
+            syncEvent.tasksJson.Clear();
+            foreach (var rawTask in rawTasks) {
+                syncEvent.tasksJson.Add(rawTask.value);
+            }
+            return RemoteUtils.SerializeSyncEvent(syncEvent, writer);
         }
     }
 }

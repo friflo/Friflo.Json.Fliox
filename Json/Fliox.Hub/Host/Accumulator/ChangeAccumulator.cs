@@ -10,6 +10,7 @@ using Friflo.Json.Fliox.Hub.Remote;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Utils;
 
+// ReSharper disable ParameterTypeCanBeEnumerable.Local
 // ReSharper disable ConvertToAutoPropertyWithPrivateSetter
 // ReSharper disable SwapViaDeconstruction
 namespace Friflo.Json.Fliox.Hub.Host.Accumulator
@@ -21,6 +22,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Accumulator
     {
         private  readonly   SmallString                                 database;
         private  readonly   Dictionary<SmallString, ContainerChanges>   containers;
+        private  readonly   List<DatabaseSubs>                          clientDatabaseSubs;
         private  readonly   HashSet<ContainerChanges>                   changedContainers;
         private             TaskBuffer                                  writeBuffer;
         private             TaskBuffer                                  readBuffer;
@@ -37,6 +39,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Accumulator
                 tasksJson           = new List<JsonValue>()
             };
             containers          = new Dictionary<SmallString, ContainerChanges>();
+            clientDatabaseSubs  = new List<DatabaseSubs>();
             changedContainers   = new HashSet<ContainerChanges>();
             writeBuffer         = new TaskBuffer();
             readBuffer          = new TaskBuffer();
@@ -120,29 +123,62 @@ namespace Friflo.Json.Fliox.Hub.Host.Accumulator
                 container.AddAccumulatedRawTask(context);
                 container.currentType = TaskType.error;
             }
+            if (changedContainers.Count == 0) {
+                return;
+            }
+            EnqueueSyncEvents(subClients, writer);
+        }
+        
+        private void EnqueueSyncEvents(EventSubClient[] subClients, ObjectWriter writer) {
+            clientDatabaseSubs.Clear();
             foreach (var subClient in subClients) {
-                if (!subClient.databaseSubs.TryGetValue(database, out var databaseSubs)) {
-                    continue;
-                }
-                syncEvent.tasksJson.Clear();
-                foreach (var container in changedContainers) {
-                    foreach (var rawTask in container.rawTasks) {
-                        foreach (var changeSub in databaseSubs.changeSubs) {
-                            if ((changeSub.changes & rawTask.change) == 0) {
-                                continue;
-                            }
-                            if (!changeSub.container.IsEqual(container.name)) {
-                                continue;
-                            }
-                            syncEvent.tasksJson.Add(rawTask.value);
-                        }
+                subClient.databaseSubs.TryGetValue(database, out var databaseSubs);
+                clientDatabaseSubs.Add(databaseSubs);
+            }
+            foreach (var container in changedContainers) {
+                var syncEventContainerTasks = container.CreateSyncEventAllTasks(syncEvent, writer);
+                for (int n = 0; n < subClients.Length; n++) {
+                    var databaseSubs = clientDatabaseSubs[n];
+                    if (databaseSubs == null) {
+                        continue;
                     }
-                }
-                if (syncEvent.tasksJson.Count > 0) {
-                    var rawSyncEvent = RemoteUtils.SerializeSyncEvent(syncEvent, writer);
-                    subClient.EnqueueEvent(rawSyncEvent);
+                    var subClient = subClients[n];
+                    if (EnqueueIndividualSyncEvent(container, subClient, databaseSubs, writer)) {
+                        continue;
+                    }
+                    subClient.EnqueueEvent(syncEventContainerTasks);
                 }
             }
+        }
+        
+        private const EntityChange AllChanges = EntityChange.create | EntityChange.upsert | EntityChange.merge | EntityChange.delete;
+
+        private bool EnqueueIndividualSyncEvent(
+            ContainerChanges    container,
+            EventSubClient      subClient,
+            DatabaseSubs        databaseSubs,
+            ObjectWriter        writer)
+        {
+            syncEvent.tasksJson.Clear();
+            foreach (var changeSub in databaseSubs.changeSubs) {
+                if (!changeSub.container.IsEqual(container.name)) {
+                    continue;
+                }
+                if (changeSub.changes == AllChanges) {
+                    return false;
+                }
+                foreach (var rawTask in container.rawTasks) {
+                    if ((changeSub.changes & rawTask.change) == 0) {
+                        continue;
+                    }
+                    syncEvent.tasksJson.Add(rawTask.value);
+                }
+            }
+            if (syncEvent.tasksJson.Count > 0) {
+                var rawSyncEvent = RemoteUtils.SerializeSyncEvent(syncEvent, writer);
+                subClient.EnqueueEvent(rawSyncEvent);
+            }
+            return true;
         }
     }
 }
