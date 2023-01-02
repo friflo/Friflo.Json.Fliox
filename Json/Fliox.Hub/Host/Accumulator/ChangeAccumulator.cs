@@ -8,7 +8,8 @@ using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Utils;
 
-// ReSharper disable MemberCanBePrivate.Global
+// ReSharper disable ConvertToAutoPropertyWithPrivateSetter
+// ReSharper disable SwapViaDeconstruction
 namespace Friflo.Json.Fliox.Hub.Host.Accumulator
 {
     /// <summary>
@@ -17,80 +18,92 @@ namespace Friflo.Json.Fliox.Hub.Host.Accumulator
     internal sealed class ChangeAccumulator
     {
         private  readonly   Dictionary<SmallString, ContainerChanges>   containers;
-        private  readonly   MessageBufferQueue<ValueChange>             changes;
-        private  readonly   List<MessageItem<ValueChange>>              events;
-        internal readonly   MemoryBuffer                                valueBuffer;
-        internal readonly   List<JsonValue>                             changeTasks;
-        internal readonly   ChangeEventTask                             taskBuffer;
-        
+        private             TaskBuffer                                  writeBuffer;
+        private             TaskBuffer                                  readBuffer;
+        internal readonly   MemoryBuffer                                rawTaskBuffer;
+        internal readonly   List<JsonValue>                             rawTasks;
+        internal readonly   WriteTaskModel                              writeTaskModel;
+        internal readonly   DeleteTaskModel                             deleteTaskModel;
 
         internal ChangeAccumulator() {
-            containers  = new Dictionary<SmallString, ContainerChanges>();
-            changes     = new MessageBufferQueue<ValueChange>();
-            events      = new List<MessageItem<ValueChange>>();
-            valueBuffer = new MemoryBuffer(1024);
-            changeTasks = new List<JsonValue>();
-            taskBuffer  = new ChangeEventTask();
+            containers      = new Dictionary<SmallString, ContainerChanges>();
+            writeBuffer     = new TaskBuffer();
+            readBuffer      = new TaskBuffer();
+            rawTaskBuffer   = new MemoryBuffer(1024);
+            rawTasks        = new List<JsonValue>();
+            writeTaskModel  = new WriteTaskModel();
+            deleteTaskModel = new DeleteTaskModel();
         }
 
-        internal void AddTask(SyncRequestTask task)
+        internal void AddSyncTask(SyncRequestTask task)
         {
             switch (task.TaskType) {
                 case TaskType.create:
-                    lock (changes) {
+                    lock (containers) {
                         var create = (CreateEntities)task;
-                        if (!containers.TryGetValue(create.containerSmall, out var container)) {
-                            container = AddContainer(create.containerSmall);
-                        }
-                        foreach (var entity in create.entities) {
-                            changes.AddTail(entity.value, new ValueChange(container, TaskType.create));
-                        }
+                        AddWriteTask(create.containerSmall, TaskType.create, create.entities);
                         break;
                     }
                 case TaskType.upsert:
-                    lock (changes) {
-                        var create = (UpsertEntities)task;
-                        if (!containers.TryGetValue(create.containerSmall, out var container)) {
-                            container = AddContainer(create.containerSmall);
-                        }
-                        foreach (var entity in create.entities) {
-                            changes.AddTail(entity.value, new ValueChange(container, TaskType.upsert));
-                        }
+                    lock (containers) {
+                        var upsert = (UpsertEntities)task;
+                        AddWriteTask(upsert.containerSmall, TaskType.upsert, upsert.entities);
                         break;
                     }
                 case TaskType.merge:
-                    lock (changes) {
+                    lock (containers) {
                         var merge = (MergeEntities)task;
-                        if (!containers.TryGetValue(merge.containerSmall, out var container)) {
-                            container = AddContainer(merge.containerSmall);
-                        }
-                        foreach (var entity in merge.patches) {
-                            changes.AddTail(entity.value, new ValueChange(container, TaskType.merge));
-                        }
+                        AddWriteTask(merge.containerSmall, TaskType.merge, merge.patches);
+                        break;
+                    }
+                case TaskType.delete:
+                    lock (containers) {
+                        var delete = (DeleteEntities)task;
+                        AddDeleteTask(delete.containerSmall, delete.ids);
                         break;
                     }
             }
         }
         
-        private ContainerChanges AddContainer(in SmallString name) {
-            var container = new ContainerChanges(name);
-            containers.Add(name, container);
-            return container;
+        private void AddWriteTask(in SmallString name, TaskType taskType, List<JsonEntity> entities) {
+            if (!containers.TryGetValue(name, out var container)) {
+                container = new ContainerChanges(name);
+                containers.Add(name, container);
+            }
+            var values = writeBuffer.values;
+            writeBuffer.tasks.Add(new ChangeTask(container, taskType, values.Count, entities.Count));
+            foreach (var entity in entities) {
+                var value = writeBuffer.valueBuffer.Add(entity.value);
+                values.Add(value);
+            }
+        }
+        
+        private void AddDeleteTask(in SmallString name, List<JsonKey> ids) {
+            if (!containers.TryGetValue(name, out var container)) {
+                container = new ContainerChanges(name);
+                containers.Add(name, container);
+            }
+            var keys = writeBuffer.keys;
+            writeBuffer.tasks.Add(new ChangeTask(container, TaskType.delete, keys.Count, ids.Count));
+            keys.AddRange(ids);
         }
 
-        internal void AccumulateEvents(EventSubClient[] subClients, ObjectWriter writer)
+        internal void AccumulateTasks(EventSubClient[] subClients, ObjectWriter writer)
         {
-            lock (changes) {
-                changes.DequeMessages(events);
+            lock (containers) {
+                var temp    = writeBuffer;
+                writeBuffer = readBuffer;
+                readBuffer  = temp;
+                writeBuffer.Clear();
             }
-            valueBuffer.Reset();
-            changeTasks.Clear();
+            rawTaskBuffer.Reset();
+            rawTasks.Clear();
             var context = new AccumulatorContext(this, writer);
-            foreach (var ev in events) {
-                ev.meta.container.AddEvent(ev, context);
+            foreach (var task in readBuffer.tasks) {
+                task.container.AddChangeTask(task, readBuffer, context);
             }
             foreach (var subClient in subClients) {
-                foreach (var task in changeTasks) {
+                foreach (var task in rawTasks) {
                     
                 }
             }
