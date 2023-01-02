@@ -4,6 +4,7 @@
 using System.Collections.Generic;
 using Friflo.Json.Burst.Utils;
 
+// ReSharper disable MemberCanBePrivate.Global
 namespace Friflo.Json.Fliox.Hub.Host.Accumulator
 {
     internal sealed class WriteTaskModel

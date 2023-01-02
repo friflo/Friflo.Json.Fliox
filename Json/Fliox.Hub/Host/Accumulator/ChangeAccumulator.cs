@@ -4,7 +4,9 @@
 using System.Collections.Generic;
 using Friflo.Json.Burst.Utils;
 using Friflo.Json.Fliox.Hub.Host.Event;
+using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
+using Friflo.Json.Fliox.Hub.Remote;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Utils;
 
@@ -15,27 +17,35 @@ namespace Friflo.Json.Fliox.Hub.Host.Accumulator
     /// <summary>
     ///  Accumulate the entity change events for a specific <see cref="EntityDatabase"/> 
     /// </summary>
-    internal sealed class ChangeAccumulator
+    public sealed class ChangeAccumulator
     {
+        private  readonly   SmallString                                 database;
         private  readonly   Dictionary<SmallString, ContainerChanges>   containers;
+        private  readonly   HashSet<ContainerChanges>                   changedContainers;
         private             TaskBuffer                                  writeBuffer;
         private             TaskBuffer                                  readBuffer;
         internal readonly   MemoryBuffer                                rawTaskBuffer;
-        internal readonly   List<JsonValue>                             rawTasks;
         internal readonly   WriteTaskModel                              writeTaskModel;
         internal readonly   DeleteTaskModel                             deleteTaskModel;
+        private  readonly   SyncEvent                                   syncEvent;
 
-        internal ChangeAccumulator() {
-            containers      = new Dictionary<SmallString, ContainerChanges>();
-            writeBuffer     = new TaskBuffer();
-            readBuffer      = new TaskBuffer();
-            rawTaskBuffer   = new MemoryBuffer(1024);
-            rawTasks        = new List<JsonValue>();
-            writeTaskModel  = new WriteTaskModel();
-            deleteTaskModel = new DeleteTaskModel();
+
+        public ChangeAccumulator(in SmallString database) {
+            this.database       = database;
+            syncEvent           = new SyncEvent {
+                db                  = database.value,
+                tasksJson           = new List<JsonValue>()
+            };
+            containers          = new Dictionary<SmallString, ContainerChanges>();
+            changedContainers   = new HashSet<ContainerChanges>();
+            writeBuffer         = new TaskBuffer();
+            readBuffer          = new TaskBuffer();
+            rawTaskBuffer       = new MemoryBuffer(1024);
+            writeTaskModel      = new WriteTaskModel();
+            deleteTaskModel     = new DeleteTaskModel();
         }
 
-        internal void AddSyncTask(SyncRequestTask task)
+        public void AddSyncTask(SyncRequestTask task)
         {
             switch (task.TaskType) {
                 case TaskType.create:
@@ -95,16 +105,42 @@ namespace Friflo.Json.Fliox.Hub.Host.Accumulator
                 writeBuffer = readBuffer;
                 readBuffer  = temp;
                 writeBuffer.Clear();
+                foreach (var pair in containers) {
+                    pair.Value.Reset();
+                }
             }
+            changedContainers.Clear();
             rawTaskBuffer.Reset();
-            rawTasks.Clear();
             var context = new AccumulatorContext(this, writer);
             foreach (var task in readBuffer.tasks) {
                 task.container.AddChangeTask(task, readBuffer, context);
+                changedContainers.Add(task.container);
+            }
+            foreach (var container in changedContainers) {
+                container.AddAccumulatedRawTask(context);
+                container.currentType = TaskType.error;
             }
             foreach (var subClient in subClients) {
-                foreach (var task in rawTasks) {
-                    
+                if (!subClient.databaseSubs.TryGetValue(database, out var databaseSubs)) {
+                    continue;
+                }
+                syncEvent.tasksJson.Clear();
+                foreach (var container in changedContainers) {
+                    foreach (var rawTask in container.rawTasks) {
+                        foreach (var changeSub in databaseSubs.changeSubs) {
+                            if ((changeSub.changes & rawTask.change) == 0) {
+                                continue;
+                            }
+                            if (!changeSub.container.IsEqual(container.name)) {
+                                continue;
+                            }
+                            syncEvent.tasksJson.Add(rawTask.value);
+                        }
+                    }
+                }
+                if (syncEvent.tasksJson.Count > 0) {
+                    var rawSyncEvent = RemoteUtils.SerializeSyncEvent(syncEvent, writer);
+                    subClient.EnqueueEvent(rawSyncEvent);
                 }
             }
         }

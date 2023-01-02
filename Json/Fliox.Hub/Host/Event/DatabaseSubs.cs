@@ -23,7 +23,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         private  readonly   HashSet<string>                 messageSubs         = new HashSet<string>();
         private  readonly   HashSet<string>                 messagePrefixSubs   = new HashSet<string>();
         /// key: <see cref="SubscribeChanges.container"/> - used array instead of Dictionary for performance
-        private             ChangeSub[]                     changeSubs          = Array.Empty<ChangeSub>();
+        internal            ChangeSub[]                     changeSubs          = Array.Empty<ChangeSub>();
 
         internal            int                             SubCount => changeSubs.Length + messageSubs.Count + messagePrefixSubs.Count; 
 

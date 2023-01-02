@@ -46,4 +46,15 @@ namespace Friflo.Json.Fliox.Hub.Host.Accumulator
             this.writer         = writer;
         }
     }
+    
+    internal readonly struct RawTask
+    {
+        internal readonly EntityChange  change;
+        internal readonly JsonValue     value;
+        
+        internal RawTask(EntityChange change, in JsonValue value) {
+            this.change     = change;
+            this.value      = value;
+        }
+    }
 }
