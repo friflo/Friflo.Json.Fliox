@@ -94,9 +94,6 @@ namespace Friflo.Json.Fliox.Hub.Host.Accumulator
         
         internal JsonValue CreateSyncEventAllTasks(SyncEvent syncEvent, ObjectWriter writer)
         {
-            if (rawTasks.Count == 0) {
-                return default;
-            }
             syncEvent.tasksJson.Clear();
             foreach (var rawTask in rawTasks) {
                 syncEvent.tasksJson.Add(rawTask.value);

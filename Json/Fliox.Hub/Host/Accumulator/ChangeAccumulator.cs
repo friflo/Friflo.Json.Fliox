@@ -28,7 +28,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Accumulator
         internal readonly   MemoryBuffer                                rawTaskBuffer;
         internal readonly   WriteTaskModel                              writeTaskModel;
         internal readonly   DeleteTaskModel                             deleteTaskModel;
-        private  readonly   SyncEvent                                   syncEvent;
+        private             SyncEvent                                   syncEvent;
         
         public ChangeAccumulator() {
             syncEvent           = new SyncEvent { tasksJson = new List<JsonValue>() };
@@ -157,11 +157,15 @@ namespace Friflo.Json.Fliox.Hub.Host.Accumulator
         }
         
         private void EnqueueSyncEvents(in SmallString database, EventSubClient[] subClients, ObjectWriter writer) {
+            syncEvent.db = database.value;
             clientSubsList.Clear();
             foreach (var subClient in subClients) {
                 if (!subClient.databaseSubs.TryGetValue(database, out var databaseSubs))
                     continue;
                 clientSubsList.Add(new ClientSubs(subClient, databaseSubs));
+            }
+            if (clientSubsList.Count == 0) {
+                return;
             }
             foreach (var containerChanges in containerChangesSet) {
                 var syncEventContainerTasks = containerChanges.CreateSyncEventAllTasks(syncEvent, writer);
