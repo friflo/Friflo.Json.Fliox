@@ -51,47 +51,50 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
     public sealed class EventDispatcher : IDisposable
     {
     #region - members
-        public              bool                                            SendUserIds         { get; set; } = true;
-        public              bool                                            SendClientIds       { get; set; } = false;
-        public              ChangeAccumulator                               ChangeAccumulator   { get; set; }
-        private  readonly   SharedEnv                                       sharedEnv;
-        private  readonly   JsonEvaluator                                   jsonEvaluator;
+        public              bool                                    SendUserIds         { get; set; } = true;
+        public              bool                                    SendClientIds       { get; set; } = false;
+        public              ChangeAccumulator                       ChangeAccumulator   { get; set; }
+        private  readonly   SharedEnv                               sharedEnv;
+        private  readonly   JsonEvaluator                           jsonEvaluator;
         /// <summary>buffer for serialized <see cref="SyncEvent"/>'s to avoid frequent allocations</summary>
-        private  readonly   List<JsonValue>                                 syncEventBuffer;
-        private  readonly   List<JsonValue>                                 eventMessageBuffer;
-        //
+        private  readonly   List<JsonValue>                         syncEventBuffer;
+        private  readonly   List<JsonValue>                         eventMessageBuffer;
+        
+    /// START - fields require lock (<see cref="subClients"/>)
         /// key: <see cref="EventSubClient.clientId"/>
         [DebuggerBrowsable(Never)]
-        private  readonly   ConcurrentDictionary<JsonKey, EventSubClient>   subClients;
+        private  readonly   Dictionary<JsonKey, EventSubClient>     subClients;
         // ReSharper disable once UnusedMember.Local - expose Dictionary as list in Debugger
-        private             ICollection<EventSubClient>                     SubClients  => subClients.Values;
+        private             ICollection<EventSubClient>             SubClients  => subClients.Values;
         
         /// <summary> Subset of <see cref="subClients"/> eligible for sending events. Either they
         /// are <see cref="EventSubClient.Connected"/> or they <see cref="EventSubClient.queueEvents"/> </summary> 
         [DebuggerBrowsable(Never)]
-        private  readonly   Dictionary<JsonKey, EventSubClient>             sendClientsMap;
+        private  readonly   Dictionary<JsonKey, EventSubClient>     sendClientsMap;
         /// <summary> Array of <see cref="EventSubClient"/>'s stored in <see cref="sendClientsMap"/><br/>
         /// Is updated whenever <see cref="sendClientsMap"/> is modified. Enables enumerating clients without heap allocation.
         /// This would be the case if sendClientsMap is a <see cref="ConcurrentDictionary{TKey,TValue}"/></summary>
-        private             EventSubClient[]                                sendClients = Array.Empty<EventSubClient>();
+        private             EventSubClient[]                        sendClients = Array.Empty<EventSubClient>();
+        private  readonly   Dictionary<SmallString, DatabaseSubs[]> databaseSubsMap;
         //
         [DebuggerBrowsable(Never)]
-        private  readonly   ConcurrentDictionary<JsonKey, EventSubUser>     subUsers;
+        private  readonly   Dictionary<JsonKey, EventSubUser>       subUsers;
         // ReSharper disable once UnusedMember.Local - expose Dictionary as list in Debugger
-        private             ICollection<EventSubUser>                       SubUsers    => subUsers.Values;
-        //
+        private             ICollection<EventSubUser>               SubUsers    => subUsers.Values;
+    // END - fields require lock
+
         /// <summary> exposed only for test assertions. <see cref="EventDispatcher"/> lives on Hub. <br/>
         /// If required its state (subscribed client) can be exposed by <see cref="DB.Monitor.ClientHits"/></summary>
         [DebuggerBrowsable(Never)]
-        public              int                                             SubscribedClientsCount => subClients.Count;
+        public              int                                     SubscribedClientsCount => subClients.Count;
         //
-        internal readonly   EventDispatching                                dispatching;
+        internal readonly   EventDispatching                        dispatching;
         /// <see cref="clientEventLoop"/> and <see cref="clientEventWriter"/>
         /// are used as a queue to send pending <see cref="SyncEvent"/>'s
-        private  readonly   Task                                            clientEventLoop;
-        private  readonly   IDataChannelWriter<EventSubClient>              clientEventWriter;
+        private  readonly   Task                                    clientEventLoop;
+        private  readonly   IDataChannelWriter<EventSubClient>      clientEventWriter;
 
-        public   override   string                                          ToString() => $"subscribers: {subClients.Count}";
+        public   override   string                                  ToString() => $"subscribers: {subClients.Count}";
 
         private const string MissingEventReceiver = "subscribing events requires an eventReceiver. E.g a WebSocket as a target for push events.";
     #endregion
@@ -100,9 +103,10 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         public EventDispatcher (EventDispatching dispatching, SharedEnv env = null) {
             sharedEnv           = env ?? SharedEnv.Default;
             jsonEvaluator       = new JsonEvaluator();
-            subClients          = new ConcurrentDictionary<JsonKey, EventSubClient>(JsonKey.Equality);
-            sendClientsMap      = new Dictionary<JsonKey, EventSubClient>          (JsonKey.Equality);
-            subUsers            = new ConcurrentDictionary<JsonKey, EventSubUser>(JsonKey.Equality);
+            subClients          = new Dictionary<JsonKey, EventSubClient>   (JsonKey.Equality);
+            sendClientsMap      = new Dictionary<JsonKey, EventSubClient>   (JsonKey.Equality);
+            subUsers            = new Dictionary<JsonKey, EventSubUser>     (JsonKey.Equality);
+            databaseSubsMap     = new Dictionary<SmallString,DatabaseSubs[]>(SmallString.Equality);
             syncEventBuffer     = new List<JsonValue>();
             eventMessageBuffer  = new List<JsonValue>();
             this.dispatching    = dispatching;
@@ -119,16 +123,20 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         }
         
         internal bool TryGetSubscriber(in JsonKey key, out EventSubClient subClient) {
-            return subClients.TryGetValue(key, out subClient);
+            lock (subClients) {
+                return subClients.TryGetValue(key, out subClient);
+            }
         }
         
         /// used for test assertion
         public int QueuedEventsCount() {
             int count = 0;
-            foreach (var pair in subClients) {
-                count += pair.Value.QueuedEventsCount;
+            lock (subClients) {
+                foreach (var pair in subClients) {
+                    count += pair.Value.QueuedEventsCount;
+                }
+                return count;
             }
-            return count;
         }
 
         public async Task StopDispatcher() {
@@ -146,78 +154,99 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         
     #region - add / remove subscritions
         internal bool SubscribeMessage(
-            in SmallString      database,
-            SubscribeMessage    subscribe,
-            User                user,
-            in JsonKey          clientId,
-            EventReceiver       eventReceiver,
-            out string          error)
+            in SmallString database,    SubscribeMessage subscribe,     User       user,
+            in JsonKey     clientId,    EventReceiver    eventReceiver, out string error)
         {
             if (eventReceiver == null) {
                 error = MissingEventReceiver; 
                 return false;
             }
             error = null;
-            EventSubClient subClient;
-            var remove = subscribe.remove;
-            if (remove.HasValue && remove.Value) {
-                if (!subClients.TryGetValue(clientId, out subClient))
-                    return true;
-                if (!subClient.databaseSubs.TryGetValue(database, out var databaseSubs)) {
-                    return true;
-                }
-                databaseSubs.RemoveMessageSubscription(subscribe.name);
-                RemoveEmptySubClient(subClient);
-                return true;
-            } else {
-                subClient = GetOrCreateSubClient(user, clientId, eventReceiver);
-                if (!subClient.databaseSubs.TryGetValue(database, out var databaseSubs)) {
-                    databaseSubs = new DatabaseSubs(database.value);
-                    subClient.databaseSubs.TryAdd(database, databaseSubs);
-                }
-                databaseSubs.AddMessageSubscription(subscribe.name);
-                return true;
-            }
-        }
-
-        internal bool SubscribeChanges (
-            in SmallString      database,
-            SubscribeChanges    subscribe,
-            User                user,
-            in JsonKey          clientId,
-            EventReceiver       eventReceiver,
-            out string          error)
-        {
-            if (eventReceiver == null) {
-                error = MissingEventReceiver; 
-                return false;
-            }
-            error = null;
-            EventSubClient subClient;
-            if (subscribe.changes.Count == 0) {
-                if (!subClients.TryGetValue(clientId, out subClient))
-                    return true;
-                if (!subClient.databaseSubs.TryGetValue(database, out var databaseSubs))
-                    return true;
-                databaseSubs.RemoveChangeSubscription(subscribe.container);
-                RemoveEmptySubClient(subClient);
-                return true;
-            } else {
-                subClient = GetOrCreateSubClient(user, clientId, eventReceiver);
-                if (!subClient.databaseSubs.TryGetValue(database, out var databaseSubs)) {
-                    databaseSubs = new DatabaseSubs(database.value);
-                    subClient.databaseSubs.TryAdd(database, databaseSubs);
-                }
-                databaseSubs.AddChangeSubscription(subscribe);
+            lock (subClients) {
+                SubscribeMessageIntern(database, subscribe, user, clientId, eventReceiver);
+                UpdateSendClients();
                 return true;
             }
         }
         
+        /// <summary> requires lock <see cref="subClients"/> </summary>
+        private void SubscribeMessageIntern(
+            in SmallString database,    SubscribeMessage subscribe,     User user,
+            in JsonKey     clientId,    EventReceiver    eventReceiver)
+        {
+            EventSubClient subClient;
+            var remove = subscribe.remove;
+            if (remove.HasValue && remove.Value) {
+                if (!subClients.TryGetValue(clientId, out subClient))
+                    return;
+                if (!subClient.databaseSubs.TryGetValue(database, out var databaseSubs)) {
+                    return;
+                }
+                databaseSubs.RemoveMessageSubscription(subscribe.name);
+                RemoveEmptySubClient(subClient);
+            } else {
+                subClient = GetOrCreateSubClientIntern(user, clientId, eventReceiver);
+                if (!subClient.databaseSubs.TryGetValue(database, out var databaseSubs)) {
+                    databaseSubs = new DatabaseSubs(subClient, database.value);
+                    subClient.databaseSubs.TryAdd(database, databaseSubs);
+                }
+                databaseSubs.AddMessageSubscription(subscribe.name);
+            }
+        }
+
+        internal bool SubscribeChanges (
+            in SmallString database,    SubscribeChanges subscribe,     User        user,
+            in JsonKey      clientId,   EventReceiver    eventReceiver, out string  error)
+        {
+            if (eventReceiver == null) {
+                error = MissingEventReceiver; 
+                return false;
+            }
+            error = null;
+            lock (subClients) {
+                SubscribeChangesIntern(database, subscribe, user, clientId, eventReceiver);
+                UpdateSendClients();
+                return true;
+            }
+        }
+        
+        /// <summary> requires lock <see cref="subClients"/> </summary>
+        private void SubscribeChangesIntern (
+            in SmallString database,    SubscribeChanges subscribe,     User        user,
+            in JsonKey      clientId,   EventReceiver    eventReceiver)
+        {
+            EventSubClient subClient;
+            if (subscribe.changes.Count == 0) {
+                if (!subClients.TryGetValue(clientId, out subClient))
+                    return;
+                if (!subClient.databaseSubs.TryGetValue(database, out var databaseSubs))
+                    return;
+                databaseSubs.RemoveChangeSubscription(subscribe.container);
+                RemoveEmptySubClient(subClient);
+            } else {
+                subClient = GetOrCreateSubClientIntern(user, clientId, eventReceiver);
+                if (!subClient.databaseSubs.TryGetValue(database, out var databaseSubs)) {
+                    databaseSubs = new DatabaseSubs(subClient, database.value);
+                    subClient.databaseSubs.TryAdd(database, databaseSubs);
+                }
+                databaseSubs.AddChangeSubscription(subscribe);
+            }
+        }
+        
         internal EventSubClient GetOrCreateSubClient(User user, in JsonKey clientId, EventReceiver eventReceiver) {
+            lock (subClients) {
+                var result = GetOrCreateSubClientIntern(user, clientId, eventReceiver);
+                UpdateSendClients();
+                return result;
+            }
+        }
+        
+        /// <summary> requires lock <see cref="subClients"/> </summary> 
+        private EventSubClient GetOrCreateSubClientIntern(User user, in JsonKey clientId, EventReceiver eventReceiver) {
             subClients.TryGetValue(clientId, out EventSubClient subClient);
             if (subClient != null) {
-                // add to sendClients as the client could have been removed meanwhile caused by a disconnect
-                AddSendClient(subClient);
+                // add to sendClientsMap as the client could have been removed meanwhile caused by a disconnect
+                sendClientsMap.TryAdd(subClient.clientId, subClient);
                 return subClient;
             }
             if (!subUsers.TryGetValue(user.userId, out var subUser)) {
@@ -229,8 +258,8 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             if (eventReceiver != null) {
                 subClient.UpdateTarget(eventReceiver);
             }
-            subClients. TryAdd(clientId, subClient);
-            AddSendClient(subClient);
+            subClients.    TryAdd(clientId, subClient);
+            sendClientsMap.TryAdd(clientId, subClient);
             subUser.clients.TryAdd(subClient, true);
             return subClient;
         }
@@ -249,32 +278,50 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                 subUsers.TryRemove(user.userId, out _);
             } */
         }
-        private void AddSendClient(EventSubClient subClient) {
-            lock (sendClientsMap) {
-                sendClientsMap.TryAdd(subClient.clientId, subClient);
-                sendClients = CreateSendClients(sendClientsMap);
-            }
-        }
         
-        private void RemoveSendClient(EventSubClient subClient) {
-            lock (sendClientsMap) {
-                sendClientsMap.Remove(subClient.clientId);
-                sendClients = CreateSendClients(sendClientsMap);
-            }
-        }
+        private readonly Dictionary<string, List<DatabaseSubs>> dbSubsMap = new Dictionary<string, List<DatabaseSubs>>(); 
         
-        private static EventSubClient[] CreateSendClients(Dictionary<JsonKey, EventSubClient> sendClientsMap) {
+        /// <summary> requires lock <see cref="subClients"/> </summary> 
+        private void UpdateSendClients()
+        {
+            foreach (var pair in dbSubsMap) {
+                pair.Value.Clear();
+            }
+            foreach (var pair in sendClientsMap) {
+                var subClient = pair.Value;
+                foreach (var databaseSubPair in subClient.databaseSubs) {
+                    var databaseSubs = databaseSubPair.Value;
+                    if (dbSubsMap.TryGetValue(databaseSubs.database, out var list)) {
+                        list.Add(databaseSubs);
+                        continue;
+                    }
+                    dbSubsMap[databaseSubs.database] = new List<DatabaseSubs>{ databaseSubs };
+                }
+            }
+            databaseSubsMap.Clear();
+            foreach (var pair in dbSubsMap) {
+                var subs = pair.Value;
+                if (subs.Count == 0) {
+                    continue;
+                }
+                var databaseSubs    = subs.ToArray();
+                var database        = pair.Key;
+                databaseSubsMap.Add(new SmallString(database), databaseSubs);
+            }
             var clients = new EventSubClient[sendClientsMap.Count];
             var index = 0;
             foreach (var pair in sendClientsMap) {
                 clients[index++] = pair.Value;
             }
-            return clients;
+            sendClients = clients;
         }
         
         internal void UpdateSubUserGroups(in JsonKey userId, IReadOnlyCollection<String> groups) {
-            if (!subUsers.TryGetValue(userId, out var subUser))
-                return;
+            EventSubUser subUser;
+            lock (subClients) {
+                if (!subUsers.TryGetValue(userId, out subUser))
+                    return;
+            }
             subUser.groups.Clear();
             if (groups != null) {
                 subUser.groups.UnionWith(groups);
@@ -295,21 +342,34 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             }
         }
         
-        private void ProcessSubscriber(SyncRequest syncRequest, SyncContext syncContext) {
-            ref JsonKey  clientId = ref syncContext.clientId;
-            if (clientId.IsNull())
-                return;
-            
-            if (!subClients.TryGetValue(clientId, out var subClient))
-                return;
+        /// <summary>use single lock to retrieve <paramref name="subClient"/> and <paramref name="databaseSubsArray"/></summary>
+        private void GetSubClientAndDatabaseSubs(
+                SyncContext     syncContext,
+            out EventSubClient  subClient,
+            out DatabaseSubs[]  databaseSubsArray)
+        {
+            JsonKey  clientId = syncContext.clientId;
+            lock (subClients) {
+                if (clientId.IsNull()) {
+                    subClient = null;
+                } else {
+                    subClients.TryGetValue(clientId, out subClient);
+                }
+                databaseSubsMap.TryGetValue(syncContext.databaseName, out databaseSubsArray);
+            }
+        }
+        
+        private void ProcessSubscriber(EventSubClient subClient, SyncRequest syncRequest, SyncContext syncContext) {
             var eventReceiver = syncContext.eventReceiver;
             if (eventReceiver != null && eventReceiver.IsRemoteTarget()) {
                 if (subClient.UpdateTarget (eventReceiver)) {
                     // remote client is using a new connection (WebSocket) so add to sendClients again
-                    AddSendClient(subClient);
+                    lock (subClients) {
+                        sendClientsMap.TryAdd(subClient.clientId, subClient);
+                        UpdateSendClients();
+                    }
                 }
             }
-            
             var eventAck = syncRequest.eventAck;
             if (!eventAck.HasValue)
                 return;
@@ -350,11 +410,17 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         /// Create serialized <see cref="SyncEvent"/>'s for the passed <see cref="SyncRequest.tasks"/> for
         /// all <see cref="EventSubClient"/>'s having matching <see cref="DatabaseSubs"/>
         /// </summary>
-        internal void EnqueueSyncTasks (SyncRequest syncRequest, SyncContext syncContext) {
+        internal void EnqueueSyncTasks (SyncRequest syncRequest, SyncContext syncContext)
+        {
+            GetSubClientAndDatabaseSubs(syncContext, out var subClient, out var databaseSubsArray);
+            if (subClient != null) {
+                ProcessSubscriber (subClient, syncRequest, syncContext);
+            }
+            if (databaseSubsArray == null) {
+                return;
+            }
             var syncTasks = syncRequest.tasks;
-            ProcessSubscriber (syncRequest, syncContext);
-
-            if (sendClients.Length == 0 || !HasSubscribableTask(syncTasks)) {
+            if (!HasSubscribableTask(syncTasks)) {
                 return; // early out
             }
             var accumulator = ChangeAccumulator;
@@ -380,22 +446,23 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                 writer.Pretty           = false;    // write sub's as one liner
                 writer.WriteNullMembers = false;
                 
-                foreach (var subClient in sendClients) {
-                    if (!subClient.queueEvents && !subClient.Connected) {
-                        RemoveSendClient(subClient);
+                foreach (var databaseSubs in databaseSubsArray) {
+                    var client = databaseSubs.client;
+                    if (!client.queueEvents && !client.Connected) {
+                        lock (subClients) {
+                            sendClientsMap.Remove(client.clientId);
+                            UpdateSendClients();
+                        }
                         continue;
                     }
-                    if (!subClient.databaseSubs.TryGetValue(database, out var databaseSubs)) {
-                        continue;
-                    }
-                    if (!databaseSubs.CreateEventTasks(syncTasks, subClient, ref syncEvent.tasks, jsonEvaluator)) {
+                    if (!databaseSubs.CreateEventTasks(syncTasks, client, ref syncEvent.tasks, jsonEvaluator)) {
                         continue;
                     }
                     SerializeEventTasks(syncEvent.tasks, ref syncEvent.tasksJson, writer, memoryBuffer);
-                    bool sendClientId       = SendClientIds || syncContext.clientId.IsEqual(subClient.clientId);
+                    bool sendClientId       = SendClientIds || syncContext.clientId.IsEqual(client.clientId);
                     syncEvent.clt           = sendClientId ? syncContext.clientId : default;
                     JsonValue rawSyncEvent  = RemoteUtils.SerializeSyncEvent(syncEvent, writer);
-                    subClient.EnqueueEvent(rawSyncEvent);
+                    client.EnqueueEvent(rawSyncEvent);
                 }
             }
             // clear cached serialized tasks -> enable GC collect byte[]'s
