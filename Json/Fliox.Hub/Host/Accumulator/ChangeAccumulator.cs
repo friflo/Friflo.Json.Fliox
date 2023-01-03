@@ -48,29 +48,29 @@ namespace Friflo.Json.Fliox.Hub.Host.Accumulator
             }
         } 
 
-        public void AddSyncTask(EntityDatabase database, SyncRequestTask task)
+        internal bool  AddSyncTask(EntityDatabase database, SyncRequestTask task)
         {
             switch (task.TaskType) {
                 case TaskType.create:
                     lock (databaseChangesMap) {
                         if (!databaseChangesMap.TryGetValue(database, out var databaseChanges))
-                            return;
+                            return false;
                         var create = (CreateEntities)task;
                         AddWriteTask(databaseChanges, create.containerSmall, TaskType.create, create.entities);
-                        break;
+                        return true;
                     }
                 case TaskType.upsert:
                     lock (databaseChangesMap) {
                         if (!databaseChangesMap.TryGetValue(database, out var databaseChanges))
-                            return;
+                            return false;
                         var upsert = (UpsertEntities)task;
                         AddWriteTask(databaseChanges, upsert.containerSmall, TaskType.upsert, upsert.entities);
-                        break;
+                        return true;
                     }
                 case TaskType.merge:
                     lock (databaseChangesMap) {
                         if (!databaseChangesMap.TryGetValue(database, out var databaseChanges))
-                            return;
+                            return false;
                         var merge = (MergeEntities)task;
                         AddWriteTask(databaseChanges, merge.containerSmall, TaskType.merge, merge.patches);
                         break;
@@ -78,12 +78,13 @@ namespace Friflo.Json.Fliox.Hub.Host.Accumulator
                 case TaskType.delete:
                     lock (databaseChangesMap) {
                         if (!databaseChangesMap.TryGetValue(database, out var databaseChanges))
-                            return;
+                            return false;
                         var delete = (DeleteEntities)task;
                         AddDeleteTask(databaseChanges, delete.containerSmall, delete.ids);
-                        break;
+                        return true;
                     }
             }
+            return false;
         }
         
         private static void AddWriteTask(

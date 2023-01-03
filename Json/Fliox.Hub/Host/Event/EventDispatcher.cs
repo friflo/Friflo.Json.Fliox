@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using Friflo.Json.Burst.Utils;
+using Friflo.Json.Fliox.Hub.Host.Accumulator;
 using Friflo.Json.Fliox.Hub.Host.Auth;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
@@ -50,8 +51,9 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
     public sealed class EventDispatcher : IDisposable
     {
     #region - members
-        public              bool                                            SendUserIds    { get; set; } = true;
-        public              bool                                            SendClientIds  { get; set; } = false;
+        public              bool                                            SendUserIds         { get; set; } = true;
+        public              bool                                            SendClientIds       { get; set; } = false;
+        public              ChangeAccumulator                               ChangeAccumulator   { get; set; }
         private  readonly   SharedEnv                                       sharedEnv;
         private  readonly   JsonEvaluator                                   jsonEvaluator;
         /// <summary>buffer for serialized <see cref="SyncEvent"/>'s to avoid frequent allocations</summary>
@@ -332,6 +334,18 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             return false;
         }
         
+        private static bool AccumulateTasks(
+            ChangeAccumulator       accumulator,
+            EntityDatabase          database,
+            List<SyncRequestTask>   syncTasks)
+        {
+            var processed = true;
+            foreach (var syncTask in syncTasks) {
+                processed = accumulator.AddSyncTask(database, syncTask) && processed;
+            }
+            return processed;
+        }
+        
         /// <summary>
         /// Create serialized <see cref="SyncEvent"/>'s for the passed <see cref="SyncRequest.tasks"/> for
         /// all <see cref="EventSubClient"/>'s having matching <see cref="DatabaseSubs"/>
@@ -342,6 +356,12 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
 
             if (sendClients.Length == 0 || !HasSubscribableTask(syncTasks)) {
                 return; // early out
+            }
+            var accumulator = ChangeAccumulator;
+            if (accumulator != null) {
+                if (AccumulateTasks(accumulator, syncContext.Database, syncTasks)) {
+                    return;
+                }
             }
             var memoryBuffer    = syncContext.MemoryBuffer;
             var database        = syncContext.databaseName;
@@ -359,7 +379,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                 ObjectWriter writer     = pooled.instance.writer;
                 writer.Pretty           = false;    // write sub's as one liner
                 writer.WriteNullMembers = false;
-
+                
                 foreach (var subClient in sendClients) {
                     if (!subClient.queueEvents && !subClient.Connected) {
                         RemoveSendClient(subClient);
