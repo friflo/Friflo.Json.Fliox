@@ -122,9 +122,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Accumulator
             keys.AddRange(ids);
         }
 
-        internal void AccumulateTasks(
-            Dictionary<SmallString, ImmutableArray<ClientDbSubs>>   databaseSubsMap,
-            ObjectWriter                                            writer)
+        internal void AccumulateTasks(DatabaseSubsMap databaseSubsMap, ObjectWriter writer)
         {
             databaseChangesList.Clear();
             lock (databaseChangesMap) {
@@ -151,7 +149,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Accumulator
                     container.AddAccumulatedRawTask(context);
                     container.currentType = TaskType.error;
                 }
-                var clientDbSubs = databaseSubsMap[databaseChanges.dbName];
+                var clientDbSubs = databaseSubsMap.map[databaseChanges.dbName];
                 EnqueueSyncEvents(clientDbSubs, writer);
                 foreach (var pair in databaseChanges.containers) {
                     pair.Value.Reset();

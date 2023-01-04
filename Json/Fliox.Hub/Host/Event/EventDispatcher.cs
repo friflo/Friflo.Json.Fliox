@@ -220,7 +220,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                 } else {
                     intern.subClients.TryGetValue(clientId, out subClient);
                 }
-                intern.databaseSubsMap.TryGetValue(syncContext.databaseName, out databaseSubsArray);
+                intern.databaseSubsMap.map.TryGetValue(syncContext.databaseName, out databaseSubsArray);
             }
         }
         

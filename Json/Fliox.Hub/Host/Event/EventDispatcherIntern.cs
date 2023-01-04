@@ -29,7 +29,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         [DebuggerBrowsable(Never)]
         internal readonly   Dictionary<JsonKey, EventSubClient>     sendClientsMap;
         /// key: database name
-        internal readonly   Dictionary<SmallString, ImmutableArray<ClientDbSubs>> databaseSubsMap;
+        internal readonly   DatabaseSubsMap                         databaseSubsMap;
         //
         [DebuggerBrowsable(Never)]
         internal readonly   Dictionary<JsonKey, EventSubUser>       subUsers;
@@ -46,7 +46,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             subClients              = new Dictionary<JsonKey, EventSubClient>   (JsonKey.Equality);
             sendClientsMap          = new Dictionary<JsonKey, EventSubClient>   (JsonKey.Equality);
             subUsers                = new Dictionary<JsonKey, EventSubUser>     (JsonKey.Equality);
-            databaseSubsMap         = new Dictionary<SmallString,ImmutableArray<ClientDbSubs>>(SmallString.Equality);
+            databaseSubsMap         = new DatabaseSubsMap(null);
             databaseSubsBuffer      = new Dictionary<string, List<ClientDbSubs>>(); 
             uniqueDatabaseSubsBuffer= new Dictionary<DatabaseSubs, DatabaseSubs>(DatabaseSubs.Equality);
         }
@@ -175,7 +175,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                 }
             }
             // --- create an ImmutableArray<ClientDbSubs> from List<ClientDbSubs> for each database
-            databaseSubsMap.Clear();
+            databaseSubsMap.map.Clear();
             foreach (var pair in databaseSubsBuffer) {
                 var subs = pair.Value;
                 if (subs.Count == 0) {
@@ -183,7 +183,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                 }
                 var databaseSubs    = subs.ToImmutableArray();
                 var database        = pair.Key;
-                databaseSubsMap.Add(new SmallString(database), databaseSubs);
+                databaseSubsMap.map.Add(new SmallString(database), databaseSubs);
             }
             // --- create EventSubClient[] containing all clients to send event to
             var clients = new EventSubClient[sendClientsMap.Count];
@@ -195,6 +195,15 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         }
     }
     
+    internal readonly struct DatabaseSubsMap
+    {
+        internal readonly Dictionary<SmallString, ImmutableArray<ClientDbSubs>>   map;
+        
+        internal DatabaseSubsMap(object dummy) {
+            map = new Dictionary<SmallString,ImmutableArray<ClientDbSubs>>(SmallString.Equality);
+        }
+    }
+
     internal readonly struct ClientDbSubs
     {
         internal readonly   EventSubClient  client;
