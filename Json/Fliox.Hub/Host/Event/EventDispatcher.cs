@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using Friflo.Json.Burst.Utils;
@@ -63,7 +62,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         /// <summary> Immutable array of <see cref="EventSubClient"/>'s stored in <see cref="EventDispatcherIntern.sendClientsMap"/><br/>
         /// Is updated whenever <see cref="EventDispatcherIntern.sendClientsMap"/> is modified. Enables enumerating clients without heap allocation.
         /// This would be the case if sendClientsMap is a ConcurrentDictionary</summary>
-        internal            ImmutableArray<EventSubClient>      sendClients;
+        internal            EventSubClient[]                    sendClients;
 
         /// <summary> exposed only for test assertions. <see cref="EventDispatcher"/> lives on Hub. <br/>
         /// If required its state (subscribed client) can be exposed by <see cref="DB.Monitor.ClientHits"/></summary>
@@ -88,7 +87,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             syncEventBuffer     = new List<JsonValue>();
             eventMessageBuffer  = new List<JsonValue>();
             intern              = new EventDispatcherIntern(this);
-            sendClients         = ImmutableArray.Create<EventSubClient>();
+            sendClients         = Array.Empty<EventSubClient>();
             this.dispatching    = dispatching;
             if (dispatching == EventDispatching.QueueSend) {
                 var channel             = DataChannelSlim<EventSubClient>.CreateUnbounded(true, true);
@@ -215,9 +214,9 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         
         /// <summary>use single lock to retrieve <paramref name="subClient"/> and <paramref name="databaseSubsArray"/></summary>
         private void GetSubClientAndDatabaseSubs(
-                SyncContext                     syncContext,
-            out EventSubClient                  subClient,
-            out ImmutableArray<ClientDbSubs>    databaseSubsArray)
+                SyncContext     syncContext,
+            out EventSubClient  subClient,
+            out ClientDbSubs[]  databaseSubsArray)
         {
             JsonKey  clientId = syncContext.clientId;
             lock (intern.monitor) {

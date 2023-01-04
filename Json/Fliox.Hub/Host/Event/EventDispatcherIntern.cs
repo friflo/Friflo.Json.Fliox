@@ -2,8 +2,8 @@
 // See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.Diagnostics;
+using System.Linq;
 using Friflo.Json.Burst.Utils;
 using Friflo.Json.Fliox.Hub.Host.Auth;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
@@ -183,7 +183,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                 if (subs.Count == 0) {
                     continue;
                 }
-                var databaseSubs    = subs.ToImmutableArray();
+                var databaseSubs    = subs.ToArray();
                 var database        = pair.Key;
                 databaseSubsMap.map.Add(new SmallString(database), databaseSubs);
             }
@@ -193,16 +193,16 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             foreach (var pair in sendClientsMap) {
                 clients[index++] = pair.Value;
             }
-            eventDispatcher.sendClients = clients.ToImmutableArray();
+            eventDispatcher.sendClients = clients.ToArray();
         }
     }
     
     internal readonly struct DatabaseSubsMap
     {
-        internal readonly Dictionary<SmallString, ImmutableArray<ClientDbSubs>>   map;
+        internal readonly Dictionary<SmallString, ClientDbSubs[]> map;
         
         internal DatabaseSubsMap(object dummy) {
-            map = new Dictionary<SmallString,ImmutableArray<ClientDbSubs>>(SmallString.Equality);
+            map = new Dictionary<SmallString, ClientDbSubs[]>(SmallString.Equality);
         }
     }
 

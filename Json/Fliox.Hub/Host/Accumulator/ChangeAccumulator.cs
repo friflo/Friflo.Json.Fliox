@@ -2,7 +2,6 @@
 // See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using Friflo.Json.Burst.Utils;
 using Friflo.Json.Fliox.Hub.Host.Event;
 using Friflo.Json.Fliox.Hub.Protocol;
@@ -157,7 +156,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Accumulator
             }
         }
         
-        private void EnqueueSyncEvents(ImmutableArray<ClientDbSubs> clientDbSubs, ObjectWriter writer) {
+        private void EnqueueSyncEvents(ClientDbSubs[] clientDbSubs, ObjectWriter writer) {
             if (clientDbSubs.Length == 0) {
                 return;
             }
