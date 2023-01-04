@@ -27,7 +27,8 @@ namespace Friflo.Json.Fliox.Hub.Host.Accumulator
         internal readonly   MemoryBuffer                                rawTaskBuffer;
         internal readonly   WriteTaskModel                              writeTaskModel;
         internal readonly   DeleteTaskModel                             deleteTaskModel;
-        private             SyncEvent                                   syncEvent;
+        private  readonly   SyncEvent                                   syncEvent;
+        private  readonly   Dictionary<DatabaseSubs, JsonValue>         rawSyncEvents;
         
         public ChangeAccumulator() {
             syncEvent           = new SyncEvent { tasksJson = new List<JsonValue>() };
@@ -37,6 +38,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Accumulator
             rawTaskBuffer       = new MemoryBuffer(1024);
             writeTaskModel      = new WriteTaskModel();
             deleteTaskModel     = new DeleteTaskModel();
+            rawSyncEvents       = new Dictionary<DatabaseSubs, JsonValue>();
         }
         
         public void AddDatabase(EntityDatabase database) {
@@ -157,22 +159,36 @@ namespace Friflo.Json.Fliox.Hub.Host.Accumulator
             }
         }
         
+        /// <summary>
+        /// Create a serialized <see cref="SyncEvent"/>'s for the passed <paramref name="clientDbSubs"/> array
+        /// </summary>
         private void EnqueueSyncEvents(ClientDbSubs[] clientDbSubs, ObjectWriter writer) {
             if (clientDbSubs.Length == 0) {
                 return;
             }
             foreach (var containerChanges in containerChangesSet) {
-                var syncEventContainerTasks = containerChanges.CreateSyncEventAllTasks(syncEvent, writer);
+                rawSyncEvents.Clear();
                 foreach (var clientDbSub in clientDbSubs) {
-                    if (EnqueueIndividualSyncEvent(containerChanges, clientDbSub, writer)) {
+                    var databaseSubs = clientDbSub.subs;
+                    if (rawSyncEvents.TryGetValue(databaseSubs, out var rawSyncEvent)) {
+                        if (rawSyncEvent.IsNull()) {
+                            continue;
+                        }
+                        clientDbSub.client.EnqueueEvent(rawSyncEvent);
                         continue;
                     }
-                    clientDbSub.client.EnqueueEvent(syncEventContainerTasks);
+                    rawSyncEvent = EnqueueSyncEvent(containerChanges, clientDbSub, writer);
+                    rawSyncEvents.Add(databaseSubs, rawSyncEvent);
                 }
             }
         }
         
-        private bool EnqueueIndividualSyncEvent(
+        /// <summary>
+        /// Create a serialized <see cref="SyncEvent"/> for the passed <paramref name="container"/>
+        /// and <paramref name="clientDbSubs"/> <br/>
+        /// Return default if no <see cref="SyncEvent"/> was created 
+        /// </summary>
+        private JsonValue EnqueueSyncEvent(
             ContainerChanges    container,
             in ClientDbSubs     clientDbSubs,
             ObjectWriter        writer)
@@ -182,9 +198,6 @@ namespace Friflo.Json.Fliox.Hub.Host.Accumulator
                 if (!changeSub.container.IsEqual(container.name)) {
                     continue;
                 }
-                if (changeSub.changes == AllChanges) {
-                    return false;
-                }
                 foreach (var rawTask in container.rawTasks) {
                     if ((changeSub.changes & rawTask.change) == 0) {
                         continue;
@@ -192,13 +205,12 @@ namespace Friflo.Json.Fliox.Hub.Host.Accumulator
                     syncEvent.tasksJson.Add(rawTask.value);
                 }
             }
-            if (syncEvent.tasksJson.Count > 0) {
-                var rawSyncEvent = RemoteUtils.SerializeSyncEvent(syncEvent, writer);
-                clientDbSubs.client.EnqueueEvent(rawSyncEvent);
+            if (syncEvent.tasksJson.Count == 0) {
+                return default;
             }
-            return true;
+            var rawSyncEvent = RemoteUtils.SerializeSyncEvent(syncEvent, writer);
+            clientDbSubs.client.EnqueueEvent(rawSyncEvent);
+            return rawSyncEvent;
         }
-        
-        private const EntityChange AllChanges = EntityChange.create | EntityChange.upsert | EntityChange.merge | EntityChange.delete;
     }
 }
