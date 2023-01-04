@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Diagnostics;
 using Friflo.Json.Burst.Utils;
 using Friflo.Json.Fliox.Hub.Host.Auth;
@@ -28,7 +29,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         [DebuggerBrowsable(Never)]
         internal readonly   Dictionary<JsonKey, EventSubClient>     sendClientsMap;
         /// key: database name
-        internal readonly   Dictionary<SmallString, ClientDbSubs[]> databaseSubsMap;
+        internal readonly   Dictionary<SmallString, ImmutableArray<ClientDbSubs>> databaseSubsMap;
         //
         [DebuggerBrowsable(Never)]
         internal readonly   Dictionary<JsonKey, EventSubUser>       subUsers;
@@ -45,7 +46,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             subClients              = new Dictionary<JsonKey, EventSubClient>   (JsonKey.Equality);
             sendClientsMap          = new Dictionary<JsonKey, EventSubClient>   (JsonKey.Equality);
             subUsers                = new Dictionary<JsonKey, EventSubUser>     (JsonKey.Equality);
-            databaseSubsMap         = new Dictionary<SmallString,ClientDbSubs[]>(SmallString.Equality);
+            databaseSubsMap         = new Dictionary<SmallString,ImmutableArray<ClientDbSubs>>(SmallString.Equality);
             databaseSubsBuffer      = new Dictionary<string, List<ClientDbSubs>>(); 
             uniqueDatabaseSubsBuffer= new Dictionary<DatabaseSubs, DatabaseSubs>(DatabaseSubs.Equality);
         }
@@ -173,14 +174,14 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                     clientDbSubs[n] = new ClientDbSubs(clientDbSub.client, cloneSubs);
                 }
             }
-            // --- create an 'immutable' ClientDbSubs[] from List<ClientDbSubs> for each database
+            // --- create an ImmutableArray<ClientDbSubs> from List<ClientDbSubs> for each database
             databaseSubsMap.Clear();
             foreach (var pair in databaseSubsBuffer) {
                 var subs = pair.Value;
                 if (subs.Count == 0) {
                     continue;
                 }
-                var databaseSubs    = subs.ToArray();
+                var databaseSubs    = subs.ToImmutableArray();
                 var database        = pair.Key;
                 databaseSubsMap.Add(new SmallString(database), databaseSubs);
             }
@@ -190,7 +191,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             foreach (var pair in sendClientsMap) {
                 clients[index++] = pair.Value;
             }
-            eventDispatcher.sendClients = clients;
+            eventDispatcher.sendClients = clients.ToImmutableArray();
         }
     }
     
