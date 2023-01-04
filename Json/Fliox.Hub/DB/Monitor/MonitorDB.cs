@@ -73,12 +73,13 @@ namespace Friflo.Json.Fliox.Hub.DB.Monitor
         }
         
         private static SubscriptionEvents? GetSubscriptionEvents (FlioxHub hub, ClientHits clientHits) {
-            if (hub.EventDispatcher == null)
+            var dispatcher = hub.EventDispatcher;
+            if (dispatcher == null)
                 return null;
-            if (!hub.EventDispatcher.TryGetSubscriber(clientHits.id, out var subscriber)) {
+            if (!dispatcher.TryGetSubscriber(clientHits.id, out var subscriber)) {
                 return null;
             }
-            return ClusterUtils.GetSubscriptionEvents(subscriber, clientHits.subscriptionEvents);
+            return ClusterUtils.GetSubscriptionEvents(dispatcher, subscriber, clientHits.subscriptionEvents);
         }
         
         internal void UpdateUsers(Authenticator authenticator, string monitorName) {

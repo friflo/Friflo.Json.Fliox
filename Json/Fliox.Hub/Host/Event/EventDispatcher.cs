@@ -192,6 +192,12 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                 subUser.groups.UnionWith(groups);
             }
         }
+        
+        internal Dictionary<SmallString, DatabaseSubs> GetDatabaseSubs(EventSubClient subClient) {
+            lock (intern.monitor) {
+                return new Dictionary<SmallString, DatabaseSubs>(subClient.databaseSubs);
+            }
+        }
     #endregion
 
     #region - event distribution

@@ -189,7 +189,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             if (dispatcher != null && !context.ClientId.IsNull() && dispatcher.TryGetSubscriber(context.ClientId, out var client)) {
                 result.queueEvents          = client.queueEvents;
                 result.queuedEvents         = client.QueuedEventsCount;
-                result.subscriptionEvents   = ClusterUtils.GetSubscriptionEvents(client, default);
+                result.subscriptionEvents   = ClusterUtils.GetSubscriptionEvents(dispatcher, client, default);
                 /* if (clientParam != null && clientParam.syncEvents) {
                     client.SendUnacknowledgedEvents(); see comment above
                 } */

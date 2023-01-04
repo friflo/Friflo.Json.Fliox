@@ -2,7 +2,6 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -31,10 +30,12 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         public              bool                                Connected => eventReceiver?.IsOpen() ?? false;
         [DebuggerBrowsable(Never)]
         public              IHubLogger                          Logger { get; }
-        
-        /// key: database - concurrent: database subs may change while running <see cref="EventDispatcher.EnqueueSyncTasks"/>
+        /// <summary>
+        /// key: database. <b>Note</b> requires lock <see cref="EventDispatcherIntern.monitor"/>. <br/>
+        /// Use thread safe <see cref="EventDispatcher.GetDatabaseSubs"/>
+        /// </summary> 
         [DebuggerBrowsable(Never)]
-        internal readonly   ConcurrentDictionary<SmallString, DatabaseSubs> databaseSubs;
+        internal readonly   Dictionary<SmallString, DatabaseSubs> databaseSubs;
         // ReSharper disable once UnusedMember.Local - expose Dictionary as list in Debugger
         private             ICollection<DatabaseSubs>           DatabaseSubs => databaseSubs.Values;
         
@@ -70,7 +71,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             this.clientId       = clientId;
             this.user           = user;
             this.dispatcher     = dispatcher;
-            databaseSubs        = new ConcurrentDictionary<SmallString, DatabaseSubs>(SmallString.Equality);
+            databaseSubs        = new Dictionary<SmallString, DatabaseSubs>(SmallString.Equality);
         }
         
         internal bool UpdateTarget(EventReceiver eventReceiver) {

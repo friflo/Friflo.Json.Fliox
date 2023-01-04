@@ -12,10 +12,15 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
     public static class ClusterUtils
     {
         // --- SubscriptionEvents
-        internal static SubscriptionEvents? GetSubscriptionEvents (EventSubClient subscriber, SubscriptionEvents? subscriptionEvents) {
+        internal static SubscriptionEvents? GetSubscriptionEvents (
+            EventDispatcher     dispatcher,
+            EventSubClient      subscriber,
+            SubscriptionEvents? subscriptionEvents)
+        {
             var changeSubs  = subscriptionEvents?.changeSubs;
             var msgSubs     = subscriptionEvents?.messageSubs;
-            foreach (var pair in subscriber.databaseSubs) {
+            var subsMap     = dispatcher.GetDatabaseSubs(subscriber);
+            foreach (var pair in subsMap) {
                 var databaseSubs = pair.Value;
                 msgSubs     = databaseSubs.GetMessageSubscriptions(msgSubs);
                 changeSubs  = databaseSubs.GetChangeSubscriptions (changeSubs);
