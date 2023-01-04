@@ -13,6 +13,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         internal    readonly    SmallString     container;
         internal    readonly    EntityChange    changes;    // flags
         internal    readonly    JsonFilter      jsonFilter;
+        /// <summary>normalized string representation of <see cref="jsonFilter"/> used for comparison</summary>
         internal    readonly    string          filter;
         
         public      override    string          ToString() => GetString();
@@ -32,11 +33,11 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             return sb.ToString();
         } 
 
-        internal ChangeSub(string container, List<EntityChange> changes, JsonFilter jsonFilter, string filter) {
+        internal ChangeSub(string container, List<EntityChange> changes, JsonFilter jsonFilter) {
             this.container  = new SmallString(container);
             this.changes    = EntityChangeUtils.ListToFlags(changes);
             this.jsonFilter = jsonFilter;
-            this.filter     = filter;
+            filter          = jsonFilter?.Linq;
         }
         
         internal int HashCode() {
