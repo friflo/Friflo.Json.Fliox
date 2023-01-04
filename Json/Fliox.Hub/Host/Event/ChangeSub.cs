@@ -20,14 +20,20 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         
         private string GetString() {
             var sb = new StringBuilder();
+            AppendTo(sb);
+            return sb.ToString();
+        }
+        
+        internal void AppendTo(StringBuilder sb) {
+            sb.Append('\'');
             sb.Append(container.value);
+            sb.Append('\'');
             sb.Append(": ");
             sb.Append(changes);
             if (filter != null) {
                 sb.Append(", filter: ");
                 sb.Append(filter);
             }
-            return sb.ToString();
         } 
 
         internal ChangeSub(string container, List<EntityChange> changes, JsonFilter jsonFilter) {

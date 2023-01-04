@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Text;
 using Friflo.Json.Fliox.Hub.DB.Cluster;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Transform;
@@ -22,7 +23,8 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         /// <summary> 'immutable' array of <see cref="changeSubsMap"/> values use for performance </summary>
         internal            ChangeSub[]                     changeSubs;
 
-        internal            int     SubCount => changeSubs.Length + messageSubs.Count + messagePrefixSubs.Count;
+        public   override   string  ToString()  => GetString();
+        internal            int     SubCount    => changeSubs.Length + messageSubs.Count + messagePrefixSubs.Count;
         
         internal static readonly  DatabaseSubsComparer Equality = new DatabaseSubsComparer();
         
@@ -39,6 +41,38 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             changeSubsMap       = new Dictionary<string, ChangeSub>(other.changeSubsMap);
             changeSubs          = new ChangeSub [other.changeSubs.Length];
             other.changeSubs.CopyTo(changeSubs, 0);
+        }
+        
+        private string GetString() {
+            var sb = new StringBuilder();
+            var first = true;
+            if (messageSubs.Count + messagePrefixSubs.Count > 0) {
+                sb.Append("messages: [");
+                foreach (var message in messageSubs) {
+                    if (!first) sb.Append(", ");
+                    first = false;
+                    sb.Append(message);
+                }
+                foreach (var prefix in messagePrefixSubs) {
+                    if (!first) sb.Append(", ");
+                    first = false;
+                    sb.Append(prefix);
+                    sb.Append('*');
+                }
+                sb.Append(']');
+            }
+            if (changeSubsMap.Count > 0) {
+                first = true;
+                if (sb.Length > 0) sb.Append(", ");
+                sb.Append("changes: [");
+                foreach (var pair in changeSubsMap) {
+                    if (!first) sb.Append(", ");
+                    first = false;
+                    pair.Value.AppendTo(sb);
+                }
+                sb.Append(']');
+            }
+            return sb.ToString();
         }
 
         private bool FilterMessage (string messageName) {
