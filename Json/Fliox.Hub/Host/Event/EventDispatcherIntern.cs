@@ -28,14 +28,14 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         [DebuggerBrowsable(Never)]
         internal readonly   Dictionary<JsonKey, EventSubClient>     sendClientsMap;
         /// key: database name
-        internal readonly   Dictionary<SmallString, DatabaseSubs[]> databaseSubsMap;
+        internal readonly   Dictionary<SmallString, ClientDbSubs[]> databaseSubsMap;
         //
         [DebuggerBrowsable(Never)]
         internal readonly   Dictionary<JsonKey, EventSubUser>       subUsers;
         // ReSharper disable once UnusedMember.Local - expose Dictionary as list in Debugger
         private             ICollection<EventSubUser>               SubUsers    => subUsers.Values;
         
-        private  readonly   Dictionary<string, List<DatabaseSubs>>  databaseSubsBuffer;
+        private  readonly   Dictionary<string, List<ClientDbSubs>>  databaseSubsBuffer;
         
         internal EventDispatcherIntern(EventDispatcher dispatcher) {
             eventDispatcher     = dispatcher;
@@ -43,8 +43,8 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             subClients          = new Dictionary<JsonKey, EventSubClient>   (JsonKey.Equality);
             sendClientsMap      = new Dictionary<JsonKey, EventSubClient>   (JsonKey.Equality);
             subUsers            = new Dictionary<JsonKey, EventSubUser>     (JsonKey.Equality);
-            databaseSubsMap     = new Dictionary<SmallString,DatabaseSubs[]>(SmallString.Equality);
-            databaseSubsBuffer  = new Dictionary<string, List<DatabaseSubs>>(); 
+            databaseSubsMap     = new Dictionary<SmallString,ClientDbSubs[]>(SmallString.Equality);
+            databaseSubsBuffer  = new Dictionary<string, List<ClientDbSubs>>(); 
         }
         
         /// <summary> requires lock <see cref="monitor"/> </summary>
@@ -63,7 +63,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             } else {
                 subClient = GetOrCreateSubClient(user, clientId, eventReceiver);
                 if (!subClient.databaseSubs.TryGetValue(database, out var databaseSubs)) {
-                    databaseSubs = new DatabaseSubs(subClient, database.value);
+                    databaseSubs = new DatabaseSubs(database.value);
                     subClient.databaseSubs.TryAdd(database, databaseSubs);
                 }
                 databaseSubs.AddChangeSubscription(subscribe);
@@ -126,7 +126,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             } else {
                 subClient = GetOrCreateSubClient(user, clientId, eventReceiver);
                 if (!subClient.databaseSubs.TryGetValue(database, out var databaseSubs)) {
-                    databaseSubs = new DatabaseSubs(subClient, database.value);
+                    databaseSubs = new DatabaseSubs(database.value);
                     subClient.databaseSubs.TryAdd(database, databaseSubs);
                 }
                 databaseSubs.AddMessageSubscription(subscribe.name);
@@ -142,12 +142,13 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             foreach (var pair in sendClientsMap) {
                 var subClient = pair.Value;
                 foreach (var databaseSubPair in subClient.databaseSubs) {
-                    var databaseSubs = databaseSubPair.Value;
+                    var databaseSubs    = databaseSubPair.Value;
+                    var clientSub       = new ClientDbSubs(subClient, databaseSubs);
                     if (databaseSubsBuffer.TryGetValue(databaseSubs.database, out var list)) {
-                        list.Add(databaseSubs);
+                        list.Add(clientSub);
                         continue;
                     }
-                    databaseSubsBuffer[databaseSubs.database] = new List<DatabaseSubs>{ databaseSubs };
+                    databaseSubsBuffer[databaseSubs.database] = new List<ClientDbSubs>{ clientSub };
                 }
             }
             databaseSubsMap.Clear();
@@ -166,6 +167,17 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                 clients[index++] = pair.Value;
             }
             eventDispatcher.sendClients = clients;
+        }
+    }
+    
+    internal readonly struct ClientDbSubs
+    {
+        internal readonly   EventSubClient  client;
+        internal readonly   DatabaseSubs    subs;
+        
+        internal ClientDbSubs(EventSubClient client, DatabaseSubs subs) {
+            this.client = client;
+            this.subs   = subs;
         }
     }
 }

@@ -210,7 +210,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         private void GetSubClientAndDatabaseSubs(
                 SyncContext     syncContext,
             out EventSubClient  subClient,
-            out DatabaseSubs[]  databaseSubsArray)
+            out ClientDbSubs[]  databaseSubsArray)
         {
             JsonKey  clientId = syncContext.clientId;
             lock (intern.monitor) {
@@ -310,8 +310,8 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                 writer.Pretty           = false;    // write sub's as one liner
                 writer.WriteNullMembers = false;
                 
-                foreach (var databaseSubs in databaseSubsArray) {
-                    var client = databaseSubs.client;
+                foreach (var clientSub in databaseSubsArray) {
+                    var client = clientSub.client;
                     if (!client.queueEvents && !client.Connected) {
                         lock (intern.monitor) {
                             intern.sendClientsMap.Remove(client.clientId);
@@ -319,7 +319,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                         }
                         continue;
                     }
-                    if (!databaseSubs.CreateEventTasks(syncTasks, client, ref syncEvent.tasks, jsonEvaluator)) {
+                    if (!clientSub.subs.CreateEventTasks(syncTasks, client, ref syncEvent.tasks, jsonEvaluator)) {
                         continue;
                     }
                     SerializeEventTasks(syncEvent.tasks, ref syncEvent.tasksJson, writer, memoryBuffer);
