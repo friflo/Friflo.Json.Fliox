@@ -15,12 +15,14 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
     /// </summary>
     internal sealed class DatabaseSubs
     {
-        private  readonly   HashSet<string>     messageSubs         = new HashSet<string>();
-        private  readonly   HashSet<string>     messagePrefixSubs   = new HashSet<string>();
-        /// key: <see cref="SubscribeChanges.container"/> - used array instead of Dictionary for performance
-        internal            ChangeSub[]         changeSubs          = Array.Empty<ChangeSub>();
+        private  readonly   HashSet<string>                 messageSubs         = new HashSet<string>();
+        private  readonly   HashSet<string>                 messagePrefixSubs   = new HashSet<string>();
+        /// <summary> key: <see cref="SubscribeChanges.container"/> </summary>
+        private  readonly   Dictionary<string, ChangeSub>   changeSubsMap       = new Dictionary<string, ChangeSub>();
+        /// <summary> 'immutable' array of <see cref="changeSubsMap"/> values use for performance </summary>
+        internal            ChangeSub[]                     changeSubs          = Array.Empty<ChangeSub>();
 
-        internal            int                 SubCount => changeSubs.Length + messageSubs.Count + messagePrefixSubs.Count;
+        internal            int     SubCount => changeSubs.Length + messageSubs.Count + messagePrefixSubs.Count;
         
         internal static readonly  DatabaseSubsComparer Equality = new DatabaseSubsComparer();
 
@@ -58,7 +60,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                 var changeSubscription = new ChangeSubscription {
                     container   = sub.container.value,
                     changes     = EntityChangeUtils.FlagsToList(sub.changes),
-                    filter      = sub.jsonFilter?.Linq
+                    filter      = sub.filter
                 };
                 subs.Add(changeSubscription);
             }
@@ -83,18 +85,20 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             }
         }
 
-        internal void RemoveChangeSubscription(string container) {
-            var list = new List<ChangeSub>(changeSubs.Length);
-            foreach (var changeSub in changeSubs) {
-                if (changeSub.container.value == container)
-                    continue;
-                list.Add(changeSub);
+        private void UpdateChangeSubs() {
+            var subs = new ChangeSub[changeSubsMap.Count];
+            int index = 0;
+            foreach (var pair in changeSubsMap) {
+                subs[index++] = pair.Value;
             }
-            if (changeSubs.Length == list.Count)
-                return;
-            changeSubs = list.ToArray();
+            changeSubs = subs;
         }
-
+        
+        internal void RemoveChangeSubscription(string container) {
+            changeSubsMap.Remove(container);
+            UpdateChangeSubs();
+        }
+        
         internal void AddChangeSubscription(SubscribeChanges subscribe) {
             var         filter      = subscribe.filter;
             JsonFilter  jsonFilter  = null;
@@ -106,15 +110,9 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                     throw new InvalidOperationException($"filter {filter} is not a FilterOperation");
                 jsonFilter      = filterOperation.IsTrue ? null : new JsonFilter(filterOperation);
             }
-            var changeSub   = new ChangeSub(subscribe.container, subscribe.changes, jsonFilter);
-            
-            // remove old change subscription if exist and add new one
-            RemoveChangeSubscription(subscribe.container);
-            var oldLen          = changeSubs.Length;
-            var newChangeSubs   = new ChangeSub[oldLen + 1];
-            Array.Copy(changeSubs, newChangeSubs, oldLen);
-            changeSubs          = newChangeSubs;
-            changeSubs[oldLen]  = changeSub;
+            var changeSub = new ChangeSub(subscribe.container, subscribe.changes, jsonFilter);
+            changeSubsMap[subscribe.container] = changeSub;
+            UpdateChangeSubs();
         }
 
         /// <summary>
