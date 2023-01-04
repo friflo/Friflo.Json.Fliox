@@ -37,14 +37,17 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         
         private  readonly   Dictionary<string, List<ClientDbSubs>>  databaseSubsBuffer;
         
+        private  readonly   Dictionary<DatabaseSubs, DatabaseSubs>  uniqueDatabaseSubsBuffer;
+        
         internal EventDispatcherIntern(EventDispatcher dispatcher) {
-            eventDispatcher     = dispatcher;
-            monitor             = new object();
-            subClients          = new Dictionary<JsonKey, EventSubClient>   (JsonKey.Equality);
-            sendClientsMap      = new Dictionary<JsonKey, EventSubClient>   (JsonKey.Equality);
-            subUsers            = new Dictionary<JsonKey, EventSubUser>     (JsonKey.Equality);
-            databaseSubsMap     = new Dictionary<SmallString,ClientDbSubs[]>(SmallString.Equality);
-            databaseSubsBuffer  = new Dictionary<string, List<ClientDbSubs>>(); 
+            eventDispatcher         = dispatcher;
+            monitor                 = new object();
+            subClients              = new Dictionary<JsonKey, EventSubClient>   (JsonKey.Equality);
+            sendClientsMap          = new Dictionary<JsonKey, EventSubClient>   (JsonKey.Equality);
+            subUsers                = new Dictionary<JsonKey, EventSubUser>     (JsonKey.Equality);
+            databaseSubsMap         = new Dictionary<SmallString,ClientDbSubs[]>(SmallString.Equality);
+            databaseSubsBuffer      = new Dictionary<string, List<ClientDbSubs>>(); 
+            uniqueDatabaseSubsBuffer= new Dictionary<DatabaseSubs, DatabaseSubs>(DatabaseSubs.Equality);
         }
         
         /// <summary> requires lock <see cref="monitor"/> </summary>
@@ -139,6 +142,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             foreach (var pair in databaseSubsBuffer) {
                 pair.Value.Clear();
             }
+            // --- create a List<ClientDbSubs> for each database
             foreach (var pair in sendClientsMap) {
                 var subClient = pair.Value;
                 foreach (var databaseSubPair in subClient.databaseSubs) {
@@ -152,6 +156,24 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                     databaseSubsBuffer[database] = new List<ClientDbSubs>{ clientSub };
                 }
             }
+            // --- find unique DatabaseSubs for each database and replace original DatabaseSubs with unique clone
+            // This is done for optimization.
+            // This enables creating a serialized SyncEvent only once for all clients using the same DatabaseSubs.
+            foreach (var pair in databaseSubsBuffer) {
+                uniqueDatabaseSubsBuffer.Clear();
+                var clientDbSubs = pair.Value;
+                for (int n = 0; n < clientDbSubs.Count; n++) {
+                    var clientDbSub = clientDbSubs[n];
+                    if (uniqueDatabaseSubsBuffer.TryGetValue(clientDbSub.subs, out var equalSubs)) {
+                        clientDbSubs[n] = new ClientDbSubs(clientDbSub.client, equalSubs);
+                        continue;
+                    }
+                    var cloneSubs = new DatabaseSubs(clientDbSub.subs);
+                    uniqueDatabaseSubsBuffer.Add(cloneSubs, cloneSubs);
+                    clientDbSubs[n] = new ClientDbSubs(clientDbSub.client, cloneSubs);
+                }
+            }
+            // --- create an 'immutable' ClientDbSubs[] from List<ClientDbSubs> for each database
             databaseSubsMap.Clear();
             foreach (var pair in databaseSubsBuffer) {
                 var subs = pair.Value;
@@ -162,6 +184,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                 var database        = pair.Key;
                 databaseSubsMap.Add(new SmallString(database), databaseSubs);
             }
+            // --- create EventSubClient[] containing all clients to send event to
             var clients = new EventSubClient[sendClientsMap.Count];
             var index = 0;
             foreach (var pair in sendClientsMap) {

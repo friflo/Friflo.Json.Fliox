@@ -15,16 +15,31 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
     /// </summary>
     internal sealed class DatabaseSubs
     {
-        private  readonly   HashSet<string>                 messageSubs         = new HashSet<string>();
-        private  readonly   HashSet<string>                 messagePrefixSubs   = new HashSet<string>();
+        private  readonly   HashSet<string>                 messageSubs;
+        private  readonly   HashSet<string>                 messagePrefixSubs;
         /// <summary> key: <see cref="SubscribeChanges.container"/> </summary>
-        private  readonly   Dictionary<string, ChangeSub>   changeSubsMap       = new Dictionary<string, ChangeSub>();
+        private  readonly   Dictionary<string, ChangeSub>   changeSubsMap;
         /// <summary> 'immutable' array of <see cref="changeSubsMap"/> values use for performance </summary>
-        internal            ChangeSub[]                     changeSubs          = Array.Empty<ChangeSub>();
+        internal            ChangeSub[]                     changeSubs;
 
         internal            int     SubCount => changeSubs.Length + messageSubs.Count + messagePrefixSubs.Count;
         
         internal static readonly  DatabaseSubsComparer Equality = new DatabaseSubsComparer();
+        
+        internal DatabaseSubs() {
+            messageSubs         = new HashSet<string>();
+            messagePrefixSubs   = new HashSet<string>();
+            changeSubsMap       = new Dictionary<string, ChangeSub>();
+            changeSubs          = Array.Empty<ChangeSub>();
+        }
+        
+        internal DatabaseSubs(DatabaseSubs other) {
+            messageSubs         = new HashSet<string>(other.messageSubs);
+            messagePrefixSubs   = new HashSet<string>(other.messagePrefixSubs);
+            changeSubsMap       = new Dictionary<string, ChangeSub>(other.changeSubsMap);
+            changeSubs          = new ChangeSub [other.changeSubs.Length];
+            other.changeSubs.CopyTo(changeSubs, 0);
+        }
 
         private bool FilterMessage (string messageName) {
             if (messageSubs.Contains(messageName))
@@ -215,14 +230,14 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         
         internal int HashCode() {
             int hashCode = 0;
-            foreach (var item in messageSubs) {
-                hashCode ^= item.GetHashCode(); 
+            foreach (var message in messageSubs) {
+                hashCode ^= message.GetHashCode(); 
             }
-            foreach (var item in messagePrefixSubs) {
-                hashCode ^= item.GetHashCode(); 
+            foreach (var prefix in messagePrefixSubs) {
+                hashCode ^= prefix.GetHashCode(); 
             }
-            foreach (var item in changeSubs) {
-                hashCode ^= item.HashCode();
+            foreach (var changeSub in changeSubs) {
+                hashCode ^= changeSub.HashCode();
             }
             return hashCode;
         }

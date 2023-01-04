@@ -10,7 +10,7 @@ using Friflo.Json.Fliox.Transform;
 namespace Friflo.Json.Fliox.Hub.Host.Event
 {
     internal readonly struct ChangeSub {
-        internal    readonly    SmallString     container;
+        internal    readonly    SmallString     container;  // never null
         internal    readonly    EntityChange    changes;    // flags
         internal    readonly    JsonFilter      jsonFilter;
         /// <summary>normalized string representation of <see cref="jsonFilter"/> used for comparison</summary>
@@ -44,7 +44,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         }
         
         internal int HashCode() {
-            return container.value.GetHashCode() ^ (int)changes ^ filter.GetHashCode();
+            return container.value.GetHashCode() ^ (int)changes ^ (filter?.GetHashCode() ?? 0);
         }
         
         internal static bool IsEqual(Dictionary<string, ChangeSub> x, Dictionary<string, ChangeSub> y) {
