@@ -98,9 +98,10 @@ namespace Friflo.Json.Fliox.Hub.Host.Accumulator
             }
             var writeBuffer = databaseChanges.writeBuffer;
             var values      = writeBuffer.values;
+            var valueBuffer = writeBuffer.valueBuffer;
             writeBuffer.tasks.Add(new ChangeTask(container, taskType, values.Count, entities.Count));
             foreach (var entity in entities) {
-                var value = writeBuffer.valueBuffer.Add(entity.value);
+                var value = valueBuffer.Add(entity.value);
                 values.Add(value);
             }
         }
