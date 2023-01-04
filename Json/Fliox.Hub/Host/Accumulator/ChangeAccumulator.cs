@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using Friflo.Json.Burst.Utils;
 using Friflo.Json.Fliox.Hub.Host.Event;
 using Friflo.Json.Fliox.Hub.Protocol;
@@ -23,7 +24,6 @@ namespace Friflo.Json.Fliox.Hub.Host.Accumulator
     {
         private  readonly   Dictionary<EntityDatabase, DatabaseChanges> databaseChangesMap;
         private  readonly   List<DatabaseChanges>                       databaseChangesList;
-        private  readonly   List<ClientSubs>                            clientSubsList;
         private  readonly   HashSet<ContainerChanges>                   containerChangesSet;
         internal readonly   MemoryBuffer                                rawTaskBuffer;
         internal readonly   WriteTaskModel                              writeTaskModel;
@@ -34,7 +34,6 @@ namespace Friflo.Json.Fliox.Hub.Host.Accumulator
             syncEvent           = new SyncEvent { tasksJson = new List<JsonValue>() };
             databaseChangesMap  = new Dictionary<EntityDatabase, DatabaseChanges>();
             databaseChangesList = new List<DatabaseChanges>();
-            clientSubsList      = new List<ClientSubs>();
             containerChangesSet = new HashSet<ContainerChanges>();
             rawTaskBuffer       = new MemoryBuffer(1024);
             writeTaskModel      = new WriteTaskModel();
@@ -123,7 +122,9 @@ namespace Friflo.Json.Fliox.Hub.Host.Accumulator
             keys.AddRange(ids);
         }
 
-        internal void AccumulateTasks(EventSubClient[] subClients, ObjectWriter writer)
+        internal void AccumulateTasks(
+            Dictionary<SmallString, ImmutableArray<ClientDbSubs>>   databaseSubsMap,
+            ObjectWriter                                            writer)
         {
             databaseChangesList.Clear();
             lock (databaseChangesMap) {
@@ -150,42 +151,36 @@ namespace Friflo.Json.Fliox.Hub.Host.Accumulator
                     container.AddAccumulatedRawTask(context);
                     container.currentType = TaskType.error;
                 }
-                EnqueueSyncEvents(databaseChanges.dbName, subClients, writer);
+                var clientDbSubs = databaseSubsMap[databaseChanges.dbName];
+                EnqueueSyncEvents(clientDbSubs, writer);
                 foreach (var pair in databaseChanges.containers) {
                     pair.Value.Reset();
                 }
             }
         }
         
-        private void EnqueueSyncEvents(in SmallString database, EventSubClient[] subClients, ObjectWriter writer) {
-            syncEvent.db = database.value;
-            clientSubsList.Clear();
-            foreach (var subClient in subClients) {
-                if (!subClient.databaseSubs.TryGetValue(database, out var databaseSubs))
-                    continue;
-                clientSubsList.Add(new ClientSubs(subClient, databaseSubs));
-            }
-            if (clientSubsList.Count == 0) {
+        private void EnqueueSyncEvents(ImmutableArray<ClientDbSubs> clientDbSubs, ObjectWriter writer) {
+            if (clientDbSubs.Length == 0) {
                 return;
             }
             foreach (var containerChanges in containerChangesSet) {
                 var syncEventContainerTasks = containerChanges.CreateSyncEventAllTasks(syncEvent, writer);
-                foreach (var clientSubs in clientSubsList) {
-                    if (EnqueueIndividualSyncEvent(containerChanges, clientSubs, writer)) {
+                foreach (var clientDbSub in clientDbSubs) {
+                    if (EnqueueIndividualSyncEvent(containerChanges, clientDbSub, writer)) {
                         continue;
                     }
-                    clientSubs.client.EnqueueEvent(syncEventContainerTasks);
+                    clientDbSub.client.EnqueueEvent(syncEventContainerTasks);
                 }
             }
         }
         
         private bool EnqueueIndividualSyncEvent(
             ContainerChanges    container,
-            in ClientSubs       clientSubs,
+            in ClientDbSubs     clientDbSubs,
             ObjectWriter        writer)
         {
             syncEvent.tasksJson.Clear();
-            foreach (var changeSub in clientSubs.changesSubs) {
+            foreach (var changeSub in clientDbSubs.subs.changeSubs) {
                 if (!changeSub.container.IsEqual(container.name)) {
                     continue;
                 }
@@ -201,7 +196,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Accumulator
             }
             if (syncEvent.tasksJson.Count > 0) {
                 var rawSyncEvent = RemoteUtils.SerializeSyncEvent(syncEvent, writer);
-                clientSubs.client.EnqueueEvent(rawSyncEvent);
+                clientDbSubs.client.EnqueueEvent(rawSyncEvent);
             }
             return true;
         }

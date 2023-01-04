@@ -2,7 +2,6 @@
 // See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
-using Friflo.Json.Fliox.Hub.Host.Event;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Utils;
@@ -56,17 +55,6 @@ namespace Friflo.Json.Fliox.Hub.Host.Accumulator
         internal RawTask(EntityChange change, in JsonValue value) {
             this.change     = change;
             this.value      = value;
-        }
-    }
-    
-    internal readonly struct ClientSubs
-    {
-        internal readonly EventSubClient    client;
-        internal readonly ChangeSub[]       changesSubs;
-        
-        internal ClientSubs(EventSubClient client, DatabaseSubs subs) {
-            this.client         = client;
-            this.changesSubs    = subs.changeSubs;
         }
     }
 }
