@@ -11,27 +11,18 @@ using Friflo.Json.Fliox.Transform;
 namespace Friflo.Json.Fliox.Hub.Host.Event
 {
     /// <summary>
-    /// Contain all subscriptions to entity changes and messages for a specific <see cref="database"/>. <br/>
+    /// Contain all subscriptions to entity changes and messages for a specific database. <br/>
     /// A <see cref="EventSubClient"/> has a single <see cref="DatabaseSubs"/> instance for each database.
     /// </summary>
     internal sealed class DatabaseSubs
     {
-        internal readonly   string                          database;
-
-        public   override   string                          ToString()          => $"database: {database}";
-
-        private  readonly   HashSet<string>                 messageSubs         = new HashSet<string>();
-        private  readonly   HashSet<string>                 messagePrefixSubs   = new HashSet<string>();
+        private  readonly   HashSet<string>     messageSubs         = new HashSet<string>();
+        private  readonly   HashSet<string>     messagePrefixSubs   = new HashSet<string>();
         /// key: <see cref="SubscribeChanges.container"/> - used array instead of Dictionary for performance
-        internal            ChangeSub[]                     changeSubs          = Array.Empty<ChangeSub>();
+        internal            ChangeSub[]         changeSubs          = Array.Empty<ChangeSub>();
 
-        internal            int                             SubCount => changeSubs.Length + messageSubs.Count + messagePrefixSubs.Count; 
+        internal            int                 SubCount => changeSubs.Length + messageSubs.Count + messagePrefixSubs.Count; 
 
-        
-        internal DatabaseSubs (string database) {
-            this.database   = database;
-        }
-        
         private bool FilterMessage (string messageName) {
             if (messageSubs.Contains(messageName))
                 return true;

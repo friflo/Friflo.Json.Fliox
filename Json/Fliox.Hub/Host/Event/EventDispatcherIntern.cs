@@ -63,7 +63,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             } else {
                 subClient = GetOrCreateSubClient(user, clientId, eventReceiver);
                 if (!subClient.databaseSubs.TryGetValue(database, out var databaseSubs)) {
-                    databaseSubs = new DatabaseSubs(database.value);
+                    databaseSubs = new DatabaseSubs();
                     subClient.databaseSubs.TryAdd(database, databaseSubs);
                 }
                 databaseSubs.AddChangeSubscription(subscribe);
@@ -126,7 +126,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             } else {
                 subClient = GetOrCreateSubClient(user, clientId, eventReceiver);
                 if (!subClient.databaseSubs.TryGetValue(database, out var databaseSubs)) {
-                    databaseSubs = new DatabaseSubs(database.value);
+                    databaseSubs = new DatabaseSubs();
                     subClient.databaseSubs.TryAdd(database, databaseSubs);
                 }
                 databaseSubs.AddMessageSubscription(subscribe.name);
@@ -142,13 +142,14 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             foreach (var pair in sendClientsMap) {
                 var subClient = pair.Value;
                 foreach (var databaseSubPair in subClient.databaseSubs) {
+                    var database        = databaseSubPair.Key.value;
                     var databaseSubs    = databaseSubPair.Value;
                     var clientSub       = new ClientDbSubs(subClient, databaseSubs);
-                    if (databaseSubsBuffer.TryGetValue(databaseSubs.database, out var list)) {
+                    if (databaseSubsBuffer.TryGetValue(database, out var list)) {
                         list.Add(clientSub);
                         continue;
                     }
-                    databaseSubsBuffer[databaseSubs.database] = new List<ClientDbSubs>{ clientSub };
+                    databaseSubsBuffer[database] = new List<ClientDbSubs>{ clientSub };
                 }
             }
             databaseSubsMap.Clear();
