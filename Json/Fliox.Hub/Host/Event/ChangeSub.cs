@@ -18,9 +18,6 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         
         public      override    string          ToString() => GetString();
         
-        internal static readonly  ChangeSubComparer Equality = new ChangeSubComparer();
-
-        
         private string GetString() {
             var sb = new StringBuilder();
             sb.Append(container.value);
@@ -40,21 +37,29 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             filter          = jsonFilter?.Linq;
         }
         
+        private bool IsEqual(in ChangeSub other) {
+            return container.value == other.container.value &&
+                   changes         == other.changes         &&
+                   filter          == other.filter;
+        }
+        
         internal int HashCode() {
             return container.value.GetHashCode() ^ (int)changes ^ filter.GetHashCode();
         }
-    }
-    
-    internal sealed class ChangeSubComparer : IEqualityComparer<ChangeSub>
-    {
-        public bool Equals(ChangeSub x, ChangeSub y) {
-            return x.container.value == y.container.value &&
-                   x.changes         == y.changes         &&
-                   x.filter          == y.filter;
-        }
-
-        public int GetHashCode(ChangeSub value) {
-            return value.HashCode();
+        
+        internal static bool IsEqual(Dictionary<string, ChangeSub> x, Dictionary<string, ChangeSub> y) {
+            if (x.Count != y.Count) {
+                return false;
+            }
+            foreach (var xPair in x) {
+                if (!y.TryGetValue(xPair.Key, out var yItem)) {
+                    return false;
+                }
+                if (!xPair.Value.IsEqual(yItem)) {
+                    return false;
+                }
+            }
+            return true;
         }
     }
 }

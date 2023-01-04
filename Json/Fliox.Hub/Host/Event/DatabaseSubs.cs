@@ -208,8 +208,9 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         }
         
         internal bool IsEqual(DatabaseSubs other) {
-            return  messageSubs.        SetEquals(other.messageSubs) &&
-                    messagePrefixSubs.  SetEquals(other.messagePrefixSubs);
+            return  messageSubs.        SetEquals(other.messageSubs)        &&
+                    messagePrefixSubs.  SetEquals(other.messagePrefixSubs)  &&
+                    ChangeSub.IsEqual(changeSubsMap, other.changeSubsMap);
         }
         
         internal int HashCode() {
