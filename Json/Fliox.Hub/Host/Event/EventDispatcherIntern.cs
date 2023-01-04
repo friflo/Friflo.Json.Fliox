@@ -145,7 +145,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             foreach (var pair in databaseSubsBuffer) {
                 pair.Value.Clear();
             }
-            // --- create a List<ClientDbSubs> for each database
+            // --- create / update List<ClientDbSubs> for each database
             foreach (var pair in sendClientsMap) {
                 var subClient = pair.Value;
                 foreach (var databaseSubPair in subClient.databaseSubs) {
