@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using Friflo.Json.Burst.Utils;
 using Friflo.Json.Fliox.Hub.DB.Cluster;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Transform;
@@ -21,7 +20,9 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         /// key: <see cref="SubscribeChanges.container"/> - used array instead of Dictionary for performance
         internal            ChangeSub[]         changeSubs          = Array.Empty<ChangeSub>();
 
-        internal            int                 SubCount => changeSubs.Length + messageSubs.Count + messagePrefixSubs.Count; 
+        internal            int                 SubCount => changeSubs.Length + messageSubs.Count + messagePrefixSubs.Count;
+        
+        internal static readonly  DatabaseSubsComparer Equality = new DatabaseSubsComparer();
 
         private bool FilterMessage (string messageName) {
             if (messageSubs.Contains(messageName))
@@ -105,7 +106,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                     throw new InvalidOperationException($"filter {filter} is not a FilterOperation");
                 jsonFilter      = filterOperation.IsTrue ? null : new JsonFilter(filterOperation);
             }
-            var changeSub   = new ChangeSub(subscribe.container, subscribe.changes, jsonFilter);
+            var changeSub   = new ChangeSub(subscribe.container, subscribe.changes, jsonFilter, filter);
             
             // remove old change subscription if exist and add new one
             RemoveChangeSubscription(subscribe.container);
@@ -207,19 +208,36 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             }
             return isEventTarget;
         }
+        
+        internal bool IsEqual(DatabaseSubs other) {
+            return  messageSubs.        SetEquals(other.messageSubs) &&
+                    messagePrefixSubs.  SetEquals(other.messagePrefixSubs);
+        }
+        
+        internal int HashCode() {
+            int hashCode = 0;
+            foreach (var item in messageSubs) {
+                hashCode ^= item.GetHashCode(); 
+            }
+            foreach (var item in messagePrefixSubs) {
+                hashCode ^= item.GetHashCode(); 
+            }
+            foreach (var item in changeSubs) {
+                hashCode ^= item.HashCode();
+            }
+            return hashCode;
+        }
     }
     
-    internal readonly struct ChangeSub {
-        internal    readonly    SmallString     container;
-        internal    readonly    EntityChange    changes;    // flags
-        internal    readonly    JsonFilter      jsonFilter;
+    internal sealed class DatabaseSubsComparer : IEqualityComparer<DatabaseSubs>
+    {
+        public bool Equals(DatabaseSubs x, DatabaseSubs y) {
+            // ReSharper disable once PossibleNullReferenceException
+            return x.IsEqual(y);
+        }
 
-        public      override    string          ToString() => $"{container.value}: {changes}";
-
-        internal ChangeSub(string container, List<EntityChange> changes, JsonFilter jsonFilter) {
-            this.container  = new SmallString(container);
-            this.changes    = EntityChangeUtils.ListToFlags(changes);
-            this.jsonFilter = jsonFilter;
+        public int GetHashCode(DatabaseSubs value) {
+            return value.HashCode();
         }
     }
 }
