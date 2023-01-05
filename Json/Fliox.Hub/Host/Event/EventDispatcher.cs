@@ -139,7 +139,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         }
     #endregion
         
-    #region - add / remove subscritions
+    #region - add / remove subscriptions
         internal bool SubscribeMessage(
             in SmallString database,    SubscribeMessage subscribe,     User       user,
             in JsonKey     clientId,    EventReceiver    eventReceiver, out string error)

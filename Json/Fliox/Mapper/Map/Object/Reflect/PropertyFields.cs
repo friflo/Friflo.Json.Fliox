@@ -75,7 +75,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
         }
         
         public PropField<T> GetField (ref Bytes fieldName) {
-            // Note: its likely that hashcode ist not set properly. So calculate anyway
+            // Note: its likely that hashCode is not set properly. So calculate anyway
             var key = new BytesHash(fieldName);
             fieldMap.TryGetValue(key, out var result);
             return result;
