@@ -23,7 +23,6 @@ using static Friflo.Json.Fliox.Hub.Host.ExecutionType;
 // using System.Threading.Tasks;    =>   only FlioxHub-async.cs contains a single async method
 
 // ReSharper disable MethodHasAsyncOverload
-// ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.Host
 {
     /// <summary>

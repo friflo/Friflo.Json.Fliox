@@ -9,6 +9,7 @@ using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Utils;
 
+// ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.Client
 {
     public partial class FlioxClient

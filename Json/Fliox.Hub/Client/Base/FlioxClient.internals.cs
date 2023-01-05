@@ -19,6 +19,7 @@ using Friflo.Json.Fliox.Utils;
 [assembly: CLSCompliant(true)]
 #endif
 
+// ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.Client
 {
     // --------------------------------- FlioxClient internals ---------------------------------

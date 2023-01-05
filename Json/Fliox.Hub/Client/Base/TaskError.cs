@@ -10,6 +10,7 @@ using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 
+// ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.Client
 {
     /// <summary>Describe the type of a <see cref="TaskError"/></summary>

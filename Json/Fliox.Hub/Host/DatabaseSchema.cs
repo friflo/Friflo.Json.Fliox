@@ -14,7 +14,6 @@ using Friflo.Json.Fliox.Schema.Native;
 using Friflo.Json.Fliox.Schema.Validation;
 using static System.Diagnostics.DebuggerBrowsableState;
 
-// ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.Host
 {
     /// <summary>

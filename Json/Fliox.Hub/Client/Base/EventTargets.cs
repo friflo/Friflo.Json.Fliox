@@ -3,6 +3,7 @@
 
 using System.Collections.Generic;
 
+// ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.Client
 {
     // ---------------------------------------------- EventTargets ----------------------------------------------

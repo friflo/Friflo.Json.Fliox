@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using Friflo.Json.Fliox.Hub.Client.Internal;
 
+// ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.Client
 {
     // --- Relation

@@ -12,6 +12,7 @@ using Friflo.Json.Fliox.Hub.Protocol;
 
 // ReSharper disable MethodHasAsyncOverload
 // ReSharper disable InconsistentlySynchronizedField
+// ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.Client
 {
     public partial class FlioxClient

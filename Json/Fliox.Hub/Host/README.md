@@ -101,7 +101,7 @@ HTTP features in detail:
 
 - Enable **user authentication** and **authorization of tasks** send by a user
 
-- Assign a [DatabaseSchema](Base/DatabaseSchema.cs) to a database to:
+- Assign a [DatabaseSchema](DatabaseSchema.cs) to a database to:
     - **validate** records written to the database by its schema definition
     
     - create type definitions for various languages: **Typescript**, **C#**, **Kotlin**, **JSON Schema** / **OpenAPI**, **GraphQL and **Html**

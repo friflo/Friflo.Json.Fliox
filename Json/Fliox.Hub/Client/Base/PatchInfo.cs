@@ -5,6 +5,7 @@ using System.Diagnostics;
 using static System.Diagnostics.DebuggerBrowsableState;
 
 // ReSharper disable ConvertToAutoProperty
+// ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.Client
 {
     /// <summary>

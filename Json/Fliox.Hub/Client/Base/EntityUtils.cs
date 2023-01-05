@@ -4,6 +4,7 @@
 using Friflo.Json.Fliox.Hub.Client.Internal.Key;
 using Friflo.Json.Fliox.Hub.Client.Internal.KeyEntity;
 
+// ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.Client
 {
     public static class EntityUtils<TKey,T> where T : class
