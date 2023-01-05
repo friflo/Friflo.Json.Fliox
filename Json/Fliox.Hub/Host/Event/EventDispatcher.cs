@@ -271,7 +271,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         {
             var processed = true;
             foreach (var syncTask in syncTasks) {
-                processed = compactor.AddSyncTask(database, syncTask) && processed;
+                processed = compactor.AddTask(database, syncTask) && processed;
             }
             return processed;
         }
