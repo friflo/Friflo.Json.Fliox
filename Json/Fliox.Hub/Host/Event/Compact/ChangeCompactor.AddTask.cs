@@ -23,20 +23,26 @@ namespace Friflo.Json.Fliox.Hub.Host.Event.Compact
                         return true;
                     }
                 case TaskType.upsert:
+                    var upsert = (UpsertEntities)task;
+                    if (upsert.users != null) {
+                        return false;
+                    }
                     lock (databaseChangesMap) {
                         if (!databaseChangesMap.TryGetValue(database, out var databaseChanges))
                             return false;
-                        var upsert = (UpsertEntities)task;
                         AddWriteTask(databaseChanges, upsert.containerSmall, TaskType.upsert, upsert.entities);
                         return true;
                     }
                 case TaskType.merge:
+                    var merge = (MergeEntities)task;
+                    if (merge.users != null) {
+                        return false;
+                    }
                     lock (databaseChangesMap) {
                         if (!databaseChangesMap.TryGetValue(database, out var databaseChanges))
                             return false;
-                        var merge = (MergeEntities)task;
                         AddWriteTask(databaseChanges, merge.containerSmall, TaskType.merge, merge.patches);
-                        break;
+                        return true;
                     }
                 case TaskType.delete:
                     lock (databaseChangesMap) {
