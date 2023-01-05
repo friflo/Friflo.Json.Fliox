@@ -9,14 +9,14 @@ using Friflo.Json.Fliox.Utils;
 namespace Friflo.Json.Fliox.Hub.Host.Event.Compact
 {
     internal readonly struct ChangeTask {
-        internal readonly TaskType          taskType;
         internal readonly ContainerChanges  containerChanges;
+        internal readonly TaskType          taskType;
         internal readonly int               start;
         internal readonly int               count;
 
         internal ChangeTask(ContainerChanges containerChanges, TaskType taskType, int start, int count) {
-            this.taskType           = taskType;
             this.containerChanges   = containerChanges;
+            this.taskType           = taskType;
             this.start              = start;
             this.count              = count;
         }
