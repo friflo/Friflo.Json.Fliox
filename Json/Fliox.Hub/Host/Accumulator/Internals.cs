@@ -23,13 +23,13 @@ namespace Friflo.Json.Fliox.Hub.Host.Accumulator
     }
     
     internal sealed class TaskBuffer {
-        internal readonly List<ChangeTask>  tasks       = new List<ChangeTask>();
+        internal readonly List<ChangeTask>  changeTasks = new List<ChangeTask>();
         internal readonly List<JsonValue>   values      = new List<JsonValue>();
         internal readonly MemoryBuffer      valueBuffer = new MemoryBuffer(1024);
         internal readonly List<JsonKey>     keys        = new List<JsonKey>();
         
         internal void Clear() {
-            tasks.Clear();
+            changeTasks.Clear();
             values.Clear();
             valueBuffer.Reset();
             keys.Clear();

@@ -101,7 +101,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Accumulator
             var writeBuffer = databaseChanges.writeBuffer;
             var values      = writeBuffer.values;
             var valueBuffer = writeBuffer.valueBuffer;
-            writeBuffer.tasks.Add(new ChangeTask(container, taskType, values.Count, entities.Count));
+            writeBuffer.changeTasks.Add(new ChangeTask(container, taskType, values.Count, entities.Count));
             foreach (var entity in entities) {
                 var value = valueBuffer.Add(entity.value);
                 values.Add(value);
@@ -120,7 +120,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Accumulator
             }
             var writeBuffer = databaseChanges.writeBuffer;
             var keys        = writeBuffer.keys;
-            writeBuffer.tasks.Add(new ChangeTask(container, TaskType.delete, keys.Count, ids.Count));
+            writeBuffer.changeTasks.Add(new ChangeTask(container, TaskType.delete, keys.Count, ids.Count));
             keys.AddRange(ids);
         }
 
@@ -140,9 +140,9 @@ namespace Friflo.Json.Fliox.Hub.Host.Accumulator
                 containerChangesSet.Clear();
                 rawTaskBuffer.Reset();
                 var readBuffer  = databaseChanges.readBuffer;
-                foreach (var task in readBuffer.tasks) {
-                    task.containerChanges.AddChangeTask(task, readBuffer, context);
-                    containerChangesSet.Add(task.containerChanges);
+                foreach (var changeTask in readBuffer.changeTasks) {
+                    changeTask.containerChanges.AddChangeTask(changeTask, readBuffer, context);
+                    containerChangesSet.Add(changeTask.containerChanges);
                 }
                 if (containerChangesSet.Count == 0) {
                     continue;
