@@ -14,12 +14,12 @@ using Friflo.Json.Fliox.Utils;
 // ReSharper disable ParameterTypeCanBeEnumerable.Local
 // ReSharper disable ForeachCanBeConvertedToQueryUsingAnotherGetEnumerator
 // ReSharper disable ConvertToAutoPropertyWithPrivateSetter
-namespace Friflo.Json.Fliox.Hub.Host.Accumulator
+namespace Friflo.Json.Fliox.Hub.Host.Compactor
 {
     /// <summary>
     ///  Accumulate the entity change events for a specific <see cref="EntityDatabase"/> 
     /// </summary>
-    public sealed class ChangeAccumulator
+    public sealed class ChangeCompactor
     {
         private  readonly   Dictionary<EntityDatabase, DatabaseChanges> databaseChangesMap;
         private  readonly   List<DatabaseChanges>                       databaseChangesList;
@@ -30,14 +30,14 @@ namespace Friflo.Json.Fliox.Hub.Host.Accumulator
         private  readonly   SyncEvent                                   syncEvent;
         private  readonly   Dictionary<DatabaseSubs, JsonValue>         rawSyncEvents;
         
-        public ChangeAccumulator() {
-            syncEvent           = new SyncEvent { tasksJson = new List<JsonValue>() };
+        public ChangeCompactor() {
             databaseChangesMap  = new Dictionary<EntityDatabase, DatabaseChanges>();
             databaseChangesList = new List<DatabaseChanges>();
             containerChangesSet = new HashSet<ContainerChanges>();
             rawTaskBuffer       = new MemoryBuffer(1024);
             writeTaskModel      = new WriteTaskModel();
             deleteTaskModel     = new DeleteTaskModel();
+            syncEvent           = new SyncEvent { tasksJson = new List<JsonValue>() };
             rawSyncEvents       = new Dictionary<DatabaseSubs, JsonValue>();
         }
         

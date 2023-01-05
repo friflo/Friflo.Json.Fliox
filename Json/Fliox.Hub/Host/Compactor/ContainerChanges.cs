@@ -8,7 +8,7 @@ using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Hub.Remote;
 using Friflo.Json.Fliox.Mapper;
 
-namespace Friflo.Json.Fliox.Hub.Host.Accumulator
+namespace Friflo.Json.Fliox.Hub.Host.Compactor
 {
     internal sealed class ContainerChanges
     {
@@ -59,7 +59,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Accumulator
         
         internal void AddAccumulatedRawTask(in AccumulatorContext context)
         {
-            var acc = context.accumulator;
+            var acc = context.compactor;
             switch (currentType) {
                 case TaskType.upsert: {
                     acc.writeTaskModel.Set(Upsert, name, values);

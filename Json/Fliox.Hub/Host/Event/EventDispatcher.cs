@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using Friflo.Json.Burst.Utils;
-using Friflo.Json.Fliox.Hub.Host.Accumulator;
+using Friflo.Json.Fliox.Hub.Host.Compactor;
 using Friflo.Json.Fliox.Hub.Host.Auth;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
@@ -52,7 +52,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
     #region - members
         public              bool                                SendUserIds         { get; set; } = true;
         public              bool                                SendClientIds       { get; set; } = false;
-        public              ChangeAccumulator                   ChangeAccumulator   { get; set; } = null;
+        public              ChangeCompactor                     ChangeCompactor     { get; set; } = null;
         internal readonly   SharedEnv                           sharedEnv;
         private  readonly   JsonEvaluator                       jsonEvaluator;
         /// <summary>buffer for serialized <see cref="SyncEvent"/>'s to avoid frequent allocations</summary>
@@ -265,13 +265,13 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         }
         
         private static bool AccumulateTasks(
-            ChangeAccumulator       accumulator,
+            ChangeCompactor         compactor,
             EntityDatabase          database,
             List<SyncRequestTask>   syncTasks)
         {
             var processed = true;
             foreach (var syncTask in syncTasks) {
-                processed = accumulator.AddSyncTask(database, syncTask) && processed;
+                processed = compactor.AddSyncTask(database, syncTask) && processed;
             }
             return processed;
         }
@@ -293,7 +293,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             if (!HasSubscribableTask(syncTasks)) {
                 return; // early out
             }
-            var accumulator = ChangeAccumulator;
+            var accumulator = ChangeCompactor;
             if (accumulator != null) {
                 if (AccumulateTasks(accumulator, syncContext.Database, syncTasks)) {
                     return;

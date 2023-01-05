@@ -6,7 +6,7 @@ using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Utils;
 
-namespace Friflo.Json.Fliox.Hub.Host.Accumulator
+namespace Friflo.Json.Fliox.Hub.Host.Compactor
 {
     internal readonly struct ChangeTask {
         internal readonly TaskType          taskType;
@@ -39,10 +39,10 @@ namespace Friflo.Json.Fliox.Hub.Host.Accumulator
     internal readonly struct AccumulatorContext
     {
         internal readonly ObjectWriter      writer;
-        internal readonly ChangeAccumulator accumulator;
+        internal readonly ChangeCompactor   compactor;
         
-        internal AccumulatorContext(ChangeAccumulator accumulator, ObjectWriter writer) {
-            this.accumulator    = accumulator;
+        internal AccumulatorContext(ChangeCompactor compactor, ObjectWriter writer) {
+            this.compactor    = compactor;
             this.writer         = writer;
         }
     }
