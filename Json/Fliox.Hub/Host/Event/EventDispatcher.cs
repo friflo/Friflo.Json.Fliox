@@ -249,7 +249,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             subClient.AcknowledgeEventMessages(value);
         }
         
-        private static bool HasSubscribableTask(List<SyncRequestTask> tasks) {
+        private static bool HasSubscribableTasks(List<SyncRequestTask> tasks) {
             foreach (var task in tasks) {
                 switch (task.TaskType) {
                     case TaskType.message:
@@ -265,9 +265,9 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         }
         
         /// <summary>
-        /// Store change tasks - create, upsert, merge and delete - in the passed <paramref name="compactor"/> <br/>
+        /// Store change tasks - create, upsert, merge and delete - if using a <see cref="ChangeCompactor"/> <br/>
         /// Stored change tasks are removed from the given <paramref name="syncTasks"/> list. <br/>
-        /// Return true no no tasks left to process
+        /// Return true if no tasks left to process
         /// </summary>
         private bool StoreChangeTasks(List<SyncRequestTask> syncTasks, SyncContext syncContext)
         {
@@ -305,14 +305,14 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                 ProcessSubscriber (subClient, syncRequest, syncContext);
             }
             if (databaseSubsArray == null) {
-                return;
+                return; // early out: database has no subscriptions
             }
             var syncTasks = syncRequest.tasks;
-            if (!HasSubscribableTask(syncTasks)) {
-                return; // early out
+            if (!HasSubscribableTasks(syncTasks)) {
+                return; // early out: no subscribable tasks found
             }
             if (StoreChangeTasks(syncTasks, syncContext)) {
-                return; // early out if no tasks left to process
+                return; // early out: no tasks left to process
             }
             var memoryBuffer    = syncContext.MemoryBuffer;
             var database        = syncContext.databaseName;

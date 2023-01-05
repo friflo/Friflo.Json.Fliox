@@ -13,8 +13,19 @@ using Friflo.Json.Fliox.Utils;
 namespace Friflo.Json.Fliox.Hub.Host.Event.Compact
 {
     /// <summary>
-    /// Compact (accumulate) entity change tasks - create, upsert, merge and delete - for registered <see cref="EntityDatabase"/>'s 
+    /// Compact (accumulate) entity change tasks - create, upsert, merge and delete - for registered
+    /// <see cref="EntityDatabase"/>'s <br/>
     /// </summary>
+    /// <remarks>
+    /// A <see cref="ChangeCompactor"/> is mainly used for optimization.<br/>
+    /// It combines multiple change tasks - eg. upsert - send from various clients into a single task. <br/>
+    /// This enables sending only a single tasks to subscribed clients instead of sending each change individually. <br/>
+    /// The effects are: <br/>
+    /// - size of serialized events sent to clients is smaller. <br/>
+    /// - serialized events are easier to read by humans. <br/>
+    /// - the CPU / memory cost to serialize events can reduce to O(1) instead O(N) for all clients having
+    ///   the same <see cref="DatabaseSubs"/> - See <see cref="rawSyncEvents"/><br/>
+    /// </remarks>
     public sealed partial class ChangeCompactor
     {
         private  readonly   Dictionary<EntityDatabase, DatabaseChanges> databaseChangesMap;
