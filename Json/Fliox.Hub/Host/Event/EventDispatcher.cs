@@ -266,13 +266,16 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         
         /// <summary>
         /// Store change tasks - create, upsert, merge and delete - in the passed <paramref name="compactor"/> <br/>
-        /// Stored change tasks are removed from the given <paramref name="syncTasks"/> list.
+        /// Stored change tasks are removed from the given <paramref name="syncTasks"/> list. <br/>
+        /// Return true no no tasks left to process
         /// </summary>
-        private static void StoreChangeTasks(
-            ChangeCompactor         compactor,
-            EntityDatabase          database,
-            List<SyncRequestTask>   syncTasks)
+        private bool StoreChangeTasks(List<SyncRequestTask> syncTasks, SyncContext syncContext)
         {
+            var compactor = ChangeCompactor;
+            if (compactor == null) {
+                return false;
+            }
+            var database            = syncContext.Database;
             var count               = syncTasks.Count;
             Span<bool> taskStored   = stackalloc bool[count];
             for (int n = 0; n < count; n++) {
@@ -288,6 +291,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                 syncTasks[index++] = syncTasks[n];
             }
             syncTasks.RemoveRange(index, count - index);
+            return index == 0;
         }
         
         /// <summary>
@@ -307,12 +311,8 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             if (!HasSubscribableTask(syncTasks)) {
                 return; // early out
             }
-            var compactor = ChangeCompactor;
-            if (compactor != null) {
-                StoreChangeTasks(compactor, syncContext.Database, syncTasks);
-                if (syncTasks.Count == 0) {
-                    return; // early out if not tasks left to process
-                }
+            if (StoreChangeTasks(syncTasks, syncContext)) {
+                return; // early out if no tasks left to process
             }
             var memoryBuffer    = syncContext.MemoryBuffer;
             var database        = syncContext.databaseName;
