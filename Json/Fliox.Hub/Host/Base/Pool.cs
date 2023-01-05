@@ -10,6 +10,7 @@ using Friflo.Json.Fliox.Transform;
 using Friflo.Json.Fliox.Transform.Tree;
 using Friflo.Json.Fliox.Utils;
 
+// ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.Host
 {
     /// <summary>

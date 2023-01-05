@@ -7,6 +7,7 @@ using Friflo.Json.Fliox.Hub.Host.Utils;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using static Friflo.Json.Fliox.Hub.Protocol.Tasks.TaskType;
 
+// ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.Host
 {
     /// <summary>

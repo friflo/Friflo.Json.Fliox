@@ -9,6 +9,7 @@ using Friflo.Json.Fliox.Transform;
 using Friflo.Json.Fliox.Utils;
 using static Friflo.Json.Fliox.Hub.Host.FilterEntityResult;
 
+// ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.Host
 {
     [Flags]

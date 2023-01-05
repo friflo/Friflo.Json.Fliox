@@ -9,6 +9,7 @@ using Friflo.Json.Fliox.Schema.Validation;
 using Friflo.Json.Fliox.Utils;
 
 // ReSharper disable ConvertToAutoProperty
+// ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.Host
 {
     /// <summary>

@@ -16,6 +16,7 @@ using static System.Diagnostics.DebuggerBrowsableState;
 // ReSharper disable ForeachCanBeConvertedToQueryUsingAnotherGetEnumerator
 // ReSharper disable ForeachCanBePartlyConvertedToQueryUsingAnotherGetEnumerator
 // ReSharper disable UseDeconstruction
+// ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.Host
 {
     public  delegate  void    HostMessageHandler<TParam>              (Param<TParam> param, MessageContext context);

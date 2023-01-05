@@ -2,13 +2,14 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
-using System.Threading.Tasks;
+// using System.Threading.Tasks; intentionally not used in sync version
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 
-// Note!  Keep file in sync with:  FlioxHub-sync.cs
+// Note!  Keep file in sync with:  FlioxHub-async.cs
 
 // ReSharper disable MethodHasAsyncOverload
+// ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.Host
 {
     public partial class FlioxHub
@@ -36,14 +37,14 @@ namespace Friflo.Json.Fliox.Hub.Host
         ///   <para> 2. An issue in the namespace <see cref="Friflo.Json.Fliox.Hub.Protocol"/> which must to be fixed.</para> 
         /// </para>
         /// </remarks>
-        public virtual async Task<ExecuteSyncResult> ExecuteRequestAsync(SyncRequest syncRequest, SyncContext syncContext)
+        public ExecuteSyncResult ExecuteRequest(SyncRequest syncRequest, SyncContext syncContext)
         {
             syncContext.request             = syncRequest;
             if (syncContext.authState.authExecuted) throw new InvalidOperationException("Expect AuthExecuted == false");
             if (authenticator.IsSynchronous(syncRequest)) {
-                      authenticator.Authenticate     (syncRequest, syncContext);
+                authenticator.Authenticate(syncRequest, syncContext);
             } else {
-                await authenticator.AuthenticateAsync(syncRequest, syncContext).ConfigureAwait(false);
+                throw new NotSupportedException("Authenticator supports only asynchronous authentication");
             }
             if (syncRequest.intern.error != null) {
                 return new ExecuteSyncResult (syncRequest.intern.error, ErrorResponseType.BadRequest); 
@@ -65,18 +66,18 @@ namespace Friflo.Json.Fliox.Hub.Host
             var response        = SyncResponse.Create(syncContext, taskCount);
             response.database   = syncRequest.database;
             var tasks           = response.tasks;
-            
+
             // ------------------------ loop through all given tasks and execute them ------------------------
             for (int index = 0; index < taskCount; index++) {
                 var task = requestTasks[index];
                 try {
-                    // Execute task synchronous or asynchronous.
-                    SyncTaskResult result;
-                    if (task.intern.executionType == ExecutionType.Sync) {
-                        result =       service.ExecuteTask      (task, db, response, syncContext);
-                    } else {
-                        result = await service.ExecuteTaskAsync (task, db, response, syncContext).ConfigureAwait(false);
-                    }
+                    // Execute task synchronous.
+                    SyncTaskResult result = service.ExecuteTask(task, db, response, syncContext);
+                    //
+                    // Ensuring that task can be executed synchronously is a result
+                    // from preceding InitSyncRequest() call.
+                    //
+                    //
                     tasks.Add(result);
                 } catch (Exception e) {
                     tasks.Add(TaskExceptionError(e)); // Note!  Should not happen - see documentation of this method.

@@ -4,6 +4,7 @@
 using System.Diagnostics;
 using static System.Diagnostics.DebuggerBrowsableState;
 
+// ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.Host
 {
     public readonly struct Param<TParam>

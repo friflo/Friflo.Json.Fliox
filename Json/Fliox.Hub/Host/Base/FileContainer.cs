@@ -11,6 +11,7 @@ using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Hub.Threading;
 using Friflo.Json.Fliox.Utils;
 
+// ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.Host
 {
     public sealed class FileContainer : EntityContainer

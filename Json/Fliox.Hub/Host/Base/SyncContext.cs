@@ -16,6 +16,7 @@ using Friflo.Json.Fliox.Utils;
 using static System.Diagnostics.DebuggerBrowsableState;
 using Browse = System.Diagnostics.DebuggerBrowsableAttribute;
 
+// ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.Host
 {
     // ------------------------------------ SyncContext ------------------------------------
