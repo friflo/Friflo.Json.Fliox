@@ -8,7 +8,7 @@ using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Hub.Remote;
 using Friflo.Json.Fliox.Mapper;
 
-namespace Friflo.Json.Fliox.Hub.Host.Compactor
+namespace Friflo.Json.Fliox.Hub.Host.Event.Compact
 {
     internal sealed class ContainerChanges
     {

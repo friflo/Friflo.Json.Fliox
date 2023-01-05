@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using Friflo.Json.Burst.Utils;
 
 // ReSharper disable SwapViaDeconstruction
-namespace Friflo.Json.Fliox.Hub.Host.Compactor
+namespace Friflo.Json.Fliox.Hub.Host.Event.Compact
 {
     internal sealed class DatabaseChanges
     {

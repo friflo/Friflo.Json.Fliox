@@ -3,7 +3,6 @@
 
 using System.Collections.Generic;
 using Friflo.Json.Burst.Utils;
-using Friflo.Json.Fliox.Hub.Host.Event;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Hub.Remote;
@@ -14,7 +13,7 @@ using Friflo.Json.Fliox.Utils;
 // ReSharper disable ParameterTypeCanBeEnumerable.Local
 // ReSharper disable ForeachCanBeConvertedToQueryUsingAnotherGetEnumerator
 // ReSharper disable ConvertToAutoPropertyWithPrivateSetter
-namespace Friflo.Json.Fliox.Hub.Host.Compactor
+namespace Friflo.Json.Fliox.Hub.Host.Event.Compact
 {
     /// <summary>
     ///  Accumulate the entity change events for a specific <see cref="EntityDatabase"/> 

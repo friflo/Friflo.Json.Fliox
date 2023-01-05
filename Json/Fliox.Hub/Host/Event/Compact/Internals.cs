@@ -6,7 +6,7 @@ using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Utils;
 
-namespace Friflo.Json.Fliox.Hub.Host.Compactor
+namespace Friflo.Json.Fliox.Hub.Host.Event.Compact
 {
     internal readonly struct ChangeTask {
         internal readonly TaskType          taskType;
