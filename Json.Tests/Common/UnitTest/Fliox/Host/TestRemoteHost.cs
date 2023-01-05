@@ -13,7 +13,6 @@ using Friflo.Json.Fliox.Hub.Remote;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Pools;
 using Friflo.Json.Fliox.Utils;
-using Friflo.Json.Tests.Common.UnitTest.Fliox.Client;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
 
@@ -34,11 +33,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
             internal            MemoryBuffer            memoryBuffer;
             internal            ObjectMapper            mapper;
             internal            SyncPools               syncPools;
+            private readonly    List<SyncRequestTask>   syncTasks  = new List<SyncRequestTask>();
             private readonly    List<SyncRequestTask>   eventTasks = new List<SyncRequestTask>();
             private readonly    List<JsonValue>         jsonTasks  = new List<JsonValue>();
             
             internal SyncContext CreateSyncContext() {
-                return new SyncContext (remoteHost.sharedEnv, null, new SyncBuffers(eventTasks, jsonTasks), syncPools);
+                return new SyncContext (remoteHost.sharedEnv, null, new SyncBuffers(syncTasks, eventTasks, jsonTasks), syncPools);
             }
         }
         

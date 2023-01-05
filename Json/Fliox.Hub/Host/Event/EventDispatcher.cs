@@ -249,8 +249,29 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             subClient.AcknowledgeEventMessages(value);
         }
         
-        private static bool HasSubscribableTasks(List<SyncRequestTask> tasks) {
-            foreach (var task in tasks) {
+        private static bool RemoveUnusedTasks(List<SyncRequestTask> syncTasks, Span<bool> useTasks) {
+            var count = useTasks.Length;
+            // --- remove stored tasks from syncTasks
+            var index = 0;
+            for (int n = 0; n < count; n++) {
+                if (!useTasks[n]) {
+                    continue;
+                }
+                syncTasks[index++] = syncTasks[n];
+            }
+            syncTasks.RemoveRange(index, count - index);
+            return index == 0;
+        }
+        
+        /// <summary>
+        /// Remove all non subscribable tasks from <paramref name="syncTasks"/> <br/>
+        /// Return true if no tasks left to process
+        /// </summary>
+        private static bool FilterSubscribableTasks(List<SyncRequestTask> syncTasks) {
+            int count = syncTasks.Count;
+            Span<bool> useTasks   = stackalloc bool[count];
+            for (int n = 0; n < count; n++) {
+                var task = syncTasks[n];
                 switch (task.TaskType) {
                     case TaskType.message:
                     case TaskType.command:
@@ -258,10 +279,11 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                     case TaskType.upsert:
                     case TaskType.delete:
                     case TaskType.merge:
-                        return true;
+                        useTasks[n] = true;
+                        continue;
                 }
             }
-            return false;
+            return RemoveUnusedTasks(syncTasks, useTasks);
         }
         
         /// <summary>
@@ -277,21 +299,12 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             }
             var database            = syncContext.Database;
             var count               = syncTasks.Count;
-            Span<bool> taskStored   = stackalloc bool[count];
+            Span<bool> useTasks     = stackalloc bool[count];
             for (int n = 0; n < count; n++) {
-                var syncTask    = syncTasks[n];
-                taskStored[n]   = compactor.StoreTask(database, syncTask);
+                var syncTask    =  syncTasks[n];
+                useTasks[n]     = !compactor.StoreTask(database, syncTask);
             }
-            // --- remove stored tasks from syncTasks List<>
-            var index = 0;
-            for (int n = 0; n < count; n++) {
-                if (taskStored[n]) {
-                    continue;
-                }
-                syncTasks[index++] = syncTasks[n];
-            }
-            syncTasks.RemoveRange(index, count - index);
-            return index == 0;
+            return RemoveUnusedTasks(syncTasks, useTasks);
         }
         
         /// <summary>
@@ -307,8 +320,10 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             if (databaseSubsArray == null) {
                 return; // early out: database has no subscriptions
             }
-            var syncTasks = syncRequest.tasks;
-            if (!HasSubscribableTasks(syncTasks)) {
+            var syncTasks = syncContext.syncBuffers.syncTasks ?? new List<SyncRequestTask>();
+            syncTasks.Clear();
+            syncTasks.AddRange(syncRequest.tasks);
+            if (FilterSubscribableTasks(syncTasks)) {
                 return; // early out: no subscribable tasks found
             }
             if (StoreChangeTasks(syncTasks, syncContext)) {
