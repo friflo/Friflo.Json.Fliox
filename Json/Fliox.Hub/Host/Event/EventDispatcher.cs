@@ -329,14 +329,13 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             if (StoreChangeTasks(syncTasks, syncContext)) {
                 return; // early out: no tasks left to process
             }
-            var memoryBuffer    = syncContext.MemoryBuffer;
-            var database        = syncContext.databaseName;
+            var memoryBuffer = syncContext.MemoryBuffer;
             foreach (var task in syncTasks) { task.intern.json = null; }
             // reused syncEvent to create a serialized SyncEvent for every EventSubClient
-            var syncEvent       = new SyncEvent {
-                db                  = database.value,
-                tasks               = syncContext.syncBuffers.eventTasks,
-                tasksJson           = syncContext.syncBuffers.tasksJson
+            var syncEvent = new SyncEvent {
+                db          = syncContext.databaseName.value,
+                tasks       = syncContext.syncBuffers.eventTasks,
+                tasksJson   = syncContext.syncBuffers.tasksJson
             };
             if (SendUserIds) {
                 syncEvent.usr    = syncRequest.userId;
