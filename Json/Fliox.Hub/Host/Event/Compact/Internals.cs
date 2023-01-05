@@ -36,14 +36,14 @@ namespace Friflo.Json.Fliox.Hub.Host.Event.Compact
         }
     }
     
-    internal readonly struct AccumulatorContext
+    internal readonly struct CompactorContext
     {
-        internal readonly ObjectWriter      writer;
         internal readonly ChangeCompactor   compactor;
+        internal readonly ObjectWriter      writer;
         
-        internal AccumulatorContext(ChangeCompactor compactor, ObjectWriter writer) {
-            this.compactor    = compactor;
-            this.writer         = writer;
+        internal CompactorContext(ChangeCompactor compactor, ObjectWriter writer) {
+            this.compactor  = compactor;
+            this.writer     = writer;
         }
     }
     

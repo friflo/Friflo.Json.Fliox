@@ -54,7 +54,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event.Compact
                     databaseChangesList.Add(pair.Value);
                 }
             }
-            var context = new AccumulatorContext(this, writer);
+            var context = new CompactorContext(this, writer);
             foreach (var databaseChanges in databaseChangesList)
             {
                 containerChangesSet.Clear();

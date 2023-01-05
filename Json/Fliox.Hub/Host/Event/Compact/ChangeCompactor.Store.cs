@@ -11,7 +11,11 @@ namespace Friflo.Json.Fliox.Hub.Host.Event.Compact
 {
     public sealed partial class ChangeCompactor
     {
-        internal bool  AddTask(EntityDatabase database, SyncRequestTask task)
+        /// <summary>
+        /// Store a change task in the <see cref="ChangeCompactor"/> <br/>
+        /// Return true if the given <paramref name="task"/> is stored. Otherwise false.
+        /// </summary>
+        internal bool  StoreTask(EntityDatabase database, SyncRequestTask task)
         {
             switch (task.TaskType) {
                 case TaskType.create:
@@ -19,7 +23,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event.Compact
                         if (!databaseChangesMap.TryGetValue(database, out var databaseChanges))
                             return false;
                         var create = (CreateEntities)task;
-                        AddWriteTask(databaseChanges, create.containerSmall, TaskType.create, create.entities);
+                        StoreWriteTask(databaseChanges, create.containerSmall, TaskType.create, create.entities);
                         return true;
                     }
                 case TaskType.upsert:
@@ -30,7 +34,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event.Compact
                     lock (databaseChangesMap) {
                         if (!databaseChangesMap.TryGetValue(database, out var databaseChanges))
                             return false;
-                        AddWriteTask(databaseChanges, upsert.containerSmall, TaskType.upsert, upsert.entities);
+                        StoreWriteTask(databaseChanges, upsert.containerSmall, TaskType.upsert, upsert.entities);
                         return true;
                     }
                 case TaskType.merge:
@@ -41,7 +45,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event.Compact
                     lock (databaseChangesMap) {
                         if (!databaseChangesMap.TryGetValue(database, out var databaseChanges))
                             return false;
-                        AddWriteTask(databaseChanges, merge.containerSmall, TaskType.merge, merge.patches);
+                        StoreWriteTask(databaseChanges, merge.containerSmall, TaskType.merge, merge.patches);
                         return true;
                     }
                 case TaskType.delete:
@@ -49,14 +53,14 @@ namespace Friflo.Json.Fliox.Hub.Host.Event.Compact
                         if (!databaseChangesMap.TryGetValue(database, out var databaseChanges))
                             return false;
                         var delete = (DeleteEntities)task;
-                        AddDeleteTask(databaseChanges, delete.containerSmall, delete.ids);
+                        StoreDeleteTask(databaseChanges, delete.containerSmall, delete.ids);
                         return true;
                     }
             }
             return false;
         }
         
-        private static void AddWriteTask(
+        private static void StoreWriteTask(
             DatabaseChanges     databaseChanges,
             in SmallString      name,
             TaskType            taskType,
@@ -77,7 +81,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event.Compact
             }
         }
         
-        private static void AddDeleteTask(
+        private static void StoreDeleteTask(
             DatabaseChanges     databaseChanges,
             in SmallString      name,
             List<JsonKey>       ids)

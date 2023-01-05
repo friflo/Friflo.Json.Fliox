@@ -264,16 +264,30 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             return false;
         }
         
-        private static bool AccumulateTasks(
+        /// <summary>
+        /// Store change tasks - create, upsert, merge and delete - in the passed <paramref name="compactor"/> <br/>
+        /// Stored change tasks are removed from the given <paramref name="syncTasks"/> list.
+        /// </summary>
+        private static void StoreChangeTasks(
             ChangeCompactor         compactor,
             EntityDatabase          database,
             List<SyncRequestTask>   syncTasks)
         {
-            var processed = true;
-            foreach (var syncTask in syncTasks) {
-                processed = compactor.AddTask(database, syncTask) && processed;
+            var count               = syncTasks.Count;
+            Span<bool> taskStored   = stackalloc bool[count];
+            for (int n = 0; n < count; n++) {
+                var syncTask    = syncTasks[n];
+                taskStored[n]   = compactor.StoreTask(database, syncTask);
             }
-            return processed;
+            // --- remove stored tasks from syncTasks List<>
+            var index = 0;
+            for (int n = 0; n < count; n++) {
+                if (taskStored[n]) {
+                    continue;
+                }
+                syncTasks[index++] = syncTasks[n];
+            }
+            syncTasks.RemoveRange(index, count - index);
         }
         
         /// <summary>
@@ -293,10 +307,11 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             if (!HasSubscribableTask(syncTasks)) {
                 return; // early out
             }
-            var accumulator = ChangeCompactor;
-            if (accumulator != null) {
-                if (AccumulateTasks(accumulator, syncContext.Database, syncTasks)) {
-                    return;
+            var compactor = ChangeCompactor;
+            if (compactor != null) {
+                StoreChangeTasks(compactor, syncContext.Database, syncTasks);
+                if (syncTasks.Count == 0) {
+                    return; // early out if not tasks left to process
                 }
             }
             var memoryBuffer    = syncContext.MemoryBuffer;

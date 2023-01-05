@@ -35,7 +35,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event.Compact
         private static readonly JsonValue Merge  = new JsonValue("\"merge\"");
         private static readonly JsonValue Delete = new JsonValue("\"delete\"");
         
-        internal void AddChangeTask(in ChangeTask changeTask, TaskBuffer readBuffer, in AccumulatorContext context)
+        internal void AddChangeTask(in ChangeTask changeTask, TaskBuffer readBuffer, in CompactorContext context)
         {
             if (changeTask.taskType != currentType) {
                 AddAccumulatedRawTask(context);
@@ -57,7 +57,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event.Compact
             }
         }
         
-        internal void AddAccumulatedRawTask(in AccumulatorContext context)
+        internal void AddAccumulatedRawTask(in CompactorContext context)
         {
             var acc = context.compactor;
             switch (currentType) {
