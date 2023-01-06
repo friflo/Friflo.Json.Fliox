@@ -76,8 +76,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event.Compact
             var valueBuffer = writeBuffer.valueBuffer;
             writeBuffer.changeTasks.Add(new ChangeTask(container, taskType, values.Count, entities.Count));
             foreach (var entity in entities) {
-                var value = valueBuffer.Add(entity.value);
-                values.Add(value);
+                values.Add(valueBuffer.Add(entity.value));
             }
         }
         

@@ -8,6 +8,7 @@ using Friflo.Json.Fliox.Hub.Remote;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Utils;
 
+// ReSharper disable ForeachCanBePartlyConvertedToQueryUsingAnotherGetEnumerator
 // ReSharper disable ParameterTypeCanBeEnumerable.Local
 // ReSharper disable ConvertToAutoPropertyWithPrivateSetter
 namespace Friflo.Json.Fliox.Hub.Host.Event.Compact
@@ -32,7 +33,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event.Compact
         private  readonly   Dictionary<EntityDatabase, DatabaseChanges> databaseChangesMap;
         internal            int                                         DatabaseCount { get; private set; }
         /// <summary>
-        /// Fields below are used as buffers in <see cref="AccumulateTasks"/> with is not thread safe.
+        /// Fields below are used as buffers in <see cref="AccumulateTasks"/> which is not thread safe.
         /// </summary>
         private  readonly   List<DatabaseChanges>               databaseChangesList;
         private  readonly   HashSet<ContainerChanges>           containerChangesSet;
@@ -82,7 +83,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event.Compact
                 foreach (var pair in databaseChangesMap) {
                     var databaseChanges = pair.Value;
                     databaseChanges.SwapBuffers();
-                    databaseChangesList.Add(pair.Value);
+                    databaseChangesList.Add(databaseChanges);
                 }
             }
             var context = new CompactorContext(this, writer);
@@ -112,57 +113,50 @@ namespace Friflo.Json.Fliox.Hub.Host.Event.Compact
         }
         
         /// <summary>
-        /// Create a serialized <see cref="SyncEvent"/>'s for the passed <paramref name="clientDbSubs"/> array
+        /// Create a serialized <see cref="SyncEvent"/>'s and queue them to the passed <paramref name="clientDbSubs"/>
         /// </summary>
         private void EnqueueSyncEvents(ClientDbSubs[] clientDbSubs, ObjectWriter writer) {
-            if (clientDbSubs.Length == 0) {
-                return;
-            }
             foreach (var containerChanges in containerChangesSet) {
                 rawSyncEvents.Clear();
                 foreach (var clientDbSub in clientDbSubs) {
                     var databaseSubs = clientDbSub.subs;
-                    if (rawSyncEvents.TryGetValue(databaseSubs, out var rawSyncEvent)) {
-                        if (rawSyncEvent.IsNull()) {
-                            continue;
-                        }
-                        clientDbSub.client.EnqueueEvent(rawSyncEvent);
+                    if (!rawSyncEvents.TryGetValue(databaseSubs, out var rawSyncEvent)) {
+                        rawSyncEvent = CreateSyncEvent(containerChanges, databaseSubs.changeSubs, writer);
+                        rawSyncEvents.Add(databaseSubs, rawSyncEvent);
+                    }
+                    if (rawSyncEvent.IsNull()) {
                         continue;
                     }
-                    rawSyncEvent = EnqueueSyncEvent(containerChanges, clientDbSub, writer);
-                    rawSyncEvents.Add(databaseSubs, rawSyncEvent);
+                    clientDbSub.client.EnqueueEvent(rawSyncEvent);
                 }
             }
         }
         
         /// <summary>
         /// Create a serialized <see cref="SyncEvent"/> for the passed <paramref name="container"/>
-        /// and <paramref name="clientDbSubs"/> <br/>
+        /// and <paramref name="changeSubs"/> <br/>
         /// Return default if no <see cref="SyncEvent"/> was created 
         /// </summary>
-        private JsonValue EnqueueSyncEvent(
-            ContainerChanges    container,
-            in ClientDbSubs     clientDbSubs,
-            ObjectWriter        writer)
+        private JsonValue CreateSyncEvent(ContainerChanges container, ChangeSub[] changeSubs, ObjectWriter writer)
         {
             syncEvent.tasksJson.Clear();
-            foreach (var changeSub in clientDbSubs.subs.changeSubs) {
+            foreach (var changeSub in changeSubs) {
                 if (!changeSub.container.IsEqual(container.name)) {
                     continue;
                 }
+                // found matching container subscription => add matching raw tasks
                 foreach (var rawTask in container.rawTasks) {
                     if ((changeSub.changes & rawTask.change) == 0) {
                         continue;
                     }
                     syncEvent.tasksJson.Add(rawTask.value);
                 }
+                break;
             }
             if (syncEvent.tasksJson.Count == 0) {
                 return default;
             }
-            var rawSyncEvent = RemoteUtils.SerializeSyncEvent(syncEvent, writer);
-            clientDbSubs.client.EnqueueEvent(rawSyncEvent);
-            return rawSyncEvent;
+            return RemoteUtils.SerializeSyncEvent(syncEvent, writer);
         }
     }
 }
