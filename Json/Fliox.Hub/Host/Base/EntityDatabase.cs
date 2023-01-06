@@ -17,6 +17,7 @@ using Friflo.Json.Fliox.Transform.Query.Ops;
 using Friflo.Json.Fliox.Utils;
 using static System.Diagnostics.DebuggerBrowsableState;
 
+// ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.Host
 {
     public sealed class DbOpt {
