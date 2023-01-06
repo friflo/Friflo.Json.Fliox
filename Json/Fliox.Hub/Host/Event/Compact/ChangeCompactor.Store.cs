@@ -9,7 +9,7 @@ using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 // ReSharper disable ForeachCanBeConvertedToQueryUsingAnotherGetEnumerator
 namespace Friflo.Json.Fliox.Hub.Host.Event.Compact
 {
-    public sealed partial class ChangeCompactor
+    internal sealed partial class ChangeCompactor
     {
         /// <summary>
         /// Store a change task in the <see cref="ChangeCompactor"/> <br/>

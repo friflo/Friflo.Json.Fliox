@@ -4,7 +4,6 @@
 using Friflo.Json.Fliox.Hub.Client;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.Event;
-using Friflo.Json.Fliox.Hub.Host.Event.Compact;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
 
@@ -47,7 +46,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Event
         }
         
         /// <summary>
-        /// Skip parsing <see cref="ClientEvent"/>'s to check <see cref="ChangeCompactor"/> performance <br/>
+        /// Skip parsing <see cref="ClientEvent"/>'s to check <see cref="EventDispatcher.EnableChangeAccumulation"/> performance <br/>
         /// E.g in case of 1000 upserts using 1000 subscribers result in parsing 1.000.000 <see cref="Record"/>'s
         /// </summary>
         [Test]
@@ -70,9 +69,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Event
                 var database        = new MemoryDatabase("remote-memory", smallValueSize: 1024);
                 var hub             = new FlioxHub(database, sharedEnv);
                 var dispatcher      = new EventDispatcher(EventDispatching.Queue);
-                var compactor       = new ChangeCompactor();
-                dispatcher.ChangeCompactor = compactor;
-                compactor.AddDatabase(database);
+                dispatcher.EnableChangeAccumulation(database);
                 hub.EventDispatcher = dispatcher;
                 var receivedEvents  = 0;
                 

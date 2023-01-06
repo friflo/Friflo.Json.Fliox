@@ -26,10 +26,11 @@ namespace Friflo.Json.Fliox.Hub.Host.Event.Compact
     /// - the CPU / memory cost to serialize events can reduce to O(1) instead O(N) for all clients having
     ///   the same <see cref="DatabaseSubs"/> - See <see cref="rawSyncEvents"/><br/>
     /// </remarks>
-    public sealed partial class ChangeCompactor
+    internal sealed partial class ChangeCompactor
     {
         /// <summary>Thread safe map used to collect the <see cref="DatabaseChanges"/> for each database</summary>
         private  readonly   Dictionary<EntityDatabase, DatabaseChanges> databaseChangesMap;
+        internal            int                                         DatabaseCount { get; private set; }
         /// <summary>
         /// Fields below are used as buffers in <see cref="AccumulateTasks"/> with is not thread safe.
         /// </summary>
@@ -52,10 +53,18 @@ namespace Friflo.Json.Fliox.Hub.Host.Event.Compact
             rawSyncEvents       = new Dictionary<DatabaseSubs, JsonValue>();
         }
         
-        public void AddDatabase(EntityDatabase database) {
+        internal void AddDatabase(EntityDatabase database) {
             var databaseChanges = new DatabaseChanges(database.name);
             lock (databaseChangesMap) {
                 databaseChangesMap.Add(database, databaseChanges);
+                DatabaseCount = databaseChangesMap.Count;
+            }
+        }
+        
+        internal void RemoveDatabase(EntityDatabase database) {
+            lock (databaseChangesMap) {
+                databaseChangesMap.Remove(database);
+                DatabaseCount = databaseChangesMap.Count;
             }
         } 
 
