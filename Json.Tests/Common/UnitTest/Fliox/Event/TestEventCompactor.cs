@@ -41,21 +41,30 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Event
         
         [Test]
         public static  void TestEventCompactor_Upsert() {
-            TestEventCompactor_UpsertIntern(2, 5, null);
+            const int clientCount = 2;
+            const int upsertCount = 5;
+            TestEventCompactor_UpsertIntern(clientCount, 2, upsertCount, null);
         }
         
         /// <summary>
         /// Skip parsing <see cref="ClientEvent"/>'s to check <see cref="ChangeCompactor"/> performance <br/>
-        /// E.g in case of 1000 upserts using 1000 subscribers result in parsing 1.000.000 upsert tasks
+        /// E.g in case of 1000 upserts using 1000 subscribers result in parsing 1.000.000 <see cref="Record"/>'s
         /// </summary>
         [Test]
         public static  void TestEventCompactor_UpsertPerf() {
-            const int clientCount = 10; // 1000;
             var eventReceiver = new IgnoreReceiver();
-            TestEventCompactor_UpsertIntern(clientCount, clientCount, eventReceiver);
+            const int clientCount = 10; // 1000;
+            const int frameCount  = 60; // 60 Hz
+            const int upsertCount = clientCount; // typically each client send a single upsert to the Hub per frame
+            TestEventCompactor_UpsertIntern(clientCount, frameCount, upsertCount, eventReceiver);
         }
         
-        private static  void TestEventCompactor_UpsertIntern(int subCount, int upsertCount, IgnoreReceiver receiver) {
+        private static  void TestEventCompactor_UpsertIntern(
+            int             clientCount,
+            int             frameCount,
+            int             upsertCount,
+            IgnoreReceiver  receiver)
+        {
             using (var sharedEnv = SharedEnv.Default) {
                 var database        = new MemoryDatabase("remote-memory", smallValueSize: 1024);
                 var hub             = new FlioxHub(database, sharedEnv);
@@ -66,30 +75,37 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Event
                 hub.EventDispatcher = dispatcher;
                 var receivedEvents  = 0;
                 
-                for (int i = 0; i < subCount; i++) {
-                    var sub = new TestCompactClient(hub, receiver) { UserId = $"client-{i}" };
-                    sub.records.SubscribeChanges(Change.All, (changes, context) => {
+                // --- setup subscribers
+                for (int i = 0; i < clientCount; i++) {
+                    var subClient = new TestCompactClient(hub, receiver) { UserId = $"client-{i}" };
+                    subClient.records.SubscribeChanges(Change.All, (changes, context) => {
                         receivedEvents++;
                         if (upsertCount != changes.Upserts.Count) {
                             Fail($"Expect: {upsertCount} was: {changes.Upserts.Count}");
                         }
                     });
-                    sub.SyncTasksSynchronous();
+                    subClient.SyncTasksSynchronous();
                 }
                 var client = new TestCompactClient(hub, receiver) { UserId = "sender" };
                 var record = new Record();
-                for (int n = 0; n < upsertCount; n++) {
-                    record.id   = n;
-                    record.x    = n;
-                    record.y    = n;
-                    client.records.Upsert(record);
-                    client.SyncTasksSynchronous();
+                
+                // --- simulate sending upsert's
+                for (int i = 0; i < frameCount; i++) {
+                    for (int n = 0; n < upsertCount; n++) {
+                        record.id   = n;
+                        record.x    = n;
+                        record.y    = n;
+                        client.records.Upsert(record);
+                        var result = client.SyncTasksSynchronous();
+                        result.Reuse(client);
+                    }
+                    hub.EventDispatcher.SendQueuedEvents();
                 }
-                hub.EventDispatcher.SendQueuedEvents();
+                var eventCount = clientCount * frameCount;
                 if (receiver != null) {
-                    AreEqual(subCount, receiver.count);
+                    AreEqual(eventCount, receiver.count);
                 } else {
-                    AreEqual(subCount, receivedEvents);
+                    AreEqual(eventCount, receivedEvents);
                 }
             }
         }
