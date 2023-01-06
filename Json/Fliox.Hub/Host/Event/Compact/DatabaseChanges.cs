@@ -16,7 +16,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event.Compact
         
         internal DatabaseChanges(in SmallString name) {
             dbName      = name;
-            containers  = new Dictionary<SmallString, ContainerChanges>();
+            containers  = new Dictionary<SmallString, ContainerChanges>(SmallString.Equality);
             writeBuffer = new TaskBuffer();
             readBuffer  = new TaskBuffer();
         }

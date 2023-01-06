@@ -18,6 +18,8 @@ namespace Friflo.Json.Fliox.Hub.Host.Event.Compact
         private  readonly   List<JsonKey>   keys;
         internal readonly   List<RawTask>   rawTasks;
 
+        public   override   string          ToString() => name.value;
+
         internal ContainerChanges(in SmallString name) {
             this.name   = name;
             currentType = TaskType.error;

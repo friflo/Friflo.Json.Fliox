@@ -74,6 +74,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         /// are used as a queue to send pending <see cref="SyncEvent"/>'s
         private  readonly   Task                                clientEventLoop;
         private  readonly   IDataChannelWriter<EventSubClient>  clientEventWriter;
+        private  readonly   DatabaseSubsMap                     databaseSubsBuffer = new DatabaseSubsMap(null);
 
         public   override   string                              ToString() => GetString();
 
@@ -197,6 +198,15 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                 return new Dictionary<SmallString, DatabaseSubs>(subClient.databaseSubs);
             }
         }
+        
+        private void CopyDatabaseSubsMap(DatabaseSubsMap subs) {
+            lock (intern.monitor) {
+                subs.map.Clear();
+                foreach (var pair in intern.databaseSubsMap.map) {
+                    subs.map.Add(pair.Key, pair.Value);
+                }
+            }
+        }
     #endregion
 
     #region - event distribution
@@ -206,6 +216,11 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             }
             using (var pooleMapper = sharedEnv.Pool.ObjectMapper.Get()) {
                 var writer = pooleMapper.instance.writer;
+                var compactor = ChangeCompactor;
+                if (compactor != null) {
+                    CopyDatabaseSubsMap(databaseSubsBuffer);
+                    compactor.AccumulateTasks(databaseSubsBuffer, writer);
+                }
                 foreach (var subClient in sendClients) {
                     subClient.SendEvents(writer, eventMessageBuffer, syncEventBuffer);
                 }
