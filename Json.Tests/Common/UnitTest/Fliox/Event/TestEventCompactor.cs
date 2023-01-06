@@ -27,7 +27,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Event
         }
         
         
-        // [Test]
+        [Test]
         public static  void TestEventCompactor_Upsert() {
             using (var sharedEnv = SharedEnv.Default) {
                 var database        = new MemoryDatabase("remote-memory", smallValueSize: 1024);

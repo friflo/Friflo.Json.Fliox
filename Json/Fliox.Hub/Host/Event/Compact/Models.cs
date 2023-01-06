@@ -9,10 +9,12 @@ namespace Friflo.Json.Fliox.Hub.Host.Event.Compact
 {
     internal sealed class WriteTaskModel
     {
-        internal    JsonValue       task;
-        internal    string          cont;
-        internal    List<JsonValue> set;
-        
+        public          JsonValue       task;
+        public          string          cont;
+        public          List<JsonValue> set;
+
+        public override string          ToString() => $"'{cont}' {task} count: {set.Count}";
+
         internal void Set(in JsonValue taskType, in SmallString container, List<JsonValue> entities) {
             task    = taskType;
             cont    = container.value;
@@ -22,9 +24,11 @@ namespace Friflo.Json.Fliox.Hub.Host.Event.Compact
     
     internal sealed class DeleteTaskModel
     {
-        internal    JsonValue       task;
-        internal    string          cont;
-        internal    List<JsonKey>   ids;
+        public          JsonValue       task;
+        public          string          cont;
+        public          List<JsonKey>   ids;
+        
+        public override string          ToString() => $"'{cont}' {task} count: {ids.Count}";
         
         internal void Set(in JsonValue taskType, in SmallString container, List<JsonKey> keys) {
             task    = taskType;
