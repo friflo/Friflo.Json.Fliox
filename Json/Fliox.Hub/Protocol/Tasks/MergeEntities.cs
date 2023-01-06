@@ -28,6 +28,8 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     
         [Browse(Never)]
         [Ignore]   internal SmallString         containerSmall;
+        [Browse(Never)]
+        [Ignore]   internal EntityContainer     entityContainer;
         /// <summary>name of the primary key property of the entity <see cref="patches"/></summary>
                     public  string              keyName;
         /// <summary>list of merge patches for each entity</summary>
@@ -40,27 +42,23 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         public   override   TaskType            TaskType => TaskType.merge;
         public   override   string              TaskName =>  $"container: '{container}'";
         
-        private EntityContainer PrepareMerge(
+        private TaskErrorResult PrepareMerge(
             EntityDatabase      database,
-            SyncContext         syncContext,
-            out TaskErrorResult error
-            )
+            SyncContext         syncContext)
         {
             if (container == null) {
-                error = MissingContainer();
-                return null;
+                return MissingContainer();
             }
             if (patches == null) {
-                error = MissingField(nameof(patches));
-                return null;
+                return MissingField(nameof(patches));
             }
             database.service.CustomizeMerge(this, syncContext);
-            error = null;
-            return database.GetOrCreateContainer(container);
+            entityContainer = database.GetOrCreateContainer(container);
+            return null;
         }
 
         public override async Task<SyncTaskResult> ExecuteAsync(EntityDatabase database, SyncResponse response, SyncContext syncContext) {
-            var entityContainer = PrepareMerge(database, syncContext, out var error);
+            var error = PrepareMerge(database, syncContext);
             if (error != null) {
                 return error;
             }
@@ -73,7 +71,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         }
         
         public override SyncTaskResult Execute(EntityDatabase database, SyncResponse response, SyncContext syncContext) {
-            var entityContainer = PrepareMerge(database, syncContext, out var error);
+            var error = PrepareMerge(database, syncContext);
             if (error != null) {
                 return error;
             }

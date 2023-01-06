@@ -28,6 +28,8 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         }
         [Browse(Never)]
         [Ignore]   internal SmallString         containerSmall;
+        [Browse(Never)]
+        [Ignore]   internal EntityContainer     entityContainer;
         /// <summary>list of <see cref="ids"/> requested for deletion</summary>
                     public  List<JsonKey>       ids;
         /// <summary>if true all entities in the specified <see cref="container"/> are deleted</summary>
@@ -45,25 +47,22 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
             return false;
         }
         
-        private EntityContainer PrepareDelete(
+        private TaskErrorResult PrepareDelete(
             EntityDatabase          database,
-            SyncContext             syncContext,
-            out TaskErrorResult     error)
+            SyncContext             syncContext)
         {
             if (container == null) {
-                error = MissingContainer();
-                return null;
+                return MissingContainer();
             }
             if (ids == null && all == null) {
-                error = MissingField($"[{nameof(ids)} | {nameof(all)}]");
-                return null;
+                return MissingField($"[{nameof(ids)} | {nameof(all)}]");
             }
-            error           = null;
-            return database.GetOrCreateContainer(container);
+            entityContainer = database.GetOrCreateContainer(container);
+            return null;
         }
 
         public override async Task<SyncTaskResult> ExecuteAsync(EntityDatabase database, SyncResponse response, SyncContext syncContext) {
-            var entityContainer = PrepareDelete (database, syncContext, out var error);
+            var error = PrepareDelete (database, syncContext);
             if (error != null) {
                 return error;
             }
@@ -75,7 +74,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         }
         
         public override SyncTaskResult Execute(EntityDatabase database, SyncResponse response, SyncContext syncContext) {
-            var entityContainer = PrepareDelete (database, syncContext, out var error);
+            var error = PrepareDelete (database, syncContext);
             if (error != null) {
                 return error;
             }
