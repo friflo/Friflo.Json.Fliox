@@ -53,6 +53,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Event
         [Test]
         public static  void TestEventCompactor_UpsertPerf() {
             var eventReceiver = new IgnoreReceiver();
+            // 500 clients, 60 Hz  =>  with compactor: 585 ms,  without compactor 9374 ms
             const int clientCount = 10; // 1000;
             const int frameCount  = 60; // 60 Hz
             const int upsertCount = clientCount; // typically each client send a single upsert to the Hub per frame
