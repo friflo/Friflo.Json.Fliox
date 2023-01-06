@@ -93,9 +93,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                 unsentSyncEvents.AddTail(syncEvent);
             }
             // Signal new event. Need to be signaled after adding event to queue. No reason to execute this in the lock. 
-            if (dispatcher != null) {
-                dispatcher.NewClientEvent(this);
-            }
+            dispatcher?.NewClientEvent(this);
         }
         
         private bool DequeueEventMessages(
