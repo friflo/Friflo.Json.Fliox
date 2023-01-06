@@ -92,6 +92,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Event
                 
                 // --- simulate sending upsert's
                 for (int i = 0; i < frameCount; i++) {
+                    // Creating upsert's has significant cost. In real scenario this is done by remote clients.
+                    // Make a reference run with upsert but without sending queued events to get its cost.
                     for (int n = 0; n < upsertCount; n++) {
                         record.id   = n;
                         record.x    = n;
