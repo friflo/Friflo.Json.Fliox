@@ -28,14 +28,18 @@ namespace Friflo.Json.Fliox.Hub.Host.Event.Compact
     /// </remarks>
     public sealed partial class ChangeCompactor
     {
+        /// <summary>Thread safe map used to collect the <see cref="DatabaseChanges"/> for each database</summary>
         private  readonly   Dictionary<EntityDatabase, DatabaseChanges> databaseChangesMap;
-        private  readonly   List<DatabaseChanges>                       databaseChangesList;
-        private  readonly   HashSet<ContainerChanges>                   containerChangesSet;
-        internal readonly   MemoryBuffer                                rawTaskBuffer;
-        internal readonly   WriteTaskModel                              writeTaskModel;
-        internal readonly   DeleteTaskModel                             deleteTaskModel;
-        private             SyncEvent                                   syncEvent;
-        private  readonly   Dictionary<DatabaseSubs, JsonValue>         rawSyncEvents;
+        /// <summary>
+        /// Fields below are used as buffers in <see cref="AccumulateTasks"/> with is not thread safe.
+        /// </summary>
+        private  readonly   List<DatabaseChanges>               databaseChangesList;
+        private  readonly   HashSet<ContainerChanges>           containerChangesSet;
+        internal readonly   MemoryBuffer                        rawTaskBuffer;
+        internal readonly   WriteTaskModel                      writeTaskModel;
+        internal readonly   DeleteTaskModel                     deleteTaskModel;
+        private             SyncEvent                           syncEvent;
+        private  readonly   Dictionary<DatabaseSubs, JsonValue> rawSyncEvents;
         
         public ChangeCompactor() {
             databaseChangesMap  = new Dictionary<EntityDatabase, DatabaseChanges>();
@@ -55,6 +59,13 @@ namespace Friflo.Json.Fliox.Hub.Host.Event.Compact
             }
         } 
 
+        /// <summary>
+        /// Accumulate all container changes - create, upsert, merge and delete - for the <see cref="ClientDbSubs"/>
+        /// of each database passed in <paramref name="databaseSubsMap"/>
+        /// </summary>
+        /// <remarks>
+        /// <b>Note</b> Method is not thread safe
+        /// </remarks>
         internal void AccumulateTasks(DatabaseSubsMap databaseSubsMap, ObjectWriter writer)
         {
             databaseChangesList.Clear();
