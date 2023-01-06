@@ -141,6 +141,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event.Compact
         {
             syncEvent.tasksJson.Clear();
             foreach (var changeSub in changeSubs) {
+                // todo could check matching container by using EntityContainer reference
                 if (!changeSub.container.IsEqual(container.name)) {
                     continue;
                 }
