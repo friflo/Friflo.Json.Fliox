@@ -34,7 +34,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event.Compact
         internal readonly   MemoryBuffer                                rawTaskBuffer;
         internal readonly   WriteTaskModel                              writeTaskModel;
         internal readonly   DeleteTaskModel                             deleteTaskModel;
-        private  readonly   SyncEvent                                   syncEvent;
+        private             SyncEvent                                   syncEvent;
         private  readonly   Dictionary<DatabaseSubs, JsonValue>         rawSyncEvents;
         
         public ChangeCompactor() {
@@ -68,6 +68,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event.Compact
             var context = new CompactorContext(this, writer);
             foreach (var databaseChanges in databaseChangesList)
             {
+                syncEvent.db = databaseChanges.dbName.value;
                 containerChangesSet.Clear();
                 rawTaskBuffer.Reset();
                 var readBuffer  = databaseChanges.readBuffer;

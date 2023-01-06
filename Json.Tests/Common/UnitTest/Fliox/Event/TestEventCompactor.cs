@@ -6,6 +6,7 @@ using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.Event;
 using Friflo.Json.Fliox.Hub.Host.Event.Compact;
 using NUnit.Framework;
+using static NUnit.Framework.Assert;
 
 namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Event
 {
@@ -29,6 +30,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Event
         
         [Test]
         public static  void TestEventCompactor_Upsert() {
+            var subCount    = 5;
+            var upsertCount = 10;
+            
             using (var sharedEnv = SharedEnv.Default) {
                 var database        = new MemoryDatabase("remote-memory", smallValueSize: 1024);
                 var hub             = new FlioxHub(database, sharedEnv);
@@ -37,20 +41,25 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Event
                 dispatcher.ChangeCompactor = compactor;
                 compactor.AddDatabase(database);
                 hub.EventDispatcher = dispatcher;
-
-                var client          = new GameClient(hub);
-                client.records.SubscribeChanges(Change.All, (changes, context) => {});
-                client.SyncTasksSynchronous();
                 
+                for (int i = 0; i < subCount; i++) {
+                    var sub = new GameClient(hub) { UserId = $"client-{i}" };
+                    sub.records.SubscribeChanges(Change.All, (changes, context) => {
+                        if (upsertCount != changes.Upserts.Count) {
+                            Fail($"Expect: {upsertCount} was: {changes.Upserts.Count}");
+                        }
+                    });
+                    sub.SyncTasksSynchronous();
+                }
+                var client = new GameClient(hub) { UserId = "sender" };
                 var record = new Record();
-                for (int n = 1; n <= 10; n++) {
+                for (int n = 0; n < upsertCount; n++) {
                     record.id   = n;
                     record.x    = n;
                     record.y    = n;
                     client.records.Upsert(record);
                     client.SyncTasksSynchronous();
                 }
-                
                 hub.EventDispatcher.SendQueuedEvents();
             }
         }
