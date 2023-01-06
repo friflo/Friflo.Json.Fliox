@@ -11,7 +11,9 @@ namespace Friflo.Json.Fliox.Hub.Host.Event.Compact
     internal readonly struct ChangeTask {
         internal readonly ContainerChanges  containerChanges;
         internal readonly TaskType          taskType;
+        /// <summary>start position in either <see cref="TaskBuffer.values"/> or <see cref="TaskBuffer.keys"/></summary>
         internal readonly int               start;
+        /// <summary>item count in either <see cref="TaskBuffer.values"/> or <see cref="TaskBuffer.keys"/></summary>
         internal readonly int               count;
 
         public   override string            ToString() => $"{taskType} count: {count}";
@@ -26,8 +28,10 @@ namespace Friflo.Json.Fliox.Hub.Host.Event.Compact
     
     internal sealed class TaskBuffer {
         internal readonly   List<ChangeTask>    changeTasks = new List<ChangeTask>();
+        /// <summary>store entities of create, upsert and merge tasks</summary>
         internal readonly   List<JsonValue>     values      = new List<JsonValue>();
         internal readonly   MemoryBuffer        valueBuffer = new MemoryBuffer(1024);
+        /// <summary>store deleted entities of a delete tasks</summary>
         internal readonly   List<JsonKey>       keys        = new List<JsonKey>();
 
         public   override   string ToString() => $"changes: {changeTasks.Count}, values: {values.Count}, keys: {keys.Count}";

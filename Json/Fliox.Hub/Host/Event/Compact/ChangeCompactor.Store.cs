@@ -60,16 +60,17 @@ namespace Friflo.Json.Fliox.Hub.Host.Event.Compact
             return false;
         }
         
+        /// <summary> Store the entities of a create, upsert or merge tasks </summary>
         private static void StoreWriteTask(
             DatabaseChanges     databaseChanges,
-            in SmallString      name,
+            in SmallString      containerName,
             TaskType            taskType,
             List<JsonEntity>    entities)
         {
             var containers = databaseChanges.containers;
-            if (!containers.TryGetValue(name, out var container)) {
-                container = new ContainerChanges(name);
-                containers.Add(name, container);
+            if (!containers.TryGetValue(containerName, out var container)) {
+                container = new ContainerChanges(containerName);
+                containers.Add(containerName, container);
             }
             var writeBuffer = databaseChanges.writeBuffer;
             var values      = writeBuffer.values;
@@ -80,15 +81,16 @@ namespace Friflo.Json.Fliox.Hub.Host.Event.Compact
             }
         }
         
+        /// <summary> Store the entity ids of a delete task </summary>
         private static void StoreDeleteTask(
             DatabaseChanges     databaseChanges,
-            in SmallString      name,
+            in SmallString      containerName,
             List<JsonKey>       ids)
         {
             var containers = databaseChanges.containers;
-            if (!containers.TryGetValue(name, out var container)) {
-                container = new ContainerChanges(name);
-                containers.Add(name, container);
+            if (!containers.TryGetValue(containerName, out var container)) {
+                container = new ContainerChanges(containerName);
+                containers.Add(containerName, container);
             }
             var writeBuffer = databaseChanges.writeBuffer;
             var keys        = writeBuffer.keys;
