@@ -10,6 +10,9 @@ using Friflo.Json.Fliox.Mapper;
 
 namespace Friflo.Json.Fliox.Hub.Host.Event.Compact
 {
+    /// <summary>
+    /// Used to collect of changes - create, upsert, merge and delete - of a specific <see cref="EntityContainer"/>
+    /// </summary>
     internal sealed class ContainerChanges
     {
         internal readonly   SmallString     name;

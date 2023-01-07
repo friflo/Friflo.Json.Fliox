@@ -24,8 +24,43 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Event
             // --- containers
             public readonly EntitySet <int, Record>     records = null;
 
-            public TestCompactClient(FlioxHub hub, EventReceiver receiver)
+            public TestCompactClient(FlioxHub hub, EventReceiver receiver = null)
                 : base (hub, null, receiver == null ? null : new ClientOptions ((h, c)  => receiver)) { }
+        }
+        
+        [Test]
+        public static  void TestEventCompactor_Changes()
+        {
+            using (var sharedEnv = SharedEnv.Default) {
+                var database        = new MemoryDatabase("remote-memory", smallValueSize: 1024);
+                var hub             = new FlioxHub(database, sharedEnv);
+                var dispatcher      = new EventDispatcher(EventDispatching.Queue);
+                dispatcher.EnableChangeAccumulation(database);
+                hub.EventDispatcher = dispatcher;
+                
+                var sub     = new TestCompactClient(hub);
+                var send    = new TestCompactClient(hub);
+                var receivedEvents = 0;
+
+                sub.records.SubscribeChanges(Change.All, (changes, context) => {
+                    switch (receivedEvents++) {
+                        case 0:
+                            AreEqual(1, changes.Creates.Count);
+                            AreEqual(1, changes.Upserts.Count);
+                            AreEqual(1, changes.Deletes.Count);
+                            break;
+                    }
+                });
+                sub.SyncTasksSynchronous();
+                
+                send.records.Create(new Record { id = 1 });
+                send.records.Upsert(new Record { id = 2 });
+                send.records.Delete(3);
+                send.SyncTasksSynchronous();
+                dispatcher.SendQueuedEvents();
+                
+                AreEqual(1, receivedEvents);
+            }
         }
         
         /// <summary> Used to test performance and memory usage of <see cref="EventDispatcher"/>.EnqueueSyncTasks() </summary>
@@ -39,7 +74,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Event
         }
         
         [Test]
-        public static  void TestEventCompactor_Upsert() {
+        public static void TestEventCompactor_Upsert() {
             const int clientCount = 2;
             const int upsertCount = 5;
             TestEventCompactor_UpsertIntern(clientCount, 2, upsertCount, null);
@@ -50,7 +85,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Event
         /// E.g in case of 1000 upserts using 1000 subscribers result in parsing 1.000.000 <see cref="Record"/>'s
         /// </summary>
         [Test]
-        public static  void TestEventCompactor_UpsertPerf() {
+        public static void TestEventCompactor_UpsertPerf() {
             var eventReceiver = new IgnoreReceiver();
             // 500 clients, 60 Hz  =>  with compactor: 585 ms,  without compactor 9374 ms
             const int clientCount = 10; // 1000;
@@ -59,7 +94,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Event
             TestEventCompactor_UpsertIntern(clientCount, frameCount, upsertCount, eventReceiver);
         }
         
-        private static  void TestEventCompactor_UpsertIntern(
+        private static void TestEventCompactor_UpsertIntern(
             int             clientCount,
             int             frameCount,
             int             upsertCount,
@@ -84,7 +119,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Event
                     });
                     subClient.SyncTasksSynchronous();
                 }
-                var client = new TestCompactClient(hub, receiver) { UserId = "sender" };
+                var client = new TestCompactClient(hub) { UserId = "sender" };
                 var record = new Record();
                 
                 // --- simulate sending upsert's
@@ -99,7 +134,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Event
                         var result = client.SyncTasksSynchronous();
                         result.Reuse(client);
                     }
-                    hub.EventDispatcher.SendQueuedEvents();
+                    dispatcher.SendQueuedEvents();
                 }
                 var eventCount = clientCount * frameCount;
                 if (receiver != null) {

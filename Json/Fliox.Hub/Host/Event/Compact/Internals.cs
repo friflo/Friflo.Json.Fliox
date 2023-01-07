@@ -8,15 +8,18 @@ using Friflo.Json.Fliox.Utils;
 
 namespace Friflo.Json.Fliox.Hub.Host.Event.Compact
 {
-    internal readonly struct ChangeTask {
-        internal readonly ContainerChanges  containerChanges;
-        internal readonly TaskType          taskType;
+    internal readonly struct ChangeTask
+    {
+        /// <summary>Used to collect all changes of a specific container</summary>
+        internal readonly   ContainerChanges    containerChanges;
+        /// <summary>The type of container mutation: create, upsert, merge or delete</summary>
+        internal readonly   TaskType            taskType;
         /// <summary>start position in either <see cref="TaskBuffer.values"/> or <see cref="TaskBuffer.keys"/></summary>
-        internal readonly int               start;
+        internal readonly   int                 start;
         /// <summary>item count in either <see cref="TaskBuffer.values"/> or <see cref="TaskBuffer.keys"/></summary>
-        internal readonly int               count;
+        internal readonly   int                 count;
 
-        public   override string            ToString() => $"{taskType} count: {count}";
+        public   override   string              ToString() => $"'{containerChanges.name.value}' {taskType} count: {count}";
 
         internal ChangeTask(ContainerChanges containerChanges, TaskType taskType, int start, int count) {
             this.containerChanges   = containerChanges;
@@ -26,7 +29,8 @@ namespace Friflo.Json.Fliox.Hub.Host.Event.Compact
         }
     }
     
-    internal sealed class TaskBuffer {
+    internal sealed class TaskBuffer
+    {
         internal readonly   List<ChangeTask>    changeTasks = new List<ChangeTask>();
         /// <summary>store entities of create, upsert and merge tasks</summary>
         internal readonly   List<JsonValue>     values      = new List<JsonValue>();
