@@ -31,32 +31,32 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     public enum TaskType
     {
         /// <summary>read container entities by id</summary>
-        read,
+        read                =  1,
         /// <summary>query container entities using a filter</summary>
-        query,
+        query               =  2,
         /// <summary>create container entities</summary>
-        create,
+        create              =  3,
         /// <summary>upsert container entities</summary>
-        upsert,
+        upsert              =  4,
         /// <summary>patch container entities by id</summary>
-        merge,
+        merge               =  5,
         /// <summary>delete container entities by id</summary>
-        delete,
+        delete              =  6,
         /// <summary>aggregate - count - container entities using a filter</summary>
-        aggregate,
+        aggregate           =  7,
         /// <summary>send a database message</summary>
-        message,
+        message             =  8,
         /// <summary>send a database command</summary>
-        command,
+        command             =  9,
         /// <summary>close cursors of a container</summary>
-        closeCursors,
+        closeCursors        = 10,
         /// <summary>subscribe to entity changes of a container</summary>
-        subscribeChanges,
+        subscribeChanges    = 11,
         /// <summary>subscribe to messages and commands send to a database</summary>
-        subscribeMessage,
+        subscribeMessage    = 12,
         /// <summary>wip</summary>
-        reserveKeys,
+        reserveKeys         = 13,
         /// <summary>indicate an error when task was executed</summary>
-        error
+        error               = 14
     }
 }

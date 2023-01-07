@@ -22,7 +22,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event.Compact
 
         internal ContainerChanges(EntityContainer entityContainer) {
             name        = entityContainer.nameSmall;
-            currentType = TaskType.error;
+            currentType = default;
             values      = new List<JsonValue>();
             keys        = new List<JsonKey>();
             rawTasks    = new List<RawTask>();

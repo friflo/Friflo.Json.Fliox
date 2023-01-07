@@ -102,7 +102,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event.Compact
                 }
                 foreach (var container in containerChangesSet) {
                     container.AddAccumulatedRawTask(context);
-                    container.currentType = TaskType.error;
+                    container.currentType = default;
                 }
                 var clientDbSubs = databaseSubsMap.map[databaseChanges.dbName];
                 EnqueueSyncEvents(clientDbSubs, writer);
