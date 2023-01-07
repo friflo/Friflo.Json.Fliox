@@ -113,7 +113,8 @@ namespace Friflo.Json.Fliox.Hub.Host.Event.Compact
         }
         
         /// <summary>
-        /// Create a serialized <see cref="SyncEvent"/>'s and queue them to the passed <paramref name="clientDbSubs"/>
+        /// Create a serialized <see cref="SyncEvent"/>'s for the <see cref="containerChangesSet"/>
+        /// and queue them to the passed <paramref name="clientDbSubs"/>
         /// </summary>
         private void EnqueueSyncEvents(ClientDbSubs[] clientDbSubs, ObjectWriter writer) {
             foreach (var containerChanges in containerChangesSet) {
