@@ -84,6 +84,6 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     /// </summary>
     public enum AggregateType {
         /// <summary>count entities</summary>
-        count
+        count   = 1
     }
 }

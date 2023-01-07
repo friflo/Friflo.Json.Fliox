@@ -81,20 +81,20 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Models
     /// </summary>
     public enum EntityErrorType
     {
-        Undefined,   // Prevent implicit initialization of underlying value 0 to a valid value (ParseError)
+        Undefined   = 0,   // Prevent implicit initialization of underlying value 0 to a valid value (ParseError)
         /// <summary>Invalid JSON when reading an entity from database<br/>
         /// can happen with key-value databases - e.g. file-system - as their values are not restricted to JSON</summary>
-        ParseError,
+        ParseError  = 1,
         /// <summary>Reading an entity from database failed<br/>
         /// e.g. a corrupt file when using the file-system as database</summary>
-        ReadError,
+        ReadError   = 2,
         /// <summary>Writing an entity to database failed<br/>
         /// e.g. the file is already in use by another process when using the file-system as database</summary>
-        WriteError,
+        WriteError  = 3,
         /// <summary>Deleting an entity in database failed<br/>
         /// e.g. the file is already in use by another process when using the file-system as database</summary>
-        DeleteError,
+        DeleteError = 4,
         /// <summary>Patching an entity failed</summary>
-        PatchError
+        PatchError  = 5
     }
 }

@@ -34,7 +34,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     /// <summary>Type of a task error used in <see cref="TaskErrorResult"/></summary>
     public enum TaskErrorResultType {
         /// HTTP status: 500
-        None,
+        None                = 0,
         /// <summary>
         /// Unhandled exception while executing a task.<br/>
         /// maps to HTTP status: 500
@@ -43,25 +43,25 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         /// Unhandled exceptions in a <see cref="EntityContainer"/> implementations need to be fixed.<br/>
         /// More information at <see cref="FlioxHub.ExecuteRequestAsync"/>.
         /// </remarks>
-        UnhandledException,
+        UnhandledException  = 1,
         /// <summary>General database error while task execution.<br/>
         /// E.g. the access is currently not available or accessing a missing table.<br/>
         /// maps to HTTP status: 500 
         /// </summary>
-        DatabaseError,
+        DatabaseError       = 2,
         /// <summary>Invalid query filter   <br/> maps to HTTP status: 400</summary>
-        FilterError,
+        FilterError         = 3,
         /// <summary>Schema validation of an entity failed  <br/> maps to HTTP status: 400</summary>
-        ValidationError,
+        ValidationError     = 4,
         /// <summary>Execution of message / command failed caused by invalid input  <br/>maps to HTTP status: 400</summary>
-        CommandError,
+        CommandError        = 5,
         /// <summary>Invalid task. E.g. by using an invalid task parameter  <br/>maps to HTTP status: 400</summary>
-        InvalidTask,
+        InvalidTask         = 6,
         /// <summary>database message / command not implemented     <br/>maps to HTTP status: 501</summary>
-        NotImplemented,
+        NotImplemented      = 7,
         /// <summary>task execution not authorized  <br/>maps to HTTP status: 403</summary>
-        PermissionDenied,
+        PermissionDenied    = 8,
         /// <summary>The entire <see cref="SyncRequest"/> containing a task failed  <br/>maps to HTTP status: 500</summary>
-        SyncError
+        SyncError           = 9
     }
 }

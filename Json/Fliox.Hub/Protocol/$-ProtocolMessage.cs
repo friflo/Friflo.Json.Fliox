@@ -124,15 +124,15 @@ namespace Friflo.Json.Fliox.Hub.Protocol
     /// </summary>
     public enum MessageType
     {
-        None,
+        None    = 0,
         /// <summary>event message - send from host to clients with subscriptions</summary>
-        ev,
+        ev      = 1,
         /// <summary>request - send from a client to a host</summary>
-        sync,
+        sync    = 2,
         /// <summary>response - send from a host to a client in reply of a request</summary>
-        resp,
+        resp    = 3,
         /// <summary>response error - send from a host to a client in reply of a request</summary>
-        error
+        error   = 4
     }
     
     /// <summary>
