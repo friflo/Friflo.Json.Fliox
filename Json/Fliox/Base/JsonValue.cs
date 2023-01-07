@@ -183,12 +183,7 @@ namespace Friflo.Json.Fliox
             if (bytes.end + len > bytes.buffer.Length) {
                 bytes.DoubleSize(bytes.end + len);    
             }
-            int pos     = bytes.end;
-            int arrEnd  = offset + len;
-            var buf     = bytes.buffer;
-            var src     = array.Array;
-            for (int n = offset; n < arrEnd; n++)
-                buf[pos++] = src[n];
+            Buffer.BlockCopy(array.Array, offset, bytes.buffer, bytes.end, len);
             bytes.end += len;
         }
         
