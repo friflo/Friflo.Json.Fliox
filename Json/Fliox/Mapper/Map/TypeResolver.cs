@@ -127,8 +127,8 @@ namespace Friflo.Json.Fliox.Mapper.Map
         }
         
         enum Mode {
-            Search,
-            Enumerate
+            Search      = 1,
+            Enumerate   = 2
         }
 
         class Query {

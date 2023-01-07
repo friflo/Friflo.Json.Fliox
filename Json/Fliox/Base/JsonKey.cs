@@ -231,9 +231,9 @@ namespace Friflo.Json.Fliox
     }
     
     public enum JsonKeyType {
-        Null,
-        Long,
-        String,
-        Guid,
+        Null    = 0,
+        Long    = 1,
+        String  = 2,
+        Guid    = 3,
     }
 }

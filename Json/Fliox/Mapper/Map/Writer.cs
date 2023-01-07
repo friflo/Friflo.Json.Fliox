@@ -9,8 +9,8 @@ using Friflo.Json.Fliox.Mapper.Utils;
 namespace Friflo.Json.Fliox.Mapper.Map
 {
     enum OutputType {
-        ByteList,
-        ByteWriter,
+        ByteList    = 1,
+        ByteWriter  = 2,
     }
     
 #if !UNITY_5_3_OR_NEWER

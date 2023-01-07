@@ -35,8 +35,8 @@ namespace Friflo.Json.Fliox.Mapper
     }
 
     public enum TypeAccess {
-        Reflection,
-        IL
+        Reflection  = 1,
+        IL          = 2
     }
     
     /// <summary>

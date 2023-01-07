@@ -10,9 +10,9 @@ using Browse = System.Diagnostics.DebuggerBrowsableAttribute;
 namespace Friflo.Json.Fliox.Mapper.Diff
 {
     internal enum NodeType {
-        Root,
-        Element,
-        Key,
+        Root    = 1,
+        Element = 2,
+        Key     = 3,
     }
     
     internal readonly struct TypeNode

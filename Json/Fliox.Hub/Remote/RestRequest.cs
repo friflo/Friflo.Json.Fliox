@@ -8,17 +8,17 @@ namespace Friflo.Json.Fliox.Hub.Remote
 {
     internal enum RestRequestType
     {
-        error,
+        error   = 1,
         // message / command
-        command,
-        message,
+        command = 2,
+        message = 3,
         // --- container operation
-        read,
-        readOne,
-        query,
-        write,
-        merge,
-        delete
+        read    = 4,
+        readOne = 5,
+        query   = 6,
+        write   = 7,
+        merge   = 8,
+        delete  = 9
     }
     
     internal readonly struct RestRequest

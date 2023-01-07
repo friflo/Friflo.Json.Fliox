@@ -383,7 +383,7 @@ namespace Friflo.Json.Fliox.Schema.Language
     }
     
     internal enum Kind {
-        Output,
-        Input
+        Output  = 1,
+        Input   = 2
     }
 }

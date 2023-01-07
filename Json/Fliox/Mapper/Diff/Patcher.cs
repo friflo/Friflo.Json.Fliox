@@ -104,7 +104,7 @@ namespace Friflo.Json.Fliox.Mapper.Diff
 
     public enum NodeAction
     {
-        Assign,
-        Remove,
+        Assign  = 1,
+        Remove  = 2,
     }
 }

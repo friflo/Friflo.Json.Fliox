@@ -6,8 +6,8 @@ using System;
 namespace Friflo.Json.Fliox.Hub
 {
     public enum HubLog {
-        Error,
-        Info
+        Error   = 1,
+        Info    = 2
     }
 
     public interface IHubLogger {

@@ -11,9 +11,9 @@ namespace Friflo.Json.Fliox.Mapper
     public enum DiffKind
     {
         /// <summary>Add all array (set) element differences to the <see cref="DiffNode"/> tree </summary>
-        DiffElements,
+        DiffElements    = 1,
         /// <summary>Add only the first element difference of any array (set) to the <see cref="DiffNode"/> tree </summary>
-        DiffArrays
+        DiffArrays      = 2
     }
     
 #if !UNITY_5_3_OR_NEWER
