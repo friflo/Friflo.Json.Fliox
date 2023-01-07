@@ -232,15 +232,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
         
         [Test]
         public void TestSubscriptionProcessorMemory() {
-            var sub     = new SubscriptionProcessor();
-            var ev      = new SyncEvent { db = "dummy", tasks = new List<SyncRequestTask>() };
-            var db      = new MemoryDatabase("dummy");
-            var hub     = new FlioxHub(db);
-            var client  = new FlioxClient(hub);
-            sub.ProcessEvent(client, ev, 0);   // force initial allocations
+            var sub         = new SubscriptionProcessor();
+            var syncEvent   = new SyncEvent { db = "dummy", tasks = new List<SyncRequestTask>() };
+            var db          = new MemoryDatabase("dummy");
+            var hub         = new FlioxHub(db);
+            var client      = new FlioxClient(hub);
+            sub.ProcessEvent(client, syncEvent, 0);   // force initial allocations
             var start = GC.GetAllocatedBytesForCurrentThread();
             for (int n = 0; n < 10; n++) {
-                sub.ProcessEvent(client, ev, 0);
+                sub.ProcessEvent(client, syncEvent, 0);
             }
             var diff = GC.GetAllocatedBytesForCurrentThread() - start;
             AreEqual(0, diff);

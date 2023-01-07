@@ -78,8 +78,8 @@ namespace Friflo.Json.Fliox.Hub.Client
                 _intern.lastEventSeq = eventMessage.seq;   
                 var processor = _intern.SubscriptionProcessor();
                 // Console.WriteLine($"----- ProcessEvent. events: {eventMessages.events.Length}");
-                foreach (var ev in eventMessage.events) {
-                    processor.ProcessEvent(this, ev, eventMessage.seq);
+                foreach (var syncEvent in eventMessage.events) {
+                    processor.ProcessEvent(this, syncEvent, eventMessage.seq);
                 }
             }
             if (_intern.ackTimer == null) {

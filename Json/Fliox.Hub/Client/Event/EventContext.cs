@@ -46,7 +46,7 @@ namespace Friflo.Json.Fliox.Hub.Client
     public sealed class EventContext : ILogSource
     {
         /// <summary> user id sending the <see cref="Messages"/> and causing the <see cref="Changes"/>  </summary>
-        public              JsonKey                 UserId          => ev.usr;
+        public              JsonKey                 UserId          => syncEvent.usr;
         /// <summary> incrementing sequence number of a received event </summary>
         public              int                     EventSeq        => seq;
         /// <summary> number of received events </summary>
@@ -57,29 +57,29 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// Use <see cref="GetChanges{TKey,T}"/> to get <b>strongly typed</b> container changes </summary>
         public              List<Changes>           Changes         => processor.contextChanges;
         /// <summary> return the number of <see cref="Messages"/> and <see cref="Changes"/> of the subscription event </summary>
-        public              EventInfo               EventInfo       => ev.GetEventInfo();
+        public              EventInfo               EventInfo       => syncEvent.GetEventInfo();
         /// <summary> is true if the client is the origin of the event </summary>
-        public              bool                    IsOrigin        => ev.clt.IsEqual(Client._intern.clientId);
+        public              bool                    IsOrigin        => syncEvent.clt.IsEqual(Client._intern.clientId);
         /// <summary> is true if the client is the origin of the event </summary>
-        public              JsonKey                 SrcClient       => ev.clt;
+        public              JsonKey                 SrcClient       => syncEvent.clt;
         /// <summary> is private to be exposed only in Debugger </summary>
         private             FlioxClient             Client          { get; set; }
         
-        public  override    string                  ToString()      => $"source user: {ev.usr}";
+        public  override    string                  ToString()      => $"source user: {syncEvent.usr}";
         
         [DebuggerBrowsable(Never)] public           IHubLogger              Logger => Client.Logger;
         [DebuggerBrowsable(Never)] private readonly SubscriptionProcessor   processor;
-        [DebuggerBrowsable(Never)] private          SyncEvent               ev;
+        [DebuggerBrowsable(Never)] private          SyncEvent               syncEvent;
         [DebuggerBrowsable(Never)] private          int                     seq;
 
         internal EventContext(SubscriptionProcessor processor) {
             this.processor  = processor;
         }
         
-        internal void Init(FlioxClient client, in SyncEvent ev, int seq) {
-            Client      = client;
-            this.ev     = ev;
-            this.seq    = seq;
+        internal void Init(FlioxClient client, in SyncEvent syncEvent, int seq) {
+            Client          = client;
+            this.syncEvent  = syncEvent;
+            this.seq        = seq;
         }
         
         /// <summary>

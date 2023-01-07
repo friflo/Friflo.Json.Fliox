@@ -19,7 +19,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event.Compact
         /// <summary>item count in either <see cref="TaskBuffer.values"/> or <see cref="TaskBuffer.keys"/></summary>
         internal readonly   int                 count;
 
-        public   override   string              ToString() => $"'{containerChanges.name.value}' {taskType} count: {count}";
+        public   override   string              ToString() => $"{taskType} '{containerChanges.name.value}' count: {count}";
 
         internal ChangeTask(ContainerChanges containerChanges, TaskType taskType, int start, int count) {
             this.containerChanges   = containerChanges;

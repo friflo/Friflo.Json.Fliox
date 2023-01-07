@@ -50,13 +50,15 @@ namespace Friflo.Json.Fliox.Hub.Host.Event.Compact
                 case TaskType.create:
                 case TaskType.upsert:
                 case TaskType.merge:
+                    var entityValues = readBuffer.values;
                     for (int n = 0; n < changeTask.count; n++) {
-                        values.Add(readBuffer.values[changeTask.start + n]);
+                        values.Add(entityValues[changeTask.start + n]);
                     }
                     break;
                 case TaskType.delete:
+                    var entityKeys = readBuffer.keys;
                     for (int n = 0; n < changeTask.count; n++) {
-                        keys.Add(readBuffer.keys[changeTask.start + n]);
+                        keys.Add(entityKeys[changeTask.start + n]);
                     }
                     break;
             }

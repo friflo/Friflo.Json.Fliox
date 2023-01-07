@@ -44,8 +44,8 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// methods like <see cref="EntitySet{TKey,T}.SubscribeChanges"/>, <see cref="FlioxClient.SubscribeAllChanges"/> or
         /// <see cref="FlioxClient.SubscribeMessage"/>.
         /// </summary>
-        public void ProcessEvent(FlioxClient client, in SyncEvent ev, int seq) {
-            eventContext.Init(client, ev, seq);
+        public void ProcessEvent(FlioxClient client, in SyncEvent syncEvent, int seq) {
+            eventContext.Init(client, syncEvent, seq);
             if (client._intern.disposed)  // store may already be disposed
                 return;
             if (objectMapper == null) {
@@ -60,12 +60,12 @@ namespace Friflo.Json.Fliox.Hub.Client
             }
             contextChanges.Clear();
             EventCount++;
-            if (client.DatabaseName != ev.db) {
-                var msg = $"invalid SyncEvent db: {ev.db}. expect: {client.DatabaseName}";
+            if (client.DatabaseName != syncEvent.db) {
+                var msg = $"invalid SyncEvent db: {syncEvent.db}. expect: {client.DatabaseName}";
                 eventContext.Logger.Log(HubLog.Error, msg);
                 return;
             }
-            foreach (var task in ev.tasks) {
+            foreach (var task in syncEvent.tasks) {
                 switch (task.TaskType)
                 {
                     case TaskType.create:   ProcessCreate (client, (CreateEntities) task);  break;

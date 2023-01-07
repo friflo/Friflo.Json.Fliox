@@ -38,28 +38,40 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Event
                 dispatcher.EnableChangeAccumulation(database);
                 hub.EventDispatcher = dispatcher;
                 
-                var sub     = new TestCompactClient(hub);
-                var send    = new TestCompactClient(hub);
-                var receivedEvents = 0;
+                var sub             = new TestCompactClient(hub);
+                var send            = new TestCompactClient(hub);
+                var changeEvents    = 0;
 
                 sub.records.SubscribeChanges(Change.All, (changes, context) => {
-                    switch (receivedEvents++) {
+                    switch (changeEvents) {
                         case 0:
+                            changeEvents++;
                             AreEqual(1, changes.Creates.Count);
-                            AreEqual(1, changes.Upserts.Count);
+                            AreEqual(2, changes.Upserts.Count);
                             AreEqual(1, changes.Deletes.Count);
+                            break;
+                        case 1:
+                            changeEvents++;
+                            AreEqual(1, changes.Patches.Count);
                             break;
                     }
                 });
                 sub.SyncTasksSynchronous();
                 
-                send.records.Create(new Record { id = 1 });
+                var record1 = new Record { id = 1 };
+                send.records.Create(record1);
                 send.records.Upsert(new Record { id = 2 });
                 send.records.Delete(3);
+                send.records.Upsert(new Record { id = 4 });
                 send.SyncTasksSynchronous();
                 dispatcher.SendQueuedEvents();
                 
-                AreEqual(1, receivedEvents);
+                record1.x = 42;
+                send.records.DetectPatches(record1); // create merge task
+                send.SyncTasksSynchronous();
+                dispatcher.SendQueuedEvents();
+                
+                AreEqual(2, changeEvents);
             }
         }
         
@@ -106,13 +118,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Event
                 var dispatcher      = new EventDispatcher(EventDispatching.Queue);
                 dispatcher.EnableChangeAccumulation(database);
                 hub.EventDispatcher = dispatcher;
-                var receivedEvents  = 0;
+                var changeEvents  = 0;
                 
                 // --- setup subscribers
                 for (int i = 0; i < clientCount; i++) {
                     var subClient = new TestCompactClient(hub, receiver) { UserId = $"client-{i}" };
                     subClient.records.SubscribeChanges(Change.All, (changes, context) => {
-                        receivedEvents++;
+                        changeEvents++;
                         if (upsertCount != changes.Upserts.Count) {
                             Fail($"Expect: {upsertCount} was: {changes.Upserts.Count}");
                         }
@@ -140,7 +152,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Event
                 if (receiver != null) {
                     AreEqual(eventCount, receiver.count);
                 } else {
-                    AreEqual(eventCount, receivedEvents);
+                    AreEqual(eventCount, changeEvents);
                 }
             }
         }
