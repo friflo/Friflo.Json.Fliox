@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
-using Friflo.Json.Burst.Utils;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.Utils;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
@@ -24,12 +23,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     {
         /// <summary>container name the <see cref="entities"/> are created</summary>
         [Serialize                            ("cont")]
-        [Required]  public  string              container {
-            get => containerSmall.value;
-            set => containerSmall = new SmallString(value);
-        }
-        [Browse(Never)]
-        [Ignore]   internal SmallString         containerSmall;
+        [Required]  public  string              container;
         [Browse(Never)]
         [Ignore]   internal EntityContainer     entityContainer;
                     public  Guid?               reservedToken;
@@ -59,7 +53,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
             entityContainer = database.GetOrCreateContainer(container);
             errorMsg = entityContainer.database.Schema?.ValidateEntities (container, entities, syncContext, EntityErrorType.WriteError, ref validationErrors);
             if (errorMsg != null) {
-                return TaskError(new CommandError(TaskErrorResultType.ValidationError, errorMsg));;
+                return TaskError(new CommandError(TaskErrorResultType.ValidationError, errorMsg));
             }
 
             // may call patcher.Copy() always to ensure a valid JSON value

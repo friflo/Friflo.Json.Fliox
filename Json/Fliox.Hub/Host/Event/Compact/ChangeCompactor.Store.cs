@@ -2,7 +2,6 @@
 // See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
-using Friflo.Json.Burst.Utils;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 
 // ReSharper disable SuggestBaseTypeForParameter
@@ -23,7 +22,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event.Compact
                         if (!databaseChangesMap.TryGetValue(database, out var databaseChanges))
                             return false;
                         var create = (CreateEntities)task;
-                        StoreWriteTask(databaseChanges, create.containerSmall, TaskType.create, create.entities);
+                        StoreWriteTask(databaseChanges, create.entityContainer, TaskType.create, create.entities);
                         return true;
                     }
                 case TaskType.upsert:
@@ -34,7 +33,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event.Compact
                     lock (databaseChangesMap) {
                         if (!databaseChangesMap.TryGetValue(database, out var databaseChanges))
                             return false;
-                        StoreWriteTask(databaseChanges, upsert.containerSmall, TaskType.upsert, upsert.entities);
+                        StoreWriteTask(databaseChanges, upsert.entityContainer, TaskType.upsert, upsert.entities);
                         return true;
                     }
                 case TaskType.merge:
@@ -45,7 +44,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event.Compact
                     lock (databaseChangesMap) {
                         if (!databaseChangesMap.TryGetValue(database, out var databaseChanges))
                             return false;
-                        StoreWriteTask(databaseChanges, merge.containerSmall, TaskType.merge, merge.patches);
+                        StoreWriteTask(databaseChanges, merge.entityContainer, TaskType.merge, merge.patches);
                         return true;
                     }
                 case TaskType.delete:
@@ -53,7 +52,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event.Compact
                         if (!databaseChangesMap.TryGetValue(database, out var databaseChanges))
                             return false;
                         var delete = (DeleteEntities)task;
-                        StoreDeleteTask(databaseChanges, delete.containerSmall, delete.ids);
+                        StoreDeleteTask(databaseChanges, delete.entityContainer, delete.ids);
                         return true;
                     }
             }
@@ -63,14 +62,14 @@ namespace Friflo.Json.Fliox.Hub.Host.Event.Compact
         /// <summary> Store the entities of a create, upsert or merge tasks </summary>
         private static void StoreWriteTask(
             DatabaseChanges     databaseChanges,
-            in SmallString      containerName,
+            EntityContainer     entityContainer,
             TaskType            taskType,
             List<JsonEntity>    entities)
         {
             var containers = databaseChanges.containers;
-            if (!containers.TryGetValue(containerName, out var container)) {
-                container = new ContainerChanges(containerName);
-                containers.Add(containerName, container);
+            if (!containers.TryGetValue(entityContainer.nameSmall, out var container)) {
+                container = new ContainerChanges(entityContainer.nameSmall);
+                containers.Add(entityContainer.nameSmall, container);
             }
             var writeBuffer = databaseChanges.writeBuffer;
             var values      = writeBuffer.values;
@@ -84,13 +83,13 @@ namespace Friflo.Json.Fliox.Hub.Host.Event.Compact
         /// <summary> Store the entity ids of a delete task </summary>
         private static void StoreDeleteTask(
             DatabaseChanges     databaseChanges,
-            in SmallString      containerName,
+            EntityContainer     entityContainer,
             List<JsonKey>       ids)
         {
             var containers = databaseChanges.containers;
-            if (!containers.TryGetValue(containerName, out var container)) {
-                container = new ContainerChanges(containerName);
-                containers.Add(containerName, container);
+            if (!containers.TryGetValue(entityContainer.nameSmall, out var container)) {
+                container = new ContainerChanges(entityContainer.nameSmall);
+                containers.Add(entityContainer.nameSmall, container);
             }
             var writeBuffer = databaseChanges.writeBuffer;
             var keys        = writeBuffer.keys;

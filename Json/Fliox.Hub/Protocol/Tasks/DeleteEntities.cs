@@ -4,7 +4,6 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
-using Friflo.Json.Burst.Utils;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
 using static System.Diagnostics.DebuggerBrowsableState;
@@ -22,12 +21,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     {
         /// <summary>container name</summary>
         [Serialize                            ("cont")]
-        [Required]  public  string              container {
-            get => containerSmall.value;
-            set => containerSmall = new SmallString(value);
-        }
-        [Browse(Never)]
-        [Ignore]   internal SmallString         containerSmall;
+        [Required]  public  string              container;
         [Browse(Never)]
         [Ignore]   internal EntityContainer     entityContainer;
         /// <summary>list of <see cref="ids"/> requested for deletion</summary>
@@ -49,6 +43,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         
         private TaskErrorResult PrepareDelete(
             EntityDatabase          database,
+            // ReSharper disable once UnusedParameter.Local
             SyncContext             syncContext)
         {
             if (container == null) {

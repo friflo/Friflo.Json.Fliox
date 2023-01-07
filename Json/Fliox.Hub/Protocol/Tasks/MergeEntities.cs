@@ -4,7 +4,6 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
-using Friflo.Json.Burst.Utils;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
 using static System.Diagnostics.DebuggerBrowsableState;
@@ -21,13 +20,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     {
         /// <summary>container name</summary>
         [Serialize                            ("cont")]
-        [Required]  public  string              container {
-            get => containerSmall.value;
-            set => containerSmall = new SmallString(value);
-        }
-    
-        [Browse(Never)]
-        [Ignore]   internal SmallString         containerSmall;
+        [Required]  public  string              container;
         [Browse(Never)]
         [Ignore]   internal EntityContainer     entityContainer;
         /// <summary>name of the primary key property of the entity <see cref="patches"/></summary>

@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Friflo.Json.Burst.Utils;
 using Friflo.Json.Fliox.Hub.Host.Utils;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
@@ -58,7 +59,9 @@ namespace Friflo.Json.Fliox.Hub.Host
     {
     #region - members
         /// <summary> container name </summary>
-        public    readonly  string                              name;
+        // ReSharper disable once InconsistentNaming
+        public              string                              name => nameSmall.value;
+        internal  readonly  SmallString                         nameSmall;
         /// <summary>
         /// The name used for a container / table instance in a specific database. By default it is equal to <see cref="name"/>.
         /// It can be customized (altered) by the <see cref="EntityDatabase.customContainerName"/> function.
@@ -104,7 +107,7 @@ namespace Friflo.Json.Fliox.Hub.Host
 
     #region - initialize
         protected EntityContainer(string name, EntityDatabase database) {
-            this.name           = name;
+            this.nameSmall      = new SmallString(name);
             this.instanceName   = database.customContainerName(name);
             this.database       = database;
             database.AddContainer(this);
