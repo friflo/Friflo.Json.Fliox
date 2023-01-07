@@ -10,7 +10,7 @@ using static NUnit.Framework.Assert;
 // ReSharper disable NotAccessedField.Local
 namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Event
 {
-    public static class TestEventCompactor
+    public static class TestEventAccumulation
     {
         private class Record
         {
@@ -19,17 +19,17 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Event
             public float   y;
         }
 
-        private class TestCompactClient : FlioxClient
+        private class TestAccumulationClient : FlioxClient
         {
             // --- containers
             public readonly EntitySet <int, Record>     records = null;
 
-            public TestCompactClient(FlioxHub hub, EventReceiver receiver = null)
+            public TestAccumulationClient(FlioxHub hub, EventReceiver receiver = null)
                 : base (hub, null, receiver == null ? null : new ClientOptions ((h, c)  => receiver)) { }
         }
         
         [Test]
-        public static  void TestEventCompactor_Changes()
+        public static  void TestEventAccumulation_Changes()
         {
             using (var sharedEnv = SharedEnv.Default) {
                 var database        = new MemoryDatabase("remote-memory", smallValueSize: 1024);
@@ -38,8 +38,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Event
                 dispatcher.EnableChangeAccumulation(database);
                 hub.EventDispatcher = dispatcher;
                 
-                var sub             = new TestCompactClient(hub);
-                var send            = new TestCompactClient(hub);
+                var sub             = new TestAccumulationClient(hub);
+                var send            = new TestAccumulationClient(hub);
                 var changeEvents    = 0;
 
                 sub.records.SubscribeChanges(Change.All, (changes, context) => {
@@ -86,10 +86,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Event
         }
         
         [Test]
-        public static void TestEventCompactor_Upsert() {
+        public static void TestEventAccumulation_Upsert() {
             const int clientCount = 2;
             const int upsertCount = 5;
-            TestEventCompactor_UpsertIntern(clientCount, 2, upsertCount, null);
+            TestEventAccumulation_UpsertIntern(clientCount, 2, upsertCount, null);
         }
         
         /// <summary>
@@ -97,16 +97,16 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Event
         /// E.g in case of 1000 upserts using 1000 subscribers result in parsing 1.000.000 <see cref="Record"/>'s
         /// </summary>
         [Test]
-        public static void TestEventCompactor_UpsertPerf() {
+        public static void TestEventAccumulation_UpsertPerf() {
             var eventReceiver = new IgnoreReceiver();
-            // 500 clients, 60 Hz  =>  with compactor: 585 ms,  without compactor 9374 ms
+            // 500 clients, 60 Hz  =>  with compactor: 536 ms,  without change accumulation 9374 ms
             const int clientCount = 10; // 1000;
             const int frameCount  = 60; // 60 Hz
             const int upsertCount = clientCount; // typically each client send a single upsert to the Hub per frame
-            TestEventCompactor_UpsertIntern(clientCount, frameCount, upsertCount, eventReceiver);
+            TestEventAccumulation_UpsertIntern(clientCount, frameCount, upsertCount, eventReceiver);
         }
         
-        private static void TestEventCompactor_UpsertIntern(
+        private static void TestEventAccumulation_UpsertIntern(
             int             clientCount,
             int             frameCount,
             int             upsertCount,
@@ -122,7 +122,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Event
                 
                 // --- setup subscribers
                 for (int i = 0; i < clientCount; i++) {
-                    var subClient = new TestCompactClient(hub, receiver) { UserId = $"client-{i}" };
+                    var subClient = new TestAccumulationClient(hub, receiver) { UserId = $"client-{i}" };
                     subClient.records.SubscribeChanges(Change.All, (changes, context) => {
                         changeEvents++;
                         if (upsertCount != changes.Upserts.Count) {
@@ -131,7 +131,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Event
                     });
                     subClient.SyncTasksSynchronous();
                 }
-                var client = new TestCompactClient(hub) { UserId = "sender" };
+                var client = new TestAccumulationClient(hub) { UserId = "sender" };
                 var record = new Record();
                 
                 // --- simulate sending upsert's
