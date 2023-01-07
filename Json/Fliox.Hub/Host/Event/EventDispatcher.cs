@@ -225,6 +225,11 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             changeCompactor.RemoveDatabase(database);
         }
         
+        /// <summary>
+        /// Send all queued events to all connected subscribers for an <see cref="EventDispatcher"/> initialized with
+        /// <see cref="EventDispatching.Queue"/><br/>
+        /// <b>Note</b> Method is not thread-safe. The method can be called from any thread.
+        /// </summary>
         public void SendQueuedEvents() {
             if (dispatching == EventDispatching.QueueSend) {
                 throw new InvalidOperationException($"must not be called if using {nameof(EventDispatcher)}.{EventDispatching.QueueSend}");
