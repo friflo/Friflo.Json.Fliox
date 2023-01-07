@@ -7,7 +7,7 @@ using Friflo.Json.Burst.Utils;
 // ReSharper disable MemberCanBePrivate.Global
 namespace Friflo.Json.Fliox.Hub.Host.Event.Compact
 {
-    internal sealed class WriteTaskModel
+    public sealed class WriteTaskModel
     {
         public          JsonValue       task;
         public          string          cont;
@@ -22,7 +22,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event.Compact
         }
     }
     
-    internal sealed class DeleteTaskModel
+    public sealed class DeleteTaskModel
     {
         public          JsonValue       task;
         public          string          cont;

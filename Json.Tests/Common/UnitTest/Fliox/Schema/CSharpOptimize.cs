@@ -1,10 +1,12 @@
 // Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System;
 using System.IO;
 using Friflo.Json.Fliox.Hub.DB.Cluster;
 using Friflo.Json.Fliox.Hub.DB.Monitor;
 using Friflo.Json.Fliox.Hub.DB.UserAuth;
+using Friflo.Json.Fliox.Hub.Host.Event.Compact;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Remote;
 using Friflo.Json.Fliox.Schema.Language;
@@ -18,68 +20,48 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema
     // [TestFixture, Ignore("WIP")]
     public static class CSharpOptimize
     {
+        private static void Generate_CS_Optimize (Type type, string folder) {
+            var typeSchema  = NativeTypeSchema.Create(type);
+            var generator   = new Generator(typeSchema, ".cs");
+            CSharpOptimizeGenerator.Generate(generator);
+            generator.WriteFiles(folder, false);
+        }
+        
         /// C# -> Optimize - Assembly: Friflo.Json.Tests
         [Test]
         public static void CS_Optimize_JsonTests () {
-            var typeSchema  = NativeTypeSchema.Create(typeof(PocStore));
-            var generator   = new Generator(typeSchema, ".cs");
-            CSharpOptimizeGenerator.Generate(generator);
-            generator.WriteFiles(CommonUtils.GetBasePath() + "Gen");
+            var folder = CommonUtils.GetBasePath() + "Gen";
+            Generate_CS_Optimize(typeof(PocStore), folder);
+        }
+        
+        private static void Generate_CS_Optimize_Library (Type type) {
+            var folder = Path.GetFullPath(CommonUtils.GetBasePath() + "../Json/") + "Fliox.Hub/Gen";
+            Generate_CS_Optimize(type, folder);
         }
         
         /// C# -> Optimize - Assembly: Friflo.Fliox.Hub
         [Test]
         public static void CS_Optimize_FlioxHub_Protocol () {
-            var typeSchema  = NativeTypeSchema.Create(typeof(ProtocolMessage));
-            var generator   = new Generator(typeSchema, ".cs");
-            CSharpOptimizeGenerator.Generate(generator);
-            var basePath = Path.GetFullPath(CommonUtils.GetBasePath() + "../Json/"); 
-            generator.WriteFiles(basePath + "Fliox.Hub/Gen", false);
+            Generate_CS_Optimize_Library(typeof(ProtocolMessage));
+            Generate_CS_Optimize_Library(typeof(RemoteEventMessage));
+            Generate_CS_Optimize_Library(typeof(RemoteSyncEvent));
+            Generate_CS_Optimize_Library(typeof(WriteTaskModel));
+            Generate_CS_Optimize_Library(typeof(DeleteTaskModel));
         }
         
         [Test]
         public static void CS_Optimize_FlioxHub_ClusterStore () {
-            var typeSchema  = NativeTypeSchema.Create(typeof(ClusterStore));
-            var generator   = new Generator(typeSchema, ".cs");
-            CSharpOptimizeGenerator.Generate(generator);
-            var basePath = Path.GetFullPath(CommonUtils.GetBasePath() + "../Json/"); 
-            generator.WriteFiles(basePath + "Fliox.Hub/Gen", false);
+            Generate_CS_Optimize_Library(typeof(ClusterStore));
         }
         
         [Test]
         public static void CS_Optimize_FlioxHub_MonitorStore () {
-            var typeSchema  = NativeTypeSchema.Create(typeof(MonitorStore));
-            var generator   = new Generator(typeSchema, ".cs");
-            CSharpOptimizeGenerator.Generate(generator);
-            var basePath = Path.GetFullPath(CommonUtils.GetBasePath() + "../Json/"); 
-            generator.WriteFiles(basePath + "Fliox.Hub/Gen", false);
+            Generate_CS_Optimize_Library(typeof(MonitorStore));
         }
         
         [Test]
         public static void CS_Optimize_FlioxHub_UserStore () {
-            var typeSchema  = NativeTypeSchema.Create(typeof(UserStore));
-            var generator   = new Generator(typeSchema, ".cs");
-            CSharpOptimizeGenerator.Generate(generator);
-            var basePath = Path.GetFullPath(CommonUtils.GetBasePath() + "../Json/"); 
-            generator.WriteFiles(basePath + "Fliox.Hub/Gen", false);
-        }
-        
-        [Test]
-        public static void CS_Optimize_FlioxHub_RemoteEventMessage () {
-            var typeSchema  = NativeTypeSchema.Create(typeof(RemoteEventMessage));
-            var generator   = new Generator(typeSchema, ".cs");
-            CSharpOptimizeGenerator.Generate(generator);
-            var basePath = Path.GetFullPath(CommonUtils.GetBasePath() + "../Json/"); 
-            generator.WriteFiles(basePath + "Fliox.Hub/Gen", false);
-        }
-        
-        [Test]
-        public static void CS_Optimize_FlioxHub_RemoteSyncEvent () {
-            var typeSchema  = NativeTypeSchema.Create(typeof(RemoteSyncEvent));
-            var generator   = new Generator(typeSchema, ".cs");
-            CSharpOptimizeGenerator.Generate(generator);
-            var basePath = Path.GetFullPath(CommonUtils.GetBasePath() + "../Json/"); 
-            generator.WriteFiles(basePath + "Fliox.Hub/Gen", false);
+            Generate_CS_Optimize_Library(typeof(UserStore));
         }
     }
 }
