@@ -68,7 +68,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event.Compact
         {
             var containers = databaseChanges.containers;
             if (!containers.TryGetValue(entityContainer.nameSmall, out var container)) {
-                container = new ContainerChanges(entityContainer.nameSmall);
+                container = new ContainerChanges(entityContainer);
                 containers.Add(entityContainer.nameSmall, container);
             }
             var writeBuffer = databaseChanges.writeBuffer;
@@ -88,7 +88,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event.Compact
         {
             var containers = databaseChanges.containers;
             if (!containers.TryGetValue(entityContainer.nameSmall, out var container)) {
-                container = new ContainerChanges(entityContainer.nameSmall);
+                container = new ContainerChanges(entityContainer);
                 containers.Add(entityContainer.nameSmall, container);
             }
             var writeBuffer = databaseChanges.writeBuffer;

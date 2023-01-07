@@ -23,8 +23,8 @@ namespace Friflo.Json.Fliox.Hub.Host.Event.Compact
 
         public   override   string          ToString() => name.value;
 
-        internal ContainerChanges(in SmallString name) {
-            this.name   = name;
+        internal ContainerChanges(EntityContainer entityContainer) {
+            name        = entityContainer.nameSmall;
             currentType = TaskType.error;
             values      = new List<JsonValue>();
             keys        = new List<JsonKey>();
