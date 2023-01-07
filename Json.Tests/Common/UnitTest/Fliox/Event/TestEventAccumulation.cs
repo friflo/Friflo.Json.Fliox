@@ -4,21 +4,23 @@
 using Friflo.Json.Fliox.Hub.Client;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.Event;
+using Friflo.Json.Fliox.Mapper.Map;
+using Friflo.Json.Tests.Common.UnitTest.Fliox.Event;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
 
 // ReSharper disable NotAccessedField.Local
 namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Event
 {
+    internal class Record
+    {
+        public int     id;
+        public float   x;
+        public float   y;
+    }
+    
     public static class TestEventAccumulation
     {
-        private class Record
-        {
-            public int     id;
-            public float   x;
-            public float   y;
-        }
-
         private class TestAccumulationClient : FlioxClient
         {
             // --- containers
@@ -155,6 +157,34 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Event
                     AreEqual(eventCount, changeEvents);
                 }
             }
+        }
+    }
+}
+
+// ReSharper disable InconsistentNaming
+namespace Gen.Friflo.Json.Tests.Common.UnitTest.Fliox.Event
+{
+    // ReSharper disable once InconsistentNaming
+    internal static class Gen_Record
+    {
+        private const int Gen_id    = 0;
+        private const int Gen_x     = 1;
+        private const int Gen_y     = 2;
+
+        private static bool ReadField (ref Record obj, PropField field, ref Reader reader) {
+            bool success;
+            switch (field.genIndex) {
+                case Gen_id:    obj.id = reader.ReadInt16 (field, out success);  return success;
+                case Gen_x:     obj.x  = reader.ReadSingle(field, out success);  return success;
+                case Gen_y:     obj.y  = reader.ReadSingle(field, out success);  return success;
+            }
+            return false;
+        }
+
+        private static void Write(ref Record obj, PropField[] fields, ref Writer writer, ref bool firstMember) {
+            writer.WriteInt32 (fields[Gen_id], obj.id,  ref firstMember);
+            writer.WriteSingle(fields[Gen_x],  obj.x,   ref firstMember);
+            writer.WriteSingle(fields[Gen_y],  obj.y,   ref firstMember);
         }
     }
 }
