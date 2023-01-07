@@ -16,35 +16,35 @@ namespace Friflo.Json.Fliox.Hub.Client
     /// <summary>Describe the type of a <see cref="TaskError"/></summary>
     public enum TaskErrorType
     {
-        Undefined, // Prevent implicit initialization of underlying value 0 to a valid value (UnhandledException)
+        Undefined           = 0, // Prevent implicit initialization of underlying value 0 to a valid value (UnhandledException)
         
         /// <summary>
         /// Inform about an unhandled exception in a <see cref="EntityContainer"/> implementation which need to be fixed.
         /// More information at <see cref="FlioxHub.ExecuteRequestAsync"/>.
         /// Maps to <see cref="TaskErrorResultType.UnhandledException"/>.
         /// </summary>
-        UnhandledException,
+        UnhandledException  = 1,
         
         /// <summary>A general database error.</summary>
         /// <remarks>
         /// E.g. the access is currently not available or accessing a missing table.
         /// maps to <see cref="TaskErrorResultType.DatabaseError"/>
         /// </remarks>
-        DatabaseError,
+        DatabaseError       = 2,
         /// <summary>Invalid query filter</summary>
-        FilterError,
+        FilterError         = 3,
         /// <summary>Schema validation of an entity failed</summary>
-        ValidationError,
+        ValidationError     = 4,
         /// <summary>Execution of message / command failed caused by invalid input</summary>
-        CommandError,
+        CommandError        = 5,
         /// <summary>database message / command not implemented</summary>
-        NotImplemented,
+        NotImplemented      = 6,
         /// <summary>Invalid task. E.g. by using an invalid task parameter</summary>
-        InvalidTask,
+        InvalidTask         = 7,
         /// <summary> Task execution denied </summary>
-        PermissionDenied,
+        PermissionDenied    = 8,
         /// <summary>The entire <see cref="SyncRequest"/> containing a task failed</summary>
-        SyncError,
+        SyncError           = 9,
         /// <summary>
         /// It is set for a <see cref="SyncTask"/> if a <see cref="SyncResponse"/> contains errors in its
         /// <see cref="Dictionary{K,V}"/> fields containing <see cref="EntityErrors"/> for entities accessed via a CRUD
@@ -52,10 +52,10 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// The entity errors are available via <see cref="TaskError.entityErrors"/>.  
         /// No mapping to a <see cref="TaskErrorResultType"/> value.
         /// </summary>
-        EntityErrors,
+        EntityErrors        = 10,
         /// <summary> Use to indicate an invalid response.</summary>
         /// <remarks>No mapping to a <see cref="TaskErrorResultType"/> value.</remarks>
-        InvalidResponse,
+        InvalidResponse     = 11,
     }
     
     /// <summary>

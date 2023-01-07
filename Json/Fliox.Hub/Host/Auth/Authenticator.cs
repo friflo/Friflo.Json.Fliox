@@ -129,8 +129,8 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
     /// Represent the result of client id validation returned by <see cref="Authenticator.ValidateClientId"/>  
     /// </summary>
     public enum ClientIdValidation {
-        IsNull,
-        Invalid,
-        Valid
+        IsNull  = 1,
+        Invalid = 2,
+        Valid   = 3
     }
 }

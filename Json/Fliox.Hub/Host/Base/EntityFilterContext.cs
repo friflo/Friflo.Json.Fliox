@@ -15,10 +15,10 @@ namespace Friflo.Json.Fliox.Hub.Host
     [Flags]
     public enum FilterEntityResult
     {
-        HasMore,
-        ReachedLimit,
-        ReachedMaxCount,  // caller need to add a cursor to the result
-        FilterError
+        HasMore         = 1,
+        ReachedLimit    = 2,
+        ReachedMaxCount = 3,  // caller need to add a cursor to the result
+        FilterError     = 4
     }
     
     /// Default implementation. Performs a full table scan! Act as reference and is okay for small data sets

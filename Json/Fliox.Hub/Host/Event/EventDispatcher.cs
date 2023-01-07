@@ -26,17 +26,17 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
     public enum EventDispatching
     {
         /// <summary>Events are queued and send asynchronously to their targets</summary>
-        QueueSend,
+        QueueSend   = 1,
         /// <summary>
         /// Events are queued only.<br/>
         /// The application need to call <see cref="EventDispatcher.SendQueuedEvents"/> regularly
         /// to send events asynchronously to their targets.
         /// </summary>
-        Queue,
+        Queue       = 2,
         /// <summary>
         /// Events are instantaneously send to their targets when processing a request in <see cref="FlioxHub.ExecuteRequestAsync"/>.
         /// </summary>
-        Send
+        Send        = 3
     }
     
     /// <summary>

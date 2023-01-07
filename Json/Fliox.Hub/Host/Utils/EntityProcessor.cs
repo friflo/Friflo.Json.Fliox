@@ -10,9 +10,9 @@ using Friflo.Json.Fliox.Mapper;
 namespace Friflo.Json.Fliox.Hub.Host.Utils
 {
     internal enum ProcessingType {
-        Validate,
-        GetKey,
-        SetKey
+        Validate    = 1,
+        GetKey      = 2,
+        SetKey      = 3
     }
     
     /// <summary>

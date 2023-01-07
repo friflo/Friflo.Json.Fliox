@@ -65,24 +65,24 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth.Rights
     /// <summary>Use to allow specific container operations in <see cref="ContainerAccess"/></summary>
     public enum OperationType {
         /// <summary>allow to create entities in a container</summary>
-        create,
+        create      = 1,
         /// <summary>allow to upsert entities in a container</summary>
-        upsert,
+        upsert      = 2,
         /// <summary>allow to delete entities in a container</summary>
-        delete,
+        delete      = 3,
         /// <summary>allow to delete all container entities</summary>
-        deleteAll,
+        deleteAll   = 4,
         /// <summary>allow to patch entities in a container</summary>
-        merge,
+        merge       = 5,
         /// <summary>allow to read entities in a container</summary>
-        read,
+        read        = 6,
         /// <summary>allow to query entities in a container</summary>
-        query,
+        query       = 7,
         /// <summary>allow to aggregate - count - entities in a container</summary>
-        aggregate,
+        aggregate   = 8,
         /// <summary>allow to mutate - create, upsert, delete and patch - entities in a container</summary>
-        mutate,
+        mutate      = 9,
         /// <summary>allow all operation types in a container</summary>
-        full
+        full        = 10
     }
 }

@@ -26,8 +26,8 @@ namespace Friflo.Json.Fliox.Hub.Host.Internal
     }
     
     internal enum MsgType {
-        Command,
-        Message
+        Command = 1,
+        Message = 2
     }
     
     // ----------------------------------- MessageDelegate -----------------------------------

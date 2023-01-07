@@ -79,9 +79,9 @@ namespace Friflo.Json.Fliox.Hub.Host
     }
     
     public enum MemoryType {
-        Concurrent,
+        Concurrent      = 1,
         /// used to preserve insertion order of entities in ClusterDB and MonitorDB
-        NonConcurrent
+        NonConcurrent   = 2
     }
     
     internal sealed class MemoryQueryEnumerator : QueryEnumerator

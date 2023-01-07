@@ -78,12 +78,12 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
         
     internal enum PreAuthType
     {
-        None,
-        MissingUserId,
-        MissingToken,
-        Unknown,
-        Failed,
-        Success,
+        None            = 0,
+        MissingUserId   = 1,
+        MissingToken    = 2,
+        Unknown         = 3,
+        Failed          = 4,
+        Success         = 5,
     }
     
     internal struct Empty { }
