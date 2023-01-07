@@ -114,10 +114,10 @@ namespace Friflo.Json.Fliox.Transform.Select
     
     internal enum SelectorType
     {
-        Root,
-        Member,
+        Root        = 1,
+        Member      = 2,
     //  ArrayWildcard,
-        ArrayGroup
+        ArrayGroup  = 3
     }
 
     internal readonly struct SelectorNode

@@ -8,16 +8,16 @@ using System.Text;
 namespace Friflo.Json.Fliox.Transform
 {
     public enum ScalarType : byte {
-        Undefined,
-        Error,
+        Undefined   = 0,
+        Error       = 1,
         //
-        String,
-        Double,
-        Long,
-        Null, // enhance case performance by putting it directly to Double & Long
-        Bool,
-        Array,
-        Object
+        String      = 2,
+        Double      = 3,
+        Long        = 4,
+        Null        = 5, // enhance case performance by putting it directly to Double & Long
+        Bool        = 6,
+        Array       = 7,
+        Object      = 8
     }
 
 #if !UNITY_5_3_OR_NEWER

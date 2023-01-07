@@ -77,11 +77,11 @@ namespace Friflo.Json.Fliox.Transform
     
     public enum PatchType
     {
-        Replace,
-        Remove,
-        Add,
-        Copy,
-        Move,
-        Test,
+        Replace = 1,
+        Remove  = 2,
+        Add     = 3,
+        Copy    = 4,
+        Move    = 5,
+        Test    = 6,
     }
 }
