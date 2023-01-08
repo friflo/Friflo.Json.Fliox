@@ -14,15 +14,15 @@ namespace Friflo.Json.Fliox.Hub.Host.Event.Collector
     /// Collected changes can be combined by the <see cref="ChangeCombiner"/> at any time.
     /// </summary>
     /// <remarks>
-    /// <see cref="ChangeCollector"/> is thread safe
+    /// <see cref="EventCollector"/> is thread safe
     /// </remarks>
-    internal sealed class ChangeCollector
+    internal sealed class EventCollector
     {
         /// <summary>Thread safe map used to collect the <see cref="DatabaseChanges"/> for each database</summary>
         private  readonly   Dictionary<EntityDatabase, DatabaseChanges> databaseChangesMap;
         internal            int                                         DatabaseCount { get; private set; }
 
-        internal ChangeCollector() {
+        internal EventCollector() {
             databaseChangesMap  = new Dictionary<EntityDatabase, DatabaseChanges>();
         }
         
@@ -53,7 +53,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event.Collector
         }
         
         /// <summary>
-        /// Store a change task in the <see cref="ChangeCollector"/> <br/>
+        /// Store a change task in the <see cref="EventCollector"/> <br/>
         /// Return true if the given <paramref name="task"/> is stored. Otherwise false.
         /// </summary>
         internal bool  StoreTask(EntityDatabase database, SyncRequestTask task, in JsonKey user)

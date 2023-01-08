@@ -53,7 +53,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         public              bool                                SendUserIds         { get; set; } = true;
         public              bool                                SendClientIds       { get; set; } = false;
         internal readonly   SharedEnv                           sharedEnv;
-        private  readonly   ChangeCollector                     changeCollector;
+        private  readonly   EventCollector                      eventCollector;
         private  readonly   ChangeCombiner                      changeCombiner;
         private  readonly   JsonEvaluator                       jsonEvaluator;
         /// <summary>buffer for serialized <see cref="SyncEvent"/>'s to avoid frequent allocations</summary>
@@ -84,8 +84,8 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
 
     #region - initialize
         public EventDispatcher (EventDispatching dispatching, SharedEnv env = null) {
-            changeCollector     = new ChangeCollector();
-            changeCombiner      = new ChangeCombiner(changeCollector);
+            eventCollector      = new EventCollector();
+            changeCombiner      = new ChangeCombiner(eventCollector);
             sharedEnv           = env ?? SharedEnv.Default;
             jsonEvaluator       = new JsonEvaluator();
             syncEventBuffer     = new List<JsonValue>();
@@ -219,12 +219,12 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         /// to subscribers are accumulated for the given <paramref name="database"/>
         /// </summary>
         public void EnableChangeAccumulation(EntityDatabase database) {
-            changeCollector.AddDatabase(database);
+            eventCollector.AddDatabase(database);
         }
         
         /// <summary>Disable container change accumulation. See <see cref="EnableChangeAccumulation"/></summary>
         public void DisableChangeAccumulation(EntityDatabase database) {
-            changeCollector.RemoveDatabase(database);
+            eventCollector.RemoveDatabase(database);
         }
         
         /// <summary>
@@ -238,7 +238,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             }
             using (var pooleMapper = sharedEnv.Pool.ObjectMapper.Get()) {
                 var writer = pooleMapper.instance.writer;
-                if (changeCollector.DatabaseCount > 0) {
+                if (eventCollector.DatabaseCount > 0) {
                     CopyDatabaseSubsMap(databaseSubsBuffer);
                     changeCombiner.AccumulateChanges(databaseSubsBuffer, writer);
                 }
@@ -324,13 +324,13 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         }
         
         /// <summary>
-        /// Store change tasks - create, upsert, merge and delete - if using a <see cref="ChangeCollector"/> <br/>
+        /// Store change tasks - create, upsert, merge and delete - if using a <see cref="EventCollector"/> <br/>
         /// Stored change tasks are removed from the given <paramref name="syncTasks"/> list. <br/>
         /// Return true if no tasks left to process
         /// </summary>
         private bool StoreChangeTasks(List<SyncRequestTask> syncTasks, SyncContext syncContext)
         {
-            if (changeCollector.DatabaseCount == 0) {
+            if (eventCollector.DatabaseCount == 0) {
                 return false;
             }
             var database            = syncContext.Database;
@@ -338,7 +338,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             Span<bool> useTasks     = stackalloc bool[count];
             for (int n = 0; n < count; n++) {
                 var syncTask    =  syncTasks[n];
-                useTasks[n]     = !changeCollector.StoreTask(database, syncTask, syncContext.User.userId);
+                useTasks[n]     = !eventCollector.StoreTask(database, syncTask, syncContext.User.userId);
             }
             return RemoveUnusedTasks(syncTasks, useTasks);
         }

@@ -7,7 +7,7 @@ using Friflo.Json.Fliox.Utils;
 namespace Friflo.Json.Fliox.Hub.Host.Event.Collector
 {
     /// <summary>
-    /// Combine container changes - create, upsert, merge and delete - stored in <see cref="ChangeCollector"/>
+    /// Combine container changes - create, upsert, merge and delete - stored in <see cref="EventCollector"/>
     /// </summary>
     /// <remarks>
     /// A <see cref="ChangeCombiner"/> is mainly used for optimization.<br/>
@@ -22,7 +22,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event.Collector
     /// </remarks>
     internal class ChangeCombiner
     {
-        private  readonly   ChangeCollector                     collector;
+        private  readonly   EventCollector                      collector;
         private  readonly   List<DatabaseChanges>               databaseChangesList;
         private  readonly   HashSet<ContainerChanges>           containerChangesSet;
         internal readonly   MemoryBuffer                        rawTaskBuffer;
@@ -31,7 +31,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event.Collector
         private             SyncEvent                           syncEvent;
         private  readonly   Dictionary<DatabaseSubs, JsonValue> rawSyncEvents;
         
-        internal ChangeCombiner(ChangeCollector collector) {
+        internal ChangeCombiner(EventCollector collector) {
             this.collector      = collector;
             databaseChangesList = new List<DatabaseChanges>();
             containerChangesSet = new HashSet<ContainerChanges>();
