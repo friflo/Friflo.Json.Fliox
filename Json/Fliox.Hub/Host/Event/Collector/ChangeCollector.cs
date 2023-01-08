@@ -56,7 +56,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event.Collector
         /// Store a change task in the <see cref="ChangeCollector"/> <br/>
         /// Return true if the given <paramref name="task"/> is stored. Otherwise false.
         /// </summary>
-        internal bool  StoreTask(EntityDatabase database, SyncRequestTask task)
+        internal bool  StoreTask(EntityDatabase database, SyncRequestTask task, in JsonKey user)
         {
             switch (task.TaskType) {
                 case TaskType.create:
@@ -64,7 +64,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event.Collector
                         if (!databaseChangesMap.TryGetValue(database, out var databaseChanges))
                             return false;
                         var create = (CreateEntities)task;
-                        StoreWriteTask(databaseChanges, create.entityContainer, TaskType.create, create.entities);
+                        StoreWriteTask(databaseChanges, create.entityContainer, TaskType.create, create.entities, user);
                         return true;
                     }
                 case TaskType.upsert:
@@ -75,7 +75,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event.Collector
                     lock (databaseChangesMap) {
                         if (!databaseChangesMap.TryGetValue(database, out var databaseChanges))
                             return false;
-                        StoreWriteTask(databaseChanges, upsert.entityContainer, TaskType.upsert, upsert.entities);
+                        StoreWriteTask(databaseChanges, upsert.entityContainer, TaskType.upsert, upsert.entities, user);
                         return true;
                     }
                 case TaskType.merge:
@@ -86,7 +86,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event.Collector
                     lock (databaseChangesMap) {
                         if (!databaseChangesMap.TryGetValue(database, out var databaseChanges))
                             return false;
-                        StoreWriteTask(databaseChanges, merge.entityContainer, TaskType.merge, merge.patches);
+                        StoreWriteTask(databaseChanges, merge.entityContainer, TaskType.merge, merge.patches, user);
                         return true;
                     }
                 case TaskType.delete:
@@ -94,7 +94,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event.Collector
                         if (!databaseChangesMap.TryGetValue(database, out var databaseChanges))
                             return false;
                         var delete = (DeleteEntities)task;
-                        StoreDeleteTask(databaseChanges, delete.entityContainer, delete.ids);
+                        StoreDeleteTask(databaseChanges, delete.entityContainer, delete.ids, user);
                         return true;
                     }
             }
@@ -106,7 +106,8 @@ namespace Friflo.Json.Fliox.Hub.Host.Event.Collector
             DatabaseChanges     databaseChanges,
             EntityContainer     entityContainer,
             TaskType            taskType,
-            List<JsonEntity>    entities)
+            List<JsonEntity>    entities,
+            in JsonKey          user)
         {
             var containers = databaseChanges.containers;
             if (!containers.TryGetValue(entityContainer.nameSmall, out var container)) {
@@ -116,7 +117,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event.Collector
             var writeBuffer = databaseChanges.writeBuffer;
             var values      = writeBuffer.values;
             var valueBuffer = writeBuffer.valueBuffer;
-            writeBuffer.changeTasks.Add(new ChangeTask(container, taskType, values.Count, entities.Count));
+            writeBuffer.changeTasks.Add(new ChangeTask(container, taskType, values.Count, entities.Count, user));
             foreach (var entity in entities) {
                 values.Add(valueBuffer.Add(entity.value));
             }
@@ -126,7 +127,8 @@ namespace Friflo.Json.Fliox.Hub.Host.Event.Collector
         private static void StoreDeleteTask(
             DatabaseChanges     databaseChanges,
             EntityContainer     entityContainer,
-            List<JsonKey>       ids)
+            List<JsonKey>       ids,
+            in JsonKey          user)
         {
             var containers = databaseChanges.containers;
             if (!containers.TryGetValue(entityContainer.nameSmall, out var container)) {
@@ -135,7 +137,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event.Collector
             }
             var writeBuffer = databaseChanges.writeBuffer;
             var keys        = writeBuffer.keys;
-            writeBuffer.changeTasks.Add(new ChangeTask(container, TaskType.delete, keys.Count, ids.Count));
+            writeBuffer.changeTasks.Add(new ChangeTask(container, TaskType.delete, keys.Count, ids.Count, user));
             keys.AddRange(ids);
         }
     }

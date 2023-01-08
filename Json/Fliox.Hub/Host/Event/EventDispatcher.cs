@@ -337,7 +337,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             Span<bool> useTasks     = stackalloc bool[count];
             for (int n = 0; n < count; n++) {
                 var syncTask    =  syncTasks[n];
-                useTasks[n]     = !changeCollector.StoreTask(database, syncTask);
+                useTasks[n]     = !changeCollector.StoreTask(database, syncTask, syncContext.User.userId);
             }
             return RemoveUnusedTasks(syncTasks, useTasks);
         }
