@@ -13,13 +13,15 @@ namespace Friflo.Json.Fliox.Hub.Host.Event.Collector
     /// Collect (and accumulate) entity container changes - create, upsert, merge and delete - for registered
     /// <see cref="EntityDatabase"/>'s <br/>
     /// </summary>
+    /// <remarks>
+    /// <see cref="ChangeCollector"/> is thread safe
+    /// </remarks>
     internal sealed class ChangeCollector
     {
         /// <summary>Thread safe map used to collect the <see cref="DatabaseChanges"/> for each database</summary>
         private  readonly   Dictionary<EntityDatabase, DatabaseChanges> databaseChangesMap;
         internal            int                                         DatabaseCount { get; private set; }
 
-        
         internal ChangeCollector() {
             databaseChangesMap  = new Dictionary<EntityDatabase, DatabaseChanges>();
         }
