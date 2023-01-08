@@ -195,15 +195,15 @@ namespace Friflo.Json.Fliox.Hub.Remote
                     // --- error
                     case error:   request.WriteError    (rr.errorType, rr.errorMessage, rr.errorStatus);                        break;
                     // --- message / command
-                    case command: await Command         (request, rr.database, rr.message, rr.value);                           break;
-                    case message: await Message         (request, rr.database, rr.message, rr.value);                           break;
+                    case command: await Command         (request, rr.database, rr.message, rr.value).ConfigureAwait(false);                           break;
+                    case message: await Message         (request, rr.database, rr.message, rr.value).ConfigureAwait(false);                           break;
                     // --- container operations
-                    case read:    await GetEntitiesById (request, rr.database, rr.container, rr.keys);                          break;
-                    case readOne: await GetEntity       (request, rr.database, rr.container, rr.id);                            break;
-                    case query:   await QueryEntities   (request, rr.database, rr.container, rr.queryParams);                   break;
-                    case write:   await PutEntities     (request, rr.database, rr.container, rr.id, rr.value, rr.queryParams);  break;
-                    case merge:   await MergeEntities   (request, rr.database, rr.container, rr.id, rr.value, rr.queryParams);  break;
-                    case delete:  await DeleteEntities  (request, rr.database, rr.container, rr.keys);                          break;
+                    case read:    await GetEntitiesById (request, rr.database, rr.container, rr.keys).ConfigureAwait(false);                          break;
+                    case readOne: await GetEntity       (request, rr.database, rr.container, rr.id).ConfigureAwait(false);                            break;
+                    case query:   await QueryEntities   (request, rr.database, rr.container, rr.queryParams).ConfigureAwait(false);                   break;
+                    case write:   await PutEntities     (request, rr.database, rr.container, rr.id, rr.value, rr.queryParams).ConfigureAwait(false);  break;
+                    case merge:   await MergeEntities   (request, rr.database, rr.container, rr.id, rr.value, rr.queryParams).ConfigureAwait(false);  break;
+                    case delete:  await DeleteEntities  (request, rr.database, rr.container, rr.keys).ConfigureAwait(false);                          break;
                 }
                 request.handled = true; 
                 return;

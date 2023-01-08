@@ -99,7 +99,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         /// <seealso cref="WebSocketHost.RunReceiveMessageLoop"/>
         private async Task RunSendMessageLoop() {
             try {
-                await SendMessageLoop();
+                await SendMessageLoop().ConfigureAwait(false);
             } catch (Exception e) {
                 var msg = GetExceptionMessage("RunSendMessageLoop()", remoteEndPoint, e);
                 Logger.Log(HubLog.Info, msg);
