@@ -6,9 +6,11 @@ using Friflo.Json.Fliox.Utils;
 
 namespace Friflo.Json.Fliox.Hub.Host.Event.Collector
 {
-    /// <summary>Combine container changes - create, upsert, merge and delete - stored in <see cref="ChangeCollector"/></summary>
+    /// <summary>
+    /// Combine container changes - create, upsert, merge and delete - stored in <see cref="ChangeCollector"/>
+    /// </summary>
     /// <remarks>
-    /// A <see cref="ChangeCollector"/> is mainly used for optimization.<br/>
+    /// A <see cref="ChangeCombiner"/> is mainly used for optimization.<br/>
     /// It combines multiple change tasks - eg. upsert - send from various clients into a single task. <br/>
     /// This enables sending only a single tasks to subscribed clients instead of sending each change individually. <br/>
     /// The effects are: <br/>

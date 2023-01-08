@@ -10,8 +10,8 @@ using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 namespace Friflo.Json.Fliox.Hub.Host.Event.Collector
 {
     /// <summary>
-    /// Collect (and accumulate) entity container changes - create, upsert, merge and delete - for registered
-    /// <see cref="EntityDatabase"/>'s <br/>
+    /// Collect entity container changes - create, upsert, merge and delete - for registered <see cref="EntityDatabase"/>'s <br/>
+    /// Collected changes can be combined by the <see cref="ChangeCombiner"/> at any time.
     /// </summary>
     /// <remarks>
     /// <see cref="ChangeCollector"/> is thread safe
