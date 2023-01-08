@@ -240,7 +240,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                 var writer = pooleMapper.instance.writer;
                 if (changeCollector.DatabaseCount > 0) {
                     CopyDatabaseSubsMap(databaseSubsBuffer);
-                    changeCombiner.AccumulateTasks(databaseSubsBuffer, writer);
+                    changeCombiner.AccumulateChanges(databaseSubsBuffer, writer);
                 }
                 foreach (var subClient in sendClients) {
                     subClient.SendEvents(writer, eventMessageBuffer, syncEventBuffer);

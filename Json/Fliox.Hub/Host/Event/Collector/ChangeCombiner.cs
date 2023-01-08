@@ -47,7 +47,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event.Collector
         /// <remarks>
         /// <b>Note</b> Method is not thread safe
         /// </remarks>
-        internal void AccumulateTasks(DatabaseSubsMap databaseSubsMap, ObjectWriter writer)
+        internal void AccumulateChanges(DatabaseSubsMap databaseSubsMap, ObjectWriter writer)
         {
             collector.GetDatabaseChanges(databaseChangesList);
             

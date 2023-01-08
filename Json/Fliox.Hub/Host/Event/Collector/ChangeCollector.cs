@@ -20,7 +20,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event.Collector
         internal            int                                         DatabaseCount { get; private set; }
 
         
-        public ChangeCollector() {
+        internal ChangeCollector() {
             databaseChangesMap  = new Dictionary<EntityDatabase, DatabaseChanges>();
         }
         
