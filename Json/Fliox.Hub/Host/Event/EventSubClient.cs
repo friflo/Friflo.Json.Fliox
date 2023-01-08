@@ -99,10 +99,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             dispatcher?.NewClientEvent(this);
         }
         
-        /// <summary> Dequeue all queued messaged. </summary>
-        /// <remarks>
-        /// <paramref name="syncEvents"/>
-        /// </remarks>
+        /// <summary> Dequeue all queued messages. </summary>
         private bool DequeueEvents(in SendEventsContext context)
         {
             var syncEvents      = context.syncEvents;
