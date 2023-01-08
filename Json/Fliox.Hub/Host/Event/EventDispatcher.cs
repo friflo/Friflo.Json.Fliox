@@ -54,6 +54,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         public              bool                                SendClientIds       { get; set; } = false;
         internal readonly   SharedEnv                           sharedEnv;
         private  readonly   ChangeCollector                     changeCollector;
+        private  readonly   ChangeCombiner                      changeCombiner;
         private  readonly   JsonEvaluator                       jsonEvaluator;
         /// <summary>buffer for serialized <see cref="SyncEvent"/>'s to avoid frequent allocations</summary>
         private  readonly   List<JsonValue>                     syncEventBuffer;
@@ -84,6 +85,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
     #region - initialize
         public EventDispatcher (EventDispatching dispatching, SharedEnv env = null) {
             changeCollector     = new ChangeCollector();
+            changeCombiner      = new ChangeCombiner(changeCollector);
             sharedEnv           = env ?? SharedEnv.Default;
             jsonEvaluator       = new JsonEvaluator();
             syncEventBuffer     = new List<JsonValue>();
@@ -238,7 +240,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                 var writer = pooleMapper.instance.writer;
                 if (changeCollector.DatabaseCount > 0) {
                     CopyDatabaseSubsMap(databaseSubsBuffer);
-                    changeCollector.AccumulateTasks(databaseSubsBuffer, writer);
+                    changeCombiner.AccumulateTasks(databaseSubsBuffer, writer);
                 }
                 foreach (var subClient in sendClients) {
                     subClient.SendEvents(writer, eventMessageBuffer, syncEventBuffer);

@@ -37,7 +37,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event.Collector
         private static readonly JsonValue Merge  = new JsonValue("\"merge\"");
         private static readonly JsonValue Delete = new JsonValue("\"delete\"");
         
-        internal void AddChangeTask(in ChangeTask changeTask, TaskBuffer readBuffer, in CollectorContext context)
+        internal void AddChangeTask(in ChangeTask changeTask, TaskBuffer readBuffer, in CombinerContext context)
         {
             if (changeTask.taskType != currentType) {
                 AddAccumulatedRawTask(context);
@@ -61,35 +61,35 @@ namespace Friflo.Json.Fliox.Hub.Host.Event.Collector
             }
         }
         
-        internal void AddAccumulatedRawTask(in CollectorContext context)
+        internal void AddAccumulatedRawTask(in CombinerContext context)
         {
-            var acc = context.collector;
+            var combiner = context.combiner;
             switch (currentType) {
                 case TaskType.upsert: {
-                    acc.writeTaskModel.Set(Upsert, name, values);
-                    var rawTask = new JsonValue(context.writer.WriteAsBytes(acc.writeTaskModel));
-                    rawTasks.Add(new RawTask(EntityChange.upsert, acc.rawTaskBuffer.Add(rawTask)));
+                    combiner.writeTaskModel.Set(Upsert, name, values);
+                    var rawTask = new JsonValue(context.writer.WriteAsBytes(combiner.writeTaskModel));
+                    rawTasks.Add(new RawTask(EntityChange.upsert, combiner.rawTaskBuffer.Add(rawTask)));
                     values.Clear();
                     break;
                 }
                 case TaskType.create: {
-                    acc.writeTaskModel.Set(Create, name, values);
-                    var rawTask = new JsonValue(context.writer.WriteAsBytes(acc.writeTaskModel));
-                    rawTasks.Add(new RawTask(EntityChange.create, acc.rawTaskBuffer.Add(rawTask)));
+                    combiner.writeTaskModel.Set(Create, name, values);
+                    var rawTask = new JsonValue(context.writer.WriteAsBytes(combiner.writeTaskModel));
+                    rawTasks.Add(new RawTask(EntityChange.create, combiner.rawTaskBuffer.Add(rawTask)));
                     values.Clear();
                     break;
                 }
                 case TaskType.merge: {
-                    acc.writeTaskModel.Set(Merge, name, values);
-                    var rawTask = new JsonValue(context.writer.WriteAsBytes(acc.writeTaskModel));
-                    rawTasks.Add(new RawTask(EntityChange.merge, acc.rawTaskBuffer.Add(rawTask)));
+                    combiner.writeTaskModel.Set(Merge, name, values);
+                    var rawTask = new JsonValue(context.writer.WriteAsBytes(combiner.writeTaskModel));
+                    rawTasks.Add(new RawTask(EntityChange.merge, combiner.rawTaskBuffer.Add(rawTask)));
                     values.Clear();
                     break;
                 }
                 case TaskType.delete: {
-                    acc.deleteTaskModel.Set(Delete, name, keys);
-                    var rawTask = new JsonValue(context.writer.WriteAsBytes(acc.deleteTaskModel));
-                    rawTasks.Add(new RawTask(EntityChange.delete, acc.rawTaskBuffer.Add(rawTask)));
+                    combiner.deleteTaskModel.Set(Delete, name, keys);
+                    var rawTask = new JsonValue(context.writer.WriteAsBytes(combiner.deleteTaskModel));
+                    rawTasks.Add(new RawTask(EntityChange.delete, combiner.rawTaskBuffer.Add(rawTask)));
                     keys.Clear();
                     break;
                 }

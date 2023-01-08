@@ -48,13 +48,13 @@ namespace Friflo.Json.Fliox.Hub.Host.Event.Collector
         }
     }
     
-    internal readonly struct CollectorContext
+    internal readonly struct CombinerContext
     {
-        internal readonly   ChangeCollector collector;
+        internal readonly   ChangeCombiner  combiner;
         internal readonly   ObjectWriter    writer;
         
-        internal CollectorContext(ChangeCollector collector, ObjectWriter writer) {
-            this.collector  = collector;
+        internal CombinerContext(ChangeCombiner combiner, ObjectWriter writer) {
+            this.combiner   = combiner;
             this.writer     = writer;
         }
     }
