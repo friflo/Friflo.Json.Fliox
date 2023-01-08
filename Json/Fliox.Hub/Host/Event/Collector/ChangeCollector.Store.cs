@@ -6,12 +6,12 @@ using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 
 // ReSharper disable SuggestBaseTypeForParameter
 // ReSharper disable ForeachCanBeConvertedToQueryUsingAnotherGetEnumerator
-namespace Friflo.Json.Fliox.Hub.Host.Event.Compact
+namespace Friflo.Json.Fliox.Hub.Host.Event.Collector
 {
-    internal sealed partial class ChangeCompactor
+    internal sealed partial class ChangeCollector
     {
         /// <summary>
-        /// Store a change task in the <see cref="ChangeCompactor"/> <br/>
+        /// Store a change task in the <see cref="ChangeCollector"/> <br/>
         /// Return true if the given <paramref name="task"/> is stored. Otherwise false.
         /// </summary>
         internal bool  StoreTask(EntityDatabase database, SyncRequestTask task)

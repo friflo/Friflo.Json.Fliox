@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using Friflo.Json.Burst.Utils;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 
-namespace Friflo.Json.Fliox.Hub.Host.Event.Compact
+namespace Friflo.Json.Fliox.Hub.Host.Event.Collector
 {
     /// <summary>
     /// Used to collect of changes - create, upsert, merge and delete - of a specific <see cref="EntityContainer"/>
@@ -37,7 +37,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event.Compact
         private static readonly JsonValue Merge  = new JsonValue("\"merge\"");
         private static readonly JsonValue Delete = new JsonValue("\"delete\"");
         
-        internal void AddChangeTask(in ChangeTask changeTask, TaskBuffer readBuffer, in CompactorContext context)
+        internal void AddChangeTask(in ChangeTask changeTask, TaskBuffer readBuffer, in CollectorContext context)
         {
             if (changeTask.taskType != currentType) {
                 AddAccumulatedRawTask(context);
@@ -61,9 +61,9 @@ namespace Friflo.Json.Fliox.Hub.Host.Event.Compact
             }
         }
         
-        internal void AddAccumulatedRawTask(in CompactorContext context)
+        internal void AddAccumulatedRawTask(in CollectorContext context)
         {
-            var acc = context.compactor;
+            var acc = context.collector;
             switch (currentType) {
                 case TaskType.upsert: {
                     acc.writeTaskModel.Set(Upsert, name, values);

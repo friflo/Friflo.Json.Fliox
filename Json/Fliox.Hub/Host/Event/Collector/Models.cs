@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using Friflo.Json.Burst.Utils;
 
 // ReSharper disable MemberCanBePrivate.Global
-namespace Friflo.Json.Fliox.Hub.Host.Event.Compact
+namespace Friflo.Json.Fliox.Hub.Host.Event.Collector
 {
     public sealed class WriteTaskModel
     {

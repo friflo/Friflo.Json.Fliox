@@ -3,7 +3,6 @@
 
 using System.Collections.Generic;
 using Friflo.Json.Fliox.Hub.Protocol;
-using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Hub.Remote;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Utils;
@@ -11,14 +10,14 @@ using Friflo.Json.Fliox.Utils;
 // ReSharper disable ForeachCanBePartlyConvertedToQueryUsingAnotherGetEnumerator
 // ReSharper disable ParameterTypeCanBeEnumerable.Local
 // ReSharper disable ConvertToAutoPropertyWithPrivateSetter
-namespace Friflo.Json.Fliox.Hub.Host.Event.Compact
+namespace Friflo.Json.Fliox.Hub.Host.Event.Collector
 {
     /// <summary>
-    /// Compact (accumulate) entity change tasks - create, upsert, merge and delete - for registered
+    /// Collect (and accumulate) entity change tasks - create, upsert, merge and delete - for registered
     /// <see cref="EntityDatabase"/>'s <br/>
     /// </summary>
     /// <remarks>
-    /// A <see cref="ChangeCompactor"/> is mainly used for optimization.<br/>
+    /// A <see cref="ChangeCollector"/> is mainly used for optimization.<br/>
     /// It combines multiple change tasks - eg. upsert - send from various clients into a single task. <br/>
     /// This enables sending only a single tasks to subscribed clients instead of sending each change individually. <br/>
     /// The effects are: <br/>
@@ -27,7 +26,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event.Compact
     /// - the CPU / memory cost to serialize events can reduce to O(1) instead O(N) for all clients having
     ///   the same <see cref="DatabaseSubs"/> - See <see cref="rawSyncEvents"/><br/>
     /// </remarks>
-    internal sealed partial class ChangeCompactor
+    internal sealed partial class ChangeCollector
     {
         /// <summary>Thread safe map used to collect the <see cref="DatabaseChanges"/> for each database</summary>
         private  readonly   Dictionary<EntityDatabase, DatabaseChanges> databaseChangesMap;
@@ -43,7 +42,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event.Compact
         private             SyncEvent                           syncEvent;
         private  readonly   Dictionary<DatabaseSubs, JsonValue> rawSyncEvents;
         
-        public ChangeCompactor() {
+        public ChangeCollector() {
             databaseChangesMap  = new Dictionary<EntityDatabase, DatabaseChanges>();
             databaseChangesList = new List<DatabaseChanges>();
             containerChangesSet = new HashSet<ContainerChanges>();
@@ -86,7 +85,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event.Compact
                     databaseChangesList.Add(databaseChanges);
                 }
             }
-            var context = new CompactorContext(this, writer);
+            var context = new CollectorContext(this, writer);
             foreach (var databaseChanges in databaseChangesList)
             {
                 syncEvent.db = databaseChanges.dbName.value;

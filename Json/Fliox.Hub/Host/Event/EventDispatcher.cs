@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using Friflo.Json.Burst.Utils;
-using Friflo.Json.Fliox.Hub.Host.Event.Compact;
+using Friflo.Json.Fliox.Hub.Host.Event.Collector;
 using Friflo.Json.Fliox.Hub.Host.Auth;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
@@ -53,7 +53,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         public              bool                                SendUserIds         { get; set; } = true;
         public              bool                                SendClientIds       { get; set; } = false;
         internal readonly   SharedEnv                           sharedEnv;
-        private  readonly   ChangeCompactor                     changeCompactor;
+        private  readonly   ChangeCollector                     changeCollector;
         private  readonly   JsonEvaluator                       jsonEvaluator;
         /// <summary>buffer for serialized <see cref="SyncEvent"/>'s to avoid frequent allocations</summary>
         private  readonly   List<JsonValue>                     syncEventBuffer;
@@ -83,7 +83,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
 
     #region - initialize
         public EventDispatcher (EventDispatching dispatching, SharedEnv env = null) {
-            changeCompactor     = new ChangeCompactor();
+            changeCollector     = new ChangeCollector();
             sharedEnv           = env ?? SharedEnv.Default;
             jsonEvaluator       = new JsonEvaluator();
             syncEventBuffer     = new List<JsonValue>();
@@ -217,12 +217,12 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         /// to subscribers are accumulated for the given <paramref name="database"/>
         /// </summary>
         public void EnableChangeAccumulation(EntityDatabase database) {
-            changeCompactor.AddDatabase(database);
+            changeCollector.AddDatabase(database);
         }
         
         /// <summary>Disable container change accumulation. See <see cref="EnableChangeAccumulation"/></summary>
         public void DisableChangeAccumulation(EntityDatabase database) {
-            changeCompactor.RemoveDatabase(database);
+            changeCollector.RemoveDatabase(database);
         }
         
         /// <summary>
@@ -236,9 +236,9 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             }
             using (var pooleMapper = sharedEnv.Pool.ObjectMapper.Get()) {
                 var writer = pooleMapper.instance.writer;
-                if (changeCompactor.DatabaseCount > 0) {
+                if (changeCollector.DatabaseCount > 0) {
                     CopyDatabaseSubsMap(databaseSubsBuffer);
-                    changeCompactor.AccumulateTasks(databaseSubsBuffer, writer);
+                    changeCollector.AccumulateTasks(databaseSubsBuffer, writer);
                 }
                 foreach (var subClient in sendClients) {
                     subClient.SendEvents(writer, eventMessageBuffer, syncEventBuffer);
@@ -321,13 +321,13 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         }
         
         /// <summary>
-        /// Store change tasks - create, upsert, merge and delete - if using a <see cref="ChangeCompactor"/> <br/>
+        /// Store change tasks - create, upsert, merge and delete - if using a <see cref="ChangeCollector"/> <br/>
         /// Stored change tasks are removed from the given <paramref name="syncTasks"/> list. <br/>
         /// Return true if no tasks left to process
         /// </summary>
         private bool StoreChangeTasks(List<SyncRequestTask> syncTasks, SyncContext syncContext)
         {
-            if (changeCompactor.DatabaseCount == 0) {
+            if (changeCollector.DatabaseCount == 0) {
                 return false;
             }
             var database            = syncContext.Database;
@@ -335,7 +335,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             Span<bool> useTasks     = stackalloc bool[count];
             for (int n = 0; n < count; n++) {
                 var syncTask    =  syncTasks[n];
-                useTasks[n]     = !changeCompactor.StoreTask(database, syncTask);
+                useTasks[n]     = !changeCollector.StoreTask(database, syncTask);
             }
             return RemoveUnusedTasks(syncTasks, useTasks);
         }

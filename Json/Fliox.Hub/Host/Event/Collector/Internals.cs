@@ -6,7 +6,7 @@ using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Utils;
 
-namespace Friflo.Json.Fliox.Hub.Host.Event.Compact
+namespace Friflo.Json.Fliox.Hub.Host.Event.Collector
 {
     internal readonly struct ChangeTask
     {
@@ -48,13 +48,13 @@ namespace Friflo.Json.Fliox.Hub.Host.Event.Compact
         }
     }
     
-    internal readonly struct CompactorContext
+    internal readonly struct CollectorContext
     {
-        internal readonly   ChangeCompactor compactor;
+        internal readonly   ChangeCollector collector;
         internal readonly   ObjectWriter    writer;
         
-        internal CompactorContext(ChangeCompactor compactor, ObjectWriter writer) {
-            this.compactor  = compactor;
+        internal CollectorContext(ChangeCollector collector, ObjectWriter writer) {
+            this.collector  = collector;
             this.writer     = writer;
         }
     }
