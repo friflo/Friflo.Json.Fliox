@@ -2,7 +2,6 @@
 // See LICENSE file in the project root for full license information.
 
 using Friflo.Json.Fliox.Hub.Protocol;
-using Friflo.Json.Fliox.Hub.Remote;
 
 namespace Friflo.Json.Fliox.Hub.Host.Event
 {

@@ -8,7 +8,6 @@ using System.Linq;
 using Friflo.Json.Burst.Utils;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Remote;
-using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Utils;
 using static System.Diagnostics.DebuggerBrowsableState;
 
@@ -92,7 +91,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         /// Note: dispatcher is null in case using <see cref="EventDispatching.Queue"/>.<br/>
         /// So SyncEvent's are collected until calling <see cref="EventDispatcher.SendQueuedEvents"/>
         /// </remarks>
-        internal void EnqueueEvent(in JsonValue syncEvent) {
+        internal void EnqueueSyncEvent(in JsonValue syncEvent) {
             lock (unsentSyncEvents) {
                 unsentSyncEvents.AddTail(syncEvent);
             }
@@ -100,11 +99,14 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             dispatcher?.NewClientEvent(this);
         }
         
-        private bool DequeueEventMessages(
-            List<JsonValue>     eventMessages,
-            List<JsonValue>     syncEvents,
-            ObjectWriter        writer)
+        /// <summary> Dequeue all queued messaged. </summary>
+        /// <remarks>
+        /// <paramref name="syncEvents"/>
+        /// </remarks>
+        private bool DequeueEvents(in SendEventsContext context)
         {
+            var syncEvents      = context.syncEvents;
+            var eventMessages   = context.eventMessages;
             syncEvents.Clear();
             eventMessages.Clear();
             lock (unsentSyncEvents) {
@@ -123,7 +125,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             if (syncEvents.Count > 0) {
                 int seq = ++eventCounter;
                 // access to syncEvents is valid. DequeMessages() is called sequentially
-                var eventMessage = RemoteUtils.CreateEventMessage(syncEvents, clientId, seq, writer);
+                var eventMessage = RemoteUtils.CreateEventMessage(syncEvents, clientId, seq, context.writer);
                 eventMessages.Add(eventMessage);
                 if (queueEvents) {
                     lock (unsentSyncEvents) {
@@ -180,7 +182,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             }
         }
         
-        internal void SendEvents (ObjectWriter writer, List<JsonValue> eventMessages, List<JsonValue> syncEvents) {
+        internal void SendEvents (in SendEventsContext context) {
             var receiver = eventReceiver;
             // early out in case the target is a remote connection which already closed.
             if (receiver == null || !receiver.IsOpen()) {
@@ -192,7 +194,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                 return;
             }
             // Trace.WriteLine("--- SendEvents");
-            while (DequeueEventMessages(eventMessages, syncEvents, writer)) {
+            while (DequeueEvents(context)) {
                 // var msg = $"DequeueEvent {ev.seq}";
                 // Trace.WriteLine(msg);
                 // Console.WriteLine(msg);
@@ -200,7 +202,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                     // Console.WriteLine($"--- SendEvents: {events.Length}");
                     // In case the event target is remote connection it is not guaranteed that the event arrives.
                     // The remote target may already be disconnected and this is still not know when sending the event.
-                    foreach (var eventMessage in eventMessages) {
+                    foreach (var eventMessage in context.eventMessages) {
                         var clientEvent     = new ClientEvent(clientId, eventMessage);
                         receiver.SendEvent(clientEvent);
                     }

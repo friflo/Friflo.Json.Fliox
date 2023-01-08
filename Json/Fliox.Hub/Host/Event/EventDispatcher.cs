@@ -242,8 +242,9 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                     CopyDatabaseSubsMap(databaseSubsBuffer);
                     changeCombiner.AccumulateChanges(databaseSubsBuffer, writer);
                 }
+                var context = new SendEventsContext (writer, eventMessageBuffer, syncEventBuffer);
                 foreach (var subClient in sendClients) {
-                    subClient.SendEvents(writer, eventMessageBuffer, syncEventBuffer);
+                    subClient.SendEvents(context);
                 }
             }
         }
@@ -396,7 +397,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                     bool sendClientId       = SendClientIds || syncContext.clientId.IsEqual(client.clientId);
                     syncEvent.clt           = sendClientId ? syncContext.clientId : default;
                     JsonValue rawSyncEvent  = RemoteUtils.SerializeSyncEvent(syncEvent, writer);
-                    client.EnqueueEvent(rawSyncEvent);
+                    client.EnqueueSyncEvent(rawSyncEvent);
                 }
             }
             // clear cached serialized tasks -> enable GC collect byte[]'s
@@ -458,10 +459,11 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         
         private async Task SendEventLoop(IDataChannelReader<EventSubClient> clientEventReader, ObjectWriter writer) {
             var logger  = sharedEnv.Logger;
+            var context = new SendEventsContext (writer, eventMessageBuffer, syncEventBuffer);
             while (true) {
                 var client = await clientEventReader.ReadAsync().ConfigureAwait(false);
                 if (client != null) {
-                    client.SendEvents(writer, eventMessageBuffer, syncEventBuffer);
+                    client.SendEvents(context);
                     continue;
                 }
                 logger.Log(HubLog.Info, $"ClientEventLoop() returns");

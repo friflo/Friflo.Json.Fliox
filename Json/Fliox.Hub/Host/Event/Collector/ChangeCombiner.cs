@@ -96,7 +96,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event.Collector
                         continue;
                     }
                     // todo consider / benchmark creating & queuing a serialized EventMessage for clients have the same set of DatabaseSubs
-                    clientDbSub.client.EnqueueEvent(rawSyncEvent);
+                    clientDbSub.client.EnqueueSyncEvent(rawSyncEvent);
                 }
             }
         }
