@@ -8,7 +8,9 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
 {
     internal readonly struct  SendEventsContext {
         internal  readonly  ObjectWriter        writer;
+        /// <summary>Buffer for serialized <see cref="Protocol.SyncEvent"/>'s </summary>
         internal  readonly  List<JsonValue>     syncEvents;
+        /// <summary>Buffer for serialized <see cref="Protocol.EventMessage"/>'s </summary>
         internal  readonly  List<JsonValue>     eventMessages;
         
         internal SendEventsContext(ObjectWriter writer, List<JsonValue> syncEvents, List<JsonValue> eventMessages) {
