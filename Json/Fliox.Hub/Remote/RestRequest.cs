@@ -25,7 +25,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
     {
         internal  readonly  RestRequestType     type;
         // --- path
-        internal  readonly  string              database;
+        internal  readonly  string              db;
         internal  readonly  string              container;
         internal  readonly  string              id;
 
@@ -47,9 +47,9 @@ namespace Friflo.Json.Fliox.Hub.Remote
         /// <summary>
         /// create request specific for <see cref="RestRequestType.message"/> and <see cref="RestRequestType.command"/>
         /// </summary>
-        internal RestRequest(RestRequestType type, string database, string name, in JsonValue value) {
+        internal RestRequest(RestRequestType type, string db, string name, in JsonValue value) {
             this.type           = type;
-            this.database       = database;
+            this.db             = db;
                  container      = null;
             this.message        = name;
             this.value          = value;
@@ -64,9 +64,9 @@ namespace Friflo.Json.Fliox.Hub.Remote
         /// <summary>
         /// create request for a database container operation
         /// </summary>
-        internal RestRequest(RestRequestType type, string database, string container, JsonKey[] keys) {
+        internal RestRequest(RestRequestType type, string db, string container, JsonKey[] keys) {
             this.type           = type;
-            this.database       = database;
+            this.db             = db;
             this.container      = container;
                  message        = null;
                  value          = default;
@@ -81,9 +81,9 @@ namespace Friflo.Json.Fliox.Hub.Remote
         /// <summary>
         /// create request for a database container operation
         /// </summary>
-        internal RestRequest(RestRequestType type, string database, string container, string id, in JsonValue value, NameValueCollection queryParams) {
+        internal RestRequest(RestRequestType type, string db, string container, string id, in JsonValue value, NameValueCollection queryParams) {
             this.type           = type;
-            this.database       = database;
+            this.db             = db;
             this.container      = container;
                  message        = null;
             this.value          = value;
@@ -100,7 +100,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         /// </summary>
         internal RestRequest(string errorType, string errorMessage, int errorStatus) {
                  type           = RestRequestType.error;
-                 database       = null;
+                 db             = null;
                  container      = null;
                  message        = null;
                  value          = default;
@@ -114,15 +114,15 @@ namespace Friflo.Json.Fliox.Hub.Remote
         
         private string GetString() {
             switch (type) {
-                case RestRequestType.command:   return $"command {database} {message}({value})";
-                case RestRequestType.message:   return $"message {database} {message}({value})";
+                case RestRequestType.command:   return $"command {db} {message}({value})";
+                case RestRequestType.message:   return $"message {db} {message}({value})";
                 
-                case RestRequestType.read:      return $"read {database}/{container}";
-                case RestRequestType.query:     return $"query {database}/{container}";
-                case RestRequestType.readOne:   return $"readOne {database}/{container}/{id}";
-                case RestRequestType.delete:    return $"delete {database}/{container}";
-                case RestRequestType.write:     return $"write {database}/{container}";
-                case RestRequestType.merge:     return $"merge {database}/{container}";
+                case RestRequestType.read:      return $"read {db}/{container}";
+                case RestRequestType.query:     return $"query {db}/{container}";
+                case RestRequestType.readOne:   return $"readOne {db}/{container}/{id}";
+                case RestRequestType.delete:    return $"delete {db}/{container}";
+                case RestRequestType.write:     return $"write {db}/{container}";
+                case RestRequestType.merge:     return $"merge {db}/{container}";
 
                 case RestRequestType.error:     return $"error {errorStatus}: {errorType} > {errorMessage}";
             }
