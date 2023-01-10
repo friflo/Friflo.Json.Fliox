@@ -56,6 +56,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         private             IReadOnlyCollection<MessageDelegate>    Handlers => handlers.Values;
         // used non concurrent Queue<> to avoid heap allocation on Enqueue()
         internal readonly   Queue<RequestJob>                       requestQueue;
+        internal readonly   List<RequestJob>                        requestBuffer;
         public              bool                                    QueueRequestExecution   => requestQueue != null;
         /// <summary>Ensure subsequent request executions run on the same thread</summary>
         private  const      bool                                    RunOnCallingThread      =  true;
@@ -65,7 +66,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// they are executed as they arrive.
         /// </summary>
         /// <remarks>
-        /// To execute queued requests (<paramref name="queueRequests"/> is true) <see cref="ExecuteQueuedRequests"/>
+        /// To execute queued requests (<paramref name="queueRequests"/> is true) <see cref="ExecuteQueuedRequestsAsync"/>
         /// need to be called regularly.<br/>
         /// This enables requests / task execution on the calling thread. <br/>
         /// This mode guarantee sequential execution of messages, commands and container operations like
@@ -74,7 +75,8 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// </remarks> 
         public DatabaseService (bool queueRequests = false) {
             AddStdCommandHandlers();
-            requestQueue = queueRequests ? new Queue<RequestJob>() : null;
+            requestQueue    = queueRequests ? new Queue<RequestJob>() : null;
+            requestBuffer   = queueRequests ? new List<RequestJob>()  : null;
         }
         
         protected internal virtual void PreExecuteTasks (SyncContext syncContext)  { }
@@ -301,18 +303,20 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// <summary>
         /// Execute queued tasks in case request queueing is enabled in the <see cref="DatabaseService"/> constructor
         /// </summary>
-        // ReSharper disable MethodHasAsyncOverload
-        public async Task ExecuteQueuedRequests() {
-            while(true) {
-                RequestJob job;
-                lock (requestQueue) {
-                    if (!requestQueue.TryDequeue(out job))
-                        return;
+        public async Task ExecuteQueuedRequestsAsync() {
+            requestBuffer.Clear();
+            lock (requestQueue) {
+                foreach (var job in requestQueue) {
+                    requestBuffer.Add(job);
                 }
+                requestQueue.Clear();
+            }
+            foreach (var job in requestBuffer) {
                 try {
                     var syncRequest = job.syncRequest;
                     ExecuteSyncResult response;
                     if (syncRequest.intern.executionType == ExecutionType.Sync) {
+                        // ReSharper disable once MethodHasAsyncOverload
                         response =       job.hub.ExecuteRequest     (syncRequest, job.syncContext);
                     } else {
                         response = await job.hub.ExecuteRequestAsync(syncRequest, job.syncContext).ConfigureAwait(RunOnCallingThread);

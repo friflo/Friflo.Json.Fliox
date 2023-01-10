@@ -22,7 +22,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
                 var echoResult = client.std.Echo("hello");
                 var task = client.SyncTasks();
                 
-                await service.ExecuteQueuedRequests();
+                await service.ExecuteQueuedRequestsAsync();
                 
                 if (!task.IsCompleted) {
                     Fail("Expect task completed");
