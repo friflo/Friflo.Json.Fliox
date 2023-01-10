@@ -3,7 +3,6 @@
 
 using System;
 using Friflo.Json.Fliox.Hub.Host.Event;
-using Friflo.Json.Fliox.Hub.Remote;
 
 namespace Friflo.Json.Fliox.Hub.Client.Internal
 {

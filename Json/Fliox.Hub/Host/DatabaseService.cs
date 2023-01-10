@@ -56,7 +56,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         private             IReadOnlyCollection<MessageDelegate>    Handlers => handlers.Values;
         // used non concurrent Queue<> to avoid heap allocation on Enqueue()
         internal readonly   Queue<RequestJob>                       requestQueue;
-        internal readonly   List<RequestJob>                        requestBuffer;
+        private  readonly   List<RequestJob>                        requestBuffer;
         public              bool                                    QueueRequestExecution   => requestQueue != null;
         /// <summary>Ensure subsequent request executions run on the same thread</summary>
         private  const      bool                                    RunOnCallingThread      =  true;
