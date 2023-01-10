@@ -57,8 +57,8 @@ namespace Friflo.Json.Fliox.Hub.Host
         private             IReadOnlyCollection<MessageDelegate>    Handlers => handlers.Values;
         
         internal readonly   ConcurrentQueue<RequestJob>             requestQueue;
-        internal            bool                                    HasRequestQueue     => requestQueue != null;
-        private  const      bool                                    RunOnCallingThread  =  true;
+        public              bool                                    QueueRequestExecution   => requestQueue != null;
+        private  const      bool                                    RunOnCallingThread      =  true;
         
         /// <summary>
         /// If <paramref name="queueRequests"/> is true <see cref="SyncRequest"/> are queued for execution otherwise
