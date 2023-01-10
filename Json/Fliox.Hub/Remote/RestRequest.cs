@@ -39,8 +39,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
         
         // --- container operations
         internal  readonly  JsonKey[]           keys;
-        
-        internal  readonly  NameValueCollection queryParams;
+        /// query string of the url. E.g. ?command=echo
+        internal  readonly  NameValueCollection query;
 
         public    override  string              ToString() => GetString();
 
@@ -58,7 +58,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                  errorMessage   = null;
                  errorStatus    = 0;
                  keys           = null;
-                 queryParams    = null;
+                 query          = null;
         }
         
         /// <summary>
@@ -75,13 +75,13 @@ namespace Friflo.Json.Fliox.Hub.Remote
                  errorMessage   = null;
                  errorStatus    = 0;
             this.keys           = keys;
-                 queryParams     = null;
+                 query          = null;
         }
         
         /// <summary>
         /// create request for a database container operation
         /// </summary>
-        internal RestRequest(RestRequestType type, string db, string container, string id, in JsonValue value, NameValueCollection queryParams) {
+        internal RestRequest(RestRequestType type, string db, string container, string id, in JsonValue value, NameValueCollection query) {
             this.type           = type;
             this.db             = db;
             this.container      = container;
@@ -92,7 +92,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                  errorMessage   = null;
                  errorStatus    = 0;
                  keys           = null;
-            this.queryParams    = queryParams;
+            this.query          = query;
         }
         
         /// <summary>
@@ -109,7 +109,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             this.errorMessage   = errorMessage;
             this.errorStatus    = errorStatus;
                  keys           = null;
-                 queryParams    = null;
+                 query          = null;
         }
         
         private string GetString() {

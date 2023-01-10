@@ -142,13 +142,13 @@ namespace Friflo.Json.Fliox.Hub.Remote
         /// Note:
         /// Request matching and execution are separated to ensure no heap allocation caused by awaited method calls. 
         /// </summary>
-        public async Task ExecuteHttpRequest(RequestContext request) {
-            if (request.method == "POST" && request.route == "/") {
-                var requestContent  = await JsonValue.ReadToEndAsync(request.body, request.contentLength).ConfigureAwait(false);
+        public async Task ExecuteHttpRequest(RequestContext cx) {
+            if (cx.method == "POST" && cx.route == "/") {
+                var requestContent  = await JsonValue.ReadToEndAsync(cx.body, cx.contentLength).ConfigureAwait(false);
 
                 // Each request require its own pool as multiple request running concurrently. Could cache a Pool instance per connection.
                 var pool        = sharedEnv.Pool;
-                var syncContext = new SyncContext(sharedEnv, null, request.memoryBuffer); // new context per request
+                var syncContext = new SyncContext(sharedEnv, null, cx.memoryBuffer); // new context per request
                 using (var pooledMapper = pool.ObjectMapper.Get()) {
                     var mapper = pooledMapper.instance;
                     // inlined ExecuteJsonRequest() to avoid async call:
@@ -175,45 +175,45 @@ namespace Friflo.Json.Fliox.Hub.Remote
                         response = JsonResponse.CreateError(mapper.writer, errorMsg, ErrorResponseType.Exception, null);
                     }
                     var body        = new JsonValue(response.body); // create copy => result.body array may change when the pooledMapper is reused
-                    request.Write(body, "application/json", (int)response.status);
-                    request.handled = true;
+                    cx.Write(body, "application/json", (int)response.status);
+                    cx.handled = true;
                     return;
                 }
             }
-            if (schemaHandler.IsMatch(request)) {
-                await schemaHandler.HandleRequest(request).ConfigureAwait(false);
-                request.handled = true;
+            if (schemaHandler.IsMatch(cx)) {
+                await schemaHandler.HandleRequest(cx).ConfigureAwait(false);
+                cx.handled = true;
                 return;
             }
-            if (RestHandler.IsMatch(request)) {
+            if (RestHandler.IsMatch(cx)) {
                 JsonValue body = default; 
-                if (request.method == "POST" || request.method == "PUT" || request.method == "PATCH") {
-                    body = await JsonValue.ReadToEndAsync(request.body, request.contentLength).ConfigureAwait(false);
+                if (cx.method == "POST" || cx.method == "PUT" || cx.method == "PATCH") {
+                    body = await JsonValue.ReadToEndAsync(cx.body, cx.contentLength).ConfigureAwait(false);
                 }
-                var rr = RestHandler.GetRestRequest(request, body); // rr looks russian :D
+                var rr = RestHandler.GetRestRequest(cx, body); // rr looks russian :D
                 // execute REST request from here instead extracting to a method to avoid additional async call
                 switch (rr.type) {
                     // --- error
-                    case error:   request.WriteError    (rr.errorType, rr.errorMessage, rr.errorStatus);                                       break;
+                    case error:      cx.WriteError      (rr.errorType, rr.errorMessage, rr.errorStatus);    break;
                     // --- message / command
-                    case command: await Command         (request, rr.db, rr.message, rr.value)                         .ConfigureAwait(false); break;
-                    case message: await Message         (request, rr.db, rr.message, rr.value)                         .ConfigureAwait(false); break;
+                    case command: await Command         (cx, rr.db, rr.message, rr.value)                   .ConfigureAwait(false); break;
+                    case message: await Message         (cx, rr.db, rr.message, rr.value)                   .ConfigureAwait(false); break;
                     // --- container operations
-                    case read:    await GetEntitiesById (request, rr.db, rr.container, rr.keys)                        .ConfigureAwait(false); break;
-                    case readOne: await GetEntity       (request, rr.db, rr.container, rr.id)                          .ConfigureAwait(false); break;
-                    case query:   await QueryEntities   (request, rr.db, rr.container, rr.queryParams)                 .ConfigureAwait(false); break;
-                    case write:   await PutEntities     (request, rr.db, rr.container, rr.id, rr.value, rr.queryParams).ConfigureAwait(false); break;
-                    case merge:   await MergeEntities   (request, rr.db, rr.container, rr.id, rr.value, rr.queryParams).ConfigureAwait(false); break;
-                    case delete:  await DeleteEntities  (request, rr.db, rr.container, rr.keys)                        .ConfigureAwait(false); break;
+                    case read:    await GetEntitiesById (cx, rr.db, rr.container, rr.keys)                  .ConfigureAwait(false); break;
+                    case readOne: await GetEntity       (cx, rr.db, rr.container, rr.id)                    .ConfigureAwait(false); break;
+                    case query:   await QueryEntities   (cx, rr.db, rr.container, rr.query)                 .ConfigureAwait(false); break;
+                    case write:   await PutEntities     (cx, rr.db, rr.container, rr.id, rr.value, rr.query).ConfigureAwait(false); break;
+                    case merge:   await MergeEntities   (cx, rr.db, rr.container, rr.id, rr.value, rr.query).ConfigureAwait(false); break;
+                    case delete:  await DeleteEntities  (cx, rr.db, rr.container, rr.keys)                  .ConfigureAwait(false); break;
                 }
-                request.handled = true; 
+                cx.handled = true; 
                 return;
             }
             foreach (var handler in customHandlers) {
-                if (!handler.IsMatch(request))
+                if (!handler.IsMatch(cx))
                     continue;
-                await handler.HandleRequest(request).ConfigureAwait(false);
-                request.handled = true;
+                await handler.HandleRequest(cx).ConfigureAwait(false);
+                cx.handled = true;
                 return;
             }
         }
