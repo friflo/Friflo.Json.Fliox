@@ -2,7 +2,6 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
@@ -310,14 +309,18 @@ namespace Friflo.Json.Fliox.Hub.Host
                     if (!requestQueue.TryDequeue(out job))
                         return;
                 }
-                var syncRequest = job.syncRequest;
-                ExecuteSyncResult response;
-                if (syncRequest.intern.executionType == ExecutionType.Sync) {
-                    response =       job.hub.ExecuteRequest     (syncRequest, job.syncContext);
-                } else {
-                    response = await job.hub.ExecuteRequestAsync(syncRequest, job.syncContext).ConfigureAwait(RunOnCallingThread);
+                try {
+                    var syncRequest = job.syncRequest;
+                    ExecuteSyncResult response;
+                    if (syncRequest.intern.executionType == ExecutionType.Sync) {
+                        response =       job.hub.ExecuteRequest     (syncRequest, job.syncContext);
+                    } else {
+                        response = await job.hub.ExecuteRequestAsync(syncRequest, job.syncContext).ConfigureAwait(RunOnCallingThread);
+                    }
+                    job.taskCompletionSource.SetResult(response);
+                } catch (Exception e) {
+                    job.taskCompletionSource.SetException(e);
                 }
-                job.taskCompletionSource.SetResult(response);
             }
         }
     }
