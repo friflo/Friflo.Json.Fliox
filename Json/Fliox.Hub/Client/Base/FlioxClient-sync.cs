@@ -31,9 +31,9 @@ namespace Friflo.Json.Fliox.Hub.Client
             var executionType   = hub.InitSyncRequest(syncRequest);
             ExecuteSyncResult syncResult;
             switch (executionType) {
-                case Queue: throw new NotSupportedException     ("synchronous execution does not support queueing requests");
+                case Queue: syncResult = Execute (syncRequest, syncContext);                break;
                 case Async: throw new InvalidOperationException ("async execution required");
-                default:    syncResult = Execute         (syncRequest, syncContext); break;
+                default:    syncResult = Execute (syncRequest, syncContext);                break;
             }
             var result      = HandleSyncResponse(syncRequest, syncResult, syncStore, buffer);
             ReuseSyncContext(syncContext);
@@ -56,9 +56,9 @@ namespace Friflo.Json.Fliox.Hub.Client
             var executionType   = hub.InitSyncRequest(syncRequest);
             ExecuteSyncResult syncResult;
             switch (executionType) {
-                case Queue: throw new NotSupportedException     ("synchronous execution does not support queueing");
+                case Queue: syncResult = Execute (syncRequest, syncContext);            break;
                 case Async: throw new InvalidOperationException ("async execution required");
-                default:    syncResult = Execute         (syncRequest, syncContext); break;
+                default:    syncResult = Execute (syncRequest, syncContext);            break;
             }
             var result = HandleSyncResponse(syncRequest, syncResult, syncStore, buffer);
             ReuseSyncContext(syncContext);
