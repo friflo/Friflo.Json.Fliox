@@ -71,7 +71,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// This enables requests / task execution on the calling thread. <br/>
         /// This mode guarantee sequential execution of messages, commands and container operations like
         /// read, query, create, upsert, merge and delete.<br/>
-        /// So using lock's or other thread synchronisation mechanisms are not necessary.
+        /// So using lock's or other thread synchronization mechanisms are not necessary.
         /// </remarks> 
         public DatabaseService (bool queueRequests = false) {
             AddStdCommandHandlers();
