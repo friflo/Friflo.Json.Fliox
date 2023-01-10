@@ -55,9 +55,10 @@ namespace Friflo.Json.Fliox.Hub.Host
         private readonly    Dictionary<string, MessageDelegate>     handlers = new Dictionary<string, MessageDelegate>();
         // ReSharper disable once UnusedMember.Local - expose Dictionary as list in Debugger
         private             IReadOnlyCollection<MessageDelegate>    Handlers => handlers.Values;
-        
-        internal readonly   ConcurrentQueue<RequestJob>             requestQueue;
+        // used non concurrent Queue<> to avoid heap allocation on Enqueue()
+        internal readonly   Queue<RequestJob>                       requestQueue;
         public              bool                                    QueueRequestExecution   => requestQueue != null;
+        /// <summary>Ensure subsequent request executions run on the same thread</summary>
         private  const      bool                                    RunOnCallingThread      =  true;
         
         /// <summary>
@@ -74,7 +75,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// </remarks> 
         public DatabaseService (bool queueRequests = false) {
             AddStdCommandHandlers();
-            requestQueue = queueRequests ? new ConcurrentQueue<RequestJob>() : null;
+            requestQueue = queueRequests ? new Queue<RequestJob>() : null;
         }
         
         protected internal virtual void PreExecuteTasks (SyncContext syncContext)  { }
@@ -304,8 +305,11 @@ namespace Friflo.Json.Fliox.Hub.Host
         // ReSharper disable MethodHasAsyncOverload
         public async Task ExecuteQueuedRequests() {
             while(true) {
-                if (!requestQueue.TryDequeue(out var job))
-                    return;
+                RequestJob job;
+                lock (requestQueue) {
+                    if (!requestQueue.TryDequeue(out job))
+                        return;
+                }
                 var syncRequest = job.syncRequest;
                 ExecuteSyncResult response;
                 if (syncRequest.intern.executionType == ExecutionType.Sync) {
