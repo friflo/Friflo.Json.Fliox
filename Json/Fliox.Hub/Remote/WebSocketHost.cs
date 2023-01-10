@@ -17,6 +17,7 @@ using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Pools;
 using Friflo.Json.Fliox.Utils;
+using static Friflo.Json.Fliox.Hub.Host.ExecutionType;
 
 // ReSharper disable MethodHasAsyncOverload
 namespace Friflo.Json.Fliox.Hub.Remote
@@ -207,12 +208,12 @@ namespace Friflo.Json.Fliox.Hub.Remote
                     if (error != null) {
                         response = JsonResponse.CreateError(mapper.writer, error, ErrorResponseType.BadResponse, null);
                     } else {
-                        var execution   = hub.InitSyncRequest(syncRequest);
+                        var executionType   = hub.InitSyncRequest(syncRequest);
                         ExecuteSyncResult syncResult;
-                        if (execution == ExecutionType.Sync) {
-                            syncResult  =       hub.ExecuteRequest      (syncRequest, syncContext);
-                        } else {
-                            syncResult  = await hub.ExecuteRequestAsync (syncRequest, syncContext).ConfigureAwait(false);
+                        switch (executionType) {
+                            case Async: syncResult = await hub.ExecuteRequestAsync (syncRequest, syncContext).ConfigureAwait(false); break;
+                            case Queue: syncResult = await hub.QueueRequestAsync   (syncRequest, syncContext).ConfigureAwait(false); break;
+                            default:    syncResult =       hub.ExecuteRequest      (syncRequest, syncContext);                       break;    
                         }
                         response = RemoteHost.CreateJsonResponse(syncResult, syncRequest.reqId, mapper.writer);
                     }

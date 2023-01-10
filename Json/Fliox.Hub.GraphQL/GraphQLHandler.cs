@@ -14,6 +14,7 @@ using Friflo.Json.Fliox.Transform.Project;
 using Friflo.Json.Fliox.Utils;
 using GraphQLParser;
 using GraphQLParser.AST;
+using static Friflo.Json.Fliox.Hub.Host.ExecutionType;
 
 // ReSharper disable MethodHasAsyncOverload
 // ReSharper disable ConvertIfStatementToSwitchStatement
@@ -88,15 +89,14 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                     syncRequest.token   = headers.Cookie("fliox-token");
                     var syncContext     = new SyncContext(context.hub.sharedEnv, null, context.memoryBuffer); // new context per request
                     
-                    var hub         = context.hub;
-                    var execution   = hub.InitSyncRequest(syncRequest);
+                    var hub             = context.hub;
+                    var executionType   = hub.InitSyncRequest(syncRequest);
                     ExecuteSyncResult syncResult;
-                    if (execution == ExecutionType.Sync) {
-                        syncResult  =       hub.ExecuteRequest      (syncRequest, syncContext);
-                    } else {
-                        syncResult  = await hub.ExecuteRequestAsync (syncRequest, syncContext).ConfigureAwait(false);
+                    switch (executionType) {
+                        case Async: syncResult = await hub.ExecuteRequestAsync (syncRequest, syncContext).ConfigureAwait(false); break;
+                        case Queue: syncResult = await hub.QueueRequestAsync   (syncRequest, syncContext).ConfigureAwait(false); break;
+                        default:    syncResult =       hub.ExecuteRequest      (syncRequest, syncContext);                       break;    
                     }
-                    
                     if (syncResult.error != null) {
                         context.WriteError("execution error", syncResult.error.message, 500);
                         return;

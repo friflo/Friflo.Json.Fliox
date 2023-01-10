@@ -35,7 +35,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc
                 Console.WriteLine($"myJob - thread {Environment.CurrentManagedThreadId}");
             });
             Queue.Enqueue(myJob);
-            await myJob.tcs.Task;
+            await myJob.tcs.Task.ConfigureAwait(false);
             Queue.Enqueue(null);
         }
 

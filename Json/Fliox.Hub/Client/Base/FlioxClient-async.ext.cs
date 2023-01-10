@@ -24,7 +24,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             syncContext.clientId = _intern.clientId;
             
             InitSyncRequest(syncRequest);
-            var response    = await ExecuteRequestAsync(syncRequest, syncContext).ConfigureAwait(false);
+            var response    = await ExecuteAsync(syncRequest, syncContext, ExecutionType.Async).ConfigureAwait(false);
 
             var syncStore   = new SyncStore();  // create default (empty) SyncStore
             return HandleSyncResponse(syncRequest, response, syncStore, buffer);

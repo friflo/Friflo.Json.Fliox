@@ -40,7 +40,7 @@ UnhandledException > InvalidOperationException: test command throw exception
    at Friflo.Json.Fliox.Hub.Host.Internal.CommandDelegate`2.InvokeDelegate(SyncRequestTask task, String messageName, JsonValue& messageValue, SyncContext syncContext)
    at Friflo.Json.Fliox.Hub.Protocol.Tasks.SendCommand.Execute(EntityDatabase database, SyncResponse response, SyncContext syncContext)
    at Friflo.Json.Fliox.Hub.Host.DatabaseService.ExecuteTask(SyncRequestTask task, EntityDatabase database, SyncResponse response, SyncContext syncContext)
-   at Friflo.Json.Fliox.Hub.Host.FlioxHub.ExecuteRequestAsync(SyncRequest syncRequest, SyncContext syncContext)
+   at Friflo.Json.Fliox.Hub.Host.FlioxHub.ExecuteRequest(SyncRequest syncRequest, SyncContext syncContext)
 
 
 ###

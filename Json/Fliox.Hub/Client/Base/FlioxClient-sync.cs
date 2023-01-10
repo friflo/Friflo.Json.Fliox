@@ -7,6 +7,7 @@ using System.Threading;
 using Friflo.Json.Fliox.Hub.Client.Internal;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Protocol;
+using static Friflo.Json.Fliox.Hub.Host.ExecutionType;
 
 // Note!  Keep file in sync with:  FlioxClient-async.cs
 
@@ -23,20 +24,21 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// As an alternative use <see cref="TrySyncTasks"/> to execute tasks which does not throw an exception. <br/>
         /// The method can be called without awaiting the result of a previous call. </remarks>
         public SyncResult SyncTasksSynchronous() {
+            var hub             = _intern.hub;
             var syncRequest     = CreateSyncRequest(out SyncStore syncStore);
             var buffer          = CreateMemoryBuffer();
             var syncContext     = CreateSyncContext(buffer);
-            var executionType   = _intern.hub.InitSyncRequest(syncRequest);
-            ExecuteSyncResult response;
-            if (executionType == ExecutionType.Sync) {
-                response    = ExecuteRequest(syncRequest, syncContext);
-            } else {
-                throw new InvalidOperationException(syncRequest.intern.error); 
+            var executionType   = hub.InitSyncRequest(syncRequest);
+            ExecuteSyncResult syncResult;
+            switch (executionType) {
+                case Queue: throw new NotSupportedException     ("synchronous execution does not support queueing requests");
+                case Async: throw new InvalidOperationException ("async execution required");
+                default:    syncResult = Execute         (syncRequest, syncContext); break;
             }
-            var result      = HandleSyncResponse(syncRequest, response, syncStore, buffer);
+            var result      = HandleSyncResponse(syncRequest, syncResult, syncStore, buffer);
             ReuseSyncContext(syncContext);
             if (!result.Success) {
-                throw new SyncTasksException(response.error, result.failed);
+                throw new SyncTasksException(syncResult.error, result.failed);
             }
             return result;
         }
@@ -47,22 +49,23 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// In performance critical application this method should be used instead of <see cref="SyncTasks"/> as throwing exceptions is expensive. <br/> 
         /// The method can be called without awaiting the result of a previous call. </remarks>
         public SyncResult TrySyncTasksSynchronous() {
+            var hub             = _intern.hub;
             var syncRequest     = CreateSyncRequest(out SyncStore syncStore);
             var buffer          = CreateMemoryBuffer();
             var syncContext     = CreateSyncContext(buffer);
-            var executionType   = _intern.hub.InitSyncRequest(syncRequest);
-            ExecuteSyncResult response;
-            if (executionType == ExecutionType.Sync) {
-                response    = ExecuteRequest(syncRequest, syncContext);
-            } else {
-                throw new InvalidOperationException(syncRequest.intern.error); 
+            var executionType   = hub.InitSyncRequest(syncRequest);
+            ExecuteSyncResult syncResult;
+            switch (executionType) {
+                case Queue: throw new NotSupportedException     ("synchronous execution does not support queueing");
+                case Async: throw new InvalidOperationException ("async execution required");
+                default:    syncResult = Execute         (syncRequest, syncContext); break;
             }
-            var result = HandleSyncResponse(syncRequest, response, syncStore, buffer);
+            var result = HandleSyncResponse(syncRequest, syncResult, syncStore, buffer);
             ReuseSyncContext(syncContext);
             return result;
         }
         
-        private ExecuteSyncResult ExecuteRequest(SyncRequest syncRequest, SyncContext syncContext) {
+        private ExecuteSyncResult Execute(SyncRequest syncRequest, SyncContext syncContext) {
             _intern.syncCount++;
             if (_intern.ackTimerPending) {
                 _intern.ackTimer?.Change(Timeout.Infinite, Timeout.Infinite);
@@ -70,8 +73,11 @@ namespace Friflo.Json.Fliox.Hub.Client
             }
             // Task<ExecuteSyncResult> task = null; not required
             try {
+                //
                 var response = _intern.hub.ExecuteRequest(syncRequest, syncContext);
-                
+                //
+                //
+                //
                 // add to pendingSyncs for counting and canceling
                 // lock (_intern.pendingSyncs) not required
                 //

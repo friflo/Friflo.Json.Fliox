@@ -215,10 +215,22 @@ namespace Friflo.Json.Fliox.Hub.Host
         public override string ToString() => success != null ? success.ToString() : error.ToString();
     }
     
+    /// <summary> Define the how to execute a <see cref="SyncRequest"/> </summary>
+    /// <remarks>
+    /// It is used to enable:<br/>
+    /// 1. Execute a <see cref="SyncRequest"/> with a synchronous call if possible to avoid heap allocation
+    ///    and CPU costs required for asynchronous methods if possible<br/>
+    /// 2. Enable queued execution of <see cref="SyncRequest"/>. See <see cref="DatabaseService.ExecuteQueuedRequests"/><br/>
+    /// </remarks>
     public enum ExecutionType {
         None    = 0,
+        /// <summary>execute request error synchronous with <see cref="FlioxHub.ExecuteRequest"/></summary>
         Error   = 1,
+        /// <summary>execute request synchronous with <see cref="FlioxHub.ExecuteRequest"/></summary>
         Sync    = 2,
-        Async   = 3
+        /// <summary>execute request asynchronous with <see cref="FlioxHub.ExecuteRequestAsync"/></summary>
+        Async   = 3,
+        /// <summary>queue request execution with <see cref="FlioxHub.QueueRequestAsync"/></summary>
+        Queue   = 4,
     }
 }

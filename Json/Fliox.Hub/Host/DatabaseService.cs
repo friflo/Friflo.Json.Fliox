@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
@@ -55,8 +56,25 @@ namespace Friflo.Json.Fliox.Hub.Host
         // ReSharper disable once UnusedMember.Local - expose Dictionary as list in Debugger
         private             IReadOnlyCollection<MessageDelegate>    Handlers => handlers.Values;
         
-        public DatabaseService () {
+        internal readonly   ConcurrentQueue<RequestJob>             requestQueue;
+        internal            bool                                    HasRequestQueue     => requestQueue != null;
+        private  const      bool                                    RunOnCallingThread  =  true;
+        
+        /// <summary>
+        /// If <paramref name="queueRequests"/> is true <see cref="SyncRequest"/> are queued for execution otherwise
+        /// they are executed as they arrive.
+        /// </summary>
+        /// <remarks>
+        /// To execute queued requests (<paramref name="queueRequests"/> is true) <see cref="ExecuteQueuedRequests"/>
+        /// need to be called regularly.<br/>
+        /// This enables requests / task execution on the calling thread. <br/>
+        /// This mode guarantee sequential execution of messages, commands and container operations like
+        /// read, query, create, upsert, merge and delete.<br/>
+        /// So using lock's or other thread synchronisation mechanisms are not necessary.
+        /// </remarks> 
+        public DatabaseService (bool queueRequests = false) {
             AddStdCommandHandlers();
+            requestQueue = queueRequests ? new ConcurrentQueue<RequestJob>() : null;
         }
         
         protected internal virtual void PreExecuteTasks (SyncContext syncContext)  { }
@@ -278,6 +296,44 @@ namespace Friflo.Json.Fliox.Hub.Host
                 if (name.StartsWith("std.") == standard)
                     commands[n++] = name;
             }
+        }
+        
+        /// <summary>
+        /// Execute queued tasks in case request queueing is enabled in the <see cref="DatabaseService"/> constructor
+        /// </summary>
+        // ReSharper disable MethodHasAsyncOverload
+        public async Task ExecuteQueuedRequests() {
+            while(true) {
+                if (!requestQueue.TryDequeue(out var job))
+                    return;
+                var syncRequest = job.syncRequest;
+                ExecuteSyncResult response;
+                if (syncRequest.intern.executionType == ExecutionType.Sync) {
+                    response =       job.hub.ExecuteRequest     (syncRequest, job.syncContext);
+                } else {
+                    response = await job.hub.ExecuteRequestAsync(syncRequest, job.syncContext).ConfigureAwait(RunOnCallingThread);
+                }
+                job.taskCompletionSource.SetResult(response);
+            }
+        }
+    }
+    
+    internal readonly struct RequestJob
+    {
+        internal readonly FlioxHub                                  hub;
+        internal readonly SyncRequest                               syncRequest;
+        internal readonly SyncContext                               syncContext;
+        internal readonly TaskCompletionSource<ExecuteSyncResult>   taskCompletionSource;
+            
+        internal RequestJob(
+            FlioxHub    hub,
+            SyncRequest syncRequest,
+            SyncContext syncContext)
+        {
+            this.hub                = hub;
+            this.syncRequest        = syncRequest;
+            this.syncContext        = syncContext;
+            taskCompletionSource    = new TaskCompletionSource<ExecuteSyncResult>();
         }
     }
 }

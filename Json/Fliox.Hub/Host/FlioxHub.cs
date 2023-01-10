@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
+using System.Threading.Tasks;
 using Friflo.Json.Burst.Utils;
 using Friflo.Json.Fliox.Hub.DB.Cluster;
 using Friflo.Json.Fliox.Hub.DB.Monitor;
@@ -218,7 +219,15 @@ namespace Friflo.Json.Fliox.Hub.Host
             }
             var executionType = isSyncRequest ? Sync : Async;
             syncRequest.intern.error = null;
-            return syncRequest.intern.executionType = executionType;
+            syncRequest.intern.executionType = executionType;
+            return db.service.HasRequestQueue ? Queue : executionType;
+        }
+        
+        public Task<ExecuteSyncResult> QueueRequestAsync(SyncRequest syncRequest, SyncContext syncContext) {
+            var requestQueue    = syncRequest.intern.db.service.requestQueue;
+            var requestJob      = new RequestJob(this, syncRequest, syncContext);
+            requestQueue.Enqueue(requestJob);
+            return requestJob.taskCompletionSource.Task;
         }
         
         /// <summary>

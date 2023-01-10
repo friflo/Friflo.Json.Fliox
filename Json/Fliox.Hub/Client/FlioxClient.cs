@@ -75,7 +75,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// <summary> using a static class prevents noise in form of 'Static members' for class instances in Debugger </summary>
         private static class Static {
             /// <summary>
-            /// Process continuation of <see cref="FlioxClient.ExecuteRequestAsync"/> on caller context. <br/>
+            /// Process continuation of <see cref="FlioxClient.ExecuteAsync"/> on caller context. <br/>
             /// This ensures modifications to entities are applied on the same context used by the caller. <br/>
             /// It also ensures that <see cref="SyncFunction.OnSync"/> is called on caller context. <br/>
             /// </summary>

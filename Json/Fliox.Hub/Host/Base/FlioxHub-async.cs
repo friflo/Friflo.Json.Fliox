@@ -5,6 +5,7 @@ using System;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
+using static Friflo.Json.Fliox.Hub.Host.ExecutionType;
 
 // Note!  Keep file in sync with:  FlioxHub-sync.cs
 
@@ -39,6 +40,12 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// </remarks>
         public virtual async Task<ExecuteSyncResult> ExecuteRequestAsync(SyncRequest syncRequest, SyncContext syncContext)
         {
+            switch (syncRequest.intern.executionType) {
+                case Error: return new ExecuteSyncResult(syncRequest.intern.error, ErrorResponseType.BadRequest);
+                case Sync:  break;
+                case Async: break;
+                default:    return new ExecuteSyncResult($"Invalid execution type: {syncRequest.intern.executionType}", ErrorResponseType.Exception);
+            }
             syncContext.request             = syncRequest;
             if (syncContext.authState.authExecuted) throw new InvalidOperationException("Expect AuthExecuted == false");
             if (authenticator.IsSynchronous(syncRequest)) {
