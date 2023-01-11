@@ -198,7 +198,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         
         internal Dictionary<SmallString, DatabaseSubs> GetDatabaseSubs(EventSubClient subClient) {
             lock (intern.monitor) {
-                return new Dictionary<SmallString, DatabaseSubs>(subClient.databaseSubs);
+                return new Dictionary<SmallString, DatabaseSubs>(subClient.databaseSubs, SmallString.Equality);
             }
         }
         
