@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Client;
 using Friflo.Json.Fliox.Hub.Host;
+using Friflo.Json.Fliox.Hub.Remote;
 using Friflo.Json.Fliox.Hub.Threading;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
@@ -89,6 +90,24 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
                     var executed = await service.ExecuteQueuedRequestsAsync();
                     Console.WriteLine($"executed: {executed}");
                 }
+            });
+        }
+        
+        // [Test]
+        public static void TestWebSocket() {
+            var hub     = new WebSocketClientHub("main_db", "ws://localhost:8010/fliox/");
+            var client  = new FlioxClient(hub) { UserId = "admin", Token = "admin" };
+
+            SingleThreadSynchronizationContext.Run(async () =>
+            {
+                var tasks = new List<Task>();
+                for (int n = 0; n < 10000; n++) {
+                    client.std.Echo("Test");
+                    var task = client.SyncTasks();
+                    tasks.Add(task);
+                }
+                await Task.WhenAll(tasks);
+                await hub.Close();
             });
         }
     }
