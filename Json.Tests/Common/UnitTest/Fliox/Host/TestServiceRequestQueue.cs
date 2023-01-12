@@ -16,16 +16,16 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
     internal class QueueingService : DatabaseService
     {
         /// <summary>
-        /// using queueRequests == true enables handlers methods like <see cref="Test"/> are called from
-        /// a single thread using <see cref="DatabaseService.ExecuteQueuedRequestsAsync"/>
+        /// using queueRequests == true enables handlers methods like <see cref="Test"/> are called / executed
+        /// sequentially from a single thread using <see cref="DatabaseService.ExecuteQueuedRequestsAsync"/>
         /// </summary>
         internal QueueingService() : base (true) {
             AddMessageHandlers(this, null);
         }
         
-        private static int Test(Param<int> param, MessageContext command)
+        private static string Test(Param<string> param, MessageContext command)
         {
-            param.Get(out int result, out _);
+            param.Get(out var result, out _);
             return result;
         }
     }
@@ -40,7 +40,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
             var client      = new FlioxClient(hub);
             
             for (int n = 0; n < 10; n++) {
-                var commandTask = client.SendCommand<int,int>("Test", 42);
+                var commandTask = client.SendCommand<string,string>("Test", "foo");
                 var task = client.SyncTasks();
                 
                 await service.ExecuteQueuedRequestsAsync();
@@ -48,8 +48,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
                 if (!task.IsCompleted) {
                     Fail("Expect task completed");
                 }
-                if (commandTask.Result != 42) {
-                    Fail("Expect hello");
+                if (commandTask.Result != "foo") {
+                    Fail("Expect foo");
                 }
             }
         }
@@ -62,37 +62,28 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
             var count       = 10;
             var finished    = 0;
             
-            void RunClient(int param) {
-                SingleThreadSynchronizationContext.Run(async () => {
-                    var client = new FlioxClient(hub);
+            SingleThreadSynchronizationContext.Run(async () =>
+            {
+                var clients = new List<FlioxClient>();
+                for (int n = 0; n < count; n++) {
+                    clients.Add(new FlioxClient(hub) { ClientId = $"{n}" });
+                }
+                var ignore = Parallel.ForEachAsync(clients, async (client, token) =>
+                {
                     for (int n = 0; n < 2; n++) {
-                        var commandTask = client.SendCommand<int,int>("Test", param);
+                        var commandTask = client.SendCommand<string,string>("Test", client.ClientId);
                         await client.SyncTasks();
-
-                        if (commandTask.Result != param) {
-                            Fail("Expect hello");
+                        
+                        if (commandTask.Result !=  client.ClientId) {
+                            Fail($"Expect {client.ClientId}");
                         }
                     }
                     Interlocked.Increment(ref finished);
                 });
-            }
-
-            SingleThreadSynchronizationContext.Run(async () =>
-            {
-                var threads = new List<Thread>();
-                for (int n = 0; n < count; n++) {
-                    var param = n;
-                    threads.Add(new Thread(() => {
-                        RunClient(param);
-                    }));
-                }
-                // a single service will be accessed from multiple clients each using its own thread 
-                foreach (var thread in threads) {
-                    thread.Start();
-                }
                 
+                // the single service will be accessed from multiple clients running on various ThreadPool worker threads 
                 while (finished < count) {
-                    await Task.Delay(1);
+
                     var executed = await service.ExecuteQueuedRequestsAsync();
                     Console.WriteLine($"executed: {executed}");
                 }
