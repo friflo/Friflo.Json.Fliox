@@ -303,7 +303,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// <summary>
         /// Execute queued tasks in case request queueing is enabled in the <see cref="DatabaseService"/> constructor
         /// </summary>
-        public async Task ExecuteQueuedRequestsAsync() {
+        public async Task<int> ExecuteQueuedRequestsAsync() {
             requestBuffer.Clear();
             lock (requestQueue) {
                 foreach (var job in requestQueue) {
@@ -326,6 +326,7 @@ namespace Friflo.Json.Fliox.Hub.Host
                     job.taskCompletionSource.SetException(e);
                 }
             }
+            return requestBuffer.Count;
         }
     }
     
