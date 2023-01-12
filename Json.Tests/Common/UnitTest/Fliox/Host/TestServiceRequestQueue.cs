@@ -64,12 +64,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
             
             SingleThreadSynchronizationContext.Run(async () =>
             {
-                var clients = new List<FlioxClient>();
-                for (int n = 0; n < count; n++) {
-                    clients.Add(new FlioxClient(hub) { ClientId = $"{n}" });
-                }
-                var ignore = Parallel.ForEachAsync(clients, async (client, token) =>
-                {
+                async Task RunClient (FlioxClient client ) {
                     for (int n = 0; n < 2; n++) {
                         var commandTask = client.SendCommand<string,string>("Test", client.ClientId);
                         await client.SyncTasks();
@@ -79,11 +74,18 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
                         }
                     }
                     Interlocked.Increment(ref finished);
-                });
-                
+                };
+                for (int n = 0; n < count; n++) {
+                    var client = new FlioxClient(hub) { ClientId = $"{n}" };
+                    var ignore = Task.Run(async () =>
+                    {
+                        await RunClient(client);    
+                    });
+                }
+
                 // the single service will be accessed from multiple clients running on various ThreadPool worker threads 
                 while (finished < count) {
-
+                    await Task.Delay(1);
                     var executed = await service.ExecuteQueuedRequestsAsync();
                     Console.WriteLine($"executed: {executed}");
                 }
