@@ -223,15 +223,10 @@ namespace Friflo.Json.Fliox.Hub.Host
             return db.service.QueueRequestExecution ? Queue : executionType;
         }
 
-        private const string QueueError = "queueing requests requires a DatabaseService with queueRequests enabled";
-        
         public Task<ExecuteSyncResult> QueueRequestAsync(SyncRequest syncRequest, SyncContext syncContext) {
-            var requestQueue    = syncRequest.intern.db.service.requestQueue;
-            if (requestQueue == null) throw new InvalidOperationException(QueueError);
-            var requestJob      = new RequestJob(this, syncRequest, syncContext);
-            lock (requestQueue) {
-                requestQueue.Enqueue(requestJob);
-            }
+            var service = syncRequest.intern.db.service;
+            var requestJob = new DatabaseService.RequestJob(this, syncRequest, syncContext);
+            service.EnqueueJob(requestJob);
             return requestJob.taskCompletionSource.Task;
         }
         

@@ -53,11 +53,12 @@ namespace Friflo.Json.Fliox.Hub.Host
         [DebuggerBrowsable(Never)]
         private readonly    Dictionary<string, MessageDelegate>     handlers = new Dictionary<string, MessageDelegate>();
         // ReSharper disable once UnusedMember.Local - expose Dictionary as list in Debugger
-        private             IReadOnlyCollection<MessageDelegate>    Handlers => handlers.Values;
-        // used non concurrent Queue<> to avoid heap allocation on Enqueue()
-        internal readonly   Queue<RequestJob>                       requestQueue;
-        private  readonly   List<RequestJob>                        requestBuffer;
-        public              bool                                    QueueRequestExecution   => requestQueue != null;
+        private             IReadOnlyCollection<MessageDelegate>    Handlers                => handlers.Values;
+        private readonly    Queue                                   queue;
+        private             bool                                    executeQueueAsync;
+        public              bool                                    QueueRequestExecution   => queue.requestJobs != null;
+
+
         /// <summary>Ensure subsequent request executions run on the same thread</summary>
         private  const      bool                                    RunOnCallingThread      =  true;
         
@@ -75,8 +76,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// </remarks> 
         public DatabaseService (bool queueRequests = false) {
             AddStdCommandHandlers();
-            requestQueue    = queueRequests ? new Queue<RequestJob>() : null;
-            requestBuffer   = queueRequests ? new List<RequestJob>()  : null;
+            queue = new Queue(queueRequests);
         }
         
         protected internal virtual void PreExecuteTasks (SyncContext syncContext)  { }
@@ -298,54 +298,6 @@ namespace Friflo.Json.Fliox.Hub.Host
                 if (name.StartsWith("std.") == standard)
                     commands[n++] = name;
             }
-        }
-        
-        /// <summary>
-        /// Execute queued tasks in case request queueing is enabled in the <see cref="DatabaseService"/> constructor
-        /// </summary>
-        public async Task<int> ExecuteQueuedRequestsAsync() {
-            requestBuffer.Clear();
-            lock (requestQueue) {
-                foreach (var job in requestQueue) {
-                    requestBuffer.Add(job);
-                }
-                requestQueue.Clear();
-            }
-            foreach (var job in requestBuffer) {
-                try {
-                    var syncRequest = job.syncRequest;
-                    ExecuteSyncResult response;
-                    if (syncRequest.intern.executionType == ExecutionType.Sync) {
-                        // ReSharper disable once MethodHasAsyncOverload
-                        response =       job.hub.ExecuteRequest     (syncRequest, job.syncContext);
-                    } else {
-                        response = await job.hub.ExecuteRequestAsync(syncRequest, job.syncContext).ConfigureAwait(RunOnCallingThread);
-                    }
-                    job.taskCompletionSource.SetResult(response);
-                } catch (Exception e) {
-                    job.taskCompletionSource.SetException(e);
-                }
-            }
-            return requestBuffer.Count;
-        }
-    }
-    
-    internal readonly struct RequestJob
-    {
-        internal readonly FlioxHub                                  hub;
-        internal readonly SyncRequest                               syncRequest;
-        internal readonly SyncContext                               syncContext;
-        internal readonly TaskCompletionSource<ExecuteSyncResult>   taskCompletionSource;
-            
-        internal RequestJob(
-            FlioxHub    hub,
-            SyncRequest syncRequest,
-            SyncContext syncContext)
-        {
-            this.hub                = hub;
-            this.syncRequest        = syncRequest;
-            this.syncContext        = syncContext;
-            taskCompletionSource    = new TaskCompletionSource<ExecuteSyncResult>();
         }
     }
 }
