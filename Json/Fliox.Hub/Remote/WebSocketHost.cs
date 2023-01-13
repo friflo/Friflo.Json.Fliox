@@ -10,59 +10,40 @@ using System.Net.WebSockets;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
-using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.Event;
-using Friflo.Json.Fliox.Hub.Protocol;
-using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Pools;
 using Friflo.Json.Fliox.Utils;
-using static Friflo.Json.Fliox.Hub.Host.ExecutionType;
 
 // ReSharper disable MethodHasAsyncOverload
 namespace Friflo.Json.Fliox.Hub.Remote
 {
     // [Things I Wish Someone Told Me About ASP.NET Core WebSockets | codetinkerer.com] https://www.codetinkerer.com/2018/06/05/aspnet-core-websockets.html
-    public sealed class WebSocketHost : EventReceiver, IDisposable, ILogSource
+    public sealed class WebSocketHost : WebHostHandler, IDisposable
     {
-        private  readonly   WebSocket               webSocket;
+        private  readonly   WebSocket                           webSocket;
         /// Only set to true for testing. It avoids an early out at <see cref="EventSubClient.SendEvents"/> 
-        private  readonly   bool                    fakeOpenClosedSocket;
+        private  readonly   bool                                fakeOpenClosedSocket;
+        private  readonly   MessageBufferQueueAsync<VoidMeta>   sendQueue;
+        private  readonly   List<JsonValue>                     messages;
+        private  readonly   IPEndPoint                          remoteEndPoint;
+        private  readonly   HostMetrics                         hostMetrics;
 
-        private  readonly   MessageBufferQueueAsync<VoidMeta> sendQueue;
-        private  readonly   List<JsonValue>         messages;
-        
-        private  readonly   FlioxHub                hub;
-        private  readonly   Pool                    pool;
-        private  readonly   SharedEnv               sharedEnv;
-        private  readonly   IPEndPoint              remoteEndPoint;
-        private  readonly   TypeStore               typeStore;
-        private  readonly   HostMetrics             hostMetrics;
-        
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public              IHubLogger                          Logger { get; }
 
-        
         private WebSocketHost (
-            RemoteHost      remoteHost,
-            WebSocket       webSocket,
-            IPEndPoint      remoteEndPoint)
+            RemoteHost  remoteHost,
+            WebSocket   webSocket,
+            IPEndPoint  remoteEndPoint)
+            : base (remoteHost)
         {
-            var env                     = remoteHost.sharedEnv;
-            hub                         = remoteHost.localHub;
-            pool                        = env.Pool;
-            sharedEnv                   = env;
-            Logger                      = env.hubLogger;
-            typeStore                   = env.TypeStore;
-            this.webSocket              = webSocket;
-            this.remoteEndPoint         = remoteEndPoint;
-            this.fakeOpenClosedSocket   = remoteHost.fakeOpenClosedSockets;
-            this.hostMetrics            = remoteHost.metrics;
-            
-            sendQueue                   = new MessageBufferQueueAsync<VoidMeta>();
-            messages                    = new List<JsonValue>();
+            this.webSocket          = webSocket;
+            this.remoteEndPoint     = remoteEndPoint;
+            fakeOpenClosedSocket    = remoteHost.fakeOpenClosedSockets;
+            hostMetrics             = remoteHost.metrics;
+            sendQueue               = new MessageBufferQueueAsync<VoidMeta>();
+            messages                = new List<JsonValue>();
         }
-
+        
         public void Dispose() {
             sendQueue.Dispose();
         }
@@ -74,15 +55,12 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 return true;
             return webSocket.State == WebSocketState.Open;
         }
-
-        public override void SendEvent(in ClientEvent clientEvent) {
-            try {
-                sendQueue.AddTail(clientEvent.message);
-            }
-            catch (Exception e) {
-               Logger.Log(HubLog.Error, "WebSocketHost.SendEvent", e);
-            }
+        
+        // --- WebHost
+        protected override void SendMessage(in JsonValue message) {
+            sendQueue.AddTail(message);
         }
+
         
         private  static readonly   Regex   RegExLineFeed   = new Regex(@"\s+");
         private  static readonly   bool    LogMessage      = false;
@@ -94,7 +72,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         /// <remarks>
         /// A send loop reading from a queue is required as message can be sent from two different sources <br/>
         /// 1. response messages created in <see cref="ReceiveMessageLoop"/> <br/>
-        /// 2. event messages send to <see cref="EventSubClient"/>'s <br/>
+        /// 2. event messages send with <see cref="WebHostHandler.SendEvent"/>'s <br/>
         /// The loop ensures a WebSocket.SendAsync() is called only once at a time.
         /// </remarks>
         /// <seealso cref="WebSocketHost.RunReceiveMessageLoop"/>
@@ -144,27 +122,21 @@ namespace Friflo.Json.Fliox.Hub.Remote
         ///         https://blog.stephencleary.com/2013/10/taskrun-etiquette-and-proper-usage.html
         /// </summary>
         private async Task RunReceiveMessageLoop() {
-            using (var pooledMapper = pool.ObjectMapper.Get()) {
+            var objectMapper = sharedEnv.Pool.ObjectMapper;
+            using (var pooledMapper = objectMapper.Get()) {
                 await ReceiveMessageLoop(pooledMapper.instance).ConfigureAwait(false);
             }
         }
         
         /// <summary>
-        /// Currently using a single reused context. This is possible as this loop wait for completion of request execution.
-        /// This approach causes <b>head-of-line blocking</b> for each WebSocket client. <br/>
-        /// For an <b>out-of-order delivery</b> implementation individual <see cref="SyncContext"/>'s, <see cref="SyncBuffers"/>
-        /// and <see cref="MemoryBuffer"/>'s are needed. Heap allocations can be avoided by pooling these instances.
+        /// Parse, execute and send response message for all received request messages.<br/>
         /// </summary>
         private async Task ReceiveMessageLoop(ObjectMapper mapper) {
-            var memoryStream            = new MemoryStream();
-            var buffer                  = new ArraySegment<byte>(new byte[8192]);
-            var syncPools               = new SyncPools(typeStore);
-            var syncBuffers             = new SyncBuffers(new List<SyncRequestTask>(), new List<SyncRequestTask>(), new List<JsonValue>());
-            var syncContext             = new SyncContext(sharedEnv, this, syncBuffers, syncPools); // reused context
-            var memoryBuffer            = new MemoryBuffer(4 * 1024);
-            // using an instance pool for reading syncRequest and its dependencies is possible as their references
-            // are only used within this method scope.
-            mapper.reader.InstancePool  = new ReaderInstancePool(typeStore);
+            var memoryStream    = new MemoryStream();
+            var reader          = mapper.reader;
+            var writer          = mapper.writer;
+            var buffer          = new ArraySegment<byte>(new byte[8192]);
+            reader.InstancePool = new ReaderInstancePool(typeStore);
             while (true) {
                 var state = webSocket.State;
                 if (state == WebSocketState.CloseReceived) {
@@ -176,7 +148,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                     // Logger.Log(HubLog.Info, $"receive loop finished. WebSocket state: {state}, remote: {remoteEndPoint}");
                     return;
                 }
-                // --- 1. read message from stream
+                // --- 1. Read request from stream
                 memoryStream.Position = 0;
                 memoryStream.SetLength(0);
                 WebSocketReceiveResult wsResult;
@@ -189,51 +161,33 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 if (wsResult.MessageType != WebSocketMessageType.Text) {
                     continue;
                 }
-                
-                // --- 2. parse and execute message
-                var requestContent  = new JsonValue(memoryStream.GetBuffer(), (int)memoryStream.Position);
-                syncContext.Init();
-                syncContext.SetMemoryBuffer(memoryBuffer);
-                mapper.reader.InstancePool?.Reuse();
-                
-                // inlined ExecuteJsonRequest() to avoid async call:
-                // JsonResponse response = await remoteHost.ExecuteJsonRequest(mapper, requestContent, syncContext).ConfigureAwait(false);
-                JsonResponse response;
+                var request = new JsonValue(memoryStream.GetBuffer(), (int)memoryStream.Position);
+                reader.InstancePool?.Reuse();
                 try {
+                    // --- 2. Parse request
                     Interlocked.Increment(ref hostMetrics.webSocket.receivedCount);
-                    var t1 = Stopwatch.GetTimestamp();
-                    var syncRequest = RemoteUtils.ReadSyncRequest(mapper.reader, requestContent, out string error);
-                    var t2 = Stopwatch.GetTimestamp();
-                    
-                    if (error != null) {
-                        response = JsonResponse.CreateError(mapper.writer, error, ErrorResponseType.BadResponse, null);
-                    } else {
-                        var executionType   = hub.InitSyncRequest(syncRequest);
-                        ExecuteSyncResult syncResult;
-                        switch (executionType) {
-                            case Async: syncResult = await hub.ExecuteRequestAsync (syncRequest, syncContext).ConfigureAwait(false); break;
-                            case Queue: syncResult = await hub.QueueRequestAsync   (syncRequest, syncContext).ConfigureAwait(false); break;
-                            default:    syncResult =       hub.ExecuteRequest      (syncRequest, syncContext);                       break;    
-                        }
-                        response = RemoteHost.CreateJsonResponse(syncResult, syncRequest.reqId, mapper.writer);
+                    var t1          = Stopwatch.GetTimestamp();
+                    var syncRequest = ParseRequest(request, reader, writer);
+                    var t2          = Stopwatch.GetTimestamp();
+                    Interlocked.Add(ref hostMetrics.webSocket.requestReadTime, t2 - t1);
+                    if (syncRequest == null) {
+                        continue;
                     }
-                    var t3 = Stopwatch.GetTimestamp();
-                    
-                    Interlocked.Add(ref hostMetrics.webSocket.requestReadTime,     t2 - t1);
-                    Interlocked.Add(ref hostMetrics.webSocket.requestExecuteTime,  t3 - t2);
+                    // --- 3. Execute request
+                    ExecuteRequest (syncRequest, writer);
+                    var t3          = Stopwatch.GetTimestamp();
+                    Interlocked.Add(ref hostMetrics.webSocket.requestExecuteTime, t3 - t2);
                 }
                 catch (Exception e) {
-                    var errorMsg = ErrorResponse.ErrorFromException(e).ToString();
-                    response = JsonResponse.CreateError(mapper.writer, errorMsg, ErrorResponseType.Exception, null);
+                    SendResponseException(e, null, writer);
                 }
-                sendQueue.AddTail(response.body); // Enqueue() copy the result.body array
             }
         }
         
         /// <summary>
         /// Create a send and receive queue and run a send and a receive loop. <br/>
         /// The loops are executed until the WebSocket is closed or disconnected. <br/>
-        /// The method <b>don't</b> throw exception. WebSocket exceptions are catched and written to <see cref="Logger"/> <br/>
+        /// The method <b>don't</b> throw exception. WebSocket exceptions are catched and written to <see cref="RemoteHost.Logger"/> <br/>
         /// </summary>
         public static async Task SendReceiveMessages(
             WebSocket   websocket,
