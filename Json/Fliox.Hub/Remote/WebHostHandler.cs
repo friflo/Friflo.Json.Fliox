@@ -22,8 +22,10 @@ namespace Friflo.Json.Fliox.Hub.Remote
     /// - execute <see cref="SyncRequest"/>'s and send serialized <see cref="SyncResponse"/> to client<br/>
     /// </summary>
     /// <remarks>
-    /// The implementation prevents <b>head-of-line blocking</b>.<br/>
+    /// The implementation aims to prevent <b>head-of-line blocking</b>.<br/>
     /// Which means it supports <b>out-of-order delivery</b> for responses send to clients.<br/>
+    /// If enabling queueing request in <see cref="DatabaseService"/> <b>head-of-line blocking</b> can occur
+    /// in case request execution is not 'instant'<br/>
     /// <br/>
     /// Requests can be executed synchronous, asynchronous or on a specific thread / execution context.<br/>
     /// - If <see cref="DatabaseService"/> is configured to queue requests they are executed
