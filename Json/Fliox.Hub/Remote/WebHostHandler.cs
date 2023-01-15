@@ -38,14 +38,14 @@ namespace Friflo.Json.Fliox.Hub.Remote
     /// </remarks>
     public abstract class WebHostHandler : EventReceiver, ILogSource
     {
-        private   readonly  FlioxHub                hub;
-        private   readonly  TypeStore               typeStore;
-        private   readonly  SharedEnv               sharedEnv;
-        private   readonly  ObjectPool<ReaderPool>  readerPool;
-        private   readonly  ObjectReader            reader;
-        private   readonly  ObjectWriter            writer;
-        private   readonly  bool                    useReaderPool;
-        private   readonly  Stack<SyncContext>      syncContextPool;
+        private   readonly  FlioxHub                    hub;
+        private   readonly  TypeStore                   typeStore;
+        private   readonly  SharedEnv                   sharedEnv;
+        private   readonly  ObjectPool<ReaderPool>      readerPool;
+        private   readonly  ObjectMapper                readMapper;
+        private   readonly  ObjectPool<ObjectMapper>    objectPool;
+        private   readonly  bool                        useReaderPool;
+        private   readonly  Stack<SyncContext>          syncContextPool;
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         public              IHubLogger  Logger { get; }
@@ -59,9 +59,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
             Logger          = remoteHost.Logger;
             var pool        = remoteHost.sharedEnv.Pool;
             readerPool      = pool.ReaderPool;
-            var mapper      = pool.ObjectMapper.Get().instance;
-            reader          = mapper.reader;
-            writer          = mapper.writer;
+            objectPool      = pool.ObjectMapper;
+            readMapper      = objectPool.Get().instance;
             useReaderPool   = remoteHost.useReaderPool;
             syncContextPool = new Stack<SyncContext>();
         }
@@ -76,6 +75,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         }
         
         protected SyncRequest ParseRequest(in JsonValue request) {
+            var reader = readMapper.reader;
             if (useReaderPool) {
                 reader.ReaderPool = readerPool.Get().instance.Reuse();
             }
@@ -83,7 +83,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             if (error == null) {
                 return syncRequest;
             }
-            var response = JsonResponse.CreateError(writer, error, ErrorResponseType.BadRequest, null);
+            var response = JsonResponse.CreateError(readMapper.writer, error, ErrorResponseType.BadRequest, null);
             SendMessage(response.body);
             return null;
         }
@@ -119,7 +119,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
 
             syncContext.MemoryBuffer.Reset();
             var reqId   = syncRequest.reqId;
-            var pool    = reader.ReaderPool;
+            var pool    = readMapper.reader.ReaderPool;
             try {
                 var executionType = hub.InitSyncRequest(syncRequest);
                 Task<ExecuteSyncResult> syncResultTask;
@@ -169,19 +169,23 @@ namespace Friflo.Json.Fliox.Hub.Remote
         }
         
         private void SendResponse(in ExecuteSyncResult syncResult, int? reqId) {
-            var error = syncResult.error;
+            var error   = syncResult.error;
+            var mapper  = objectPool.Get().instance;
             if (error != null) {
-                var errorResponse = JsonResponse.CreateError(writer, error.message, error.type, reqId);
+                var errorResponse = JsonResponse.CreateError(mapper.writer, error.message, error.type, reqId);
                 SendMessage(errorResponse.body);
-                return;
+            } else {
+                var response = RemoteHost.CreateJsonResponse(syncResult, reqId, mapper.writer);
+                SendMessage(response.body);
             }
-            var response = RemoteHost.CreateJsonResponse(syncResult, reqId, writer);
-            SendMessage(response.body);
+            objectPool.Return(mapper);
         }
         
         protected void SendResponseException(Exception e, int? reqId) {
-            var errorMsg = ErrorResponse.ErrorFromException(e).ToString();
-            var response = JsonResponse.CreateError(writer, errorMsg, ErrorResponseType.Exception, reqId);
+            var errorMsg    = ErrorResponse.ErrorFromException(e).ToString();
+            var mapper      = objectPool.Get().instance;
+            var response    = JsonResponse.CreateError(mapper.writer, errorMsg, ErrorResponseType.Exception, reqId);
+            objectPool.Return(mapper);
             SendMessage(response.body);
         }
     }
