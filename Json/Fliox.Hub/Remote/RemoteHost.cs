@@ -23,6 +23,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
         public   readonly   FlioxHub        localHub;
         public   readonly   SharedEnv       sharedEnv;
         public   readonly   HostMetrics     metrics = new HostMetrics();
+        public              bool            useReaderPool;
+
         /// Only set to true for testing. It avoids an early out at <see cref="EventSubClient.SendEvents"/> 
         public              bool            fakeOpenClosedSockets;
         

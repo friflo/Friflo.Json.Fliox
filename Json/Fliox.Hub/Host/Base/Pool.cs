@@ -5,6 +5,7 @@ using System;
 using System.Collections.Concurrent;
 using Friflo.Json.Fliox.Hub.Host.Utils;
 using Friflo.Json.Fliox.Mapper;
+using Friflo.Json.Fliox.Pools;
 using Friflo.Json.Fliox.Schema.Validation;
 using Friflo.Json.Fliox.Transform;
 using Friflo.Json.Fliox.Transform.Tree;
@@ -32,6 +33,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// <summary> Returned <see cref="Mapper.ObjectMapper"/> doesnt throw Read() exceptions. To handle errors its
         /// <see cref="Mapper.ObjectMapper.reader"/> -> <see cref="ObjectReader.Error"/> need to be checked. </summary>
         internal    ObjectPool<ObjectMapper>    ObjectMapper    { get; }
+        internal    ObjectPool<ReaderInstancePool>    ReaderPool    { get; }
         internal    ObjectPool<EntityProcessor> EntityProcessor { get; }
         internal    ObjectPool<TypeValidator>   TypeValidator   { get; }
         internal    ObjectPool<MemoryBuffer>    MemoryBuffer    { get; }
@@ -62,6 +64,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             ScalarSelector  = new ObjectPool<ScalarSelector>    (() => new ScalarSelector());
             JsonEvaluator   = new ObjectPool<JsonEvaluator>     (() => new JsonEvaluator());
             ObjectMapper    = new ObjectPool<ObjectMapper>      (() => new ObjectMapper(sharedEnv.TypeStore),  m => m.ErrorHandler = ObjectReader.NoThrow);
+            ReaderPool      = new ObjectPool<ReaderInstancePool>(() => new ReaderInstancePool(sharedEnv.TypeStore));
             EntityProcessor = new ObjectPool<EntityProcessor>   (() => new EntityProcessor());
             TypeValidator   = new ObjectPool<TypeValidator>     (() => new TypeValidator());
             MemoryBuffer    = new ObjectPool<MemoryBuffer>      (() => new MemoryBuffer(4 * 1024));
@@ -73,6 +76,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             ScalarSelector. Dispose();
             JsonEvaluator.  Dispose();
             ObjectMapper.   Dispose();
+            ReaderPool.     Dispose();
             EntityProcessor.Dispose();
             TypeValidator.  Dispose();
             MemoryBuffer.   Dispose();

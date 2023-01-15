@@ -11,8 +11,6 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host.Event;
-using Friflo.Json.Fliox.Mapper;
-using Friflo.Json.Fliox.Pools;
 using Friflo.Json.Fliox.Utils;
 
 // ReSharper disable MethodHasAsyncOverload
@@ -122,21 +120,15 @@ namespace Friflo.Json.Fliox.Hub.Remote
         ///         https://blog.stephencleary.com/2013/10/taskrun-etiquette-and-proper-usage.html
         /// </summary>
         private async Task RunReceiveMessageLoop() {
-            var objectMapper = sharedEnv.Pool.ObjectMapper;
-            using (var pooledMapper = objectMapper.Get()) {
-                await ReceiveMessageLoop(pooledMapper.instance).ConfigureAwait(false);
-            }
+            await ReceiveMessageLoop().ConfigureAwait(false);
         }
         
         /// <summary>
         /// Parse, execute and send response message for all received request messages.<br/>
         /// </summary>
-        private async Task ReceiveMessageLoop(ObjectMapper mapper) {
+        private async Task ReceiveMessageLoop() {
             var memoryStream    = new MemoryStream();
-            var reader          = mapper.reader;
-            var writer          = mapper.writer;
             var buffer          = new ArraySegment<byte>(new byte[8192]);
-            reader.InstancePool = new ReaderInstancePool(typeStore);
             while (true) {
                 var state = webSocket.State;
                 if (state == WebSocketState.CloseReceived) {
@@ -162,24 +154,23 @@ namespace Friflo.Json.Fliox.Hub.Remote
                     continue;
                 }
                 var request = new JsonValue(memoryStream.GetBuffer(), (int)memoryStream.Position);
-                reader.InstancePool?.Reuse();
                 try {
                     // --- 2. Parse request
                     Interlocked.Increment(ref hostMetrics.webSocket.receivedCount);
                     var t1          = Stopwatch.GetTimestamp();
-                    var syncRequest = ParseRequest(request, reader, writer);
+                    var syncRequest = ParseRequest(request);
                     var t2          = Stopwatch.GetTimestamp();
                     Interlocked.Add(ref hostMetrics.webSocket.requestReadTime, t2 - t1);
                     if (syncRequest == null) {
                         continue;
                     }
                     // --- 3. Execute request
-                    ExecuteRequest (syncRequest, writer);
+                    ExecuteRequest (syncRequest);
                     var t3          = Stopwatch.GetTimestamp();
                     Interlocked.Add(ref hostMetrics.webSocket.requestExecuteTime, t3 - t2);
                 }
                 catch (Exception e) {
-                    SendResponseException(e, null, writer);
+                    SendResponseException(e, null);
                 }
             }
         }
