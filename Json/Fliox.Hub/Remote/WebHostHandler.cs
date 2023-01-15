@@ -45,6 +45,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         private   readonly  ObjectReader            reader;
         private   readonly  ObjectWriter            writer;
         private   readonly  bool                    useReaderPool;
+        private   readonly  Stack<SyncContext>      syncContextPool;
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         public              IHubLogger  Logger { get; }
@@ -62,6 +63,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             reader          = mapper.reader;
             writer          = mapper.writer;
             useReaderPool   = remoteHost.useReaderPool;
+            syncContextPool = new Stack<SyncContext>();
         }
 
         public override void SendEvent(in ClientEvent clientEvent) {
@@ -86,16 +88,29 @@ namespace Friflo.Json.Fliox.Hub.Remote
             return null;
         }
         
+        /// <summary>create or use a pooled <see cref="SyncContext"/></summary>
         private SyncContext CreateSyncContext() {
-            // todo optimize: pool SyncContext
+            if (syncContextPool.TryPop(out var syncContext)) {
+                return syncContext;
+            }
             var syncPools       = new SyncPools(typeStore);
             var syncBuffers     = new SyncBuffers(new List<SyncRequestTask>(), new List<SyncRequestTask>(), new List<JsonValue>());
-            var syncContext     = new SyncContext(sharedEnv, this, syncBuffers, syncPools); // reused context
             var memoryBuffer    = new MemoryBuffer(4 * 1024);
-
-            syncContext.Init();
+            syncContext         = new SyncContext(sharedEnv, this, syncBuffers, syncPools); // reused context
             syncContext.SetMemoryBuffer(memoryBuffer);
             return syncContext;
+        }
+        
+        /// <summary>
+        /// <b>Note</b> <br/>
+        /// Return <see cref="SyncContext"/> to pool after calling <see cref="SendResponse"/> or <see cref="SendResponseException"/>
+        /// as <see cref="SyncContext.MemoryBuffer"/> could be used when writing <see cref="JsonResponse"/>.
+        /// </summary>
+        private void ReturnSyncContext(SyncContext syncContext) {
+            var memoryBuffer = syncContext.MemoryBuffer;
+            syncContext.Init();
+            syncContext.SetMemoryBuffer(memoryBuffer);
+            syncContextPool.Push(syncContext);
         }
         
         protected void ExecuteRequest(SyncRequest syncRequest)
@@ -115,15 +130,18 @@ namespace Friflo.Json.Fliox.Hub.Remote
                         var syncResult          = hub.ExecuteRequest      (syncRequest, syncContext);
                         if (pool != null) readerPool.Return(pool);
                         SendResponse(syncResult, reqId);
+                        ReturnSyncContext(syncContext);
                         return;
                 }
                 syncResultTask.ContinueWith(task => {
                     if (pool != null) readerPool.Return(pool);
                     SyncResultContinuation(task, reqId);
+                    ReturnSyncContext(syncContext);
                 });
             }
             catch (Exception e) {
                 SendResponseException(e, reqId);
+                ReturnSyncContext(syncContext);
             }
         }
         
