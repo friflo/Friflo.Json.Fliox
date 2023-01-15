@@ -86,8 +86,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             return null;
         }
         
-        protected void ExecuteRequest(SyncRequest syncRequest)
-        {
+        private SyncContext CreateSyncContext() {
             // todo optimize: pool SyncContext
             var syncPools           = new SyncPools(typeStore);
             var syncBuffers         = new SyncBuffers(new List<SyncRequestTask>(), new List<SyncRequestTask>(), new List<JsonValue>());
@@ -96,6 +95,12 @@ namespace Friflo.Json.Fliox.Hub.Remote
 
             syncContext.Init();
             syncContext.SetMemoryBuffer(memoryBuffer);
+            return syncContext;
+        }
+        
+        protected void ExecuteRequest(SyncRequest syncRequest)
+        {
+            var syncContext = CreateSyncContext();
             var reqId       = syncRequest.reqId;
             var readerPool  = reader.InstancePool;
             try {
