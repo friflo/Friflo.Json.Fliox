@@ -67,6 +67,8 @@ export interface PocStore {
     ["test.CommandExecutionException"]     () : int32;
     /** echos the given parameter to assure the database is working appropriately. */
     ["std.Echo"]                           (param: any) : any;
+    /** A a command that completes after a specified number of milliseconds. */
+    ["std.Delay"]                          (param: int32) : int32;
     /** list all database containers */
     ["std.Containers"]                     () : DbContainers;
     /** list all database commands and messages */

@@ -53,6 +53,7 @@ GET {{base}}/rest/main_db?command=std.Messages
         "test.CommandExecutionError",
         "test.CommandExecutionException",
         "std.Echo",
+        "std.Delay",
         "std.Containers",
         "std.Messages",
         "std.Schema",

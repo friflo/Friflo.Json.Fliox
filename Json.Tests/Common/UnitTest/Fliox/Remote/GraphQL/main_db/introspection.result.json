@@ -938,6 +938,29 @@
                     }
                 },
                 {
+                    "name": "std_Delay",
+                    "description": "/** A a command that completes after a specified number of milliseconds. */\n",
+                    "args": [
+                        {
+                            "name": "param",
+                            "type": {
+                                "kind":"NON_NULL",
+                                "ofType": {
+                                    "kind":"SCALAR",
+                                    "name": "Int"
+                                }
+                            }
+                        }
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "Int"
+                        }
+                    }
+                },
+                {
                     "name": "std_Containers",
                     "description": "/** list all database containers */\n",
                     "args": [

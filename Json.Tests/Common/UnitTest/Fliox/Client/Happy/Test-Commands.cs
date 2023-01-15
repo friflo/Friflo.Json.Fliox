@@ -68,7 +68,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             AreEqual("in-memory",       database0.storage);
             
             var commandsResult = commands.Result;
-            AreEqual(21,                commandsResult.commands.Length);
+            AreEqual(22,                commandsResult.commands.Length);
             AreEqual(5,                 commandsResult.messages.Length);
         }
         
@@ -116,7 +116,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             AreEqual("in-memory",       database0.storage);
             
             var commandsResult = commands.Result;
-            AreEqual(21,                commandsResult.commands.Length);
+            AreEqual(22,                commandsResult.commands.Length);
             AreEqual(3,                 commandsResult.messages.Length);
             //
             var hostResult = stdHost.Result;

@@ -70,6 +70,8 @@ namespace Friflo.Json.Fliox.Hub.Client
         // --- commands: database
         /// <summary>echos the given parameter to assure the database is working appropriately. </summary>
         public CommandTask<TParam>      Echo<TParam> (TParam param) => SendCommand<TParam,TParam>   (Std.Echo, param);
+        /// <summary>A a command that completes after a specified number of milliseconds. </summary>
+        public CommandTask<int>         Delay(int delay)    => SendCommand<int,int>                 (Std.Delay, delay);
         /// <summary>list all database containers</summary>
         public CommandTask<DbContainers>Containers()        => SendCommand<DbContainers>            (Std.Containers);
         /// <summary>list all database commands and messages</summary>
@@ -101,6 +103,7 @@ namespace Friflo.Json.Fliox.Hub.Client
     internal static class Std  {
         // --- database
         public const string Echo        = "std.Echo";
+        public const string Delay       = "std.Delay";
         public const string Containers  = "std.Containers";
         public const string Messages    = "std.Messages";
         public const string Schema      = "std.Schema";

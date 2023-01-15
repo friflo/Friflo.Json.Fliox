@@ -38,7 +38,7 @@ GET {{base}}/rest/cluster/messages?ids=cluster,user_db,unknown
 # Content-Type: application/json
 
 [
-    {"id":"cluster","commands":["std.Echo","std.Containers","std.Messages","std.Schema","std.Stats","std.Host","std.Cluster","std.User","std.Client"],"messages":[]},
+    {"id":"cluster","commands":["std.Echo","std.Delay","std.Containers","std.Messages","std.Schema","std.Stats","std.Host","std.Cluster","std.User","std.Client"],"messages":[]},
     null,
     null
 ]

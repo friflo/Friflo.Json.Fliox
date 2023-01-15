@@ -123,6 +123,7 @@
         "test.CommandExecutionError",
         "test.CommandExecutionException",
         "std.Echo",
+        "std.Delay",
         "std.Containers",
         "std.Messages",
         "std.Schema",

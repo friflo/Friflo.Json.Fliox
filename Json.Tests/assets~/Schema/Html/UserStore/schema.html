@@ -341,8 +341,8 @@
     </li>
     <li><a href='#Standard'>Standard</a>
         <ul>
-            <li><a href='#Standard.int64'><div><span>int64</span></div></a></li>
             <li><a href='#Standard.int32'><div><span>int32</span></div></a></li>
+            <li><a href='#Standard.int64'><div><span>int64</span></div></a></li>
         </ul>
     </li>
 </ul>
@@ -414,6 +414,12 @@ Each <b>role</b> in container <b>roles</b> has a set of <b>rights</b> which gran
             <td><sig>(<keyword>param</keyword>: <predef>any</predef>) : <predef>any</predef></sig></td>
             <td><oas><a href='../open-api.html#/commands/post__command_std_Echo' target='_blank' title='open std.Echo API as OpenAPI specification (OAS) in new tab'>OAS</a></oas></td>
             <td><docs>echos the given parameter to assure the database is working appropriately.</docs></td>
+        </tr>
+        <tr>
+            <td><cmd>std.Delay</cmd></td>
+            <td><sig>(<keyword>param</keyword>: <a href='#Standard.int32'>int32</a>) : <a href='#Standard.int32'>int32</a></sig></td>
+            <td><oas><a href='../open-api.html#/commands/post__command_std_Delay' target='_blank' title='open std.Delay API as OpenAPI specification (OAS) in new tab'>OAS</a></oas></td>
+            <td><docs>A a command that completes after a specified number of milliseconds.</docs></td>
         </tr>
         <tr>
             <td><cmd>std.Containers</cmd></td>
@@ -1349,16 +1355,16 @@ Note: commands are messages - so permission of subscribing commands is same as f
         <a href='#Standard'>Standard</a> <keyword>namespace</keyword>
     </h2>
     <div class='type'>
-    <h3 id='Standard.int64'>
-        <a href='#Standard.int64'>int64</a>
-    </h3>
-    <desc>signed integer 64-bit. Range: [-9223372036854775808, 9223372036854775807]<br/>number in JavaScript.  Range: [-9007199254740991, 9007199254740991]</desc>
-    </div>
-    <div class='type'>
     <h3 id='Standard.int32'>
         <a href='#Standard.int32'>int32</a>
     </h3>
     <desc>signed integer 32-bit. Range: [-2147483648, 2147483647]</desc>
+    </div>
+    <div class='type'>
+    <h3 id='Standard.int64'>
+        <a href='#Standard.int64'>int64</a>
+    </h3>
+    <desc>signed integer 64-bit. Range: [-9223372036854775808, 9223372036854775807]<br/>number in JavaScript.  Range: [-9007199254740991, 9007199254740991]</desc>
     </div>
 </div>
 

@@ -26,6 +26,8 @@
                 "ClearAuthCache":   { "result": { "type": "boolean" } },
                 "std.Echo":         { "param": {  }, "result": {  },
                     "description": "echos the given parameter to assure the database is working appropriately." },
+                "std.Delay":        { "param": { "$ref": "./Standard.json#/definitions/int32" }, "result": { "$ref": "./Standard.json#/definitions/int32" },
+                    "description": "A a command that completes after a specified number of milliseconds." },
                 "std.Containers":   { "result": { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/DbContainers" },
                     "description": "list all database containers" },
                 "std.Messages":     { "result": { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/DbMessages" },

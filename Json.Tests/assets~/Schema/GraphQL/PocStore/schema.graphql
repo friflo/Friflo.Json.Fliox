@@ -48,6 +48,7 @@ type Query {
     test_CommandExecutionError     : Int!
     test_CommandExecutionException : Int!
     std_Echo                      (param: Any!) : Any!
+    std_Delay                     (param: Int!) : Int!
     std_Containers                 : DbContainers!
     std_Messages                   : DbMessages!
     std_Schema                     : DbSchema!

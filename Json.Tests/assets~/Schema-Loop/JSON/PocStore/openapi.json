@@ -327,6 +327,33 @@
         }
       }
     },
+    "/?command=std.Delay": {
+      "post": {
+        "summary":    "A a command that completes after a specified number of milliseconds.",
+        "tags":       ["commands"],
+        "requestBody": {          
+          "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "Standard.json#/definitions/int32"
+                }
+              }
+            }
+        },
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "Standard.json#/definitions/int32"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/?command=std.Containers": {
       "post": {
         "summary":    "list all database containers",

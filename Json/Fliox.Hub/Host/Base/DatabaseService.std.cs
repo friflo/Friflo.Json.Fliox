@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Client;
@@ -20,6 +21,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             // add each command handler individually
             // --- database
             AddCommandHandler      <JsonValue,   JsonValue>     (Std.Echo,          Echo);
+            AddCommandHandlerAsync <int,         int>           (Std.Delay,         Delay);
             AddCommandHandlerAsync <Empty,       DbContainers>  (Std.Containers,    Containers);
             AddCommandHandler      <Empty,       DbMessages>    (Std.Messages,      Messages);
             AddCommandHandler      <Empty,       DbSchema>      (Std.Schema,        Schema);
@@ -35,6 +37,16 @@ namespace Friflo.Json.Fliox.Hub.Host
         
         private static JsonValue Echo (Param<JsonValue> param, MessageContext context) {
             return param.RawParam;
+        }
+        
+        private static async Task<int> Delay (Param<int> param, MessageContext context) {
+            if (!param.Get(out var delay, out var error)) {
+                return context.Error<int>(error);
+            }
+            var start = Stopwatch.GetTimestamp();
+            await Task.Delay(delay);
+            var duration = (int)(1000 * (Stopwatch.GetTimestamp() - start) / Stopwatch.Frequency);
+            return duration;
         }
         
         private static HostInfo HostInfo (Param<HostParam> param, MessageContext context) {
