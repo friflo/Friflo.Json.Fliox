@@ -41,7 +41,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         private   readonly  FlioxHub                hub;
         private   readonly  TypeStore               typeStore;
         private   readonly  SharedEnv               sharedEnv;
-        private   readonly  ObjectPool<ReaderPool>  readerPoolPool;
+        private   readonly  ObjectPool<ReaderPool>  readerPool;
         private   readonly  ObjectReader            reader;
         private   readonly  ObjectWriter            writer;
         private   readonly  bool                    useReaderPool;
@@ -57,7 +57,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             hub             = remoteHost.localHub;
             Logger          = remoteHost.Logger;
             var pool        = remoteHost.sharedEnv.Pool;
-            readerPoolPool  = pool.ReaderPool;
+            readerPool      = pool.ReaderPool;
             var mapper      = pool.ObjectMapper.Get().instance;
             reader          = mapper.reader;
             writer          = mapper.writer;
@@ -75,9 +75,9 @@ namespace Friflo.Json.Fliox.Hub.Remote
         
         protected SyncRequest ParseRequest(in JsonValue request) {
             if (useReaderPool) {
-                reader.ReaderPool = readerPoolPool.Get().instance.Reuse();
+                reader.ReaderPool = readerPool.Get().instance.Reuse();
             }
-            var syncRequest     = RemoteUtils.ReadSyncRequest(reader, request, out string error);
+            var syncRequest = RemoteUtils.ReadSyncRequest(reader, request, out string error);
             if (error == null) {
                 return syncRequest;
             }
@@ -103,8 +103,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
             var syncContext = CreateSyncContext();
 
             syncContext.MemoryBuffer.Reset();
-            var reqId       = syncRequest.reqId;
-            var readerPool  = reader.ReaderPool;
+            var reqId   = syncRequest.reqId;
+            var pool    = reader.ReaderPool;
             try {
                 var executionType = hub.InitSyncRequest(syncRequest);
                 Task<ExecuteSyncResult> syncResultTask;
@@ -113,12 +113,12 @@ namespace Friflo.Json.Fliox.Hub.Remote
                     case Queue: syncResultTask  = hub.QueueRequestAsync   (syncRequest, syncContext); break;
                     default:
                         var syncResult          = hub.ExecuteRequest      (syncRequest, syncContext);
-                        if (readerPool != null) readerPoolPool.Return(readerPool);
+                        if (pool != null) readerPool.Return(pool);
                         SendResponse(syncResult, reqId);
                         return;
                 }
                 syncResultTask.ContinueWith(task => {
-                    if (readerPool != null) readerPoolPool.Return(readerPool);
+                    if (pool != null) readerPool.Return(pool);
                     SyncResultContinuation(task, reqId);
                 });
             }

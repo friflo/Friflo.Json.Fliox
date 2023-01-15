@@ -61,8 +61,8 @@ namespace Friflo.Json.Fliox.Hub.Host
         [Browse(Never)] internal            SmallString         databaseName;              // not null
         [Browse(Never)] internal            ClientIdValidation  clientIdValidation;
         [Browse(Never)] internal            SyncRequest         request;
-        [Browse(Never)] internal            ReaderPool          responseReaderPool;   
         [Browse(Never)] private             MemoryBuffer        memoryBuffer;
+        [Browse(Never)] internal            ReaderPool          responseReaderPool;   
         
         public void Init () {
             authState           = default;
