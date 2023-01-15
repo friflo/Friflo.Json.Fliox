@@ -61,7 +61,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// <summary> container name </summary>
         // ReSharper disable once InconsistentNaming
         public              string                              name => nameSmall.value;
-        internal  readonly  SmallString                         nameSmall;
+        public    readonly  SmallString                         nameSmall;
         /// <summary>
         /// The name used for a container / table instance in a specific database. By default it is equal to <see cref="name"/>.
         /// It can be customized (altered) by the <see cref="EntityDatabase.customContainerName"/> function.

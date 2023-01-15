@@ -26,6 +26,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         [Required]  public  string              container;
         [Browse(Never)]
         [Ignore]   internal EntityContainer     entityContainer;
+        [Ignore]    public  EntityContainer     EntityContainer => entityContainer;
                     public  Guid?               reservedToken;
         /// <summary>name of the primary key property in <see cref="entities"/></summary>
                     public  string              keyName;

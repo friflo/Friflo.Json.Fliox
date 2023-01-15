@@ -23,6 +23,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         [Required]  public  string              container;
         [Browse(Never)]
         [Ignore]   internal EntityContainer     entityContainer;
+        [Ignore]    public  EntityContainer     EntityContainer => entityContainer;
         /// <summary>name of the primary key property of the entity <see cref="patches"/></summary>
                     public  string              keyName;
         /// <summary>list of merge patches for each entity</summary>

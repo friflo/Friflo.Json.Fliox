@@ -24,6 +24,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         [Required]  public  string              container;
         [Browse(Never)]
         [Ignore]   internal EntityContainer     entityContainer;
+        [Ignore]    public  EntityContainer     EntityContainer => entityContainer;
         /// <summary>list of <see cref="ids"/> requested for deletion</summary>
                     public  List<JsonKey>       ids;
         /// <summary>if true all entities in the specified <see cref="container"/> are deleted</summary>
