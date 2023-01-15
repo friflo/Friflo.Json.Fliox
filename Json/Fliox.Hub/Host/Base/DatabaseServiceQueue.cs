@@ -13,33 +13,14 @@ namespace Friflo.Json.Fliox.Hub.Host
         // used non concurrent Queue<> to avoid heap allocation on Enqueue()
         private  readonly   Queue<RequestJob>   requestJobs;
         private  readonly   List<RequestJob>    requestBuffer;
-        private             bool                executeQueueAsync;
-
+        
         /// <summary>Ensure subsequent request executions run on the same thread</summary>
         private  const      bool                RunOnCallingThread      =  true;
-        
+
+
         internal DatabaseServiceQueue () {
             requestJobs     = new Queue<RequestJob>();
             requestBuffer   = new List<RequestJob>();
-        }
-        
-        public int ExecuteQueuedRequests(out bool executeAsync)
-        {
-            FillRequestBuffer();
-
-            foreach (var job in requestBuffer) {
-                if (job.syncRequest.intern.executionType != ExecutionType.Sync) {
-                    executeQueueAsync = executeAsync = true;
-                    return requestBuffer.Count;
-                }
-            }
-            // case: all requests can be executed synchronous
-            foreach (var job in requestBuffer) {
-                var response = job.hub.ExecuteRequest (job.syncRequest, job.syncContext);
-                job.taskCompletionSource.SetResult(response);
-            }
-            executeQueueAsync = executeAsync = false;
-            return requestBuffer.Count;
         }
         
         /// <summary>
@@ -47,11 +28,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// </summary>
         public async Task<int> ExecuteQueuedRequestsAsync()
         {
-            if (executeQueueAsync) {
-                executeQueueAsync = false;
-            } else { 
-                FillRequestBuffer();
-            }
+            FillRequestBuffer();
             foreach (var job in requestBuffer) {
                 try {
                     var syncRequest = job.syncRequest;
