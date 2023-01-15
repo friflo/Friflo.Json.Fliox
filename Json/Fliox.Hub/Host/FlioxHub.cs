@@ -220,13 +220,13 @@ namespace Friflo.Json.Fliox.Hub.Host
             var executionType = isSyncRequest ? Sync : Async;
             syncRequest.intern.error = null;
             syncRequest.intern.executionType = executionType;
-            return db.service.QueueRequestExecution ? Queue : executionType;
+            return db.service.queue != null ? Queue : executionType;
         }
 
         public Task<ExecuteSyncResult> QueueRequestAsync(SyncRequest syncRequest, SyncContext syncContext) {
-            var service = syncRequest.intern.db.service;
-            var requestJob = new DatabaseService.RequestJob(this, syncRequest, syncContext);
-            service.EnqueueJob(requestJob);
+            var queue       = syncRequest.intern.db.service.queue;
+            var requestJob  = new RequestJob(this, syncRequest, syncContext);
+            queue.EnqueueJob(requestJob);
             return requestJob.taskCompletionSource.Task;
         }
         

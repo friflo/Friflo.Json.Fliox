@@ -32,7 +32,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
     /// <br/>
     /// Requests can be executed synchronous, asynchronous or on a specific thread / execution context.<br/>
     /// - If <see cref="DatabaseService"/> is configured to queue requests they are executed
-    ///   on the thread calling <see cref="DatabaseService.ExecuteQueuedRequestsAsync"/> <br/>
+    ///   on the thread calling <see cref="DatabaseService.queue"/> <br/>
     /// - Synchronous in case a request can be executed synchronous<br/>
     /// - Asynchronous in case a request requires asynchronous execution<br/>
     /// </remarks>

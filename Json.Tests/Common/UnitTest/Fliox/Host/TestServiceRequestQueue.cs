@@ -18,7 +18,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
     {
         /// <summary>
         /// using queueRequests == true enables handlers methods like <see cref="Test"/> are called / executed
-        /// sequentially from a single thread using <see cref="DatabaseService.ExecuteQueuedRequestsAsync"/>
+        /// sequentially from a single thread using <see cref="DatabaseService.queue"/>
         /// </summary>
         internal QueueingService() : base (true) {
             AddMessageHandlers(this, null);
@@ -44,7 +44,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
                 var commandTask = client.SendCommand<string,string>("Test", "foo");
                 var task = client.SyncTasks();
                 
-                await service.ExecuteQueuedRequestsAsync();
+                await service.queue.ExecuteQueuedRequestsAsync();
                 
                 if (!task.IsCompleted) {
                     Fail("Expect task completed");
@@ -87,7 +87,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
                 // the single service will be accessed from multiple clients running on various ThreadPool worker threads 
                 while (finished < count) {
                     await Task.Delay(1);
-                    var executed = await service.ExecuteQueuedRequestsAsync();
+                    var executed = await service.queue.ExecuteQueuedRequestsAsync();
                     Console.WriteLine($"executed: {executed}");
                 }
             });

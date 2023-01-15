@@ -54,20 +54,15 @@ namespace Friflo.Json.Fliox.Hub.Host
         private readonly    Dictionary<string, MessageDelegate>     handlers = new Dictionary<string, MessageDelegate>();
         // ReSharper disable once UnusedMember.Local - expose Dictionary as list in Debugger
         private             IReadOnlyCollection<MessageDelegate>    Handlers                => handlers.Values;
-        private readonly    Queue                                   queue;
-        private             bool                                    executeQueueAsync;
-        public              bool                                    QueueRequestExecution   => queue.requestJobs != null;
+        public  readonly    DatabaseServiceQueue                    queue;
 
 
-        /// <summary>Ensure subsequent request executions run on the same thread</summary>
-        private  const      bool                                    RunOnCallingThread      =  true;
-        
         /// <summary>
         /// If <paramref name="queueRequests"/> is true <see cref="SyncRequest"/> are queued for execution otherwise
         /// they are executed as they arrive.
         /// </summary>
         /// <remarks>
-        /// To execute queued requests (<paramref name="queueRequests"/> is true) <see cref="ExecuteQueuedRequestsAsync"/>
+        /// To execute queued requests (<paramref name="queueRequests"/> is true) <see cref="DatabaseServiceQueue.ExecuteQueuedRequestsAsync"/>
         /// need to be called regularly.<br/>
         /// This enables requests / task execution on the calling thread. <br/>
         /// This mode guarantee sequential execution of messages, commands and container operations like
@@ -76,7 +71,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// </remarks> 
         public DatabaseService (bool queueRequests = false) {
             AddStdCommandHandlers();
-            queue = new Queue(queueRequests);
+            queue = queueRequests ? new DatabaseServiceQueue() : null; 
         }
         
         protected internal virtual void PreExecuteTasks (SyncContext syncContext)  { }

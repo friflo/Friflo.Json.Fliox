@@ -18,7 +18,7 @@ namespace Friflo.Json.Fliox.Hub.Host
     ///     are easier to read. 
     ///   </item>
     ///   <item>
-    ///     Enable queued execution of <see cref="SyncRequest"/>. See <see cref="DatabaseService.ExecuteQueuedRequestsAsync"/>
+    ///     Enable queued execution of <see cref="SyncRequest"/>. See <see cref="DatabaseService.queue"/>
     ///   </item>
     /// </list>
     /// </remarks>
