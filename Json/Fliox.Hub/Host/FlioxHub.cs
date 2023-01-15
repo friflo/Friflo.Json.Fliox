@@ -225,9 +225,9 @@ namespace Friflo.Json.Fliox.Hub.Host
 
         public Task<ExecuteSyncResult> QueueRequestAsync(SyncRequest syncRequest, SyncContext syncContext) {
             var queue       = syncRequest.intern.db.service.queue;
-            var requestJob  = new RequestJob(this, syncRequest, syncContext);
-            queue.EnqueueJob(requestJob);
-            return requestJob.taskCompletionSource.Task;
+            var serviceJob  = new ServiceJob(this, syncRequest, syncContext);
+            queue.EnqueueJob(serviceJob);
+            return serviceJob.taskCompletionSource.Task;
         }
         
         /// <summary>

@@ -11,16 +11,16 @@ namespace Friflo.Json.Fliox.Hub.Host
 {
     public class DatabaseServiceQueue {
         // used non concurrent Queue<> to avoid heap allocation on Enqueue()
-        private  readonly   Queue<RequestJob>   requestJobs;
-        private  readonly   List<RequestJob>    requestBuffer;
+        private     readonly    Queue<ServiceJob>   serviceJobs;
+        private     readonly    List<ServiceJob>    jobBuffer;
         
         /// <summary>Ensure subsequent request executions run on the same thread</summary>
-        private  const      bool                RunOnCallingThread      =  true;
+        private     const       bool                RunOnCallingThread      =  true;
 
 
-        internal DatabaseServiceQueue () {
-            requestJobs     = new Queue<RequestJob>();
-            requestBuffer   = new List<RequestJob>();
+        public DatabaseServiceQueue () {
+            serviceJobs = new Queue<ServiceJob>();
+            jobBuffer   = new List<ServiceJob>();
         }
         
         /// <summary>
@@ -29,7 +29,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         public async Task<int> ExecuteQueuedRequestsAsync()
         {
             FillRequestBuffer();
-            foreach (var job in requestBuffer) {
+            foreach (var job in jobBuffer) {
                 try {
                     var syncRequest = job.syncRequest;
                     ExecuteSyncResult response;
@@ -44,34 +44,34 @@ namespace Friflo.Json.Fliox.Hub.Host
                     job.taskCompletionSource.SetException(e);
                 }
             }
-            return requestBuffer.Count;
+            return jobBuffer.Count;
         }
         
         private void FillRequestBuffer() {
-            requestBuffer.Clear();
-            lock (requestJobs) {
-                foreach (var job in requestJobs) {
-                    requestBuffer.Add(job);
+            jobBuffer.Clear();
+            lock (serviceJobs) {
+                foreach (var job in serviceJobs) {
+                    jobBuffer.Add(job);
                 }
-                requestJobs.Clear();
+                serviceJobs.Clear();
             }            
         }
         
-        internal void EnqueueJob(in RequestJob requestJob) {
-            lock (requestJobs) {
-                requestJobs.Enqueue(requestJob);
+        internal void EnqueueJob(in ServiceJob serviceJob) {
+            lock (serviceJobs) {
+                serviceJobs.Enqueue(serviceJob);
             }
         }
     }
     
-    internal readonly struct RequestJob
+    internal readonly struct ServiceJob
     {
         internal readonly FlioxHub                                  hub;
         internal readonly SyncRequest                               syncRequest;
         internal readonly SyncContext                               syncContext;
         internal readonly TaskCompletionSource<ExecuteSyncResult>   taskCompletionSource;
             
-        internal RequestJob(FlioxHub hub, SyncRequest syncRequest, SyncContext syncContext) {
+        internal ServiceJob(FlioxHub hub, SyncRequest syncRequest, SyncContext syncContext) {
             this.hub                = hub;
             this.syncRequest        = syncRequest;
             this.syncContext        = syncContext;

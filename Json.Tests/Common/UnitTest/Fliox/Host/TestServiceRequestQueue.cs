@@ -20,7 +20,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
         /// using queueRequests == true enables handlers methods like <see cref="Test"/> are called / executed
         /// sequentially from a single thread using <see cref="DatabaseService.queue"/>
         /// </summary>
-        internal QueueingService() : base (true) {
+        internal QueueingService() : base (new DatabaseServiceQueue()) {
             AddMessageHandlers(this, null);
         }
         

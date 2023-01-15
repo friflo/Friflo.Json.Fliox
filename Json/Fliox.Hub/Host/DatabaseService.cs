@@ -58,20 +58,20 @@ namespace Friflo.Json.Fliox.Hub.Host
 
 
         /// <summary>
-        /// If <paramref name="queueRequests"/> is true <see cref="SyncRequest"/> are queued for execution otherwise
+        /// If <paramref name="queue"/> is set <see cref="SyncRequest"/> are queued for execution otherwise
         /// they are executed as they arrive.
         /// </summary>
         /// <remarks>
-        /// To execute queued requests (<paramref name="queueRequests"/> is true) <see cref="DatabaseServiceQueue.ExecuteQueuedRequestsAsync"/>
+        /// To execute queued requests (<paramref name="queue"/> is set) <see cref="DatabaseServiceQueue.ExecuteQueuedRequestsAsync"/>
         /// need to be called regularly.<br/>
         /// This enables requests / task execution on the calling thread. <br/>
         /// This mode guarantee sequential execution of messages, commands and container operations like
         /// read, query, create, upsert, merge and delete.<br/>
         /// So using lock's or other thread synchronization mechanisms are not necessary.
         /// </remarks> 
-        public DatabaseService (bool queueRequests = false) {
+        public DatabaseService (DatabaseServiceQueue queue = null) {
             AddStdCommandHandlers();
-            queue = queueRequests ? new DatabaseServiceQueue() : null; 
+            this.queue = queue; 
         }
         
         protected internal virtual void PreExecuteTasks (SyncContext syncContext)  { }
