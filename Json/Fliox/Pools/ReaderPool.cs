@@ -10,12 +10,12 @@ namespace Friflo.Json.Fliox.Pools
 {
     /// <summary>
     /// A pool for class instances of all types defined in a <see cref="TypeStore"/>.<br/>
-    /// By assigning to <see cref="ObjectReader.InstancePool"/> pooled instances are reused when deserializing JSON
+    /// By assigning to <see cref="ObjectReader.ReaderPool"/> pooled instances are reused when deserializing JSON
     /// with <see cref="ObjectReader"/> <b>Read()</b> methods.<br/>
     /// The pool is not utilized when using the <see cref="ObjectReader"/> <b>ReadTo()</b> methods.
     /// </summary>
-    /// <remarks> <see cref="ReaderInstancePool"/> is not thread safe </remarks>
-    public sealed class ReaderInstancePool : IDisposable
+    /// <remarks> <see cref="ReaderPool"/> is not thread safe </remarks>
+    public sealed class ReaderPool : IDisposable
     {
         private             PoolIntern<object>[]    pools;
         private             int                     poolCount;
@@ -29,7 +29,7 @@ namespace Friflo.Json.Fliox.Pools
 
         public   override   string                  ToString() => GetString();
         
-        public ReaderInstancePool(TypeStore typeStore) {
+        public ReaderPool(TypeStore typeStore) {
             pools           = Array.Empty<PoolIntern<object>>();
             buffer          = new byte[128];
 #if DEBUG
@@ -41,9 +41,9 @@ namespace Friflo.Json.Fliox.Pools
 
         /// <summary>
         /// Make pooled class instances available for reuse.<br/>
-        /// These instances were created when using the <see cref="ReaderInstancePool"/> in a previous <see cref="Reuse"/> cycle.
+        /// These instances were created when using the <see cref="ReaderPool"/> in a previous <see cref="Reuse"/> cycle.
         /// </summary>
-        public ReaderInstancePool Reuse() {
+        public ReaderPool Reuse() {
             version++;
             bufferPos = 0;
             return this;

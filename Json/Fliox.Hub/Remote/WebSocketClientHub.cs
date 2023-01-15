@@ -181,7 +181,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                             if (!wsConn.requestMap.Remove(id, out RemoteRequest request)) {
                                 throw new InvalidOperationException($"reqId not found. id: {id}");
                             }
-                            reader.InstancePool = request.responseInstancePool;
+                            reader.ReaderPool   = request.responseReaderPool;
                             var response        = reader.Read<ProtocolResponse>(message);
                             request.response.SetResult(response);
                             break;

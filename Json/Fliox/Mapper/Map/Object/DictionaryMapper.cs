@@ -139,8 +139,8 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object
             if (!reader.StartObject(this, out success))
                 return default;
 
-            if (map == null || reader.instancePool != null) {
-                map = (TMap) CreateInstance(reader.instancePool);
+            if (map == null || reader.readerPool != null) {
+                map = (TMap) CreateInstance(reader.readerPool);
                 map.Clear();
             } else {
                 map.Clear();

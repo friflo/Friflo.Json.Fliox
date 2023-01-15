@@ -36,14 +36,14 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         internal readonly   string                          database;
         /// <summary>is null if <see cref="FlioxHub.SupportPushEvents"/> == false</summary> 
         internal readonly   EventReceiver                   eventReceiver;
-        internal readonly   ObjectPool<ReaderInstancePool>  responseReaderPool;
+        internal readonly   ObjectPool<ReaderPool>          responseReaderPool;
 
         // --- readonly / private - owned
         private             ObjectDiffer                    objectDiffer;       // create on demand
         private             JsonMergeWriter                 mergeWriter;        // create on demand
         private             EntityProcessor                 processor;          // create on demand
         private             ObjectMapper                    objectMapper;       // create on demand
-        private             ReaderInstancePool              eventReaderPool;    // create on demand
+        private             ReaderPool                      eventReaderPool;    // create on demand
         
         internal readonly   EntitySet[]                             entitySets;
         private  readonly   Dictionary<string, EntitySet>           setByName;
@@ -85,7 +85,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         internal ObjectDiffer           ObjectDiffer()          => objectDiffer          ?? (objectDiffer          = new ObjectDiffer(typeStore));
         internal JsonMergeWriter        JsonMergeWriter()       => mergeWriter           ?? (mergeWriter           = new JsonMergeWriter(typeStore));
         internal ObjectMapper           ObjectMapper()          => objectMapper          ?? (objectMapper          = new ObjectMapper(typeStore));
-        internal ReaderInstancePool     EventReaderPool()       => eventReaderPool       ?? (eventReaderPool       = new ReaderInstancePool(typeStore));
+        internal ReaderPool             EventReaderPool()       => eventReaderPool       ?? (eventReaderPool       = new ReaderPool(typeStore));
 
         internal SubscriptionProcessor  SubscriptionProcessor() => subscriptionProcessor ?? (subscriptionProcessor = new SubscriptionProcessor());
         internal List<JsonKey>          IdsBuf()                => idsBuf                ?? (idsBuf                = new List<JsonKey>());

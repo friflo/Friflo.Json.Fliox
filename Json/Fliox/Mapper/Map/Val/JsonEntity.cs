@@ -46,7 +46,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
             serializer.InitSerializer();
             serializer.WriteTree(ref reader.parser);
             success     = true;
-            var pool    = reader.instancePool;
+            var pool    = reader.readerPool;
             if (pool != null) {
                 return new JsonEntity(pool.CreateJsonValue(ref serializer.json));
             }

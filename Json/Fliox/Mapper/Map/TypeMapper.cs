@@ -190,10 +190,10 @@ namespace Friflo.Json.Fliox.Mapper.Map
 
         public override      object  NewInstance() =>  null;
         
-        protected            object  CreateInstance(ReaderInstancePool pool) {
-            if (pool == null)
+        protected            object  CreateInstance(ReaderPool readerPool) {
+            if (readerPool == null)
                 return NewInstance();
-            return pool.CreateObject(this);
+            return readerPool.CreateObject(this);
         }
     }
     

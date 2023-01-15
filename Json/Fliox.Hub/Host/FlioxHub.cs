@@ -167,7 +167,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// <summary>
         /// Optimization for Unity to avoid heap allocations of <see cref="SyncResponse"/> instances and its dependencies
         /// </summary>
-        internal virtual  ObjectPool<ReaderInstancePool> GetResponseReaderPool() => null;
+        internal virtual  ObjectPool<ReaderPool> GetResponseReaderPool() => null;
         
         #endregion
         

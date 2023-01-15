@@ -16,14 +16,14 @@ namespace Friflo.Json.Fliox.Hub.Remote
     public abstract class RemoteClientHub : FlioxHub
     {
         private  readonly   Dictionary<JsonKey, EventReceiver>  eventReceivers;
-        private  readonly   ObjectPool<ReaderInstancePool>      responseReaderPool;
+        private  readonly   ObjectPool<ReaderPool>              responseReaderPool;
 
         // ReSharper disable once EmptyConstructor - added for source navigation
         protected RemoteClientHub(EntityDatabase database, SharedEnv env)
             : base(database, env)
         {
             eventReceivers      = new Dictionary<JsonKey, EventReceiver>(JsonKey.Equality);
-            responseReaderPool  = new ObjectPool<ReaderInstancePool>(() => new ReaderInstancePool(sharedEnv.TypeStore));
+            responseReaderPool  = new ObjectPool<ReaderPool>(() => new ReaderPool(sharedEnv.TypeStore));
         }
 
         /// <summary>A class extending  <see cref="RemoteClientHub"/> must implement this method.</summary>
@@ -44,7 +44,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             return ExecutionType.Async;
         }
         
-        internal override  ObjectPool<ReaderInstancePool> GetResponseReaderPool() => responseReaderPool;
+        internal override  ObjectPool<ReaderPool> GetResponseReaderPool() => responseReaderPool;
         
         protected void OnReceiveEvent(in ClientEvent clientEvent) {
             if (eventReceivers.TryGetValue(clientEvent.dstClientId, out var eventReceiver)) {

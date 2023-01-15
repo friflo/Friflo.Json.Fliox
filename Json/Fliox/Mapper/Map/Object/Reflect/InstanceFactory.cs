@@ -86,15 +86,15 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
             }
         }
 
-        internal object CreateInstance(ReaderInstancePool instancePool, Type type) {
+        internal object CreateInstance(ReaderPool readerPool, Type type) {
             if (isAbstract)
                 throw new InvalidOperationException($"type requires concrete types by [InstanceType()] or [PolymorphType()] on: {type.Name}");
-            if (instancePool == null)
+            if (readerPool == null)
                 return instanceMapper.NewInstance();
-            return instancePool.CreateObject(instanceMapper);
+            return readerPool.CreateObject(instanceMapper);
         }
         
-        internal object CreatePolymorph(ReaderInstancePool instancePool, ref Bytes name, object obj, out TypeMapper mapper) {
+        internal object CreatePolymorph(ReaderPool readerPool, ref Bytes name, object obj, out TypeMapper mapper) {
             var key = new BytesHash (name);
             if (!mapperByName.TryGetValue(key, out mapper))
                 return null;
@@ -103,9 +103,9 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
                 if (objType == mapper.type)
                     return obj;
             }
-            if (instancePool == null)
+            if (readerPool == null)
                 return mapper.NewInstance();
-            return instancePool.CreateObject(mapper);
+            return readerPool.CreateObject(mapper);
         }
         
         internal object CreatePolymorph(Type type) {

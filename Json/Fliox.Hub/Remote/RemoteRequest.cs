@@ -13,11 +13,11 @@ namespace Friflo.Json.Fliox.Hub.Remote
     internal readonly struct RemoteRequest
     {
         internal readonly   TaskCompletionSource<ProtocolResponse>  response;
-        internal readonly   ReaderInstancePool                      responseInstancePool;   
+        internal readonly   ReaderPool                              responseReaderPool;   
         
         internal RemoteRequest(SyncContext syncContext, CancellationTokenSource cancellationToken) {
-            response                = new TaskCompletionSource<ProtocolResponse>();
-            responseInstancePool    = syncContext.responseInstancePool; 
+            response            = new TaskCompletionSource<ProtocolResponse>();
+            responseReaderPool  = syncContext.responseReaderPool; 
             
             syncContext.canceler = () => {
                 cancellationToken.Cancel();

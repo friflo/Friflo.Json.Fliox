@@ -33,7 +33,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// <summary> Returned <see cref="Mapper.ObjectMapper"/> doesnt throw Read() exceptions. To handle errors its
         /// <see cref="Mapper.ObjectMapper.reader"/> -> <see cref="ObjectReader.Error"/> need to be checked. </summary>
         internal    ObjectPool<ObjectMapper>    ObjectMapper    { get; }
-        internal    ObjectPool<ReaderInstancePool>    ReaderPool    { get; }
+        internal    ObjectPool<ReaderPool>      ReaderPool      { get; }
         internal    ObjectPool<EntityProcessor> EntityProcessor { get; }
         internal    ObjectPool<TypeValidator>   TypeValidator   { get; }
         internal    ObjectPool<MemoryBuffer>    MemoryBuffer    { get; }
@@ -64,7 +64,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             ScalarSelector  = new ObjectPool<ScalarSelector>    (() => new ScalarSelector());
             JsonEvaluator   = new ObjectPool<JsonEvaluator>     (() => new JsonEvaluator());
             ObjectMapper    = new ObjectPool<ObjectMapper>      (() => new ObjectMapper(sharedEnv.TypeStore),  m => m.ErrorHandler = ObjectReader.NoThrow);
-            ReaderPool      = new ObjectPool<ReaderInstancePool>(() => new ReaderInstancePool(sharedEnv.TypeStore));
+            ReaderPool      = new ObjectPool<ReaderPool>        (() => new ReaderPool(sharedEnv.TypeStore));
             EntityProcessor = new ObjectPool<EntityProcessor>   (() => new EntityProcessor());
             TypeValidator   = new ObjectPool<TypeValidator>     (() => new TypeValidator());
             MemoryBuffer    = new ObjectPool<MemoryBuffer>      (() => new MemoryBuffer(4 * 1024));

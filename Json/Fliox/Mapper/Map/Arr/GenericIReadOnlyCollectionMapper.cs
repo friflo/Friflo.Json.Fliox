@@ -96,7 +96,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Arr
             if (!reader.StartArray(this, out success))
                 return default;
             
-            var list = (List<TElm>)CreateInstance(reader.instancePool);
+            var list = (List<TElm>)CreateInstance(reader.readerPool);
             list.Clear();
             while (true) {
                 JsonEvent ev = reader.parser.NextEvent();

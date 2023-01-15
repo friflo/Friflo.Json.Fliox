@@ -102,8 +102,8 @@ namespace Friflo.Json.Fliox.Mapper.Map.Arr
                 return default;
             
             var queue = slot;
-            if (queue == null || reader.instancePool != null) {
-                queue = (TCol) CreateInstance(reader.instancePool);
+            if (queue == null || reader.readerPool != null) {
+                queue = (TCol) CreateInstance(reader.readerPool);
                 queue.Clear();
             } else {
                 queue.Clear();

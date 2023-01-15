@@ -102,8 +102,8 @@ namespace Friflo.Json.Fliox.Mapper.Map.Arr
                 return default;
             
             var stack = slot;
-            if (stack == null || reader.instancePool != null) {
-                stack = (TCol) CreateInstance(reader.instancePool);
+            if (stack == null || reader.readerPool != null) {
+                stack = (TCol) CreateInstance(reader.readerPool);
                 stack.Clear();
             } else {
                 stack.Clear();

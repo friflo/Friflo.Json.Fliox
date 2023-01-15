@@ -38,13 +38,13 @@ namespace Friflo.Json.Fliox.Hub.Remote
     /// </remarks>
     public abstract class WebHostHandler : EventReceiver, ILogSource
     {
-        private   readonly  FlioxHub                        hub;
-        private   readonly  TypeStore                       typeStore;
-        private   readonly  SharedEnv                       sharedEnv;
-        private   readonly  ObjectPool<ReaderInstancePool>  readerPoolPool;
-        private   readonly  ObjectReader                    reader;
-        private   readonly  ObjectWriter                    writer;
-        private   readonly  bool                            useReaderPool;
+        private   readonly  FlioxHub                hub;
+        private   readonly  TypeStore               typeStore;
+        private   readonly  SharedEnv               sharedEnv;
+        private   readonly  ObjectPool<ReaderPool>  readerPoolPool;
+        private   readonly  ObjectReader            reader;
+        private   readonly  ObjectWriter            writer;
+        private   readonly  bool                    useReaderPool;
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         public              IHubLogger  Logger { get; }
@@ -75,7 +75,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         
         protected SyncRequest ParseRequest(in JsonValue request) {
             if (useReaderPool) {
-                reader.InstancePool = readerPoolPool.Get().instance.Reuse();
+                reader.ReaderPool = readerPoolPool.Get().instance.Reuse();
             }
             var syncRequest     = RemoteUtils.ReadSyncRequest(reader, request, out string error);
             if (error == null) {
@@ -88,10 +88,10 @@ namespace Friflo.Json.Fliox.Hub.Remote
         
         private SyncContext CreateSyncContext() {
             // todo optimize: pool SyncContext
-            var syncPools           = new SyncPools(typeStore);
-            var syncBuffers         = new SyncBuffers(new List<SyncRequestTask>(), new List<SyncRequestTask>(), new List<JsonValue>());
-            var syncContext         = new SyncContext(sharedEnv, this, syncBuffers, syncPools); // reused context
-            var memoryBuffer        = new MemoryBuffer(4 * 1024);
+            var syncPools       = new SyncPools(typeStore);
+            var syncBuffers     = new SyncBuffers(new List<SyncRequestTask>(), new List<SyncRequestTask>(), new List<JsonValue>());
+            var syncContext     = new SyncContext(sharedEnv, this, syncBuffers, syncPools); // reused context
+            var memoryBuffer    = new MemoryBuffer(4 * 1024);
 
             syncContext.Init();
             syncContext.SetMemoryBuffer(memoryBuffer);
@@ -101,8 +101,10 @@ namespace Friflo.Json.Fliox.Hub.Remote
         protected void ExecuteRequest(SyncRequest syncRequest)
         {
             var syncContext = CreateSyncContext();
+
+            syncContext.MemoryBuffer.Reset();
             var reqId       = syncRequest.reqId;
-            var readerPool  = reader.InstancePool;
+            var readerPool  = reader.ReaderPool;
             try {
                 var executionType = hub.InitSyncRequest(syncRequest);
                 Task<ExecuteSyncResult> syncResultTask;

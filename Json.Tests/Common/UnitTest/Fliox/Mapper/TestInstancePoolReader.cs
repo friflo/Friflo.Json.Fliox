@@ -52,8 +52,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
             var json = mapper.WriteAsValue<ProtocolMessage>(syncRequest);
             
             var reader          = mapper.reader;
-            var pool            = new ReaderInstancePool(typeStore);
-            reader.InstancePool = pool;
+            var pool            = new ReaderPool(typeStore);
+            reader.ReaderPool   = pool;
             long start = 0;
             for (int n = 0; n < Count; n++) {
                 if (n == 1) {

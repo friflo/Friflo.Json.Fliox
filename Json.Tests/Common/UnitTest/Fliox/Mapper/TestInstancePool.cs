@@ -62,7 +62,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
         
         private static void TestPoolInternal(TypeStore typeStore)
         {
-            var pool                    = new ReaderInstancePool(typeStore);
+            var pool                    = new ReaderPool(typeStore);
             var syncRequestMapper       = typeStore.GetTypeMapper<SyncRequest>();
             var syncRequestTasksMapper  = typeStore.GetTypeMapper<List<SyncRequestTask>>();
             var upsertMapper            = typeStore.GetTypeMapper<UpsertEntities>();

@@ -60,7 +60,7 @@ namespace Friflo.Json.Fliox.Mapper
             MaxDepth            = Utf8JsonParser.DefaultMaxDepth;
             WriteNullMembers    = true;
             Pretty              = false;
-            reader.InstancePool = null;
+            reader.ReaderPool   = null;
         }
         
         // --------------- Bytes ---------------

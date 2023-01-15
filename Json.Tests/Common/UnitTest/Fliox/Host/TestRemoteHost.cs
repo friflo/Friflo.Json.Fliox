@@ -52,7 +52,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
                     long start      = GC.GetAllocatedBytesForCurrentThread();
                     cx.contextRead.Init();
                     cx.contextRead.SetMemoryBuffer(cx.memoryBuffer);
-                    cx.mapper.reader.InstancePool.Reuse();
+                    cx.mapper.reader.ReaderPool.Reuse();
                     var response    = cx.remoteHost.ExecuteJsonRequest(cx.mapper, cx.readReq, cx.contextRead);
                     
                     dif = GC.GetAllocatedBytesForCurrentThread() - start;
@@ -73,7 +73,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
                     long start      = GC.GetAllocatedBytesForCurrentThread();
                     cx.contextRead.Init();
                     cx.contextRead.SetMemoryBuffer(cx.memoryBuffer);
-                    cx.mapper.reader.InstancePool.Reuse();
+                    cx.mapper.reader.ReaderPool.Reuse();
                     var response    = cx.remoteHost.ExecuteJsonRequest(cx.mapper, cx.writeReq, cx.contextRead);
                     
                     dif = GC.GetAllocatedBytesForCurrentThread() - start;
@@ -101,7 +101,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
                     long start      = GC.GetAllocatedBytesForCurrentThread();
                     cx.contextRead.Init();
                     cx.contextRead.SetMemoryBuffer(cx.memoryBuffer);
-                    cx.mapper.reader.InstancePool.Reuse();
+                    cx.mapper.reader.ReaderPool.Reuse();
                     var response    = cx.remoteHost.ExecuteJsonRequest(cx.mapper, cx.writeReq, cx.contextRead);
                     cx.hub.EventDispatcher?.SendQueuedEvents();
                     
@@ -121,8 +121,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
             cx.remoteHost       = new RemoteHost(cx.hub, sharedEnv);
             cx.memoryBuffer     = new MemoryBuffer (4 * 1024);
             cx.mapper           = new ObjectMapper(typeStore);
-            cx.mapper.WriteNullMembers      = false;
-            cx.mapper.reader.InstancePool   = new ReaderInstancePool(typeStore);
+            cx.mapper.WriteNullMembers  = false;
+            cx.mapper.reader.ReaderPool = new ReaderPool(typeStore);
             cx.syncPools        = new SyncPools(typeStore);
 
             // -- create request with upsert task

@@ -293,7 +293,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object
                 string discriminator = factory.discriminator;
                 if (discriminator == null) {
                     if (obj == null) {
-                        obj = (T) factory.CreateInstance(reader.instancePool, typeof(T));
+                        obj = (T) factory.CreateInstance(reader.readerPool, typeof(T));
                         if (obj == null)
                             return reader.ErrorMsg<TypeMapper<T>>($"No instance created in InstanceFactory: ", factory.GetType().Name, out success);
                     } else {
@@ -304,7 +304,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object
                 }
                 if (ev == JsonEvent.ValueString && reader.parser.key.IsEqualArray(factory.discriminatorBytes)) {
                     ref Bytes discriminant = ref reader.parser.value;
-                    obj = (T) factory.CreatePolymorph(reader.instancePool, ref discriminant, obj, out var mapper);
+                    obj = (T) factory.CreatePolymorph(reader.readerPool, ref discriminant, obj, out var mapper);
                     if (obj == null)
                         return reader.ErrorMsg<TypeMapper<T>>($"No [PolymorphType] type declared for discriminant: '{discriminant}' on type: ", classType.type.Name, out success);
                     parser.NextEvent();
@@ -314,7 +314,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object
                 return reader.ErrorMsg<TypeMapper<T>>($"Expect discriminator '{discriminator}': '...' as first JSON member for type: ", classType.type.Name, out success);
             }
             if (classType.IsNull(ref obj))
-                obj = (T) classType.CreateInstance(reader.instancePool);
+                obj = (T) classType.CreateInstance(reader.readerPool);
             success = true;
             return null;
         }
