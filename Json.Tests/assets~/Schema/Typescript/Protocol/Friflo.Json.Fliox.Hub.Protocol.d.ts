@@ -177,17 +177,17 @@ export abstract class ProtocolEvent extends ProtocolMessage {
  */
 export class EventMessage extends ProtocolEvent {
     /** message type */
-    msg     : "ev";
+    msg  : "ev";
     /**
      * Increasing event sequence number starting with 1 for a specific target client **dstClientId**.
      * Each target client (subscriber) has its own sequence.
      */
-    seq     : int32;
+    seq  : int32;
     /**
      * Each **SyncEvent** corresponds to a **SyncRequest** and contains the subscribed
      * messages and container changes in its **tasks** field
      */
-    events? : SyncEvent[] | null;
+    ev?  : SyncEvent[] | null;
 }
 
 /**

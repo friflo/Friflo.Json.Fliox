@@ -38,7 +38,7 @@ export class Playground
             responseState.innerText = "";
         };
         this.wsClient.onEvents  = (eventMessage) => {
-            const events        = eventMessage.events;
+            const events        = eventMessage.ev;
             this.eventCount    += events.length;
             const countStr      = String(this.eventCount);
             subscriptionCount.innerText = countStr;

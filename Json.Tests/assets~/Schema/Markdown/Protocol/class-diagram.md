@@ -78,11 +78,11 @@ class ProtocolEvent {
 
 ProtocolEvent <|-- EventMessage
 class EventMessage {
-    msg     : "ev"
-    seq     : int32
-    events? : SyncEvent[]
+    msg  : "ev"
+    seq  : int32
+    ev?  : SyncEvent[]
 }
-EventMessage *-- "0..*" SyncEvent : events
+EventMessage *-- "0..*" SyncEvent : ev
 
 class SyncEvent {
     usr?   : string

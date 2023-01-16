@@ -92,10 +92,10 @@
             "extends": { "$ref": "./Friflo.Json.Fliox.Hub.Protocol.ProtocolEvent.json#/definitions/ProtocolEvent" },
             "description": "Contains a set of <b>SyncEvent</b>'s. It is send as a push message to clients to deliver the events\nsubscribed by these clients.",
             "properties": {
-                "msg":    { "enum": ["ev"] },
-                "clt":    { "type": ["string", "null"], "description": "The target client the event is sent to. This enables sharing a single (WebSocket) connection by multiple clients.\nIn many scenarios this property is redundant as every client uses a WebSocket exclusively." },
-                "seq":    { "$ref": "./Standard.json#/definitions/int32", "description": "Increasing event sequence number starting with 1 for a specific target client <b>dstClientId</b>.\nEach target client (subscriber) has its own sequence." },
-                "events": { "type": ["array", "null"], "items": { "$ref": "#/definitions/SyncEvent" }, "description": "Each <b>SyncEvent</b> corresponds to a <b>SyncRequest</b> and contains the subscribed\nmessages and container changes in its <b>tasks</b> field" }
+                "msg": { "enum": ["ev"] },
+                "clt": { "type": ["string", "null"], "description": "The target client the event is sent to. This enables sharing a single (WebSocket) connection by multiple clients.\nIn many scenarios this property is redundant as every client uses a WebSocket exclusively." },
+                "seq": { "$ref": "./Standard.json#/definitions/int32", "description": "Increasing event sequence number starting with 1 for a specific target client <b>dstClientId</b>.\nEach target client (subscriber) has its own sequence." },
+                "ev":  { "type": ["array", "null"], "items": { "$ref": "#/definitions/SyncEvent" }, "description": "Each <b>SyncEvent</b> corresponds to a <b>SyncRequest</b> and contains the subscribed\nmessages and container changes in its <b>tasks</b> field" }
             },
             "required": [
                 "msg",

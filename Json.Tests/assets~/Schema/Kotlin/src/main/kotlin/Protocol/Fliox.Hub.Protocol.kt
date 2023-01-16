@@ -77,9 +77,9 @@ enum class ErrorResponseType {
 @Serializable
 @SerialName("ev")
 data class EventMessage (
-    override  val clt    : String? = null,
-              val seq    : Int,
-              val events : List<SyncEvent>? = null,
+    override  val clt : String? = null,
+              val seq : Int,
+              val ev  : List<SyncEvent>? = null,
 ) : ProtocolEvent()
 
 @Serializable

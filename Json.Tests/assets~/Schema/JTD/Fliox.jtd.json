@@ -401,9 +401,9 @@
         },
         "EventMessage": {
             "properties": {
-                "clt":    { "type": "string", "nullable": true },
-                "seq":    { "type": "int32" },
-                "events": { "elements": { "ref":  "SyncEvent" }, "nullable": true }
+                "clt": { "type": "string", "nullable": true },
+                "seq": { "type": "int32" },
+                "ev":  { "elements": { "ref":  "SyncEvent" }, "nullable": true }
             }
         },
         "ProtocolEvent": {

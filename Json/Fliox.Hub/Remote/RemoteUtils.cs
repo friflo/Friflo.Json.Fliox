@@ -16,7 +16,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         /** map to <see cref="ProtocolEvent"/> discriminator */ public  string          msg;
         /** map to <see cref="ProtocolEvent.dstClientId"/> */   public  JsonKey         clt;
         /** map to <see cref="EventMessage.seq"/> */            public  int             seq;
-        /** map to <see cref="EventMessage.events"/> */         public  List<JsonValue> events;
+        /** map to <see cref="EventMessage.events"/> */         public  List<JsonValue> ev;
     }
     
     /// <summary> Reflect the shape of a <see cref="SyncEvent"/> </summary>
@@ -59,7 +59,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         {
             writer.Pretty           = true;
             writer.WriteNullMembers = false;
-            var remoteEventMessage  = new RemoteEventMessage { msg = "ev", clt = dstClientId, seq = seq, events = syncEvents };
+            var remoteEventMessage  = new RemoteEventMessage { msg = "ev", clt = dstClientId, seq = seq, ev = syncEvents };
             var result              = writer.WriteAsBytes(remoteEventMessage);
             return new JsonValue(result);
         }
