@@ -93,7 +93,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         public   override string        ToString()              => "";
 
         private static readonly Dictionary<Type, ClientTypeInfo>    ClientTypeCache = new Dictionary<Type, ClientTypeInfo>();
-        private static readonly DirectEventProcessor                DefaultEventProcessor = new DirectEventProcessor();
+        private static readonly SynchronousEventProcessor                DefaultEventProcessor = new SynchronousEventProcessor();
 
        
         internal EntitySet  GetSetByName    (string name)                    => setByName[name];

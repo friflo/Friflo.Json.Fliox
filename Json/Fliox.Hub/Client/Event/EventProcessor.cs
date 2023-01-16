@@ -14,7 +14,7 @@ namespace Friflo.Json.Fliox.Hub.Client
     /// An <see cref="EventProcessor"/> is used to process subscription events subscribed by a <see cref="FlioxClient"/>
     /// </summary>
     /// <remarks>
-    /// By default a <see cref="FlioxClient"/> uses a <see cref="DirectEventProcessor"/> to handle subscription events
+    /// By default a <see cref="FlioxClient"/> uses a <see cref="SynchronousEventProcessor"/> to handle subscription events
     /// in the thread the events arrive.
     /// </remarks>
     public abstract class EventProcessor
@@ -28,7 +28,7 @@ namespace Friflo.Json.Fliox.Hub.Client
     /// <remarks>
     /// E.g. In case of a <see cref="System.Net.WebSockets.WebSocket"/> in the thread reading data from the WebSocket stream.
     /// </remarks>
-    public sealed class DirectEventProcessor : EventProcessor
+    public sealed class SynchronousEventProcessor : EventProcessor
     {
         public override void EnqueueEvent(FlioxClient client, in JsonValue eventMessage) {
             client.ProcessEvents(eventMessage);
@@ -39,7 +39,7 @@ namespace Friflo.Json.Fliox.Hub.Client
     /// An <see cref="EventProcessor"/> implementation used for UI based applications having a <see cref="SynchronizationContext"/>
     /// </summary>
     /// <remarks>
-    /// The <see cref="SynchronizationContextProcessor"/> ensures that the handler methods passed to the <b>Subscribe*()</b> methods of
+    /// The <see cref="EventProcessorContext"/> ensures that the handler methods passed to the <b>Subscribe*()</b> methods of
     /// <see cref="FlioxClient"/> and <see cref="EntitySet{TKey,T}"/> are called on the on the thread associated with
     /// the <see cref="SynchronizationContext"/>
     /// <br/>
@@ -57,18 +57,18 @@ namespace Friflo.Json.Fliox.Hub.Client
     ///   </item>
     /// </list>
     /// </remarks>
-    public sealed class SynchronizationContextProcessor : EventProcessor
+    public sealed class EventProcessorContext : EventProcessor
     {
         private  readonly   SynchronizationContext          synchronizationContext;
         private  readonly   MessageBufferQueue<FlioxClient> messageQueue    = new MessageBufferQueue<FlioxClient>();
         private  readonly   List<MessageItem<FlioxClient>>  messages        = new List<MessageItem<FlioxClient>>(); 
         
 
-        public SynchronizationContextProcessor(SynchronizationContext synchronizationContext) {
+        public EventProcessorContext(SynchronizationContext synchronizationContext) {
             this.synchronizationContext = synchronizationContext ?? throw new ArgumentNullException(nameof(synchronizationContext));
         }
         
-        public SynchronizationContextProcessor() {
+        public EventProcessorContext() {
             synchronizationContext =
                 SynchronizationContext.Current
                 ?? throw new InvalidOperationException(SynchronizationContextIsNull);
@@ -104,12 +104,12 @@ Consider running application / test withing SingleThreadSynchronizationContext.R
     /// This allows to specify the exact code point in an application (e.g. Unity) to call the handler
     /// methods of message and changes subscriptions.
     /// </remarks>
-    public sealed class QueuingEventProcessor : EventProcessor
+    public sealed class EventProcessorQueue : EventProcessor
     {
         private  readonly   MessageBufferQueue<FlioxClient> messageQueue    = new MessageBufferQueue<FlioxClient>();
         private  readonly   List<MessageItem<FlioxClient>>  messages        = new List<MessageItem<FlioxClient>>(); 
 
-        public QueuingEventProcessor() { }
+        public EventProcessorQueue() { }
         
         public override void EnqueueEvent(FlioxClient client, in JsonValue eventMessage) {
             lock (messageQueue) {

@@ -26,7 +26,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
             var store       = new UserStore (userAuthenticator.userHub);
             store.UserId    = UserStore.AuthenticationUser;
             store.ClientId  = "user_db_subscriber";
-            store.SetEventProcessor(new DirectEventProcessor());
+            store.SetEventProcessor(new SynchronousEventProcessor());
         //  store.credentials.SubscribeChanges  (Change.All, CredentialChange);
             store.permissions.SubscribeChanges  (Change.All, PermissionChange);
             store.roles.SubscribeChanges        (Change.All, RoleChange);
