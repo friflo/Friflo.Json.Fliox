@@ -62,7 +62,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// they are executed as they arrive.
         /// </summary>
         /// <remarks>
-        /// To execute queued requests (<paramref name="queue"/> is set) <see cref="DatabaseServiceQueue.ExecuteQueuedRequestsAsync"/>
+        /// To execute queued requests (<paramref name="queue"/> is set) <see cref="DatabaseServiceQueue.ExecuteQueuedRequestsAsync()"/>
         /// need to be called regularly.<br/>
         /// This enables requests / task execution on the calling thread. <br/>
         /// This mode guarantee sequential execution of messages, commands and container operations like
