@@ -52,6 +52,10 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
     #region - members
         public              bool                                SendEventUserId         { get; set; } = true;
         public              bool                                SendEventClientId       { get; set; } = false;
+        /// <summary>
+        /// If true the target client id is set in <see cref="EventMessage"/>'s sent to client<br/>
+        /// If false remote clients like <see cref="RemoteClientHub"/> must be initialized with <see cref="RemoteClientAccess.Single"/>
+        /// </summary>
         public              bool                                SendTargetClientId      { get; set; } = true;
         internal readonly   SharedEnv                           sharedEnv;
         private  readonly   EventCollector                      eventCollector;
