@@ -38,9 +38,12 @@ namespace Friflo.Json.Fliox.Hub.Remote
         public override async Task<ExecuteSyncResult> ExecuteRequestAsync(SyncRequest syncRequest, SyncContext syncContext)
         {
             using (var pooledMapper = syncContext.ObjectMapper.Get()) {
-                var mapper          = pooledMapper.instance;
-                var jsonRequest     = RemoteUtils.CreateProtocolMessage(syncRequest, mapper.writer);
-                var content         = jsonRequest.AsByteArrayContent();
+                var mapper              = pooledMapper.instance;
+                var writer              = mapper.writer;
+                writer.Pretty           = true;
+                writer.WriteNullMembers = false;
+                var jsonRequest         = RemoteUtils.CreateProtocolMessage(syncRequest, writer);
+                var content             = jsonRequest.AsByteArrayContent();
                 content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
                 // body.Headers.ContentEncoding = new string[]{"charset=utf-8"};
                 

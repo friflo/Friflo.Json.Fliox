@@ -239,6 +239,8 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             }
             using (var pooleMapper = sharedEnv.Pool.ObjectMapper.Get()) {
                 var writer = pooleMapper.instance.writer;
+                writer.Pretty           = false;
+                writer.WriteNullMembers = false;
                 if (eventCollector.DatabaseCount > 0) {
                     CopyDatabaseSubsMap(databaseSubsBuffer);
                     changeCombiner.AccumulateChanges(databaseSubsBuffer, writer);
@@ -449,7 +451,10 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         private async Task RunSendEventLoop(IDataChannelReader<EventSubClient> clientEventReader) {
             try {
                 using (var mapper = new ObjectMapper(sharedEnv.TypeStore)) {
-                    await SendEventLoop(clientEventReader, mapper.writer).ConfigureAwait(false);
+                    var writer = mapper.writer;
+                    writer.Pretty            = false;
+                    writer.WriteNullMembers  = false;
+                    await SendEventLoop(clientEventReader, writer).ConfigureAwait(false);
                 }
             } catch (Exception e) {
                 var message = "RunSendEventLoop() failed";

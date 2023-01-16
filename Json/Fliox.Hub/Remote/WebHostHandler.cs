@@ -174,13 +174,16 @@ namespace Friflo.Json.Fliox.Hub.Remote
         }
         
         private void SendResponse(in ExecuteSyncResult syncResult, int? reqId) {
-            var error   = syncResult.error;
-            var mapper  = objectPool.Get().instance;
+            var error               = syncResult.error;
+            var mapper              = objectPool.Get().instance;
+            var writer              = mapper.writer;
+            writer.Pretty           = false;
+            writer.WriteNullMembers = false;
             if (error != null) {
-                var errorResponse = JsonResponse.CreateError(mapper.writer, error.message, error.type, reqId);
+                var errorResponse = JsonResponse.CreateError(writer, error.message, error.type, reqId);
                 SendMessage(errorResponse.body);
             } else {
-                var response = RemoteHost.CreateJsonResponse(syncResult, reqId, mapper.writer);
+                var response = RemoteHost.CreateJsonResponse(syncResult, reqId, writer);
                 SendMessage(response.body);
             }
             objectPool.Return(mapper);

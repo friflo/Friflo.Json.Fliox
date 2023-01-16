@@ -210,8 +210,10 @@ namespace Friflo.Json.Fliox.Hub.Remote
 
             try {
                 using (var pooledMapper = syncContext.ObjectMapper.Get()) {
-                    var mapper      = pooledMapper.instance;
-                    var rawRequest  = RemoteUtils.CreateProtocolMessage(syncRequest, mapper.writer);
+                    var writer              = pooledMapper.instance.writer;
+                    writer.Pretty           = false;
+                    writer.WriteNullMembers = false;
+                    var rawRequest  = RemoteUtils.CreateProtocolMessage(syncRequest, writer);
                     // request need to be queued _before_ sending it to be prepared for handling the response.
                     var wsRequest   = new RemoteRequest(syncContext, cancellationToken);
                     wsConn.requestMap.Add(sendReqId, wsRequest);

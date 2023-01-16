@@ -150,14 +150,17 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 var pool        = sharedEnv.Pool;
                 var syncContext = new SyncContext(sharedEnv, null, cx.memoryBuffer); // new context per request
                 using (var pooledMapper = pool.ObjectMapper.Get()) {
-                    var mapper = pooledMapper.instance;
+                    var mapper              = pooledMapper.instance;
+                    var writer              = mapper.writer;
+                    writer.Pretty           = true;
+                    writer.WriteNullMembers = false;
                     // inlined ExecuteJsonRequest() to avoid async call:
                     // JsonResponse response  = await ExecuteJsonRequest(mapper, requestContent, syncContext).ConfigureAwait(false);
                     JsonResponse response;
                     try {
                         var syncRequest = RemoteUtils.ReadSyncRequest(mapper.reader, requestContent, out string error);
                         if (error != null) {
-                            response = JsonResponse.CreateError(mapper.writer, error, ErrorResponseType.BadResponse, null);
+                            response = JsonResponse.CreateError(writer, error, ErrorResponseType.BadResponse, null);
                         } else {
                             var hub             = localHub;
                             var executionType   = hub.InitSyncRequest(syncRequest);
@@ -167,12 +170,12 @@ namespace Friflo.Json.Fliox.Hub.Remote
                                 case Queue: syncResult = await hub.QueueRequestAsync   (syncRequest, syncContext).ConfigureAwait(false); break;
                                 default:    syncResult =       hub.ExecuteRequest      (syncRequest, syncContext);                       break;
                             }
-                            response = CreateJsonResponse(syncResult, syncRequest.reqId, mapper.writer);
+                            response = CreateJsonResponse(syncResult, syncRequest.reqId, writer);
                         }
                     }
                     catch (Exception e) {
                         var errorMsg = ErrorResponse.ErrorFromException(e).ToString();
-                        response = JsonResponse.CreateError(mapper.writer, errorMsg, ErrorResponseType.Exception, null);
+                        response = JsonResponse.CreateError(writer, errorMsg, ErrorResponseType.Exception, null);
                     }
                     var body        = new JsonValue(response.body); // create copy => result.body array may change when the pooledMapper is reused
                     cx.Write(body, "application/json", (int)response.status);

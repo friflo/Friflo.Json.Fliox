@@ -41,8 +41,6 @@ namespace Friflo.Json.Fliox.Hub.Remote
             ProtocolMessage message,
             ObjectWriter    writer)
         {
-            writer.Pretty           = true;
-            writer.WriteNullMembers = false;
             var result              = writer.WriteAsBytes(message);
             return new JsonValue(result);
         }
@@ -55,10 +53,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
             List<JsonValue>     syncEvents,
             in JsonKey          dstClientId,
             int                 seq,
-            ObjectWriter        writer)   
+            ObjectWriter        writer)
         {
-            writer.Pretty           = true;
-            writer.WriteNullMembers = false;
             var remoteEventMessage  = new RemoteEventMessage { msg = "ev", clt = dstClientId, seq = seq, ev = syncEvents };
             var result              = writer.WriteAsBytes(remoteEventMessage);
             return new JsonValue(result);
@@ -71,8 +67,6 @@ namespace Friflo.Json.Fliox.Hub.Remote
             in SyncEvent        syncEvent,
             ObjectWriter        writer)       
         {
-            writer.Pretty           = true;
-            writer.WriteNullMembers = false;
             var remoteEv = new RemoteSyncEvent {
                 usr         = syncEvent.usr,
                 db          = syncEvent.db,
