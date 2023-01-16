@@ -90,8 +90,11 @@ namespace Friflo.Json.Fliox.Hub.Remote
         
         /// <summary>create or use a pooled <see cref="SyncContext"/></summary>
         private SyncContext CreateSyncContext() {
-            if (syncContextPool.TryPop(out var syncContext)) {
-                return syncContext;
+            SyncContext syncContext;
+            lock (syncContextPool) {
+                if (syncContextPool.TryPop(out syncContext)) {
+                    return syncContext;
+                }
             }
             var syncPools       = new SyncPools(typeStore);
             var syncBuffers     = new SyncBuffers(new List<SyncRequestTask>(), new List<SyncRequestTask>(), new List<JsonValue>());
@@ -110,7 +113,9 @@ namespace Friflo.Json.Fliox.Hub.Remote
             var memoryBuffer = syncContext.MemoryBuffer;
             syncContext.Init();
             syncContext.SetMemoryBuffer(memoryBuffer);
-            syncContextPool.Push(syncContext);
+            lock (syncContextPool) {
+                syncContextPool.Push(syncContext);
+            }
         }
         
         protected void ExecuteRequest(SyncRequest syncRequest)
