@@ -20,7 +20,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         }
         
         /// <summary>
-        /// Execute queued tasks in case request queueing is enabled in the <see cref="DatabaseService"/> constructor
+        /// Execute queued requests in case request queueing is enabled in the <see cref="DatabaseService"/> constructor
         /// </summary>
         public async Task<int> ExecuteQueuedRequestsAsync()
         {
@@ -44,7 +44,8 @@ namespace Friflo.Json.Fliox.Hub.Host
         }
         
         /// <summary>
-        /// Execute queued tasks in case request queueing is enabled in the <see cref="DatabaseService"/> constructor
+        /// Execute queued requests which can be executed synchronous. <br/>
+        /// Return all requests which require asynchronous execution in <paramref name="asyncServiceJobs"/>
         /// </summary>
         public int ExecuteQueuedRequests(out AsyncServiceJobs asyncServiceJobs)
         {
@@ -70,7 +71,9 @@ namespace Friflo.Json.Fliox.Hub.Host
             return jobBuffer.Count;
         }
             
-        /// <summary>Execute all async requests returned from <see cref="ExecuteQueuedRequests"/></summary>
+        /// <summary>
+        /// Execute requests returned from <see cref="ExecuteQueuedRequests"/> which require asynchronous execution.
+        /// </summary>
         public static async Task ExecuteQueuedRequestsAsync(AsyncServiceJobs asyncServiceJobs) {
             var asyncJobs = asyncServiceJobs.asyncJobs;
             foreach (var job in asyncJobs) {
