@@ -18,7 +18,9 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         public  readonly    JsonKey     dstClientId;
         /// <summary>serialized <see cref="EventMessage"/></summary>
         public  readonly    JsonValue   message;
-        
+
+        public  override    string      ToString() => $"client: {dstClientId}";
+
         public ClientEvent(in JsonKey dstClientId, in JsonValue message) {
             this.dstClientId    = dstClientId;
             this.message        = message;

@@ -20,11 +20,11 @@ namespace Friflo.Json.Fliox.Hub.Remote
         
         public   override   string      ToString()  => $"{database.name} - endpoint: {endpoint}";
 
-        public HttpClientHub(string dbName, string endpoint, SharedEnv env = null)
-            : base(new RemoteDatabase(dbName), env)
+        public HttpClientHub(string dbName, string endpoint, SharedEnv env = null, RemoteClientAccess access = RemoteClientAccess.Multi)
+            : base(new RemoteDatabase(dbName), env, access)
         {
-            this.endpoint = endpoint;
-            httpClient = new HttpClient();
+            this.endpoint   = endpoint;
+            httpClient      = new HttpClient();
         }
         
         public override void Dispose() {

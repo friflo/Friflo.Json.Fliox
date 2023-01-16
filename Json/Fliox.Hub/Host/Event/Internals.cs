@@ -12,11 +12,18 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         internal  readonly  List<JsonValue>     syncEvents;
         /// <summary>Buffer for serialized <see cref="Protocol.EventMessage"/>'s </summary>
         internal  readonly  List<JsonValue>     eventMessages;
+        internal  readonly  bool                sendTargetClientId;
         
-        internal SendEventsContext(ObjectWriter writer, List<JsonValue> syncEvents, List<JsonValue> eventMessages) {
-            this.writer         = writer;
-            this.syncEvents     = syncEvents;
-            this.eventMessages  = eventMessages;
+        internal SendEventsContext(
+            ObjectWriter    writer,
+            List<JsonValue> syncEvents,
+            List<JsonValue> eventMessages,
+            bool            sendTargetClientId)
+        {
+            this.writer             = writer;
+            this.syncEvents         = syncEvents;
+            this.eventMessages      = eventMessages;
+            this.sendTargetClientId = sendTargetClientId;
         }
     }
 }

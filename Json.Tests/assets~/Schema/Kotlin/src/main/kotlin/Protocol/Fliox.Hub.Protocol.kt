@@ -77,7 +77,7 @@ enum class ErrorResponseType {
 @Serializable
 @SerialName("ev")
 data class EventMessage (
-    override  val clt    : String,
+    override  val clt    : String? = null,
               val seq    : Int,
               val events : List<SyncEvent>? = null,
 ) : ProtocolEvent()
@@ -85,7 +85,7 @@ data class EventMessage (
 @Serializable
 // @JsonClassDiscriminator("msg") https://github.com/Kotlin/kotlinx.serialization/issues/546
 abstract class ProtocolEvent  : ProtocolMessage() {
-    abstract  val clt : String
+    abstract  val clt : String?
 }
 
 @Serializable

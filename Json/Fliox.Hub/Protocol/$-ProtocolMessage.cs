@@ -116,7 +116,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol
         /// In many scenarios this property is redundant as every client uses a WebSocket exclusively.
         /// </summary>
         [Serialize                        ("clt")]
-        [Required]      public  JsonKey     dstClientId;
+                        public  JsonKey     dstClientId;
     }
     
     /// <summary>

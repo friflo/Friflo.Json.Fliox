@@ -39,7 +39,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol
     {
         /// <summary>
         /// The user which caused the event. Specifically the user which made a database change or sent a message / command.<br/>
-        /// By default it is set always. If not required set <see cref="EventDispatcher.SendUserIds"/> to false.
+        /// By default it is set always. If not required set <see cref="EventDispatcher.SendEventUserId"/> to false.
         /// </summary>
         [Serialize                                    ("usr")]
                     public      JsonKey                 usr;
@@ -47,7 +47,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol
         /// <summary>
         /// The client which caused the event. Specifically the client which made a database change or sent a message / command.<br/>
         /// By default it set only if the subscriber is the origin of the event to enable ignoring the event.<br/>
-        /// It is set in any case if <see cref="EventDispatcher.SendClientIds"/> is true.
+        /// It is set in any case if <see cref="EventDispatcher.SendEventClientId"/> is true.
         /// </summary>
         [Serialize                                    ("clt")]
                     public      JsonKey                 clt;

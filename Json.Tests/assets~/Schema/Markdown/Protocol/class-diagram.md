@@ -73,7 +73,7 @@ class ErrorResponseType:::cssEnum {
 ProtocolMessage <|-- ProtocolEvent
 class ProtocolEvent {
     <<abstract>>
-    clt  : string
+    clt? : string
 }
 
 ProtocolEvent <|-- EventMessage

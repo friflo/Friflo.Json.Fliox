@@ -168,7 +168,7 @@ export abstract class ProtocolEvent extends ProtocolMessage {
      * The target client the event is sent to. This enables sharing a single (WebSocket) connection by multiple clients.
      * In many scenarios this property is redundant as every client uses a WebSocket exclusively.
      */
-    clt  : string;
+    clt? : string | null;
 }
 
 /**
@@ -197,13 +197,13 @@ export class EventMessage extends ProtocolEvent {
 export class SyncEvent {
     /**
      * The user which caused the event. Specifically the user which made a database change or sent a message / command.  
-     * By default it is set always. If not required set **SendUserIds** to false.
+     * By default it is set always. If not required set **SendEventUserId** to false.
      */
     usr?   : string | null;
     /**
      * The client which caused the event. Specifically the client which made a database change or sent a message / command.  
      * By default it set only if the subscriber is the origin of the event to enable ignoring the event.  
-     * It is set in any case if **SendClientIds** is true.
+     * It is set in any case if **SendEventClientId** is true.
      */
     clt?   : string | null;
     /** The database the **tasks** refer to */

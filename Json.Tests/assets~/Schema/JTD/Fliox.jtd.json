@@ -401,7 +401,7 @@
         },
         "EventMessage": {
             "properties": {
-                "clt":    { "type": "string" },
+                "clt":    { "type": "string", "nullable": true },
                 "seq":    { "type": "int32" },
                 "events": { "elements": { "ref":  "SyncEvent" }, "nullable": true }
             }
@@ -412,7 +412,7 @@
                 "ev": { "ref":  "EventMessage" }
             },
             "properties": {
-                "clt": { "type": "string" }
+                "clt": { "type": "string", "nullable": true }
             }
         },
         "SyncEvent": {

@@ -19,9 +19,9 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         public override bool    IsOpen ()           => true;
 
         public override void    SendEvent(in ClientEvent clientEvent) {
-            if (!clientEvent.dstClientId.IsEqual(client._intern.clientId))
-                throw new InvalidOperationException("Expect ProtocolEvent.dstId == FlioxClient.clientId");
-            
+            if (!clientEvent.dstClientId.IsNull() && !clientEvent.dstClientId.IsEqual(client._intern.clientId)) {
+                throw new InvalidOperationException("Expect event target client id == FlioxClient.clientId");
+            }
             client._intern.eventProcessor.EnqueueEvent(client, clientEvent.message);
         }
     }
