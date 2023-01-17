@@ -361,8 +361,12 @@ export class App {
     }
 
     private             hostInfo:       HostInfo;
+    private             defaultDb:      string = null;
     public  readonly    clusterTree:    ClusterTree;
 
+    public getDefaultDb() : string {
+        return this.defaultDb;
+    }
 
     private async loadCluster () {
         const tasks: SyncRequestTask_Union[] = [
@@ -395,7 +399,9 @@ export class App {
         const website       = this.hostInfo.projectWebsite;
         const envName       = this.hostInfo.envName;
         const envColor      = this.hostInfo.envColor;
-
+        if (dbContainers?.length > 0) {
+            this.defaultDb = dbContainers[0].id;
+        }
         flioxVersionEl.innerText = "Version " + flioxVersion;
         if (name) {
             projectName.innerText   = name;

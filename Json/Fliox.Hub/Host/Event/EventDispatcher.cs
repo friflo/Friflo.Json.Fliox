@@ -269,7 +269,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                 } else {
                     intern.subClients.TryGetValue(clientId, out subClient);
                 }
-                intern.databaseSubsMap.map.TryGetValue(syncContext.databaseName, out databaseSubsArray);
+                intern.databaseSubsMap.map.TryGetValue(syncContext.database.name, out databaseSubsArray);
             }
         }
         
@@ -375,8 +375,10 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             var memoryBuffer = syncContext.MemoryBuffer;
             foreach (var task in syncTasks) { task.intern.json = null; }
             // reused syncEvent to create a serialized SyncEvent for every EventSubClient
+            var database    = syncContext.database;
+            var isDefaultDB = syncContext.hub.database == database;
             var syncEvent = new SyncEvent {
-                db          = syncContext.databaseName.value,
+                db          = isDefaultDB ? null : database.name.value,
                 tasks       = syncContext.syncBuffers.eventTasks,
                 tasksJson   = syncContext.syncBuffers.tasksJson
             };

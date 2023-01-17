@@ -4,7 +4,6 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using Friflo.Json.Burst.Utils;
 using Friflo.Json.Fliox.Hub.Host.Auth;
 using Friflo.Json.Fliox.Hub.Host.Event;
 using Friflo.Json.Fliox.Hub.Host.Utils;
@@ -35,8 +34,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         public              JsonKey                     ClientId        => clientId;
         public              User                        User            => authState.user;
         public              bool                        Authenticated   => authState.authenticated;
-        public              SmallString                 DatabaseName    => databaseName;                    // not null
-        public              EntityDatabase              Database        => hub.GetDatabase(databaseName);   // not null
+        public              EntityDatabase              Database        => database;                // not null
         public              ObjectPool<ObjectMapper>    ObjectMapper    => pool.ObjectMapper;
         public              ObjectPool<EntityProcessor> EntityProcessor => pool.EntityProcessor;
         public              MemoryBuffer                MemoryBuffer    => memoryBuffer;
@@ -58,7 +56,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         [Browse(Never)] internal            Action              canceler = () => {};
         [Browse(Never)] internal            FlioxHub            hub;
         [Browse(Never)] internal            JsonKey             clientId;
-        [Browse(Never)] internal            SmallString         databaseName;              // not null
+        [Browse(Never)] internal            EntityDatabase      database;           // not null
         [Browse(Never)] internal            ClientIdValidation  clientIdValidation;
         [Browse(Never)] internal            SyncRequest         request;
         [Browse(Never)] private             MemoryBuffer        memoryBuffer;
@@ -69,7 +67,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             canceler            = null;
             hub                 = null;
             clientId            = default;
-            databaseName        = default;
+            database            = null;
             clientIdValidation  = default;
             request             = null;
             memoryBuffer        = null;

@@ -57,8 +57,7 @@ namespace Friflo.Json.Fliox.Hub.Host
                 return new ExecuteSyncResult (syncRequest.intern.error, ErrorResponseType.BadRequest); 
             }
             syncContext.hub                 = this;
-            var db                          = syncRequest.intern.db;
-            syncContext.databaseName        = db.name;
+            var db =  syncContext.database  = syncRequest.intern.db;
             syncContext.clientId            = syncRequest.clientId;
             syncContext.clientIdValidation  = authenticator.ValidateClientId(clientController, syncContext);
             

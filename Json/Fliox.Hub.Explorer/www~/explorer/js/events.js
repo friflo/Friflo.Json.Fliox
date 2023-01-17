@@ -315,36 +315,38 @@ export class Events {
         editor.executeEdits("addSubscriptionEvent", [{ range: range, text: evStr, forceMoveMarkers: true }], callback);
     }
     updateUI(ev) {
-        const databaseSub = this.databaseSubs[ev.db];
+        var _a;
+        const db = (_a = ev.db) !== null && _a !== void 0 ? _a : app.getDefaultDb();
+        const databaseSub = this.databaseSubs[db];
         for (const task of ev.tasks) {
             switch (task.task) {
                 case "command":
                 case "message": {
                     const allMessageSub = databaseSub.messageSubs["*"];
                     allMessageSub.events++;
-                    this.uiMessageText(ev.db, "*", allMessageSub, "event");
+                    this.uiMessageText(db, "*", allMessageSub, "event");
                     const messageSub = databaseSub.messageSubs[task.name];
                     messageSub.events++;
-                    this.uiMessageText(ev.db, task.name, messageSub, "event");
+                    this.uiMessageText(db, task.name, messageSub, "event");
                     break;
                 }
                 case "upsert":
                 case "create": {
                     const containerSub = databaseSub.containerSubs[task.cont];
                     containerSub.creates += task.set.length;
-                    this.uiContainerText(ev.db, task.cont, containerSub, "event");
+                    this.uiContainerText(db, task.cont, containerSub, "event");
                     break;
                 }
                 case "delete": {
                     const containerSub = databaseSub.containerSubs[task.cont];
                     containerSub.deletes += task.ids.length;
-                    this.uiContainerText(ev.db, task.cont, containerSub, "event");
+                    this.uiContainerText(db, task.cont, containerSub, "event");
                     break;
                 }
                 case "merge": {
                     const containerSub = databaseSub.containerSubs[task.cont];
                     containerSub.patches += task.set.length;
-                    this.uiContainerText(ev.db, task.cont, containerSub, "event");
+                    this.uiContainerText(db, task.cont, containerSub, "event");
                     break;
                 }
             }
