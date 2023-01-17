@@ -38,6 +38,7 @@ namespace Friflo.Json.Fliox.Hub.Client
     /// </remarks>
     public class HubMessages
     {
+        /// <summary> Used to send typed messages / commands by classes extending <see cref="HubMessages"/></summary>
         protected readonly FlioxClient.SendTask send;
         
         protected HubMessages (FlioxClient client) {

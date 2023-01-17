@@ -53,6 +53,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         [Browse(Never)] public      string                      DatabaseName    => _intern.database ?? _intern.hub.DatabaseName.value;
         /// <summary> access to standard database commands - <see cref="StdCommands"/> </summary>
         [Browse(Never)] public    readonly   StdCommands        std;
+        /// <summary> Used to send typed messages / commands by classes extending <see cref="FlioxClient"/></summary>
         [Browse(Never)] protected readonly   SendTask           send;
         [Browse(Never)] public      IReadOnlyList<SyncFunction> Functions       => _intern.syncStore.functions;
         /// <summary> general client information: attached database, the number of cached entities and scheduled <see cref="Tasks"/> </summary>
@@ -300,16 +301,28 @@ namespace Friflo.Json.Fliox.Hub.Client
                 this.prefix = string.IsNullOrEmpty(prefix) ? null : prefix;
             }
 
+            /// <summary>
+            /// Send a message with the name of the calling method and <paramref name="param"/> value to a database.<br/>
+            /// Other clients can subscribe the message to receive an event with <see cref="SubscribeMessage"/>.
+            /// </summary>
             public MessageTask          Message<TParam>          (TParam param, [CallerMemberName] string name = "") {
                 var messageName = prefix == null ? name : prefix + name;
                 return client.SendMessage(messageName, param);
             }
             
+            /// <summary>
+            /// Send a command with the name of the calling method (without a command value) to a database.<br/>
+            /// Other clients can subscribe the command to receive an event with <see cref="SubscribeMessage"/>.
+            /// </summary>
             public CommandTask<TResult> Command<TResult>         ([CallerMemberName] string name = "") {
                 var commandName = prefix == null ? name : prefix + name;
                 return client.SendCommand<TResult>(commandName);
             }
             
+            /// <summary>
+            /// Send a command with the name of the calling method and <paramref name="param"/> value to a database.<br/>
+            /// Other clients can subscribe the command to receive an event with <see cref="SubscribeMessage"/>.
+            /// </summary>
             public CommandTask<TResult> Command<TParam, TResult> (TParam param, [CallerMemberName] string name = "") {
                 var commandName = prefix == null ? name : prefix + name;
                 return client.SendCommand<TParam, TResult>(commandName, param);
