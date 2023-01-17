@@ -32,7 +32,7 @@ namespace Friflo.Json.Fliox.Hub.Client
     /// {
     ///     public MyCommands(FlioxClient client) : base(client) { }
     ///     
-    ///     public CommandTask &lt;string&gt; Cmd (string param) => SendCommand &lt;string, string&gt;("test.Cmd", param);
+    ///     public CommandTask &lt;string&gt; Cmd (string param) => send.Command &lt;string, string&gt;(param);
     /// }
     /// </code>
     /// </remarks>
