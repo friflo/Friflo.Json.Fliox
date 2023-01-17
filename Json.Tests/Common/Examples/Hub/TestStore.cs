@@ -18,6 +18,6 @@ namespace Friflo.Json.Tests.Common.Examples.Hub
     {
         public MyCommands(FlioxClient client) : base(client) { }
         
-        public CommandTask<string> Cmd (string param) => SendCommand<string, string>("test.Cmd", param);
+        public CommandTask<string> Cmd (string param) => send.Command<string, string>(param, "test.Cmd");
     }
 }

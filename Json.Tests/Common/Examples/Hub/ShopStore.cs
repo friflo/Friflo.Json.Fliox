@@ -15,7 +15,7 @@ namespace Friflo.Json.Tests.Common.Examples.Hub
         
         // --- commands
         /// <summary>return 'hello ...!' with the given <paramref name="param"/></summary>
-        public CommandTask<string>  Hello (string param)    => SendCommand<string, string> ("Hello", param);
+        public CommandTask<string>  Hello (string param)    => send.Command<string, string> (param);
         
         public ShopStore(FlioxHub hub) : base(hub) { }
     }

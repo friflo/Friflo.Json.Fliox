@@ -135,7 +135,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
     {
         public readonly SubCommands sub;
 
-        public CommandTask<string>      Command3 ()                 => SendCommand<string>          ("sub.Command3");
+        public CommandTask<string>      Command3 ()                 => send.Command<string>          ("sub.Command3");
         
         public SubPocStore(FlioxHub hub, string dbName = null) : base(hub, dbName) {
             sub = new SubCommands(this);
@@ -146,7 +146,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
     {
         internal SubCommands(SubPocStore client) : base(client) { }
         
-        public CommandTask<string>      Command4 ()                 => SendCommand<string>          ("sub.Command4");
+        public CommandTask<string>      Command4 ()                 => send.Command<string>          ("sub.Command4");
     }
     
     public class SubPocService : PocService {

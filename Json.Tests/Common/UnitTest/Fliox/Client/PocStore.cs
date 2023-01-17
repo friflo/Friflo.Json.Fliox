@@ -48,19 +48,19 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
         
         // --- commands
         [DatabaseCommand              ("TestCommand")]
-        public CommandTask<bool>        Test (TestCommand param)    => SendCommand<TestCommand, bool>("TestCommand",param);
+        public CommandTask<bool>        Test (TestCommand param)    => send.Command<TestCommand, bool>(param, "TestCommand");
         /// <summary> Create the given number of sync requests each with an upsert to articles </summary>
-        public CommandTask<int>         MultiRequests(int? param)   => SendCommand<int>             ("MultiRequests");
-        public CommandTask<string>      SyncCommand (string param)  => SendCommand<string, string>  ("SyncCommand", param);
-        public CommandTask<string>      AsyncCommand (string param) => SendCommand<string, string>  ("AsyncCommand",param);
-        public CommandTask<string>      Command1 ()                 => SendCommand<string>          ("Command1");
-        public CommandTask<int>         CommandInt (int param)      => SendCommand<int>             ("CommandInt");     // test required param (value type)
+        public CommandTask<int>         MultiRequests(int? param)   => send.Command<int>             ();
+        public CommandTask<string>      SyncCommand (string param)  => send.Command<string, string>  (param);
+        public CommandTask<string>      AsyncCommand (string param) => send.Command<string, string>  (param);
+        public CommandTask<string>      Command1 ()                 => send.Command<string>          ();
+        public CommandTask<int>         CommandInt (int param)      => send.Command<int>             ();     // test required param (value type)
         
         // --- messages
-        public MessageTask              Message1    (string param)  => SendMessage  ("Message1",        param);
-        public MessageTask              AsyncMessage(string param)  => SendMessage  ("AsyncMessage",    param);
-        public MessageTask              StartTime   (DateTime param)=> SendMessage  ("StartTime",       param);
-        public MessageTask              StopTime    (DateTime param)=> SendMessage  ("StopTime",        param);
+        public MessageTask              Message1    (string param)  => send.Message  (param);
+        public MessageTask              AsyncMessage(string param)  => send.Message  (param);
+        public MessageTask              StartTime   (DateTime param)=> send.Message  (param);
+        public MessageTask              StopTime    (DateTime param)=> send.Message  (param);
     }
     
     
@@ -69,14 +69,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
         public TestCommands(FlioxClient client) : base(client) { }
         
         // --- commands
-        public CommandTask<string>  Command2 ()                 => SendCommand<string>          ("test.Command2");
-        public CommandTask<string>  CommandHello (string param) => SendCommand<string, string>  ("test.CommandHello", param);
+        public CommandTask<string>  Command2 ()                 => send.Command<string>          ("test.Command2");
+        public CommandTask<string>  CommandHello (string param) => send.Command<string, string>  (param, "test.CommandHello");
         
-        public CommandTask<int>     CommandExecutionError ()    => SendCommand<int>             ("test.CommandExecutionError");     // test returning an error
-        public CommandTask<int>     CommandExecutionException() => SendCommand<int>             ("test.CommandExecutionException"); // test throwing exception
+        public CommandTask<int>     CommandExecutionError ()    => send.Command<int>             ("test.CommandExecutionError");     // test returning an error
+        public CommandTask<int>     CommandExecutionException() => send.Command<int>             ("test.CommandExecutionException"); // test throwing exception
 
         
         // --- messages
-        public MessageTask          Message2 (string param)     => SendMessage                  ("test.Message2",  param);
+        public MessageTask          Message2 (string param)     => send.Message                  (param, "test.Message2");
     }
 }

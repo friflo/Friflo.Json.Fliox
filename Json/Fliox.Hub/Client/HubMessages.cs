@@ -36,22 +36,10 @@ namespace Friflo.Json.Fliox.Hub.Client
     /// </remarks>
     public class HubMessages
     {
-        private readonly    FlioxClient client;
+        protected readonly FlioxClient.SendTask send;
         
         protected HubMessages (FlioxClient client) {
-            this.client = client;
-        }
-        
-        protected MessageTask SendMessage<TParam>(string name, TParam param) {
-            return client.SendMessage(name, param);
-        }
-        
-        protected CommandTask<TResult> SendCommand<TResult>(string name) {
-            return client.SendCommand<TResult>(name);
-        }
-        
-        protected CommandTask<TResult> SendCommand<TParam, TResult>(string name, TParam param) {
-            return client.SendCommand<TParam, TResult>(name, param);
+            send = new FlioxClient.SendTask(client);
         }
     }
     
@@ -69,31 +57,31 @@ namespace Friflo.Json.Fliox.Hub.Client
 
         // --- commands: database
         /// <summary>echos the given parameter to assure the database is working appropriately. </summary>
-        public CommandTask<TParam>      Echo<TParam> (TParam param) => SendCommand<TParam,TParam>   (Std.Echo, param);
+        public CommandTask<TParam>      Echo<TParam> (TParam param) => send.Command<TParam,TParam>   (param, Std.Echo);
         /// <summary>A a command that completes after a specified number of milliseconds. </summary>
-        public CommandTask<int>         Delay(int delay)    => SendCommand<int,int>                 (Std.Delay, delay);
+        public CommandTask<int>         Delay(int delay)    => send.Command<int,int>                 (delay, Std.Delay);
         /// <summary>list all database containers</summary>
-        public CommandTask<DbContainers>Containers()        => SendCommand<DbContainers>            (Std.Containers);
+        public CommandTask<DbContainers>Containers()        => send.Command<DbContainers>            (Std.Containers);
         /// <summary>list all database commands and messages</summary>
-        public CommandTask<DbMessages>  Messages()          => SendCommand<DbMessages>              (Std.Messages);
+        public CommandTask<DbMessages>  Messages()          => send.Command<DbMessages>              (Std.Messages);
         /// <summary>return the Schema assigned to the database</summary>
-        public CommandTask<DbSchema>    Schema()            => SendCommand<DbSchema>                (Std.Schema);
+        public CommandTask<DbSchema>    Schema()            => send.Command<DbSchema>                (Std.Schema);
         /// <summary>return the number of entities of all containers (or the given container) of the database</summary>
-        public CommandTask<DbStats>     Stats(string param) => SendCommand<DbStats>                 (Std.Stats);
+        public CommandTask<DbStats>     Stats(string param) => send.Command<DbStats>                 (Std.Stats);
         
         // --- commands: host
         /// <summary>returns general information about the Hub like version, host, project and environment name</summary>
-        public CommandTask<HostInfo>    Host(HostParam param)=> SendCommand<HostParam, HostInfo>    (Std.HostInfo, param);
+        public CommandTask<HostInfo>    Host(HostParam param)=> send.Command<HostParam, HostInfo>    (param, Std.HostInfo);
         /// <summary>list all databases and their containers hosted by the Hub</summary>
-        public CommandTask<HostCluster> Cluster()           => SendCommand<HostCluster>             (Std.HostCluster);
+        public CommandTask<HostCluster> Cluster()            => send.Command<HostCluster>            (Std.HostCluster);
         
         // --- commands: user
         /// <summary>return the groups of the current user. Optionally change the groups of the current user</summary>
-        public CommandTask<UserResult>  User(UserParam param) => SendCommand<UserParam,UserResult>  (Std.User, param);
+        public CommandTask<UserResult>  User(UserParam param)=> send.Command<UserParam,UserResult>  (param, Std.User);
         
         // --- commands: client
         /// <summary>return client specific infos and adjust general client behavior like <see cref="ClientParam.queueEvents"/></summary>
-        public CommandTask<ClientResult> Client(ClientParam param)=> SendCommand<ClientParam, ClientResult>(Std.Client, param);
+        public CommandTask<ClientResult> Client(ClientParam param)=> send.Command<ClientParam, ClientResult>(param, Std.Client);
 
     }
     

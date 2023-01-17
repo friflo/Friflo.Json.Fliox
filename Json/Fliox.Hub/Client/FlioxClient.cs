@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using Friflo.Json.Fliox.Hub.Client.Event;
 using Friflo.Json.Fliox.Hub.Client.Internal;
 using Friflo.Json.Fliox.Hub.Client.Internal.Map;
@@ -51,7 +52,8 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// <summary> name of the database the client is attached to </summary>
         [Browse(Never)] public      string                      DatabaseName    => _intern.database ?? _intern.hub.DatabaseName.value;
         /// <summary> access to standard database commands - <see cref="StdCommands"/> </summary>
-        [Browse(Never)] public readonly   StdCommands           std;
+        [Browse(Never)] public    readonly   StdCommands        std;
+        [Browse(Never)] protected readonly   SendTask           send;
         [Browse(Never)] public      IReadOnlyList<SyncFunction> Functions       => _intern.syncStore.functions;
         /// <summary> general client information: attached database, the number of cached entities and scheduled <see cref="Tasks"/> </summary>
         [Browse(Never)] public      ClientInfo                  ClientInfo      => new ClientInfo(this); 
@@ -97,6 +99,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// </summary>
         public FlioxClient(FlioxHub hub, string dbName = null, ClientOptions options = null) {
             if (hub  == null)  throw new ArgumentNullException(nameof(hub));
+            send                = new SendTask(this);
             type                = GetType();
             options             = options ?? ClientOptions.Default;
             var eventReceiver   = options.createEventReceiver(hub, this);
@@ -285,7 +288,27 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
         #endregion
 
-    #region - send message
+    #region - send message / command
+        public readonly struct  SendTask {
+            private readonly FlioxClient client;
+                
+            internal SendTask(FlioxClient client) {
+                this.client = client;
+            }
+                
+            public MessageTask          Message<TParam>          (TParam param, [CallerMemberName] string name = "") {
+                return client.SendMessage(name, param);
+            }
+            
+            public CommandTask<TResult> Command<TResult>         ([CallerMemberName] string name = "") {
+                return client.SendCommand<TResult>(name);
+            }
+            
+            public CommandTask<TResult> Command<TParam, TResult> (TParam param, [CallerMemberName] string name = "") {
+                return client.SendCommand<TParam, TResult>(name, param);
+            }
+        }
+        
         /// <summary>
         /// Send a message with the given <paramref name="name"/> (without a value) to a database.
         /// Other clients can subscribe the message to receive an event with <see cref="SubscribeMessage"/>.
@@ -317,9 +340,7 @@ namespace Friflo.Json.Fliox.Hub.Client
                 return task;
             }
         }
-        #endregion
 
-    #region - send command
         /// <summary>
         /// Send a command with the given <paramref name="name"/> (without a command value) to a database.
         /// Other clients can subscribe the command to receive an event with <see cref="SubscribeMessage"/>.
