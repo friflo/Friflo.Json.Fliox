@@ -1,3 +1,4 @@
+using Friflo.Json.Fliox;
 using Friflo.Json.Fliox.Hub.Client;
 using Friflo.Json.Fliox.Hub.Host;
 
@@ -14,10 +15,11 @@ namespace Friflo.Json.Tests.Common.Examples.Hub
         }
     }
     
+    [MessagePrefix("test.")]
     public class MyCommands : HubMessages
     {
         public MyCommands(FlioxClient client) : base(client) { }
         
-        public CommandTask<string> Cmd (string param) => send.Command<string, string>(param, "test.Cmd");
+        public CommandTask<string> Cmd (string param) => send.Command<string, string>(param);
     }
 }

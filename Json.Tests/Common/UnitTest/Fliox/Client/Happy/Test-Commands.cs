@@ -3,6 +3,7 @@
 
 using System;
 using System.Threading.Tasks;
+using Friflo.Json.Fliox;
 using Friflo.Json.Fliox.Hub.Client;
 using Friflo.Json.Fliox.Hub.DB.Cluster;
 using Friflo.Json.Fliox.Hub.Host;
@@ -142,11 +143,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         }
     }
     
+    [MessagePrefix("sub.")]
     public sealed class SubCommands : HubMessages
     {
         internal SubCommands(SubPocStore client) : base(client) { }
         
-        public CommandTask<string>      Command4 ()                 => send.Command<string>          ("sub.Command4");
+        public CommandTask<string>      Command4 ()                 => send.Command<string>          ();
     }
     
     public class SubPocService : PocService {

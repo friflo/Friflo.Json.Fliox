@@ -26,16 +26,16 @@ namespace Demo
         
         // --- commands
         /// <summary> generate random entities (records) in the containers listed in the <see cref="Fake"/> param </summary>
-        public CommandTask<Records>     FakeRecords (Fake param)    => send.Command<Fake, Records>   (param, "demo.FakeRecords");
+        public CommandTask<Records>     FakeRecords (Fake param)    => send.Command<Fake, Records>   (param);
 
         /// <summary> count records added to containers within the last param seconds. default 60</summary>
-        public CommandTask<Counts>      CountLatest (int? param)    => send.Command<int?, Counts>    (param, "demo.CountLatest");
+        public CommandTask<Counts>      CountLatest (int? param)    => send.Command<int?, Counts>    (param);
         
         /// <summary> return records added to containers within the last param seconds. default 60</summary>
-        public CommandTask<Records>     LatestRecords(int? param)   => send.Command<int?, Records>   (param, "demo.LatestRecords");
+        public CommandTask<Records>     LatestRecords(int? param)   => send.Command<int?, Records>   (param);
 
         /// <summary> simple command adding two numbers - no database access. </summary>
-        public CommandTask<double>      Add  (Operands  param)      => send.Command<Operands, double>(param, "demo.Add");
+        public CommandTask<double>      Add  (Operands  param)      => send.Command<Operands, double>(param);
 
         public DemoClient(FlioxHub hub, string dbName = null) : base (hub, dbName) { }
     }

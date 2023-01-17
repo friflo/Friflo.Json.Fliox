@@ -100,10 +100,10 @@ namespace Friflo.Json.Fliox.Hub.Client
         public FlioxClient(FlioxHub hub, string dbName = null, ClientOptions options = null) {
             if (hub  == null)  throw new ArgumentNullException(nameof(hub));
             type                = GetType();
-            send                = new SendTask(this);
             options             = options ?? ClientOptions.Default;
             var eventReceiver   = options.createEventReceiver(hub, this);
             _intern             = new ClientIntern(this, hub, dbName, eventReceiver);
+            send                = new SendTask(this, _intern.messagePrefix);
             std                 = new StdCommands  (this);
             hub.sharedEnv.sharedCache.AddRootType(type);
         }
@@ -290,22 +290,33 @@ namespace Friflo.Json.Fliox.Hub.Client
 
     #region - send message / command
         public readonly struct  SendTask {
-            private readonly FlioxClient client;
-                
-            internal SendTask(FlioxClient client) {
+            private readonly    FlioxClient client;
+            private readonly    string      prefix;
+
+            public  override    string      ToString()  => prefix;
+
+            internal SendTask(FlioxClient client, string prefix) {
                 this.client = client;
+                this.prefix = string.IsNullOrEmpty(prefix) ? null : prefix;
+            }
+
+            private string GetName(string name) {
+                return prefix == null ? name : prefix + name;
             }
                 
             public MessageTask          Message<TParam>          (TParam param, [CallerMemberName] string name = "") {
-                return client.SendMessage(name, param);
+                var messageName = GetName(name);
+                return client.SendMessage(messageName, param);
             }
             
             public CommandTask<TResult> Command<TResult>         ([CallerMemberName] string name = "") {
-                return client.SendCommand<TResult>(name);
+                var commandName = GetName(name);
+                return client.SendCommand<TResult>(commandName);
             }
             
             public CommandTask<TResult> Command<TParam, TResult> (TParam param, [CallerMemberName] string name = "") {
-                return client.SendCommand<TParam, TResult>(name, param);
+                var commandName = GetName(name);
+                return client.SendCommand<TParam, TResult>(commandName, param);
             }
         }
         

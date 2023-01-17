@@ -2,7 +2,9 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 using Friflo.Json.Fliox.Hub.DB.Cluster;
+using Friflo.Json.Fliox.Mapper.Map.Utils;
 
 namespace Friflo.Json.Fliox.Hub.Client
 {
@@ -39,14 +41,34 @@ namespace Friflo.Json.Fliox.Hub.Client
         protected readonly FlioxClient.SendTask send;
         
         protected HubMessages (FlioxClient client) {
-            send = new FlioxClient.SendTask(client);
+            var prefix  = GetMessagePrefix();
+            send        = new FlioxClient.SendTask(client, prefix);
         }
+        
+        private string GetMessagePrefix() {
+            var     type = GetType();
+            string  prefix;
+            lock (PrefixCache) {
+                if (PrefixCache.TryGetValue(type, out prefix)) {
+                    return prefix;
+                }
+            }
+            var attributes  = type.CustomAttributes;
+            prefix          = MessageUtils.GetMessagePrefix(attributes);
+            lock (PrefixCache) {
+                PrefixCache.TryAdd(type, prefix);    
+            }
+            return prefix;
+        }
+        
+        private static readonly Dictionary<Type, string> PrefixCache = new Dictionary<Type, string>();
     }
     
     // ---------------------------------- standard commands ----------------------------------
     /// <summary>
     /// Contains standard database commands. Its commands are prefixed with <b>std.*</b>
     /// </summary>
+    [MessagePrefix("std.")]
     public sealed class StdCommands : HubMessages
     {
         internal StdCommands(FlioxClient client) : base(client) { }
@@ -57,31 +79,31 @@ namespace Friflo.Json.Fliox.Hub.Client
 
         // --- commands: database
         /// <summary>echos the given parameter to assure the database is working appropriately. </summary>
-        public CommandTask<TParam>      Echo<TParam> (TParam param) => send.Command<TParam,TParam>   (param, Std.Echo);
+        public CommandTask<TParam>      Echo<TParam> (TParam param) => send.Command<TParam,TParam>   (param);
         /// <summary>A a command that completes after a specified number of milliseconds. </summary>
-        public CommandTask<int>         Delay(int delay)    => send.Command<int,int>                 (delay, Std.Delay);
+        public CommandTask<int>         Delay(int delay)        => send.Command<int,int>                 (delay);
         /// <summary>list all database containers</summary>
-        public CommandTask<DbContainers>Containers()        => send.Command<DbContainers>            (Std.Containers);
+        public CommandTask<DbContainers>Containers()            => send.Command<DbContainers>            ();
         /// <summary>list all database commands and messages</summary>
-        public CommandTask<DbMessages>  Messages()          => send.Command<DbMessages>              (Std.Messages);
+        public CommandTask<DbMessages>  Messages()              => send.Command<DbMessages>              ();
         /// <summary>return the Schema assigned to the database</summary>
-        public CommandTask<DbSchema>    Schema()            => send.Command<DbSchema>                (Std.Schema);
+        public CommandTask<DbSchema>    Schema()                => send.Command<DbSchema>                ();
         /// <summary>return the number of entities of all containers (or the given container) of the database</summary>
-        public CommandTask<DbStats>     Stats(string param) => send.Command<DbStats>                 (Std.Stats);
+        public CommandTask<DbStats>     Stats(string param)     => send.Command<DbStats>                 ();
         
         // --- commands: host
         /// <summary>returns general information about the Hub like version, host, project and environment name</summary>
-        public CommandTask<HostInfo>    Host(HostParam param)=> send.Command<HostParam, HostInfo>    (param, Std.HostInfo);
+        public CommandTask<HostInfo>    Host(HostParam param)   => send.Command<HostParam, HostInfo>    (param);
         /// <summary>list all databases and their containers hosted by the Hub</summary>
-        public CommandTask<HostCluster> Cluster()            => send.Command<HostCluster>            (Std.HostCluster);
+        public CommandTask<HostCluster> Cluster()               => send.Command<HostCluster>            ();
         
         // --- commands: user
         /// <summary>return the groups of the current user. Optionally change the groups of the current user</summary>
-        public CommandTask<UserResult>  User(UserParam param)=> send.Command<UserParam,UserResult>  (param, Std.User);
+        public CommandTask<UserResult>  User(UserParam param)   => send.Command<UserParam,UserResult>  (param);
         
         // --- commands: client
         /// <summary>return client specific infos and adjust general client behavior like <see cref="ClientParam.queueEvents"/></summary>
-        public CommandTask<ClientResult> Client(ClientParam param)=> send.Command<ClientParam, ClientResult>(param, Std.Client);
+        public CommandTask<ClientResult> Client(ClientParam param)=> send.Command<ClientParam, ClientResult>(param);
 
     }
     

@@ -63,20 +63,20 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
         public MessageTask              StopTime    (DateTime param)=> send.Message  (param);
     }
     
-    
+    [MessagePrefix("test.")]
     public class TestCommands : HubMessages
     {
         public TestCommands(FlioxClient client) : base(client) { }
         
         // --- commands
-        public CommandTask<string>  Command2 ()                 => send.Command<string>          ("test.Command2");
-        public CommandTask<string>  CommandHello (string param) => send.Command<string, string>  (param, "test.CommandHello");
+        public CommandTask<string>  Command2 ()                 => send.Command<string>          ();
+        public CommandTask<string>  CommandHello (string param) => send.Command<string, string>  (param);
         
-        public CommandTask<int>     CommandExecutionError ()    => send.Command<int>             ("test.CommandExecutionError");     // test returning an error
-        public CommandTask<int>     CommandExecutionException() => send.Command<int>             ("test.CommandExecutionException"); // test throwing exception
+        public CommandTask<int>     CommandExecutionError ()    => send.Command<int>             ();     // test returning an error
+        public CommandTask<int>     CommandExecutionException() => send.Command<int>             (); // test throwing exception
 
         
         // --- messages
-        public MessageTask          Message2 (string param)     => send.Message                  (param, "test.Message2");
+        public MessageTask          Message2 (string param)     => send.Message                  (param);
     }
 }
