@@ -300,22 +300,18 @@ namespace Friflo.Json.Fliox.Hub.Client
                 this.prefix = string.IsNullOrEmpty(prefix) ? null : prefix;
             }
 
-            private string GetName(string name) {
-                return prefix == null ? name : prefix + name;
-            }
-                
             public MessageTask          Message<TParam>          (TParam param, [CallerMemberName] string name = "") {
-                var messageName = GetName(name);
+                var messageName = prefix == null ? name : prefix + name;
                 return client.SendMessage(messageName, param);
             }
             
             public CommandTask<TResult> Command<TResult>         ([CallerMemberName] string name = "") {
-                var commandName = GetName(name);
+                var commandName = prefix == null ? name : prefix + name;
                 return client.SendCommand<TResult>(commandName);
             }
             
             public CommandTask<TResult> Command<TParam, TResult> (TParam param, [CallerMemberName] string name = "") {
-                var commandName = GetName(name);
+                var commandName = prefix == null ? name : prefix + name;
                 return client.SendCommand<TParam, TResult>(commandName, param);
             }
         }
