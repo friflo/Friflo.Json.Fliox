@@ -419,7 +419,7 @@
             "properties": {
                 "usr":   { "type": "string", "nullable": true },
                 "clt":   { "type": "string", "nullable": true },
-                "db":    { "type": "string" },
+                "db":    { "type": "string", "nullable": true },
                 "tasks": { "elements": { "ref":  "SyncRequestTask" }, "nullable": true }
             }
         }

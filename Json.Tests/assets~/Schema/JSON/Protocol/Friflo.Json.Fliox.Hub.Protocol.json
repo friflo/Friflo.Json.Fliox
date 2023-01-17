@@ -110,12 +110,9 @@
             "properties": {
                 "usr":   { "type": ["string", "null"], "description": "The user which caused the event. Specifically the user which made a database change or sent a message / command.<br/>\nBy default it is set always. If not required set <b>SendEventUserId</b> to false." },
                 "clt":   { "type": ["string", "null"], "description": "The client which caused the event. Specifically the client which made a database change or sent a message / command.<br/>\nBy default it set only if the subscriber is the origin of the event to enable ignoring the event.<br/>\nIt is set in any case if <b>SendEventClientId</b> is true." },
-                "db":    { "type": "string", "description": "The database the <b>tasks</b> refer to" },
+                "db":    { "type": ["string", "null"], "description": "The database the <b>tasks</b> refer to<br/><b>db</b> is null if the event refers to the default <b>database</b>" },
                 "tasks": { "type": ["array", "null"], "items": { "$ref": "./Friflo.Json.Fliox.Hub.Protocol.Tasks.json#/definitions/SyncRequestTask" }, "description": "Contains the events an application subscribed. These are:<br/><b>CreateEntities</b>, \n<b>UpsertEntities</b>, \n<b>DeleteEntities</b>,\n<b>SendMessage</b>, \n<b>SendCommand</b>" }
             },
-            "required": [
-                "db"
-            ],
             "additionalProperties": false
         }
     }

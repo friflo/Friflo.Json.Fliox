@@ -92,7 +92,7 @@ abstract class ProtocolEvent  : ProtocolMessage() {
 data class SyncEvent (
               val usr   : String? = null,
               val clt   : String? = null,
-              val db    : String,
+              val db    : String? = null,
               val tasks : List<SyncRequestTask>? = null,
 )
 

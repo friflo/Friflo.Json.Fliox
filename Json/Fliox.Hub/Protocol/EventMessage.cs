@@ -2,8 +2,8 @@
 // See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Text;
+using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.Event;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 
@@ -53,8 +53,11 @@ namespace Friflo.Json.Fliox.Hub.Protocol
         [Serialize                                    ("clt")]
                     public      JsonKey                 clt;
         
-        /// <summary>The database the <see cref="tasks"/> refer to</summary>
-        [Required]  public      string                  db;
+        /// <summary>
+        /// The database the <see cref="tasks"/> refer to<br/>
+        /// <see cref="db"/> is null if the event refers to the default <see cref="FlioxHub.database"/>
+        /// </summary>
+                    public      string                  db;
 
         /// <summary>
         /// Contains the events an application subscribed. These are:<br/>

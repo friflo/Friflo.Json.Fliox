@@ -206,8 +206,8 @@ export class SyncEvent {
      * It is set in any case if **SendEventClientId** is true.
      */
     clt?   : string | null;
-    /** The database the **tasks** refer to */
-    db     : string;
+    /** The database the **tasks** refer to  **db** is null if the event refers to the default **database** */
+    db?    : string | null;
     /**
      * Contains the events an application subscribed. These are:  **CreateEntities**, 
      * **UpsertEntities**, 

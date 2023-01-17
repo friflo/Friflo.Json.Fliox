@@ -87,7 +87,7 @@ EventMessage *-- "0..*" SyncEvent : ev
 class SyncEvent {
     usr?   : string
     clt?   : string
-    db     : string
+    db?    : string
     tasks? : SyncRequestTask[]
 }
 SyncEvent *-- "0..*" SyncRequestTask : tasks
