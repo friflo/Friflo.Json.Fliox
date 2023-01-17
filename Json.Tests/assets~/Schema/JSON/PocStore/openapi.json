@@ -318,7 +318,7 @@
     },
     "/?command=std.Echo": {
       "post": {
-        "summary":    "echos the given parameter to assure the database is working appropriately.",
+        "summary":    "Echos the given parameter to assure the database is working appropriately.",
         "tags":       ["commands"],
         "requestBody": {          
           "content": {
@@ -345,7 +345,7 @@
     },
     "/?command=std.Delay": {
       "post": {
-        "summary":    "A a command that completes after a specified number of milliseconds.",
+        "summary":    "A command that completes after a specified number of milliseconds.",
         "tags":       ["commands"],
         "requestBody": {          
           "content": {
@@ -372,7 +372,7 @@
     },
     "/?command=std.Containers": {
       "post": {
-        "summary":    "list all database containers",
+        "summary":    "List all database containers",
         "tags":       ["commands"],
         "responses": {
           "200": {             
@@ -390,7 +390,7 @@
     },
     "/?command=std.Messages": {
       "post": {
-        "summary":    "list all database commands and messages",
+        "summary":    "List all database commands and messages",
         "tags":       ["commands"],
         "responses": {
           "200": {             
@@ -408,7 +408,7 @@
     },
     "/?command=std.Schema": {
       "post": {
-        "summary":    "return the Schema assigned to the database",
+        "summary":    "Return the Schema assigned to the database",
         "tags":       ["commands"],
         "responses": {
           "200": {             
@@ -426,7 +426,7 @@
     },
     "/?command=std.Stats": {
       "post": {
-        "summary":    "return the number of entities of all containers (or the given container) of the database",
+        "summary":    "Return the number of entities of all containers (or the given container) of the database",
         "tags":       ["commands"],
         "requestBody": {          
           "content": {
@@ -453,7 +453,7 @@
     },
     "/?command=std.Host": {
       "post": {
-        "summary":    "returns general information about the Hub like version, host, project and environment name",
+        "summary":    "Returns general information about the Hub like version, host, project and environment name",
         "tags":       ["commands"],
         "requestBody": {          
           "content": {
@@ -480,7 +480,7 @@
     },
     "/?command=std.Cluster": {
       "post": {
-        "summary":    "list all databases and their containers hosted by the Hub",
+        "summary":    "List all databases and their containers hosted by the Hub",
         "tags":       ["commands"],
         "responses": {
           "200": {             
@@ -498,7 +498,7 @@
     },
     "/?command=std.User": {
       "post": {
-        "summary":    "return the groups of the current user. Optionally change the groups of the current user",
+        "summary":    "Return the groups of the current user. Optionally change the groups of the current user",
         "tags":       ["commands"],
         "requestBody": {          
           "content": {
@@ -525,7 +525,7 @@
     },
     "/?command=std.Client": {
       "post": {
-        "summary":    "return client specific infos and adjust general client behavior like <b>queueEvents</b>",
+        "summary":    "Return client specific infos and adjust general client behavior like <b>queueEvents</b>",
         "tags":       ["commands"],
         "requestBody": {          
           "content": {

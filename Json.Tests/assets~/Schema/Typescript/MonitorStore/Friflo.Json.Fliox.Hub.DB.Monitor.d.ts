@@ -32,25 +32,25 @@ export interface MonitorStore {
     // --- commands
     /** Reset all request, task and event counters */
     ["ClearStats"]         (param: ClearStats | null) : ClearStatsResult;
-    /** echos the given parameter to assure the database is working appropriately. */
+    /** Echos the given parameter to assure the database is working appropriately. */
     ["std.Echo"]           (param: any) : any;
-    /** A a command that completes after a specified number of milliseconds. */
+    /** A command that completes after a specified number of milliseconds. */
     ["std.Delay"]          (param: int32) : int32;
-    /** list all database containers */
+    /** List all database containers */
     ["std.Containers"]     () : DbContainers;
-    /** list all database commands and messages */
+    /** List all database commands and messages */
     ["std.Messages"]       () : DbMessages;
-    /** return the Schema assigned to the database */
+    /** Return the Schema assigned to the database */
     ["std.Schema"]         () : DbSchema;
-    /** return the number of entities of all containers (or the given container) of the database */
+    /** Return the number of entities of all containers (or the given container) of the database */
     ["std.Stats"]          (param: string | null) : DbStats;
-    /** returns general information about the Hub like version, host, project and environment name */
+    /** Returns general information about the Hub like version, host, project and environment name */
     ["std.Host"]           (param: HostParam | null) : HostInfo;
-    /** list all databases and their containers hosted by the Hub */
+    /** List all databases and their containers hosted by the Hub */
     ["std.Cluster"]        () : HostCluster;
-    /** return the groups of the current user. Optionally change the groups of the current user */
+    /** Return the groups of the current user. Optionally change the groups of the current user */
     ["std.User"]           (param: UserParam | null) : UserResult;
-    /** return client specific infos and adjust general client behavior like **queueEvents** */
+    /** Return client specific infos and adjust general client behavior like **queueEvents** */
     ["std.Client"]         (param: ClientParam | null) : ClientResult;
 }
 
