@@ -99,8 +99,8 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// </summary>
         public FlioxClient(FlioxHub hub, string dbName = null, ClientOptions options = null) {
             if (hub  == null)  throw new ArgumentNullException(nameof(hub));
-            send                = new SendTask(this);
             type                = GetType();
+            send                = new SendTask(this);
             options             = options ?? ClientOptions.Default;
             var eventReceiver   = options.createEventReceiver(hub, this);
             _intern             = new ClientIntern(this, hub, dbName, eventReceiver);

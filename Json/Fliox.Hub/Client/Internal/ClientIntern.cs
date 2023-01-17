@@ -19,6 +19,7 @@ using Friflo.Json.Fliox.Hub.Utils;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Mapper.Diff;
 using Friflo.Json.Fliox.Mapper.Map;
+using Friflo.Json.Fliox.Mapper.Map.Utils;
 using Friflo.Json.Fliox.Pools;
 using Friflo.Json.Fliox.Utils;
 using static System.Diagnostics.DebuggerBrowsableState;
@@ -37,6 +38,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         /// <summary>is null if <see cref="FlioxHub.SupportPushEvents"/> == false</summary> 
         internal readonly   EventReceiver                   eventReceiver;
         internal readonly   ObjectPool<ReaderPool>          responseReaderPool;
+        internal readonly   string                          messagePrefix;
 
         // --- readonly / private - owned
         private             ObjectDiffer                    objectDiffer;       // create on demand
@@ -92,8 +94,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
 
         public   override string        ToString()              => "";
 
-        private static readonly Dictionary<Type, ClientTypeInfo>    ClientTypeCache = new Dictionary<Type, ClientTypeInfo>();
-        private static readonly SynchronousEventProcessor                DefaultEventProcessor = new SynchronousEventProcessor();
+        private static readonly Dictionary<Type, ClientTypeInfo>    ClientTypeCache         = new Dictionary<Type, ClientTypeInfo>();
+        private static readonly SynchronousEventProcessor           DefaultEventProcessor   = new SynchronousEventProcessor();
 
        
         internal EntitySet  GetSetByName    (string name)                    => setByName[name];
@@ -156,7 +158,9 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             syncResultBuffer            = default;
             syncContextBuffer           = default;
             
-            InitEntitySets (client, entityInfos);
+            messagePrefix               = null;
+            var info = InitEntitySets (client, entityInfos);
+            messagePrefix               = info.messagePrefix;
         }
         
         internal void Dispose() {
@@ -189,7 +193,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             syncStore       = new SyncStore();
         }
         
-        private void InitEntitySets(FlioxClient client, EntityInfo[] entityInfos) {
+        private ClientTypeInfo InitEntitySets(FlioxClient client, EntityInfo[] entityInfos) {
             var clientTypeInfo  = GetClientTypeInfo (client.type, entityInfos);
             var error           = clientTypeInfo.error;
             if (error != null) {
@@ -206,6 +210,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 setByName[name] = entitySet;
                 entityInfo.SetEntitySetMember(client, entitySet);
             }
+            return clientTypeInfo;
         }
         
         private ClientTypeInfo GetClientTypeInfo (Type clientType, EntityInfo[] entityInfos) {
@@ -218,8 +223,9 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                     var entitySetType = entityInfos[n].entitySetType;
                     mappers[n] = (IEntitySetMapper)typeStore.GetTypeMapper(entitySetType);
                 }
-                var error       = ValidateMappers(mappers, entityInfos);
-                var clientInfo  = new ClientTypeInfo (mappers, error);
+                var error           = ValidateMappers(mappers, entityInfos);
+                var messagePrefix   = MessageUtils.GetMessagePrefix(clientType.CustomAttributes);
+                var clientInfo      = new ClientTypeInfo (mappers, messagePrefix, error);
                 cache.Add(clientType, clientInfo);
                 return clientInfo;
             }
@@ -329,9 +335,15 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         {
             internal  readonly  string              error;
             internal  readonly  IEntitySetMapper[]  entitySetMappers;
+            internal  readonly  string              messagePrefix;
         
-            internal ClientTypeInfo (IEntitySetMapper[] entitySetMappers, string error) {
+            internal ClientTypeInfo (
+                IEntitySetMapper[]  entitySetMappers,
+                string              messagePrefix,
+                string              error)
+            {
                 this.entitySetMappers   = entitySetMappers;
+                this.messagePrefix      = messagePrefix;
                 this.error              = error;
             }
         }
