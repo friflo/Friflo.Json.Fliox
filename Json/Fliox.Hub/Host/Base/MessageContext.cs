@@ -16,7 +16,6 @@ namespace Friflo.Json.Fliox.Hub.Host
     /// <remarks>
     /// In general it provides:
     /// - the command <see cref="Name"/> == method name <br/>
-    /// - the <see cref="DatabaseName"/> <br/>
     /// - the <see cref="Database"/> instance <br/>
     /// - the <see cref="Hub"/> exposing general Hub information <br/>
     /// - a <see cref="Pool"/> mainly providing common utilities to transform JSON <br/>
@@ -26,7 +25,6 @@ namespace Friflo.Json.Fliox.Hub.Host
         public              string          Name            { get; }
         public              SyncRequestTask Task            { get; }
         public              FlioxHub        Hub             => syncContext.hub;
-        public              string          DatabaseName    => syncContext.database.name.value; // not null
         public              EntityDatabase  Database        => syncContext.database;            // not null
         public              User            User            => syncContext.User;
         public              JsonKey         ClientId        => syncContext.clientId;

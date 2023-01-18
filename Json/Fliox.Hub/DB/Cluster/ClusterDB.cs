@@ -74,21 +74,21 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
                     messages.Upsert(dbMessages);
                 }
                 if (ClusterDB.FindTask(nameof(schemas),dbKey, tasks)) {
-                    var schema = CreateDbSchema(database, databaseName);
+                    var schema = CreateDbSchema(database);
                     if (schema != null)
                         schemas.Upsert(schema);
                 }
             }
         }
         
-        internal static DbSchema CreateDbSchema (EntityDatabase database, string databaseName) {
+        internal static DbSchema CreateDbSchema (EntityDatabase database) {
             var databaseSchema = database.Schema;
             if (databaseSchema == null)
                 return null;
             var jsonSchemas = databaseSchema.GetJsonSchemas();
             jsonSchemas.Remove("openapi.json");
             var schema = new DbSchema {
-                id          = databaseName,
+                id          = database.name.value,
                 schemaName  = databaseSchema.Name,
                 schemaPath  = databaseSchema.Path,
                 jsonSchemas = jsonSchemas

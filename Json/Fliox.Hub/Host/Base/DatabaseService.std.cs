@@ -107,15 +107,14 @@ namespace Friflo.Json.Fliox.Hub.Host
         private static DbMessages Messages (Param<Empty> param, MessageContext context) {
             var database        = context.Database;  
             var dbMessages      = database.GetDbMessages();
-            dbMessages.id       = context.DatabaseName;
+            dbMessages.id       = database.name.value;
             return dbMessages;
         }
         
         private static DbSchema Schema (Param<Empty> param, MessageContext context) {
             context.WritePretty = false;
             var database        = context.Database;  
-            var databaseName    = context.DatabaseName;
-            return ClusterStore.CreateDbSchema(database, databaseName);
+            return ClusterStore.CreateDbSchema(database);
         }
         
         private static async Task<DbStats> Stats (Param<string> param, MessageContext context) {
