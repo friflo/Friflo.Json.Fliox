@@ -43,6 +43,8 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         
         public      abstract   TaskType         TaskType { get; }
         public      abstract   string           TaskName { get; }
+        /// Return true in case a task is a 'No Operation' task. E.g an upsert without entities
+        public      virtual    bool             IsNop()   => false;
 
         public      override   string           ToString() => TaskName;
         

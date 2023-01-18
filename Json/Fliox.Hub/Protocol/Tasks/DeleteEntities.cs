@@ -31,6 +31,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         
         public   override   TaskType            TaskType => TaskType.delete;
         public   override   string              TaskName => $"container: '{container}'";
+        public   override   bool                IsNop()  => ids?.Count == 0;
         
         internal bool Authorize (string container, bool delete, bool deleteAll) {
             bool allBool = all != null && all.Value;
@@ -62,7 +63,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
             if (error != null) {
                 return error;
             }
-            if (ids?.Count == 0) {
+            if (IsNop()) {
                 return new DeleteEntitiesResult();
             }
             var result = await entityContainer.DeleteEntitiesAsync(this, syncContext).ConfigureAwait(false);
@@ -77,7 +78,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
             if (error != null) {
                 return error;
             }
-            if (ids?.Count == 0) {
+            if (IsNop()) {
                 return new DeleteEntitiesResult();
             }
             var result = entityContainer.DeleteEntities(this, syncContext);

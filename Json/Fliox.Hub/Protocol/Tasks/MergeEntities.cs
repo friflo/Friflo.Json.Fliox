@@ -31,6 +31,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         
         public   override   TaskType            TaskType => TaskType.merge;
         public   override   string              TaskName =>  $"container: '{container}'";
+        public   override   bool                IsNop()  => patches.Count == 0;
         
         private TaskErrorResult PrepareMerge(
             EntityDatabase      database,
@@ -52,7 +53,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
             if (error != null) {
                 return error;
             }
-            if (patches.Count == 0) {
+            if (IsNop()) {
                 return new MergeEntitiesResult();
             }
             var result = await entityContainer.MergeEntitiesAsync(this, syncContext).ConfigureAwait(false);
@@ -68,7 +69,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
             if (error != null) {
                 return error;
             }
-            if (patches.Count == 0) {
+            if (IsNop()) {
                 return new MergeEntitiesResult();
             }
             var result = entityContainer.MergeEntities(this, syncContext);

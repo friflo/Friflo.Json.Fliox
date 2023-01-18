@@ -35,6 +35,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
                         
         public   override   TaskType            TaskType => TaskType.create;
         public   override   string              TaskName => $"container: '{container}'";
+        public   override   bool                IsNop()  => entities.Count == 0;
         
         private TaskErrorResult PrepareCreate(
             EntityDatabase          database,
@@ -77,7 +78,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
             if (error != null) {
                 return error;
             }
-            if (entities.Count == 0) {
+            if (IsNop()) {
                 return new CreateEntitiesResult{ errors = validationErrors };
             }
             var result = await entityContainer.CreateEntitiesAsync(this, syncContext).ConfigureAwait(false);
@@ -95,7 +96,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
             if (error != null) {
                 return error;
             }
-            if (entities.Count == 0) {
+            if (IsNop()) {
                 return new CreateEntitiesResult { errors = validationErrors };
             }
             var result = entityContainer.CreateEntities(this, syncContext);

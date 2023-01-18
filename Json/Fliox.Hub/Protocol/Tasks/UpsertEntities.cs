@@ -33,6 +33,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         
         public   override   TaskType            TaskType => TaskType.upsert;
         public   override   string              TaskName => $"container: '{container}'";
+        public   override   bool                IsNop()  => entities.Count == 0;
         
         private TaskErrorResult PrepareUpsert(
             EntityDatabase          database,
@@ -76,7 +77,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
             if (error != null) {
                 return error;
             }
-            if (entities.Count == 0) {
+            if (IsNop()) {
                 return new UpsertEntitiesResult{ errors = validationErrors };
             }
             var result = await entityContainer.UpsertEntitiesAsync(this, syncContext).ConfigureAwait(false);
@@ -93,7 +94,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
             if (error != null) {
                 return error;
             }
-            if (entities.Count == 0) {
+            if (IsNop()) {
                 return new UpsertEntitiesResult{ errors = validationErrors };
             }
             var result = entityContainer.UpsertEntities(this, syncContext);

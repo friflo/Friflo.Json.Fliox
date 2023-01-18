@@ -321,24 +321,13 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                 var task = syncTasks[n];
                 switch (task.TaskType) {
                     case TaskType.create:
-                        if (((CreateEntities)task).entities.Count > 0) {
-                            useTasks[n] = true;
-                        }
-                        continue;
                     case TaskType.upsert:
-                        if (((UpsertEntities)task).entities.Count > 0) {
-                            useTasks[n] = true;
-                        }
-                        continue;
                     case TaskType.merge:
-                        if (((MergeEntities)task).patches.Count > 0) {
-                            useTasks[n] = true;
-                        }
-                        continue;
                     case TaskType.delete:
-                        if (((DeleteEntities)task).ids.Count > 0) {
-                            useTasks[n] = true;
+                        if (task.IsNop()) {
+                            continue;
                         }
+                        useTasks[n] = true;
                         continue;
                     case TaskType.message:
                     case TaskType.command:
