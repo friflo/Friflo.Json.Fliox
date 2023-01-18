@@ -69,9 +69,6 @@ namespace Friflo.Json.Fliox.Hub.Host.Event.Collector
                     }
                 case TaskType.upsert:
                     var upsert = (UpsertEntities)task;
-                    if (upsert.users != null) {
-                        return false;
-                    }
                     lock (databaseChangesMap) {
                         if (!databaseChangesMap.TryGetValue(database, out var databaseChanges))
                             return false;
@@ -80,9 +77,6 @@ namespace Friflo.Json.Fliox.Hub.Host.Event.Collector
                     }
                 case TaskType.merge:
                     var merge = (MergeEntities)task;
-                    if (merge.users != null) {
-                        return false;
-                    }
                     lock (databaseChangesMap) {
                         if (!databaseChangesMap.TryGetValue(database, out var databaseChanges))
                             return false;

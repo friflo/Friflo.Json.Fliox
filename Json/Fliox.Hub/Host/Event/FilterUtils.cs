@@ -39,8 +39,8 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                     var upsert = (UpsertEntities) task;
                     if (!upsert.entityContainer.nameSmall.IsEqual(subscribe.container))
                         return null;
-                    if (!IsEventTarget(subClient, upsert.users))
-                        return null;
+                    // if (!IsEventTarget(subClient, upsert.users))
+                    //    return null;
                     var filter = subscribe.jsonFilter;
                     if (filter == null)
                         return upsert;
@@ -66,8 +66,8 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                     var merge = (MergeEntities) task;
                     if (!merge.entityContainer.nameSmall.IsEqual(subscribe.container))
                         return null;
-                    if (!IsEventTarget(subClient, merge.users))
-                        return null;
+                    //if (!IsEventTarget(subClient, merge.users))
+                    //    return null;
                     // todo apply filter
                     return task;
                 
@@ -76,6 +76,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             }
         }
         
+        /*
         private static bool IsEventTarget (EventSubClient subClient, List<JsonKey> targetUsers) {
             if (targetUsers == null)
                 return true;
@@ -85,7 +86,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                     return true;
             }
             return false;
-        }
+        } */
         
         private static List<JsonEntity> FilterEntities (
             JsonFilter          jsonFilter,

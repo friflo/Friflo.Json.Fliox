@@ -32,9 +32,6 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         [Serialize                            ("set")]
         [Required] public   List<JsonEntity>    entities;
         
-        /// <summary>if set the Hub forward the Upsert as an event only to given <see cref="users"/></summary>
-        [Ignore]   public   List<JsonKey>       users;
-        
         public   override   TaskType            TaskType => TaskType.upsert;
         public   override   string              TaskName => $"container: '{container}'";
         

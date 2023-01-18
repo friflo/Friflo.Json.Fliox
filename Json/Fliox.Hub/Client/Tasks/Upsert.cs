@@ -64,7 +64,6 @@ namespace Friflo.Json.Fliox.Hub.Client
         
         protected internal override void Reuse() {
             upsertEntities.entities.Clear();
-            upsertEntities.users?.Clear();
             set.upsertEntitiesBuffer.Add(upsertEntities);
                 
             entities.Clear();
