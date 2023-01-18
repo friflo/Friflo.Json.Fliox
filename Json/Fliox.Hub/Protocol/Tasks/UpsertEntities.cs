@@ -24,8 +24,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         [Serialize                            ("cont")]
         [Required]  public  string              container;
         [Browse(Never)]
-        [Ignore]   internal EntityContainer     entityContainer;
-        [Ignore]   public   EntityContainer     EntityContainer => entityContainer;
+        [Ignore]   public   EntityContainer     entityContainer;
         /// <summary>name of the primary key property in <see cref="entities"/></summary>
                    public   string              keyName;
         /// <summary>the <see cref="entities"/> which are upserted in the specified <see cref="container"/></summary>
@@ -77,6 +76,9 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
             if (error != null) {
                 return error;
             }
+            if (entities.Count == 0) {
+                return new UpsertEntitiesResult{ errors = validationErrors };
+            }
             var result = await entityContainer.UpsertEntitiesAsync(this, syncContext).ConfigureAwait(false);
             if (result.Error != null) {
                 return TaskError(result.Error);
@@ -90,6 +92,9 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
             var error = PrepareUpsert(database, syncContext, ref validationErrors);
             if (error != null) {
                 return error;
+            }
+            if (entities.Count == 0) {
+                return new UpsertEntitiesResult{ errors = validationErrors };
             }
             var result = entityContainer.UpsertEntities(this, syncContext);
             if (result.Error != null) {

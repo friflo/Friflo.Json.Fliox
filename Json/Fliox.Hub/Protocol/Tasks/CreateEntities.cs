@@ -25,8 +25,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         [Serialize                            ("cont")]
         [Required]  public  string              container;
         [Browse(Never)]
-        [Ignore]   internal EntityContainer     entityContainer;
-        [Ignore]    public  EntityContainer     EntityContainer => entityContainer;
+        [Ignore]    public  EntityContainer     entityContainer;
                     public  Guid?               reservedToken;
         /// <summary>name of the primary key property in <see cref="entities"/></summary>
                     public  string              keyName;
@@ -77,6 +76,9 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
             if (error != null) {
                 return error;
             }
+            if (entities.Count == 0) {
+                return new CreateEntitiesResult{ errors = validationErrors };
+            }
             var result = await entityContainer.CreateEntitiesAsync(this, syncContext).ConfigureAwait(false);
             
             if (result.Error != null) {
@@ -91,6 +93,9 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
             var error = PrepareCreate(database, syncContext, ref validationErrors);
             if (error != null) {
                 return error;
+            }
+            if (entities.Count == 0) {
+                return new CreateEntitiesResult { errors = validationErrors };
             }
             var result = entityContainer.CreateEntities(this, syncContext);
             

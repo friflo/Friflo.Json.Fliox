@@ -23,8 +23,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         [Serialize                            ("cont")]
         [Required]  public  string              container;
         [Browse(Never)]
-        [Ignore]   internal EntityContainer     entityContainer;
-        [Ignore]    public  EntityContainer     EntityContainer => entityContainer;
+        [Ignore]    public  EntityContainer     entityContainer;
         /// <summary>list of <see cref="ids"/> requested for deletion</summary>
                     public  List<JsonKey>       ids;
         /// <summary>if true all entities in the specified <see cref="container"/> are deleted</summary>
@@ -62,6 +61,9 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
             if (error != null) {
                 return error;
             }
+            if (ids?.Count == 0) {
+                return new DeleteEntitiesResult();
+            }
             var result = await entityContainer.DeleteEntitiesAsync(this, syncContext).ConfigureAwait(false);
             if (result.Error != null) {
                 return TaskError(result.Error);
@@ -73,6 +75,9 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
             var error = PrepareDelete (database, syncContext);
             if (error != null) {
                 return error;
+            }
+            if (ids?.Count == 0) {
+                return new DeleteEntitiesResult();
             }
             var result = entityContainer.DeleteEntities(this, syncContext);
             if (result.Error != null) {

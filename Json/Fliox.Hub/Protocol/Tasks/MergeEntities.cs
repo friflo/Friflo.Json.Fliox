@@ -22,8 +22,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         [Serialize                            ("cont")]
         [Required]  public  string              container;
         [Browse(Never)]
-        [Ignore]   internal EntityContainer     entityContainer;
-        [Ignore]    public  EntityContainer     EntityContainer => entityContainer;
+        [Ignore]    public  EntityContainer     entityContainer;
         /// <summary>name of the primary key property of the entity <see cref="patches"/></summary>
                     public  string              keyName;
         /// <summary>list of merge patches for each entity</summary>
@@ -53,6 +52,9 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
             if (error != null) {
                 return error;
             }
+            if (patches.Count == 0) {
+                return new MergeEntitiesResult();
+            }
             var result = await entityContainer.MergeEntitiesAsync(this, syncContext).ConfigureAwait(false);
             
             if (result.Error != null) {
@@ -65,6 +67,9 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
             var error = PrepareMerge(database, syncContext);
             if (error != null) {
                 return error;
+            }
+            if (patches.Count == 0) {
+                return new MergeEntitiesResult();
             }
             var result = entityContainer.MergeEntities(this, syncContext);
             
