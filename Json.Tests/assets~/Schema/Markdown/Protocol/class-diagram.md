@@ -17,13 +17,13 @@ class ProtocolRequest {
 
 ProtocolRequest <|-- SyncRequest
 class SyncRequest {
-    msg       : "sync"
-    user?     : string
-    token?    : string
-    ack?      : int32
-    tasks     : SyncRequestTask[]
-    database? : string
-    info?     : any
+    msg    : "sync"
+    user?  : string
+    token? : string
+    ack?   : int32
+    tasks  : SyncRequestTask[]
+    db?    : string
+    info?  : any
 }
 SyncRequest *-- "0..*" SyncRequestTask : tasks
 

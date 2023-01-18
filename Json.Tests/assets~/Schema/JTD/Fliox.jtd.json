@@ -15,14 +15,14 @@
         },
         "SyncRequest": {
             "properties": {
-                "req":      { "type": "int32", "nullable": true },
-                "clt":      { "type": "string", "nullable": true },
-                "user":     { "type": "string", "nullable": true },
-                "token":    { "type": "string", "nullable": true },
-                "ack":      { "type": "int32", "nullable": true },
-                "tasks":    { "elements": { "ref":  "SyncRequestTask" } },
-                "database": { "type": "string", "nullable": true },
-                "info":     { "nullable": true }
+                "req":   { "type": "int32", "nullable": true },
+                "clt":   { "type": "string", "nullable": true },
+                "user":  { "type": "string", "nullable": true },
+                "token": { "type": "string", "nullable": true },
+                "ack":   { "type": "int32", "nullable": true },
+                "tasks": { "elements": { "ref":  "SyncRequestTask" } },
+                "db":    { "type": "string", "nullable": true },
+                "info":  { "nullable": true }
             }
         },
         "ProtocolRequest": {

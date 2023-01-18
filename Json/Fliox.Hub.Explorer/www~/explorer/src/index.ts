@@ -243,7 +243,7 @@ export class App {
         const db = database == "main_db" ? undefined : database;
         const sync: SyncRequest = {
             "msg":      "sync",
-            "database": db,
+            "db":       db,
             "tasks":    tasks,
             "user":     defaultUser.value,
             "token":    defaultToken.value

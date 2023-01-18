@@ -2,9 +2,9 @@
   "msg": "sync",
   "tasks": [
     {
-      "task":     "subscribeMessage",
-      "name":     "*",
-      "remove":   false
+      "task": "subscribeMessage",
+      "name": "*",
+      "remove": false
     }
   ],  
   "info": [

@@ -4,8 +4,8 @@
     {
       "task": "query",
       "cont": "articles",
-      "maxCount":   5,
-      "cursor":     null
+      "maxCount": 5,
+      "cursor": null
     }
   ],
   "info": [

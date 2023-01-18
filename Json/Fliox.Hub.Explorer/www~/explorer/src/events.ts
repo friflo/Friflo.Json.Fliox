@@ -445,7 +445,7 @@ export class Events
             this.uiContainerText(databaseName, containerName, containerSub, null);
         }
         const subscribeChanges: SubscribeChanges = { task: "subscribeChanges", changes: changes, cont: containerName };
-        const syncRequest:      SyncRequest      = { msg: "sync", database: databaseName, tasks: [subscribeChanges] };
+        const syncRequest:      SyncRequest      = { msg: "sync", db: databaseName, tasks: [subscribeChanges] };
 
         const err = await this.sendSubscriptionRequest(syncRequest);
         if (err) {
@@ -496,7 +496,7 @@ export class Events
             this.uiMessageText(databaseName, messageName, messageSub, null);
         }
         const subscribeMessage: SubscribeMessage = { task: "subscribeMessage", remove: remove, name: messageName };
-        const syncRequest:      SyncRequest      = { msg: "sync", database: databaseName, tasks: [subscribeMessage] };
+        const syncRequest:      SyncRequest      = { msg: "sync", db: databaseName, tasks: [subscribeMessage] };
 
         const err = await this.sendSubscriptionRequest(syncRequest);
         if (err) {

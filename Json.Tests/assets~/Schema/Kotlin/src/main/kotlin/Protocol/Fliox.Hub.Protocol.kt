@@ -15,14 +15,14 @@ abstract class ProtocolMessage  {
 @Serializable
 @SerialName("sync")
 data class SyncRequest (
-    override  val req      : Int? = null,
-    override  val clt      : String? = null,
-              val user     : String? = null,
-              val token    : String? = null,
-              val ack      : Int? = null,
-              val tasks    : List<SyncRequestTask>,
-              val database : String? = null,
-              val info     : JsonElement? = null,
+    override  val req   : Int? = null,
+    override  val clt   : String? = null,
+              val user  : String? = null,
+              val token : String? = null,
+              val ack   : Int? = null,
+              val tasks : List<SyncRequestTask>,
+              val db    : String? = null,
+              val info  : JsonElement? = null,
 ) : ProtocolRequest()
 
 @Serializable

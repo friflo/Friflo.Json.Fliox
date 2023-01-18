@@ -2,8 +2,8 @@
   "msg": "sync",
   "tasks": [
     {
-      "task":   "merge",
-      "cont":   "articles",
+      "task": "merge",
+      "cont": "articles",
       "set": [
         {
           "id":   1,

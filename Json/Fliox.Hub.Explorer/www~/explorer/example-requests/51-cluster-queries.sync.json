@@ -1,6 +1,6 @@
 {
   "msg": "sync",
-  "database": "cluster",
+  "db":  "cluster",
   "tasks": [
     { "task": "query", "cont": "containers" },
     { "task": "query", "cont": "commands"   }

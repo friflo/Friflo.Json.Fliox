@@ -1,6 +1,6 @@
 {
   "msg": "sync",
-  "database": "monitor",
+  "db":  "monitor",
   "tasks": [
     { "task": "query", "cont": "users"     },
     { "task": "query", "cont": "histories" }

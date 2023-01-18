@@ -59,27 +59,27 @@ export abstract class ProtocolRequest extends ProtocolMessage {
 /** A **SyncRequest** is sent to a **FlioxHub** targeting a specific **database**. */
 export class SyncRequest extends ProtocolRequest {
     /** message type */
-    msg       : "sync";
+    msg    : "sync";
     /**
      * Identify the user performing a sync request.
      * In case using of using **UserAuthenticator** the **userId** and **token**
      * are use for user authentication.
      */
-    user?     : string | null;
-    token?    : string | null;
+    user?  : string | null;
+    token? : string | null;
     /**
      * **eventAck** is used to ensure (change) events are delivered reliable.
      * A client set **eventAck** to the last received **seq** in case
      * it has subscribed to database changes by a **SubscribeChanges** task.
      * Otherwise **eventAck** is null.
      */
-    ack?      : int32 | null;
+    ack?   : int32 | null;
     /** list of tasks either container operations or database commands / messages */
-    tasks     : SyncRequestTask_Union[];
+    tasks  : SyncRequestTask_Union[];
     /** database name the **tasks** apply to. null to access the default database */
-    database? : string | null;
+    db?    : string | null;
     /** optional JSON value - can be used to describe a request */
-    info?     : any | null;
+    info?  : any | null;
 }
 
 /** Base type for response messages send from a host to a client in reply of **SyncRequest** */

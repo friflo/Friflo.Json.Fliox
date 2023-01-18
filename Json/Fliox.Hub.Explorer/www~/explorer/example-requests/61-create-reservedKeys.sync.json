@@ -2,8 +2,8 @@
   "msg": "sync",
   "tasks": [
     {
-      "task":           "create",
-      "cont":           "articles",
+      "task":   "create",
+      "cont":   "articles",
       "reservedToken":"00000000-0000-0000-0000-000000000000",
       "set": [
           { "id": "new-article","name":"New Article S10"}
