@@ -62,9 +62,9 @@ class DatabaseSub {
     }
 }
 class SubEvent {
-    constructor(msg, ev, seq) {
+    constructor(msg, db, ev, seq) {
         this.msg = SubEvent.internName(msg);
-        this.db = SubEvent.internName(ev.db);
+        this.db = SubEvent.internName(db);
         this.seq = seq;
         this.usr = SubEvent.internName(ev.usr);
         const messages = [];
@@ -274,10 +274,12 @@ export class Events {
         editor.revealPositionNearTop(pos);
     }
     addSubscriptionEvent(ev, seq) {
+        var _a;
+        const db = (_a = ev.db) !== null && _a !== void 0 ? _a : this.defaultDB;
         const evStr = Events.event2String(ev, seq, prettifyEvents.checked);
-        const msg = new SubEvent(evStr, ev, seq);
+        const msg = new SubEvent(evStr, db, ev, seq);
         this.subEvents.push(msg);
-        this.updateUI(ev);
+        this.updateUI(db, ev);
         if (!this.filter.match(msg))
             return;
         if (!msg.filterSeqSrc(this.userFilter, this.seqStart, this.seqEnd))
@@ -318,9 +320,7 @@ export class Events {
         }
         editor.executeEdits("addSubscriptionEvent", [{ range: range, text: evStr, forceMoveMarkers: true }], callback);
     }
-    updateUI(ev) {
-        var _a;
-        const db = (_a = ev.db) !== null && _a !== void 0 ? _a : this.defaultDB;
+    updateUI(db, ev) {
         const databaseSub = this.databaseSubs[db];
         for (const task of ev.tasks) {
             switch (task.task) {

@@ -105,9 +105,9 @@ class SubEvent {
         return name;
     }
 
-    constructor(msg: string, ev: SyncEvent, seq: number) {
+    constructor(msg: string, db: string, ev: SyncEvent, seq: number) {
         this.msg                    = SubEvent.internName(msg);
-        this.db                     = SubEvent.internName(ev.db);
+        this.db                     = SubEvent.internName(db);
         this.seq                    = seq;
         this.usr                    = SubEvent.internName(ev.usr);
         const messages:   string[]  = []; 
@@ -323,10 +323,11 @@ export class Events
     }
 
     public addSubscriptionEvent(ev: SyncEvent, seq: number) : void {
+        const db        = ev.db ?? this.defaultDB;
         const evStr     = Events.event2String (ev, seq, prettifyEvents.checked);
-        const msg       = new SubEvent(evStr, ev, seq);
+        const msg       = new SubEvent(evStr, db, ev, seq);
         this.subEvents.push (msg);
-        this.updateUI(ev);
+        this.updateUI(db, ev);
 
         if (!this.filter.match(msg))
             return;
@@ -372,9 +373,8 @@ export class Events
         editor.executeEdits("addSubscriptionEvent", [{ range: range, text: evStr, forceMoveMarkers: true }], callback);
     }
 
-    private updateUI(ev: SyncEvent) {
-        const db = ev.db ?? this.defaultDB;
-
+    private updateUI(db: string, ev: SyncEvent)
+    {
         const databaseSub = this.databaseSubs[db];
         for (const task of ev.tasks) {
             switch (task.task) {
