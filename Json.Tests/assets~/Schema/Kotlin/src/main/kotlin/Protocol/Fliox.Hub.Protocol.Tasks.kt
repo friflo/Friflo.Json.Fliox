@@ -92,7 +92,7 @@ data class DeleteEntities (
 ) : SyncRequestTask()
 
 @Serializable
-@SerialName("message")
+@SerialName("msg")
 data class SendMessage (
     override  val info    : JsonElement? = null,
     override  val name    : String,
@@ -113,7 +113,7 @@ abstract class SyncMessageTask {
 }
 
 @Serializable
-@SerialName("command")
+@SerialName("cmd")
 data class SendCommand (
     override  val info    : JsonElement? = null,
     override  val name    : String,
@@ -216,7 +216,7 @@ data class DeleteEntitiesResult (
 ) : SyncTaskResult()
 
 @Serializable
-@SerialName("message")
+@SerialName("msg")
 class SendMessageResult (
 ) : SyncMessageResult()
 
@@ -225,7 +225,7 @@ abstract class SyncMessageResult {
 }
 
 @Serializable
-@SerialName("command")
+@SerialName("cmd")
 data class SendCommandResult (
               val result : JsonElement? = null,
 ) : SyncMessageResult()

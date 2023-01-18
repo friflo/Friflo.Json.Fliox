@@ -2,7 +2,7 @@
   "msg": "sync",
   "tasks": [
     {
-      "task": "command",
+      "task": "cmd",
       "name": "std.Echo",
       "param": "Hello World"
     }

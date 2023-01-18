@@ -37,8 +37,8 @@ export abstract class SyncRequestTask {
         | "aggregate"
         | "merge"
         | "delete"
-        | "message"
-        | "command"
+        | "msg"
+        | "cmd"
         | "closeCursors"
         | "subscribeChanges"
         | "subscribeMessage"
@@ -202,7 +202,7 @@ export abstract class SyncMessageTask extends SyncRequestTask {
  */
 export class SendMessage extends SyncMessageTask {
     /** task type */
-    task     : "message";
+    task     : "msg";
 }
 
 /**
@@ -212,7 +212,7 @@ export class SendMessage extends SyncMessageTask {
  */
 export class SendCommand extends SyncMessageTask {
     /** task type */
-    task     : "command";
+    task     : "cmd";
 }
 
 /** Close the **cursors** of the given **container** */
@@ -296,8 +296,8 @@ export abstract class SyncTaskResult {
         | "aggregate"
         | "merge"
         | "delete"
-        | "message"
-        | "command"
+        | "msg"
+        | "cmd"
         | "closeCursors"
         | "subscribeChanges"
         | "subscribeMessage"
@@ -373,13 +373,13 @@ export abstract class SyncMessageResult extends SyncTaskResult {
 /** Result of a **SendMessage** task */
 export class SendMessageResult extends SyncMessageResult {
     /** task result type */
-    task  : "message";
+    task  : "msg";
 }
 
 /** Result of a **SendCommand** task */
 export class SendCommandResult extends SyncMessageResult {
     /** task result type */
-    task    : "command";
+    task    : "cmd";
     result? : any | null;
 }
 

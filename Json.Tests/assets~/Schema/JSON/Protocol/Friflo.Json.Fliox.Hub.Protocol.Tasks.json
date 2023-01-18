@@ -20,7 +20,7 @@
                 { "$ref": "#/definitions/ReserveKeys" }
             ],
             "properties": {
-                "task": { "enum": ["create", "upsert", "read", "query", "aggregate", "merge", "delete", "message", "command", "closeCursors", "subscribeChanges", "subscribeMessage", "reserveKeys"], "description": "task type" },
+                "task": { "enum": ["create", "upsert", "read", "query", "aggregate", "merge", "delete", "msg", "cmd", "closeCursors", "subscribeChanges", "subscribeMessage", "reserveKeys"], "description": "task type" },
                 "info": {  }
             },
             "required": [
@@ -176,7 +176,7 @@
             "extends": { "$ref": "#/definitions/SyncMessageTask" },
             "description": "Send a database message with the given <b>param</b>. <br/>\nIn case <b>users</b> or <b>clients</b> is set the Hub forward\nthe message as an event only to the given <b>users</b> or <b>clients</b>.",
             "properties": {
-                "task":    { "enum": ["message"] },
+                "task":    { "enum": ["msg"] },
                 "info":    {  },
                 "name":    { "type": "string", "description": "command / message name" },
                 "param":   { "description": "command / message parameter. Can be null or absent" },
@@ -213,7 +213,7 @@
             "extends": { "$ref": "#/definitions/SyncMessageTask" },
             "description": "Send a database command with the given <b>param</b>. <br/>\nIn case <b>users</b> or <b>clients</b> is set the Hub forward\nthe message as an event only to the given <b>users</b> or <b>clients</b>.",
             "properties": {
-                "task":    { "enum": ["command"] },
+                "task":    { "enum": ["cmd"] },
                 "info":    {  },
                 "name":    { "type": "string", "description": "command / message name" },
                 "param":   { "description": "command / message parameter. Can be null or absent" },
@@ -328,7 +328,7 @@
                 { "$ref": "#/definitions/TaskErrorResult" }
             ],
             "properties": {
-                "task": { "enum": ["create", "upsert", "read", "query", "aggregate", "merge", "delete", "message", "command", "closeCursors", "subscribeChanges", "subscribeMessage", "reserveKeys", "error"], "description": "task result type" }
+                "task": { "enum": ["create", "upsert", "read", "query", "aggregate", "merge", "delete", "msg", "cmd", "closeCursors", "subscribeChanges", "subscribeMessage", "reserveKeys", "error"], "description": "task result type" }
             },
             "required": [
                 "task"
@@ -437,7 +437,7 @@
             "extends": { "$ref": "#/definitions/SyncMessageResult" },
             "description": "Result of a <b>SendMessage</b> task",
             "properties": {
-                "task": { "enum": ["message"] }
+                "task": { "enum": ["msg"] }
             },
             "required": [
                 "task"
@@ -458,7 +458,7 @@
             "extends": { "$ref": "#/definitions/SyncMessageResult" },
             "description": "Result of a <b>SendCommand</b> task",
             "properties": {
-                "task":   { "enum": ["command"] },
+                "task":   { "enum": ["cmd"] },
                 "result": {  }
             },
             "required": [

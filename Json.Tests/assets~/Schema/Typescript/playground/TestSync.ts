@@ -6,8 +6,8 @@ var exampleSync: ProtocolMessage_Union =
     msg: "sync",
     tasks: [
         {
-            "task": "message",
-            "name": "DbEcho",
+            "task": "msg",
+            "name": "std.Echo",
             "param": { "some": "data" }
         },
         {

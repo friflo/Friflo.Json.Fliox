@@ -114,8 +114,8 @@ class SubEvent {
         const containers: string[]  = [];
         for (const task of ev.tasks) {
             switch (task.task) {
-                case "message":
-                case "command": {
+                case "msg":
+                case "cmd": {
                     const msgName = SubEvent.internName(task.name);
                     messages.push(msgName);
                     break;
@@ -264,8 +264,8 @@ export class Events
         const tasksJson: string[] = [];
         for (const task of ev.tasks) {
             switch (task.task) {
-                case "message":
-                case "command": {
+                case "msg":
+                case "cmd": {
                     const json = JSON.stringify(task);
                     tasksJson.push(json);
                     break;
@@ -378,8 +378,8 @@ export class Events
         const databaseSub = this.databaseSubs[db];
         for (const task of ev.tasks) {
             switch (task.task) {
-                case "command":
-                case "message": {
+                case "cmd":
+                case "msg": {
                     const allMessageSub = databaseSub.messageSubs["*"];
                     allMessageSub.events++;
                     this.uiMessageText(db, "*", allMessageSub, "event");

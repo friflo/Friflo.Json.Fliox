@@ -321,7 +321,7 @@ export class App {
     }
     async loadCluster() {
         const tasks = [
-            { "task": "command", "name": "std.Host" },
+            { "task": "cmd", "name": "std.Host" },
             { "task": "query", "cont": "containers" },
             { "task": "query", "cont": "messages" },
             { "task": "query", "cont": "schemas" },
@@ -658,7 +658,7 @@ export class App {
   "msg": "sync",
   "tasks": [
     {
-      "task":  "command",
+      "task":  "cmd",
       "name":  "std.Echo",
       "param": "Hello World"
     }

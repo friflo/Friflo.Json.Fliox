@@ -76,7 +76,7 @@ POST {{base}}/
   "msg": "sync",
   "tasks": [
     {
-      "task":  "message",
+      "task":  "msg",
       "name":  "SomeMessage",
       "param": "Hello Message"
     }

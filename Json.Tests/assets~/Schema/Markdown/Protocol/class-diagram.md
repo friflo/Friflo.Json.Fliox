@@ -220,12 +220,12 @@ class SyncMessageTask {
 
 SyncMessageTask <|-- SendMessage
 class SendMessage {
-    task     : "message"
+    task     : "msg"
 }
 
 SyncMessageTask <|-- SendCommand
 class SendCommand {
-    task     : "command"
+    task     : "cmd"
 }
 
 SyncRequestTask <|-- CloseCursors
@@ -331,12 +331,12 @@ class SyncMessageResult {
 
 SyncMessageResult <|-- SendMessageResult
 class SendMessageResult {
-    task  : "message"
+    task  : "msg"
 }
 
 SyncMessageResult <|-- SendCommandResult
 class SendCommandResult {
-    task    : "command"
+    task    : "cmd"
     result? : any
 }
 
