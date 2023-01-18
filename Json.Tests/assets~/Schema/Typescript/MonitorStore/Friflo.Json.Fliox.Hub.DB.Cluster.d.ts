@@ -47,6 +47,8 @@ export class DbContainers {
     storage     : string;
     /** list of database **containers** */
     containers  : string[];
+    /** true if the database is the default database of a Hub */
+    defaultDB?  : boolean | null;
 }
 
 /** **commands** and **messages** of a database */

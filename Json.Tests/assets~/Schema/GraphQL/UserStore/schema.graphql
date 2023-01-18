@@ -299,12 +299,14 @@ type DbContainers {
     id         : String!
     storage    : String!
     containers : [String!]!
+    defaultDB  : Boolean
 }
 
 input DbContainersInput {
     id         : String!
     storage    : String!
     containers : [String!]!
+    defaultDB  : Boolean
 }
 
 type DbMessages {

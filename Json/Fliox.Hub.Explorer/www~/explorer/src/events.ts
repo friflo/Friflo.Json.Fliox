@@ -145,6 +145,7 @@ export class Events
     private readonly    clusterTree:    ClusterTree;
     private readonly    databaseSubs:   { [database: string] : DatabaseSub } = {}
     private readonly    subEvents:      SubEvent[] = [];
+    private             defaultDB:      string = null;
     private             filter:         EventFilter;
     private             userFilter:     string[] = null;
     private             seqStart    = 0;
@@ -212,6 +213,9 @@ export class Events
         for (const database of dbContainers) {
             const databaseSub = new DatabaseSub();
             this.databaseSubs[database.id] = databaseSub;
+            if (database.defaultDB) {
+                this.defaultDB = database.id;
+            }
             for (const container of database.containers) {
                 databaseSub.containerSubs[container] = new ContainerSub();
             }
@@ -369,7 +373,7 @@ export class Events
     }
 
     private updateUI(ev: SyncEvent) {
-        const db = ev.db ?? app.getDefaultDb();
+        const db = ev.db ?? this.defaultDB;
 
         const databaseSub = this.databaseSubs[db];
         for (const task of ev.tasks) {

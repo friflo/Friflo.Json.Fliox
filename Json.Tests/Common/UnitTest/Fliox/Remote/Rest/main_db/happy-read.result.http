@@ -37,7 +37,8 @@ GET {{base}}/rest
                 "producers",
                 "employees",
                 "types"
-            ]
+            ],
+            "defaultDB": true
         },
         {
             "id": "cluster",
@@ -87,7 +88,8 @@ GET {{base}}/rest/main_db
         "producers",
         "employees",
         "types"
-    ]
+    ],
+    "defaultDB": true
 }
 
 ###

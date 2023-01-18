@@ -8,7 +8,8 @@
             "properties": {
                 "id":         { "type": "string", "description": "database name" },
                 "storage":    { "type": "string", "description": "<b>storage</b> type. e.g. memory, file-system, ..." },
-                "containers": { "type": "array", "items": { "type": "string" }, "description": "list of database <b>containers</b>" }
+                "containers": { "type": "array", "items": { "type": "string" }, "description": "list of database <b>containers</b>" },
+                "defaultDB":  { "type": ["boolean", "null"], "description": "true if the database is the default database of a Hub" }
             },
             "required": [
                 "id",

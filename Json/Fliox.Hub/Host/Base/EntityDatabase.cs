@@ -147,7 +147,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         }
         
         /// <summary>return all database containers</summary>
-        public async Task<DbContainers> GetDbContainers() {
+        public async Task<DbContainers> GetDbContainers(string database, FlioxHub hub) {
             string[] containerList;
             var schema = Schema;
             if (schema != null) {
@@ -155,7 +155,16 @@ namespace Friflo.Json.Fliox.Hub.Host
             } else {
                 containerList = await GetContainers().ConfigureAwait(false);
             }
-            return new DbContainers { containers = containerList, storage = StorageType };
+            bool? isDefaultDB = null;
+            if (database == hub.database.name.value) {
+                isDefaultDB = true;
+            }
+            return new DbContainers {
+                containers  = containerList,
+                storage     = StorageType,
+                id          = database,
+                defaultDB   = isDefaultDB
+            };
         }
 
         private static class Static {

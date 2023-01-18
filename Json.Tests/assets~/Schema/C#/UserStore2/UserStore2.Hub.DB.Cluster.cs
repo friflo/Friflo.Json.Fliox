@@ -15,6 +15,7 @@ public class DbContainers {
     string        storage;
     [Required]
     List<string>  containers;
+    bool?         defaultDB;
 }
 
 public class DbMessages {

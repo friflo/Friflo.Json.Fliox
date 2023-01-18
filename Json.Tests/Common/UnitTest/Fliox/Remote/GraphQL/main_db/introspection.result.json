@@ -3797,6 +3797,16 @@
                             }
                         }
                     }
+                },
+                {
+                    "name": "defaultDB",
+                    "description": "    /** true if the database is the default database of a Hub */\n",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"SCALAR",
+                        "name": "Boolean"
+                    }
                 }
             ],
             "interfaces": [
@@ -3850,6 +3860,16 @@
                                 }
                             }
                         }
+                    }
+                },
+                {
+                    "name": "defaultDB",
+                    "description": "    /** true if the database is the default database of a Hub */\n",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"SCALAR",
+                        "name": "Boolean"
                     }
                 }
             ]

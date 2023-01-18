@@ -113,7 +113,8 @@
             "properties": {
                 "id":         { "type": "string" },
                 "storage":    { "type": "string" },
-                "containers": { "elements": { "type": "string" } }
+                "containers": { "elements": { "type": "string" } },
+                "defaultDB":  { "type": "boolean", "nullable": true }
             }
         },
         "DbMessages": {

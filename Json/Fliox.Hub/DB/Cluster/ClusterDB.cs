@@ -65,8 +65,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
                 var dbKey           = new JsonKey(databaseName);
                 if (ClusterDB.FindTask(nameof(containers), dbKey, tasks)) {
                     // synchronous call OK => ClusterDB is a memory database - it tasks are executed synchronous
-                    var dbContainers    = database.GetDbContainers().Result;
-                    dbContainers.id     = databaseName;
+                    var dbContainers    = database.GetDbContainers(databaseName, hub).Result;
                     containers.Upsert(dbContainers);
                 }
                 if (ClusterDB.FindTask(nameof(messages), dbKey, tasks)) {
@@ -109,8 +108,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
                 if (!DatabaseFilter.IsAuthorizedDatabase(authorizedDatabases, databaseName))
                     continue;
                 var database        = pair.Value;
-                var dbContainers    = await database.GetDbContainers().ConfigureAwait(false);
-                dbContainers.id     = databaseName.value;
+                var dbContainers    = await database.GetDbContainers(databaseName.value, hub).ConfigureAwait(false);
                 databaseList.Add(dbContainers);
             }
             return new HostCluster{ databases = databaseList };

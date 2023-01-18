@@ -20,6 +20,7 @@ class DbContainers:::cssEntity {
     id          : string
     storage     : string
     containers  : string[]
+    defaultDB?  : boolean
 }
 
 class DbMessages:::cssEntity {

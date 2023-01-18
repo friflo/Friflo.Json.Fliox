@@ -18,6 +18,8 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
         [Required]  public  string                          storage;
         /// <summary>list of database <see cref="containers"/></summary>
         [Required]  public  string[]                        containers;
+        /// <summary>true if the database is the default database of a Hub</summary>
+                    public  bool?                           defaultDB;
                         
         public override     string                          ToString() => JsonSerializer.Serialize(this).Replace("\"", "'");
     }

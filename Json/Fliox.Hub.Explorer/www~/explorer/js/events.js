@@ -113,6 +113,7 @@ export class Events {
     constructor() {
         this.databaseSubs = {};
         this.subEvents = [];
+        this.defaultDB = null;
         this.userFilter = null;
         this.seqStart = 0;
         this.seqEnd = Number.MAX_SAFE_INTEGER;
@@ -172,6 +173,9 @@ export class Events {
         for (const database of dbContainers) {
             const databaseSub = new DatabaseSub();
             this.databaseSubs[database.id] = databaseSub;
+            if (database.defaultDB) {
+                this.defaultDB = database.id;
+            }
             for (const container of database.containers) {
                 databaseSub.containerSubs[container] = new ContainerSub();
             }
@@ -316,7 +320,7 @@ export class Events {
     }
     updateUI(ev) {
         var _a;
-        const db = (_a = ev.db) !== null && _a !== void 0 ? _a : app.getDefaultDb();
+        const db = (_a = ev.db) !== null && _a !== void 0 ? _a : this.defaultDB;
         const databaseSub = this.databaseSubs[db];
         for (const task of ev.tasks) {
             switch (task.task) {

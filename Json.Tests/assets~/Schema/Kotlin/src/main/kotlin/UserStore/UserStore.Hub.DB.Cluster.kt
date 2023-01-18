@@ -11,6 +11,7 @@ data class DbContainers (
               val id         : String,
               val storage    : String,
               val containers : List<String>,
+              val defaultDB  : Boolean? = null,
 )
 
 @Serializable

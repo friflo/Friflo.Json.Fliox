@@ -32,7 +32,6 @@ const eventsContainer = el("eventsContainer");
 export const flioxRoot = "./";
 export class App {
     constructor() {
-        this.defaultDb = null;
         // --------------------------------------- schema ---------------------------------------
         this.databaseSchemas = {};
         this.schemaLess = '<span title="schema-less database - no type information available" style="opacity:0.5">schema-less</span>';
@@ -320,9 +319,6 @@ export class App {
         }
         classList.remove(className);
     }
-    getDefaultDb() {
-        return this.defaultDb;
-    }
     async loadCluster() {
         const tasks = [
             { "task": "command", "name": "std.Host" },
@@ -354,9 +350,6 @@ export class App {
         const website = this.hostInfo.projectWebsite;
         const envName = this.hostInfo.envName;
         const envColor = this.hostInfo.envColor;
-        if ((dbContainers === null || dbContainers === void 0 ? void 0 : dbContainers.length) > 0) {
-            this.defaultDb = dbContainers[0].id;
-        }
         flioxVersionEl.innerText = "Version " + flioxVersion;
         if (name) {
             projectName.innerText = name;

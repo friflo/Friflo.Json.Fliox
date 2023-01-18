@@ -31,7 +31,8 @@ GET {{base}}/rest/main_db?command=std.Containers
         "producers",
         "employees",
         "types"
-    ]
+    ],
+    "defaultDB": true
 }
 
 ###
