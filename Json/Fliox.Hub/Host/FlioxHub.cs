@@ -224,10 +224,10 @@ namespace Friflo.Json.Fliox.Hub.Host
         }
 
         public Task<ExecuteSyncResult> QueueRequestAsync(SyncRequest syncRequest, SyncContext syncContext) {
-            var queue       = syncRequest.intern.db.service.queue;
-            var serviceJob  = new ServiceJob(this, syncRequest, syncContext);
-            queue.EnqueueJob(serviceJob);
-            return serviceJob.taskCompletionSource.Task;
+            var queue   = syncRequest.intern.db.service.queue ?? throw new InvalidOperationException("DatabaseService initialized without a queue");
+            var job     = new ServiceJob(this, syncRequest, syncContext);
+            queue.EnqueueJob(job);
+            return job.taskCompletionSource.Task;
         }
         
         /// <summary>
