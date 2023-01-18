@@ -1,7 +1,7 @@
 @base = http://localhost:8010/fliox
 
 ###
-GET {{base}}/rest/user_db?command=ValidateUserDb
+GET {{base}}/rest/user_db?cmd=ValidateUserDb
 # StatusCode:   200
 # Content-Type: application/json
 
@@ -15,7 +15,7 @@ GET {{base}}/rest/user_db?command=ValidateUserDb
 }
 
 ###
-GET {{base}}/rest/user_db?command=ValidateUserDb
+GET {{base}}/rest/user_db?cmd=ValidateUserDb
 # StatusCode:   200
 # Content-Type: application/json
 

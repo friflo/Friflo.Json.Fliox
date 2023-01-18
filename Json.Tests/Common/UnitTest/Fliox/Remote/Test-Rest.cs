@@ -14,7 +14,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
         /// </summary>
         [Test, Order(0)]
         public static void Rest__main_db_init() {
-            var request = HttpRequest("POST", "/rest/main_db/", "?command=std.Echo");
+            var request = HttpRequest("POST", "/rest/main_db/", "?cmd=std.Echo");
             AssertRequest(request, 200, "application/json", "null");
         }
         

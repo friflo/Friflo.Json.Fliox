@@ -536,7 +536,7 @@ export class App {
     }
     
     public static getMessagesLink (database: string) : string {
-        const href = `./rest/${database}?command=std.Messages`;
+        const href = `./rest/${database}?cmd=std.Messages`;
         return `<a title="open database commands & messages in new tab" href=${href} target="_blank" rel="noopener noreferrer">${database}</a>`;
     }
 

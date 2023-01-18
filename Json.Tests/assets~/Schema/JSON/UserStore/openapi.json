@@ -54,7 +54,7 @@
         }
       }
     },
-    "/?command=AuthenticateUser": {
+    "/?cmd=AuthenticateUser": {
       "post": {
         "summary":    "authenticate user <b>Credentials</b>: <b>userId</b> and <b>token</b>",
         "tags":       ["commands"],
@@ -81,7 +81,7 @@
         }
       }
     },
-    "/?command=ValidateUserDb": {
+    "/?cmd=ValidateUserDb": {
       "post": {
         "summary":    "",
         "tags":       ["commands"],
@@ -99,7 +99,7 @@
         }
       }
     },
-    "/?command=ClearAuthCache": {
+    "/?cmd=ClearAuthCache": {
       "post": {
         "summary":    "",
         "tags":       ["commands"],
@@ -117,7 +117,7 @@
         }
       }
     },
-    "/?command=std.Echo": {
+    "/?cmd=std.Echo": {
       "post": {
         "summary":    "Echos the given parameter to assure the database is working appropriately.",
         "tags":       ["commands"],
@@ -144,7 +144,7 @@
         }
       }
     },
-    "/?command=std.Delay": {
+    "/?cmd=std.Delay": {
       "post": {
         "summary":    "A command that completes after a specified number of milliseconds.",
         "tags":       ["commands"],
@@ -171,7 +171,7 @@
         }
       }
     },
-    "/?command=std.Containers": {
+    "/?cmd=std.Containers": {
       "post": {
         "summary":    "List all database containers",
         "tags":       ["commands"],
@@ -189,7 +189,7 @@
         }
       }
     },
-    "/?command=std.Messages": {
+    "/?cmd=std.Messages": {
       "post": {
         "summary":    "List all database commands and messages",
         "tags":       ["commands"],
@@ -207,7 +207,7 @@
         }
       }
     },
-    "/?command=std.Schema": {
+    "/?cmd=std.Schema": {
       "post": {
         "summary":    "Return the Schema assigned to the database",
         "tags":       ["commands"],
@@ -225,7 +225,7 @@
         }
       }
     },
-    "/?command=std.Stats": {
+    "/?cmd=std.Stats": {
       "post": {
         "summary":    "Return the number of entities of all containers (or the given container) of the database",
         "tags":       ["commands"],
@@ -252,7 +252,7 @@
         }
       }
     },
-    "/?command=std.Host": {
+    "/?cmd=std.Host": {
       "post": {
         "summary":    "Returns general information about the Hub like version, host, project and environment name",
         "tags":       ["commands"],
@@ -279,7 +279,7 @@
         }
       }
     },
-    "/?command=std.Cluster": {
+    "/?cmd=std.Cluster": {
       "post": {
         "summary":    "List all databases and their containers hosted by the Hub",
         "tags":       ["commands"],
@@ -297,7 +297,7 @@
         }
       }
     },
-    "/?command=std.User": {
+    "/?cmd=std.User": {
       "post": {
         "summary":    "Return the groups of the current user. Optionally change the groups of the current user",
         "tags":       ["commands"],
@@ -324,7 +324,7 @@
         }
       }
     },
-    "/?command=std.Client": {
+    "/?cmd=std.Client": {
       "post": {
         "summary":    "Return client specific infos and adjust general client behavior like <b>queueEvents</b>",
         "tags":       ["commands"],

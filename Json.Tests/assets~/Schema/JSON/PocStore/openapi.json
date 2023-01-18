@@ -82,7 +82,7 @@
         }
       }
     },
-    "/?command=TestCommand": {
+    "/?cmd=TestCommand": {
       "post": {
         "summary":    "",
         "tags":       ["commands"],
@@ -109,7 +109,7 @@
         }
       }
     },
-    "/?command=MultiRequests": {
+    "/?cmd=MultiRequests": {
       "post": {
         "summary":    "Create the given number of sync requests each with an upsert to articles",
         "tags":       ["commands"],
@@ -136,7 +136,7 @@
         }
       }
     },
-    "/?command=SyncCommand": {
+    "/?cmd=SyncCommand": {
       "post": {
         "summary":    "",
         "tags":       ["commands"],
@@ -163,7 +163,7 @@
         }
       }
     },
-    "/?command=AsyncCommand": {
+    "/?cmd=AsyncCommand": {
       "post": {
         "summary":    "",
         "tags":       ["commands"],
@@ -190,7 +190,7 @@
         }
       }
     },
-    "/?command=Command1": {
+    "/?cmd=Command1": {
       "post": {
         "summary":    "",
         "tags":       ["commands"],
@@ -208,7 +208,7 @@
         }
       }
     },
-    "/?command=CommandInt": {
+    "/?cmd=CommandInt": {
       "post": {
         "summary":    "",
         "tags":       ["commands"],
@@ -235,7 +235,7 @@
         }
       }
     },
-    "/?command=test.Command2": {
+    "/?cmd=test.Command2": {
       "post": {
         "summary":    "",
         "tags":       ["commands"],
@@ -253,7 +253,7 @@
         }
       }
     },
-    "/?command=test.CommandHello": {
+    "/?cmd=test.CommandHello": {
       "post": {
         "summary":    "",
         "tags":       ["commands"],
@@ -280,7 +280,7 @@
         }
       }
     },
-    "/?command=test.CommandExecutionError": {
+    "/?cmd=test.CommandExecutionError": {
       "post": {
         "summary":    "",
         "tags":       ["commands"],
@@ -298,7 +298,7 @@
         }
       }
     },
-    "/?command=test.CommandExecutionException": {
+    "/?cmd=test.CommandExecutionException": {
       "post": {
         "summary":    "",
         "tags":       ["commands"],
@@ -316,7 +316,7 @@
         }
       }
     },
-    "/?command=std.Echo": {
+    "/?cmd=std.Echo": {
       "post": {
         "summary":    "Echos the given parameter to assure the database is working appropriately.",
         "tags":       ["commands"],
@@ -343,7 +343,7 @@
         }
       }
     },
-    "/?command=std.Delay": {
+    "/?cmd=std.Delay": {
       "post": {
         "summary":    "A command that completes after a specified number of milliseconds.",
         "tags":       ["commands"],
@@ -370,7 +370,7 @@
         }
       }
     },
-    "/?command=std.Containers": {
+    "/?cmd=std.Containers": {
       "post": {
         "summary":    "List all database containers",
         "tags":       ["commands"],
@@ -388,7 +388,7 @@
         }
       }
     },
-    "/?command=std.Messages": {
+    "/?cmd=std.Messages": {
       "post": {
         "summary":    "List all database commands and messages",
         "tags":       ["commands"],
@@ -406,7 +406,7 @@
         }
       }
     },
-    "/?command=std.Schema": {
+    "/?cmd=std.Schema": {
       "post": {
         "summary":    "Return the Schema assigned to the database",
         "tags":       ["commands"],
@@ -424,7 +424,7 @@
         }
       }
     },
-    "/?command=std.Stats": {
+    "/?cmd=std.Stats": {
       "post": {
         "summary":    "Return the number of entities of all containers (or the given container) of the database",
         "tags":       ["commands"],
@@ -451,7 +451,7 @@
         }
       }
     },
-    "/?command=std.Host": {
+    "/?cmd=std.Host": {
       "post": {
         "summary":    "Returns general information about the Hub like version, host, project and environment name",
         "tags":       ["commands"],
@@ -478,7 +478,7 @@
         }
       }
     },
-    "/?command=std.Cluster": {
+    "/?cmd=std.Cluster": {
       "post": {
         "summary":    "List all databases and their containers hosted by the Hub",
         "tags":       ["commands"],
@@ -496,7 +496,7 @@
         }
       }
     },
-    "/?command=std.User": {
+    "/?cmd=std.User": {
       "post": {
         "summary":    "Return the groups of the current user. Optionally change the groups of the current user",
         "tags":       ["commands"],
@@ -523,7 +523,7 @@
         }
       }
     },
-    "/?command=std.Client": {
+    "/?cmd=std.Client": {
       "post": {
         "summary":    "Return client specific infos and adjust general client behavior like <b>queueEvents</b>",
         "tags":       ["commands"],
@@ -550,7 +550,7 @@
         }
       }
     },
-    "/?message=Message1": {
+    "/?msg=Message1": {
       "post": {
         "summary":    "",
         "tags":       ["messages"],
@@ -577,7 +577,7 @@
         }
       }
     },
-    "/?message=AsyncMessage": {
+    "/?msg=AsyncMessage": {
       "post": {
         "summary":    "",
         "tags":       ["messages"],
@@ -604,7 +604,7 @@
         }
       }
     },
-    "/?message=StartTime": {
+    "/?msg=StartTime": {
       "post": {
         "summary":    "",
         "tags":       ["messages"],
@@ -631,7 +631,7 @@
         }
       }
     },
-    "/?message=StopTime": {
+    "/?msg=StopTime": {
       "post": {
         "summary":    "",
         "tags":       ["messages"],
@@ -658,7 +658,7 @@
         }
       }
     },
-    "/?message=test.Message2": {
+    "/?msg=test.Message2": {
       "post": {
         "summary":    "",
         "tags":       ["messages"],

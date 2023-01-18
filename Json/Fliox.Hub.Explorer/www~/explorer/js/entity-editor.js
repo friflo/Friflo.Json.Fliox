@@ -125,7 +125,7 @@ export class EntityEditor {
         const commandLink = this.createMessagesDocLink(database, "commands");
         ulDatabase.append(commandLink);
         // commands list
-        const messagesLi = this.createMessagesLi(database, "command", dbMessages.commands, messageMap);
+        const messagesLi = this.createMessagesLi(database, "cmd", dbMessages.commands, messageMap);
         ulDatabase.appendChild(messagesLi);
         const messages = dbMessages.messages;
         if (messages && messages.length > 0) {
@@ -133,7 +133,7 @@ export class EntityEditor {
             const commandLink = this.createMessagesDocLink(database, "messages");
             ulDatabase.append(commandLink);
             // messages list
-            const messagesLi = this.createMessagesLi(database, "message", dbMessages.messages, messageMap);
+            const messagesLi = this.createMessagesLi(database, "msg", dbMessages.messages, messageMap);
             ulDatabase.appendChild(messagesLi);
         }
         entityExplorer.innerText = "";
@@ -631,7 +631,7 @@ export class EntityEditor {
         var _a;
         this.setExplorerEditor("command");
         const schema = (_a = app.databaseSchemas[database]) === null || _a === void 0 ? void 0 : _a._rootSchema;
-        const messages = type == "command" ? schema === null || schema === void 0 ? void 0 : schema.commands : schema === null || schema === void 0 ? void 0 : schema.messages;
+        const messages = type == "cmd" ? schema === null || schema === void 0 ? void 0 : schema.commands : schema === null || schema === void 0 ? void 0 : schema.messages;
         const signature = messages ? messages[command] : null;
         const defaultParam = EntityEditor.getDefaultValue(signature === null || signature === void 0 ? void 0 : signature.param);
         this.entityIdentity = {
@@ -644,7 +644,7 @@ export class EntityEditor {
         this.setCommandParam(database, command, defaultParam); // sets command param => must be called before getCommandUrl()
         this.setCommandResult(database, command);
         commandSignature.innerHTML = this.getCommandDocsEl(database, command, signature);
-        //  commandAnchor.innerHTML     = `GET <span style="opacity:0.5">${database}?command=</span>${command}`;
+        //  commandAnchor.innerHTML     = `GET <span style="opacity:0.5">${database}?cmd=</span>${command}`;
         commandAnchor.innerHTML = command; // `GET &nbsp;&nbsp;${command}`;
         commandAnchor.href = this.getCommandUrl(database, command, type);
         commandAnchor.onfocus = () => {
@@ -690,7 +690,7 @@ export class EntityEditor {
         const param = EntityEditor.getMessageArg("param", database, signature.param);
         const returnHtml = EntityEditor.getReturnType(database, signature.result);
         const commandEl = app.getSchemaCommand(database, category, command);
-        const apiLinks = App.getApiLinks(database, "open commands API", `#/commands/post__command_${command}`);
+        const apiLinks = App.getApiLinks(database, "open commands API", `#/commands/post__cmd_${command}`);
         const el = `<span title="command parameter type">
             ${commandEl}
             (${param})

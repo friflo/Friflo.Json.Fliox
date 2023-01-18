@@ -16,15 +16,15 @@ Cookie: {{auth}}
 [{ "id": "xxx" }]
 
 ###
-POST {{base}}/rest/main_db?command=UnknownCommand
+POST {{base}}/rest/main_db?cmd=UnknownCommand
 Cookie: {{auth}}
 
 ###
-POST {{base}}/rest/main_db?command=test.CommandExecutionError
+POST {{base}}/rest/main_db?cmd=test.CommandExecutionError
 Cookie: {{auth}}
 
 ###
-POST {{base}}/rest/main_db?command=test.CommandExecutionException
+POST {{base}}/rest/main_db?cmd=test.CommandExecutionException
 Cookie: {{auth}}
 
 

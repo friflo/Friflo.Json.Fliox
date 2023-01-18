@@ -205,7 +205,8 @@ $@"    <chapter id='{type}'><a href='#{type}'>{type}</a>{oasCommandsLink}</chapt
                 var result  = GetMessageArg(null,    messageDef.result, context);
                 var doc     = GetDoc("\n            <td><docs>", messageDef.doc, "</docs></td>");
                 var signature = $"({param}) : {result}";
-                var oasLink = GetOasLink("/commands/post__command_", $"open {messageDef.name} API", messageDef.name);
+                var path    = messageDef.result != null ? "/commands/post__cmd_" : "/messages/post__msg_";
+                var oasLink = GetOasLink(path, $"open {messageDef.name} API", messageDef.name);
                 sb.AppendLF(
 $@"        <tr>
             <td><cmd>{messageDef.name}</cmd></td>

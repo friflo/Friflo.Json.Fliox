@@ -11,23 +11,23 @@ GET {{base}}/rest/main_db//article-1
 Cookie: {{auth}}
 
 ###
-GET {{base}}/rest/main_db/foo/?command=bar
+GET {{base}}/rest/main_db/foo/?cmd=bar
 Cookie: {{auth}}
 
 ###
-POST {{base}}/rest/main_db/foo/?command=bar
+POST {{base}}/rest/main_db/foo/?cmd=bar
 Cookie: {{auth}}
 
 ###
-GET {{base}}/rest/main_db/foo/?message=bar
+GET {{base}}/rest/main_db/foo/?msg=bar
 Cookie: {{auth}}
 
 ###
-POST {{base}}/rest/main_db/foo/?message=bar
+POST {{base}}/rest/main_db/foo/?msg=bar
 Cookie: {{auth}}
 
 ###
-GET {{base}}/rest/main_db/?command=std.Echo&param=invalid
+GET {{base}}/rest/main_db/?cmd=std.Echo&param=invalid
 Cookie: {{auth}}
 
 ###

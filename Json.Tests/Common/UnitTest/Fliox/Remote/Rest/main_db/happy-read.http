@@ -7,7 +7,7 @@ GET {{base}}/rest/main_db/articles/article-1
 Cookie: {{auth}}
 
 ###
-POST {{base}}/rest/main_db/?message=Message1
+POST {{base}}/rest/main_db/?msg=Message1
 Cookie: {{auth}}
 
 "foo"

@@ -2,21 +2,21 @@
 @base = http://localhost:8010/fliox
 
 ###
-POST {{base}}/rest/main_db/?command=std.Echo
+POST {{base}}/rest/main_db/?cmd=std.Echo
 # StatusCode:   200
 # Content-Type: application/json
 
 { "hello": "world" }
 
 ###
-GET {{base}}/rest/main_db/?command=std.Echo&param="hello"
+GET {{base}}/rest/main_db/?cmd=std.Echo&param="hello"
 # StatusCode:   200
 # Content-Type: application/json
 
 "hello"
 
 ###
-GET {{base}}/rest/main_db?command=std.Containers
+GET {{base}}/rest/main_db?cmd=std.Containers
 # StatusCode:   200
 # Content-Type: application/json
 
@@ -36,7 +36,7 @@ GET {{base}}/rest/main_db?command=std.Containers
 }
 
 ###
-GET {{base}}/rest/main_db?command=std.Messages
+GET {{base}}/rest/main_db?cmd=std.Messages
 # StatusCode:   200
 # Content-Type: application/json
 
@@ -74,7 +74,7 @@ GET {{base}}/rest/main_db?command=std.Messages
 }
 
 ###
-GET {{base}}/rest/main_db?command=std.Host
+GET {{base}}/rest/main_db?cmd=std.Host
 # StatusCode:   200
 # Content-Type: application/json
 
@@ -99,7 +99,7 @@ GET {{base}}/rest/main_db?command=std.Host
 }
 
 ###
-GET {{base}}/rest/main_db?command=std.User
+GET {{base}}/rest/main_db?cmd=std.User
 # StatusCode:   200
 # Content-Type: application/json
 

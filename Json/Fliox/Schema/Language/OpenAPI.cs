@@ -184,8 +184,8 @@ namespace Friflo.Json.Fliox.Schema.Language
             var response        = new ContentRef(dbContainers, false);
             EmitPath("database", "get", "/",   null, "return all database containers", null, response, sb);
 
-            EmitMessages("command", schemaType.Commands, sb);
-            EmitMessages("message", schemaType.Messages, sb);
+            EmitMessages("cmd", schemaType.Commands, sb);
+            EmitMessages("msg", schemaType.Messages, sb);
             foreach (var container in schemaType.Fields) {
                 EmitContainerApi(container, sb);
             }
@@ -209,7 +209,7 @@ namespace Friflo.Json.Fliox.Schema.Language
                 // queryParams.Add(new Parameter("query", "param", paramRef, false));
             }
             var doc             = type.doc ?? "";
-            var tag             = messageType == "command" ? "commands" : "messages";
+            var tag             = messageType == "cmd" ? "commands" : "messages";
             var resultType      = type.result?.type;
             Content response;
             if (resultType != null) {

@@ -35,15 +35,15 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 var pool            = context.Pool;
                 var method          = context.method;
                 var queryParams     = HttpUtility.ParseQueryString(context.query);
-                var commandName     = queryParams["command"];
-                var messageName     = queryParams["message"];
+                var commandName     = queryParams["cmd"];
+                var messageName     = queryParams["msg"];
                 var isGet           = method == "GET";
                 var isPost          = method == "POST";
                 var resourcePath    = route.Substring(RestBase.Length + 1);
                 var res             = new Resource(resourcePath);
                 
-                // ------------------    GET            /rest/database?command=...   /database?message=...
-                //                       POST           /rest/database?command=...   /database?message=...
+                // ------------------    GET            /rest/database?cmd=...   /rest/database?msg=...
+                //                       POST           /rest/database?cmd=...   /rest/database?msg=...
                 if ((commandName != null || messageName != null) && (isGet || isPost)) {
                     if (res.length != 1) {
                         return new RestRequest(GetErrorType(commandName), $"messages & commands operate on database. was: {resourcePath}", 400);

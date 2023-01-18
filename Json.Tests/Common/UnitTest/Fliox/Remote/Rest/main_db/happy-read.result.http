@@ -13,7 +13,7 @@ GET {{base}}/rest/main_db/articles/article-1
 }
 
 ###
-POST {{base}}/rest/main_db/?message=Message1
+POST {{base}}/rest/main_db/?msg=Message1
 # StatusCode:   200
 # Content-Type: application/json
 

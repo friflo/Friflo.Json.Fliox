@@ -396,77 +396,77 @@ Each <b>role</b> in container <b>roles</b> has a set of <b>rights</b> which gran
         <tr>
             <td><cmd>AuthenticateUser</cmd></td>
             <td><sig>(<keyword>param</keyword>: <a href='#Friflo.Json.Fliox.Hub.DB.UserAuth.Credentials'>Credentials</a> | null) : <a href='#Friflo.Json.Fliox.Hub.DB.UserAuth.AuthResult'>AuthResult</a></sig></td>
-            <td><oas><a href='../open-api.html#/commands/post__command_AuthenticateUser' target='_blank' title='open AuthenticateUser API as OpenAPI specification (OAS) in new tab'>OAS</a></oas></td>
+            <td><oas><a href='../open-api.html#/commands/post__cmd_AuthenticateUser' target='_blank' title='open AuthenticateUser API as OpenAPI specification (OAS) in new tab'>OAS</a></oas></td>
             <td><docs>authenticate user <b>Credentials</b>: <b>userId</b> and <b>token</b></docs></td>
         </tr>
         <tr>
             <td><cmd>ValidateUserDb</cmd></td>
             <td><sig>() : <a href='#Friflo.Json.Fliox.Hub.DB.UserAuth.ValidateUserDbResult'>ValidateUserDbResult</a></sig></td>
-            <td><oas><a href='../open-api.html#/commands/post__command_ValidateUserDb' target='_blank' title='open ValidateUserDb API as OpenAPI specification (OAS) in new tab'>OAS</a></oas></td>
+            <td><oas><a href='../open-api.html#/commands/post__cmd_ValidateUserDb' target='_blank' title='open ValidateUserDb API as OpenAPI specification (OAS) in new tab'>OAS</a></oas></td>
         </tr>
         <tr>
             <td><cmd>ClearAuthCache</cmd></td>
             <td><sig>() : <predef>boolean</predef></sig></td>
-            <td><oas><a href='../open-api.html#/commands/post__command_ClearAuthCache' target='_blank' title='open ClearAuthCache API as OpenAPI specification (OAS) in new tab'>OAS</a></oas></td>
+            <td><oas><a href='../open-api.html#/commands/post__cmd_ClearAuthCache' target='_blank' title='open ClearAuthCache API as OpenAPI specification (OAS) in new tab'>OAS</a></oas></td>
         </tr>
         <tr>
             <td><cmd>std.Echo</cmd></td>
             <td><sig>(<keyword>param</keyword>: <predef>any</predef>) : <predef>any</predef></sig></td>
-            <td><oas><a href='../open-api.html#/commands/post__command_std_Echo' target='_blank' title='open std.Echo API as OpenAPI specification (OAS) in new tab'>OAS</a></oas></td>
+            <td><oas><a href='../open-api.html#/commands/post__cmd_std_Echo' target='_blank' title='open std.Echo API as OpenAPI specification (OAS) in new tab'>OAS</a></oas></td>
             <td><docs>Echos the given parameter to assure the database is working appropriately.</docs></td>
         </tr>
         <tr>
             <td><cmd>std.Delay</cmd></td>
             <td><sig>(<keyword>param</keyword>: <a href='#Standard.int32'>int32</a>) : <a href='#Standard.int32'>int32</a></sig></td>
-            <td><oas><a href='../open-api.html#/commands/post__command_std_Delay' target='_blank' title='open std.Delay API as OpenAPI specification (OAS) in new tab'>OAS</a></oas></td>
+            <td><oas><a href='../open-api.html#/commands/post__cmd_std_Delay' target='_blank' title='open std.Delay API as OpenAPI specification (OAS) in new tab'>OAS</a></oas></td>
             <td><docs>A command that completes after a specified number of milliseconds.</docs></td>
         </tr>
         <tr>
             <td><cmd>std.Containers</cmd></td>
             <td><sig>() : <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.DbContainers'>DbContainers</a></sig></td>
-            <td><oas><a href='../open-api.html#/commands/post__command_std_Containers' target='_blank' title='open std.Containers API as OpenAPI specification (OAS) in new tab'>OAS</a></oas></td>
+            <td><oas><a href='../open-api.html#/commands/post__cmd_std_Containers' target='_blank' title='open std.Containers API as OpenAPI specification (OAS) in new tab'>OAS</a></oas></td>
             <td><docs>List all database containers</docs></td>
         </tr>
         <tr>
             <td><cmd>std.Messages</cmd></td>
             <td><sig>() : <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.DbMessages'>DbMessages</a></sig></td>
-            <td><oas><a href='../open-api.html#/commands/post__command_std_Messages' target='_blank' title='open std.Messages API as OpenAPI specification (OAS) in new tab'>OAS</a></oas></td>
+            <td><oas><a href='../open-api.html#/commands/post__cmd_std_Messages' target='_blank' title='open std.Messages API as OpenAPI specification (OAS) in new tab'>OAS</a></oas></td>
             <td><docs>List all database commands and messages</docs></td>
         </tr>
         <tr>
             <td><cmd>std.Schema</cmd></td>
             <td><sig>() : <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.DbSchema'>DbSchema</a></sig></td>
-            <td><oas><a href='../open-api.html#/commands/post__command_std_Schema' target='_blank' title='open std.Schema API as OpenAPI specification (OAS) in new tab'>OAS</a></oas></td>
+            <td><oas><a href='../open-api.html#/commands/post__cmd_std_Schema' target='_blank' title='open std.Schema API as OpenAPI specification (OAS) in new tab'>OAS</a></oas></td>
             <td><docs>Return the Schema assigned to the database</docs></td>
         </tr>
         <tr>
             <td><cmd>std.Stats</cmd></td>
             <td><sig>(<keyword>param</keyword>: <predef>string</predef> | null) : <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.DbStats'>DbStats</a></sig></td>
-            <td><oas><a href='../open-api.html#/commands/post__command_std_Stats' target='_blank' title='open std.Stats API as OpenAPI specification (OAS) in new tab'>OAS</a></oas></td>
+            <td><oas><a href='../open-api.html#/commands/post__cmd_std_Stats' target='_blank' title='open std.Stats API as OpenAPI specification (OAS) in new tab'>OAS</a></oas></td>
             <td><docs>Return the number of entities of all containers (or the given container) of the database</docs></td>
         </tr>
         <tr>
             <td><cmd>std.Host</cmd></td>
             <td><sig>(<keyword>param</keyword>: <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.HostParam'>HostParam</a> | null) : <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.HostInfo'>HostInfo</a></sig></td>
-            <td><oas><a href='../open-api.html#/commands/post__command_std_Host' target='_blank' title='open std.Host API as OpenAPI specification (OAS) in new tab'>OAS</a></oas></td>
+            <td><oas><a href='../open-api.html#/commands/post__cmd_std_Host' target='_blank' title='open std.Host API as OpenAPI specification (OAS) in new tab'>OAS</a></oas></td>
             <td><docs>Returns general information about the Hub like version, host, project and environment name</docs></td>
         </tr>
         <tr>
             <td><cmd>std.Cluster</cmd></td>
             <td><sig>() : <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.HostCluster'>HostCluster</a></sig></td>
-            <td><oas><a href='../open-api.html#/commands/post__command_std_Cluster' target='_blank' title='open std.Cluster API as OpenAPI specification (OAS) in new tab'>OAS</a></oas></td>
+            <td><oas><a href='../open-api.html#/commands/post__cmd_std_Cluster' target='_blank' title='open std.Cluster API as OpenAPI specification (OAS) in new tab'>OAS</a></oas></td>
             <td><docs>List all databases and their containers hosted by the Hub</docs></td>
         </tr>
         <tr>
             <td><cmd>std.User</cmd></td>
             <td><sig>(<keyword>param</keyword>: <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.UserParam'>UserParam</a> | null) : <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.UserResult'>UserResult</a></sig></td>
-            <td><oas><a href='../open-api.html#/commands/post__command_std_User' target='_blank' title='open std.User API as OpenAPI specification (OAS) in new tab'>OAS</a></oas></td>
+            <td><oas><a href='../open-api.html#/commands/post__cmd_std_User' target='_blank' title='open std.User API as OpenAPI specification (OAS) in new tab'>OAS</a></oas></td>
             <td><docs>Return the groups of the current user. Optionally change the groups of the current user</docs></td>
         </tr>
         <tr>
             <td><cmd>std.Client</cmd></td>
             <td><sig>(<keyword>param</keyword>: <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.ClientParam'>ClientParam</a> | null) : <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.ClientResult'>ClientResult</a></sig></td>
-            <td><oas><a href='../open-api.html#/commands/post__command_std_Client' target='_blank' title='open std.Client API as OpenAPI specification (OAS) in new tab'>OAS</a></oas></td>
+            <td><oas><a href='../open-api.html#/commands/post__cmd_std_Client' target='_blank' title='open std.Client API as OpenAPI specification (OAS) in new tab'>OAS</a></oas></td>
             <td><docs>Return client specific infos and adjust general client behavior like <b>queueEvents</b></docs></td>
         </tr>
     </table>

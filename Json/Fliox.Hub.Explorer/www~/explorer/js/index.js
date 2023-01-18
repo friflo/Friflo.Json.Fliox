@@ -474,7 +474,7 @@ export class App {
             `href="${flioxRoot}schema/${database}/html/class-diagram.html" target="_blank" rel="noopener noreferrer">CD</a>`;
     }
     static getMessagesLink(database) {
-        const href = `./rest/${database}?command=std.Messages`;
+        const href = `./rest/${database}?cmd=std.Messages`;
         return `<a title="open database commands & messages in new tab" href=${href} target="_blank" rel="noopener noreferrer">${database}</a>`;
     }
     getContainerSchema(database, container) {

@@ -39,7 +39,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         
         // --- container operations
         internal  readonly  JsonKey[]           keys;
-        /// query string of the url. E.g. ?command=echo
+        /// query string of the url. E.g. ?cmd=std.Echo
         internal  readonly  NameValueCollection query;
 
         public    override  string              ToString() => GetString();
