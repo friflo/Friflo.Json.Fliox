@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using Friflo.Json.Burst.Utils;
+using Friflo.Json.Fliox.Hub.Client;
 using Friflo.Json.Fliox.Hub.Host.Event.Collector;
 using Friflo.Json.Fliox.Hub.Host.Auth;
 using Friflo.Json.Fliox.Hub.Protocol;
@@ -53,7 +54,9 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         public              bool                                SendEventUserId         { get; set; } = true;
         public              bool                                SendEventClientId       { get; set; } = false;
         /// <summary>
-        /// If true the target client id is set in <see cref="EventMessage"/>'s sent to client<br/>
+        /// If true the target client id is set in <see cref="EventMessage"/>'s sent to clients<br/>
+        /// By sending the client id multiple <see cref="FlioxClient"/>'s can use a single <see cref="WebSocketClientHub"/>
+        /// to receive events.<br/>
         /// If false remote clients like <see cref="RemoteClientHub"/> must be initialized with <see cref="RemoteClientAccess.Single"/>
         /// </summary>
         public              bool                                SendTargetClientId      { get; set; } = true;
