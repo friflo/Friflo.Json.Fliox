@@ -77,8 +77,10 @@ namespace Friflo.Json.Fliox.Hub.Host
         protected internal virtual void PreExecuteTasks (SyncContext syncContext)  { }
         protected internal virtual void PostExecuteTasks(SyncContext syncContext)  { }
         
+        protected internal virtual void CustomizeCreate (CreateEntities task, SyncContext syncContext) { }
         protected internal virtual void CustomizeUpsert (UpsertEntities task, SyncContext syncContext) { }
         protected internal virtual void CustomizeMerge  (MergeEntities  task, SyncContext syncContext) { }
+        protected internal virtual void CustomizeDelete (DeleteEntities task, SyncContext syncContext) { }
         
         public virtual async Task<SyncTaskResult> ExecuteTaskAsync (SyncRequestTask task, EntityDatabase database, SyncResponse response, SyncContext syncContext) {
             if (!AuthorizeTask(task, syncContext, out var error))

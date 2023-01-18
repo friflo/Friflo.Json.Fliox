@@ -67,6 +67,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
                     }
                 }
             }
+            database.service.CustomizeCreate(this, syncContext);
             return null;
         }
         

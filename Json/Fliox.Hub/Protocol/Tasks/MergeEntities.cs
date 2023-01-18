@@ -42,8 +42,8 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
             if (patches == null) {
                 return MissingField(nameof(patches));
             }
-            database.service.CustomizeMerge(this, syncContext);
             entityContainer = database.GetOrCreateContainer(container);
+            database.service.CustomizeMerge(this, syncContext);
             return null;
         }
 
