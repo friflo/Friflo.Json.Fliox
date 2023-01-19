@@ -235,6 +235,18 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             eventCollector.RemoveDatabase(database);
         }
         
+        public void SendSyncEvent(in SmallString database, in SyncEvent syncEvent, ObjectWriter writer) {
+            lock (intern.monitor) {
+                if (!intern.databaseSubsMap.map.TryGetValue(database, out var databaseSubsArray)) {
+                    return;
+                }
+                var rawSyncEvent = new JsonValue(writer.WriteAsBytes(syncEvent));
+                foreach (var clientSub in databaseSubsArray) {
+                    clientSub.client.EnqueueSyncEvent(rawSyncEvent);
+                }
+            }
+        }
+        
         /// <summary>
         /// Send all queued events to all connected subscribers for an <see cref="EventDispatcher"/> initialized with
         /// <see cref="EventDispatching.Queue"/><br/>
