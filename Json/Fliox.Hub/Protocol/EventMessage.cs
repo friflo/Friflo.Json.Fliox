@@ -40,7 +40,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol
     public struct RawSyncTask
     {
         public JsonValue  task; // create, upsert, merge or delete
-        public string     cont;
+        public JsonValue  cont; // container name
         public JsonValue  set;  // serialized entities
     }
 

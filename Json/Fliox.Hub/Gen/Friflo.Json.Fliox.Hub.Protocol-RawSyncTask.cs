@@ -15,7 +15,7 @@ namespace Gen.Friflo.Json.Fliox.Hub.Protocol
             bool success;
             switch (field.genIndex) {
                 case Gen_task: obj.task = reader.ReadJsonValue (field, out success);  return success;
-                case Gen_cont: obj.cont = reader.ReadString    (field, obj.cont, out success);  return success;
+                case Gen_cont: obj.cont = reader.ReadJsonValue (field, out success);  return success;
                 case Gen_set:  obj.set  = reader.ReadJsonValue (field, out success);  return success;
             }
             return false;
@@ -23,7 +23,7 @@ namespace Gen.Friflo.Json.Fliox.Hub.Protocol
 
         private static void Write(ref RawSyncTask obj, PropField[] fields, ref Writer writer, ref bool firstMember) {
             writer.WriteJsonValue (fields[Gen_task], obj.task, ref firstMember);
-            writer.WriteString    (fields[Gen_cont], obj.cont, ref firstMember);
+            writer.WriteJsonValue (fields[Gen_cont], obj.cont, ref firstMember);
             writer.WriteJsonValue (fields[Gen_set],  obj.set,  ref firstMember);
         }
     }
