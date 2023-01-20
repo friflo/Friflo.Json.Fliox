@@ -81,7 +81,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
                 return error;
             }
             if (IsNop()) {
-                return new UpsertEntitiesResult{ errors = validationErrors };
+                return UpsertEntitiesResult.Create(syncContext, validationErrors);
             }
             var result = await entityContainer.UpsertEntitiesAsync(this, syncContext).ConfigureAwait(false);
             if (result.Error != null) {
@@ -97,7 +97,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
                 return error;
             }
             if (IsNop()) {
-                return new UpsertEntitiesResult{ errors = validationErrors };
+                return UpsertEntitiesResult.Create(syncContext, validationErrors);
             }
             var result = entityContainer.UpsertEntities(this, syncContext);
             if (result.Error != null) {
@@ -118,8 +118,10 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         /// <summary>list of entity errors failed to upsert</summary>
                     public  List<EntityError>   errors;
         
-        public static UpsertEntitiesResult Create(SyncContext syncContext) {
-            return syncContext.syncPools?.upsertResultPool.Create() ?? new UpsertEntitiesResult();
+        public static UpsertEntitiesResult Create(SyncContext syncContext, List<EntityError> entityErrors) {
+            var result = syncContext.syncPools?.upsertResultPool.Create() ?? new UpsertEntitiesResult();
+            result.errors = entityErrors;
+            return result;
         }
 
         internal override   TaskType            TaskType => TaskType.upsert;

@@ -83,9 +83,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             } finally {
                 rwLock.ReleaseWriterLock();
             }
-            var result = UpsertEntitiesResult.Create(syncContext);
-            result.errors = upsertErrors;
-            return result;
+            return UpsertEntitiesResult.Create(syncContext, upsertErrors);
         }
 
         public override async Task<ReadEntitiesResult> ReadEntitiesAsync(ReadEntities command, SyncContext syncContext) {
