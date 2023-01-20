@@ -36,7 +36,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         /// return true to execute this task synchronous. <br/>
         /// return false to execute task asynchronous
         /// </summary>
-        public override bool PreExecute(EntityDatabase database) {
+        public override bool PreExecute(EntityDatabase database, SharedEnv env) {
             if (name == null) {
                 intern.executionType = ExecutionType.Sync; // execute error synchronously. error: missing field: {name}
                 return true; 

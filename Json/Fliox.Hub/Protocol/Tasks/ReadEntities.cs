@@ -32,7 +32,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         public   override   TaskType            TaskType => TaskType.read;
         public   override   string              TaskName =>  $"container: '{container}'";
         
-        public override bool PreExecute(EntityDatabase database) {
+        public override bool PreExecute(EntityDatabase database, SharedEnv env) {
             if (references != null) {
                 intern.executionType   = ExecutionType.Async;
                 return false;

@@ -88,14 +88,14 @@ namespace Friflo.Json.Fliox.Hub.Host
         public string ValidateEntities (
             string                  container,
             List<JsonEntity>        entities,
-            SyncContext             syncContext,
+            SharedEnv               env,
             EntityErrorType         errorType,
             ref List<EntityError>   validationErrors
         ) {
             if (!containerTypes.TryGetValue(container, out ValidationType type)) {
                 return $"No Schema definition for container Type: {container}";
             }
-            using (var pooled = syncContext.pool.TypeValidator.Get()) {
+            using (var pooled = env.Pool.TypeValidator.Get()) {
                 TypeValidator validator = pooled.instance;
                 for (int n = 0; n < entities.Count; n++) {
                     var entity = entities[n];

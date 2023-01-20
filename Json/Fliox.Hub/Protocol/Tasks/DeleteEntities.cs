@@ -43,9 +43,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         }
         
         private TaskErrorResult PrepareDelete(
-            EntityDatabase          database,
-            // ReSharper disable once UnusedParameter.Local
-            SyncContext             syncContext)
+            EntityDatabase          database)
         {
             if (container == null) {
                 return MissingContainer();
@@ -54,12 +52,12 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
                 return MissingField($"[{nameof(ids)} | {nameof(all)}]");
             }
             entityContainer = database.GetOrCreateContainer(container);
-            database.service.CustomizeDelete(this, syncContext);
             return null;
         }
 
         public override async Task<SyncTaskResult> ExecuteAsync(EntityDatabase database, SyncResponse response, SyncContext syncContext) {
-            var error = PrepareDelete (database, syncContext);
+            var error = PrepareDelete (database);
+            database.service.CustomizeDelete(this, syncContext);
             if (error != null) {
                 return error;
             }
@@ -74,7 +72,8 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         }
         
         public override SyncTaskResult Execute(EntityDatabase database, SyncResponse response, SyncContext syncContext) {
-            var error = PrepareDelete (database, syncContext);
+            var error = PrepareDelete (database);
+            database.service.CustomizeDelete(this, syncContext);
             if (error != null) {
                 return error;
             }

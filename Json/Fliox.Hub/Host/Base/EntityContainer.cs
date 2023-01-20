@@ -135,7 +135,8 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// </remarks>
         public virtual async Task<MergeEntitiesResult> MergeEntitiesAsync (MergeEntities mergeEntities, SyncContext syncContext) {
             var patches = mergeEntities.patches;
-            if (!EntityUtils.GetKeysFromEntities(mergeEntities.keyName, patches, syncContext, out string keyError)) {
+            var env     = syncContext.sharedEnv;
+            if (!EntityUtils.GetKeysFromEntities(mergeEntities.keyName, patches, env, out string keyError)) {
                 return new MergeEntitiesResult { Error = new CommandError(TaskErrorResultType.InvalidTask, keyError) };
             }
             var ids = new List<JsonKey>(patches.Count);
@@ -158,7 +159,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             var targets     = new  List<JsonEntity>  (entities.Length);
             var container   = mergeEntities.container;
             List<EntityError> patchErrors = null;
-            using (var pooled = syncContext.pool.JsonMerger.Get())
+            using (var pooled = env.Pool.JsonMerger.Get())
             {
                 JsonMerger merger   = pooled.instance;
                 merger.Pretty       = Pretty;
@@ -188,7 +189,7 @@ namespace Friflo.Json.Fliox.Hub.Host
                     targets.Add(new JsonEntity(key, merge));
                 }
             }
-            var valError = database.Schema?.ValidateEntities(container, targets, syncContext, EntityErrorType.PatchError, ref patchErrors);
+            var valError = database.Schema?.ValidateEntities(container, targets, env, EntityErrorType.PatchError, ref patchErrors);
             if (valError != null) {
                 return new MergeEntitiesResult{Error = new CommandError(TaskErrorResultType.ValidationError, valError)};
             }

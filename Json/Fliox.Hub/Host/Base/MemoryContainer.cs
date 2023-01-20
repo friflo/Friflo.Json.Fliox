@@ -171,7 +171,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             SyncContext     syncContext)
         {
             var patches = mergeEntities.patches;
-            if (!EntityUtils.GetKeysFromEntities(mergeEntities.keyName, patches, syncContext, out string keyError)) {
+            if (!EntityUtils.GetKeysFromEntities(mergeEntities.keyName, patches, syncContext.sharedEnv, out string keyError)) {
                 var error = new CommandError(TaskErrorResultType.InvalidTask, keyError);
                 return new MergeEntitiesResult { Error = error };
             }

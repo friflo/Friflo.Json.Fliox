@@ -34,8 +34,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         public   override   bool                IsNop()  => patches.Count == 0;
         
         private TaskErrorResult PrepareMerge(
-            EntityDatabase      database,
-            SyncContext         syncContext)
+            EntityDatabase      database)
         {
             if (container == null) {
                 return MissingContainer();
@@ -44,12 +43,12 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
                 return MissingField(nameof(patches));
             }
             entityContainer = database.GetOrCreateContainer(container);
-            database.service.CustomizeMerge(this, syncContext);
             return null;
         }
 
         public override async Task<SyncTaskResult> ExecuteAsync(EntityDatabase database, SyncResponse response, SyncContext syncContext) {
-            var error = PrepareMerge(database, syncContext);
+            var error = PrepareMerge(database);
+            database.service.CustomizeMerge(this, syncContext);
             if (error != null) {
                 return error;
             }
@@ -65,7 +64,8 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         }
         
         public override SyncTaskResult Execute(EntityDatabase database, SyncResponse response, SyncContext syncContext) {
-            var error = PrepareMerge(database, syncContext);
+            var error = PrepareMerge(database);
+            database.service.CustomizeMerge(this, syncContext);
             if (error != null) {
                 return error;
             }

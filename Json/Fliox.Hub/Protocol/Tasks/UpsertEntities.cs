@@ -25,6 +25,8 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         [Required]  public  string              container;
         [Browse(Never)]
         [Ignore]   public   EntityContainer     entityContainer;
+        [Ignore]   private  List<EntityError>   validationErrors;
+        [Ignore]   private  TaskErrorResult     error;
         /// <summary>name of the primary key property in <see cref="entities"/></summary>
                    public   string              keyName;
         /// <summary>the <see cref="entities"/> which are upserted in the specified <see cref="container"/></summary>
@@ -35,28 +37,31 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         public   override   string              TaskName => $"container: '{container}'";
         public   override   bool                IsNop()  => entities.Count == 0;
         
-        private TaskErrorResult PrepareUpsert(
-            EntityDatabase          database,
-            SyncContext             syncContext,
-            ref List<EntityError>   validationErrors)
+        public override bool PreExecute(EntityDatabase database, SharedEnv env) {
+            error = PrepareUpsert(database, env);
+            return base.PreExecute(database, env);
+        }
+        
+        private TaskErrorResult PrepareUpsert(EntityDatabase database, SharedEnv env)
         {
+            validationErrors = null;
             if (container == null) {
                 return MissingContainer();
             }
             if (entities == null) {
                 return MissingField(nameof(entities));
             }
-            if (!EntityUtils.GetKeysFromEntities(keyName, entities, syncContext, out string errorMsg)) {
+            if (!EntityUtils.GetKeysFromEntities(keyName, entities, env, out string errorMsg)) {
                 return InvalidTask(errorMsg);
             }
-            errorMsg = database.Schema?.ValidateEntities (container, entities, syncContext, EntityErrorType.WriteError, ref validationErrors);
+            errorMsg = database.Schema?.ValidateEntities (container, entities, env, EntityErrorType.WriteError, ref validationErrors);
             if (errorMsg != null) {
                 return TaskError(new CommandError(TaskErrorResultType.ValidationError, errorMsg));
             }
             entityContainer = database.GetOrCreateContainer(container);
             // may call patcher.Copy() always to ensure a valid JSON value
             if (entityContainer.Pretty) {
-                using (var pooled = syncContext.pool.JsonPatcher.Get()) {
+                using (var pooled = env.Pool.JsonPatcher.Get()) {
                     JsonPatcher patcher = pooled.instance;
                     for (int n = 0; n < entities.Count; n++) {
                         var entity = entities[n];
@@ -67,13 +72,11 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
                     }
                 }
             }
-            database.service.CustomizeUpsert(this, syncContext);
             return null;
         }
         
         public override async Task<SyncTaskResult> ExecuteAsync(EntityDatabase database, SyncResponse response, SyncContext syncContext) {
-            List<EntityError> validationErrors = null;
-            var error = PrepareUpsert(database, syncContext, ref validationErrors);
+            database.service.CustomizeUpsert(this, syncContext);
             if (error != null) {
                 return error;
             }
@@ -89,8 +92,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         }
         
         public override SyncTaskResult Execute(EntityDatabase database, SyncResponse response, SyncContext syncContext) {
-            List<EntityError> validationErrors = null;
-            var error = PrepareUpsert(database, syncContext, ref validationErrors);
+            database.service.CustomizeUpsert(this, syncContext);
             if (error != null) {
                 return error;
             }

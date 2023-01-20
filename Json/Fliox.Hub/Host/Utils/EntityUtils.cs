@@ -60,10 +60,10 @@ namespace Friflo.Json.Fliox.Hub.Host.Utils
         internal static bool GetKeysFromEntities (
             string              keyName,
             List<JsonEntity>    entities,
-            SyncContext         syncContext,
+            SharedEnv           env,
             out string          error
         ) {
-            using (var pooled = syncContext.EntityProcessor.Get()) {
+            using (var pooled = env.Pool.EntityProcessor.Get()) {
                 var processor = pooled.instance;
                 for (int n = 0; n < entities.Count; n++) {
                     var entity  = entities[n];

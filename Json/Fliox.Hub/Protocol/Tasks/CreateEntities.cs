@@ -39,7 +39,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         
         private TaskErrorResult PrepareCreate(
             EntityDatabase          database,
-            SyncContext             syncContext,
+            SharedEnv               env,
             ref List<EntityError>   validationErrors)
         {
             if (container == null) {
@@ -48,18 +48,18 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
             if (entities == null) {
                 return MissingField(nameof(entities));
             }
-            if (!EntityUtils.GetKeysFromEntities(keyName, entities, syncContext, out string errorMsg)) {
+            if (!EntityUtils.GetKeysFromEntities(keyName, entities, env, out string errorMsg)) {
                 return InvalidTask(errorMsg);
             }
             entityContainer = database.GetOrCreateContainer(container);
-            errorMsg = entityContainer.database.Schema?.ValidateEntities (container, entities, syncContext, EntityErrorType.WriteError, ref validationErrors);
+            errorMsg = entityContainer.database.Schema?.ValidateEntities (container, entities, env, EntityErrorType.WriteError, ref validationErrors);
             if (errorMsg != null) {
                 return TaskError(new CommandError(TaskErrorResultType.ValidationError, errorMsg));
             }
 
             // may call patcher.Copy() always to ensure a valid JSON value
             if (entityContainer.Pretty) {
-                using (var pooled = syncContext.pool.JsonPatcher.Get()) {
+                using (var pooled = env.Pool.JsonPatcher.Get()) {
                     JsonPatcher patcher = pooled.instance;
                     for (int n = 0; n < entities.Count; n++) {
                         var entity = entities[n];
@@ -68,13 +68,13 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
                     }
                 }
             }
-            database.service.CustomizeCreate(this, syncContext);
             return null;
         }
         
         public override async Task<SyncTaskResult> ExecuteAsync(EntityDatabase database, SyncResponse response, SyncContext syncContext) {
             List<EntityError> validationErrors = null;
-            var error =  PrepareCreate(database, syncContext, ref validationErrors);
+            var error =  PrepareCreate(database, syncContext.sharedEnv, ref validationErrors);
+            database.service.CustomizeCreate(this, syncContext);
             if (error != null) {
                 return error;
             }
@@ -92,7 +92,9 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         
         public override SyncTaskResult Execute(EntityDatabase database, SyncResponse response, SyncContext syncContext) {
             List<EntityError> validationErrors = null;
-            var error = PrepareCreate(database, syncContext, ref validationErrors);
+            var error = PrepareCreate(database, syncContext.sharedEnv, ref validationErrors);
+            database.service.CustomizeCreate(this, syncContext);
+
             if (error != null) {
                 return error;
             }
