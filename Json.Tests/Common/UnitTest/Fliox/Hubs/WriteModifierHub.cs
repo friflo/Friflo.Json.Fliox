@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using Friflo.Json.Fliox;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.Utils;
@@ -35,7 +34,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs
             }
         }
 
-        public override async Task<ExecuteSyncResult> ExecuteRequestAsync(SyncRequest syncRequest, SyncContext syncContext) {
+        public override ExecutionType InitSyncRequest(SyncRequest syncRequest) {
             foreach (var task in syncRequest.tasks) {
                 switch (task) {
                     case CreateEntities createEntities:
@@ -50,7 +49,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs
                         break;
                 }
             }
-            return await hub.ExecuteRequestAsync(syncRequest, syncContext);
+            return base.InitSyncRequest(syncRequest);
         }
 
         public WriteModifiers GetWriteModifiers(string container) {
