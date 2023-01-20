@@ -31,6 +31,18 @@ namespace Friflo.Json.Fliox.Hub.Protocol
         
         internal override       MessageType         MessageType => MessageType.ev;
     }
+    
+    public struct RawSyncEvent
+    {
+        public List<RawSyncTask>  tasks;
+    }
+    
+    public struct RawSyncTask
+    {
+        public JsonValue  task; // create, upsert, merge or delete
+        public string     cont;
+        public JsonValue  set;  // serialized entities
+    }
 
     /// <summary>
     /// A <see cref="SyncEvent"/> corresponds to a <see cref="SyncRequest"/> and contains the subscribed

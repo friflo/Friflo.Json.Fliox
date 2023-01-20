@@ -235,7 +235,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             eventCollector.RemoveDatabase(database);
         }
         
-        public void SendSyncEvent(in SmallString database, in SmallString container, in SyncEvent syncEvent, ObjectWriter writer) {
+        public void SendSyncEvent(in SmallString database, in SmallString container, in RawSyncEvent syncEvent, ObjectWriter writer) {
             lock (intern.monitor) {
                 if (!intern.databaseSubsMap.map.TryGetValue(database, out var databaseSubsArray)) {
                     return;

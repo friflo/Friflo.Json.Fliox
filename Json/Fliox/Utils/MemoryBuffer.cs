@@ -76,5 +76,10 @@ namespace Friflo.Json.Fliox.Utils
             position    = len;
             return new JsonValue(buffer, 0, len);
         }
+        
+        public JsonValue GetValue(int position, int count) {
+            if (position + count > this.position) throw new IndexOutOfRangeException($"position: {position}, max: {this.position}");
+            return new JsonValue(buffer, position, count);
+        }
     }
 }

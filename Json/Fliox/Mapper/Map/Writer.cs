@@ -25,7 +25,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
         public              ValueFormat         format;
         internal            Bytes               @null;
         public              char[]              charBuf;
-        internal            int                 level;
+        public              int                 level;
         public              int                 maxDepth;
         public              bool                pretty;
         public              bool                writeNullMembers;
@@ -36,7 +36,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
 #else
         public              IBytesWriter        bytesWriter;
 #endif
-        public              int                 Level => level;
+        // public           int                 GetLevel() => level;
 
         public Writer(TypeStore typeStore) {
             bytes           = new Bytes(128);
