@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
+using Friflo.Json.Fliox.Hub.Host.Utils;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
 using static System.Diagnostics.DebuggerBrowsableState;
 using Browse = System.Diagnostics.DebuggerBrowsableAttribute;
@@ -33,8 +34,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         public   override   string              TaskName =>  $"container: '{container}'";
         public   override   bool                IsNop()  => patches.Count == 0;
         
-        private TaskErrorResult PrepareMerge(
-            EntityDatabase      database)
+        private TaskErrorResult PrepareMerge(EntityDatabase database, SharedEnv env)
         {
             if (container == null) {
                 return MissingContainer();
@@ -42,12 +42,15 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
             if (patches == null) {
                 return MissingField(nameof(patches));
             }
+            if (!EntityUtils.GetKeysFromEntities(keyName, patches, env, out string errorMsg)) {
+                return InvalidTask(errorMsg);
+            }
             entityContainer = database.GetOrCreateContainer(container);
             return null;
         }
 
         public override async Task<SyncTaskResult> ExecuteAsync(EntityDatabase database, SyncResponse response, SyncContext syncContext) {
-            var error = PrepareMerge(database);
+            var error = PrepareMerge(database, syncContext.sharedEnv);
             database.service.CustomizeMerge(this, syncContext);
             if (error != null) {
                 return error;
@@ -64,7 +67,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         }
         
         public override SyncTaskResult Execute(EntityDatabase database, SyncResponse response, SyncContext syncContext) {
-            var error = PrepareMerge(database);
+            var error = PrepareMerge(database, syncContext.sharedEnv);
             database.service.CustomizeMerge(this, syncContext);
             if (error != null) {
                 return error;

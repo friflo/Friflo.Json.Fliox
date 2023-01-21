@@ -136,10 +136,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         public virtual async Task<MergeEntitiesResult> MergeEntitiesAsync (MergeEntities mergeEntities, SyncContext syncContext) {
             var patches = mergeEntities.patches;
             var env     = syncContext.sharedEnv;
-            if (!EntityUtils.GetKeysFromEntities(mergeEntities.keyName, patches, env, out string keyError)) {
-                return new MergeEntitiesResult { Error = new CommandError(TaskErrorResultType.InvalidTask, keyError) };
-            }
-            var ids = new List<JsonKey>(patches.Count);
+            var ids     = new List<JsonKey>(patches.Count);
             foreach (var patch in patches) {
                 ids.Add(patch.key);
             }
