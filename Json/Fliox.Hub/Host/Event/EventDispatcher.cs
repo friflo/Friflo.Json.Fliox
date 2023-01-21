@@ -65,7 +65,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         private  readonly   ChangeCombiner                      changeCombiner;
         private  readonly   JsonEvaluator                       jsonEvaluator;
         /// <summary>buffer for serialized <see cref="SyncEvent"/>'s to avoid frequent allocations</summary>
-        private  readonly   List<JsonValue>                     syncEventBuffer;
+        private  readonly   List<JsonValue>                     eventBuffer;
         private  readonly   List<JsonValue>                     eventMessageBuffer;
         private  readonly   EventDispatcherIntern               intern;
         /// <summary> Immutable array of <see cref="EventSubClient"/>'s stored in <see cref="EventDispatcherIntern.sendClientsMap"/><br/>
@@ -96,7 +96,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             changeCombiner      = new ChangeCombiner(eventCollector);
             sharedEnv           = env ?? SharedEnv.Default;
             jsonEvaluator       = new JsonEvaluator();
-            syncEventBuffer     = new List<JsonValue>();
+            eventBuffer         = new List<JsonValue>();
             eventMessageBuffer  = new List<JsonValue>();
             intern              = new EventDispatcherIntern(this);
             sendClients         = Array.Empty<EventSubClient>();
@@ -246,7 +246,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                     foreach (var changeSub in clientSub.subs.changeSubs)
                     {
                         if (changeSub.container.IsEqual(container)) {
-                            clientSub.client.EnqueueSyncEvent(rawSyncEvent);
+                            clientSub.client.EnqueueEvent(rawSyncEvent, EventType.SyncEvent);
                             break;
                         }
                     }
@@ -271,7 +271,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                     CopyDatabaseSubsMap(databaseSubsBuffer);
                     changeCombiner.AccumulateChanges(databaseSubsBuffer, writer);
                 }
-                var context = new SendEventsContext (writer, eventMessageBuffer, syncEventBuffer, SendTargetClientId);
+                var context = new SendEventsContext (writer, eventMessageBuffer, eventBuffer, SendTargetClientId);
                 foreach (var subClient in sendClients) {
                     subClient.SendEvents(context);
                 }
@@ -433,7 +433,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                     bool sendClientId       = SendEventClientId || syncContext.clientId.IsEqual(client.clientId);
                     syncEvent.clt           = sendClientId ? syncContext.clientId : default;
                     JsonValue rawSyncEvent  = RemoteUtils.SerializeSyncEvent(syncEvent, writer);
-                    client.EnqueueSyncEvent(rawSyncEvent);
+                    client.EnqueueEvent(rawSyncEvent, EventType.SyncEvent);
                 }
             }
             // clear cached serialized tasks -> enable GC collect byte[]'s
@@ -498,7 +498,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         
         private async Task SendEventLoop(IDataChannelReader<EventSubClient> clientEventReader, ObjectWriter writer) {
             var logger  = sharedEnv.Logger;
-            var context = new SendEventsContext (writer, eventMessageBuffer, syncEventBuffer, SendTargetClientId);
+            var context = new SendEventsContext (writer, eventMessageBuffer, eventBuffer, SendTargetClientId);
             while (true) {
                 var client = await clientEventReader.ReadAsync().ConfigureAwait(false);
                 if (client != null) {

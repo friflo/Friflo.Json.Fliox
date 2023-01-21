@@ -40,10 +40,10 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         
         internal            int                                 SubCount    => databaseSubs.Sum(sub => sub.Value.SubCount); 
         
-        /// lock (<see cref="unsentSyncEvents"/>) {
+        /// lock (<see cref="unsentEvents"/>) {
         private             int                                 eventCounter;
         /// <summary>Contains all serialized <see cref="SyncEvent"/>'s not yet sent.</summary>
-        private  readonly   MessageBufferQueue<VoidMeta>        unsentSyncEvents    = new MessageBufferQueue<VoidMeta>();
+        private  readonly   MessageBufferQueue<Event>           unsentEvents    = new MessageBufferQueue<Event>();
         /// <summary>Contains all serialized <see cref="EventMessage"/>'s which are sent but not acknowledged.
         /// TMeta is <see cref="EventMessage.seq"/></summary>
         private  readonly   MessageBufferQueue<int>             sentEventMessages   = new MessageBufferQueue<int>();
@@ -55,7 +55,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
 
         internal            int                                 Seq                 => eventCounter;
         /// <summary> number of events stored for a client not yet acknowledged by the client </summary>
-        internal            int                                 QueuedEventsCount   => unsentSyncEvents.Count + sentEventMessages.Count;
+        internal            int                                 QueuedEventsCount   => unsentEvents.Count + sentEventMessages.Count;
         
         public   override   string                              ToString()          => $"client: '{clientId.AsString()}'";
         
@@ -91,9 +91,10 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         /// Note: dispatcher is null in case using <see cref="EventDispatching.Queue"/>.<br/>
         /// So SyncEvent's are collected until calling <see cref="EventDispatcher.SendQueuedEvents"/>
         /// </remarks>
-        internal void EnqueueSyncEvent(in JsonValue syncEvent) {
-            lock (unsentSyncEvents) {
-                unsentSyncEvents.AddTail(syncEvent);
+        internal void EnqueueEvent(in JsonValue syncEvent, EventType eventType) {
+            var unsent = unsentEvents;
+            lock (unsent) {
+                unsent.AddTail(syncEvent, new Event(eventType));
             }
             // dispatcher == null  =>  see remarks
             dispatcher?.NewClientEvent(this);
@@ -102,11 +103,12 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         /// <summary> Dequeue all queued messages. </summary>
         private bool DequeueEvents(in SendEventsContext context)
         {
-            var syncEvents      = context.syncEvents;
+            var eventBuffer     = context.eventBuffer;
             var eventMessages   = context.eventMessages;
-            syncEvents.Clear();
+            eventBuffer.Clear();
             eventMessages.Clear();
-            lock (unsentSyncEvents) {
+            var unsent = unsentEvents;
+            lock (unsent) {
                 // resend EventMessage's in case of a reconnect and sent EventMessage's are queued.
                 // reconnects should typically occur rarely   
                 if (resendEventMessages) {
@@ -114,19 +116,19 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                     // must be copied -> the byte[]'s in sentEventMessages may change outside lock
                     CopyEventMessages(eventMessages, sentEventMessages);
                 }
-                var syncEventCount = unsentSyncEvents.Count;
+                var syncEventCount = unsent.Count;
                 if (syncEventCount > 0) {
-                    unsentSyncEvents.DequeMessageValues(syncEvents);
+                    unsent.DequeMessageValues(eventBuffer);
                 }
             }
-            if (syncEvents.Count > 0) {
+            if (eventBuffer.Count > 0) {
                 int seq = ++eventCounter;
                 // access to syncEvents is valid. DequeMessages() is called sequentially
                 var client       = context.sendTargetClientId ? clientId : default;
-                var eventMessage = RemoteUtils.CreateEventMessage(syncEvents, client, seq, context.writer);
+                var eventMessage = RemoteUtils.CreateEventMessage(eventBuffer, client, seq, context.writer);
                 eventMessages.Add(eventMessage);
                 if (queueEvents) {
-                    lock (unsentSyncEvents) {
+                    lock (unsent) {
                         sentEventMessages.AddTail(eventMessage, seq);
                     }
                 }
@@ -153,7 +155,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         /// Remove all acknowledged serialized <see cref="EventMessage"/>' from <see cref="sentEventMessages"/>
         /// </summary>
         internal void AcknowledgeEventMessages(int eventAck) {
-            lock (unsentSyncEvents) {
+            lock (unsentEvents) {
                 while (sentEventMessages.Count > 0) {
                     var ev = sentEventMessages.GetHead();
                     if (ev.meta <= eventAck) {
@@ -166,11 +168,11 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         }
 
         /// <summary>
-        /// Prepend all not acknowledged events to <see cref="unsentSyncEvents"/> in their original order
+        /// Prepend all not acknowledged events to <see cref="unsentEvents"/> in their original order
         /// and trigger sending the events stored in the deque.
         /// </summary>
         private void SendUnacknowledgedEvents() {
-            lock (unsentSyncEvents) {
+            lock (unsentEvents) {
                 if (dispatcher != null && sentEventMessages.Count > 0) {
                     resendEventMessages = true;
                     // Console.WriteLine($"unsentEventsQueue: {unsentEventsQueue.Count}");
@@ -186,8 +188,9 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             if (receiver == null || !receiver.IsOpen()) {
                 if (queueEvents)
                     return;
-                lock (unsentSyncEvents) {
-                    unsentSyncEvents.Clear();
+                var unsent = unsentEvents;
+                lock (unsent) {
+                    unsent.Clear();
                 }
                 return;
             }
