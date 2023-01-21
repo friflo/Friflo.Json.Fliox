@@ -47,7 +47,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema
             Generate_CS_Optimize_Library(typeof(RemoteSyncEvent));
             Generate_CS_Optimize_Library(typeof(WriteTaskModel));
             Generate_CS_Optimize_Library(typeof(DeleteTaskModel));
-            Generate_CS_Optimize_Library(typeof(RawSyncEvent));
+            Generate_CS_Optimize_Library(typeof(RawEventMessage));
         }
         
         [Test]
