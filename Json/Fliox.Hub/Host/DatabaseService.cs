@@ -74,6 +74,10 @@ namespace Friflo.Json.Fliox.Hub.Host
             this.queue = queue; 
         }
         
+        protected internal virtual ExecutionType GetExecutionType(SyncRequest syncRequest) {
+            return queue != null ? ExecutionType.Queue : syncRequest.intern.executionType;
+        }
+        
         protected internal virtual void PreExecuteTasks (SyncContext syncContext)  { }
         protected internal virtual void PostExecuteTasks(SyncContext syncContext)  { }
         

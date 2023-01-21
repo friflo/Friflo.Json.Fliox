@@ -220,7 +220,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             var executionType = isSyncRequest ? Sync : Async;
             syncRequest.intern.error = null;
             syncRequest.intern.executionType = executionType;
-            return db.service.queue != null ? Queue : executionType;
+            return db.service.GetExecutionType(syncRequest);
         }
 
         public Task<ExecuteSyncResult> QueueRequestAsync(SyncRequest syncRequest, SyncContext syncContext) {
