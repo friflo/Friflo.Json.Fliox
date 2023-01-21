@@ -134,6 +134,11 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             return eventMessages.Count > 0;
         }
         
+        internal void SendEventMessage(in JsonValue eventMessage) {
+            var clientEvent = new ClientEvent(clientId, eventMessage);
+            eventReceiver.SendEvent(clientEvent);
+        }
+        
         private static void CopyEventMessages(List<JsonValue> eventMessages, MessageBufferQueue<int> sentEventMessages) {
             var sumCount = 0;
             foreach (var eventMessage in sentEventMessages) {

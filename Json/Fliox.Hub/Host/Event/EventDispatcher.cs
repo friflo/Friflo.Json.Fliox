@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Threading;
 using System.Threading.Tasks;
 using Friflo.Json.Burst.Utils;
 using Friflo.Json.Fliox.Hub.Client;
@@ -235,20 +236,49 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             eventCollector.RemoveDatabase(database);
         }
         
-        public void SendSyncEvent(in SmallString database, in SmallString container, in RawSyncEvent syncEvent, ObjectWriter writer) {
+        /// <summary>method is thread safe </summary>
+        public void SendRawSyncEvent(in SmallString database, in SmallString container, in RawSyncEvent syncEvent, ObjectWriter writer) {
+            ClientDbSubs[] databaseSubsArray;
             lock (intern.monitor) {
-                if (!intern.databaseSubsMap.map.TryGetValue(database, out var databaseSubsArray)) {
+                if (!intern.databaseSubsMap.map.TryGetValue(database, out databaseSubsArray)) {
                     return;
                 }
-                var rawSyncEvent = new JsonValue(writer.WriteAsBytes(syncEvent));
-                foreach (var clientSub in databaseSubsArray)
+            }
+            var rawSyncEvent = new JsonValue(writer.WriteAsBytes(syncEvent));
+            foreach (var clientSub in databaseSubsArray)
+            {
+                foreach (var changeSub in clientSub.subs.changeSubs)
                 {
-                    foreach (var changeSub in clientSub.subs.changeSubs)
-                    {
-                        if (changeSub.container.IsEqual(container)) {
-                            clientSub.client.EnqueueSyncEvent(rawSyncEvent);
-                            break;
-                        }
+                    if (changeSub.container.IsEqual(container)) {
+                        clientSub.client.EnqueueSyncEvent(rawSyncEvent);
+                        break;
+                    }
+                }
+            }
+        }
+        
+        private                     int         seq;
+        private static readonly     JsonValue   Ev = new JsonValue("\"ev\"");
+        
+        /// <summary>method is thread safe </summary>
+        public void SendRawEventMessage(in SmallString database, in SmallString container, RawEventMessage eventMessage, ObjectWriter writer) {
+            ClientDbSubs[] databaseSubsArray;
+            lock (intern.monitor) {
+                if (!intern.databaseSubsMap.map.TryGetValue(database, out databaseSubsArray)) {
+                    return;
+                }
+            }
+            Interlocked.Increment(ref seq);
+            eventMessage.msg    = Ev;
+            eventMessage.seq    = seq;
+            var rawEventMessage = new JsonValue(writer.WriteAsBytes(eventMessage));
+            foreach (var clientSub in databaseSubsArray)
+            {
+                foreach (var changeSub in clientSub.subs.changeSubs)
+                {
+                    if (changeSub.container.IsEqual(container)) {
+                        clientSub.client.SendEventMessage(rawEventMessage);
+                        break;
                     }
                 }
             }
