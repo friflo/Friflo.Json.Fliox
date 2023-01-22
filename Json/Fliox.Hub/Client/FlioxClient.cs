@@ -202,8 +202,9 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// <remarks>
         /// By default a <see cref="FlioxClient"/> uses a <see cref="SynchronousEventProcessor"/> to handle subscription events
         /// in the thread an event arrives.<br/>
-        /// In case of an <b>UI</b> application consider using a <see cref="EventProcessorContext"/> used to process
-        /// subscription events in the <b>UI</b> thread.
+        /// In case of an <b>UI</b> application an <see cref="EventProcessorContext"/> can be used to process
+        /// subscription events on the <b>UI</b> thread by using the <see cref="System.Threading.SynchronizationContext"/>
+        /// of the application.
         /// </remarks>
         public void SetEventProcessor(EventProcessor eventProcessor) {
             _intern.eventProcessor = eventProcessor ?? throw new ArgumentNullException(nameof(eventProcessor));
