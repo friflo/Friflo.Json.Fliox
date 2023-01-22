@@ -142,14 +142,15 @@ namespace Friflo.Json.Fliox.Mapper
         // --- ReadTo()
         public T ReadTo<T>(Bytes utf8Bytes, T obj, bool setMissingFields)  {
             InitJsonReaderBytes(ref utf8Bytes, setMissingFields);
-            T result = ReadToStart(obj);
+            var mapper  = (TypeMapper<T>) intern.typeCache.GetTypeMapper(typeof(T));
+            T   result  = ReadToStart(obj, mapper);
             JsonBurstError();
             return result;
         }
 
         public object ReadToObject(Bytes utf8Bytes, object obj, bool setMissingFields)  {
             InitJsonReaderBytes(ref utf8Bytes, setMissingFields);
-            object result = ReadToStart(obj);
+            object result = ReadToStartObject(obj);
             JsonBurstError();
             return result;
         }
@@ -173,14 +174,15 @@ namespace Friflo.Json.Fliox.Mapper
         // --- ReadTo()
         public T ReadTo<T>(Stream utf8Stream, T obj, bool setMissingFields)  {
             InitJsonReaderStream(utf8Stream, setMissingFields);
-            T result = ReadToStart(obj);
+            var mapper  = (TypeMapper<T>) intern.typeCache.GetTypeMapper(typeof(T));
+            T   result  = ReadToStart(obj, mapper);
             JsonBurstError();
             return result;
         }
 
         public object ReadToObject(Stream utf8Stream, object obj, bool setMissingFields)  {
             InitJsonReaderStream(utf8Stream, setMissingFields);
-            object result = ReadToStart(obj);
+            object result = ReadToStartObject(obj);
             JsonBurstError();
             return result;
         }
@@ -204,7 +206,8 @@ namespace Friflo.Json.Fliox.Mapper
         // --- ReadTo()
         public T ReadTo<T>(string json, T obj, bool setMissingFields)  {
             InitJsonReaderString(json, setMissingFields);
-            T result = ReadToStart(obj);
+            var mapper  = (TypeMapper<T>) intern.typeCache.GetTypeMapper(typeof(T));
+            T   result  = ReadToStart(obj, mapper);
             JsonBurstError();
             return result;
 
@@ -212,7 +215,7 @@ namespace Friflo.Json.Fliox.Mapper
 
         public object ReadToObject(string json, object obj, bool setMissingFields)  {
             InitJsonReaderString(json, setMissingFields);
-            object result = ReadToStart(obj);
+            object result = ReadToStartObject(obj);
             JsonBurstError();
             return result;
         }
@@ -243,14 +246,22 @@ namespace Friflo.Json.Fliox.Mapper
         // --- ReadTo()
         public T ReadTo<T>(in JsonValue json, T obj, bool setMissingFields)  {
             InitJsonReaderArray(json, setMissingFields);
-            T result = ReadToStart(obj);
+            var mapper  = (TypeMapper<T>) intern.typeCache.GetTypeMapper(typeof(T));
+            T   result  = ReadToStart(obj, mapper);
+            JsonBurstError();
+            return result;
+        }
+        
+        public T ReadTo<T>(TypeMapper<T> mapper, in JsonValue json, T obj, bool setMissingFields)  {
+            InitJsonReaderArray(json, setMissingFields);
+            T   result  = ReadToStart(obj, mapper);
             JsonBurstError();
             return result;
         }
 
         public object ReadToObject(in JsonValue json, object obj, bool setMissingFields)  {
             InitJsonReaderArray(json, setMissingFields);
-            object result = ReadToStart(obj);
+            object result = ReadToStartObject(obj);
             JsonBurstError();
             return result;
         }
@@ -314,9 +325,7 @@ namespace Friflo.Json.Fliox.Mapper
             }
         }
         
-        private T ReadToStart<T>(T value) {
-            TypeMapper<T> mapper  = (TypeMapper<T>) intern.typeCache.GetTypeMapper(value.GetType());
-
+        private T ReadToStart<T>(T value, TypeMapper<T> mapper) {
             JsonEvent ev = intern.parser.NextEvent();
             switch (ev) {
                 case JsonEvent.ObjectStart:
@@ -332,7 +341,7 @@ namespace Friflo.Json.Fliox.Mapper
             }
         }
 
-        private object ReadToStart(object value) {
+        private object ReadToStartObject(object value) {
             TypeMapper mapper  = intern.typeCache.GetTypeMapper(value.GetType());
 
             JsonEvent ev = intern.parser.NextEvent();
