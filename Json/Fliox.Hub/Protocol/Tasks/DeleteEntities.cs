@@ -24,6 +24,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         [Required]  public  string              container;
         [Browse(Never)]
         [Ignore]    public  EntityContainer     entityContainer;
+        [Ignore]    private TaskErrorResult     error;
         /// <summary>list of <see cref="ids"/> requested for deletion</summary>
                     public  List<JsonKey>       ids;
         /// <summary>if true all entities in the specified <see cref="container"/> are deleted</summary>
@@ -42,8 +43,12 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
             return false;
         }
         
-        private TaskErrorResult PrepareDelete(
-            EntityDatabase          database)
+        public override bool PreExecute(EntityDatabase database, SharedEnv env) {
+            error = PrepareDelete(database);
+            return base.PreExecute(database, env);
+        }
+        
+        private TaskErrorResult PrepareDelete(EntityDatabase database)
         {
             if (container == null) {
                 return MissingContainer();
@@ -56,7 +61,6 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         }
 
         public override async Task<SyncTaskResult> ExecuteAsync(EntityDatabase database, SyncResponse response, SyncContext syncContext) {
-            var error = PrepareDelete (database);
             database.service.CustomizeDelete(this, syncContext);
             if (error != null) {
                 return error;
@@ -72,7 +76,6 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         }
         
         public override SyncTaskResult Execute(EntityDatabase database, SyncResponse response, SyncContext syncContext) {
-            var error = PrepareDelete (database);
             database.service.CustomizeDelete(this, syncContext);
             if (error != null) {
                 return error;
