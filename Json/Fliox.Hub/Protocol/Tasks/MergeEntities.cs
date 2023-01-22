@@ -24,6 +24,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         [Required]  public  string              container;
         [Browse(Never)]
         [Ignore]    public  EntityContainer     entityContainer;
+        [Ignore]    private TaskErrorResult     error;
         /// <summary>name of the primary key property of the entity <see cref="patches"/></summary>
                     public  string              keyName;
         /// <summary>list of merge patches for each entity</summary>
@@ -33,6 +34,11 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         public   override   TaskType            TaskType => TaskType.merge;
         public   override   string              TaskName =>  $"container: '{container}'";
         public   override   bool                IsNop()  => patches.Count == 0;
+        
+        public override bool PreExecute(EntityDatabase database, SharedEnv env) {
+            error = PrepareMerge(database, env);
+            return base.PreExecute(database, env);
+        }
         
         private TaskErrorResult PrepareMerge(EntityDatabase database, SharedEnv env)
         {
@@ -50,7 +56,6 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         }
 
         public override async Task<SyncTaskResult> ExecuteAsync(EntityDatabase database, SyncResponse response, SyncContext syncContext) {
-            var error = PrepareMerge(database, syncContext.sharedEnv);
             database.service.CustomizeMerge(this, syncContext);
             if (error != null) {
                 return error;
@@ -67,7 +72,6 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         }
         
         public override SyncTaskResult Execute(EntityDatabase database, SyncResponse response, SyncContext syncContext) {
-            var error = PrepareMerge(database, syncContext.sharedEnv);
             database.service.CustomizeMerge(this, syncContext);
             if (error != null) {
                 return error;

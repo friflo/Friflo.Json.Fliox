@@ -26,6 +26,8 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         [Required]  public  string              container;
         [Browse(Never)]
         [Ignore]    public  EntityContainer     entityContainer;
+        [Ignore]    private List<EntityError>   validationErrors;
+        [Ignore]    private TaskErrorResult     error;
                     public  Guid?               reservedToken;
         /// <summary>name of the primary key property in <see cref="entities"/></summary>
                     public  string              keyName;
@@ -37,10 +39,12 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         public   override   string              TaskName => $"container: '{container}'";
         public   override   bool                IsNop()  => entities.Count == 0;
         
-        private TaskErrorResult PrepareCreate(
-            EntityDatabase          database,
-            SharedEnv               env,
-            ref List<EntityError>   validationErrors)
+        public override bool PreExecute(EntityDatabase database, SharedEnv env) {
+            error = PrepareCreate(database, env);
+            return base.PreExecute(database, env);
+        }
+        
+        private TaskErrorResult PrepareCreate(EntityDatabase database, SharedEnv env)
         {
             if (container == null) {
                 return MissingContainer();
@@ -72,8 +76,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         }
         
         public override async Task<SyncTaskResult> ExecuteAsync(EntityDatabase database, SyncResponse response, SyncContext syncContext) {
-            List<EntityError> validationErrors = null;
-            var error =  PrepareCreate(database, syncContext.sharedEnv, ref validationErrors);
+            PrepareCreate(database, syncContext.sharedEnv);
             database.service.CustomizeCreate(this, syncContext);
             if (error != null) {
                 return error;
@@ -91,10 +94,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         }
         
         public override SyncTaskResult Execute(EntityDatabase database, SyncResponse response, SyncContext syncContext) {
-            List<EntityError> validationErrors = null;
-            var error = PrepareCreate(database, syncContext.sharedEnv, ref validationErrors);
             database.service.CustomizeCreate(this, syncContext);
-
             if (error != null) {
                 return error;
             }
