@@ -134,7 +134,7 @@ namespace Friflo.Json.Fliox.Mapper
         
         public object ReadObject(Bytes utf8Bytes, Type type) {
             InitJsonReaderBytes(ref utf8Bytes, ReaderPool != null);
-            Var result = ReadStart(type);
+            Var result = ReadStartObject(type);
             JsonBurstError();
             return result.ToObject();
         }
@@ -166,7 +166,7 @@ namespace Friflo.Json.Fliox.Mapper
         
         public object ReadObject(Stream utf8Stream, Type type) {
             InitJsonReaderStream(utf8Stream, ReaderPool != null);
-            Var result = ReadStart(type);
+            Var result = ReadStartObject(type);
             JsonBurstError();
             return result.ToObject();
         }
@@ -198,7 +198,7 @@ namespace Friflo.Json.Fliox.Mapper
         
         public object ReadObject(string json, Type type) {
             InitJsonReaderString(json, ReaderPool != null);
-            Var result = ReadStart(type);
+            Var result = ReadStartObject(type);
             JsonBurstError();
             return result.ToObject();
         }
@@ -231,14 +231,14 @@ namespace Friflo.Json.Fliox.Mapper
         
         public object ReadObject(in JsonValue json, Type type) {
             InitJsonReaderArray(json, ReaderPool != null);
-            Var result = ReadStart(type);
+            Var result = ReadStartObject(type);
             JsonBurstError();
             return result.ToObject();
         }
         
         internal Var ReadObjectVar(in JsonValue json, Type type) {
             InitJsonReaderArray(json, ReaderPool != null);
-            Var result = ReadStart(type);
+            Var result = ReadStartObject(type);
             JsonBurstError();
             return result;
         }
@@ -268,7 +268,7 @@ namespace Friflo.Json.Fliox.Mapper
 
         
         // --------------------------------------- private --------------------------------------- 
-        private Var ReadStart(Type type) {
+        private Var ReadStartObject(Type type) {
             TypeMapper  mapper  = intern.typeCache.GetTypeMapper(type);
             Var defaultValue    = mapper.varType.DefaultValue;
 
