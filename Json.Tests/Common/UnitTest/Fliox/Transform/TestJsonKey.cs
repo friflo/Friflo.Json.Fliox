@@ -70,11 +70,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             var value       = new Bytes("0---------1----"); // 15 characters. 
             var list        = new List<JsonKey>(count);
             var valueParser = new ValueParser();
+            var start       = GC.GetAllocatedBytesForCurrentThread();
             for (int n = 0; n < count; n++) {
                 var key = new JsonKey (ref value, ref valueParser, default);
                 list.Add(key);
             }
+            var dif = GC.GetAllocatedBytesForCurrentThread() - start;
             AreEqual(count, list.Count);
+            AreEqual(0, dif, "allocated bytes");
         }
     }
 }
