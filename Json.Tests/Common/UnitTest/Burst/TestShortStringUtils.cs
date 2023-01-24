@@ -1,6 +1,7 @@
 // Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using Friflo.Json.Burst;
 using Friflo.Json.Burst.Utils;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
@@ -42,6 +43,38 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                 AreEqual("0123456789012345", str);
                 AreEqual(0, lng);
                 AreEqual(0, lng2);
+            }
+        }
+        
+        [Test]
+        public static void TestShortStringUtils_Bytes() {
+            {
+                var input = new Bytes("");
+                ShortStringUtils.BytesToLongLong(input, out string str, out long lng, out long lng2);
+                IsNull(str);
+                AreEqual(0, lng);
+                AreEqual(0, lng2);
+                
+                ShortStringUtils.LongLongToString(lng, lng2, out string result);
+                AreEqual("", result);
+            } {
+                var input = new Bytes("a");
+                ShortStringUtils.BytesToLongLong(input, out string str, out long lng, out long lng2);
+                IsNull(str);
+                AreEqual(0x_00_00_00_00_00_00_00_61, lng);
+                AreEqual(0x_01_00_00_00_00_00_00_00, lng2);
+                
+                ShortStringUtils.LongLongToString(lng, lng2, out string result);
+                AreEqual("a", result);
+            } {
+                var input = new Bytes("012345678901234");
+                ShortStringUtils.BytesToLongLong(input, out string str, out long lng, out long lng2);
+                IsNull(str);
+                AreEqual(0x_37_36_35_34_33_32_31_30, lng);
+                AreEqual(0x_0F_34_33_32_31_30_39_38, lng2);
+                
+                ShortStringUtils.LongLongToString(lng, lng2, out string result);
+                AreEqual("012345678901234", result);
             }
         }
     }
