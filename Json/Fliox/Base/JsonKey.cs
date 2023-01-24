@@ -17,9 +17,9 @@ namespace Friflo.Json.Fliox
     {
         internal readonly       JsonKeyType type;
         internal readonly       string      str;
-        internal readonly       long        lng;    // also used as lower 64 bit for Guid
+        internal readonly       long        lng;  // long  |  lower  64 bits for Guid  | lower  8 bytes for UTF-8 string
         [Browse(Never)]
-        internal readonly       long        lng2;   // higher 64 bit for Guid
+        internal readonly       long        lng2; //          higher 64 bits for Guid  | higher 7 bytes for UTF-8 string + 1 byte length
         
         public                  JsonKeyType Type    => type;
         internal                Guid        Guid    => GuidUtils.LongLongToGuid(lng, lng2);
@@ -148,8 +148,8 @@ namespace Friflo.Json.Fliox
         
         public bool IsNull() {
             switch (type) {
-                case LONG:      return false;
-                case STRING:    return str == null;
+                case LONG:
+                case STRING:
                 case GUID:      return false;
                 case NULL:      return true;
                 default:
