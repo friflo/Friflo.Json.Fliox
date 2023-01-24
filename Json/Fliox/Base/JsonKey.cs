@@ -59,14 +59,6 @@ namespace Friflo.Json.Fliox
                 return;
             }
             type    = STRING;
-            // --- assert on JSON control characters
-            foreach (var c in value) {
-                switch (c) {
-                    case '"':
-                    case '\\':
-                        throw new ArgumentException($"JsonKey must not contain JSON control characters: was {value}");
-                }
-            }
             ShortString.StringToLongLong(value, out str, out lng, out lng2);
         }
         
@@ -89,18 +81,7 @@ namespace Friflo.Json.Fliox
                 return;
             }
             type    = STRING;
-            // --- assert on JSON control characters 
-            var end = bytes.end;
-            var buf = bytes.buffer;
-            for (int i = bytes.start; i < end; i++) {
-                switch (buf[i]) {
-                    case (int)'"':
-                    case (int)'\\':
-                        throw new ArgumentException($"JsonKey must not contain JSON control characters: was {bytes.AsString()}");
-                }
-            }
-            if (bytesLen <= ShortString.MaxLength) {
-                ShortString.BytesToLongLong(bytes, out lng, out lng2);
+            if (ShortString.BytesToLongLong(bytes, out lng, out lng2)) {
                 str     = null;
             } else {
                 str     = GetString(ref bytes, oldKey.str);

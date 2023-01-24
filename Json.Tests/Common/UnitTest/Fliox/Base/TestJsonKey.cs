@@ -7,11 +7,12 @@ using System.Text;
 using Friflo.Json.Burst;
 using Friflo.Json.Burst.Utils;
 using Friflo.Json.Fliox;
+using Friflo.Json.Fliox.Mapper;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
 
 
-namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
+namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Base
 {
     public static class TestJsonKey
     {
@@ -51,13 +52,25 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
         
         [Test]
         public static void JsonKeyTests_String () {
+            var writer = new ObjectWriter(new TypeStore());
             {
-                var str = new JsonKey ("short string");
+                var str     = new JsonKey ("short string");
                 AreEqual("short string", str.AsString());
-            }
-            {
-                var str = new JsonKey ("UTF-8 string with more than 15 characters");
+            } {
+                var str     = new JsonKey ("UTF-8 string with more than 15 characters");
                 AreEqual("UTF-8 string with more than 15 characters", str.AsString());
+            } {
+                var str     = new JsonKey ("--\"--");   // support: "
+                var result  = writer.Write(str);
+                AreEqual("\"--\\\"--\"", result);
+            } {
+                var str     = new JsonKey ("--\\--");   // support: \
+                var result  = writer.Write(str);
+                AreEqual("\"--\\\\--\"", result);
+            } {
+                var str     = new JsonKey ("☀🌎♥👋");   // support unicode
+                var result  = writer.Write(str);
+                AreEqual("\"☀🌎♥👋\"", result);
             }
         }
         
