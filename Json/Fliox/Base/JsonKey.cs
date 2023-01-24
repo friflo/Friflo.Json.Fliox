@@ -101,27 +101,26 @@ namespace Friflo.Json.Fliox
             }
             if (bytesLen <= ShortString.MaxLength) {
                 ShortString.BytesToLongLong(bytes, out lng, out lng2);
-                str = null;
+                str     = null;
             } else {
-                if (oldKey.str == null) {
-                    str     = bytes.AsString();
-                } else {
-                    int len         = bytes.end - bytes.start;
-                    var src         = new ReadOnlySpan<byte>(bytes.buffer, bytes.start, len);
-                    var maxCount    = Encoding.UTF8.GetMaxCharCount(len);
-                    Span<char> dest = stackalloc char[maxCount];
-                    int strLen      = Encoding.UTF8.GetChars(src, dest);
-                    var newSpan     = dest.Slice(0, strLen);
-                    var oldSpan     = oldKey.str.AsSpan();
-                    if (newSpan.SequenceEqual(oldSpan)) {
-                        str = oldKey.str;
-                    } else {
-                        str = newSpan.ToString();
-                    }
-                }
+                str     = GetString(ref bytes, oldKey.str);
                 lng     = 0;
                 lng2    = 0;
             }
+        }
+        
+        private static string GetString(ref Bytes bytes, string oldKey) {
+            int len         = bytes.end - bytes.start;
+            var src         = new ReadOnlySpan<byte>(bytes.buffer, bytes.start, len);
+            var maxCount    = Encoding.UTF8.GetMaxCharCount(len);
+            Span<char> dest = stackalloc char[maxCount];
+            int strLen      = Encoding.UTF8.GetChars(src, dest);
+            var newSpan     = dest.Slice(0, strLen);
+            var oldSpan     = oldKey.AsSpan();
+            if (newSpan.SequenceEqual(oldSpan)) {
+                return oldKey;
+            }
+            return newSpan.ToString();
         }
 
         public JsonKey (long value) {
