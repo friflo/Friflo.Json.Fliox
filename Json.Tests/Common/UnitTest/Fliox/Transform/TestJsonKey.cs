@@ -81,46 +81,31 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             AreEqual(0, dif, "allocated bytes");
         }
 
-        private const int Count = 10; // 20_000_000;
+        private const int Count = 50_000_000;
         
         /// <summary>
-        /// Compare performance of <see cref="ShortString"/> optimization using 15 / 16 characters 
+        /// Performance optimization significant for Unity:     50_000_000 => 0.6 sec
         /// </summary>
         [Test]
-        public static void JsonKeyTests_StringLookup () {
+        public static void JsonKeyTests_StringEquals () {
 
-            var foo     = new JsonKey("foo");
-            var bar     = new JsonKey("bar");
-            var map     = new Dictionary<JsonKey, int>(JsonKey.Equality) {
-                [foo] = 1,
-                [bar] = 2
-            };
-            var ignore1 = map[foo]; // force one time allocations
-            var ignore2 = map[foo];
-            var start   = GC.GetAllocatedBytesForCurrentThread();
+            var foo1     = new JsonKey("foo");
+            var foo2     = new JsonKey("foo");
             for (int n = 0; n < Count; n++) {
-                var _ = map[foo];
+                var _ = foo1.IsEqual(foo2);
             }
-            var dif = GC.GetAllocatedBytesForCurrentThread() - start;
-            AreEqual(0, dif, "allocated bytes");
         }
         
+        /// <summary>
+        /// Reference string comparison:                        50_000_000 => 13.0 sec
+        /// </summary>
         [Test]
-        public static void JsonKeyTests_StringLookupReference () {
-            var foo     = "foo";
-            var bar     = "bar";
-            var map     = new Dictionary<string, int>() {
-                [foo] = 1,
-                [bar] = 2
-            };
-            var ignore1 = map[foo]; // force one time allocations
-            var ignore2 = map[foo];
-            var start   = GC.GetAllocatedBytesForCurrentThread();
+        public static void JsonKeyTests_StringEqualsReference () {
+            var foo1     = new string("foo");
+            var foo2     = new string("foo");
             for (int n = 0; n < Count; n++) {
-                var _ = map[foo];
+                var _ = foo1 == foo2;
             }
-            var dif = GC.GetAllocatedBytesForCurrentThread() - start;
-            AreEqual(0, dif, "allocated bytes");
         }
     }
 }
