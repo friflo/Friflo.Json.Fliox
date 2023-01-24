@@ -206,7 +206,7 @@ namespace Friflo.Json.Fliox
                     if (str == null && other.str == null) {
                         return lng == other.lng && lng2 == other.lng2;
                     }
-                    return str  == other.str;
+                    return str == other.str;
                 case GUID:      return lng  == other.lng && lng2 == other.lng2;
                 case NULL:      return true;
                 default:
@@ -270,7 +270,11 @@ namespace Friflo.Json.Fliox
                     valueFormat.AppendLong(ref dest, lng);
                     break;
                 case STRING:
-                    dest.AppendString(str);
+                    if (str != null) {
+                        dest.AppendString(str);
+                        break;
+                    }
+                    dest.AppendShortString(lng, lng2);
                     break;
                 case GUID:
                     dest.AppendGuid(Guid);
@@ -286,7 +290,14 @@ namespace Friflo.Json.Fliox
                     sb.Append(lng);
                     break;
                 case STRING:
-                    sb.Append(str);
+                    if (str != null) {
+                        sb.Append(str);
+                        break;
+                    }
+                    Span<char> chars    = stackalloc char[MaxCharCount];
+                    var len             = ShortStringUtils.GetChars(lng, lng2, chars);
+                    var readOnlyChars   = chars.Slice(0, len);
+                    sb.Append(readOnlyChars);
                     break;
                 case GUID:
 #if UNITY_5_3_OR_NEWER
