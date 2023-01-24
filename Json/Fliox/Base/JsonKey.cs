@@ -17,7 +17,7 @@ namespace Friflo.Json.Fliox
     public readonly struct JsonKey
     {
         internal    readonly    JsonKeyType type;
-        internal    readonly    string      str;  // TODO make private
+        internal    readonly    string      str;
         internal    readonly    long        lng;  // long  |  lower  64 bits for Guid  | lower  8 bytes for UTF-8 string
         [Browse(Never)]
         internal    readonly    long        lng2; //          higher 64 bits for Guid  | higher 7 bytes for UTF-8 string + 1 byte length
@@ -27,8 +27,9 @@ namespace Friflo.Json.Fliox
 
         public      override    string      ToString()  { var value = AsString(); return value ?? "null"; }
 
-        public static readonly  JsonKeyComparer         Comparer = new JsonKeyComparer();
-        public static readonly  JsonKeyEqualityComparer Equality = new JsonKeyEqualityComparer();
+        public static readonly  JsonKeyComparer         Comparer    = new JsonKeyComparer();
+        public static readonly  JsonKeyEqualityComparer Equality    = new JsonKeyEqualityComparer();
+        private const           int                     GuidLength  = 36;
 
         /// <summary>
         /// Calling this constructor should be the last option as it may force a string creation. <br/>
@@ -50,16 +51,15 @@ namespace Friflo.Json.Fliox
                 lng2    = 0;
                 return;
             }
-            if (Guid.TryParse(value, out var guid)) {
+            var stringLength = value.Length;
+            if (stringLength == GuidLength && Guid.TryParse(value, out var guid)) {
                 type    = GUID;
                 str     = null;
                 GuidUtils.GuidToLongLong(guid, out lng, out lng2);
                 return;
             }
             type    = STRING;
-            str     = value;
-            lng     = 0;
-            lng2    = 0;
+            ShortStringUtils.StringToLongLong(value, out str, out lng, out lng2);
         }
         
         public JsonKey (ref Bytes bytes, ref ValueParser valueParser, in JsonKey oldKey) {
@@ -73,31 +73,37 @@ namespace Friflo.Json.Fliox
                 lng2    = 0;
                 return;
             }
-            if (bytes.TryParseGuid(out var guid, out string temp)) { // temp not null in Unity. Otherwise null
+            var bytesLen = bytes.end - bytes.start;
+            if (bytesLen == GuidLength && bytes.TryParseGuid(out var guid, out string temp)) { // temp not null in Unity. Otherwise null
                 type    = GUID;
                 str     = temp;
                 GuidUtils.GuidToLongLong(guid, out lng, out lng2);
                 return;
             }
             type    = STRING;
-            if (oldKey.str == null) {
-                str     = temp ?? bytes.AsString();
+            if (bytesLen <= 15) {
+                ShortStringUtils.BytesToLongLong(bytes, out lng, out lng2);
+                str = null;
             } else {
-                int len         = bytes.end - bytes.start;
-                var src         = new ReadOnlySpan<byte>(bytes.buffer, bytes.start, len);
-                var maxCount    = Encoding.UTF8.GetMaxCharCount(len);
-                Span<char> dest = stackalloc char[maxCount];
-                int strLen      = Encoding.UTF8.GetChars(src, dest);
-                var newSpan     = dest.Slice(0, strLen);
-                var oldSpan     = oldKey.str.AsSpan();
-                if (newSpan.SequenceEqual(oldSpan)) {
-                    str = oldKey.str;
+                if (oldKey.str == null) {
+                    str     = bytes.AsString();
                 } else {
-                    str = newSpan.ToString();
+                    int len         = bytes.end - bytes.start;
+                    var src         = new ReadOnlySpan<byte>(bytes.buffer, bytes.start, len);
+                    var maxCount    = Encoding.UTF8.GetMaxCharCount(len);
+                    Span<char> dest = stackalloc char[maxCount];
+                    int strLen      = Encoding.UTF8.GetChars(src, dest);
+                    var newSpan     = dest.Slice(0, strLen);
+                    var oldSpan     = oldKey.str.AsSpan();
+                    if (newSpan.SequenceEqual(oldSpan)) {
+                        str = oldKey.str;
+                    } else {
+                        str = newSpan.ToString();
+                    }
                 }
+                lng     = 0;
+                lng2    = 0;
             }
-            lng     = 0;
-            lng2    = 0;
         }
 
         public JsonKey (long value) {

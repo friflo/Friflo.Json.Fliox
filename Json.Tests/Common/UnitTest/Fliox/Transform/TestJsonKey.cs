@@ -29,6 +29,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 var key = new JsonKey ("abc");
                 key.AppendTo(sb);
                 AreEqual ("abc", sb.ToString());
+            } {
+                var sb = new StringBuilder();
+                var key = new JsonKey ("append UTF-8 string with more than 15 characters");
+                key.AppendTo(sb);
+                AreEqual ("append UTF-8 string with more than 15 characters", sb.ToString());
             }
         }
         
@@ -39,6 +44,18 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             var guidKey = new JsonKey (guidSrc);
             var guidDst = guidKey.AsGuid();
             AreEqual(guidSrc, guidDst);
+        }
+        
+        [Test]
+        public static void JsonKeyTests_String () {
+            {
+                var str = new JsonKey ("short string");
+                AreEqual("short string", str.AsString());
+            }
+            {
+                var str = new JsonKey ("UTF-8 string with more than 15 characters");
+                AreEqual("UTF-8 string with more than 15 characters", str.AsString());
+            }
         }
     }
 }

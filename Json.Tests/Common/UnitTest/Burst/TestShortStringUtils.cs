@@ -51,8 +51,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
         public static void TestShortStringUtils_Bytes() {
             {
                 var input = new Bytes("");
-                ShortStringUtils.BytesToLongLong(input, out string str, out long lng, out long lng2);
-                IsNull(str);
+                ShortStringUtils.BytesToLongLong(input, out long lng, out long lng2);
                 AreEqual(0, lng);
                 AreEqual(0, lng2);
                 
@@ -60,8 +59,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                 AreEqual("", result);
             } {
                 var input = new Bytes("a");
-                ShortStringUtils.BytesToLongLong(input, out string str, out long lng, out long lng2);
-                IsNull(str);
+                ShortStringUtils.BytesToLongLong(input, out long lng, out long lng2);
                 AreEqual(0x_00_00_00_00_00_00_00_61, lng);
                 AreEqual(0x_01_00_00_00_00_00_00_00, lng2);
                 
@@ -69,8 +67,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                 AreEqual("a", result);
             } {
                 var input = new Bytes("012345678901234");
-                ShortStringUtils.BytesToLongLong(input, out string str, out long lng, out long lng2);
-                IsNull(str);
+                ShortStringUtils.BytesToLongLong(input, out long lng, out long lng2);
                 AreEqual(0x_37_36_35_34_33_32_31_30, lng);
                 AreEqual(0x_0F_34_33_32_31_30_39_38, lng2);
                 

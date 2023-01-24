@@ -41,27 +41,22 @@ namespace Friflo.Json.Burst.Utils
             }
         }
         
-        public static unsafe void BytesToLongLong(in Bytes value, out string str, out long lng, out long lng2) {
+        public static unsafe void BytesToLongLong (in Bytes value, out long lng, out long lng2) {
             var byteCount       = value.end - value.start;
+            if (byteCount > 15) throw new ArgumentException("expect value length <= 15");
             Span<byte> src      = new Span<byte>(value.buffer, value.start, byteCount);
             Span<byte> bytes    = stackalloc byte[16];
             src.CopyTo(bytes);
-            if (byteCount <= 15) {
-                bytes[15] = (byte)byteCount;
-                fixed (byte*  bytesPtr  = bytes) 
-                fixed (long*  lngPtr    = &lng)
-                fixed (long*  lngPtr2   = &lng2)
-                {
-                    var bytesLongPtr    = (long*)bytesPtr;
-                    *lngPtr             = bytesLongPtr[0];
-                    *lngPtr2            = bytesLongPtr[1];
-                }
-                str = null;
-                return;
-            } 
-            str     = value.AsString();
-            lng     = 0;
-            lng2    = 0;
+
+            bytes[15] = (byte)byteCount;
+            fixed (byte*  bytesPtr  = bytes) 
+            fixed (long*  lngPtr    = &lng)
+            fixed (long*  lngPtr2   = &lng2)
+            {
+                var bytesLongPtr    = (long*)bytesPtr;
+                *lngPtr             = bytesLongPtr[0];
+                *lngPtr2            = bytesLongPtr[1];
+            }
         }
         
         public static unsafe int GetChars(long lng, long lng2, in Span<char> chars) {
