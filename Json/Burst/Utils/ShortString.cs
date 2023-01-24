@@ -6,13 +6,16 @@ using System.Text;
 
 namespace Friflo.Json.Burst.Utils
 {
-    public static class ShortStringUtils
+    public static class ShortString
     {
+        public const int MaxLength      = 15;
+        public const int ShiftLength    = 56;
+        
         public static unsafe void StringToLongLong(string value, out string str, out long lng, out long lng2) {
             var byteCount       = Encoding.UTF8.GetByteCount(value);
-            if (byteCount <= 15) {
-                Span<byte> bytes    = stackalloc byte[16];
-                bytes[15]           = (byte)byteCount;
+            if (byteCount <= MaxLength) {
+                Span<byte> bytes        = stackalloc byte[16];
+                bytes[MaxLength]        = (byte)byteCount;
                 Encoding.UTF8.GetBytes(value, bytes);
                 fixed (byte*  bytesPtr  = &bytes[0]) 
                 fixed (long*  lngPtr    = &lng)
@@ -32,7 +35,7 @@ namespace Friflo.Json.Burst.Utils
         
         public static unsafe void LongLongToString(long lng, long lng2, out string str) {
             Span<byte> bytes    = stackalloc byte[16];
-            int byteCount       = (int)(lng2 >> 56); // shift 7 bytes right 
+            int byteCount       = (int)(lng2 >> ShiftLength); // shift 7 bytes right 
             fixed (byte*  bytesPtr  = &bytes[0]) {
                 var bytesLongPtr    = (long*)bytesPtr;
                 bytesLongPtr[0]     = lng;
@@ -43,12 +46,12 @@ namespace Friflo.Json.Burst.Utils
         
         public static unsafe void BytesToLongLong (in Bytes value, out long lng, out long lng2) {
             var byteCount       = value.end - value.start;
-            if (byteCount > 15) throw new ArgumentException("expect value length <= 15");
+            if (byteCount > MaxLength) throw new ArgumentException($"expect value length <= {MaxLength}");
             Span<byte> src      = new Span<byte>(value.buffer, value.start, byteCount);
             Span<byte> bytes    = stackalloc byte[16];
             src.CopyTo(bytes);
 
-            bytes[15] = (byte)byteCount;
+            bytes[MaxLength] = (byte)byteCount;
             fixed (byte*  bytesPtr  = bytes) 
             fixed (long*  lngPtr    = &lng)
             fixed (long*  lngPtr2   = &lng2)
@@ -60,7 +63,7 @@ namespace Friflo.Json.Burst.Utils
         }
         
         public static unsafe int GetChars(long lng, long lng2, in Span<char> chars) {
-            int byteCount       = (int)(lng2 >> 56); // shift 7 bytes right
+            int byteCount       = (int)(lng2 >> ShiftLength); // shift 7 bytes right
             Span<byte> bytes    = stackalloc byte[byteCount];
             fixed (byte*  bytesPtr  = &bytes[0]) {
                 var bytesLongPtr    = (long*)bytesPtr;

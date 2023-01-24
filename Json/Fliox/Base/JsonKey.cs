@@ -59,7 +59,7 @@ namespace Friflo.Json.Fliox
                 return;
             }
             type    = STRING;
-            ShortStringUtils.StringToLongLong(value, out str, out lng, out lng2);
+            ShortString.StringToLongLong(value, out str, out lng, out lng2);
         }
         
         public JsonKey (ref Bytes bytes, ref ValueParser valueParser, in JsonKey oldKey) {
@@ -81,8 +81,8 @@ namespace Friflo.Json.Fliox
                 return;
             }
             type    = STRING;
-            if (bytesLen <= 15) {
-                ShortStringUtils.BytesToLongLong(bytes, out lng, out lng2);
+            if (bytesLen <= ShortString.MaxLength) {
+                ShortString.BytesToLongLong(bytes, out lng, out lng2);
                 str = null;
             } else {
                 if (oldKey.str == null) {
@@ -175,7 +175,7 @@ namespace Friflo.Json.Fliox
                     return string.Compare(left.str, right.str, InvariantCulture);
                 }
                 Span<char> rightChars   = stackalloc char[MaxCharCount];
-                var rightCount          = ShortStringUtils.GetChars(right.lng, right.lng2, rightChars);
+                var rightCount          = ShortString.GetChars(right.lng, right.lng2, rightChars);
                 
                 ReadOnlySpan<char> leftReadOnly    = left.str.AsSpan();
                 ReadOnlySpan<char> rightReadOnly   = rightChars.Slice(0, rightCount);
@@ -184,17 +184,17 @@ namespace Friflo.Json.Fliox
             // case: left.str == null
             if (right.str != null) {
                 Span<char> leftChars    = stackalloc char[MaxCharCount];
-                var leftCount           = ShortStringUtils.GetChars(left.lng, left.lng2, leftChars);
+                var leftCount           = ShortString.GetChars(left.lng, left.lng2, leftChars);
                 
                 ReadOnlySpan<char> leftReadOnly    = leftChars.Slice(0, leftCount);
                 ReadOnlySpan<char> rightReadOnly   = right.str.AsSpan();
                 return leftReadOnly.CompareTo(rightReadOnly, InvariantCulture);
             } else {
                 Span<char> leftChars    = stackalloc char[MaxCharCount];
-                var leftCount           = ShortStringUtils.GetChars(left.lng, left.lng2, leftChars);
+                var leftCount           = ShortString.GetChars(left.lng, left.lng2, leftChars);
                 
                 Span<char> rightChars   = stackalloc char[MaxCharCount];
-                var rightCount          = ShortStringUtils.GetChars(right.lng, right.lng2, rightChars);
+                var rightCount          = ShortString.GetChars(right.lng, right.lng2, rightChars);
                 
                 ReadOnlySpan<char>  leftReadOnly    = leftChars. Slice(0, leftCount);
                 ReadOnlySpan<char>  rightReadOnly   = rightChars.Slice(0, rightCount);
@@ -248,7 +248,7 @@ namespace Friflo.Json.Fliox
                         return str;
                     }
                     Span<char> chars    = stackalloc char[MaxCharCount];
-                    var length          = ShortStringUtils.GetChars(lng, lng2, chars);
+                    var length          = ShortString.GetChars(lng, lng2, chars);
                     var readOnlySpan    = chars.Slice(0, length);
                     return new string(readOnlySpan);
                 case GUID:      return str ?? Guid.ToString();
@@ -301,7 +301,7 @@ namespace Friflo.Json.Fliox
                         break;
                     }
                     Span<char> chars    = stackalloc char[MaxCharCount];
-                    var len             = ShortStringUtils.GetChars(lng, lng2, chars);
+                    var len             = ShortString.GetChars(lng, lng2, chars);
                     var readOnlyChars   = chars.Slice(0, len);
                     sb.Append(readOnlyChars);
                     break;
