@@ -8,6 +8,7 @@ using Friflo.Json.Burst.Utils;
 using Friflo.Json.Fliox.Mapper;
 using static Friflo.Json.Fliox.JsonKeyType;
 using static System.Diagnostics.DebuggerBrowsableState;
+using static System.StringComparison;
 using Browse = System.Diagnostics.DebuggerBrowsableAttribute;
 
 // ReSharper disable once CheckNamespace
@@ -157,8 +158,42 @@ namespace Friflo.Json.Fliox
             }
         }
         
-        public int StringCompare(in JsonKey other) {
-            return string.Compare(str, other.str, StringComparison.InvariantCulture);
+        private const int MaxCharCount = 16; // Encoding.UTF8.GetMaxCharCount(15);
+        
+        public static int StringCompare(in JsonKey left, in JsonKey right) {
+            if (left.type  != STRING) throw new ArgumentException("expect left.type: STRING");
+            if (right.type != STRING) throw new ArgumentException("expect right.type: STRING");
+            
+            if (left.str != null) {
+                if (right.str != null) {
+                    return string.Compare(left.str, right.str, InvariantCulture);
+                }
+                Span<char> rightChars   = stackalloc char[MaxCharCount];
+                var rightCount          = ShortStringUtils.GetChars(right.lng, right.lng2, rightChars);
+                
+                ReadOnlySpan<char> leftReadOnly    = left.str.AsSpan();
+                ReadOnlySpan<char> rightReadOnly   = rightChars.Slice(0, rightCount);
+                return leftReadOnly.CompareTo(rightReadOnly, InvariantCulture);
+            }
+            // case: str == null
+            if (right.str != null) {
+                Span<char> leftChars    = stackalloc char[MaxCharCount];
+                var leftCount           = ShortStringUtils.GetChars(left.lng, left.lng2, leftChars);
+                
+                ReadOnlySpan<char> leftReadOnly    = leftChars.Slice(0, leftCount);
+                ReadOnlySpan<char> rightReadOnly   = right.str.AsSpan();
+                return leftReadOnly.CompareTo(rightReadOnly, InvariantCulture);
+            } else {
+                Span<char> leftChars    = stackalloc char[MaxCharCount];
+                var leftCount           = ShortStringUtils.GetChars(left.lng, left.lng2, leftChars);
+                
+                Span<char> rightChars   = stackalloc char[MaxCharCount];
+                var rightCount          = ShortStringUtils.GetChars(right.lng, right.lng2, rightChars);
+                
+                ReadOnlySpan<char>  leftReadOnly    = leftChars. Slice(0, leftCount);
+                ReadOnlySpan<char>  rightReadOnly   = rightChars.Slice(0, rightCount);
+                return leftReadOnly.CompareTo(rightReadOnly, InvariantCulture);
+            }
         }
         
         public bool IsEqual(in JsonKey other) {

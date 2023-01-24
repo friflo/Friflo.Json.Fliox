@@ -3,6 +3,7 @@
 
 using Friflo.Json.Burst;
 using Friflo.Json.Burst.Utils;
+using Friflo.Json.Fliox;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
 
@@ -75,6 +76,16 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                 
                 ShortStringUtils.LongLongToString(lng, lng2, out string result);
                 AreEqual("012345678901234", result);
+            }
+        }
+        
+        [Test]
+        public static void TestShortStringUtils_Compare() {
+            {
+                var left  = new JsonKey("a");
+                var right = new JsonKey("b");
+                var result = JsonKey.StringCompare(left, right);
+                AreEqual(-1, result); 
             }
         }
     }

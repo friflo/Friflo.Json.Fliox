@@ -63,5 +63,16 @@ namespace Friflo.Json.Burst.Utils
             lng     = 0;
             lng2    = 0;
         }
+        
+        public static unsafe int GetChars(long lng, long lng2, in Span<char> chars) {
+            int byteCount       = (int)(lng2 >> 56); // shift 7 bytes right
+            Span<byte> bytes    = stackalloc byte[byteCount];
+            fixed (byte*  bytesPtr  = &bytes[0]) {
+                var bytesLongPtr    = (long*)bytesPtr;
+                bytesLongPtr[0]     = lng;
+                bytesLongPtr[1]     = lng2;
+                return Encoding.UTF8.GetChars(bytes, chars);
+            }
+        }
     }
 }
