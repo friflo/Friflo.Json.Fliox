@@ -7,12 +7,7 @@
     "excludePlatforms": [],
     "allowUnsafeCode": true,
     "overrideReferences": false,
-    "precompiledReferences": [
-        "Mono.Cecil.dll",
-        "Mono.Cecil.Rocks.dll",
-        "Mono.Cecil.Pdb.dll",
-        "Mono.Cecil.Mdb.dll"
-    ],
+    "precompiledReferences": [],
     "autoReferenced": true,
     "defineConstraints": [],
     "versionDefines": [],

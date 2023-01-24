@@ -10,9 +10,15 @@ using Mono.Cecil.Rocks;
 // [[SOLVED] Burst and Mono Cecil - Unity Forum] https://forum.unity.com/threads/solved-burst-and-mono-cecil.781148/
 public class ILWeaver
 {
+
+    static bool enabled = false;
+
     [InitializeOnLoadMethod]
     static void init()
     {
+        if (!enabled) {
+            return;
+        }
         List<string> assemblies = new List<string>();
         UnityEditor.Compilation.CompilationPipeline.compilationStarted += (o) => {
             EditorApplication.LockReloadAssemblies();
@@ -38,5 +44,29 @@ public class ILWeaver
         };
     }
 }
+
+/** require dependencies in *.asmdef
+
+{
+    "name": "Friflo.Json.Fliox",
+    "references": [
+        "Unity.Burst"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": true,
+    "overrideReferences": false,
+    "precompiledReferences": [
+        "Mono.Cecil.dll",
+        "Mono.Cecil.Rocks.dll",
+        "Mono.Cecil.Pdb.dll",
+        "Mono.Cecil.Mdb.dll"
+    ],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
+*/
 
 #endif
