@@ -80,5 +80,47 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             AreEqual(count, list.Count);
             AreEqual(0, dif, "allocated bytes");
         }
+
+        private const int Count = 10; // 20_000_000;
+        
+        /// <summary>
+        /// Compare performance of <see cref="ShortString"/> optimization using 15 / 16 characters 
+        /// </summary>
+        [Test]
+        public static void JsonKeyTests_StringLookup () {
+
+            var foo     = new JsonKey("foo");
+            var bar     = new JsonKey("bar");
+            var map     = new Dictionary<JsonKey, int>(JsonKey.Equality) {
+                [foo] = 1,
+                [bar] = 2
+            };
+            var ignore1 = map[foo]; // force one time allocations
+            var ignore2 = map[foo];
+            var start   = GC.GetAllocatedBytesForCurrentThread();
+            for (int n = 0; n < Count; n++) {
+                var _ = map[foo];
+            }
+            var dif = GC.GetAllocatedBytesForCurrentThread() - start;
+            AreEqual(0, dif, "allocated bytes");
+        }
+        
+        [Test]
+        public static void JsonKeyTests_StringLookupReference () {
+            var foo     = "foo";
+            var bar     = "bar";
+            var map     = new Dictionary<string, int>() {
+                [foo] = 1,
+                [bar] = 2
+            };
+            var ignore1 = map[foo]; // force one time allocations
+            var ignore2 = map[foo];
+            var start   = GC.GetAllocatedBytesForCurrentThread();
+            for (int n = 0; n < Count; n++) {
+                var _ = map[foo];
+            }
+            var dif = GC.GetAllocatedBytesForCurrentThread() - start;
+            AreEqual(0, dif, "allocated bytes");
+        }
     }
 }

@@ -236,11 +236,11 @@ namespace Friflo.Json.Fliox
                     throw new InvalidOperationException("Invalid IdType"); 
             }
         }
-        
+
         public int HashCode() {
             switch (type) {
                 case LONG:      return lng. GetHashCode();
-                case STRING:    return str?.GetHashCode() ?? lng. GetHashCode() ^ lng2.GetHashCode();
+                case STRING:    return str?.GetHashCode() ?? lng.GetHashCode() ^ lng2.GetHashCode();
                 case GUID:      return lng. GetHashCode() ^ lng2.GetHashCode();
                 case NULL:      return 0;
                 default:
