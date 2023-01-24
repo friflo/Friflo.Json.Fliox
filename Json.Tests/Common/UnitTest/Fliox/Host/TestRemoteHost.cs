@@ -58,7 +58,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
                     dif = GC.GetAllocatedBytesForCurrentThread() - start;
                     if (response.status != JsonResponseStatus.Ok)   Fail("Expect OK");
                 }
-                AreEqual(776, dif);
+                AreEqual(800, dif);
             }
         }
         
@@ -129,7 +129,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
             var syncWrite = new SyncRequest {
                 database = "remote-memory",
                 tasks = new List<SyncRequestTask> {
-                    new UpsertEntities { container = "players", entities = new List<JsonEntity> {
+                    new UpsertEntities { container = new JsonKey("players"), entities = new List<JsonEntity> {
                         new JsonEntity(new JsonKey(1), new JsonValue(@"{""id"":1}"))
                     } }
                 }
@@ -140,7 +140,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
             var syncRead = new SyncRequest {
                 database = "remote-memory",
                 tasks = new List<SyncRequestTask> {
-                    new ReadEntities { container = "players", ids = new List<JsonKey> { new JsonKey(1)} }
+                    new ReadEntities { container = new JsonKey("players"), ids = new List<JsonKey> { new JsonKey(1)} }
                 }
             };
             cx.readReq = cx.mapper.WriteAsValue<ProtocolMessage>(syncRead);

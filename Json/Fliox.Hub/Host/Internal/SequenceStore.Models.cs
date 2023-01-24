@@ -9,7 +9,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Internal
 {
     // ---------------------------------- entity models ----------------------------------
     public sealed class Sequence {
-        [Key]       public  string  container;
+        [Key]       public  JsonKey container;
         [Required]  public  long    autoId;
         [Serialize               ("_etag")]
                     public  string  etag;
@@ -17,7 +17,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Internal
     
     public sealed class SequenceKeys {
         [Key]       public  Guid    token;  // secret to ensure the client has reserved the keys
-        [Required]  public  string  container;
+        [Required]  public  JsonKey container;
         [Required]  public  long    start;
         [Required]  public  int     count;
                     public  JsonKey user;   // to track back who reserved keys in case of abuse

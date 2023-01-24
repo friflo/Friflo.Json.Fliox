@@ -30,18 +30,18 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
 
         public override void Write(ref Writer writer, JsonKey value) {
             switch (value.type) {
-                case JsonKeyType.Long:
+                case JsonKeyType.LONG:
                     writer.bytes.AppendChar('\"');
                     writer.format.AppendLong(ref writer.bytes, value.lng);
                     writer.bytes.AppendChar('\"');
                     break;
-                case JsonKeyType.String:
+                case JsonKeyType.STRING:
                     writer.WriteString(value.str);
                     break;
-                case JsonKeyType.Guid:
+                case JsonKeyType.GUID:
                     writer.WriteGuid(value.Guid);
                     break;
-                case JsonKeyType.Null:
+                case JsonKeyType.NULL:
                     writer.AppendNull();
                     break;
             }
@@ -56,7 +56,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
                     return new JsonKey();
                 case JsonEvent.ValueString:
                     success = true;
-                    return new JsonKey(ref parser.value, ref parser.valueParser);
+                    return new JsonKey(ref parser.value, ref parser.valueParser, default);
                 default:
                     return reader.ErrorMsg<JsonKey>("Expect string as JsonKey. ", ev, out success);
             }

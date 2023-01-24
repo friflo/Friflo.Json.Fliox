@@ -49,7 +49,7 @@ namespace Friflo.Json.Fliox.Hub.Host
                 var value   = new JsonValue (entity.value);
                 if (keyValues.TryAdd(key, value))
                     continue;
-                var error = new EntityError(EntityErrorType.WriteError, name, key, "entity already exist");
+                var error = new EntityError(EntityErrorType.WriteError, nameKey, key, "entity already exist");
                 AddEntityError(ref createErrors, key, error);
             }
             return new CreateEntitiesResult { errors = createErrors };

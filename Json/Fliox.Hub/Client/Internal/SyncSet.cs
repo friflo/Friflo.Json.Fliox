@@ -139,7 +139,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         // ----------------------------------- create task methods -----------------------------------
         internal ReserveKeys ReserveKeys(ReserveKeysTask<TKey,T> reserveKeys) {
             return new ReserveKeys {
-                container   = set.name,
+                container   = set.nameKey,
                 count       = reserveKeys.count,
                 intern      = new SyncTaskIntern(reserveKeys)
             };
@@ -159,7 +159,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 entries.Add(new JsonEntity(peer.id, value));
             }
             return new CreateEntities {
-                container       = set.name,
+                container       = set.nameKey,
                 keyName         = SyncKeyName(set.GetKeyName()),
                 entities        = entries,
                 reservedToken   = new Guid(), // todo
@@ -181,7 +181,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 var value   = writer.WriteAsValue(entity);
                 entities.Add(new JsonEntity(peer.id, value));
             }
-            upsertEntities.container        = set.name;
+            upsertEntities.container        = set.nameKey;
             upsertEntities.keyName          = SyncKeyName(set.GetKeyName());
             upsertEntities.entities         = entities;
             upsertEntities.intern.syncTask  = upsert;
@@ -200,7 +200,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 ids.Add(id);
             }
             return new ReadEntities {
-                container   = set.name,
+                container   = set.nameKey,
                 keyName     = SyncKeyName(set.GetKeyName()),
                 isIntKey    = IsIntKey(set.IsIntKey()),
                 ids         = ids,
@@ -218,7 +218,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             }
             var filterTree  = FilterToJson(query.filter, context.mapper);
             return new QueryEntities {
-                container   = set.name,
+                container   = set.nameKey,
                 keyName     = SyncKeyName(set.GetKeyName()),
                 isIntKey    = IsIntKey(set.IsIntKey()),
                 filterTree  = filterTree,
@@ -234,7 +234,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         internal override AggregateEntities AggregateEntities(AggregateTask aggregate, in CreateTaskContext context) {
             var filterTree  = FilterToJson(aggregate.filter, context.mapper);
             return new AggregateEntities {
-                container   = set.name,
+                container   = set.nameKey,
                 type        = aggregate.Type,
             //  keyName     = SyncKeyName(set.GetKeyName()),
             //  isIntKey    = IsIntKey(set.IsIntKey()),
@@ -251,7 +251,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
 
         internal override CloseCursors CloseCursors(CloseCursorsTask closeCursor) {
             return new CloseCursors {
-                container   = set.name,
+                container   = set.nameKey,
                 cursors     = closeCursor.cursors,
                 intern      = new SyncTaskIntern(closeCursor) 
             };
@@ -267,7 +267,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 list.Add(new JsonEntity(patch.entityPatch));
             }
             return new MergeEntities {
-                container   = set.name,
+                container   = set.nameKey,
                 keyName     = SyncKeyName(set.GetKeyName()),
                 patches     = list,
                 intern      = new SyncTaskIntern(detectPatches) 
@@ -282,7 +282,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 ids.Add(id);
             }
             return new DeleteEntities {
-                container   = set.name,
+                container   = set.nameKey,
                 ids         = ids,
                 intern      = new SyncTaskIntern(deleteTask) 
             };
@@ -290,7 +290,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
 
         internal DeleteEntities DeleteAll(DeleteAllTask<TKey,T> deleteTask) {
            return new DeleteEntities {
-                container   = set.name,
+                container   = set.nameKey,
                 all         = true,
                 intern      = new SyncTaskIntern(deleteTask) 
             };
@@ -299,7 +299,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         internal override SubscribeChanges SubscribeChanges(SubscribeChangesTask<T> sub, in CreateTaskContext context) {
             var filter = sub.filter.Linq;
             return new SubscribeChanges {
-                container   = set.name,
+                container   = set.nameKey,
                 filter      = filter,
                 changes     = sub.changes,
                 intern      = new SyncTaskIntern(sub) 

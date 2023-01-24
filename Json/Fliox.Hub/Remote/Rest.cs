@@ -92,7 +92,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         }
         
         // -------------------------------------- resource access  --------------------------------------
-        internal static async Task GetEntitiesById(RequestContext context, string database, string container, JsonKey[] keys) {
+        internal static async Task GetEntitiesById(RequestContext context, string database, JsonKey container, JsonKey[] keys) {
             if (database == context.hub.DatabaseName.value)
                 database = null;
             var readEntities = new ReadEntities { container = container, ids = new List<JsonKey>(keys.Length)};
@@ -131,7 +131,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             }
         }
         
-        internal static async Task QueryEntities(RequestContext context, string database, string container, NameValueCollection queryParams) {
+        internal static async Task QueryEntities(RequestContext context, string database, JsonKey container, NameValueCollection queryParams) {
             if (database == context.hub.DatabaseName.value)
                 database = null;
             var filter = CreateFilterTree(context, queryParams);
@@ -241,7 +241,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             return filterOp;
         }
         
-        internal static async Task GetEntity(RequestContext context, string database, string container, string id) {
+        internal static async Task GetEntity(RequestContext context, string database, JsonKey container, string id) {
             if (database == context.hub.DatabaseName.value)
                 database = null;
             var hub             = context.hub;
@@ -275,7 +275,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             context.Write(content.Json, "application/json", entityStatus);
         }
         
-        internal static async Task DeleteEntities(RequestContext context, string database, string container, JsonKey[] keys) {
+        internal static async Task DeleteEntities(RequestContext context, string database, JsonKey container, JsonKey[] keys) {
             if (database == context.hub.DatabaseName.value)
                 database = null;
             var deleteEntities  = new DeleteEntities { container = container, ids = new List<JsonKey>(keys.Length) };
@@ -346,7 +346,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         internal static async Task PutEntities(
             RequestContext      context,
             string              database,
-            string              container,
+            JsonKey             container,
             string              id,
             JsonValue           value,
             NameValueCollection queryParams)
@@ -409,7 +409,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         internal static async Task MergeEntities(
             RequestContext      context,
             string              database,
-            string              container,
+            JsonKey             container,
             string              id,
             JsonValue           patch,
             NameValueCollection queryParams)

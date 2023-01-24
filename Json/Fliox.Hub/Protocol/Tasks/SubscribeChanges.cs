@@ -18,7 +18,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     {
         /// <summary>container name</summary>
         [Serialize                                ("cont")]
-        [Required]  public      string              container;
+        [Required]  public      JsonKey             container;
         /// <summary>subscribe to entity <see cref="changes"/> of the given <see cref="container"/></summary>
         [Required]  public      List<EntityChange>  changes;
         /// <summary>subscription filter as a <a href="https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/operators/lambda-expressions">Lambda expression</a> (infix notation)
@@ -38,7 +38,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
             if (eventDispatcher == null) {
                 return InvalidTask("Hub has no EventDispatcher");
             }
-            if (container == null) {
+            if (container.IsNull()) {
                 return MissingContainer();
             }
             if (changes == null) {

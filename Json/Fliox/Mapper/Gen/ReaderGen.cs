@@ -171,11 +171,11 @@ namespace Friflo.Json.Fliox.Mapper.Map
         
         // --- JsonKey
         /// <see cref="JsonKeyMapper.Read"/>
-        public JsonKey ReadJsonKey (PropField field, out bool success) {
+        public JsonKey ReadJsonKey (PropField field, in JsonKey value, out bool success) {
             if (parser.Event != JsonEvent.ValueString)
                 return HandleEventGen<JsonKey>(field.fieldType, out success);
             success = true;
-            return new JsonKey(ref parser.value, ref parser.valueParser);
+            return new JsonKey(ref parser.value, ref parser.valueParser, value);
         }
         
         // --- JsonValue

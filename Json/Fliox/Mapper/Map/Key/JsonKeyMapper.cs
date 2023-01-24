@@ -9,15 +9,15 @@ namespace Friflo.Json.Fliox.Mapper.Map.Key
     {
         public override void WriteKey (ref Writer writer, in JsonKey key) {
             switch (key.type) {
-                case JsonKeyType.Long:
+                case JsonKeyType.LONG:
                     writer.bytes.AppendChar('\"');
                     writer.format.AppendLong(ref writer.bytes, key.lng);
                     writer.bytes.AppendChar('\"');
                     break;
-                case JsonKeyType.String:
+                case JsonKeyType.STRING:
                     writer.WriteString(key.str);
                     break;
-                case JsonKeyType.Guid:
+                case JsonKeyType.GUID:
                     writer.WriteGuid(key.Guid);
                     break;
                 default:
@@ -28,7 +28,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Key
         public override JsonKey ReadKey (ref Reader reader, out bool success) {
             ref var parser = ref reader.parser;
             success = true;
-            return new JsonKey(ref parser.key, ref parser.valueParser);
+            return new JsonKey(ref parser.key, ref parser.valueParser, default);
         }
         
         public override JsonKey     ToJsonKey      (in JsonKey key) {

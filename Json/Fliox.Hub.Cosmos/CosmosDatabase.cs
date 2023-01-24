@@ -24,9 +24,9 @@ namespace Friflo.Json.Fliox.Hub.Cosmos
             this.pretty         = pretty;
         }
         
-        public override EntityContainer CreateContainer(string name, EntityDatabase database) {
+        public override EntityContainer CreateContainer(in JsonKey name, EntityDatabase database) {
             var options = new ContainerOptions(cosmosDatabase, throughput);
-            return new CosmosContainer(name, database, options, pretty);
+            return new CosmosContainer(name.AsString(), database, options, pretty);
         }
     }
     

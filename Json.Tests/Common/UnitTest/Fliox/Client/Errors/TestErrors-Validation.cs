@@ -40,7 +40,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             modifierHub.ClearErrors();
             var articles = store.articles;
             
-            var articleModifier = modifierHub.GetWriteModifiers(nameof(PocStore.articles));
+            var articleModifier = modifierHub.GetWriteModifiers(new JsonKey(nameof(PocStore.articles)));
             articleModifier.writes.Add("article-missing-id",     val => new JsonValue("{\"id\": \"article-missing-id\" }"));
             articleModifier.writes.Add("article-incorrect-type", val => new JsonValue(val.AsString().Replace("\"xxx\"", "123")));
 

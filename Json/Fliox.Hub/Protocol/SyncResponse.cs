@@ -30,20 +30,20 @@ namespace Friflo.Json.Fliox.Hub.Protocol
                         
         internal override   MessageType                             MessageType => MessageType.resp;
         
-        public ContainerEntities FindContainer(string containerName) {
+        public ContainerEntities FindContainer(in JsonKey containerName) {
             if (containers == null)
                 return null;
             foreach (var container in containers) {
-                if (container.container == containerName)
+                if (container.container.IsEqual(containerName))
                     return container;
             }
             return null;
         }
         
-        internal ContainerEntities GetContainerResult(string containerName) {
+        internal ContainerEntities GetContainerResult(in JsonKey containerName) {
             if (containers == null) containers = new List<ContainerEntities>();
             foreach (var container in containers) {
-                if (container.container == containerName)
+                if (container.container.IsEqual(containerName))
                     return container;
             }
             var result = new ContainerEntities { container = containerName };
@@ -104,7 +104,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol
         /// <summary>container name the of the returned <see cref="entities"/> </summary>
         /// Required only by <see cref="RemoteHost"/> for serialization
         [Serialize                            ("cont")]
-        [Required]  public  string              container;
+        [Required]  public  JsonKey             container;
         /// <summary>number of <see cref="entities"/> - not utilized by Protocol</summary>
         [DebugInfo] public  int?                count;
         /// <summary>
@@ -123,7 +123,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol
         
         [Ignore]    public readonly Dictionary<JsonKey, EntityValue>    entityMap = new Dictionary<JsonKey, EntityValue>(JsonKey.Equality);
 
-        public override     string              ToString() => container;
+        public override     string              ToString() => container.AsString();
 
         internal void AddEntities(EntityValue[] add) {
             entityMap.EnsureCapacity(entityMap.Count + add.Length);

@@ -11,7 +11,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Internal
     {
         // --- containers
         [Serialize                                      ("_sequence")]  
-        public readonly EntitySet <string, Sequence>       sequence;
+        public readonly EntitySet <JsonKey, Sequence>      sequence;
         [Serialize                                      ("_sequenceKeys")]  
         public readonly EntitySet <Guid,   SequenceKeys>   sequenceKeys;
         

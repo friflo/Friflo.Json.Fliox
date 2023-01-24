@@ -13,15 +13,15 @@ namespace Gen.Friflo.Json.Fliox.Hub.DB.UserAuth
         private static bool ReadField (ref UserPermission obj, PropField field, ref Reader reader) {
             bool success;
             switch (field.genIndex) {
-                case Gen_id:    obj.id    = reader.ReadJsonKey (field, out success);  return success;
-                case Gen_roles: obj.roles = reader.ReadClass   (field, obj.roles, out success);  return success;
+                case Gen_id:    obj.id    = reader.ReadJsonKey (field, obj.id,    out success);  return success;
+                case Gen_roles: obj.roles = reader.ReadClass (field, obj.roles, out success);  return success;
             }
             return false;
         }
 
         private static void Write(ref UserPermission obj, PropField[] fields, ref Writer writer, ref bool firstMember) {
             writer.WriteJsonKey (fields[Gen_id],    obj.id,    ref firstMember);
-            writer.WriteClass   (fields[Gen_roles], obj.roles, ref firstMember);
+            writer.WriteClass (fields[Gen_roles], obj.roles, ref firstMember);
         }
     }
 }

@@ -50,7 +50,7 @@ namespace Friflo.Json.Fliox.Hub.Host
     {
         public   readonly   TypeSchema                          typeSchema;
         [DebuggerBrowsable(Never)]
-        private  readonly   Dictionary<string, ValidationType>  containerTypes  = new Dictionary<string, ValidationType>();
+        private  readonly   Dictionary<JsonKey, ValidationType> containerTypes  = new Dictionary<JsonKey, ValidationType>(JsonKey.Equality);
         // ReSharper disable once UnusedMember.Local - expose Dictionary as list in Debugger
         private             IReadOnlyCollection<ValidationType> ContainerTypes  => containerTypes.Values;
         
@@ -61,7 +61,7 @@ namespace Friflo.Json.Fliox.Hub.Host
 
         public   override   string                              ToString()  => typeSchema.RootType.Name;
         
-        public              ValidationType  GetValidationType (string container) => containerTypes[container];
+        public              ValidationType  GetValidationType (in JsonKey container) => containerTypes[container];
 
         public DatabaseSchema(TypeSchema typeSchema) {
             this.typeSchema = typeSchema;
@@ -86,7 +86,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         }
         
         public string ValidateEntities (
-            string                  container,
+            in JsonKey              container,
             List<JsonEntity>        entities,
             SharedEnv               env,
             EntityErrorType         errorType,

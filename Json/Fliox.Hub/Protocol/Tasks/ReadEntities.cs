@@ -20,7 +20,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     {
         /// <summary>container name</summary>
         [Serialize                            ("cont")]
-        [Required]  public  string              container;
+        [Required]  public  JsonKey             container;
         /// <summary> name of the primary key property of the returned entities </summary>
                     public  string              keyName;
                     public  bool?               isIntKey;
@@ -46,7 +46,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
             EntityDatabase          database,
             out TaskErrorResult     error)
         {
-            if (container == null) {
+            if (container.IsNull()) {
                 error = MissingContainer();
                 return null;
             }
@@ -81,7 +81,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
             
             if (references != null && references.Count > 0) {
                 var readRefResults =
-                    await entityContainer.ReadReferencesAsync(references, entities, entityContainer.name, "", response, syncContext).ConfigureAwait(false);
+                    await entityContainer.ReadReferencesAsync(references, entities, entityContainer.nameKey, "", response, syncContext).ConfigureAwait(false);
                 // returned readRefResults.references is always set. Each references[] item contain either a result or an error.
                 result.references = readRefResults.references;
             }
@@ -133,7 +133,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         /// So database adapters which can ensure the JSON value is always valid made calling <see cref="ValidateEntities"/>
         /// obsolete - like Postgres/JSONB, Azure Cosmos DB or MongoDB.
         /// </summary>
-        public void ValidateEntities(string container, string keyName, SyncContext syncContext) {
+        public void ValidateEntities(in JsonKey container, string keyName, SyncContext syncContext) {
             using (var pooled = syncContext.EntityProcessor.Get()) {
                 EntityProcessor processor = pooled.instance;
                 for (int n = 0; n < entities.Length; n++) {

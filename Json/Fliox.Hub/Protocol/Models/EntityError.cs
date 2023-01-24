@@ -27,7 +27,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Models
         /// <summary>error details when accessing an entity</summary>
         [Serialize] public  string              message;
             
-        [Ignore]    public  string              container;
+        [Ignore]    public  JsonKey             container;
         /// <summary>Is != <see cref="TaskErrorResultType.None"/> if the error is caused indirectly by a <see cref="SyncRequestTask"/> error.</summary>
         [Ignore]    public  TaskErrorResultType taskErrorType;
         /// <summary>Show the stacktrace if <see cref="taskErrorType"/> == <see cref="TaskErrorResultType.UnhandledException"/>
@@ -38,7 +38,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Models
 
         public EntityError() { } // required for TypeMapper
 
-        public EntityError(EntityErrorType type, string container, in JsonKey id, string message) {
+        public EntityError(EntityErrorType type, in JsonKey container, in JsonKey id, string message) {
             this.type       = type;
             this.container  = container;
             this.id         = id;

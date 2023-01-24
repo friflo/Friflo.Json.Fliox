@@ -41,7 +41,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
                 database    = "db",
                 tasks       = new List<SyncRequestTask> {
                     new UpsertEntities {
-                        container   = "test",
+                        container   = new JsonKey("test"),
                         entities    = new List<JsonEntity> {
                             new JsonEntity(new JsonKey(11), new JsonValue(@"{""id"":11}")),
                             new JsonEntity(new JsonKey(22), new JsonValue(@"{""id"":22}"))

@@ -48,7 +48,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         private             ReaderPool                      eventReaderPool;    // create on demand
         
         internal readonly   EntitySet[]                             entitySets;
-        private  readonly   Dictionary<string, EntitySet>           setByName;
+        private  readonly   Dictionary<JsonKey, EntitySet>          setByName;
         
         [DebuggerBrowsable(Never)]
         internal            Dictionary<string, MessageSubscriber>   subscriptions;          // create on demand - only used for subscriptions
@@ -98,8 +98,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         private static readonly SynchronousEventProcessor           DefaultEventProcessor   = new SynchronousEventProcessor();
 
        
-        internal EntitySet  GetSetByName    (string name)                    => setByName[name];
-        internal bool       TryGetSetByName (string name, out EntitySet set) => setByName.TryGetValue(name, out set);
+        internal EntitySet  GetSetByName    (in JsonKey name)                    => setByName[name];
+        internal bool       TryGetSetByName (in JsonKey name, out EntitySet set) => setByName.TryGetValue(name, out set);
 
         internal void SetSubscriptionProcessor(SubscriptionProcessor processor) {
             subscriptionProcessor?.Dispose();
@@ -131,7 +131,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             objectMapper            = null;
             eventReaderPool         = null;
             entitySets              = new EntitySet[entityInfos.Length];
-            setByName               = new Dictionary<string, EntitySet>(entityInfos.Length);
+            setByName               = new Dictionary<JsonKey, EntitySet>(entityInfos.Length, JsonKey.Equality);
             subscriptions           = null; 
             subscriptionsPrefix     = null; 
             pendingSyncs            = new Dictionary<Task, SyncContext>();
@@ -201,13 +201,14 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             }
             var mappers = clientTypeInfo.entitySetMappers;
             for (int n = 0; n < entityInfos.Length; n++) {
-                var entityInfo  = entityInfos[n];
-                var name        = entityInfo.container;
-                var setMapper   = mappers[n];
-                var entitySet   = setMapper.CreateEntitySet(name);
+                var entityInfo      = entityInfos[n];
+                var name            = entityInfo.container;
+                var nameKey         = new JsonKey(name);
+                var setMapper       = mappers[n];
+                var entitySet       = setMapper.CreateEntitySet(name);
                 entitySet.Init(client);
-                entitySets[n]   = entitySet;
-                setByName[name] = entitySet;
+                entitySets[n]       = entitySet;
+                setByName[nameKey]  = entitySet;
                 entityInfo.SetEntitySetMember(client, entitySet);
             }
             return clientTypeInfo;
@@ -257,7 +258,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             return null;
         }
 
-        internal Dictionary<string, SyncSet> CreateSyncSets(Dictionary<string,SyncSet> syncSets) {
+        internal Dictionary<JsonKey, SyncSet> CreateSyncSets(Dictionary<JsonKey,SyncSet> syncSets) {
             var count = 0;
             syncSets?.Clear();
             foreach (var set in entitySets) {
@@ -270,12 +271,12 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 return syncSets;
             }
             // create Dictionary<,> only if required
-            syncSets = syncSets ?? new Dictionary<string, SyncSet>(count);
+            syncSets = syncSets ?? new Dictionary<JsonKey, SyncSet>(count, JsonKey.Equality);
             foreach (var set in entitySets) {
                 SyncSet syncSet = set.SyncSet;
                 if (syncSet == null)
                     continue;
-                syncSets.Add(set.name, syncSet);
+                syncSets.Add(set.nameKey, syncSet);
             }
             return syncSets;
         }

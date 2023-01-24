@@ -16,7 +16,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
     {
         internal  readonly  string          name;
         internal  readonly  QueryType       type;
-        internal  readonly  string          container;
+        internal  readonly  JsonKey         container;
         internal  readonly  SelectionNode   selection;
         internal  readonly  int             taskIndex;
         internal  readonly  SyncRequestTask task;
@@ -27,7 +27,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
         
         public    override  string          ToString()  => $"{type}: {name}";
 
-        internal Query(string resolverName, string alias, QueryType type, string container, in SelectionNode selection, int taskIndex, in QueryRequest queryRequest) {
+        internal Query(string resolverName, string alias, QueryType type, in JsonKey container, in SelectionNode selection, int taskIndex, in QueryRequest queryRequest) {
             this.name           = alias ?? resolverName;
             this.resolverName   = resolverName;
             this.type           = type;
@@ -47,7 +47,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
         internal  readonly  SelectionObject resultObject;
         
         /// <summary> only: <see cref="QueryType.Query"/> and <see cref="QueryType.Read"/> </summary>
-        internal  readonly  string      container;
+        internal  readonly  JsonKey     container;
         /// <summary> only: <see cref="QueryType.Message"/> and <see cref="QueryType.Command"/> </summary>
         internal  readonly  bool        hasParam;
         /// <summary> only: <see cref="QueryType.Message"/> and <see cref="QueryType.Command"/> </summary>
@@ -59,7 +59,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
         internal QueryResolver(string name, QueryType queryType, FieldDef param, TypeDef resultType) {
             this.name       = name;
             this.queryType  = queryType;
-            this.container  = null;
+            this.container  = default;
             hasParam        = param != null;
             paramRequired   = param != null && param.required;
             resultObject    = resultType != null ? CreateSelectionObject(resultType.nameUtf8, resultType) : default;
@@ -69,7 +69,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
         internal QueryResolver(string name, QueryType queryType, string container, TypeDef entityType, IUtf8Buffer buffer) {
             this.name       = Gql.MethodName(name, container);
             this.queryType  = queryType;
-            this.container  = container;
+            this.container  = new JsonKey(container);
             hasParam        = false;
             paramRequired   = false;
             resultObject    = CreateResultType(queryType, container, entityType, buffer);

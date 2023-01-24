@@ -20,7 +20,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event.Collector
         internal readonly   int                 count;
         internal readonly   JsonKey             user;
 
-        public   override   string              ToString() => $"{taskType} '{containerChanges.name.value}' count: {count}";
+        public   override   string              ToString() => $"{taskType} '{containerChanges.name.AsString()}' count: {count}";
 
         internal ChangeTask(ContainerChanges containerChanges, TaskType taskType, int start, int count, in JsonKey user) {
             this.containerChanges   = containerChanges;

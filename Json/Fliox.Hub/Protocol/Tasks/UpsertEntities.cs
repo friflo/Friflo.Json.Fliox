@@ -22,7 +22,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     {
         /// <summary>container name the <see cref="entities"/> are upserted - created or updated</summary>
         [Serialize                            ("cont")]
-        [Required]  public  string              container;
+        [Required]  public  JsonKey             container;
         [Browse(Never)]
         [Ignore]   public   EntityContainer     entityContainer;
         [Ignore]   private  List<EntityError>   validationErrors;
@@ -45,7 +45,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         private TaskErrorResult PrepareUpsert(EntityDatabase database, SharedEnv env)
         {
             validationErrors = null;
-            if (container == null) {
+            if (container.IsNull()) {
                 return MissingContainer();
             }
             if (entities == null) {

@@ -12,7 +12,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
     public sealed class AuthorizeContainer : TaskAuthorizer {
         private  readonly   DatabaseFilter  databaseFilter;
         
-        private  readonly   string          container;
+        private  readonly   JsonKey         container;
         
         private  readonly   bool            create;
         private  readonly   bool            upsert;
@@ -29,7 +29,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
         public AuthorizeContainer (string container, ICollection<OperationType> types, string database)
         {
             databaseFilter  = new DatabaseFilter(database);
-            this.container  = container;
+            this.container  = new JsonKey(container);
             SetRoles(types, ref create, ref upsert, ref delete, ref deleteAll, ref merge, ref read, ref query, ref aggregate);
         }
         
@@ -67,17 +67,17 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
             if (!databaseFilter.Authorize(syncContext))
                 return false;
             switch (task.TaskType) {
-                case TaskType.create:       return create       && ((CreateEntities)    task).container == container;
-                case TaskType.upsert:       return upsert       && ((UpsertEntities)    task).container == container;
+                case TaskType.create:       return create       && ((CreateEntities)    task).container.IsEqual(container);
+                case TaskType.upsert:       return upsert       && ((UpsertEntities)    task).container.IsEqual(container);
                 case TaskType.delete:
                     var deleteEntities = (DeleteEntities)  task;
                     return deleteEntities.Authorize(container, delete, deleteAll);
-                case TaskType.merge:        return merge        && ((MergeEntities)     task).container == container;
+                case TaskType.merge:        return merge        && ((MergeEntities)     task).container.IsEqual(container);
                 //
-                case TaskType.read:         return read         && ((ReadEntities)      task).container == container;
-                case TaskType.query:        return query        && ((QueryEntities)     task).container == container;
-                case TaskType.closeCursors: return query        && ((CloseCursors)      task).container == container;
-                case TaskType.aggregate:    return aggregate    && ((AggregateEntities) task).container == container;
+                case TaskType.read:         return read         && ((ReadEntities)      task).container.IsEqual(container);
+                case TaskType.query:        return query        && ((QueryEntities)     task).container.IsEqual(container);
+                case TaskType.closeCursors: return query        && ((CloseCursors)      task).container.IsEqual(container);
+                case TaskType.aggregate:    return aggregate    && ((AggregateEntities) task).container.IsEqual(container);
             }
             return false;
         }

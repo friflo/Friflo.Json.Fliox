@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Friflo.Json.Burst.Utils;
 using Friflo.Json.Fliox.Hub.Host.Utils;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
@@ -59,9 +58,8 @@ namespace Friflo.Json.Fliox.Hub.Host
     {
     #region - members
         /// <summary> container name </summary>
-        // ReSharper disable once InconsistentNaming
-        public              string                              name => nameSmall.value;
-        public    readonly  SmallString                         nameSmall;
+        public    readonly  string                              name;
+        public    readonly  JsonKey                             nameKey;
         /// <summary>
         /// The name used for a container / table instance in a specific database. By default it is equal to <see cref="name"/>.
         /// It can be customized (altered) by the <see cref="EntityDatabase.customContainerName"/> function.
@@ -107,7 +105,8 @@ namespace Friflo.Json.Fliox.Hub.Host
 
     #region - initialize
         protected EntityContainer(string name, EntityDatabase database) {
-            this.nameSmall      = new SmallString(name);
+            this.name           = name;
+            this.nameKey        = new JsonKey(name);
             this.instanceName   = database.customContainerName(name);
             this.database       = database;
             database.AddContainer(this);
@@ -257,7 +256,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         private static List<ReferencesResult> GetReferences(
             List<References>    references,
             EntityValue[]       entities,
-            string              container,
+            in JsonKey          container,
             SyncContext         syncContext)
         {
             if (references.Count == 0)
@@ -320,7 +319,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         internal async Task<ReadReferencesResult> ReadReferencesAsync(
                 List<References>    references,
                 EntityValue[]       entities,
-                string              container,
+                JsonKey             container,
                 string              selectorPath,
                 SyncResponse        syncResponse,
                 SyncContext         syncContext)

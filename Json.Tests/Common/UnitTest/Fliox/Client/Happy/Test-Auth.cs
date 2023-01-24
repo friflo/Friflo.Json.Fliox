@@ -54,9 +54,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         private static bool TestPredicate (SyncRequestTask task, SyncContext syncContext) {
             switch (task) {
                 case ReadEntities   read:
-                    return read.container   == nameof(PocStore.articles);
+                    return read.container.  IsEqual(new JsonKey(nameof(PocStore.articles)));
                 case UpsertEntities upsert:
-                    return upsert.container == nameof(PocStore.articles);
+                    return upsert.container.IsEqual(new JsonKey(nameof(PocStore.articles)));
             }
             return false;
         }

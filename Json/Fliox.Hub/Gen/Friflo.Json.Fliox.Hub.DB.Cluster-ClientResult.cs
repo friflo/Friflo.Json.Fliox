@@ -17,7 +17,7 @@ namespace Gen.Friflo.Json.Fliox.Hub.DB.Cluster
             switch (field.genIndex) {
                 case Gen_queueEvents:        obj.queueEvents        = reader.ReadBoolean (field, out success);  return success;
                 case Gen_queuedEvents:       obj.queuedEvents       = reader.ReadInt32   (field, out success);  return success;
-                case Gen_clientId:           obj.clientId           = reader.ReadJsonKey (field, out success);  return success;
+                case Gen_clientId:           obj.clientId           = reader.ReadJsonKey (field, obj.clientId,           out success);  return success;
                 case Gen_subscriptionEvents: obj.subscriptionEvents = reader.ReadStructNull (field, obj.subscriptionEvents, out success);  return success;
             }
             return false;

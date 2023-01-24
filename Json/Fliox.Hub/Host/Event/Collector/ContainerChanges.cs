@@ -12,16 +12,16 @@ namespace Friflo.Json.Fliox.Hub.Host.Event.Collector
     /// </summary>
     internal sealed class ContainerChanges
     {
-        internal readonly   SmallString     name;
+        internal readonly   JsonKey         name;
         internal            TaskType        currentType;
         private  readonly   List<JsonValue> values;
         private  readonly   List<JsonKey>   keys;
         internal readonly   List<RawTask>   rawTasks;
 
-        public   override   string          ToString() => name.value;
+        public   override   string          ToString() => name.AsString();
 
         internal ContainerChanges(EntityContainer entityContainer) {
-            name        = entityContainer.nameSmall;
+            name        = entityContainer.nameKey;
             currentType = default;
             values      = new List<JsonValue>();
             keys        = new List<JsonKey>();

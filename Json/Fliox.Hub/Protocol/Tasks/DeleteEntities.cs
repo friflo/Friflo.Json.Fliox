@@ -21,7 +21,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     {
         /// <summary>container name</summary>
         [Serialize                            ("cont")]
-        [Required]  public  string              container;
+        [Required]  public  JsonKey             container;
         [Browse(Never)]
         [Ignore]    public  EntityContainer     entityContainer;
         [Ignore]    private TaskErrorResult     error;
@@ -34,11 +34,11 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         public   override   string              TaskName => $"container: '{container}'";
         public   override   bool                IsNop()  => ids?.Count == 0;
         
-        internal bool Authorize (string container, bool delete, bool deleteAll) {
+        internal bool Authorize (in JsonKey container, bool delete, bool deleteAll) {
             bool allBool = all != null && all.Value;
-            if (delete    && ids.Count >  0 && !allBool        && this.container == container)
+            if (delete    && ids.Count >  0 && !allBool     && this.container.IsEqual(container))
                 return true;
-            if (deleteAll && ids.Count == 0 && allBool         && this.container == container)
+            if (deleteAll && ids.Count == 0 && allBool      && this.container.IsEqual(container))
                 return true;
             return false;
         }
@@ -50,7 +50,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         
         private TaskErrorResult PrepareDelete(EntityDatabase database)
         {
-            if (container == null) {
+            if (container.IsNull()) {
                 return MissingContainer();
             }
             if (ids == null && all == null) {

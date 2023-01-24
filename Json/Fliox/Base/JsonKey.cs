@@ -6,6 +6,7 @@ using System.Text;
 using Friflo.Json.Burst;
 using Friflo.Json.Burst.Utils;
 using Friflo.Json.Fliox.Mapper;
+using static Friflo.Json.Fliox.JsonKeyType;
 using static System.Diagnostics.DebuggerBrowsableState;
 using Browse = System.Diagnostics.DebuggerBrowsableAttribute;
 
@@ -35,34 +36,34 @@ namespace Friflo.Json.Fliox
         public JsonKey (string value)
         {
             if (value == null) {
-                type    = JsonKeyType.Null;
+                type    = NULL;
                 str     = null;
                 lng     = 0;
                 lng2    = 0;
                 return;
             }
             if (long.TryParse(value, out long result)) {
-                type    = JsonKeyType.Long;
+                type    = LONG;
                 str     = null;
                 lng     = result;
                 lng2    = 0;
                 return;
             }
             if (Guid.TryParse(value, out var guid)) {
-                type    = JsonKeyType.Guid;
+                type    = GUID;
                 str     = null;
                 GuidUtils.GuidToLongLong(guid, out lng, out lng2);
                 return;
             }
-            type    = JsonKeyType.String;
+            type    = STRING;
             str     = value;
             lng     = 0;
             lng2    = 0;
         }
         
-        public JsonKey (ref Bytes bytes, ref ValueParser valueParser) {
+        public JsonKey (ref Bytes bytes, ref ValueParser valueParser, in JsonKey oldKey) {
             if (bytes.IsIntegral()) {
-                type    = JsonKeyType.Long;
+                type    = LONG;
                 str     = null;
                 var error = new Bytes();
                 lng     = valueParser.ParseLong(ref bytes, ref error, out bool success);
@@ -72,40 +73,55 @@ namespace Friflo.Json.Fliox
                 return;
             }
             if (bytes.TryParseGuid(out var guid, out string temp)) { // temp not null in Unity. Otherwise null
-                type    = JsonKeyType.Guid;
+                type    = GUID;
                 str     = temp;
                 GuidUtils.GuidToLongLong(guid, out lng, out lng2);
                 return;
             }
-            type    = JsonKeyType.String;
-            str     = temp ?? bytes.AsString();
+            type    = STRING;
+            if (oldKey.str == null) {
+                str     = temp ?? bytes.AsString();
+            } else {
+                int len         = bytes.end - bytes.start;
+                var src         = new ReadOnlySpan<byte>(bytes.buffer, bytes.start, len);
+                var maxCount    = Encoding.UTF8.GetMaxCharCount(len);
+                Span<char> dest = stackalloc char[maxCount];
+                int strLen      = Encoding.UTF8.GetChars(src, dest);
+                var newSpan     = dest.Slice(0, strLen);
+                var oldSpan     = oldKey.str.AsSpan();
+                if (newSpan.SequenceEqual(oldSpan)) {
+                    str = oldKey.str;
+                } else {
+                    str = newSpan.ToString();
+                }
+            }
             lng     = 0;
             lng2    = 0;
         }
 
         public JsonKey (long value) {
-            type    = JsonKeyType.Long;
+            type    = LONG;
             str     = null;
             lng     = value;
             lng2    = 0;
         }
         
         public JsonKey (long? value) {
-            type    = value.HasValue ? JsonKeyType.Long : JsonKeyType.Null;
+            type    = value.HasValue ? LONG : NULL;
             str     = null;
             lng     = value ?? 0;
             lng2    = 0;
         }
         
         public JsonKey (in Guid guid) {
-            type    = JsonKeyType.Guid;
+            type    = GUID;
             str     = null;
             GuidUtils.GuidToLongLong(guid, out lng, out lng2);
         }
         
         public JsonKey (in Guid? guid) {
             var hasValue= guid.HasValue;
-            type        = hasValue ? JsonKeyType.Guid : JsonKeyType.Null;
+            type        = hasValue ? GUID : NULL;
             str         = null; // hasValue ? guid.ToString() : null;
             if (hasValue) {
                 GuidUtils.GuidToLongLong(guid.Value, out lng, out lng2);
@@ -124,7 +140,7 @@ namespace Friflo.Json.Fliox
                 guid        = value.guid;
                 return;
             }
-            type        = JsonKeyType.Null;
+            type        = NULL;
             str         = null;
             lng         = 0;
             guid        = new Guid();
@@ -132,10 +148,10 @@ namespace Friflo.Json.Fliox
         
         public bool IsNull() {
             switch (type) {
-                case JsonKeyType.Long:      return false;
-                case JsonKeyType.String:    return str == null;
-                case JsonKeyType.Guid:      return false;
-                case JsonKeyType.Null:      return true;
+                case LONG:      return false;
+                case STRING:    return str == null;
+                case GUID:      return false;
+                case NULL:      return true;
                 default:
                     throw new InvalidOperationException($"invalid JsonKey: {AsString()}");
             }
@@ -146,10 +162,21 @@ namespace Friflo.Json.Fliox
                 return false;
             
             switch (type) {
-                case JsonKeyType.Long:      return lng  == other.lng;
-                case JsonKeyType.String:    return str  == other.str;
-                case JsonKeyType.Guid:      return lng  == other.lng && lng2 == other.lng2;
-                case JsonKeyType.Null:      return true;
+                case LONG:      return lng  == other.lng;
+                case STRING:    return str  == other.str;
+                case GUID:      return lng  == other.lng && lng2 == other.lng2;
+                case NULL:      return true;
+                default:
+                    throw new InvalidOperationException("Invalid IdType"); 
+            }
+        }
+        
+        public int HashCode() {
+            switch (type) {
+                case LONG:      return lng. GetHashCode();
+                case STRING:    return str. GetHashCode();
+                case GUID:      return lng. GetHashCode() ^ lng2.GetHashCode();
+                case NULL:      return 0;
                 default:
                     throw new InvalidOperationException("Invalid IdType"); 
             }
@@ -166,17 +193,17 @@ namespace Friflo.Json.Fliox
         /// <summary>Calling this method causes string instantiation. To avoid this use its <i>AppendTo</i> methods if possible.</summary> 
         public string AsString() {
             switch (type) {
-                case JsonKeyType.Long:      return str ?? lng. ToString();
-                case JsonKeyType.String:    return str;
-                case JsonKeyType.Guid:      return str ?? Guid.ToString();
-                case JsonKeyType.Null:      return null;
+                case LONG:      return str ?? lng. ToString();
+                case STRING:    return str;
+                case GUID:      return str ?? Guid.ToString();
+                case NULL:      return null;
                 default:
                     throw new InvalidOperationException($"unexpected type in JsonKey.AsString(). type: {type}");
             }
         }
         
         public long AsLong() {
-            if (type == JsonKeyType.Long)
+            if (type == LONG)
                 return lng;
             throw new InvalidOperationException($"cannot return JsonKey as long. {AsString()}");
         }
@@ -184,18 +211,18 @@ namespace Friflo.Json.Fliox
         public Guid AsGuid() => Guid;
         
         public Guid? AsGuidNullable() {
-            return type == JsonKeyType.Guid ? Guid : default; 
+            return type == GUID ? Guid : default; 
         }
         
         public void AppendTo(ref Bytes dest, ref ValueFormat valueFormat) {
             switch (type) {
-                case JsonKeyType.Long:
+                case LONG:
                     valueFormat.AppendLong(ref dest, lng);
                     break;
-                case JsonKeyType.String:
+                case STRING:
                     dest.AppendString(str);
                     break;
-                case JsonKeyType.Guid:
+                case GUID:
                     dest.AppendGuid(Guid);
                     break;
                 default:
@@ -205,13 +232,13 @@ namespace Friflo.Json.Fliox
         
         public void AppendTo(StringBuilder sb) {
             switch (type) {
-                case JsonKeyType.Long:
+                case LONG:
                     sb.Append(lng);
                     break;
-                case JsonKeyType.String:
+                case STRING:
                     sb.Append(str);
                     break;
-                case JsonKeyType.Guid:
+                case GUID:
 #if UNITY_5_3_OR_NEWER
                     var guidStr = Guid.ToString();
                     sb.Append(guidStr);
@@ -230,10 +257,11 @@ namespace Friflo.Json.Fliox
         }
     }
     
+    // ReSharper disable InconsistentNaming
     public enum JsonKeyType {
-        Null    = 0,
-        Long    = 1,
-        String  = 2,
-        Guid    = 3,
+        NULL    = 0,
+        LONG    = 1,
+        STRING  = 2,
+        GUID    = 3,
     }
 }

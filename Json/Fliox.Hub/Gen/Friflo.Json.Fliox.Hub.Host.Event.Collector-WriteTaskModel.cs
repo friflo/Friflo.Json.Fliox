@@ -15,7 +15,7 @@ namespace Gen.Friflo.Json.Fliox.Hub.Host.Event.Collector
             bool success;
             switch (field.genIndex) {
                 case Gen_task: obj.task = reader.ReadJsonValue (field, out success);  return success;
-                case Gen_cont: obj.cont = reader.ReadString    (field, obj.cont, out success);  return success;
+                case Gen_cont: obj.cont = reader.ReadJsonKey   (field, obj.cont, out success);  return success;
                 case Gen_set:  obj.set  = reader.ReadClass     (field, obj.set,  out success);  return success;
             }
             return false;
@@ -23,7 +23,7 @@ namespace Gen.Friflo.Json.Fliox.Hub.Host.Event.Collector
 
         private static void Write(ref WriteTaskModel obj, PropField[] fields, ref Writer writer, ref bool firstMember) {
             writer.WriteJsonValue (fields[Gen_task], obj.task, ref firstMember);
-            writer.WriteString    (fields[Gen_cont], obj.cont, ref firstMember);
+            writer.WriteJsonKey   (fields[Gen_cont], obj.cont, ref firstMember);
             writer.WriteClass     (fields[Gen_set],  obj.set,  ref firstMember);
         }
     }

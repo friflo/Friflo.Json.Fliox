@@ -19,7 +19,7 @@ namespace Friflo.Json.Fliox.Hub.Client
     public sealed class SubscriptionProcessor : IDisposable
     {
         private  readonly   EventContext                eventContext;
-        private  readonly   Dictionary<string, Changes> changes         = new Dictionary<string, Changes>();
+        private  readonly   Dictionary<JsonKey,Changes> changes         = new Dictionary<JsonKey,Changes>(JsonKey.Equality);
         /// <summary> contain only <see cref="Changes"/> where <see cref="Changes.Count"/> > 0 </summary>
         internal readonly   List<Changes>               contextChanges  = new List<Changes>();
         internal readonly   List<Message>               messages        = new List<Message>();
@@ -84,7 +84,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             
             // --- invoke changes handlers
             foreach (var change in contextChanges) {
-                var container = change.Container;
+                var container = change.ContainerKey;
                 client._intern.TryGetSetByName(container, out EntitySet set);
                 set.changeCallback?.InvokeCallback(change, eventContext);
             }
@@ -188,7 +188,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
         
         internal Changes GetChanges (EntitySet entitySet) {
-            if (changes.TryGetValue(entitySet.name, out var change))
+            if (changes.TryGetValue(entitySet.nameKey, out var change))
                 return change;
             object[] constructorParams = { entitySet, objectMapper };
             var keyType     = entitySet.KeyType;
@@ -196,7 +196,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             var genericArgs = new[] { keyType, entityType };
             var instance    = TypeMapperUtils.CreateGenericInstance(typeof(Changes<,>), genericArgs, constructorParams);
             change          = (Changes)instance;
-            changes.Add(entitySet.name, change);
+            changes.Add(entitySet.nameKey, change);
             return change;
         }
     }

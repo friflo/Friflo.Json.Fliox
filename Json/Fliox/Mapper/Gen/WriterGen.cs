@@ -145,15 +145,15 @@ namespace Friflo.Json.Fliox.Mapper.Map
             }
             WriteFieldKey(field, ref firstMember);
             switch (value.type) {
-                case JsonKeyType.Long:
+                case JsonKeyType.LONG:
                     bytes.AppendChar('\"');
                     format.AppendLong(ref bytes, value.lng);
                     bytes.AppendChar('\"');
                     break;
-                case JsonKeyType.String:
+                case JsonKeyType.STRING:
                     WriteString(value.str);
                     break;
-                case JsonKeyType.Guid:
+                case JsonKeyType.GUID:
                     WriteGuid(value.Guid);
                     break;
             }

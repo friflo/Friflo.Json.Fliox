@@ -21,7 +21,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     {
         /// <summary>container name</summary>
         [Serialize                            ("cont")]
-        [Required]  public  string              container;
+        [Required]  public  JsonKey             container;
         [Browse(Never)]
         [Ignore]    public  EntityContainer     entityContainer;
         [Ignore]    private TaskErrorResult     error;
@@ -42,7 +42,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         
         private TaskErrorResult PrepareMerge(EntityDatabase database, SharedEnv env)
         {
-            if (container == null) {
+            if (container.IsNull()) {
                 return MissingContainer();
             }
             if (patches == null) {

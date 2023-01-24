@@ -16,7 +16,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs
     public class TestDatabase : EntityDatabase
     {
         private  readonly   EntityDatabase                      local;
-        internal readonly   Dictionary<string, TestContainer>   testContainers  = new Dictionary<string, TestContainer>();
+        internal readonly   Dictionary<JsonKey, TestContainer>  testContainers  = new Dictionary<JsonKey, TestContainer>(JsonKey.Equality);
         
         public   override   string                              StorageType => "TestDatabase";
 
@@ -26,12 +26,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs
             this.local = local;
         }
 
-        public override EntityContainer CreateContainer(string name, EntityDatabase database) {
+        public override EntityContainer CreateContainer(in JsonKey name, EntityDatabase database) {
             if (TryGetContainer(name, out EntityContainer container)) {
                 return container;
             }
             EntityContainer localContainer = local.GetOrCreateContainer(name);
-            var testContainer = new TestContainer(name, database, localContainer);
+            var testContainer = new TestContainer(name.AsString(), database, localContainer);
             testContainers.Add(name, testContainer);
             return testContainer;
         }
@@ -81,7 +81,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs
             
             foreach (var pair in testDatabase.testContainers) {
                 TestContainer testContainer = pair.Value;
-                var result = response.success.FindContainer(testContainer.name);
+                var result = response.success.FindContainer(testContainer.nameKey);
                 if (result == null)
                     continue;
                 var entities = result.entityMap;
@@ -96,13 +96,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs
         }
         
         public TestContainer GetTestContainer(string container) {
-            return (TestContainer) testDatabase.GetOrCreateContainer(container);
+            return (TestContainer) testDatabase.GetOrCreateContainer(new JsonKey(container));
         }
     }
     
     public abstract class SimValue
     {
-        internal abstract EntityValue ToEntityValue(string container, JsonKey key);
+        internal abstract EntityValue ToEntityValue(in JsonKey container, JsonKey key);
     }
     
     public class SimJson : SimValue
@@ -111,12 +111,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs
         
         internal SimJson(string value) { this.value = value; }
         
-        internal override EntityValue ToEntityValue(string container, JsonKey key) { return new EntityValue(key, new JsonValue(value)); }
+        internal override EntityValue ToEntityValue(in JsonKey container, JsonKey key) { return new EntityValue(key, new JsonValue(value)); }
     }
     
     public class SimReadError : SimValue
     {
-        internal override EntityValue ToEntityValue(string container, JsonKey key) {
+        internal override EntityValue ToEntityValue(in JsonKey container, JsonKey key) {
             var error = new EntityError(EntityErrorType.ReadError, container, key, "simulated read entity error");
             return new EntityValue(key, error);
         }
@@ -125,7 +125,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs
     public class SimWriteError
     {
         internal EntityError ToEntityError(string container, JsonKey key) {
-            return new EntityError(EntityErrorType.WriteError, container, key, "simulated write entity error");
+            return new EntityError(EntityErrorType.WriteError, new JsonKey(container), key, "simulated write entity error");
         }
     }
     
@@ -197,7 +197,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs
             var databaseError = SimulateReadErrors(result.entities);
             if (databaseError != null)
                 result.Error = databaseError;
-            result.ValidateEntities(local.name, command.keyName, syncContext);
+            result.ValidateEntities(local.nameKey, command.keyName, syncContext);
             return result;
         }
         
@@ -227,7 +227,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs
                 var id      = entity.key.AsString();
                 if (!readEntityErrors.TryGetValue(id, out var value))
                     continue;
-                entities[n] = value.ToEntityValue(name, entity.key);
+                entities[n] = value.ToEntityValue(nameKey, entity.key);
             }
             for (int n = 0; n < entities.Length; n++) {
                 var entity  = entities[n];

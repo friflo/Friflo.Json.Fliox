@@ -14,16 +14,16 @@ namespace Friflo.Json.Fliox.Mapper
                 return dif;
             
             switch (x.type) {
-                case JsonKeyType.Long:
+                case JsonKeyType.LONG:
                     long longDif = x.lng - y.lng;
                     if (longDif < 0)
                         return -1;
                     if (longDif > 0)
                         return +1;
                     return 0;
-                case JsonKeyType.String:
+                case JsonKeyType.STRING:
                     return string.Compare(x.str, y.str, StringComparison.InvariantCulture);
-                case JsonKeyType.Guid:
+                case JsonKeyType.GUID:
                     return x.Guid.CompareTo(y.Guid);
                 default:
                     throw new InvalidOperationException("Invalid IdType"); 
@@ -34,26 +34,11 @@ namespace Friflo.Json.Fliox.Mapper
     public sealed class JsonKeyEqualityComparer : IEqualityComparer<JsonKey>
     {
         public bool Equals(JsonKey x, JsonKey y) {
-            if (x.type != y.type)
-                return false;
-            
-            switch (x.type) {
-                case JsonKeyType.Long:      return x.lng  == y.lng;
-                case JsonKeyType.String:    return x.str  == y.str;
-                case JsonKeyType.Guid:      return x.lng  == y.lng && x.lng2 == y.lng2;
-                default:
-                    throw new InvalidOperationException("Invalid IdType"); 
-            }
+            return x.IsEqual(y);
         }
 
         public int GetHashCode(JsonKey jsonKey) {
-            switch (jsonKey.type) {
-                case JsonKeyType.Long:      return jsonKey.lng. GetHashCode();
-                case JsonKeyType.String:    return jsonKey.str. GetHashCode();
-                case JsonKeyType.Guid:      return jsonKey.lng. GetHashCode() ^ jsonKey.lng2.GetHashCode();
-                default:
-                    throw new InvalidOperationException("Invalid IdType"); 
-            }
+            return jsonKey.HashCode();
         }
     }
 }

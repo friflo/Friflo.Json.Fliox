@@ -90,7 +90,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
                     error = InvalidTaskError("missing reference selector");
                     return false;
                 }
-                if (reference.container == null) {
+                if (reference.container.IsNull()) {
                     error =  InvalidTaskError("missing reference container");
                     return false;
                 }

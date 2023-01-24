@@ -13,15 +13,15 @@ namespace Gen.Friflo.Json.Fliox.Hub.DB.Monitor
         private static bool ReadField (ref HostHits obj, PropField field, ref Reader reader) {
             bool success;
             switch (field.genIndex) {
-                case Gen_id:     obj.id     = reader.ReadJsonKey (field, out success);  return success;
-                case Gen_counts: obj.counts = reader.ReadStruct  (field, obj.counts, out success);  return success;
+                case Gen_id:     obj.id     = reader.ReadJsonKey (field, obj.id,     out success);  return success;
+                case Gen_counts: obj.counts = reader.ReadStruct (field, obj.counts, out success);  return success;
             }
             return false;
         }
 
         private static void Write(ref HostHits obj, PropField[] fields, ref Writer writer, ref bool firstMember) {
             writer.WriteJsonKey (fields[Gen_id],     obj.id,     ref firstMember);
-            writer.WriteStruct  (fields[Gen_counts], obj.counts, ref firstMember);
+            writer.WriteStruct (fields[Gen_counts], obj.counts, ref firstMember);
         }
     }
 }

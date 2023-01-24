@@ -8,7 +8,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
 {
     internal sealed class SyncStore
     {
-        internal    Dictionary<string,SyncSet>  SyncSets { get; private set; }
+        internal    Dictionary<JsonKey,SyncSet> SyncSets { get; private set; }
         
         internal readonly   List<SyncFunction>  functions           = new List<SyncFunction>();
         

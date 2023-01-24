@@ -237,7 +237,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         }
         
         /// <summary>method is thread safe </summary>
-        public void SendRawSyncEvent(in SmallString database, in SmallString container, in RawSyncEvent syncEvent, ObjectWriter writer) {
+        public void SendRawSyncEvent(in SmallString database, in JsonKey container, in RawSyncEvent syncEvent, ObjectWriter writer) {
             ClientDbSubs[] databaseSubsArray;
             lock (intern.monitor) {
                 if (!intern.databaseSubsMap.map.TryGetValue(database, out databaseSubsArray)) {
@@ -261,7 +261,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         private static readonly     JsonValue   Ev = new JsonValue("\"ev\"");
         
         /// <summary>method is thread safe </summary>
-        public void SendRawEventMessage(in SmallString database, in SmallString container, RawEventMessage eventMessage, ObjectWriter writer) {
+        public void SendRawEventMessage(in SmallString database, in JsonKey container, RawEventMessage eventMessage, ObjectWriter writer) {
             ClientDbSubs[] databaseSubsArray;
             lock (intern.monitor) {
                 if (!intern.databaseSubsMap.map.TryGetValue(database, out databaseSubsArray)) {

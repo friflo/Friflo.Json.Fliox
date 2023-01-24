@@ -59,7 +59,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         
         /// <summary> map of of containers identified by their container name </summary>
         [DebuggerBrowsable(Never)]
-        private  readonly   ConcurrentDictionary<string, EntityContainer>   containers;
+        private  readonly   ConcurrentDictionary<JsonKey, EntityContainer>  containers;
         // ReSharper disable once UnusedMember.Local - expose Dictionary as list in Debugger
         private             ICollection<EntityContainer>                    Containers => containers.Values;
         
@@ -93,7 +93,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// pass null by implementations.
         /// </summary>
         protected EntityDatabase(string dbName, DatabaseService service, DbOpt opt){
-            containers          = new ConcurrentDictionary<string, EntityContainer>();
+            containers          = new ConcurrentDictionary<JsonKey, EntityContainer>(JsonKey.Equality);
             if (dbName == null) throw new ArgumentNullException(nameof(dbName));
             name                = new SmallString(dbName); 
             customContainerName = (opt ?? DbOpt.Default).customContainerName;
@@ -115,13 +115,13 @@ namespace Friflo.Json.Fliox.Hub.Host
         public   virtual    bool                IsSyncTask(SyncRequestTask task) => false;
     
         /// <summary>Create a container with the given <paramref name="name"/> in the database</summary>
-        public abstract EntityContainer CreateContainer     (string name, EntityDatabase database);
+        public abstract EntityContainer CreateContainer     (in JsonKey name, EntityDatabase database);
         
         internal void AddContainer(EntityContainer container) {
-            containers.TryAdd(container.name, container);
+            containers.TryAdd(container.nameKey, container);
         }
         
-        protected bool TryGetContainer(string name, out EntityContainer container) {
+        protected bool TryGetContainer(in JsonKey name, out EntityContainer container) {
             return containers.TryGetValue(name, out container);
         }
 
@@ -129,7 +129,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// return the <see cref="EntityContainer"/> with the given <paramref name="name"/>.
         /// Create a new <see cref="EntityContainer"/> if not already done.
         /// </summary>
-        public EntityContainer GetOrCreateContainer(string name)
+        public EntityContainer GetOrCreateContainer(in JsonKey name)
         {
             if (containers.TryGetValue(name, out EntityContainer container))
                 return container;
@@ -140,8 +140,8 @@ namespace Friflo.Json.Fliox.Hub.Host
         protected virtual Task<string[]> GetContainers() {
             var containerList = new string[containers.Count];
             int n = 0;
-            foreach (var container in containers) {
-                containerList[n++] = container.Key;
+            foreach (var pair in containers) {
+                containerList[n++] = pair.Value.name;
             }
             return Task.FromResult(containerList);
         }
@@ -209,11 +209,12 @@ namespace Friflo.Json.Fliox.Hub.Host
         
         private async Task SeedContainer(EntityDatabase src, string container, string keyName, SyncContext syncContext)
         {
-            var srcContainer    = src.GetOrCreateContainer(container);
-            var dstContainer    = GetOrCreateContainer(container);
+            var containerName   = new JsonKey(container);
+            var srcContainer    = src.GetOrCreateContainer(containerName);
+            var dstContainer    = GetOrCreateContainer(containerName);
             var filterContext   = new OperationContext();
             filterContext.Init(Operation.FilterTrue, out _);
-            var query           = new QueryEntities { container = container, filterContext = filterContext, keyName = keyName };
+            var query           = new QueryEntities { container = containerName, filterContext = filterContext, keyName = keyName };
             var queryResult     = await srcContainer.QueryEntitiesAsync(query, syncContext).ConfigureAwait(false);
             
             var entities        = new List<JsonEntity>(queryResult.entities.Length);
@@ -221,7 +222,7 @@ namespace Friflo.Json.Fliox.Hub.Host
                 entities.Add(new JsonEntity(entity.Json));
             }
             EntityUtils.GetKeysFromEntities (keyName, entities, syncContext.sharedEnv, out _);
-            var upsert          = new UpsertEntities { container = container, entities = entities };
+            var upsert          = new UpsertEntities { container = containerName, entities = entities };
             await dstContainer.UpsertEntitiesAsync(upsert, syncContext).ConfigureAwait(false);
         }
         #endregion

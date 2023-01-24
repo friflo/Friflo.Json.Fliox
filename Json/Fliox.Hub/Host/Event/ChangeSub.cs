@@ -3,14 +3,13 @@
 
 using System.Collections.Generic;
 using System.Text;
-using Friflo.Json.Burst.Utils;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Transform;
 
 namespace Friflo.Json.Fliox.Hub.Host.Event
 {
     internal readonly struct ChangeSub {
-        internal    readonly    SmallString     container;  // never null
+        internal    readonly    JsonKey         container;  // never null
         internal    readonly    EntityChange    changes;    // flags
         internal    readonly    JsonFilter      jsonFilter;
         /// <summary>normalized string representation of <see cref="jsonFilter"/> used for comparison</summary>
@@ -26,7 +25,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         
         internal void AppendTo(StringBuilder sb) {
             sb.Append('\'');
-            sb.Append(container.value);
+            container.AppendTo(sb);
             sb.Append('\'');
             sb.Append(": ");
             sb.Append(changes);
@@ -36,24 +35,24 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             }
         } 
 
-        internal ChangeSub(string container, List<EntityChange> changes, JsonFilter jsonFilter) {
-            this.container  = new SmallString(container);
+        internal ChangeSub(in JsonKey container, List<EntityChange> changes, JsonFilter jsonFilter) {
+            this.container  = container;
             this.changes    = EntityChangeUtils.ListToFlags(changes);
             this.jsonFilter = jsonFilter;
             filter          = jsonFilter?.Linq;
         }
         
         private bool IsEqual(in ChangeSub other) {
-            return container.value == other.container.value &&
-                   changes         == other.changes         &&
+            return container.IsEqual(other.container) &&
+                   changes         == other.changes   &&
                    filter          == other.filter;
         }
         
         internal int HashCode() {
-            return container.value.GetHashCode() ^ (int)changes ^ (filter?.GetHashCode() ?? 0);
+            return container.HashCode() ^ (int)changes ^ (filter?.GetHashCode() ?? 0);
         }
         
-        internal static bool IsEqual(Dictionary<string, ChangeSub> x, Dictionary<string, ChangeSub> y) {
+        internal static bool IsEqual(Dictionary<JsonKey, ChangeSub> x, Dictionary<JsonKey, ChangeSub> y) {
             if (x.Count != y.Count) {
                 return false;
             }

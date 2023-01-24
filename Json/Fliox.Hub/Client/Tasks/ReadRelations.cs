@@ -18,7 +18,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         [DebuggerBrowsable(Never)]
         internal            TaskState   state;
         internal abstract   string      Selector    { get; }
-        internal abstract   string      Container   { get; }
+        internal abstract   JsonKey     Container   { get; }
         internal abstract   string      KeyName     { get; }
         internal abstract   bool        IsIntKey    { get; }
         internal abstract   SubRelations SubRelations     { get; }
@@ -88,14 +88,14 @@ namespace Friflo.Json.Fliox.Hub.Client
         public    override  string      Details => $"{parent.GetLabel()} -> {Selector}";
             
         internal  override  string      Selector  { get; }
-        internal  override  string      Container { get; }
+        internal  override  JsonKey     Container { get; }
         internal  override  string      KeyName   { get; }
         internal  override  bool        IsIntKey  { get; }
         
         internal  override  SubRelations SubRelations => relations.subRelations;
 
 
-        internal ReadRelations(SyncFunction parent, string selector, string container, string keyName, bool isIntKey, FlioxClient store)
+        internal ReadRelations(SyncFunction parent, string selector, in JsonKey container, string keyName, bool isIntKey, FlioxClient store)
             : base(store)
         {
             this.parent     = parent;

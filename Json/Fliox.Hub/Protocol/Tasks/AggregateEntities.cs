@@ -19,7 +19,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     {
         /// <summary>container name</summary>
         [Serialize                                ("cont")]
-        [Required]  public      string              container;
+        [Required]  public      JsonKey             container;
         /// <summary>aggregation type - e.g. count </summary>
                     public      AggregateType       type;
         /// <summary>aggregation filter as JSON tree. <br/>
@@ -44,7 +44,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         }
 
         public override async Task<SyncTaskResult> ExecuteAsync(EntityDatabase database, SyncResponse response, SyncContext syncContext) {
-            if (container == null)
+            if (container.IsNull())
                 return MissingContainer();
             if (!QueryEntities.ValidateFilter (filterTree, filter, syncContext, ref filterLambda, out var error))
                 return error;
@@ -70,7 +70,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     {
         /// <summary>container name - not utilized by Protocol</summary>
         [Serialize                            ("cont")]
-        [DebugInfo]     public  string          container;
+        [DebugInfo]     public  JsonKey         container;
                         public  double?         value;      // set if not using groupBy
         [Ignore]        public  CommandError    Error { get; set; }
 

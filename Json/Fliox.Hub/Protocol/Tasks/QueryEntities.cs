@@ -20,7 +20,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     {
         /// <summary>container name</summary>
         [Serialize                            ("cont")]
-        [Required]  public  string              container;
+        [Required]  public  JsonKey             container;
         /// <summary>name of the primary key property of the returned entities</summary>
                     public  string              keyName;
                     public  bool?               isIntKey;
@@ -102,7 +102,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         }
         
         public override async Task<SyncTaskResult> ExecuteAsync(EntityDatabase database, SyncResponse response, SyncContext syncContext) {
-            if (container == null)
+            if (container.IsNull())
                 return MissingContainer();
             if (!ValidReferences(references, out var error))
                 return error;
@@ -151,7 +151,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     {
         /// <summary>container name - not utilized by Protocol</summary>
         [Serialize                                ("cont")]
-        [DebugInfo] public  string                  container;
+        [DebugInfo] public  JsonKey                 container;
                     public  string                  cursor;
         /// <summary>number of <see cref="ids"/> - not utilized by Protocol</summary>
         [DebugInfo] public  int?                    count;

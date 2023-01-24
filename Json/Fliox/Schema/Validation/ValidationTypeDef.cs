@@ -208,7 +208,7 @@ namespace Friflo.Json.Fliox.Schema.Validation
                         sb.Append(", ");
                     }
                     var fieldName = requiredFields[n].fieldName;
-                    sb.Append(fieldName);
+                    fieldName.AppendTo(sb);
                 }
             }
             sb.Append(']');

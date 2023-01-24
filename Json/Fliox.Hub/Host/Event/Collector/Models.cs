@@ -10,14 +10,14 @@ namespace Friflo.Json.Fliox.Hub.Host.Event.Collector
     public sealed class WriteTaskModel
     {
         public          JsonValue       task;
-        public          string          cont;
+        public          JsonKey         cont;
         public          List<JsonValue> set;
 
         public override string          ToString() => $"'{cont}' {task} count: {set.Count}";
 
-        internal void Set(in JsonValue taskType, in SmallString container, List<JsonValue> entities) {
+        internal void Set(in JsonValue taskType, in JsonKey container, List<JsonValue> entities) {
             task    = taskType;
-            cont    = container.value;
+            cont    = container;
             set     = entities;
         }
     }
@@ -25,14 +25,14 @@ namespace Friflo.Json.Fliox.Hub.Host.Event.Collector
     public sealed class DeleteTaskModel
     {
         public          JsonValue       task;
-        public          string          cont;
+        public          JsonKey         cont;
         public          List<JsonKey>   ids;
         
         public override string          ToString() => $"'{cont}' {task} count: {ids.Count}";
         
-        internal void Set(in JsonValue taskType, in SmallString container, List<JsonKey> keys) {
+        internal void Set(in JsonValue taskType, in JsonKey container, List<JsonKey> keys) {
             task    = taskType;
-            cont    = container.value;
+            cont    = container;
             ids     = keys;
         }
     }

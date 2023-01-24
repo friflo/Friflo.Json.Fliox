@@ -270,7 +270,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             // var relation = set.intern.store._intern.GetSetByType(typeof(TRef));
             var keyName         = relation.GetKeyName();
             var isIntKey        = relation.IsIntKey();
-            var readRelation    = new ReadRelation<TRef>(this, path, relation.name, keyName, isIntKey, set.intern.store);
+            var readRelation    = new ReadRelation<TRef>(this, path, relation.nameKey, keyName, isIntKey, set.intern.store);
             relations.subRelations.AddReadRelations(path, readRelation);
             set.intern.store.AddFunction(readRelation);
             return readRelation;

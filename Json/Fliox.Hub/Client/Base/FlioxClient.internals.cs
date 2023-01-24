@@ -131,7 +131,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             _intern.syncStore.functions.Add(task);
         }
         
-        internal EntitySet GetEntitySet(string name) {
+        internal EntitySet GetEntitySet(in JsonKey name) {
             if (_intern.TryGetSetByName(name, out var entitySet))
                 return entitySet;
             throw new InvalidOperationException($"unknown EntitySet. name: {name}");
@@ -207,7 +207,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             syncRequest.eventAck    = _intern.lastEventSeq;
         }
 
-        private static void CopyEntityErrorsToMap(List<EntityError> errors, string container, ref IDictionary<JsonKey, EntityError> errorMap) {
+        private static void CopyEntityErrorsToMap(List<EntityError> errors, in JsonKey container, ref IDictionary<JsonKey, EntityError> errorMap) {
             foreach (var error in errors) {
                 // error .container is not serialized as it is redundant data.
                 // Infer its value from containing error List
@@ -221,7 +221,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             }
         }
 
-        private static readonly IDictionary<string, SyncSet> EmptySynSet = new EmptyDictionary<string, SyncSet>();
+        private static readonly IDictionary<JsonKey, SyncSet> EmptySynSet = new EmptyDictionary<JsonKey, SyncSet>();
 
         private static void CopyEntityErrors(List<SyncRequestTask> tasks, List<SyncTaskResult> responseTasks, SyncStore syncStore) {
             var syncSets = syncStore.SyncSets ?? EmptySynSet;
@@ -276,8 +276,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             }
             var processor = _intern.EntityProcessor();
             foreach (var container in containers) {
-                string name         = container.container;
-                if (!_intern.TryGetSetByName(name, out EntitySet set)) {
+                if (!_intern.TryGetSetByName(container.container, out EntitySet set)) {
                     continue;
                 }
                 var keyName         = set.GetKeyName();
@@ -458,13 +457,13 @@ namespace Friflo.Json.Fliox.Hub.Client
                 case TaskType.read:
                     var readList =          (ReadEntities)      task;
                     syncSet = syncSets[readList.container];
-                    var entities = containerResults?.Find(c => c.container == readList.container);
+                    var entities = containerResults?.Find(c => c.container.IsEqual(readList.container));
                     syncSet.ReadEntitiesResult(readList, result, entities);
                     break;
                 case TaskType.query:
                     var query =             (QueryEntities)     task;
                     syncSet = syncSets[query.container];
-                    var queryEntities = containerResults?.Find(c => c.container == query.container);
+                    var queryEntities = containerResults?.Find(c => c.container.IsEqual(query.container));
                     syncSet.QueryEntitiesResult(query, result, queryEntities);
                     break;
                 case TaskType.closeCursors:

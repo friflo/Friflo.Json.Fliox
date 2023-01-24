@@ -16,7 +16,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     /// </summary>
     public sealed class ReserveKeys  : SyncRequestTask {
         [Serialize                        ("cont")]
-        [Required]  public  string          container;
+        [Required]  public  JsonKey         container;
         [Required]  public  int             count;
         
         public   override   TaskType        TaskType => TaskType.reserveKeys;

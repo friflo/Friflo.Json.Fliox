@@ -35,7 +35,8 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// <summary> number of changes per mutation type: creates, upserts, deletes and patches </summary>
         public                                          ChangeInfo          ChangeInfo  => changeInfo;
         /// <summary> name of the container the changes are referring to </summary>
-        public    abstract                              string              Container   { get; }
+        public    abstract                              string              Container       { get; }
+        public    abstract                              JsonKey             ContainerKey    { get; }
         /// <summary> raw JSON values of created container entities </summary>
         public                                          List<JsonEntity>    RawCreates  => rawCreates;
         /// <summary> raw JSON values of upserted container entities </summary>
@@ -81,6 +82,7 @@ namespace Friflo.Json.Fliox.Hub.Client
 
         public    override  string              ToString()      => FormatToString();       
         public    override  string              Container       { get; }
+        public    override  JsonKey             ContainerKey    { get; }
         
         [DebuggerBrowsable(Never)] private          List<T>         creates;
         [DebuggerBrowsable(Never)] private          List<T>         upserts;
@@ -94,6 +96,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         internal Changes(EntitySet<TKey, T> entitySet, ObjectMapper mapper) {
             keyName         = entitySet.GetKeyName();
             Container       = entitySet.name;
+            ContainerKey    = entitySet.nameKey;
             objectMapper    = mapper;
         }
         

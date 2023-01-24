@@ -16,7 +16,7 @@ namespace Gen.Friflo.Json.Fliox.Hub.Protocol.Tasks
         private static bool ReadField (ref QueryEntitiesResult obj, PropField field, ref Reader reader) {
             bool success;
             switch (field.genIndex) {
-                case Gen_container:  obj.container  = reader.ReadString    (field, obj.container,  out success);  return success;
+                case Gen_container:  obj.container  = reader.ReadJsonKey   (field, obj.container,  out success);  return success;
                 case Gen_cursor:     obj.cursor     = reader.ReadString    (field, obj.cursor,     out success);  return success;
                 case Gen_count:      obj.count      = reader.ReadInt32Null (field, out success);  return success;
                 case Gen_ids:        obj.ids        = reader.ReadClass     (field, obj.ids,        out success);  return success;
@@ -26,7 +26,7 @@ namespace Gen.Friflo.Json.Fliox.Hub.Protocol.Tasks
         }
 
         private static void Write(ref QueryEntitiesResult obj, PropField[] fields, ref Writer writer, ref bool firstMember) {
-            writer.WriteString    (fields[Gen_container],  obj.container,  ref firstMember);
+            writer.WriteJsonKey   (fields[Gen_container],  obj.container,  ref firstMember);
             writer.WriteString    (fields[Gen_cursor],     obj.cursor,     ref firstMember);
             writer.WriteInt32Null (fields[Gen_count],      obj.count,      ref firstMember);
             writer.WriteClass     (fields[Gen_ids],        obj.ids,        ref firstMember);

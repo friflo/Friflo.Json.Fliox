@@ -14,17 +14,17 @@ namespace Gen.Friflo.Json.Fliox.Hub.Protocol.Models
         private static bool ReadField (ref EntityError obj, PropField field, ref Reader reader) {
             bool success;
             switch (field.genIndex) {
-                case Gen_id:      obj.id      = reader.ReadJsonKey (field, out success);  return success;
-                case Gen_type:    obj.type    = reader.ReadEnum    (field, obj.type,    out success);  return success;
-                case Gen_message: obj.message = reader.ReadString  (field, obj.message, out success);  return success;
+                case Gen_id:      obj.id      = reader.ReadJsonKey (field, obj.id,      out success);  return success;
+                case Gen_type:    obj.type    = reader.ReadEnum (field, obj.type,    out success);  return success;
+                case Gen_message: obj.message = reader.ReadString (field, obj.message, out success);  return success;
             }
             return false;
         }
 
         private static void Write(ref EntityError obj, PropField[] fields, ref Writer writer, ref bool firstMember) {
             writer.WriteJsonKey (fields[Gen_id],      obj.id,      ref firstMember);
-            writer.WriteEnum    (fields[Gen_type],    obj.type,    ref firstMember);
-            writer.WriteString  (fields[Gen_message], obj.message, ref firstMember);
+            writer.WriteEnum (fields[Gen_type],    obj.type,    ref firstMember);
+            writer.WriteString (fields[Gen_message], obj.message, ref firstMember);
         }
     }
 }

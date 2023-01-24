@@ -16,7 +16,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs
     public class WriteModifierHub : FlioxHub
     {
         private readonly    FlioxHub                            hub;
-        private readonly    Dictionary<string, WriteModifiers>  writeModifiers  = new Dictionary<string, WriteModifiers>();
+        private readonly    Dictionary<JsonKey, WriteModifiers> writeModifiers  = new Dictionary<JsonKey, WriteModifiers>(JsonKey.Equality);
         private readonly    EntityProcessor                     processor       = new EntityProcessor();
         
         public WriteModifierHub(FlioxHub hub) : base(hub.database, hub.sharedEnv) {
@@ -52,7 +52,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs
             return base.InitSyncRequest(syncRequest);
         }
 
-        public WriteModifiers GetWriteModifiers(string container) {
+        public WriteModifiers GetWriteModifiers(in JsonKey container) {
             if (!writeModifiers.TryGetValue(container, out var writeModifier)) {
                 writeModifier = new WriteModifiers(processor);
                 writeModifiers.Add(container, writeModifier);
