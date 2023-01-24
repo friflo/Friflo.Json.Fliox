@@ -36,7 +36,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
                     writer.bytes.AppendChar('\"');
                     break;
                 case JsonKeyType.STRING:
-                    writer.WriteString(value.str);
+                    writer.WriteJsonKey(value);
                     break;
                 case JsonKeyType.GUID:
                     writer.WriteGuid(value.Guid);

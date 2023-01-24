@@ -22,7 +22,7 @@ namespace Friflo.Json.Fliox.Mapper
                         return +1;
                     return 0;
                 case JsonKeyType.STRING:
-                    return string.Compare(x.str, y.str, StringComparison.InvariantCulture);
+                    return x.StringCompare(y);
                 case JsonKeyType.GUID:
                     return x.Guid.CompareTo(y.Guid);
                 default:

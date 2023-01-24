@@ -15,16 +15,16 @@ namespace Friflo.Json.Fliox
 {
     public readonly struct JsonKey
     {
-        internal readonly       JsonKeyType type;
-        internal readonly       string      str;
-        internal readonly       long        lng;  // long  |  lower  64 bits for Guid  | lower  8 bytes for UTF-8 string
+        internal    readonly    JsonKeyType type;
+        internal    readonly    string      str;  // TODO make private
+        internal    readonly    long        lng;  // long  |  lower  64 bits for Guid  | lower  8 bytes for UTF-8 string
         [Browse(Never)]
-        internal readonly       long        lng2; //          higher 64 bits for Guid  | higher 7 bytes for UTF-8 string + 1 byte length
+        private     readonly    long        lng2; //          higher 64 bits for Guid  | higher 7 bytes for UTF-8 string + 1 byte length
         
         public                  JsonKeyType Type    => type;
         internal                Guid        Guid    => GuidUtils.LongLongToGuid(lng, lng2);
 
-        public   override       string      ToString()  { var value = AsString(); return value ?? "null"; }
+        public      override    string      ToString()  { var value = AsString(); return value ?? "null"; }
 
         public static readonly  JsonKeyComparer         Comparer = new JsonKeyComparer();
         public static readonly  JsonKeyEqualityComparer Equality = new JsonKeyEqualityComparer();
@@ -155,6 +155,10 @@ namespace Friflo.Json.Fliox
                 default:
                     throw new InvalidOperationException($"invalid JsonKey: {AsString()}");
             }
+        }
+        
+        public int StringCompare(in JsonKey other) {
+            return string.Compare(str, other.str, StringComparison.InvariantCulture);
         }
         
         public bool IsEqual(in JsonKey other) {
