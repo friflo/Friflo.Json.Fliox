@@ -86,6 +86,21 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                 var right = new JsonKey("b");
                 var result = JsonKey.StringCompare(left, right);
                 AreEqual(-1, result); 
+            } {
+                var left  = new JsonKey("a");
+                var right = new JsonKey("bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb");
+                var result = JsonKey.StringCompare(left, right);
+                AreEqual(-1, result); 
+            } {
+                var left  = new JsonKey("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+                var right = new JsonKey("b");
+                var result = JsonKey.StringCompare(left, right);
+                AreEqual(-1, result); 
+            } {
+                var left  = new JsonKey("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+                var right = new JsonKey("bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb");
+                var result = JsonKey.StringCompare(left, right);
+                AreEqual(-1, result); 
             }
         }
     }
