@@ -20,7 +20,7 @@ namespace Friflo.Json.Fliox
         internal    readonly    string      str;  // TODO make private
         internal    readonly    long        lng;  // long  |  lower  64 bits for Guid  | lower  8 bytes for UTF-8 string
         [Browse(Never)]
-        private     readonly    long        lng2; //          higher 64 bits for Guid  | higher 7 bytes for UTF-8 string + 1 byte length
+        internal    readonly    long        lng2; //          higher 64 bits for Guid  | higher 7 bytes for UTF-8 string + 1 byte length
         
         public                  JsonKeyType Type    => type;
         internal                Guid        Guid    => GuidUtils.LongLongToGuid(lng, lng2);
@@ -175,7 +175,7 @@ namespace Friflo.Json.Fliox
                 ReadOnlySpan<char> rightReadOnly   = rightChars.Slice(0, rightCount);
                 return leftReadOnly.CompareTo(rightReadOnly, InvariantCulture);
             }
-            // case: str == null
+            // case: left.str == null
             if (right.str != null) {
                 Span<char> leftChars    = stackalloc char[MaxCharCount];
                 var leftCount           = ShortStringUtils.GetChars(left.lng, left.lng2, leftChars);
@@ -202,7 +202,11 @@ namespace Friflo.Json.Fliox
             
             switch (type) {
                 case LONG:      return lng  == other.lng;
-                case STRING:    return str  == other.str;
+                case STRING:
+                    if (str == null && other.str == null) {
+                        return lng == other.lng && lng2 == other.lng2;
+                    }
+                    return str  == other.str;
                 case GUID:      return lng  == other.lng && lng2 == other.lng2;
                 case NULL:      return true;
                 default:
@@ -213,7 +217,7 @@ namespace Friflo.Json.Fliox
         public int HashCode() {
             switch (type) {
                 case LONG:      return lng. GetHashCode();
-                case STRING:    return str. GetHashCode();
+                case STRING:    return str?.GetHashCode() ?? lng. GetHashCode() ^ lng2.GetHashCode();
                 case GUID:      return lng. GetHashCode() ^ lng2.GetHashCode();
                 case NULL:      return 0;
                 default:
@@ -233,7 +237,14 @@ namespace Friflo.Json.Fliox
         public string AsString() {
             switch (type) {
                 case LONG:      return str ?? lng. ToString();
-                case STRING:    return str;
+                case STRING:
+                    if (str != null) {
+                        return str;
+                    }
+                    Span<char> chars    = stackalloc char[MaxCharCount];
+                    var length          = ShortStringUtils.GetChars(lng, lng2, chars);
+                    var readOnlySpan    = chars.Slice(0, length);
+                    return new string(readOnlySpan);
                 case GUID:      return str ?? Guid.ToString();
                 case NULL:      return null;
                 default:

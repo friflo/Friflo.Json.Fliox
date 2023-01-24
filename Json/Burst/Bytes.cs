@@ -455,6 +455,24 @@ namespace Friflo.Json.Burst
                 buf[pos++] = (byte) str[ n ];
             end += len;
         }
+        
+        public unsafe void AppendShortString(long lng, long lng2)
+        {
+            int len = (int)(lng2 >> 56); // shift 7 bytes right
+            if (end + len > buffer.Length) {
+                DoubleSize(end + len);
+            }
+            Span<byte> bytes    = stackalloc byte[16];
+            fixed (byte*  bytesPtr  = &bytes[0]) {
+                var bytesLongPtr    = (long*)bytesPtr;
+                bytesLongPtr[0]     = lng;
+                bytesLongPtr[1]     = lng2;
+            }
+            var source  = bytes.Slice(0, len);
+            var target  = new Span<byte>(buffer, end, buffer.Length - end);
+            source.CopyTo(target);
+            end += len;
+        }
 
         public void Set (string val)
         {

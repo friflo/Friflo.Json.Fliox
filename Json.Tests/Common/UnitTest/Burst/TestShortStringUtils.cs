@@ -103,5 +103,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                 AreEqual(-1, result); 
             }
         }
+        
+        [Test]
+        public static void TestShortStringUtils_Append() {
+            var target = new Bytes(10);
+            ShortStringUtils.StringToLongLong("abc", out _, out long lng, out long lng2);
+            target.AppendShortString(lng, lng2);
+            AreEqual("abc", target.AsString());
+        }
     }
 }
