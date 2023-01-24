@@ -6,6 +6,14 @@ using System.Text;
 
 namespace Friflo.Json.Burst.Utils
 {
+    /// <summary>
+    /// Utility methods to support SSO - short string optimization<br/>
+    /// In case the UTF-8 representation of a string fits in 16 bytes
+    /// <b> 15 bytes + 1 length byte  </b>
+    /// a string is encode in <b>two long</b> values.<br/>
+    /// <br/>
+    /// <b>Two long</b> fields are used by the <c>struct JsonKey</c> internally.
+    /// </summary>
     public static class ShortString
     {
         // ReSharper disable once MemberCanBePrivate.Global
