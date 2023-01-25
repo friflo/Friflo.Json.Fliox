@@ -37,7 +37,7 @@ class ProtocolResponse {
 ProtocolResponse <|-- SyncResponse
 class SyncResponse {
     msg         : "resp"
-    database?   : string
+    db?         : string
     tasks?      : SyncTaskResult[]
     containers? : ContainerEntities[]
     info?       : any

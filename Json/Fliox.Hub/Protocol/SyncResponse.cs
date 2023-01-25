@@ -20,15 +20,16 @@ namespace Friflo.Json.Fliox.Hub.Protocol
     public sealed class SyncResponse : ProtocolResponse
     {
         /// <summary>for debugging - not used by Protocol</summary>
-                    public  JsonKey                                 database;
+        [Serialize                                ("db")]
+                    public  JsonKey                 database;
         /// <summary>list of task results corresponding to the <see cref="SyncRequest.tasks"/> in a <see cref="SyncRequest"/></summary>
-                    public  List<SyncTaskResult>                    tasks;
+                    public  List<SyncTaskResult>    tasks;
         /// <summary>entities as results from the <see cref="SyncRequest.tasks"/> in a <see cref="SyncRequest"/>
         /// grouped by container</summary>
-                    public  List<ContainerEntities>                 containers;
-                    public  JsonValue                               info;
+                    public  List<ContainerEntities> containers;
+                    public  JsonValue               info;
                         
-        internal override   MessageType                             MessageType => MessageType.resp;
+        internal override   MessageType             MessageType => MessageType.resp;
         
         public ContainerEntities FindContainer(in JsonKey containerName) {
             if (containers == null)

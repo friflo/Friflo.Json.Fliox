@@ -108,7 +108,7 @@ export class SyncResponse extends ProtocolResponse {
     /** message type */
     msg         : "resp";
     /** for debugging - not used by Protocol */
-    database?   : string | null;
+    db?         : string | null;
     /** list of task results corresponding to the **tasks** in a **SyncRequest** */
     tasks?      : SyncTaskResult_Union[] | null;
     /**

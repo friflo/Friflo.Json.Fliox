@@ -37,7 +37,7 @@ abstract class ProtocolRequest  : ProtocolMessage() {
 data class SyncResponse (
     override  val req        : Int? = null,
     override  val clt        : String? = null,
-              val database   : String? = null,
+              val db         : String? = null,
               val tasks      : List<SyncTaskResult>? = null,
               val containers : List<ContainerEntities>? = null,
               val info       : JsonElement? = null,

@@ -31,7 +31,7 @@
                 "msg":        { "enum": ["resp"] },
                 "req":        { "oneOf": [{ "$ref": "./Standard.json#/definitions/int32" }, {"type": "null"}], "description": "Set to the value of the corresponding <b>reqId</b> of a <b>ProtocolRequest</b>" },
                 "clt":        { "type": ["string", "null"], "description": "Set to <b>clientId</b> of a <b>SyncRequest</b> in case the given\n<b>clientId</b> was valid. Otherwise it is set to null." },
-                "database":   { "type": ["string", "null"], "description": "for debugging - not used by Protocol" },
+                "db":         { "type": ["string", "null"], "description": "for debugging - not used by Protocol" },
                 "tasks":      { "type": ["array", "null"], "items": { "$ref": "./Friflo.Json.Fliox.Hub.Protocol.Tasks.json#/definitions/SyncTaskResult" }, "description": "list of task results corresponding to the <b>tasks</b> in a <b>SyncRequest</b>" },
                 "containers": { "type": ["array", "null"], "items": { "$ref": "#/definitions/ContainerEntities" }, "description": "entities as results from the <b>tasks</b> in a <b>SyncRequest</b>\ngrouped by container" },
                 "info":       {  }
