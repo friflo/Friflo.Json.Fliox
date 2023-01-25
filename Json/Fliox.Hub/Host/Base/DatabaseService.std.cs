@@ -100,14 +100,14 @@ namespace Friflo.Json.Fliox.Hub.Host
 
         private static async Task<DbContainers> Containers (Param<Empty> param, MessageContext context) {
             var database        = context.Database;  
-            var dbContainers    = await database.GetDbContainers(database.name.value, context.Hub).ConfigureAwait(false);
+            var dbContainers    = await database.GetDbContainers(database.name, context.Hub).ConfigureAwait(false);
             return dbContainers;
         }
         
         private static DbMessages Messages (Param<Empty> param, MessageContext context) {
             var database        = context.Database;  
             var dbMessages      = database.GetDbMessages();
-            dbMessages.id       = database.name.value;
+            dbMessages.id       = database.name;
             return dbMessages;
         }
         
@@ -124,7 +124,7 @@ namespace Friflo.Json.Fliox.Hub.Host
                 return context.Error<DbStats>(error);
 
             if (containerName == null) {
-                var dbContainers    = await database.GetDbContainers(database.name.value, context.Hub).ConfigureAwait(false);
+                var dbContainers    = await database.GetDbContainers(database.name, context.Hub).ConfigureAwait(false);
                 containerNames      = dbContainers.containers;
             } else {
                 containerNames = new [] { containerName };

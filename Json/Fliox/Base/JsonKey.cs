@@ -30,10 +30,9 @@ namespace Friflo.Json.Fliox
         [Browse(Never)]
         internal    readonly    long        lng2; //          higher 64 bits for Guid  | higher 7 bytes for UTF-8 string + 1 byte length
         
-        public                  JsonKeyType Type    => type;
-        internal                Guid        Guid    => GuidUtils.LongLongToGuid(lng, lng2);
-
-        public      override    string      ToString()  { var value = AsString(); return value ?? "null"; }
+        public                  JsonKeyType Type        => type;
+        internal                Guid        Guid        => GuidUtils.LongLongToGuid(lng, lng2);
+        public      override    string      ToString()  => GetString(); 
 
         public static readonly  JsonKeyComparer         Comparer    = new JsonKeyComparer();
         public static readonly  JsonKeyEqualityComparer Equality    = new JsonKeyEqualityComparer();
@@ -285,6 +284,13 @@ namespace Friflo.Json.Fliox
 
         public override int GetHashCode() {
             throw new NotImplementedException("not implemented by intention to avoid boxing. Use JsonKey.Equality comparer");
+        }
+        
+        private string GetString() {
+            if (type == NULL) {
+                return "null";
+            }
+            return $"'{AsString()}'";
         }
 
         /// <summary>Calling this method causes string instantiation. To avoid this use its <i>AppendTo</i> methods if possible.</summary> 

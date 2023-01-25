@@ -4,7 +4,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using Friflo.Json.Burst.Utils;
 using Friflo.Json.Fliox.Hub.Host.Auth;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using static System.Diagnostics.DebuggerBrowsableState;
@@ -36,7 +35,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         // ReSharper disable once UnusedMember.Local - expose Dictionary as list in Debugger
         private             ICollection<EventSubUser>               SubUsers    => subUsers.Values;
         
-        private  readonly   Dictionary<string, List<ClientDbSubs>>  databaseSubsBuffer;
+        private  readonly   Dictionary<JsonKey, List<ClientDbSubs>>  databaseSubsBuffer;
         
         private  readonly   Dictionary<DatabaseSubs, DatabaseSubs>  uniqueDatabaseSubsBuffer;
         
@@ -47,14 +46,14 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             sendClientsMap          = new Dictionary<JsonKey, EventSubClient>   (JsonKey.Equality);
             subUsers                = new Dictionary<JsonKey, EventSubUser>     (JsonKey.Equality);
             databaseSubsMap         = new DatabaseSubsMap(null);
-            databaseSubsBuffer      = new Dictionary<string, List<ClientDbSubs>>(); 
+            databaseSubsBuffer      = new Dictionary<JsonKey, List<ClientDbSubs>>(JsonKey.Equality); 
             uniqueDatabaseSubsBuffer= new Dictionary<DatabaseSubs, DatabaseSubs>(DatabaseSubs.Equality);
         }
         
         /// <summary> requires lock <see cref="monitor"/> </summary>
         internal void SubscribeChanges (
-            in SmallString database,    SubscribeChanges subscribe,     User        user,
-            in JsonKey      clientId,   EventReceiver    eventReceiver)
+            in JsonKey database,   SubscribeChanges subscribe,     User        user,
+            in JsonKey clientId,   EventReceiver    eventReceiver)
         {
             EventSubClient subClient;
             if (subscribe.changes.Count == 0) {
@@ -115,8 +114,8 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         
         /// <summary> requires lock <see cref="monitor"/> </summary>
         internal void SubscribeMessage(
-            in SmallString database,    SubscribeMessage subscribe,     User user,
-            in JsonKey     clientId,    EventReceiver    eventReceiver)
+            in JsonKey database,    SubscribeMessage subscribe,     User user,
+            in JsonKey clientId,    EventReceiver    eventReceiver)
         {
             EventSubClient subClient;
             var remove = subscribe.remove;
@@ -149,7 +148,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             foreach (var pair in sendClientsMap) {
                 var subClient = pair.Value;
                 foreach (var databaseSubPair in subClient.databaseSubs) {
-                    var database        = databaseSubPair.Key.value;
+                    var database        = databaseSubPair.Key;
                     var databaseSubs    = databaseSubPair.Value;
                     var clientSub       = new ClientDbSubs(subClient, databaseSubs);
                     if (databaseSubsBuffer.TryGetValue(database, out var list)) {
@@ -185,7 +184,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                 }
                 var databaseSubs    = subs.ToArray();
                 var database        = pair.Key;
-                databaseSubsMap.map.Add(new SmallString(database), databaseSubs);
+                databaseSubsMap.map.Add(database, databaseSubs);
             }
             // --- create EventSubClient[] containing all clients to send event to
             var clients = new EventSubClient[sendClientsMap.Count];
@@ -199,10 +198,10 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
     
     internal readonly struct DatabaseSubsMap
     {
-        internal readonly Dictionary<SmallString, ClientDbSubs[]> map;
+        internal readonly Dictionary<JsonKey, ClientDbSubs[]> map;
         
         internal DatabaseSubsMap(object dummy) {
-            map = new Dictionary<SmallString, ClientDbSubs[]>(SmallString.Equality);
+            map = new Dictionary<JsonKey, ClientDbSubs[]>(JsonKey.Equality);
         }
     }
 

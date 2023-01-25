@@ -92,9 +92,9 @@ namespace Friflo.Json.Fliox.Hub.Remote
         }
         
         // -------------------------------------- resource access  --------------------------------------
-        internal static async Task GetEntitiesById(RequestContext context, string database, JsonKey container, JsonKey[] keys) {
-            if (database == context.hub.DatabaseName.value)
-                database = null;
+        internal static async Task GetEntitiesById(RequestContext context, JsonKey database, JsonKey container, JsonKey[] keys) {
+            if (database.IsEqual(context.hub.database.nameKey))
+                database = default;
             var readEntities = new ReadEntities { container = container, ids = new List<JsonKey>(keys.Length)};
             foreach (var id in keys) {
                 readEntities.ids.Add(id);    
@@ -131,9 +131,9 @@ namespace Friflo.Json.Fliox.Hub.Remote
             }
         }
         
-        internal static async Task QueryEntities(RequestContext context, string database, JsonKey container, NameValueCollection queryParams) {
-            if (database == context.hub.DatabaseName.value)
-                database = null;
+        internal static async Task QueryEntities(RequestContext context, JsonKey database, JsonKey container, NameValueCollection queryParams) {
+            if (database.IsEqual(context.hub.database.nameKey))
+                database = default;
             var filter = CreateFilterTree(context, queryParams);
             if (filter.IsNull())
                 return;
@@ -241,9 +241,9 @@ namespace Friflo.Json.Fliox.Hub.Remote
             return filterOp;
         }
         
-        internal static async Task GetEntity(RequestContext context, string database, JsonKey container, string id) {
-            if (database == context.hub.DatabaseName.value)
-                database = null;
+        internal static async Task GetEntity(RequestContext context, JsonKey database, JsonKey container, string id) {
+            if (database.IsEqual(context.hub.database.nameKey))
+                database = default;
             var hub             = context.hub;
             var entityId        = new JsonKey(id);
             var readEntities    = new ReadEntities { container = container, ids = new List<JsonKey> {entityId}};
@@ -275,9 +275,9 @@ namespace Friflo.Json.Fliox.Hub.Remote
             context.Write(content.Json, "application/json", entityStatus);
         }
         
-        internal static async Task DeleteEntities(RequestContext context, string database, JsonKey container, JsonKey[] keys) {
-            if (database == context.hub.DatabaseName.value)
-                database = null;
+        internal static async Task DeleteEntities(RequestContext context, JsonKey database, JsonKey container, JsonKey[] keys) {
+            if (database.IsEqual(context.hub.database.nameKey))
+                database = default;
             var deleteEntities  = new DeleteEntities { container = container, ids = new List<JsonKey>(keys.Length) };
             foreach (var key in keys) {
                 deleteEntities.ids.Add(key);
@@ -345,7 +345,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         
         internal static async Task PutEntities(
             RequestContext      context,
-            string              database,
+            JsonKey             database,
             JsonKey             container,
             string              id,
             JsonValue           value,
@@ -358,8 +358,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
             }
             var type        = create ? TaskType.create : TaskType.upsert;
 
-            if (database == context.hub.DatabaseName.value)
-                database = null;
+            if (database.IsEqual(context.hub.database.nameKey))
+                database = default;
             var entities = Body2JsonValues(context, id, keyName, value, out error);
             if (error != null) {
                 context.WriteError("PUT error", error, 400);
@@ -408,15 +408,15 @@ namespace Friflo.Json.Fliox.Hub.Remote
         
         internal static async Task MergeEntities(
             RequestContext      context,
-            string              database,
+            JsonKey             database,
             JsonKey             container,
             string              id,
             JsonValue           patch,
             NameValueCollection queryParams)
         {
             var keyName     = queryParams["keyName"];
-            if (database == context.hub.DatabaseName.value)
-                database = null;
+            if (database.IsEqual(context.hub.database.nameKey))
+                database = default;
             var patches = Body2JsonValues(context, id, keyName, patch, out string error);
             if (error != null) {
                 context.WriteError("PATCH error", error, 400);
@@ -456,14 +456,14 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 sb.Append("\n| ");
                 sb.Append(error.type);
                 sb.Append(": [");
-                sb.Append(error.id);
+                error.id.AppendTo(sb);
                 sb.Append("], ");
                 sb.Append(error.message);
             }
         }
         
         // ----------------------------------------- command / message -----------------------------------------
-        internal static async Task Command(RequestContext context, string database, string command, JsonValue param) {
+        internal static async Task Command(RequestContext context, JsonKey database, string command, JsonValue param) {
             var hub             = context.hub;
             var sendCommand     = new SendCommand { name = command, param = param };
             var syncRequest     = CreateSyncRequest(context, database, sendCommand, out var syncContext);
@@ -486,7 +486,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             context.Write(sendResult.result, "application/json", 200);
         }
         
-        internal static async Task Message(RequestContext context, string database, string message, JsonValue param) {
+        internal static async Task Message(RequestContext context, JsonKey database, string message, JsonValue param) {
             var hub             = context.hub;
             var sendMessage     = new SendMessage { name = message, param = param };
             var syncRequest     = CreateSyncRequest(context, database, sendMessage, out var syncContext);
@@ -511,7 +511,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
 
 
         // ----------------------------------------- utils -----------------------------------------
-        private static SyncRequest CreateSyncRequest (RequestContext context, string database, SyncRequestTask task, out SyncContext syncContext) {
+        private static SyncRequest CreateSyncRequest (RequestContext context, in JsonKey database, SyncRequestTask task, out SyncContext syncContext) {
             var tasks   = new List<SyncRequestTask> { task };
             var userId  = context.headers.Cookie("fliox-user");
             var token   = context.headers.Cookie("fliox-token");

@@ -144,7 +144,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             var diff = GC.GetAllocatedBytesForCurrentThread() - start;
             var platform    = Environment.OSVersion.Platform;
             var isWindows   = platform == PlatformID.Win32NT; 
-            var expected    = isWindows ? 2552 : 2552;  // Test Windows & Linux
+            var expected    = isWindows ? 2584 : 2584;  // Test Windows & Linux
             Console.WriteLine($"PocStore allocation. platform: {platform}, memory: {diff}");
             AreEqual(expected, diff);
         }
@@ -201,7 +201,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             var diff        = GC.GetAllocatedBytesForCurrentThread() - start;
             stopwatch.Stop();
             Console.WriteLine($"SyncTasks() count: {count}, ms: {stopwatch.ElapsedMilliseconds}");
-            var expected    = IsDebug() ? 760 : 600;  // Test Debug & Release
+            var expected    = IsDebug() ? 808 : 648;  // Test Debug & Release
             AreEqual(expected, diff);
         }
         
@@ -226,14 +226,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
                 await store.SyncTasks();
             }
             var diff = GC.GetAllocatedBytesForCurrentThread() - start;
-            var expected = IsDebug() ? Is.InRange(30328, 30480) : Is.InRange(27800, 27920); // Test Debug & Release
+            var expected = IsDebug() ? Is.InRange(30328, 30528) : Is.InRange(27800, 27968); // Test Debug & Release
             That(diff, expected);
         }
         
         [Test]
         public void TestSubscriptionProcessorMemory() {
             var sub         = new SubscriptionProcessor();
-            var syncEvent   = new SyncEvent { db = "dummy", tasks = new List<SyncRequestTask>() };
+            var syncEvent   = new SyncEvent { db = new JsonKey("dummy"), tasks = new List<SyncRequestTask>() };
             var db          = new MemoryDatabase("dummy");
             var hub         = new FlioxHub(db);
             var client      = new FlioxClient(hub);

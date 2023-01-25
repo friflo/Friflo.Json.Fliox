@@ -127,7 +127,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
 
             // -- create request with upsert task
             var syncWrite = new SyncRequest {
-                database = "remote-memory",
+                database = new JsonKey("remote-memory"),
                 tasks = new List<SyncRequestTask> {
                     new UpsertEntities { container = new JsonKey("players"), entities = new List<JsonEntity> {
                         new JsonEntity(new JsonKey(1), new JsonValue(@"{""id"":1}"))
@@ -138,7 +138,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
             
             // -- create request with read task
             var syncRead = new SyncRequest {
-                database = "remote-memory",
+                database = new JsonKey("remote-memory"),
                 tasks = new List<SyncRequestTask> {
                     new ReadEntities { container = new JsonKey("players"), ids = new List<JsonKey> { new JsonKey(1)} }
                 }

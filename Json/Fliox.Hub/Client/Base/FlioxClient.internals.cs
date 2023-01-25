@@ -200,7 +200,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
         
         private void InitSyncRequest(SyncRequest syncRequest) {
-            syncRequest.database    = _intern.database;
+            syncRequest.database    = _intern.databaseKey;
             syncRequest.userId      = _intern.userId;
             syncRequest.clientId    = _intern.clientId; 
             syncRequest.token       = _intern.token;

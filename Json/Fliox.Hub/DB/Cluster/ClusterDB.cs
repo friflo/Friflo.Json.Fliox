@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Friflo.Json.Burst.Utils;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.Auth;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
@@ -89,7 +88,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
             var jsonSchemas = databaseSchema.GetJsonSchemas();
             jsonSchemas.Remove("openapi.json");
             var schema = new DbSchema {
-                id          = database.name.value,
+                id          = database.name,
                 schemaName  = databaseSchema.Name,
                 schemaPath  = databaseSchema.Path,
                 jsonSchemas = jsonSchemas
@@ -105,11 +104,10 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
             var databases       = hub.GetDatabases();
             var databaseList    = new List<DbContainers>(databases.Count);
             foreach (var pair in databases) {
-                var databaseName    = new SmallString(pair.Key);
-                if (!DatabaseFilter.IsAuthorizedDatabase(authorizedDatabases, databaseName))
+                var database    = pair.Value;
+                if (!DatabaseFilter.IsAuthorizedDatabase(authorizedDatabases, database.nameKey))
                     continue;
-                var database        = pair.Value;
-                var dbContainers    = await database.GetDbContainers(databaseName.value, hub).ConfigureAwait(false);
+                var dbContainers    = await database.GetDbContainers(database.name, hub).ConfigureAwait(false);
                 databaseList.Add(dbContainers);
             }
             return new HostCluster{ databases = databaseList };

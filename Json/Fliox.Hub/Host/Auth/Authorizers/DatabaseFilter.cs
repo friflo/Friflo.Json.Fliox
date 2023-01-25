@@ -3,14 +3,13 @@
 
 using System;
 using System.Collections.Generic;
-using Friflo.Json.Burst.Utils;
 
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.Host.Auth
 {
     public readonly struct DatabaseFilter
     {
-        internal   readonly     SmallString database;
+        internal   readonly     JsonKey     database;
         internal   readonly     bool        isPrefix;
         internal   readonly     string      dbLabel;
 
@@ -20,25 +19,25 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
             dbLabel     = database ?? throw new ArgumentNullException(nameof(database));
             isPrefix    = database.EndsWith("*");
             if (isPrefix) {
-                this.database = new SmallString(database.Substring(0, database.Length - 1));
+                this.database = new JsonKey(database.Substring(0, database.Length - 1));
             } else {
-                this.database = new SmallString(database);
+                this.database = new JsonKey(database);
             }
         }
         
-        private bool Authorize(in SmallString databaseName) {
+        private bool Authorize(in JsonKey databaseName) {
             if (databaseName.IsNull()) throw new ArgumentNullException(nameof(databaseName));
             if (isPrefix) {
-                return databaseName.value.StartsWith(database.value);
+                return JsonKey.StringStartsWith(databaseName, database, StringComparison.InvariantCulture);
             }
             return databaseName.IsEqual(database);
         }
         
         internal bool Authorize(SyncContext syncContext) {
-            return Authorize(syncContext.database.name);
+            return Authorize(syncContext.database.nameKey);
         }
         
-        internal static bool IsAuthorizedDatabase(IEnumerable<DatabaseFilter> databaseFilters, in SmallString databaseName) {
+        internal static bool IsAuthorizedDatabase(IEnumerable<DatabaseFilter> databaseFilters, in JsonKey databaseName) {
             foreach (var authorizeDatabase in databaseFilters) {
                 if (authorizeDatabase.Authorize(databaseName))
                     return true;

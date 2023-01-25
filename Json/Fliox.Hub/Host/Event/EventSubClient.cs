@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using Friflo.Json.Burst.Utils;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Remote;
 using Friflo.Json.Fliox.Utils;
@@ -34,7 +33,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         /// Use thread safe <see cref="EventDispatcher.GetDatabaseSubs"/>
         /// </summary> 
         [DebuggerBrowsable(Never)]
-        internal readonly   Dictionary<SmallString, DatabaseSubs> databaseSubs;
+        internal readonly   Dictionary<JsonKey, DatabaseSubs>   databaseSubs;
         // ReSharper disable once UnusedMember.Local - expose Dictionary as list in Debugger
         private             ICollection<DatabaseSubs>           DatabaseSubs => databaseSubs.Values;
         
@@ -70,7 +69,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             this.clientId       = clientId;
             this.user           = user;
             this.dispatcher     = dispatcher;
-            databaseSubs        = new Dictionary<SmallString, DatabaseSubs>(SmallString.Equality);
+            databaseSubs        = new Dictionary<JsonKey, DatabaseSubs>(JsonKey.Equality);
         }
         
         internal bool UpdateTarget(EventReceiver eventReceiver) {

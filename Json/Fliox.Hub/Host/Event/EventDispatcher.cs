@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
-using Friflo.Json.Burst.Utils;
 using Friflo.Json.Fliox.Hub.Client;
 using Friflo.Json.Fliox.Hub.Host.Event.Collector;
 using Friflo.Json.Fliox.Hub.Host.Auth;
@@ -154,8 +153,8 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         
     #region - add / remove subscriptions
         internal bool SubscribeMessage(
-            in SmallString database,    SubscribeMessage subscribe,     User       user,
-            in JsonKey     clientId,    EventReceiver    eventReceiver, out string error)
+            in JsonKey database,    SubscribeMessage subscribe,     User       user,
+            in JsonKey clientId,    EventReceiver    eventReceiver, out string error)
         {
             if (eventReceiver == null) {
                 error = MissingEventReceiver; 
@@ -170,8 +169,8 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         }
         
         internal bool SubscribeChanges (
-            in SmallString database,    SubscribeChanges subscribe,     User        user,
-            in JsonKey      clientId,   EventReceiver    eventReceiver, out string  error)
+            in JsonKey database,   SubscribeChanges subscribe,     User        user,
+            in JsonKey clientId,   EventReceiver    eventReceiver, out string  error)
         {
             if (eventReceiver == null) {
                 error = MissingEventReceiver; 
@@ -205,9 +204,9 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             }
         }
         
-        internal Dictionary<SmallString, DatabaseSubs> GetDatabaseSubs(EventSubClient subClient) {
+        internal Dictionary<JsonKey, DatabaseSubs> GetDatabaseSubs(EventSubClient subClient) {
             lock (intern.monitor) {
-                return new Dictionary<SmallString, DatabaseSubs>(subClient.databaseSubs, SmallString.Equality);
+                return new Dictionary<JsonKey, DatabaseSubs>(subClient.databaseSubs, JsonKey.Equality);
             }
         }
         
@@ -237,7 +236,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         }
         
         /// <summary>method is thread safe </summary>
-        public void SendRawSyncEvent(in SmallString database, in JsonKey container, in RawSyncEvent syncEvent, ObjectWriter writer) {
+        public void SendRawSyncEvent(in JsonKey database, in JsonKey container, in RawSyncEvent syncEvent, ObjectWriter writer) {
             ClientDbSubs[] databaseSubsArray;
             lock (intern.monitor) {
                 if (!intern.databaseSubsMap.map.TryGetValue(database, out databaseSubsArray)) {
@@ -261,7 +260,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         private static readonly     JsonValue   Ev = new JsonValue("\"ev\"");
         
         /// <summary>method is thread safe </summary>
-        public void SendRawEventMessage(in SmallString database, in JsonKey container, RawEventMessage eventMessage, ObjectWriter writer) {
+        public void SendRawEventMessage(in JsonKey database, in JsonKey container, RawEventMessage eventMessage, ObjectWriter writer) {
             ClientDbSubs[] databaseSubsArray;
             lock (intern.monitor) {
                 if (!intern.databaseSubsMap.map.TryGetValue(database, out databaseSubsArray)) {
@@ -321,7 +320,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                 } else {
                     intern.subClients.TryGetValue(clientId, out subClient);
                 }
-                intern.databaseSubsMap.map.TryGetValue(syncContext.database.name, out databaseSubsArray);
+                intern.databaseSubsMap.map.TryGetValue(syncContext.database.nameKey, out databaseSubsArray);
             }
         }
         
@@ -435,7 +434,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             var database    = syncContext.database;
             var isDefaultDB = syncContext.hub.database == database;
             var syncEvent = new SyncEvent {
-                db          = isDefaultDB ? null : database.name.value,
+                db          = isDefaultDB ? default : database.nameKey,
                 tasks       = syncContext.syncBuffers.eventTasks,
                 tasksJson   = syncContext.syncBuffers.tasksJson
             };

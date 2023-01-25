@@ -49,7 +49,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                         return new RestRequest(GetErrorType(commandName), $"messages & commands operate on database. was: {resourcePath}", 400);
                     }
                     var database = res.database;
-                    if (database == context.hub.DatabaseName.value)
+                    if (database == context.hub.database.name)
                         database = null;
                     JsonValue param;
                     if (isPost) {

@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using Friflo.Json.Burst.Utils;
 using Friflo.Json.Fliox.Hub.Host.Event;
 using Friflo.Json.Fliox.Hub.Protocol;
 
@@ -37,13 +36,13 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
         
         // --- RequestCount
         internal static void UpdateCountsMap (
-            Dictionary<SmallString, RequestCount>   requestCounts, // key: database
-            in SmallString                          database,
-            SyncRequest                             syncRequest)
+            Dictionary<JsonKey, RequestCount>   requestCounts, // key: database
+            in JsonKey                          database,
+            SyncRequest                         syncRequest)
         {
             lock (requestCounts) {
                 if (!requestCounts.TryGetValue(database, out RequestCount requestCount)) {
-                    requestCount = new RequestCount { db = database.value };
+                    requestCount = new RequestCount { db = database };
                     requestCounts[database] = requestCount;
                 }
                 UpdateCounts(ref requestCount, syncRequest);
@@ -57,9 +56,9 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
         }
         
         internal static void CountsMapToList(
-            List<RequestCount>                      dst,
-            Dictionary<SmallString, RequestCount>   src,
-            string                                  exclude)
+            List<RequestCount>                  dst,
+            Dictionary<JsonKey, RequestCount>   src,
+            string                              exclude)
         {
             dst.Clear();
             lock (src) {
@@ -70,7 +69,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
                     dst.Add(counts);
                 }
             }
-            dst.Sort((c1, c2) => string.Compare(c1.db, c2.db, StringComparison.Ordinal));
+            dst.Sort((c1, c2) => JsonKey.StringCompare(c1.db, c2.db, StringComparison.Ordinal));
         }
     }
 }

@@ -56,7 +56,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event.Collector
             var context = new CombinerContext(this, writer);
             foreach (var databaseChanges in databaseChangesList)
             {
-                syncEvent.db = databaseChanges.dbName.value;
+                syncEvent.db = databaseChanges.dbName;
                 containerChangesSet.Clear();
                 rawTaskBuffer.Reset();
                 var readBuffer  = databaseChanges.readBuffer;

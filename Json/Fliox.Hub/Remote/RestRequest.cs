@@ -25,7 +25,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
     {
         internal  readonly  RestRequestType     type;
         // --- path
-        internal  readonly  string              db;
+        internal  readonly  JsonKey             db;
         internal  readonly  JsonKey             container;
         internal  readonly  string              id;
 
@@ -49,7 +49,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         /// </summary>
         internal RestRequest(RestRequestType type, string db, string name, in JsonValue value) {
             this.type           = type;
-            this.db             = db;
+            this.db             = new JsonKey(db);
                  container      = default;
             this.message        = name;
             this.value          = value;
@@ -66,7 +66,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         /// </summary>
         internal RestRequest(RestRequestType type, string db, string container, JsonKey[] keys) {
             this.type           = type;
-            this.db             = db;
+            this.db             = new JsonKey(db);
             this.container      = new JsonKey(container);
                  message        = null;
                  value          = default;
@@ -83,7 +83,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         /// </summary>
         internal RestRequest(RestRequestType type, string db, string container, string id, in JsonValue value, NameValueCollection query) {
             this.type           = type;
-            this.db             = db;
+            this.db             = new JsonKey(db);
             this.container      = new JsonKey(container);
                  message        = null;
             this.value          = value;
@@ -100,7 +100,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         /// </summary>
         internal RestRequest(string errorType, string errorMessage, int errorStatus) {
                  type           = RestRequestType.error;
-                 db             = null;
+                 db             = default;
                  container      = default;
                  message        = null;
                  value          = default;

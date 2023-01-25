@@ -4,7 +4,6 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
-using Friflo.Json.Burst.Utils;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.Auth;
 using Friflo.Json.Fliox.Hub.Protocol;
@@ -72,8 +71,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
 
             var ids = new List<JsonKey>(read.ids.Count);
             foreach (var id in read.ids) {
-                var database    = new SmallString(id.AsString());
-                if (DatabaseFilter.IsAuthorizedDatabase(databaseFilters, database)) {
+                if (DatabaseFilter.IsAuthorizedDatabase(databaseFilters, id)) {
                     ids.Add(id);
                 } else {
                     deniedIds.Add(id);
@@ -94,9 +92,9 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
                 else
                     sb.Append(" || ");
                 if (authorizedDatabase.isPrefix)
-                    sb.Append($"(o.id.StartsWith('{authorizedDatabase.database}'))");
+                    sb.Append($"(o.id.StartsWith('{authorizedDatabase.database.AsString()}'))");
                 else 
-                    sb.Append($"(o.id == '{authorizedDatabase.database}')");
+                    sb.Append($"(o.id == '{authorizedDatabase.database.AsString()}')");
             }
             query.filter        = sb.ToString();
             query.filterTree    = default;

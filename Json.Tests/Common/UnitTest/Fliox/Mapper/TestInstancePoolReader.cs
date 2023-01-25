@@ -38,7 +38,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
             mapper.WriteNullMembers = false;
             
             var syncRequest = new SyncRequest {
-                database    = "db",
+                database    = new JsonKey("db"),
                 tasks       = new List<SyncRequestTask> {
                     new UpsertEntities {
                         container   = new JsonKey("test"),

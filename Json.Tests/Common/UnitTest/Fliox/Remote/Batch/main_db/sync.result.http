@@ -89,7 +89,7 @@ POST {{base}}/
         {
             "task":"error",
             "type": "PermissionDenied",
-            "message": "not authorized. Authentication failed. user: admin"
+            "message": "not authorized. Authentication failed. user: 'admin'"
         }
     ]
 }

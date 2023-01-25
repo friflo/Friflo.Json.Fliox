@@ -25,7 +25,7 @@ namespace Gen.Friflo.Json.Fliox.Hub.Protocol
                 case Gen_token:    obj.token    = reader.ReadString    (field, obj.token,    out success);  return success;
                 case Gen_eventAck: obj.eventAck = reader.ReadInt32Null (field, out success);  return success;
                 case Gen_tasks:    obj.tasks    = reader.ReadClass     (field, obj.tasks,    out success);  return success;
-                case Gen_database: obj.database = reader.ReadString    (field, obj.database, out success);  return success;
+                case Gen_database: obj.database = reader.ReadJsonKey   (field, obj.database, out success);  return success;
                 case Gen_info:     obj.info     = reader.ReadJsonValue (field, out success);  return success;
             }
             return false;
@@ -38,7 +38,7 @@ namespace Gen.Friflo.Json.Fliox.Hub.Protocol
             writer.WriteString    (fields[Gen_token],    obj.token,    ref firstMember);
             writer.WriteInt32Null (fields[Gen_eventAck], obj.eventAck, ref firstMember);
             writer.WriteClass     (fields[Gen_tasks],    obj.tasks,    ref firstMember);
-            writer.WriteString    (fields[Gen_database], obj.database, ref firstMember);
+            writer.WriteJsonKey   (fields[Gen_database], obj.database, ref firstMember);
             writer.WriteJsonValue (fields[Gen_info],     obj.info,     ref firstMember);
         }
     }

@@ -17,7 +17,7 @@ namespace Gen.Friflo.Json.Fliox.Hub.Protocol
             switch (field.genIndex) {
                 case Gen_usr:   obj.usr   = reader.ReadJsonKey (field, obj.usr,   out success);  return success;
                 case Gen_clt:   obj.clt   = reader.ReadJsonKey (field, obj.clt,   out success);  return success;
-                case Gen_db:    obj.db    = reader.ReadString (field, obj.db,    out success);  return success;
+                case Gen_db:    obj.db    = reader.ReadJsonKey (field, obj.db,    out success);  return success;
                 case Gen_tasks: obj.tasks = reader.ReadClass (field, obj.tasks, out success);  return success;
             }
             return false;
@@ -26,7 +26,7 @@ namespace Gen.Friflo.Json.Fliox.Hub.Protocol
         private static void Write(ref SyncEvent obj, PropField[] fields, ref Writer writer, ref bool firstMember) {
             writer.WriteJsonKey (fields[Gen_usr],   obj.usr,   ref firstMember);
             writer.WriteJsonKey (fields[Gen_clt],   obj.clt,   ref firstMember);
-            writer.WriteString (fields[Gen_db],    obj.db,    ref firstMember);
+            writer.WriteJsonKey (fields[Gen_db],    obj.db,    ref firstMember);
             writer.WriteClass (fields[Gen_tasks], obj.tasks, ref firstMember);
         }
     }

@@ -68,5 +68,5 @@ GET {{base}}/rest/cluster/containers
 # StatusCode:   403
 # Content-Type: text/plain
 
-PermissionDenied > not authorized. user: user-readonly
+PermissionDenied > not authorized. user: 'user-readonly'
 

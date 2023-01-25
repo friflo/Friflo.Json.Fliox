@@ -86,7 +86,7 @@ namespace Friflo.Json.Fliox.Hub.Host
                     tasks.Add(result);
                 } catch (Exception e) {
                     tasks.Add(TaskExceptionError(e)); // Note!  Should not happen - see documentation of this method.
-                    var message = GetLogMessage(db.name.value, syncRequest.userId, index, task);
+                    var message = GetLogMessage(db.name, syncRequest.userId, index, task);
                     Logger.Log(HubLog.Error, message, e);
                 }
             }

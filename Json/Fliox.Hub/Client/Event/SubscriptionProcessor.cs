@@ -61,7 +61,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             contextChanges.Clear();
             EventCount++;
             var db = syncEvent.db;
-            if (db != null && client.DatabaseName != db) {
+            if (!db.IsNull() && !client._intern.databaseKey.IsEqual(db)) {
                 var msg = $"invalid SyncEvent db: {db}. expect: {client.DatabaseName}";
                 eventContext.Logger.Log(HubLog.Error, msg);
                 return;

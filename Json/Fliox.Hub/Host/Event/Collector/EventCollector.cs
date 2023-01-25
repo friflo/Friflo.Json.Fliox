@@ -27,7 +27,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event.Collector
         }
         
         internal void AddDatabase(EntityDatabase database) {
-            var databaseChanges = new DatabaseChanges(database.name);
+            var databaseChanges = new DatabaseChanges(database.nameKey);
             lock (databaseChangesMap) {
                 databaseChangesMap.Add(database, databaseChanges);
                 DatabaseCount = databaseChangesMap.Count;

@@ -20,7 +20,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol
     public sealed class SyncResponse : ProtocolResponse
     {
         /// <summary>for debugging - not used by Protocol</summary>
-                    public  string                                  database;
+                    public  JsonKey                                 database;
         /// <summary>list of task results corresponding to the <see cref="SyncRequest.tasks"/> in a <see cref="SyncRequest"/></summary>
                     public  List<SyncTaskResult>                    tasks;
         /// <summary>entities as results from the <see cref="SyncRequest.tasks"/> in a <see cref="SyncRequest"/>

@@ -6,7 +6,6 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
-using Friflo.Json.Burst.Utils;
 using Friflo.Json.Fliox.Hub.DB.Cluster;
 using Friflo.Json.Fliox.Hub.Host.Utils;
 using Friflo.Json.Fliox.Hub.Protocol;
@@ -54,8 +53,9 @@ namespace Friflo.Json.Fliox.Hub.Host
     {
     #region - members
         /// <summary>database name</summary>
-        public   readonly   SmallString         name;       // non null
-        public   override   string              ToString()  => name.value;
+        public   readonly   string              name;                   // not null
+        public   readonly   JsonKey             nameKey;                // not null
+        public   override   string              ToString()  => name;    // not null
         
         /// <summary> map of of containers identified by their container name </summary>
         [DebuggerBrowsable(Never)]
@@ -95,7 +95,9 @@ namespace Friflo.Json.Fliox.Hub.Host
         protected EntityDatabase(string dbName, DatabaseService service, DbOpt opt){
             containers          = new ConcurrentDictionary<JsonKey, EntityContainer>(JsonKey.Equality);
             if (dbName == null) throw new ArgumentNullException(nameof(dbName));
-            name                = new SmallString(dbName); 
+            name    = dbName;
+            nameKey = new JsonKey(dbName);
+            
             customContainerName = (opt ?? DbOpt.Default).customContainerName;
             this.service        = service ?? new DatabaseService();
         }
@@ -156,7 +158,7 @@ namespace Friflo.Json.Fliox.Hub.Host
                 containerList = await GetContainers().ConfigureAwait(false);
             }
             bool? isDefaultDB = null;
-            if (database == hub.database.name.value) {
+            if (database == hub.database.name) {
                 isDefaultDB = true;
             }
             return new DbContainers {

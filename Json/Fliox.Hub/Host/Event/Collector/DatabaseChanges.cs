@@ -2,19 +2,18 @@
 // See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
-using Friflo.Json.Burst.Utils;
 
 // ReSharper disable SwapViaDeconstruction
 namespace Friflo.Json.Fliox.Hub.Host.Event.Collector
 {
     internal sealed class DatabaseChanges
     {
-        internal readonly   SmallString                             dbName;
+        internal readonly   JsonKey                                 dbName;
         internal readonly   Dictionary<JsonKey, ContainerChanges>   containers;
         internal            TaskBuffer                              writeBuffer;
         internal            TaskBuffer                              readBuffer;
         
-        internal DatabaseChanges(in SmallString name) {
+        internal DatabaseChanges(in JsonKey name) {
             dbName      = name;
             containers  = new Dictionary<JsonKey, ContainerChanges>(JsonKey.Equality);
             writeBuffer = new TaskBuffer();

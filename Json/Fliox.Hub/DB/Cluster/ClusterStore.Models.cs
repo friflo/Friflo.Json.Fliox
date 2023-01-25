@@ -197,7 +197,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
     /// <summary>number of requests and tasks executed per database</summary>
     public struct RequestCount {
         /// <summary>database name</summary>
-        public              string  db;
+        public              JsonKey db;
         /// <summary>number of executed requests</summary>
         public              int     requests;
         /// <summary>number of executed tasks</summary>

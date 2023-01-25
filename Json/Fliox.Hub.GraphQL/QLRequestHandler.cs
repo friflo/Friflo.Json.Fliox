@@ -18,11 +18,11 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
 {
     internal sealed class QLRequestHandler
     {
-        private  readonly   string                              database;
+        private  readonly   JsonKey                             database;
         private  readonly   Dictionary<string, QueryResolver>   resolvers = new Dictionary<string, QueryResolver>();
         
         internal QLRequestHandler(TypeSchema typeSchema, string database) {
-            this.database   = database;
+            this.database   = new JsonKey(database);
             var schemaType  = typeSchema.RootType;
             var buffer      = new Utf8Buffer();
             foreach (var field in schemaType.Fields) {

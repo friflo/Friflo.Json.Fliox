@@ -180,7 +180,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             
         /// All tests using <see cref="PocStoreSubscriber"/> are required to use "createStore" as userId
         public void OnEvent (EventContext context) {
-            AreEqual("createStore", context.UserId.ToString());
+            AreEqual("createStore", context.UserId.AsString());
             EventCount  = context.EventCount;
             IsOrigin    = context.IsOrigin;
             

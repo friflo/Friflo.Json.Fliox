@@ -50,7 +50,7 @@ namespace Friflo.Json.Fliox.Hub.Client
                         private     FlioxHub                    Hub             => _intern.hub;
 
         /// <summary> name of the database the client is attached to </summary>
-        [Browse(Never)] public      string                      DatabaseName    => _intern.database ?? _intern.hub.DatabaseName.value;
+        [Browse(Never)] public      string                      DatabaseName    => _intern.database;
         /// <summary> access to standard database commands - <see cref="StdCommands"/> </summary>
         [Browse(Never)] public    readonly   StdCommands        std;
         /// <summary> Used to send typed messages / commands by classes extending <see cref="FlioxClient"/></summary>

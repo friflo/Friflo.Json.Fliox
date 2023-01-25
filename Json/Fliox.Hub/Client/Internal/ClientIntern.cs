@@ -14,7 +14,6 @@ using Friflo.Json.Fliox.Hub.Host.Event;
 using Friflo.Json.Fliox.Hub.Host.Utils;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
-using Friflo.Json.Fliox.Hub.Remote;
 using Friflo.Json.Fliox.Hub.Utils;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Mapper.Diff;
@@ -35,6 +34,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         internal readonly   SharedEnv                       sharedEnv;
         internal readonly   IHubLogger                      hubLogger;
         internal readonly   string                          database;
+        internal readonly   JsonKey                         databaseKey;
         /// <summary>is null if <see cref="FlioxHub.SupportPushEvents"/> == false</summary> 
         internal readonly   EventReceiver                   eventReceiver;
         internal readonly   ObjectPool<ReaderPool>          responseReaderPool;
@@ -120,7 +120,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             this.pool               = sharedEnv.Pool;
             this.hubLogger          = sharedEnv.hubLogger;
             this.hub                = hub;
-            this.database           = database ?? (hub is RemoteClientHub remoteHub ? remoteHub.DatabaseName.value : null);
+            this.database           = database ?? hub.database.name;
+            databaseKey             = new JsonKey(this.database);
             this.eventReceiver      = eventReceiver;
             responseReaderPool      = hub.GetResponseReaderPool();
             

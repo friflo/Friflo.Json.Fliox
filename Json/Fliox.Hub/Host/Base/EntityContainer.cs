@@ -343,7 +343,7 @@ namespace Friflo.Json.Fliox.Hub.Host
                 // In case of ReadEntities error: Assign error to result and continue with other references.
                 // Resolving other references are independent may be successful.
                 if (refEntities.Error != null) {
-                    var message = $"read references failed: '{container}{subPath}' - {refEntities.Error.message}";
+                    var message = $"read references failed: '{container.AsString()}{subPath}' - {refEntities.Error.message}";
                     referenceResult.error = message;
                     continue;
                 }

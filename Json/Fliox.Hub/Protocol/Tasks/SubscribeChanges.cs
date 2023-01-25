@@ -57,7 +57,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
                 }
             }
             var eventReceiver   = syncContext.eventReceiver;
-            if (!eventDispatcher.SubscribeChanges(database.name, this, syncContext.User, syncContext.clientId, eventReceiver, out errorMsg)) {
+            if (!eventDispatcher.SubscribeChanges(database.nameKey, this, syncContext.User, syncContext.clientId, eventReceiver, out errorMsg)) {
                 return InvalidTask(errorMsg);
             }
             return new SubscribeChangesResult();

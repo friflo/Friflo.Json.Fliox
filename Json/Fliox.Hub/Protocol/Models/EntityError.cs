@@ -55,7 +55,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Models
             sb.Append(prefix);
             sb.Append(type);
             sb.Append(": ");
-            sb.Append(container);
+            container.AppendTo(sb);
             sb.Append(" [");
             id.AppendTo(sb);
             sb.Append("], ");
