@@ -92,13 +92,13 @@ namespace Friflo.Json.Fliox
             if (ShortString.BytesToLongLong(bytes, out lng, out lng2)) {
                 str     = null;
             } else {
-                str     = GetString(ref bytes, oldKey.str);
+                str     = GetString(bytes, oldKey.str);
                 lng     = 0;
                 lng2    = 0;
             }
         }
         
-        private static string GetString(ref Bytes bytes, string oldKey) {
+        private static string GetString(in Bytes bytes, string oldKey) {
             int len         = bytes.end - bytes.start;
             var src         = new ReadOnlySpan<byte>(bytes.buffer, bytes.start, len);
             var maxCount    = Encoding.UTF8.GetMaxCharCount(len);
