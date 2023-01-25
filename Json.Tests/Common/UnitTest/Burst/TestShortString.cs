@@ -112,6 +112,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
         [Test]
         public static void TestShortString_StartsWith() {
             AssertStartsWith("",                        "",  true);
+            AssertStartsWith("a",                       "",  true);
             AssertStartsWith("a",                       "a", true);
             AssertStartsWith("ab",                      "a", true);
             AssertStartsWith("a string length > 15",    "a", true);

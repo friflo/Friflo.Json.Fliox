@@ -171,27 +171,27 @@ namespace Friflo.Json.Fliox
         
         public static int StringCompare(in JsonKey left, in JsonKey right, StringComparison comparisonType)
         {
-            if (left.type  != STRING) throw new ArgumentException("expect left.type: STRING");
-            if (right.type != STRING) throw new ArgumentException("expect right.type: STRING");
+            if (left.type   != STRING) throw new ArgumentException("expect left.type: STRING");
+            if (right.type  != STRING) throw new ArgumentException("expect right.type: STRING");
             
-            if (left.str != null) {
-                if (right.str != null) {
+            if (right.str != null) {
+                if (left.str != null) {
                     return string.Compare(left.str, right.str, comparisonType);
                 }
+                Span<char> leftChars   = stackalloc char[MaxCharCount];
+                var leftCount          = ShortString.GetChars(left.lng, left.lng2, leftChars);
+                
+                ReadOnlySpan<char> leftReadOnly     = leftChars.Slice(0, leftCount);
+                ReadOnlySpan<char> rightReadOnly    = right.str.AsSpan();
+                return leftReadOnly.CompareTo(rightReadOnly, comparisonType);
+            }
+            // case: right.str == null
+            if (left.str != null) {
                 Span<char> rightChars   = stackalloc char[MaxCharCount];
                 var rightCount          = ShortString.GetChars(right.lng, right.lng2, rightChars);
                 
-                ReadOnlySpan<char> leftReadOnly    = left.str.AsSpan();
-                ReadOnlySpan<char> rightReadOnly   = rightChars.Slice(0, rightCount);
-                return leftReadOnly.CompareTo(rightReadOnly, comparisonType);
-            }
-            // case: left.str == null
-            if (right.str != null) {
-                Span<char> leftChars    = stackalloc char[MaxCharCount];
-                var leftCount           = ShortString.GetChars(left.lng, left.lng2, leftChars);
-                
-                ReadOnlySpan<char> leftReadOnly    = leftChars.Slice(0, leftCount);
-                ReadOnlySpan<char> rightReadOnly   = right.str.AsSpan();
+                ReadOnlySpan<char> leftReadOnly     = left.str.AsSpan();
+                ReadOnlySpan<char> rightReadOnly    = rightChars.Slice(0, rightCount);
                 return leftReadOnly.CompareTo(rightReadOnly, comparisonType);
             } else {
                 Span<char> leftChars    = stackalloc char[MaxCharCount];
@@ -199,36 +199,40 @@ namespace Friflo.Json.Fliox
                 
                 Span<char> rightChars   = stackalloc char[MaxCharCount];
                 var rightCount          = ShortString.GetChars(right.lng, right.lng2, rightChars);
-                
-                ReadOnlySpan<char>  leftReadOnly    = leftChars. Slice(0, leftCount);
-                ReadOnlySpan<char>  rightReadOnly   = rightChars.Slice(0, rightCount);
+
+                ReadOnlySpan<char>  leftReadOnly    = leftChars.Slice(0, leftCount);
+                ReadOnlySpan<char>  rightReadOnly   = rightChars. Slice(0, rightCount);
                 return leftReadOnly.CompareTo(rightReadOnly, comparisonType);
             }
         }
         
         public static bool StringStartsWith(in JsonKey left, in JsonKey right, StringComparison comparisonType)
         {
-            if (left.type  != STRING) throw new ArgumentException("expect left.type: STRING");
-            if (right.type != STRING) throw new ArgumentException("expect right.type: STRING");
+            if (left.type   != STRING) throw new ArgumentException("expect left.type: STRING");
+            if (right.type  != STRING) throw new ArgumentException("expect right.type: STRING");
             
-            if (left.str != null) {
-                if (right.str != null) {
+            if (right.str != null) {
+                if (left.str != null) {
                     return left.str.StartsWith(right.str, comparisonType);
                 }
+                Span<char> leftChars   = stackalloc char[MaxCharCount];
+                var leftCount          = ShortString.GetChars(left.lng, left.lng2, leftChars);
+                
+                ReadOnlySpan<char> leftReadOnly     = leftChars.Slice(0, leftCount);
+                ReadOnlySpan<char> rightReadOnly    = right.str.AsSpan();
+                return leftReadOnly.StartsWith(rightReadOnly, comparisonType);
+            }
+            // --- case: right.str == null
+            int rightLength = (int)(right.lng2 >> ShortString.ShiftLength);
+            if (rightLength == 0) {
+                return true;    // early out for right: ""
+            }
+            if (left.str != null) {
                 Span<char> rightChars   = stackalloc char[MaxCharCount];
                 var rightCount          = ShortString.GetChars(right.lng, right.lng2, rightChars);
                 
-                ReadOnlySpan<char> leftReadOnly    = left.str.AsSpan();
-                ReadOnlySpan<char> rightReadOnly   = rightChars.Slice(0, rightCount);
-                return leftReadOnly.StartsWith(rightReadOnly, comparisonType);
-            }
-            // case: left.str == null
-            if (right.str != null) {
-                Span<char> leftChars    = stackalloc char[MaxCharCount];
-                var leftCount           = ShortString.GetChars(left.lng, left.lng2, leftChars);
-                
-                ReadOnlySpan<char> leftReadOnly    = leftChars.Slice(0, leftCount);
-                ReadOnlySpan<char> rightReadOnly   = right.str.AsSpan();
+                ReadOnlySpan<char> leftReadOnly     = left.str.AsSpan();
+                ReadOnlySpan<char> rightReadOnly    = rightChars.Slice(0, rightCount);
                 return leftReadOnly.StartsWith(rightReadOnly, comparisonType);
             } else {
                 Span<char> leftChars    = stackalloc char[MaxCharCount];
@@ -236,9 +240,9 @@ namespace Friflo.Json.Fliox
                 
                 Span<char> rightChars   = stackalloc char[MaxCharCount];
                 var rightCount          = ShortString.GetChars(right.lng, right.lng2, rightChars);
-                
-                ReadOnlySpan<char>  leftReadOnly    = leftChars. Slice(0, leftCount);
-                ReadOnlySpan<char>  rightReadOnly   = rightChars.Slice(0, rightCount);
+
+                ReadOnlySpan<char>  leftReadOnly    = leftChars.Slice(0, leftCount);
+                ReadOnlySpan<char>  rightReadOnly   = rightChars. Slice(0, rightCount);
                 return leftReadOnly.StartsWith(rightReadOnly, comparisonType);
             }
         }
