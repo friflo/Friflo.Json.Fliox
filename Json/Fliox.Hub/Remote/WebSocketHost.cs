@@ -7,7 +7,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Net.WebSockets;
-using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host.Event;
@@ -60,8 +59,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
         }
 
         
-        private  static readonly   Regex   RegExLineFeed   = new Regex(@"\s+");
-        private  static readonly   bool    LogMessage      = false;
+        // private  static readonly   Regex   RegExLineFeed   = new Regex(@"\s+");
+        private     static readonly   bool    LogMessage      = false;
         
         /// <summary>
         /// Loop is purely I/O bound => don't wrap in
@@ -91,8 +90,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 var remoteEvent = await sendQueue.DequeMessagesAsync(messages).ConfigureAwait(false);
                 foreach (var message in messages) {
                     if (LogMessage) {
-                        var msg = RegExLineFeed.Replace(message.AsString(), "");
-                        Logger.Log(HubLog.Info, msg);
+                        Logger.Log(HubLog.Info, message.AsString());
                     }
                     var arraySegment = message.AsReadOnlyMemory();
                     // if (sendMessage.Count > 100000) Console.WriteLine($"SendLoop. size: {sendMessage.Count}");
