@@ -3,7 +3,7 @@
 
 using System;
 using System.Collections.Generic;
-using Friflo.Json.Burst.Utils;
+using Friflo.Json.Tests.Common.UnitTest.Misc;
 using Friflo.Json.Tests.Common.UnitTest.Misc.LabString;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;

@@ -4,7 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using Friflo.Json.Burst.Utils;
+using Friflo.Json.Tests.Common.UnitTest.Misc;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
 
