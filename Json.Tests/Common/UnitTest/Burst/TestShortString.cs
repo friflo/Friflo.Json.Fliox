@@ -61,8 +61,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
             {
                 var input = new Bytes("");
                 ShortString.BytesToLongLong(input, out long lng, out long lng2);
-                AreEqual(0, lng);
-                AreEqual(0, lng2);
+                AreEqual(0x_00_00_00_00_00_00_00_00, lng);
+                AreEqual(0x_00_00_00_00_00_00_00_00, lng2);
                 
                 ShortString.LongLongToString(lng, lng2, out string result);
                 AreEqual("", result);
@@ -91,6 +91,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
             AssertStartsCompare("a string length > 15", "b",                    -1);
             AssertStartsCompare("a",                    "b string length > 15", -1);
             AssertStartsCompare("a string length > 15", "b string length > 15", -1);
+            //
+            AssertStartsCompare("a",                    "a",                     0);
+            AssertStartsCompare("",                     "",                      0);
+            AssertStartsCompare("a string length > 15", "a string length > 15",  0);
+            //
+            AssertStartsCompare("b",                    "a",                     1);
+            AssertStartsCompare("b string length > 15", "a",                     1);
+            AssertStartsCompare("b",                    "a string length > 15",  1);
+            AssertStartsCompare("b string length > 15", "a string length > 15",  1);
         }
         
         private static void AssertStartsCompare(string left, string right, int expected) {
