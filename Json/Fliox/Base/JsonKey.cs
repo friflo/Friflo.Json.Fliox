@@ -219,6 +219,7 @@ namespace Friflo.Json.Fliox
                 if (left.str != null) {
                     return left.str.StartsWith(right.str, comparisonType);
                 }
+                // --- case: only left is short string
                 Span<char> leftChars   = stackalloc char[MaxCharCount];
                 var leftCount          = ShortString.GetChars(left.lng, left.lng2, leftChars);
                 
@@ -226,7 +227,7 @@ namespace Friflo.Json.Fliox
                 ReadOnlySpan<char> rightReadOnly    = right.str.AsSpan();
                 return leftReadOnly.StartsWith(rightReadOnly, comparisonType);
             }
-            // --- case: right.str == null
+            // --- case: right.str == null  =>  only right is short string
             int rightLength = (int)(right.lng2 >> ShortString.ShiftLength);
             if (rightLength == 0) {
                 return true;    // early out for right: ""
@@ -238,16 +239,19 @@ namespace Friflo.Json.Fliox
                 ReadOnlySpan<char> leftReadOnly     = left.str.AsSpan();
                 ReadOnlySpan<char> rightReadOnly    = rightChars.Slice(0, rightCount);
                 return leftReadOnly.StartsWith(rightReadOnly, comparisonType);
+            }
+            // --- case: left and right are short strings
+            int leftLength = (int)(left.lng2 >> ShortString.ShiftLength);
+            if (rightLength > leftLength) {
+                return false;
+            }
+            if (rightLength < 8) {
+                long mask0  = 0x00ff_ffff_ffff_ffff >> (8 * (    7 - rightLength));
+                return  (left.lng & mask0)  == (right.lng & mask0);
             } else {
-                Span<char> leftChars    = stackalloc char[MaxCharCount];
-                var leftCount           = ShortString.GetChars(left.lng, left.lng2, leftChars);
-                
-                Span<char> rightChars   = stackalloc char[MaxCharCount];
-                var rightCount          = ShortString.GetChars(right.lng, right.lng2, rightChars);
-
-                ReadOnlySpan<char>  leftReadOnly    = leftChars.Slice(0, leftCount);
-                ReadOnlySpan<char>  rightReadOnly   = rightChars. Slice(0, rightCount);
-                return leftReadOnly.StartsWith(rightReadOnly, comparisonType);
+                long mask8  = 0x00ff_ffff_ffff_ffff >> (8 * (8 + 7 - rightLength));
+                return   left.lng           ==  right.lng &&
+                        (left.lng2 & mask8) == (right.lng2 & mask8);
             }
         }
         

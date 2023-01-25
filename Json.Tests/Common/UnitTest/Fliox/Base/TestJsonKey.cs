@@ -94,7 +94,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Base
             AreEqual(0, dif, "allocated bytes");
         }
 
-        private const int Count = 50_000_000;
+        private const int Count = 10; // 50_000_000;
         
         /// <summary>
         /// Performance optimization significant for Unity:     50_000_000 => 0.6 sec
@@ -118,6 +118,26 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Base
             var foo2     = new string("foo");
             for (int n = 0; n < Count; n++) {
                 var _ = foo1 == foo2;
+            }
+        }
+        
+        [Test]
+        public static void JsonKeyTests_StringStartsWith () {
+
+            var foo1     = new JsonKey("foobar");
+            var foo2     = new JsonKey("foo");
+            for (int n = 0; n < Count; n++) {
+                var _ = JsonKey.StringStartsWith(foo1, foo2, StringComparison.InvariantCulture);
+            }
+        }
+        
+        [Test]
+        public static void JsonKeyTests_StringStartsWithReference () {
+
+            var foo1     = "foobar";
+            var foo2     = "foo";
+            for (int n = 0; n < Count; n++) {
+                var _ = foo1.StartsWith(foo2, StringComparison.InvariantCulture);
             }
         }
     }

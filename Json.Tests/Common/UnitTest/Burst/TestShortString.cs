@@ -117,6 +117,23 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
             AssertStartsWith("ab",                      "a", true);
             AssertStartsWith("a string length > 15",    "a", true);
             AssertStartsWith("a", "a string length > 15",    false);
+            //
+            AssertStartsWith("abcde0123456789",         "abcde0123456789",  true);
+            AssertStartsWith("abcde0123456789",         "abcde012345678",  true);
+            AssertStartsWith("abcde0123456789",         "abcde01234567",  true);
+            AssertStartsWith("abcde0123456789",         "abcde0123456",  true);
+            AssertStartsWith("abcde0123456789",         "abcde012345",  true);
+            AssertStartsWith("abcde0123456789",         "abcde01234",  true);
+            AssertStartsWith("abcde0123456789",         "abcde0123",  true);
+            AssertStartsWith("abcde0123456789",         "abcde012",  true);
+            AssertStartsWith("abcde0123456789",         "abcde01",  true);
+            AssertStartsWith("abcde0123456789",         "abcde0",  true);
+            AssertStartsWith("abcde0123456789",         "abcde",  true);
+            AssertStartsWith("abcde0123456789",         "abcd",  true);
+            AssertStartsWith("abcde0123456789",         "abc",  true);
+            AssertStartsWith("abcde0123456789",         "ab",  true);
+            AssertStartsWith("abcde0123456789",         "a",  true);
+            AssertStartsWith("abcde0123456789",         "",  true);
         }
         
         private static void AssertStartsWith(string left, string right, bool expected) {
