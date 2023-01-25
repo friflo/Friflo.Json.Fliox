@@ -6,7 +6,6 @@ using Friflo.Json.Burst;
 using Friflo.Json.Burst.Utils;
 using Friflo.Json.Fliox;
 using NUnit.Framework;
-using static System.StringComparison;
 using static NUnit.Framework.Assert;
 
 // ReSharper disable InlineOutVariableDeclaration
@@ -15,7 +14,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
     public static class TestShortString
     {
         [Test]
-        public static void TestShortStringUtils_String() {
+        public static void TestShortString_String() {
             {
                 ShortString.StringToLongLong("", out string str, out long lng, out long lng2);
                 IsNull(str);
@@ -58,7 +57,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
         }
         
         [Test]
-        public static void TestShortStringUtils_Bytes() {
+        public static void TestShortString_Bytes() {
             {
                 var input = new Bytes("");
                 ShortString.BytesToLongLong(input, out long lng, out long lng2);
@@ -87,32 +86,38 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
         }
         
         [Test]
-        public static void TestShortStringUtils_Compare() {
-            {
-                var left  = new JsonKey("a");
-                var right = new JsonKey("b");
-                var result = JsonKey.StringCompare(left, right, InvariantCulture);
-                AreEqual(-1, result); 
-            } {
-                var left  = new JsonKey("a");
-                var right = new JsonKey("bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb");
-                var result = JsonKey.StringCompare(left, right, InvariantCulture);
-                AreEqual(-1, result); 
-            } {
-                var left  = new JsonKey("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
-                var right = new JsonKey("b");
-                var result = JsonKey.StringCompare(left, right, InvariantCulture);
-                AreEqual(-1, result); 
-            } {
-                var left  = new JsonKey("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
-                var right = new JsonKey("bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb");
-                var result = JsonKey.StringCompare(left, right, InvariantCulture);
-                AreEqual(-1, result); 
-            }
+        public static void TestShortString_Compare() {
+            AssertStartsCompare("a",                    "b",                    -1);
+            AssertStartsCompare("a string length > 15", "b",                    -1);
+            AssertStartsCompare("a",                    "b string length > 15", -1);
+            AssertStartsCompare("a string length > 15", "b string length > 15", -1);
+        }
+        
+        private static void AssertStartsCompare(string left, string right, int expected) {
+            var leftKey  = new JsonKey(left);
+            var rightKey = new JsonKey(right);
+            var result   = JsonKey.StringCompare(leftKey, rightKey, StringComparison.InvariantCulture);
+            AreEqual(expected, result);
         }
         
         [Test]
-        public static void TestShortStringUtils_Append() {
+        public static void TestShortString_StartsWith() {
+            AssertStartsWith("",                        "",  true);
+            AssertStartsWith("a",                       "a", true);
+            AssertStartsWith("ab",                      "a", true);
+            AssertStartsWith("a string length > 15",    "a", true);
+            AssertStartsWith("a", "a string length > 15",    false);
+        }
+        
+        private static void AssertStartsWith(string left, string right, bool expected) {
+            var leftKey  = new JsonKey(left);
+            var rightKey = new JsonKey(right);
+            var result   = JsonKey.StringStartsWith(leftKey, rightKey, StringComparison.InvariantCulture);
+            AreEqual(expected, result);
+        }
+        
+        [Test]
+        public static void TestShortString_Append() {
             var target = new Bytes(10);
             ShortString.StringToLongLong("abc", out _, out long lng, out long lng2);
             target.AppendShortString(lng, lng2);

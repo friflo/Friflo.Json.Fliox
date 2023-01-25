@@ -17,9 +17,11 @@ namespace Friflo.Json.Burst.Utils
     public static class ShortString
     {
         // ReSharper disable once MemberCanBePrivate.Global
-        public const int MaxLength      = 15;
+        public  const int   MaxLength      = 15;
         /// <summary> shift highest byte of lng2 7 bytes right to get byte count</summary>
-        public const int ShiftLength    = 56;   
+        public  const int   ShiftLength    = 56;
+        /// <summary> <see cref="MaxLength"/> + 1 </summary>
+        private const int   ByteCount      = 16;
         
         /// <summary>
         /// If <paramref name="value"/> contains control characters => use string instance.<br/>
@@ -35,7 +37,7 @@ namespace Friflo.Json.Burst.Utils
             }
             var byteCount = Encoding.UTF8.GetByteCount(value);
             if (byteCount <= MaxLength) {
-                Span<byte> bytes        = stackalloc byte[16];
+                Span<byte> bytes        = stackalloc byte[ByteCount];
                 bytes[MaxLength]        = (byte)byteCount;
                 Encoding.UTF8.GetBytes(value, bytes);
                 fixed (byte*  bytesPtr  = &bytes[0]) 
@@ -66,7 +68,7 @@ namespace Friflo.Json.Burst.Utils
         }
         
         public static unsafe void LongLongToString(long lng, long lng2, out string str) {
-            Span<byte> bytes    = stackalloc byte[16];
+            Span<byte> bytes    = stackalloc byte[ByteCount];
             int byteCount       = (int)(lng2 >> ShiftLength); 
             fixed (byte*  bytesPtr  = &bytes[0]) {
                 var bytesLongPtr    = (long*)bytesPtr;
@@ -100,7 +102,7 @@ namespace Friflo.Json.Burst.Utils
                 }
             }
             Span<byte> src  = new Span<byte>(value.buffer, value.start, byteCount);
-            Span<byte> dst  = stackalloc byte[16];
+            Span<byte> dst  = stackalloc byte[ByteCount];
             src.CopyTo(dst);                    // copy byteCount bytes to dst 
             dst[MaxLength] = (byte)byteCount;   // set last byte to length
             
@@ -115,14 +117,15 @@ namespace Friflo.Json.Burst.Utils
             return true;
         }
         
-        public static unsafe int GetChars(long lng, long lng2, in Span<char> chars) {
-            int byteCount       = (int)(lng2 >> ShiftLength);
-            Span<byte> bytes    = stackalloc byte[byteCount];
-            fixed (byte*  bytesPtr  = &bytes[0]) {
+        public static unsafe int GetChars(long lng, long lng2, in Span<char> dst) {
+            int byteCount           = (int)(lng2 >> ShiftLength);
+            Span<byte> bytes        = stackalloc byte[ByteCount];
+            ReadOnlySpan<byte> src  = bytes.Slice(0, byteCount);
+            fixed (byte*  bytesPtr = &bytes[0]) {
                 var bytesLongPtr    = (long*)bytesPtr;
                 bytesLongPtr[0]     = lng;
                 bytesLongPtr[1]     = lng2;
-                return Encoding.UTF8.GetChars(bytes, chars);
+                return Encoding.UTF8.GetChars(src, dst);
             }
         }
     }
