@@ -15,7 +15,8 @@ namespace Friflo.Json.Fliox
 {
     /// <summary>
     /// A struct optimized to store JSON strings representing integers, strings or GUID's<br/>
-    /// E.g. <c>"12345", "article" or "550e8400-e29b-11d4-a716-446655440000"</c>
+    /// E.g. <c>"12345", "article" or "550e8400-e29b-11d4-a716-446655440000"</c><br/>
+    /// A <see cref="JsonKey"/> can also represents a <c>null</c> value. It can be tested using <see cref="IsNull"/>.<br/>
     /// </summary>
     /// <remarks>
     /// The main goal of optimization is to avoid allocations for the types mentioned above.<br/>
