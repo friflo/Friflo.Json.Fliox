@@ -18,7 +18,8 @@ namespace Friflo.Json.Burst.Utils
     {
         // ReSharper disable once MemberCanBePrivate.Global
         public const int MaxLength      = 15;
-        public const int ShiftLength    = 56;
+        /// <summary> shift highest byte of lng2 7 bytes right to get byte count</summary>
+        public const int ShiftLength    = 56;   
         
         /// <summary>
         /// If <paramref name="value"/> contains control characters => use string instance.<br/>
@@ -66,7 +67,7 @@ namespace Friflo.Json.Burst.Utils
         
         public static unsafe void LongLongToString(long lng, long lng2, out string str) {
             Span<byte> bytes    = stackalloc byte[16];
-            int byteCount       = (int)(lng2 >> ShiftLength); // shift 7 bytes right 
+            int byteCount       = (int)(lng2 >> ShiftLength); 
             fixed (byte*  bytesPtr  = &bytes[0]) {
                 var bytesLongPtr    = (long*)bytesPtr;
                 bytesLongPtr[0]     = lng;
@@ -115,7 +116,7 @@ namespace Friflo.Json.Burst.Utils
         }
         
         public static unsafe int GetChars(long lng, long lng2, in Span<char> chars) {
-            int byteCount       = (int)(lng2 >> ShiftLength); // shift 7 bytes right
+            int byteCount       = (int)(lng2 >> ShiftLength);
             Span<byte> bytes    = stackalloc byte[byteCount];
             fixed (byte*  bytesPtr  = &bytes[0]) {
                 var bytesLongPtr    = (long*)bytesPtr;
