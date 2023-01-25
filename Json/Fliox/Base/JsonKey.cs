@@ -13,6 +13,12 @@ using Browse = System.Diagnostics.DebuggerBrowsableAttribute;
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox
 {
+    /// <summary>
+    /// A struct optimized to store JSON strings representing integers, strings or GUID's<br/>
+    /// The main goal of optimization is to avoid allocations for the types mentioned above.<br/>
+    /// Integers and GUID's are stored inside the struct. Strings with length less than 15 characters are also
+    /// stored inside the struct to avoid heap allocations.
+    /// </summary>
     public readonly struct JsonKey
     {
         internal    readonly    JsonKeyType type;
