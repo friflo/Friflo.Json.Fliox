@@ -41,7 +41,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.Test
             var urlPath     = requestLine.Substring(spacePos + 1);
             var queryPos    = urlPath.IndexOf('?');
             path            = queryPos == -1 ? urlPath : urlPath.Substring(0, queryPos);
-            var baseEnd     = path.IndexOf(BaseVariable, StringComparison.InvariantCulture);
+            var baseEnd     = path.IndexOf(BaseVariable, StringComparison.Ordinal);
             if (baseEnd == -1) {
                 throw new InvalidOperationException("expect {{base}} in url. was: " +  urlPath);
             }
@@ -97,7 +97,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.Test
             result.EnsureCapacity(cookies.Length);
             
             foreach (var cookie in cookies) {
-                var assignPos   = cookie.IndexOf("=", StringComparison.InvariantCulture);
+                var assignPos   = cookie.IndexOf("=", StringComparison.Ordinal);
                 var cookieName  = cookie.Substring(0, assignPos).Trim();
                 var cookieValue = cookie.Substring(assignPos + 1).Trim();
                 result.Add(cookieName, cookieValue);

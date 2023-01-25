@@ -1,7 +1,6 @@
 // Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
-using System;
 using Friflo.Json.Burst;
 using Friflo.Json.Burst.Utils;
 using Friflo.Json.Fliox;
@@ -105,7 +104,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
         private static void AssertStartsCompare(string left, string right, int expected) {
             var leftKey  = new JsonKey(left);
             var rightKey = new JsonKey(right);
-            var result   = JsonKey.StringCompare(leftKey, rightKey, StringComparison.InvariantCulture);
+            var result   = JsonKey.StringCompare(leftKey, rightKey);
             AreEqual(expected, result);
         }
         
@@ -139,7 +138,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
         private static void AssertStartsWith(string left, string right, bool expected) {
             var leftKey  = new JsonKey(left);
             var rightKey = new JsonKey(right);
-            var result   = JsonKey.StringStartsWith(leftKey, rightKey, StringComparison.InvariantCulture);
+            var result   = JsonKey.StringStartsWith(leftKey, rightKey);
             AreEqual(expected, result);
         }
         

@@ -127,7 +127,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Base
             var foo1     = new JsonKey("foobar");
             var foo2     = new JsonKey("foo");
             for (int n = 0; n < Count; n++) {
-                var _ = JsonKey.StringStartsWith(foo1, foo2, StringComparison.InvariantCulture);
+                var _ = JsonKey.StringStartsWith(foo1, foo2);
             }
         }
         
@@ -137,7 +137,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Base
             var foo1     = "foobar";
             var foo2     = "foo";
             for (int n = 0; n < Count; n++) {
-                var _ = foo1.StartsWith(foo2, StringComparison.InvariantCulture);
+                var _ = foo1.StartsWith(foo2, StringComparison.Ordinal);
             }
         }
     }

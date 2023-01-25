@@ -36,7 +36,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc
             var member = Expression.Parameter(type, "param");
             var memberExpression = Expression.PropertyOrField( member, fieldName);
             var targetMethod = memberExpression.Type.GetMethod( "IndexOf", new Type[] { typeof(string), typeof(StringComparison) } );
-            var methodCallExpression = Expression.Call( memberExpression, targetMethod, Expression.Constant(val), Expression.Constant( StringComparison.CurrentCultureIgnoreCase ) );
+            var methodCallExpression = Expression.Call( memberExpression, targetMethod, Expression.Constant(val), Expression.Constant( StringComparison.Ordinal ) );
 
             return Expression.Lambda<Func<T, bool>>( 
                 Expression.AndAlso(

@@ -160,7 +160,7 @@ namespace Friflo.Json.Fliox.Schema.Language
             ns  = ns ?? "default";
             foreach (var replacement in replacements) {
                 var search = replacement.@namespace;
-                var pos = ns.IndexOf(search, StringComparison.InvariantCulture);
+                var pos = ns.IndexOf(search, StringComparison.Ordinal);
                 if (pos == 0) {
                     var subStr = ns.Substring(search.Length);
                     var replace = replacement.replacement;
@@ -318,7 +318,7 @@ namespace Friflo.Json.Fliox.Schema.Language
                     if (current == content)
                         continue;
                 }
-                var lastSlash   = path.LastIndexOf("/", StringComparison.InvariantCulture);
+                var lastSlash   = path.LastIndexOf("/", StringComparison.Ordinal);
                 var fileFolder  = lastSlash == -1 ? folder : path.Substring(0, lastSlash);
                 Directory.CreateDirectory(fileFolder);
                 File.WriteAllText(path, content, utf8);

@@ -28,7 +28,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
         private bool Authorize(in JsonKey databaseName) {
             if (databaseName.IsNull()) throw new ArgumentNullException(nameof(databaseName));
             if (isPrefix) {
-                return JsonKey.StringStartsWith(databaseName, database, StringComparison.InvariantCulture);
+                return JsonKey.StringStartsWith(databaseName, database);
             }
             return databaseName.IsEqual(database);
         }
