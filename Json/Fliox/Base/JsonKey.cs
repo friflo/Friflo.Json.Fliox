@@ -261,6 +261,8 @@ namespace Friflo.Json.Fliox
                     if (str == null && other.str == null) {
                         return lng == other.lng && lng2 == other.lng2;
                     }
+                    // In case one str field is null and the other is set strings are not equal as one value is a
+                    // short string (str == null) with length <= 15 and the other a string instance with length > 15.
                     return str == other.str;
                 case GUID:      return lng  == other.lng && lng2 == other.lng2;
                 case NULL:      return true;
