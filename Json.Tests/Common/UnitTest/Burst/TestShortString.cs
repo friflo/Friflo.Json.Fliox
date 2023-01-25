@@ -1,10 +1,12 @@
 // Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System;
 using Friflo.Json.Burst;
 using Friflo.Json.Burst.Utils;
 using Friflo.Json.Fliox;
 using NUnit.Framework;
+using static System.StringComparison;
 using static NUnit.Framework.Assert;
 
 // ReSharper disable InlineOutVariableDeclaration
@@ -89,22 +91,22 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
             {
                 var left  = new JsonKey("a");
                 var right = new JsonKey("b");
-                var result = JsonKey.StringCompare(left, right);
+                var result = JsonKey.StringCompare(left, right, InvariantCulture);
                 AreEqual(-1, result); 
             } {
                 var left  = new JsonKey("a");
                 var right = new JsonKey("bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb");
-                var result = JsonKey.StringCompare(left, right);
+                var result = JsonKey.StringCompare(left, right, InvariantCulture);
                 AreEqual(-1, result); 
             } {
                 var left  = new JsonKey("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
                 var right = new JsonKey("b");
-                var result = JsonKey.StringCompare(left, right);
+                var result = JsonKey.StringCompare(left, right, InvariantCulture);
                 AreEqual(-1, result); 
             } {
                 var left  = new JsonKey("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
                 var right = new JsonKey("bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb");
-                var result = JsonKey.StringCompare(left, right);
+                var result = JsonKey.StringCompare(left, right, InvariantCulture);
                 AreEqual(-1, result); 
             }
         }

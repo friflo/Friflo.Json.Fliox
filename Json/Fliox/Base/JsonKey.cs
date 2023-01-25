@@ -8,7 +8,6 @@ using Friflo.Json.Burst.Utils;
 using Friflo.Json.Fliox.Mapper;
 using static Friflo.Json.Fliox.JsonKeyType;
 using static System.Diagnostics.DebuggerBrowsableState;
-using static System.StringComparison;
 using Browse = System.Diagnostics.DebuggerBrowsableAttribute;
 
 // ReSharper disable once CheckNamespace
@@ -164,20 +163,20 @@ namespace Friflo.Json.Fliox
         
         private const int MaxCharCount = 16; // Encoding.UTF8.GetMaxCharCount(15);
         
-        public static int StringCompare(in JsonKey left, in JsonKey right) {
+        public static int StringCompare(in JsonKey left, in JsonKey right, StringComparison comparisonType) {
             if (left.type  != STRING) throw new ArgumentException("expect left.type: STRING");
             if (right.type != STRING) throw new ArgumentException("expect right.type: STRING");
             
             if (left.str != null) {
                 if (right.str != null) {
-                    return string.Compare(left.str, right.str, InvariantCulture);
+                    return string.Compare(left.str, right.str, comparisonType);
                 }
                 Span<char> rightChars   = stackalloc char[MaxCharCount];
                 var rightCount          = ShortString.GetChars(right.lng, right.lng2, rightChars);
                 
                 ReadOnlySpan<char> leftReadOnly    = left.str.AsSpan();
                 ReadOnlySpan<char> rightReadOnly   = rightChars.Slice(0, rightCount);
-                return leftReadOnly.CompareTo(rightReadOnly, InvariantCulture);
+                return leftReadOnly.CompareTo(rightReadOnly, comparisonType);
             }
             // case: left.str == null
             if (right.str != null) {
@@ -186,7 +185,7 @@ namespace Friflo.Json.Fliox
                 
                 ReadOnlySpan<char> leftReadOnly    = leftChars.Slice(0, leftCount);
                 ReadOnlySpan<char> rightReadOnly   = right.str.AsSpan();
-                return leftReadOnly.CompareTo(rightReadOnly, InvariantCulture);
+                return leftReadOnly.CompareTo(rightReadOnly, comparisonType);
             } else {
                 Span<char> leftChars    = stackalloc char[MaxCharCount];
                 var leftCount           = ShortString.GetChars(left.lng, left.lng2, leftChars);
@@ -196,7 +195,7 @@ namespace Friflo.Json.Fliox
                 
                 ReadOnlySpan<char>  leftReadOnly    = leftChars. Slice(0, leftCount);
                 ReadOnlySpan<char>  rightReadOnly   = rightChars.Slice(0, rightCount);
-                return leftReadOnly.CompareTo(rightReadOnly, InvariantCulture);
+                return leftReadOnly.CompareTo(rightReadOnly, comparisonType);
             }
         }
         
