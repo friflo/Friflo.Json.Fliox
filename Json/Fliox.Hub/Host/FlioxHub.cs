@@ -308,12 +308,6 @@ namespace Friflo.Json.Fliox.Hub.Host
             var databaseName = new JsonKey(name);
             return extensionDbs.TryGetValue(databaseName, out value);
         }
-        
-        public EntityDatabase GetDatabase(in JsonKey name) {
-            if (name.IsEqual(database.nameKey))
-                return database;
-            return extensionDbs[name];
-        }
 
         internal Dictionary<string, EntityDatabase> GetDatabases() {
             var result = new Dictionary<string, EntityDatabase> (extensionDbs.Count + 1) {

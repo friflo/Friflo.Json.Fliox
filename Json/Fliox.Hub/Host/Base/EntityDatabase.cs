@@ -93,10 +93,9 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// pass null by implementations.
         /// </summary>
         protected EntityDatabase(string dbName, DatabaseService service, DbOpt opt){
-            containers          = new ConcurrentDictionary<JsonKey, EntityContainer>(JsonKey.Equality);
-            if (dbName == null) throw new ArgumentNullException(nameof(dbName));
-            name    = dbName;
-            nameKey = new JsonKey(dbName);
+            containers  = new ConcurrentDictionary<JsonKey, EntityContainer>(JsonKey.Equality);
+            name        = dbName ?? throw new ArgumentNullException(nameof(dbName));
+            nameKey     = new JsonKey(dbName);
             
             customContainerName = (opt ?? DbOpt.Default).customContainerName;
             this.service        = service ?? new DatabaseService();
