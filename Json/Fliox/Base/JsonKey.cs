@@ -24,6 +24,7 @@ namespace Friflo.Json.Fliox
     /// </remarks>
     public readonly struct JsonKey
     {
+        // TODO could store type in long lng2 to increase length of short strings from 15 to 22 by using unused bytes in enum
         internal    readonly    JsonKeyType type;
         internal    readonly    string      str;
         internal    readonly    long        lng;  // long  |  lower  64 bits for Guid  | lower  8 bytes for UTF-8 string
