@@ -17,8 +17,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
             {
                 ShortString.StringToLongLong("", out string str, out long lng, out long lng2);
                 IsNull(str);
-                AreEqual(0, lng);
-                AreEqual(0, lng2);
+                AreEqual(0x_00_00_00_00_00_00_00_00, lng);
+                AreEqual(0x_00_00_00_00_00_00_00_00, lng2);
                 
                 ShortString.LongLongToString(lng, lng2, out string result);
                 AreEqual("", result);
@@ -27,6 +27,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                 IsNull(str);
                 AreEqual(0x_00_00_00_00_00_00_00_61, lng);
                 AreEqual(0x_01_00_00_00_00_00_00_00, lng2);
+                //           ^-- length byte
                 
                 ShortString.LongLongToString(lng, lng2, out string result);
                 AreEqual("a", result);
@@ -38,8 +39,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                 
                 ShortString.LongLongToString(lng, lng2, out string result);
                 AreEqual("012345678901234", result);
-            }
-            {
+            } {
+                ShortString.StringToLongLong("☀🌎♥👋", out string str, out long lng, out long lng2);
+                IsNull(str);
+                AreEqual(0x_E2_8E_8C_9F_F0_80_98_E2, (ulong)lng);
+                AreEqual(0x_0E_00_8B_91_9F_F0_A5_99, lng2);
+                
+                ShortString.LongLongToString(lng, lng2, out string result);
+                AreEqual("☀🌎♥👋", result);
+            } {
                 ShortString.StringToLongLong("0123456789012345", out string str, out long lng, out long lng2);
                 AreEqual("0123456789012345", str);
                 AreEqual(0, lng);
