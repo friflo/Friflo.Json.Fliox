@@ -94,7 +94,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                         var msg = RegExLineFeed.Replace(message.AsString(), "");
                         Logger.Log(HubLog.Info, msg);
                     }
-                    var arraySegment = message.AsArraySegment();
+                    var arraySegment = message.AsReadOnlyMemory();
                     // if (sendMessage.Count > 100000) Console.WriteLine($"SendLoop. size: {sendMessage.Count}");
                     await webSocket.SendAsync(arraySegment, WebSocketMessageType.Text, true, CancellationToken.None).ConfigureAwait(false);
                 }

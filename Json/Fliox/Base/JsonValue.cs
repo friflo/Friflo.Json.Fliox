@@ -34,7 +34,8 @@ namespace Friflo.Json.Fliox
         public   override   string      ToString()          => AsString();
         public              string      AsString()          => array == null ? "null" : Encoding.UTF8.GetString(array, start, count);
         
-        public  ArraySegment<byte>      AsArraySegment()    => new ArraySegment<byte>   (Array, start, Count);
+        /* removed AsArraySegment() as it enables mutation of the internal array
+        public  ArraySegment<byte>      AsArraySegment()    => new ArraySegment<byte>   (Array, start, Count); */
         public  ReadOnlyMemory<byte>    AsReadOnlyMemory()  => new ReadOnlyMemory<byte> (Array, start, Count);
         public  ByteArrayContent        AsByteArrayContent()=> new ByteArrayContent     (Array, start, Count); // todo may remove dependency System.Net.Http
         public  ReadOnlySpan<byte>      AsReadOnlySpan()    => new ReadOnlySpan<byte>   (Array, start, Count);
