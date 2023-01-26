@@ -143,7 +143,7 @@ namespace Friflo.Json.Fliox
         
         private const int MaxCharCount = 16; // Encoding.UTF8.GetMaxCharCount(15);
         
-        public static int StringCompare(in JsonKey left, in JsonKey right)
+        internal static int StringCompare(in JsonKey left, in JsonKey right)
         {
             if (left.type   != STRING) throw new ArgumentException("expect left.type: STRING");
             if (right.type  != STRING) throw new ArgumentException("expect right.type: STRING");
@@ -151,16 +151,6 @@ namespace Friflo.Json.Fliox
             var leftStr     = new ShortString(left);
             var rightStr    = new ShortString(right);
             return ShortString.StringCompare(leftStr, rightStr);
-        }
-        
-        public static bool StringStartsWith(in JsonKey left, in JsonKey right)
-        {
-            if (left.type   != STRING) throw new ArgumentException("expect left.type: STRING");
-            if (right.type  != STRING) throw new ArgumentException("expect right.type: STRING");
-            
-            var leftStr     = new ShortString(left);
-            var rightStr    = new ShortString(right);
-            return ShortString.StringStartsWith(leftStr, rightStr);
         }
         
         public bool IsEqual(in JsonKey other) {

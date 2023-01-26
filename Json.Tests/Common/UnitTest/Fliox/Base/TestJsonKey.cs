@@ -93,52 +93,5 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Base
             AreEqual(count, list.Count);
             AreEqual(0, dif, "allocated bytes");
         }
-
-        private const int Count = 10; // 50_000_000;
-        
-        /// <summary>
-        /// Performance optimization significant for Unity:     50_000_000 => 0.6 sec
-        /// </summary>
-        [Test]
-        public static void JsonKeyTests_StringEquals () {
-
-            var foo1     = new JsonKey("foo");
-            var foo2     = new JsonKey("foo");
-            for (int n = 0; n < Count; n++) {
-                var _ = foo1.IsEqual(foo2);
-            }
-        }
-        
-        /// <summary>
-        /// Reference string comparison:                        50_000_000 => 13.0 sec
-        /// </summary>
-        [Test]
-        public static void JsonKeyTests_StringEqualsReference () {
-            var foo1     = new string("foo");
-            var foo2     = new string("foo");
-            for (int n = 0; n < Count; n++) {
-                var _ = foo1 == foo2;
-            }
-        }
-        
-        [Test]
-        public static void JsonKeyTests_StringStartsWith () {
-
-            var foo1     = new JsonKey("foobar");
-            var foo2     = new JsonKey("foo");
-            for (int n = 0; n < Count; n++) {
-                var _ = JsonKey.StringStartsWith(foo1, foo2);
-            }
-        }
-        
-        [Test]
-        public static void JsonKeyTests_StringStartsWithReference () {
-
-            var foo1     = "foobar";
-            var foo2     = "foo";
-            for (int n = 0; n < Count; n++) {
-                var _ = foo1.StartsWith(foo2, StringComparison.Ordinal);
-            }
-        }
     }
 }

@@ -1,6 +1,7 @@
 // Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System;
 using Friflo.Json.Burst;
 using Friflo.Json.Burst.Utils;
 using Friflo.Json.Fliox;
@@ -8,7 +9,7 @@ using NUnit.Framework;
 using static NUnit.Framework.Assert;
 
 // ReSharper disable InlineOutVariableDeclaration
-namespace Friflo.Json.Tests.Common.UnitTest.Burst
+namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Base
 {
     public static class TestShortString
     {
@@ -102,9 +103,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
         }
         
         private static void AssertStartsCompare(string left, string right, int expected) {
-            var leftKey  = new JsonKey(left);
-            var rightKey = new JsonKey(right);
-            var result   = JsonKey.StringCompare(leftKey, rightKey);
+            var leftKey  = new ShortString(left);
+            var rightKey = new ShortString(right);
+            var result   = ShortString.StringCompare(leftKey, rightKey);
             AreEqual(expected, result);
         }
         
@@ -136,9 +137,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
         }
         
         private static void AssertStartsWith(string left, string right, bool expected) {
-            var leftKey  = new JsonKey(left);
-            var rightKey = new JsonKey(right);
-            var result   = JsonKey.StringStartsWith(leftKey, rightKey);
+            var leftKey  = new ShortString(left);
+            var rightKey = new ShortString(right);
+            var result   = ShortString.StringStartsWith(leftKey, rightKey);
             AreEqual(expected, result);
         }
         
@@ -148,6 +149,53 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
             ShortStringUtils.StringToLongLong("abc", out _, out long lng, out long lng2);
             target.AppendShortString(lng, lng2);
             AreEqual("abc", target.AsString());
+        }
+        
+        private const int Count = 10; // 50_000_000;
+        
+        [Test]
+        public static void TestShortString_StringStartsWith () {
+
+            var foo1     = new ShortString("foobar");
+            var foo2     = new ShortString("foo");
+            for (int n = 0; n < Count; n++) {
+                var _ = ShortString.StringStartsWith(foo1, foo2);
+            }
+        }
+        
+        [Test]
+        public static void TestShortString_StringStartsWithReference () {
+
+            var foo1     = "foobar";
+            var foo2     = "foo";
+            for (int n = 0; n < Count; n++) {
+                var _ = foo1.StartsWith(foo2, StringComparison.Ordinal);
+            }
+        }
+        
+        /// <summary>
+        /// Performance optimization significant for Unity:     50_000_000 => 0.6 sec
+        /// </summary>
+        [Test]
+        public static void TestShortString_StringEquals () {
+
+            var foo1     = new ShortString("foo");
+            var foo2     = new ShortString("foo");
+            for (int n = 0; n < Count; n++) {
+                var _ = foo1.IsEqual(foo2);
+            }
+        }
+        
+        /// <summary>
+        /// Reference string comparison:                        50_000_000 => 13.0 sec
+        /// </summary>
+        [Test]
+        public static void TestShortString_StringEqualsReference () {
+            var foo1     = new string("foo");
+            var foo2     = new string("foo");
+            for (int n = 0; n < Count; n++) {
+                var _ = foo1 == foo2;
+            }
         }
     }
 }
