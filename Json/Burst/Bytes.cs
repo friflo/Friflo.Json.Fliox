@@ -207,13 +207,12 @@ namespace Friflo.Json.Burst
             return true;
         }
         
-        public const int MinGuidLength = 36; // 12345678-1234-1234-1234-123456789abc
-        public const int MaxGuidLength = 68; // {0x12345678,0x1234,0x1234,{0x12,0x34,0x12,0x34,0x56,0x78,0x9a,0xbc}}
+        public const int GuidLength = 36; // 12345678-1234-1234-1234-123456789abc
 
         /// In case of Unity <paramref name="str"/> is not null. Otherwise null.
         public bool TryParseGuid(out Guid guid, out string str) {
             int len = end - start;
-            if (len < MinGuidLength || MaxGuidLength < len) {
+            if (len != GuidLength) {
                 str = null;
                 guid = new Guid();
                 return false;
@@ -236,7 +235,7 @@ namespace Friflo.Json.Burst
             var str = guid.ToString();
             AppendString(str);
 #else
-            Span<char> span = stackalloc char[MaxGuidLength];
+            Span<char> span = stackalloc char[GuidLength];
             if (!guid.TryFormat(span, out int charsWritten))
                 throw new InvalidOperationException("AppendGuid() failed");
             EnsureCapacity(charsWritten);

@@ -373,10 +373,10 @@ namespace Friflo.Json.Fliox
                     var guidStr = Guid.ToString();
                     sb.Append(guidStr);
 #else
-                    Span<char> span = stackalloc char[Bytes.MinGuidLength];
+                    Span<char> span = stackalloc char[Bytes.GuidLength];
                     if (!Guid.TryFormat(span, out int charsWritten))
                         throw new InvalidOperationException("AppendGuid() failed");
-                    if (charsWritten != Bytes.MinGuidLength)
+                    if (charsWritten != Bytes.GuidLength)
                         throw new InvalidOperationException($"Unexpected Guid length. Was: {charsWritten}");
                     sb.Append(span);
 #endif
