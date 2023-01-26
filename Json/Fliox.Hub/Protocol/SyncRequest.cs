@@ -39,7 +39,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol
         [Required]  public  List<SyncRequestTask>   tasks;
         /// <summary>database name the <see cref="tasks"/> apply to. null to access the default database</summary>
         [Serialize                                ("db")]
-                    public  JsonKey                 database;
+                    public  ShortString             database;
         /// <summary>optional JSON value - can be used to describe a request</summary>
                     public  JsonValue               info;
         

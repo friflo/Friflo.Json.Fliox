@@ -21,7 +21,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol
     {
         /// <summary>for debugging - not used by Protocol</summary>
         [Serialize                                ("db")]
-                    public  JsonKey                 database;
+                    public  ShortString             database;
         /// <summary>list of task results corresponding to the <see cref="SyncRequest.tasks"/> in a <see cref="SyncRequest"/></summary>
                     public  List<SyncTaskResult>    tasks;
         /// <summary>entities as results from the <see cref="SyncRequest.tasks"/> in a <see cref="SyncRequest"/>

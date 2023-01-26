@@ -32,7 +32,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
         // --- internal
         internal readonly   ConcurrentDictionary<JsonKey, Empty>    clients;        // key: clientId
         /// <b>Note</b> requires lock when accessing. Did not use ConcurrentDictionary to avoid heap allocation
-        internal readonly   Dictionary<JsonKey, RequestCount>       requestCounts;  // key: database
+        internal readonly   Dictionary<ShortString, RequestCount>   requestCounts;  // key: database
         private             HashSet<string>                         groups;         // can be null
         
         public static readonly  JsonKey   AnonymousId = new JsonKey("anonymous");
@@ -40,7 +40,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
 
         internal User (in JsonKey userId, string token) {
             clients             = new ConcurrentDictionary<JsonKey, Empty>(JsonKey.Equality);
-            requestCounts       = new Dictionary<JsonKey, RequestCount>(JsonKey.Equality);
+            requestCounts       = new Dictionary<ShortString, RequestCount>(ShortString.Equality);
             this.userId         = userId;
             this.token          = token;
         }

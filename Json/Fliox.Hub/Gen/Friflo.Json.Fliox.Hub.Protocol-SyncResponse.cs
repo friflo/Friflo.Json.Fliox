@@ -19,7 +19,7 @@ namespace Gen.Friflo.Json.Fliox.Hub.Protocol
             switch (field.genIndex) {
                 case Gen_reqId:      obj.reqId      = reader.ReadInt32Null (field, out success);  return success;
                 case Gen_clientId:   obj.clientId   = reader.ReadJsonKey   (field, obj.clientId,   out success);  return success;
-                case Gen_database:   obj.database   = reader.ReadJsonKey   (field, obj.database,   out success);  return success;
+                case Gen_database:   obj.database   = reader.ReadShortString (field, obj.database,   out success);  return success;
                 case Gen_tasks:      obj.tasks      = reader.ReadClass     (field, obj.tasks,      out success);  return success;
                 case Gen_containers: obj.containers = reader.ReadClass     (field, obj.containers, out success);  return success;
                 case Gen_info:       obj.info       = reader.ReadJsonValue (field, out success);  return success;
@@ -30,7 +30,7 @@ namespace Gen.Friflo.Json.Fliox.Hub.Protocol
         private static void Write(ref SyncResponse obj, PropField[] fields, ref Writer writer, ref bool firstMember) {
             writer.WriteInt32Null (fields[Gen_reqId],      obj.reqId,      ref firstMember);
             writer.WriteJsonKey   (fields[Gen_clientId],   obj.clientId,   ref firstMember);
-            writer.WriteJsonKey   (fields[Gen_database],   obj.database,   ref firstMember);
+            writer.WriteShortString (fields[Gen_database],   obj.database,   ref firstMember);
             writer.WriteClass     (fields[Gen_tasks],      obj.tasks,      ref firstMember);
             writer.WriteClass     (fields[Gen_containers], obj.containers, ref firstMember);
             writer.WriteJsonValue (fields[Gen_info],       obj.info,       ref firstMember);

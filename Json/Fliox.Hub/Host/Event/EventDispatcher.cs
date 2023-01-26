@@ -153,8 +153,8 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         
     #region - add / remove subscriptions
         internal bool SubscribeMessage(
-            in JsonKey database,    SubscribeMessage subscribe,     User       user,
-            in JsonKey clientId,    EventReceiver    eventReceiver, out string error)
+            in ShortString database,    SubscribeMessage subscribe,     User       user,
+            in JsonKey clientId,        EventReceiver    eventReceiver, out string error)
         {
             if (eventReceiver == null) {
                 error = MissingEventReceiver; 
@@ -169,8 +169,8 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         }
         
         internal bool SubscribeChanges (
-            in JsonKey database,   SubscribeChanges subscribe,     User        user,
-            in JsonKey clientId,   EventReceiver    eventReceiver, out string  error)
+            in ShortString database,    SubscribeChanges subscribe,     User        user,
+            in JsonKey clientId,        EventReceiver    eventReceiver, out string  error)
         {
             if (eventReceiver == null) {
                 error = MissingEventReceiver; 
@@ -204,9 +204,9 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             }
         }
         
-        internal Dictionary<JsonKey, DatabaseSubs> GetDatabaseSubs(EventSubClient subClient) {
+        internal Dictionary<ShortString, DatabaseSubs> GetDatabaseSubs(EventSubClient subClient) {
             lock (intern.monitor) {
-                return new Dictionary<JsonKey, DatabaseSubs>(subClient.databaseSubs, JsonKey.Equality);
+                return new Dictionary<ShortString, DatabaseSubs>(subClient.databaseSubs, ShortString.Equality);
             }
         }
         
@@ -236,7 +236,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         }
         
         /// <summary>method is thread safe </summary>
-        public void SendRawSyncEvent(in JsonKey database, in ShortString container, in RawSyncEvent syncEvent, ObjectWriter writer) {
+        public void SendRawSyncEvent(in ShortString database, in ShortString container, in RawSyncEvent syncEvent, ObjectWriter writer) {
             ClientDbSubs[] databaseSubsArray;
             lock (intern.monitor) {
                 if (!intern.databaseSubsMap.map.TryGetValue(database, out databaseSubsArray)) {
@@ -260,7 +260,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         private static readonly     JsonValue   Ev = new JsonValue("\"ev\"");
         
         /// <summary>method is thread safe </summary>
-        public void SendRawEventMessage(in JsonKey database, in ShortString container, RawEventMessage eventMessage, ObjectWriter writer) {
+        public void SendRawEventMessage(in ShortString database, in ShortString container, RawEventMessage eventMessage, ObjectWriter writer) {
             ClientDbSubs[] databaseSubsArray;
             lock (intern.monitor) {
                 if (!intern.databaseSubsMap.map.TryGetValue(database, out databaseSubsArray)) {

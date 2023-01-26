@@ -76,7 +76,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         // ReSharper disable once UnusedMember.Local - show as property to list it within the first members in Debugger
         private             EntityDatabase      Database        => database;            // not null
         /// <summary> name of the default <see cref="database"/> assigned to the <see cref="FlioxHub"/> </summary>
-        public              JsonKey             DatabaseName    => database.nameKey;    // not null
+        public              ShortString         DatabaseName    => database.nameKey;    // not null
         public   override   string              ToString()      => database.name;       // not null
         
         [DebuggerBrowsable(Never)]
@@ -126,7 +126,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         
         public   readonly   SharedEnv               sharedEnv;
         
-        internal readonly   HostStats               hostStats   = new HostStats{ requestCount = new RequestCount{ db = new JsonKey("*")} };
+        internal readonly   HostStats               hostStats   = new HostStats{ requestCount = new RequestCount{ db = new ShortString("*")} };
         [DebuggerBrowsable(Never)]
         internal readonly   List<string>            routes      = new List<string>();
 
@@ -153,7 +153,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             sharedEnv       = env  ?? SharedEnv.Default;
             this.database   = database ?? throw new ArgumentNullException(nameof(database));
             this.hostName   = hostName ?? "host";
-            extensionDbs    = new Dictionary<JsonKey, EntityDatabase>(JsonKey.Equality);
+            extensionDbs    = new Dictionary<ShortString, EntityDatabase>(ShortString.Equality);
         }
         
         public virtual void Dispose() { }  // todo - remove
@@ -271,7 +271,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             return sb.ToString();
         }
         
-        private void UpdateRequestStats(in JsonKey database, SyncRequest syncRequest, SyncContext syncContext) {
+        private void UpdateRequestStats(in ShortString database, SyncRequest syncRequest, SyncContext syncContext) {
             var user = syncContext.User;
             ClusterUtils.UpdateCountsMap(user.requestCounts, database, syncRequest);
             ref var clientId = ref syncContext.clientId;
@@ -285,9 +285,9 @@ namespace Friflo.Json.Fliox.Hub.Host
 
     #region - extension databases
         [DebuggerBrowsable(Never)]
-        private readonly  Dictionary<JsonKey, EntityDatabase>   extensionDbs;
+        private readonly  Dictionary<ShortString, EntityDatabase>   extensionDbs;
         // ReSharper disable once UnusedMember.Local - expose Dictionary as list in Debugger
-        private           IReadOnlyCollection<EntityDatabase>   ExtensionDbs => extensionDbs.Values;
+        private           IReadOnlyCollection<EntityDatabase>       ExtensionDbs => extensionDbs.Values;
         
         /// <summary>
         /// Add an <paramref name="extensionDB"/> to the Hub. The extension database is identified by its
@@ -305,7 +305,7 @@ namespace Friflo.Json.Fliox.Hub.Host
                 value = database;
                 return true;
             }
-            var databaseName = new JsonKey(name);
+            var databaseName = new ShortString(name);
             return extensionDbs.TryGetValue(databaseName, out value);
         }
 

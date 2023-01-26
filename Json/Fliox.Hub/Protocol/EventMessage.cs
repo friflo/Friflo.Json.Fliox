@@ -79,7 +79,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol
         /// The database the <see cref="tasks"/> refer to<br/>
         /// <see cref="db"/> is null if the event refers to the default <see cref="FlioxHub.database"/>
         /// </summary>
-                    public      JsonKey                 db;
+                    public      ShortString             db;
 
         /// <summary>
         /// Contains the events an application subscribed. These are:<br/>

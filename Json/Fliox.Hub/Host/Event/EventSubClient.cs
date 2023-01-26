@@ -20,43 +20,43 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
     /// A client is identified by its <see cref="clientId"/>.
     /// </summary>
     internal sealed class EventSubClient : ILogSource {
-        internal readonly   JsonKey                             clientId;   // key field
-        internal readonly   EventSubUser                        user;
-        internal            bool                                queueEvents;
-        private             EventReceiver                       eventReceiver; // can be null if created by a REST request
+        internal readonly   JsonKey                                 clientId;   // key field
+        internal readonly   EventSubUser                            user;
+        internal            bool                                    queueEvents;
+        private             EventReceiver                           eventReceiver; // can be null if created by a REST request
 
-        public              bool                                Connected => eventReceiver?.IsOpen() ?? false;
+        public              bool                                    Connected => eventReceiver?.IsOpen() ?? false;
         [DebuggerBrowsable(Never)]
-        public              IHubLogger                          Logger { get; }
+        public              IHubLogger                              Logger { get; }
         /// <summary>
         /// key: database. <b>Note</b> requires lock <see cref="EventDispatcherIntern.monitor"/>. <br/>
         /// Use thread safe <see cref="EventDispatcher.GetDatabaseSubs"/>
         /// </summary> 
         [DebuggerBrowsable(Never)]
-        internal readonly   Dictionary<JsonKey, DatabaseSubs>   databaseSubs;
+        internal readonly   Dictionary<ShortString, DatabaseSubs>   databaseSubs;
         // ReSharper disable once UnusedMember.Local - expose Dictionary as list in Debugger
-        private             ICollection<DatabaseSubs>           DatabaseSubs => databaseSubs.Values;
+        private             ICollection<DatabaseSubs>               DatabaseSubs => databaseSubs.Values;
         
-        internal            int                                 SubCount    => databaseSubs.Sum(sub => sub.Value.SubCount); 
+        internal            int                                     SubCount    => databaseSubs.Sum(sub => sub.Value.SubCount); 
         
         /// lock (<see cref="unsentSyncEvents"/>) {
-        private             int                                 eventCounter;
+        private             int                                     eventCounter;
         /// <summary>Contains all serialized <see cref="SyncEvent"/>'s not yet sent.</summary>
-        private  readonly   MessageBufferQueue<VoidMeta>        unsentSyncEvents    = new MessageBufferQueue<VoidMeta>();
+        private  readonly   MessageBufferQueue<VoidMeta>            unsentSyncEvents    = new MessageBufferQueue<VoidMeta>();
         /// <summary>Contains all serialized <see cref="EventMessage"/>'s which are sent but not acknowledged.
         /// TMeta is <see cref="EventMessage.seq"/></summary>
-        private  readonly   MessageBufferQueue<int>             sentEventMessages   = new MessageBufferQueue<int>();
+        private  readonly   MessageBufferQueue<int>                 sentEventMessages   = new MessageBufferQueue<int>();
         /// <summary>Set to true if <see cref="sentEventMessages"/> need to be resend</summary>
-        private             bool                                resendEventMessages;
+        private             bool                                    resendEventMessages;
         // }
         
-        private  readonly   EventDispatcher                     dispatcher;
+        private  readonly   EventDispatcher                         dispatcher;
 
-        internal            int                                 Seq                 => eventCounter;
+        internal            int                                     Seq                 => eventCounter;
         /// <summary> number of events stored for a client not yet acknowledged by the client </summary>
-        internal            int                                 QueuedEventsCount   => unsentSyncEvents.Count + sentEventMessages.Count;
+        internal            int                                     QueuedEventsCount   => unsentSyncEvents.Count + sentEventMessages.Count;
         
-        public   override   string                              ToString()          => $"client: '{clientId.AsString()}'";
+        public   override   string                                  ToString()          => $"client: '{clientId.AsString()}'";
         
         
         internal EventSubClient (
@@ -69,7 +69,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             this.clientId       = clientId;
             this.user           = user;
             this.dispatcher     = dispatcher;
-            databaseSubs        = new Dictionary<JsonKey, DatabaseSubs>(JsonKey.Equality);
+            databaseSubs        = new Dictionary<ShortString, DatabaseSubs>(ShortString.Equality);
         }
         
         internal bool UpdateTarget(EventReceiver eventReceiver) {

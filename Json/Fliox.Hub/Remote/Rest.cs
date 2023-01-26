@@ -92,7 +92,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         }
         
         // -------------------------------------- resource access  --------------------------------------
-        internal static async Task GetEntitiesById(RequestContext context, JsonKey database, ShortString container, JsonKey[] keys) {
+        internal static async Task GetEntitiesById(RequestContext context, ShortString database, ShortString container, JsonKey[] keys) {
             if (database.IsEqual(context.hub.database.nameKey))
                 database = default;
             var readEntities = new ReadEntities { container = container, ids = new List<JsonKey>(keys.Length)};
@@ -131,7 +131,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             }
         }
         
-        internal static async Task QueryEntities(RequestContext context, JsonKey database, ShortString container, NameValueCollection queryParams) {
+        internal static async Task QueryEntities(RequestContext context, ShortString database, ShortString container, NameValueCollection queryParams) {
             if (database.IsEqual(context.hub.database.nameKey))
                 database = default;
             var filter = CreateFilterTree(context, queryParams);
@@ -241,7 +241,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             return filterOp;
         }
         
-        internal static async Task GetEntity(RequestContext context, JsonKey database, ShortString container, string id) {
+        internal static async Task GetEntity(RequestContext context, ShortString database, ShortString container, string id) {
             if (database.IsEqual(context.hub.database.nameKey))
                 database = default;
             var hub             = context.hub;
@@ -275,7 +275,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             context.Write(content.Json, "application/json", entityStatus);
         }
         
-        internal static async Task DeleteEntities(RequestContext context, JsonKey database, ShortString container, JsonKey[] keys) {
+        internal static async Task DeleteEntities(RequestContext context, ShortString database, ShortString container, JsonKey[] keys) {
             if (database.IsEqual(context.hub.database.nameKey))
                 database = default;
             var deleteEntities  = new DeleteEntities { container = container, ids = new List<JsonKey>(keys.Length) };
@@ -345,7 +345,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         
         internal static async Task PutEntities(
             RequestContext      context,
-            JsonKey             database,
+            ShortString         database,
             ShortString         container,
             string              id,
             JsonValue           value,
@@ -408,7 +408,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         
         internal static async Task MergeEntities(
             RequestContext      context,
-            JsonKey             database,
+            ShortString         database,
             ShortString         container,
             string              id,
             JsonValue           patch,
@@ -463,7 +463,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         }
         
         // ----------------------------------------- command / message -----------------------------------------
-        internal static async Task Command(RequestContext context, JsonKey database, string command, JsonValue param) {
+        internal static async Task Command(RequestContext context, ShortString database, string command, JsonValue param) {
             var hub             = context.hub;
             var sendCommand     = new SendCommand { name = command, param = param };
             var syncRequest     = CreateSyncRequest(context, database, sendCommand, out var syncContext);
@@ -486,7 +486,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             context.Write(sendResult.result, "application/json", 200);
         }
         
-        internal static async Task Message(RequestContext context, JsonKey database, string message, JsonValue param) {
+        internal static async Task Message(RequestContext context, ShortString database, string message, JsonValue param) {
             var hub             = context.hub;
             var sendMessage     = new SendMessage { name = message, param = param };
             var syncRequest     = CreateSyncRequest(context, database, sendMessage, out var syncContext);
@@ -511,7 +511,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
 
 
         // ----------------------------------------- utils -----------------------------------------
-        private static SyncRequest CreateSyncRequest (RequestContext context, in JsonKey database, SyncRequestTask task, out SyncContext syncContext) {
+        private static SyncRequest CreateSyncRequest (RequestContext context, in ShortString database, SyncRequestTask task, out SyncContext syncContext) {
             var tasks   = new List<SyncRequestTask> { task };
             var userId  = context.headers.Cookie("fliox-user");
             var token   = context.headers.Cookie("fliox-token");

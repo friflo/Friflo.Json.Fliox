@@ -197,12 +197,12 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
     /// <summary>number of requests and tasks executed per database</summary>
     public struct RequestCount {
         /// <summary>database name</summary>
-        public              JsonKey db;
+        public              ShortString db;
         /// <summary>number of executed requests</summary>
-        public              int     requests;
+        public              int         requests;
         /// <summary>number of executed tasks</summary>
-        public              int     tasks;
+        public              int         tasks;
 
-        public override     string  ToString() => $"db: {db}, requests: {requests}, tasks: {tasks}";
+        public override     string      ToString() => $"db: {db}, requests: {requests}, tasks: {tasks}";
     }
 }

@@ -9,7 +9,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
 {
     public readonly struct DatabaseFilter
     {
-        internal   readonly     JsonKey     database;
+        internal   readonly     ShortString database;
         internal   readonly     bool        isPrefix;
         internal   readonly     string      dbLabel;
 
@@ -19,16 +19,16 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
             dbLabel     = database ?? throw new ArgumentNullException(nameof(database));
             isPrefix    = database.EndsWith("*");
             if (isPrefix) {
-                this.database = new JsonKey(database.Substring(0, database.Length - 1));
+                this.database = new ShortString(database.Substring(0, database.Length - 1));
             } else {
-                this.database = new JsonKey(database);
+                this.database = new ShortString(database);
             }
         }
         
-        private bool Authorize(in JsonKey databaseName) {
+        private bool Authorize(in ShortString databaseName) {
             if (databaseName.IsNull()) throw new ArgumentNullException(nameof(databaseName));
             if (isPrefix) {
-                return JsonKey.StringStartsWith(databaseName, database);
+                return ShortString.StringStartsWith(databaseName, database);
             }
             return databaseName.IsEqual(database);
         }
@@ -37,7 +37,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
             return Authorize(syncContext.database.nameKey);
         }
         
-        internal static bool IsAuthorizedDatabase(IEnumerable<DatabaseFilter> databaseFilters, in JsonKey databaseName) {
+        internal static bool IsAuthorizedDatabase(IEnumerable<DatabaseFilter> databaseFilters, in ShortString databaseName) {
             foreach (var authorizeDatabase in databaseFilters) {
                 if (authorizeDatabase.Authorize(databaseName))
                     return true;

@@ -23,7 +23,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
     public struct RemoteSyncEvent
     {
         /** map to <see cref="SyncEvent.usr"/> */               public  JsonKey         usr;
-        /** map to <see cref="SyncEvent.db"/> */                public  JsonKey         db;
+        /** map to <see cref="SyncEvent.db"/> */                public  ShortString     db;
         /** map to <see cref="SyncEvent.clt"/> */               public  JsonKey         clt;
         /** map to <see cref="SyncEvent.tasks"/> */             public  List<JsonValue> tasks;
     }

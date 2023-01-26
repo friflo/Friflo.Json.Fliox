@@ -1,7 +1,6 @@
 // Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
-using System;
 using System.Collections.Generic;
 using Friflo.Json.Fliox.Hub.Host.Event;
 using Friflo.Json.Fliox.Hub.Protocol;
@@ -36,9 +35,9 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
         
         // --- RequestCount
         internal static void UpdateCountsMap (
-            Dictionary<JsonKey, RequestCount>   requestCounts, // key: database
-            in JsonKey                          database,
-            SyncRequest                         syncRequest)
+            Dictionary<ShortString, RequestCount>   requestCounts, // key: database
+            in ShortString                          database,
+            SyncRequest                             syncRequest)
         {
             lock (requestCounts) {
                 if (!requestCounts.TryGetValue(database, out RequestCount requestCount)) {
@@ -56,9 +55,9 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
         }
         
         internal static void CountsMapToList(
-            List<RequestCount>                  dst,
-            Dictionary<JsonKey, RequestCount>   src,
-            string                              exclude)
+            List<RequestCount>                      dst,
+            Dictionary<ShortString, RequestCount>   src,
+            string                                  exclude)
         {
             dst.Clear();
             lock (src) {
@@ -69,7 +68,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
                     dst.Add(counts);
                 }
             }
-            dst.Sort((c1, c2) => JsonKey.StringCompare(c1.db, c2.db));
+            dst.Sort((c1, c2) => ShortString.StringCompare(c1.db, c2.db));
         }
     }
 }

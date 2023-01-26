@@ -25,7 +25,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
     {
         internal  readonly  RestRequestType     type;
         // --- path
-        internal  readonly  JsonKey             db;
+        internal  readonly  ShortString         db;
         internal  readonly  ShortString         container;
         internal  readonly  string              id;
 
@@ -49,7 +49,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         /// </summary>
         internal RestRequest(RestRequestType type, string db, string name, in JsonValue value) {
             this.type           = type;
-            this.db             = new JsonKey(db);
+            this.db             = new ShortString(db);
                  container      = default;
             this.message        = name;
             this.value          = value;
@@ -66,7 +66,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         /// </summary>
         internal RestRequest(RestRequestType type, string db, string container, JsonKey[] keys) {
             this.type           = type;
-            this.db             = new JsonKey(db);
+            this.db             = new ShortString(db);
             this.container      = new ShortString(container);
                  message        = null;
                  value          = default;
@@ -83,7 +83,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         /// </summary>
         internal RestRequest(RestRequestType type, string db, string container, string id, in JsonValue value, NameValueCollection query) {
             this.type           = type;
-            this.db             = new JsonKey(db);
+            this.db             = new ShortString(db);
             this.container      = new ShortString(container);
                  message        = null;
             this.value          = value;

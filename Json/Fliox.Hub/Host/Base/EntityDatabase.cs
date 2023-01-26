@@ -55,7 +55,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// <summary>database name</summary>
         public   readonly   string              name;                   // not null
         /// <summary>database name encoded as type <see cref="JsonKey"/></summary>
-        public   readonly   JsonKey             nameKey;                // not null
+        public   readonly   ShortString         nameKey;                // not null
         public   override   string              ToString()  => name;    // not null
         
         /// <summary> map of of containers identified by their container name </summary>
@@ -96,7 +96,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         protected EntityDatabase(string dbName, DatabaseService service, DbOpt opt){
             containers  = new ConcurrentDictionary<ShortString, EntityContainer>(ShortString.Equality);
             name        = dbName ?? throw new ArgumentNullException(nameof(dbName));
-            nameKey     = new JsonKey(dbName);
+            nameKey     = new ShortString(dbName);
             
             customContainerName = (opt ?? DbOpt.Default).customContainerName;
             this.service        = service ?? new DatabaseService();

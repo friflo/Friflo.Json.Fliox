@@ -31,13 +31,13 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         internal readonly   DatabaseSubsMap                         databaseSubsMap;
         //
         [DebuggerBrowsable(Never)]
-        internal readonly   Dictionary<JsonKey, EventSubUser>       subUsers;
+        internal readonly   Dictionary<JsonKey, EventSubUser>           subUsers;
         // ReSharper disable once UnusedMember.Local - expose Dictionary as list in Debugger
-        private             ICollection<EventSubUser>               SubUsers    => subUsers.Values;
+        private             ICollection<EventSubUser>                   SubUsers    => subUsers.Values;
         
-        private  readonly   Dictionary<JsonKey, List<ClientDbSubs>>  databaseSubsBuffer;
+        private  readonly   Dictionary<ShortString, List<ClientDbSubs>> databaseSubsBuffer;
         
-        private  readonly   Dictionary<DatabaseSubs, DatabaseSubs>  uniqueDatabaseSubsBuffer;
+        private  readonly   Dictionary<DatabaseSubs, DatabaseSubs>      uniqueDatabaseSubsBuffer;
         
         internal EventDispatcherIntern(EventDispatcher dispatcher) {
             eventDispatcher         = dispatcher;
@@ -46,14 +46,14 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             sendClientsMap          = new Dictionary<JsonKey, EventSubClient>   (JsonKey.Equality);
             subUsers                = new Dictionary<JsonKey, EventSubUser>     (JsonKey.Equality);
             databaseSubsMap         = new DatabaseSubsMap(null);
-            databaseSubsBuffer      = new Dictionary<JsonKey, List<ClientDbSubs>>(JsonKey.Equality); 
+            databaseSubsBuffer      = new Dictionary<ShortString, List<ClientDbSubs>>(ShortString.Equality); 
             uniqueDatabaseSubsBuffer= new Dictionary<DatabaseSubs, DatabaseSubs>(DatabaseSubs.Equality);
         }
         
         /// <summary> requires lock <see cref="monitor"/> </summary>
         internal void SubscribeChanges (
-            in JsonKey database,   SubscribeChanges subscribe,     User        user,
-            in JsonKey clientId,   EventReceiver    eventReceiver)
+            in ShortString database,    SubscribeChanges subscribe,     User        user,
+            in JsonKey clientId,        EventReceiver    eventReceiver)
         {
             EventSubClient subClient;
             if (subscribe.changes.Count == 0) {
@@ -114,8 +114,8 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         
         /// <summary> requires lock <see cref="monitor"/> </summary>
         internal void SubscribeMessage(
-            in JsonKey database,    SubscribeMessage subscribe,     User user,
-            in JsonKey clientId,    EventReceiver    eventReceiver)
+            in ShortString database,    SubscribeMessage subscribe,     User user,
+            in JsonKey clientId,        EventReceiver    eventReceiver)
         {
             EventSubClient subClient;
             var remove = subscribe.remove;
@@ -198,10 +198,10 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
     
     internal readonly struct DatabaseSubsMap
     {
-        internal readonly Dictionary<JsonKey, ClientDbSubs[]> map;
+        internal readonly Dictionary<ShortString, ClientDbSubs[]> map;
         
         internal DatabaseSubsMap(object dummy) {
-            map = new Dictionary<JsonKey, ClientDbSubs[]>(JsonKey.Equality);
+            map = new Dictionary<ShortString, ClientDbSubs[]>(ShortString.Equality);
         }
     }
 
