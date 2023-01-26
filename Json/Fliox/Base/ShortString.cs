@@ -13,6 +13,20 @@ using Browse = System.Diagnostics.DebuggerBrowsableAttribute;
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox
 {
+    /// <summary>
+    /// A struct optimized to store strings with the focus on minimizing memory allocations<br/>
+    /// In contrast to <see cref="JsonKey"/> it supports to check strings with <see cref="StringStartsWith"/><br/>
+    /// <br/> 
+    /// It is intended to be used for database, container, message and command names.<br/>
+    /// <see cref="StringStartsWith"/> is optimized to enable filtering names by using a prefix - e.g. <c>'std.*'</c>
+    /// used for authorization and subscriptions filters.  
+    /// </summary>
+    /// <remarks>
+    /// The main optimization goal is to avoid allocations for the types mentioned above.<br/>
+    /// Strings with length less than 15 characters are stored inside the struct to avoid heap allocations.<br/>
+    /// A <see cref="ShortString"/> can also represents a <c>null</c> value. It can be tested using <see cref="IsNull"/>.<br/>
+    /// </remarks>
+    /// /// <seealso cref="JsonKey"/>
     public readonly struct ShortString
     {
         internal    readonly    bool        notNull;

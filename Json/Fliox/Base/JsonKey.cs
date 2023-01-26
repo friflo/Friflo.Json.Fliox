@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 using System.Text;
 using Friflo.Json.Burst;
 using Friflo.Json.Burst.Utils;
@@ -14,15 +15,20 @@ using Browse = System.Diagnostics.DebuggerBrowsableAttribute;
 namespace Friflo.Json.Fliox
 {
     /// <summary>
-    /// A struct optimized to store JSON strings representing integers, strings or GUID's<br/>
+    /// A struct optimized to store strings representing integers, strings or GUID's<br/>
     /// E.g. <c>"12345", "article" or "550e8400-e29b-11d4-a716-446655440000"</c><br/>
-    /// A <see cref="JsonKey"/> can also represents a <c>null</c> value. It can be tested using <see cref="IsNull"/>.<br/>
+    /// It is intended to be used for entity id's stored in containers.<br/>
     /// </summary>
     /// <remarks>
-    /// The main goal of optimization is to avoid allocations for the types mentioned above.<br/>
+    /// The optimization goals are:<br/>
+    /// - avoid heap allocations for the types mentioned above.<br/>
+    /// - providing a performant lookup when used as key in a <see cref="Dictionary{TKey,TValue}"/> or <see cref="HashSet{T}"/><br/>
+    /// <br/>
     /// Integers and GUID's are stored inside the struct. Strings with length less than 15 characters are also
-    /// stored inside the struct to avoid heap allocations.
+    /// stored inside the struct to avoid heap allocations.<br/>
+    /// A <see cref="JsonKey"/> can also represents a <c>null</c> value. It can be tested using <see cref="IsNull"/>.<br/>
     /// </remarks>
+    /// <seealso cref="ShortString"/>
     public readonly struct JsonKey
     {
         // TODO could store type in long lng2 to increase length of short strings from 15 to 22 by using unused bytes in enum
