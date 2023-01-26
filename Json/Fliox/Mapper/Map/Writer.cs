@@ -70,7 +70,6 @@ namespace Friflo.Json.Fliox.Mapper.Map
             Utf8JsonWriter.AppendEscString(ref bytes, in str);
         }
         
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void WriteJsonKey(in JsonKey value) {
             var str = value.str;
             if (str != null) {
@@ -84,8 +83,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
             bytes.buffer[bytes.end++] = (byte)'"';
         }
         
-
-        public void WriteJsonString(in ShortString value) {
+        public void WriteShortString(in ShortString value) {
             var str = value.str;
             if (str != null) {
                 Utf8JsonWriter.AppendEscString(ref bytes, in str);
