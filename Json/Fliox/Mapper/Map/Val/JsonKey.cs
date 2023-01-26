@@ -47,7 +47,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
             }
         }
 
-        public override JsonKey Read(ref Reader reader, JsonKey slot, out bool success) {
+        public override JsonKey Read(ref Reader reader, JsonKey value, out bool success) {
             ref var parser = ref reader.parser;
             var ev = parser.Event;
             switch (ev) {
@@ -56,7 +56,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
                     return new JsonKey();
                 case JsonEvent.ValueString:
                     success = true;
-                    return new JsonKey(ref parser.value, ref parser.valueParser, default);
+                    return new JsonKey(ref parser.value, ref parser.valueParser, value);
                 default:
                     return reader.ErrorMsg<JsonKey>("Expect string as JsonKey. ", ev, out success);
             }
