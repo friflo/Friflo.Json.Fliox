@@ -141,8 +141,6 @@ namespace Friflo.Json.Fliox
             }
         }
         
-        private const int MaxCharCount = 16; // Encoding.UTF8.GetMaxCharCount(15);
-        
         internal static int StringCompare(in JsonKey left, in JsonKey right)
         {
             if (left.type   != STRING) throw new ArgumentException("expect left.type: STRING");
@@ -207,7 +205,7 @@ namespace Friflo.Json.Fliox
                     if (str != null) {
                         return str;
                     }
-                    Span<char> chars    = stackalloc char[MaxCharCount];
+                    Span<char> chars    = stackalloc char[ShortString.MaxCharCount];
                     var length          = ShortStringUtils.GetChars(lng, lng2, chars);
                     var readOnlySpan    = chars.Slice(0, length);
                     return new string(readOnlySpan);
@@ -260,7 +258,7 @@ namespace Friflo.Json.Fliox
                         sb.Append(str);
                         break;
                     }
-                    Span<char> chars    = stackalloc char[MaxCharCount];
+                    Span<char> chars    = stackalloc char[ShortString.MaxCharCount];
                     var len             = ShortStringUtils.GetChars(lng, lng2, chars);
                     var readOnlyChars   = chars.Slice(0, len);
                     sb.Append(readOnlyChars);

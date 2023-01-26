@@ -74,7 +74,7 @@ namespace Friflo.Json.Fliox
         
         public bool IsNull() => !notNull;
         
-        private const int MaxCharCount = 16; // Encoding.UTF8.GetMaxCharCount(15);
+        internal const int MaxCharCount = 16; // Encoding.UTF8.GetMaxCharCount(15);
         
         public static int StringCompare(in ShortString left, in ShortString right)
         {
