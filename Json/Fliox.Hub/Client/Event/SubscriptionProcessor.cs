@@ -18,17 +18,17 @@ namespace Friflo.Json.Fliox.Hub.Client
     /// </summary>
     public sealed class SubscriptionProcessor : IDisposable
     {
-        private  readonly   EventContext                eventContext;
+        private  readonly   EventContext                    eventContext;
         private  readonly   Dictionary<ShortString,Changes> changes         = new Dictionary<ShortString,Changes>(ShortString.Equality);
         /// <summary> contain only <see cref="Changes"/> where <see cref="Changes.Count"/> > 0 </summary>
-        internal readonly   List<Changes>               contextChanges  = new List<Changes>();
-        internal readonly   List<Message>               messages        = new List<Message>();
-        private             ObjectMapper                objectMapper;
-        internal            int                         EventCount { get; private set ; }
-        private  readonly   List<MessageCallback>       tempCallbackHandlers    = new List<MessageCallback>();
-        private  readonly   List<MessageSubscriber>     tempSubscriptionsPrefix = new List<MessageSubscriber>();
+        internal readonly   List<Changes>                   contextChanges  = new List<Changes>();
+        internal readonly   List<Message>                   messages        = new List<Message>();
+        private             ObjectMapper                    objectMapper;
+        internal            int                             EventCount { get; private set ; }
+        private  readonly   List<MessageCallback>           tempCallbackHandlers    = new List<MessageCallback>();
+        private  readonly   List<MessageSubscriber>         tempSubscriptionsPrefix = new List<MessageSubscriber>();
         
-        public   override   string                      ToString()  => $"EventCount: {EventCount}";
+        public   override   string                          ToString()  => $"EventCount: {EventCount}";
         
         public SubscriptionProcessor() {
             eventContext = new EventContext(this);
@@ -61,7 +61,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             contextChanges.Clear();
             EventCount++;
             var db = syncEvent.db;
-            if (!db.IsNull() && !client._intern.databaseKey.IsEqual(db)) {
+            if (!db.IsNull() && !client._intern.databaseShort.IsEqual(db)) {
                 var msg = $"invalid SyncEvent db: {db}. expect: {client.DatabaseName}";
                 eventContext.Logger.Log(HubLog.Error, msg);
                 return;
@@ -84,8 +84,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             
             // --- invoke changes handlers
             foreach (var change in contextChanges) {
-                var container = change.ContainerKey;
-                client._intern.TryGetSetByName(container, out EntitySet set);
+                client._intern.TryGetSetByName(change.ContainerShort, out EntitySet set);
                 set.changeCallback?.InvokeCallback(change, eventContext);
             }
             if (contextChanges.Count > 0) {
@@ -188,7 +187,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
         
         internal Changes GetChanges (EntitySet entitySet) {
-            if (changes.TryGetValue(entitySet.nameKey, out var change))
+            if (changes.TryGetValue(entitySet.nameShort, out var change))
                 return change;
             object[] constructorParams = { entitySet, objectMapper };
             var keyType     = entitySet.KeyType;
@@ -196,7 +195,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             var genericArgs = new[] { keyType, entityType };
             var instance    = TypeMapperUtils.CreateGenericInstance(typeof(Changes<,>), genericArgs, constructorParams);
             change          = (Changes)instance;
-            changes.Add(entitySet.nameKey, change);
+            changes.Add(entitySet.nameShort, change);
             return change;
         }
     }

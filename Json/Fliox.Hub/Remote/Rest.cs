@@ -93,7 +93,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         
         // -------------------------------------- resource access  --------------------------------------
         internal static async Task GetEntitiesById(RequestContext context, ShortString database, ShortString container, JsonKey[] keys) {
-            if (database.IsEqual(context.hub.database.nameKey))
+            if (database.IsEqual(context.hub.database.nameShort))
                 database = default;
             var readEntities = new ReadEntities { container = container, ids = new List<JsonKey>(keys.Length)};
             foreach (var id in keys) {
@@ -132,7 +132,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         }
         
         internal static async Task QueryEntities(RequestContext context, ShortString database, ShortString container, NameValueCollection queryParams) {
-            if (database.IsEqual(context.hub.database.nameKey))
+            if (database.IsEqual(context.hub.database.nameShort))
                 database = default;
             var filter = CreateFilterTree(context, queryParams);
             if (filter.IsNull())
@@ -242,7 +242,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         }
         
         internal static async Task GetEntity(RequestContext context, ShortString database, ShortString container, string id) {
-            if (database.IsEqual(context.hub.database.nameKey))
+            if (database.IsEqual(context.hub.database.nameShort))
                 database = default;
             var hub             = context.hub;
             var entityId        = new JsonKey(id);
@@ -276,7 +276,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         }
         
         internal static async Task DeleteEntities(RequestContext context, ShortString database, ShortString container, JsonKey[] keys) {
-            if (database.IsEqual(context.hub.database.nameKey))
+            if (database.IsEqual(context.hub.database.nameShort))
                 database = default;
             var deleteEntities  = new DeleteEntities { container = container, ids = new List<JsonKey>(keys.Length) };
             foreach (var key in keys) {
@@ -358,7 +358,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             }
             var type        = create ? TaskType.create : TaskType.upsert;
 
-            if (database.IsEqual(context.hub.database.nameKey))
+            if (database.IsEqual(context.hub.database.nameShort))
                 database = default;
             var entities = Body2JsonValues(context, id, keyName, value, out error);
             if (error != null) {
@@ -415,7 +415,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             NameValueCollection queryParams)
         {
             var keyName     = queryParams["keyName"];
-            if (database.IsEqual(context.hub.database.nameKey))
+            if (database.IsEqual(context.hub.database.nameShort))
                 database = default;
             var patches = Body2JsonValues(context, id, keyName, patch, out string error);
             if (error != null) {

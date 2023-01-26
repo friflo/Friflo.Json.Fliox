@@ -103,9 +103,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Base
         }
         
         private static void AssertStartsCompare(string left, string right, int expected) {
-            var leftKey  = new ShortString(left);
-            var rightKey = new ShortString(right);
-            var result   = ShortString.StringCompare(leftKey, rightKey);
+            var leftShort   = new ShortString(left);
+            var rightShort  = new ShortString(right);
+            var result      = ShortString.StringCompare(leftShort, rightShort);
             AreEqual(expected, result);
         }
         
@@ -137,9 +137,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Base
         }
         
         private static void AssertStartsWith(string left, string right, bool expected) {
-            var leftKey  = new ShortString(left);
-            var rightKey = new ShortString(right);
-            var result   = ShortString.StringStartsWith(leftKey, rightKey);
+            var leftShort   = new ShortString(left);
+            var rightShort  = new ShortString(right);
+            var result      = ShortString.StringStartsWith(leftShort, rightShort);
             AreEqual(expected, result);
         }
         

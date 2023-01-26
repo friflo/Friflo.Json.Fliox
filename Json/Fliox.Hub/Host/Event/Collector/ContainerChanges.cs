@@ -20,7 +20,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event.Collector
         public   override   string          ToString() => name.AsString();
 
         internal ContainerChanges(EntityContainer entityContainer) {
-            name        = entityContainer.nameKey;
+            name        = entityContainer.nameShort;
             currentType = default;
             values      = new List<JsonValue>();
             keys        = new List<JsonKey>();

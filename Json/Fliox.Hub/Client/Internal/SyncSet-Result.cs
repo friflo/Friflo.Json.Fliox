@@ -99,7 +99,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 }
                 foreach (var createPair in creates) {
                     var id = createPair.Key;
-                    var error = new EntityError(EntityErrorType.WriteError, set.nameKey, id, taskError.message) {
+                    var error = new EntityError(EntityErrorType.WriteError, set.nameShort, id, taskError.message) {
                         taskErrorType   = taskError.type,
                         stacktrace      = taskError.stacktrace
                     };
@@ -216,7 +216,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         }
         
         private void AddEntityResponseError(in JsonKey id, Dictionary<JsonKey, EntityValue> entities, ref TaskErrorInfo entityErrorInfo) {
-            var responseError = new EntityError(EntityErrorType.ReadError, set.nameKey, id, "requested entity missing in response results");
+            var responseError = new EntityError(EntityErrorType.ReadError, set.nameShort, id, "requested entity missing in response results");
             entityErrorInfo.AddEntityError(responseError);
             var value = new EntityValue(id, responseError); 
             entities.Add(id, value);
@@ -339,7 +339,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 }
                 foreach (var patch in patches) {
                     var id      = KeyConvert.KeyToId(patch.Key); 
-                    var error   = new EntityError(EntityErrorType.PatchError, set.nameKey, id, taskError.message){
+                    var error   = new EntityError(EntityErrorType.PatchError, set.nameShort, id, taskError.message){
                         taskErrorType   = taskError.type,
                         stacktrace      = taskError.stacktrace
                     };

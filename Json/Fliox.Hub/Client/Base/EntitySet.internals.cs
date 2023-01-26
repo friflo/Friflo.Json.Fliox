@@ -21,7 +21,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
     public abstract class EntitySet
     {
         [DebuggerBrowsable(Never)] public   readonly  string          name;
-        [DebuggerBrowsable(Never)] public   readonly  ShortString     nameKey;
+        [DebuggerBrowsable(Never)] public   readonly  ShortString     nameShort;
         [DebuggerBrowsable(Never)] internal           ChangeCallback  changeCallback;
 
         internal  abstract  SyncSet     SyncSet     { get; }
@@ -46,8 +46,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         public static       void                GetRawEntities(EntitySet entitySet, List<object> result) => entitySet.GetRawEntities(result);
 
         protected EntitySet(string name) {
-            this.name       = name;
-            this.nameKey    = new ShortString(name);
+            this.name   = name;
+            nameShort   = new ShortString(name);
         }
     }
     
@@ -209,7 +209,7 @@ namespace Friflo.Json.Fliox.Hub.Client
                     // id & container are not serialized as they are redundant data.
                     // Infer their values from containing dictionary & EntitySet<>
                     error.id        = id;
-                    error.container = nameKey;
+                    error.container = nameShort;
                     peer.error      = error;
                     continue;
                 }
@@ -229,7 +229,7 @@ namespace Friflo.Json.Fliox.Hub.Client
                 if (reader.Success) {
                     peer.SetPatchSource(json);
                 } else {
-                    var entityError = new EntityError(EntityErrorType.ParseError, nameKey, id, reader.Error.msg.ToString());
+                    var entityError = new EntityError(EntityErrorType.ParseError, nameShort, id, reader.Error.msg.ToString());
                     // entityMap[id].SetError(id, entityError); - used when using class EntityValue
                     // [c# - Editing dictionary values in a foreach loop - Stack Overflow] https://stackoverflow.com/questions/1070766/editing-dictionary-values-in-a-foreach-loop
                     entityMap[id] = new EntityValue(id, entityError);

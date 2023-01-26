@@ -34,7 +34,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         internal readonly   SharedEnv                       sharedEnv;
         internal readonly   IHubLogger                      hubLogger;
         internal readonly   string                          database;
-        internal readonly   ShortString                     databaseKey;
+        internal readonly   ShortString                     databaseShort;
         /// <summary>is null if <see cref="FlioxHub.SupportPushEvents"/> == false</summary> 
         internal readonly   EventReceiver                   eventReceiver;
         internal readonly   ObjectPool<ReaderPool>          responseReaderPool;
@@ -121,7 +121,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             this.hubLogger          = sharedEnv.hubLogger;
             this.hub                = hub;
             this.database           = database ?? hub.database.name;
-            databaseKey             = new ShortString(this.database);
+            databaseShort           = new ShortString(this.database);
             this.eventReceiver      = eventReceiver;
             responseReaderPool      = hub.GetResponseReaderPool();
             
@@ -204,12 +204,12 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             for (int n = 0; n < entityInfos.Length; n++) {
                 var entityInfo      = entityInfos[n];
                 var name            = entityInfo.container;
-                var nameKey         = new ShortString(name);
+                var nameShort       = new ShortString(name);
                 var setMapper       = mappers[n];
                 var entitySet       = setMapper.CreateEntitySet(name);
                 entitySet.Init(client);
                 entitySets[n]       = entitySet;
-                setByName[nameKey]  = entitySet;
+                setByName[nameShort]  = entitySet;
                 entityInfo.SetEntitySetMember(client, entitySet);
             }
             return clientTypeInfo;
@@ -277,7 +277,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 SyncSet syncSet = set.SyncSet;
                 if (syncSet == null)
                     continue;
-                syncSets.Add(set.nameKey, syncSet);
+                syncSets.Add(set.nameShort, syncSet);
             }
             return syncSets;
         }

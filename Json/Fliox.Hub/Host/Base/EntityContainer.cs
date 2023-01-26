@@ -59,7 +59,7 @@ namespace Friflo.Json.Fliox.Hub.Host
     #region - members
         /// <summary> container name </summary>
         public    readonly  string                              name;
-        public    readonly  ShortString                         nameKey;
+        public    readonly  ShortString                         nameShort;
         /// <summary>
         /// The name used for a container / table instance in a specific database. By default it is equal to <see cref="name"/>.
         /// It can be customized (altered) by the <see cref="EntityDatabase.customContainerName"/> function.
@@ -106,7 +106,7 @@ namespace Friflo.Json.Fliox.Hub.Host
     #region - initialize
         protected EntityContainer(string name, EntityDatabase database) {
             this.name           = name;
-            this.nameKey        = new ShortString(name);
+            this.nameShort      = new ShortString(name);
             this.instanceName   = database.customContainerName(name);
             this.database       = database;
             database.AddContainer(this);

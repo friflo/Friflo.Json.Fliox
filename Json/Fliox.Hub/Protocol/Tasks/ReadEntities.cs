@@ -81,7 +81,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
             
             if (references != null && references.Count > 0) {
                 var readRefResults =
-                    await entityContainer.ReadReferencesAsync(references, entities, entityContainer.nameKey, "", response, syncContext).ConfigureAwait(false);
+                    await entityContainer.ReadReferencesAsync(references, entities, entityContainer.nameShort, "", response, syncContext).ConfigureAwait(false);
                 // returned readRefResults.references is always set. Each references[] item contain either a result or an error.
                 result.references = readRefResults.references;
             }

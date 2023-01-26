@@ -81,7 +81,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs
             
             foreach (var pair in testDatabase.testContainers) {
                 TestContainer testContainer = pair.Value;
-                var result = response.success.FindContainer(testContainer.nameKey);
+                var result = response.success.FindContainer(testContainer.nameShort);
                 if (result == null)
                     continue;
                 var entities = result.entityMap;
@@ -197,7 +197,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs
             var databaseError = SimulateReadErrors(result.entities);
             if (databaseError != null)
                 result.Error = databaseError;
-            result.ValidateEntities(local.nameKey, command.keyName, syncContext);
+            result.ValidateEntities(local.nameShort, command.keyName, syncContext);
             return result;
         }
         
@@ -227,7 +227,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs
                 var id      = entity.key.AsString();
                 if (!readEntityErrors.TryGetValue(id, out var value))
                     continue;
-                entities[n] = value.ToEntityValue(nameKey, entity.key);
+                entities[n] = value.ToEntityValue(nameShort, entity.key);
             }
             for (int n = 0; n < entities.Length; n++) {
                 var entity  = entities[n];

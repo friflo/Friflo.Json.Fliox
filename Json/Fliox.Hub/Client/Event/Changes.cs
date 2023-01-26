@@ -36,7 +36,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         public                                          ChangeInfo          ChangeInfo  => changeInfo;
         /// <summary> name of the container the changes are referring to </summary>
         public    abstract                              string              Container       { get; }
-        public    abstract                              ShortString         ContainerKey    { get; }
+        public    abstract                              ShortString         ContainerShort  { get; }
         /// <summary> raw JSON values of created container entities </summary>
         public                                          List<JsonEntity>    RawCreates  => rawCreates;
         /// <summary> raw JSON values of upserted container entities </summary>
@@ -82,7 +82,7 @@ namespace Friflo.Json.Fliox.Hub.Client
 
         public    override  string              ToString()      => FormatToString();       
         public    override  string              Container       { get; }
-        public    override  ShortString         ContainerKey    { get; }
+        public    override  ShortString         ContainerShort  { get; }
         
         [DebuggerBrowsable(Never)] private          List<T>         creates;
         [DebuggerBrowsable(Never)] private          List<T>         upserts;
@@ -96,7 +96,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         internal Changes(EntitySet<TKey, T> entitySet, ObjectMapper mapper) {
             keyName         = entitySet.GetKeyName();
             Container       = entitySet.name;
-            ContainerKey    = entitySet.nameKey;
+            ContainerShort  = entitySet.nameShort;
             objectMapper    = mapper;
         }
         

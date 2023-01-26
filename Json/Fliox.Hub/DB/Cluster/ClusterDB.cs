@@ -105,7 +105,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
             var databaseList    = new List<DbContainers>(databases.Count);
             foreach (var pair in databases) {
                 var database    = pair.Value;
-                if (!DatabaseFilter.IsAuthorizedDatabase(authorizedDatabases, database.nameKey))
+                if (!DatabaseFilter.IsAuthorizedDatabase(authorizedDatabases, database.nameShort))
                     continue;
                 var dbContainers    = await database.GetDbContainers(database.name, hub).ConfigureAwait(false);
                 databaseList.Add(dbContainers);

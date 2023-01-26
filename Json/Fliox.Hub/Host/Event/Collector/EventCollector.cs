@@ -27,7 +27,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event.Collector
         }
         
         internal void AddDatabase(EntityDatabase database) {
-            var databaseChanges = new DatabaseChanges(database.nameKey);
+            var databaseChanges = new DatabaseChanges(database.nameShort);
             lock (databaseChangesMap) {
                 databaseChangesMap.Add(database, databaseChanges);
                 DatabaseCount = databaseChangesMap.Count;
@@ -104,9 +104,9 @@ namespace Friflo.Json.Fliox.Hub.Host.Event.Collector
             in JsonKey          user)
         {
             var containers = databaseChanges.containers;
-            if (!containers.TryGetValue(entityContainer.nameKey, out var container)) {
+            if (!containers.TryGetValue(entityContainer.nameShort, out var container)) {
                 container = new ContainerChanges(entityContainer);
-                containers.Add(entityContainer.nameKey, container);
+                containers.Add(entityContainer.nameShort, container);
             }
             var writeBuffer = databaseChanges.writeBuffer;
             var values      = writeBuffer.values;
@@ -125,9 +125,9 @@ namespace Friflo.Json.Fliox.Hub.Host.Event.Collector
             in JsonKey          user)
         {
             var containers = databaseChanges.containers;
-            if (!containers.TryGetValue(entityContainer.nameKey, out var container)) {
+            if (!containers.TryGetValue(entityContainer.nameShort, out var container)) {
                 container = new ContainerChanges(entityContainer);
-                containers.Add(entityContainer.nameKey, container);
+                containers.Add(entityContainer.nameShort, container);
             }
             var writeBuffer = databaseChanges.writeBuffer;
             var keys        = writeBuffer.keys;

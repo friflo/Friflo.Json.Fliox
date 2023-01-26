@@ -34,7 +34,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
         }
         
         internal bool Authorize(SyncContext syncContext) {
-            return Authorize(syncContext.database.nameKey);
+            return Authorize(syncContext.database.nameShort);
         }
         
         internal static bool IsAuthorizedDatabase(IEnumerable<DatabaseFilter> databaseFilters, in ShortString databaseName) {

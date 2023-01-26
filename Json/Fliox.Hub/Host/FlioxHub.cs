@@ -76,7 +76,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         // ReSharper disable once UnusedMember.Local - show as property to list it within the first members in Debugger
         private             EntityDatabase      Database        => database;            // not null
         /// <summary> name of the default <see cref="database"/> assigned to the <see cref="FlioxHub"/> </summary>
-        public              ShortString         DatabaseName    => database.nameKey;    // not null
+        public              ShortString         DatabaseName    => database.nameShort;  // not null
         public   override   string              ToString()      => database.name;       // not null
         
         [DebuggerBrowsable(Never)]
@@ -189,7 +189,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             var isSyncRequest       = authenticator.IsSynchronous(syncRequest);
             var db                  = database;
             if (!syncRequest.database.IsNull()) {
-                if (!syncRequest.database.IsEqual(database.nameKey)) {
+                if (!syncRequest.database.IsEqual(database.nameShort)) {
                     if (!extensionDbs.TryGetValue(syncRequest.database, out db)) {
                         syncRequest.intern.error = $"database not found: '{syncRequest.database.AsString()}'";
                         return syncRequest.intern.executionType = Error;
@@ -233,7 +233,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         private void PostExecute(SyncRequest syncRequest, SyncResponse response, SyncContext syncContext) {
             hostStats.Update(syncRequest);
             var db = syncRequest.intern.db;
-            UpdateRequestStats(db.nameKey, syncRequest, syncContext);
+            UpdateRequestStats(db.nameShort, syncRequest, syncContext);
 
             // - Note: Only relevant for Push messages when using a bidirectional protocol like WebSocket
             // As a client is required to use response.clientId it is set to null if given clientId was invalid.
@@ -291,11 +291,11 @@ namespace Friflo.Json.Fliox.Hub.Host
         
         /// <summary>
         /// Add an <paramref name="extensionDB"/> to the Hub. The extension database is identified by its
-        /// <see cref="EntityDatabase.nameKey"/>
+        /// <see cref="EntityDatabase.nameShort"/>
         /// </summary>
         public void AddExtensionDB(EntityDatabase extensionDB) {
-            extensionDbs.Add(extensionDB.nameKey, extensionDB);
-            var msg = $"add extension db: {extensionDB.nameKey} ({extensionDB.StorageType})";
+            extensionDbs.Add(extensionDB.nameShort, extensionDB);
+            var msg = $"add extension db: {extensionDB.nameShort} ({extensionDB.StorageType})";
             Logger.Log(HubLog.Info, msg);
         }
         
