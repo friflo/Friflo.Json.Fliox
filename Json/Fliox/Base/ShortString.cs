@@ -17,7 +17,7 @@ namespace Friflo.Json.Fliox
     /// A struct optimized to store strings with the focus on minimizing memory allocations<br/>
     /// In contrast to <see cref="JsonKey"/> it supports to check strings with <see cref="StringStartsWith"/><br/>
     /// <br/> 
-    /// It is intended to be used for database, container, message and command names.<br/>
+    /// It is intended to be used for <i>descriptive names</i> like database, container, message and command names.<br/>
     /// <see cref="StringStartsWith"/> is optimized to enable filtering names by using a prefix - e.g. <c>'std.*'</c>
     /// used for authorization and subscriptions filters.  
     /// </summary>
