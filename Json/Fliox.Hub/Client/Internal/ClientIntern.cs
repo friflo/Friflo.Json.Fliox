@@ -48,7 +48,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         private             ReaderPool                      eventReaderPool;    // create on demand
         
         internal readonly   EntitySet[]                             entitySets;
-        private  readonly   Dictionary<JsonKey, EntitySet>          setByName;
+        private  readonly   Dictionary<ShortString, EntitySet>      setByName;
         
         [DebuggerBrowsable(Never)]
         internal            Dictionary<string, MessageSubscriber>   subscriptions;          // create on demand - only used for subscriptions
@@ -98,8 +98,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         private static readonly SynchronousEventProcessor           DefaultEventProcessor   = new SynchronousEventProcessor();
 
        
-        internal EntitySet  GetSetByName    (in JsonKey name)                    => setByName[name];
-        internal bool       TryGetSetByName (in JsonKey name, out EntitySet set) => setByName.TryGetValue(name, out set);
+        internal EntitySet  GetSetByName    (in ShortString name)                    => setByName[name];
+        internal bool       TryGetSetByName (in ShortString name, out EntitySet set) => setByName.TryGetValue(name, out set);
 
         internal void SetSubscriptionProcessor(SubscriptionProcessor processor) {
             subscriptionProcessor?.Dispose();
@@ -132,7 +132,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             objectMapper            = null;
             eventReaderPool         = null;
             entitySets              = new EntitySet[entityInfos.Length];
-            setByName               = new Dictionary<JsonKey, EntitySet>(entityInfos.Length, JsonKey.Equality);
+            setByName               = new Dictionary<ShortString, EntitySet>(entityInfos.Length, ShortString.Equality);
             subscriptions           = null; 
             subscriptionsPrefix     = null; 
             pendingSyncs            = new Dictionary<Task, SyncContext>();
@@ -204,7 +204,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             for (int n = 0; n < entityInfos.Length; n++) {
                 var entityInfo      = entityInfos[n];
                 var name            = entityInfo.container;
-                var nameKey         = new JsonKey(name);
+                var nameKey         = new ShortString(name);
                 var setMapper       = mappers[n];
                 var entitySet       = setMapper.CreateEntitySet(name);
                 entitySet.Init(client);
@@ -259,7 +259,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             return null;
         }
 
-        internal Dictionary<JsonKey, SyncSet> CreateSyncSets(Dictionary<JsonKey,SyncSet> syncSets) {
+        internal Dictionary<ShortString, SyncSet> CreateSyncSets(Dictionary<ShortString,SyncSet> syncSets) {
             var count = 0;
             syncSets?.Clear();
             foreach (var set in entitySets) {
@@ -272,7 +272,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 return syncSets;
             }
             // create Dictionary<,> only if required
-            syncSets = syncSets ?? new Dictionary<JsonKey, SyncSet>(count, JsonKey.Equality);
+            syncSets = syncSets ?? new Dictionary<ShortString, SyncSet>(count, ShortString.Equality);
             foreach (var set in entitySets) {
                 SyncSet syncSet = set.SyncSet;
                 if (syncSet == null)

@@ -253,7 +253,7 @@ namespace Friflo.Json.Fliox.Schema.Language
                 return ""; // allow any type                
             if (type == standard.JsonEntity)
                 return ""; // allow any type                
-            if (type == standard.String || type == standard.JsonKey)
+            if (type == standard.String || type == standard.JsonKey || type == standard.ShortString)
                 return $"\"type\": {Opt(required, "string")}";
             if (type == standard.Boolean)
                 return $"\"type\": {Opt(required, "boolean")}";

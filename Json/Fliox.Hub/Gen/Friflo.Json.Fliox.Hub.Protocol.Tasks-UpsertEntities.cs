@@ -16,7 +16,7 @@ namespace Gen.Friflo.Json.Fliox.Hub.Protocol.Tasks
             bool success;
             switch (field.genIndex) {
                 case Gen_info:      obj.info      = reader.ReadJsonValue (field, out success);  return success;
-                case Gen_container: obj.container = reader.ReadJsonKey   (field, obj.container, out success);  return success;
+                case Gen_container: obj.container = reader.ReadShortString (field, obj.container, out success);  return success;
                 case Gen_keyName:   obj.keyName   = reader.ReadString    (field, obj.keyName,   out success);  return success;
                 case Gen_entities:  obj.entities  = reader.ReadClass     (field, obj.entities,  out success);  return success;
             }
@@ -25,7 +25,7 @@ namespace Gen.Friflo.Json.Fliox.Hub.Protocol.Tasks
 
         private static void Write(ref UpsertEntities obj, PropField[] fields, ref Writer writer, ref bool firstMember) {
             writer.WriteJsonValue (fields[Gen_info],      obj.info,      ref firstMember);
-            writer.WriteJsonKey   (fields[Gen_container], obj.container, ref firstMember);
+            writer.WriteShortString (fields[Gen_container], obj.container, ref firstMember);
             writer.WriteString    (fields[Gen_keyName],   obj.keyName,   ref firstMember);
             writer.WriteClass     (fields[Gen_entities],  obj.entities,  ref firstMember);
         }

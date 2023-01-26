@@ -18,7 +18,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     {
         /// <summary>container name</summary>
         [Serialize                                ("cont")]
-        [Required]  public      JsonKey             container;
+        [Required]  public      ShortString         container;
         /// <summary>subscribe to entity <see cref="changes"/> of the given <see cref="container"/></summary>
         [Required]  public      List<EntityChange>  changes;
         /// <summary>subscription filter as a <a href="https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/operators/lambda-expressions">Lambda expression</a> (infix notation)

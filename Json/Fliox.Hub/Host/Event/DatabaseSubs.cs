@@ -16,12 +16,12 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
     /// </summary>
     internal sealed class DatabaseSubs
     {
-        private  readonly   HashSet<string>                 messageSubs;
-        private  readonly   HashSet<string>                 messagePrefixSubs;
+        private  readonly   HashSet<string>                     messageSubs;
+        private  readonly   HashSet<string>                     messagePrefixSubs;
         /// <summary> key: <see cref="SubscribeChanges.container"/> </summary>
-        private  readonly   Dictionary<JsonKey, ChangeSub>  changeSubsMap;
+        private  readonly   Dictionary<ShortString, ChangeSub>  changeSubsMap;
         /// <summary> 'immutable' array of <see cref="changeSubsMap"/> values use for performance </summary>
-        internal            ChangeSub[]                     changeSubs;
+        internal            ChangeSub[]                         changeSubs;
 
         public   override   string  ToString()  => GetString();
         internal            int     SubCount    => changeSubs.Length + messageSubs.Count + messagePrefixSubs.Count;
@@ -31,14 +31,14 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         internal DatabaseSubs() {
             messageSubs         = new HashSet<string>();
             messagePrefixSubs   = new HashSet<string>();
-            changeSubsMap       = new Dictionary<JsonKey, ChangeSub>(JsonKey.Equality);
+            changeSubsMap       = new Dictionary<ShortString, ChangeSub>(ShortString.Equality);
             changeSubs          = Array.Empty<ChangeSub>();
         }
         
         internal DatabaseSubs(DatabaseSubs other) {
             messageSubs         = new HashSet<string>(other.messageSubs);
             messagePrefixSubs   = new HashSet<string>(other.messagePrefixSubs);
-            changeSubsMap       = new Dictionary<JsonKey, ChangeSub>(other.changeSubsMap, JsonKey.Equality);
+            changeSubsMap       = new Dictionary<ShortString, ChangeSub>(other.changeSubsMap, ShortString.Equality);
             changeSubs          = new ChangeSub [other.changeSubs.Length];
             other.changeSubs.CopyTo(changeSubs, 0);
         }
@@ -143,7 +143,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             changeSubs = subs;
         }
         
-        internal void RemoveChangeSubscription(in JsonKey container) {
+        internal void RemoveChangeSubscription(in ShortString container) {
             changeSubsMap.Remove(container);
             UpdateChangeSubs();
         }

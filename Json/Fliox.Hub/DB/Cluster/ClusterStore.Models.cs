@@ -187,7 +187,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
     public sealed class ChangeSubscription
     {
         /// <summary>name of subscribed container</summary>
-        [Required]  public  JsonKey             container;
+        [Required]  public  ShortString         container;
         /// <summary>type of subscribed changes like create, upsert, delete and patch</summary>
         [Required]  public  List<EntityChange>  changes;
         /// <summary>filter to narrow the amount of change events</summary>

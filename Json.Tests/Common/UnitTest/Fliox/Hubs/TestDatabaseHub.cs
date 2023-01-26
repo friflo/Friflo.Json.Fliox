@@ -15,10 +15,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs
 {
     public class TestDatabase : EntityDatabase
     {
-        private  readonly   EntityDatabase                      local;
-        internal readonly   Dictionary<JsonKey, TestContainer>  testContainers  = new Dictionary<JsonKey, TestContainer>(JsonKey.Equality);
+        private  readonly   EntityDatabase                          local;
+        internal readonly   Dictionary<ShortString, TestContainer>  testContainers  = new Dictionary<ShortString, TestContainer>(ShortString.Equality);
         
-        public   override   string                              StorageType => "TestDatabase";
+        public   override   string                                  StorageType => "TestDatabase";
 
         public TestDatabase(EntityDatabase local)
             : base (local.name, null, null)
@@ -26,7 +26,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs
             this.local = local;
         }
 
-        public override EntityContainer CreateContainer(in JsonKey name, EntityDatabase database) {
+        public override EntityContainer CreateContainer(in ShortString name, EntityDatabase database) {
             if (TryGetContainer(name, out EntityContainer container)) {
                 return container;
             }
@@ -96,13 +96,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs
         }
         
         public TestContainer GetTestContainer(string container) {
-            return (TestContainer) testDatabase.GetOrCreateContainer(new JsonKey(container));
+            return (TestContainer) testDatabase.GetOrCreateContainer(new ShortString(container));
         }
     }
     
     public abstract class SimValue
     {
-        internal abstract EntityValue ToEntityValue(in JsonKey container, JsonKey key);
+        internal abstract EntityValue ToEntityValue(in ShortString container, JsonKey key);
     }
     
     public class SimJson : SimValue
@@ -111,12 +111,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs
         
         internal SimJson(string value) { this.value = value; }
         
-        internal override EntityValue ToEntityValue(in JsonKey container, JsonKey key) { return new EntityValue(key, new JsonValue(value)); }
+        internal override EntityValue ToEntityValue(in ShortString container, JsonKey key) { return new EntityValue(key, new JsonValue(value)); }
     }
     
     public class SimReadError : SimValue
     {
-        internal override EntityValue ToEntityValue(in JsonKey container, JsonKey key) {
+        internal override EntityValue ToEntityValue(in ShortString container, JsonKey key) {
             var error = new EntityError(EntityErrorType.ReadError, container, key, "simulated read entity error");
             return new EntityValue(key, error);
         }
@@ -125,7 +125,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs
     public class SimWriteError
     {
         internal EntityError ToEntityError(string container, JsonKey key) {
-            return new EntityError(EntityErrorType.WriteError, new JsonKey(container), key, "simulated write entity error");
+            return new EntityError(EntityErrorType.WriteError, new ShortString(container), key, "simulated write entity error");
         }
     }
     

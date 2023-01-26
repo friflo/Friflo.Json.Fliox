@@ -9,7 +9,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
 {
     public sealed class AuthorizeSubscribeChanges : TaskAuthorizer {
         private  readonly   DatabaseFilter      databaseFilter;
-        private  readonly   JsonKey             container;
+        private  readonly   ShortString         container;
         
         private  readonly   bool                create;
         private  readonly   bool                upsert;
@@ -21,7 +21,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
         public AuthorizeSubscribeChanges (string container, ICollection<EntityChange> changes, string database)
         {
             databaseFilter  = new DatabaseFilter(database);
-            this.container  = new JsonKey(container);
+            this.container  = new ShortString(container);
             foreach (var change in changes) {
                 switch (change) {
                     case EntityChange.create: create = true; break;

@@ -23,13 +23,13 @@ namespace Friflo.Json.Fliox.Hub.Client
         public    override  string      Details => $"{parent.GetLabel()} -> {Selector}";
                 
         internal  override  string      Selector    { get; }
-        internal  override  JsonKey     Container   { get; }
+        internal  override  ShortString Container   { get; }
         internal  override  string      KeyName     { get; }
         internal  override  bool        IsIntKey    { get; }
 
         internal override   SubRelations SubRelations => relations.subRelations;
 
-        internal ReadRelation(SyncTask parent, string selector, in JsonKey container, string keyName, bool isIntKey, FlioxClient store)
+        internal ReadRelation(SyncTask parent, string selector, in ShortString container, string keyName, bool isIntKey, FlioxClient store)
             : base(store)
         {
             relations       = new Relations(this);

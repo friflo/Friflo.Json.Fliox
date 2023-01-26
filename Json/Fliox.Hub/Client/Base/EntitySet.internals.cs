@@ -21,7 +21,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
     public abstract class EntitySet
     {
         [DebuggerBrowsable(Never)] public   readonly  string          name;
-        [DebuggerBrowsable(Never)] public   readonly  JsonKey         nameKey;
+        [DebuggerBrowsable(Never)] public   readonly  ShortString     nameKey;
         [DebuggerBrowsable(Never)] internal           ChangeCallback  changeCallback;
 
         internal  abstract  SyncSet     SyncSet     { get; }
@@ -47,7 +47,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
 
         protected EntitySet(string name) {
             this.name       = name;
-            this.nameKey    = new JsonKey(name);
+            this.nameKey    = new ShortString(name);
         }
     }
     

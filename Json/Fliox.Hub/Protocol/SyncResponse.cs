@@ -31,7 +31,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol
                         
         internal override   MessageType             MessageType => MessageType.resp;
         
-        public ContainerEntities FindContainer(in JsonKey containerName) {
+        public ContainerEntities FindContainer(in ShortString containerName) {
             if (containers == null)
                 return null;
             foreach (var container in containers) {
@@ -41,7 +41,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol
             return null;
         }
         
-        internal ContainerEntities GetContainerResult(in JsonKey containerName) {
+        internal ContainerEntities GetContainerResult(in ShortString containerName) {
             if (containers == null) containers = new List<ContainerEntities>();
             foreach (var container in containers) {
                 if (container.container.IsEqual(containerName))
@@ -105,7 +105,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol
         /// <summary>container name the of the returned <see cref="entities"/> </summary>
         /// Required only by <see cref="RemoteHost"/> for serialization
         [Serialize                            ("cont")]
-        [Required]  public  JsonKey             container;
+        [Required]  public  ShortString         container;
         /// <summary>number of <see cref="entities"/> - not utilized by Protocol</summary>
         [DebugInfo] public  int?                count;
         /// <summary>

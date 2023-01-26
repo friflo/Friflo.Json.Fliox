@@ -8,14 +8,14 @@ namespace Friflo.Json.Fliox.Hub.Host.Event.Collector
 {
     internal sealed class DatabaseChanges
     {
-        internal readonly   JsonKey                                 dbName;
-        internal readonly   Dictionary<JsonKey, ContainerChanges>   containers;
-        internal            TaskBuffer                              writeBuffer;
-        internal            TaskBuffer                              readBuffer;
+        internal readonly   JsonKey                                     dbName;
+        internal readonly   Dictionary<ShortString, ContainerChanges>   containers;
+        internal            TaskBuffer                                  writeBuffer;
+        internal            TaskBuffer                                  readBuffer;
         
         internal DatabaseChanges(in JsonKey name) {
             dbName      = name;
-            containers  = new Dictionary<JsonKey, ContainerChanges>(JsonKey.Equality);
+            containers  = new Dictionary<ShortString, ContainerChanges>(ShortString.Equality);
             writeBuffer = new TaskBuffer();
             readBuffer  = new TaskBuffer();
         }

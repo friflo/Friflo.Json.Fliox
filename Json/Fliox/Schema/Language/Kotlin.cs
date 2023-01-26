@@ -51,6 +51,7 @@ namespace Friflo.Json.Fliox.Schema.Language
             AddType (map, standard.Double,      "Double" );
             AddType (map, standard.Float,       "Float" );
             AddType (map, standard.JsonKey,     "String" );
+            AddType (map, standard.ShortString, "String" );
             return map;
         }
         

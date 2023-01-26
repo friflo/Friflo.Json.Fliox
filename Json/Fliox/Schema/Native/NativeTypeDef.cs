@@ -47,7 +47,7 @@ namespace Friflo.Json.Fliox.Schema.Native
             this.mapper     = mapper;
             IsEnum          = native.IsEnum;
             IsClass         = mapper.IsComplex;
-            IsStruct        = mapper.type.IsValueType && mapper.type != typeof(JsonKey); // JsonKey is "nullable"
+            IsStruct        = mapper.type.IsValueType && mapper.type != typeof(JsonKey) && mapper.type != typeof(ShortString); // JsonKey is "nullable"
             Discriminant    = mapper.Discriminant;
             EnumValues      = EnumValue.CreateEnumValues(mapper.GetEnumValues(), mapper.GetEnumValueDocs(), buffer);
         }

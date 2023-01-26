@@ -13,14 +13,14 @@ namespace Gen.Friflo.Json.Fliox.Hub.Protocol.Tasks
         private static bool ReadField (ref AggregateEntitiesResult obj, PropField field, ref Reader reader) {
             bool success;
             switch (field.genIndex) {
-                case Gen_container: obj.container = reader.ReadJsonKey    (field, obj.container, out success);  return success;
+                case Gen_container: obj.container = reader.ReadShortString (field, obj.container, out success);  return success;
                 case Gen_value:     obj.value     = reader.ReadDoubleNull (field, out success);  return success;
             }
             return false;
         }
 
         private static void Write(ref AggregateEntitiesResult obj, PropField[] fields, ref Writer writer, ref bool firstMember) {
-            writer.WriteJsonKey    (fields[Gen_container], obj.container, ref firstMember);
+            writer.WriteShortString (fields[Gen_container], obj.container, ref firstMember);
             writer.WriteDoubleNull (fields[Gen_value],     obj.value,     ref firstMember);
         }
     }

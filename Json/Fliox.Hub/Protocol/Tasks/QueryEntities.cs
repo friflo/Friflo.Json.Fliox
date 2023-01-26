@@ -20,7 +20,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     {
         /// <summary>container name</summary>
         [Serialize                            ("cont")]
-        [Required]  public  JsonKey             container;
+        [Required]  public  ShortString         container;
         /// <summary>name of the primary key property of the returned entities</summary>
                     public  string              keyName;
                     public  bool?               isIntKey;
@@ -151,7 +151,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     {
         /// <summary>container name - not utilized by Protocol</summary>
         [Serialize                                ("cont")]
-        [DebugInfo] public  JsonKey                 container;
+        [DebugInfo] public  ShortString             container;
                     public  string                  cursor;
         /// <summary>number of <see cref="ids"/> - not utilized by Protocol</summary>
         [DebugInfo] public  int?                    count;

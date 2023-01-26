@@ -134,6 +134,7 @@ namespace Friflo.Json.Fliox.Schema.Language
         private const string BooleanType    = @"""type"": ""boolean""";
         private const string JsonValueType  = @" ";
         private const string JsonKeyType    = @"""type"": ""string""";
+        private const string JsonStringType = @"""type"": ""string""";
         
         private static string CreateTags(TypeDef schemaType) {
             var sb = new StringBuilder();
@@ -170,6 +171,8 @@ namespace Friflo.Json.Fliox.Schema.Language
                 return JsonValueType;
             if (typeDef == standardTypes.JsonKey)
                 return JsonKeyType;
+            if (typeDef == standardTypes.ShortString)
+                return JsonStringType;
 
             return Ref (typeDef, true, generator);
         }

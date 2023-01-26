@@ -11,7 +11,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event.Collector
     /// </summary>
     internal sealed class ContainerChanges
     {
-        internal readonly   JsonKey         name;
+        internal readonly   ShortString     name;
         internal            TaskType        currentType;
         private  readonly   List<JsonValue> values;
         private  readonly   List<JsonKey>   keys;

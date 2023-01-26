@@ -26,6 +26,7 @@ namespace Friflo.Json.Fliox.Schema.Definition
         
         public abstract     TypeDef     JsonValue   { get; }
         public abstract     TypeDef     JsonKey     { get; }
+        public abstract     TypeDef     ShortString { get; }
         public abstract     TypeDef     JsonEntity  { get; }
     }
 }

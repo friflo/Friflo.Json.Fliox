@@ -17,7 +17,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     {
         /// <summary>container name</summary>
         [Serialize                        ("cont")]
-        [Required]  public  JsonKey         container;
+        [Required]  public  ShortString     container;
         /// <summary>list of <see cref="cursors"/></summary>
                     public  List<string>    cursors;
         public   override   TaskType        TaskType => TaskType.closeCursors;

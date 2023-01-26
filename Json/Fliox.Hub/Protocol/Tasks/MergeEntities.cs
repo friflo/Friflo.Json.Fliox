@@ -21,7 +21,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     {
         /// <summary>container name</summary>
         [Serialize                            ("cont")]
-        [Required]  public  JsonKey             container;
+        [Required]  public  ShortString         container;
         [Browse(Never)]
         [Ignore]    public  EntityContainer     entityContainer;
         [Ignore]    private TaskErrorResult     error;

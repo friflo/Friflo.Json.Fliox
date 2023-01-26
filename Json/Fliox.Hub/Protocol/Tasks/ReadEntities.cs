@@ -20,7 +20,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     {
         /// <summary>container name</summary>
         [Serialize                            ("cont")]
-        [Required]  public  JsonKey             container;
+        [Required]  public  ShortString         container;
         /// <summary> name of the primary key property of the returned entities </summary>
                     public  string              keyName;
                     public  bool?               isIntKey;
@@ -133,7 +133,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         /// So database adapters which can ensure the JSON value is always valid made calling <see cref="ValidateEntities"/>
         /// obsolete - like Postgres/JSONB, Azure Cosmos DB or MongoDB.
         /// </summary>
-        public void ValidateEntities(in JsonKey container, string keyName, SyncContext syncContext) {
+        public void ValidateEntities(in ShortString container, string keyName, SyncContext syncContext) {
             using (var pooled = syncContext.EntityProcessor.Get()) {
                 EntityProcessor processor = pooled.instance;
                 for (int n = 0; n < entities.Length; n++) {

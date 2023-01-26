@@ -159,6 +159,19 @@ namespace Friflo.Json.Fliox.Mapper.Map
             }
         }
         
+        // --- ShortString
+        /// <see cref="ShortStringMapper.Write"/>
+        public void WriteShortString (PropField field, in ShortString value, ref bool firstMember) {
+            if (value.IsNull()) {
+                WriteKeyNull(field, ref firstMember);
+                return;
+            }
+            WriteFieldKey(field, ref firstMember);
+            if (value.notNull) {
+                WriteJsonString(value);
+            }
+        }
+        
         // --- JsonValue
         /// <see cref="JsonValueMapper.Write"/>
         public void WriteJsonValue (PropField field, in JsonValue value, ref bool firstMember) {

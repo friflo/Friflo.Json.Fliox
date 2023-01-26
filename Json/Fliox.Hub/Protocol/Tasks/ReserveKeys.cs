@@ -16,7 +16,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     /// </summary>
     public sealed class ReserveKeys  : SyncRequestTask {
         [Serialize                        ("cont")]
-        [Required]  public  JsonKey         container;
+        [Required]  public  ShortString     container;
         [Required]  public  int             count;
         
         public   override   TaskType        TaskType => TaskType.reserveKeys;
@@ -30,7 +30,8 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
                 var store = pooledStore.instance;
                 store.UserId = "ReserveKeys";
                 var read            = store.sequence.Read();
-                var sequenceTask    = read.Find(container);
+                var containerKey    = new JsonKey(container.AsString());
+                var sequenceTask    = read.Find(containerKey);
                 var sync            = await store.TrySyncTasks().ConfigureAwait(false);
                 if (!sync.Success) {
                     return  new ReserveKeysResult { Error = new CommandError(sync.Message) };
@@ -38,7 +39,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
                 var sequence = sequenceTask.Result;
                 if (sequence == null) {
                     sequence = new Sequence {
-                        container   = container,
+                        container   = new JsonKey(container.AsString()),
                         autoId      = count 
                     };
                 } else {

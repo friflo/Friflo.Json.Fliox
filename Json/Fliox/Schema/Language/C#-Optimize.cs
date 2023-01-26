@@ -149,6 +149,10 @@ namespace Friflo.Json.Fliox.Schema.Language
                 suffix = "JsonKey";
                 return false;
             }
+            if (type == std.ShortString) {
+                suffix = "ShortString";
+                return false;
+            }
             if (type == std.JsonValue) {
                 suffix = "JsonValue";
                 return true;

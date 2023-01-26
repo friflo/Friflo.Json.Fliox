@@ -16,10 +16,10 @@ namespace Friflo.Json.Fliox.Hub.Host.Internal
     }
     
     public sealed class SequenceKeys {
-        [Key]       public  Guid    token;  // secret to ensure the client has reserved the keys
-        [Required]  public  JsonKey container;
-        [Required]  public  long    start;
-        [Required]  public  int     count;
-                    public  JsonKey user;   // to track back who reserved keys in case of abuse
+        [Key]       public  Guid        token;  // secret to ensure the client has reserved the keys
+        [Required]  public  ShortString container;
+        [Required]  public  long        start;
+        [Required]  public  int         count;
+                    public  JsonKey     user;   // to track back who reserved keys in case of abuse
     }
 }

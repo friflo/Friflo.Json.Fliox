@@ -44,7 +44,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             Directory.CreateDirectory(databaseFolder);
         }
 
-        public override EntityContainer CreateContainer(in JsonKey name, EntityDatabase database) {
+        public override EntityContainer CreateContainer(in ShortString name, EntityDatabase database) {
             return new FileContainer(name.AsString(), this, databaseFolder, pretty);
         }
         

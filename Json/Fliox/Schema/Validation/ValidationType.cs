@@ -9,7 +9,7 @@ namespace Friflo.Json.Fliox.Schema.Validation
 {
     // could by a struct 
     public sealed class ValidationType  {
-        public    readonly  JsonKey                     fieldName;
+        public    readonly  ShortString                 fieldName;
         internal  readonly  Utf8String                  name;
         internal  readonly  bool                        required;
         internal  readonly  bool                        isArray;
@@ -29,7 +29,7 @@ namespace Friflo.Json.Fliox.Schema.Validation
         internal ValidationType(FieldDef fieldDef, int requiredPos) {
             type                = fieldDef.type;
             typeName            = fieldDef.isArray ? $"{type.Name}[]" : type.Name; 
-            fieldName           = new JsonKey(fieldDef.name);
+            fieldName           = new ShortString(fieldDef.name);
             name                = fieldDef.nameUtf8;
             required            = fieldDef.required;
             isArray             = fieldDef.isArray;

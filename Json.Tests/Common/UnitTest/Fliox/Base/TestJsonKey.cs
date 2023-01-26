@@ -75,7 +75,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Base
         }
         
         /// <summary>
-        /// Compare performance of <see cref="ShortString"/> optimization using 15 / 16 characters 
+        /// Compare performance of <see cref="ShortStringUtils"/> optimization using 15 / 16 characters 
         /// </summary>
         [Test]
         public static void JsonKeyTests_StringPerf () {

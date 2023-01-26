@@ -22,7 +22,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Models
         [Required]  public  string              selector; // e.g. ".items[*].article"
         /// <summary>the <see cref="container"/> storing the entities referenced by the specified <see cref="selector"/></summary>
         [Serialize                            ("cont")]
-        [Required]  public  JsonKey             container;
+        [Required]  public  ShortString         container;
                     public  string              keyName;
                     public  bool?               isIntKey;
                     public  List<References>    references;
@@ -34,7 +34,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Models
                     public  string                  error;
         /// <summary>container name - not utilized by Protocol</summary>
         [Serialize                                ("cont")]
-        [DebugInfo] public  JsonKey                 container;
+        [DebugInfo] public  ShortString             container;
         /// <summary>number of <see cref="ids"/> - not utilized by Protocol</summary>
         [DebugInfo] public  int?                    count;
         [Required]  public  List<JsonKey>           ids;

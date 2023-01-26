@@ -59,7 +59,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             containerType       = type ?? MemoryType.Concurrent;
         }
         
-        public override EntityContainer CreateContainer(in JsonKey name, EntityDatabase database) {
+        public override EntityContainer CreateContainer(in ShortString name, EntityDatabase database) {
             return new MemoryContainer(name.AsString(), database, containerType, pretty, smallValueSize);
         }
         

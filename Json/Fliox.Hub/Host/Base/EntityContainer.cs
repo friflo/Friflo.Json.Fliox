@@ -59,7 +59,7 @@ namespace Friflo.Json.Fliox.Hub.Host
     #region - members
         /// <summary> container name </summary>
         public    readonly  string                              name;
-        public    readonly  JsonKey                             nameKey;
+        public    readonly  ShortString                         nameKey;
         /// <summary>
         /// The name used for a container / table instance in a specific database. By default it is equal to <see cref="name"/>.
         /// It can be customized (altered) by the <see cref="EntityDatabase.customContainerName"/> function.
@@ -106,7 +106,7 @@ namespace Friflo.Json.Fliox.Hub.Host
     #region - initialize
         protected EntityContainer(string name, EntityDatabase database) {
             this.name           = name;
-            this.nameKey        = new JsonKey(name);
+            this.nameKey        = new ShortString(name);
             this.instanceName   = database.customContainerName(name);
             this.database       = database;
             database.AddContainer(this);
@@ -256,7 +256,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         private static List<ReferencesResult> GetReferences(
             List<References>    references,
             EntityValue[]       entities,
-            in JsonKey          container,
+            in ShortString      container,
             SyncContext         syncContext)
         {
             if (references.Count == 0)
@@ -319,7 +319,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         internal async Task<ReadReferencesResult> ReadReferencesAsync(
                 List<References>    references,
                 EntityValue[]       entities,
-                JsonKey             container,
+                ShortString         container,
                 string              selectorPath,
                 SyncResponse        syncResponse,
                 SyncContext         syncContext)

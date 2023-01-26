@@ -131,7 +131,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             _intern.syncStore.functions.Add(task);
         }
         
-        internal EntitySet GetEntitySet(in JsonKey name) {
+        internal EntitySet GetEntitySet(in ShortString name) {
             if (_intern.TryGetSetByName(name, out var entitySet))
                 return entitySet;
             throw new InvalidOperationException($"unknown EntitySet. name: {name}");
@@ -207,7 +207,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             syncRequest.eventAck    = _intern.lastEventSeq;
         }
 
-        private static void CopyEntityErrorsToMap(List<EntityError> errors, in JsonKey container, ref IDictionary<JsonKey, EntityError> errorMap) {
+        private static void CopyEntityErrorsToMap(List<EntityError> errors, in ShortString container, ref IDictionary<JsonKey, EntityError> errorMap) {
             foreach (var error in errors) {
                 // error .container is not serialized as it is redundant data.
                 // Infer its value from containing error List
@@ -221,7 +221,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             }
         }
 
-        private static readonly IDictionary<JsonKey, SyncSet> EmptySynSet = new EmptyDictionary<JsonKey, SyncSet>();
+        private static readonly IDictionary<ShortString, SyncSet> EmptySynSet = new EmptyDictionary<ShortString, SyncSet>();
 
         private static void CopyEntityErrors(List<SyncRequestTask> tasks, List<SyncTaskResult> responseTasks, SyncStore syncStore) {
             var syncSets = syncStore.SyncSets ?? EmptySynSet;

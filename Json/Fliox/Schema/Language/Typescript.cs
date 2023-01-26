@@ -213,7 +213,7 @@ namespace Friflo.Json.Fliox.Schema.Language
                 return "any"; // known as Mr anti-any  :) 
             if (type == standard.JsonEntity)
                 return "any"; 
-            if (type == standard.String || type == standard.JsonKey)
+            if (type == standard.String || type == standard.JsonKey || type == standard.ShortString)
                 return "string";
             if (type == standard.Boolean)
                 return "boolean";

@@ -17,7 +17,7 @@ namespace Gen.Friflo.Json.Fliox.Hub.Protocol.Tasks
             bool success;
             switch (field.genIndex) {
                 case Gen_info:       obj.info       = reader.ReadJsonValue (field, out success);  return success;
-                case Gen_container:  obj.container  = reader.ReadJsonKey   (field, obj.container,  out success);  return success;
+                case Gen_container:  obj.container  = reader.ReadShortString (field, obj.container,  out success);  return success;
                 case Gen_type:       obj.type       = reader.ReadEnum      (field, obj.type,       out success);  return success;
                 case Gen_filterTree: obj.filterTree = reader.ReadJsonValue (field, out success);  return success;
                 case Gen_filter:     obj.filter     = reader.ReadString    (field, obj.filter,     out success);  return success;
@@ -27,7 +27,7 @@ namespace Gen.Friflo.Json.Fliox.Hub.Protocol.Tasks
 
         private static void Write(ref AggregateEntities obj, PropField[] fields, ref Writer writer, ref bool firstMember) {
             writer.WriteJsonValue (fields[Gen_info],       obj.info,       ref firstMember);
-            writer.WriteJsonKey   (fields[Gen_container],  obj.container,  ref firstMember);
+            writer.WriteShortString (fields[Gen_container],  obj.container,  ref firstMember);
             writer.WriteEnum      (fields[Gen_type],       obj.type,       ref firstMember);
             writer.WriteJsonValue (fields[Gen_filterTree], obj.filterTree, ref firstMember);
             writer.WriteString    (fields[Gen_filter],     obj.filter,     ref firstMember);

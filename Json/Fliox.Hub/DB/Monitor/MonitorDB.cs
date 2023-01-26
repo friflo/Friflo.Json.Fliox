@@ -39,12 +39,12 @@ namespace Friflo.Json.Fliox.Hub.DB.Monitor
             monitorHub      = new FlioxHub(stateDB, hub.sharedEnv);
         }
 
-        public override EntityContainer CreateContainer(in JsonKey name, EntityDatabase database) {
+        public override EntityContainer CreateContainer(in ShortString name, EntityDatabase database) {
             return stateDB.CreateContainer(name, database);
         }
 
         internal static bool FindTask(string container, List<SyncRequestTask> tasks) {
-            var containerName = new JsonKey(container);
+            var containerName = new ShortString(container);
             foreach (var task in tasks) {
                 if (task is ReadEntities read && read.container.IsEqual(containerName))
                     return true;

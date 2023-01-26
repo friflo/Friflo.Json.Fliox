@@ -15,7 +15,7 @@ namespace Gen.Friflo.Json.Fliox.Hub.Host.Event.Collector
             bool success;
             switch (field.genIndex) {
                 case Gen_task: obj.task = reader.ReadJsonValue (field, out success);  return success;
-                case Gen_cont: obj.cont = reader.ReadJsonKey   (field, obj.cont, out success);  return success;
+                case Gen_cont: obj.cont = reader.ReadShortString (field, obj.cont, out success);  return success;
                 case Gen_ids:  obj.ids  = reader.ReadClass     (field, obj.ids,  out success);  return success;
             }
             return false;
@@ -23,7 +23,7 @@ namespace Gen.Friflo.Json.Fliox.Hub.Host.Event.Collector
 
         private static void Write(ref DeleteTaskModel obj, PropField[] fields, ref Writer writer, ref bool firstMember) {
             writer.WriteJsonValue (fields[Gen_task], obj.task, ref firstMember);
-            writer.WriteJsonKey   (fields[Gen_cont], obj.cont, ref firstMember);
+            writer.WriteShortString (fields[Gen_cont], obj.cont, ref firstMember);
             writer.WriteClass     (fields[Gen_ids],  obj.ids,  ref firstMember);
         }
     }

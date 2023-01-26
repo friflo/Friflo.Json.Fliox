@@ -66,6 +66,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema.Misc
                
             AddType (map, standard.DateTime,      "timestamp" );
             AddType (map, standard.JsonKey,       "string" );
+            AddType (map, standard.ShortString,   "string" );
             return map;
         }
         

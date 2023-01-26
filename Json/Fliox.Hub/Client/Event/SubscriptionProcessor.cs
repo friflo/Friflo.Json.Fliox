@@ -19,7 +19,7 @@ namespace Friflo.Json.Fliox.Hub.Client
     public sealed class SubscriptionProcessor : IDisposable
     {
         private  readonly   EventContext                eventContext;
-        private  readonly   Dictionary<JsonKey,Changes> changes         = new Dictionary<JsonKey,Changes>(JsonKey.Equality);
+        private  readonly   Dictionary<ShortString,Changes> changes         = new Dictionary<ShortString,Changes>(ShortString.Equality);
         /// <summary> contain only <see cref="Changes"/> where <see cref="Changes.Count"/> > 0 </summary>
         internal readonly   List<Changes>               contextChanges  = new List<Changes>();
         internal readonly   List<Message>               messages        = new List<Message>();

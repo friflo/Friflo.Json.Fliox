@@ -22,6 +22,7 @@ namespace Friflo.Json.Fliox.Schema.JSON
         public   override   TypeDef     Guid        { get; }
         public   override   TypeDef     JsonValue   { get; }
         public   override   TypeDef     JsonKey     { get; }
+        public   override   TypeDef     ShortString { get; }
         public   override   TypeDef     JsonEntity  { get; }
         
         internal JsonStandardTypes (Dictionary<string, JsonTypeDef> types, IUtf8Buffer buffer) {
@@ -38,6 +39,7 @@ namespace Friflo.Json.Fliox.Schema.JSON
             Guid        = Find(types, "./Standard.json#/definitions/Guid");
             JsonValue   = new JsonTypeDef("{ }",    buffer);
             JsonKey     = new JsonTypeDef("string", buffer);
+            ShortString = new JsonTypeDef("string", buffer);
             JsonEntity  = new JsonTypeDef("{ }",    buffer);
         }
         

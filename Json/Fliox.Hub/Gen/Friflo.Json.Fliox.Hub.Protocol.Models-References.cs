@@ -17,7 +17,7 @@ namespace Gen.Friflo.Json.Fliox.Hub.Protocol.Models
             bool success;
             switch (field.genIndex) {
                 case Gen_selector:   obj.selector   = reader.ReadString      (field, obj.selector,   out success);  return success;
-                case Gen_container:  obj.container  = reader.ReadJsonKey     (field, obj.container,  out success);  return success;
+                case Gen_container:  obj.container  = reader.ReadShortString (field, obj.container,  out success);  return success;
                 case Gen_keyName:    obj.keyName    = reader.ReadString      (field, obj.keyName,    out success);  return success;
                 case Gen_isIntKey:   obj.isIntKey   = reader.ReadBooleanNull (field, out success);  return success;
                 case Gen_references: obj.references = reader.ReadClass       (field, obj.references, out success);  return success;
@@ -27,7 +27,7 @@ namespace Gen.Friflo.Json.Fliox.Hub.Protocol.Models
 
         private static void Write(ref References obj, PropField[] fields, ref Writer writer, ref bool firstMember) {
             writer.WriteString      (fields[Gen_selector],   obj.selector,   ref firstMember);
-            writer.WriteJsonKey     (fields[Gen_container],  obj.container,  ref firstMember);
+            writer.WriteShortString (fields[Gen_container],  obj.container,  ref firstMember);
             writer.WriteString      (fields[Gen_keyName],    obj.keyName,    ref firstMember);
             writer.WriteBooleanNull (fields[Gen_isIntKey],   obj.isIntKey,   ref firstMember);
             writer.WriteClass       (fields[Gen_references], obj.references, ref firstMember);

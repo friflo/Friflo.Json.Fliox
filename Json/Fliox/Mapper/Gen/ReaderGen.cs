@@ -178,6 +178,15 @@ namespace Friflo.Json.Fliox.Mapper.Map
             return new JsonKey(ref parser.value, ref parser.valueParser, value);
         }
         
+        // --- ShortString
+        /// <see cref="ShortStringMapper.Read"/>
+        public ShortString ReadShortString (PropField field, in ShortString value, out bool success) {
+            if (parser.Event != JsonEvent.ValueString)
+                return HandleEventGen<ShortString>(field.fieldType, out success);
+            success = true;
+            return new ShortString(ref parser.value, value);
+        }
+        
         // --- JsonValue
         /// <see cref="JsonValueMapper.Read"/>
         public JsonValue ReadJsonValue (PropField field, out bool success) {

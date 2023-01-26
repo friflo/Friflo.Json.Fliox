@@ -19,7 +19,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     {
         /// <summary>container name</summary>
         [Serialize                                ("cont")]
-        [Required]  public      JsonKey             container;
+        [Required]  public      ShortString         container;
         /// <summary>aggregation type - e.g. count </summary>
                     public      AggregateType       type;
         /// <summary>aggregation filter as JSON tree. <br/>
@@ -70,7 +70,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     {
         /// <summary>container name - not utilized by Protocol</summary>
         [Serialize                            ("cont")]
-        [DebugInfo]     public  JsonKey         container;
+        [DebugInfo]     public  ShortString     container;
                         public  double?         value;      // set if not using groupBy
         [Ignore]        public  CommandError    Error { get; set; }
 

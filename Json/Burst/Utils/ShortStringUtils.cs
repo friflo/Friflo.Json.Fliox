@@ -14,7 +14,7 @@ namespace Friflo.Json.Burst.Utils
     /// <br/>
     /// <b>Two long</b> fields are used by the <c>struct JsonKey</c> internally.
     /// </summary>
-    public static class ShortString
+    public static class ShortStringUtils
     {
         // ReSharper disable once MemberCanBePrivate.Global
         public  const int   MaxLength      = 15;

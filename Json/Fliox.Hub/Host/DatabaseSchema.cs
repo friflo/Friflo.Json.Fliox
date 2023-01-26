@@ -48,20 +48,20 @@ namespace Friflo.Json.Fliox.Hub.Host
     /// </remarks>
     public sealed class DatabaseSchema
     {
-        public   readonly   TypeSchema                          typeSchema;
+        public   readonly   TypeSchema                              typeSchema;
         [DebuggerBrowsable(Never)]
-        private  readonly   Dictionary<JsonKey, ValidationType> containerTypes  = new Dictionary<JsonKey, ValidationType>(JsonKey.Equality);
+        private  readonly   Dictionary<ShortString, ValidationType> containerTypes  = new Dictionary<ShortString, ValidationType>(ShortString.Equality);
         // ReSharper disable once UnusedMember.Local - expose Dictionary as list in Debugger
-        private             IReadOnlyCollection<ValidationType> ContainerTypes  => containerTypes.Values;
+        private             IReadOnlyCollection<ValidationType>     ContainerTypes  => containerTypes.Values;
         
-        private             Dictionary<string, JsonValue>       jsonSchemas; // cache schemas after creation
+        private             Dictionary<string, JsonValue>           jsonSchemas; // cache schemas after creation
         
-        internal            string                              Name        => typeSchema.RootType.Name;
-        internal            string                              Path        => typeSchema.RootType.Path + ".json";
+        internal            string                                  Name        => typeSchema.RootType.Name;
+        internal            string                                  Path        => typeSchema.RootType.Path + ".json";
 
-        public   override   string                              ToString()  => typeSchema.RootType.Name;
+        public   override   string                                  ToString()  => typeSchema.RootType.Name;
         
-        public              ValidationType  GetValidationType (in JsonKey container) => containerTypes[container];
+        public              ValidationType  GetValidationType (in ShortString container) => containerTypes[container];
 
         public DatabaseSchema(TypeSchema typeSchema) {
             this.typeSchema = typeSchema;
@@ -86,7 +86,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         }
         
         public string ValidateEntities (
-            in JsonKey              container,
+            in ShortString          container,
             List<JsonEntity>        entities,
             SharedEnv               env,
             EntityErrorType         errorType,

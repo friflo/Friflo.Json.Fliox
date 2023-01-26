@@ -12,7 +12,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
     public sealed class AuthorizeContainer : TaskAuthorizer {
         private  readonly   DatabaseFilter  databaseFilter;
         
-        private  readonly   JsonKey         container;
+        private  readonly   ShortString     container;
         
         private  readonly   bool            create;
         private  readonly   bool            upsert;
@@ -29,7 +29,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
         public AuthorizeContainer (string container, ICollection<OperationType> types, string database)
         {
             databaseFilter  = new DatabaseFilter(database);
-            this.container  = new JsonKey(container);
+            this.container  = new ShortString(container);
             SetRoles(types, ref create, ref upsert, ref delete, ref deleteAll, ref merge, ref read, ref query, ref aggregate);
         }
         
