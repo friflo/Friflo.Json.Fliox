@@ -39,7 +39,6 @@ namespace Friflo.Json.Fliox
 
         public static readonly  JsonKeyComparer         Comparer    = new JsonKeyComparer();
         public static readonly  JsonKeyEqualityComparer Equality    = new JsonKeyEqualityComparer();
-        private const           int                     GuidLength  = 36;
 
         /// <summary>
         /// Calling this constructor should be the last option as it may force a string creation. <br/>
@@ -62,7 +61,7 @@ namespace Friflo.Json.Fliox
                 return;
             }
             var stringLength = value.Length;
-            if (stringLength == GuidLength && Guid.TryParse(value, out var guid)) {
+            if (stringLength == Bytes.GuidLength && Guid.TryParse(value, out var guid)) {
                 type    = GUID;
                 str     = null;
                 GuidUtils.GuidToLongLong(guid, out lng, out lng2);
@@ -84,7 +83,7 @@ namespace Friflo.Json.Fliox
                 return;
             }
             var bytesLen = bytes.end - bytes.start;
-            if (bytesLen == GuidLength && bytes.TryParseGuid(out var guid, out string temp)) { // temp not null in Unity. Otherwise null
+            if (bytesLen == Bytes.GuidLength && bytes.TryParseGuid(out var guid, out string temp)) { // temp not null in Unity. Otherwise null
                 type    = GUID;
                 str     = temp;
                 GuidUtils.GuidToLongLong(guid, out lng, out lng2);
