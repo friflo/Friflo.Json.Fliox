@@ -17,7 +17,7 @@ namespace Friflo.Json.Fliox
     /// <summary>
     /// A struct optimized to store strings representing integers, strings or GUID's<br/>
     /// E.g. <c>"12345", "article" or "550e8400-e29b-11d4-a716-446655440000"</c><br/>
-    /// It is intended to be used for entity id's stored in containers.<br/>
+    /// It is intended to be used for <i>arbitrary</i> identifiers like entity, user or client id's.<br/>
     /// </summary>
     /// <remarks>
     /// The optimization goals are:<br/>
