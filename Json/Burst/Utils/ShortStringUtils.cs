@@ -76,12 +76,12 @@ namespace Friflo.Json.Burst.Utils
         }
         
         public static unsafe void LongLongToString(long lng, long lng2, out string str) {
-            Span<byte> bytes    = stackalloc byte[ByteCount];
             if (lng2 == IsNULL) {
                 str = null;
                 return;
             }
-            int byteCount = GetLength(lng2);
+            Span<byte> bytes    = stackalloc byte[ByteCount];
+            int byteCount       = GetLength(lng2);
             fixed (byte*  bytesPtr  = &bytes[0]) {
                 var bytesLongPtr    = (long*)bytesPtr;
                 bytesLongPtr[0]     = lng;
