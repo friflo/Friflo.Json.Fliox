@@ -31,9 +31,9 @@ namespace Friflo.Json.Fliox
     {
         internal    readonly    bool        notNull;
         internal    readonly    string      str;
-        internal    readonly    long        lng;  // long  |  lower  64 bits for Guid  | lower  8 bytes for UTF-8 string
+        internal    readonly    long        lng;  // lower  8 bytes for UTF-8 string
         [Browse(Never)]
-        internal    readonly    long        lng2; //          higher 64 bits for Guid  | higher 7 bytes for UTF-8 string + 1 byte length
+        internal    readonly    long        lng2; // higher 7 bytes for UTF-8 string + 1 byte length
         
         public      override    string      ToString()  => GetString(); 
 
