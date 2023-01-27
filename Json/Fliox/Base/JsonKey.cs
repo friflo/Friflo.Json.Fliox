@@ -147,14 +147,28 @@ namespace Friflo.Json.Fliox
             }
         }
         
-        internal static int StringCompare(in JsonKey left, in JsonKey right)
-        {
-            if (left.type   != STRING) throw new ArgumentException("expect left.type: STRING");
-            if (right.type  != STRING) throw new ArgumentException("expect right.type: STRING");
+        public static int Compare(in JsonKey left, in JsonKey right) {
+            int dif = left.type - right.type;
+            if (dif != 0)
+                return dif;
             
-            var leftStr     = new ShortString(left);
-            var rightStr    = new ShortString(right);
-            return ShortString.StringCompare(leftStr, rightStr);
+            switch (left.type) {
+                case LONG:
+                    long longDif = left.lng - right.lng;
+                    if (longDif < 0)
+                        return -1;
+                    if (longDif > 0)
+                        return +1;
+                    return 0;
+                case STRING:
+                    var leftShort    = new ShortString(left);
+                    var rightShort   = new ShortString(right);
+                    return ShortString.StringCompare(leftShort, rightShort);
+                case GUID:
+                    return left.Guid.CompareTo(right.Guid);
+                default:
+                    throw new InvalidOperationException("Invalid IdType"); 
+            }
         }
         
         public bool IsEqual(in JsonKey other) {
