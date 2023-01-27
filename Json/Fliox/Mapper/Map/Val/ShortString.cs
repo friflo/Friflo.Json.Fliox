@@ -28,7 +28,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
         }
 
         public override void Write(ref Writer writer, ShortString value) {
-            if (value.notNull) {
+            if (!value.IsNull()) {
                 writer.WriteShortString(value);
             } else {
                 writer.AppendNull();

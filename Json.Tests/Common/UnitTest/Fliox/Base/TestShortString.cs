@@ -1,6 +1,7 @@
 // Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 using Friflo.Json.Burst;
 using Friflo.Json.Burst.Utils;
@@ -14,12 +15,30 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Base
     public static class TestShortString
     {
         [Test]
+        public static void TestShortString_Null() {
+            {
+                var result = new ShortString();
+                IsTrue(result.IsNull());
+            } {
+                var result = new ShortString(null);
+                IsTrue(result.IsNull());
+            } {
+                var result = new ShortString("a");
+                IsFalse(result.IsNull());
+            }  {
+                var result = new ShortString("a string length > 15");
+                IsFalse(result.IsNull());
+            }
+        }
+        
+        [Test]
         public static void TestShortString_String() {
             {
                 ShortStringUtils.StringToLongLong("", out string str, out long lng, out long lng2);
                 IsNull(str);
                 AreEqual(0x_00_00_00_00_00_00_00_00, lng);
-                AreEqual(0x_00_00_00_00_00_00_00_00, lng2);
+                AreEqual(0x_01_00_00_00_00_00_00_00, lng2);
+                //           ^-- length byte
                 
                 ShortStringUtils.LongLongToString(lng, lng2, out string result);
                 AreEqual("", result);
@@ -27,8 +46,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Base
                 ShortStringUtils.StringToLongLong("a", out string str, out long lng, out long lng2);
                 IsNull(str);
                 AreEqual(0x_00_00_00_00_00_00_00_61, lng);
-                AreEqual(0x_01_00_00_00_00_00_00_00, lng2);
-                //           ^-- length byte
+                AreEqual(0x_02_00_00_00_00_00_00_00, lng2);
                 
                 ShortStringUtils.LongLongToString(lng, lng2, out string result);
                 AreEqual("a", result);
@@ -36,7 +54,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Base
                 ShortStringUtils.StringToLongLong("012345678901234", out string str, out long lng, out long lng2);
                 IsNull(str);
                 AreEqual(0x_37_36_35_34_33_32_31_30, lng);
-                AreEqual(0x_0F_34_33_32_31_30_39_38, lng2);
+                AreEqual(0x_10_34_33_32_31_30_39_38, lng2);
                 
                 ShortStringUtils.LongLongToString(lng, lng2, out string result);
                 AreEqual("012345678901234", result);
@@ -44,7 +62,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Base
                 ShortStringUtils.StringToLongLong("☀🌎♥👋", out string str, out long lng, out long lng2);
                 IsNull(str);
                 AreEqual(0x_E2_8E_8C_9F_F0_80_98_E2, (ulong)lng);
-                AreEqual(0x_0E_00_8B_91_9F_F0_A5_99, lng2);
+                AreEqual(0x_0F_00_8B_91_9F_F0_A5_99, lng2);
                 
                 ShortStringUtils.LongLongToString(lng, lng2, out string result);
                 AreEqual("☀🌎♥👋", result);
@@ -62,7 +80,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Base
                 var input = new Bytes("");
                 ShortStringUtils.BytesToLongLong(input, out long lng, out long lng2);
                 AreEqual(0x_00_00_00_00_00_00_00_00, lng);
-                AreEqual(0x_00_00_00_00_00_00_00_00, lng2);
+                AreEqual(0x_01_00_00_00_00_00_00_00, lng2);
                 
                 ShortStringUtils.LongLongToString(lng, lng2, out string result);
                 AreEqual("", result);
@@ -70,7 +88,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Base
                 var input = new Bytes("a");
                 ShortStringUtils.BytesToLongLong(input, out long lng, out long lng2);
                 AreEqual(0x_00_00_00_00_00_00_00_61, lng);
-                AreEqual(0x_01_00_00_00_00_00_00_00, lng2);
+                AreEqual(0x_02_00_00_00_00_00_00_00, lng2);
                 
                 ShortStringUtils.LongLongToString(lng, lng2, out string result);
                 AreEqual("a", result);
@@ -78,10 +96,66 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Base
                 var input = new Bytes("012345678901234");
                 ShortStringUtils.BytesToLongLong(input, out long lng, out long lng2);
                 AreEqual(0x_37_36_35_34_33_32_31_30, lng);
-                AreEqual(0x_0F_34_33_32_31_30_39_38, lng2);
+                AreEqual(0x_10_34_33_32_31_30_39_38, lng2);
                 
                 ShortStringUtils.LongLongToString(lng, lng2, out string result);
                 AreEqual("012345678901234", result);
+            }
+        }
+        
+        [Test]
+        public static void TestShortString_IsEqual() {
+            // --- equal
+            AssertIsEqual(null,                     null,                   true);
+            AssertIsEqual("a",                      "a",                    true);
+            AssertIsEqual("a string length > 15",   "a string length > 15", true);
+            
+            // --- not equal
+            AssertIsEqual("a",                      "b",                    false);
+            AssertIsEqual("a",                      null,                   false);
+            AssertIsEqual("a string length > 15",   null,                   false);
+            AssertIsEqual(null,                     "b",                    false);
+            AssertIsEqual(null,                     "b string length > 15", false);
+        }
+        
+        private static void AssertIsEqual(string left, string right, bool expected) {
+            var leftShort   = new ShortString(left);
+            var rightShort  = new ShortString(right);
+            var result      = leftShort.IsEqual(rightShort);
+            AreEqual(expected, result);
+        }
+        
+        [Test]
+        public static void TestShortString_CompareNull () {
+            // --- string compare reference
+            {
+                var result = string.Compare(null, null, StringComparison.Ordinal);
+                AreEqual( 0, result);
+            } {
+                var result = string.Compare(null, "a", StringComparison.Ordinal);
+                AreEqual(-1, result);
+            } {
+                var result = string.Compare("a", null, StringComparison.Ordinal);
+                AreEqual(+1, result);
+            }
+            // --- ShortString (long) compare
+            {
+                var result = ShortString.StringCompare(default, new ShortString("aaaaaaaaaaaaaaaaaaaaaaaaaaaaa"));
+                AreEqual(-1, result);
+            } {
+                var result = ShortString.StringCompare(new ShortString("aaaaaaaaaaaaaaaaaaaaaaaaaaaaa"), default);
+                AreEqual(+1, result);
+            }
+            // --- ShortString (short) compare
+            {
+                var result = ShortString.StringCompare(default, default);
+                AreEqual( 0, result);
+            } {
+                var result = ShortString.StringCompare(default, new ShortString("a"));
+                AreEqual(-1, result);
+            } {
+                var result = ShortString.StringCompare(new ShortString("a"), default);
+                AreEqual(+1, result);
             }
         }
         

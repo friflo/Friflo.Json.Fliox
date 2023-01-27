@@ -18,15 +18,17 @@ namespace Friflo.Json.Burst.Utils
     public static class ShortStringUtils
     {
         // ReSharper disable once MemberCanBePrivate.Global
-        public  const int   MaxLength      = 15;
+        public  const int   MaxLength   = 15;
         /// <summary> shift highest byte of lng2 7 bytes right to get byte count</summary>
-        private const int   ShiftLength    = 56;
+        private const int   ShiftLength = 56;
         /// <summary> <see cref="MaxLength"/> + 1 </summary>
-        private const int   ByteCount      = 16;
+        private const int   ByteCount   = 16;
+        
+        public  const int   IsNULL      = 0;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int GetLength (long lng2) {
-            return (int)(lng2 >> ShiftLength);
+            return (int)(lng2 >> ShiftLength) - 1;
         }
         
         /// <summary>
@@ -44,7 +46,7 @@ namespace Friflo.Json.Burst.Utils
             var byteCount = Encoding.UTF8.GetByteCount(value);
             if (byteCount <= MaxLength) {
                 Span<byte> bytes        = stackalloc byte[ByteCount];
-                bytes[MaxLength]        = (byte)byteCount;
+                bytes[MaxLength]        = (byte)(byteCount + 1);
                 Encoding.UTF8.GetBytes(value, bytes);
                 fixed (byte*  bytesPtr  = &bytes[0]) 
                 fixed (long*  lngPtr    = &lng)
@@ -75,7 +77,11 @@ namespace Friflo.Json.Burst.Utils
         
         public static unsafe void LongLongToString(long lng, long lng2, out string str) {
             Span<byte> bytes    = stackalloc byte[ByteCount];
-            int byteCount       = GetLength(lng2);
+            if (lng2 == IsNULL) {
+                str = null;
+                return;
+            }
+            int byteCount = GetLength(lng2);
             fixed (byte*  bytesPtr  = &bytes[0]) {
                 var bytesLongPtr    = (long*)bytesPtr;
                 bytesLongPtr[0]     = lng;
@@ -109,8 +115,8 @@ namespace Friflo.Json.Burst.Utils
             }
             Span<byte> src  = new Span<byte>(value.buffer, value.start, byteCount);
             Span<byte> dst  = stackalloc byte[ByteCount];
-            src.CopyTo(dst);                    // copy byteCount bytes to dst 
-            dst[MaxLength] = (byte)byteCount;   // set last byte to length
+            src.CopyTo(dst);                        // copy byteCount bytes to dst 
+            dst[MaxLength] = (byte)(byteCount + 1); // set last byte to length
             
             fixed (byte*  bytesPtr  = dst) 
             fixed (long*  lngPtr    = &lng)

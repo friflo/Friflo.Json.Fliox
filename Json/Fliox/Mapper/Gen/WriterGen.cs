@@ -167,9 +167,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
                 return;
             }
             WriteFieldKey(field, ref firstMember);
-            if (value.notNull) {
-                WriteShortString(value);
-            }
+            WriteShortString(value);
         }
         
         // --- JsonValue
