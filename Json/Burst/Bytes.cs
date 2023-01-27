@@ -457,7 +457,7 @@ namespace Friflo.Json.Burst
         
         public unsafe void AppendShortString(long lng, long lng2)
         {
-            int len = (int)(lng2 >> ShortStringUtils.ShiftLength);
+            int len = ShortStringUtils.GetLength(lng2);
             if (end + len > buffer.Length) {
                 DoubleSize(end + len);
             }

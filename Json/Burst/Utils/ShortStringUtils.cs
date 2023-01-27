@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
+using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace Friflo.Json.Burst.Utils
@@ -19,9 +20,14 @@ namespace Friflo.Json.Burst.Utils
         // ReSharper disable once MemberCanBePrivate.Global
         public  const int   MaxLength      = 15;
         /// <summary> shift highest byte of lng2 7 bytes right to get byte count</summary>
-        public  const int   ShiftLength    = 56;
+        private const int   ShiftLength    = 56;
         /// <summary> <see cref="MaxLength"/> + 1 </summary>
         private const int   ByteCount      = 16;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int GetLength (long lng2) {
+            return (int)(lng2 >> ShiftLength);
+        }
         
         /// <summary>
         /// If <paramref name="value"/> contains control characters => use string instance.<br/>
@@ -69,7 +75,7 @@ namespace Friflo.Json.Burst.Utils
         
         public static unsafe void LongLongToString(long lng, long lng2, out string str) {
             Span<byte> bytes    = stackalloc byte[ByteCount];
-            int byteCount       = (int)(lng2 >> ShiftLength); 
+            int byteCount       = GetLength(lng2);
             fixed (byte*  bytesPtr  = &bytes[0]) {
                 var bytesLongPtr    = (long*)bytesPtr;
                 bytesLongPtr[0]     = lng;
@@ -118,7 +124,7 @@ namespace Friflo.Json.Burst.Utils
         }
         
         public static unsafe int GetChars(long lng, long lng2, in Span<char> dst) {
-            int byteCount           = (int)(lng2 >> ShiftLength);
+            int byteCount           = GetLength(lng2);
             Span<byte> bytes        = stackalloc byte[ByteCount];
             ReadOnlySpan<byte> src  = bytes.Slice(0, byteCount);
             fixed (byte*  bytesPtr = &bytes[0]) {

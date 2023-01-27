@@ -142,7 +142,7 @@ namespace Friflo.Json.Fliox
                 return leftReadOnly.StartsWith(rightReadOnly, Ordinal);
             }
             // --- case: right.str == null  =>  only right is short string
-            int rightLength = (int)(right.lng2 >> ShortStringUtils.ShiftLength);
+            int rightLength = ShortStringUtils.GetLength(right.lng2);
             if (rightLength == 0) {
                 return true;    // early out for right: ""
             }
@@ -155,7 +155,7 @@ namespace Friflo.Json.Fliox
                 return leftReadOnly.StartsWith(rightReadOnly, Ordinal);
             }
             // --- case: left and right are short strings
-            int leftLength = (int)(left.lng2 >> ShortStringUtils.ShiftLength);
+            int leftLength = ShortStringUtils.GetLength(left.lng2);
             if (rightLength > leftLength) {
                 return false;
             }
