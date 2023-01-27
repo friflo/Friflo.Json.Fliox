@@ -16,4 +16,11 @@ namespace Friflo.Json.Fliox.Mapper
             return jsonKey.HashCode();
         }
     }
+    
+    public sealed class ShortStringComparer : IComparer<ShortString>
+    {
+        public int Compare(ShortString x, ShortString y) {
+            return ShortString.StringCompare(x, y);
+        }
+    }
 }
