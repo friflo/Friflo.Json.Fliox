@@ -140,21 +140,21 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Base
             }
             // --- ShortString (long) compare
             {
-                var result = ShortString.StringCompare(default, new ShortString("aaaaaaaaaaaaaaaaaaaaaaaaaaaaa"));
+                var result = ShortString.Compare(default, new ShortString("aaaaaaaaaaaaaaaaaaaaaaaaaaaaa"));
                 AreEqual(-1, result);
             } {
-                var result = ShortString.StringCompare(new ShortString("aaaaaaaaaaaaaaaaaaaaaaaaaaaaa"), default);
+                var result = ShortString.Compare(new ShortString("aaaaaaaaaaaaaaaaaaaaaaaaaaaaa"), default);
                 AreEqual(+1, result);
             }
             // --- ShortString (short) compare
             {
-                var result = ShortString.StringCompare(default, default);
+                var result = ShortString.Compare(default, default);
                 AreEqual( 0, result);
             } {
-                var result = ShortString.StringCompare(default, new ShortString("a"));
+                var result = ShortString.Compare(default, new ShortString("a"));
                 AreEqual(-1, result);
             } {
-                var result = ShortString.StringCompare(new ShortString("a"), default);
+                var result = ShortString.Compare(new ShortString("a"), default);
                 AreEqual(+1, result);
             }
         }
@@ -179,7 +179,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Base
         private static void AssertStartsCompare(string left, string right, int expected) {
             var leftShort   = new ShortString(left);
             var rightShort  = new ShortString(right);
-            var result      = ShortString.StringCompare(leftShort, rightShort);
+            var result      = ShortString.Compare(leftShort, rightShort);
             AreEqual(expected, result);
         }
         

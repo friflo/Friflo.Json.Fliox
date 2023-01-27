@@ -163,7 +163,7 @@ namespace Friflo.Json.Fliox
                 case STRING:
                     var leftShort    = new ShortString(left);
                     var rightShort   = new ShortString(right);
-                    return ShortString.StringCompare(leftShort, rightShort);
+                    return ShortString.Compare(leftShort, rightShort);
                 case GUID:
                     return left.Guid.CompareTo(right.Guid);
                 default:

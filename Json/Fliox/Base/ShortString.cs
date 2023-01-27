@@ -80,7 +80,7 @@ namespace Friflo.Json.Fliox
         
         internal const int MaxCharCount = 16; // Encoding.UTF8.GetMaxCharCount(15);
         
-        public static int StringCompare(in ShortString left, in ShortString right)
+        public static int Compare(in ShortString left, in ShortString right)
         {
             if (right.str != null) {
                 if (left.str != null) {

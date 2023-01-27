@@ -19,7 +19,7 @@ namespace Friflo.Json.Fliox.Mapper
     public sealed class ShortStringComparer : IComparer<ShortString>
     {
         public int Compare(ShortString x, ShortString y) {
-            return ShortString.StringCompare(x, y);
+            return ShortString.Compare(x, y);
         }
     }
 }
