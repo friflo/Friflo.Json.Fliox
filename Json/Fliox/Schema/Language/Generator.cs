@@ -287,7 +287,7 @@ namespace Friflo.Json.Fliox.Schema.Language
                 if (type2 == rootType)
                     return +1;
                 // remaining namespace by comparing theirs names
-                return string.Compare(file1.@namespace, file2.@namespace, StringComparison.Ordinal);
+                return string.CompareOrdinal(file1.@namespace, file2.@namespace);
             });
             return emitFiles;
         }

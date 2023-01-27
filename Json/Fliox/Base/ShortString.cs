@@ -84,7 +84,7 @@ namespace Friflo.Json.Fliox
         {
             if (right.str != null) {
                 if (left.str != null) {
-                    return string.Compare(left.str, right.str, Ordinal);
+                    return string.CompareOrdinal(left.str, right.str);
                 }
                 if (left.lng2 == IsNULL) {
                     return -1;

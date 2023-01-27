@@ -70,7 +70,7 @@ namespace Friflo.Json.Fliox.Transform {
                 case ScalarType.String:
                     if (other.IsString) {
                         result = default;
-                        return string.Compare(stringValue, other.stringValue, StringComparison.Ordinal);
+                        return string.CompareOrdinal(stringValue, other.stringValue);
                     }
                     return CompareDefault(other, operation, out result);
                 case ScalarType.Double:

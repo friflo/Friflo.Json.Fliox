@@ -129,13 +129,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Base
         public static void TestShortString_CompareNull () {
             // --- string compare reference
             {
-                var result = string.Compare(null, null, StringComparison.Ordinal);
+                var result = string.CompareOrdinal(null, null);
                 AreEqual( 0, result);
             } {
-                var result = string.Compare(null, "a", StringComparison.Ordinal);
+                var result = string.CompareOrdinal(null, "a");
                 AreEqual(-1, result);
             } {
-                var result = string.Compare("a", null, StringComparison.Ordinal);
+                var result = string.CompareOrdinal("a", null);
                 AreEqual(+1, result);
             }
             // --- ShortString (long) compare
