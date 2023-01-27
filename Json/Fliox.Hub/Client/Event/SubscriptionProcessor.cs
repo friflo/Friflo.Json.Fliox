@@ -93,7 +93,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             
             // --- invoke message handlers
             foreach (var message in messages) {
-                var name = message.Name;
+                var name = message.NameShort;
                 var subs = client._intern.subscriptions;
                 if (subs != null && subs.TryGetValue(name, out MessageSubscriber subscriber)) {
                     subscriber.InvokeCallbacks(message.invokeContext, eventContext);    
@@ -103,7 +103,7 @@ namespace Friflo.Json.Fliox.Hub.Client
                     tempSubscriptionsPrefix.Clear();
                     tempSubscriptionsPrefix.AddRange(subsPrefix);
                     foreach (var sub in tempSubscriptionsPrefix) {
-                        if (name.StartsWith(sub.name)) {
+                        if (ShortString.StartsWith(name, sub.name)) {
                             sub.InvokeCallbacks(message.invokeContext, eventContext);
                         }
                     }

@@ -51,10 +51,10 @@ namespace Friflo.Json.Fliox.Hub.Host
     public partial class DatabaseService
     {
         [DebuggerBrowsable(Never)]
-        private readonly    Dictionary<string, MessageDelegate>     handlers = new Dictionary<string, MessageDelegate>();
+        private readonly    Dictionary<ShortString, MessageDelegate>    handlers;
         // ReSharper disable once UnusedMember.Local - expose Dictionary as list in Debugger
-        private             IReadOnlyCollection<MessageDelegate>    Handlers                => handlers.Values;
-        public  readonly    DatabaseServiceQueue                    queue;
+        private             IReadOnlyCollection<MessageDelegate>        Handlers    => handlers.Values;
+        public  readonly    DatabaseServiceQueue                        queue;
 
 
         /// <summary>
@@ -70,6 +70,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// So using lock's or other thread synchronization mechanisms are not necessary.
         /// </remarks> 
         public DatabaseService (DatabaseServiceQueue queue = null) {
+            handlers = new Dictionary<ShortString, MessageDelegate>(ShortString.Equality);
             AddStdCommandHandlers();
             this.queue = queue; 
         }
@@ -133,7 +134,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// </summary>
         protected void AddMessageHandler<TParam> (string name, HostMessageHandler<TParam> handler) {
             var message = new MessageDelegate<TParam>(name, handler);
-            handlers.Add(name, message);
+            handlers.Add(new ShortString(name), message);
         }
         
         /// <summary>
@@ -145,7 +146,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// </summary>
         protected void AddMessageHandlerAsync<TParam> (string name, HostMessageHandlerAsync<TParam> handler) {
             var message = new MessageDelegateAsync<TParam>(name, handler);
-            handlers.Add(name, message);
+            handlers.Add(new ShortString(name), message);
         }
         
         /// <summary>
@@ -157,7 +158,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// </summary>
         protected void AddCommandHandler<TParam, TResult> (string name, HostCommandHandler<TParam, TResult> handler) {
             var command = new CommandDelegate<TParam, TResult>(name, handler);
-            handlers.Add(name, command);
+            handlers.Add(new ShortString(name), command);
         }
 
         /// <summary>
@@ -169,7 +170,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// </summary>
         protected void AddCommandHandlerAsync<TParam, TResult> (string name, HostCommandHandler<TParam, Task<TResult>> handler) {
             var command = new CommandDelegateAsync<TParam, TResult>(name, handler);
-            handlers.Add(name, command);
+            handlers.Add(new ShortString(name), command);
         }
        
         /// <summary>
@@ -201,7 +202,7 @@ namespace Friflo.Json.Fliox.Hub.Host
                 } else {
                     messageDelegate = CreateCommandCallback(instance, handler, messagePrefix);
                 }
-                handlers.Add(messageDelegate.name, messageDelegate);
+                handlers.Add(new ShortString(messageDelegate.name), messageDelegate);
             }
         }
         
@@ -258,7 +259,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         }
         
         // --- internal API ---
-        internal bool TryGetMessage(string name, out MessageDelegate message) {
+        internal bool TryGetMessage(in ShortString name, out MessageDelegate message) {
             return handlers.TryGetValue(name, out message);
         }
         
@@ -268,7 +269,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             int         n = 0;
             foreach (var pair in handlers) {
                 if (pair.Value.MsgType == MsgType.Message)
-                    result[n++] = pair.Key;
+                    result[n++] = pair.Key.AsString();
             }
             return result;
         }
@@ -291,11 +292,11 @@ namespace Friflo.Json.Fliox.Hub.Host
             return count;
         }
         
-        private static void AddCommands (string[] commands, ref int n, bool standard, Dictionary<string, MessageDelegate> commandMap) {
+        private static void AddCommands (string[] commands, ref int n, bool standard, Dictionary<ShortString, MessageDelegate> commandMap) {
             foreach (var pair in commandMap) {
                 if (pair.Value.MsgType != MsgType.Command)
                     continue;
-                var name = pair.Key;
+                var name = pair.Key.ToString();
                 if (name.StartsWith("std.") == standard)
                     commands[n++] = name;
             }

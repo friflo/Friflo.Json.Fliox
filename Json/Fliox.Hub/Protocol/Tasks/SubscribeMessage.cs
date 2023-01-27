@@ -45,8 +45,9 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
             return new SubscribeMessageResult();
         }
         
-        internal static string GetPrefix (string name) {
-            return name.EndsWith("*") ? name.Substring(0, name.Length - 1) : null;
+        internal static ShortString GetPrefix (string name) {
+            var prefix = name.EndsWith("*") ? name.Substring(0, name.Length - 1) : null; 
+            return new ShortString(prefix);
         }
     }
     

@@ -18,7 +18,7 @@ namespace Gen.Friflo.Json.Fliox.Hub.Protocol.Tasks
             bool success;
             switch (field.genIndex) {
                 case Gen_info:    obj.info    = reader.ReadJsonValue (field, out success);  return success;
-                case Gen_name:    obj.name    = reader.ReadString    (field, obj.name,    out success);  return success;
+                case Gen_name:    obj.name    = reader.ReadShortString (field, obj.name,    out success);  return success;
                 case Gen_param:   obj.param   = reader.ReadJsonValue (field, out success);  return success;
                 case Gen_users:   obj.users   = reader.ReadClass     (field, obj.users,   out success);  return success;
                 case Gen_clients: obj.clients = reader.ReadClass     (field, obj.clients, out success);  return success;
@@ -29,7 +29,7 @@ namespace Gen.Friflo.Json.Fliox.Hub.Protocol.Tasks
 
         private static void Write(ref SendCommand obj, PropField[] fields, ref Writer writer, ref bool firstMember) {
             writer.WriteJsonValue (fields[Gen_info],    obj.info,    ref firstMember);
-            writer.WriteString    (fields[Gen_name],    obj.name,    ref firstMember);
+            writer.WriteShortString (fields[Gen_name],    obj.name,    ref firstMember);
             writer.WriteJsonValue (fields[Gen_param],   obj.param,   ref firstMember);
             writer.WriteClass     (fields[Gen_users],   obj.users,   ref firstMember);
             writer.WriteClass     (fields[Gen_clients], obj.clients, ref firstMember);

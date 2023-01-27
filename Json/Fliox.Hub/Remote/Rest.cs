@@ -465,7 +465,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         // ----------------------------------------- command / message -----------------------------------------
         internal static async Task Command(RequestContext context, ShortString database, string command, JsonValue param) {
             var hub             = context.hub;
-            var sendCommand     = new SendCommand { name = command, param = param };
+            var sendCommand     = new SendCommand { name = new ShortString(command), param = param };
             var syncRequest     = CreateSyncRequest(context, database, sendCommand, out var syncContext);
             var executionType   = hub.InitSyncRequest(syncRequest);
             ExecuteSyncResult syncResult;
@@ -488,7 +488,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         
         internal static async Task Message(RequestContext context, ShortString database, string message, JsonValue param) {
             var hub             = context.hub;
-            var sendMessage     = new SendMessage { name = message, param = param };
+            var sendMessage     = new SendMessage { name = new ShortString(message), param = param };
             var syncRequest     = CreateSyncRequest(context, database, sendMessage, out var syncContext);
             var executionType   = hub.InitSyncRequest(syncRequest);
             ExecuteSyncResult syncResult;

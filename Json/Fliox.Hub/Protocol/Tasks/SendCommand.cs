@@ -18,11 +18,11 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         
         
         private TaskErrorResult PrepareSend() {
-            if (name == null) {
+            if (name.IsNull()) {
                 return MissingField(nameof(name));
             }
             if (callback == null) {
-                var msg = $"no command handler for: '{name}'";
+                var msg = $"no command handler for: '{name.AsString()}'";
                 return new TaskErrorResult (TaskErrorResultType.NotImplemented, msg);
             }
             return null;

@@ -42,22 +42,22 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
     
     internal readonly struct QueryResolver
     {
-        internal  readonly  string          name;
+        internal  readonly  ShortString     name;
         internal  readonly  QueryType       queryType;
         internal  readonly  SelectionObject resultObject;
         
         /// <summary> only: <see cref="QueryType.Query"/> and <see cref="QueryType.Read"/> </summary>
-        internal  readonly  ShortString container;
+        internal  readonly  ShortString     container;
         /// <summary> only: <see cref="QueryType.Message"/> and <see cref="QueryType.Command"/> </summary>
-        internal  readonly  bool        hasParam;
+        internal  readonly  bool            hasParam;
         /// <summary> only: <see cref="QueryType.Message"/> and <see cref="QueryType.Command"/> </summary>
-        internal  readonly  bool        paramRequired;  // message / command only
+        internal  readonly  bool            paramRequired;  // message / command only
 
-        public    override  string      ToString() => $"{queryType}: {name}";
+        public    override  string          ToString() => $"{queryType}: {name.AsString()}";
         
         /// <summary> constructor for database messages / commands </summary>
         internal QueryResolver(string name, QueryType queryType, FieldDef param, TypeDef resultType) {
-            this.name       = name;
+            this.name       = new ShortString(name);
             this.queryType  = queryType;
             this.container  = default;
             hasParam        = param != null;
@@ -67,7 +67,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
         
         /// <summary> constructor for container methods </summary>
         internal QueryResolver(string name, QueryType queryType, string container, TypeDef entityType, IUtf8Buffer buffer) {
-            this.name       = Gql.MethodName(name, container);
+            this.name       = new ShortString(Gql.MethodName(name, container));
             this.queryType  = queryType;
             this.container  = new ShortString(container);
             hasParam        = false;

@@ -22,7 +22,7 @@ namespace Friflo.Json.Fliox.Hub.Host
     /// For consistency the API to access the command param is same a <see cref="IMessage"/>
     /// </remarks>
     public sealed class MessageContext { // : IMessage { // uncomment to check API consistency
-        public              string          Name            { get; }
+        public              string          Name            => nameShort.AsString();
         public              SyncRequestTask Task            { get; }
         public              FlioxHub        Hub             => syncContext.hub;
         public              EntityDatabase  Database        => syncContext.database;            // not null
@@ -40,16 +40,18 @@ namespace Friflo.Json.Fliox.Hub.Host
         
         // --- internal / private fields
         [DebuggerBrowsable(Never)]
-        private   readonly  SyncContext     syncContext;
+        private  readonly   ShortString     nameShort;
+        [DebuggerBrowsable(Never)]
+        private  readonly   SyncContext     syncContext;
         internal            string          error;
         
-        public   override   string          ToString()      => Name;
+        public   override   string          ToString()      => nameShort.AsString();
 
 
-        internal MessageContext(SyncRequestTask task, string name, SyncContext syncContext) {
+        internal MessageContext(SyncRequestTask task, in ShortString name, SyncContext syncContext) {
             Task                = task;
-            Name                = name;
-            this.syncContext = syncContext;
+            nameShort           = name;
+            this.syncContext    = syncContext;
             WritePretty         = true;
         }
         

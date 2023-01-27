@@ -20,7 +20,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     public abstract class SyncMessageTask : SyncRequestTask
     {
         /// <summary>command / message name</summary>
-        [Required]  public  string          name;
+        [Required]  public  ShortString     name;
         /// <summary>command / message parameter. Can be null or absent</summary>
                     public  JsonValue       param;
         /// <summary>if set the Hub forward the message as an event only to given <see cref="users"/></summary>
@@ -37,7 +37,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         /// return false to execute task asynchronous
         /// </summary>
         public override bool PreExecute(EntityDatabase database, SharedEnv env) {
-            if (name == null) {
+            if (name.IsNull()) {
                 intern.executionType = ExecutionType.Sync; // execute error synchronously. error: missing field: {name}
                 return true; 
             }
@@ -63,7 +63,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         public   override       TaskType        TaskType => TaskType.message;
 
         public override async Task<SyncTaskResult> ExecuteAsync(EntityDatabase database, SyncResponse response, SyncContext syncContext) {
-            if (name == null)
+            if (name.IsNull())
                 return MissingField(nameof(name));
             if (callback != null) {
                 var result  = await callback.InvokeDelegateAsync(this, name, param, syncContext).ConfigureAwait(false);
@@ -75,7 +75,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         }
         
         public override SyncTaskResult Execute(EntityDatabase database, SyncResponse response, SyncContext syncContext) {
-            if (name == null)
+            if (name.IsNull())
                 return MissingField(nameof(name));
             if (callback != null) {
                 var result  = callback.InvokeDelegate(this, name, param, syncContext);

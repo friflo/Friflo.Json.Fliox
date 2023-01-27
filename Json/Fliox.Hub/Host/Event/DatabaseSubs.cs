@@ -16,8 +16,8 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
     /// </summary>
     internal sealed class DatabaseSubs
     {
-        private  readonly   HashSet<string>                     messageSubs;
-        private  readonly   HashSet<string>                     messagePrefixSubs;
+        private  readonly   HashSet<ShortString>                messageSubs;
+        private  readonly   HashSet<ShortString>                messagePrefixSubs;
         /// <summary> key: <see cref="SubscribeChanges.container"/> </summary>
         private  readonly   Dictionary<ShortString, ChangeSub>  changeSubsMap;
         /// <summary> 'immutable' array of <see cref="changeSubsMap"/> values use for performance </summary>
@@ -29,15 +29,15 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         internal static readonly  DatabaseSubsComparer Equality = new DatabaseSubsComparer();
         
         internal DatabaseSubs() {
-            messageSubs         = new HashSet<string>();
-            messagePrefixSubs   = new HashSet<string>();
+            messageSubs         = new HashSet<ShortString>(ShortString.Equality);
+            messagePrefixSubs   = new HashSet<ShortString>(ShortString.Equality);
             changeSubsMap       = new Dictionary<ShortString, ChangeSub>(ShortString.Equality);
             changeSubs          = Array.Empty<ChangeSub>();
         }
         
         internal DatabaseSubs(DatabaseSubs other) {
-            messageSubs         = new HashSet<string>(other.messageSubs);
-            messagePrefixSubs   = new HashSet<string>(other.messagePrefixSubs);
+            messageSubs         = new HashSet<ShortString>(other.messageSubs,       ShortString.Equality);
+            messagePrefixSubs   = new HashSet<ShortString>(other.messagePrefixSubs, ShortString.Equality);
             changeSubsMap       = new Dictionary<ShortString, ChangeSub>(other.changeSubsMap, ShortString.Equality);
             changeSubs          = new ChangeSub [other.changeSubs.Length];
             other.changeSubs.CopyTo(changeSubs, 0);
@@ -75,11 +75,11 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             return sb.ToString();
         }
 
-        private bool FilterMessage (string messageName) {
+        private bool FilterMessage (in ShortString messageName) {
             if (messageSubs.Contains(messageName))
                 return true;
             foreach (var prefixSub in messagePrefixSubs) {
-                if (messageName.StartsWith(prefixSub)) {
+                if (ShortString.StartsWith(messageName, prefixSub)) {
                     return true;
                 }
             }
@@ -89,7 +89,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         internal List<string> GetMessageSubscriptions (List<string> msgSubs) {
             foreach (var messageSub in messageSubs) {
                 if (msgSubs == null) msgSubs = new List<string>();
-                msgSubs.Add(messageSub);
+                msgSubs.Add(messageSub.AsString());
             }
             foreach (var messageSub in messagePrefixSubs) {
                 if (msgSubs == null) msgSubs = new List<string>();
@@ -118,8 +118,8 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
 
         internal void RemoveMessageSubscription(string name) {
             var prefix = SubscribeMessage.GetPrefix(name);
-            if (prefix == null) {
-                messageSubs.Remove(name);
+            if (prefix.IsNull()) {
+                messageSubs.Remove(new ShortString(name));
             } else {
                 messagePrefixSubs.Remove(prefix);
             }
@@ -127,8 +127,8 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
 
         internal void AddMessageSubscription(string name) {
             var prefix = SubscribeMessage.GetPrefix(name);
-            if (prefix == null) {
-                messageSubs.Add(name);
+            if (prefix.IsNull()) {
+                messageSubs.Add(new ShortString(name));
             } else {
                 messagePrefixSubs.Add(prefix);
             }
@@ -265,10 +265,10 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         internal int HashCode() {
             int hashCode = 0;
             foreach (var message in messageSubs) {
-                hashCode ^= message.GetHashCode(); 
+                hashCode ^= message.HashCode(); 
             }
             foreach (var prefix in messagePrefixSubs) {
-                hashCode ^= prefix.GetHashCode(); 
+                hashCode ^= prefix.HashCode(); 
             }
             foreach (var changeSub in changeSubs) {
                 hashCode ^= changeSub.HashCode();

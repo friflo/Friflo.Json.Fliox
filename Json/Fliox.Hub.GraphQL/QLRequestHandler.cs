@@ -18,8 +18,8 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
 {
     internal sealed class QLRequestHandler
     {
-        private  readonly   ShortString                         database;
-        private  readonly   Dictionary<string, QueryResolver>   resolvers = new Dictionary<string, QueryResolver>();
+        private  readonly   ShortString                             database;
+        private  readonly   Dictionary<ShortString, QueryResolver>  resolvers = new Dictionary<ShortString, QueryResolver>(ShortString.Equality);
         
         internal QLRequestHandler(TypeSchema typeSchema, string database) {
             this.database   = new ShortString(database);
@@ -52,7 +52,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                 var name        = message.name.Replace(".", "_");
                 var resultType  = message.result?.type;
                 var query       = new QueryResolver(message.name, messageType, message.param, resultType);
-                resolvers.Add(name,             query);
+                resolvers.Add(new ShortString(name), query);
             }
         }
         
@@ -90,7 +90,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                     continue;
                 var name    = graphQLQuery.Name.StringValue;
                 var alias   = graphQLQuery.Alias?.Name.StringValue;
-                if (!resolvers.TryGetValue(name, out var resolver)) {
+                if (!resolvers.TryGetValue(new ShortString(name), out var resolver)) {
                     QueryRequest queryRequest = new QueryError(null, $"unknown query / mutation: {name}");
                     var query = new Query(name, alias, resolver.queryType, resolver.container, default, -1, queryRequest);
                     queries.Add(query);

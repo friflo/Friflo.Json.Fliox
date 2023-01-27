@@ -37,18 +37,18 @@ namespace Friflo.Json.Fliox.Hub.Client
         public              EventTargets    EventTargets { get; set; }
         internal            EventTargets    GetOrCreateTargets() => EventTargets ?? (EventTargets = new EventTargets());
         
-        internal  readonly  string          name;
+        internal  readonly  ShortString     name;
         protected readonly  JsonValue       param;
         
         [DebuggerBrowsable(Never)]
         internal            TaskState       state;
         internal  override  TaskState       State       => state;
         
-        public    override  string          Details     => $"MessageTask (name: {name})";
+        public    override  string          Details     => $"MessageTask (name: {name.AsString()})";
         internal  override  TaskType        TaskType    => TaskType.message;
 
         
-        internal MessageTask(string name, in JsonValue param) {
+        internal MessageTask(in ShortString name, in JsonValue param) {
             this.name       = name;
             this.param      = param;
         }
@@ -79,14 +79,14 @@ namespace Friflo.Json.Fliox.Hub.Client
         private  readonly   Pool            pool;
         internal            JsonValue       result;
 
-        public   override   string          Details     => $"CommandTask (name: {name})";
+        public   override   string          Details     => $"CommandTask (name: {name.AsString()})";
 
         /// <summary>Return the result of a command used as a command as JSON.
         /// JSON is "null" if the command doesnt return a result.
         /// For type safe access of the result use <see cref="ReadResult{T}"/></summary>
         public              JsonValue       RawResult  => IsOk("CommandTask.RawResult", out Exception e) ? result : throw e;
         
-        internal CommandTask(string name, in JsonValue param, Pool pool)
+        internal CommandTask(in ShortString name, in JsonValue param, Pool pool)
             : base (name, param)
         {
             this.pool = pool;
@@ -160,7 +160,7 @@ namespace Friflo.Json.Fliox.Hub.Client
     {
         public              TResult         Result => ReadResult<TResult>();
         
-        internal CommandTask(string name, in JsonValue param, Pool pool)
+        internal CommandTask(in ShortString name, in JsonValue param, Pool pool)
             : base (name, param, pool) { }
     }
 }

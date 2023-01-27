@@ -21,12 +21,14 @@ namespace Friflo.Json.Fliox.Hub.Client
     public delegate void MessageSubscriptionHandler<TMessage>  (Message<TMessage>  message, EventContext context);
 
     /// <summary>
-    /// Expose the <see cref="Name"/> and the <see cref="RawParam"/> of a received message.
+    /// Expose the <see cref="NameShort"/> and the <see cref="RawParam"/> of a received message.
     /// Use <see cref="GetParam{TParam}"/> to get type safe access to the <see cref="RawParam"/> of a message. 
     /// </summary>
     public interface IMessage {
         /// <summary>message name</summary>
         string              Name        { get; }
+        /// <summary>message name</summary>
+        ShortString         NameShort   { get; }
         /// <summary>raw message parameter as JSON</summary>
         JsonValue           RawParam    { get; }
         
@@ -38,11 +40,12 @@ namespace Friflo.Json.Fliox.Hub.Client
     } 
     
     /// <summary>
-    /// Expose the <see cref="Name"/>, the <see cref="RawParam"/> and the type safe <see cref="GetParam"/> of a received message.
+    /// Expose the <see cref="NameShort"/>, the <see cref="RawParam"/> and the type safe <see cref="GetParam"/> of a received message.
     /// </summary>
     public readonly struct Message<TParam> : IMessage {
         /// <summary>message name</summary>
-        public              string          Name        => invokeContext.name;
+        public              string          Name       => invokeContext.name.AsString();
+        public              ShortString     NameShort  => invokeContext.name;
         /// <summary>raw message parameter as JSON</summary>
         public              JsonValue       RawParam   => invokeContext.param;
         
@@ -76,13 +79,14 @@ namespace Friflo.Json.Fliox.Hub.Client
     }
     
     /// <summary>
-    /// Expose the <see cref="Name"/> and the <see cref="RawParam"/> of a received message.
+    /// Expose the <see cref="NameShort"/> and the <see cref="RawParam"/> of a received message.
     /// </summary>
     public readonly struct Message  : IMessage {
         /// <summary>message name</summary>
-        public              string          Name        => invokeContext.name;
+        public              string          Name        => invokeContext.name.AsString();
+        public              ShortString     NameShort   => invokeContext.name;
         /// <summary>raw message parameter as JSON</summary>
-        public              JsonValue       RawParam   => invokeContext.param;
+        public              JsonValue       RawParam    => invokeContext.param;
         
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         internal readonly   InvokeContext   invokeContext;

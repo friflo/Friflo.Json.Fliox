@@ -13,25 +13,25 @@ namespace Friflo.Json.Fliox.Hub.Client.Event
     internal sealed class MessageSubscriber
     {
         internal readonly   bool                    isPrefix;
-        internal readonly   string                  name;
+        internal readonly   ShortString             name;
         internal readonly   List<MessageCallback>   callbackHandlers = new List<MessageCallback>();
 
         public   override   string                  ToString() => FormatToString();
 
         internal MessageSubscriber (string name) {
             var prefix = SubscribeMessage.GetPrefix(name);
-            isPrefix = prefix != null;
+            isPrefix = !prefix.IsNull();
             if (isPrefix) {
                 this.name = prefix;
             } else {
-                this.name = name;
+                this.name = new ShortString(name);
             }
         }
         
         private string FormatToString() {
             if (isPrefix)
-                return $"{name}*";
-            return name;
+                return $"{name.AsString()}*";
+            return name.AsString();
         }
         
         internal void InvokeCallbacks(in InvokeContext invokeContext, EventContext context) {
@@ -55,14 +55,14 @@ namespace Friflo.Json.Fliox.Hub.Client.Event
     
     internal readonly struct InvokeContext
     {
-        internal  readonly  string                  name;
+        internal  readonly  ShortString             name;
         internal  readonly  JsonValue               param;
         internal  readonly  ObjectReader            reader;
         internal  readonly  List<MessageCallback>   tempCallbackHandlers;
         
         public    override  string          ToString() => $"{name}(param: {param.AsString()})";
 
-        internal InvokeContext(string name, in JsonValue param, ObjectReader reader, List<MessageCallback> tempCallbackHandlers) {
+        internal InvokeContext(in ShortString name, in JsonValue param, ObjectReader reader, List<MessageCallback> tempCallbackHandlers) {
             this.name                   = name;
             this.param                  = param;
             this.reader                 = reader;

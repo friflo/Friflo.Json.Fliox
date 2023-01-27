@@ -339,7 +339,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// the <see cref="FlioxClient"/> subclass. This adds the message and its API to the <see cref="DatabaseSchema"/>. 
         /// </remarks>
         public MessageTask SendMessage(string name) {
-            var task = new MessageTask(name, new JsonValue());
+            var task = new MessageTask(new ShortString(name), new JsonValue());
             AddTask(task);
             return task;
         }
@@ -356,7 +356,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             using (var pooled = ObjectMapper.Get()) {
                 var writer  = pooled.instance.writer;
                 var json    = writer.WriteAsValue(param);
-                var task    = new MessageTask(name, json);
+                var task    = new MessageTask(new ShortString(name), json);
                 AddTask(task);
                 return task;
             }
@@ -371,7 +371,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// the <see cref="FlioxClient"/> subclass. This adds the command and its API to the <see cref="DatabaseSchema"/>. 
         /// </remarks>
         public CommandTask<TResult> SendCommand<TResult>(string name) {
-            var task    = new CommandTask<TResult>(name, new JsonValue(), _intern.pool);
+            var task    = new CommandTask<TResult>(new ShortString(name), new JsonValue(), _intern.pool);
             AddTask(task);
             return task;
         }
@@ -388,7 +388,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             using (var pooled = ObjectMapper.Get()) {
                 var mapper  = pooled.instance;
                 var json    = mapper.WriteAsValue(param);
-                var task    = new CommandTask<TResult>(name, json, _intern.pool);
+                var task    = new CommandTask<TResult>(new ShortString(name), json, _intern.pool);
                 AddTask(task);
                 return task;
             }
