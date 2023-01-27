@@ -213,7 +213,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Base
         private static void AssertStartsWith(string left, string right, bool expected) {
             var leftShort   = new ShortString(left);
             var rightShort  = new ShortString(right);
-            var result      = ShortString.StringStartsWith(leftShort, rightShort);
+            var result      = ShortString.StartsWith(leftShort, rightShort);
             AreEqual(expected, result);
         }
         
@@ -251,7 +251,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Base
             var foo2     = new ShortString("12");
             for (int n = 0; n < StartsWithIterations; n++) {
                 for (int i = 0; i < ValueCount; i++) {
-                    var _ = ShortString.StringStartsWith(values[i], foo2);
+                    var _ = ShortString.StartsWith(values[i], foo2);
                 }
             }
         }

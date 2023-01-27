@@ -14,10 +14,10 @@ namespace Friflo.Json.Fliox
 {
     /// <summary>
     /// A struct optimized to store strings with the focus on minimizing memory allocations<br/>
-    /// In contrast to <see cref="JsonKey"/> it supports to check strings with <see cref="StringStartsWith"/><br/>
+    /// In contrast to <see cref="JsonKey"/> it supports to check strings with <see cref="StartsWith"/><br/>
     /// <br/>
     /// It is intended to be used for <i>stable and descriptive names</i> like database, container, message and command names.<br/>
-    /// <see cref="StringStartsWith"/> is optimized to enable filtering names by using a prefix - e.g. <c>"std.*"</c>
+    /// <see cref="StartsWith"/> is optimized to enable filtering names by using a prefix - e.g. <c>"std.*"</c>
     /// used for authorization and subscriptions filters.
     /// </summary>
     /// <remarks>
@@ -128,10 +128,10 @@ namespace Friflo.Json.Fliox
             }
         }
         
-        public static bool StringStartsWith(in ShortString left, in ShortString right)
+        public static bool StartsWith(in ShortString left, in ShortString right)
         {
-            if (left.IsNull())  throw new ArgumentException("expect left != null");
-            if (right.IsNull()) throw new ArgumentException("expect right != null");
+            if (left.IsNull())  throw new ArgumentNullException(nameof(left));
+            if (right.IsNull()) throw new ArgumentNullException(nameof(right));
             
             if (right.str != null) {
                 if (left.str != null) {
