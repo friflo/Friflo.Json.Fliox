@@ -1,7 +1,7 @@
 // Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
-using System;
+using System.Collections.Generic;
 using Friflo.Json.Burst;
 using Friflo.Json.Burst.Utils;
 using Friflo.Json.Fliox;
@@ -151,50 +151,69 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Base
             AreEqual("abc", target.AsString());
         }
         
-        private const int Count = 10; // 50_000_000;
+        
+        private static List<string> CreateStrings(int count) {
+            var list = new List<string>(count);
+            for (int n = 0; n < count; n++) {
+                list.Add(n.ToString());
+            }
+            return list;
+        }
+        
+        private static List<ShortString> CreateShortStrings(int count) {
+            var list = new List<ShortString>(count);
+            for (int n = 0; n < count; n++) {
+                list.Add(new ShortString(n.ToString()));
+            }
+            return list;
+        }
+        
+        private const int StartsWithIterations  = 1; // 1000;
+        private const int ValueCount            = 1000;
         
         [Test]
         public static void TestShortString_StringStartsWith () {
-
-            var foo1     = new ShortString("foobar");
-            var foo2     = new ShortString("foo");
-            for (int n = 0; n < Count; n++) {
-                var _ = ShortString.StringStartsWith(foo1, foo2);
+            var values   = CreateShortStrings(ValueCount);
+            var foo2     = new ShortString("12");
+            for (int n = 0; n < StartsWithIterations; n++) {
+                for (int i = 0; i < ValueCount; i++) {
+                    var _ = ShortString.StringStartsWith(values[i], foo2);
+                }
             }
         }
         
         [Test]
         public static void TestShortString_StringStartsWithReference () {
-
-            var foo1     = "foobar";
-            var foo2     = "foo";
-            for (int n = 0; n < Count; n++) {
-                var _ = foo1.StartsWith(foo2, StringComparison.Ordinal);
+            var values   = CreateStrings(ValueCount);
+            var foo2     = "12";
+            for (int n = 0; n < StartsWithIterations; n++) {
+                for (int i = 0; i < ValueCount; i++) {
+                    var _ = values[i].StartsWith(foo2);
+                }
             }
         }
         
-        /// <summary>
-        /// Performance optimization significant for Unity:     50_000_000 => 0.6 sec
-        /// </summary>
+        private const int EqualsIterations = 1; // 1_000_000;
+        
         [Test]
         public static void TestShortString_StringEquals () {
-
-            var foo1     = new ShortString("foo");
-            var foo2     = new ShortString("foo");
-            for (int n = 0; n < Count; n++) {
-                var _ = foo1.IsEqual(foo2);
+            var values   = CreateShortStrings(ValueCount);
+            var foo2     = new ShortString("12");
+            for (int n = 0; n < EqualsIterations; n++) {
+                for (int i = 0; i < ValueCount; i++) {
+                    var _ = values[i].IsEqual(foo2);
+                }
             }
         }
         
-        /// <summary>
-        /// Reference string comparison:                        50_000_000 => 13.0 sec
-        /// </summary>
         [Test]
         public static void TestShortString_StringEqualsReference () {
-            var foo1     = new string("foo");
-            var foo2     = new string("foo");
-            for (int n = 0; n < Count; n++) {
-                var _ = foo1 == foo2;
+            var values   = CreateStrings(ValueCount);
+            var foo2     = "12";
+            for (int n = 0; n < EqualsIterations; n++) {
+                for (int i = 0; i < ValueCount; i++) {
+                    var _ = values[i] == foo2;
+                }
             }
         }
     }
