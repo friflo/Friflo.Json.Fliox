@@ -38,7 +38,7 @@ namespace Friflo.Json.Fliox
         [Browse(Never)]
         internal    readonly    long        lng2; //          higher 64 bits for Guid  | higher 7 bytes for UTF-8 string + 1 byte length
         
-        public                  JsonKeyType Type        => type;
+        public                  bool        IsNull()    => type == NULL;
         internal                Guid        Guid        => GuidUtils.LongLongToGuid(lng, lng2);
         public      override    string      ToString()  => GetString(); 
 
@@ -136,16 +136,6 @@ namespace Friflo.Json.Fliox
             lng2    = 0;
         }
         
-        public bool IsNull() {
-            switch (type) {
-                case LONG:
-                case STRING:
-                case GUID:      return false;
-                case NULL:      return true;
-                default:
-                    throw new InvalidOperationException($"invalid JsonKey: {AsString()}");
-            }
-        }
         
         public static int Compare(in JsonKey left, in JsonKey right) {
             int dif = left.type - right.type;
@@ -166,9 +156,8 @@ namespace Friflo.Json.Fliox
                     return ShortString.Compare(leftShort, rightShort);
                 case GUID:
                     return left.Guid.CompareTo(right.Guid);
-                default:
-                    throw new InvalidOperationException("Invalid IdType"); 
             }
+            throw new InvalidOperationException("Invalid JsonKeyType"); 
         }
         
         public bool IsEqual(in JsonKey other) {
@@ -186,9 +175,8 @@ namespace Friflo.Json.Fliox
                     return str == other.str;
                 case GUID:      return lng  == other.lng && lng2 == other.lng2;
                 case NULL:      return true;
-                default:
-                    throw new InvalidOperationException("Invalid IdType"); 
             }
+            throw new InvalidOperationException("Invalid JsonKeyType"); 
         }
 
         public int HashCode() {
@@ -197,9 +185,8 @@ namespace Friflo.Json.Fliox
                 case STRING:    return str?.GetHashCode() ?? lng.GetHashCode() ^ lng2.GetHashCode();
                 case GUID:      return lng. GetHashCode() ^ lng2.GetHashCode();
                 case NULL:      return 0;
-                default:
-                    throw new InvalidOperationException("Invalid IdType"); 
             }
+            throw new InvalidOperationException("Invalid JsonKeyType"); 
         }
 
         public override bool Equals(object obj) {
@@ -231,9 +218,8 @@ namespace Friflo.Json.Fliox
                     return new string(readOnlySpan);
                 case GUID:      return str ?? Guid.ToString();
                 case NULL:      return null;
-                default:
-                    throw new InvalidOperationException($"unexpected type in JsonKey.AsString(). type: {type}");
             }
+            throw new InvalidOperationException("Invalid JsonKeyType"); 
         }
         
         public long AsLong() {
@@ -264,7 +250,7 @@ namespace Friflo.Json.Fliox
                     dest.AppendGuid(Guid);
                     break;
                 default:
-                    throw new InvalidOperationException($"unexpected type in JsonKey.AppendTo()");
+                    throw new InvalidOperationException("unexpected type in JsonKey.AppendTo()");
             }
         }
         
@@ -297,7 +283,7 @@ namespace Friflo.Json.Fliox
 #endif
                     break;
                 default:
-                    throw new InvalidOperationException($"unexpected type in JsonKey.AppendTo()");
+                    throw new InvalidOperationException("unexpected type in JsonKey.AppendTo()");
             }
         }
     }
