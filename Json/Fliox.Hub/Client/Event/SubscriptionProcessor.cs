@@ -93,9 +93,8 @@ namespace Friflo.Json.Fliox.Hub.Client
             
             // --- invoke message handlers
             foreach (var message in messages) {
-                var name = message.NameShort;
                 var subs = client._intern.subscriptions;
-                if (subs != null && subs.TryGetValue(name, out MessageSubscriber subscriber)) {
+                if (subs != null && subs.TryGetValue(message.invokeContext.name, out MessageSubscriber subscriber)) {
                     subscriber.InvokeCallbacks(message.invokeContext, eventContext);    
                 }
                 var subsPrefix = client._intern.subscriptionsPrefix;
@@ -103,7 +102,7 @@ namespace Friflo.Json.Fliox.Hub.Client
                     tempSubscriptionsPrefix.Clear();
                     tempSubscriptionsPrefix.AddRange(subsPrefix);
                     foreach (var sub in tempSubscriptionsPrefix) {
-                        if (ShortString.StartsWith(name, sub.name)) {
+                        if (ShortString.StartsWith(message.invokeContext.name, sub.name)) {
                             sub.InvokeCallbacks(message.invokeContext, eventContext);
                         }
                     }
@@ -170,11 +169,10 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
         
         private void ProcessMessage(SyncMessageTask task) {
-            var name = task.name;
             // callbacks require their own reader as store._intern.jsonMapper.reader cannot be used.
             // This jsonMapper is used in various threads caused by .ConfigureAwait(false) continuations
             // and ProcessEvent() can be called concurrently from the 'main' thread.
-            var invokeContext   = new InvokeContext(name, task.param, objectMapper.reader, tempCallbackHandlers);
+            var invokeContext   = new InvokeContext(task.name, task.param, objectMapper.reader, tempCallbackHandlers);
             var message         = new Message(invokeContext);
             messages.Add(message);
         }

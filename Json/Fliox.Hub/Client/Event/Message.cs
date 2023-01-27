@@ -21,14 +21,12 @@ namespace Friflo.Json.Fliox.Hub.Client
     public delegate void MessageSubscriptionHandler<TMessage>  (Message<TMessage>  message, EventContext context);
 
     /// <summary>
-    /// Expose the <see cref="NameShort"/> and the <see cref="RawParam"/> of a received message.
+    /// Expose the <see cref="Name"/> and the <see cref="RawParam"/> of a received message.
     /// Use <see cref="GetParam{TParam}"/> to get type safe access to the <see cref="RawParam"/> of a message. 
     /// </summary>
     public interface IMessage {
         /// <summary>message name</summary>
         string              Name        { get; }
-        /// <summary>message name</summary>
-        ShortString         NameShort   { get; }
         /// <summary>raw message parameter as JSON</summary>
         JsonValue           RawParam    { get; }
         
@@ -40,17 +38,16 @@ namespace Friflo.Json.Fliox.Hub.Client
     } 
     
     /// <summary>
-    /// Expose the <see cref="NameShort"/>, the <see cref="RawParam"/> and the type safe <see cref="GetParam"/> of a received message.
+    /// Expose the <see cref="Name"/>, the <see cref="RawParam"/> and the type safe <see cref="GetParam"/> of a received message.
     /// </summary>
     public readonly struct Message<TParam> : IMessage {
         /// <summary>message name</summary>
         public              string          Name       => invokeContext.name.AsString();
-        public              ShortString     NameShort  => invokeContext.name;
         /// <summary>raw message parameter as JSON</summary>
         public              JsonValue       RawParam   => invokeContext.param;
         
         private             TParam          DebugParam {
-            get { Message.Read(RawParam, invokeContext.reader, out TParam param, out _); return param; }
+            get { Message.Read(invokeContext.param, invokeContext.reader, out TParam param, out _); return param; }
         }
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
@@ -60,14 +57,14 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// <param name="param">the param value if conversion successful</param>
         /// <param name="error">contains the error message if conversion failed</param>
         /// <returns> true if successful; false otherwise </returns>
-        public  bool    GetParam    (out TParam param, out string error) => Message.Read(RawParam, invokeContext.reader, out param, out error);
+        public  bool    GetParam    (out TParam param, out string error) => Message.Read(invokeContext.param, invokeContext.reader, out param, out error);
         /// <summary>Return the message <paramref name="param"/> as the given type <typeparamref name="T"/> without validation</summary>
         /// <param name="param">the param value if conversion successful</param>
         /// <param name="error">contains the error message if conversion failed</param>
         /// <returns> true if successful; false otherwise </returns>
-        public  bool    GetParam<T> (out T      param, out string error) => Message.Read(RawParam, invokeContext.reader, out param, out error);
+        public  bool    GetParam<T> (out T      param, out string error) => Message.Read(invokeContext.param, invokeContext.reader, out param, out error);
 
-        public override string          ToString()  => $"{Name} (param: {RawParam.AsString()})";
+        public override string          ToString()  => $"{Name} (param: {invokeContext.param.AsString()})";
         
         /// <summary>
         /// <see cref="RawParam"/> is set to <see cref="SyncMessageTask.param"/> json.
@@ -79,19 +76,18 @@ namespace Friflo.Json.Fliox.Hub.Client
     }
     
     /// <summary>
-    /// Expose the <see cref="NameShort"/> and the <see cref="RawParam"/> of a received message.
+    /// Expose the <see cref="Name"/> and the <see cref="RawParam"/> of a received message.
     /// </summary>
     public readonly struct Message  : IMessage {
         /// <summary>message name</summary>
         public              string          Name        => invokeContext.name.AsString();
-        public              ShortString     NameShort   => invokeContext.name;
         /// <summary>raw message parameter as JSON</summary>
         public              JsonValue       RawParam    => invokeContext.param;
         
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         internal readonly   InvokeContext   invokeContext;
         
-        public override     string          ToString()  => $"{Name} (param: {RawParam.AsString()})";
+        public override     string          ToString()  => $"{Name} (param: {invokeContext.param.AsString()})";
         
         internal Message(in InvokeContext invokeContext) {
             this.invokeContext = invokeContext;
@@ -102,7 +98,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// <param name="error">contains the error message if conversion failed</param>
         /// <returns> true if successful; false otherwise </returns>
         public bool GetParam<TParam>(out TParam param, out string error) {
-            return Read(RawParam, invokeContext.reader, out param, out error);
+            return Read(invokeContext.param, invokeContext.reader, out param, out error);
         }
         
         // --- internals
