@@ -40,10 +40,6 @@ namespace Friflo.Json.Fliox
         public static readonly  ShortStringEqualityComparer Equality    = new ShortStringEqualityComparer();
         public static readonly  ShortStringComparer         Comparer    = new ShortStringComparer();
 
-        /// <summary>
-        /// Calling this constructor should be the last option as it may force a string creation. <br/>
-        /// Use alternative constructors if using a specific key type like <see cref="long"/> or <see cref="Guid"/>.
-        /// </summary>
         public ShortString (string value)
         {
             if (value == null) {
