@@ -137,19 +137,21 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Base
                 var result = string.CompareOrdinal("a", null);
                 AreEqual(+1, result);
             }
+            // --- ShortString null
+            {
+                var result = new ShortString().Compare(default);
+                AreEqual( 0, result);
+            }
             // --- ShortString (long) compare
             {
-                var result = new ShortString().Compare(new ShortString("aaaaaaaaaaaaaaaaaaaaaaaaaaaaa"));
+                var result = new ShortString().Compare(new ShortString("a string length > 15"));
                 AreEqual(-1, result);
             } {
-                var result = new ShortString("aaaaaaaaaaaaaaaaaaaaaaaaaaaaa").Compare(default);
+                var result = new ShortString("a string length > 15").Compare(default);
                 AreEqual(+1, result);
             }
             // --- ShortString (short) compare
             {
-                var result = new ShortString().Compare(default);
-                AreEqual( 0, result);
-            } {
                 var result = new ShortString().Compare(new ShortString("a"));
                 AreEqual(-1, result);
             } {
