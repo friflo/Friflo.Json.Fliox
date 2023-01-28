@@ -8,7 +8,7 @@ namespace Friflo.Json.Fliox.Mapper
     public sealed class JsonKeyComparer : IComparer<JsonKey>
     {
         public int Compare(JsonKey x, JsonKey y) {
-            return JsonKey.Compare(x, y);
+            return x.Compare(y);
         }
     }
     

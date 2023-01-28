@@ -28,7 +28,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
         private bool Authorize(in ShortString databaseName) {
             if (databaseName.IsNull()) throw new ArgumentNullException(nameof(databaseName));
             if (isPrefix) {
-                return ShortString.StartsWith(databaseName, database);
+                return databaseName.StartsWith(database);
             }
             return databaseName.IsEqual(database);
         }

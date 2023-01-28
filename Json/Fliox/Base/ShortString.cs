@@ -80,36 +80,37 @@ namespace Friflo.Json.Fliox
         
         internal const int MaxCharCount = 16; // Encoding.UTF8.GetMaxCharCount(15);
         
-        public static int Compare(in ShortString left, in ShortString right)
+        public int Compare(in ShortString right)
         {
+            // left = this
             if (right.str != null) {
-                if (left.str != null) {
-                    return string.CompareOrdinal(left.str, right.str);
+                if (str != null) {
+                    return string.CompareOrdinal(str, right.str);
                 }
-                if (left.lng2 == IsNULL) {
+                if (lng2 == IsNULL) {
                     return -1;
                 }
                 Span<char> leftChars   = stackalloc char[MaxCharCount];
-                var leftCount          = GetChars(left.lng, left.lng2, leftChars);
+                var leftCount          = GetChars(lng, lng2, leftChars);
                 
                 ReadOnlySpan<char> leftReadOnly     = leftChars.Slice(0, leftCount);
                 ReadOnlySpan<char> rightReadOnly    = right.str.AsSpan();
                 return leftReadOnly.CompareTo(rightReadOnly, Ordinal);
             }
             // case: right.str == null
-            if (left.str != null) {
+            if (str != null) {
                 if (right.lng2 == IsNULL) {
                     return +1;
                 }
                 Span<char> rightChars   = stackalloc char[MaxCharCount];
                 var rightCount          = GetChars(right.lng, right.lng2, rightChars);
                 
-                ReadOnlySpan<char> leftReadOnly     = left.str.AsSpan();
+                ReadOnlySpan<char> leftReadOnly     = str.AsSpan();
                 ReadOnlySpan<char> rightReadOnly    = rightChars.Slice(0, rightCount);
                 return leftReadOnly.CompareTo(rightReadOnly, Ordinal);
             } else {
                 // case: left and right are short strings
-                if (left.lng2 == IsNULL) {
+                if (lng2 == IsNULL) {
                     return right.lng2 == IsNULL ? 0 : -1;  
                 }
                 if (right.lng2 == IsNULL) {
@@ -117,7 +118,7 @@ namespace Friflo.Json.Fliox
                 }
                 // TODO could perform comparison based on lng & lng2 similar to StringStartsWith()
                 Span<char> leftChars    = stackalloc char[MaxCharCount];
-                var leftCount           = GetChars(left.lng, left.lng2, leftChars);
+                var leftCount           = GetChars(lng, lng2, leftChars);
                 
                 Span<char> rightChars   = stackalloc char[MaxCharCount];
                 var rightCount          = GetChars(right.lng, right.lng2, rightChars);
@@ -128,18 +129,19 @@ namespace Friflo.Json.Fliox
             }
         }
         
-        public static bool StartsWith(in ShortString left, in ShortString right)
+        public bool StartsWith(in ShortString right)
         {
-            if (left.IsNull())  throw new ArgumentNullException(nameof(left));
+            // left = this
+            if (IsNull())       throw new NullReferenceException();
             if (right.IsNull()) throw new ArgumentNullException(nameof(right));
             
             if (right.str != null) {
-                if (left.str != null) {
-                    return left.str.StartsWith(right.str, Ordinal);
+                if (str != null) {
+                    return str.StartsWith(right.str, Ordinal);
                 }
                 // --- case: only left is short string
                 Span<char> leftChars   = stackalloc char[MaxCharCount];
-                var leftCount          = GetChars(left.lng, left.lng2, leftChars);
+                var leftCount          = GetChars(lng, lng2, leftChars);
                 
                 ReadOnlySpan<char> leftReadOnly     = leftChars.Slice(0, leftCount);
                 ReadOnlySpan<char> rightReadOnly    = right.str.AsSpan();
@@ -150,26 +152,26 @@ namespace Friflo.Json.Fliox
             if (rightLength == 0) {
                 return true;    // early out for right: ""
             }
-            if (left.str != null) {
+            if (str != null) {
                 Span<char> rightChars   = stackalloc char[MaxCharCount];
                 var rightCount          = GetChars(right.lng, right.lng2, rightChars);
                 
-                ReadOnlySpan<char> leftReadOnly     = left.str.AsSpan();
+                ReadOnlySpan<char> leftReadOnly     = str.AsSpan();
                 ReadOnlySpan<char> rightReadOnly    = rightChars.Slice(0, rightCount);
                 return leftReadOnly.StartsWith(rightReadOnly, Ordinal);
             }
             // --- case: left and right are short strings
-            int leftLength = GetLength(left.lng2);
+            int leftLength = GetLength(lng2);
             if (rightLength > leftLength) {
                 return false;
             }
             if (rightLength < 8) {
                 long mask0  = 0x00ff_ffff_ffff_ffff >> (8 * (    7 - rightLength));
-                return  (left.lng & mask0)  == (right.lng & mask0);
+                return  (lng & mask0)  == (right.lng & mask0);
             } else {
                 long mask8  = 0x00ff_ffff_ffff_ffff >> (8 * (8 + 7 - rightLength));
-                return   left.lng           ==  right.lng &&
-                        (left.lng2 & mask8) == (right.lng2 & mask8);
+                return   lng           ==  right.lng &&
+                        (lng2 & mask8) == (right.lng2 & mask8);
             }
         }
         

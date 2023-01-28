@@ -33,7 +33,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
             if (!(task is SyncMessageTask messageTask))
                 return false;
             if (prefix) {
-                return ShortString.StartsWith(messageTask.name, messageName);
+                return messageTask.name.StartsWith(messageName);
             }
             return messageTask.name.IsEqual(messageName);
         }

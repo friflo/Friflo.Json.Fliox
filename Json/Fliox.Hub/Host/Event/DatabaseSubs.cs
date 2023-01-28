@@ -79,7 +79,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             if (messageSubs.Contains(messageName))
                 return true;
             foreach (var prefixSub in messagePrefixSubs) {
-                if (ShortString.StartsWith(messageName, prefixSub)) {
+                if (messageName.StartsWith(prefixSub)) {
                     return true;
                 }
             }

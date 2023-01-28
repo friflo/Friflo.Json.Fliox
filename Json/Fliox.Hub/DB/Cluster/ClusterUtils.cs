@@ -68,7 +68,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
                     dst.Add(counts);
                 }
             }
-            dst.Sort((c1, c2) => ShortString.Compare(c1.db, c2.db));
+            dst.Sort((c1, c2) => c1.db.Compare(c2.db));
         }
     }
 }

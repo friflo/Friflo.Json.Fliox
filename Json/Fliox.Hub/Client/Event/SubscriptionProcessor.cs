@@ -102,7 +102,7 @@ namespace Friflo.Json.Fliox.Hub.Client
                     tempSubscriptionsPrefix.Clear();
                     tempSubscriptionsPrefix.AddRange(subsPrefix);
                     foreach (var sub in tempSubscriptionsPrefix) {
-                        if (ShortString.StartsWith(message.invokeContext.name, sub.name)) {
+                        if (message.invokeContext.name.StartsWith(sub.name)) {
                             sub.InvokeCallbacks(message.invokeContext, eventContext);
                         }
                     }
