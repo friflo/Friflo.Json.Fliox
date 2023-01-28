@@ -144,18 +144,19 @@ namespace Friflo.Json.Fliox.Mapper.Map
                 return;
             }
             WriteFieldKey(field, ref firstMember);
-            switch (value.type) {
-                case JsonKeyType.LONG:
-                    bytes.AppendChar('\"');
-                    format.AppendLong(ref bytes, value.lng);
-                    bytes.AppendChar('\"');
-                    break;
-                case JsonKeyType.STRING:
-                    WriteJsonKey(value);
-                    break;
-                case JsonKeyType.GUID:
-                    WriteGuid(value.Guid);
-                    break;
+            var obj = value.obj;
+            if (obj == JsonKey.LONG) {
+                bytes.AppendChar('\"');
+                format.AppendLong(ref bytes, value.lng);
+                bytes.AppendChar('\"');
+                return;
+            }
+            if (obj is string) {
+                WriteJsonKey(value);
+                return;
+            }
+            if (obj == JsonKey.GUID) {
+                WriteGuid(value.Guid);
             }
         }
         

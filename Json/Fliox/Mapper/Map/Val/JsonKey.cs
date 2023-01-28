@@ -29,21 +29,24 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
         }
 
         public override void Write(ref Writer writer, JsonKey value) {
-            switch (value.type) {
-                case JsonKeyType.LONG:
-                    writer.bytes.AppendChar('\"');
-                    writer.format.AppendLong(ref writer.bytes, value.lng);
-                    writer.bytes.AppendChar('\"');
-                    break;
-                case JsonKeyType.STRING:
-                    writer.WriteJsonKey(value);
-                    break;
-                case JsonKeyType.GUID:
-                    writer.WriteGuid(value.Guid);
-                    break;
-                case JsonKeyType.NULL:
-                    writer.AppendNull();
-                    break;
+            var obj = value.obj;
+            if (obj == JsonKey.LONG) {
+                writer.bytes.AppendChar('\"');
+                writer.format.AppendLong(ref writer.bytes, value.lng);
+                writer.bytes.AppendChar('\"');
+                return;
+            }
+            if (obj is string) {
+                writer.WriteJsonKey(value);
+                return;
+            }
+            if (obj == JsonKey.GUID) {
+                writer.WriteGuid(value.Guid);
+                return;
+            }
+            if (obj == null) {
+                writer.AppendNull();
+                return;
             }
         }
 

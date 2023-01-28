@@ -37,7 +37,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
         [Test]
         public static  void TestRemoteClient_UpsertMemory() {
             var dif = UpsertMemory();
-            AreEqual(296, dif);
+            AreEqual(288, dif);
         }
         
         private static long UpsertMemory() {
@@ -71,7 +71,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
         [Test]
         public static  void TestRemoteClient_ReadMemory() {
             var dif         = ReadMemory();
-            var expected    = TestUtils.IsDebug() ? 1336 : 1312;  // Test Debug & Release
+            var expected    = TestUtils.IsDebug() ? 1264 : 1240;  // Test Debug & Release
             AreEqual(expected, dif);
         }
         

@@ -71,7 +71,7 @@ namespace Friflo.Json.Fliox
         
         public ShortString (in JsonKey jsonKey)
         {
-            str     = jsonKey.str;
+            str     = jsonKey.obj == JsonKey.STRING_SHORT ? null : (string)jsonKey.obj;
             lng     = jsonKey.lng;
             lng2    = jsonKey.lng2;
         }
