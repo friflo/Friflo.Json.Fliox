@@ -235,40 +235,16 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Base
             return list;
         }
         
-        private static List<ShortString> CreateShortStrings(int count) {
-            var list = new List<ShortString>(count);
+        private static ShortString[] CreateShortStrings(int count) {
+            var list = new ShortString[count];
             for (int n = 0; n < count; n++) {
-                list.Add(new ShortString(n.ToString()));
+                list[n] = new ShortString(n.ToString());
             }
             return list;
         }
         
-        private const int StartsWithIterations  = 1; // 1000;
-        private const int ValueCount            = 1000;
-        
-        [Test]
-        public static void TestShortString_StringStartsWith () {
-            var values   = CreateShortStrings(ValueCount);
-            var foo2     = new ShortString("12");
-            for (int n = 0; n < StartsWithIterations; n++) {
-                for (int i = 0; i < ValueCount; i++) {
-                    var _ = values[i].StartsWith(foo2);
-                }
-            }
-        }
-        
-        [Test]
-        public static void TestShortString_StringStartsWithReference () {
-            var values   = CreateStrings(ValueCount);
-            var foo2     = "12";
-            for (int n = 0; n < StartsWithIterations; n++) {
-                for (int i = 0; i < ValueCount; i++) {
-                    var _ = values[i].StartsWith(foo2);
-                }
-            }
-        }
-        
-        private const int EqualsIterations = 1; // 1_000_000;
+        private const int ValueCount        = 1000;
+        private const int EqualsIterations  = 1; // 1_000_000;
         
         [Test]
         public static void TestShortString_StringEquals () {
@@ -288,6 +264,30 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Base
             for (int n = 0; n < EqualsIterations; n++) {
                 for (int i = 0; i < ValueCount; i++) {
                     var _ = values[i] == foo2;
+                }
+            }
+        }
+        
+        private const int StartsWithIterations  = 1; // 1000;
+        
+        [Test]
+        public static void TestShortString_StringStartsWith () {
+            var values   = CreateShortStrings(ValueCount);
+            var foo2     = new ShortString("12");
+            for (int n = 0; n < StartsWithIterations; n++) {
+                for (int i = 0; i < ValueCount; i++) {
+                    var _ = values[i].StartsWith(foo2);
+                }
+            }
+        }
+        
+        [Test]
+        public static void TestShortString_StringStartsWithReference () {
+            var values   = CreateStrings(ValueCount);
+            var foo2     = "12";
+            for (int n = 0; n < StartsWithIterations; n++) {
+                for (int i = 0; i < ValueCount; i++) {
+                    var _ = values[i].StartsWith(foo2);
                 }
             }
         }
