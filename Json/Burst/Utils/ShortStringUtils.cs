@@ -4,6 +4,8 @@
 using System;
 using System.Runtime.CompilerServices;
 using System.Text;
+using static System.BitConverter;
+using static System.Buffers.Binary.BinaryPrimitives;
 
 namespace Friflo.Json.Burst.Utils
 {
@@ -15,14 +17,21 @@ namespace Friflo.Json.Burst.Utils
     /// <br/>
     /// <b>Two long</b> fields are used by the <c>struct JsonKey</c> internally.
     /// </summary>
+    /// <remarks>
+    /// <b>BigEndian support (ARM)</b> currently untested
+    /// </remarks>
     public static class ShortStringUtils
     {
         // ReSharper disable once MemberCanBePrivate.Global
-        public  const int   MaxLength   = 15;
-        /// <summary> shift highest byte of lng2 7 bytes right to get byte count</summary>
-        private const int   ShiftLength = 56;
-        /// <summary> <see cref="MaxLength"/> + 1 </summary>
-        private const int   ByteCount   = 16;
+        /// Maximum number of bytes that can be stored in a short string
+        public  const   int     MaxLength   = 15;
+        /// number of bytes used to store a short string
+        private const   int     ByteCount   = 16;
+        /// position of the short string length byte.
+        private const   int     LengthPos   = 15;
+        /// shift highest byte of lng2 7 bytes right to get byte count
+        private const   int     ShiftLength = 56;
+        
         
         /// <summary>
         /// <c>lng2</c> == <see cref="IsNull"/>     => string is null
@@ -54,15 +63,15 @@ namespace Friflo.Json.Burst.Utils
             var byteCount = Encoding.UTF8.GetByteCount(value);
             if (byteCount <= MaxLength) {
                 Span<byte> bytes        = stackalloc byte[ByteCount];
-                bytes[MaxLength]        = (byte)(byteCount + 1);
+                bytes[LengthPos]        = (byte)(byteCount + 1); // set highest byte to length
                 Encoding.UTF8.GetBytes(value, bytes);
                 fixed (byte*  bytesPtr  = &bytes[0]) 
                 fixed (long*  lngPtr    = &lng)
                 fixed (long*  lngPtr2   = &lng2)
                 {
                     var bytesLongPtr    = (long*)bytesPtr;
-                    *lngPtr             = bytesLongPtr[0];
-                    *lngPtr2            = bytesLongPtr[1];
+                    *lngPtr             = IsLittleEndian ? bytesLongPtr[0] : ReverseEndianness(bytesLongPtr[0]);
+                    *lngPtr2            = IsLittleEndian ? bytesLongPtr[1] : ReverseEndianness(bytesLongPtr[1]);
                 }
                 str = null;
                 return;
@@ -92,8 +101,8 @@ namespace Friflo.Json.Burst.Utils
             int byteCount       = GetLength(lng2);
             fixed (byte*  bytesPtr  = &bytes[0]) {
                 var bytesLongPtr    = (long*)bytesPtr;
-                bytesLongPtr[0]     = lng;
-                bytesLongPtr[1]     = lng2;
+                bytesLongPtr[0]     = IsLittleEndian ? lng  : ReverseEndianness(lng);
+                bytesLongPtr[1]     = IsLittleEndian ? lng2 : ReverseEndianness(lng2);
                 str                 = Encoding.UTF8.GetString(bytesPtr, byteCount);
             }
         }
@@ -124,15 +133,15 @@ namespace Friflo.Json.Burst.Utils
             Span<byte> src  = new Span<byte>(value.buffer, value.start, byteCount);
             Span<byte> dst  = stackalloc byte[ByteCount];
             src.CopyTo(dst);                        // copy byteCount bytes to dst 
-            dst[MaxLength] = (byte)(byteCount + 1); // set last byte to length
+            dst[LengthPos] = (byte)(byteCount + 1); // set highest byte to length
             
             fixed (byte*  bytesPtr  = dst) 
             fixed (long*  lngPtr    = &lng)
             fixed (long*  lngPtr2   = &lng2)
             {
                 var bytesLongPtr    = (long*)bytesPtr;
-                *lngPtr             = bytesLongPtr[0];
-                *lngPtr2            = bytesLongPtr[1];
+                *lngPtr             = IsLittleEndian ? bytesLongPtr[0] : ReverseEndianness(bytesLongPtr[0]);
+                *lngPtr2            = IsLittleEndian ? bytesLongPtr[1] : ReverseEndianness(bytesLongPtr[1]);
             }
             return true;
         }
@@ -143,8 +152,8 @@ namespace Friflo.Json.Burst.Utils
             ReadOnlySpan<byte> src  = bytes.Slice(0, byteCount);
             fixed (byte*  bytesPtr = &bytes[0]) {
                 var bytesLongPtr    = (long*)bytesPtr;
-                bytesLongPtr[0]     = lng;
-                bytesLongPtr[1]     = lng2;
+                bytesLongPtr[0]     = IsLittleEndian ? lng  : ReverseEndianness(lng);
+                bytesLongPtr[1]     = IsLittleEndian ? lng2 : ReverseEndianness(lng2);
                 return Encoding.UTF8.GetChars(src, dst);
             }
         }
