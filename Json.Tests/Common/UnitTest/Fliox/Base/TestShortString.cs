@@ -68,8 +68,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Base
             } {
                 ShortStringUtils.StringToLongLong("0123456789012345", out string str, out long lng, out long lng2);
                 AreEqual("0123456789012345", str);
-                AreEqual(0,     lng);
-                AreEqual(-255,  lng2);
+                AreEqual(0x_00_00_00_00_00_00_00_00, lng);
+                AreEqual(0x_7f_00_00_00_00_00_00_00, lng2);
             }
         }
         

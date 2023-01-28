@@ -41,7 +41,7 @@ namespace Friflo.Json.Fliox
         /// <list type="bullet">
         ///   <item>0:          <see cref="ShortString"/> represents a null string</item>
         ///   <item>greater 0:  short string length + 1</item>
-        ///   <item>-255:       using a <see cref="string"/> instance</item>
+        ///   <item>-128:       using a <see cref="string"/> instance</item>
         /// </list>
         /// </summary>
         internal    readonly    long        lng2; // higher 7 bytes for UTF-8 string + 1 byte length / NULL

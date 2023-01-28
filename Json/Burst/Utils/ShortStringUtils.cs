@@ -27,12 +27,12 @@ namespace Friflo.Json.Burst.Utils
         /// <summary>
         /// <c>lng2</c> == <see cref="IsNull"/>     => string is null
         /// </summary>
-        public  const int   IsNull      =    0;
+        public  const int   IsNull      = 0;
         /// <summary>
         /// <c>lng2</c> == <see cref="IsString"/>   => string is represented by a <see cref="string"/> instance
         /// stored in <c>str</c><br/>
         /// </summary>
-        public  const int   IsString    = -255;
+        public  const long  IsString    = 0x7f00_0000_0000_0000;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int GetLength (long lng2) {
