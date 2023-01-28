@@ -29,8 +29,21 @@ namespace Friflo.Json.Fliox
     /// <seealso cref="JsonKey"/>
     public readonly struct ShortString
     {
+        /// <summary>is not null in case a <see cref="ShortString"/> is represented by a <see cref="string"/> instance.</summary>
         internal    readonly    string      str;
-        internal    readonly    long        lng;  // lower  8 bytes for UTF-8 string
+        /// <summary>
+        /// bytes[0..7] - lower 8 UTF-8 bytes of a short string
+        /// </summary>
+        internal    readonly    long        lng;
+        /// <summary>
+        /// bytes[0..6] - higher 7 UTF-8 bytes of a short string.<br/>
+        /// byte [7]
+        /// <list type="bullet">
+        ///   <item>0:          <see cref="ShortString"/> represents a null string</item>
+        ///   <item>greater 0:  short string length + 1</item>
+        ///   <item>-255:       using a <see cref="string"/> instance</item>
+        /// </list>
+        /// </summary>
         internal    readonly    long        lng2; // higher 7 bytes for UTF-8 string + 1 byte length / NULL
         
         public                  bool        IsNull()    => lng2 == ShortStringUtils.IsNull;
