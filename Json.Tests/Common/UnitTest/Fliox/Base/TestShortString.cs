@@ -1,7 +1,6 @@
 // Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
-using System;
 using System.Collections.Generic;
 using Friflo.Json.Burst;
 using Friflo.Json.Burst.Utils;
@@ -69,8 +68,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Base
             } {
                 ShortStringUtils.StringToLongLong("0123456789012345", out string str, out long lng, out long lng2);
                 AreEqual("0123456789012345", str);
-                AreEqual(0, lng);
-                AreEqual(0, lng2);
+                AreEqual(0,     lng);
+                AreEqual(-255,  lng2);
             }
         }
         

@@ -4,6 +4,7 @@
 using System;
 using System.Text;
 using Friflo.Json.Burst;
+using Friflo.Json.Burst.Utils;
 using Friflo.Json.Fliox.Mapper;
 using static Friflo.Json.Burst.Utils.ShortStringUtils;
 using static System.StringComparison;
@@ -32,7 +33,7 @@ namespace Friflo.Json.Fliox
         internal    readonly    long        lng;  // lower  8 bytes for UTF-8 string
         internal    readonly    long        lng2; // higher 7 bytes for UTF-8 string + 1 byte length / NULL
         
-        public                  bool        IsNull()    => str == null && lng2 == IsNULL;
+        public                  bool        IsNull()    => lng2 == ShortStringUtils.IsNull;
         public      override    string      ToString()  => GetString(); 
 
         public static readonly  ShortStringEqualityComparer Equality    = new ShortStringEqualityComparer();
@@ -51,9 +52,7 @@ namespace Friflo.Json.Fliox
             if (BytesToLongLong(bytes, out lng, out lng2)) {
                 str     = null;
             } else {
-                str     = GetString(bytes, oldKey.str);
-                lng     = 0;
-                lng2    = 0;
+                str     = GetString(bytes, oldKey.str, out lng, out lng2);
             }
         }
         
@@ -64,7 +63,9 @@ namespace Friflo.Json.Fliox
             lng2    = jsonKey.lng2;
         }
         
-        internal static string GetString(in Bytes bytes, string oldKey) {
+        internal static string GetString(in Bytes bytes, string oldKey, out long lng, out long lng2) {
+            lng     = 0;
+            lng2    = IsString;
             int len         = bytes.end - bytes.start;
             var src         = new ReadOnlySpan<byte>(bytes.buffer, bytes.start, len);
             var maxCount    = Encoding.UTF8.GetMaxCharCount(len);
@@ -87,7 +88,7 @@ namespace Friflo.Json.Fliox
                 if (str != null) {
                     return string.CompareOrdinal(str, right.str);
                 }
-                if (lng2 == IsNULL) {
+                if (lng2 == ShortStringUtils.IsNull) {
                     return -1;
                 }
                 Span<char> leftChars   = stackalloc char[MaxCharCount];
@@ -99,7 +100,7 @@ namespace Friflo.Json.Fliox
             }
             // case: right.str == null
             if (str != null) {
-                if (right.lng2 == IsNULL) {
+                if (right.lng2 == ShortStringUtils.IsNull) {
                     return +1;
                 }
                 Span<char> rightChars   = stackalloc char[MaxCharCount];
@@ -110,10 +111,10 @@ namespace Friflo.Json.Fliox
                 return leftReadOnly.CompareTo(rightReadOnly, Ordinal);
             } else {
                 // case: left and right are short strings
-                if (lng2 == IsNULL) {
-                    return right.lng2 == IsNULL ? 0 : -1;  
+                if (lng2 == ShortStringUtils.IsNull) {
+                    return right.lng2 == ShortStringUtils.IsNull ? 0 : -1;  
                 }
-                if (right.lng2 == IsNULL) {
+                if (right.lng2 == ShortStringUtils.IsNull) {
                     return +1;
                 }
                 // TODO could perform comparison based on lng & lng2 similar to StringStartsWith()

@@ -98,9 +98,7 @@ namespace Friflo.Json.Fliox
             if (ShortStringUtils.BytesToLongLong(bytes, out lng, out lng2)) {
                 str     = null;
             } else {
-                str     = ShortString.GetString(bytes, oldKey.str);
-                lng     = 0;
-                lng2    = 0;
+                str     = ShortString.GetString(bytes, oldKey.str, out lng, out lng2);
             }
         }
 

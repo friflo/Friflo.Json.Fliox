@@ -24,7 +24,15 @@ namespace Friflo.Json.Burst.Utils
         /// <summary> <see cref="MaxLength"/> + 1 </summary>
         private const int   ByteCount   = 16;
         
-        public  const int   IsNULL      = 0;
+        /// <summary>
+        /// <c>lng2</c> == <see cref="IsNull"/>     => string is null
+        /// </summary>
+        public  const int   IsNull      =    0;
+        /// <summary>
+        /// <c>lng2</c> == <see cref="IsString"/>   => string is represented by a <see cref="string"/> instance
+        /// stored in <c>str</c><br/>
+        /// </summary>
+        public  const int   IsString    = -255;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int GetLength (long lng2) {
@@ -40,7 +48,7 @@ namespace Friflo.Json.Burst.Utils
             if (ContainsControlChars(value)) {
                 str     = value;
                 lng     = 0;
-                lng2    = 0;
+                lng2    = IsString;
                 return;
             }
             var byteCount = Encoding.UTF8.GetByteCount(value);
@@ -61,7 +69,7 @@ namespace Friflo.Json.Burst.Utils
             }
             str     = value;
             lng     = 0;
-            lng2    = 0;
+            lng2    = IsString;
         }
         
         private static bool ContainsControlChars(string value) {
@@ -76,7 +84,7 @@ namespace Friflo.Json.Burst.Utils
         }
         
         public static unsafe void LongLongToString(long lng, long lng2, out string str) {
-            if (lng2 == IsNULL) {
+            if (lng2 == IsNull) {
                 str = null;
                 return;
             }
