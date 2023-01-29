@@ -38,11 +38,11 @@ namespace Friflo.Json.Fliox
         ///     <item><see cref="STRING_SHORT"/>    - a short string with length less than 16 bytes encoded a UTF-8</item>
         ///     <item><see cref="string"/> instance - an arbitrary string instance with length greater 15 bytes</item>
         /// </list>
-        internal    readonly    object  obj;
+        internal    readonly    object  keyObj;
         internal    readonly    long    lng;  // long  |  lower  64 bits for Guid  | lower  8 bytes for UTF-8 string
         internal    readonly    long    lng2; //          higher 64 bits for Guid  | higher 7 bytes for UTF-8 string + 1 byte length
         
-        public                  bool    IsNull()    => obj == null;
+        public                  bool    IsNull()    => keyObj == null;
         internal                Guid    Guid        => GuidUtils.LongLongToGuid(lng, lng2);
         public      override    string  ToString()  => GetString(); 
 
@@ -60,30 +60,30 @@ namespace Friflo.Json.Fliox
         public JsonKey (string value)
         {
             if (value == null) {
-                obj     = null;
+                keyObj  = null;
                 lng     = 0;
                 lng2    = 0;
                 return;
             }
             if (long.TryParse(value, out long result)) {
-                obj     = LONG;
+                keyObj  = LONG;
                 lng     = result;
                 lng2    = 0;
                 return;
             }
             var stringLength = value.Length;
             if (stringLength == Bytes.GuidLength && Guid.TryParse(value, out var guid)) {
-                obj     = GUID;
+                keyObj  = GUID;
                 GuidUtils.GuidToLongLong(guid, out lng, out lng2);
                 return;
             }
             ShortStringUtils.StringToLongLong(value, out string str, out lng, out lng2);
-            obj = str ?? STRING_SHORT;
+            keyObj = str ?? STRING_SHORT;
         }
         
         public JsonKey (ref Bytes bytes, ref ValueParser valueParser, in JsonKey oldKey) {
             if (bytes.IsIntegral()) {
-                obj     = LONG;
+                keyObj  = LONG;
                 var error = new Bytes();
                 lng     = valueParser.ParseLong(ref bytes, ref error, out bool success);
                 if (!success)
@@ -93,37 +93,37 @@ namespace Friflo.Json.Fliox
             }
             var bytesLen = bytes.end - bytes.start;
             if (bytesLen == Bytes.GuidLength && bytes.TryParseGuid(out var guid, out _)) { // out value not null in Unity. Otherwise null
-                obj     = GUID;
+                keyObj  = GUID;
                 GuidUtils.GuidToLongLong(guid, out lng, out lng2);
                 return;
             }
             if (ShortStringUtils.BytesToLongLong(bytes, out lng, out lng2)) {
-                obj     = STRING_SHORT;
+                keyObj  = STRING_SHORT;
             } else {
-                obj     = ShortString.GetString(bytes, (string)oldKey.obj, out lng, out lng2);
+                keyObj  = ShortString.GetString(bytes, (string)oldKey.keyObj, out lng, out lng2);
             }
         }
 
         public JsonKey (long value) {
-            obj     = LONG;
+            keyObj  = LONG;
             lng     = value;
             lng2    = 0;
         }
         
         public JsonKey (long? value) {
-            obj     = value.HasValue ? LONG : null;
+            keyObj  = value.HasValue ? LONG : null;
             lng     = value ?? 0;
             lng2    = 0;
         }
         
         public JsonKey (in Guid guid) {
-            obj     = GUID;
+            keyObj  = GUID;
             GuidUtils.GuidToLongLong(guid, out lng, out lng2);
         }
         
         public JsonKey (in Guid? guid) {
             var hasValue= guid.HasValue;
-            obj     =  hasValue ? GUID : null;
+            keyObj  =  hasValue ? GUID : null;
             if (hasValue) {
                 GuidUtils.GuidToLongLong(guid.Value, out lng, out lng2);
                 return;
@@ -143,14 +143,14 @@ namespace Friflo.Json.Fliox
 
         public int Compare(in JsonKey right) {
             // left = this
-            var thisObj = obj;
-            if (thisObj != right.obj) {
-                if (thisObj is string) {
+            var obj = keyObj;
+            if (obj != right.keyObj) {
+                if (obj is string) {
                     return new ShortString(this).Compare(new ShortString(right));
                 }
-                return GetKeyType(thisObj) - GetKeyType(right.obj);
+                return GetKeyType(obj) - GetKeyType(right.keyObj);
             }
-            if (thisObj == LONG) {
+            if (obj == LONG) {
                 long longDif = lng - right.lng;
                 if (longDif < 0)
                     return -1;
@@ -158,38 +158,38 @@ namespace Friflo.Json.Fliox
                     return +1;
                 return 0;
             }
-            if (thisObj == STRING_SHORT) {
+            if (obj == STRING_SHORT) {
                 return new ShortString(this).Compare(new ShortString(right));
             }
-            if (thisObj == GUID) {
+            if (obj == GUID) {
                 return Guid.CompareTo(right.Guid);
             }
             return 0; // same reference: : null or string instance
         }
         
         public bool IsEqual(in JsonKey other) {
-            var thisObj = obj;
-            if (thisObj != other.obj) {
-                if (thisObj is string) {
+            var obj = keyObj;
+            if (obj != other.keyObj) {
+                if (obj is string) {
                     // In case one obj field is STRING_SHORT and the other is a "long" string instance strings are
                     // not equal as "STRING_SHORT".Length == 12 and the other string instance has length > 15.
-                    return (string)thisObj == (string)other.obj;
+                    return (string)obj == (string)other.keyObj;
                 }
                 return false;
             }
-            if (thisObj == LONG)            return lng == other.lng;
-            if (thisObj == STRING_SHORT)    return lng == other.lng && lng2 == other.lng2;
-            if (thisObj == GUID)            return lng == other.lng && lng2 == other.lng2;
+            if (obj == LONG)            return lng == other.lng;
+            if (obj == STRING_SHORT)    return lng == other.lng && lng2 == other.lng2;
+            if (obj == GUID)            return lng == other.lng && lng2 == other.lng2;
             return true; // same reference: null or string instance
         }
 
         public int HashCode() {
-            var thisObj = obj;
-            if (thisObj == LONG)            return lng.GetHashCode();
-            if (thisObj == STRING_SHORT)    return lng.GetHashCode() ^ lng2.GetHashCode();
-            if (thisObj == GUID)            return lng.GetHashCode() ^ lng2.GetHashCode();
-            if (thisObj is string)          return thisObj.GetHashCode();
-            if (thisObj == null)            return 0;
+            var obj = keyObj;
+            if (obj == LONG)            return lng.GetHashCode();
+            if (obj == STRING_SHORT)    return lng.GetHashCode() ^ lng2.GetHashCode();
+            if (obj == GUID)            return lng.GetHashCode() ^ lng2.GetHashCode();
+            if (obj is string)          return obj.GetHashCode();
+            if (obj == null)            return 0;
             
             throw new InvalidOperationException("Invalid JsonKeyType"); 
         }
@@ -203,7 +203,7 @@ namespace Friflo.Json.Fliox
         }
         
         private string GetString() {
-            if (obj == null) {
+            if (keyObj == null) {
                 return "null";
             }
             return $"'{AsString()}'";
@@ -211,24 +211,24 @@ namespace Friflo.Json.Fliox
 
         /// <summary>Calling this method causes string instantiation. To avoid this use its <i>AppendTo</i> methods if possible.</summary> 
         public string AsString() {
-            var thisObj = obj;
-            if (thisObj == LONG)    return lng. ToString();
-            if (thisObj == STRING_SHORT) {
+            var obj = keyObj;
+            if (obj == LONG)    return lng. ToString();
+            if (obj == STRING_SHORT) {
                 Span<char> chars    = stackalloc char[ShortString.MaxCharCount];
                 var length          = ShortStringUtils.GetChars(lng, lng2, chars);
                 var readOnlySpan    = chars.Slice(0, length);
                 return new string(readOnlySpan);
             }
-            if (thisObj is string) {
-                return (string)thisObj;
+            if (obj is string) {
+                return (string)obj;
             }
-            if (thisObj == GUID) return Guid.ToString();
-            if (thisObj == null) return null;
+            if (obj == GUID) return Guid.ToString();
+            if (obj == null) return null;
             throw new InvalidOperationException("Invalid JsonKeyType"); 
         }
         
         public long AsLong() {
-            if (obj == LONG)
+            if (keyObj == LONG)
                 return lng;
             throw new InvalidOperationException($"cannot return JsonKey as long. {AsString()}");
         }
@@ -236,36 +236,36 @@ namespace Friflo.Json.Fliox
         public Guid AsGuid() => Guid;
         
         public Guid? AsGuidNullable() {
-            return obj == GUID ? Guid : default; 
+            return keyObj == GUID ? Guid : default; 
         }
         
         public void AppendTo(ref Bytes dest, ref ValueFormat valueFormat) {
-            var thisObj = obj;
-            if (thisObj == LONG)            { valueFormat.AppendLong(ref dest, lng);    return; }
-            if (thisObj == STRING_SHORT)    { dest.AppendShortString(lng, lng2);        return; }
-            if (thisObj is string)          { dest.AppendString((string)thisObj);       return; }
-            if (thisObj == GUID)            { dest.AppendGuid(Guid);                    return; }
+            var obj = keyObj;
+            if (obj == LONG)            { valueFormat.AppendLong(ref dest, lng);    return; }
+            if (obj == STRING_SHORT)    { dest.AppendShortString(lng, lng2);        return; }
+            if (obj is string)          { dest.AppendString((string)obj);           return; }
+            if (obj == GUID)            { dest.AppendGuid(Guid);                    return; }
             throw new InvalidOperationException("unexpected type in JsonKey.AppendTo()");
         }
         
         public void AppendTo(StringBuilder sb) {
-            var thisObj = obj;
-            if (thisObj == LONG) {
+            var obj = keyObj;
+            if (obj == LONG) {
                 sb.Append(lng);
                 return;
             }
-            if (thisObj == STRING_SHORT) {
+            if (obj == STRING_SHORT) {
                 Span<char> chars    = stackalloc char[ShortString.MaxCharCount];
                 var len             = ShortStringUtils.GetChars(lng, lng2, chars);
                 var readOnlyChars   = chars.Slice(0, len);
                 sb.Append(readOnlyChars);
                 return;
             }
-            if (thisObj is string) {
-                sb.Append(thisObj);
+            if (obj is string) {
+                sb.Append(obj);
                 return;
             }
-            if (thisObj == GUID) {
+            if (obj == GUID) {
 #if UNITY_5_3_OR_NEWER
                 var guidStr = Guid.ToString();
                 sb.Append(guidStr);

@@ -29,7 +29,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
         }
 
         public override void Write(ref Writer writer, JsonKey value) {
-            var obj = value.obj;
+            var obj = value.keyObj;
             if (obj == JsonKey.LONG) {
                 writer.bytes.AppendChar('\"');
                 writer.format.AppendLong(ref writer.bytes, value.lng);

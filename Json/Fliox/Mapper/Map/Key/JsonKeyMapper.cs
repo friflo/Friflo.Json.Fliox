@@ -8,7 +8,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Key
     internal sealed class JsonKeyMapper : KeyMapper<JsonKey>
     {
         public override void WriteKey (ref Writer writer, in JsonKey key) {
-            var obj = key.obj;
+            var obj = key.keyObj;
             if (obj == JsonKey.LONG) {
                 writer.bytes.AppendChar('\"');
                 writer.format.AppendLong(ref writer.bytes, key.lng);

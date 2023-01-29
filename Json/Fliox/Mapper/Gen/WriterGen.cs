@@ -144,7 +144,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
                 return;
             }
             WriteFieldKey(field, ref firstMember);
-            var obj = value.obj;
+            var obj = value.keyObj;
             if (obj == JsonKey.LONG) {
                 bytes.AppendChar('\"');
                 format.AppendLong(ref bytes, value.lng);

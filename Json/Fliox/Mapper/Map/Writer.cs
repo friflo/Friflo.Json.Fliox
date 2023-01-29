@@ -71,7 +71,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
         }
         
         public void WriteJsonKey(in JsonKey value) {
-            var obj = value.obj;
+            var obj = value.keyObj;
             if (obj != JsonKey.STRING_SHORT) {
                 var str = (string)obj;
                 Utf8JsonWriter.AppendEscString(ref bytes, str);
