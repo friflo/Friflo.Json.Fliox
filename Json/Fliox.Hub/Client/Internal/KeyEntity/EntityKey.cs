@@ -87,13 +87,14 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal.KeyEntity
                 throw new InvalidOperationException(msg2);
             }
             bool auto = AttributeUtils.IsAutoIncrement(property.CustomAttributes);
-            if (propType == typeof(string)) return new EntityKeyStringProperty<T>   (property, idGetMethod, idSetMethod);
-            if (propType == typeof(Guid))   return new EntityKeyGuidProperty<T>     (property, idGetMethod, idSetMethod);
-            if (propType == typeof(int))    return new EntityKeyIntProperty<T>      (property, idGetMethod, idSetMethod);
-            if (propType == typeof(long))   return new EntityKeyLongProperty<T>     (property, idGetMethod, idSetMethod);
-            if (propType == typeof(short))  return new EntityKeyShortProperty<T>    (property, idGetMethod, idSetMethod);
-            if (propType == typeof(byte))   return new EntityKeyByteProperty<T>     (property, idGetMethod, idSetMethod);
-            if (propType == typeof(JsonKey))return new EntityKeyJsonKeyProperty<T>  (property, idGetMethod, idSetMethod);
+            if (propType == typeof(string))     return new EntityKeyStringProperty<T>       (property, idGetMethod, idSetMethod);
+            if (propType == typeof(ShortString))return new EntityKeyShortStringProperty<T>  (property, idGetMethod, idSetMethod);
+            if (propType == typeof(Guid))       return new EntityKeyGuidProperty<T>         (property, idGetMethod, idSetMethod);
+            if (propType == typeof(int))        return new EntityKeyIntProperty<T>          (property, idGetMethod, idSetMethod);
+            if (propType == typeof(long))       return new EntityKeyLongProperty<T>         (property, idGetMethod, idSetMethod);
+            if (propType == typeof(short))      return new EntityKeyShortProperty<T>        (property, idGetMethod, idSetMethod);
+            if (propType == typeof(byte))       return new EntityKeyByteProperty<T>         (property, idGetMethod, idSetMethod);
+            if (propType == typeof(JsonKey))    return new EntityKeyJsonKeyProperty<T>      (property, idGetMethod, idSetMethod);
             var msg = UnsupportedTypeMessage(type, property, propType);
             throw new InvalidOperationException(msg);
         }
@@ -102,13 +103,14 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal.KeyEntity
             var type        = typeof (T);
             var fieldType   = field.FieldType;
             bool auto = AttributeUtils.IsAutoIncrement(fieldType.CustomAttributes);
-            if (fieldType == typeof(string))    return new EntityKeyStringField<T>  (field);
-            if (fieldType == typeof(Guid))      return new EntityKeyGuidField<T>    (field);
-            if (fieldType == typeof(int))       return new EntityKeyIntField<T>     (field);
-            if (fieldType == typeof(long))      return new EntityKeyLongField<T>    (field);
-            if (fieldType == typeof(short))     return new EntityKeyShortField<T>   (field);
-            if (fieldType == typeof(byte))      return new EntityKeyByteField<T>    (field);
-            if (fieldType == typeof(JsonKey))   return new EntityKeyJsonKeyField<T> (field);
+            if (fieldType == typeof(string))        return new EntityKeyStringField<T>      (field);
+            if (fieldType == typeof(ShortString))   return new EntityKeyShortStringField<T> (field);
+            if (fieldType == typeof(Guid))          return new EntityKeyGuidField<T>        (field);
+            if (fieldType == typeof(int))           return new EntityKeyIntField<T>         (field);
+            if (fieldType == typeof(long))          return new EntityKeyLongField<T>        (field);
+            if (fieldType == typeof(short))         return new EntityKeyShortField<T>       (field);
+            if (fieldType == typeof(byte))          return new EntityKeyByteField<T>        (field);
+            if (fieldType == typeof(JsonKey))       return new EntityKeyJsonKeyField<T>     (field);
             var msg = UnsupportedTypeMessage(type, field, fieldType);
             throw new InvalidOperationException(msg);
         }

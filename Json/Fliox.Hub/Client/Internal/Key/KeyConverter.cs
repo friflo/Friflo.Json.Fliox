@@ -22,18 +22,19 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal.Key
 
         private static KeyConverter CreateRefKey<TKey> () {
             var keyType = typeof (TKey);
-            if (keyType == typeof(string))  return new KeyConverterString   ();
-            if (keyType == typeof(Guid))    return new KeyConverterGuid     ();
-            if (keyType == typeof(Guid?))   return new KeyConverterGuidNull ();
-            if (keyType == typeof(int))     return new KeyConverterInt      ();
-            if (keyType == typeof(int?))    return new KeyConverterIntNull  ();
-            if (keyType == typeof(long))    return new KeyConverterLong     ();
-            if (keyType == typeof(long?))   return new KeyConverterLongNull ();
-            if (keyType == typeof(short))   return new KeyConverterShort    ();
-            if (keyType == typeof(short?))  return new KeyConverterShortNull();
-            if (keyType == typeof(byte))    return new KeyConverterByte     ();
-            if (keyType == typeof(byte?))   return new KeyConverterByteNull ();
-            if (keyType == typeof(JsonKey)) return new KeyConverterJsonKey  ();
+            if (keyType == typeof(string))      return new KeyConverterString       ();
+            if (keyType == typeof(ShortString)) return new KeyConverterShortString  ();
+            if (keyType == typeof(Guid))        return new KeyConverterGuid         ();
+            if (keyType == typeof(Guid?))       return new KeyConverterGuidNull     ();
+            if (keyType == typeof(int))         return new KeyConverterInt          ();
+            if (keyType == typeof(int?))        return new KeyConverterIntNull      ();
+            if (keyType == typeof(long))        return new KeyConverterLong         ();
+            if (keyType == typeof(long?))       return new KeyConverterLongNull     ();
+            if (keyType == typeof(short))       return new KeyConverterShort        ();
+            if (keyType == typeof(short?))      return new KeyConverterShortNull    ();
+            if (keyType == typeof(byte))        return new KeyConverterByte         ();
+            if (keyType == typeof(byte?))       return new KeyConverterByteNull     ();
+            if (keyType == typeof(JsonKey))     return new KeyConverterJsonKey      ();
             var msg = UnsupportedTypeMessage(keyType);
             throw new InvalidOperationException(msg);
         }

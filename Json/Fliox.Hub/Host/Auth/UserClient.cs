@@ -7,13 +7,13 @@ using Friflo.Json.Fliox.Hub.DB.Cluster;
 namespace Friflo.Json.Fliox.Hub.Host.Auth
 {
     internal readonly struct UserClient {
-        internal readonly   JsonKey                                 userId;
+        internal readonly   ShortString                             userId;
         /// <b>Note</b> requires lock when accessing. Did not use ConcurrentDictionary to avoid heap allocation
         internal readonly   Dictionary<ShortString, RequestCount>   requestCounts;
         
         public   override   string                                  ToString() => userId.AsString();
 
-        internal UserClient (in JsonKey userId) {
+        internal UserClient (in ShortString userId) {
             requestCounts   = new Dictionary<ShortString, RequestCount>(ShortString.Equality);
             this.userId     = userId;
         }

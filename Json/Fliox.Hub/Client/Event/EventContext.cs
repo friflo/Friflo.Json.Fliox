@@ -46,7 +46,7 @@ namespace Friflo.Json.Fliox.Hub.Client
     public sealed class EventContext : ILogSource
     {
         /// <summary> user id sending the <see cref="Messages"/> and causing the <see cref="Changes"/>  </summary>
-        public              JsonKey                 UserId          => syncEvent.usr;
+        public              ShortString             UserId          => syncEvent.usr;
         /// <summary> incrementing sequence number of a received event </summary>
         public              int                     EventSeq        => seq;
         /// <summary> number of received events </summary>
@@ -61,7 +61,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// <summary> is true if the client is the origin of the event </summary>
         public              bool                    IsOrigin        => syncEvent.clt.IsEqual(Client._intern.clientId);
         /// <summary> is true if the client is the origin of the event </summary>
-        public              JsonKey                 SrcClient       => syncEvent.clt;
+        public              ShortString             SrcClient       => syncEvent.clt;
         /// <summary> is private to be exposed only in Debugger </summary>
         private             FlioxClient             Client          { get; set; }
         

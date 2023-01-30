@@ -71,7 +71,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
 
             var ids = new List<JsonKey>(read.ids.Count);
             foreach (var id in read.ids) {
-                var idShort = new ShortString(id.AsString());
+                var idShort = new ShortString(id);
                 if (DatabaseFilter.IsAuthorizedDatabase(databaseFilters, idShort)) {
                     ids.Add(id);
                 } else {

@@ -11,13 +11,14 @@ namespace Friflo.Json.Fliox.Mapper.Map
     {
         internal static Dictionary<Type, KeyMapper> CreateDefaultKeyMappers() {
             var keyMappers = new Dictionary<Type, KeyMapper> {
-                { typeof(string),   new StringKeyMapper() },
-                { typeof(long),     new LongKeyMapper()   },
-                { typeof(int),      new IntKeyMapper()    },
-                { typeof(short),    new ShortKeyMapper()  },
-                { typeof(byte),     new ByteKeyMapper()   },
-                { typeof(JsonKey),  new JsonKeyMapper()   },
-                { typeof(Guid),     new GuidKeyMapper()   },
+                { typeof(string),       new StringKeyMapper()   },
+                { typeof(ShortString),  new ShortStringMapper() },
+                { typeof(long),         new LongKeyMapper()     },
+                { typeof(int),          new IntKeyMapper()      },
+                { typeof(short),        new ShortKeyMapper()    },
+                { typeof(byte),         new ByteKeyMapper()     },
+                { typeof(JsonKey),      new JsonKeyMapper()     },
+                { typeof(Guid),         new GuidKeyMapper()     },
             };
             return keyMappers;
         }

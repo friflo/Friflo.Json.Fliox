@@ -14,7 +14,7 @@ namespace Gen.Friflo.Json.Fliox.Hub.DB.Monitor
         private static bool ReadField (ref UserHits obj, PropField field, ref Reader reader) {
             bool success;
             switch (field.genIndex) {
-                case Gen_id:      obj.id      = reader.ReadJsonKey (field, obj.id,      out success);  return success;
+                case Gen_id:      obj.id      = reader.ReadShortString (field, obj.id,      out success);  return success;
                 case Gen_clients: obj.clients = reader.ReadClass (field, obj.clients, out success);  return success;
                 case Gen_counts:  obj.counts  = reader.ReadClass (field, obj.counts,  out success);  return success;
             }
@@ -22,7 +22,7 @@ namespace Gen.Friflo.Json.Fliox.Hub.DB.Monitor
         }
 
         private static void Write(ref UserHits obj, PropField[] fields, ref Writer writer, ref bool firstMember) {
-            writer.WriteJsonKey (fields[Gen_id],      obj.id,      ref firstMember);
+            writer.WriteShortString (fields[Gen_id],      obj.id,      ref firstMember);
             writer.WriteClass (fields[Gen_clients], obj.clients, ref firstMember);
             writer.WriteClass (fields[Gen_counts],  obj.counts,  ref firstMember);
         }

@@ -24,7 +24,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
     {
         protected readonly  Dictionary<string, AuthorizePredicate>  registeredPredicates;
         [DebuggerBrowsable(Never)]
-        internal  readonly  ConcurrentDictionary<JsonKey, User>     users;  // todo make private
+        internal  readonly  ConcurrentDictionary<ShortString, User> users;  // todo make private
         // ReSharper disable once UnusedMember.Local - expose Dictionary as list in Debugger
         private             ICollection<User>                       Users => users.Values;
         internal  readonly  User                                    anonymousUser;
@@ -49,7 +49,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
         
         protected Authenticator () {
             registeredPredicates    = new Dictionary<string, AuthorizePredicate>();
-            users                   = new ConcurrentDictionary <JsonKey, User>(JsonKey.Equality);
+            users                   = new ConcurrentDictionary <ShortString, User>(ShortString.Equality);
             anonymousUser           = new User(User.AnonymousId, null);
             users.TryAdd(User.AnonymousId, anonymousUser);
         }

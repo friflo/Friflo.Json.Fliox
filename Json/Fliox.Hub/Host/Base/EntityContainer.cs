@@ -223,7 +223,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         #endregion
     
     #region - internal methods
-        internal string StoreCursor(QueryEnumerator enumerator, in JsonKey userId) {
+        internal string StoreCursor(QueryEnumerator enumerator, in ShortString userId) {
             var cursor      = enumerator.Cursor;
             if (cursor != null) {
                 cursors.Remove(cursor);

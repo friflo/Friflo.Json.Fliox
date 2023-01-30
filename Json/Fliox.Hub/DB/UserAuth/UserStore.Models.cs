@@ -14,7 +14,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
     /// <summary>contains a <see cref="token"/> assigned to a user used for authentication</summary>
     public sealed class UserCredential {
         /// <summary>user id</summary>
-        [Required]  public  JsonKey         id;
+        [Required]  public  ShortString     id;
         /// <summary>user token</summary>
                     public  string          token;
                         
@@ -24,7 +24,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
     /// <summary>Set of <see cref="roles"/> assigned to a user used for authorization</summary>
     public sealed class UserPermission {
         /// <summary>user id</summary>
-        [Required]  public  JsonKey         id;
+        [Required]  public  ShortString     id;
         /// <summary>set of <see cref="roles"/> assigned to a user</summary>
         [Relation(nameof(UserStore.roles))]
                     public  List<string>    roles;
@@ -52,7 +52,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
     /// </summary>
     public sealed class UserTarget {
         /// <summary>user id</summary>
-        [Required]  public  JsonKey         id;
+        [Required]  public  ShortString     id;
         /// <summary>list of <see cref="groups"/> assigned to a user</summary>
         [Required]  public  List<string>    groups;
                         
@@ -62,7 +62,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
     // ---------------------------- command models - aka DTO's ---------------------------
     /// <summary>user <see cref="Credentials"/> used for authentication</summary>
     public sealed class Credentials {
-        [Required]  public  JsonKey         userId;
+        [Required]  public  ShortString     userId;
         [Required]  public  string          token;
 
         public override     string          ToString() => $"userId: {userId}";

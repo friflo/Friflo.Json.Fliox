@@ -171,8 +171,8 @@ namespace Friflo.Json.Fliox.Hub.Host
         #endregion
         
     #region - event receiver
-        public   virtual    void    AddEventReceiver      (in JsonKey clientId, EventReceiver eventReceiver) {}
-        public   virtual    void    RemoveEventReceiver   (in JsonKey clientId) {}
+        public   virtual    void    AddEventReceiver      (in ShortString clientId, EventReceiver eventReceiver) {}
+        public   virtual    void    RemoveEventReceiver   (in ShortString clientId) {}
         #endregion
 
     #region - sync request execution
@@ -238,7 +238,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             // - Note: Only relevant for Push messages when using a bidirectional protocol like WebSocket
             // As a client is required to use response.clientId it is set to null if given clientId was invalid.
             // So next request will create a new valid client id.
-            response.clientId = syncContext.clientIdValidation == ClientIdValidation.Invalid ? new JsonKey() : syncContext.clientId;
+            response.clientId = syncContext.clientIdValidation == ClientIdValidation.Invalid ? new ShortString() : syncContext.clientId;
             
             response.AssertResponse(syncRequest);
             
@@ -262,7 +262,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             return new TaskErrorResult (TaskErrorResultType.UnhandledException,msg, stack);
         }
         
-        private static string GetLogMessage (string database, in JsonKey user, int taskIndex, SyncRequestTask task) {
+        private static string GetLogMessage (string database, in ShortString user, int taskIndex, SyncRequestTask task) {
             var sb = new StringBuilder();
             sb.Append("database: "); sb.Append(database);
             sb.Append(", user: "); user.AppendTo(sb);

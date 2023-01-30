@@ -26,7 +26,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
     /// </remarks>
     public sealed class UserDatabaseAuthenticator : Authenticator
     {
-        private readonly        Dictionary<JsonKey, TaskAuthorizer> userRights;
+        private readonly        Dictionary<ShortString, TaskAuthorizer> userRights;
         
         public UserDatabaseAuthenticator(string userDbName) {
             var changes         = new [] { EntityChange.create, EntityChange.upsert, EntityChange.delete, EntityChange.merge };
@@ -42,9 +42,9 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
             var serverRights    = new AuthorizeAny(new TaskAuthorizer[] {
                 new AuthorizeContainer       (nameof(UserStore.credentials), new []{ OperationType.read }, userDbName)
             });
-            userRights = new Dictionary<JsonKey, TaskAuthorizer> (JsonKey.Equality) {
-                { new JsonKey(UserStore.AuthenticationUser),    authUserRights },
-                { new JsonKey(UserStore.Server),                serverRights   },
+            userRights = new Dictionary<ShortString, TaskAuthorizer> (ShortString.Equality) {
+                { new ShortString(UserStore.AuthenticationUser),    authUserRights },
+                { new ShortString(UserStore.Server),                serverRights   },
             };
         }
 

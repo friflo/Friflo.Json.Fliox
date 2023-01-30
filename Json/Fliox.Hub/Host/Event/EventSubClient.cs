@@ -20,7 +20,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
     /// A client is identified by its <see cref="clientId"/>.
     /// </summary>
     internal sealed class EventSubClient : ILogSource {
-        internal readonly   JsonKey                                 clientId;   // key field
+        internal readonly   ShortString                             clientId;   // key field
         internal readonly   EventSubUser                            user;
         internal            bool                                    queueEvents;
         private             EventReceiver                           eventReceiver; // can be null if created by a REST request
@@ -62,7 +62,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         internal EventSubClient (
             SharedEnv           env,
             EventSubUser        user,
-            in JsonKey          clientId,
+            in ShortString      clientId,
             EventDispatcher     dispatcher)
         {
             Logger              = env.hubLogger;

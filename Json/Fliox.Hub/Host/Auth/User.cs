@@ -22,7 +22,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
     /// </remarks>
     public sealed class User {
         // --- public
-        public   readonly   JsonKey         userId;
+        public   readonly   ShortString     userId;
         public   readonly   string          token;
         internal            TaskAuthorizer  taskAuthorizer  = TaskAuthorizer.None;  // not null
         internal            HubPermission   hubPermission   = HubPermission.None;   // not null
@@ -30,17 +30,17 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
         public   override   string          ToString() => userId.AsString();
         
         // --- internal
-        internal readonly   ConcurrentDictionary<JsonKey, Empty>    clients;        // key: clientId
+        internal readonly   ConcurrentDictionary<ShortString, Empty>    clients;        // key: clientId
         /// <b>Note</b> requires lock when accessing. Did not use ConcurrentDictionary to avoid heap allocation
-        internal readonly   Dictionary<ShortString, RequestCount>   requestCounts;  // key: database
-        private             HashSet<string>                         groups;         // can be null
+        internal readonly   Dictionary<ShortString, RequestCount>       requestCounts;  // key: database
+        private             HashSet<string>                             groups;         // can be null
         
-        public static readonly  JsonKey   AnonymousId = new JsonKey("anonymous");
+        public static readonly  ShortString   AnonymousId = new ShortString("anonymous");
 
 
-        internal User (in JsonKey userId, string token) {
-            clients             = new ConcurrentDictionary<JsonKey, Empty>(JsonKey.Equality);
-            requestCounts       = new Dictionary<ShortString, RequestCount>(ShortString.Equality);
+        internal User (in ShortString userId, string token) {
+            clients             = new ConcurrentDictionary<ShortString, Empty>(ShortString.Equality);
+            requestCounts       = new Dictionary<ShortString, RequestCount>   (ShortString.Equality);
             this.userId         = userId;
             this.token          = token;
         }

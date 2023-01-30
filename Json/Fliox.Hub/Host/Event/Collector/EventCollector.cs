@@ -56,7 +56,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event.Collector
         /// Store a change task in the <see cref="EventCollector"/> <br/>
         /// Return true if the given <paramref name="task"/> is stored. Otherwise false.
         /// </summary>
-        internal bool  StoreTask(EntityDatabase database, SyncRequestTask task, in JsonKey user)
+        internal bool  StoreTask(EntityDatabase database, SyncRequestTask task, in ShortString user)
         {
             switch (task.TaskType) {
                 case TaskType.create:
@@ -101,7 +101,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event.Collector
             EntityContainer     entityContainer,
             TaskType            taskType,
             List<JsonEntity>    entities,
-            in JsonKey          user)
+            in ShortString      user)
         {
             var containers = databaseChanges.containers;
             if (!containers.TryGetValue(entityContainer.nameShort, out var container)) {
@@ -122,7 +122,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event.Collector
             DatabaseChanges     databaseChanges,
             EntityContainer     entityContainer,
             List<JsonKey>       ids,
-            in JsonKey          user)
+            in ShortString      user)
         {
             var containers = databaseChanges.containers;
             if (!containers.TryGetValue(entityContainer.nameShort, out var container)) {

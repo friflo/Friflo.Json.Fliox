@@ -169,7 +169,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             var counts = new List<RequestCount>();
             ClusterUtils.CountsMapToList(counts, user.requestCounts, null);
             
-            var clients = new List<JsonKey>();
+            var clients = new List<ShortString>();
             foreach (var clientPair in user.clients) {
                 clients.Add(clientPair.Key);
             }

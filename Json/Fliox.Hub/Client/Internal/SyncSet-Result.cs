@@ -58,6 +58,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         internal static Dictionary<TKey, T> CreateDictionary<TKey, T>(int capacity = 0) {
             if (typeof(TKey) == typeof(JsonKey))
                 return (Dictionary<TKey, T>)(object)new Dictionary<JsonKey, T>(capacity, JsonKey.Equality);
+            if (typeof(TKey) == typeof(ShortString))
+                return (Dictionary<TKey, T>)(object)new Dictionary<ShortString, T>(capacity, ShortString.Equality);
             return new Dictionary<TKey, T>(capacity);
         }
     }

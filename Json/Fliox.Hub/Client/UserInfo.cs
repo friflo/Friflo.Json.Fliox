@@ -8,13 +8,13 @@ namespace Friflo.Json.Fliox.Hub.Client
 {
     /// <summary>Contains the tuple of <see cref="userId"/>, <see cref="token"/> and <see cref="clientId"/></summary>
     public readonly struct UserInfo {
-                                    public  readonly    JsonKey     userId; 
+                                    public  readonly    ShortString userId; 
         [DebuggerBrowsable(Never)]  public  readonly    string      token;
-                                    public  readonly    JsonKey     clientId;
+                                    public  readonly    ShortString clientId;
 
         public override                                 string      ToString() => $"userId: {userId}, clientId: {clientId}";
 
-        public UserInfo (in JsonKey userId, string token, in JsonKey clientId) {
+        public UserInfo (in ShortString userId, string token, in ShortString clientId) {
             this.userId     = userId;
             this.token      = token;
             this.clientId   = clientId;

@@ -130,7 +130,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             var hosts   = result.hosts.Result;
             AreEqual(1, hosts.Count);
             
-            var host    = hosts.Find(i => i.id.IsEqual(new JsonKey("Test")));
+            var host    = hosts.Find(i => i.id.IsEqual(new ShortString("Test")));
             AreEqual("{'id':'Test','counts':{'requests':2,'tasks':3}}", host.ToString());
             
             // --- users
@@ -140,20 +140,20 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             var anonymousInfo = users.Find(i => i.id.IsEqual(User.AnonymousId)).ToString();
             AreEqual("{'id':'anonymous','clients':[],'counts':[]}",     anonymousInfo);
             
-            var adminInfo = users.Find(i => i.id.IsEqual(new JsonKey("monitor-admin"))).ToString();
+            var adminInfo = users.Find(i => i.id.IsEqual(new ShortString("monitor-admin"))).ToString();
             AreEqual("{'id':'monitor-admin','clients':['monitor-client'],'counts':[{'db':'monitor','requests':1,'tasks':1}]}", adminInfo);
             
-            var pocAdmin = users.Find(i => i.id.IsEqual(new JsonKey("poc-admin"))).ToString();
+            var pocAdmin = users.Find(i => i.id.IsEqual(new ShortString("poc-admin"))).ToString();
             AreEqual("{'id':'poc-admin','clients':['poc-client'],'counts':[{'db':'main_db','requests':1,'tasks':2}]}", pocAdmin);
             
             // --- clients
             var clients = result.clients.Result;
             AreEqual(2, clients.Count);
             
-            var pocClientInfo = clients.Find(i => i.id.IsEqual(new JsonKey("poc-client"))).ToString();
+            var pocClientInfo = clients.Find(i => i.id.IsEqual(new ShortString("poc-client"))).ToString();
             AreEqual("{'id':'poc-client','user':'poc-admin','counts':[{'db':'main_db','requests':1,'tasks':2}]}", pocClientInfo);
             
-            var monitorClientInfo = clients.Find(i => i.id.IsEqual(new JsonKey("monitor-client"))).ToString();
+            var monitorClientInfo = clients.Find(i => i.id.IsEqual(new ShortString("monitor-client"))).ToString();
             AreEqual("{'id':'monitor-client','user':'monitor-admin','counts':[{'db':'monitor','requests':1,'tasks':1}]}", monitorClientInfo);
             
             NotNull(result.user.Result);
@@ -166,8 +166,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         }
 
         private  static async Task AssertMonitorErrors(MonitorStore monitor) {
-            var deleteUser      = monitor.users.Delete(new JsonKey("123"));
-            var createUser      = monitor.users.Create(new UserHits{id = new JsonKey("abc")});
+            var deleteUser      = monitor.users.Delete(new ShortString("123"));
+            var createUser      = monitor.users.Create(new UserHits{id = new ShortString("abc")});
             await monitor.TrySyncTasks();
             AreEqual("InvalidTask ~ MonitorDB does not support task: 'create'",   createUser.Error.Message);
             AreEqual("InvalidTask ~ MonitorDB does not support task: 'delete'",   deleteUser.Error.Message);
@@ -195,8 +195,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             var result = new MonitorResult();
             result.users       = monitor.users.QueryAll();
             result.clients     = monitor.clients.QueryAll();
-            result.user        = monitor.users.Read().Find(new JsonKey("poc-admin"));
-            result.client      = monitor.clients.Read().Find(new JsonKey("poc-client"));
+            result.user        = monitor.users.Read().Find(new ShortString("poc-admin"));
+            result.client      = monitor.clients.Read().Find(new ShortString("poc-client"));
             result.hosts       = monitor.hosts.QueryAll();
             result.sync        = await monitor.TrySyncTasks();
             
@@ -205,11 +205,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         
         internal class MonitorResult {
             internal    SyncResult                      sync;
-            internal    QueryTask<JsonKey,  UserHits>   users;
-            internal    QueryTask<JsonKey,  ClientHits> clients;
-            internal    Find<JsonKey,       UserHits>   user;
-            internal    Find<JsonKey,       ClientHits> client;
-            internal    QueryTask<JsonKey,  HostHits>   hosts;
+            internal    QueryTask<ShortString,  UserHits>   users;
+            internal    QueryTask<ShortString,  ClientHits> clients;
+            internal    Find<ShortString,       UserHits>   user;
+            internal    Find<ShortString,       ClientHits> client;
+            internal    QueryTask<ShortString,  HostHits>   hosts;
         }
     }
 }

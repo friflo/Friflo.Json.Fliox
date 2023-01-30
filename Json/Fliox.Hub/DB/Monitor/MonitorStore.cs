@@ -16,13 +16,13 @@ namespace Friflo.Json.Fliox.Hub.DB.Monitor
     /// </summary>
     public partial class  MonitorStore :  FlioxClient
     {
-        internal            string                              hostName;
+        internal            string                                  hostName;
         
         // --- containers
-        public  readonly    EntitySet <JsonKey, HostHits>       hosts;
-        public  readonly    EntitySet <JsonKey, UserHits>       users;
-        public  readonly    EntitySet <JsonKey, ClientHits>     clients;
-        public  readonly    EntitySet <int,     HistoryHits>    histories;
+        public  readonly    EntitySet <ShortString, HostHits>       hosts;
+        public  readonly    EntitySet <ShortString, UserHits>       users;
+        public  readonly    EntitySet <ShortString, ClientHits>     clients;
+        public  readonly    EntitySet <int,         HistoryHits>    histories;
 
         public MonitorStore(FlioxHub hub, string dbName = null) : base(hub, dbName) { }
         

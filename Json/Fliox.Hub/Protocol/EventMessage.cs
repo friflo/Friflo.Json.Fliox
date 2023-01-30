@@ -65,7 +65,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol
         /// By default it is set always. If not required set <see cref="EventDispatcher.SendEventUserId"/> to false.
         /// </summary>
         [Serialize                                    ("usr")]
-                    public      JsonKey                 usr;
+                    public      ShortString             usr;
         
         /// <summary>
         /// The client which caused the event. Specifically the client which made a database change or sent a message / command.<br/>
@@ -73,7 +73,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol
         /// It is set in any case if <see cref="EventDispatcher.SendEventClientId"/> is true.
         /// </summary>
         [Serialize                                    ("clt")]
-                    public      JsonKey                 clt;
+                    public      ShortString             clt;
         
         /// <summary>
         /// The database the <see cref="tasks"/> refer to<br/>

@@ -292,7 +292,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
             await base.SetUserOptionsAsync(user, param).ConfigureAwait(false); 
         }
 
-        private async Task<Result<UserAuthInfo>> GetUserAuthInfoAsync(UserStore userStore, JsonKey userId) {
+        private async Task<Result<UserAuthInfo>> GetUserAuthInfoAsync(UserStore userStore, ShortString userId) {
             var readPermission  = userStore.permissions.Read().Find(userId);
             var readTarget      = userStore.targets.Read().Find(userId);
             await userStore.SyncTasks().ConfigureAwait(false);

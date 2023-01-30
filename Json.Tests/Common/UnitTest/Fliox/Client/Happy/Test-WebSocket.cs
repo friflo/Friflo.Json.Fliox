@@ -60,7 +60,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 
                 AreEqual(0, clientResult.Result.queuedEvents);  // no events send right now
                 
-                var findClient1 = monitor.clients.Read().Find(new JsonKey("1"));
+                var findClient1 = monitor.clients.Read().Find(new ShortString("1"));
                 await monitor.SyncTasks();
                 
                 var client1 = findClient1.Result;

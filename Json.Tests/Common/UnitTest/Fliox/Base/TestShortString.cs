@@ -1,6 +1,7 @@
 // Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 using Friflo.Json.Burst;
 using Friflo.Json.Burst.Utils;
@@ -216,6 +217,58 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Base
             var rightShort  = new ShortString(right);
             var result      = leftShort.StartsWith(rightShort);
             AreEqual(expected, result);
+        }
+        
+        [Test]
+        public static void TestShortString_ToJsonKey() {
+            {
+                var str = new ShortString ();
+                var key = new JsonKey(str);
+                IsNull(key.AsString());
+            } {
+                var str = new ShortString ("abc");
+                var key = new JsonKey(str);
+                AreEqual("abc", key.AsString());
+            } {
+                var str = new ShortString ("1");
+                var key = new JsonKey(str);
+                AreEqual(1, key.AsLong());
+                AreEqual("1", key.AsString());
+            } {
+                var str = new ShortString ("550e8400-e29b-11d4-a716-446655440000");
+                var key = new JsonKey(str);
+                AreEqual(new Guid("550e8400-e29b-11d4-a716-446655440000"), key.AsGuid());
+                AreEqual("550e8400-e29b-11d4-a716-446655440000", key.AsString());
+            } {
+                var str = new ShortString ("a string length > 15");
+                var key = new JsonKey(str);
+                AreEqual("a string length > 15", key.AsString());
+            }
+        }
+        
+        [Test]
+        public static void TestShortString_FromJsonKey() {
+            {
+                var key = new JsonKey();
+                var str = new ShortString(key);
+                IsNull(str.AsString());
+            } {
+                var key = new JsonKey("abc");
+                var str = new ShortString(key);
+                AreEqual("abc", str.AsString());
+            } {
+                var key = new JsonKey("1");
+                var str = new ShortString(key);
+                AreEqual("1", str.AsString());
+            } {
+                var key = new JsonKey("550e8400-e29b-11d4-a716-446655440000");
+                var str = new ShortString(key);
+                AreEqual("550e8400-e29b-11d4-a716-446655440000", str.AsString());
+            } {
+                var key = new JsonKey("a string length > 15");
+                var str = new ShortString(key);
+                AreEqual("a string length > 15", str.AsString());
+            }
         }
         
         [Test]

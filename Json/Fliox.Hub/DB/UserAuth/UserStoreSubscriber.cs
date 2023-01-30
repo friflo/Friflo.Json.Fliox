@@ -36,8 +36,8 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
         
         // ReSharper disable once UnusedMember.Local
         // ReSharper disable once UnusedParameter.Local
-        private void CredentialChange(Changes<JsonKey, UserCredential> changes, EventContext context) {
-            var changedUsers = new HashSet<JsonKey>(JsonKey.Equality);
+        private void CredentialChange(Changes<ShortString, UserCredential> changes, EventContext context) {
+            var changedUsers = new HashSet<ShortString>(ShortString.Equality);
             foreach (var entity in changes.Upserts) { changedUsers.Add(entity.id); }
             foreach (var id     in changes.Deletes) { changedUsers.Add(id); }
             foreach (var patch  in changes.Patches) { changedUsers.Add(patch.key); }
@@ -47,8 +47,8 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
             }
         }
         
-        private void PermissionChange(Changes<JsonKey, UserPermission> changes, EventContext context) {
-            var changedUsers = new HashSet<JsonKey>(JsonKey.Equality);
+        private void PermissionChange(Changes<ShortString, UserPermission> changes, EventContext context) {
+            var changedUsers = new HashSet<ShortString>(ShortString.Equality);
             foreach (var entity in changes.Upserts) { changedUsers.Add(entity.id); }
             foreach (var id     in changes.Deletes) { changedUsers.Add(id); }
             foreach (var patch  in changes.Patches) { changedUsers.Add(patch.key); }
@@ -65,7 +65,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
             foreach (var id     in changes.Deletes) { changedRoles.Add(id); }
             foreach (var patch  in changes.Patches) { changedRoles.Add(patch.key); }
             
-            var affectedUsers = new List<JsonKey>();
+            var affectedUsers = new List<ShortString>();
             foreach (var changedRole in changedRoles) {
                 if(!userAuthenticator.roleCache.TryRemove(changedRole, out var role))
                     continue;
@@ -76,7 +76,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
             }
         }
         
-        private void TargetChange(Changes<JsonKey, UserTarget> changes, EventContext context) {
+        private void TargetChange(Changes<ShortString, UserTarget> changes, EventContext context) {
             var dispatcher  = userAuthenticator.userHub.EventDispatcher;
             var users       = userAuthenticator.users;
             foreach (var userTarget in changes.Upserts) {
@@ -95,7 +95,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
         
         /// Iterate all authorized users and remove those having an <see cref="TaskAuthorizer"/> which was modified.
         /// Used iteration instead of an additional map (role -> users) to avoid long lived objects in heap.
-        private void AddAffectedUsers(List<JsonKey> affectedUsers, TaskAuthorizer[] search) {
+        private void AddAffectedUsers(List<ShortString> affectedUsers, TaskAuthorizer[] search) {
             foreach (var pair in userAuthenticator.users) {
                 var user = pair.Value;
                 if (user.taskAuthorizer is AuthorizeAny any) {

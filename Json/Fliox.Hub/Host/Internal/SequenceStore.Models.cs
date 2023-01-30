@@ -20,6 +20,6 @@ namespace Friflo.Json.Fliox.Hub.Host.Internal
         [Required]  public  ShortString container;
         [Required]  public  long        start;
         [Required]  public  int         count;
-                    public  JsonKey     user;   // to track back who reserved keys in case of abuse
+                    public  ShortString user;   // to track back who reserved keys in case of abuse
     }
 }

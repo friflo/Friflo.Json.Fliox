@@ -121,7 +121,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             lock (intern.monitor) { return intern.subClients.Count; }
         }
 
-        internal bool TryGetSubscriber(in JsonKey key, out EventSubClient subClient) {
+        internal bool TryGetSubscriber(in ShortString key, out EventSubClient subClient) {
             lock (intern.monitor) {
                 return intern.subClients.TryGetValue(key, out subClient);
             }
@@ -154,7 +154,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
     #region - add / remove subscriptions
         internal bool SubscribeMessage(
             in ShortString database,    SubscribeMessage subscribe,     User       user,
-            in JsonKey clientId,        EventReceiver    eventReceiver, out string error)
+            in ShortString clientId,    EventReceiver    eventReceiver, out string error)
         {
             if (eventReceiver == null) {
                 error = MissingEventReceiver; 
@@ -170,7 +170,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         
         internal bool SubscribeChanges (
             in ShortString database,    SubscribeChanges subscribe,     User        user,
-            in JsonKey clientId,        EventReceiver    eventReceiver, out string  error)
+            in ShortString clientId,    EventReceiver    eventReceiver, out string  error)
         {
             if (eventReceiver == null) {
                 error = MissingEventReceiver; 
@@ -184,7 +184,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             }
         }
         
-        internal EventSubClient GetOrCreateSubClient(User user, in JsonKey clientId, EventReceiver eventReceiver) {
+        internal EventSubClient GetOrCreateSubClient(User user, in ShortString clientId, EventReceiver eventReceiver) {
             lock (intern.monitor) {
                 var result = intern.GetOrCreateSubClient(user, clientId, eventReceiver);
                 intern.UpdateSendClients();
@@ -192,7 +192,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             }
         }
         
-        internal void UpdateSubUserGroups(in JsonKey userId, IReadOnlyCollection<String> groups) {
+        internal void UpdateSubUserGroups(in ShortString userId, IReadOnlyCollection<String> groups) {
             EventSubUser subUser;
             lock (intern.monitor) {
                 if (!intern.subUsers.TryGetValue(userId, out subUser))
@@ -313,7 +313,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             out EventSubClient  subClient,
             out ClientDbSubs[]  databaseSubsArray)
         {
-            JsonKey  clientId = syncContext.clientId;
+            ShortString  clientId = syncContext.clientId;
             lock (intern.monitor) {
                 if (clientId.IsNull()) {
                     subClient = null;

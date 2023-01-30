@@ -20,17 +20,17 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     public abstract class SyncMessageTask : SyncRequestTask
     {
         /// <summary>command / message name</summary>
-        [Required]  public  ShortString     name;
+        [Required]  public  ShortString         name;
         /// <summary>command / message parameter. Can be null or absent</summary>
-                    public  JsonValue       param;
+                    public  JsonValue           param;
         /// <summary>if set the Hub forward the message as an event only to given <see cref="users"/></summary>
-                    public  List<JsonKey>   users;
+                    public  List<ShortString>   users;
         /// <summary>if set the Hub forward the message as an event only to given <see cref="clients"/></summary>
-                    public  List<JsonKey>   clients;
+                    public  List<ShortString>   clients;
         /// <summary>if set the Hub forward the message as an event only to given <see cref="groups"/></summary>
-                    public  List<string>    groups;
+                    public  List<string>        groups;
         
-        [Ignore]   internal MessageDelegate callback;
+        [Ignore]   internal MessageDelegate     callback;
         
         /// <summary>
         /// return true to execute this task synchronous. <br/>

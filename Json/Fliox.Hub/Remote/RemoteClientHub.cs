@@ -31,15 +31,15 @@ namespace Friflo.Json.Fliox.Hub.Remote
     
     public abstract class RemoteClientHub : FlioxHub
     {
-        private  readonly   Dictionary<JsonKey, EventReceiver>  eventReceivers;
-        private  readonly   ObjectPool<ReaderPool>              responseReaderPool;
-        private  readonly   RemoteClientAccess                  access;
+        private  readonly   Dictionary<ShortString, EventReceiver>  eventReceivers;
+        private  readonly   ObjectPool<ReaderPool>                  responseReaderPool;
+        private  readonly   RemoteClientAccess                      access;
 
         // ReSharper disable once EmptyConstructor - added for source navigation
         protected RemoteClientHub(EntityDatabase database, SharedEnv env, RemoteClientAccess access = RemoteClientAccess.Multi)
             : base(database, env)
         {
-            eventReceivers      = new Dictionary<JsonKey, EventReceiver>(JsonKey.Equality);
+            eventReceivers      = new Dictionary<ShortString, EventReceiver>(ShortString.Equality);
             responseReaderPool  = new ObjectPool<ReaderPool>(() => new ReaderPool(sharedEnv.TypeStore));
             this.access         = access;     
         }
@@ -47,14 +47,14 @@ namespace Friflo.Json.Fliox.Hub.Remote
         /// <summary>A class extending  <see cref="RemoteClientHub"/> must implement this method.</summary>
         public abstract override Task<ExecuteSyncResult> ExecuteRequestAsync(SyncRequest syncRequest, SyncContext syncContext);
         
-        public override void AddEventReceiver(in JsonKey clientId, EventReceiver eventReceiver) {
+        public override void AddEventReceiver(in ShortString clientId, EventReceiver eventReceiver) {
             if (access == RemoteClientAccess.Single && eventReceivers.Count > 0) {
                 throw new InvalidOperationException("Remote client is configured for single access");
             }
             eventReceivers.Add(clientId, eventReceiver);
         }
         
-        public override void RemoveEventReceiver(in JsonKey clientId) {
+        public override void RemoveEventReceiver(in ShortString clientId) {
             if (clientId.IsNull())
                 return;
             eventReceivers.Remove(clientId);

@@ -29,15 +29,15 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
     public abstract class ClientController {
         /// key: clientId
         [DebuggerBrowsable(Never)]
-        internal readonly   ConcurrentDictionary<JsonKey, UserClient>   clients = new ConcurrentDictionary<JsonKey, UserClient>(JsonKey.Equality);
+        internal readonly   ConcurrentDictionary<ShortString, UserClient>   clients = new ConcurrentDictionary<ShortString, UserClient>(ShortString.Equality);
         // ReSharper disable once UnusedMember.Local - expose Dictionary as list in Debugger
-        private             ICollection<UserClient>                     Clients => clients.Values;
+        private             ICollection<UserClient>                         Clients => clients.Values;
 
-        public   override   string                                      ToString() => $"clients: {clients.Count}";
+        public   override   string                                          ToString() => $"clients: {clients.Count}";
         
-        protected abstract  JsonKey     NewId();
+        protected abstract  ShortString     NewId();
 
-        public JsonKey NewClientIdFor(User user) {
+        public ShortString NewClientIdFor(User user) {
             while (true) { 
                 var clientId = NewId();
                 var client = new UserClient(user.userId);
@@ -48,7 +48,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
             }
         }
         
-        public bool UseClientIdFor(User user, in JsonKey clientId) {
+        public bool UseClientIdFor(User user, in ShortString clientId) {
             if (clients.TryGetValue(clientId, out UserClient client )) {
                 return client.userId.IsEqual(user.userId);
             }
@@ -73,15 +73,15 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
     public sealed class IncrementClientController : ClientController {
         private long clientIdSequence;
 
-        protected override JsonKey NewId() {
+        protected override ShortString NewId() {
             var id = Interlocked.Increment(ref clientIdSequence);
-            return new JsonKey(id);
+            return new ShortString(id.ToString());
         }
     }
     
     public sealed class GuidClientController : ClientController {
-        protected override JsonKey NewId() {
-            return new JsonKey(Guid.NewGuid());
+        protected override ShortString NewId() {
+            return new ShortString(Guid.NewGuid().ToString());
         }
     }
 }

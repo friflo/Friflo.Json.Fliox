@@ -93,7 +93,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Monitor
 
                 var userClients = user.clients;
                 if (userHits.clients == null) {
-                    userHits.clients = new List<JsonKey>(userClients.Count);
+                    userHits.clients = new List<ShortString>(userClients.Count);
                 } else {
                     userHits.clients.Clear();
                 }
@@ -119,7 +119,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Monitor
         }
         
         internal void UpdateHost(HostStats hostStats) {
-            var hostNameKey = new JsonKey(hostName);
+            var hostNameKey = new ShortString(hostName);
             if (!hosts.Local.TryGetEntity(hostNameKey, out var hostHits)) {
                 hostHits = new HostHits { id = hostNameKey };
             }

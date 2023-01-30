@@ -71,8 +71,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         internal            int                         syncCount;
         internal            Timer                       ackTimer;
         internal            bool                        ackTimerPending;
-        internal            JsonKey                     userId;
-        internal            JsonKey                     clientId;
+        internal            ShortString                 userId;
+        internal            ShortString                 clientId;
         internal            string                      token;
         
         internal            InstanceBuffer<SyncStore>   syncStoreBuffer;
@@ -149,8 +149,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             syncCount                   = 0;
             ackTimer                    = null;
             ackTimerPending             = false;
-            userId                      = new JsonKey();
-            clientId                    = new JsonKey();
+            userId                      = new ShortString();
+            clientId                    = new ShortString();
             token                       = null;
             
             syncStoreBuffer             = default;
@@ -184,8 +184,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         
         internal void Reset () {
             hub.RemoveEventReceiver(clientId);
-            userId          = new JsonKey();
-            clientId        = new JsonKey();
+            userId          = new ShortString();
+            clientId        = new ShortString();
             token           = null;
             lastEventSeq    = 0;
             syncCount       = 0;

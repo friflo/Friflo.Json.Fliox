@@ -18,11 +18,11 @@ namespace Friflo.Json.Fliox.Hub.Host.Event.Collector
         internal readonly   int                 start;
         /// <summary>item count in either <see cref="TaskBuffer.values"/> or <see cref="TaskBuffer.keys"/></summary>
         internal readonly   int                 count;
-        internal readonly   JsonKey             user;
+        internal readonly   ShortString         user;
 
         public   override   string              ToString() => $"{taskType} '{containerChanges.name.AsString()}' count: {count}";
 
-        internal ChangeTask(ContainerChanges containerChanges, TaskType taskType, int start, int count, in JsonKey user) {
+        internal ChangeTask(ContainerChanges containerChanges, TaskType taskType, int start, int count, in ShortString user) {
             this.containerChanges   = containerChanges;
             this.taskType           = taskType;
             this.start              = start;

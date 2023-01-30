@@ -19,19 +19,19 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         internal readonly   object                                  monitor;
         /// key: <see cref="EventSubClient.clientId"/>
         [DebuggerBrowsable(Never)]
-        internal readonly   Dictionary<JsonKey, EventSubClient>     subClients;
+        internal readonly   Dictionary<ShortString, EventSubClient> subClients;
         // ReSharper disable once UnusedMember.Local - expose Dictionary as list in Debugger
         private             ICollection<EventSubClient>             SubClients  => subClients.Values;
         
         /// <summary> Subset of <see cref="subClients"/> eligible for sending events. Either they
         /// are <see cref="EventSubClient.Connected"/> or they <see cref="EventSubClient.queueEvents"/> </summary> 
         [DebuggerBrowsable(Never)]
-        internal readonly   Dictionary<JsonKey, EventSubClient>     sendClientsMap;
+        internal readonly   Dictionary<ShortString, EventSubClient> sendClientsMap;
         /// key: database name
         internal readonly   DatabaseSubsMap                         databaseSubsMap;
         //
         [DebuggerBrowsable(Never)]
-        internal readonly   Dictionary<JsonKey, EventSubUser>           subUsers;
+        internal readonly   Dictionary<ShortString, EventSubUser>       subUsers;
         // ReSharper disable once UnusedMember.Local - expose Dictionary as list in Debugger
         private             ICollection<EventSubUser>                   SubUsers    => subUsers.Values;
         
@@ -42,9 +42,9 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         internal EventDispatcherIntern(EventDispatcher dispatcher) {
             eventDispatcher         = dispatcher;
             monitor                 = new object();
-            subClients              = new Dictionary<JsonKey, EventSubClient>   (JsonKey.Equality);
-            sendClientsMap          = new Dictionary<JsonKey, EventSubClient>   (JsonKey.Equality);
-            subUsers                = new Dictionary<JsonKey, EventSubUser>     (JsonKey.Equality);
+            subClients              = new Dictionary<ShortString, EventSubClient>   (ShortString.Equality);
+            sendClientsMap          = new Dictionary<ShortString, EventSubClient>   (ShortString.Equality);
+            subUsers                = new Dictionary<ShortString, EventSubUser>     (ShortString.Equality);
             databaseSubsMap         = new DatabaseSubsMap(null);
             databaseSubsBuffer      = new Dictionary<ShortString, List<ClientDbSubs>>(ShortString.Equality); 
             uniqueDatabaseSubsBuffer= new Dictionary<DatabaseSubs, DatabaseSubs>(DatabaseSubs.Equality);
@@ -53,7 +53,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         /// <summary> requires lock <see cref="monitor"/> </summary>
         internal void SubscribeChanges (
             in ShortString database,    SubscribeChanges subscribe,     User        user,
-            in JsonKey clientId,        EventReceiver    eventReceiver)
+            in ShortString clientId,    EventReceiver    eventReceiver)
         {
             EventSubClient subClient;
             if (subscribe.changes.Count == 0) {
@@ -75,7 +75,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         }
         
         /// <summary> requires lock <see cref="monitor"/> </summary> 
-        internal EventSubClient GetOrCreateSubClient(User user, in JsonKey clientId, EventReceiver eventReceiver) {
+        internal EventSubClient GetOrCreateSubClient(User user, in ShortString clientId, EventReceiver eventReceiver) {
             subClients.TryGetValue(clientId, out EventSubClient subClient);
             if (subClient != null) {
                 // add to sendClientsMap as the client could have been removed meanwhile caused by a disconnect
@@ -115,7 +115,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         /// <summary> requires lock <see cref="monitor"/> </summary>
         internal void SubscribeMessage(
             in ShortString database,    SubscribeMessage subscribe,     User user,
-            in JsonKey clientId,        EventReceiver    eventReceiver)
+            in ShortString clientId,    EventReceiver    eventReceiver)
         {
             EventSubClient subClient;
             var remove = subscribe.remove;

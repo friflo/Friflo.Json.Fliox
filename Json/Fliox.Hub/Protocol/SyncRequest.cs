@@ -25,7 +25,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol
         /// are use for user authentication.
         /// </summary>
         [Serialize                                ("user")]
-                    public  JsonKey                 userId;
+                    public  ShortString             userId;
                     public  string                  token;
         /// <summary>
         /// <see cref="eventAck"/> is used to ensure (change) events are delivered reliable.

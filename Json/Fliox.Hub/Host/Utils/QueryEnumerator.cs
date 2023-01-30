@@ -12,7 +12,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Utils
         private     bool            detached;
         private     EntityContainer container;
         /// Ensure a stored cursor can be accessed only by the user created this cursor
-        public      JsonKey         UserId  { get; private set; }
+        public      ShortString     UserId  { get; private set; }
         public      string          Cursor  { get; private set; }
 
         public abstract bool MoveNext();
@@ -42,7 +42,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Utils
             detached = false;
         }
         
-        public void Detach(string cursor, EntityContainer container, in JsonKey userId) {
+        public void Detach(string cursor, EntityContainer container, in ShortString userId) {
             detached        = true;
             Cursor          = cursor;
             UserId          = userId;

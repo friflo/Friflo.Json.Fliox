@@ -62,8 +62,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             // --- client1 receive all events
             var clientId    = "client-1";
             var userId      = "user-1";
-            var clientKey   = new JsonKey(clientId);   // test interface using a JsonKey
-            var userKey     = new JsonKey(userId);     // test interface using a JsonKey
+            var clientKey   = new ShortString(clientId);   // test interface using a JsonKey
+            var userKey     = new ShortString(userId);     // test interface using a JsonKey
 
             // --- single target
             client.SendMessage("msg-1").EventTargetUser(userId);

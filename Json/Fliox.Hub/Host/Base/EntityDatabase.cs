@@ -54,7 +54,7 @@ namespace Friflo.Json.Fliox.Hub.Host
     #region - members
         /// <summary>database name</summary>
         public   readonly   string              name;                   // not null
-        /// <summary>database name encoded as type <see cref="JsonKey"/></summary>
+        /// <summary>database name encoded as type <see cref="ShortString"/></summary>
         public   readonly   ShortString         nameShort;              // not null
         public   override   string              ToString()  => name;    // not null
         

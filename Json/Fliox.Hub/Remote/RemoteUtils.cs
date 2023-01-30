@@ -14,7 +14,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
     public struct RemoteEventMessage
     {
         /** map to <see cref="ProtocolEvent"/> discriminator */ public  string          msg;
-        /** map to <see cref="ProtocolEvent.dstClientId"/> */   public  JsonKey         clt;
+        /** map to <see cref="ProtocolEvent.dstClientId"/> */   public  ShortString     clt;
         /** map to <see cref="EventMessage.seq"/> */            public  int             seq;
         /** map to <see cref="EventMessage.events"/> */         public  List<JsonValue> ev;
     }
@@ -22,9 +22,9 @@ namespace Friflo.Json.Fliox.Hub.Remote
     /// <summary> Reflect the shape of a <see cref="SyncEvent"/> </summary>
     public struct RemoteSyncEvent
     {
-        /** map to <see cref="SyncEvent.usr"/> */               public  JsonKey         usr;
+        /** map to <see cref="SyncEvent.usr"/> */               public  ShortString     usr;
         /** map to <see cref="SyncEvent.db"/> */                public  ShortString     db;
-        /** map to <see cref="SyncEvent.clt"/> */               public  JsonKey         clt;
+        /** map to <see cref="SyncEvent.clt"/> */               public  ShortString     clt;
         /** map to <see cref="SyncEvent.tasks"/> */             public  List<JsonValue> tasks;
     }
     
@@ -51,7 +51,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         /// </summary>
         public static JsonValue CreateEventMessage (
             List<JsonValue>     syncEvents,
-            in JsonKey          dstClientId,
+            in ShortString      dstClientId,
             int                 seq,
             ObjectWriter        writer)
         {
@@ -142,7 +142,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                             continue;
                         }
                         if (parser.key.IsEqual(clt)) {
-                            result.dstClientId  = new JsonKey(parser.value.AsString()); // cache client id string
+                            result.dstClientId  = new ShortString(ref parser.value, default);
                             return result;
                         }
                         continue;
@@ -152,8 +152,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                             return result;
                         }
                         if (parser.key.IsEqual(clt)) {
-                            var id = parser.ValueAsLong(out _);
-                            result.dstClientId  = new JsonKey(id);
+                            result.dstClientId  = new ShortString(ref parser.value, default);
                             return result;
                         }
                         continue;
@@ -184,7 +183,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
     internal struct MessageHead
     {
         internal    MessageType type;
-        internal    JsonKey     dstClientId;
+        internal    ShortString dstClientId;
         internal    int?        reqId;
     } 
 }

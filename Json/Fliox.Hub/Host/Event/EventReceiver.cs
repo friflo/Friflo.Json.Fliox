@@ -15,13 +15,13 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
     public readonly struct ClientEvent
     {
         /// <summary>the <see cref="ProtocolEvent.dstClientId"/> of the <see cref="message"/></summary>
-        public  readonly    JsonKey     dstClientId;
+        public  readonly    ShortString dstClientId;
         /// <summary>serialized <see cref="EventMessage"/></summary>
         public  readonly    JsonValue   message;
 
         public  override    string      ToString() => $"client: {dstClientId}";
 
-        public ClientEvent(in JsonKey dstClientId, in JsonValue message) {
+        public ClientEvent(in ShortString dstClientId, in JsonValue message) {
             this.dstClientId    = dstClientId;
             this.message        = message;
         }

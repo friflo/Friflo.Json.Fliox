@@ -20,8 +20,8 @@ namespace Gen.Friflo.Json.Fliox.Hub.Protocol
             bool success;
             switch (field.genIndex) {
                 case Gen_reqId:    obj.reqId    = reader.ReadInt32Null (field, out success);  return success;
-                case Gen_clientId: obj.clientId = reader.ReadJsonKey   (field, obj.clientId, out success);  return success;
-                case Gen_userId:   obj.userId   = reader.ReadJsonKey   (field, obj.userId,   out success);  return success;
+                case Gen_clientId: obj.clientId = reader.ReadShortString (field, obj.clientId, out success);  return success;
+                case Gen_userId:   obj.userId   = reader.ReadShortString (field, obj.userId,   out success);  return success;
                 case Gen_token:    obj.token    = reader.ReadString    (field, obj.token,    out success);  return success;
                 case Gen_eventAck: obj.eventAck = reader.ReadInt32Null (field, out success);  return success;
                 case Gen_tasks:    obj.tasks    = reader.ReadClass     (field, obj.tasks,    out success);  return success;
@@ -33,8 +33,8 @@ namespace Gen.Friflo.Json.Fliox.Hub.Protocol
 
         private static void Write(ref SyncRequest obj, PropField[] fields, ref Writer writer, ref bool firstMember) {
             writer.WriteInt32Null (fields[Gen_reqId],    obj.reqId,    ref firstMember);
-            writer.WriteJsonKey   (fields[Gen_clientId], obj.clientId, ref firstMember);
-            writer.WriteJsonKey   (fields[Gen_userId],   obj.userId,   ref firstMember);
+            writer.WriteShortString (fields[Gen_clientId], obj.clientId, ref firstMember);
+            writer.WriteShortString (fields[Gen_userId],   obj.userId,   ref firstMember);
             writer.WriteString    (fields[Gen_token],    obj.token,    ref firstMember);
             writer.WriteInt32Null (fields[Gen_eventAck], obj.eventAck, ref firstMember);
             writer.WriteClass     (fields[Gen_tasks],    obj.tasks,    ref firstMember);

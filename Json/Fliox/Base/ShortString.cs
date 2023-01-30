@@ -47,7 +47,7 @@ namespace Friflo.Json.Fliox
         internal    readonly    long        lng2; // higher 7 bytes for UTF-8 string + 1 byte length / NULL
         
         public                  bool        IsNull()    => lng2 == ShortStringUtils.IsNull;
-        public      override    string      ToString()  => GetString(); 
+        public      override    string      ToString()  => GetString();
 
         public static readonly  ShortStringEqualityComparer Equality    = new ShortStringEqualityComparer();
         public static readonly  ShortStringComparer         Comparer    = new ShortStringComparer();
@@ -71,9 +71,37 @@ namespace Friflo.Json.Fliox
         
         public ShortString (in JsonKey jsonKey)
         {
-            str     = jsonKey.keyObj == JsonKey.STRING_SHORT ? null : (string)jsonKey.keyObj;
-            lng     = jsonKey.lng;
-            lng2    = jsonKey.lng2;
+            var obj = jsonKey.keyObj;
+            if (obj == null) {
+                this = default;
+                return;
+            }
+            if (obj == JsonKey.STRING_SHORT) {
+                str     = null;
+                lng     = jsonKey.lng;
+                lng2    = jsonKey.lng2;
+                return;
+            }
+            if (obj == JsonKey.LONG) {
+                // TODO optimize avoid string creation
+                var longStr = jsonKey.lng.ToString();
+                StringToLongLong(longStr, out str, out lng, out lng2);
+                return;
+            }
+            if (obj == JsonKey.GUID) {
+                // TODO optimize avoid string creation
+                var guid    = GuidUtils.LongLongToGuid(jsonKey.lng, jsonKey.lng2);
+                var guidStr = guid.ToString();
+                StringToLongLong(guidStr, out str, out lng, out lng2);
+                return;
+            }
+            if (obj is string value) {
+                str     = value;
+                lng     = 0;
+                lng2    = IsString;
+                return;
+            }
+            throw new InvalidOperationException("unhanded case");
         }
         
         internal static string GetString(in Bytes bytes, string oldKey, out long lng, out long lng2) {

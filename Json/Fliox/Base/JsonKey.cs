@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Text;
 using Friflo.Json.Burst;
 using Friflo.Json.Burst.Utils;
@@ -60,11 +61,13 @@ namespace Friflo.Json.Fliox
         public JsonKey (string value)
         {
             if (value == null) {
-                keyObj  = null;
-                lng     = 0;
-                lng2    = 0;
+                this = default;
                 return;
             }
+            FormString(value, out keyObj, out lng, out lng2);
+        }
+        
+        private static void FormString(string value, out object keyObj, out long lng, out long lng2) {
             if (long.TryParse(value, out long result)) {
                 keyObj  = LONG;
                 lng     = result;
@@ -103,6 +106,29 @@ namespace Friflo.Json.Fliox
                 keyObj  = ShortString.GetString(bytes, (string)oldKey.keyObj, out lng, out lng2);
             }
         }
+        
+        public JsonKey (in ShortString value) {
+            if (value.IsNull()) {
+                this = default;
+                return;
+            }
+            if (value.str != null) {
+                FormString(value.str, out keyObj, out lng, out lng2);
+                return;
+            }
+            Span<char> chars = stackalloc char[ShortString.MaxCharCount];
+            ShortStringUtils.GetChars(value.lng, value.lng2, chars);
+            int len             = ShortStringUtils.GetLength(value.lng2);
+            var readOnlySpan    = chars.Slice(0, len);
+            if (long.TryParse(readOnlySpan, NumberStyles.Float, NumberFormatInfo.InvariantInfo, out lng)) {
+                keyObj  = LONG;
+                lng2    = 0;
+                return;
+            }
+            keyObj  = STRING_SHORT;
+            lng     = value.lng;
+            lng2    = value.lng2;
+        }
 
         public JsonKey (long value) {
             keyObj  = LONG;
@@ -133,11 +159,10 @@ namespace Friflo.Json.Fliox
         }
         
         private static JsonKeyType GetKeyType(object obj) {
-            var thisObj = obj;
-            if (thisObj == null)            return JsonKeyType.NULL;
-            if (thisObj == LONG)            return JsonKeyType.LONG;
-            if (thisObj == STRING_SHORT)    return JsonKeyType.STRING;
-            if (thisObj == GUID)            return JsonKeyType.GUID;
+            if (obj == null)            return JsonKeyType.NULL;
+            if (obj == LONG)            return JsonKeyType.LONG;
+            if (obj == STRING_SHORT)    return JsonKeyType.STRING;
+            if (obj == GUID)            return JsonKeyType.GUID;
             return JsonKeyType.STRING;
         }
 
@@ -233,8 +258,12 @@ namespace Friflo.Json.Fliox
             throw new InvalidOperationException($"cannot return JsonKey as long. {AsString()}");
         }
         
-        public Guid AsGuid() => Guid;
-        
+        public Guid AsGuid() {
+            if (keyObj == GUID)
+                return Guid;
+            throw new InvalidOperationException($"cannot return JsonKey as Guid. {AsString()}");
+        }
+
         public Guid? AsGuidNullable() {
             return keyObj == GUID ? Guid : default; 
         }

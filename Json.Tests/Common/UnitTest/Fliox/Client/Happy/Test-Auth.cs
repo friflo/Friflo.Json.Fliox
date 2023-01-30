@@ -243,8 +243,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         
         private static async Task AssertUserStore(UserStore store, string user) {
             var allCredentials  = store.credentials.QueryAll();
-            var createTask      = store.credentials.Create(new UserCredential{ id= new JsonKey("create-id") });
-            var upsertTask      = store.credentials.Upsert(new UserCredential{ id= new JsonKey("upsert-id") });
+            var createTask      = store.credentials.Create(new UserCredential{ id= new ShortString("create-id") });
+            var upsertTask      = store.credentials.Upsert(new UserCredential{ id= new ShortString("upsert-id") });
             await store.TrySyncTasks();
             
             AreEqual($"PermissionDenied ~ not authorized. user: '{user}'", allCredentials.Error.Message);
@@ -253,7 +253,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         }
         
         private static async Task AssertServerStore(UserStore store) {
-            var credTask        = store.credentials.Read().Find(new JsonKey("test-operation"));
+            var credTask        = store.credentials.Read().Find(new ShortString("test-operation"));
             await store.TrySyncTasks();
             
             var cred = credTask.Result;
@@ -261,7 +261,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         }
         
         private static async Task AssertAuthUserStore(UserStore store) {
-            var credTask        = store.credentials.Read().Find(new JsonKey("test-operation"));
+            var credTask        = store.credentials.Read().Find(new ShortString("test-operation"));
             await store.TrySyncTasks();
             
             AreEqual("PermissionDenied ~ not authorized. user: 'AuthenticationUser'", credTask.Error.Message);

@@ -255,30 +255,21 @@ namespace Friflo.Json.Burst.Utils
             return result;
         } */
 
-        private static bool ParseDoubleInternal(ref Bytes bytes, out double result) {
-#if UNITY_5_3_OR_NEWER
-            String val = bytes.ToString();
-            return double.TryParse(val, NumberStyles.Float, NumberFormatInfo.InvariantInfo, out result);
-#else
-            var len             = bytes.Len;
+        private static bool TryParseDouble(in Bytes bytes, out double result) {
+            var len             = bytes.end - bytes.start;
             Span<char> charBuf  = stackalloc char[len];
-            if (len > charBuf.Length) {
-                result = default;
-                return false;
-            }
-            byte[] arr  = bytes.buffer;
-            int pos     = bytes.start;
+            byte[] arr          = bytes.buffer;
+            int pos             = bytes.start;
             for (int n = 0; n < len; n++)
                 charBuf[n] = (char)arr[pos + n];
-            var span = charBuf.Slice(0 , len);
+            var span = charBuf.Slice(0, len);
             return double.TryParse(span, NumberStyles.Float, NumberFormatInfo.InvariantInfo, out result);
-#endif
         }
 
         public static double ParseDoubleStd(ref Bytes bytes, ref Bytes valueError, out bool success) {
             valueError.Clear();
             success = true;
-            if (ParseDoubleInternal(ref bytes, out double result)) {
+            if (TryParseDouble(bytes, out double result)) {
                 if (double.IsInfinity(result) || double.IsNegativeInfinity(result)) {
                     SetErrorFalse("double value out of range. val: ", ref bytes, ref valueError);
                     success = false;
@@ -291,30 +282,21 @@ namespace Friflo.Json.Burst.Utils
             return 0;
         }
 
-        private static bool ParseFloatInternal(ref Bytes bytes, out float result) {
-#if UNITY_5_3_OR_NEWER
-            String val = bytes.ToString();
-            return float.TryParse(val, NumberStyles.Float, NumberFormatInfo.InvariantInfo, out result);
-#else
-            int len             = bytes.Len;
+        private static bool TryParseFloat(in Bytes bytes, out float result) {
+            int len             = bytes.end - bytes.start;
             Span<char> charBuf  = stackalloc char[len];
-            if (len > charBuf.Length) {
-                result = default;
-                return false;
-            }
-            byte[] arr = bytes.buffer;
-            int pos = bytes.start;
+            byte[] arr          = bytes.buffer;
+            int pos             = bytes.start;
             for (int n = 0; n < len; n++)
                 charBuf[n] = (char)arr[pos + n];
             var span = charBuf.Slice(0 , len);
             return float.TryParse(span, NumberStyles.Float, NumberFormatInfo.InvariantInfo, out result);
-#endif
         }
 
         public static float ParseFloatStd(ref Bytes bytes, ref Bytes valueError, out bool success) {
             valueError.Clear();
             success = true;
-            if (ParseFloatInternal(ref bytes, out float result)) {
+            if (TryParseFloat(bytes, out float result)) {
                 if (float.IsInfinity(result) || float.IsNegativeInfinity(result)) {
                     SetErrorFalse ("float value out of range. val: ", ref bytes, ref valueError);
                     success = false;

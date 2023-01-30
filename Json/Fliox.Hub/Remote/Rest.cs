@@ -519,9 +519,9 @@ namespace Friflo.Json.Fliox.Hub.Remote
             var syncRequest = new SyncRequest {
                 database    = database,
                 tasks       = tasks,
-                userId      = new JsonKey(userId),
+                userId      = new ShortString(userId),
                 token       = token,
-                clientId    = new JsonKey(clientId) 
+                clientId    = new ShortString(clientId) 
             };
             var hub         = context.hub;
             syncContext     = new SyncContext(hub.sharedEnv, null, context.memoryBuffer); // new context per request

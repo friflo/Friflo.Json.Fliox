@@ -31,7 +31,7 @@ namespace Friflo.Json.Fliox.Hub.Host
     {
         // --- public
         public              FlioxHub                    Hub             => hub;
-        public              JsonKey                     ClientId        => clientId;
+        public              ShortString                 ClientId        => clientId;
         public              User                        User            => authState.user;
         public              bool                        Authenticated   => authState.authenticated;
         public              EntityDatabase              Database        => database;                // not null
@@ -56,7 +56,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         [Browse(Never)] internal            AuthState           authState;
         [Browse(Never)] internal            Action              canceler = () => {};
         [Browse(Never)] internal            FlioxHub            hub;
-        [Browse(Never)] internal            JsonKey             clientId;
+        [Browse(Never)] internal            ShortString         clientId;
         [Browse(Never)] internal            EntityDatabase      database;           // not null
         [Browse(Never)] internal            ClientIdValidation  clientIdValidation;
         [Browse(Never)] internal            SyncRequest         request;
@@ -125,7 +125,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             authState.hubPermission     = hubPermission;
         }
         
-        public void SetClientId(in JsonKey clientId) {
+        public void SetClientId(in ShortString clientId) {
             this.clientId       = clientId;
             clientIdValidation  = ClientIdValidation.Valid;
         }

@@ -74,7 +74,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol
         /// to enable sending <see cref="SyncEvent"/>'s to the desired subscriber.
         /// </summary>
         [Serialize                        ("clt")]
-                        public  JsonKey     clientId;
+                        public  ShortString clientId;
     }
     
     // ----------------------------------- response -----------------------------------
@@ -104,7 +104,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol
         /// <see cref="SyncEvent"/> target. 
         /// </remarks>
         [Serialize                        ("clt")]
-                        public  JsonKey     clientId;
+                        public  ShortString clientId;
     }
     
     // ----------------------------------- event -----------------------------------

@@ -127,7 +127,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         [Browse(Never)]
         public string UserId {
             get => _intern.userId.AsString();
-            set => _intern.userId = new JsonKey(value);
+            set => _intern.userId = new ShortString(value);
         }
         
         /// <summary><see cref="Token"/> - used to authenticate the <see cref="UserId"/> at the Hub</summary>
@@ -141,10 +141,10 @@ namespace Friflo.Json.Fliox.Hub.Client
         [Browse(Never)]
         public string ClientId {
             get => _intern.clientId.AsString();
-            set => SetClientId(new JsonKey(value));
+            set => SetClientId(new ShortString(value));
         }
         
-        private void SetClientId(in JsonKey newClientId) {
+        private void SetClientId(in ShortString newClientId) {
             if (newClientId.IsEqual(_intern.clientId))
                 return;
             if (!_intern.clientId.IsNull()) {
