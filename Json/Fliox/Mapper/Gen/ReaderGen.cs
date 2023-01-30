@@ -175,7 +175,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
             if (parser.Event != JsonEvent.ValueString)
                 return HandleEventGen<JsonKey>(field.fieldType, out success);
             success = true;
-            return new JsonKey(ref parser.value, ref parser.valueParser, value);
+            return new JsonKey(ref parser.value, value);
         }
         
         // --- ShortString

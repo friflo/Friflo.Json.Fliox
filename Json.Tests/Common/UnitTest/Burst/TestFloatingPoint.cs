@@ -19,7 +19,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
             public bool         success;
             public Bytes        parseError;
             public Bytes        bytes = new Bytes(32);
-            public ValueParser  parser;
 
             public void Dispose() {
                 bytes.Dispose();
@@ -57,7 +56,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
             using  (var parseDblCx = new ParseDblCx())
             {
                 var parseCx = parseDblCx;
-                parseCx.parser.InitValueParser();
                 AreEqual(     0.0,        ParseDbl(           "0",      ref parseCx)); 
                 AreEqual(   1234567890.0, ParseDbl(  "1234567890",      ref parseCx));
                 AreEqual(   123.0       , ParseDbl(         "123",      ref parseCx)); 
@@ -101,7 +99,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
         double ParseDbl(String value, ref ParseDblCx parseCx) {
             parseCx.bytes.Clear();
             parseCx.bytes.AppendStringUtf8(value);
-            return parseCx.parser.ParseDouble(ref parseCx.bytes, ref parseCx.parseError, out parseCx.success);
+            return ValueParser.ParseDouble(ref parseCx.bytes, ref parseCx.parseError, out parseCx.success);
         }
         
         bool isDouble;
@@ -231,14 +229,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
         public void TestParseDoubleFast()
         {
             Bytes valueError = new Bytes();
-            ValueParser parser = new ValueParser();
-            parser.InitValueParser();
             double sum = 0;
             Bytes bytes = new Bytes (testFloat);
             for (int n = 0; n < num3; n++) {
-                sum += parser.ParseDouble(ref bytes, ref valueError, out _);
+                sum += ValueParser.ParseDouble(ref bytes, ref valueError, out _);
             }
-            parser.Dispose();
             TestContext.Out.WriteLine($"TestParseDoubleFast: {sum}");
         }
     }

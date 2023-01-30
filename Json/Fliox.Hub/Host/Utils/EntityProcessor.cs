@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using Friflo.Json.Burst;
+using Friflo.Json.Burst.Utils;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Mapper;
 
@@ -107,13 +108,13 @@ namespace Friflo.Json.Fliox.Hub.Host.Utils
                             break;
                         foundKey = true;
                         if (ev == JsonEvent.ValueNumber && !parser.isFloat) {
-                            parser.valueParser.ParseLong(ref parser.value, ref sb, out bool success);
+                            ValueParser.ParseLong(ref parser.value, ref sb, out bool success);
                             if (!success) {
                                 error = "invalid integer key: " + sb.AsString();
                                 return false;
                             }
                         }
-                        keyValue = new JsonKey(ref parser.value, ref parser.valueParser, default);
+                        keyValue = new JsonKey(ref parser.value, default);
                         switch (processingType) {
                             case ProcessingType.Validate:
                                 continue;

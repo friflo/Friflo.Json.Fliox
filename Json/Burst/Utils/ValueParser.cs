@@ -3,49 +3,12 @@
 using System;
 using System.Globalization;
 
-#if JSON_BURST
-    using Str32 = Unity.Collections.FixedString32;
-    using Str128 = Unity.Collections.FixedString128;
-#else
-    using Str32 = System.String;
-    using Str128 = System.String;
-#endif
-
 namespace Friflo.Json.Burst.Utils
 {
-#if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
-#endif
-    public struct ValueParser : IDisposable
+    public static class ValueParser
     {
-        private     Str32   @true;
-        private     Str32   @false;
-        private     Str32   _1;
-        private     Str32   _0;
-        private     bool    initialized;
-#if !UNITY_5_3_OR_NEWER
-        private     char[]  charBuf;
-#endif
-
-
-        public void InitValueParser() {
-            if (initialized)
-                return;
-            initialized = true;
-            @true =     "true";
-            @false =    "false";
-            _1 =        "1";
-            _0 =        "0";
-#if !UNITY_5_3_OR_NEWER
-            // at least a minimum of MaxGuidLength (68)
-            charBuf = new char[128];
-#endif
-        }
-        
-        public void Dispose() {
-        }
-        
-        private static void SetErrorFalse (in Str128 msg, ref Bytes value, ref Bytes dst) {
+        private static void SetErrorFalse (string msg, ref Bytes value, ref Bytes dst) {
             if (dst.IsCreated()) {
                 dst.Clear();
                 dst.AppendStr128(in msg);
@@ -53,7 +16,7 @@ namespace Friflo.Json.Burst.Utils
             }
         }
         
-        public int ParseInt(ref Bytes bytes, ref Bytes valueError, out bool success) {
+        public static int ParseInt(ref Bytes bytes, ref Bytes valueError, out bool success) {
             success = false;
             valueError.Clear();
             int val         = 0;
@@ -96,7 +59,7 @@ namespace Friflo.Json.Burst.Utils
             return positive ? -val : val;
         }
 
-        public long ParseLong(ref Bytes bytes, ref Bytes valueError, out bool success) {
+        public static long ParseLong(ref Bytes bytes, ref Bytes valueError, out bool success) {
             success = false;
             valueError.Clear();
             long val        = 0;
@@ -139,7 +102,7 @@ namespace Friflo.Json.Burst.Utils
             return positive ? -val : val;
         }
 
-        public double ParseDouble(ref Bytes bytes, ref Bytes valueError, out bool success)
+        public static double ParseDouble(ref Bytes bytes, ref Bytes valueError, out bool success)
         {
             valueError.Clear();
             success         = false;
@@ -266,7 +229,7 @@ namespace Friflo.Json.Burst.Utils
             return negative ? -d : d;
         }
         
-        private readonly static double[] PowTable = CreatePowTable ();
+        private static readonly double[] PowTable = CreatePowTable ();
 
         private static double[] CreatePowTable ()
         {
@@ -291,39 +254,28 @@ namespace Friflo.Json.Burst.Utils
             }
             return result;
         } */
-    
-        public bool ParseBoolean(ref Bytes bytes, ref Bytes valueError, out bool success) {
-            success = true;
-            valueError.Clear();
-            if (bytes.IsEqual32(in @true)   || bytes.IsEqual32(in _1))
-                return true;
-            if (bytes.IsEqual32(in @false)  || bytes.IsEqual32(in _0))
-                return false;
-            success = false;
-            SetErrorFalse("Invalid boolean. Expected true/false but found: ", ref bytes, ref valueError);
-            return false;
-        }
-        
-        private bool ParseDoubleInternal(ref Bytes bytes, out double result) {
+
+        private static bool ParseDoubleInternal(ref Bytes bytes, out double result) {
 #if UNITY_5_3_OR_NEWER
             String val = bytes.ToString();
             return double.TryParse(val, NumberStyles.Float, NumberFormatInfo.InvariantInfo, out result);
 #else
-            var len = bytes.Len;
+            var len             = bytes.Len;
+            Span<char> charBuf  = stackalloc char[len];
             if (len > charBuf.Length) {
                 result = default;
                 return false;
             }
-            byte[] arr = bytes.buffer;
-            int pos = bytes.start;
+            byte[] arr  = bytes.buffer;
+            int pos     = bytes.start;
             for (int n = 0; n < len; n++)
                 charBuf[n] = (char)arr[pos + n];
-            ReadOnlySpan<char> span = new ReadOnlySpan<char> (charBuf, 0 , len);
+            var span = charBuf.Slice(0 , len);
             return double.TryParse(span, NumberStyles.Float, NumberFormatInfo.InvariantInfo, out result);
 #endif
         }
 
-        public double ParseDoubleStd(ref Bytes bytes, ref Bytes valueError, out bool success) {
+        public static double ParseDoubleStd(ref Bytes bytes, ref Bytes valueError, out bool success) {
             valueError.Clear();
             success = true;
             if (ParseDoubleInternal(ref bytes, out double result)) {
@@ -339,12 +291,13 @@ namespace Friflo.Json.Burst.Utils
             return 0;
         }
 
-        private bool ParseFloatInternal(ref Bytes bytes, out float result) {
+        private static bool ParseFloatInternal(ref Bytes bytes, out float result) {
 #if UNITY_5_3_OR_NEWER
             String val = bytes.ToString();
             return float.TryParse(val, NumberStyles.Float, NumberFormatInfo.InvariantInfo, out result);
 #else
-            int len = bytes.Len;
+            int len             = bytes.Len;
+            Span<char> charBuf  = stackalloc char[len];
             if (len > charBuf.Length) {
                 result = default;
                 return false;
@@ -353,12 +306,12 @@ namespace Friflo.Json.Burst.Utils
             int pos = bytes.start;
             for (int n = 0; n < len; n++)
                 charBuf[n] = (char)arr[pos + n];
-            ReadOnlySpan<char> span = new ReadOnlySpan<char> (charBuf, 0 , len);
+            var span = charBuf.Slice(0 , len);
             return float.TryParse(span, NumberStyles.Float, NumberFormatInfo.InvariantInfo, out result);
 #endif
         }
 
-        public float ParseFloatStd(ref Bytes bytes, ref Bytes valueError, out bool success) {
+        public static float ParseFloatStd(ref Bytes bytes, ref Bytes valueError, out bool success) {
             valueError.Clear();
             success = true;
             if (ParseFloatInternal(ref bytes, out float result)) {

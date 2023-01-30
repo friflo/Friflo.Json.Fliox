@@ -1,6 +1,8 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using Friflo.Json.Burst.Utils;
+
 namespace Friflo.Json.Fliox.Mapper.Map.Key
 {
     internal sealed class ShortKeyMapper : KeyMapper<short>
@@ -13,7 +15,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Key
         
         public override short ReadKey (ref Reader reader, out bool success) {
             ref var parser = ref reader.parser;
-            return (short)parser.valueParser.ParseInt(ref parser.key, ref parser.errVal, out success);
+            return (short)ValueParser.ParseInt(ref parser.key, ref parser.errVal, out success);
         }
         
         public override JsonKey     ToJsonKey      (in short key) {
