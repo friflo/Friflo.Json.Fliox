@@ -17,7 +17,7 @@
     }
   ],
   "info": [
-    "query articles with filter: o.name == 'Smartphone'",
+    "query articles with filter: o => o.name == 'Smartphone'",
 
     "the expressions 'filter' and 'filterTree' are equal",
     " 'filter':     infix notation  - easy to read by humans",

@@ -22,7 +22,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         /// <summary>subscribe to entity <see cref="changes"/> of the given <see cref="container"/></summary>
         [Required]  public      List<EntityChange>  changes;
         /// <summary>subscription filter as a <a href="https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/operators/lambda-expressions">Lambda expression</a> (infix notation)
-        /// returning a boolean value. E.g. <c>o.name == 'Smartphone'</c></summary>
+        /// returning a boolean value. E.g. <c>o => o.name == 'Smartphone'</c></summary>
                     public      string              filter;
         
         public   override       TaskType            TaskType  => TaskType.subscribeChanges;

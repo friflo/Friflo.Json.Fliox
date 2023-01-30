@@ -9,6 +9,6 @@
     }
   ],
   "info": [
-    "count articles with filter: o.name == 'Smartphone'"
+    "count articles with filter: o => o.name == 'Smartphone'"
   ]
 }
