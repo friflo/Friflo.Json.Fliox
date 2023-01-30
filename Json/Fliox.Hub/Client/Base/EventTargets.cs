@@ -18,7 +18,7 @@ namespace Friflo.Json.Fliox.Hub.Client
     {
         internal    List<ShortString>   users;
         internal    List<ShortString>   clients;
-        internal    List<string>        groups;
+        internal    List<ShortString>   groups;
         
         // --- user
         public void AddUser(string user) {
@@ -75,14 +75,22 @@ namespace Friflo.Json.Fliox.Hub.Client
         // --- group
         public void AddGroup(string group) {
             if (groups == null) {
-                groups = new List<string> { group };
+                groups = new List<ShortString> { new ShortString(group) };
                 return;
             }
-            groups.Add(group);
+            groups.Add(new ShortString(group));
         }
         
+        // --- groups
         public void AddGroups(ICollection<string> groups) {
-            if (this.groups == null) this.groups = new List<string>(groups.Count);
+            if (this.groups == null) this.groups = new List<ShortString>(groups.Count);
+            foreach (var group in groups) {
+                this.groups.Add(new ShortString(group));
+            }
+        }
+        
+        public void AddGroups(ICollection<ShortString> groups) {
+            if (this.groups == null) this.groups = new List<ShortString>(groups.Count);
             this.groups.AddRange(groups);
         }
     }

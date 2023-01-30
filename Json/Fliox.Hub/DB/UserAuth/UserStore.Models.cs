@@ -52,11 +52,11 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
     /// </summary>
     public sealed class UserTarget {
         /// <summary>user id</summary>
-        [Required]  public  ShortString     id;
+        [Required]  public  ShortString         id;
         /// <summary>list of <see cref="groups"/> assigned to a user</summary>
-        [Required]  public  List<string>    groups;
+        [Required]  public  List<ShortString>   groups;
                         
-        public override     string          ToString() => JsonSerializer.Serialize(this);
+        public override     string              ToString() => JsonSerializer.Serialize(this);
     }
     
     // ---------------------------- command models - aka DTO's ---------------------------

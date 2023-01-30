@@ -283,7 +283,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
             var read        = store.targets.Read().Find(user.userId);
             await store.SyncTasks().ConfigureAwait(false);
             
-            var userTarget      = read.Result ?? new UserTarget { id = user.userId, groups = new List<string>() };
+            var userTarget      = read.Result ?? new UserTarget { id = user.userId, groups = new List<ShortString>() };
             var groups          = User.UpdateGroups(userTarget.groups, param);
             userTarget.groups   = groups.ToList();
             store.targets.Upsert(userTarget);
@@ -373,11 +373,11 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
 
     internal sealed class UserAuthInfo
     {
-        internal readonly   TaskAuthorizer  taskAuthorizer;
-        internal readonly   HubPermission   hubPermission;
-        internal readonly   List<string>    groups;
+        internal readonly   TaskAuthorizer      taskAuthorizer;
+        internal readonly   HubPermission       hubPermission;
+        internal readonly   List<ShortString>   groups;
         
-        internal UserAuthInfo(IList<TaskAuthorizer> authorizers, IList<HubPermission> hubPermissions, List<string> groups) {
+        internal UserAuthInfo(IList<TaskAuthorizer> authorizers, IList<HubPermission> hubPermissions, List<ShortString> groups) {
             var taskAuthorizers = new List<TaskAuthorizer>();
             foreach (var authorizer in authorizers) {
                 switch (authorizer) {

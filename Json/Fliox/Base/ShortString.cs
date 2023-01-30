@@ -17,14 +17,16 @@ namespace Friflo.Json.Fliox
     /// A struct optimized to store strings with the focus on minimizing memory allocations<br/>
     /// In contrast to <see cref="JsonKey"/> it supports to check strings with <see cref="StartsWith"/><br/>
     /// <br/>
-    /// It is intended to be used for <i>stable and descriptive names</i> like database, container, message and command names.<br/>
+    /// It is intended to be used for <i>stable and descriptive names</i> like:
+    /// database, container, message, command, user, client and group names.<br/>
     /// <see cref="StartsWith"/> is optimized to enable filtering names by using a prefix - e.g. <c>"std.*"</c>
     /// used for authorization and subscriptions filters.
     /// </summary>
     /// <remarks>
-    /// The main optimization goal is to avoid allocations for the types mentioned above.<br/>
-    /// Strings with length less than 15 characters are stored inside the struct to avoid heap allocations.<br/>
+    /// The main optimization goal is to avoid string allocations.<br/>
+    /// Strings with length less than 16 characters are stored inside the struct to avoid heap allocations.<br/>
     /// A <see cref="ShortString"/> can also represents a <c>null</c> value. It can be tested using <see cref="IsNull"/>.<br/>
+    /// Size of <see cref="ShortString"/> is 24 bytes<br/>
     /// </remarks>
     /// <seealso cref="JsonKey"/>
     public readonly struct ShortString

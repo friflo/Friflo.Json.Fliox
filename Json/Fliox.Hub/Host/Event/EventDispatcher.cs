@@ -192,7 +192,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             }
         }
         
-        internal void UpdateSubUserGroups(in ShortString userId, IReadOnlyCollection<String> groups) {
+        internal void UpdateSubUserGroups(in ShortString userId, IReadOnlyCollection<ShortString> groups) {
             EventSubUser subUser;
             lock (intern.monitor) {
                 if (!intern.subUsers.TryGetValue(userId, out subUser))

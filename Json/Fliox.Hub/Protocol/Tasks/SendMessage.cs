@@ -28,7 +28,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         /// <summary>if set the Hub forward the message as an event only to given <see cref="clients"/></summary>
                     public  List<ShortString>   clients;
         /// <summary>if set the Hub forward the message as an event only to given <see cref="groups"/></summary>
-                    public  List<string>        groups;
+                    public  List<ShortString>   groups;
         
         [Ignore]   internal MessageDelegate     callback;
         

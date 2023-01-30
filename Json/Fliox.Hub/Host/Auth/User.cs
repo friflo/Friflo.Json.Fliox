@@ -33,7 +33,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
         internal readonly   ConcurrentDictionary<ShortString, Empty>    clients;        // key: clientId
         /// <b>Note</b> requires lock when accessing. Did not use ConcurrentDictionary to avoid heap allocation
         internal readonly   Dictionary<ShortString, RequestCount>       requestCounts;  // key: database
-        private             HashSet<string>                             groups;         // can be null
+        private             HashSet<ShortString>                        groups;         // can be null
         
         public static readonly  ShortString   AnonymousId = new ShortString("anonymous");
 
@@ -45,22 +45,22 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
             this.token          = token;
         }
         
-        public  IReadOnlyCollection<string> GetGroups() {
+        public  IReadOnlyCollection<ShortString> GetGroups() {
             if (groups != null)
                 return groups;
-            return Array.Empty<string>();
+            return Array.Empty<ShortString>();
         }
         
-        internal void SetGroups(IReadOnlyCollection<string> groups) {
-            this.groups = groups?.ToHashSet();
+        internal void SetGroups(IReadOnlyCollection<ShortString> groups) {
+            this.groups = groups?.ToHashSet(ShortString.Equality);
         }
         
         public void SetUserOptions(UserParam param) {
             groups = UpdateGroups(groups, param);
         }
         
-        public static HashSet<string> UpdateGroups(ICollection<string> groups, UserParam param) {
-            var result = groups != null ? new HashSet<string>(groups) : new HashSet<string>();
+        public static HashSet<ShortString> UpdateGroups(ICollection<ShortString> groups, UserParam param) {
+            var result = groups != null ? new HashSet<ShortString>(groups, ShortString.Equality) : new HashSet<ShortString>(ShortString.Equality);
             var addGroups = param.addGroups;
             if (addGroups != null) {
                 result.UnionWith(addGroups);
