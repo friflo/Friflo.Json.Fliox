@@ -4,10 +4,12 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Runtime.CompilerServices;
 using System.Text;
 using Friflo.Json.Burst;
 using Friflo.Json.Burst.Utils;
 using Friflo.Json.Fliox.Mapper;
+using static System.Runtime.CompilerServices.MethodImplOptions;
 using Browse = System.Diagnostics.DebuggerBrowsableAttribute;
 
 // ReSharper disable InconsistentNaming
@@ -45,8 +47,10 @@ namespace Friflo.Json.Fliox
         internal    readonly    long    lng;  // long  |  lower  64 bits for Guid  | lower  8 bytes for UTF-8 string
         internal    readonly    long    lng2; //          higher 64 bits for Guid  | higher 7 bytes for UTF-8 string + 1 byte length
         
-        public                  bool    IsNull()    => keyObj == null;
-        internal                Guid    Guid        => GuidUtils.LongLongToGuid(lng, lng2);
+                                         internal   Guid    Guid            => GuidUtils.LongLongToGuid(lng, lng2);
+        [MethodImpl(AggressiveInlining)] public     bool    IsNull()        => keyObj == null;
+        [MethodImpl(AggressiveInlining)] internal   int     GetShortLength()=> (int)(lng2 >> ShortStringUtils.ShiftLength) - 1;
+        
         public      override    string  ToString()  => GetString(); 
 
         public static readonly  JsonKeyComparer         Comparer    = new JsonKeyComparer();
@@ -120,7 +124,7 @@ namespace Friflo.Json.Fliox
             }
             Span<char> chars = stackalloc char[ShortString.MaxCharCount];
             ShortStringUtils.GetChars(value.lng, value.lng2, chars);
-            int len             = ShortStringUtils.GetLength(value.lng2);
+            int len             = value.GetShortLength();
             var readOnlySpan    = chars.Slice(0, len);
             if (long.TryParse(readOnlySpan, NumberStyles.Float, NumberFormatInfo.InvariantInfo, out lng)) {
                 keyObj  = LONG;

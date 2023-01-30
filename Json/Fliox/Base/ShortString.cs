@@ -2,12 +2,14 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
+using System.Runtime.CompilerServices;
 using System.Text;
 using Friflo.Json.Burst;
 using Friflo.Json.Burst.Utils;
 using Friflo.Json.Fliox.Mapper;
 using static Friflo.Json.Burst.Utils.ShortStringUtils;
 using static System.StringComparison;
+using static System.Runtime.CompilerServices.MethodImplOptions;
 using Browse = System.Diagnostics.DebuggerBrowsableAttribute;
 
 // ReSharper disable once CheckNamespace
@@ -32,11 +34,11 @@ namespace Friflo.Json.Fliox
     public readonly struct ShortString
     {
         /// <summary>is not null in case a <see cref="ShortString"/> is represented by a <see cref="string"/> instance.</summary>
-        internal    readonly    string      str;
+        internal    readonly    string  str;
         /// <summary>
         /// bytes[0..7] - lower 8 UTF-8 bytes of a short string
         /// </summary>
-        internal    readonly    long        lng;
+        internal    readonly    long    lng;
         /// <summary>
         /// bytes[0..6] - higher 7 UTF-8 bytes of a short string.<br/>
         /// byte [7]
@@ -46,10 +48,12 @@ namespace Friflo.Json.Fliox
         ///   <item>-128:       using a <see cref="string"/> instance</item>
         /// </list>
         /// </summary>
-        internal    readonly    long        lng2; // higher 7 bytes for UTF-8 string + 1 byte length / NULL
+        internal    readonly    long    lng2; // higher 7 bytes for UTF-8 string + 1 byte length / NULL
         
-        public                  bool        IsNull()    => lng2 == ShortStringUtils.IsNull;
-        public      override    string      ToString()  => GetString();
+        
+        [MethodImpl(AggressiveInlining)] public     bool    IsNull()        => lng2 == ShortStringUtils.IsNull;
+        [MethodImpl(AggressiveInlining)] internal   int     GetShortLength()=> (int)(lng2 >> ShiftLength) - 1;
+        public override                             string  ToString()      => GetString();
 
         public static readonly  ShortStringEqualityComparer Equality    = new ShortStringEqualityComparer();
         public static readonly  ShortStringComparer         Comparer    = new ShortStringComparer();
@@ -192,7 +196,7 @@ namespace Friflo.Json.Fliox
                 return leftReadOnly.StartsWith(rightReadOnly, Ordinal);
             }
             // --- case: right.str == null  =>  only right is short string
-            int rightLength = GetLength(right.lng2);
+            int rightLength = right.GetShortLength();
             if (rightLength == 0) {
                 return true;    // early out for right: ""
             }
@@ -205,7 +209,7 @@ namespace Friflo.Json.Fliox
                 return leftReadOnly.StartsWith(rightReadOnly, Ordinal);
             }
             // --- case: left and right are short strings
-            int leftLength = GetLength(lng2);
+            int leftLength = GetShortLength();
             if (rightLength > leftLength) {
                 return false;
             }

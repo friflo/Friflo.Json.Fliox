@@ -30,7 +30,7 @@ namespace Friflo.Json.Burst.Utils
         /// position of the short string length byte.
         private const   int     LengthPos   = 15;
         /// shift highest byte of lng2 7 bytes right to get byte count
-        private const   int     ShiftLength = 56;
+        public  const   int     ShiftLength = 56;
         
         
         /// <summary>
