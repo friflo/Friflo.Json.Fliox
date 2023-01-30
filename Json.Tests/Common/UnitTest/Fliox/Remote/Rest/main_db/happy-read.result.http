@@ -191,3 +191,13 @@ POST {{base}}/rest/main_db/articles/bulk-get
 }
 ]
 
+###
+POST {{base}}/rest/main_db/articles/bulk-get
+# StatusCode:   200
+# Content-Type: application/json
+
+[
+    null,
+    null
+]
+

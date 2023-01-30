@@ -41,3 +41,9 @@ POST {{base}}/rest/main_db/articles/bulk-get
 Cookie: {{auth}}
 
 ["article-1","article-2"]
+
+###
+POST {{base}}/rest/main_db/articles/bulk-get
+Cookie: {{auth}}
+
+[1,2]

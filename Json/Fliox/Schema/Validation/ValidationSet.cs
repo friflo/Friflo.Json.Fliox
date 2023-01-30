@@ -57,7 +57,7 @@ namespace Friflo.Json.Fliox.Schema.Validation
             AddStandardType(TypeId.DateTime,    standardType.DateTime);
             AddStandardType(TypeId.Guid,        standardType.Guid);
             AddStandardType(TypeId.JsonValue,   standardType.JsonValue);
-            AddStandardType(TypeId.String,      standardType.JsonKey);
+            AddStandardType(TypeId.JsonKey,     standardType.JsonKey);
             AddStandardType(TypeId.String,      standardType.ShortString);
 
             foreach (var type in schemaTypes) {
@@ -112,6 +112,8 @@ namespace Friflo.Json.Fliox.Schema.Validation
                 case TypeId.BigInteger: return new ValidationTypeDef(typeId, "BigInteger",  typeDef, false);
                 case TypeId.DateTime:   return new ValidationTypeDef(typeId, "DateTime",    typeDef, false);
                 case TypeId.Guid:       return new ValidationTypeDef(typeId, "Guid",        typeDef, false);
+                //
+                case TypeId.JsonKey:    return new ValidationTypeDef(typeId, "JsonKey",     typeDef, false);
                 // --- JSON: number, string, boolean, array & object
                 case TypeId.JsonValue:  return new ValidationTypeDef(typeId, "JSON",        typeDef);
                 default:

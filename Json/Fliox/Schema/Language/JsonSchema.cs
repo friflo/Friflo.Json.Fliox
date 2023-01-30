@@ -53,6 +53,8 @@ namespace Friflo.Json.Fliox.Schema.Language
             AddType (map, standard.BigInteger,  "\"type\": \"string\", \"pattern\": \"^-?[0-9]+$\"" ); // https://www.regextester.com/
             AddType (map, standard.DateTime,    "\"type\": \"string\", \"format\": \"date-time\", \"default\": \"2022-01-01T00:00:00.000Z\"" );
             AddType (map, standard.Guid,        "\"type\": \"string\", \"pattern\": \"^[{]?[0-9a-fA-F]{8}-([0-9a-fA-F]{4}-){3}[0-9a-fA-F]{12}[}]?$\"" );
+            AddType (map, standard.JsonKey,     "\"oneOf\": [{ \"type\": \"string\" }, { \"type\": \"integer\" }]");
+            
             return map;
         }
 
@@ -253,7 +255,7 @@ namespace Friflo.Json.Fliox.Schema.Language
                 return ""; // allow any type                
             if (type == standard.JsonEntity)
                 return ""; // allow any type                
-            if (type == standard.String || type == standard.JsonKey || type == standard.ShortString)
+            if (type == standard.String || type == standard.ShortString)
                 return $"\"type\": {Opt(required, "string")}";
             if (type == standard.Boolean)
                 return $"\"type\": {Opt(required, "boolean")}";

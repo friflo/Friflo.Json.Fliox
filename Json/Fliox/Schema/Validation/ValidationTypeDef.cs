@@ -238,6 +238,7 @@ namespace Friflo.Json.Fliox.Schema.Validation
         Guid        = 13,
         Enum        = 14,
         //
-        JsonValue   = 15
+        JsonKey     = 15,
+        JsonValue   = 16
     }
 }

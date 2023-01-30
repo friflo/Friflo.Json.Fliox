@@ -4,6 +4,7 @@ import { SyncRequestTask }       from "./Friflo.Json.Fliox.Hub.Protocol.Tasks";
 import { SyncRequestTask_Union } from "./Friflo.Json.Fliox.Hub.Protocol.Tasks";
 import { SyncTaskResult }        from "./Friflo.Json.Fliox.Hub.Protocol.Tasks";
 import { SyncTaskResult_Union }  from "./Friflo.Json.Fliox.Hub.Protocol.Tasks";
+import { JsonKey }               from "./Standard";
 import { EntityError }           from "./Friflo.Json.Fliox.Hub.Protocol.Models";
 
 /** **ProtocolMessage** is the base type for all messages which are classified into request, response and event. */
@@ -134,7 +135,7 @@ export class ContainerEntities {
      */
     set       : any[];
     /** list of entities not found by **ReadEntities** tasks */
-    notFound? : string[] | null;
+    notFound? : JsonKey[] | null;
     /** list of entity errors read from **container** */
     errors?   : EntityError[] | null;
 }

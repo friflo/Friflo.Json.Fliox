@@ -15,16 +15,17 @@ using Browse = System.Diagnostics.DebuggerBrowsableAttribute;
 namespace Friflo.Json.Fliox
 {
     /// <summary>
-    /// A struct optimized to store strings representing integers, strings or GUID's<br/>
-    /// E.g. <c>"12345", "article" or "550e8400-e29b-11d4-a716-446655440000"</c><br/>
-    /// It is intended to be used for <i>arbitrary</i> identifiers like entity, user or client id's.<br/>
+    /// A struct optimized to store integers, strings or GUID's internally used for entity identifiers.<br/>
+    /// E.g. <c>123, "123", "article" or "550e8400-e29b-11d4-a716-446655440000"</c><br/>
+    /// Encoding of integers can numbers e.g. <c>123</c> or strings e.g. <c>"123"</c><br/>
+    /// <see cref="JsonKey"/> is used within the library for processing <i>arbitrary</i> entity identifiers.<br/>
     /// </summary>
     /// <remarks>
     /// The optimization goals are:<br/>
     /// - avoid heap allocations for the types mentioned above.<br/>
     /// - providing a performant lookup when used as key in a <see cref="Dictionary{TKey,TValue}"/> or <see cref="HashSet{T}"/><br/>
     /// <br/>
-    /// Integers and GUID's are stored inside the struct. Strings with length less than 15 characters are also
+    /// Integers and GUID's are stored inside the struct. Strings with length less than 16 characters are also
     /// stored inside the struct to avoid heap allocations.<br/>
     /// A <see cref="JsonKey"/> can also represents a <c>null</c> value. It can be tested using <see cref="IsNull"/>.<br/>
     /// </remarks>

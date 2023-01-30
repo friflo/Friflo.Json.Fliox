@@ -34,13 +34,6 @@ Cookie: {{auth}}
 POST {{base}}/rest/main_db/articles/invalidOperation
 Cookie: {{auth}}
 
-
-###
-POST {{base}}/rest/main_db/articles/bulk-get
-Cookie: {{auth}}
-
-[1,2]
-
 ###
 GET {{base}}/rest/main_db/articles/article-1/invalid
 Cookie: {{auth}}

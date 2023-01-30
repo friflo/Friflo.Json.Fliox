@@ -13,7 +13,7 @@ var exampleSync: ProtocolMessage_Union =
         {
             "task": "read",
             "cont": "Article",            
-            "ids": ["article-galaxy", "article-ipad"]            
+            "ids": ["article-galaxy", "article-ipad", 1, 2]
         },
         {
             "task": "read",
@@ -62,7 +62,7 @@ var exampleSync: ProtocolMessage_Union =
         {
             "task": "delete",
             "cont": "Article",
-            "ids": ["new-article"]
+            "ids": ["new-article", 1, 2]
         },
         {
             "task": "merge",
@@ -85,6 +85,27 @@ var exampleSync: ProtocolMessage_Union =
             "changes": ["create", "upsert", "delete", "merge"]
         }
     ]
+}
+
+var exampleResponse: ProtocolMessage_Union =
+{
+    msg: "resp",
+    tasks: [
+        {
+            "task": "query",
+            "cont": "orders",
+            "ids": ["new-article", 1, 2]
+        }
+    ],
+    "containers" : [
+        {
+            "cont": "order",
+            "set": [
+                { "id": "new-article", "name":"New Article S10" }
+            ]
+        }
+    ]
+
 }
 
 export function testSync() {

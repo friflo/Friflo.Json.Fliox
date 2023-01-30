@@ -252,8 +252,10 @@ $@"        <tr>
                 return "<predef>any</predef>"; // known as Mr anti-any  :) 
             if (type == standard.JsonEntity)
                 return "<predef>any</predef>"; 
-            if (type == standard.String || type == standard.JsonKey || type == standard.ShortString)
+            if (type == standard.String || type == standard.ShortString)
                 return "<predef>string</predef>";
+            if (type == standard.JsonKey)
+                return "<predef>(string | integer)</predef>";
             if (type == standard.Boolean)
                 return "<predef>boolean</predef>";
             context.imports.Add(type);

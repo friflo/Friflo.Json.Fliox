@@ -31,9 +31,9 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
         public override void Write(ref Writer writer, JsonKey value) {
             var obj = value.keyObj;
             if (obj == JsonKey.LONG) {
-                writer.bytes.AppendChar('\"');
+                // writer.bytes.AppendChar('\"');
                 writer.format.AppendLong(ref writer.bytes, value.lng);
-                writer.bytes.AppendChar('\"');
+                // writer.bytes.AppendChar('\"');
                 return;
             }
             if (obj is string) {
@@ -58,6 +58,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
                     success = true;
                     return new JsonKey();
                 case JsonEvent.ValueString:
+                case JsonEvent.ValueNumber:
                     success = true;
                     return new JsonKey(ref parser.value, value);
                 default:

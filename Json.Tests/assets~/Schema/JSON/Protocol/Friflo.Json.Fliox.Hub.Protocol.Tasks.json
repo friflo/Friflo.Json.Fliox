@@ -75,7 +75,7 @@
                 "cont":       { "type": "string", "description": "container name" },
                 "keyName":    { "type": ["string", "null"], "description": "name of the primary key property of the returned entities" },
                 "isIntKey":   { "type": ["boolean", "null"] },
-                "ids":        { "type": "array", "items": { "type": "string" }, "description": "list of requested entity <b>ids</b>" },
+                "ids":        { "type": "array", "items": { "$ref": "./Standard.json#/definitions/JsonKey" }, "description": "list of requested entity <b>ids</b>" },
                 "references": { "type": ["array", "null"], "items": { "$ref": "./Friflo.Json.Fliox.Hub.Protocol.Models.json#/definitions/References" }, "description": "used to request the entities referenced by properties of a read task result" }
             },
             "required": [
@@ -162,7 +162,7 @@
                 "task": { "enum": ["delete"] },
                 "info": {  },
                 "cont": { "type": "string", "description": "container name" },
-                "ids":  { "type": ["array", "null"], "items": { "type": "string" }, "description": "list of <b>ids</b> requested for deletion" },
+                "ids":  { "type": ["array", "null"], "items": { "$ref": "./Standard.json#/definitions/JsonKey" }, "description": "list of <b>ids</b> requested for deletion" },
                 "all":  { "type": ["boolean", "null"], "description": "if true all entities in the specified <b>container</b> are deleted" }
             },
             "required": [
@@ -383,7 +383,7 @@
                 "cont":       { "type": ["string", "null"], "description": "container name - not utilized by Protocol" },
                 "cursor":     { "type": ["string", "null"] },
                 "count":      { "oneOf": [{ "$ref": "./Standard.json#/definitions/int32" }, {"type": "null"}], "description": "number of <b>ids</b> - not utilized by Protocol" },
-                "ids":        { "type": "array", "items": { "type": "string" } },
+                "ids":        { "type": "array", "items": { "$ref": "./Standard.json#/definitions/JsonKey" } },
                 "references": { "type": ["array", "null"], "items": { "$ref": "./Friflo.Json.Fliox.Hub.Protocol.Models.json#/definitions/ReferencesResult" } }
             },
             "required": [

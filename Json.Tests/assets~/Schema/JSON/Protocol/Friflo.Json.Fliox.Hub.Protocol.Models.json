@@ -22,7 +22,7 @@
             "type": "object",
             "description": "Used by <b>SyncResponse</b> to return errors when mutating an entity by: create, upsert, patch and delete",
             "properties": {
-                "id":      { "type": "string", "description": "entity id" },
+                "id":      { "$ref": "./Standard.json#/definitions/JsonKey", "description": "entity id" },
                 "type":    { "$ref": "#/definitions/EntityErrorType", "description": "error type when accessing an entity in a database" },
                 "message": { "type": ["string", "null"], "description": "error details when accessing an entity" }
             },
@@ -56,7 +56,7 @@
                 "error":      { "type": ["string", "null"] },
                 "cont":       { "type": ["string", "null"], "description": "container name - not utilized by Protocol" },
                 "count":      { "oneOf": [{ "$ref": "./Standard.json#/definitions/int32" }, {"type": "null"}], "description": "number of <b>ids</b> - not utilized by Protocol" },
-                "ids":        { "type": "array", "items": { "type": "string" } },
+                "ids":        { "type": "array", "items": { "$ref": "./Standard.json#/definitions/JsonKey" } },
                 "references": { "type": ["array", "null"], "items": { "$ref": "#/definitions/ReferencesResult" } }
             },
             "required": [

@@ -38,7 +38,7 @@ namespace Friflo.Json.Fliox.Schema.JSON
             DateTime    = Find(types, "./Standard.json#/definitions/DateTime");
             Guid        = Find(types, "./Standard.json#/definitions/Guid");
             JsonValue   = new JsonTypeDef("{ }",    buffer);
-            JsonKey     = new JsonTypeDef("string", buffer);
+            JsonKey     = Find(types, "./Standard.json#/definitions/JsonKey");
             ShortString = new JsonTypeDef("string", buffer);
             JsonEntity  = new JsonTypeDef("{ }",    buffer);
         }

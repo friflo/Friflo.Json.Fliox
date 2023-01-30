@@ -10,9 +10,9 @@ namespace Friflo.Json.Fliox.Mapper.Map.Key
         public override void WriteKey (ref Writer writer, in JsonKey key) {
             var obj = key.keyObj;
             if (obj == JsonKey.LONG) {
-                writer.bytes.AppendChar('\"');
+                // writer.bytes.AppendChar('\"');
                 writer.format.AppendLong(ref writer.bytes, key.lng);
-                writer.bytes.AppendChar('\"');
+                // writer.bytes.AppendChar('\"');
                 return;
             }
             if (obj is string) {

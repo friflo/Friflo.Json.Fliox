@@ -58,13 +58,6 @@ POST {{base}}/rest/main_db/articles/invalidOperation
 post failed > invalid container operation: invalidOperation
 
 ###
-POST {{base}}/rest/main_db/articles/bulk-get
-# StatusCode:   400
-# Content-Type: text/plain
-
-invalid id list > JsonReader/error: Expect string as JsonKey. ValueNumber path: '[0]' at position: 2
-
-###
 GET {{base}}/rest/main_db/articles/article-1/invalid
 # StatusCode:   400
 # Content-Type: text/plain

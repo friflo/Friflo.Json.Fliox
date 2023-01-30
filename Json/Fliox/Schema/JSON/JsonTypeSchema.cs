@@ -85,17 +85,21 @@ namespace Friflo.Json.Fliox.Schema.JSON
                         typeDef.messages = CreateMessages(type.messages, false, context);
                     }
                     if (oneOf != null) {
-                        var unionTypes = new List<UnionItem>(oneOf.Count);
-                        foreach (var item in oneOf) {
-                            var itemRef             = FindRef(item.reference, context);
-                            var discriminantMember  = itemRef.type.properties[type.discriminator];
-                            var discriminant        = discriminantMember.discriminant[0];
-                            var unionItem           = new UnionItem(itemRef, discriminant, Utf8Buffer);
-                            unionTypes.Add(unionItem);
+                        // Check is required to support standard.JsonKey in JsonSchemaGenerator at:
+                        // AddType (map, standard.JsonKey,     "\"oneOf\": [{ \"type\": \"string\" }, { \"type\": \"integer\" }]");
+                        if (type.discriminator != null) {
+                            var unionTypes = new List<UnionItem>(oneOf.Count);
+                            foreach (var item in oneOf) {
+                                var itemRef             = FindRef(item.reference, context);
+                                var discriminantMember  = itemRef.type.properties[type.discriminator];
+                                var discriminant        = discriminantMember.discriminant[0];
+                                var unionItem           = new UnionItem(itemRef, discriminant, Utf8Buffer);
+                                unionTypes.Add(unionItem);
+                            }
+                            typeDef.isAbstract  = true;
+                            var discField       = type.properties[type.discriminator];
+                            typeDef.unionType   = new UnionType (type.discriminator, discField.description, unionTypes, Utf8Buffer);
                         }
-                        typeDef.isAbstract  = true;
-                        var discField       = type.properties[type.discriminator];
-                        typeDef.unionType   = new UnionType (type.discriminator, discField.description, unionTypes, Utf8Buffer);
                     }
                 }
                 foreach (JSONSchema schema in schemaList) {
