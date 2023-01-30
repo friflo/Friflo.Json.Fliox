@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Friflo.Json.Burst;
 using Friflo.Json.Burst.Utils;
 using Friflo.Json.Fliox;
@@ -296,8 +297,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Base
             return list;
         }
         
-        private const int ValueCount        = 1000;
-        private const int EqualsIterations  = 1; // 1_000_000;
+        // ----------------------------------------- pref tests -----------------------------------------
+        private const int ValueCount        = 10_000;
+        private const int EqualsIterations  = 1; // 100_000;
         
         [Test]
         public static void TestShortString_StringEquals () {
@@ -341,6 +343,32 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Base
             for (int n = 0; n < StartsWithIterations; n++) {
                 for (int i = 0; i < ValueCount; i++) {
                     var _ = values[i].StartsWith(foo2);
+                }
+            }
+        }
+        
+        private const int LookupIterations  = 1; // 10_000;
+        
+        [Test]
+        public static void TestShortString_Lookup () {
+            var values   = CreateStrings(ValueCount);
+            var map     = values.ToDictionary(k => new ShortString(k), v => 0, ShortString.Equality);
+            var key     = new ShortString("12");
+            for (int n = 0; n < LookupIterations; n++) {
+                for (int i = 0; i < ValueCount; i++) {
+                    var _ = map[key];
+                }
+            }
+        }
+        
+        [Test]
+        public static void TestShortString_LookupReference () {
+            var values  = CreateStrings(ValueCount);
+            var map     = values.ToDictionary(k => k, v => 0);
+            var key     = "12";
+            for (int n = 0; n < LookupIterations; n++) {
+                for (int i = 0; i < ValueCount; i++) {
+                    var _ = map[key];
                 }
             }
         }
