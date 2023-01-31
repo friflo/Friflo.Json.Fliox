@@ -461,7 +461,7 @@ namespace Friflo.Json.Burst
             if (end + len > buffer.Length) {
                 DoubleSize(end + len);
             }
-            Span<byte> bytes    = stackalloc byte[16];
+            Span<byte> bytes  = stackalloc byte[ShortStringUtils.ByteCount];
             fixed (byte*  bytesPtr  = &bytes[0]) {
                 var bytesLongPtr    = (long*)bytesPtr;
                 bytesLongPtr[0]     = lng;

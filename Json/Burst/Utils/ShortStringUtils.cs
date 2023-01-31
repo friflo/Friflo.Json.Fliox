@@ -26,7 +26,7 @@ namespace Friflo.Json.Burst.Utils
         /// Maximum number of bytes that can be stored in a short string
         public  const   int     MaxLength   = 15;
         /// number of bytes used to store a short string
-        private const   int     ByteCount   = 16;
+        public  const   int     ByteCount   = 16;
         /// position of the short string length byte.
         private const   int     LengthPos   = 15;
         /// shift highest byte of lng2 7 bytes right to get byte count
