@@ -16,7 +16,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
         /// <summary>user id</summary>
         [Required]  public  ShortString     id;
         /// <summary>user token</summary>
-                    public  string          token;
+                    public  ShortString     token;
                         
         public override     string          ToString() => JsonSerializer.Serialize(this);
     }
@@ -63,7 +63,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
     /// <summary>user <see cref="Credentials"/> used for authentication</summary>
     public sealed class Credentials {
         [Required]  public  ShortString     userId;
-        [Required]  public  string          token;
+        [Required]  public  ShortString     token;
 
         public override     string          ToString() => $"userId: {userId}";
     }

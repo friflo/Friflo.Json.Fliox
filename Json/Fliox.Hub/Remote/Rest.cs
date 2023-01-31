@@ -520,8 +520,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 database    = database,
                 tasks       = tasks,
                 userId      = new ShortString(userId),
-                token       = token,
-                clientId    = new ShortString(clientId) 
+                token       = new ShortString(token),
+                clientId    = new ShortString(clientId)
             };
             var hub         = context.hub;
             syncContext     = new SyncContext(hub.sharedEnv, null, context.memoryBuffer); // new context per request

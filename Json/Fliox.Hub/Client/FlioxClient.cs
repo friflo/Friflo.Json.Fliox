@@ -133,8 +133,8 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// <summary><see cref="Token"/> - used to authenticate the <see cref="UserId"/> at the Hub</summary>
         [Browse(Never)]
         public string Token {
-            get => _intern.token;
-            set => _intern.token   = value;
+            get => _intern.token.AsString();
+            set => _intern.token = new ShortString(value);
         }
 
         /// <summary>client id - identifies the client at a Hub</summary>

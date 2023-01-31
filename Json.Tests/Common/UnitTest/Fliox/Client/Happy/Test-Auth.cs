@@ -257,7 +257,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             await store.TrySyncTasks();
             
             var cred = credTask.Result;
-            AreEqual("test-operation-token", cred.token);
+            AreEqual("test-operation-token", cred.token.AsString());
         }
         
         private static async Task AssertAuthUserStore(UserStore store) {

@@ -23,7 +23,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
     public sealed class User {
         // --- public
         public   readonly   ShortString     userId;
-        public   readonly   string          token;
+        public   readonly   ShortString     token;
         internal            TaskAuthorizer  taskAuthorizer  = TaskAuthorizer.None;  // not null
         internal            HubPermission   hubPermission   = HubPermission.None;   // not null
 
@@ -38,7 +38,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
         public static readonly  ShortString   AnonymousId = new ShortString("anonymous");
 
 
-        internal User (in ShortString userId, string token) {
+        internal User (in ShortString userId, in ShortString token) {
             clients             = new ConcurrentDictionary<ShortString, Empty>(ShortString.Equality);
             requestCounts       = new Dictionary<ShortString, RequestCount>   (ShortString.Equality);
             this.userId         = userId;

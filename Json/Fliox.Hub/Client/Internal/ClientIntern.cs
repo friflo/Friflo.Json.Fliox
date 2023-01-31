@@ -73,7 +73,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         internal            bool                        ackTimerPending;
         internal            ShortString                 userId;
         internal            ShortString                 clientId;
-        internal            string                      token;
+        internal            ShortString                 token;
         
         internal            InstanceBuffer<SyncStore>   syncStoreBuffer;
         internal            InstanceBuffer<SyncRequest> syncRequestBuffer;
@@ -149,9 +149,9 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             syncCount                   = 0;
             ackTimer                    = null;
             ackTimerPending             = false;
-            userId                      = new ShortString();
-            clientId                    = new ShortString();
-            token                       = null;
+            userId                      = default;
+            clientId                    = default;
+            token                       = default;
             
             syncStoreBuffer             = default;
             syncRequestBuffer           = default;
@@ -184,9 +184,9 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         
         internal void Reset () {
             hub.RemoveEventReceiver(clientId);
-            userId          = new ShortString();
-            clientId        = new ShortString();
-            token           = null;
+            userId          = default;
+            clientId        = default;
+            token           = default;
             lastEventSeq    = 0;
             syncCount       = 0;
             subscriptionsPrefix?.Clear();   // todo should assert if having open subscriptions 

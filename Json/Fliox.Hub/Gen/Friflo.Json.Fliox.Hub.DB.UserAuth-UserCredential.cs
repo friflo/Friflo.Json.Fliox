@@ -14,14 +14,14 @@ namespace Gen.Friflo.Json.Fliox.Hub.DB.UserAuth
             bool success;
             switch (field.genIndex) {
                 case Gen_id:    obj.id    = reader.ReadShortString (field, obj.id,    out success);  return success;
-                case Gen_token: obj.token = reader.ReadString (field, obj.token, out success);  return success;
+                case Gen_token: obj.token = reader.ReadShortString (field, obj.token, out success);  return success;
             }
             return false;
         }
 
         private static void Write(ref UserCredential obj, PropField[] fields, ref Writer writer, ref bool firstMember) {
             writer.WriteShortString (fields[Gen_id],    obj.id,    ref firstMember);
-            writer.WriteString (fields[Gen_token], obj.token, ref firstMember);
+            writer.WriteShortString (fields[Gen_token], obj.token, ref firstMember);
         }
     }
 }

@@ -26,7 +26,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol
         /// </summary>
         [Serialize                                ("user")]
                     public  ShortString             userId;
-                    public  string                  token;
+                    public  ShortString             token;
         /// <summary>
         /// <see cref="eventAck"/> is used to ensure (change) events are delivered reliable.
         /// A client set <see cref="eventAck"/> to the last received <see cref="EventMessage.seq"/> in case

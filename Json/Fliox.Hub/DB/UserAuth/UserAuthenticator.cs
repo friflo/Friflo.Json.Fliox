@@ -19,9 +19,9 @@ using Friflo.Json.Fliox.Schema.Native;
 namespace Friflo.Json.Fliox.Hub.DB.UserAuth
 {
     internal sealed class AuthCred {
-        internal readonly   string          token;
+        internal readonly   ShortString     token;
         
-        internal AuthCred (string token) {
+        internal AuthCred (in ShortString token) {
             this.token  = token;
         }
     }
@@ -155,13 +155,13 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
                 type = PreAuthType.MissingUserId;
                 return true;
             }
-            if (syncRequest.token == null) {
+            if (syncRequest.token.IsNull()) {
                 user = null;
                 type = PreAuthType.MissingToken;
                 return true;
             }
             if (users.TryGetValue(syncRequest.userId, out user)) {
-                if (user.token != syncRequest.token) {
+                if (!user.token.IsEqual(syncRequest.token)) {
                     type = PreAuthType.Failed;
                     return false;
                 }
@@ -226,7 +226,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
                     users.TryAdd(userId, user);
                 }
                 
-                if (user == null || token != user.token) {
+                if (user == null || !token.IsEqual(user.token)) {
                     syncContext.AuthenticationFailed(anonymousUser, InvalidUserToken, AnonymousTaskAuthorizer, AnonymousHubPermission);
                     return;
                 }

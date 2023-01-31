@@ -35,7 +35,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
                 }
 
                 UserCredential  cred    = findCred.Result;
-                bool            isValid = cred != null && cred.token == authenticate.token;
+                bool            isValid = cred != null && cred.token.IsEqual(authenticate.token);
                 return new AuthResult { isValid = isValid };
             }
         }
