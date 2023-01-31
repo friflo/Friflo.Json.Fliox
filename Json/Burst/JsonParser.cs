@@ -586,13 +586,14 @@ namespace Friflo.Json.Burst
 
         private int ReadWhiteSpace()
         {
+            var buffer  = buf.buffer;   // use local for performance
             // using locals improved performance
             while (true) {
                 int p       = pos;
                 int end     = bufEnd;
                 for (; p < end;)
                 {
-                    int c = buf.buffer[p++];
+                    int c = buffer[p++];
                     if (c > ' ') {
                         pos = p;
                         return c;
@@ -616,12 +617,13 @@ namespace Friflo.Json.Burst
         {
             value.Clear();
             value.AppendChar((char)firstChar);
-            isFloat = false;
+            isFloat     = false;
+            var buffer  = buf.buffer;   // use local for performance
             
             while (true) {
                 for (; pos < bufEnd; pos++)
                 {
-                    int c = buf.buffer[pos];
+                    int c = buffer[pos];
                     switch (c)
                     {
                         case '0':   case '1':   case '2':   case '3':   case '4':
@@ -656,6 +658,7 @@ namespace Friflo.Json.Burst
         private bool ReadString(ref Bytes token)
         {
             token.Clear();
+            var buffer  = buf.buffer;  // use local for performance
             while (true)
             {
                 // using locals improved performance
@@ -664,7 +667,7 @@ namespace Friflo.Json.Burst
                 
                 for (; p < end; p++)
                 {
-                    int c = buf.buffer[p];
+                    int c = buffer[p];
                     if (c == '\"')
                     {
                         pos = p + 1;
@@ -682,7 +685,7 @@ namespace Friflo.Json.Burst
                             p   = pos;
                             end = bufEnd;
                         }
-                        c = buf.buffer[p];
+                        c = buffer[p];
                         switch (c)
                         {
                         case '"':   token.AppendChar('"');  break;
@@ -717,26 +720,27 @@ namespace Friflo.Json.Burst
     
         private bool ReadUnicode (ref Bytes token)
         {
+            var buffer = buf.buffer; // use local for performance
             if (pos >= bufEnd) {
                 if (!Read())
                     return SetErrorFalse("Expect 4 hex digits after '\\u' in value");
             }
-            int d1 = Digit2Int(buf.buffer[pos++]);
+            int d1 = Digit2Int(buffer[pos++]);
             if (pos >= bufEnd) {
                 if (!Read())
                     return SetErrorFalse("Expect 4 hex digits after '\\u' in value");
             }
-            int d2 = Digit2Int(buf.buffer[pos++]);
+            int d2 = Digit2Int(buffer[pos++]);
             if (pos >= bufEnd) {
                 if (!Read())
                     return SetErrorFalse("Expect 4 hex digits after '\\u' in value");
             }
-            int d3 = Digit2Int(buf.buffer[pos++]);
+            int d3 = Digit2Int(buffer[pos++]);
             if (pos >= bufEnd) {
                 if (!Read())
                     return SetErrorFalse("Expect 4 hex digits after '\\u' in value");
             }
-            int d4 = Digit2Int(buf.buffer[pos++]);
+            int d4 = Digit2Int(buffer[pos++]);
 
             if (d1 == -1 || d2 == -1 || d3 == -1 || d4 == -1)
                 return SetErrorFalse("Invalid hex digits after '\\u' in value");
@@ -799,13 +803,14 @@ namespace Friflo.Json.Burst
         {
             value.Clear();
             value.AppendChar(firstChar);
-            int keyWordPos = 1;
+            int keyWordPos  = 1;
+            var buffer      = buf.buffer;   // use local for performance
             
             while (true) {
                 
                 for (; pos < bufEnd; pos++)
                 {
-                    int c = buf.buffer[pos];
+                    int c = buffer[pos];
                     value.AppendChar((char)c);
                     if (c == keyword[keyWordPos++]) {
                         if (keyWordPos != keyword.Length)
