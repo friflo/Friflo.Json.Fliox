@@ -30,7 +30,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
                 var store = pooledStore.instance;
                 store.UserId = "ReserveKeys";
                 var read            = store.sequence.Read();
-                var containerKey    = new JsonKey(container.AsString());
+                var containerKey    = new JsonKey(container);
                 var sequenceTask    = read.Find(containerKey);
                 var sync            = await store.TrySyncTasks().ConfigureAwait(false);
                 if (!sync.Success) {
@@ -39,7 +39,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
                 var sequence = sequenceTask.Result;
                 if (sequence == null) {
                     sequence = new Sequence {
-                        container   = new JsonKey(container.AsString()),
+                        container   = new JsonKey(container),
                         autoId      = count 
                     };
                 } else {
