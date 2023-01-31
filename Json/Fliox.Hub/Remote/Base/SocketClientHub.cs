@@ -15,12 +15,12 @@ using Friflo.Json.Fliox.Utils;
 namespace Friflo.Json.Fliox.Hub.Remote
 {
     /// <summary>
-    /// By default a remote client like <see cref="RemoteClientHub"/> can be used by multiple <see cref="Client.FlioxClient"/>'s.<br/>
+    /// By default a remote client like <see cref="SocketClientHub"/> can be used by multiple <see cref="Client.FlioxClient"/>'s.<br/>
     /// <br/>
     /// To minimize the size of serialized <see cref="EventMessage"/>'s sent to subscribed clients the <see cref="EventDispatcher"/>
     /// can omit sending the target client id by settings <see cref="EventDispatcher.SendTargetClientId"/> to false.<br/>
-    /// In this case all <see cref="RemoteClientHub"/>'s must be initialized with <see cref="Single"/> enabling
-    /// processing events by the single <see cref="Client.FlioxClient"/> using a <see cref="RemoteClientHub"/>. 
+    /// In this case all <see cref="SocketClientHub"/>'s must be initialized with <see cref="Single"/> enabling
+    /// processing events by the single <see cref="Client.FlioxClient"/> using a <see cref="SocketClientHub"/>. 
     /// </summary>
     public enum RemoteClientAccess
     {
@@ -30,14 +30,14 @@ namespace Friflo.Json.Fliox.Hub.Remote
         Multi
     }
     
-    public abstract class RemoteClientHub : FlioxHub
+    public abstract class SocketClientHub : FlioxHub
     {
         private  readonly   Dictionary<ShortString, EventReceiver>  eventReceivers;
         private  readonly   ObjectPool<ReaderPool>                  responseReaderPool;
         private  readonly   RemoteClientAccess                      access;
 
         // ReSharper disable once EmptyConstructor - added for source navigation
-        protected RemoteClientHub(EntityDatabase database, SharedEnv env, RemoteClientAccess access = RemoteClientAccess.Multi)
+        protected SocketClientHub(EntityDatabase database, SharedEnv env, RemoteClientAccess access = RemoteClientAccess.Multi)
             : base(database, env)
         {
             eventReceivers      = new Dictionary<ShortString, EventReceiver>(ShortString.Equality);
@@ -45,7 +45,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             this.access         = access;     
         }
 
-        /// <summary>A class extending  <see cref="RemoteClientHub"/> must implement this method.</summary>
+        /// <summary>A class extending  <see cref="SocketClientHub"/> must implement this method.</summary>
         public abstract override Task<ExecuteSyncResult> ExecuteRequestAsync(SyncRequest syncRequest, SyncContext syncContext);
         
         public override void AddEventReceiver(in ShortString clientId, EventReceiver eventReceiver) {

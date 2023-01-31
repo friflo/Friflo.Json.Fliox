@@ -30,7 +30,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
     /// <summary>
     /// A <see cref="FlioxHub"/> accessed remotely  using a <see cref="WebSocket"/> connection
     /// </summary>
-    public sealed class WebSocketClientHub : RemoteClientHub
+    public sealed class WebSocketClientHub : SocketClientHub
     {
         private  readonly   string                      endpoint;
         private  readonly   Uri                         endpointUri;

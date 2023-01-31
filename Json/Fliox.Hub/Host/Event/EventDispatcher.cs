@@ -57,7 +57,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         /// If true the target client id is set in <see cref="EventMessage"/>'s sent to clients<br/>
         /// By sending the client id multiple <see cref="FlioxClient"/>'s can use a single <see cref="WebSocketClientHub"/>
         /// to receive events.<br/>
-        /// If false remote clients like <see cref="RemoteClientHub"/> must be initialized with <see cref="RemoteClientAccess.Single"/>
+        /// If false remote clients like <see cref="SocketClientHub"/> must be initialized with <see cref="RemoteClientAccess.Single"/>
         /// </summary>
         public              bool                                SendTargetClientId      { get; set; } = true;
         internal readonly   SharedEnv                           sharedEnv;

@@ -34,7 +34,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol
     ///     2. multiplexing of messages from different clients, servers or peers in a shared connection.<br/>
     ///     This also means all <see cref="Fliox"/> messages doesnt (and must not) require a session.<br/>
     ///     This principle also enables using a single <see cref="FlioxHub"/> by multiple clients like
-    ///     <see cref="Client.FlioxClient"/> even for remote clients like <see cref="RemoteClientHub"/>.
+    ///     <see cref="Client.FlioxClient"/> even for remote clients like <see cref="SocketClientHub"/>.
     /// </para>
     /// </remarks>
     [Discriminator("msg", "message type")] 
@@ -53,7 +53,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol
     [Discriminator("msg", "request type")] 
     [PolymorphType(typeof(SyncRequest),         "sync")]
     public abstract class ProtocolRequest   : ProtocolMessage {
-        /// <summary>Used only for <see cref="RemoteClientHub"/> to enable:
+        /// <summary>Used only for <see cref="SocketClientHub"/> to enable:
         /// <para>
         ///   1. Out of order response handling for their corresponding requests.
         /// </para>

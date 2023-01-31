@@ -14,7 +14,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
     /// <summary>
     /// A <see cref="FlioxHub"/> accessed remotely using a <see cref="HttpClient"/>
     /// </summary>
-    public sealed class HttpClientHub : RemoteClientHub
+    public sealed class HttpClientHub : SocketClientHub
     {
         private  readonly   string      endpoint;
         private  readonly   HttpClient  httpClient;

@@ -17,7 +17,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs
     /// <para>No creation of an extra thread for the HTTP server.</para>
     /// <para>Simplify debugging as only a single thread is running.</para>
     /// </summary>
-    public class LoopbackHub : RemoteClientHub
+    public class LoopbackHub : SocketClientHub
     {
         public readonly    FlioxHub  host;
 
