@@ -13,9 +13,11 @@ using Friflo.Json.Fliox.Hub.Host.Event;
 using Friflo.Json.Fliox.Utils;
 
 // ReSharper disable MethodHasAsyncOverload
-// ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.Remote.Udp
 {
+    /// <summary>
+    /// Initial implementation based on <see cref="WebSocketHost"/>
+    /// </summary>
     public sealed class UdpSocketHost : SocketHost, IDisposable
     {
         private  readonly   UdpClient                           udpClient;

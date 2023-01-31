@@ -12,7 +12,6 @@ using Friflo.Json.Fliox.Hub.Host.Event;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Mapper;
 
-// ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.Remote.Udp
 {
     /// <summary>
@@ -27,7 +26,8 @@ namespace Friflo.Json.Fliox.Hub.Remote.Udp
 
 
     /// <summary>
-    /// A <see cref="FlioxHub"/> accessed remotely  using a <see cref="UdpClient"/> connection
+    /// A <see cref="FlioxHub"/> accessed remotely  using a <see cref="UdpClient"/> connection<br/>
+    /// Initial implementation based on <see cref="WebSocketClientHub"/>
     /// </summary>
     public sealed class UdpSocketClientHub : SocketClientHub
     {
