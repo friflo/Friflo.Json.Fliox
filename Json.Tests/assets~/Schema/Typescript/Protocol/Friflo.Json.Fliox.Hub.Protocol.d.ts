@@ -35,7 +35,7 @@ export abstract class ProtocolRequest extends ProtocolMessage {
         | "sync"
     ;
     /**
-     * Used only for **RemoteClientHub** to enable:
+     * Used only for **SocketClientHub** to enable:
      * 
      * 1. Out of order response handling for their corresponding requests.
      * 
