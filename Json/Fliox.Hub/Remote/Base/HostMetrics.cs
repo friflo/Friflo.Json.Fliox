@@ -3,6 +3,7 @@
 
 using System.Diagnostics;
 
+// ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.Remote
 {
     public sealed class HostMetrics {

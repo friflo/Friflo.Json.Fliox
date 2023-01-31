@@ -6,9 +6,9 @@ using System.Web;
 using Friflo.Json.Fliox.Hub.Client;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
-using static Friflo.Json.Fliox.Hub.Remote.RestRequestType;
+using static Friflo.Json.Fliox.Hub.Remote.REST.RestRequestType;
 
-namespace Friflo.Json.Fliox.Hub.Remote
+namespace Friflo.Json.Fliox.Hub.Remote.REST
 {
     internal static partial class Rest {
         

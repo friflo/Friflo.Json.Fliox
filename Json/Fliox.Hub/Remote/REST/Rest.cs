@@ -20,7 +20,7 @@ using static Friflo.Json.Fliox.Hub.Host.ExecutionType;
 // ReSharper disable SwitchStatementHandlesSomeKnownEnumValuesWithDefault
 // ReSharper disable ForeachCanBePartlyConvertedToQueryUsingAnotherGetEnumerator
 // ReSharper disable ForeachCanBeConvertedToQueryUsingAnotherGetEnumerator
-namespace Friflo.Json.Fliox.Hub.Remote
+namespace Friflo.Json.Fliox.Hub.Remote.REST
 {
     /// <summary>static class to ensure all REST methods are static</summary>
     internal static partial class Rest

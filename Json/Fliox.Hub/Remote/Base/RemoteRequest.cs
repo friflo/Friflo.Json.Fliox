@@ -8,6 +8,7 @@ using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Pools;
 
+// ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.Remote
 {
     internal readonly struct RemoteRequest

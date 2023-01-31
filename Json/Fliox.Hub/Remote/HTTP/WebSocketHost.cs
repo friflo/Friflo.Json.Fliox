@@ -13,6 +13,7 @@ using Friflo.Json.Fliox.Hub.Host.Event;
 using Friflo.Json.Fliox.Utils;
 
 // ReSharper disable MethodHasAsyncOverload
+// ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.Remote
 {
     // [Things I Wish Someone Told Me About ASP.NET Core WebSockets | codetinkerer.com] https://www.codetinkerer.com/2018/06/05/aspnet-core-websockets.html

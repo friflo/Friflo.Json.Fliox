@@ -12,7 +12,7 @@ using Friflo.Json.Fliox.Schema.Language;
 using static System.Diagnostics.DebuggerBrowsableState;
 
 // Note! - Must not have any dependency to System.Net or System.Net.Http (or other HTTP stuff)
-namespace Friflo.Json.Fliox.Hub.Remote
+namespace Friflo.Json.Fliox.Hub.Remote.Schema
 {
     public delegate byte[] CreateZip(IDictionary<string, string> files);
 

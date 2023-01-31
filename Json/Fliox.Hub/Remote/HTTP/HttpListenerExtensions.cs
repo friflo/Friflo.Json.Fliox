@@ -7,8 +7,8 @@ using System.Net;
 using System.Net.WebSockets;
 using System.Text;
 using System.Threading.Tasks;
-using Friflo.Json.Fliox.Hub.Remote.WebSockets;
 
+// ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.Remote
 {
     public static class HttpListenerExtensions

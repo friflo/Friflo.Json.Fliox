@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 // ReSharper disable MemberCanBePrivate.Global
+// ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.Remote
 {
     // [A Simple HTTP server in C#] https://gist.github.com/define-private-public/d05bc52dd0bed1c4699d49e2737e80e7

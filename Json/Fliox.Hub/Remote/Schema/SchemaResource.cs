@@ -8,7 +8,7 @@ using Friflo.Json.Fliox.Schema.Definition;
 using Friflo.Json.Fliox.Schema.Language;
 
 // Note! - Must not have any dependency to System.Net or System.Net.Http (or other HTTP stuff)
-namespace Friflo.Json.Fliox.Hub.Remote
+namespace Friflo.Json.Fliox.Hub.Remote.Schema
 {
     internal sealed class SchemaResource {
         private  readonly   string                              database;
