@@ -172,6 +172,10 @@ namespace Friflo.Json.Fliox
             Buffer.BlockCopy(src.array, src.start, dstArray, 0, count);
             dst = new JsonValue(dstArray, count);
         }
+        
+        public void CopyTo(byte[] target) {
+            Buffer.BlockCopy(Array, start, target, 0, Count);
+        }
     }
     
     public static class JsonValueExtensions {

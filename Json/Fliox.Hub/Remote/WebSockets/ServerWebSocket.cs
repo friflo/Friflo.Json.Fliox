@@ -11,6 +11,10 @@ using System.Threading.Tasks;
 // ReSharper disable ConvertToAutoProperty
 namespace Friflo.Json.Fliox.Hub.Remote.WebSockets
 {
+    /// <summary>
+    /// A server <see cref="WebSocket"/> implementation.<br/>
+    /// This implementation is required for Unity as it does not provide an implementation of <c>System.Net.WebSockets.ServerWebSocket</c>.
+    /// </summary>
     internal sealed class ServerWebSocket : WebSocket
     {
         private readonly    NetworkStream           stream;
