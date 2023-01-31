@@ -136,7 +136,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
             }
             result.ids          = ids;
             if (ids.Count > 0) {
-                result.count        = ids.Count;
+                result.len          = ids.Count;
             }
             result.references   = queryRefsResults.references;
             return result;
@@ -154,7 +154,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         [DebugInfo] public  ShortString             container;
                     public  string                  cursor;
         /// <summary>number of <see cref="ids"/> - not utilized by Protocol</summary>
-        [DebugInfo] public  int?                    count;
+        [DebugInfo] public  int?                    len;
         [Required]  public  List<JsonKey>           ids;
                     public  List<ReferencesResult>  references;
                         

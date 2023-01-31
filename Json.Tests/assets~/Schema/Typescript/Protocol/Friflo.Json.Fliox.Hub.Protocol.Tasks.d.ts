@@ -338,7 +338,7 @@ export class QueryEntitiesResult extends SyncTaskResult {
     cont?       : string | null;
     cursor?     : string | null;
     /** number of **ids** - not utilized by Protocol */
-    count?      : int32 | null;
+    len?        : int32 | null;
     ids         : JsonKey[];
     references? : ReferencesResult[] | null;
 }

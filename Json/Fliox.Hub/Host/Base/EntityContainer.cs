@@ -308,7 +308,7 @@ namespace Friflo.Json.Fliox.Hub.Host
                             ids.Add(id);
                         }
                         if (ids.Count > 0) {
-                            referenceResult.count = ids.Count;     
+                            referenceResult.len = ids.Count;     
                         }
                     }
                 }

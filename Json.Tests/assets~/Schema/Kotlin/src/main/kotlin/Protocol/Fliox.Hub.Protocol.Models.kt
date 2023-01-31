@@ -33,7 +33,7 @@ enum class EntityErrorType {
 data class ReferencesResult (
               val error      : String? = null,
               val cont       : String? = null,
-              val count      : Int? = null,
+              val len        : Int? = null,
               val ids        : List<String>,
               val references : List<ReferencesResult>? = null,
 )

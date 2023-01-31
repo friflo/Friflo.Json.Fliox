@@ -47,7 +47,7 @@ SyncResponse *-- "0..*" ContainerEntities : containers
 
 class ContainerEntities {
     cont      : string
-    count?    : int32
+    len?      : int32
     set       : any[]
     notFound? : string[]
     errors?   : EntityError[]
@@ -122,7 +122,7 @@ class EntityErrorType:::cssEnum {
 class ReferencesResult {
     error?      : string
     cont?       : string
-    count?      : int32
+    len?        : int32
     ids         : string[]
     references? : ReferencesResult[]
 }
@@ -297,7 +297,7 @@ class QueryEntitiesResult {
     task        : "query"
     cont?       : string
     cursor?     : string
-    count?      : int32
+    len?        : int32
     ids         : string[]
     references? : ReferencesResult[]
 }

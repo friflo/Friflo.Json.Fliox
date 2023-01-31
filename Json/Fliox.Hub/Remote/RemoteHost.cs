@@ -153,7 +153,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 container.notFound  = notFound;
                 container.errors    = errors;
                 if (entities.Count > 0) {
-                    container.count = entities.Count;
+                    container.len = entities.Count;
                 }
             }
         }

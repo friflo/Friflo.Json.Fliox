@@ -36,7 +36,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Models
         [Serialize                                ("cont")]
         [DebugInfo] public  ShortString             container;
         /// <summary>number of <see cref="ids"/> - not utilized by Protocol</summary>
-        [DebugInfo] public  int?                    count;
+        [DebugInfo] public  int?                    len;
         [Required]  public  List<JsonKey>           ids;
                     public  List<ReferencesResult>  references;
     }

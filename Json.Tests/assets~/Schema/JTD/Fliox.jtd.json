@@ -282,7 +282,7 @@
             "properties": {
                 "error":      { "type": "string", "nullable": true },
                 "cont":       { "type": "string", "nullable": true },
-                "count":      { "type": "int32", "nullable": true },
+                "len":        { "type": "int32", "nullable": true },
                 "ids":        { "elements": { "type": "string" } },
                 "references": { "elements": { "ref":  "ReferencesResult" }, "nullable": true }
             }
@@ -291,7 +291,7 @@
             "properties": {
                 "cont":       { "type": "string", "nullable": true },
                 "cursor":     { "type": "string", "nullable": true },
-                "count":      { "type": "int32", "nullable": true },
+                "len":        { "type": "int32", "nullable": true },
                 "ids":        { "elements": { "type": "string" } },
                 "references": { "elements": { "ref":  "ReferencesResult" }, "nullable": true }
             }
@@ -378,7 +378,7 @@
         "ContainerEntities": {
             "properties": {
                 "cont":     { "type": "string" },
-                "count":    { "type": "int32", "nullable": true },
+                "len":      { "type": "int32", "nullable": true },
                 "set":      { "elements": {  } },
                 "notFound": { "elements": { "type": "string" }, "nullable": true },
                 "errors":   { "elements": { "ref":  "EntityError" }, "nullable": true }

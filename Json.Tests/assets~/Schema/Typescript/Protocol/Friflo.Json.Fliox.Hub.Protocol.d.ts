@@ -128,7 +128,7 @@ export class ContainerEntities {
     /** container name the of the returned **entities** */
     cont      : string;
     /** number of **entities** - not utilized by Protocol */
-    count?    : int32 | null;
+    len?      : int32 | null;
     /**
      * all **entities** from the **container** resulting from
      * **ReadEntities** and **QueryEntities** tasks of a **SyncRequest**

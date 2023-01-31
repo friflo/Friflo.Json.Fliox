@@ -107,7 +107,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol
         [Serialize                            ("cont")]
         [Required]  public  ShortString         container;
         /// <summary>number of <see cref="entities"/> - not utilized by Protocol</summary>
-        [DebugInfo] public  int?                count;
+        [DebugInfo] public  int?                len;
         /// <summary>
         /// all <see cref="entities"/> from the <see cref="container"/> resulting from
         /// <see cref="ReadEntities"/> and <see cref="QueryEntities"/> tasks of a <see cref="SyncRequest"/>

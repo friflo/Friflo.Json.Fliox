@@ -9,7 +9,7 @@ namespace Gen.Friflo.Json.Fliox.Hub.Protocol.Tasks
     {
         private const int Gen_container = 0;
         private const int Gen_cursor = 1;
-        private const int Gen_count = 2;
+        private const int Gen_len = 2;
         private const int Gen_ids = 3;
         private const int Gen_references = 4;
 
@@ -18,7 +18,7 @@ namespace Gen.Friflo.Json.Fliox.Hub.Protocol.Tasks
             switch (field.genIndex) {
                 case Gen_container:  obj.container  = reader.ReadShortString (field, obj.container,  out success);  return success;
                 case Gen_cursor:     obj.cursor     = reader.ReadString    (field, obj.cursor,     out success);  return success;
-                case Gen_count:      obj.count      = reader.ReadInt32Null (field, out success);  return success;
+                case Gen_len:        obj.len        = reader.ReadInt32Null (field, out success);  return success;
                 case Gen_ids:        obj.ids        = reader.ReadClass     (field, obj.ids,        out success);  return success;
                 case Gen_references: obj.references = reader.ReadClass     (field, obj.references, out success);  return success;
             }
@@ -28,7 +28,7 @@ namespace Gen.Friflo.Json.Fliox.Hub.Protocol.Tasks
         private static void Write(ref QueryEntitiesResult obj, PropField[] fields, ref Writer writer, ref bool firstMember) {
             writer.WriteShortString (fields[Gen_container],  obj.container,  ref firstMember);
             writer.WriteString    (fields[Gen_cursor],     obj.cursor,     ref firstMember);
-            writer.WriteInt32Null (fields[Gen_count],      obj.count,      ref firstMember);
+            writer.WriteInt32Null (fields[Gen_len],        obj.len,        ref firstMember);
             writer.WriteClass     (fields[Gen_ids],        obj.ids,        ref firstMember);
             writer.WriteClass     (fields[Gen_references], obj.references, ref firstMember);
         }

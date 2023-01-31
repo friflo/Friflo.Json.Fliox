@@ -382,7 +382,7 @@
                 "task":       { "enum": ["query"] },
                 "cont":       { "type": ["string", "null"], "description": "container name - not utilized by Protocol" },
                 "cursor":     { "type": ["string", "null"] },
-                "count":      { "oneOf": [{ "$ref": "./Standard.json#/definitions/int32" }, {"type": "null"}], "description": "number of <b>ids</b> - not utilized by Protocol" },
+                "len":        { "oneOf": [{ "$ref": "./Standard.json#/definitions/int32" }, {"type": "null"}], "description": "number of <b>ids</b> - not utilized by Protocol" },
                 "ids":        { "type": "array", "items": { "$ref": "./Standard.json#/definitions/JsonKey" } },
                 "references": { "type": ["array", "null"], "items": { "$ref": "./Friflo.Json.Fliox.Hub.Protocol.Models.json#/definitions/ReferencesResult" } }
             },
