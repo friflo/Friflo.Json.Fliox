@@ -14,7 +14,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Key
         public override ShortString ReadKey (ref Reader reader, out bool success) {
             ref var parser = ref reader.parser;
             success = true;
-            return new ShortString(ref parser.key, default);
+            return new ShortString(ref parser.key, null);
         }
         
         public override JsonKey     ToJsonKey      (in ShortString key) {

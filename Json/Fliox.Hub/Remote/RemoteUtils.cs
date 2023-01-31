@@ -142,7 +142,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                             continue;
                         }
                         if (parser.key.IsEqual(clt)) {
-                            result.dstClientId  = new ShortString(ref parser.value, default);
+                            result.dstClientId  = new ShortString(ref parser.value, null);
                             return result;
                         }
                         continue;
@@ -152,7 +152,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                             return result;
                         }
                         if (parser.key.IsEqual(clt)) {
-                            result.dstClientId  = new ShortString(ref parser.value, default);
+                            result.dstClientId  = new ShortString(ref parser.value, null);
                             return result;
                         }
                         continue;

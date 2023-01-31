@@ -67,11 +67,11 @@ namespace Friflo.Json.Fliox
             StringToLongLong(value, out str, out lng, out lng2);
         }
         
-        public ShortString (ref Bytes bytes, in ShortString oldKey) {
+        public ShortString (ref Bytes bytes, string reuseStr) {
             if (BytesToLongLong(bytes, out lng, out lng2)) {
                 str     = null;
             } else {
-                str     = GetString(bytes, oldKey.str, out lng, out lng2);
+                str     = GetString(bytes, reuseStr, out lng, out lng2);
             }
         }
         
@@ -110,7 +110,7 @@ namespace Friflo.Json.Fliox
             throw new InvalidOperationException("unhanded case");
         }
         
-        internal static string GetString(in Bytes bytes, string oldKey, out long lng, out long lng2) {
+        internal static string GetString(in Bytes bytes, string reuseStr, out long lng, out long lng2) {
             lng     = 0;
             lng2    = IsString;
             int len         = bytes.end - bytes.start;
@@ -119,9 +119,9 @@ namespace Friflo.Json.Fliox
             Span<char> dest = stackalloc char[maxCount];
             int strLen      = Encoding.UTF8.GetChars(src, dest);
             var newSpan     = dest.Slice(0, strLen);
-            var oldSpan     = oldKey.AsSpan();
+            var oldSpan     = reuseStr.AsSpan();
             if (newSpan.SequenceEqual(oldSpan)) {
-                return oldKey;
+                return reuseStr;
             }
             return newSpan.ToString();
         }
