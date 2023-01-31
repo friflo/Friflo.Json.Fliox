@@ -19,7 +19,7 @@ using static Friflo.Json.Fliox.Hub.Host.ExecutionType;
 namespace Friflo.Json.Fliox.Hub.Remote
 {
     /// <summary>
-    /// <see cref="WebHostHandler"/> provide a set of methods to:<br/>
+    /// <see cref="RemoteSocketHost"/> provide a set of methods to:<br/>
     /// - parse serialized <see cref="SyncRequest"/> messages.<br/>
     /// - execute <see cref="SyncRequest"/>'s and send serialized <see cref="SyncResponse"/> to client<br/>
     /// </summary>
@@ -37,7 +37,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
     /// - Synchronous in case a request can be executed synchronous<br/>
     /// - Asynchronous in case a request requires asynchronous execution<br/>
     /// </remarks>
-    public abstract class WebHostHandler : EventReceiver, ILogSource
+    public abstract class RemoteSocketHost : EventReceiver, ILogSource
     {
         private   readonly  FlioxHub                    hub;
         private   readonly  TypeStore                   typeStore;
@@ -52,7 +52,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         public              IHubLogger  Logger { get; }
         protected abstract  void        SendMessage(in JsonValue message);
 
-        protected WebHostHandler(RemoteHost remoteHost) {
+        protected RemoteSocketHost(RemoteHost remoteHost) {
             var env         = remoteHost.sharedEnv;
             sharedEnv       = env;
             typeStore       = sharedEnv.TypeStore;

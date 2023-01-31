@@ -17,7 +17,7 @@ using Friflo.Json.Fliox.Utils;
 namespace Friflo.Json.Fliox.Hub.Remote
 {
     // [Things I Wish Someone Told Me About ASP.NET Core WebSockets | codetinkerer.com] https://www.codetinkerer.com/2018/06/05/aspnet-core-websockets.html
-    public sealed class WebSocketHost : WebHostHandler, IDisposable
+    public sealed class WebSocketHost : RemoteSocketHost, IDisposable
     {
         private  readonly   WebSocket                           webSocket;
         /// Only set to true for testing. It avoids an early out at <see cref="EventSubClient.SendEvents"/> 
@@ -70,7 +70,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         /// <remarks>
         /// A send loop reading from a queue is required as message can be sent from two different sources <br/>
         /// 1. response messages created in <see cref="ReceiveMessageLoop"/> <br/>
-        /// 2. event messages send with <see cref="WebHostHandler.SendEvent"/>'s <br/>
+        /// 2. event messages send with <see cref="RemoteSocketHost.SendEvent"/>'s <br/>
         /// The loop ensures a WebSocket.SendAsync() is called only once at a time.
         /// </remarks>
         /// <seealso cref="WebSocketHost.RunReceiveMessageLoop"/>
