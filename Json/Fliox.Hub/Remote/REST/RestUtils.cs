@@ -20,13 +20,13 @@ using static Friflo.Json.Fliox.Hub.Host.ExecutionType;
 // ReSharper disable SwitchStatementHandlesSomeKnownEnumValuesWithDefault
 // ReSharper disable ForeachCanBePartlyConvertedToQueryUsingAnotherGetEnumerator
 // ReSharper disable ForeachCanBeConvertedToQueryUsingAnotherGetEnumerator
-namespace Friflo.Json.Fliox.Hub.Remote.REST
+namespace Friflo.Json.Fliox.Hub.Remote.Rest
 {
     /// <summary>static class to ensure all REST methods are static</summary>
-    internal static partial class Rest
+    internal static class RestUtils
     {
         // -------------------------------------- helper methods --------------------------------------
-        private static JsonKey[] GetKeysFromIds(string[] ids) {
+        internal static JsonKey[] GetKeysFromIds(string[] ids) {
             var keys = new JsonKey[ids.Length];
             for (int n = 0; n < ids.Length; n++) {
                 keys[n] = new JsonKey(ids[n]);
@@ -34,7 +34,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.REST
             return keys;
         }
         
-        private static bool IsValidJson (Pool pool, in JsonValue value, out string error) {
+        internal static bool IsValidJson (Pool pool, in JsonValue value, out string error) {
             error = null;
             if (value.IsNull())
                 return true;
@@ -47,7 +47,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.REST
             return true;
         }
         
-        private static string GetErrorType (string command) {
+        internal static string GetErrorType (string command) {
             return command != null ? "command error" : "message error";
         }
         

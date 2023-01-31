@@ -6,13 +6,14 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Protocol;
+using Friflo.Json.Fliox.Hub.Remote.Rest;
 using Friflo.Json.Fliox.Hub.Remote.Schema;
 using Friflo.Json.Fliox.Schema.JSON;
 using Friflo.Json.Fliox.Schema.Language;
 using Friflo.Json.Fliox.Schema.Native;
 using Friflo.Json.Fliox.Transform;
-using static Friflo.Json.Fliox.Hub.Remote.REST.RestRequestType;
-using static Friflo.Json.Fliox.Hub.Remote.REST.Rest;
+using static Friflo.Json.Fliox.Hub.Remote.Rest.RestRequestType;
+using static Friflo.Json.Fliox.Hub.Remote.Rest.RestUtils;
 using static Friflo.Json.Fliox.Hub.Host.ExecutionType;
 
 // ReSharper disable MethodHasAsyncOverload

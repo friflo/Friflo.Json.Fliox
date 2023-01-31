@@ -4,7 +4,7 @@
 using System.Collections.Specialized;
 
 // ReSharper disable InconsistentNaming
-namespace Friflo.Json.Fliox.Hub.Remote.REST
+namespace Friflo.Json.Fliox.Hub.Remote.Rest
 {
     internal enum RestRequestType
     {
