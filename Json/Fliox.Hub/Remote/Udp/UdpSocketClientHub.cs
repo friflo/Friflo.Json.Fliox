@@ -18,10 +18,14 @@ namespace Friflo.Json.Fliox.Hub.Remote.Udp
     /// Each <see cref="WebSocketConnection"/> store its send requests in the <see cref="requestMap"/>
     /// to map received response messages to its related <see cref="SyncRequest"/>
     /// </summary>
-    internal sealed class UdpSocketConnection
+    internal sealed class UdpSocket
     {
-        internal  readonly  UdpClient           websocket   = new UdpClient();
+        internal  readonly  UdpClient           client;
         internal  readonly  RemoteRequestMap    requestMap  = new RemoteRequestMap();
+        
+        internal UdpSocket(UdpClient client) {
+            this.client = client;
+        }
     }
 
 
@@ -32,12 +36,11 @@ namespace Friflo.Json.Fliox.Hub.Remote.Udp
     public sealed class UdpSocketClientHub : SocketClientHub
     {
         private  readonly   string                      endpoint;
-        private  readonly   Uri                         endpointUri;
         /// Incrementing requests id used to map a <see cref="ProtocolResponse"/>'s to its related <see cref="SyncRequest"/>.
         private             int                         reqId;
         public              bool                        IsConnected => true;
 
-        private             UdpSocketConnection         wsConnection;
+        private  readonly   UdpSocket                   udpSocket;
         private             byte[]                      sendBuffer;
         
         private  readonly   CancellationTokenSource     cancellationToken = new CancellationTokenSource();
@@ -48,8 +51,10 @@ namespace Friflo.Json.Fliox.Hub.Remote.Udp
             : base(new RemoteDatabase(dbName), env, access)
         {
             this.endpoint   = endpoint;
-            endpointUri     = new Uri(endpoint);
-            sendBuffer      = new byte[128];
+            UdpListener.TryParseEndpoint(endpoint, out var ipEndpoint);
+            var client  = new UdpClient(ipEndpoint);
+            udpSocket   = new UdpSocket(client);
+            sendBuffer  = new byte[128];
         }
         
         /* public override void Dispose() {
@@ -57,71 +62,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.Udp
             // websocket.CancelPendingRequests();
         } */
         
-        /* private WebSocketConnection GetWebsocketConnection() {
-            lock (websocketLock) {
-                var wsConn = wsConnection;
-                if (wsConn != null && wsConn.websocket.State == WebSocketState.Open)
-                    return wsConn;
-                return null;
-            }
-        }
-        
-        private Task<WebSocketConnection> JoinConnects(out TaskCompletionSource<WebSocketConnection> tcs, out WebSocketConnection wsConn) {
-            lock (websocketLock) {
-                if (connectTask != null) {
-                    wsConn  = null;
-                    tcs     = null;
-                    return connectTask;
-                }
-                wsConn  = wsConnection = new WebSocketConnection();
-                tcs     = new TaskCompletionSource<WebSocketConnection>();
-                connectTask = tcs.Task;
-                return connectTask;
-            }
-        }
-        
-        // static int count;
-        
-        private async Task<WebSocketConnection> Connect() {
-            var task = JoinConnects(out var tcs, out WebSocketConnection wsConn);
-            if (tcs == null) {
-                wsConn = await task.ConfigureAwait(false);
-                return wsConn;
-            }
-
-            // Console.WriteLine($"WebSocketClientHub.Connect() endpoint: {endpoint}");
-            // ws.Options.SetBuffer(4096, 4096);
-            try {
-                // Console.WriteLine($"Connect {++count}");
-                await wsConn.websocket.ConnectAsync(endpointUri, CancellationToken.None).ConfigureAwait(false);
-
-                connectTask = null;
-                tcs.SetResult(wsConn);
-            } catch (Exception e) {
-                connectTask = null;
-                tcs.SetException(e);
-                throw;
-            }
-            try {
-                _ = RunReceiveMessageLoop(wsConn).ConfigureAwait(false);
-            } catch (Exception e) {
-                Debug.Fail("ReceiveLoop() failed", e.Message);
-            }
-            return wsConn;
-        }
-        
-        public async Task Close() {
-            WebSocketConnection wsConn;
-            lock (websocketLock) {
-                wsConn = wsConnection;
-                if (wsConn == null || wsConn.websocket.State == WebSocketState.Closed)
-                    return;
-                wsConnection = null;
-            }
-            await wsConn.websocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "", CancellationToken.None).ConfigureAwait(false);
-        } */
-        
-        private async Task RunReceiveMessageLoop(UdpSocketConnection wsConn) {
+        private async Task RunReceiveMessageLoop(UdpSocket wsConn) {
             using (var mapper = new ObjectMapper(sharedEnv.TypeStore)) {
                 await ReceiveMessageLoop(wsConn, mapper.reader).ConfigureAwait(false);
             }
@@ -135,19 +76,22 @@ namespace Friflo.Json.Fliox.Hub.Remote.Udp
         /// - A blocking WebSocket.SendAsync() call does not block WebSocket.ReceiveAsync() <br/>
         /// - The created <see cref="RemoteRequest.response"/>'s act as a queue. <br/>
         /// </summary>
-        private async Task ReceiveMessageLoop(UdpSocketConnection wsConn, ObjectReader reader) {
+        private async Task ReceiveMessageLoop(UdpSocket wsConn, ObjectReader reader) {
             var parser          = new Utf8JsonParser();
-            var ws              = wsConn.websocket;
+            var ws              = wsConn.client;
             var memoryStream    = new MemoryStream();
             while (true)
             {
                 memoryStream.Position = 0;
                 memoryStream.SetLength(0);
                 try {
-                    // --- read complete WebSocket message
-
-                    UdpReceiveResult wsResult = await ws.ReceiveAsync().ConfigureAwait(false);
-                    var buffer = wsResult.Buffer;
+                    // --- read complete datagram message
+                    var receiveResult   = await ws.ReceiveAsync().ConfigureAwait(false);
+                    
+                    var buffer          = receiveResult.Buffer;
+                    if (memoryStream.Capacity < buffer.Length) {
+                        memoryStream.Capacity = buffer.Length;
+                    }
                     memoryStream.Write(buffer, 0, buffer.Length);
 
                     // --- determine message type
@@ -184,7 +128,6 @@ namespace Friflo.Json.Fliox.Hub.Remote.Udp
         }
         
         public override async Task<ExecuteSyncResult> ExecuteRequestAsync(SyncRequest syncRequest, SyncContext syncContext) {
-            var wsConn = wsConnection;
             /* var wsConn = GetWebsocketConnection();
             if (wsConn == null) {
                 wsConn = await Connect().ConfigureAwait(false);
@@ -200,7 +143,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.Udp
                     var rawRequest  = RemoteUtils.CreateProtocolMessage(syncRequest, writer);
                     // request need to be queued _before_ sending it to be prepared for handling the response.
                     var wsRequest   = new RemoteRequest(syncContext, cancellationToken);
-                    wsConn.requestMap.Add(sendReqId, wsRequest);
+                    udpSocket.requestMap.Add(sendReqId, wsRequest);
                     
                     var length = rawRequest.Count;
                     if (sendBuffer.Length < length) {
@@ -208,7 +151,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.Udp
                     }
 
                     // --- Send message
-                    await wsConn.websocket.SendAsync(sendBuffer, length, null).ConfigureAwait(false);
+                    await udpSocket.client.SendAsync(sendBuffer, length, null).ConfigureAwait(false);
                     
                     // --- Wait for response
                     var response = await wsRequest.response.Task.ConfigureAwait(false);

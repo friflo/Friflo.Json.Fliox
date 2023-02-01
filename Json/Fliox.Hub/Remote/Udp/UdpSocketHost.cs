@@ -129,25 +129,17 @@ namespace Friflo.Json.Fliox.Hub.Remote.Udp
         private async Task ReceiveMessageLoop() {
             var memoryStream    = new MemoryStream();
             while (true) {
-                /* var state = udpClient.State;
-                if (state == WebSocketState.CloseReceived) {
-                    var description = udpClient.CloseStatusDescription;
-                    await udpClient.CloseAsync(WebSocketCloseStatus.NormalClosure, description, CancellationToken.None).ConfigureAwait(false);
-                    return;
-                }
-                if (state != WebSocketState.Open) {
-                    // Logger.Log(HubLog.Info, $"receive loop finished. WebSocket state: {state}, remote: {remoteEndPoint}");
-                    return;
-                } */
-                // --- 1. Read request from stream
                 memoryStream.Position = 0;
                 memoryStream.SetLength(0);
-
-                UdpReceiveResult wsResult = await udpClient.ReceiveAsync().ConfigureAwait(false);
-                var buffer = wsResult.Buffer;
+                
+                // --- 1. Read request from datagram
+                var receiveResult   = await udpClient.ReceiveAsync().ConfigureAwait(false);
+                var buffer          = receiveResult.Buffer;
+                if (memoryStream.Capacity < buffer.Length) {
+                    memoryStream.Capacity = buffer.Length;
+                }
                 memoryStream.Write(buffer, 0, buffer.Length);
 
-                
                 var request = new JsonValue(memoryStream.GetBuffer(), (int)memoryStream.Position);
                 try {
                     // --- 2. Parse request

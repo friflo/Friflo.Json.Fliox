@@ -29,7 +29,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.Udp
             await UdpSocketHost.SendReceiveMessages(udpListener, ipEndPoint, hub, hostEnv);
         }
         
-        private static bool TryParseEndpoint(string endpoint, out IPEndPoint result) {
+        internal static bool TryParseEndpoint(string endpoint, out IPEndPoint result) {
             int addressLength   = endpoint.Length;  // If there's no port then send the entire string to the address parser
             int lastColonPos    = endpoint.LastIndexOf(':');
             // Look to see if this is an IPv6 address with a port.
