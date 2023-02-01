@@ -46,6 +46,15 @@ namespace Friflo.Json.Fliox.Utils
                 return queue.DequeMessageValues(messages);    
             }
         }
+        
+        public async Task<MessageBufferEvent> DequeMessages(List<MessageItem<TMeta>> messages) {
+            messages.Clear();
+            await messageAvailable.WaitAsync().ConfigureAwait(false);
+
+            lock (queue) {
+                return queue.DequeMessages(messages);    
+            }
+        }
 
         public void Close() {
             lock (queue) {

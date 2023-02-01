@@ -25,8 +25,11 @@ namespace Friflo.Json.Fliox.Hub.Remote.Udp
         internal  readonly  RemoteRequestMap    requestMap;
 
         internal UdpSocket() {
-            this.client = new UdpClient();
-            requestMap  = new RemoteRequestMap();
+            client              = new UdpClient();
+            // TODO check how to set port automatically
+            var localEndPoint   = new IPEndPoint(IPAddress.Any, 1234);
+            client.Client.Bind(localEndPoint);
+            requestMap          = new RemoteRequestMap();
         }
     }
 
@@ -57,6 +60,8 @@ namespace Friflo.Json.Fliox.Hub.Remote.Udp
             UdpListener.TryParseEndpoint(endpoint, out ipEndpoint);
             udpSocket   = new UdpSocket();
             sendBuffer  = new byte[128];
+            // TODO check if running loop from here is OK
+            var _ = RunReceiveMessageLoop(udpSocket);
         }
         
         /* public override void Dispose() {

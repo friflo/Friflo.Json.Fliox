@@ -57,7 +57,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         }
         
         // --- WebHost
-        protected override void SendMessage(in JsonValue message) {
+        protected override void SendMessage(in JsonValue message, IPEndPoint remoteEndPoint) {
             sendQueue.AddTail(message);
         }
 
@@ -159,19 +159,19 @@ namespace Friflo.Json.Fliox.Hub.Remote
                     // --- 2. Parse request
                     Interlocked.Increment(ref hostMetrics.webSocket.receivedCount);
                     var t1          = Stopwatch.GetTimestamp();
-                    var syncRequest = ParseRequest(request);
+                    var syncRequest = ParseRequest(request, remoteEndPoint);
                     var t2          = Stopwatch.GetTimestamp();
                     Interlocked.Add(ref hostMetrics.webSocket.requestReadTime, t2 - t1);
                     if (syncRequest == null) {
                         continue;
                     }
                     // --- 3. Execute request
-                    ExecuteRequest (syncRequest);
+                    ExecuteRequest (syncRequest, remoteEndPoint);
                     var t3          = Stopwatch.GetTimestamp();
                     Interlocked.Add(ref hostMetrics.webSocket.requestExecuteTime, t3 - t2);
                 }
                 catch (Exception e) {
-                    SendResponseException(e, null);
+                    SendResponseException(e, null, remoteEndPoint);
                 }
             }
         }
