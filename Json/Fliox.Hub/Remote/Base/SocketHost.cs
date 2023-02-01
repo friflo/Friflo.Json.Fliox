@@ -20,6 +20,8 @@ using static Friflo.Json.Fliox.Hub.Host.ExecutionType;
 namespace Friflo.Json.Fliox.Hub.Remote
 {
     /// <summary>
+    /// Counterpart of <see cref="SocketClientHub"/> used by socket implementations running on the server.<br/>
+    /// <br/>
     /// <see cref="SocketHost"/> provide a set of methods to:<br/>
     /// - parse serialized <see cref="SyncRequest"/> messages.<br/>
     /// - execute <see cref="SyncRequest"/>'s and send serialized <see cref="SyncResponse"/> to client<br/>

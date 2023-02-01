@@ -7,9 +7,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
-using Friflo.Json.Burst;
 using Friflo.Json.Fliox.Hub.Host;
-using Friflo.Json.Fliox.Hub.Host.Event;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Mapper;
 
@@ -91,7 +89,6 @@ namespace Friflo.Json.Fliox.Hub.Remote
         /// - The created <see cref="RemoteRequest.response"/>'s act as a queue. <br/>
         /// </summary>
         private async Task ReceiveMessageLoop(UdpSocket socket, ObjectReader reader) {
-            var parser          = new Utf8JsonParser();
             var client          = socket.client;
             var memoryStream    = new MemoryStream();
             while (true)
@@ -108,29 +105,9 @@ namespace Friflo.Json.Fliox.Hub.Remote
                     }
                     memoryStream.Write(buffer, 0, buffer.Length);
 
-                    // --- determine message type
+                    // --- process received message
                     var message     = new JsonValue(memoryStream.GetBuffer(), (int)memoryStream.Position);
-                    var messageHead = RemoteUtils.ReadMessageHead(ref parser, message);
-                    
-                    // --- handle either response or event message
-                    switch (messageHead.type) {
-                        case MessageType.resp:
-                        case MessageType.error:
-                            if (!messageHead.reqId.HasValue)
-                                throw new InvalidOperationException($"missing reqId in response:\n{message}");
-                            var id = messageHead.reqId.Value;
-                            if (!socket.requestMap.Remove(id, out RemoteRequest request)) {
-                                throw new InvalidOperationException($"reqId not found. id: {id}");
-                            }
-                            reader.ReaderPool   = request.responseReaderPool;
-                            var response        = reader.Read<ProtocolResponse>(message);
-                            request.response.SetResult(response);
-                            break;
-                        case MessageType.ev:
-                            var clientEvent = new ClientEvent (messageHead.dstClientId, message);
-                            OnReceiveEvent(clientEvent);
-                            break;
-                    }
+                    ProcessMessage(message, socket.requestMap, reader);
                 }
                 catch (Exception e)
                 {

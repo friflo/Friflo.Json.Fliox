@@ -4,9 +4,11 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Friflo.Json.Burst;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.Event;
 using Friflo.Json.Fliox.Hub.Protocol;
+using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Pools;
 using Friflo.Json.Fliox.Utils;
 
@@ -31,11 +33,16 @@ namespace Friflo.Json.Fliox.Hub.Remote
         Multi
     }
     
+    /// <summary>
+    /// Counterpart of <see cref="SocketHost"/> used by socket implementations running on clients.
+    /// </summary>
     public abstract class SocketClientHub : FlioxHub
     {
         private  readonly   Dictionary<ShortString, EventReceiver>  eventReceivers;
         private  readonly   ObjectPool<ReaderPool>                  responseReaderPool;
         private  readonly   RemoteClientAccess                      access;
+        private             Utf8JsonParser                          parser;
+
 
         // ReSharper disable once EmptyConstructor - added for source navigation
         protected SocketClientHub(EntityDatabase database, SharedEnv env, RemoteClientAccess access = RemoteClientAccess.Multi)
@@ -69,7 +76,32 @@ namespace Friflo.Json.Fliox.Hub.Remote
         
         internal override  ObjectPool<ReaderPool> GetResponseReaderPool() => responseReaderPool;
         
-        protected void OnReceiveEvent(in ClientEvent clientEvent) {
+        protected void ProcessMessage(in JsonValue message, RemoteRequestMap requestMap, ObjectReader reader) {
+            // --- determine message type
+            var messageHead = RemoteUtils.ReadMessageHead(ref parser, message);
+                    
+            // --- handle either response or event message
+            switch (messageHead.type) {
+                case MessageType.resp:
+                case MessageType.error:
+                    if (!messageHead.reqId.HasValue)
+                        throw new InvalidOperationException($"missing reqId in response:\n{message}");
+                    var id = messageHead.reqId.Value;
+                    if (!requestMap.Remove(id, out RemoteRequest request)) {
+                        throw new InvalidOperationException($"reqId not found. id: {id}");
+                    }
+                    reader.ReaderPool   = request.responseReaderPool;
+                    var response        = reader.Read<ProtocolResponse>(message);
+                    request.response.SetResult(response);
+                    break;
+                case MessageType.ev:
+                    var clientEvent = new ClientEvent (messageHead.dstClientId, message);
+                    OnReceiveEvent(clientEvent);
+                    break;
+            }
+        }
+        
+        private void OnReceiveEvent(in ClientEvent clientEvent) {
             if (access == RemoteClientAccess.Single) {
                 // case: 0 or 1 eventReceivers
                 if (eventReceivers.Count == 0) {

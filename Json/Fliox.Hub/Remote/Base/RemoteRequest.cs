@@ -28,7 +28,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         }
     }
     
-    internal sealed class RemoteRequestMap {
+    public sealed class RemoteRequestMap {
         private  readonly  Dictionary<int, RemoteRequest> requestMap = new Dictionary<int, RemoteRequest>();
         
         internal void Add(int reqId, RemoteRequest request) {
