@@ -43,7 +43,9 @@ namespace Friflo.Json.Fliox.Hub.Remote.Udp
                 }
             }
             result = null;
-            if (!IPAddress.TryParse(endpoint.Substring(0, addressLength), out IPAddress address)) {
+            var address = endpoint.Substring(0, addressLength);
+            if (address == "localhost") address = "127.0.0.1";
+            if (!IPAddress.TryParse(address, out IPAddress ipAddress)) {
                 return false;
             }
             if (addressLength == endpoint.Length) {
@@ -55,7 +57,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.Udp
             if (port > IPEndPoint.MaxPort) {
                 return false;
             }
-            result = new IPEndPoint(address, port);
+            result = new IPEndPoint(ipAddress, port);
             return true;
         }
     }

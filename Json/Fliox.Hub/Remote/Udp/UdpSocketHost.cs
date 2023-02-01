@@ -132,6 +132,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.Udp
                 
                 // --- 1. Read request from datagram
                 var receiveResult   = await udpClient.ReceiveAsync().ConfigureAwait(false);
+                
                 var buffer          = receiveResult.Buffer;
                 if (memoryStream.Capacity < buffer.Length) {
                     memoryStream.Capacity = buffer.Length;

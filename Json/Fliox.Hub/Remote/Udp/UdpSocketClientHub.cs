@@ -3,6 +3,7 @@
 
 using System;
 using System.IO;
+using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
@@ -21,10 +22,11 @@ namespace Friflo.Json.Fliox.Hub.Remote.Udp
     internal sealed class UdpSocket
     {
         internal  readonly  UdpClient           client;
-        internal  readonly  RemoteRequestMap    requestMap  = new RemoteRequestMap();
-        
-        internal UdpSocket(UdpClient client) {
-            this.client = client;
+        internal  readonly  RemoteRequestMap    requestMap;
+
+        internal UdpSocket() {
+            this.client = new UdpClient();
+            requestMap  = new RemoteRequestMap();
         }
     }
 
@@ -36,6 +38,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.Udp
     public sealed class UdpSocketClientHub : SocketClientHub
     {
         private  readonly   string                      endpoint;
+        private  readonly   IPEndPoint                  ipEndpoint;
         /// Incrementing requests id used to map a <see cref="ProtocolResponse"/>'s to its related <see cref="SyncRequest"/>.
         private             int                         reqId;
         public              bool                        IsConnected => true;
@@ -51,9 +54,8 @@ namespace Friflo.Json.Fliox.Hub.Remote.Udp
             : base(new RemoteDatabase(dbName), env, access)
         {
             this.endpoint   = endpoint;
-            UdpListener.TryParseEndpoint(endpoint, out var ipEndpoint);
-            var client  = new UdpClient(ipEndpoint);
-            udpSocket   = new UdpSocket(client);
+            UdpListener.TryParseEndpoint(endpoint, out ipEndpoint);
+            udpSocket   = new UdpSocket();
             sendBuffer  = new byte[128];
         }
         
@@ -145,8 +147,10 @@ namespace Friflo.Json.Fliox.Hub.Remote.Udp
                     if (sendBuffer.Length < length) {
                         sendBuffer = new byte[length];
                     }
+                    rawRequest.CopyTo(sendBuffer);
+                    
                     // --- Send message
-                    await udpSocket.client.SendAsync(sendBuffer, length, null).ConfigureAwait(false);
+                    await udpSocket.client.SendAsync(sendBuffer, length, ipEndpoint).ConfigureAwait(false);
                     
                     // --- Wait for response
                     var response = await request.response.Task.ConfigureAwait(false);
