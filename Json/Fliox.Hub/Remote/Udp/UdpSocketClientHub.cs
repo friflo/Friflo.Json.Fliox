@@ -37,7 +37,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
 
     /// <summary>
     /// A <see cref="FlioxHub"/> accessed remotely  using a <see cref="UdpClient"/> connection<br/>
-    /// Initial implementation based on <see cref="WebSocketClientHub"/>
+    /// Implementation aligned with <see cref="WebSocketClientHub"/>
     /// </summary>
     public sealed class UdpSocketClientHub : SocketClientHub
     {
@@ -47,23 +47,25 @@ namespace Friflo.Json.Fliox.Hub.Remote
         private             int                         reqId;
         public              bool                        IsConnected => true;
 
-        private  readonly   UdpSocket                   udpSocket;
+        private  readonly   UdpSocket                   socket;
         private             byte[]                      sendBuffer;
         
         private  readonly   CancellationTokenSource     cancellationToken = new CancellationTokenSource();
         
         public   override   string                      ToString() => $"{database.name} - endpoint: {endpoint}";
         
-        /// <summary>if port == 0 an available port is used</summary>
+        /// <summary>
+        /// if port == 0 an available port is used
+        /// </summary>
         public UdpSocketClientHub(string dbName, string endpoint, int port = 0, SharedEnv env = null, RemoteClientAccess access = RemoteClientAccess.Multi)
             : base(new RemoteDatabase(dbName), env, access)
         {
             this.endpoint   = endpoint;
             UdpServer.TryParseEndpoint(endpoint, out ipEndpoint);
-            udpSocket   = new UdpSocket(port);
-            sendBuffer  = new byte[128];
+            socket          = new UdpSocket(port);
+            sendBuffer      = new byte[128];
             // TODO check if running loop from here is OK
-            var _ = RunReceiveMessageLoop(udpSocket);
+            var _ = RunReceiveMessageLoop(socket);
         }
         
         /* public override void Dispose() {
@@ -148,8 +150,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
                     var rawRequest  = RemoteUtils.CreateProtocolMessage(syncRequest, writer);
                     // request need to be queued _before_ sending it to be prepared for handling the response.
                     var request     = new RemoteRequest(syncContext, cancellationToken);
-                    udpSocket.requestMap.Add(sendReqId, request);
-                    
+
+                    socket.requestMap.Add(sendReqId, request);                    
                     var length = rawRequest.Count;
                     if (sendBuffer.Length < length) {
                         sendBuffer = new byte[length];
@@ -157,7 +159,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                     rawRequest.CopyTo(sendBuffer);
                     
                     // --- Send message
-                    await udpSocket.client.SendAsync(sendBuffer, length, ipEndpoint).ConfigureAwait(false);
+                    await socket.client.SendAsync(sendBuffer, length, ipEndpoint).ConfigureAwait(false);
                     
                     // --- Wait for response
                     var response = await request.response.Task.ConfigureAwait(false);
