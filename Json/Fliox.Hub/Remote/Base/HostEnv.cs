@@ -2,10 +2,21 @@
 // See LICENSE file in the project root for full license information.
 
 using System.Diagnostics;
+using Friflo.Json.Fliox.Hub.Host.Event;
+
+// Note! - Must not have any dependency to System.Net or System.Net.Http (or other HTTP stuff)
 
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.Remote
 {
+    public class HostEnv
+    {
+        public   readonly   HostMetrics     metrics = new HostMetrics();
+        public              bool            useReaderPool;
+        /// Only set to true for testing. It avoids an early out at <see cref="EventSubClient.SendEvents"/>
+        public              bool            fakeOpenClosedSockets;
+    }
+    
     public sealed class HostMetrics {
         public  WebSocketMetrics    webSocket;
     }

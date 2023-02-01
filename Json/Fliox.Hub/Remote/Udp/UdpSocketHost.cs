@@ -9,7 +9,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
-using Friflo.Json.Fliox.Hub.Host.Event;
+using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Utils;
 
 // ReSharper disable MethodHasAsyncOverload
@@ -21,8 +21,6 @@ namespace Friflo.Json.Fliox.Hub.Remote.Udp
     public sealed class UdpSocketHost : SocketHost, IDisposable
     {
         private  readonly   UdpClient                           udpClient;
-        /// Only set to true for testing. It avoids an early out at <see cref="EventSubClient.SendEvents"/> 
-        private  readonly   bool                                fakeOpenClosedSocket;
         private  readonly   MessageBufferQueueAsync<VoidMeta>   sendQueue;
         private  readonly   List<JsonValue>                     messages;
         private  readonly   IPEndPoint                          remoteEndPoint;
@@ -30,15 +28,15 @@ namespace Friflo.Json.Fliox.Hub.Remote.Udp
 
 
         private UdpSocketHost (
-            RemoteHost  remoteHost,
             UdpClient   udpClient,
-            IPEndPoint  remoteEndPoint)
-            : base (remoteHost)
+            IPEndPoint  remoteEndPoint,
+            FlioxHub    hub,
+            HostEnv     hostEnv)
+        : base (hub, hostEnv)
         {
             this.udpClient          = udpClient;
             this.remoteEndPoint     = remoteEndPoint;
-            fakeOpenClosedSocket    = remoteHost.fakeOpenClosedSockets;
-            hostMetrics             = remoteHost.metrics;
+            hostMetrics             = hostEnv.metrics;
             sendQueue               = new MessageBufferQueueAsync<VoidMeta>();
             messages                = new List<JsonValue>();
         }
@@ -180,9 +178,10 @@ namespace Friflo.Json.Fliox.Hub.Remote.Udp
         public static async Task SendReceiveMessages(
             UdpClient   udpClient,
             IPEndPoint  remoteEndPoint,
-            RemoteHost  remoteHost)
+            FlioxHub    hub,
+            HostEnv     hostEnv)
         {
-            var  target     = new UdpSocketHost(remoteHost, udpClient, remoteEndPoint);
+            var  target     = new UdpSocketHost(udpClient, remoteEndPoint, hub, hostEnv);
             Task sendLoop   = null;
             try {
                 sendLoop = target.RunSendMessageLoop();
@@ -193,11 +192,11 @@ namespace Friflo.Json.Fliox.Hub.Remote.Udp
             }
             catch (SocketException e) {
                 var msg = GetExceptionMessage("UdpSocketHost.SendReceiveMessages()", remoteEndPoint, e);
-                remoteHost.Logger.Log(HubLog.Info, msg);
+                hub.Logger.Log(HubLog.Info, msg);
             }
             catch (Exception e) {
                 var msg = GetExceptionMessage("UdpSocketHost.SendReceiveMessages()", remoteEndPoint, e);
-                remoteHost.Logger.Log(HubLog.Info, msg);
+                hub.Logger.Log(HubLog.Info, msg);
             }
             finally {
                 if (sendLoop != null) {

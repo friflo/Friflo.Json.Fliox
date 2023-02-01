@@ -5,6 +5,8 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
+// Note! - Must not have any dependency to System.Net or System.Net.Http (or other HTTP stuff)
+
 // ReSharper disable MemberCanBePrivate.Global
 namespace Friflo.Json.Fliox.Hub.Remote.Test
 {

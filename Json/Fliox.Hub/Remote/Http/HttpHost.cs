@@ -56,6 +56,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
         private  readonly   RestHandler             restHandler     = new RestHandler();
         private  readonly   List<IRequestHandler>   customHandlers  = new List<IRequestHandler>();
         private  readonly   List<string>            hubRoutes;
+        public              HostEnv                 hostEnv         = new HostEnv();
+
         
         public   const      string                  DefaultCacheControl = "max-age=600";
 

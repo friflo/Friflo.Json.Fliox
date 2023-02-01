@@ -6,16 +6,15 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
-using Friflo.Json.Fliox.Hub.Host.Event;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Mapper;
 using static Friflo.Json.Fliox.Hub.Host.ExecutionType;
 
+// Note! - Must not have any dependency to System.Net or System.Net.Http (or other HTTP stuff)
+
 // ReSharper disable MethodHasAsyncOverload
 // ReSharper disable InlineTemporaryVariable
-
-// Note! - Must not have any dependency to System.Net or System.Net.Http (or other HTTP stuff)
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.Remote
 {
@@ -23,13 +22,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
     {
         public   readonly   FlioxHub        localHub;
         public   readonly   SharedEnv       sharedEnv;
-        public   readonly   HostMetrics     metrics = new HostMetrics();
-        public              bool            useReaderPool;
-
-        /// Only set to true for testing. It avoids an early out at <see cref="EventSubClient.SendEvents"/> 
-        public              bool            fakeOpenClosedSockets;
         
-        internal            FlioxHub        LocalHub    => localHub;
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         public              IHubLogger      Logger      => sharedEnv.hubLogger;
 

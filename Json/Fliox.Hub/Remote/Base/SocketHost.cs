@@ -15,6 +15,7 @@ using Friflo.Json.Fliox.Utils;
 using static Friflo.Json.Fliox.Hub.Host.ExecutionType;
 
 // Note! - Must not have any dependency to System.Net or System.Net.Http (or other HTTP stuff)
+
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.Remote
 {
@@ -52,17 +53,17 @@ namespace Friflo.Json.Fliox.Hub.Remote
         public              IHubLogger  Logger { get; }
         protected abstract  void        SendMessage(in JsonValue message);
 
-        protected SocketHost(RemoteHost remoteHost) {
-            var env         = remoteHost.sharedEnv;
+        protected SocketHost(FlioxHub hub, HostEnv hostEnv) {
+            var env         = hub.sharedEnv;
             sharedEnv       = env;
             typeStore       = sharedEnv.TypeStore;
-            hub             = remoteHost.localHub;
-            Logger          = remoteHost.Logger;
-            var pool        = remoteHost.sharedEnv.Pool;
+            this.hub        = hub;
+            Logger          = hub.Logger;
+            var pool        = sharedEnv.Pool;
             readerPool      = pool.ReaderPool;
             objectPool      = pool.ObjectMapper;
             readMapper      = objectPool.Get().instance;
-            useReaderPool   = remoteHost.useReaderPool;
+            useReaderPool   = hostEnv.useReaderPool;
             syncContextPool = new Stack<SyncContext>();
         }
 

@@ -7,6 +7,8 @@ using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
 
+// Note! - Must not have any dependency to System.Net or System.Net.Http (or other HTTP stuff)
+
 // ReSharper disable MemberCanBePrivate.Global
 namespace Friflo.Json.Fliox.Hub.Remote.Test
 {

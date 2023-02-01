@@ -9,6 +9,7 @@ using System.Net;
 using System.Net.WebSockets;
 using System.Threading;
 using System.Threading.Tasks;
+using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.Event;
 using Friflo.Json.Fliox.Utils;
 
@@ -29,15 +30,16 @@ namespace Friflo.Json.Fliox.Hub.Remote
 
 
         private WebSocketHost (
-            RemoteHost  remoteHost,
             WebSocket   webSocket,
-            IPEndPoint  remoteEndPoint)
-            : base (remoteHost)
+            IPEndPoint  remoteEndPoint,
+            FlioxHub    hub,
+            HostEnv     hostEnv)
+        : base (hub, hostEnv)
         {
             this.webSocket          = webSocket;
             this.remoteEndPoint     = remoteEndPoint;
-            fakeOpenClosedSocket    = remoteHost.fakeOpenClosedSockets;
-            hostMetrics             = remoteHost.metrics;
+            fakeOpenClosedSocket    = hostEnv.fakeOpenClosedSockets;
+            hostMetrics             = hostEnv.metrics;
             sendQueue               = new MessageBufferQueueAsync<VoidMeta>();
             messages                = new List<JsonValue>();
         }
@@ -182,9 +184,10 @@ namespace Friflo.Json.Fliox.Hub.Remote
         public static async Task SendReceiveMessages(
             WebSocket   websocket,
             IPEndPoint  remoteEndPoint,
-            RemoteHost  remoteHost)
+            FlioxHub    hub,
+            HostEnv     hostEnv)
         {
-            var  target     = new WebSocketHost(remoteHost, websocket, remoteEndPoint);
+            var  target     = new WebSocketHost(websocket, remoteEndPoint, hub, hostEnv);
             Task sendLoop   = null;
             try {
                 sendLoop = target.RunSendMessageLoop();
@@ -195,11 +198,11 @@ namespace Friflo.Json.Fliox.Hub.Remote
             }
             catch (WebSocketException e) {
                 var msg = GetExceptionMessage("WebSocketHost.SendReceiveMessages()", remoteEndPoint, e);
-                remoteHost.Logger.Log(HubLog.Info, msg);
+                hub.Logger.Log(HubLog.Info, msg);
             }
             catch (Exception e) {
                 var msg = GetExceptionMessage("WebSocketHost.SendReceiveMessages()", remoteEndPoint, e);
-                remoteHost.Logger.Log(HubLog.Info, msg);
+                hub.Logger.Log(HubLog.Info, msg);
             }
             finally {
                 if (sendLoop != null) {

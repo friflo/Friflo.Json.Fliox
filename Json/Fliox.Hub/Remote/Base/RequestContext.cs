@@ -9,6 +9,7 @@ using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Utils;
 
 // Note! - Must not have any dependency to System.Net or System.Net.Http (or other HTTP stuff)
+
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.Remote
 {
@@ -59,7 +60,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             IHttpHeaders    headers,
             MemoryBuffer    memoryBuffer)
         {
-            this.hub            = remoteHost.LocalHub;
+            this.hub            = remoteHost.localHub;
             this.method         = method;
             this.route          = route;
             this.query          = query;
