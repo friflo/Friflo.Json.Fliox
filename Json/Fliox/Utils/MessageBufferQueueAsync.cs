@@ -10,7 +10,7 @@ namespace Friflo.Json.Fliox.Utils
 {
     /// <summary>
     /// Asynchronous version of <see cref="MessageBufferQueue{T}"/> used to support
-    /// awaiting new messages asynchronous with <see cref="DequeMessagesAsync"/> 
+    /// awaiting new messages asynchronous with <see cref="DequeMessageValuesAsync"/> 
     /// </summary>
     public sealed class MessageBufferQueueAsync<TMeta> : IDisposable
     {
@@ -38,7 +38,7 @@ namespace Friflo.Json.Fliox.Utils
             }
         }
         
-        public async Task<MessageBufferEvent> DequeMessagesAsync(List<JsonValue> messages) {
+        public async Task<MessageBufferEvent> DequeMessageValuesAsync(List<JsonValue> messages) {
             messages.Clear();
             await messageAvailable.WaitAsync().ConfigureAwait(false);
 
@@ -47,7 +47,7 @@ namespace Friflo.Json.Fliox.Utils
             }
         }
         
-        public async Task<MessageBufferEvent> DequeMessages(List<MessageItem<TMeta>> messages) {
+        public async Task<MessageBufferEvent> DequeMessagesAsync(List<MessageItem<TMeta>> messages) {
             messages.Clear();
             await messageAvailable.WaitAsync().ConfigureAwait(false);
 

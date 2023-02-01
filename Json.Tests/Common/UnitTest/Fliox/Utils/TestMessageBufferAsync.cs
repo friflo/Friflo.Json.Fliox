@@ -28,7 +28,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Utils
             queue.AddTail(msg2);
             
             var messages    = new List<JsonValue>();
-            var ev          = await queue.DequeMessagesAsync(messages);
+            var ev          = await queue.DequeMessageValuesAsync(messages);
             
             queue.AddTail(msg3);
 
@@ -37,7 +37,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Utils
             AreEqual("msg-2", messages[1].AsString());
             AreEqual(MessageBufferEvent.NewMessage, ev);
             
-            ev = await queue.DequeMessagesAsync(messages);
+            ev = await queue.DequeMessageValuesAsync(messages);
             
             AreEqual(1, messages.Count);
             AreEqual("msg-3", messages[0].AsString());
@@ -54,7 +54,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Utils
             queue.Close();
             
             var messages    = new List<JsonValue>();
-            var ev          = await queue.DequeMessagesAsync(messages);
+            var ev          = await queue.DequeMessageValuesAsync(messages);
             
             AreEqual(1, messages.Count);
             AreEqual("msg-1", messages[0].AsString());
@@ -66,7 +66,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Utils
             var queue = new MessageBufferQueueAsync<VoidMeta>(2);
             
             var messages = new List<JsonValue>();
-            var waitTask = queue.DequeMessagesAsync(messages);
+            var waitTask = queue.DequeMessageValuesAsync(messages);
             
             var msg1 = new JsonValue("msg-1");
             var msg2 = new JsonValue("msg-2");
@@ -113,7 +113,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Utils
             int dequeCount      = 0;
             while (true) {
                 var messages    = new List<JsonValue>();
-                var ev          = await queue.DequeMessagesAsync(messages);
+                var ev          = await queue.DequeMessageValuesAsync(messages);
                 dequeCount++;
                 // Console.WriteLine($"{count} - messages: {messages.Count}");
                 foreach (var msg in messages) {

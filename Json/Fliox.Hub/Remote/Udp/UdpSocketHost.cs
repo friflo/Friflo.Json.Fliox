@@ -15,8 +15,9 @@ using Friflo.Json.Fliox.Utils;
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.Remote
 {
+
     /// <summary>
-    /// Initial implementation based on <see cref="WebSocketHost"/>
+    /// Implementation aligned with <see cref="WebSocketHost"/>
     /// </summary>
     internal sealed class UdpSocketHost : SocketHost, IDisposable
     {
@@ -82,7 +83,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         private async Task SendMessageLoop() {
             var buffer = new byte[128];  
             while (true) {
-                var remoteEvent = await sendQueue.DequeMessages(messages).ConfigureAwait(false);
+                var remoteEvent = await sendQueue.DequeMessagesAsync(messages).ConfigureAwait(false);
                 foreach (var message in messages) {
                     if (LogMessage) {
                         Logger.Log(HubLog.Info, message.value.AsString());
@@ -94,7 +95,6 @@ namespace Friflo.Json.Fliox.Hub.Remote
                     message.value.CopyTo(buffer);
                     // if (sendMessage.Count > 100000) Console.WriteLine($"SendLoop. size: {sendMessage.Count}");
                     await udpClient.SendAsync(buffer, length, message.meta.remoteEndPoint).ConfigureAwait(false);
-
                 }
                 if (remoteEvent == MessageBufferEvent.Closed) {
                     return;

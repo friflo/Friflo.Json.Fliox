@@ -13,21 +13,23 @@ using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.Event;
 using Friflo.Json.Fliox.Utils;
 
-// ReSharper disable MethodHasAsyncOverload
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.Remote
 {
     // [Things I Wish Someone Told Me About ASP.NET Core WebSockets | codetinkerer.com] https://www.codetinkerer.com/2018/06/05/aspnet-core-websockets.html
-    public sealed class WebSocketHost : SocketHost, IDisposable
+    /// <summary>
+    /// Implementation aligned with <see cref="UdpSocketHost"/>
+    /// </summary>
+    internal sealed class WebSocketHost : SocketHost, IDisposable
     {
         private  readonly   WebSocket                           webSocket;
-        /// Only set to true for testing. It avoids an early out at <see cref="EventSubClient.SendEvents"/> 
-        private  readonly   bool                                fakeOpenClosedSocket;
         private  readonly   MessageBufferQueueAsync<VoidMeta>   sendQueue;
         private  readonly   List<JsonValue>                     messages;
         private  readonly   IPEndPoint                          remoteEndPoint;
-        private  readonly   SocketContext                       socketContext;
         private  readonly   HostMetrics                         hostMetrics;
+        private  readonly   SocketContext                       socketContext;
+        /// Only set to true for testing. It avoids an early out at <see cref="EventSubClient.SendEvents"/> 
+        private  readonly   bool                                fakeOpenClosedSocket;
 
 
         private WebSocketHost (
@@ -39,11 +41,11 @@ namespace Friflo.Json.Fliox.Hub.Remote
         {
             this.webSocket          = webSocket;
             this.remoteEndPoint     = remoteEndPoint;
-            socketContext           = new SocketContext(this.remoteEndPoint);
-            fakeOpenClosedSocket    = hostEnv.fakeOpenClosedSockets;
             hostMetrics             = hostEnv.metrics;
             sendQueue               = new MessageBufferQueueAsync<VoidMeta>();
             messages                = new List<JsonValue>();
+            socketContext           = new SocketContext(this.remoteEndPoint);
+            fakeOpenClosedSocket    = hostEnv.fakeOpenClosedSockets;
         }
         
         public void Dispose() {
@@ -92,7 +94,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         // System.InvalidOperationException: There is already one outstanding 'SendAsync' call for this WebSocket instance. ReceiveAsync and SendAsync can be called simultaneously, but at most one outstanding operation for each of them is allowed at the same time. 
         private async Task SendMessageLoop() {
             while (true) {
-                var remoteEvent = await sendQueue.DequeMessagesAsync(messages).ConfigureAwait(false);
+                var remoteEvent = await sendQueue.DequeMessageValuesAsync(messages).ConfigureAwait(false);
                 foreach (var message in messages) {
                     if (LogMessage) {
                         Logger.Log(HubLog.Info, message.AsString());
