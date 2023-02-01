@@ -37,8 +37,11 @@ namespace Friflo.Json.Fliox.Hub.Remote
 
     /// <summary>
     /// A <see cref="FlioxHub"/> accessed remotely  using a <see cref="UdpClient"/> connection<br/>
-    /// Implementation aligned with <see cref="WebSocketClientHub"/>
     /// </summary>
+    /// <remarks>
+    /// Counterpart of <see cref="UdpSocketHost"/> used by clients.<br/>
+    /// Implementation aligned with <see cref="WebSocketClientHub"/>
+    /// </remarks>
     public sealed class UdpSocketClientHub : SocketClientHub
     {
         private  readonly   string                      endpoint;

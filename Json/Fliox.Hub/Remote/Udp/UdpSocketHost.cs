@@ -19,6 +19,9 @@ namespace Friflo.Json.Fliox.Hub.Remote
     /// <summary>
     /// Implementation aligned with <see cref="WebSocketHost"/>
     /// </summary>
+    /// <remarks>
+    /// Counterpart of <see cref="UdpSocketClientHub"/> used by the server.<br/>
+    /// </remarks>
     internal sealed class UdpSocketHost : SocketHost, IDisposable
     {
         private  readonly   UdpClient                           udpClient;
@@ -132,7 +135,6 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 
                 // --- 1. Read request from datagram
                 var receiveResult   = await udpClient.ReceiveAsync().ConfigureAwait(false);
-                var socketContext   = new SocketContext(receiveResult.RemoteEndPoint);
                 
                 var buffer          = receiveResult.Buffer;
                 if (memoryStream.Capacity < buffer.Length) {
@@ -140,7 +142,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 }
                 memoryStream.Write(buffer, 0, buffer.Length);
 
-                var request = new JsonValue(memoryStream.GetBuffer(), (int)memoryStream.Position);
+                var socketContext   = new SocketContext(receiveResult.RemoteEndPoint);
+                var request         = new JsonValue(memoryStream.GetBuffer(), (int)memoryStream.Position);
                 try {
                     // --- 2. Parse request
                     Interlocked.Increment(ref hostMetrics.udp.receivedCount);

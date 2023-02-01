@@ -20,14 +20,16 @@ namespace Friflo.Json.Fliox.Hub.Remote
     /// <summary>
     /// Implementation aligned with <see cref="UdpSocketHost"/>
     /// </summary>
-    internal sealed class WebSocketHost : SocketHost, IDisposable
+    /// <remarks>
+    /// Counterpart of <see cref="WebSocketClientHub"/> used by the server.<br/>
+    /// </remarks>
+    public sealed class WebSocketHost : SocketHost, IDisposable
     {
         private  readonly   WebSocket                           webSocket;
         private  readonly   MessageBufferQueueAsync<VoidMeta>   sendQueue;
         private  readonly   List<JsonValue>                     messages;
         private  readonly   IPEndPoint                          remoteEndPoint;
         private  readonly   HostMetrics                         hostMetrics;
-        private  readonly   SocketContext                       socketContext;
         /// Only set to true for testing. It avoids an early out at <see cref="EventSubClient.SendEvents"/> 
         private  readonly   bool                                fakeOpenClosedSocket;
 
@@ -44,7 +46,6 @@ namespace Friflo.Json.Fliox.Hub.Remote
             hostMetrics             = hostEnv.metrics;
             sendQueue               = new MessageBufferQueueAsync<VoidMeta>();
             messages                = new List<JsonValue>();
-            socketContext           = new SocketContext(this.remoteEndPoint);
             fakeOpenClosedSocket    = hostEnv.fakeOpenClosedSockets;
         }
         
@@ -158,7 +159,9 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 if (wsResult.MessageType != WebSocketMessageType.Text) {
                     continue;
                 }
-                var request = new JsonValue(memoryStream.GetBuffer(), (int)memoryStream.Position);
+                
+                var socketContext   = new SocketContext(remoteEndPoint);
+                var request         = new JsonValue(memoryStream.GetBuffer(), (int)memoryStream.Position);
                 try {
                     // --- 2. Parse request
                     Interlocked.Increment(ref hostMetrics.webSocket.receivedCount);
