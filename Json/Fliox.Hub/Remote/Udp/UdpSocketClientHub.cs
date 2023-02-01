@@ -25,10 +25,10 @@ namespace Friflo.Json.Fliox.Hub.Remote
         internal  readonly  UdpClient           client;
         internal  readonly  RemoteRequestMap    requestMap;
 
-        internal UdpSocket() {
+        /// <summary>if port == 0 an available port is used</summary>
+        internal UdpSocket(int port) {
             client              = new UdpClient();
-            // TODO check how to set port automatically
-            var localEndPoint   = new IPEndPoint(IPAddress.Any, 1234);
+            var localEndPoint   = new IPEndPoint(IPAddress.Any, port);
             client.Client.Bind(localEndPoint);
             requestMap          = new RemoteRequestMap();
         }
@@ -54,12 +54,13 @@ namespace Friflo.Json.Fliox.Hub.Remote
         
         public   override   string                      ToString() => $"{database.name} - endpoint: {endpoint}";
         
-        public UdpSocketClientHub(string dbName, string endpoint, SharedEnv env = null, RemoteClientAccess access = RemoteClientAccess.Multi)
+        /// <summary>if port == 0 an available port is used</summary>
+        public UdpSocketClientHub(string dbName, string endpoint, int port = 0, SharedEnv env = null, RemoteClientAccess access = RemoteClientAccess.Multi)
             : base(new RemoteDatabase(dbName), env, access)
         {
             this.endpoint   = endpoint;
             UdpServer.TryParseEndpoint(endpoint, out ipEndpoint);
-            udpSocket   = new UdpSocket();
+            udpSocket   = new UdpSocket(port);
             sendBuffer  = new byte[128];
             // TODO check if running loop from here is OK
             var _ = RunReceiveMessageLoop(udpSocket);
