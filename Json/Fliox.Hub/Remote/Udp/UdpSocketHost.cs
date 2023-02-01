@@ -50,8 +50,8 @@ namespace Friflo.Json.Fliox.Hub.Remote.Udp
         public override bool    IsOpen ()           => true;
         
         // --- WebHost
-        protected override void SendMessage(in JsonValue message, IPEndPoint remoteEndPoint) {
-            sendQueue.AddTail(message, new UdpMeta(remoteEndPoint));
+        protected override void SendMessage(in JsonValue message, in SocketContext socketContext) {
+            sendQueue.AddTail(message, new UdpMeta(socketContext.remoteEndPoint));
         }
 
         
@@ -132,7 +132,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.Udp
                 
                 // --- 1. Read request from datagram
                 var receiveResult   = await udpClient.ReceiveAsync().ConfigureAwait(false);
-                var remoteEndPoint  = receiveResult.RemoteEndPoint;
+                var socketContext   = new SocketContext(receiveResult.RemoteEndPoint);
                 
                 var buffer          = receiveResult.Buffer;
                 if (memoryStream.Capacity < buffer.Length) {
@@ -145,19 +145,19 @@ namespace Friflo.Json.Fliox.Hub.Remote.Udp
                     // --- 2. Parse request
                     Interlocked.Increment(ref hostMetrics.udp.receivedCount);
                     var t1          = Stopwatch.GetTimestamp();
-                    var syncRequest = ParseRequest(request, remoteEndPoint);
+                    var syncRequest = ParseRequest(request, socketContext);
                     var t2          = Stopwatch.GetTimestamp();
                     Interlocked.Add(ref hostMetrics.udp.requestReadTime, t2 - t1);
                     if (syncRequest == null) {
                         continue;
                     }
                     // --- 3. Execute request
-                    ExecuteRequest (syncRequest, remoteEndPoint);
+                    ExecuteRequest (syncRequest, socketContext);
                     var t3          = Stopwatch.GetTimestamp();
                     Interlocked.Add(ref hostMetrics.udp.requestExecuteTime, t3 - t2);
                 }
                 catch (Exception e) {
-                    SendResponseException(e, null, remoteEndPoint);
+                    SendResponseException(e, null, socketContext);
                 }
             }
         }
