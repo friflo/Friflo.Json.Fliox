@@ -201,7 +201,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
     }
     
     /// <summary>
-    /// Used by <see cref="Udp.UdpSocketHost"/> to send a response to the <see cref="remoteEndPoint"/>
+    /// Used by <see cref="UdpSocketHost"/> to send a response to the <see cref="remoteEndPoint"/>
     /// which made a request.<br/>
     /// It is not required by <see cref="WebSocketHost"/> as the remote endpoint is implicit in the used WebSocket.
     /// </summary>
