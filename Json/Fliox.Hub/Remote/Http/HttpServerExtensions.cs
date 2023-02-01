@@ -12,7 +12,7 @@ using Friflo.Json.Fliox.Hub.Remote.WebSockets;
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.Remote
 {
-    public static class HttpListenerExtensions
+    public static class HttpServerExtensions
     {
         /// <summary>
         /// Execute the request return a RequestContext containing the execution result.
@@ -67,7 +67,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             HttpListenerResponse resp = context.Response;
             if (!requestContext.Handled) {
                 var body = $"{context.Request.Url} not found";
-                await WriteResponseString(resp, "text/plain", 404, body, null).ConfigureAwait(false);
+                await resp.WriteResponseString("text/plain", 404, body, null).ConfigureAwait(false);
                 return;
             }
             var responseBody = requestContext.Response;
@@ -76,7 +76,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             resp.Close();
         }
         
-        public static async Task WriteResponseString (HttpListenerResponse response, string contentType, int statusCode, string value, Dictionary<string, string> headers) {
+        public static async Task WriteResponseString (this HttpListenerResponse response, string contentType, int statusCode, string value, Dictionary<string, string> headers) {
             byte[]  resultBytes = Encoding.UTF8.GetBytes(value);
             
             SetResponseHeader(response, contentType, statusCode, resultBytes.Length, headers);

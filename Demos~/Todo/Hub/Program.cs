@@ -13,7 +13,7 @@ namespace TodoHub
         public static void Main()
         {
             var httpHost = CreateHttpHost();
-            HttpListenerHost.RunHost("http://+:8010/", httpHost);
+            HttpServer.RunHost("http://+:8010/", httpHost);
         }
         
         /// <summary> blueprint to showcase a minimal feature set of a <see cref="HttpHost"/> </summary>

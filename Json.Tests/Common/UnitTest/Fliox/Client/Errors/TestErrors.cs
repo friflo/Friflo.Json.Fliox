@@ -57,7 +57,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             using (var fileDatabase = new FileDatabase(TestGlobals.DB, TestGlobals.PocStoreFolder))
             using (var testHub      = new TestDatabaseHub(fileDatabase, TestGlobals.Shared))
             using (var httpHost     = new HttpHost(testHub, "/"))
-            using (var server       = new HttpListenerHost("http://+:8080/", httpHost)) {
+            using (var server       = new HttpServer("http://+:8080/", httpHost)) {
                 await Happy.TestHappy.RunServer(server, async () => {
                     using (var remoteHub    = new HttpClientHub(TestGlobals.DB, "http://localhost:8080/", TestGlobals.Shared))
                     using (var useStore     = new PocStore(remoteHub) { UserId = "useStore", ClientId = "use-client"}) {

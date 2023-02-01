@@ -125,7 +125,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             using (var database     = new FileDatabase(TestGlobals.DB, TestGlobals.PocStoreFolder, new PocService()))
             using (var hub          = new FlioxHub(database, TestGlobals.Shared))
             using (var httpHost     = new HttpHost(hub, "/"))
-            using (var server       = new HttpListenerHost("http://+:8080/", httpHost))
+            using (var server       = new HttpServer("http://+:8080/", httpHost))
             using (var remoteHub    = new HttpClientHub(TestGlobals.DB, "http://localhost:8080/", TestGlobals.Shared)) {
                 await RunServer(server, async () => {
                     
@@ -159,7 +159,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             using (var database         = new FileDatabase(TestGlobals.DB, TestGlobals.PocStoreFolder, new PocService()))
             using (var hub          	= new FlioxHub(database, TestGlobals.Shared))
             using (var httpHost         = new HttpHost(hub, "/", TestGlobals.Shared))
-            using (var server           = new HttpListenerHost("http://+:8080/", httpHost))
+            using (var server           = new HttpServer("http://+:8080/", httpHost))
             using (var remoteHub        = new WebSocketClientHub(TestGlobals.DB, "ws://localhost:8080/", TestGlobals.Shared))
             using (var listenDb         = new PocStore(remoteHub) { UserId = "listenDb", ClientId = "listen-client"}) {
                 hub.EventDispatcher = eventDispatcher;
@@ -195,7 +195,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             using (var database         = new FileDatabase(TestGlobals.DB, TestGlobals.PocStoreFolder, new PocService()))
             using (var hub          	= new FlioxHub(database, TestGlobals.Shared))
             using (var hostHub          = new HttpHost(hub, "/"))
-            using (var server           = new HttpListenerHost("http://+:8080/", hostHub))
+            using (var server           = new HttpServer("http://+:8080/", hostHub))
             using (var remoteHub        = new WebSocketClientHub(TestGlobals.DB, "ws://localhost:8080/", TestGlobals.Shared))
             using (var listenDb         = new PocStore(remoteHub) { UserId = "listenDb", ClientId = "listen-client"}) {
                 hostHub.hostEnv.fakeOpenClosedSockets = true;
@@ -262,7 +262,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             }
         }
         
-        internal static async Task RunServer(HttpListenerHost server, Func<Task> run) {
+        internal static async Task RunServer(HttpServer server, Func<Task> run) {
             server.Start();
             Task hostTask = null;
             try {

@@ -19,7 +19,7 @@ namespace DemoHub
         {
             if (args.Contains("HttpListener")) {
                 var httpHost = CreateHttpHost();
-                HttpListenerHost.RunHost("http://+:8010/", httpHost);
+                HttpServer.RunHost("http://+:8010/", httpHost);
                 return;
             }
             Startup.Run(args);      // ASP.NET Core 3, 3.1, 5
@@ -30,7 +30,7 @@ namespace DemoHub
         /// This method is a blueprint showing how to setup a <see cref="HttpHost"/> utilizing all features available
         /// via HTTP and WebSockets. The Hub can be integrated by two different HTTP servers:
         /// <list type="bullet">
-        ///   <item> By <see cref="System.Net.HttpListener"/> see <see cref="HttpListenerHost.RunHost"/> </item>
+        ///   <item> By <see cref="System.Net.HttpListener"/> see <see cref="HttpServer.RunHost"/> </item>
         ///   <item> By <a href="https://docs.microsoft.com/en-us/aspnet/core/">ASP.NET Core / Kestrel</a> see <see cref="Startup.Configure"/></item>
         /// </list>
         /// The features of a <see cref="HttpHost"/> instance utilized by this blueprint method are listed at

@@ -31,13 +31,13 @@ namespace Friflo.Json.Tests.Main
         private static void TestServer(string endpoint) {
             var hostHub = CreateHttpHost(new Config());
         //  var hostHub = CreateMiniHost();
-            var server = new HttpListenerHost(endpoint, hostHub);
+            var server = new HttpServer(endpoint, hostHub);
             // Test assigning a customRequestHandler 
             server.customRequestHandler = async context => {
                 var url = context.Request.Url;
                 var path = url != null ? url.LocalPath : null;
                 if (path == "/hello") {
-                    await HttpListenerExtensions.WriteResponseString(context.Response, "text/plain", 200, "Hi", null).ConfigureAwait(false);
+                    await context.Response.WriteResponseString("text/plain", 200, "Hi", null).ConfigureAwait(false);
                     return;
                 }
                 await server.ExecuteRequest(context);

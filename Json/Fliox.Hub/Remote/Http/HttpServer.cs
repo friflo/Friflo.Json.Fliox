@@ -20,20 +20,20 @@ namespace Friflo.Json.Fliox.Hub.Remote
     // See: [Configure options for the ASP.NET Core Kestrel web server | Microsoft Docs] https://docs.microsoft.com/en-us/aspnet/core/fundamentals/servers/kestrel/options?view=aspnetcore-5.0
 
     /// <summary>
-    /// <see cref="HttpListenerHost"/> is a utility class to enable running a simple HTTP Server by using a <see cref="HttpListener"/>
+    /// <see cref="HttpServer"/> is a utility class to enable running a simple HTTP Server by using a <see cref="HttpListener"/>
     /// </summary>
     /// <remarks>
     /// Via its utility methods is manages the lifecycle of a <see cref="HttpListener"/>.
     /// Lifecycle methods:
     /// <list type="bullet">
-    ///     <item>Create an instance: <see cref="HttpListenerHost(string, HttpHost)"/></item>
+    ///     <item>Create an instance: <see cref="HttpServer(string,Friflo.Json.Fliox.Hub.Remote.HttpHost)"/></item>
     ///     <item>Start server: <see cref="Start"/></item>
     ///     <item>Run server loop for incoming connections: <see cref="Run"/></item>
     ///     <item>Stop server: <see cref="Stop"/></item>
     ///     <item>Shutdown server: <see cref="Dispose"/></item>
     /// </list>
     /// </remarks>
-    public sealed class HttpListenerHost : IDisposable, ILogSource
+    public sealed class HttpServer : IDisposable, ILogSource
     {
         private  readonly   HttpListener                    listener;
         private             bool                            running;
@@ -48,14 +48,14 @@ namespace Friflo.Json.Fliox.Hub.Remote
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         public              IHubLogger                      Logger { get; }
         
-        public HttpListenerHost(HttpListener httpListener, HttpHost httpHost) {
+        public HttpServer(HttpListener httpListener, HttpHost httpHost) {
             this.httpHost           = httpHost;
             listener                = httpListener;
             Logger                  = httpHost.sharedEnv.hubLogger;
             customRequestHandler    = ExecuteRequest;
         }
         
-        public HttpListenerHost(string endpoint, HttpHost httpHost)
+        public HttpServer(string endpoint, HttpHost httpHost)
             : this (CreateHttpListener(new []{endpoint}), httpHost)
         { }
         
@@ -66,7 +66,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         //     netsh http delete urlacl http://+:8010/
         // Get DOMAIN\USER via  PowerShell > $env:UserName / $env:UserDomain 
         public static int RunHost(string endpoint, HttpHost httpHost) {
-            var server = new HttpListenerHost(endpoint, httpHost);
+            var server = new HttpServer(endpoint, httpHost);
             server.Start();
             server.Run();
             return 0;
@@ -141,7 +141,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                         var resp    = context.Response;
                         var message = $"fliox request failed - {e.GetType().Name}: {e.Message}";
                         LogException(message, e);
-                        await HttpListenerExtensions.WriteResponseString(resp, "text/plain", 500, message, null).ConfigureAwait(false);
+                        await resp.WriteResponseString("text/plain", 500, message, null).ConfigureAwait(false);
                         resp.Close();
                         return;
                     }
@@ -165,12 +165,12 @@ namespace Friflo.Json.Fliox.Hub.Remote
             if (path == "/" && httpHost.endpoint != "/") {
                 var location = httpHost.endpoint;
                 var headers = new Dictionary<string, string> { { "Location", location }};
-                await HttpListenerExtensions.WriteResponseString(response, "text/plain", 302, $"redirect -> {location}", headers).ConfigureAwait(false);
+                await response.WriteResponseString("text/plain", 302, $"redirect -> {location}", headers).ConfigureAwait(false);
                 response.OutputStream.Close(); // required by HttpListener in Unity for redirect. CLR does this automatically.
                 return;
             }
             var body = $"{context.Request.Url} not found";
-            await HttpListenerExtensions.WriteResponseString(response, "text/plain", 404, body, null).ConfigureAwait(false);
+            await response.WriteResponseString("text/plain", 404, body, null).ConfigureAwait(false);
         }
         
 

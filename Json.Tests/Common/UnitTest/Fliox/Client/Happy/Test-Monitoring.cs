@@ -60,7 +60,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             using (var database     = new FileDatabase(TestGlobals.DB, TestGlobals.PocStoreFolder))
             using (var hub          = new FlioxHub(database, TestGlobals.Shared, HostName))
             using (var httpHost     = new HttpHost(hub, "/"))
-            using (var server       = new HttpListenerHost("http://+:8080/", httpHost)) 
+            using (var server       = new HttpServer("http://+:8080/", httpHost)) 
             using (var monitor      = new MonitorDB(TestGlobals.Monitor, hub))
             using (var remoteHub    = new HttpClientHub(TestGlobals.DB, "http://localhost:8080/", TestGlobals.Shared)) {
                 hub.AddExtensionDB(monitor);
