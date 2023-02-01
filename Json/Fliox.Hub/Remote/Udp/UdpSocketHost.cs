@@ -66,9 +66,9 @@ namespace Friflo.Json.Fliox.Hub.Remote.Udp
         /// A send loop reading from a queue is required as message can be sent from two different sources <br/>
         /// 1. response messages created in <see cref="ReceiveMessageLoop"/> <br/>
         /// 2. event messages send with <see cref="SocketHost.SendEvent"/>'s <br/>
-        /// The loop ensures a WebSocket.SendAsync() is called only once at a time.
+        /// The loop ensures a UdpClient.SendAsync() is called only once at a time.
         /// </remarks>
-        /// <seealso cref="WebSocketHost.RunReceiveMessageLoop"/>
+        /// <seealso cref="UdpSocketHost.RunReceiveMessageLoop"/>
         private async Task RunSendMessageLoop() {
             try {
                 await SendMessageLoop().ConfigureAwait(false);
@@ -78,9 +78,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.Udp
             }
         }
         
-        // Send queue (sendWriter / sendReader) is required  to prevent having more than one WebSocket.SendAsync() call outstanding.
-        // Otherwise:
-        // System.InvalidOperationException: There is already one outstanding 'SendAsync' call for this WebSocket instance. ReceiveAsync and SendAsync can be called simultaneously, but at most one outstanding operation for each of them is allowed at the same time. 
+        // Send queue (sendWriter / sendReader) is required  to prevent having more than one UdpClient.SendAsync() call outstanding.
         private async Task SendMessageLoop() {
             var buffer = new byte[128];  
             while (true) {
@@ -143,18 +141,18 @@ namespace Friflo.Json.Fliox.Hub.Remote.Udp
                 var request = new JsonValue(memoryStream.GetBuffer(), (int)memoryStream.Position);
                 try {
                     // --- 2. Parse request
-                    Interlocked.Increment(ref hostMetrics.webSocket.receivedCount);
+                    Interlocked.Increment(ref hostMetrics.udp.receivedCount);
                     var t1          = Stopwatch.GetTimestamp();
                     var syncRequest = ParseRequest(request);
                     var t2          = Stopwatch.GetTimestamp();
-                    Interlocked.Add(ref hostMetrics.webSocket.requestReadTime, t2 - t1);
+                    Interlocked.Add(ref hostMetrics.udp.requestReadTime, t2 - t1);
                     if (syncRequest == null) {
                         continue;
                     }
                     // --- 3. Execute request
                     ExecuteRequest (syncRequest);
                     var t3          = Stopwatch.GetTimestamp();
-                    Interlocked.Add(ref hostMetrics.webSocket.requestExecuteTime, t3 - t2);
+                    Interlocked.Add(ref hostMetrics.udp.requestExecuteTime, t3 - t2);
                 }
                 catch (Exception e) {
                     SendResponseException(e, null);
@@ -207,7 +205,6 @@ namespace Friflo.Json.Fliox.Hub.Remote.Udp
                 return $"{location} {e.GetType().Name}: {e.Message} ErrorCode: {listenerException.ErrorCode}, remote: {remoteEndPoint} ";
             }
             if (e is SocketException wsException) {
-                // e.g. WebSocketException - ErrorCode: 0, HResult: 0x80004005, WebSocketErrorCode: ConnectionClosedPrematurely, Message:The remote party closed the WebSocket connection without completing the close handshake., remote:[::1]:51809
                 return $"{location} {e.GetType().Name} {e.Message} ErrorCode: {wsException.ErrorCode}, HResult: 0x{e.HResult:X}, remote: {remoteEndPoint}";
             }
             return $"{location} {e.GetType().Name}: {e.Message}, remote: {remoteEndPoint}";

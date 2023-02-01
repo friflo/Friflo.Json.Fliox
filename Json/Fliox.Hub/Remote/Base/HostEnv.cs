@@ -18,14 +18,15 @@ namespace Friflo.Json.Fliox.Hub.Remote
     }
     
     public sealed class HostMetrics {
-        public  WebSocketMetrics    webSocket;
+        public  SocketMetrics    webSocket;
+        public  SocketMetrics    udp;
     }
     
     /// <summary>
     /// Time values are the difference of two timestamps: endTime - startTime <br/>
     /// timestamps are used from <see cref="Stopwatch.GetTimestamp"/>
     /// </summary>
-    public struct WebSocketMetrics {
+    public struct SocketMetrics {
         /// <summary> accumulated count of all received WebSocket messages </summary>
         public  int     receivedCount;
         /// <summary> accumulated read request time of all WebSocket's </summary>

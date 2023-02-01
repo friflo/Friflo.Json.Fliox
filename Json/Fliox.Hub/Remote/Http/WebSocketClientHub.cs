@@ -216,15 +216,15 @@ namespace Friflo.Json.Fliox.Hub.Remote
                     writer.WriteNullMembers = false;
                     var rawRequest  = RemoteUtils.CreateProtocolMessage(syncRequest, writer);
                     // request need to be queued _before_ sending it to be prepared for handling the response.
-                    var wsRequest   = new RemoteRequest(syncContext, cancellationToken);
-                    wsConn.requestMap.Add(sendReqId, wsRequest);
+                    var request     = new RemoteRequest(syncContext, cancellationToken);
+                    wsConn.requestMap.Add(sendReqId, request);
                     var buffer      = rawRequest.AsReadOnlyMemory();
 
                     // --- Send message
                     await wsConn.websocket.SendAsync(buffer, WebSocketMessageType.Text, true, CancellationToken.None).ConfigureAwait(false);
                     
                     // --- Wait for response
-                    var response = await wsRequest.response.Task.ConfigureAwait(false);
+                    var response = await request.response.Task.ConfigureAwait(false);
                     
                     if (response is SyncResponse syncResponse) {
                         return new ExecuteSyncResult(syncResponse);

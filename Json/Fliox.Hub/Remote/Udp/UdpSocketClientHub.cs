@@ -62,9 +62,9 @@ namespace Friflo.Json.Fliox.Hub.Remote.Udp
             // websocket.CancelPendingRequests();
         } */
         
-        private async Task RunReceiveMessageLoop(UdpSocket wsConn) {
+        private async Task RunReceiveMessageLoop(UdpSocket socket) {
             using (var mapper = new ObjectMapper(sharedEnv.TypeStore)) {
-                await ReceiveMessageLoop(wsConn, mapper.reader).ConfigureAwait(false);
+                await ReceiveMessageLoop(socket, mapper.reader).ConfigureAwait(false);
             }
         }
 
@@ -76,9 +76,9 @@ namespace Friflo.Json.Fliox.Hub.Remote.Udp
         /// - A blocking WebSocket.SendAsync() call does not block WebSocket.ReceiveAsync() <br/>
         /// - The created <see cref="RemoteRequest.response"/>'s act as a queue. <br/>
         /// </summary>
-        private async Task ReceiveMessageLoop(UdpSocket wsConn, ObjectReader reader) {
+        private async Task ReceiveMessageLoop(UdpSocket socket, ObjectReader reader) {
             var parser          = new Utf8JsonParser();
-            var ws              = wsConn.client;
+            var client          = socket.client;
             var memoryStream    = new MemoryStream();
             while (true)
             {
@@ -86,7 +86,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.Udp
                 memoryStream.SetLength(0);
                 try {
                     // --- read complete datagram message
-                    var receiveResult   = await ws.ReceiveAsync().ConfigureAwait(false);
+                    var receiveResult   = await client.ReceiveAsync().ConfigureAwait(false);
                     
                     var buffer          = receiveResult.Buffer;
                     if (memoryStream.Capacity < buffer.Length) {
@@ -105,7 +105,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.Udp
                             if (!messageHead.reqId.HasValue)
                                 throw new InvalidOperationException($"missing reqId in response:\n{message}");
                             var id = messageHead.reqId.Value;
-                            if (!wsConn.requestMap.Remove(id, out RemoteRequest request)) {
+                            if (!socket.requestMap.Remove(id, out RemoteRequest request)) {
                                 throw new InvalidOperationException($"reqId not found. id: {id}");
                             }
                             reader.ReaderPool   = request.responseReaderPool;
@@ -122,16 +122,12 @@ namespace Friflo.Json.Fliox.Hub.Remote.Udp
                 {
                     var message = $"WebSocketClientHub receive error: {e.Message}";
                     Logger.Log(HubLog.Error, message, e);
-                    wsConn.requestMap.CancelRequests();
+                    socket.requestMap.CancelRequests();
                 }
             }
         }
         
         public override async Task<ExecuteSyncResult> ExecuteRequestAsync(SyncRequest syncRequest, SyncContext syncContext) {
-            /* var wsConn = GetWebsocketConnection();
-            if (wsConn == null) {
-                wsConn = await Connect().ConfigureAwait(false);
-            } */
             int sendReqId       = Interlocked.Increment(ref reqId);
             syncRequest.reqId   = sendReqId;
 
@@ -142,19 +138,18 @@ namespace Friflo.Json.Fliox.Hub.Remote.Udp
                     writer.WriteNullMembers = false;
                     var rawRequest  = RemoteUtils.CreateProtocolMessage(syncRequest, writer);
                     // request need to be queued _before_ sending it to be prepared for handling the response.
-                    var wsRequest   = new RemoteRequest(syncContext, cancellationToken);
-                    udpSocket.requestMap.Add(sendReqId, wsRequest);
+                    var request     = new RemoteRequest(syncContext, cancellationToken);
+                    udpSocket.requestMap.Add(sendReqId, request);
                     
                     var length = rawRequest.Count;
                     if (sendBuffer.Length < length) {
                         sendBuffer = new byte[length];
                     }
-
                     // --- Send message
                     await udpSocket.client.SendAsync(sendBuffer, length, null).ConfigureAwait(false);
                     
                     // --- Wait for response
-                    var response = await wsRequest.response.Task.ConfigureAwait(false);
+                    var response = await request.response.Task.ConfigureAwait(false);
                     
                     if (response is SyncResponse syncResponse) {
                         return new ExecuteSyncResult(syncResponse);
