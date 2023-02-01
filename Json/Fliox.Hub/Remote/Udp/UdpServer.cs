@@ -8,16 +8,17 @@ using System.Net.Sockets;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
 
-namespace Friflo.Json.Fliox.Hub.Remote.Udp
+// ReSharper disable once CheckNamespace
+namespace Friflo.Json.Fliox.Hub.Remote
 {
-    public class UdpListener
+    public sealed class UdpServer
     {
         private readonly    UdpClient   udpListener;
         private readonly    IPEndPoint  ipEndPoint;
         private readonly    FlioxHub    hub;
         private readonly    HostEnv     hostEnv = new HostEnv();
         
-        public UdpListener(string endpoint, FlioxHub hub) {
+        public UdpServer(string endpoint, FlioxHub hub) {
             this.hub    = hub;
             if (!TryParseEndpoint(endpoint, out ipEndPoint)) {
                 throw new ArgumentException($"invalid endpoint: {endpoint}", nameof(endpoint));

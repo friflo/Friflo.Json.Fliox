@@ -13,7 +13,8 @@ using Friflo.Json.Fliox.Hub.Host.Event;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Mapper;
 
-namespace Friflo.Json.Fliox.Hub.Remote.Udp
+// ReSharper disable once CheckNamespace
+namespace Friflo.Json.Fliox.Hub.Remote
 {
     /// <summary>
     /// Each <see cref="WebSocketConnection"/> store its send requests in the <see cref="requestMap"/>
@@ -57,7 +58,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.Udp
             : base(new RemoteDatabase(dbName), env, access)
         {
             this.endpoint   = endpoint;
-            UdpListener.TryParseEndpoint(endpoint, out ipEndpoint);
+            UdpServer.TryParseEndpoint(endpoint, out ipEndpoint);
             udpSocket   = new UdpSocket();
             sendBuffer  = new byte[128];
             // TODO check if running loop from here is OK

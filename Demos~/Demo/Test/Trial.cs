@@ -60,12 +60,13 @@ namespace DemoTest {
         private static FlioxHub CreateHub(string option)
         {
             switch (option) {
-                case "http":    return new HttpClientHub("main_db", "http://localhost:8010/fliox/");
-                case "ws":      return new WebSocketClientHub("main_db", "ws://localhost:8010/fliox/");
-                case "file":    return new FlioxHub(new FileDatabase("main_db", "./DB/main_db"));
+                case "http":    return new HttpClientHub              ("main_db", "http://localhost:8010/fliox/");
+                case "ws":      return new WebSocketClientHub         ("main_db", "ws://localhost:8010/fliox/");
+                case "udp":     return new UdpSocketClientHub         ("main_db", "localhost:5000");
+                case "file":    return new FlioxHub(new FileDatabase  ("main_db", "./DB/main_db"));
                 case "memory":  return new FlioxHub(new MemoryDatabase("main_db"));
             }
-            throw new InvalidOperationException($"unknown option: '{option}' use: [http, ws, file, memory]");
+            throw new InvalidOperationException($"unknown option: '{option}' use: [http, ws, udp, file, memory]");
         }
     }
 }
