@@ -51,7 +51,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             var headers         = new HttpListenerHeaders(request.Headers, request.Cookies);
             var contentLength   = (int)req.ContentLength64;
             using(var memoryBuffer = httpHost.sharedEnv.MemoryBuffer.Get()) {
-                var requestContext  = new RequestContext(httpHost, method, route, url.Query, req.InputStream, contentLength, headers, memoryBuffer.instance);
+                var requestContext  = new RequestContext(httpHost.localHub, method, route, url.Query, req.InputStream, contentLength, headers, memoryBuffer.instance);
                 await httpHost.ExecuteHttpRequest(requestContext).ConfigureAwait(false);
                 
                 return requestContext;

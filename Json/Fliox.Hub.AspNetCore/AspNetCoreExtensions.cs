@@ -58,7 +58,7 @@ namespace Friflo.Json.Fliox.Hub.AspNetCore
             var body            = httpRequest.Body;
             int bodyLength      = (int)(httpRequest.ContentLength ?? 0);
             using(var memoryBuffer = httpHost.sharedEnv.MemoryBuffer.Get()) {
-                var requestContext  = new RequestContext(httpHost, httpRequest.Method, route, query, body, bodyLength, headers, memoryBuffer.instance);
+                var requestContext  = new RequestContext(httpHost.localHub, httpRequest.Method, route, query, body, bodyLength, headers, memoryBuffer.instance);
                 await httpHost.ExecuteHttpRequest(requestContext).ConfigureAwait(false);
                     
                 return requestContext;

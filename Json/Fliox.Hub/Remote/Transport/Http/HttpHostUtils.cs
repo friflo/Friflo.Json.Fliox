@@ -27,13 +27,13 @@ namespace Friflo.Json.Fliox.Hub.Remote
         public static  RequestContext ExecuteUnknownPath(HttpHost httpHost, string path, string method) {
             var endpoint = httpHost.endpoint;
             if (path == httpHost.endpointRoot && method == "GET") {
-                var context = new RequestContext(httpHost, "GET", path, null, null, 0, null, null);
+                var context = new RequestContext(httpHost.localHub, "GET", path, null, null, 0, null, null);
                 context.AddHeader("Location", endpoint);
                 context.WriteString($"redirect -> {endpoint}", "text/plain", 302);
                 context.handled = true;
                 return context;
             } else {
-                var context = new RequestContext(httpHost, method, path, null, null, 0, null, null);
+                var context = new RequestContext(httpHost.localHub, method, path, null, null, 0, null, null);
                 var message = $"Expect path matching HttpHost.endpoint: {endpoint}, path: {path}";
                 context.WriteError("internal path mapping error", message, 500);
                 context.handled = true;
