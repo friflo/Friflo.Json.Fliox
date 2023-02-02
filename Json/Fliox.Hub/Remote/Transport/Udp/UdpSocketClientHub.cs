@@ -132,14 +132,10 @@ namespace Friflo.Json.Fliox.Hub.Remote
                     var request     = new RemoteRequest(syncContext, cancellationToken);
 
                     socket.requestMap.Add(sendReqId, request);                    
-                    var length = rawRequest.Count;
-                    if (sendBuffer.Length < length) {
-                        sendBuffer = new byte[length];
-                    }
-                    rawRequest.CopyTo(sendBuffer);
+                    rawRequest.CopyTo(ref sendBuffer);
                     
                     // --- Send message
-                    await socket.client.SendAsync(sendBuffer, length, ipEndpoint).ConfigureAwait(false);
+                    await socket.client.SendAsync(sendBuffer, rawRequest.Count, ipEndpoint).ConfigureAwait(false);
                     
                     // --- Wait for response
                     var response = await request.response.Task.ConfigureAwait(false);

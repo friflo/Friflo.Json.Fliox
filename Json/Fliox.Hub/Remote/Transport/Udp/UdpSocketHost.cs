@@ -4,7 +4,6 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
@@ -91,13 +90,9 @@ namespace Friflo.Json.Fliox.Hub.Remote
                     if (LogMessage) {
                         Logger.Log(HubLog.Info, message.value.AsString());
                     }
-                    var length = message.value.Count;
-                    if (buffer.Length < length) {
-                        buffer = new byte[length];
-                    }
-                    message.value.CopyTo(buffer);
+                    message.value.CopyTo(ref buffer);
                     // if (sendMessage.Count > 100000) Console.WriteLine($"SendLoop. size: {sendMessage.Count}");
-                    await udpClient.SendAsync(buffer, length, message.meta.remoteEndPoint).ConfigureAwait(false);
+                    await udpClient.SendAsync(buffer, message.value.Count, message.meta.remoteEndPoint).ConfigureAwait(false);
                 }
                 if (remoteEvent == MessageBufferEvent.Closed) {
                     return;
@@ -128,22 +123,13 @@ namespace Friflo.Json.Fliox.Hub.Remote
         /// Parse, execute and send response message for all received request messages.<br/>
         /// </summary>
         private async Task ReceiveMessageLoop() {
-            var memoryStream    = new MemoryStream();
             while (true) {
-                memoryStream.Position = 0;
-                memoryStream.SetLength(0);
-                
                 // --- 1. Read request from datagram
                 var receiveResult   = await udpClient.ReceiveAsync().ConfigureAwait(false);
-                
                 var buffer          = receiveResult.Buffer;
-                if (memoryStream.Capacity < buffer.Length) {
-                    memoryStream.Capacity = buffer.Length;
-                }
-                memoryStream.Write(buffer, 0, buffer.Length);
 
                 var socketContext   = new SocketContext(receiveResult.RemoteEndPoint);
-                var request         = new JsonValue(memoryStream.GetBuffer(), (int)memoryStream.Position);
+                var request         = new JsonValue(buffer, buffer.Length);
                 try {
                     // --- 2. Parse request
                     Interlocked.Increment(ref hostMetrics.udp.receivedCount);
@@ -203,12 +189,6 @@ namespace Friflo.Json.Fliox.Hub.Remote
         }
         
         private static string GetExceptionMessage(string location, IPEndPoint remoteEndPoint, Exception e) {
-            if (e.InnerException is HttpListenerException listenerException) {
-                e = listenerException;
-                // observed ErrorCode:
-                // 995 The I/O operation has been aborted because of either a thread exit or an application request.
-                return $"{location} {e.GetType().Name}: {e.Message} ErrorCode: {listenerException.ErrorCode}, remote: {remoteEndPoint} ";
-            }
             if (e is SocketException wsException) {
                 return $"{location} {e.GetType().Name} {e.Message} ErrorCode: {wsException.ErrorCode}, HResult: 0x{e.HResult:X}, remote: {remoteEndPoint}";
             }
