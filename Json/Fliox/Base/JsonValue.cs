@@ -173,7 +173,14 @@ namespace Friflo.Json.Fliox
             dst = new JsonValue(dstArray, count);
         }
         
-        public void CopyTo(byte[] target) {
+        /// <summary>
+        /// Copy the bytes of the <see cref="JsonValue"/> to the given <paramref name="target"/> array.<br/>
+        /// A new array is created if the Length given target array is too small.
+        /// </summary>
+        public void CopyTo(ref byte[] target) {
+            if (Count > target.Length) {
+                target = new byte[Count];
+            }
             Buffer.BlockCopy(Array, start, target, 0, Count);
         }
     }
