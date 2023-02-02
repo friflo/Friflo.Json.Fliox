@@ -61,7 +61,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             : base(new RemoteDatabase(dbName), env, access)
         {
             this.endpoint   = endpoint;
-            UdpServer.TryParseEndpoint(endpoint, out ipEndpoint);
+            TransportUtils.TryParseEndpoint(endpoint, out ipEndpoint);
             socket          = new UdpSocket(port);
             sendBuffer      = new byte[128];
             // TODO check if running loop from here is OK
