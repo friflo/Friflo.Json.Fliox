@@ -49,7 +49,7 @@ namespace Friflo.Json.Fliox.Hub.AspNetCore
                 var httpConnection  = context.Features.Get<IHttpConnectionFeature>();
                 var remoteEndPoint  = new IPEndPoint(httpConnection.RemoteIpAddress, httpConnection.RemotePort);
                 // awaits until thew websocket is closed or disconnected
-                await WebSocketHost.SendReceiveMessages(websocket, remoteEndPoint, httpHost.localHub, httpHost.hostEnv).ConfigureAwait(false);
+                await WebSocketHost.SendReceiveMessages(websocket, remoteEndPoint, httpHost.hub, httpHost.hostEnv).ConfigureAwait(false);
                 
                 return null;
             }
@@ -58,7 +58,7 @@ namespace Friflo.Json.Fliox.Hub.AspNetCore
             var body            = httpRequest.Body;
             int bodyLength      = (int)(httpRequest.ContentLength ?? 0);
             using(var memoryBuffer = httpHost.sharedEnv.MemoryBuffer.Get()) {
-                var requestContext  = new RequestContext(httpHost.localHub, httpRequest.Method, route, query, body, bodyLength, headers, memoryBuffer.instance);
+                var requestContext  = new RequestContext(httpHost.hub, httpRequest.Method, route, query, body, bodyLength, headers, memoryBuffer.instance);
                 await httpHost.ExecuteHttpRequest(requestContext).ConfigureAwait(false);
                     
                 return requestContext;

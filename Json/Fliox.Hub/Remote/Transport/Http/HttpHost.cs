@@ -57,7 +57,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         private  readonly   RestHandler             restHandler     = new RestHandler();
         private  readonly   List<IRequestHandler>   customHandlers  = new List<IRequestHandler>();
         private  readonly   List<string>            hubRoutes;
-        public   readonly   FlioxHub                localHub;
+        public   readonly   FlioxHub                hub;
         public   readonly   SharedEnv               sharedEnv;
         public              HostEnv                 hostEnv         = new HostEnv();
 
@@ -91,7 +91,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         public HttpHost(FlioxHub hub, string endpoint, SharedEnv env = null)
         {
             sharedEnv   = env  ?? SharedEnv.Default;
-            localHub    = hub;
+            this.hub    = hub;
             var msg = $"create HttpHost db: {hub.DatabaseName} ({hub.database.StorageType})";
             Logger.Log(HubLog.Info, msg);
             if (!_titleDisplayed) {
@@ -175,7 +175,6 @@ namespace Friflo.Json.Fliox.Hub.Remote
                         if (error != null) {
                             response = JsonResponse.CreateError(writer, error, ErrorResponseType.BadResponse, null);
                         } else {
-                            var hub             = localHub;
                             var executionType   = hub.InitSyncRequest(syncRequest);
                             ExecuteSyncResult syncResult;
                             switch (executionType) {
