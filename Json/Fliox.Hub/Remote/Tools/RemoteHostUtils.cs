@@ -12,8 +12,7 @@ using Friflo.Json.Fliox.Mapper;
 
 // ReSharper disable MethodHasAsyncOverload
 // ReSharper disable InlineTemporaryVariable
-// ReSharper disable once CheckNamespace
-namespace Friflo.Json.Fliox.Hub.Remote
+namespace Friflo.Json.Fliox.Hub.Remote.Tools
 {
     public static class RemoteHostUtils
     {

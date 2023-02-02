@@ -9,6 +9,7 @@ using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Remote.Rest;
 using Friflo.Json.Fliox.Hub.Remote.Schema;
+using Friflo.Json.Fliox.Hub.Remote.Tools;
 using Friflo.Json.Fliox.Schema.JSON;
 using Friflo.Json.Fliox.Schema.Language;
 using Friflo.Json.Fliox.Schema.Native;

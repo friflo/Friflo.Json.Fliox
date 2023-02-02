@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Remote;
+using Friflo.Json.Fliox.Hub.Remote.Tools;
 
 namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs
 {

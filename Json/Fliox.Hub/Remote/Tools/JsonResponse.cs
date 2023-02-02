@@ -6,8 +6,7 @@ using Friflo.Json.Fliox.Mapper;
 
 // Note! - Must not have any dependency to System.Net or System.Net.Http (or other HTTP stuff)
 
-// ReSharper disable once CheckNamespace
-namespace Friflo.Json.Fliox.Hub.Remote
+namespace Friflo.Json.Fliox.Hub.Remote.Tools
 {
     public enum JsonResponseStatus {
         /// maps to HTTP 200 OK

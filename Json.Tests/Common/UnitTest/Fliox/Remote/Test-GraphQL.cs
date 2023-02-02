@@ -4,7 +4,7 @@
 #if !UNITY_5_3_OR_NEWER
 
 using System.IO;
-using Friflo.Json.Fliox.Hub.Remote;
+using Friflo.Json.Fliox.Hub.Remote.Tools;
 using Friflo.Json.Tests.Common.Utils;
 using NUnit.Framework;
 

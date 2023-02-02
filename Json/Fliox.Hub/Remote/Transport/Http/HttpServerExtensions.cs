@@ -7,6 +7,7 @@ using System.Net;
 using System.Net.WebSockets;
 using System.Text;
 using System.Threading.Tasks;
+using Friflo.Json.Fliox.Hub.Remote.Tools;
 using Friflo.Json.Fliox.Hub.Remote.WebSockets;
 
 // ReSharper disable once CheckNamespace

@@ -8,6 +8,7 @@ using Friflo.Json.Burst;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.Event;
 using Friflo.Json.Fliox.Hub.Protocol;
+using Friflo.Json.Fliox.Hub.Remote.Tools;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Pools;
 using Friflo.Json.Fliox.Utils;

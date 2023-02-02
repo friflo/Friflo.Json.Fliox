@@ -9,8 +9,7 @@ using Friflo.Json.Fliox.Mapper;
 
 // Note! - Must not have any dependency to System.Net or System.Net.Http (or other HTTP stuff)
 
-// ReSharper disable once CheckNamespace
-namespace Friflo.Json.Fliox.Hub.Remote
+namespace Friflo.Json.Fliox.Hub.Remote.Tools
 {
     /// <summary> Reflect the shape of a <see cref="EventMessage"/> </summary>
     public struct RemoteEventMessage

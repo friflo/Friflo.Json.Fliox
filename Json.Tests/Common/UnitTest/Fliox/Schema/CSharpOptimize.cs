@@ -8,7 +8,7 @@ using Friflo.Json.Fliox.Hub.DB.Monitor;
 using Friflo.Json.Fliox.Hub.DB.UserAuth;
 using Friflo.Json.Fliox.Hub.Host.Event.Collector;
 using Friflo.Json.Fliox.Hub.Protocol;
-using Friflo.Json.Fliox.Hub.Remote;
+using Friflo.Json.Fliox.Hub.Remote.Tools;
 using Friflo.Json.Fliox.Schema.Language;
 using Friflo.Json.Fliox.Schema.Native;
 using Friflo.Json.Tests.Common.UnitTest.Fliox.Client;
