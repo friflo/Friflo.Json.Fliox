@@ -34,7 +34,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
     /// <b>Attention</b> all <c>Create</c> methods return a <see cref="JsonValue"/> which are only valid until the
     /// passed <see cref="ObjectReader"/> it reused 
     /// </summary>
-    public static class RemoteUtils
+    public static class RemoteMessageUtils
     {
         /// <summary>
         /// <b>Attention</b> returned <see cref="JsonValue"/> is <b>only</b> valid until the passed <paramref name="writer"/> is reused

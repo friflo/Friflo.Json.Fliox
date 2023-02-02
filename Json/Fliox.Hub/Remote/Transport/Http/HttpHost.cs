@@ -171,7 +171,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                     // JsonResponse response  = await ExecuteJsonRequest(mapper, requestContent, syncContext).ConfigureAwait(false);
                     JsonResponse response;
                     try {
-                        var syncRequest = RemoteUtils.ReadSyncRequest(mapper.reader, requestContent, out string error);
+                        var syncRequest = RemoteMessageUtils.ReadSyncRequest(mapper.reader, requestContent, out string error);
                         if (error != null) {
                             response = JsonResponse.CreateError(writer, error, ErrorResponseType.BadResponse, null);
                         } else {
@@ -182,7 +182,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                                 case Queue: syncResult = await hub.QueueRequestAsync   (syncRequest, syncContext).ConfigureAwait(false); break;
                                 default:    syncResult =       hub.ExecuteRequest      (syncRequest, syncContext);                       break;
                             }
-                            response = RemoteHost.CreateJsonResponse(syncResult, syncRequest.reqId, writer);
+                            response = RemoteHostUtils.CreateJsonResponse(syncResult, syncRequest.reqId, writer);
                         }
                     }
                     catch (Exception e) {

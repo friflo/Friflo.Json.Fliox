@@ -118,7 +118,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                     var writer              = pooledMapper.instance.writer;
                     writer.Pretty           = false;
                     writer.WriteNullMembers = false;
-                    var rawRequest  = RemoteUtils.CreateProtocolMessage(syncRequest, writer);
+                    var rawRequest  = RemoteMessageUtils.CreateProtocolMessage(syncRequest, writer);
                     // request need to be queued _before_ sending it to be prepared for handling the response.
                     var request     = new RemoteRequest(syncContext, cancellationToken);
 

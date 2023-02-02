@@ -52,7 +52,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
                     cx.contextRead.Init();
                     cx.contextRead.SetMemoryBuffer(cx.memoryBuffer);
                     cx.mapper.reader.ReaderPool.Reuse();
-                    var response    = RemoteHost.ExecuteJsonRequest(cx.hub, cx.mapper, cx.readReq, cx.contextRead);
+                    var response    = RemoteHostUtils.ExecuteJsonRequest(cx.hub, cx.mapper, cx.readReq, cx.contextRead);
                     
                     dif = GC.GetAllocatedBytesForCurrentThread() - start;
                     if (response.status != JsonResponseStatus.Ok)   Fail("Expect OK");
@@ -73,7 +73,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
                     cx.contextRead.Init();
                     cx.contextRead.SetMemoryBuffer(cx.memoryBuffer);
                     cx.mapper.reader.ReaderPool.Reuse();
-                    var response    = RemoteHost.ExecuteJsonRequest(cx.hub, cx.mapper, cx.writeReq, cx.contextRead);
+                    var response    = RemoteHostUtils.ExecuteJsonRequest(cx.hub, cx.mapper, cx.writeReq, cx.contextRead);
                     
                     dif = GC.GetAllocatedBytesForCurrentThread() - start;
                     if (response.status != JsonResponseStatus.Ok)   Fail("Expect OK");
@@ -101,7 +101,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
                     cx.contextRead.Init();
                     cx.contextRead.SetMemoryBuffer(cx.memoryBuffer);
                     cx.mapper.reader.ReaderPool.Reuse();
-                    var response    = RemoteHost.ExecuteJsonRequest(cx.hub, cx.mapper, cx.writeReq, cx.contextRead);
+                    var response    = RemoteHostUtils.ExecuteJsonRequest(cx.hub, cx.mapper, cx.writeReq, cx.contextRead);
                     cx.hub.EventDispatcher?.SendQueuedEvents();
                     
                     dif = GC.GetAllocatedBytesForCurrentThread() - start;
@@ -146,7 +146,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
             var contextWrite    = cx.CreateSyncContext();
             contextWrite.SetMemoryBuffer(cx.memoryBuffer);
             
-            var writeResponse   = RemoteHost.ExecuteJsonRequest(cx.hub, cx.mapper, cx.writeReq, contextWrite);
+            var writeResponse   = RemoteHostUtils.ExecuteJsonRequest(cx.hub, cx.mapper, cx.writeReq, contextWrite);
             AreEqual(JsonResponseStatus.Ok, writeResponse.status);
             return cx;
         }

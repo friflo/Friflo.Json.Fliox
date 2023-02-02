@@ -15,7 +15,7 @@ using Friflo.Json.Fliox.Mapper;
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.Remote
 {
-    public static class RemoteHost
+    public static class RemoteHostUtils
     {
         public static JsonResponse ExecuteJsonRequest(
             FlioxHub        hub,
@@ -26,7 +26,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             // used response assignment instead of return in each branch to provide copy/paste code to avoid an async call in caller
             JsonResponse response;
             try {
-                var syncRequest = RemoteUtils.ReadSyncRequest(mapper.reader, jsonRequest, out string error);
+                var syncRequest = RemoteMessageUtils.ReadSyncRequest(mapper.reader, jsonRequest, out string error);
                 if (error != null) {
                     response = JsonResponse.CreateError(mapper.writer, error, ErrorResponseType.BadResponse, null);
                 } else {
@@ -50,11 +50,11 @@ namespace Friflo.Json.Fliox.Hub.Remote
             }
             SetContainerResults(response.success);
             response.Result.reqId   = reqId;
-            JsonValue jsonResponse  = RemoteUtils.CreateProtocolMessage(response.Result, writer);
+            JsonValue jsonResponse  = RemoteMessageUtils.CreateProtocolMessage(response.Result, writer);
             return new JsonResponse(jsonResponse, JsonResponseStatus.Ok);
         }
         
-        /// Required only by <see cref="RemoteHost"/>
+        /// Required only by <see cref="RemoteHostUtils"/>
         /// Distribute <see cref="ContainerEntities.entityMap"/> to <see cref="ContainerEntities.entities"/>,
         /// <see cref="ContainerEntities.notFound"/> and <see cref="ContainerEntities.errors"/> to simplify and
         /// minimize response by removing redundancy.

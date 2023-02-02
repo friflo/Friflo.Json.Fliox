@@ -83,7 +83,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             if (useReaderPool) {
                 reader.ReaderPool = readerPool.Get().instance.Reuse();
             }
-            var syncRequest = RemoteUtils.ReadSyncRequest(reader, request, out string error);
+            var syncRequest = RemoteMessageUtils.ReadSyncRequest(reader, request, out string error);
             if (error == null) {
                 return syncRequest;
             }
@@ -187,7 +187,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 var errorResponse = JsonResponse.CreateError(writer, error.message, error.type, reqId);
                 SendMessage(errorResponse.body, socketContext);
             } else {
-                var response = RemoteHost.CreateJsonResponse(syncResult, reqId, writer);
+                var response = RemoteHostUtils.CreateJsonResponse(syncResult, reqId, writer);
                 SendMessage(response.body, socketContext);
             }
             objectPool.Return(mapper);

@@ -4,7 +4,6 @@
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Client;
 using Friflo.Json.Fliox.Hub.Host;
-using Friflo.Json.Fliox.Hub.Remote;
 using Friflo.Json.Fliox.Hub.Threading;
 using Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs;
 using NUnit.Framework;
@@ -28,7 +27,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         /// <br></br>
         /// Motivation for "pipelining": <br></br>
         /// SyncTasks() calls are executed in order but overall execution time is improved in scenarios with high latency to a
-        /// <see cref="RemoteHost"/> because RTT is added only once instead of n times for n awaited SyncTasks() calls. 
+        /// remote host because RTT is added only once instead of n times for n awaited SyncTasks() calls. 
         /// </summary>
         [Test] public static void TestSyncConcurrency () {
             using (var _                = SharedEnv.Default) // for LeakTestsFixture

@@ -78,7 +78,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         
         protected void ProcessMessage(in JsonValue message, RemoteRequestMap requestMap, ObjectReader reader) {
             // --- determine message type
-            var messageHead = RemoteUtils.ReadMessageHead(ref parser, message);
+            var messageHead = RemoteMessageUtils.ReadMessageHead(ref parser, message);
                     
             // --- handle either response or event message
             switch (messageHead.type) {

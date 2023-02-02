@@ -7,7 +7,6 @@ using System.Diagnostics;
 using Friflo.Json.Fliox.Hub.Client;
 using Friflo.Json.Fliox.Hub.Host.Internal;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
-using Friflo.Json.Fliox.Hub.Remote;
 using Friflo.Json.Fliox.Schema.Definition;
 using Friflo.Json.Fliox.Schema.Language;
 using Friflo.Json.Fliox.Schema.Native;
@@ -21,7 +20,7 @@ namespace Friflo.Json.Fliox.Hub.Host
     /// of entities represented as JSON used in write operations - create, upsert and patch.
     /// </summary>
     /// <remarks>
-    /// It is intended to be used for <see cref="RemoteHost"/> instances to ensure that the entities
+    /// It is intended to be used for <see cref="EntityDatabase"/> instances to ensure that the entities
     /// (records) in an <see cref="EntityContainer"/> always meet the expected type. So only successful validated JSON
     /// payloads are written to an <see cref="EntityContainer"/>.
     /// JSON validation includes the following checks:

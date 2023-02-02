@@ -43,7 +43,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 var writer              = mapper.writer;
                 writer.Pretty           = true;
                 writer.WriteNullMembers = false;
-                var jsonRequest         = RemoteUtils.CreateProtocolMessage(syncRequest, writer);
+                var jsonRequest         = RemoteMessageUtils.CreateProtocolMessage(syncRequest, writer);
                 var content             = jsonRequest.AsByteArrayContent();
                 content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
                 // body.Headers.ContentEncoding = new string[]{"charset=utf-8"};
@@ -53,7 +53,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                     
                     var bodyArray       = await httpResponse.Content.ReadAsByteArrayAsync().ConfigureAwait(false);
                     var jsonBody        = new JsonValue(bodyArray);
-                    var response        = RemoteUtils.ReadProtocolMessage (jsonBody, mapper.reader, out string error);
+                    var response        = RemoteMessageUtils.ReadProtocolMessage (jsonBody, mapper.reader, out string error);
                     switch (response) {
                         case null:
                             return  new ExecuteSyncResult(error, ErrorResponseType.BadResponse);

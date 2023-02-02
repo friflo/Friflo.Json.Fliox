@@ -122,7 +122,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                 int seq = ++eventCounter;
                 // access to syncEvents is valid. DequeMessages() is called sequentially
                 var client       = context.sendTargetClientId ? clientId : default;
-                var eventMessage = RemoteUtils.CreateEventMessage(syncEvents, client, seq, context.writer);
+                var eventMessage = RemoteMessageUtils.CreateEventMessage(syncEvents, client, seq, context.writer);
                 eventMessages.Add(eventMessage);
                 if (queueEvents) {
                     lock (unsentSyncEvents) {
