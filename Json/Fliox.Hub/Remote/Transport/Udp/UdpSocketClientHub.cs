@@ -2,7 +2,6 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
-using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
@@ -90,23 +89,15 @@ namespace Friflo.Json.Fliox.Hub.Remote
         /// </summary>
         private async Task ReceiveMessageLoop(UdpSocket socket, ObjectReader reader) {
             var client          = socket.client;
-            var memoryStream    = new MemoryStream();
             while (true)
             {
-                memoryStream.Position = 0;
-                memoryStream.SetLength(0);
                 try {
                     // --- read complete datagram message
                     var receiveResult   = await client.ReceiveAsync().ConfigureAwait(false);
-                    
                     var buffer          = receiveResult.Buffer;
-                    if (memoryStream.Capacity < buffer.Length) {
-                        memoryStream.Capacity = buffer.Length;
-                    }
-                    memoryStream.Write(buffer, 0, buffer.Length);
 
                     // --- process received message
-                    var message     = new JsonValue(memoryStream.GetBuffer(), (int)memoryStream.Position);
+                    var message = new JsonValue(buffer, buffer.Length);
                     ProcessMessage(message, socket.requestMap, reader);
                 }
                 catch (Exception e)
