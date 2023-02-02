@@ -244,7 +244,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             using (var hub          	= new FlioxHub(database, TestGlobals.Shared))
             using (var loopbackHub      = new LoopbackHub(hub))
             using (var listenDb         = new PocStore(loopbackHub) { UserId = "listenDb", ClientId = "listen-client"}) {
-                loopbackHub.host.EventDispatcher    = eventDispatcher;
+                loopbackHub.hub.EventDispatcher    = eventDispatcher;
                 var listenSubscriber        = await CreatePocStoreSubscriber(listenDb, EventAssertion.Changes);
                 using (var createStore      = new PocStore(loopbackHub) { UserId = "createStore", ClientId = "create-client"})
                 using (var useStore         = new PocStore(loopbackHub) { UserId = "useStore",    ClientId = "use-client"}) {

@@ -19,17 +19,17 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs
     /// </summary>
     public class LoopbackHub : SocketClientHub
     {
-        public readonly    FlioxHub  host;
+        public readonly FlioxHub hub;
 
         public LoopbackHub(FlioxHub hub, RemoteClientAccess access = RemoteClientAccess.Multi)
             : base(hub.database, hub.sharedEnv, access)
         {
-            host = hub;
+            this.hub = hub;
         }
 
         public override void Dispose() {
             base.Dispose();
-            host.Dispose();
+            hub.Dispose();
         }
         
         public override async Task<ExecuteSyncResult> ExecuteRequestAsync(SyncRequest syncRequest, SyncContext syncContext) {
@@ -37,8 +37,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs
                 var mapper          = pooledMapper.instance;
                 var requestJson     = RemoteMessageUtils.CreateProtocolMessage(syncRequest, mapper.writer);
                 var requestCopy     = RemoteMessageUtils.ReadSyncRequest (mapper.reader, requestJson, out var _);
-                host.InitSyncRequest(requestCopy);
-                var syncResponse    = await host.ExecuteRequestAsync(requestCopy, syncContext);
+                hub.InitSyncRequest(requestCopy);
+                var syncResponse    = await hub.ExecuteRequestAsync(requestCopy, syncContext);
                 
                 if (syncResponse.error != null) {
                     return syncResponse;
