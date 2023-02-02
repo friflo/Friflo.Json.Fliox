@@ -26,7 +26,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         }
 
         public async Task Run() {
-            await UdpSocketHost.SendReceiveMessages(udpListener, ipEndPoint, hub, hostEnv);
+            await UdpSocketHost.SendReceiveMessages(udpListener, ipEndPoint, hub, hostEnv).ConfigureAwait(false);
         }
     }
 }
