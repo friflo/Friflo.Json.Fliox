@@ -18,6 +18,7 @@ namespace Friflo.Json.Tests.Main
             MemoryDbThroughput,
             FileDbThroughput,
             WebsocketDbThroughput,
+            UdpDbThroughput,
             HttpDbThroughput,
             LoopbackDbThroughput
         }
@@ -65,6 +66,9 @@ namespace Friflo.Json.Tests.Main
                         break;
                     case Module.WebsocketDbThroughput:
                         await Throughput.WebsocketDbThroughput();
+                        break;
+                    case Module.UdpDbThroughput:
+                        await Throughput.UdpDbThroughput();
                         break;
                     case Module.HttpDbThroughput:
                         await Throughput.HttpDbThroughput();

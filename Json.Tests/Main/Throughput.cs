@@ -35,6 +35,19 @@ namespace Friflo.Json.Tests.Main
             }
         }
         
+        public static async Task UdpDbThroughput() {
+            using (var database     = new MemoryDatabase(TestDB))
+            using (var hub          = new FlioxHub(database))
+            using (var server       = new UdpServer("127.0.0.1:5000", hub))
+            using (var remoteHub    = new UdpSocketClientHub(TestDB, "127.0.0.1:5000")) {
+                var _ = server.Run();
+                // await TestHappy.RunServer(server, async () => {
+                    // await remoteHub.Connect();
+                    await TestHappy.ConcurrentAccess(remoteHub, 4, 0, 1_000_000, false);
+                // });
+            }
+        }
+        
         public static async Task HttpDbThroughput() {
             using (var database     = new MemoryDatabase(TestDB))
             using (var hub          = new FlioxHub(database))

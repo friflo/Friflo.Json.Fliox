@@ -10,7 +10,7 @@ using Friflo.Json.Fliox.Hub.Host;
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.Remote
 {
-    public sealed class UdpServer
+    public sealed class UdpServer : IDisposable
     {
         private readonly    UdpClient   udpListener;
         private readonly    IPEndPoint  ipEndPoint;
@@ -24,6 +24,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
             }
             udpListener = new UdpClient(ipEndPoint);
         }
+
+        public void Dispose() { }
 
         public async Task Run() {
             await UdpSocketHost.SendReceiveMessages(udpListener, ipEndPoint, hub, hostEnv).ConfigureAwait(false);
