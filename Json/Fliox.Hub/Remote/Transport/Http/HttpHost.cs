@@ -52,24 +52,25 @@ namespace Friflo.Json.Fliox.Hub.Remote
     {
         /// <summary>never null, ends with '/'</summary>
         public   readonly   string                  endpoint; 
+        public   readonly   FlioxHub                hub;
+        public   readonly   SharedEnv               sharedEnv;
+        public              HostEnv                 hostEnv     = new HostEnv();
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        public              IHubLogger              Logger      => sharedEnv.hubLogger;
+        
+        public   const      string                  DefaultCacheControl = "max-age=600";
+        
+        // --- private / internal
         internal readonly   string                  endpointRoot;
         private  readonly   SchemaHandler           schemaHandler   = new SchemaHandler();
         private  readonly   RestHandler             restHandler     = new RestHandler();
         private  readonly   List<IRequestHandler>   customHandlers  = new List<IRequestHandler>();
         private  readonly   List<string>            hubRoutes;
-        public   readonly   FlioxHub                hub;
-        public   readonly   SharedEnv               sharedEnv;
-        public              HostEnv                 hostEnv         = new HostEnv();
-
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public              IHubLogger      Logger      => sharedEnv.hubLogger;
-        
-        public   const      string                  DefaultCacheControl = "max-age=600";
 
         public   override   string                  ToString() => $"endpoint: {endpoint}";
 
-        private static  bool    _titleDisplayed;
-        private const   string  JsonFlioxBanner =
+        private  static     bool    _titleDisplayed;
+        private  const      string  JsonFlioxBanner =
 @"    ____   _   _
    |  __| | | |_|  ____  __  __
    |  _|  | | | | | __ | \ \/ /
