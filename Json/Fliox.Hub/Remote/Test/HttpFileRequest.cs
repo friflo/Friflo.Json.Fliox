@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
-using Friflo.Json.Fliox.Hub.Remote.Tools;
 
 // Note! - Must not have any dependency to System.Net or System.Net.Http (or other HTTP stuff)
 

@@ -10,7 +10,8 @@ using Friflo.Json.Fliox.Utils;
 
 // Note! - Must not have any dependency to System.Net or System.Net.Http (or other HTTP stuff)
 
-namespace Friflo.Json.Fliox.Hub.Remote.Tools
+// ReSharper disable once CheckNamespace
+namespace Friflo.Json.Fliox.Hub.Remote
 {
     public interface IRequestHandler
     {

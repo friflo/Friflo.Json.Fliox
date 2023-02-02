@@ -4,7 +4,6 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using Friflo.Json.Fliox.Hub.Remote.Tools;
 
 // Note! - Must not have any dependency to System.Net or System.Net.Http (or other HTTP stuff)
 
