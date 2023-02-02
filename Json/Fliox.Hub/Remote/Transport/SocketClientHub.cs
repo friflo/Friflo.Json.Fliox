@@ -129,6 +129,16 @@ namespace Friflo.Json.Fliox.Hub.Remote
             var msg2 = $"received event for unknown client: {GetType().Name}({this}), client id: {clientEvent.dstClientId}";
             Logger.Log(HubLog.Error, msg2);
         }
+        
+        protected static ExecuteSyncResult CreateSyncResult(ProtocolResponse response) {
+            if (response is SyncResponse syncResponse) {
+                return new ExecuteSyncResult(syncResponse);
+            }
+            if (response is ErrorResponse errorResponse) {
+                return new ExecuteSyncResult(errorResponse.message, errorResponse.type);
+            }
+            return new ExecuteSyncResult($"invalid response: Was: {response.MessageType}", ErrorResponseType.BadResponse);
+        }
     }
     
     internal sealed class RemoteDatabase : EntityDatabase
