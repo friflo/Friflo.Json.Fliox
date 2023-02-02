@@ -29,7 +29,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
             internal            JsonValue               writeReq;
             internal            SyncContext             contextRead;
             internal            FlioxHub                hub;
-            internal            RemoteHost              remoteHost;
             internal            MemoryBuffer            memoryBuffer;
             internal            ObjectMapper            mapper;
             internal            SyncPools               syncPools;
@@ -38,7 +37,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
             private readonly    List<JsonValue>         jsonTasks  = new List<JsonValue>();
             
             internal SyncContext CreateSyncContext() {
-                return new SyncContext (remoteHost.sharedEnv, null, new SyncBuffers(syncTasks, eventTasks, jsonTasks), syncPools);
+                return new SyncContext (hub.sharedEnv, null, new SyncBuffers(syncTasks, eventTasks, jsonTasks), syncPools);
             }
         }
         
@@ -53,7 +52,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
                     cx.contextRead.Init();
                     cx.contextRead.SetMemoryBuffer(cx.memoryBuffer);
                     cx.mapper.reader.ReaderPool.Reuse();
-                    var response    = cx.remoteHost.ExecuteJsonRequest(cx.mapper, cx.readReq, cx.contextRead);
+                    var response    = RemoteHost.ExecuteJsonRequest(cx.hub, cx.mapper, cx.readReq, cx.contextRead);
                     
                     dif = GC.GetAllocatedBytesForCurrentThread() - start;
                     if (response.status != JsonResponseStatus.Ok)   Fail("Expect OK");
@@ -74,7 +73,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
                     cx.contextRead.Init();
                     cx.contextRead.SetMemoryBuffer(cx.memoryBuffer);
                     cx.mapper.reader.ReaderPool.Reuse();
-                    var response    = cx.remoteHost.ExecuteJsonRequest(cx.mapper, cx.writeReq, cx.contextRead);
+                    var response    = RemoteHost.ExecuteJsonRequest(cx.hub, cx.mapper, cx.writeReq, cx.contextRead);
                     
                     dif = GC.GetAllocatedBytesForCurrentThread() - start;
                     if (response.status != JsonResponseStatus.Ok)   Fail("Expect OK");
@@ -102,7 +101,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
                     cx.contextRead.Init();
                     cx.contextRead.SetMemoryBuffer(cx.memoryBuffer);
                     cx.mapper.reader.ReaderPool.Reuse();
-                    var response    = cx.remoteHost.ExecuteJsonRequest(cx.mapper, cx.writeReq, cx.contextRead);
+                    var response    = RemoteHost.ExecuteJsonRequest(cx.hub, cx.mapper, cx.writeReq, cx.contextRead);
                     cx.hub.EventDispatcher?.SendQueuedEvents();
                     
                     dif = GC.GetAllocatedBytesForCurrentThread() - start;
@@ -118,7 +117,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
             var typeStore       = sharedEnv.TypeStore;
             var database        = new MemoryDatabase("remote-memory", smallValueSize: 1024);
             cx.hub              = new FlioxHub(database, sharedEnv);
-            cx.remoteHost       = new RemoteHost(cx.hub, sharedEnv);
             cx.memoryBuffer     = new MemoryBuffer (4 * 1024);
             cx.mapper           = new ObjectMapper(typeStore);
             cx.mapper.WriteNullMembers  = false;
@@ -148,7 +146,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
             var contextWrite    = cx.CreateSyncContext();
             contextWrite.SetMemoryBuffer(cx.memoryBuffer);
             
-            var writeResponse   = cx.remoteHost.ExecuteJsonRequest(cx.mapper, cx.writeReq, contextWrite);
+            var writeResponse   = RemoteHost.ExecuteJsonRequest(cx.hub, cx.mapper, cx.writeReq, contextWrite);
             AreEqual(JsonResponseStatus.Ok, writeResponse.status);
             return cx;
         }

@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Protocol;
@@ -47,7 +48,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
     ///   <item><b>GraphQL</b> via an endpoint like <b><c>/fliox/graphql/database</c></b> - requires package: Friflo.Json.Fliox.Hub.GraphQL</item>
     /// </list>
     /// </remarks>
-    public sealed class HttpHost : RemoteHost
+    public sealed class HttpHost : ILogSource, IDisposable
     {
         /// <summary>never null, ends with '/'</summary>
         public   readonly   string                  endpoint; 
@@ -56,8 +57,12 @@ namespace Friflo.Json.Fliox.Hub.Remote
         private  readonly   RestHandler             restHandler     = new RestHandler();
         private  readonly   List<IRequestHandler>   customHandlers  = new List<IRequestHandler>();
         private  readonly   List<string>            hubRoutes;
+        public   readonly   FlioxHub                localHub;
+        public   readonly   SharedEnv               sharedEnv;
         public              HostEnv                 hostEnv         = new HostEnv();
 
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        public              IHubLogger      Logger      => sharedEnv.hubLogger;
         
         public   const      string                  DefaultCacheControl = "max-age=600";
 
@@ -84,8 +89,9 @@ namespace Friflo.Json.Fliox.Hub.Remote
         }
 
         public HttpHost(FlioxHub hub, string endpoint, SharedEnv env = null)
-            : base(hub, env)
         {
+            sharedEnv   = env  ?? SharedEnv.Default;
+            localHub    = hub;
             var msg = $"create HttpHost db: {hub.DatabaseName} ({hub.database.StorageType})";
             Logger.Log(HubLog.Info, msg);
             if (!_titleDisplayed) {
@@ -117,7 +123,9 @@ namespace Friflo.Json.Fliox.Hub.Remote
             var jsonSchemaRoot      = jsonSchema.TypesAsTypeDefs(new [] {typeof(JSONSchema)});
             schemaHandler.AddSchema ("json-schema", jsonSchema, jsonSchemaRoot);
         }
-        
+
+        public void Dispose() { }
+
         public string CacheControl {
             get => schemaHandler.CacheControl;
             set => schemaHandler.CacheControl = value;
@@ -175,7 +183,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                                 case Queue: syncResult = await hub.QueueRequestAsync   (syncRequest, syncContext).ConfigureAwait(false); break;
                                 default:    syncResult =       hub.ExecuteRequest      (syncRequest, syncContext);                       break;
                             }
-                            response = CreateJsonResponse(syncResult, syncRequest.reqId, writer);
+                            response = RemoteHost.CreateJsonResponse(syncResult, syncRequest.reqId, writer);
                         }
                     }
                     catch (Exception e) {

@@ -154,7 +154,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         /// <summary>
         /// Create a send and receive queue and run a send and a receive loop. <br/>
         /// The loops are executed until the WebSocket is closed or disconnected. <br/>
-        /// The method <b>don't</b> throw exception. WebSocket exceptions are catched and written to <see cref="RemoteHost.Logger"/> <br/>
+        /// The method <b>don't</b> throw exception. WebSocket exceptions are catched and written to <see cref="FlioxHub.Logger"/> <br/>
         /// </summary>
         public static async Task SendReceiveMessages(
             UdpClient   udpClient,

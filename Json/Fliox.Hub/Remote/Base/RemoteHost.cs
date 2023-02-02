@@ -3,13 +3,10 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Mapper;
-using static Friflo.Json.Fliox.Hub.Host.ExecutionType;
 
 // Note! - Must not have any dependency to System.Net or System.Net.Http (or other HTTP stuff)
 
@@ -18,59 +15,10 @@ using static Friflo.Json.Fliox.Hub.Host.ExecutionType;
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.Remote
 {
-    public class RemoteHost : IDisposable, ILogSource
+    public static class RemoteHost
     {
-        public   readonly   FlioxHub        localHub;
-        public   readonly   SharedEnv       sharedEnv;
-        
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public              IHubLogger      Logger      => sharedEnv.hubLogger;
-
-
-        public RemoteHost(FlioxHub hub, SharedEnv env) {
-            sharedEnv   = env  ?? SharedEnv.Default;
-            localHub    = hub;
-        }
-        
-        public void Dispose() { }
-        
-        /// <summary>
-        /// <b>Attention</b> returned <see cref="JsonResponse"/> is <b>only</b> valid until the passed <paramref name="mapper"/> is reused
-        /// </summary>
-        /// <remarks>
-        /// <b>Hint</b> Copy / Paste implementation to avoid an async call in caller
-        /// </remarks>
-        public async Task<JsonResponse> ExecuteJsonRequestAsync(
-            ObjectMapper    mapper,
-            JsonValue       jsonRequest,
-            SyncContext     syncContext)
-        {
-            // used response assignment instead of return in each branch to provide copy/paste code to avoid an async call in caller
-            JsonResponse response;
-            try {
-                var syncRequest = RemoteUtils.ReadSyncRequest(mapper.reader, jsonRequest, out string error);
-                if (error != null) {
-                    response = JsonResponse.CreateError(mapper.writer, error, ErrorResponseType.BadResponse, null);
-                } else {
-                    var hub             = localHub;
-                    var executionType   = hub.InitSyncRequest(syncRequest);
-                    ExecuteSyncResult syncResult;
-                    switch (executionType) {
-                        case Async: syncResult = await hub.ExecuteRequestAsync (syncRequest, syncContext).ConfigureAwait(false); break;
-                        case Queue: syncResult = await hub.QueueRequestAsync   (syncRequest, syncContext).ConfigureAwait(false); break;
-                        default:    syncResult =       hub.ExecuteRequest      (syncRequest, syncContext);                       break;
-                    }
-                    response = CreateJsonResponse(syncResult, syncRequest.reqId, mapper.writer);
-                }
-            }
-            catch (Exception e) {
-                var errorMsg = ErrorResponse.ErrorFromException(e).ToString();
-                response = JsonResponse.CreateError(mapper.writer, errorMsg, ErrorResponseType.Exception, null);
-            }
-            return response;
-        }
-        
-        public JsonResponse ExecuteJsonRequest(
+        public static JsonResponse ExecuteJsonRequest(
+            FlioxHub        hub,
             ObjectMapper    mapper,
             in JsonValue    jsonRequest,
             SyncContext     syncContext)
@@ -82,8 +30,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 if (error != null) {
                     response = JsonResponse.CreateError(mapper.writer, error, ErrorResponseType.BadResponse, null);
                 } else {
-                    localHub.InitSyncRequest(syncRequest);
-                    var syncResult = localHub.ExecuteRequest(syncRequest, syncContext);
+                    hub.InitSyncRequest(syncRequest);
+                    var syncResult = hub.ExecuteRequest(syncRequest, syncContext);
                 
                     response = CreateJsonResponse(syncResult, syncRequest.reqId, mapper.writer);
                 }
