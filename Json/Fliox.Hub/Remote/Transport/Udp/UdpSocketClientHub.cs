@@ -42,29 +42,26 @@ namespace Friflo.Json.Fliox.Hub.Remote
     /// </remarks>
     public sealed class UdpSocketClientHub : SocketClientHub
     {
-        private  readonly   string                      endpoint;
-        private  readonly   IPEndPoint                  ipEndpoint;
+        private  readonly   IPEndPoint                  remoteHost;
         /// Incrementing requests id used to map a <see cref="ProtocolResponse"/>'s to its related <see cref="SyncRequest"/>.
         private             int                         reqId;
         public              bool                        IsConnected => true;
-
         private  readonly   UdpSocket                   socket;
-        private             byte[]                      sendBuffer;
-        
         private  readonly   CancellationTokenSource     cancellationToken = new CancellationTokenSource();
+        private  readonly   bool                        logMessages = false;
+        private  readonly   int                         localPort;
         
-        public   override   string                      ToString() => $"{database.name} - endpoint: {endpoint}";
+        public   override   string                      ToString() => $"{database.name} - port: {localPort}";
         
         /// <summary>
         /// if port == 0 an available port is used
         /// </summary>
-        public UdpSocketClientHub(string dbName, string endpoint, int port = 0, SharedEnv env = null, RemoteClientAccess access = RemoteClientAccess.Multi)
+        public UdpSocketClientHub(string dbName, string remoteHost, int port = 0, SharedEnv env = null, RemoteClientAccess access = RemoteClientAccess.Multi)
             : base(new RemoteDatabase(dbName), env, access)
         {
-            this.endpoint   = endpoint;
-            TransportUtils.TryParseEndpoint(endpoint, out ipEndpoint);
-            socket          = new UdpSocket(port);
-            sendBuffer      = new byte[128];
+            TransportUtils.TryParseEndpoint(remoteHost, out this.remoteHost);
+            socket      = new UdpSocket(port);
+            localPort   = ((IPEndPoint)socket.client.Client.LocalEndPoint).Port;
             // TODO check if running loop from here is OK
             var _ = RunReceiveMessageLoop(socket);
         }
@@ -99,6 +96,9 @@ namespace Friflo.Json.Fliox.Hub.Remote
 
                     // --- process received message
                     var message = new JsonValue(buffer, buffer.Length);
+                    if (logMessages) {
+                        Logger.Log(HubLog.Info, $"c:{localPort,5} <-{remoteHost,20} {message.AsString().Truncate()}");
+                    }
                     ProcessMessage(message, socket.requestMap, reader);
                 }
                 catch (Exception e)
@@ -122,12 +122,12 @@ namespace Friflo.Json.Fliox.Hub.Remote
                     var rawRequest  = RemoteMessageUtils.CreateProtocolMessage(syncRequest, writer);
                     // request need to be queued _before_ sending it to be prepared for handling the response.
                     var request     = new RemoteRequest(syncContext, cancellationToken);
-
-                    socket.requestMap.Add(sendReqId, request);                    
-                    rawRequest.CopyTo(ref sendBuffer);
-                    
+                    socket.requestMap.Add(sendReqId, request);
+                    if (logMessages) {
+                        Logger.Log(HubLog.Info, $"c:{localPort,5} ->{remoteHost,20} {rawRequest.AsString().Truncate()}");
+                    }
                     // --- Send message
-                    await socket.client.SendAsync(sendBuffer, rawRequest.Count, ipEndpoint).ConfigureAwait(false);
+                    await socket.client.SendAsync(rawRequest.MutableArray, rawRequest.Count, remoteHost).ConfigureAwait(false);
                     
                     // --- Wait for response
                     var response = await request.response.Task.ConfigureAwait(false);
@@ -138,7 +138,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             catch (Exception e) {
                 var error = ErrorResponse.ErrorFromException(e);
                 error.Append(" endpoint: ");
-                error.Append(endpoint);
+                error.Append(remoteHost);
                 var msg = error.ToString();
                 return new ExecuteSyncResult(msg, ErrorResponseType.Exception);
             }

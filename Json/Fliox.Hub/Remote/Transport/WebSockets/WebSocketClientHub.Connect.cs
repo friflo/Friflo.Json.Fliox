@@ -48,7 +48,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             // ws.Options.SetBuffer(4096, 4096);
             try {
                 // Console.WriteLine($"Connect {++count}");
-                await wsConn.websocket.ConnectAsync(endpointUri, CancellationToken.None).ConfigureAwait(false);
+                await wsConn.websocket.ConnectAsync(remoteHost, CancellationToken.None).ConfigureAwait(false);
 
                 connectTask = null;
                 tcs.SetResult(wsConn);

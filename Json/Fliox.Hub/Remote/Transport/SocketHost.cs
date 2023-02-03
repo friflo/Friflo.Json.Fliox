@@ -79,6 +79,10 @@ namespace Friflo.Json.Fliox.Hub.Remote
             }
         }
         
+        /// <summary>
+        /// Method is not thread-safe<br/>
+        /// Expectation is method is called sequentially from the receive message loop- 
+        /// </summary>
         protected SyncRequest ParseRequest(in JsonValue request, in SocketContext socketContext) {
             var reader = readMapper.reader;
             if (useReaderPool) {
@@ -123,6 +127,10 @@ namespace Friflo.Json.Fliox.Hub.Remote
             }
         }
         
+        /// <summary>
+        /// Method is not thread-safe<br/>
+        /// Expectation is method is called sequentially from the receive message loop- 
+        /// </summary>
         protected void ExecuteRequest(SyncRequest syncRequest, SocketContext socketContext)
         {
             var syncContext = CreateSyncContext();
@@ -204,16 +212,16 @@ namespace Friflo.Json.Fliox.Hub.Remote
     }
     
     /// <summary>
-    /// Used by <see cref="UdpSocketHost"/> to send a response to the <see cref="remoteEndPoint"/>
+    /// Used by <see cref="UdpSocketHost"/> to send a response to the <see cref="remoteClient"/>
     /// which made a request.<br/>
     /// It is not required by <see cref="WebSocketHost"/> as the remote endpoint is implicit in the used WebSocket.
     /// </summary>
     public readonly struct SocketContext
     {
-        internal readonly System.Net.IPEndPoint remoteEndPoint;
+        internal readonly System.Net.IPEndPoint remoteClient;
         
-        internal SocketContext(System.Net.IPEndPoint remoteEndPoint) {
-            this.remoteEndPoint = remoteEndPoint;
+        internal SocketContext(System.Net.IPEndPoint remoteClient) {
+            this.remoteClient = remoteClient;
         }
     }
 }

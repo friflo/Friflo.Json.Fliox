@@ -39,11 +39,11 @@ namespace Friflo.Json.Fliox.Hub.Remote
     /// </remarks>
     public sealed partial class WebSocketClientHub : SocketClientHub
     {
-        private  readonly   string                      endpoint;
-        private  readonly   Uri                         endpointUri;
+        private  readonly   Uri                         remoteHost;
         /// Incrementing requests id used to map a <see cref="ProtocolResponse"/>'s to its related <see cref="SyncRequest"/>.
         private             int                         reqId;
         public              bool                        IsConnected => wsConnection?.websocket.State == WebSocketState.Open;
+        private  readonly   bool                        logMessages = false;
 
         /// lock (<see cref="websocketLock"/>) {
         private readonly    object                      websocketLock = new object();
@@ -53,16 +53,15 @@ namespace Friflo.Json.Fliox.Hub.Remote
         
         private  readonly   CancellationTokenSource     cancellationToken = new CancellationTokenSource();
         
-        public   override   string                      ToString() => $"{database.name} - endpoint: {endpoint}";
+        public   override   string                      ToString() => $"{database.name} - endpoint: {remoteHost}";
         
         /// <summary>
         /// Create a remote <see cref="FlioxHub"/> by using a <see cref="WebSocket"/> connection
         /// </summary>
-        public WebSocketClientHub(string dbName, string endpoint, SharedEnv env = null, RemoteClientAccess access = RemoteClientAccess.Multi)
+        public WebSocketClientHub(string dbName, string remoteHost, SharedEnv env = null, RemoteClientAccess access = RemoteClientAccess.Multi)
             : base(new RemoteDatabase(dbName), env, access)
         {
-            this.endpoint   = endpoint;
-            endpointUri     = new Uri(endpoint);
+            this.remoteHost = new Uri(remoteHost);
         }
         
         /* public override void Dispose() {
@@ -110,12 +109,15 @@ namespace Friflo.Json.Fliox.Hub.Remote
                         return;
                     }
                     if (wsResult.MessageType != WebSocketMessageType.Text) {
-                        Logger.Log(HubLog.Error, $"Expect WebSocket message type text. type: {wsResult.MessageType} {endpoint}");
+                        Logger.Log(HubLog.Error, $"Expect WebSocket message type text. type: {wsResult.MessageType} {remoteHost}");
                         continue;
                     }
 
                     // --- process received message
                     var message     = new JsonValue(memoryStream.GetBuffer(), (int)memoryStream.Position);
+                    if (logMessages) {
+                        Logger.Log(HubLog.Info, $"client   <-{remoteHost,20} {message.AsString().Truncate()}");
+                    }
                     ProcessMessage(message, socket.requestMap, reader);
                 }
                 catch (Exception e)
@@ -146,7 +148,9 @@ namespace Friflo.Json.Fliox.Hub.Remote
                     
                     socket.requestMap.Add(sendReqId, request);
                     var sendBuffer  = rawRequest.AsReadOnlyMemory();
-
+                    if (logMessages) {
+                        Logger.Log(HubLog.Info, $"client   ->{remoteHost,20} {rawRequest.AsString().Truncate()}");
+                    }
                     // --- Send message
                     await socket.websocket.SendAsync(sendBuffer, WebSocketMessageType.Text, true, CancellationToken.None).ConfigureAwait(false);
                     
@@ -159,7 +163,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             catch (Exception e) {
                 var error = ErrorResponse.ErrorFromException(e);
                 error.Append(" endpoint: ");
-                error.Append(endpoint);
+                error.Append(remoteHost);
                 var msg = error.ToString();
                 return new ExecuteSyncResult(msg, ErrorResponseType.Exception);
             }

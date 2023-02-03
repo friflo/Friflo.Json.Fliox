@@ -42,7 +42,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         private  readonly   Dictionary<ShortString, EventReceiver>  eventReceivers;
         private  readonly   ObjectPool<ReaderPool>                  responseReaderPool;
         private  readonly   RemoteClientAccess                      access;
-        private             Utf8JsonParser                          parser;
+        private             Utf8JsonParser                          messageParser; // non thread-safe
 
 
         // ReSharper disable once EmptyConstructor - added for source navigation
@@ -54,7 +54,11 @@ namespace Friflo.Json.Fliox.Hub.Remote
             this.access         = access;     
         }
 
-        /// <summary>A class extending  <see cref="SocketClientHub"/> must implement this method.</summary>
+        /// <summary>
+        /// A class extending  <see cref="SocketClientHub"/> must implement this method.<br/>
+        /// Implementation must be thread-safe as multiple <see cref="Client.FlioxClient"/> instances are allowed to
+        /// use a single <see cref="FlioxHub"/> instance.
+        /// </summary>
         public abstract override Task<ExecuteSyncResult> ExecuteRequestAsync(SyncRequest syncRequest, SyncContext syncContext);
         
         public override void AddEventReceiver(in ShortString clientId, EventReceiver eventReceiver) {
@@ -77,9 +81,13 @@ namespace Friflo.Json.Fliox.Hub.Remote
         
         internal override  ObjectPool<ReaderPool> GetResponseReaderPool() => responseReaderPool;
         
+        /// <summary>
+        /// Method is not thread safe.<br/>
+        /// Expectation is calling this method sequentially from a receive message loop.  
+        /// </summary>
         protected void ProcessMessage(in JsonValue message, RemoteRequestMap requestMap, ObjectReader reader) {
             // --- determine message type
-            var messageHead = RemoteMessageUtils.ReadMessageHead(ref parser, message);
+            var messageHead = RemoteMessageUtils.ReadMessageHead(ref messageParser, message);
                     
             // --- handle either response or event message
             switch (messageHead.type) {

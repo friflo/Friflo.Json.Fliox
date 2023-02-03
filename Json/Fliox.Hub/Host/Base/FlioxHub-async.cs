@@ -16,7 +16,9 @@ namespace Friflo.Json.Fliox.Hub.Host
     public partial class FlioxHub
     {
         /// <summary>
-        /// Execute all <see cref="SyncRequest.tasks"/> of a <see cref="SyncRequest"/> send by client.
+        /// Execute all <see cref="SyncRequest.tasks"/> of a <see cref="SyncRequest"/> send by client.<br/>
+        /// Method is thread-safe as multiple <see cref="Client.FlioxClient"/> instances are allowed to
+        /// use a single <see cref="FlioxHub"/> instance.
         /// </summary>
         /// <remarks>
         /// All requests to a <see cref="FlioxHub"/> are handled by this method.

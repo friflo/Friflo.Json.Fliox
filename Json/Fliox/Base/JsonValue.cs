@@ -26,8 +26,10 @@ namespace Friflo.Json.Fliox
         public   readonly   int         start;              // > 0 if using an InstancePool
         private  readonly   int         count;              // can be 0    - default struct value
         
-        /// <summary><b>Note</b> Not public to prevent potential side effects by application code mutating array elements</summary>
+        /// <summary>Used internally where callers guarantee not mutating the array</summary>
         internal            byte[]      Array               => array ?? Null;                       // never null
+        /// <summary><b>Attention!</b> Callers must guarantee not mutating the array. Otherwise undefined behavior.</summary>
+        public              byte[]      MutableArray        => array ?? Null;                       // never null
         public              int         Count               => array != null ? count : Null.Length; // always > 0
         public              bool        IsNull()            => array == null;
 

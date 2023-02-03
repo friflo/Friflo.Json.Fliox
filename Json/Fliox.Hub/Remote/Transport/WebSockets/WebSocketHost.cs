@@ -28,21 +28,22 @@ namespace Friflo.Json.Fliox.Hub.Remote
         private  readonly   WebSocket                           webSocket;
         private  readonly   MessageBufferQueueAsync<VoidMeta>   sendQueue;
         private  readonly   List<JsonValue>                     messages;
-        private  readonly   IPEndPoint                          remoteEndPoint;
+        private  readonly   IPEndPoint                          remoteClient;
         private  readonly   HostMetrics                         hostMetrics;
         /// Only set to true for testing. It avoids an early out at <see cref="EventSubClient.SendEvents"/> 
         private  readonly   bool                                fakeOpenClosedSocket;
+        private  readonly   bool                                logMessages = false;
 
 
         private WebSocketHost (
             WebSocket   webSocket,
-            IPEndPoint  remoteEndPoint,
+            IPEndPoint  remoteClient,
             FlioxHub    hub,
             HostEnv     hostEnv)
         : base (hub, hostEnv)
         {
             this.webSocket          = webSocket;
-            this.remoteEndPoint     = remoteEndPoint;
+            this.remoteClient       = remoteClient;
             hostMetrics             = hostEnv.metrics;
             sendQueue               = new MessageBufferQueueAsync<VoidMeta>();
             messages                = new List<JsonValue>();
@@ -65,11 +66,31 @@ namespace Friflo.Json.Fliox.Hub.Remote
         protected override void SendMessage(in JsonValue message, in SocketContext remoteEndPoint) {
             sendQueue.AddTail(message);
         }
+        
+        private void OnReceive(in JsonValue request)
+        {
+            var socketContext   = new SocketContext(remoteClient);
+            // --- precondition: message was read from socket
+            try {
+                // --- 1. Parse request
+                Interlocked.Increment(ref hostMetrics.webSocket.receivedCount);
+                var t1          = Stopwatch.GetTimestamp();
+                var syncRequest = ParseRequest(request, socketContext);
+                var t2          = Stopwatch.GetTimestamp();
+                Interlocked.Add(ref hostMetrics.webSocket.requestReadTime, t2 - t1);
+                if (syncRequest == null) {
+                    return;
+                }
+                // --- 2. Execute request
+                ExecuteRequest (syncRequest, socketContext);
+                var t3          = Stopwatch.GetTimestamp();
+                Interlocked.Add(ref hostMetrics.webSocket.requestExecuteTime, t3 - t2);
+            }
+            catch (Exception e) {
+                SendResponseException(e, null, socketContext);
+            }
+        }
 
-        
-        // private  static readonly   Regex   RegExLineFeed   = new Regex(@"\s+");
-        private     static readonly   bool    LogMessage      = false;
-        
         /// <summary>
         /// Loop is purely I/O bound => don't wrap in
         /// return Task.Run(async () => { ... });
@@ -85,7 +106,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             try {
                 await SendMessageLoop().ConfigureAwait(false);
             } catch (Exception e) {
-                var msg = GetExceptionMessage("RunSendMessageLoop()", remoteEndPoint, e);
+                var msg = GetExceptionMessage("RunSendMessageLoop()", remoteClient, e);
                 Logger.Log(HubLog.Info, msg);
             }
         }
@@ -97,8 +118,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
             while (true) {
                 var remoteEvent = await sendQueue.DequeMessageValuesAsync(messages).ConfigureAwait(false);
                 foreach (var message in messages) {
-                    if (LogMessage) {
-                        Logger.Log(HubLog.Info, message.AsString());
+                    if (logMessages) {
+                        Logger.Log(HubLog.Info, $" server ->{remoteClient,20} {message.AsString().Truncate()}");
                     }
                     var arraySegment = message.AsReadOnlyMemory();
                     // if (sendMessage.Count > 100000) Console.WriteLine($"SendLoop. size: {sendMessage.Count}");
@@ -159,27 +180,11 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 if (wsResult.MessageType != WebSocketMessageType.Text) {
                     continue;
                 }
-                
-                var socketContext   = new SocketContext(remoteEndPoint);
-                var request         = new JsonValue(memoryStream.GetBuffer(), (int)memoryStream.Position);
-                try {
-                    // --- 2. Parse request
-                    Interlocked.Increment(ref hostMetrics.webSocket.receivedCount);
-                    var t1          = Stopwatch.GetTimestamp();
-                    var syncRequest = ParseRequest(request, socketContext);
-                    var t2          = Stopwatch.GetTimestamp();
-                    Interlocked.Add(ref hostMetrics.webSocket.requestReadTime, t2 - t1);
-                    if (syncRequest == null) {
-                        continue;
-                    }
-                    // --- 3. Execute request
-                    ExecuteRequest (syncRequest, socketContext);
-                    var t3          = Stopwatch.GetTimestamp();
-                    Interlocked.Add(ref hostMetrics.webSocket.requestExecuteTime, t3 - t2);
+                var request = new JsonValue(memoryStream.GetBuffer(), (int)memoryStream.Position);
+                if (logMessages) {
+                    Logger.Log(HubLog.Info, $" server <-{remoteClient,20} {request.AsString().Truncate()}");
                 }
-                catch (Exception e) {
-                    SendResponseException(e, null, socketContext);
-                }
+                OnReceive(request);
             }
         }
         
@@ -190,11 +195,11 @@ namespace Friflo.Json.Fliox.Hub.Remote
         /// </summary>
         public static async Task SendReceiveMessages(
             WebSocket   websocket,
-            IPEndPoint  remoteEndPoint,
+            IPEndPoint  remoteClient,
             FlioxHub    hub,
             HostEnv     hostEnv)
         {
-            var  target     = new WebSocketHost(websocket, remoteEndPoint, hub, hostEnv);
+            var  target     = new WebSocketHost(websocket, remoteClient, hub, hostEnv);
             Task sendLoop   = null;
             try {
                 sendLoop = target.RunSendMessageLoop();
@@ -204,11 +209,11 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 target.sendQueue.Close();
             }
             catch (WebSocketException e) {
-                var msg = GetExceptionMessage("WebSocketHost.SendReceiveMessages()", remoteEndPoint, e);
+                var msg = GetExceptionMessage("WebSocketHost.SendReceiveMessages()", remoteClient, e);
                 hub.Logger.Log(HubLog.Info, msg);
             }
             catch (Exception e) {
-                var msg = GetExceptionMessage("WebSocketHost.SendReceiveMessages()", remoteEndPoint, e);
+                var msg = GetExceptionMessage("WebSocketHost.SendReceiveMessages()", remoteClient, e);
                 hub.Logger.Log(HubLog.Info, msg);
             }
             finally {

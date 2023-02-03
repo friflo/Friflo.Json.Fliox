@@ -41,5 +41,11 @@ namespace Friflo.Json.Fliox.Hub.Remote
             result = new IPEndPoint(ipAddress, port);
             return true;
         }
+        
+        public static string Truncate(this string value) {
+            const int maxLength = 120;
+            if (string.IsNullOrEmpty(value)) return value;
+            return value.Length <= maxLength ? value : value.Substring(0, maxLength); 
+        }
     }
 }

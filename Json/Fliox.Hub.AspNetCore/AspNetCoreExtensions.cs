@@ -47,9 +47,9 @@ namespace Friflo.Json.Fliox.Hub.AspNetCore
             if (isWebSocket) {
                 var websocket       = await context.WebSockets.AcceptWebSocketAsync().ConfigureAwait(false);
                 var httpConnection  = context.Features.Get<IHttpConnectionFeature>();
-                var remoteEndPoint  = new IPEndPoint(httpConnection.RemoteIpAddress, httpConnection.RemotePort);
+                var remoteClient    = new IPEndPoint(httpConnection.RemoteIpAddress, httpConnection.RemotePort);
                 // awaits until thew websocket is closed or disconnected
-                await WebSocketHost.SendReceiveMessages(websocket, remoteEndPoint, httpHost.hub, httpHost.hostEnv).ConfigureAwait(false);
+                await WebSocketHost.SendReceiveMessages(websocket, remoteClient, httpHost.hub, httpHost.hostEnv).ConfigureAwait(false);
                 
                 return null;
             }
