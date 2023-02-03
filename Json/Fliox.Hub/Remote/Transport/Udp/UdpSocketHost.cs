@@ -35,32 +35,31 @@ namespace Friflo.Json.Fliox.Hub.Remote
         public override bool    IsOpen ()           => true;
         
         // --- WebHost
-        protected override void SendMessage(in JsonValue message, in SocketContext socketContext) {
+        protected override void SendMessage(in JsonValue message) {
             server.sendQueue.AddTail(message, new UdpMeta(remoteClient));
         }
         
         internal void OnReceive(in JsonValue request)
         {
-            var socketContext   = new SocketContext(remoteClient);
             var hostMetrics     = server.hostMetrics;
             // --- precondition: message was read from socket
             try {
                 // --- 1. Parse request
                 Interlocked.Increment(ref hostMetrics.udp.receivedCount);
                 var t1          = Stopwatch.GetTimestamp();
-                var syncRequest = ParseRequest(request, socketContext);
+                var syncRequest = ParseRequest(request);
                 var t2          = Stopwatch.GetTimestamp();
                 Interlocked.Add(ref hostMetrics.udp.requestReadTime, t2 - t1);
                 if (syncRequest == null) {
                     return;
                 }
                 // --- 2. Execute request
-                ExecuteRequest (syncRequest, socketContext);
+                ExecuteRequest (syncRequest);
                 var t3          = Stopwatch.GetTimestamp();
                 Interlocked.Add(ref hostMetrics.udp.requestExecuteTime, t3 - t2);
             }
             catch (Exception e) {
-                SendResponseException(e, null, socketContext);
+                SendResponseException(e, null);
             }
         }
     }

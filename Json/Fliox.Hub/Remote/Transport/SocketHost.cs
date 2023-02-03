@@ -54,7 +54,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         public              IHubLogger  Logger { get; }
-        protected abstract  void        SendMessage(in JsonValue message, in SocketContext socketContext);
+        protected abstract  void        SendMessage(in JsonValue message);
 
         protected SocketHost(FlioxHub hub, HostEnv hostEnv) {
             var env         = hub.sharedEnv;
@@ -72,7 +72,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
 
         public override void SendEvent(in ClientEvent clientEvent) {
             try {
-                SendMessage(clientEvent.message, default);
+                SendMessage(clientEvent.message);
             }
             catch (Exception e) {
                 Logger.Log(HubLog.Error, "WebSocketHost.SendEvent", e);
@@ -83,7 +83,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         /// Method is not thread-safe<br/>
         /// Expectation is method is called sequentially from the receive message loop- 
         /// </summary>
-        protected SyncRequest ParseRequest(in JsonValue request, in SocketContext socketContext) {
+        protected SyncRequest ParseRequest(in JsonValue request) {
             var reader = readMapper.reader;
             if (useReaderPool) {
                 reader.ReaderPool = readerPool.Get().instance.Reuse();
@@ -93,7 +93,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 return syncRequest;
             }
             var response = JsonResponse.CreateError(readMapper.writer, error, ErrorResponseType.BadRequest, null);
-            SendMessage(response.body, socketContext);
+            SendMessage(response.body);
             return null;
         }
         
@@ -131,7 +131,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         /// Method is not thread-safe<br/>
         /// Expectation is method is called sequentially from the receive message loop- 
         /// </summary>
-        protected void ExecuteRequest(SyncRequest syncRequest, SocketContext socketContext)
+        protected void ExecuteRequest(SyncRequest syncRequest)
         {
             var syncContext = CreateSyncContext();
 
@@ -147,36 +147,36 @@ namespace Friflo.Json.Fliox.Hub.Remote
                     default:
                         var syncResult          = hub.ExecuteRequest      (syncRequest, syncContext);
                         if (pool != null) readerPool.Return(pool);
-                        SendResponse(syncResult, reqId, socketContext);
+                        SendResponse(syncResult, reqId);
                         ReturnSyncContext(syncContext);
                         return;
                 }
                 syncResultTask.ContinueWith(task => {
                     if (pool != null) readerPool.Return(pool);
-                    SyncResultContinuation(task, reqId, socketContext);
+                    SyncResultContinuation(task, reqId);
                     ReturnSyncContext(syncContext);
                 });
             }
             catch (Exception e) {
-                SendResponseException(e, reqId, socketContext);
+                SendResponseException(e, reqId);
                 ReturnSyncContext(syncContext);
             }
         }
         
-        private void SyncResultContinuation(Task<ExecuteSyncResult> task, int? reqId, in SocketContext socketContext) {
+        private void SyncResultContinuation(Task<ExecuteSyncResult> task, int? reqId) {
             var status = task.Status;
             switch (status) {
                 case TaskStatus.RanToCompletion:
                     var syncResult = task.Result;
-                    SendResponse(syncResult, reqId, socketContext);
+                    SendResponse(syncResult, reqId);
                     return;
                 case TaskStatus.Faulted:
                     var exception = task.Exception;
-                    SendResponseException(exception, reqId, socketContext);
+                    SendResponseException(exception, reqId);
                     return;
                 case TaskStatus.Canceled:
                     var canceledException = task.Exception; // OperationCanceledException
-                    SendResponseException(canceledException, reqId, socketContext);
+                    SendResponseException(canceledException, reqId);
                     return;
                 default:
                     var errorMsg = $"unexpected continuation task status {status}, reqId: {reqId}";
@@ -186,7 +186,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             }
         }
         
-        private void SendResponse(in ExecuteSyncResult syncResult, int? reqId, in SocketContext socketContext) {
+        private void SendResponse(in ExecuteSyncResult syncResult, int? reqId) {
             var error               = syncResult.error;
             var mapper              = objectPool.Get().instance;
             var writer              = mapper.writer;
@@ -194,34 +194,20 @@ namespace Friflo.Json.Fliox.Hub.Remote
             writer.WriteNullMembers = false;
             if (error != null) {
                 var errorResponse = JsonResponse.CreateError(writer, error.message, error.type, reqId);
-                SendMessage(errorResponse.body, socketContext);
+                SendMessage(errorResponse.body);
             } else {
                 var response = RemoteHostUtils.CreateJsonResponse(syncResult, reqId, writer);
-                SendMessage(response.body, socketContext);
+                SendMessage(response.body);
             }
             objectPool.Return(mapper);
         }
         
-        protected void SendResponseException(Exception e, int? reqId, in SocketContext socketContext) {
+        protected void SendResponseException(Exception e, int? reqId) {
             var errorMsg    = ErrorResponse.ErrorFromException(e).ToString();
             var mapper      = objectPool.Get().instance;
             var response    = JsonResponse.CreateError(mapper.writer, errorMsg, ErrorResponseType.Exception, reqId);
             objectPool.Return(mapper);
-            SendMessage(response.body, socketContext);
-        }
-    }
-    
-    /// <summary>
-    /// Used by <see cref="UdpSocketHost"/> to send a response to the <see cref="remoteClient"/>
-    /// which made a request.<br/>
-    /// It is not required by <see cref="WebSocketHost"/> as the remote endpoint is implicit in the used WebSocket.
-    /// </summary>
-    public readonly struct SocketContext
-    {
-        internal readonly System.Net.IPEndPoint remoteClient;
-        
-        internal SocketContext(System.Net.IPEndPoint remoteClient) {
-            this.remoteClient = remoteClient;
+            SendMessage(response.body);
         }
     }
 }
