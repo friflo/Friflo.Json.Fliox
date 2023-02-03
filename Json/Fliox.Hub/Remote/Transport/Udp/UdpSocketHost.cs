@@ -1,10 +1,7 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
-using System;
-using System.Diagnostics;
 using System.Net;
-using System.Threading;
 
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.Remote
@@ -37,30 +34,6 @@ namespace Friflo.Json.Fliox.Hub.Remote
         // --- WebHost
         protected override void SendMessage(in JsonValue message) {
             server.sendQueue.AddTail(message, new UdpMeta(remoteClient));
-        }
-        
-        internal void OnReceive(in JsonValue request)
-        {
-            var hostMetrics     = server.hostMetrics;
-            // --- precondition: message was read from socket
-            try {
-                // --- 1. Parse request
-                Interlocked.Increment(ref hostMetrics.udp.receivedCount);
-                var t1          = Stopwatch.GetTimestamp();
-                var syncRequest = ParseRequest(request);
-                var t2          = Stopwatch.GetTimestamp();
-                Interlocked.Add(ref hostMetrics.udp.requestReadTime, t2 - t1);
-                if (syncRequest == null) {
-                    return;
-                }
-                // --- 2. Execute request
-                ExecuteRequest (syncRequest);
-                var t3          = Stopwatch.GetTimestamp();
-                Interlocked.Add(ref hostMetrics.udp.requestExecuteTime, t3 - t2);
-            }
-            catch (Exception e) {
-                SendResponseException(e, null);
-            }
         }
     }
 }

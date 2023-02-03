@@ -107,7 +107,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 if (logMessages) {
                     Logger.Log(HubLog.Info, $" server <-{socketHost.remoteClient,20} {request.AsString().Truncate()}");
                 }
-                socketHost.OnReceive(request);
+                socketHost.OnReceive(request, hostMetrics.udp);
             }
         }
         

@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Threading;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.Event;
@@ -127,11 +128,34 @@ namespace Friflo.Json.Fliox.Hub.Remote
             }
         }
         
+        internal void OnReceive(in JsonValue request, SocketMetrics metrics)
+        {
+            // --- precondition: message was read from socket
+            try {
+                // --- 1. Parse request
+                Interlocked.Increment(ref metrics.receivedCount);
+                var t1          = Stopwatch.GetTimestamp();
+                var syncRequest = ParseRequest(request);
+                var t2          = Stopwatch.GetTimestamp();
+                Interlocked.Add(ref metrics.requestReadTime, t2 - t1);
+                if (syncRequest == null) {
+                    return;
+                }
+                // --- 2. Execute request
+                ExecuteRequest (syncRequest);
+                var t3          = Stopwatch.GetTimestamp();
+                Interlocked.Add(ref metrics.requestExecuteTime, t3 - t2);
+            }
+            catch (Exception e) {
+                SendResponseException(e, null);
+            }
+        }
+        
         /// <summary>
         /// Method is not thread-safe<br/>
         /// Expectation is method is called sequentially from the receive message loop- 
         /// </summary>
-        protected void ExecuteRequest(SyncRequest syncRequest)
+        private void ExecuteRequest(SyncRequest syncRequest)
         {
             var syncContext = CreateSyncContext();
 

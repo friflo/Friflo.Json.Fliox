@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Net.WebSockets;
@@ -67,29 +66,6 @@ namespace Friflo.Json.Fliox.Hub.Remote
             sendQueue.AddTail(message);
         }
         
-        private void OnReceive(in JsonValue request)
-        {
-            // --- precondition: message was read from socket
-            try {
-                // --- 1. Parse request
-                Interlocked.Increment(ref hostMetrics.webSocket.receivedCount);
-                var t1          = Stopwatch.GetTimestamp();
-                var syncRequest = ParseRequest(request);
-                var t2          = Stopwatch.GetTimestamp();
-                Interlocked.Add(ref hostMetrics.webSocket.requestReadTime, t2 - t1);
-                if (syncRequest == null) {
-                    return;
-                }
-                // --- 2. Execute request
-                ExecuteRequest (syncRequest);
-                var t3          = Stopwatch.GetTimestamp();
-                Interlocked.Add(ref hostMetrics.webSocket.requestExecuteTime, t3 - t2);
-            }
-            catch (Exception e) {
-                SendResponseException(e, null);
-            }
-        }
-
         /// <summary>
         /// Loop is purely I/O bound => don't wrap in
         /// return Task.Run(async () => { ... });
@@ -183,7 +159,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 if (logMessages) {
                     Logger.Log(HubLog.Info, $" server <-{remoteClient,20} {request.AsString().Truncate()}");
                 }
-                OnReceive(request);
+                OnReceive(request, hostMetrics.webSocket);
             }
         }
         
