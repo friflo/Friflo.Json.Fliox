@@ -39,6 +39,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         
         public override async Task<ExecuteSyncResult> ExecuteRequestAsync(SyncRequest syncRequest, SyncContext syncContext)
         {
+            // requires its own mapper - method can be called from multiple threads simultaneously
             using (var pooledMapper = syncContext.ObjectMapper.Get()) {
                 var mapper              = pooledMapper.instance;
                 var writer              = mapper.writer;

@@ -57,7 +57,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         /// <summary>
         /// A class extending  <see cref="SocketClientHub"/> must implement this method.<br/>
         /// Implementation must be thread-safe as multiple <see cref="Client.FlioxClient"/> instances are allowed to
-        /// use a single <see cref="FlioxHub"/> instance.
+        /// use a single <see cref="FlioxHub"/> instance simultaneously.
         /// </summary>
         public abstract override Task<ExecuteSyncResult> ExecuteRequestAsync(SyncRequest syncRequest, SyncContext syncContext);
         

@@ -136,8 +136,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
             }
             int sendReqId       = Interlocked.Increment(ref reqId);
             syncRequest.reqId   = sendReqId;
-
             try {
+                // requires its own mapper - method can be called from multiple threads simultaneously
                 using (var pooledMapper = syncContext.ObjectMapper.Get()) {
                     var writer              = pooledMapper.instance.writer;
                     writer.Pretty           = false;

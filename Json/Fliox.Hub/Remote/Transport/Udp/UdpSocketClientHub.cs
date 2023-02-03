@@ -113,8 +113,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
         public override async Task<ExecuteSyncResult> ExecuteRequestAsync(SyncRequest syncRequest, SyncContext syncContext) {
             int sendReqId       = Interlocked.Increment(ref reqId);
             syncRequest.reqId   = sendReqId;
-
             try {
+                // requires its own mapper - method can be called from multiple threads simultaneously
                 using (var pooledMapper = syncContext.ObjectMapper.Get()) {
                     var writer              = pooledMapper.instance.writer;
                     writer.Pretty           = false;
