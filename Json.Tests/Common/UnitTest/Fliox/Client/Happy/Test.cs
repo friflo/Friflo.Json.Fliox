@@ -264,21 +264,21 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         
         internal static async Task RunServer(HttpServer server, Func<Task> run) {
             server.Start();
-            Task hostTask = null;
+            Task runTask = null;
             try {
-                hostTask = Task.Run(() => {
-                    // await hostDatabase.HandleIncomingConnections();
+                runTask = Task.Run(() => {
                     server.Run();
                     // await Task.Delay(100); // test awaiting hostTask
-                    Logger.Info("1. RemoteHost finished");
+                    Logger.Info("1. run() finished");
                 });
                 
                 await run();
-            } finally {
+            }
+            finally {
                 await server.Stop();
-                if (hostTask != null)
-                    await hostTask;
-                Logger.Info("2. awaited hostTask");
+                if (runTask != null)
+                    await runTask;
+                Logger.Info("2. HttpServer stopped");
             }
         } 
 
