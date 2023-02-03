@@ -211,11 +211,9 @@ namespace Friflo.Json.Fliox.Hub.Remote
         }
         
         private void SendResponse(in ExecuteSyncResult syncResult, int? reqId) {
-            var error               = syncResult.error;
-            var mapper              = objectPool.Get().instance;
-            var writer              = mapper.writer;
-            writer.Pretty           = false;
-            writer.WriteNullMembers = false;
+            var error   = syncResult.error;
+            var mapper  = objectPool.Get().instance;
+            var writer  = RemoteMessageUtils.GetCompactWriter(mapper);
             if (error != null) {
                 var errorResponse = JsonResponse.CreateError(writer, error.message, error.type, reqId);
                 SendMessage(errorResponse.body);

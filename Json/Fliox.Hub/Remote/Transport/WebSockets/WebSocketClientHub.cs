@@ -139,9 +139,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             try {
                 // requires its own mapper - method can be called from multiple threads simultaneously
                 using (var pooledMapper = syncContext.ObjectMapper.Get()) {
-                    var writer              = pooledMapper.instance.writer;
-                    writer.Pretty           = false;
-                    writer.WriteNullMembers = false;
+                    var writer      = RemoteMessageUtils.GetCompactWriter(pooledMapper.instance);
                     var rawRequest  = RemoteMessageUtils.CreateProtocolMessage(syncRequest, writer);
                     // request need to be queued _before_ sending it to be prepared for handling the response.
                     var request     = new RemoteRequest(syncContext, cancellationToken);

@@ -35,6 +35,20 @@ namespace Friflo.Json.Fliox.Hub.Remote.Tools
     /// </summary>
     public static class RemoteMessageUtils
     {
+        public static ObjectWriter GetCompactWriter (ObjectMapper mapper) {
+            var writer              = mapper.writer;
+            writer.Pretty           = false;
+            writer.WriteNullMembers = false;
+            return writer;
+        }
+        
+        public static ObjectWriter GetPrettyWriter (ObjectMapper mapper) {
+            var writer              = mapper.writer;
+            writer.Pretty           = true;
+            writer.WriteNullMembers = false;
+            return writer;
+        }
+        
         /// <summary>
         /// <b>Attention</b> returned <see cref="JsonValue"/> is <b>only</b> valid until the passed <paramref name="writer"/> is reused
         /// </summary>

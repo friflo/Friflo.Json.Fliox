@@ -119,6 +119,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
             cx.hub              = new FlioxHub(database, sharedEnv);
             cx.memoryBuffer     = new MemoryBuffer (4 * 1024);
             cx.mapper           = new ObjectMapper(typeStore);
+            cx.mapper.Pretty            = true;
             cx.mapper.WriteNullMembers  = false;
             cx.mapper.reader.ReaderPool = new ReaderPool(typeStore);
             cx.syncPools        = new SyncPools(typeStore);

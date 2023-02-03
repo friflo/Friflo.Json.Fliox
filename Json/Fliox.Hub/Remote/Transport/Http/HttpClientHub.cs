@@ -42,9 +42,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             // requires its own mapper - method can be called from multiple threads simultaneously
             using (var pooledMapper = syncContext.ObjectMapper.Get()) {
                 var mapper              = pooledMapper.instance;
-                var writer              = mapper.writer;
-                writer.Pretty           = true;
-                writer.WriteNullMembers = false;
+                var writer              = RemoteMessageUtils.GetPrettyWriter(mapper);
                 var jsonRequest         = RemoteMessageUtils.CreateProtocolMessage(syncRequest, writer);
                 var content             = jsonRequest.AsByteArrayContent();
                 content.Headers.ContentType = new MediaTypeHeaderValue("application/json");

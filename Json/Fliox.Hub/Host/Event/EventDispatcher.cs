@@ -294,9 +294,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                 throw new InvalidOperationException($"must not be called if using {nameof(EventDispatcher)}.{EventDispatching.QueueSend}");
             }
             using (var pooleMapper = sharedEnv.Pool.ObjectMapper.Get()) {
-                var writer = pooleMapper.instance.writer;
-                writer.Pretty           = false;
-                writer.WriteNullMembers = false;
+                var writer = RemoteMessageUtils.GetCompactWriter(pooleMapper.instance);
                 if (eventCollector.DatabaseCount > 0) {
                     CopyDatabaseSubsMap(databaseSubsBuffer);
                     changeCombiner.AccumulateChanges(databaseSubsBuffer, writer);
@@ -443,9 +441,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                 syncEvent.usr    = syncRequest.userId;
             }
             using (var pooled = syncContext.ObjectMapper.Get()) {
-                ObjectWriter writer     = pooled.instance.writer;
-                writer.Pretty           = false;    // write sub's as one liner
-                writer.WriteNullMembers = false;
+                var writer = RemoteMessageUtils.GetCompactWriter(pooled.instance);
                 
                 foreach (var clientSub in databaseSubsArray) {
                     var client = clientSub.client;
@@ -514,9 +510,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         private async Task RunSendEventLoop(IDataChannelReader<EventSubClient> clientEventReader) {
             try {
                 using (var mapper = new ObjectMapper(sharedEnv.TypeStore)) {
-                    var writer = mapper.writer;
-                    writer.Pretty            = false;
-                    writer.WriteNullMembers  = false;
+                    var writer = RemoteMessageUtils.GetCompactWriter(mapper);
                     await SendEventLoop(clientEventReader, writer).ConfigureAwait(false);
                 }
             } catch (Exception e) {

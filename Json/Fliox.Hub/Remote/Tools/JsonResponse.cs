@@ -35,10 +35,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.Tools
         {
             var status          = type == ErrorResponseType.Exception ? JsonResponseStatus.Exception : JsonResponseStatus.Error;
             var errorResponse   = new ErrorResponse { message = message, type = type, reqId = reqId };
-
-            writer.Pretty           = true;
-            writer.WriteNullMembers = false;
-            var body                = writer.WriteAsBytes<ProtocolMessage>(errorResponse);
+            var body            = writer.WriteAsBytes<ProtocolMessage>(errorResponse);
             return new JsonResponse(new JsonValue(body), status);
         }
     }

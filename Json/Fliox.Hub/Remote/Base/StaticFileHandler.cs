@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
+using Friflo.Json.Fliox.Hub.Remote.Tools;
 using Friflo.Json.Fliox.Hub.Utils;
 using static System.Diagnostics.DebuggerBrowsableState;
 
@@ -134,8 +135,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             }
             Array.Sort(fileNames);
             using (var mapper = context.Pool.ObjectMapper.Get()) {
-                var writer      = mapper.instance.writer;
-                writer.Pretty   = true;
+                var writer      = RemoteMessageUtils.GetPrettyWriter(mapper.instance);
                 var jsonList    = writer.Write(fileNames);
                 context.WriteString(jsonList, "application/json", 200);
             }

@@ -4,6 +4,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Friflo.Json.Fliox.Hub.Remote.Tools;
 using Friflo.Json.Fliox.Schema.Definition;
 using Friflo.Json.Fliox.Schema.Language;
 
@@ -97,8 +98,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.Schema
             }
             if (fileName == "directory") {
                 using (var pooled = context.ObjectMapper.Get()) {
-                    var writer      = pooled.instance.writer;
-                    writer.Pretty   = true;
+                    var writer      = RemoteMessageUtils.GetPrettyWriter(pooled.instance);
                     var directory   = writer.Write(files.Keys.ToList());
                     return Result.Success(directory, "application/json");
                 }
