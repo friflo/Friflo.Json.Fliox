@@ -99,7 +99,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                     if (logMessages) {
                         Logger.Log(HubLog.Info, $"c:{localPort,5} <-{remoteHost,20} {message.AsString().Truncate()}");
                     }
-                    ProcessMessage(message, socket.requestMap, reader);
+                    OnReceive(message, socket.requestMap, reader);
                 }
                 catch (Exception e)
                 {

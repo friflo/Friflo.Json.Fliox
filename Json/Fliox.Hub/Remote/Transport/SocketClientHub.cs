@@ -85,7 +85,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         /// Method is not thread safe.<br/>
         /// Expectation is calling this method sequentially from a receive message loop.  
         /// </summary>
-        protected void ProcessMessage(in JsonValue message, RemoteRequestMap requestMap, ObjectReader reader) {
+        protected void OnReceive(in JsonValue message, RemoteRequestMap requestMap, ObjectReader reader) {
             // --- determine message type
             var messageHead = RemoteMessageUtils.ReadMessageHead(ref messageParser, message);
                     
