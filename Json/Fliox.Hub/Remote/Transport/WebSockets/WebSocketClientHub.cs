@@ -35,7 +35,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
     /// </summary>
     /// <remarks>
     /// Counterpart of <see cref="WebSocketHost"/> used by clients.<br/>
-    /// Implementation aligned with <see cref="UdpSocketClientHub"/>
+    /// Implementation aligned with <see cref="Transport.Udp.UdpSocketClientHub"/>
     /// </remarks>
     public sealed partial class WebSocketClientHub : SocketClientHub
     {

@@ -3,7 +3,7 @@
 
 using System.Net;
 
-namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
+namespace Friflo.Json.Fliox.Hub.Remote.Transport.UdpRef
 {
     /// <summary>
     /// Implementation aligned with <see cref="WebSocketHost"/>

@@ -11,7 +11,7 @@ using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Remote.Tools;
 using Friflo.Json.Fliox.Mapper;
 
-namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
+namespace Friflo.Json.Fliox.Hub.Remote.Transport.UdpRef
 {
     /// <summary>
     /// Each <see cref="WebSocketConnection"/> store its send requests in the <see cref="requestMap"/>
@@ -19,19 +19,18 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
     /// </summary>
     internal sealed class UdpSocket
     {
-        internal  readonly  Socket              socket;
+        internal  readonly  UdpClient           udpClient;
         internal  readonly  RemoteRequestMap    requestMap;
 
         /// <summary>if port == 0 an available port is used</summary>
         internal UdpSocket(int port) {
             var localEndPoint   = new IPEndPoint(IPAddress.Any, port);
-            // setting AddressFamily.InterNetwork improves performance - did not analyzed reason
-            socket              = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
-            socket.Bind(localEndPoint);
+            udpClient  = new UdpClient();
+            udpClient.Client.Bind(localEndPoint);
             requestMap = new RemoteRequestMap();
         }
 
-        internal int GetPort() => ((IPEndPoint)socket.LocalEndPoint).Port;
+        internal int GetPort() => ((IPEndPoint)udpClient.Client.LocalEndPoint).Port;
     }
 
 
@@ -88,18 +87,14 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
         /// - The created <see cref="RemoteRequest.response"/>'s act as a queue. <br/>
         /// </summary>
         private async Task ReceiveMessageLoop(UdpSocket udpSocket, ObjectReader reader) {
-            var bufferSegment = udpSocket.socket != null ? new ArraySegment<byte>(new byte[0x10000]) : default;
             while (true)
             {
                 try {
                     // --- read complete datagram message
-                    var result  = await udpSocket.socket.ReceiveFromAsync(bufferSegment, SocketFlags.None, remoteHost).ConfigureAwait(false);
-                    var message = new JsonValue(bufferSegment.Array, result.ReceivedBytes);
+                    var result  = await udpSocket.udpClient.ReceiveAsync().ConfigureAwait(false);
                     
-                    // note: using ReceiveFromAsync() is faster than ReceiveAsync() - did not analyzed reason
-                    // int length  = await udpSocket.socket.ReceiveAsync(bufferSegment, SocketFlags.None).ConfigureAwait(false);
-                    // message     = new JsonValue(bufferSegment.Array, length);
-
+                    var buffer  = result.Buffer;
+                    var message = new JsonValue(buffer, buffer.Length);
                     // --- process received message
                     if (logMessages) {
                         Logger.Log(HubLog.Info, $"c:{localPort,5} <-{remoteHost,20} {message.AsString().Truncate()}");
@@ -130,7 +125,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
                         Logger.Log(HubLog.Info, $"c:{localPort,5} ->{remoteHost,20} {rawRequest.AsString().Truncate()}");
                     }
                     // --- Send message
-                    await udpSocket.socket.SendToAsync(rawRequest.AsMutableArraySegment(), SocketFlags.None, remoteHost).ConfigureAwait(false);
+                    await udpSocket.udpClient.SendAsync(rawRequest.MutableArray, rawRequest.Count, remoteHost).ConfigureAwait(false);
 
                     // --- Wait for response
                     var response = await request.response.Task.ConfigureAwait(false);

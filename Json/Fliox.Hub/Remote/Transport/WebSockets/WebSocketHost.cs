@@ -17,7 +17,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
 {
     // [Things I Wish Someone Told Me About ASP.NET Core WebSockets | codetinkerer.com] https://www.codetinkerer.com/2018/06/05/aspnet-core-websockets.html
     /// <summary>
-    /// Implementation aligned with <see cref="UdpSocketHost"/>
+    /// Implementation aligned with <see cref="Transport.Udp.UdpSocketHost"/>
     /// </summary>
     /// <remarks>
     /// Counterpart of <see cref="WebSocketClientHub"/> used by the server.<br/>

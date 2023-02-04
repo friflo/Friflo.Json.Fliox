@@ -10,12 +10,13 @@ using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Utils;
 
-namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
+
+namespace Friflo.Json.Fliox.Hub.Remote.Transport.UdpRef
 {
     public sealed class UdpServer : IDisposable, ILogSource
     {
         internal readonly   FlioxHub                                hub;
-        private  readonly   Socket                                  socket;
+        private  readonly   UdpClient                               udpClient;
         private  readonly   IPEndPoint                              ipEndPoint;
         internal readonly   HostEnv                                 hostEnv = new HostEnv();
         internal readonly   MessageBufferQueueAsync<UdpMeta>        sendQueue;
@@ -32,8 +33,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
                 throw new ArgumentException($"invalid endpoint: {endpoint}", nameof(endpoint));
             }
             this.hub    = hub;
-            socket      = new Socket(SocketType.Dgram, ProtocolType.Udp);
-            socket.Bind(ipEndPoint);
+            udpClient   = new UdpClient(ipEndPoint);
             Logger      = hub.Logger;
             sendQueue   = new MessageBufferQueueAsync<UdpMeta>();
             messages    = new List<MessageItem<UdpMeta>>();
@@ -70,14 +70,16 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
         
         // Send queue (sendWriter / sendReader) is required  to prevent having more than one UdpClient.SendAsync() call outstanding.
         private async Task SendMessageLoop() {
+            var buffer = udpClient != null ? new byte[128] : null; // UdpClient.SendAsync() requires datagram array starting datagram[0]
             while (true) {
                 var remoteEvent = await sendQueue.DequeMessagesAsync(messages).ConfigureAwait(false);
                 foreach (var message in messages) {
                     if (logMessages) {
                         Logger.Log(HubLog.Info, $" server ->{message.meta.remoteEndPoint,20} {message.value.AsString().Truncate()}");
                     }
-                    var array = message.value.AsMutableArraySegment();
-                    await socket.SendToAsync(array, SocketFlags.None, message.meta.remoteEndPoint).ConfigureAwait(false);
+                    message.value.CopyTo(ref buffer);
+                    // ReSharper disable once PossibleNullReferenceException
+                    await udpClient.SendAsync(buffer, message.value.Count, message.meta.remoteEndPoint).ConfigureAwait(false);
                 }
                 if (remoteEvent == MessageBufferEvent.Closed) {
                     return;
@@ -89,31 +91,25 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
             await ReceiveMessageLoop().ConfigureAwait(false);
         }
         
-        private static readonly IPEndPoint DummyEndpoint = new IPEndPoint(IPAddress.Any, 0);
-        
-        /// <summary>
-        /// Parse, execute and send response message for all received request messages.<br/>
-        /// </summary>
         private async Task ReceiveMessageLoop() {
-            var buffer = new ArraySegment<byte>(new byte[0x10000]);
             while (true) {
                 // --- 1. Read request from datagram
-                var result = await socket.ReceiveFromAsync(buffer, SocketFlags.None, DummyEndpoint);
+                var receiveResult = await udpClient.ReceiveAsync().ConfigureAwait(false);
                 
-                var remoteEndpoint  = (IPEndPoint)result.RemoteEndPoint;
+                var remoteEndpoint = receiveResult.RemoteEndPoint;
                 if (!clients.TryGetValue(remoteEndpoint, out var socketHost)) {
                     socketHost              = new UdpSocketHost(this, remoteEndpoint);
                     clients[remoteEndpoint] = socketHost;
                 }
-                var request = new JsonValue(buffer.Array, result.ReceivedBytes);
+                var buffer  = receiveResult.Buffer;
+                var request = new JsonValue(buffer, buffer.Length);
                 if (logMessages) {
                     Logger.Log(HubLog.Info, $" server <-{socketHost.remoteClient,20} {request.AsString().Truncate()}");
                 }
                 socketHost.OnReceive(request, hostMetrics.udp);
             }
         }
-
-
+        
         /// <summary>
         /// Create a send and receive queue and run a send and a receive loop. <br/>
         /// The loops are executed until the WebSocket is closed or disconnected. <br/>
@@ -141,7 +137,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
                 if (sendLoop != null) {
                     await sendLoop.ConfigureAwait(false);
                 }
-                socket?.Dispose();
+                udpClient?.Dispose();
             }
         }
         

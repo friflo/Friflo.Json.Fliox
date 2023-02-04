@@ -48,4 +48,15 @@ namespace Friflo.Json.Fliox.Hub.Remote
             return value.Length <= maxLength ? value : value.Substring(0, maxLength); 
         }
     }
+    
+    internal readonly struct UdpMeta
+    {
+        internal readonly   IPEndPoint  remoteEndPoint;
+
+        public   override   string      ToString() => remoteEndPoint.ToString();
+
+        internal UdpMeta (IPEndPoint remoteEndPoint) {
+            this.remoteEndPoint = remoteEndPoint ?? throw new ArgumentNullException(nameof(remoteEndPoint));
+        }
+    }
 }
