@@ -112,14 +112,19 @@ namespace Friflo.Json.Fliox.Hub.Remote
         
         private async Task GetHandler (RequestContext context) {
             var path = context.route;
-            if (path.EndsWith("/"))
+            if (path.EndsWith("/")) {
                 path += "index.html";
+            }
             string ext = Path.GetExtension (path);
             if (string.IsNullOrEmpty(ext)) {
                 ListDirectory(context);
                 return;
             }
-            var content     = await fileHandler.ReadFile(path).ConfigureAwait(false);
+            var content = await fileHandler.ReadFile(path).ConfigureAwait(false);
+            if (content == null) {
+                context.WriteError("file error", $"file not found: {path}", 404);
+                return;
+            }
             var contentType = ContentTypeFromPath(path);
             var body        = new JsonValue(content);
             context.Write(body, contentType, 200);

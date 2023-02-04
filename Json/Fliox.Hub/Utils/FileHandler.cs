@@ -23,10 +23,14 @@ namespace Friflo.Json.Fliox.Hub.Utils
         }
         
         public async Task<byte[]> ReadFile(string path) {
-            var filePath = rootFolder + path;
-            using (var sourceStream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read, bufferSize: 4096, useAsync: false)) {
-                var memoryStream = new MemoryStream();
-                byte[] buffer = new byte[0x1000];
+            var filePath    = rootFolder + path;
+            var fileInfo    = new FileInfo(filePath);
+            if (!fileInfo.Exists) {
+                return null;
+            }
+            using (var sourceStream = fileInfo.OpenRead()) {
+                var memoryStream    = new MemoryStream();
+                byte[] buffer       = new byte[0x1000];
                 int numRead;
                 while ((numRead = await sourceStream.ReadAsync(buffer, 0, buffer.Length).ConfigureAwait(false)) != 0) {
                     memoryStream.Write(buffer, 0, numRead);
