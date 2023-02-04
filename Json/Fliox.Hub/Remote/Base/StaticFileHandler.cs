@@ -90,8 +90,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                     return;                    
                 }
                 if (cache.TryGetValue(context.route, out CacheEntry entry)) {
-                    var body = new JsonValue(entry.body);
-                    context.Write(body, entry.mediaType, entry.status);
+                    context.Write(entry.body, entry.mediaType, entry.status);
                     context.SetHeaders(entry.headers);
                     return;
                 }
@@ -120,9 +119,10 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 ListDirectory(context);
                 return;
             }
-            var content = await fileHandler.ReadFile(path).ConfigureAwait(false);
+            var content     = await fileHandler.ReadFile(path).ConfigureAwait(false);
             var contentType = ContentTypeFromPath(path);
-            context.Write(new JsonValue(content), contentType, 200);
+            var body        = new JsonValue(content);
+            context.Write(body, contentType, 200);
         }
         
         private void ListDirectory (RequestContext context) {
@@ -164,7 +164,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         private   readonly  string                      path;
         internal  readonly  int                         status;
         internal  readonly  string                      mediaType;
-        internal  readonly  byte[]                      body;
+        internal  readonly  JsonValue                   body; // any file content type. js, html, png, ... 
         internal  readonly  Dictionary<string, string>  headers;
 
         public    override  string                      ToString() => path;
@@ -173,7 +173,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             this.path   = path;
             status      = context.StatusCode;
             mediaType   = context.ResponseContentType;
-            body        = context.Response.AsByteArray();
+            body        = context.Response;
             headers     = context.ResponseHeaders;
         }
     }
