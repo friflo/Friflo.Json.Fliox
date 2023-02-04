@@ -262,7 +262,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             }
         }
         
-        internal static async Task RunServer(HttpServer server, Func<Task> run) {
+        internal static async Task RunServer(IServer server, Func<Task> run) {
             server.Start();
             Task runTask = null;
             try {
@@ -275,7 +275,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 await run();
             }
             finally {
-                await server.Stop();
+                // TODO remove Task.Delay(1) - was in HttpServer.Stop()
+                await Task.Delay(1).ConfigureAwait(false);
+                server.Stop();
                 if (runTask != null)
                     await runTask;
                 Logger.Info("2. HttpServer stopped");

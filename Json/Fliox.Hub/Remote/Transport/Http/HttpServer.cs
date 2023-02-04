@@ -33,7 +33,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
     ///     <item>Shutdown server: <see cref="Dispose"/></item>
     /// </list>
     /// </remarks>
-    public sealed class HttpServer : IDisposable, ILogSource
+    public sealed class HttpServer : IServer, IDisposable, ILogSource
     {
         private  readonly   HttpListener                    listener;
         private             bool                            running;
@@ -208,8 +208,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             listenTask.GetAwaiter().GetResult();
         }
         
-        public async Task Stop() {
-            await Task.Delay(1).ConfigureAwait(false);
+        public void Stop() {
             running = false;
             listener.Stop();
         }
