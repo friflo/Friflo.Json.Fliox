@@ -35,8 +35,9 @@ namespace Friflo.Json.Fliox.Hub.Remote
             }
             this.hub    = hub;
             socket      = new Socket(SocketType.Dgram, ProtocolType.Udp);
-            socket.Bind(ipEndPoint);
-            if (socket == null) {
+            if (socket != null) {
+                socket.Bind(ipEndPoint);
+            } else {
                 udpClient = new UdpClient(ipEndPoint); // reference implementation using UdpClient 
             }
             Logger      = hub.Logger;

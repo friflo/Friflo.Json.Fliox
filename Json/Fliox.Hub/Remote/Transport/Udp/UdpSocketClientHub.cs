@@ -27,7 +27,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
         /// <summary>if port == 0 an available port is used</summary>
         internal UdpSocket(int port) {
             var localEndPoint   = new IPEndPoint(IPAddress.Any, port);
-            socket              = null; // new Socket(SocketType.Dgram, ProtocolType.Udp);
+            // setting AddressFamily.InterNetwork improves performance - did not analyzed reason
+            socket              = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
             if (socket != null) {
                 socket.Bind(localEndPoint);
             } else {
@@ -89,7 +90,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 await ReceiveMessageLoop(socket, mapper.reader).ConfigureAwait(false);
             }
         }
-
+        
         /// <summary>
         /// In contrast to <see cref="WebSocketHost"/> the <see cref="WebSocketClientHub"/> has no SendMessageLoop() <br/>
         /// This is possible because WebSocket messages are only response messages created in this loop. <br/>
@@ -106,8 +107,11 @@ namespace Friflo.Json.Fliox.Hub.Remote
                     // --- read complete datagram message
                     JsonValue message;
                     if (udpSocket.socket != null) {
-                        int length  = await udpSocket.socket.ReceiveAsync(bufferSegment, SocketFlags.None).ConfigureAwait(false);
-                        message     = new JsonValue(bufferSegment.Array, length);
+                        var result  = await udpSocket.socket.ReceiveFromAsync(bufferSegment, SocketFlags.None, remoteHost).ConfigureAwait(false);
+                        message     = new JsonValue(bufferSegment.Array, result.ReceivedBytes);
+                        // note: using ReceiveFromAsync() is faster than ReceiveAsync() - did not analyzed reason
+                        // int length  = await udpSocket.socket.ReceiveAsync(bufferSegment, SocketFlags.None).ConfigureAwait(false);
+                        // message     = new JsonValue(bufferSegment.Array, length);
                     } else {
                         var result  = await udpSocket.udpClient.ReceiveAsync().ConfigureAwait(false);
                         var buffer  = result.Buffer;
