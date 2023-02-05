@@ -115,9 +115,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
 
                     // --- process received message
                     var message     = new JsonValue(memoryStream.GetBuffer(), (int)memoryStream.Position);
-                    if (logMessages) {
-                        Logger.Log(HubLog.Info, $"client   <-{remoteHost,20} {message.AsString().Truncate()}");
-                    }
+                    if (logMessages) TransportUtils.LogMessage(Logger, $"client   <-", remoteHost, message);
                     OnReceive(message, socket.requestMap, reader);
                 }
                 catch (Exception e)
@@ -146,9 +144,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                     
                     socket.requestMap.Add(sendReqId, request);
                     var sendBuffer  = rawRequest.AsReadOnlyMemory();
-                    if (logMessages) {
-                        Logger.Log(HubLog.Info, $"client   ->{remoteHost,20} {rawRequest.AsString().Truncate()}");
-                    }
+                    if (logMessages) TransportUtils.LogMessage(Logger, $"client   ->", remoteHost, rawRequest);
                     // --- Send message
                     await socket.websocket.SendAsync(sendBuffer, WebSocketMessageType.Text, true, CancellationToken.None).ConfigureAwait(false);
                     

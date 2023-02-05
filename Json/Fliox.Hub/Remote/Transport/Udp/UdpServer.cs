@@ -63,7 +63,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
             try {
                 await SendMessageLoop().ConfigureAwait(false);
             } catch (Exception e) {
-                var msg = GetExceptionMessage("RunSendMessageLoop()", ipEndPoint, e);
+                var msg = TransportUtils.GetExceptionMessage("UdpServer.RunSendMessageLoop()", ipEndPoint, e);
                 Logger.Log(HubLog.Info, msg);
             }
         }
@@ -73,9 +73,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
             while (true) {
                 var remoteEvent = await sendQueue.DequeMessagesAsync(messages).ConfigureAwait(false);
                 foreach (var message in messages) {
-                    if (logMessages) {
-                        Logger.Log(HubLog.Info, $" server ->{message.meta.remoteEndPoint,20} {message.value.AsString().Truncate()}");
-                    }
+                    if (logMessages) TransportUtils.LogMessage(Logger, " server ->", message.meta.remoteEndPoint, message.value);
                     var array = message.value.AsMutableArraySegment();
                     await socket.SendToAsync(array, SocketFlags.None, message.meta.remoteEndPoint).ConfigureAwait(false);
                 }
@@ -106,9 +104,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
                     clients[remoteEndpoint] = socketHost;
                 }
                 var request = new JsonValue(buffer.Array, result.ReceivedBytes);
-                if (logMessages) {
-                    Logger.Log(HubLog.Info, $" server <-{socketHost.remoteClient,20} {request.AsString().Truncate()}");
-                }
+                if (logMessages) TransportUtils.LogMessage(Logger, " server <-", socketHost.remoteClient, request);
                 socketHost.OnReceive(request, hostMetrics.udp);
             }
         }
@@ -129,12 +125,8 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
 
                 sendQueue.Close();
             }
-            catch (SocketException e) {
-                var msg = GetExceptionMessage("UdpSocketHost.SendReceiveMessages()", ipEndPoint, e);
-                hub.Logger.Log(HubLog.Info, msg);
-            }
             catch (Exception e) {
-                var msg = GetExceptionMessage("UdpSocketHost.SendReceiveMessages()", ipEndPoint, e);
+                var msg = TransportUtils.GetExceptionMessage("UdpServer.SendReceiveMessages()", ipEndPoint, e);
                 hub.Logger.Log(HubLog.Info, msg);
             }
             finally {
@@ -143,13 +135,6 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
                 }
                 socket?.Dispose();
             }
-        }
-        
-        private static string GetExceptionMessage(string location, IPEndPoint remoteEndPoint, Exception e) {
-            if (e is SocketException wsException) {
-                return $"{location} {e.GetType().Name} {e.Message} ErrorCode: {wsException.ErrorCode}, HResult: 0x{e.HResult:X}, remote: {remoteEndPoint}";
-            }
-            return $"{location} {e.GetType().Name}: {e.Message}, remote: {remoteEndPoint}";
         }
     }
 }
