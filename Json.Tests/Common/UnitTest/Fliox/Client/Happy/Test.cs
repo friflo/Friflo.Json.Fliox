@@ -198,7 +198,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             using (var server           = new HttpServer("http://+:8080/", hostHub))
             using (var remoteHub        = new WebSocketClientHub(TestGlobals.DB, "ws://localhost:8080/", TestGlobals.Shared))
             using (var listenDb         = new PocStore(remoteHub) { UserId = "listenDb", ClientId = "listen-client"}) {
-                hostHub.hostEnv.fakeOpenClosedSockets = true;
+                hostHub.hub.GetFeature<RemoteHostEnv>().fakeOpenClosedSockets = true;
                 hub.EventDispatcher = eventDispatcher;
                 await RunServer(server, async () => {
                     // await remoteHub.Connect();

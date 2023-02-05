@@ -18,7 +18,6 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.UdpRef
         internal readonly   FlioxHub                                hub;
         private  readonly   UdpClient                               udpClient;
         private  readonly   IPEndPoint                              ipEndPoint;
-        internal readonly   HostEnv                                 hostEnv = new HostEnv();
         internal readonly   MessageBufferQueueAsync<UdpMeta>        sendQueue;
         private  readonly   List<MessageItem<UdpMeta>>              messages;
         private  readonly   HostMetrics                             hostMetrics;
@@ -35,7 +34,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.UdpRef
             Logger      = hub.Logger;
             sendQueue   = new MessageBufferQueueAsync<UdpMeta>();
             messages    = new List<MessageItem<UdpMeta>>();
-            hostMetrics = hostEnv.metrics;
+            hostMetrics = hub.GetFeature<RemoteHostEnv>().metrics;
             clients     = new Dictionary<IPEndPoint, UdpSocketHost>();
         }
 
@@ -100,7 +99,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.UdpRef
                 var buffer  = receiveResult.Buffer;
                 var request = new JsonValue(buffer, buffer.Length);
                 if (logMessages) TransportUtils.LogMessage(Logger, " server <-", socketHost.remoteClient, request);
-                socketHost.OnReceive(request, hostMetrics.udp);
+                socketHost.OnReceive(request, ref hostMetrics.udp);
             }
         }
         

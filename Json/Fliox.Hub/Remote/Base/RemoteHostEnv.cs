@@ -9,7 +9,7 @@ using Friflo.Json.Fliox.Hub.Host.Event;
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.Remote
 {
-    public class HostEnv
+    public class RemoteHostEnv
     {
         public   readonly   HostMetrics     metrics = new HostMetrics();
         public              bool            useReaderPool;

@@ -35,12 +35,12 @@ namespace Friflo.Json.Fliox.Hub.Remote
 
 
         private WebSocketHost (
-            WebSocket   webSocket,
-            IPEndPoint  remoteClient,
-            FlioxHub    hub,
-            HostEnv     hostEnv)
-        : base (hub, hostEnv)
+            WebSocket       webSocket,
+            IPEndPoint      remoteClient,
+            FlioxHub        hub)
+        : base (hub)
         {
+            var hostEnv             = hub.GetFeature<RemoteHostEnv>();
             this.webSocket          = webSocket;
             this.remoteClient       = remoteClient;
             hostMetrics             = hostEnv.metrics;
@@ -155,7 +155,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 }
                 var request = new JsonValue(memoryStream.GetBuffer(), (int)memoryStream.Position);
                 if (logMessages) TransportUtils.LogMessage(Logger, $"server <-", remoteClient, request);
-                OnReceive(request, hostMetrics.webSocket);
+                OnReceive(request, ref hostMetrics.webSocket);
             }
         }
         
@@ -165,12 +165,11 @@ namespace Friflo.Json.Fliox.Hub.Remote
         /// The method <b>don't</b> throw exception. WebSocket exceptions are catched and written to <see cref="FlioxHub.Logger"/> <br/>
         /// </summary>
         public static async Task SendReceiveMessages(
-            WebSocket   websocket,
-            IPEndPoint  remoteClient,
-            FlioxHub    hub,
-            HostEnv     hostEnv)
+            WebSocket       websocket,
+            IPEndPoint      remoteClient,
+            FlioxHub        hub)
         {
-            var  target     = new WebSocketHost(websocket, remoteClient, hub, hostEnv);
+            var  target     = new WebSocketHost(websocket, remoteClient, hub);
             Task sendLoop   = null;
             try {
                 sendLoop = target.RunSendMessageLoop();

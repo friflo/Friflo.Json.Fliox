@@ -57,7 +57,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         public              IHubLogger  Logger { get; }
         protected abstract  void        SendMessage(in JsonValue message);
 
-        protected SocketHost(FlioxHub hub, HostEnv hostEnv) {
+        protected SocketHost(FlioxHub hub) {
             var env         = hub.sharedEnv;
             sharedEnv       = env;
             typeStore       = sharedEnv.TypeStore;
@@ -67,7 +67,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             readerPool      = pool.ReaderPool;
             objectPool      = pool.ObjectMapper;
             readMapper      = objectPool.Get().instance;
-            useReaderPool   = hostEnv.useReaderPool;
+            useReaderPool   = hub.GetFeature<RemoteHostEnv>().useReaderPool;
             syncContextPool = new Stack<SyncContext>();
         }
 
@@ -128,7 +128,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             }
         }
         
-        internal void OnReceive(in JsonValue request, SocketMetrics metrics)
+        internal void OnReceive(in JsonValue request, ref SocketMetrics metrics)
         {
             // --- precondition: message was read from socket
             try {

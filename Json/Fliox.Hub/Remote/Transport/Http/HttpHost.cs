@@ -55,7 +55,6 @@ namespace Friflo.Json.Fliox.Hub.Remote
         public   readonly   string                  endpoint; 
         public   readonly   FlioxHub                hub;
         public   readonly   SharedEnv               sharedEnv;
-        public              HostEnv                 hostEnv     = new HostEnv();
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         public              IHubLogger              Logger      => sharedEnv.hubLogger;
         

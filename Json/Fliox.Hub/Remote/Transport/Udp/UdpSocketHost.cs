@@ -17,7 +17,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
         private  readonly   UdpServer   server;
 
         internal UdpSocketHost (UdpServer server, IPEndPoint  remoteClient)
-        : base (server.hub, server.hostEnv)
+        : base (server.hub)
         {
             this.server         = server;
             this.remoteClient   = remoteClient;

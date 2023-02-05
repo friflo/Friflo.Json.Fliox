@@ -126,6 +126,8 @@ namespace Friflo.Json.Fliox.Hub.Host
         
         public   readonly   SharedEnv               sharedEnv;
         
+        private  readonly   Dictionary<Type,object> features    = new Dictionary<Type, object>();
+
         internal readonly   HostStats               hostStats   = new HostStats{ requestCount = new RequestCount{ db = new ShortString("*")} };
         [DebuggerBrowsable(Never)]
         internal readonly   List<string>            routes      = new List<string>();
@@ -158,6 +160,19 @@ namespace Friflo.Json.Fliox.Hub.Host
         
         public virtual void Dispose() { }  // todo - remove
         
+        public TFeature GetFeature<TFeature>() where TFeature : new() {
+            if (features.TryGetValue(typeof(TFeature), out var value)) {
+                return (TFeature)value;
+            }
+            var feature                 = new TFeature();
+            features[typeof(TFeature)]  = feature;
+            return feature;
+        }
+        
+        public void SetFeature<TFeature>(TFeature feature) where TFeature : new() {
+            features[typeof(TFeature)] = feature;
+        }
+
         private static string GetFlioxVersion() {
             var version     = typeof(FlioxHub).Assembly.GetName().Version;
             return version == null ? "-.-.-" : $"{version.Major}.{version.Minor}.{version.Build}";
