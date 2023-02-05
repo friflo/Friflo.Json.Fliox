@@ -30,6 +30,8 @@ namespace Friflo.Json.Tests.Main
             using (var httpHost     = new HttpHost(hub, "/"))
             using (var server       = new HttpServer("http://+:8080/", httpHost))
             using (var remoteHub    = new WebSocketClientHub(TestDB, "ws://localhost:8080/")) {
+                hub.GetFeature<RemoteHostEnv>().logMessages = false;
+                remoteHub.logMessages = false;
                 await TestHappy.RunServer(server, async () => {
                     // await remoteHub.Connect();
                     await TestHappy.ConcurrentAccess(remoteHub, 4, 0, 1_000_000, false);
@@ -42,6 +44,8 @@ namespace Friflo.Json.Tests.Main
             using (var hub          = new FlioxHub(database))
             using (var server       = new UdpServer("127.0.0.1:5000", hub))
             using (var remoteHub    = new UdpSocketClientHub(TestDB, "127.0.0.1:5000") { logMessages = false }) {
+                hub.GetFeature<RemoteHostEnv>().logMessages = false;
+                remoteHub.logMessages = false;
                 var _ = server.Run();
                 // await TestHappy.RunServer(server, async () => {
                     // await remoteHub.Connect();

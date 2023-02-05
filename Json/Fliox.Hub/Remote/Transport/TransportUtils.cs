@@ -5,6 +5,7 @@ using System;
 using System.Globalization;
 using System.Net;
 using System.Net.Sockets;
+using System.Text;
 
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.Remote
@@ -45,13 +46,26 @@ namespace Friflo.Json.Fliox.Hub.Remote
         }
         
         public static string Truncate(this string value) {
-            const int maxLength = 120;
+            
             if (string.IsNullOrEmpty(value)) return value;
             return value.Length <= maxLength ? value : value.Substring(0, maxLength); 
         }
         
+        const int maxLength = 120;
+        
         public static void LogMessage(IHubLogger logger, string name, object endpoint, in JsonValue message) {
-            logger.Log(HubLog.Info, $"{name}{endpoint,20} {message.AsString().Truncate()}");
+            var sb          = new StringBuilder();
+            var msg         = message.AsString();
+            var msgTruncate = msg.Length <= maxLength ? msg.AsSpan() : msg.AsSpan(0, maxLength);
+            var endpointStr = endpoint.ToString() ?? "---";
+            var indent      = Math.Max(24 - endpointStr.Length, 0);
+            sb.Append(name);
+            sb.Append(' ');
+            sb.Append(endpoint);
+            sb.Append(' ', indent);
+            sb.Append(' ');
+            sb.Append(msgTruncate);
+            logger.Log(HubLog.Info, sb.ToString());
         }
         
         public static string GetExceptionMessage(string location, IPEndPoint endpoint, Exception e) {
