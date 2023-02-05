@@ -14,8 +14,7 @@ using Friflo.Json.Fliox.Mapper;
 namespace Friflo.Json.Fliox.Hub.Remote.Transport.UdpRef
 {
     /// <summary>
-    /// Each <see cref="WebSocketConnection"/> store its send requests in the <see cref="requestMap"/>
-    /// to map received response messages to its related <see cref="SyncRequest"/>
+    /// Store send requests in the <see cref="requestMap"/> to map received response messages to its related <see cref="SyncRequest"/>
     /// </summary>
     internal sealed class UdpSocket
     {
