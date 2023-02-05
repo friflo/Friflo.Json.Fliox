@@ -14,6 +14,9 @@ namespace Friflo.Json.Fliox.Hub.Remote.Tools
 {
     internal readonly struct RemoteRequest
     {
+        /// <summary>
+        /// After a client send a remote request to the host the <see cref="response"/> is used to await its completion
+        /// </summary>
         internal readonly   TaskCompletionSource<ProtocolResponse>  response;
         internal readonly   ReaderPool                              responseReaderPool;   
         

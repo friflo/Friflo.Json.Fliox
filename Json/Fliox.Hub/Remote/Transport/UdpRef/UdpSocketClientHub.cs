@@ -78,12 +78,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.UdpRef
         }
         
         /// <summary>
-        /// In contrast to <see cref="WebSocketHost"/> the <see cref="WebSocketClientHub"/> has no SendMessageLoop() <br/>
-        /// This is possible because WebSocket messages are only response messages created in this loop. <br/>
-        /// As <see cref="ReceiveMessageLoop"/> is called sequentially in the loop, WebSocket.SendAsync() is called only once at any time.
-        /// Infos: <br/>
-        /// - A blocking WebSocket.SendAsync() call does not block WebSocket.ReceiveAsync() <br/>
-        /// - The created <see cref="RemoteRequest.response"/>'s act as a queue. <br/>
+        /// Has no SendMessageLoop() - client send only response messages via <see cref="SocketClientHub.OnReceive"/>
         /// </summary>
         private async Task ReceiveMessageLoop(UdpSocket udpSocket, ObjectReader reader) {
             while (true)
