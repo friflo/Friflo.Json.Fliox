@@ -29,10 +29,8 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.UdpRef
         public              IHubLogger  Logger { get; }
         
         public UdpServer(string endpoint, FlioxHub hub) {
-            if (!TransportUtils.TryParseEndpoint(endpoint, out ipEndPoint)) {
-                throw new ArgumentException($"invalid endpoint: {endpoint}", nameof(endpoint));
-            }
             this.hub    = hub;
+            ipEndPoint  = TransportUtils.ParseEndpoint(endpoint) ?? throw new ArgumentException($"invalid endpoint: {endpoint}");
             udpClient   = new UdpClient(ipEndPoint);
             Logger      = hub.Logger;
             sendQueue   = new MessageBufferQueueAsync<UdpMeta>();
@@ -70,7 +68,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.UdpRef
         
         // Send queue (sendWriter / sendReader) is required  to prevent having more than one UdpClient.SendAsync() call outstanding.
         private async Task SendMessageLoop() {
-            var buffer = udpClient != null ? new byte[128] : null; // UdpClient.SendAsync() requires datagram array starting datagram[0]
+            var buffer = new byte[128]; // UdpClient.SendAsync() requires datagram array starting datagram[0]
             while (true) {
                 var remoteEvent = await sendQueue.DequeMessagesAsync(messages).ConfigureAwait(false);
                 foreach (var message in messages) {

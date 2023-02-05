@@ -11,7 +11,10 @@ namespace Friflo.Json.Fliox.Hub.Remote
 {
     internal static class TransportUtils
     {
-        internal static bool TryParseEndpoint(string endpoint, out IPEndPoint result) {
+        internal static IPEndPoint ParseEndpoint(string endpoint) {
+            if (endpoint == null) {
+                return null;
+            }
             int addressLength   = endpoint.Length;  // If there's no port then send the entire string to the address parser
             int lastColonPos    = endpoint.LastIndexOf(':');
             // Look to see if this is an IPv6 address with a port.
@@ -24,23 +27,21 @@ namespace Friflo.Json.Fliox.Hub.Remote
                     addressLength = lastColonPos;
                 }
             }
-            result = null;
             var address = endpoint.Substring(0, addressLength);
             if (address == "localhost") address = "127.0.0.1";
             if (!IPAddress.TryParse(address, out IPAddress ipAddress)) {
-                return false;
+                return null;
             }
             if (addressLength == endpoint.Length) {
-                return false;
+                return null;
             }
             if (!int.TryParse(endpoint.AsSpan(addressLength + 1), NumberStyles.None, CultureInfo.InvariantCulture, out int port)) {
-                return false;
+                return null;
             }
             if (port > IPEndPoint.MaxPort) {
-                return false;
+                return null;
             }
-            result = new IPEndPoint(ipAddress, port);
-            return true;
+            return new IPEndPoint(ipAddress, port);
         }
         
         public static string Truncate(this string value) {

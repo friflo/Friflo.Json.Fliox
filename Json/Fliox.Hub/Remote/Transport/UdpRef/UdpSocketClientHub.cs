@@ -60,9 +60,9 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.UdpRef
         public UdpSocketClientHub(string dbName, string remoteHost, int port = 0, SharedEnv env = null, RemoteClientAccess access = RemoteClientAccess.Multi)
             : base(new RemoteDatabase(dbName), env, access)
         {
-            TransportUtils.TryParseEndpoint(remoteHost, out this.remoteHost);
-            udpSocket   = new UdpSocket(port);
-            localPort   = udpSocket.GetPort();
+            this.remoteHost = TransportUtils.ParseEndpoint(remoteHost) ?? throw new ArgumentException($"invalid remoteHost: {remoteHost}");
+            udpSocket       = new UdpSocket(port);
+            localPort       = udpSocket.GetPort();
             // TODO check if running loop from here is OK
             var _ = RunReceiveMessageLoop(udpSocket);
         }

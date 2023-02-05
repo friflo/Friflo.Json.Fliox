@@ -28,10 +28,8 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
         public              IHubLogger  Logger { get; }
         
         public UdpServer(string endpoint, FlioxHub hub) {
-            if (!TransportUtils.TryParseEndpoint(endpoint, out ipEndPoint)) {
-                throw new ArgumentException($"invalid endpoint: {endpoint}", nameof(endpoint));
-            }
             this.hub    = hub;
+            ipEndPoint  = TransportUtils.ParseEndpoint(endpoint) ?? throw new ArgumentException($"invalid endpoint: {endpoint}");
             socket      = new Socket(SocketType.Dgram, ProtocolType.Udp);
             socket.Bind(ipEndPoint);
             Logger      = hub.Logger;
