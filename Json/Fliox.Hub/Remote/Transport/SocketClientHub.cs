@@ -148,6 +148,14 @@ namespace Friflo.Json.Fliox.Hub.Remote
             }
             return new ExecuteSyncResult($"invalid response: Was: {response.MessageType}", ErrorResponseType.BadResponse);
         }
+        
+        protected static ExecuteSyncResult CreateSyncError(Exception e, object remoteHost) {
+            var error = ErrorResponse.ErrorFromException(e);
+            error.Append(" remoteHost: ");
+            error.Append(remoteHost);
+            var msg = error.ToString();
+            return new ExecuteSyncResult(msg, ErrorResponseType.Exception);
+        }
     }
     
     internal sealed class RemoteDatabase : EntityDatabase

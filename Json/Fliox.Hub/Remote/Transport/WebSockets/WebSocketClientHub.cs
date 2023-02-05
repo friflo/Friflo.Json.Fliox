@@ -155,11 +155,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 }
             }
             catch (Exception e) {
-                var error = ErrorResponse.ErrorFromException(e);
-                error.Append(" endpoint: ");
-                error.Append(remoteHost);
-                var msg = error.ToString();
-                return new ExecuteSyncResult(msg, ErrorResponseType.Exception);
+                return CreateSyncError(e, remoteHost);
             }
         }
     }
