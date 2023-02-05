@@ -9,8 +9,8 @@ using System.Net.WebSockets;
 using System.Threading;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
-using Friflo.Json.Fliox.Hub.Host.Event;
 using Friflo.Json.Fliox.Utils;
+using static Friflo.Json.Fliox.Hub.Remote.TransportUtils;
 
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.Remote
@@ -28,11 +28,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         private  readonly   MessageBufferQueueAsync<VoidMeta>   sendQueue;
         private  readonly   List<JsonValue>                     messages;
         private  readonly   IPEndPoint                          remoteClient;
-        private  readonly   HostMetrics                         hostMetrics;
-        /// Only set to true for testing. It avoids an early out at <see cref="EventSubClient.SendEvents"/> 
-        private  readonly   bool                                fakeOpenClosedSocket;
-        private  readonly   bool                                logMessages = false;
-
+        private  readonly   RemoteHostEnv                       hostEnv;
 
         private WebSocketHost (
             WebSocket       webSocket,
@@ -40,13 +36,11 @@ namespace Friflo.Json.Fliox.Hub.Remote
             FlioxHub        hub)
         : base (hub)
         {
-            var hostEnv             = hub.GetFeature<RemoteHostEnv>();
+            hostEnv                 = hub.GetFeature<RemoteHostEnv>();
             this.webSocket          = webSocket;
             this.remoteClient       = remoteClient;
-            hostMetrics             = hostEnv.metrics;
             sendQueue               = new MessageBufferQueueAsync<VoidMeta>();
             messages                = new List<JsonValue>();
-            fakeOpenClosedSocket    = hostEnv.fakeOpenClosedSockets;
         }
         
         public void Dispose() {
@@ -56,7 +50,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         // --- IEventReceiver
         public override bool    IsRemoteTarget ()   => true;
         public override bool    IsOpen () {
-            if (fakeOpenClosedSocket)
+            if (hostEnv.fakeOpenClosedSockets)
                 return true;
             return webSocket.State == WebSocketState.Open;
         }
@@ -93,7 +87,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             while (true) {
                 var remoteEvent = await sendQueue.DequeMessageValuesAsync(messages).ConfigureAwait(false);
                 foreach (var message in messages) {
-                    if (logMessages) TransportUtils.LogMessage(Logger, $"server ->", remoteClient, message);
+                    if (hostEnv.logMessages) LogMessage(Logger, $"server ->", remoteClient, message);
                     var arraySegment = message.AsReadOnlyMemory();
                     // if (sendMessage.Count > 100000) Console.WriteLine($"SendLoop. size: {sendMessage.Count}");
                     await webSocket.SendAsync(arraySegment, WebSocketMessageType.Text, true, CancellationToken.None).ConfigureAwait(false);
@@ -154,8 +148,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
                     continue;
                 }
                 var request = new JsonValue(memoryStream.GetBuffer(), (int)memoryStream.Position);
-                if (logMessages) TransportUtils.LogMessage(Logger, $"server <-", remoteClient, request);
-                OnReceive(request, ref hostMetrics.webSocket);
+                if (hostEnv.logMessages) LogMessage(Logger, $"server <-", remoteClient, request);
+                OnReceive(request, ref hostEnv.metrics.webSocket);
             }
         }
         

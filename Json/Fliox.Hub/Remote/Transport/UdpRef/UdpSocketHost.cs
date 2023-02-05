@@ -3,20 +3,21 @@
 
 using System.Net;
 
-namespace Friflo.Json.Fliox.Hub.Remote.Transport.UdpRef
+// ReSharper disable once CheckNamespace
+namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
 {
     /// <summary>
     /// Implementation aligned with <see cref="WebSocketHost"/>
     /// </summary>
     /// <remarks>
-    /// Counterpart of <see cref="UdpSocketClientHub"/> used by the server.<br/>
+    /// Counterpart of <see cref="UdpRefSocketClientHub"/> used by the server.<br/>
     /// </remarks>
-    internal sealed class UdpSocketHost : SocketHost
+    internal sealed class UdpRefSocketHost : SocketHost
     {
-        internal readonly   IPEndPoint  remoteClient;
-        private  readonly   UdpServer   server;
+        internal readonly   IPEndPoint      remoteClient;
+        private  readonly   UdpRefServer    server;
 
-        internal UdpSocketHost (UdpServer server, IPEndPoint  remoteClient)
+        internal UdpRefSocketHost (UdpRefServer server, IPEndPoint  remoteClient)
         : base (server.hub)
         {
             this.server         = server;

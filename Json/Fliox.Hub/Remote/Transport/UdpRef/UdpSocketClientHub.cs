@@ -11,18 +11,19 @@ using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Remote.Tools;
 using Friflo.Json.Fliox.Mapper;
 
-namespace Friflo.Json.Fliox.Hub.Remote.Transport.UdpRef
+// ReSharper disable once CheckNamespace
+namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
 {
     /// <summary>
     /// Store send requests in the <see cref="requestMap"/> to map received response messages to its related <see cref="SyncRequest"/>
     /// </summary>
-    internal sealed class UdpSocket
+    internal sealed class UdpRefSocket
     {
         internal  readonly  UdpClient           udpClient;
         internal  readonly  RemoteRequestMap    requestMap;
 
         /// <summary>if port == 0 an available port is used</summary>
-        internal UdpSocket(int port) {
+        internal UdpRefSocket(int port) {
             var localEndPoint   = new IPEndPoint(IPAddress.Any, port);
             udpClient  = new UdpClient();
             udpClient.Client.Bind(localEndPoint);
@@ -37,18 +38,18 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.UdpRef
     /// A <see cref="FlioxHub"/> accessed remotely  using a <see cref="UdpClient"/> connection<br/>
     /// </summary>
     /// <remarks>
-    /// Counterpart of <see cref="UdpSocketHost"/> used by clients.<br/>
+    /// Counterpart of <see cref="UdpRefSocketHost"/> used by clients.<br/>
     /// Implementation aligned with <see cref="WebSocketClientHub"/>
     /// </remarks>
-    public sealed class UdpSocketClientHub : SocketClientHub
+    public sealed class UdpRefSocketClientHub : SocketClientHub
     {
         private  readonly   IPEndPoint                  remoteHost;
         /// Incrementing requests id used to map a <see cref="ProtocolResponse"/>'s to its related <see cref="SyncRequest"/>.
         private             int                         reqId;
         public              bool                        IsConnected => true;
-        private  readonly   UdpSocket                   udpSocket;
+        private  readonly   UdpRefSocket                udpSocket;
         private  readonly   CancellationTokenSource     cancellationToken = new CancellationTokenSource();
-        private  readonly   bool                        logMessages = false;
+        public              bool                        logMessages;
         private  readonly   int                         localPort;
         
         public   override   string                      ToString() => $"{database.name} - port: {localPort}";
@@ -56,11 +57,11 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.UdpRef
         /// <summary>
         /// if port == 0 an available port is used
         /// </summary>
-        public UdpSocketClientHub(string dbName, string remoteHost, int port = 0, SharedEnv env = null, RemoteClientAccess access = RemoteClientAccess.Multi)
+        public UdpRefSocketClientHub(string dbName, string remoteHost, int port = 0, SharedEnv env = null, RemoteClientAccess access = RemoteClientAccess.Multi)
             : base(new RemoteDatabase(dbName), env, access)
         {
             this.remoteHost = TransportUtils.ParseEndpoint(remoteHost) ?? throw new ArgumentException($"invalid remoteHost: {remoteHost}");
-            udpSocket       = new UdpSocket(port);
+            udpSocket       = new UdpRefSocket(port);
             localPort       = udpSocket.GetPort();
             // TODO check if running loop from here is OK
             var _ = RunReceiveMessageLoop(udpSocket);
@@ -71,7 +72,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.UdpRef
             // websocket.CancelPendingRequests();
         } */
         
-        private async Task RunReceiveMessageLoop(UdpSocket socket) {
+        private async Task RunReceiveMessageLoop(UdpRefSocket socket) {
             using (var mapper = new ObjectMapper(sharedEnv.TypeStore)) {
                 await ReceiveMessageLoop(socket, mapper.reader).ConfigureAwait(false);
             }
@@ -80,7 +81,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.UdpRef
         /// <summary>
         /// Has no SendMessageLoop() - client send only response messages via <see cref="SocketClientHub.OnReceive"/>
         /// </summary>
-        private async Task ReceiveMessageLoop(UdpSocket udpSocket, ObjectReader reader) {
+        private async Task ReceiveMessageLoop(UdpRefSocket udpSocket, ObjectReader reader) {
             while (true)
             {
                 try {

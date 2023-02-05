@@ -9,6 +9,7 @@ using System.Net.Sockets;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Utils;
+using static Friflo.Json.Fliox.Hub.Remote.TransportUtils;
 
 namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
 {
@@ -19,22 +20,21 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
         private  readonly   IPEndPoint                              ipEndPoint;
         internal readonly   MessageBufferQueueAsync<UdpMeta>        sendQueue;
         private  readonly   List<MessageItem<UdpMeta>>              messages;
-        private  readonly   HostMetrics                             hostMetrics;
+        private  readonly   RemoteHostEnv                           hostEnv;
         private  readonly   Dictionary<IPEndPoint, UdpSocketHost>   clients;
-        private  readonly   bool                                    logMessages = false;
         
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         public              IHubLogger  Logger { get; }
         
         public UdpServer(string endpoint, FlioxHub hub) {
             this.hub    = hub;
-            ipEndPoint  = TransportUtils.ParseEndpoint(endpoint) ?? throw new ArgumentException($"invalid endpoint: {endpoint}");
+            ipEndPoint  = ParseEndpoint(endpoint) ?? throw new ArgumentException($"invalid endpoint: {endpoint}");
             socket      = new Socket(SocketType.Dgram, ProtocolType.Udp);
             socket.Bind(ipEndPoint);
             Logger      = hub.Logger;
             sendQueue   = new MessageBufferQueueAsync<UdpMeta>();
             messages    = new List<MessageItem<UdpMeta>>();
-            hostMetrics = hub.GetFeature<RemoteHostEnv>().metrics;
+            hostEnv     = hub.GetFeature<RemoteHostEnv>();
             clients     = new Dictionary<IPEndPoint, UdpSocketHost>();
         }
 
@@ -60,7 +60,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
             try {
                 await SendMessageLoop().ConfigureAwait(false);
             } catch (Exception e) {
-                var msg = TransportUtils.GetExceptionMessage("UdpServer.RunSendMessageLoop()", ipEndPoint, e);
+                var msg = GetExceptionMessage("UdpServer.RunSendMessageLoop()", ipEndPoint, e);
                 Logger.Log(HubLog.Info, msg);
             }
         }
@@ -70,7 +70,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
             while (true) {
                 var remoteEvent = await sendQueue.DequeMessagesAsync(messages).ConfigureAwait(false);
                 foreach (var message in messages) {
-                    if (logMessages) TransportUtils.LogMessage(Logger, " server ->", message.meta.remoteEndPoint, message.value);
+                    if (hostEnv.logMessages) LogMessage(Logger, " server ->", message.meta.remoteEndPoint, message.value);
                     var array = message.value.AsMutableArraySegment();
                     await socket.SendToAsync(array, SocketFlags.None, message.meta.remoteEndPoint).ConfigureAwait(false);
                 }
@@ -101,8 +101,8 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
                     clients[remoteEndpoint] = socketHost;
                 }
                 var request = new JsonValue(buffer.Array, result.ReceivedBytes);
-                if (logMessages) TransportUtils.LogMessage(Logger, " server <-", socketHost.remoteClient, request);
-                socketHost.OnReceive(request, ref hostMetrics.udp);
+                if (hostEnv.logMessages) LogMessage(Logger, " server <-", socketHost.remoteClient, request);
+                socketHost.OnReceive(request, ref hostEnv.metrics.udp);
             }
         }
 
@@ -123,7 +123,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
                 sendQueue.Close();
             }
             catch (Exception e) {
-                var msg = TransportUtils.GetExceptionMessage("UdpServer.SendReceiveMessages()", ipEndPoint, e);
+                var msg = GetExceptionMessage("UdpServer.SendReceiveMessages()", ipEndPoint, e);
                 hub.Logger.Log(HubLog.Info, msg);
             }
             finally {

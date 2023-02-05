@@ -49,7 +49,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
         public              bool                        IsConnected => true;
         private  readonly   UdpSocket                   udpSocket;
         private  readonly   CancellationTokenSource     cancellationToken = new CancellationTokenSource();
-        private  readonly   bool                        logMessages = false;
+        public              bool                        logMessages;
         private  readonly   int                         localPort;
         
         public   override   string                      ToString() => $"{database.name} - port: {localPort}";

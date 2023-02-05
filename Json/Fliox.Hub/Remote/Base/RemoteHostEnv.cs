@@ -15,6 +15,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         public              bool            useReaderPool;
         /// Only set to true for testing. It avoids an early out at <see cref="EventSubClient.SendEvents"/>
         public              bool            fakeOpenClosedSockets;
+        public              bool            logMessages;
     }
     
     public sealed class HostMetrics {
