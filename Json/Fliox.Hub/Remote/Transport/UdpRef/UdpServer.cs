@@ -21,7 +21,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.UdpRef
         internal readonly   HostEnv                                 hostEnv = new HostEnv();
         internal readonly   MessageBufferQueueAsync<UdpMeta>        sendQueue;
         private  readonly   List<MessageItem<UdpMeta>>              messages;
-        internal readonly   HostMetrics                             hostMetrics;
+        private  readonly   HostMetrics                             hostMetrics;
         private  readonly   Dictionary<IPEndPoint, UdpSocketHost>   clients;
         private  readonly   bool                                    logMessages = false;
         

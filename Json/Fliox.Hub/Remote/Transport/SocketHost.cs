@@ -84,7 +84,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         /// Method is not thread-safe<br/>
         /// Expectation is method is called sequentially from the receive message loop- 
         /// </summary>
-        protected SyncRequest ParseRequest(in JsonValue request) {
+        private SyncRequest ParseRequest(in JsonValue request) {
             var reader = readMapper.reader;
             if (useReaderPool) {
                 reader.ReaderPool = readerPool.Get().instance.Reuse();
@@ -224,7 +224,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             objectPool.Return(mapper);
         }
         
-        protected void SendResponseException(Exception e, int? reqId) {
+        private void SendResponseException(Exception e, int? reqId) {
             var errorMsg    = ErrorResponse.ErrorFromException(e).ToString();
             var mapper      = objectPool.Get().instance;
             var response    = JsonResponse.CreateError(mapper.writer, errorMsg, ErrorResponseType.Exception, reqId);
