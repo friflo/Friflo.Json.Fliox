@@ -42,7 +42,6 @@ namespace Friflo.Json.Fliox.Hub.Remote
         /// Incrementing requests id used to map a <see cref="ProtocolResponse"/>'s to its related <see cref="SyncRequest"/>.
         private             int                         reqId;
         public              bool                        IsConnected => wsConnection?.websocket.State == WebSocketState.Open;
-        public              bool                        logMessages;
 
         /// lock (<see cref="websocketLock"/>) {
         private readonly    object                      websocketLock = new object();
@@ -109,7 +108,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
 
                     // --- process received message
                     var message     = new JsonValue(memoryStream.GetBuffer(), (int)memoryStream.Position);
-                    if (logMessages) TransportUtils.LogMessage(Logger, $"client  <-", remoteHost, message);
+                    if (env.logMessages) TransportUtils.LogMessage(Logger, $"client  <-", remoteHost, message);
                     OnReceive(message, socket.requestMap, reader);
                 }
                 catch (Exception e)
@@ -138,7 +137,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                     
                     socket.requestMap.Add(sendReqId, request);
                     var sendBuffer  = rawRequest.AsReadOnlyMemory();
-                    if (logMessages) TransportUtils.LogMessage(Logger, $"client  ->", remoteHost, rawRequest);
+                    if (env.logMessages) TransportUtils.LogMessage(Logger, $"client  ->", remoteHost, rawRequest);
                     // --- Send message
                     await socket.websocket.SendAsync(sendBuffer, WebSocketMessageType.Text, true, CancellationToken.None).ConfigureAwait(false);
                     

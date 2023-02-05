@@ -39,10 +39,13 @@ namespace Friflo.Json.Fliox.Hub.Remote
     /// </summary>
     public abstract class SocketClientHub : FlioxHub
     {
+        public              RemoteClientEnv                         ClientEnv { get => env; set => env = value ?? throw new ArgumentNullException(nameof(ClientEnv)); }
+        
         private  readonly   Dictionary<ShortString, EventReceiver>  eventReceivers;
         private  readonly   ObjectPool<ReaderPool>                  responseReaderPool;
         private  readonly   RemoteClientAccess                      access;
         private             Utf8JsonParser                          messageParser; // non thread-safe
+        protected           RemoteClientEnv                         env = new RemoteClientEnv();
 
 
         // ReSharper disable once EmptyConstructor - added for source navigation
