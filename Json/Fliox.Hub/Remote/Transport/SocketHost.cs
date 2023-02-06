@@ -72,7 +72,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             syncContextPool = new Stack<SyncContext>();
         }
 
-        public override void SendEvent(in ClientEvent clientEvent) {
+        protected internal override void SendEvent(in ClientEvent clientEvent) {
             try {
                 SendMessage(clientEvent.message);
             }

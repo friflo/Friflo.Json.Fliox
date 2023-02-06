@@ -6,10 +6,10 @@ using Friflo.Json.Fliox.Hub.Protocol;
 namespace Friflo.Json.Fliox.Hub.Host.Event
 {
     public abstract class EventReceiver {
-        public abstract bool    IsOpen ();
-        public abstract bool    IsRemoteTarget ();
+        protected internal abstract bool    IsOpen ();
+        protected internal abstract bool    IsRemoteTarget ();
         /// <summary>Send a serialized <see cref="EventMessage"/> to the receiver</summary>
-        public abstract void    SendEvent(in ClientEvent clientEvent);
+        protected internal abstract void    SendEvent(in ClientEvent clientEvent);
     }
     
     public readonly struct ClientEvent

@@ -26,8 +26,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
     /// <summary> Used to test performance and memory usage of <see cref="EventDispatcher"/>.EnqueueSyncTasks() </summary>
     public class TestEventReceiver : EventReceiver
     {
-        public override bool    IsOpen()           => true;
-        public override bool    IsRemoteTarget()   => true;
-        public override void    SendEvent(in ClientEvent clientEvent) { }
+        protected override bool    IsOpen()           => true;
+        protected override bool    IsRemoteTarget()   => true;
+        protected override void    SendEvent(in ClientEvent clientEvent) { }
     }
 }

@@ -25,8 +25,8 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
         }
         
         // --- IEventReceiver
-        public override bool    IsRemoteTarget ()   => true;
-        public override bool    IsOpen ()           => true;
+        protected internal override bool    IsRemoteTarget ()   => true;
+        protected internal override bool    IsOpen ()           => true;
         
         // --- WebHost
         protected override void SendMessage(in JsonValue message) {
