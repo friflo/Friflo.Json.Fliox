@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Text;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.DB.Cluster;
@@ -18,6 +17,7 @@ using Friflo.Json.Fliox.Pools;
 using Friflo.Json.Fliox.Utils;
 using static System.Diagnostics.DebuggerBrowsableState;
 using static Friflo.Json.Fliox.Hub.Host.ExecutionType;
+using Browse = System.Diagnostics.DebuggerBrowsableAttribute;
 
 // Note! Must not import
 // using System.Threading.Tasks;    =>   only FlioxHub-async.cs contains a single async method
@@ -71,15 +71,15 @@ namespace Friflo.Json.Fliox.Hub.Host
     {
     #region - members
         /// <summary> The default <see cref="database"/> assigned to the <see cref="FlioxHub"/> </summary>
-        [DebuggerBrowsable(Never)]
-        public   readonly   EntityDatabase      database;                               // not null
+        [Browse(Never)]
+        public   readonly   EntityDatabase      database;                           // not null
         // ReSharper disable once UnusedMember.Local - show as property to list it within the first members in Debugger
-        private             EntityDatabase      Database        => database;            // not null
+        private             EntityDatabase      Database        => database;        // not null
         /// <summary> name of the default <see cref="database"/> assigned to the <see cref="FlioxHub"/> </summary>
-        public              ShortString         DatabaseName    => database.nameShort;  // not null
-        public   override   string              ToString()      => database.name;       // not null
+        public              string              DatabaseName    => database.name;   // not null
+        public   override   string              ToString()      => database.name;   // not null
         
-        [DebuggerBrowsable(Never)]
+        [Browse(Never)]
         public              IHubLogger          Logger          => sharedEnv.hubLogger;
         
         /// <summary>
@@ -112,31 +112,27 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// A host name that is assigned to a default database.
         /// Its only purpose is to use it as id in <see cref="HostHits.id"/>.
         /// </summary>
-        public   readonly   string                  hostName;
+        public   readonly   string              hostName;
         
         /// <summary>host <see cref="HostVersion"/> - available via command <b>std.Host</b></summary>
-        public              string                  HostVersion    { get; set; } = "1.0.0";
+        public              string              HostVersion    { get; set; } = "1.0.0";
         
-        public   static     string                  FlioxVersion    => GetFlioxVersion();
+        public   static     string              FlioxVersion    => GetFlioxVersion();
         
         /// <summary>General Hub information - available via command <b>std.Host</b></summary>
-        public              HubInfo                 Info { get => info; set => info = value ?? throw new ArgumentNullException(nameof(Info)); }
+        public              HubInfo             Info { get => info; set => info = value ?? throw new ArgumentNullException(nameof(Info)); }
         
-        public   readonly   SharedEnv               sharedEnv;
+        public   readonly   SharedEnv           sharedEnv;
         
-        // --- internal / private
+        // --- private / internal fields & properties 
         /// <summary><see cref="Routes"/> exposed by the Host - available via command <b>std.Host</b> </summary>
-        internal            IReadOnlyList<string>   Routes => routes;
-
-        private  readonly   Dictionary<Type,object> features    = new Dictionary<Type, object>();
-
-        internal readonly   HostStats               hostStats   = new HostStats{ requestCount = new RequestCount{ db = new ShortString("*")} };
-        [DebuggerBrowsable(Never)]
-        internal readonly   List<string>            routes      = new List<string>();
-
-        [DebuggerBrowsable(Never)]  private HubInfo             info                = new HubInfo();
-        [DebuggerBrowsable(Never)]  private Authenticator       authenticator       = CreateDefaultAuthenticator();
-        [DebuggerBrowsable(Never)]  private ClientController    clientController    = new IncrementClientController();
+                        internal            IReadOnlyList<string>   Routes          => routes;
+                        private  readonly   Dictionary<Type,object> features        = new Dictionary<Type, object>();
+                        internal readonly   HostStats               hostStats       = new HostStats{ requestCount = new RequestCount{ db = new ShortString("*")} };
+        [Browse(Never)] internal readonly   List<string>            routes          = new List<string>();
+        [Browse(Never)] private             HubInfo                 info            = new HubInfo();
+        [Browse(Never)] private             Authenticator           authenticator   = CreateDefaultAuthenticator();
+        [Browse(Never)] private             ClientController        clientController= new IncrementClientController();
         
         /// <see cref="Authenticator"/> is mutable => create new instance per Hub 
         private static Authenticator CreateDefaultAuthenticator() {
@@ -301,7 +297,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         #endregion
 
     #region - extension databases
-        [DebuggerBrowsable(Never)]
+        [Browse(Never)]
         private readonly  Dictionary<ShortString, EntityDatabase>   extensionDbs;
         // ReSharper disable once UnusedMember.Local - expose Dictionary as list in Debugger
         private           IReadOnlyCollection<EntityDatabase>       ExtensionDbs => extensionDbs.Values;
