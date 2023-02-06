@@ -80,7 +80,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             }
         }
         
-        // Send queue (sendWriter / sendReader) is required  to prevent having more than one WebSocket.SendAsync() call outstanding.
+        /// Send queue is required to ensure having only a single outstanding SendAsync() at any time
         // Otherwise:
         // System.InvalidOperationException: There is already one outstanding 'SendAsync' call for this WebSocket instance. ReceiveAsync and SendAsync can be called simultaneously, but at most one outstanding operation for each of them is allowed at the same time. 
         private async Task SendMessageLoop() {

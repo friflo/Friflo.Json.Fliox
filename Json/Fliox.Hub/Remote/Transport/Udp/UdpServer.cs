@@ -65,7 +65,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
             }
         }
         
-        // Send queue (sendWriter / sendReader) is required  to prevent having more than one UdpClient.SendAsync() call outstanding.
+        /// Send queue is required to ensure having only a single outstanding SendAsync() at any time
         private async Task SendMessageLoop() {
             while (true) {
                 var remoteEvent = await sendQueue.DequeMessagesAsync(messages).ConfigureAwait(false);
