@@ -78,7 +78,6 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
                 foreach (var message in messages) {
                     if (hostEnv.logMessages) LogMessage(Logger, " server ->", message.meta.remoteEndPoint, message.value);
                     message.value.CopyTo(ref buffer);
-                    // ReSharper disable once PossibleNullReferenceException
                     await udpClient.SendAsync(buffer, message.value.Count, message.meta.remoteEndPoint).ConfigureAwait(false);
                 }
                 if (remoteEvent == MessageBufferEvent.Closed) {

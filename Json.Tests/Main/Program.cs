@@ -1,4 +1,5 @@
-﻿using Friflo.Json.Fliox.Hub.DB.Cluster;
+﻿using System.Net;
+using Friflo.Json.Fliox.Hub.DB.Cluster;
 using Friflo.Json.Fliox.Hub.DB.Monitor;
 using Friflo.Json.Fliox.Hub.DB.UserAuth;
 using Friflo.Json.Fliox.Hub.GraphQL;
@@ -31,7 +32,9 @@ namespace Friflo.Json.Tests.Main
         private static void TestServer(string endpoint) {
             var hostHub = CreateHttpHost(new Config());
         //  var hostHub = CreateMiniHost();
-            var server = new HttpServer(endpoint, hostHub);
+            var httpListener = new HttpListener();
+            httpListener.Prefixes.Add(endpoint);
+            var server = new HttpServer(httpListener, hostHub);
             // Test assigning a customRequestHandler 
             server.customRequestHandler = async context => {
                 var url = context.Request.Url;

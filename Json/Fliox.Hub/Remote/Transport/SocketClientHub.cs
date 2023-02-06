@@ -48,8 +48,6 @@ namespace Friflo.Json.Fliox.Hub.Remote
         private             Utf8JsonParser                          messageParser; // non thread-safe
         protected           RemoteClientEnv                         env = new RemoteClientEnv();
 
-
-        // ReSharper disable once EmptyConstructor - added for source navigation
         protected SocketClientHub(EntityDatabase database, SharedEnv env, RemoteClientAccess access = RemoteClientAccess.Multi)
             : base(database, env)
         {

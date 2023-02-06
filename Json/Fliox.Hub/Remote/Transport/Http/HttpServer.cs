@@ -8,7 +8,6 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
-// ReSharper disable MemberCanBePrivate.Global
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.Remote
 {
