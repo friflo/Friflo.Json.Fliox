@@ -15,18 +15,18 @@ namespace Friflo.Json.Fliox.Hub.Remote
     /// <summary>
     /// A <see cref="FlioxHub"/> accessed remotely using a <see cref="HttpClient"/>
     /// </summary>
-    public sealed class HttpClientHub : SocketClientHub
+    public sealed class HttpClientHub : FlioxHub
     {
-        private  readonly   string      endpoint;
-        private  readonly   HttpClient  httpClient;
+        private  readonly   string                  endpoint;
+        private  readonly   HttpClient              httpClient;
         
         public   override   string      ToString()  => $"{database.nameShort} - endpoint: {endpoint}";
 
-        public HttpClientHub(string dbName, string endpoint, SharedEnv env = null, RemoteClientAccess access = RemoteClientAccess.Multi)
-            : base(new RemoteDatabase(dbName), env, access)
+        public HttpClientHub(string dbName, string endpoint, SharedEnv env = null)
+            : base(new RemoteDatabase(dbName), env)
         {
-            this.endpoint   = endpoint;
-            httpClient      = new HttpClient();
+            this.endpoint       = endpoint;
+            httpClient          = new HttpClient();
         }
         
         public override void Dispose() {
@@ -35,7 +35,12 @@ namespace Friflo.Json.Fliox.Hub.Remote
             httpClient.Dispose();
         }
         
-        public override bool SupportPushEvents => false;
+        protected internal  override    bool    SupportPushEvents   => false;
+        protected internal  override    bool    IsRemoteHub         => true;
+        
+        public override ExecutionType InitSyncRequest(SyncRequest syncRequest) {
+            return ExecutionType.Async;
+        }
         
         public override async Task<ExecuteSyncResult> ExecuteRequestAsync(SyncRequest syncRequest, SyncContext syncContext)
         {

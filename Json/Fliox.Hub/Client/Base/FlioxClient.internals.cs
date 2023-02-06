@@ -397,7 +397,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             response.success.AssertResponse(syncRequest);
             SyncResponse    syncResponse    = response.success;
             var             hub             = _intern.hub; 
-            if (hub is SocketClientHub) {
+            if (hub.IsRemoteHub) {
                 GetContainerResults(syncResponse);
             }
             var containers = syncResponse.containers;

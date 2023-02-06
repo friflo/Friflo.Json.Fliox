@@ -77,6 +77,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
             eventReceivers.Remove(clientId);
         }
         
+        protected internal override bool    IsRemoteHub => true;
+        
         public override ExecutionType InitSyncRequest(SyncRequest syncRequest) {
             // base.InitSyncRequest(syncRequest);
             return ExecutionType.Async;

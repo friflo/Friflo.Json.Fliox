@@ -91,7 +91,8 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// </remarks>
         public              EventDispatcher     EventDispatcher     { get; set; }
         
-        public virtual      bool                SupportPushEvents   => true;
+        protected internal virtual  bool        SupportPushEvents   => true;
+        protected internal virtual  bool        IsRemoteHub         => false;
         
         /// <summary>
         /// An <see cref="Auth.Authenticator"/> performs authentication and authorization for all

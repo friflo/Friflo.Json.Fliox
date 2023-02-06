@@ -18,12 +18,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs
     /// <para>No creation of an extra thread for the HTTP server.</para>
     /// <para>Simplify debugging as only a single thread is running.</para>
     /// </summary>
-    public class LoopbackHub : SocketClientHub
+    public class LoopbackHub : FlioxHub
     {
         public readonly FlioxHub hub;
 
-        public LoopbackHub(FlioxHub hub, RemoteClientAccess access = RemoteClientAccess.Multi)
-            : base(hub.database, hub.sharedEnv, access)
+        public LoopbackHub(FlioxHub hub)
+            : base(hub.database, hub.sharedEnv)
         {
             this.hub = hub;
         }
@@ -31,6 +31,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs
         public override void Dispose() {
             base.Dispose();
             hub.Dispose();
+        }
+        
+        protected override    bool    IsRemoteHub         => true;
+        
+        public override ExecutionType InitSyncRequest(SyncRequest syncRequest) {
+            return ExecutionType.Async;
         }
         
         public override async Task<ExecuteSyncResult> ExecuteRequestAsync(SyncRequest syncRequest, SyncContext syncContext) {
