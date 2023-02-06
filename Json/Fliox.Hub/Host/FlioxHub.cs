@@ -19,9 +19,6 @@ using static System.Diagnostics.DebuggerBrowsableState;
 using static Friflo.Json.Fliox.Hub.Host.ExecutionType;
 using Browse = System.Diagnostics.DebuggerBrowsableAttribute;
 
-// Note! Must not import
-// using System.Threading.Tasks;    =>   only FlioxHub-async.cs contains a single async method
-
 // ReSharper disable MethodHasAsyncOverload
 namespace Friflo.Json.Fliox.Hub.Host
 {
