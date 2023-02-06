@@ -19,18 +19,18 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
     /// </summary>
     internal sealed class UdpRefSocket
     {
-        internal  readonly  UdpClient           udpClient;
+        internal  readonly  UdpClient           client;
         internal  readonly  RemoteRequestMap    requestMap;
 
         /// <summary>if port == 0 an available port is used</summary>
         internal UdpRefSocket(int port) {
             var localEndPoint   = new IPEndPoint(IPAddress.Any, port);
-            udpClient  = new UdpClient();
-            udpClient.Client.Bind(localEndPoint);
+            client              = new UdpClient();
+            client.Client.Bind(localEndPoint);
             requestMap = new RemoteRequestMap();
         }
 
-        internal int GetPort() => ((IPEndPoint)udpClient.Client.LocalEndPoint).Port;
+        internal int GetPort() => ((IPEndPoint)client.Client.LocalEndPoint).Port;
     }
 
 
@@ -47,7 +47,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
         /// Incrementing requests id used to map a <see cref="ProtocolResponse"/>'s to its related <see cref="SyncRequest"/>.
         private             int                         reqId;
         public              bool                        IsConnected => true;
-        private  readonly   UdpRefSocket                udpSocket;
+        private  readonly   UdpRefSocket                udp;
         private  readonly   CancellationTokenSource     cancellationToken = new CancellationTokenSource();
         private  readonly   int                         localPort;
         
@@ -60,10 +60,10 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
             : base(new RemoteDatabase(dbName), env, access)
         {
             this.remoteHost = TransportUtils.ParseEndpoint(remoteHost) ?? throw new ArgumentException($"invalid remoteHost: {remoteHost}");
-            udpSocket       = new UdpRefSocket(port);
-            localPort       = udpSocket.GetPort();
+            udp         = new UdpRefSocket(port);
+            localPort   = udp.GetPort();
             // TODO check if running loop from here is OK
-            var _ = RunReceiveMessageLoop(udpSocket);
+            var _ = RunReceiveMessageLoop(udp);
         }
         
         /* public override void Dispose() {
@@ -85,7 +85,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
             {
                 try {
                     // --- read complete datagram message
-                    var result  = await udpSocket.udpClient.ReceiveAsync().ConfigureAwait(false);
+                    var result  = await udpSocket.client.ReceiveAsync().ConfigureAwait(false);
                     
                     var buffer  = result.Buffer;
                     var message = new JsonValue(buffer, buffer.Length);
@@ -112,10 +112,10 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
                     var rawRequest  = RemoteMessageUtils.CreateProtocolMessage(syncRequest, writer);
                     // request need to be queued _before_ sending it to be prepared for handling the response.
                     var request     = new RemoteRequest(syncContext, cancellationToken);
-                    udpSocket.requestMap.Add(sendReqId, request);
+                    udp.requestMap.Add(sendReqId, request);
                     if (env.logMessages) TransportUtils.LogMessage(Logger, $"c:{localPort,5} ->", remoteHost, rawRequest);
                     // --- Send message
-                    await udpSocket.udpClient.SendAsync(rawRequest.MutableArray, rawRequest.Count, remoteHost).ConfigureAwait(false);
+                    await udp.client.SendAsync(rawRequest.MutableArray, rawRequest.Count, remoteHost).ConfigureAwait(false);
 
                     // --- Wait for response
                     var response = await request.response.Task.ConfigureAwait(false);

@@ -47,7 +47,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
         /// Incrementing requests id used to map a <see cref="ProtocolResponse"/>'s to its related <see cref="SyncRequest"/>.
         private             int                         reqId;
         public              bool                        IsConnected => true;
-        private  readonly   UdpSocket                   udpSocket;
+        private  readonly   UdpSocket                   udp;
         private  readonly   CancellationTokenSource     cancellationToken = new CancellationTokenSource();
         private  readonly   int                         localPort;
         
@@ -60,10 +60,10 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
             : base(new RemoteDatabase(dbName), env, access)
         {
             this.remoteHost = TransportUtils.ParseEndpoint(remoteHost) ?? throw new ArgumentException($"invalid remoteHost: {remoteHost}");
-            udpSocket       = new UdpSocket(port);
-            localPort       = udpSocket.GetPort();
+            udp         = new UdpSocket(port);
+            localPort   = udp.GetPort();
             // TODO check if running loop from here is OK
-            var _ = RunReceiveMessageLoop(udpSocket);
+            var _ = RunReceiveMessageLoop(udp);
         }
         
         /* public override void Dispose() {
@@ -116,11 +116,11 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
                     var rawRequest  = RemoteMessageUtils.CreateProtocolMessage(syncRequest, writer);
                     // request need to be queued _before_ sending it to be prepared for handling the response.
                     var request     = new RemoteRequest(syncContext, cancellationToken);
-                    udpSocket.requestMap.Add(sendReqId, request);
+                    udp.requestMap.Add(sendReqId, request);
                     
                     if (env.logMessages) TransportUtils.LogMessage(Logger, $"c:{localPort,5} ->", remoteHost, rawRequest);
                     // --- Send message
-                    await udpSocket.socket.SendToAsync(rawRequest.AsMutableArraySegment(), SocketFlags.None, remoteHost).ConfigureAwait(false);
+                    await udp.socket.SendToAsync(rawRequest.AsMutableArraySegment(), SocketFlags.None, remoteHost).ConfigureAwait(false);
 
                     // --- Wait for response
                     var response = await request.response.Task.ConfigureAwait(false);
