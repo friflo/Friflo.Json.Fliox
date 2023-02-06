@@ -5,7 +5,7 @@
 
         <IsPackable>false</IsPackable>
 
-        <LangVersion>7.3</LangVersion>
+        <LangVersion>9.0</LangVersion>
 		<GenerateProgramFile>false</GenerateProgramFile>
         <!-- EnableDefaultContentItems: false - default content files (*.json) are visible in IDE's -->
         <EnableDefaultContentItems>false</EnableDefaultContentItems>
