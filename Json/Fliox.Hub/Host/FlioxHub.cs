@@ -121,11 +121,12 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// <summary>General Hub information - available via command <b>std.Host</b></summary>
         public              HubInfo                 Info { get => info; set => info = value ?? throw new ArgumentNullException(nameof(Info)); }
         
-        /// <summary><see cref="Routes"/> exposed by the Host - available via command <b>std.Host</b> </summary>
-        public              IReadOnlyList<string>   Routes => routes;
-        
         public   readonly   SharedEnv               sharedEnv;
         
+        // --- internal / private
+        /// <summary><see cref="Routes"/> exposed by the Host - available via command <b>std.Host</b> </summary>
+        internal            IReadOnlyList<string>   Routes => routes;
+
         private  readonly   Dictionary<Type,object> features    = new Dictionary<Type, object>();
 
         internal readonly   HostStats               hostStats   = new HostStats{ requestCount = new RequestCount{ db = new ShortString("*")} };
@@ -186,8 +187,8 @@ namespace Friflo.Json.Fliox.Hub.Host
         #endregion
         
     #region - event receiver
-        public   virtual    void    AddEventReceiver      (in ShortString clientId, EventReceiver eventReceiver) {}
-        public   virtual    void    RemoveEventReceiver   (in ShortString clientId) {}
+        internal   virtual    void    AddEventReceiver      (in ShortString clientId, EventReceiver eventReceiver) {}
+        internal   virtual    void    RemoveEventReceiver   (in ShortString clientId) {}
         #endregion
 
     #region - sync request execution

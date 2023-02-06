@@ -64,14 +64,14 @@ namespace Friflo.Json.Fliox.Hub.Remote
         /// </summary>
         public abstract override Task<ExecuteSyncResult> ExecuteRequestAsync(SyncRequest syncRequest, SyncContext syncContext);
         
-        public override void AddEventReceiver(in ShortString clientId, EventReceiver eventReceiver) {
+        internal override void AddEventReceiver(in ShortString clientId, EventReceiver eventReceiver) {
             if (access == RemoteClientAccess.Single && eventReceivers.Count > 0) {
                 throw new InvalidOperationException("Remote client is configured for single access");
             }
             eventReceivers.Add(clientId, eventReceiver);
         }
         
-        public override void RemoveEventReceiver(in ShortString clientId) {
+        internal override void RemoveEventReceiver(in ShortString clientId) {
             if (clientId.IsNull())
                 return;
             eventReceivers.Remove(clientId);
