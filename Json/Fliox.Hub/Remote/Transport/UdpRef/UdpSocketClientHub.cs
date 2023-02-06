@@ -63,7 +63,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
             udp         = new UdpRefSocket(port);
             localPort   = udp.GetPort();
             // TODO check if running loop from here is OK
-            var _ = RunReceiveMessageLoop(udp);
+            var _ = RunReceiveMessageLoop();
         }
         
         /* public override void Dispose() {
@@ -71,33 +71,33 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
             // websocket.CancelPendingRequests();
         } */
         
-        private async Task RunReceiveMessageLoop(UdpRefSocket socket) {
+        private async Task RunReceiveMessageLoop() {
             using (var mapper = new ObjectMapper(sharedEnv.TypeStore)) {
-                await ReceiveMessageLoop(socket, mapper.reader).ConfigureAwait(false);
+                await ReceiveMessageLoop(mapper.reader).ConfigureAwait(false);
             }
         }
         
         /// <summary>
         /// Has no SendMessageLoop() - client send only response messages via <see cref="SocketClientHub.OnReceive"/>
         /// </summary>
-        private async Task ReceiveMessageLoop(UdpRefSocket udpSocket, ObjectReader reader) {
+        private async Task ReceiveMessageLoop(ObjectReader reader) {
             while (true)
             {
                 try {
                     // --- read complete datagram message
-                    var result  = await udpSocket.client.ReceiveAsync().ConfigureAwait(false);
+                    var result  = await udp.client.ReceiveAsync().ConfigureAwait(false);
                     
                     var buffer  = result.Buffer;
                     var message = new JsonValue(buffer, buffer.Length);
                     // --- process received message
                     if (env.logMessages) TransportUtils.LogMessage(Logger, $"c:{localPort,5} <-", remoteHost, message);
-                    OnReceive(message, udpSocket.requestMap, reader);
+                    OnReceive(message, udp.requestMap, reader);
                 }
                 catch (Exception e)
                 {
                     var message = $"WebSocketClientHub receive error: {e.Message}";
                     Logger.Log(HubLog.Error, message, e);
-                    udpSocket.requestMap.CancelRequests();
+                    udp.requestMap.CancelRequests();
                 }
             }
         }

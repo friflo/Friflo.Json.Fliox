@@ -15,21 +15,21 @@ namespace Friflo.Json.Fliox.Hub.Remote
         private WebSocketConnection GetWebsocketConnection() {
             lock (websocketLock) {
                 var wsConn = wsConnection;
-                if (wsConn != null && wsConn.websocket.State == WebSocketState.Open)
+                if (wsConn != null && wsConn.socket.State == WebSocketState.Open)
                     return wsConn;
                 return null;
             }
         }
         
-        private Task<WebSocketConnection> JoinConnects(out TaskCompletionSource<WebSocketConnection> tcs, out WebSocketConnection wsConn) {
+        private Task<WebSocketConnection> JoinConnects(out TaskCompletionSource<WebSocketConnection> tcs, out WebSocketConnection connection) {
             lock (websocketLock) {
                 if (connectTask != null) {
-                    wsConn  = null;
+                    connection  = null;
                     tcs     = null;
                     return connectTask;
                 }
-                wsConn  = wsConnection = new WebSocketConnection();
-                tcs     = new TaskCompletionSource<WebSocketConnection>();
+                connection  = wsConnection = new WebSocketConnection();
+                tcs         = new TaskCompletionSource<WebSocketConnection>();
                 connectTask = tcs.Task;
                 return connectTask;
             }
@@ -38,42 +38,42 @@ namespace Friflo.Json.Fliox.Hub.Remote
         // static int count;
         
         private async Task<WebSocketConnection> Connect() {
-            var task = JoinConnects(out var tcs, out WebSocketConnection wsConn);
+            var task = JoinConnects(out var tcs, out WebSocketConnection connection);
             if (tcs == null) {
-                wsConn = await task.ConfigureAwait(false);
-                return wsConn;
+                connection = await task.ConfigureAwait(false);
+                return connection;
             }
 
             // Console.WriteLine($"WebSocketClientHub.Connect() endpoint: {endpoint}");
             // ws.Options.SetBuffer(4096, 4096);
             try {
                 // Console.WriteLine($"Connect {++count}");
-                await wsConn.websocket.ConnectAsync(remoteHost, CancellationToken.None).ConfigureAwait(false);
+                await connection.socket.ConnectAsync(remoteHost, CancellationToken.None).ConfigureAwait(false);
 
                 connectTask = null;
-                tcs.SetResult(wsConn);
+                tcs.SetResult(connection);
             } catch (Exception e) {
                 connectTask = null;
                 tcs.SetException(e);
                 throw;
             }
             try {
-                _ = RunReceiveMessageLoop(wsConn).ConfigureAwait(false);
+                _ = RunReceiveMessageLoop(connection).ConfigureAwait(false);
             } catch (Exception e) {
                 Debug.Fail("ReceiveLoop() failed", e.Message);
             }
-            return wsConn;
+            return connection;
         }
         
         public async Task Close() {
-            WebSocketConnection wsConn;
+            WebSocketConnection connection;
             lock (websocketLock) {
-                wsConn = wsConnection;
-                if (wsConn == null || wsConn.websocket.State == WebSocketState.Closed)
+                connection = wsConnection;
+                if (connection == null || connection.socket.State == WebSocketState.Closed)
                     return;
                 wsConnection = null;
             }
-            await wsConn.websocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "", CancellationToken.None).ConfigureAwait(false);
+            await connection.socket.CloseAsync(WebSocketCloseStatus.NormalClosure, "", CancellationToken.None).ConfigureAwait(false);
         }
     }
 }

@@ -19,11 +19,11 @@ namespace Friflo.Json.Fliox.Hub.Remote
     /// </summary>
     internal sealed class WebSocketConnection
     {
-        internal  readonly  ClientWebSocket     websocket;
+        internal  readonly  ClientWebSocket     socket;
         internal  readonly  RemoteRequestMap    requestMap;
         
         internal WebSocketConnection() {
-            websocket   = new ClientWebSocket();
+            socket      = new ClientWebSocket();
             requestMap  = new RemoteRequestMap();
         }
     }
@@ -41,7 +41,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         private  readonly   Uri                         remoteHost;
         /// Incrementing requests id used to map a <see cref="ProtocolResponse"/>'s to its related <see cref="SyncRequest"/>.
         private             int                         reqId;
-        public              bool                        IsConnected => wsConnection?.websocket.State == WebSocketState.Open;
+        public              bool                        IsConnected => wsConnection?.socket.State == WebSocketState.Open;
 
         /// lock (<see cref="websocketLock"/>) {
         private readonly    object                      websocketLock = new object();
@@ -67,18 +67,18 @@ namespace Friflo.Json.Fliox.Hub.Remote
             // websocket.CancelPendingRequests();
         } */
         
-        private async Task RunReceiveMessageLoop(WebSocketConnection socket) {
+        private async Task RunReceiveMessageLoop(WebSocketConnection connection) {
             using (var mapper = new ObjectMapper(sharedEnv.TypeStore)) {
-                await ReceiveMessageLoop(socket, mapper.reader).ConfigureAwait(false);
+                await ReceiveMessageLoop(connection, mapper.reader).ConfigureAwait(false);
             }
         }
         
         /// <summary>
         /// Has no SendMessageLoop() - client send only response messages via <see cref="SocketClientHub.OnReceive"/>
         /// </summary>
-        private async Task ReceiveMessageLoop(WebSocketConnection socket, ObjectReader reader) {
-            var buffer          = new ArraySegment<byte>(new byte[8192]);
-            var ws              = socket.websocket;
+        private async Task ReceiveMessageLoop(WebSocketConnection connection, ObjectReader reader) {
+            var buffer  = new ArraySegment<byte>(new byte[8192]);
+            var socket  = connection.socket;
             var memoryStream    = new MemoryStream();
             while (true)
             {
@@ -88,16 +88,16 @@ namespace Friflo.Json.Fliox.Hub.Remote
                     // --- read complete WebSocket message
                     WebSocketReceiveResult wsResult;
                     do {
-                        if (ws.State != WebSocketState.Open) {
+                        if (socket.State != WebSocketState.Open) {
                             // Logger.Log(HubLog.Info, $"Pre-ReceiveAsync. State: {ws.State}");
                             return;
                         }
-                        wsResult = await ws.ReceiveAsync(buffer, cancellationToken.Token).ConfigureAwait(false);
+                        wsResult = await socket.ReceiveAsync(buffer, cancellationToken.Token).ConfigureAwait(false);
                         memoryStream.Write(buffer.Array, buffer.Offset, wsResult.Count);
                     }
                     while(!wsResult.EndOfMessage);
 
-                    if (ws.State != WebSocketState.Open) {
+                    if (socket.State != WebSocketState.Open) {
                         // Logger.Log(HubLog.Info, $"Post-ReceiveAsync. State: {ws.State}");
                         return;
                     }
@@ -109,13 +109,13 @@ namespace Friflo.Json.Fliox.Hub.Remote
 
                     // --- process received message
                     if (env.logMessages) TransportUtils.LogMessage(Logger, $"client  <-", remoteHost, message);
-                    OnReceive(message, socket.requestMap, reader);
+                    OnReceive(message, connection.requestMap, reader);
                 }
                 catch (Exception e)
                 {
                     var message = $"WebSocketClientHub receive error: {e.Message}";
                     Logger.Log(HubLog.Error, message, e);
-                    socket.requestMap.CancelRequests();
+                    connection.requestMap.CancelRequests();
                 }
             }
         }
@@ -138,7 +138,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                     var sendBuffer  = rawRequest.AsReadOnlyMemory();
                     if (env.logMessages) TransportUtils.LogMessage(Logger, $"client  ->", remoteHost, rawRequest);
                     // --- Send message
-                    await socket.websocket.SendAsync(sendBuffer, WebSocketMessageType.Text, true, CancellationToken.None).ConfigureAwait(false);
+                    await socket.socket.SendAsync(sendBuffer, WebSocketMessageType.Text, true, CancellationToken.None).ConfigureAwait(false);
                     
                     // --- Wait for response
                     var response = await request.response.Task.ConfigureAwait(false);
