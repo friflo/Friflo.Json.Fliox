@@ -44,7 +44,8 @@ namespace Friflo.Json.Fliox.Hub.Host
                 return context.Error<int>(error);
             }
             var start = Stopwatch.GetTimestamp();
-            await Task.Delay(delay);
+            await Task.Delay(delay).ConfigureAwait(false);
+            
             var duration = (int)(1000 * (Stopwatch.GetTimestamp() - start) / Stopwatch.Frequency);
             return duration;
         }

@@ -69,6 +69,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
         private async Task SendMessageLoop() {
             while (true) {
                 var remoteEvent = await sendQueue.DequeMessagesAsync(messages).ConfigureAwait(false);
+                
                 foreach (var message in messages) {
                     if (hostEnv.logMessages) LogMessage(Logger, " server ->", message.meta.remoteEndPoint, message.value);
                     var array = message.value.AsMutableArraySegment();
@@ -93,7 +94,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
             var buffer = new ArraySegment<byte>(new byte[0x10000]);
             while (true) {
                 // --- 1. Read request from datagram
-                var result = await socket.ReceiveFromAsync(buffer, SocketFlags.None, DummyEndpoint);
+                var result = await socket.ReceiveFromAsync(buffer, SocketFlags.None, DummyEndpoint).ConfigureAwait(false);
                 
                 var remoteEndpoint  = (IPEndPoint)result.RemoteEndPoint;
                 if (!clients.TryGetValue(remoteEndpoint, out var socketHost)) {
