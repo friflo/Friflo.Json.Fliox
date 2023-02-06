@@ -16,7 +16,8 @@ using Friflo.Json.Fliox.Pools;
 using Friflo.Json.Fliox.Utils;
 using static Friflo.Json.Fliox.Hub.Host.ExecutionType;
 
-// Note! - Must not have any dependency to System.Net or System.Net.Http (or other HTTP stuff)
+// Note! - Must not have any dependency to System.Net, System.Net.Sockets, System.Net.WebSockets, System.Net.Http
+//         or other specific communication implementations.
 
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.Remote
