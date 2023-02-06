@@ -116,7 +116,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         
         public   static     string              FlioxVersion    => GetFlioxVersion();
         
-        /// <summary>General Hub information - available via command <b>std.Host</b></summary>
+        /// <summary>General descriptive Hub information - available via command <b>std.Host</b></summary>
         public              HubInfo             Info { get => info; set => info = value ?? throw new ArgumentNullException(nameof(Info)); }
         
         public   readonly   SharedEnv           sharedEnv;

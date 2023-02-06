@@ -70,6 +70,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
             var buffer = new byte[128]; // UdpClient.SendAsync() requires datagram array starting datagram[0]
             while (true) {
                 var remoteEvent = await sendQueue.DequeMessagesAsync(messages).ConfigureAwait(false);
+                
                 foreach (var message in messages) {
                     if (hostEnv.logMessages) LogMessage(Logger, " server ->", message.meta.remoteEndPoint, message.value);
                     message.value.CopyTo(ref buffer);
