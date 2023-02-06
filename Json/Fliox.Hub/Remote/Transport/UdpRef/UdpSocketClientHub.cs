@@ -35,6 +35,8 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
 
 
     /// <summary>
+    /// Same implementation as <see cref="UdpSocketClientHub"/> but using a <see cref="UdpClient"/> instead of a <see cref="Socket"/>.<br/>
+    /// Performance will be slower as a new byte array is created for every received datagram.<br/>
     /// A <see cref="FlioxHub"/> accessed remotely  using a <see cref="UdpClient"/> connection<br/>
     /// </summary>
     /// <remarks>

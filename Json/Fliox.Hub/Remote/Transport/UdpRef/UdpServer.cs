@@ -14,6 +14,10 @@ using static Friflo.Json.Fliox.Hub.Remote.TransportUtils;
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
 {
+    /// <summary>
+    /// Same implementation as <see cref="UdpServer"/> but using a <see cref="UdpClient"/> instead of a <see cref="Socket"/>.<br/>
+    /// Performance will be slower as a new byte array is created for every received datagram.<br/>
+    /// </summary>
     public sealed class UdpRefServer : IDisposable, ILogSource
     {
         internal readonly   FlioxHub                                hub;
