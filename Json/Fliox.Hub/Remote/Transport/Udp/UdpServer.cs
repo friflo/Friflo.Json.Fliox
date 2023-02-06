@@ -106,7 +106,6 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
             }
         }
 
-
         /// <summary>
         /// Create a send and receive queue and run a send and a receive loop. <br/>
         /// The loops are executed until the WebSocket is closed or disconnected. <br/>

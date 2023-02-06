@@ -86,6 +86,9 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
             await ReceiveMessageLoop().ConfigureAwait(false);
         }
         
+        /// <summary>
+        /// Parse, execute and send response message for all received request messages.<br/>
+        /// </summary>
         private async Task ReceiveMessageLoop() {
             while (true) {
                 // --- 1. Read request from datagram
@@ -102,7 +105,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
                 socketHost.OnReceive(request, ref hostEnv.metrics.udp);
             }
         }
-        
+
         /// <summary>
         /// Create a send and receive queue and run a send and a receive loop. <br/>
         /// The loops are executed until the WebSocket is closed or disconnected. <br/>
