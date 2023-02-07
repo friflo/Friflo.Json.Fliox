@@ -65,7 +65,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             return connection;
         }
         
-        public async Task Close() {
+        public override async Task Close() {
             WebSocketConnection connection;
             lock (websocketLock) {
                 connection = wsConnection;

@@ -71,6 +71,11 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
             // websocket.CancelPendingRequests();
         } */
         
+        public override Task Close() {
+            udp.socket.Close();
+            return Task.CompletedTask;
+        }
+        
         private async Task RunReceiveMessageLoop() {
             using (var mapper = new ObjectMapper(sharedEnv.TypeStore)) {
                 await ReceiveMessageLoop(mapper.reader).ConfigureAwait(false);

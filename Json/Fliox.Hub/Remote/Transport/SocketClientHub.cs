@@ -60,6 +60,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         }
 
         public abstract bool IsConnected { get; }
+        public abstract Task Close();
         
         /// <summary>
         /// A class extending  <see cref="SocketClientHub"/> must implement this method.<br/>
