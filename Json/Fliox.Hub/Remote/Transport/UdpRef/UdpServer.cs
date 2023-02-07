@@ -19,9 +19,10 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
     /// Same implementation as <see cref="UdpServer"/> but using a <see cref="UdpClient"/> instead of a <see cref="Socket"/>.<br/>
     /// Performance will be slower as a new byte array is created for every received datagram.<br/>
     /// </summary>
-    public sealed class UdpRefServer : IDisposable, ILogSource
+    public sealed class UdpRefServer : IServer, IDisposable, ILogSource
     {
         internal readonly   FlioxHub                                hub;
+        private             bool                                    running;
         private  readonly   UdpClient                               udpClient;
         private  readonly   IPEndPoint                              ipEndPoint;
         internal readonly   MessageBufferQueueAsync<UdpMeta>        sendQueue;
@@ -48,9 +49,15 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
         public void Dispose() {
             sendQueue.Dispose();
         }
-
-        public async Task Run() {
-            await SendReceiveMessages().ConfigureAwait(false);
+        
+        // --- IServer
+        public void     Start   () { }
+        public void     Run     () => SendReceiveMessages().GetAwaiter().GetResult();
+        public Task     RunAsync() => SendReceiveMessages();
+        public void     Stop    () {
+            running = false;
+            udpClient.Close();
+            sendQueue.Close();
         }
         
         /// <summary>
@@ -75,7 +82,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
         /// Send queue is required to ensure having only a single outstanding SendAsync() at any time
         private async Task SendMessageLoop() {
             var buffer = new byte[128]; // UdpClient.SendAsync() requires datagram array starting datagram[0]
-            while (true) {
+            while (running) {
                 var remoteEvent = await sendQueue.DequeMessagesAsync(messages).ConfigureAwait(false);
                 
                 foreach (var message in messages) {
@@ -97,7 +104,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
         /// Parse, execute and send response message for all received request messages.<br/>
         /// </summary>
         private async Task ReceiveMessageLoop() {
-            while (true) {
+            while (running) {
                 // --- 1. Read request from datagram
                 var receiveResult = await udpClient.ReceiveAsync().ConfigureAwait(false);
                 

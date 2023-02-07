@@ -280,7 +280,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 server.Stop();
                 if (runTask != null)
                     await runTask;
-                Logger.Info("2. HttpServer stopped");
+                Logger.Info($"2. {server.GetType().Name} stopped");
             }
         } 
 

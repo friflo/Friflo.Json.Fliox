@@ -14,9 +14,10 @@ using static Friflo.Json.Fliox.Hub.Remote.TransportUtils;
 
 namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
 {
-    public sealed class UdpServer : IDisposable, ILogSource
+    public sealed class UdpServer : IServer, IDisposable, ILogSource
     {
         internal readonly   FlioxHub                                hub;
+        private             bool                                    running;
         private  readonly   Socket                                  socket;
         private  readonly   IPEndPoint                              ipEndPoint;
         internal readonly   MessageBufferQueueAsync<UdpMeta>        sendQueue;
@@ -44,9 +45,15 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
         public void Dispose() {
             sendQueue.Dispose();
         }
-
-        public async Task Run() {
-            await SendReceiveMessages().ConfigureAwait(false);
+        
+        // --- IServer
+        public void     Start   () { }
+        public void     Run     () => SendReceiveMessages().GetAwaiter().GetResult();
+        public Task     RunAsync() => SendReceiveMessages();
+        public void     Stop    () {
+            running = false;
+            socket.Close();
+            sendQueue.Close();
         }
         
         /// <summary>
@@ -70,7 +77,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
         
         /// Send queue is required to ensure having only a single outstanding SendAsync() at any time
         private async Task SendMessageLoop() {
-            while (true) {
+            while (running) {
                 var remoteEvent = await sendQueue.DequeMessagesAsync(messages).ConfigureAwait(false);
                 
                 foreach (var message in messages) {
@@ -95,7 +102,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
         /// </summary>
         private async Task ReceiveMessageLoop() {
             var buffer = new ArraySegment<byte>(new byte[0x10000]);
-            while (true) {
+            while (running) {
                 // --- 1. Read request from datagram
                 var result = await socket.ReceiveFromAsync(buffer, SocketFlags.None, DummyEndpoint).ConfigureAwait(false);
                 
@@ -117,6 +124,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
         /// </summary>
         private async Task SendReceiveMessages()
         {
+            running         = true;
             Task sendLoop   = null;
             try {
                 sendLoop = RunSendMessageLoop();

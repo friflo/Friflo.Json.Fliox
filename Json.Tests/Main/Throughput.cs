@@ -47,11 +47,9 @@ namespace Friflo.Json.Tests.Main
             using (var remoteHub    = new UdpSocketClientHub(TestDB, "127.0.0.1:5000")) {
                 hub.GetFeature<RemoteHostEnv>().logMessages = false;
                 remoteHub.ClientEnv.logMessages             = false;
-                var _ = server.Run();
-                // await TestHappy.RunServer(server, async () => {
-                    // await remoteHub.Connect();
-                    await TestHappy.ConcurrentAccess(remoteHub, 4, 0, 1_000_000, false);
-                // });
+                await TestHappy.RunServer(server, async () => {
+                    await TestHappy.ConcurrentAccess(remoteHub, 4, 0, 1_000, false);
+                });
             }
         }
         
@@ -60,11 +58,9 @@ namespace Friflo.Json.Tests.Main
             using (var hub          = new FlioxHub(database))
             using (var server       = new UdpRefServer("127.0.0.1:5000", hub))
             using (var remoteHub    = new UdpRefSocketClientHub(TestDB, "127.0.0.1:5000")) {
-                var _ = server.Run();
-                // await TestHappy.RunServer(server, async () => {
-                    // await remoteHub.Connect();
+                await TestHappy.RunServer(server, async () => {
                     await TestHappy.ConcurrentAccess(remoteHub, 4, 0, 1_000_000, false);
-                // });
+                });
             }
         }
         
