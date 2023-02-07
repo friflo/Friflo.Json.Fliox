@@ -48,7 +48,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
         private  readonly   IPEndPoint                  remoteHost;
         /// Incrementing requests id used to map a <see cref="ProtocolResponse"/>'s to its related <see cref="SyncRequest"/>.
         private             int                         reqId;
-        public              bool                        IsConnected => true;
+        public   override   bool                        IsConnected => true;
         private  readonly   UdpRefSocket                udp;
         private  readonly   CancellationTokenSource     cancellationToken = new CancellationTokenSource();
         private  readonly   int                         localPort;

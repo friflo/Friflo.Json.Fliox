@@ -59,6 +59,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
             this.access         = access;     
         }
 
+        public abstract bool IsConnected { get; }
+        
         /// <summary>
         /// A class extending  <see cref="SocketClientHub"/> must implement this method.<br/>
         /// Implementation must be thread-safe as multiple <see cref="Client.FlioxClient"/> instances are allowed to

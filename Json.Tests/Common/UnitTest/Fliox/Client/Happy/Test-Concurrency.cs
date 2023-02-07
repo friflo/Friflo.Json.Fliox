@@ -10,6 +10,7 @@ using Friflo.Json.Fliox.Hub.Client;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Remote;
+using Friflo.Json.Fliox.Hub.Remote.Transport.Udp;
 using Friflo.Json.Fliox.Hub.Threading;
 using Friflo.Json.Tests.Common.Utils;
 using NUnit.Framework;
@@ -144,15 +145,31 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             return sum;
         }
         
+        [Test] public static void  TestConcurrentUdp()       { SingleThreadSynchronizationContext.Run(TestConcurrentUdpAsync); }
+        
+        private static async Task TestConcurrentUdpAsync () {
+            using (var _                = SharedEnv.Default) // for LeakTestsFixture
+            using (var database         = new MemoryDatabase(TestGlobals.DB))
+            using (var hub          	= new FlioxHub(database, TestGlobals.Shared))
+            using (var server           = new UdpServer("127.0.0.1:5000", hub))
+            using (var remoteHub        = new UdpSocketClientHub(TestGlobals.DB, "127.0.0.1:5000", 0, TestGlobals.Shared)) {
+                await RunServer(server, async () => {
+                    // await remoteHub.Connect();
+                    await RunConcurrentHub(remoteHub, 4, 10); // 10 requests are sufficient to force concurrency error
+                    // await remoteHub.Close();
+                });
+            }
+        }
+        
+        [Test] public static void  TestConcurrentWebSocket()       { SingleThreadSynchronizationContext.Run(TestConcurrentWebSocketAsync); }
+        
         /// <summary>
         /// Assert that <see cref="WebSocketClientHub"/> support being used by multiple clients aka
         /// <see cref="FlioxClient"/>'s and using concurrent requests.
         /// All <see cref="FlioxHub"/> implementations support this behavior, so <see cref="WebSocketClientHub"/>
         /// have to ensure this also. It utilize <see cref="ProtocolRequest.reqId"/> to ensure this.
         /// </summary>
-#if !UNITY_5_3_OR_NEWER 
-        [Test]
-        public static async Task TestConcurrentWebSocket () {
+        private static async Task TestConcurrentWebSocketAsync () {
             using (var _                = SharedEnv.Default) // for LeakTestsFixture
             using (var database         = new MemoryDatabase(TestGlobals.DB))
             using (var hub          	= new FlioxHub(database, TestGlobals.Shared))
@@ -161,14 +178,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             using (var remoteHub        = new WebSocketClientHub(TestGlobals.DB, "ws://localhost:8080/", TestGlobals.Shared)) {
                 await RunServer(server, async () => {
                     // await remoteHub.Connect();
-                    await ConcurrentWebSocket(remoteHub, 4, 10); // 10 requests are sufficient to force concurrency error
+                    await RunConcurrentHub(remoteHub, 4, 10); // 10 requests are sufficient to force concurrency error
                     await remoteHub.Close();
                 });
             }
         }
-#endif
         
-        private static async Task ConcurrentWebSocket(FlioxHub hub, int clientCount, int requestCount)
+        private static async Task RunConcurrentHub(FlioxHub hub, int clientCount, int requestCount)
         {
             // --- prepare
             var clients = new List<FlioxClient>();
