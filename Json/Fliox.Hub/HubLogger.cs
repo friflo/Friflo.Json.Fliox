@@ -74,13 +74,13 @@ namespace Friflo.Json.Fliox.Hub
     {
         private readonly TextWriter writer;
         
-        public HubLoggerStream(string filePath) {
+        public HubLoggerStream(string filePath, Encoding encoding = null) {
             var fileStream  = new FileStream(filePath, FileMode.Append, FileAccess.Write);
-            writer          = new StreamWriter(fileStream, Encoding.UTF8);
+            writer          = new StreamWriter(fileStream, encoding ?? Encoding.UTF8);
         }
         
-        public HubLoggerStream(Stream stream) {
-            writer          = new StreamWriter(stream, Encoding.UTF8);
+        public HubLoggerStream(Stream stream, Encoding encoding = null) {
+            writer          = new StreamWriter(stream, encoding ?? Encoding.UTF8);
         }
         
         public void Close() {

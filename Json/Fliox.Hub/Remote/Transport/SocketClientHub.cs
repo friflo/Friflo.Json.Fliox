@@ -48,8 +48,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
         private   readonly  RemoteClientAccess                      access;
         private             Utf8JsonParser                          messageParser; // non thread-safe
         protected           RemoteClientEnv                         env     = new RemoteClientEnv();
-        protected readonly  StringBuilder                           sbSend  = new StringBuilder();
-        protected readonly  StringBuilder                           sbRecv  = new StringBuilder();
+        protected           StringBuilder                           sbSend;
+        protected           StringBuilder                           sbRecv;
 
         protected SocketClientHub(EntityDatabase database, SharedEnv env, RemoteClientAccess access = RemoteClientAccess.Multi)
             : base(database, env)

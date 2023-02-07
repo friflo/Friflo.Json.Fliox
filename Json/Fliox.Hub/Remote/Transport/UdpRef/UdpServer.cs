@@ -28,8 +28,8 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
         private  readonly   List<MessageItem<UdpMeta>>              messages;
         private  readonly   RemoteHostEnv                           hostEnv;
         private  readonly   Dictionary<IPEndPoint,UdpRefSocketHost> clients;
-        private  readonly   StringBuilder                           sbSend = new StringBuilder();
-        private  readonly   StringBuilder                           sbRecv = new StringBuilder();
+        private             StringBuilder                           sbSend;
+        private             StringBuilder                           sbRecv;
         
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         public              IHubLogger  Logger { get; }
@@ -79,7 +79,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
                 var remoteEvent = await sendQueue.DequeMessagesAsync(messages).ConfigureAwait(false);
                 
                 foreach (var message in messages) {
-                    if (hostEnv.logMessages) LogMessage(Logger, sbSend, " server ->", message.meta.remoteEndPoint, message.value);
+                    if (hostEnv.logMessages) LogMessage(Logger, ref sbSend, " server ->", message.meta.remoteEndPoint, message.value);
                     message.value.CopyTo(ref buffer);
                     await udpClient.SendAsync(buffer, message.value.Count, message.meta.remoteEndPoint).ConfigureAwait(false);
                 }
@@ -108,7 +108,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
                 }
                 var buffer  = receiveResult.Buffer;
                 var request = new JsonValue(buffer, buffer.Length);
-                if (hostEnv.logMessages) LogMessage(Logger, sbRecv, " server <-", socketHost.remoteClient, request);
+                if (hostEnv.logMessages) LogMessage(Logger, ref sbRecv, " server <-", socketHost.remoteClient, request);
                 socketHost.OnReceive(request, ref hostEnv.metrics.udp);
             }
         }
