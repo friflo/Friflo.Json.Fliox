@@ -33,7 +33,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
         public UdpServer(string endpoint, FlioxHub hub) {
             this.hub    = hub;
             ipEndPoint  = ParseEndpoint(endpoint) ?? throw new ArgumentException($"invalid endpoint: {endpoint}");
-            socket      = new Socket(SocketType.Dgram, ProtocolType.Udp);
+            socket      = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
             socket.Bind(ipEndPoint);
             Logger      = hub.Logger;
             sendQueue   = new MessageBufferQueueAsync<UdpMeta>();
