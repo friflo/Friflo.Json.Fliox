@@ -11,37 +11,18 @@ using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Remote.Tools;
 using Friflo.Json.Fliox.Mapper;
 
+// ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
 {
-    /// <summary>
-    /// Store send requests in the <see cref="requestMap"/> to map received response messages to its related <see cref="SyncRequest"/>
-    /// </summary>
-    internal sealed class UdpSocket
-    {
-        internal  readonly  Socket              socket;
-        internal  readonly  RemoteRequestMap    requestMap;
-
-        /// <summary>if port == 0 an available port is used</summary>
-        internal UdpSocket(int port) {
-            var localEndPoint   = new IPEndPoint(IPAddress.Any, port);
-            // setting AddressFamily.InterNetwork improves performance - did not analyzed reason
-            socket              = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
-            socket.Bind(localEndPoint);
-            requestMap = new RemoteRequestMap();
-        }
-
-        internal int GetPort() => ((IPEndPoint)socket.LocalEndPoint).Port;
-    }
-
 
     /// <summary>
     /// A <see cref="FlioxHub"/> accessed remotely  using a <see cref="UdpClient"/> connection<br/>
     /// </summary>
     /// <remarks>
-    /// Counterpart of <see cref="UdpSocketHost"/> used by clients.<br/>
+    /// Counterpart of <see cref="UdpServerSync"/> used by clients.<br/>
     /// Implementation aligned with <see cref="WebSocketClientHub"/>
     /// </remarks>
-    public sealed class UdpSocketClientHub : SocketClientHub
+    public sealed class UdpSocketSyncClientHub : SocketClientHub
     {
         private  readonly   IPEndPoint                  remoteHost;
         /// Incrementing requests id used to map a <see cref="ProtocolResponse"/>'s to its related <see cref="SyncRequest"/>.
@@ -56,7 +37,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
         /// <summary>
         /// if port == 0 an available port is used
         /// </summary>
-        public UdpSocketClientHub(string dbName, string remoteHost, int port = 0, SharedEnv env = null, RemoteClientAccess access = RemoteClientAccess.Multi)
+        public UdpSocketSyncClientHub(string dbName, string remoteHost, int port = 0, SharedEnv env = null, RemoteClientAccess access = RemoteClientAccess.Multi)
             : base(new RemoteDatabase(dbName), env, access)
         {
             this.remoteHost = TransportUtils.ParseEndpoint(remoteHost) ?? throw new ArgumentException($"invalid remoteHost: {remoteHost}");
@@ -76,38 +57,47 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
             return Task.CompletedTask;
         }
         
-        private async Task RunReceiveMessageLoop() {
-            using (var mapper = new ObjectMapper(sharedEnv.TypeStore)) {
-                await ReceiveMessageLoop(mapper.reader).ConfigureAwait(false);
-            }
+        private Thread RunReceiveMessageLoop() {
+            var thread = new Thread(() => {
+                try {
+                    ReceiveMessageLoop();
+                } catch (Exception e) {
+                    var msg = $"UdpSocketSyncClientHub receive error: {e.Message}";
+                    Logger.Log(HubLog.Info, msg);
+                }
+            });
+            thread.Name = "UDP client - recv";
+            thread.Start();
+
+            return thread;
         }
         
         /// <summary>
         /// Has no SendMessageLoop() - client send only response messages via <see cref="SocketClientHub.OnReceive"/>
         /// </summary>
-        private async Task ReceiveMessageLoop(ObjectReader reader) {
-            var buffer = new ArraySegment<byte>(new byte[0x10000]);
-            while (true)
-            {
-                try {
-                    // --- read complete datagram message
-                    var result  = await udp.socket.ReceiveFromAsync(buffer, SocketFlags.None, remoteHost).ConfigureAwait(false);
-                    
-                    var message = new JsonValue(buffer.Array, result.ReceivedBytes);
-                    
-                    // note: using ReceiveFromAsync() is faster than ReceiveAsync() - did not analyzed reason
-                    // int length  = await udpSocket.socket.ReceiveAsync(bufferSegment, SocketFlags.None).ConfigureAwait(false);
-                    // message     = new JsonValue(bufferSegment.Array, length);
-
-                    // --- process received message
-                    if (env.logMessages) TransportUtils.LogMessage(Logger, ref sbRecv, $"c:{localPort,5} <-", remoteHost, message);
-                    OnReceive(message, udp.requestMap, reader);
-                }
-                catch (Exception e)
+        private void ReceiveMessageLoop() {
+            using (var mapper = new ObjectMapper(sharedEnv.TypeStore)) {
+                var reader = mapper.reader;
+                var buffer = new byte[0x10000];
+                while (true)
                 {
-                    var message = $"WebSocketClientHub receive error: {e.Message}";
-                    Logger.Log(HubLog.Error, message, e);
-                    udp.requestMap.CancelRequests();
+                    try {
+                        // --- read complete datagram message
+                        EndPoint endpoint = null;
+                        var receivedBytes   = udp.socket.ReceiveFrom(buffer, SocketFlags.None, ref endpoint);
+                        
+                        var message         = new JsonValue(buffer, receivedBytes);
+
+                        // --- process received message
+                        if (env.logMessages) TransportUtils.LogMessage(Logger, ref sbRecv, $"c:{localPort,5} <-", remoteHost, message);
+                        OnReceive(message, udp.requestMap, reader);
+                    }
+                    catch (Exception e)
+                    {
+                        var message = $"WebSocketClientHub receive error: {e.Message}";
+                        Logger.Log(HubLog.Error, message, e);
+                        udp.requestMap.CancelRequests();
+                    }
                 }
             }
         }
@@ -126,8 +116,12 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
                     
                     if (env.logMessages) TransportUtils.LogMessage(Logger, ref sbSend, $"c:{localPort,5} ->", remoteHost, rawRequest);
                     // --- Send message
-                    await udp.socket.SendToAsync(rawRequest.AsMutableArraySegment(), SocketFlags.None, remoteHost).ConfigureAwait(false);
-
+                    var length  = rawRequest.Count;
+                    var send    = udp.socket.SendTo(rawRequest.MutableArray, length, SocketFlags.None, remoteHost);
+                    
+                    if (send != length) {
+                        throw new InvalidOperationException($"UdpSocketSyncClientHub - SendTo() error. expected: {length}, was: {send}");
+                    }
                     // --- Wait for response
                     var response = await request.response.Task.ConfigureAwait(false);
                     
