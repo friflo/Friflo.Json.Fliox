@@ -99,6 +99,7 @@ namespace Friflo.Json.Fliox.Hub
                     writer.Write(exception);
                 }
                 writer.WriteLine();
+                writer.Flush();
             }
         }
         

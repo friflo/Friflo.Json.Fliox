@@ -36,6 +36,12 @@ namespace Friflo.Json.Fliox.Hub.Remote
         Multi
     }
     
+    [Flags]
+    public enum ProtocolFeature
+    {
+        Duplicates = 1
+    }
+    
     /// <summary>
     /// Counterpart of <see cref="SocketHost"/> used by socket implementations running on clients.
     /// </summary>
@@ -45,18 +51,24 @@ namespace Friflo.Json.Fliox.Hub.Remote
         
         private   readonly  Dictionary<ShortString, EventReceiver>  eventReceivers;
         private   readonly  ObjectPool<ReaderPool>                  responseReaderPool;
+        private   readonly  ProtocolFeature                         protocolFeature;
         private   readonly  RemoteClientAccess                      access;
         private             Utf8JsonParser                          messageParser; // non thread-safe
         protected           RemoteClientEnv                         env     = new RemoteClientEnv();
         protected           StringBuilder                           sbSend;
         protected           StringBuilder                           sbRecv;
 
-        protected SocketClientHub(EntityDatabase database, SharedEnv env, RemoteClientAccess access = RemoteClientAccess.Multi)
+        protected SocketClientHub(
+            EntityDatabase      database,
+            SharedEnv           env,
+            ProtocolFeature     protocolFeature,
+            RemoteClientAccess  access = RemoteClientAccess.Multi)
             : base(database, env)
         {
-            eventReceivers      = new Dictionary<ShortString, EventReceiver>(ShortString.Equality);
-            responseReaderPool  = new ObjectPool<ReaderPool>(() => new ReaderPool(sharedEnv.TypeStore));
-            this.access         = access;     
+            eventReceivers          = new Dictionary<ShortString, EventReceiver>(ShortString.Equality);
+            responseReaderPool      = new ObjectPool<ReaderPool>(() => new ReaderPool(sharedEnv.TypeStore));
+            this.protocolFeature    = protocolFeature;
+            this.access             = access;     
         }
 
         public abstract bool IsConnected { get; }
@@ -107,7 +119,10 @@ namespace Friflo.Json.Fliox.Hub.Remote
                         throw new InvalidOperationException($"missing reqId in response:\n{message}");
                     var id = messageHead.reqId.Value;
                     if (!requestMap.Remove(id, out RemoteRequest request)) {
-                        throw new InvalidOperationException($"reqId not found. id: {id}");
+                        var msg = $"reqId not found. id: {id}";
+                        if ((protocolFeature & ProtocolFeature.Duplicates) == 0)    throw new InvalidOperationException(msg);
+                        Logger.Log(HubLog.Info, msg);                               // UDP can receive duplicates. 
+                        break;
                     }
                     reader.ReaderPool   = request.responseReaderPool;
                     var response        = reader.Read<ProtocolResponse>(message);

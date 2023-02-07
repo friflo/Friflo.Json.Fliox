@@ -57,7 +57,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         /// Create a remote <see cref="FlioxHub"/> by using a <see cref="WebSocket"/> connection
         /// </summary>
         public WebSocketClientHub(string dbName, string remoteHost, SharedEnv env = null, RemoteClientAccess access = RemoteClientAccess.Multi)
-            : base(new RemoteDatabase(dbName), env, access)
+            : base(new RemoteDatabase(dbName), env, 0, access)
         {
             this.remoteHost = new Uri(remoteHost);
         }

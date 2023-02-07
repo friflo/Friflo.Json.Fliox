@@ -38,7 +38,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
         /// if port == 0 an available port is used
         /// </summary>
         public UdpSocketSyncClientHub(string dbName, string remoteHost, int port = 0, SharedEnv env = null, RemoteClientAccess access = RemoteClientAccess.Multi)
-            : base(new RemoteDatabase(dbName), env, access)
+            : base(new RemoteDatabase(dbName), env, ProtocolFeature.Duplicates, access)
         {
             this.remoteHost = TransportUtils.ParseEndpoint(remoteHost) ?? throw new ArgumentException($"invalid remoteHost: {remoteHost}");
             udp         = new UdpSocket(port);

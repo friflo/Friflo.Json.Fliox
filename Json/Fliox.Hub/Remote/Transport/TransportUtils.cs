@@ -51,7 +51,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             return value.Length <= maxLength ? value : value.Substring(0, maxLength); 
         }
         
-        const int maxLength = 120;
+        const int maxLength = 200;
         
         public static void LogMessage(IHubLogger logger, ref StringBuilder sb, string name, object endpoint, in JsonValue message) {
             sb            ??= new StringBuilder();
