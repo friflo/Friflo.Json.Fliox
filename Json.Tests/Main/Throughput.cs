@@ -48,7 +48,7 @@ namespace Friflo.Json.Tests.Main
                 hub.GetFeature<RemoteHostEnv>().logMessages = false;
                 remoteHub.ClientEnv.logMessages             = false;
                 await TestHappy.RunServer(server, async () => {
-                    await TestHappy.ConcurrentAccess(remoteHub, 4, 0, 1_000, false);
+                    await TestHappy.ConcurrentAccess(remoteHub, 4, 0, 1_000_000, false);
                 });
             }
         }
