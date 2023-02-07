@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Net;
 using System.Net.Sockets;
+using System.Text;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Utils;
@@ -22,6 +23,8 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
         private  readonly   List<MessageItem<UdpMeta>>              messages;
         private  readonly   RemoteHostEnv                           hostEnv;
         private  readonly   Dictionary<IPEndPoint, UdpSocketHost>   clients;
+        private  readonly   StringBuilder                           sbSend = new StringBuilder();
+        private  readonly   StringBuilder                           sbRecv = new StringBuilder();
         
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         public              IHubLogger  Logger { get; }
@@ -71,7 +74,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
                 var remoteEvent = await sendQueue.DequeMessagesAsync(messages).ConfigureAwait(false);
                 
                 foreach (var message in messages) {
-                    if (hostEnv.logMessages) LogMessage(Logger, " server ->", message.meta.remoteEndPoint, message.value);
+                    if (hostEnv.logMessages) LogMessage(Logger, sbSend, " server ->", message.meta.remoteEndPoint, message.value);
                     var array = message.value.AsMutableArraySegment();
                     await socket.SendToAsync(array, SocketFlags.None, message.meta.remoteEndPoint).ConfigureAwait(false);
                 }
@@ -102,7 +105,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
                     clients[remoteEndpoint] = socketHost;
                 }
                 var request = new JsonValue(buffer.Array, result.ReceivedBytes);
-                if (hostEnv.logMessages) LogMessage(Logger, " server <-", socketHost.remoteClient, request);
+                if (hostEnv.logMessages) LogMessage(Logger, sbRecv, " server <-", socketHost.remoteClient, request);
                 socketHost.OnReceive(request, ref hostEnv.metrics.udp);
             }
         }

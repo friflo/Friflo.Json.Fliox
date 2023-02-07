@@ -4,6 +4,7 @@
 #if !UNITY_2020_1_OR_NEWER
 
 using System;
+using System.Text;
 using Microsoft.Extensions.Logging;
 
 namespace Friflo.Json.Fliox.Hub.AspNetCore
@@ -19,6 +20,11 @@ namespace Friflo.Json.Fliox.Hub.AspNetCore
         public void Log(HubLog hubLog, string message, Exception exception) {
             var logLevel = GetLogLevel(hubLog);
             logger.Log(logLevel, exception, message);
+        }
+        
+        public void Log(HubLog hubLog, StringBuilder message, Exception exception) {
+            var logLevel = GetLogLevel(hubLog);
+            logger.Log(logLevel, exception, message.ToString());
         }
         
         private static LogLevel GetLogLevel(HubLog hubLog) {

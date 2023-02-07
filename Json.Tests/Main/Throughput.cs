@@ -40,6 +40,7 @@ namespace Friflo.Json.Tests.Main
         }
         
         public static async Task UdpDbThroughput() {
+            // SharedEnv.Default.Logger = new HubLoggerStream("hub.log");
             using (var database     = new MemoryDatabase(TestDB))
             using (var hub          = new FlioxHub(database))
             using (var server       = new UdpServer("127.0.0.1:5000", hub))

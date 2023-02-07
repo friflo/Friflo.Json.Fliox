@@ -94,7 +94,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
                     // message     = new JsonValue(bufferSegment.Array, length);
 
                     // --- process received message
-                    if (env.logMessages) TransportUtils.LogMessage(Logger, $"c:{localPort,5} <-", remoteHost, message);
+                    if (env.logMessages) TransportUtils.LogMessage(Logger, sbRecv, $"c:{localPort,5} <-", remoteHost, message);
                     OnReceive(message, udp.requestMap, reader);
                 }
                 catch (Exception e)
@@ -118,7 +118,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
                     var request     = new RemoteRequest(syncContext, cancellationToken);
                     udp.requestMap.Add(sendReqId, request);
                     
-                    if (env.logMessages) TransportUtils.LogMessage(Logger, $"c:{localPort,5} ->", remoteHost, rawRequest);
+                    if (env.logMessages) TransportUtils.LogMessage(Logger, sbSend, $"c:{localPort,5} ->", remoteHost, rawRequest);
                     // --- Send message
                     await udp.socket.SendToAsync(rawRequest.AsMutableArraySegment(), SocketFlags.None, remoteHost).ConfigureAwait(false);
 

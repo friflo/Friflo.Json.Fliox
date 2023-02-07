@@ -53,8 +53,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         
         const int maxLength = 120;
         
-        public static void LogMessage(IHubLogger logger, string name, object endpoint, in JsonValue message) {
-            var sb          = new StringBuilder();
+        public static void LogMessage(IHubLogger logger, StringBuilder sb, string name, object endpoint, in JsonValue message) {
             var msg         = message.AsString();
             var msgTruncate = msg.Length <= maxLength ? msg.AsSpan() : msg.AsSpan(0, maxLength);
             var endpointStr = endpoint.ToString() ?? "---";
@@ -65,7 +64,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
             sb.Append(' ', indent);
             sb.Append(' ');
             sb.Append(msgTruncate);
-            logger.Log(HubLog.Info, sb.ToString());
+            logger.Log(HubLog.Info, sb);
+            sb.Clear();
         }
         
         public static string GetExceptionMessage(string location, IPEndPoint endpoint, Exception e) {

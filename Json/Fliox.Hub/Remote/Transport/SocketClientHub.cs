@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Text;
 using System.Threading.Tasks;
 using Friflo.Json.Burst;
 using Friflo.Json.Fliox.Hub.Host;
@@ -42,11 +43,13 @@ namespace Friflo.Json.Fliox.Hub.Remote
     {
         public              RemoteClientEnv                         ClientEnv { get => env; set => env = value ?? throw new ArgumentNullException(nameof(ClientEnv)); }
         
-        private  readonly   Dictionary<ShortString, EventReceiver>  eventReceivers;
-        private  readonly   ObjectPool<ReaderPool>                  responseReaderPool;
-        private  readonly   RemoteClientAccess                      access;
+        private   readonly  Dictionary<ShortString, EventReceiver>  eventReceivers;
+        private   readonly  ObjectPool<ReaderPool>                  responseReaderPool;
+        private   readonly  RemoteClientAccess                      access;
         private             Utf8JsonParser                          messageParser; // non thread-safe
-        protected           RemoteClientEnv                         env = new RemoteClientEnv();
+        protected           RemoteClientEnv                         env     = new RemoteClientEnv();
+        protected readonly  StringBuilder                           sbSend  = new StringBuilder();
+        protected readonly  StringBuilder                           sbRecv  = new StringBuilder();
 
         protected SocketClientHub(EntityDatabase database, SharedEnv env, RemoteClientAccess access = RemoteClientAccess.Multi)
             : base(database, env)

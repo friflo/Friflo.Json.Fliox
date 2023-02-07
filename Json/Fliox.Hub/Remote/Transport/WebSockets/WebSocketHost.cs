@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Net.WebSockets;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
@@ -29,6 +30,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
         private  readonly   List<JsonValue>                     messages;
         private  readonly   IPEndPoint                          remoteClient;
         private  readonly   RemoteHostEnv                       hostEnv;
+        private  readonly   StringBuilder                       sbSend = new StringBuilder();
+        private  readonly   StringBuilder                       sbRecv = new StringBuilder();
 
         private WebSocketHost (
             WebSocket       webSocket,
@@ -87,7 +90,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             while (true) {
                 var remoteEvent = await sendQueue.DequeMessageValuesAsync(messages).ConfigureAwait(false);
                 foreach (var message in messages) {
-                    if (hostEnv.logMessages) LogMessage(Logger, $" server ->", remoteClient, message);
+                    if (hostEnv.logMessages) LogMessage(Logger, sbSend, $" server ->", remoteClient, message);
                     var arraySegment = message.AsReadOnlyMemory();
                     // if (sendMessage.Count > 100000) Console.WriteLine($"SendLoop. size: {sendMessage.Count}");
                     await webSocket.SendAsync(arraySegment, WebSocketMessageType.Text, true, CancellationToken.None).ConfigureAwait(false);
@@ -148,7 +151,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                     continue;
                 }
                 var request = new JsonValue(memoryStream.GetBuffer(), (int)memoryStream.Position);
-                if (hostEnv.logMessages) LogMessage(Logger, $" server <-", remoteClient, request);
+                if (hostEnv.logMessages) LogMessage(Logger, sbRecv, $" server <-", remoteClient, request);
                 OnReceive(request, ref hostEnv.metrics.webSocket);
             }
         }
