@@ -58,7 +58,7 @@ namespace Friflo.Json.Fliox.Hub
         }
         
         public void Log(HubLog hubLog, StringBuilder message, Exception exception) {
-            Console.WriteLine(message.ToString());
+            Log(hubLog, message.ToString(), exception);
         }
     }
     
@@ -69,7 +69,7 @@ namespace Friflo.Json.Fliox.Hub
         public void Log(HubLog hubLog, StringBuilder message, Exception exception) { }
     }
     
-    // -------------------------------- HubLoggerFile --------------------------------
+    // -------------------------------- HubLoggerStream --------------------------------
     public sealed class HubLoggerStream : IHubLogger
     {
         private readonly TextWriter writer;
@@ -130,6 +130,10 @@ namespace Friflo.Json.Fliox.Hub
                     UnityEngine.Debug.Log(fullMessage);
                     break;
             }
+        }
+
+        public void Log(HubLog hubLog, StringBuilder message, Exception exception) {
+            Log(hubLog, message.ToString(), exception);
         }
     }
 #endif
