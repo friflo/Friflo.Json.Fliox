@@ -18,7 +18,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
     {
         internal readonly   FlioxHub                                hub;
         private             bool                                    running;
-        private  readonly   Socket                                  socket;
+        private             Socket                                  socket;
         private  readonly   IPEndPoint                              ipEndPoint;
         internal readonly   MessageBufferQueueAsync<UdpMeta>        sendQueue;
         private  readonly   List<MessageItem<UdpMeta>>              messages;
@@ -33,8 +33,6 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
         public UdpServer(string endpoint, FlioxHub hub) {
             this.hub    = hub;
             ipEndPoint  = ParseEndpoint(endpoint) ?? throw new ArgumentException($"invalid endpoint: {endpoint}");
-            socket      = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
-            socket.Bind(ipEndPoint);
             Logger      = hub.Logger;
             sendQueue   = new MessageBufferQueueAsync<UdpMeta>();
             messages    = new List<MessageItem<UdpMeta>>();
@@ -47,7 +45,10 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
         }
         
         // --- IServer
-        public void     Start   () { }
+        public void     Start   () {
+            socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
+            socket.Bind(ipEndPoint);
+        }
         public void     Run     () => SendReceiveMessages().GetAwaiter().GetResult();
         public Task     RunAsync() => SendReceiveMessages();
         public void     Stop    () {
@@ -124,6 +125,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
         /// </summary>
         private async Task SendReceiveMessages()
         {
+            if (socket == null) throw new InvalidOperationException("server not started");
             running         = true;
             Task sendLoop   = null;
             try {

@@ -185,7 +185,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         //
         public void Start() {
             // Create a Http server and start listening for incoming connections
-            listener.Start();
+            listener.Start();   // create and Bind() a Socket for each endpoint 
             var sb = new StringBuilder();
             var startPage = GetStartPage();
             sb.Append("Hub Explorer - ");

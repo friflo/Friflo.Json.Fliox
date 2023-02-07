@@ -23,7 +23,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
     {
         internal readonly   FlioxHub                                hub;
         private             bool                                    running;
-        private  readonly   UdpClient                               udpClient;
+        private             UdpClient                               udpClient;
         private  readonly   IPEndPoint                              ipEndPoint;
         internal readonly   MessageBufferQueueAsync<UdpMeta>        sendQueue;
         private  readonly   List<MessageItem<UdpMeta>>              messages;
@@ -38,7 +38,6 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
         public UdpRefServer(string endpoint, FlioxHub hub) {
             this.hub    = hub;
             ipEndPoint  = ParseEndpoint(endpoint) ?? throw new ArgumentException($"invalid endpoint: {endpoint}");
-            udpClient   = new UdpClient(ipEndPoint);
             Logger      = hub.Logger;
             sendQueue   = new MessageBufferQueueAsync<UdpMeta>();
             messages    = new List<MessageItem<UdpMeta>>();
@@ -51,7 +50,9 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
         }
         
         // --- IServer
-        public void     Start   () { }
+        public void     Start   () {
+            udpClient = new UdpClient(ipEndPoint); // calls updClient.Client.Bind()
+        }
         public void     Run     () => SendReceiveMessages().GetAwaiter().GetResult();
         public Task     RunAsync() => SendReceiveMessages();
         public void     Stop    () {
@@ -127,6 +128,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
         /// </summary>
         private async Task SendReceiveMessages()
         {
+            if (udpClient == null) throw new InvalidOperationException("server not started");
             Task sendLoop   = null;
             try {
                 sendLoop = RunSendMessageLoop();
