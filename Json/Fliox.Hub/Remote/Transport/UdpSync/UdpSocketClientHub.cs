@@ -44,7 +44,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
             udp         = new UdpSocket(port);
             localPort   = udp.GetPort();
             // TODO check if running loop from here is OK
-            var thread  = new Thread(RunReceiveMessageLoop) { Name = $"client:{port} UDP recv" };
+            var thread  = new Thread(RunReceiveMessageLoop) { Name = $"client:{localPort} UDP recv" };
             thread.Start();
         }
         
@@ -89,10 +89,13 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
                         if (env.logMessages) TransportUtils.LogMessage(Logger, ref sbRecv, $"c:{localPort,5} <-", remoteHost, message);
                         OnReceive(message, udp.requestMap, reader);
                     }
-                    catch (Exception e)
-                    {
-                        var message = $"WebSocketClientHub receive error: {e.Message}";
-                        Logger.Log(HubLog.Error, message, e);
+                    catch (SocketException e) {
+                        Logger.Log(HubLog.Info, $"UdpSocketSyncClientHub.ReceiveMessageLoop() receive error: {e.Message}");
+                        udp.requestMap.CancelRequests();
+                        return;
+                    }
+                    catch (Exception e) {
+                        Logger.Log(HubLog.Error, $"UdpSocketSyncClientHub.ReceiveMessageLoop() receive error: {e.Message}", e);
                         udp.requestMap.CancelRequests();
                     }
                 }

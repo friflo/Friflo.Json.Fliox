@@ -103,6 +103,11 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
                     if (env.logMessages) TransportUtils.LogMessage(Logger, ref sbRecv, $"c:{localPort,5} <-", remoteHost, message);
                     OnReceive(message, udp.requestMap, reader);
                 }
+                catch (SocketException e) {
+                    Logger.Log(HubLog.Info, $"UdpSocketClientHub.ReceiveMessageLoop() receive error: {e.Message}");
+                    udp.requestMap.CancelRequests();
+                    return;
+                }
                 catch (Exception e)
                 {
                     var message = $"WebSocketClientHub receive error: {e.Message}";

@@ -56,7 +56,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
         public void     Stop    () {
             running = false;
             socket.Close();
-            sendQueue.Close();    
+            sendQueue.Close();
         }
         
         /// <summary>

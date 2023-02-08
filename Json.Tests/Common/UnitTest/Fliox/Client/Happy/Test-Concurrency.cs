@@ -145,6 +145,22 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             return sum;
         }
         
+        [Test] public static void   TestConcurrentUdpSync()         { SingleThreadSynchronizationContext.Run(TestConcurrentUdpSyncAsync); }
+        
+        private static async Task   TestConcurrentUdpSyncAsync () {
+            using (var _                = SharedEnv.Default) // for LeakTestsFixture
+            using (var database         = new MemoryDatabase(TestGlobals.DB))
+            using (var hub          	= new FlioxHub(database, TestGlobals.Shared))
+            using (var server           = new UdpServerSync("127.0.0.1:5000", hub))
+            using (var remoteHub        = new UdpSocketSyncClientHub(TestGlobals.DB, "127.0.0.1:5000", 0, TestGlobals.Shared)) {
+                await RunServer(server, async () => {
+                    // await remoteHub.Connect();
+                    await RunConcurrentHub(remoteHub, 4, 10); // 10 requests are sufficient to force concurrency error
+                    await remoteHub.Close();
+                });
+            }
+        }
+        
         [Test] public static void   TestConcurrentUdp()         { SingleThreadSynchronizationContext.Run(TestConcurrentUdpAsync); }
         
         private static async Task   TestConcurrentUdpAsync () {
