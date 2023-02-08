@@ -16,11 +16,11 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
         internal readonly   IPEndPoint  remoteClient;
         private  readonly   UdpServer   server;
 
-        internal UdpSocketHost (UdpServer server, IPEndPoint  remoteClient)
+        internal UdpSocketHost (UdpServer server, IPEndPoint remoteClient)
         : base (server.hub)
         {
             this.server         = server;
-            this.remoteClient   = remoteClient;
+            this.remoteClient   = new IPEndPointReuse(remoteClient.Address, remoteClient.Port);
         }
         
         // --- IEventReceiver
