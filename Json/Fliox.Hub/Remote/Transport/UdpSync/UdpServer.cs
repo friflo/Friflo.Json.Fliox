@@ -89,9 +89,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
                     var msg  = message.value;
                     var send = socket.SendTo(msg.MutableArray, msg.start, msg.Count, SocketFlags.None, message.meta.remoteEndPoint);
                     
-                    if (send != msg.Count) {
-                        throw new InvalidOperationException($"UdpServerSync - SendTo() error. expected: {msg.Count}, was: {send}");
-                    }
+                    if (send != msg.Count) throw new InvalidOperationException($"UdpServerSync - send error. expected: {msg.Count}, was: {send}");
                 }
                 if (remoteEvent == MessageBufferEvent.Closed) {
                     return;
@@ -121,13 +119,13 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
                 int receivedBytes   = socket.ReceiveFrom(buffer, 0, buffer.Length, SocketFlags.None, ref endpoint);
                 
                 var remoteEndpoint  = (IPEndPoint)endpoint;
-                if (!clients.TryGetValue(remoteEndpoint, out var socketHost)) {
-                    socketHost              = new UdpSocketSyncHost(this, remoteEndpoint);
-                    clients[remoteEndpoint] = socketHost;
+                if (!clients.TryGetValue(remoteEndpoint, out var remote)) {
+                    remote                      = new UdpSocketSyncHost(this, remoteEndpoint);
+                    clients[remote.endpoint]    = remote;
                 }
                 var request = new JsonValue(buffer, receivedBytes);
-                if (hostEnv.logMessages) LogMessage(Logger, ref sbRecv, " server <-", socketHost.remoteClient, request);
-                socketHost.OnReceive(request, ref hostEnv.metrics.udp);
+                if (hostEnv.logMessages) LogMessage(Logger, ref sbRecv, " server <-", remote.endpoint, request);
+                remote.OnReceive(request, ref hostEnv.metrics.udp);
             }
         }
 
