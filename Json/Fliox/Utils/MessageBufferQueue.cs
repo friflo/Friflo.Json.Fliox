@@ -23,7 +23,6 @@ namespace Friflo.Json.Fliox.Utils
             var metaStr = meta.ToString();
             if (metaStr?.Length > 0) {
                 var sb = new StringBuilder();
-                sb.Append("meta: ");
                 sb.Append(metaStr);
                 sb.Append("  value: ");
                 sb.Append(value.AsString());

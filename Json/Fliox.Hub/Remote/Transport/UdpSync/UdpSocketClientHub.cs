@@ -44,7 +44,8 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
             udp         = new UdpSocket(port);
             localPort   = udp.GetPort();
             // TODO check if running loop from here is OK
-            var _ = RunReceiveMessageLoop();
+            var thread  = new Thread(RunReceiveMessageLoop) { Name = $"client:{port} UDP recv" };
+            thread.Start();
         }
         
         /* public override void Dispose() {
@@ -57,20 +58,16 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
             return Task.CompletedTask;
         }
         
-        private Thread RunReceiveMessageLoop() {
-            var thread = new Thread(() => {
-                try {
-                    ReceiveMessageLoop();
-                } catch (Exception e) {
-                    var msg = $"UdpSocketSyncClientHub receive error: {e.Message}";
-                    Logger.Log(HubLog.Info, msg);
-                }
-            });
-            thread.Name = "UDP client - recv";
-            thread.Start();
-
-            return thread;
+        private void RunReceiveMessageLoop() {
+            try {
+                ReceiveMessageLoop();
+            } catch (Exception e) {
+                var msg = $"UdpSocketSyncClientHub receive error: {e.Message}";
+                Logger.Log(HubLog.Info, msg);
+            }
         }
+        
+        private static readonly IPEndPoint DummyEndpoint = new IPEndPoint(IPAddress.Any, 0);
         
         /// <summary>
         /// Has no SendMessageLoop() - client send only response messages via <see cref="SocketClientHub.OnReceive"/>
@@ -83,8 +80,8 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
                 {
                     try {
                         // --- read complete datagram message
-                        EndPoint endpoint = null;
-                        var receivedBytes   = udp.socket.ReceiveFrom(buffer, SocketFlags.None, ref endpoint);
+                        EndPoint endpoint   = DummyEndpoint;
+                        var receivedBytes   = udp.socket.ReceiveFrom(buffer, 0, buffer.Length, SocketFlags.None, ref endpoint);
                         
                         var message         = new JsonValue(buffer, receivedBytes);
 
@@ -117,7 +114,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
                     if (env.logMessages) TransportUtils.LogMessage(Logger, ref sbSend, $"c:{localPort,5} ->", remoteHost, rawRequest);
                     // --- Send message
                     var length  = rawRequest.Count;
-                    var send    = udp.socket.SendTo(rawRequest.MutableArray, length, SocketFlags.None, remoteHost);
+                    var send    = udp.socket.SendTo(rawRequest.MutableArray, rawRequest.start, length, SocketFlags.None, remoteHost);
                     
                     if (send != length) {
                         throw new InvalidOperationException($"UdpSocketSyncClientHub - SendTo() error. expected: {length}, was: {send}");

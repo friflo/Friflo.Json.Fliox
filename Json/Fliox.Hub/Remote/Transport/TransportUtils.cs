@@ -81,7 +81,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
     {
         internal readonly   IPEndPoint  remoteEndPoint;
 
-        public   override   string      ToString() => remoteEndPoint.ToString();
+        public   override   string      ToString() => $"remote: {remoteEndPoint}";
 
         internal UdpMeta (IPEndPoint remoteEndPoint) {
             this.remoteEndPoint = remoteEndPoint ?? throw new ArgumentNullException(nameof(remoteEndPoint));

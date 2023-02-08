@@ -4,24 +4,23 @@
 using System;
 using System.Collections.Generic;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace Friflo.Json.Fliox.Utils
 {
     /// <summary>
-    /// Asynchronous version of <see cref="MessageBufferQueue{T}"/> used to support
-    /// awaiting new messages asynchronous with <see cref="DequeMessagesAsync"/> 
+    /// Synchronous version of <see cref="MessageBufferQueue{T}"/> used to support
+    /// waiting for new messages synchronous with <see cref="DequeMessages"/> 
     /// </summary>
-    public sealed class MessageBufferQueueAsync<TMeta> : IDisposable
+    public sealed class MessageBufferQueueSync<TMeta> : IDisposable
     {
         private  readonly   MessageBufferQueue<TMeta>   queue;
-        private  readonly   SemaphoreSlim               messageAvailable;
+        private  readonly   ManualResetEvent            messageAvailable;
 
         public   override   string                      ToString() => GetString();
 
-        public MessageBufferQueueAsync(int capacity = 4) {
+        public MessageBufferQueueSync(int capacity = 4) {
             queue               = new MessageBufferQueue<TMeta>(capacity);
-            messageAvailable    = new SemaphoreSlim(0, 1);
+            messageAvailable    = new ManualResetEvent(false);
         }
         
         public void Dispose() {
@@ -32,24 +31,23 @@ namespace Friflo.Json.Fliox.Utils
             lock (queue) {
                 queue.AddTail(data, meta);
             }
-            // send event _after_ adding message to queue
-            if (messageAvailable.CurrentCount == 0) {
-                messageAvailable.Release();
-            }
+            messageAvailable.Set();
         }
         
-        public async Task<MessageBufferEvent> DequeMessageValuesAsync(List<JsonValue> messages) {
+        public MessageBufferEvent DequeMessageValues(List<JsonValue> messages) {
             messages.Clear();
-            await messageAvailable.WaitAsync().ConfigureAwait(false);
+            messageAvailable.WaitOne();
+            messageAvailable.Reset();
 
             lock (queue) {
                 return queue.DequeMessageValues(messages);    
             }
         }
         
-        public async Task<MessageBufferEvent> DequeMessagesAsync(List<MessageItem<TMeta>> messages) {
+        public MessageBufferEvent DequeMessages(List<MessageItem<TMeta>> messages) {
             messages.Clear();
-            await messageAvailable.WaitAsync().ConfigureAwait(false);
+            messageAvailable.WaitOne();
+            messageAvailable.Reset();
 
             lock (queue) {
                 return queue.DequeMessages(messages);    
@@ -59,10 +57,8 @@ namespace Friflo.Json.Fliox.Utils
         public void Close() {
             lock (queue) {
                 queue.Close();
-                if (messageAvailable.CurrentCount == 0) {
-                    messageAvailable.Release();
-                }
             }
+            messageAvailable.Set();
         }
         
         private string GetString() {
