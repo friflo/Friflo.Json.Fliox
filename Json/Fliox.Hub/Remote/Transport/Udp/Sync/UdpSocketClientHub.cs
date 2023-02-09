@@ -116,10 +116,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
                     
                     if (env.logMessages) TransportUtils.LogMessage(Logger, ref sbSend, $"c:{localPort,5} ->", remoteHost, rawRequest);
                     // --- Send message
-                    var length  = rawRequest.Count;
-                    var send    = udp.socket.Send(rawRequest.MutableArray, rawRequest.start, length, SocketFlags.None);
-                    
-                    if (send != length) throw new InvalidOperationException($"UdpSocketSyncClientHub - send error. expected: {length}, was: {send}");
+                    udp.socket.Send(rawRequest.MutableArray, rawRequest.start, rawRequest.Count, SocketFlags.None);
                     
                     // --- Wait for response
                     var response = await request.response.Task.ConfigureAwait(false);

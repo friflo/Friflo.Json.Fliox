@@ -87,9 +87,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
                 foreach (var message in messages) {
                     if (hostEnv.logMessages) LogMessage(Logger, ref sbSend, " server ->", message.meta.remoteEndPoint, message.value);
                     var msg  = message.value;
-                    var send = socket.SendTo(msg.MutableArray, msg.start, msg.Count, SocketFlags.None, message.meta.remoteEndPoint);
-                    
-                    if (send != msg.Count) throw new InvalidOperationException($"UdpServerSync - send error. expected: {msg.Count}, was: {send}");
+                    socket.SendTo(msg.MutableArray, msg.start, msg.Count, SocketFlags.None, message.meta.remoteEndPoint);
                 }
                 if (remoteEvent == MessageBufferEvent.Closed) {
                     return;
