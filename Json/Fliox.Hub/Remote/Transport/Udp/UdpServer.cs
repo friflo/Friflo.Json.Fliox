@@ -96,7 +96,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
             await ReceiveMessageLoop().ConfigureAwait(false);
         }
         
-        private static readonly IPEndPoint DummyEndpoint = new IPEndPoint(IPAddress.Any, 0);
+        private readonly IPEndPoint endPointCache = IPEndPointCache.Create(IPAddress.Any, 0);
         
         /// <summary>
         /// Parse, execute and send response message for all received request messages.<br/>
@@ -105,7 +105,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
             var buffer = new ArraySegment<byte>(new byte[0x10000]);
             while (running) {
                 // --- 1. Read request from datagram
-                var result = await socket.ReceiveFromAsync(buffer, SocketFlags.None, DummyEndpoint).ConfigureAwait(false);
+                var result = await socket.ReceiveFromAsync(buffer, SocketFlags.None, endPointCache).ConfigureAwait(false);
                 
                 var remoteEndpoint  = (IPEndPoint)result.RemoteEndPoint;
                 if (!clients.TryGetValue(remoteEndpoint, out var socketHost)) {

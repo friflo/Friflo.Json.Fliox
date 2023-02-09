@@ -106,7 +106,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
             }
         }
         
-        private readonly IPEndPointCache endPointCache = new IPEndPointCache(IPAddress.Any, 0);
+        private readonly IPEndPoint endPointCache = IPEndPointCache.Create(IPAddress.Any, 0);
         
         /// <summary>
         /// Parse, execute and send response message for all received request messages.<br/>

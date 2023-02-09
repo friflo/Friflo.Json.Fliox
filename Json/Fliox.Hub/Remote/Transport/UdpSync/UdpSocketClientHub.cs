@@ -41,7 +41,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
             : base(new RemoteDatabase(dbName), env, ProtocolFeature.Duplicates, access)
         {
             var ipEndPoint  = TransportUtils.ParseEndpoint(remoteHost) ?? throw new ArgumentException($"invalid remoteHost: {remoteHost}");
-            this.remoteHost = new IPEndPointReuse(ipEndPoint.Address, ipEndPoint.Port);
+            this.remoteHost = IPEndPointReuse.Create(ipEndPoint.Address, ipEndPoint.Port);
             udp             = new UdpSocket(port);
             localPort       = udp.GetPort();
             // TODO check if running loop from here is OK
@@ -68,7 +68,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
             }
         }
         
-        private static readonly IPEndPoint DummyEndpoint = new IPEndPoint(IPAddress.Any, 0);
+        private readonly IPEndPoint endPointCache = IPEndPointCache.Create(IPAddress.Any, 0);
         
         /// <summary>
         /// Has no SendMessageLoop() - client send only response messages via <see cref="SocketClientHub.OnReceive"/>
@@ -81,7 +81,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
                 {
                     try {
                         // --- read complete datagram message
-                        EndPoint endpoint   = DummyEndpoint;
+                        EndPoint endpoint   = endPointCache;
                         var receivedBytes   = udp.socket.ReceiveFrom(buffer, 0, buffer.Length, SocketFlags.None, ref endpoint);
                         
                         var message         = new JsonValue(buffer, receivedBytes);

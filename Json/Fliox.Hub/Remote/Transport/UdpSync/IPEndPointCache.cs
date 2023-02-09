@@ -21,14 +21,17 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
         /// Method is called from Socket.ReceiveFrom() in Unity 2021.3.9f1. It is not called in MS CLR
         public  override    SocketAddress                               Serialize()     => address;
 
-        public IPEndPointCache(long address, int port) : base(address, port) {
+        private IPEndPointCache(IPAddress address, int port) : base(address, port) {
             this.address    = base.Serialize();
             hashCode        = base.GetHashCode();
         }
-
-        public IPEndPointCache(IPAddress address, int port) : base(address, port) {
-            this.address    = base.Serialize();
-            hashCode        = base.GetHashCode();
+        
+        public static IPEndPoint Create(IPAddress address, int port) {
+#if UNITY_5_3_OR_NEWER
+            return new IPEndPointCache(address, port);
+#else
+            return new IPEndPoint     (address, port);
+#endif
         }
 
         /// Method is called from Socket.ReceiveFrom() in Unity 2021.3.9f1. It is not called in MS CLR

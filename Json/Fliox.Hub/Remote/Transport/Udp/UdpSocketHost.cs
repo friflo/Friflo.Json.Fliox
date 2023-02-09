@@ -20,7 +20,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
         : base (server.hub)
         {
             this.server         = server;
-            this.remoteClient   = new IPEndPointReuse(remoteClient.Address, remoteClient.Port);
+            this.remoteClient   = IPEndPointReuse.Create(remoteClient.Address, remoteClient.Port);
         }
         
         // --- IEventReceiver
