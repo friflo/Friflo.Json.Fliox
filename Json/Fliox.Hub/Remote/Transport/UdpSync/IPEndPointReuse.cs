@@ -7,7 +7,7 @@ using System.Net;
 namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
 {
     /// <summary>
-    /// Optimization specific for Unity to avoid heap allocation in Socket.SendTo() method caused by
+    /// Optimization specific for Unity to avoid heap allocation in Socket.SendTo() methods caused by
     /// <see cref="IPEndPoint.Serialize"/>
     /// </summary>
     public class IPEndPointReuse : IPEndPoint
@@ -15,7 +15,9 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
         private readonly    SocketAddress   address;
         private readonly    int             hashCode;
         
-        public  override    int             GetHashCode() => hashCode;
+        public  override    int             GetHashCode()   => hashCode;
+        /// Method is called from Socket.SendTo() in Unity 2021.3.9f1. It is not called in MS CLR
+        public override     SocketAddress   Serialize()     => address;
 
         public IPEndPointReuse(long address, int port) : base(address, port) {
             this.address    = base.Serialize();
@@ -27,8 +29,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
             hashCode        = base.GetHashCode();
         }
 
-        public override SocketAddress Serialize() => address;
-        
+        /// Method is called from Socket.SendTo() in Unity 2021.3.9f1. It is not called in MS CLR
         public override EndPoint Create(SocketAddress socketAddress) {
             if (address.Equals(socketAddress)) {
                 return this;

@@ -106,7 +106,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
             }
         }
         
-        private static readonly IPEndPoint DummyEndpoint = new IPEndPoint(IPAddress.Any, 0);
+        private readonly IPEndPointCache endPointCache = new IPEndPointCache(IPAddress.Any, 0);
         
         /// <summary>
         /// Parse, execute and send response message for all received request messages.<br/>
@@ -115,7 +115,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
             var buffer = new byte[0x10000];
             while (running) {
                 // --- 1. Read request from datagram
-                EndPoint endpoint   = DummyEndpoint;
+                EndPoint endpoint   = endPointCache;
                 int receivedBytes   = socket.ReceiveFrom(buffer, 0, buffer.Length, SocketFlags.None, ref endpoint);
                 
                 var remoteEndpoint  = (IPEndPoint)endpoint;
