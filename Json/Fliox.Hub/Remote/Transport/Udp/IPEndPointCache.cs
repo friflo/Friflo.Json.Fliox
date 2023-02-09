@@ -9,16 +9,17 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
 {
     /// <summary>
     /// Optimization specific for Unity to avoid heap allocation in Socket.ReceiveFrom() method caused by
-    /// <see cref="IPEndPoint.Serialize"/>
+    /// <see cref="IPEndPoint.Serialize"/>.<br/>
+    /// Class is not used in CLR.
     /// </summary>
-    public class IPEndPointCache : IPEndPoint
+    internal sealed class IPEndPointCache : IPEndPoint
     {
         private readonly    SocketAddress                           address;
         private readonly    int                                     hashCode;
         private readonly    Dictionary<AddressKey, IPEndPointReuse> cachedIPEndPoints;
         
         public  override    int                                     GetHashCode()   => hashCode;
-        /// Method is called from Socket.ReceiveFrom() in Unity 2021.3.9f1. It is not called in MS CLR
+        /// Method is called from Socket.ReceiveFrom() in Unity 2021.3.9f1. Not utilized in CLR. 
         public  override    SocketAddress                           Serialize()     => address;
 
         private IPEndPointCache(IPAddress address, int port) : base(address, port) {
@@ -27,7 +28,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
             cachedIPEndPoints   = new Dictionary<AddressKey, IPEndPointReuse>(AddressKey.Equality);
         }
         
-        public static IPEndPoint Create(IPAddress address, int port) {
+        internal static IPEndPoint Create(IPAddress address, int port) {
 #if UNITY_5_3_OR_NEWER
             return new IPEndPointCache(address, port);
 #else

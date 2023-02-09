@@ -8,15 +8,15 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
 {
     /// <summary>
     /// Optimization specific for Unity to avoid heap allocation in Socket.SendTo() methods caused by
-    /// <see cref="IPEndPoint.Serialize"/>
+    /// <see cref="IPEndPoint.Serialize"/>.<br/>
+    /// Class is not used in CLR.
     /// </summary>
-    public class IPEndPointReuse : IPEndPoint
+    internal sealed class IPEndPointReuse : IPEndPoint
     {
         private readonly    SocketAddress   address;
         private readonly    int             hashCode;
         
         public  override    int             GetHashCode()   => hashCode;
-        /// Method is called from Socket.SendTo() in Unity 2021.3.9f1. It is not called in MS CLR
         public override     SocketAddress   Serialize()     => address;
 
         internal IPEndPointReuse(IPAddress address, int port) : base(address, port) {
@@ -32,7 +32,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
 #endif
         }
 
-        /// Method is called from Socket.SendTo() in Unity 2021.3.9f1. It is not called in MS CLR
+        /// Method is called from Socket.SendTo() in Unity 2021.3.9f1. Not utilized in CLR. 
         public override EndPoint Create(SocketAddress socketAddress) {
             if (address.Equals(socketAddress)) {
                 return this;
