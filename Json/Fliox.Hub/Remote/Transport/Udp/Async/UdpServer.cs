@@ -12,6 +12,7 @@ using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Utils;
 using static Friflo.Json.Fliox.Hub.Remote.TransportUtils;
 
+// ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
 {
     public sealed class UdpServer : IServer, IDisposable, ILogSource

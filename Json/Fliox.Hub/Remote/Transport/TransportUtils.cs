@@ -48,15 +48,15 @@ namespace Friflo.Json.Fliox.Hub.Remote
         public static string Truncate(this string value) {
             
             if (string.IsNullOrEmpty(value)) return value;
-            return value.Length <= maxLength ? value : value.Substring(0, maxLength); 
+            return value.Length <= MaxLength ? value : value.Substring(0, MaxLength); 
         }
         
-        const int maxLength = 200;
+        const int MaxLength = 200;
         
         public static void LogMessage(IHubLogger logger, ref StringBuilder sb, string name, object endpoint, in JsonValue message) {
             sb            ??= new StringBuilder();
             var msg         = message.AsString();
-            var msgTruncate = msg.Length <= maxLength ? msg.AsSpan() : msg.AsSpan(0, maxLength);
+            var msgTruncate = msg.Length <= MaxLength ? msg.AsSpan() : msg.AsSpan(0, MaxLength);
             var endpointStr = endpoint.ToString() ?? "---";
             var indent      = Math.Max(24 - endpointStr.Length, 0);
             sb.Append(name);
@@ -74,17 +74,6 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 return $"{location} {e.GetType().Name} {e.Message} ErrorCode: {socketException.ErrorCode}, HResult: 0x{e.HResult:X}, endpoint: {endpoint}";
             }
             return $"{location} {e.GetType().Name}: {e.Message}, endpoint: {endpoint}";
-        }
-    }
-    
-    internal readonly struct UdpMeta
-    {
-        internal readonly   IPEndPoint  remoteEndPoint;
-
-        public   override   string      ToString() => $"remote: {remoteEndPoint}";
-
-        internal UdpMeta (IPEndPoint remoteEndPoint) {
-            this.remoteEndPoint = remoteEndPoint ?? throw new ArgumentNullException(nameof(remoteEndPoint));
         }
     }
 }

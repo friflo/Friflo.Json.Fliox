@@ -3,6 +3,7 @@
 
 using System.Net;
 
+// ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
 {
     /// <summary>
