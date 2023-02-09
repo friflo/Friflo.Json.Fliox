@@ -43,6 +43,8 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
             var ipEndPoint  = TransportUtils.ParseEndpoint(remoteHost) ?? throw new ArgumentException($"invalid remoteHost: {remoteHost}");
             this.remoteHost = IPEndPointReuse.Create(ipEndPoint.Address, ipEndPoint.Port);
             udp             = new UdpSocket(port);
+            // Connect() enable using Socket.Receive() & Send() instead of ReceiveFrom() & SendTo()
+            udp.socket.Connect(this.remoteHost);
             localPort       = udp.GetPort();
             // TODO check if running loop from here is OK
             var thread  = new Thread(RunReceiveMessageLoop) { Name = $"client:{localPort} UDP recv" };
@@ -68,8 +70,6 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
             }
         }
         
-        private readonly IPEndPoint endPointCache = IPEndPointCache.Create(IPAddress.Any, 0);
-        
         /// <summary>
         /// Has no SendMessageLoop() - client send only response messages via <see cref="SocketClientHub.OnReceive"/>
         /// </summary>
@@ -81,8 +81,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
                 {
                     try {
                         // --- read complete datagram message
-                        EndPoint endpoint   = endPointCache;
-                        var receivedBytes   = udp.socket.ReceiveFrom(buffer, 0, buffer.Length, SocketFlags.None, ref endpoint);
+                        var receivedBytes   = udp.socket.Receive(buffer, 0, buffer.Length, SocketFlags.None);
                         
                         var message         = new JsonValue(buffer, receivedBytes);
 
@@ -118,7 +117,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
                     if (env.logMessages) TransportUtils.LogMessage(Logger, ref sbSend, $"c:{localPort,5} ->", remoteHost, rawRequest);
                     // --- Send message
                     var length  = rawRequest.Count;
-                    var send    = udp.socket.SendTo(rawRequest.MutableArray, rawRequest.start, length, SocketFlags.None, remoteHost);
+                    var send    = udp.socket.Send(rawRequest.MutableArray, rawRequest.start, length, SocketFlags.None);
                     
                     if (send != length) throw new InvalidOperationException($"UdpSocketSyncClientHub - send error. expected: {length}, was: {send}");
                     

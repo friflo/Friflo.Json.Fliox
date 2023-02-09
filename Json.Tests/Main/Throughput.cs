@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using Friflo.Json.Fliox.Hub;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Remote;
 using Friflo.Json.Fliox.Hub.Remote.Transport.Udp;
@@ -47,17 +48,6 @@ namespace Friflo.Json.Tests.Main
             using (var remoteHub    = new UdpSocketClientHub(TestDB, "127.0.0.1:5000")) {
                 hub.GetFeature<RemoteHostEnv>().logMessages = false;
                 remoteHub.ClientEnv.logMessages             = false;
-                await TestHappy.RunServer(server, async () => {
-                    await TestHappy.ConcurrentAccess(remoteHub, 4, 0, 1_000_000, false);
-                });
-            }
-        }
-        
-        public static async Task UdpRefDbThroughput() {
-            using (var database     = new MemoryDatabase(TestDB))
-            using (var hub          = new FlioxHub(database))
-            using (var server       = new UdpRefServer("127.0.0.1:5000", hub))
-            using (var remoteHub    = new UdpRefSocketClientHub(TestDB, "127.0.0.1:5000")) {
                 await TestHappy.RunServer(server, async () => {
                     await TestHappy.ConcurrentAccess(remoteHub, 4, 0, 1_000_000, false);
                 });

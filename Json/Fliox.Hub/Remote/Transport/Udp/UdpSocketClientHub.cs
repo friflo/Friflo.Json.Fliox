@@ -63,6 +63,8 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
             this.remoteHost = IPEndPointReuse.Create(ipEndPoint.Address, ipEndPoint.Port);
             udp             = new UdpSocket(port);
             localPort       = udp.GetPort();
+            // Connect: enable using Socket.ReceiveAsync() & SendAsync() instead of ReceiveFromAsync() & SendToAsync()
+            udp.socket.Connect(this.remoteHost);
             // TODO check if running loop from here is OK
             var _ = RunReceiveMessageLoop();
         }
@@ -92,9 +94,9 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
             {
                 try {
                     // --- read complete datagram message
-                    var result  = await udp.socket.ReceiveFromAsync(buffer, SocketFlags.None, remoteHost).ConfigureAwait(false);
+                    var receivedBytes  = await udp.socket.ReceiveAsync(buffer, SocketFlags.None).ConfigureAwait(false);
                     
-                    var message = new JsonValue(buffer.Array, result.ReceivedBytes);
+                    var message = new JsonValue(buffer.Array, receivedBytes);
                     
                     // note: using ReceiveFromAsync() is faster than ReceiveAsync() - did not analyzed reason
                     // int length  = await udpSocket.socket.ReceiveAsync(bufferSegment, SocketFlags.None).ConfigureAwait(false);
@@ -109,8 +111,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
                     udp.requestMap.CancelRequests();
                     return;
                 }
-                catch (Exception e)
-                {
+                catch (Exception e) {
                     var message = $"WebSocketClientHub receive error: {e.Message}";
                     Logger.Log(HubLog.Error, message, e);
                     udp.requestMap.CancelRequests();
@@ -132,7 +133,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
                     
                     if (env.logMessages) TransportUtils.LogMessage(Logger, ref sbSend, $"c:{localPort,5} ->", remoteHost, rawRequest);
                     // --- Send message
-                    await udp.socket.SendToAsync(rawRequest.AsMutableArraySegment(), SocketFlags.None, remoteHost).ConfigureAwait(false);
+                    await udp.socket.SendAsync(rawRequest.AsMutableArraySegment(), SocketFlags.None).ConfigureAwait(false);
 
                     // --- Wait for response
                     var response = await request.response.Task.ConfigureAwait(false);
