@@ -12,10 +12,11 @@ using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Utils;
 using static Friflo.Json.Fliox.Hub.Remote.TransportUtils;
 
+// ReSharper disable ConvertToAutoPropertyWhenPossible
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
 {
-    public sealed class UdpServerSync : IServer, IDisposable
+    public sealed class UdpServerSync : IServer, ILogSource, IDisposable
     {
         internal readonly   FlioxHub                                    hub;
         private             bool                                        running;
@@ -28,6 +29,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
         private             StringBuilder                               sbSend;
         private             StringBuilder                               sbRecv;
         private  readonly   IHubLogger                                  logger;
+        public              IHubLogger                                  Logger => logger;
         
         public UdpServerSync(string endpoint, FlioxHub hub) {
             this.hub        = hub;
