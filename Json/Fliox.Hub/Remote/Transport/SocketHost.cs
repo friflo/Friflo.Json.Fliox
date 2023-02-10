@@ -20,6 +20,7 @@ using static Friflo.Json.Fliox.Hub.Host.ExecutionType;
 //         or other specific communication implementations.
 
 // ReSharper disable once CheckNamespace
+// ReSharper disable ConvertToUsingDeclaration
 namespace Friflo.Json.Fliox.Hub.Remote
 {
     /// <summary>
@@ -28,6 +29,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
     /// <see cref="SocketHost"/> provide a set of methods to:<br/>
     /// - parse serialized <see cref="SyncRequest"/> messages.<br/>
     /// - execute <see cref="SyncRequest"/>'s and send serialized <see cref="SyncResponse"/> to client<br/>
+    /// <br/>
+    /// Instances of <see cref="SocketHost"/> are thread safe
     /// </summary>
     /// <remarks>
     /// The implementation aims to prevent <b>head-of-line blocking</b>.<br/>
@@ -46,29 +49,27 @@ namespace Friflo.Json.Fliox.Hub.Remote
     public abstract class SocketHost : EventReceiver
     {
         private   readonly  FlioxHub                    hub;
-        private   readonly  TypeStore                   typeStore;
         private   readonly  SharedEnv                   sharedEnv;
+        private   readonly  TypeStore                   typeStore;
         private   readonly  ObjectPool<ReaderPool>      readerPool;
-        private   readonly  ObjectMapper                readMapper;
         private   readonly  ObjectPool<ObjectMapper>    objectPool;
         private   readonly  bool                        useReaderPool;
-        private   readonly  Stack<SyncContext>          syncContextPool;
+        private   readonly  Stack<SyncContext>          syncContextPool; // requires lock
         protected readonly  IHubLogger                  logger;
         
         protected abstract  void        SendMessage(in JsonValue message);
 
         protected SocketHost(FlioxHub hub) {
             var env         = hub.sharedEnv;
+            this.hub        = hub;
             sharedEnv       = env;
             typeStore       = sharedEnv.TypeStore;
-            this.hub        = hub;
-            logger          = hub.Logger;
             var pool        = sharedEnv.Pool;
             readerPool      = pool.ReaderPool;
             objectPool      = pool.ObjectMapper;
-            readMapper      = objectPool.Get().instance;
             useReaderPool   = hub.GetFeature<RemoteHostEnv>().useReaderPool;
             syncContextPool = new Stack<SyncContext>();
+            logger          = hub.Logger;
         }
 
         protected internal override void SendEvent(in ClientEvent clientEvent) {
@@ -80,20 +81,12 @@ namespace Friflo.Json.Fliox.Hub.Remote
             }
         }
         
-        /// <summary>
-        /// Method is not thread-safe<br/>
-        /// Expectation is method is called sequentially from the receive message loop- 
-        /// </summary>
-        private SyncRequest ParseRequest(in JsonValue request) {
-            var reader = readMapper.reader;
-            if (useReaderPool) {
-                reader.ReaderPool = readerPool.Get().instance.Reuse();
-            }
-            var syncRequest = RemoteMessageUtils.ReadSyncRequest(reader, request, out string error);
+        private SyncRequest ParseRequest(ObjectMapper mapper, in JsonValue request) {
+            var syncRequest = RemoteMessageUtils.ReadSyncRequest(mapper.reader, request, out string error);
             if (error == null) {
                 return syncRequest;
             }
-            var response = JsonResponse.CreateError(readMapper.writer, error, ErrorResponseType.BadRequest, null);
+            var response = JsonResponse.CreateError(mapper.writer, error, ErrorResponseType.BadRequest, null);
             SendMessage(response.body);
             return null;
         }
@@ -130,20 +123,29 @@ namespace Friflo.Json.Fliox.Hub.Remote
         
         internal void OnReceive(in JsonValue request, ref SocketMetrics metrics)
         {
+            ReaderPool pool = null; 
+            if (useReaderPool) {
+                pool = readerPool.Get().instance.Reuse();
+            }
             // --- precondition: message was read from socket
             try {
                 // --- 1. Parse request
                 Interlocked.Increment(ref metrics.receivedCount);
-                var t1          = Stopwatch.GetTimestamp();
-                var syncRequest = ParseRequest(request);
-                var t2          = Stopwatch.GetTimestamp();
+                var t1              = Stopwatch.GetTimestamp();
+                SyncRequest syncRequest;
+                using (var pooled = objectPool.Get()) {
+                    var mapper                  = pooled.instance;
+                    mapper.reader.ReaderPool    = pool;
+                    syncRequest = ParseRequest(mapper, request);
+                }
+                var t2              = Stopwatch.GetTimestamp();
                 Interlocked.Add(ref metrics.requestReadTime, t2 - t1);
                 if (syncRequest == null) {
                     return;
                 }
                 // --- 2. Execute request
-                ExecuteRequest (syncRequest);
-                var t3          = Stopwatch.GetTimestamp();
+                ExecuteRequest (syncRequest, pool);
+                var t3              = Stopwatch.GetTimestamp();
                 Interlocked.Add(ref metrics.requestExecuteTime, t3 - t2);
             }
             catch (Exception e) {
@@ -155,13 +157,12 @@ namespace Friflo.Json.Fliox.Hub.Remote
         /// Method is not thread-safe<br/>
         /// Expectation is method is called sequentially from the receive message loop- 
         /// </summary>
-        private void ExecuteRequest(SyncRequest syncRequest)
+        private void ExecuteRequest(SyncRequest syncRequest, ReaderPool pool)
         {
             var syncContext = CreateSyncContext();
 
             syncContext.MemoryBuffer.Reset();
             var reqId   = syncRequest.reqId;
-            var pool    = readMapper.reader.ReaderPool;
             try {
                 var executionType = hub.InitSyncRequest(syncRequest);
                 Task<ExecuteSyncResult> syncResultTask;
@@ -212,24 +213,26 @@ namespace Friflo.Json.Fliox.Hub.Remote
         
         private void SendResponse(in ExecuteSyncResult syncResult, int? reqId) {
             var error   = syncResult.error;
-            var mapper  = objectPool.Get().instance;
-            var writer  = RemoteMessageUtils.GetCompactWriter(mapper);
-            if (error != null) {
-                var errorResponse = JsonResponse.CreateError(writer, error.message, error.type, reqId);
-                SendMessage(errorResponse.body);
-            } else {
-                var response = RemoteHostUtils.CreateJsonResponse(syncResult, reqId, writer);
-                SendMessage(response.body);
+            using (var pooled = objectPool.Get()) {
+                var mapper  = pooled.instance;
+                var writer  = RemoteMessageUtils.GetCompactWriter(mapper);
+                if (error != null) {
+                    var errorResponse = JsonResponse.CreateError(writer, error.message, error.type, reqId);
+                    SendMessage(errorResponse.body);
+                } else {
+                    var response = RemoteHostUtils.CreateJsonResponse(syncResult, reqId, writer);
+                    SendMessage(response.body);
+                }
             }
-            objectPool.Return(mapper);
         }
         
         private void SendResponseException(Exception e, int? reqId) {
             var errorMsg    = ErrorResponse.ErrorFromException(e).ToString();
-            var mapper      = objectPool.Get().instance;
-            var response    = JsonResponse.CreateError(mapper.writer, errorMsg, ErrorResponseType.Exception, reqId);
-            objectPool.Return(mapper);
-            SendMessage(response.body);
+            using (var pooled = objectPool.Get()) {
+                var mapper      = pooled.instance;
+                var response    = JsonResponse.CreateError(mapper.writer, errorMsg, ErrorResponseType.Exception, reqId);
+                SendMessage(response.body);
+            }
         }
     }
 }
