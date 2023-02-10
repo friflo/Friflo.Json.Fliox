@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host.Utils;
@@ -11,6 +12,7 @@ using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Transform;
 using Friflo.Json.Fliox.Transform.Tree;
+using static System.Diagnostics.DebuggerBrowsableState;
 
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.Host
@@ -59,6 +61,7 @@ namespace Friflo.Json.Fliox.Hub.Host
     #region - members
         /// <summary> container name </summary>
         public    readonly  string                              name;
+        [DebuggerBrowsable(Never)]
         public    readonly  ShortString                         nameShort;
         /// <summary>
         /// The name used for a container / table instance in a specific database. By default it is equal to <see cref="name"/>.

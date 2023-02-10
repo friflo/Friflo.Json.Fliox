@@ -55,6 +55,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// <summary>database name</summary>
         public   readonly   string              name;                   // not null
         /// <summary>database name encoded as type <see cref="ShortString"/></summary>
+        [DebuggerBrowsable(Never)]
         public   readonly   ShortString         nameShort;              // not null
         public   override   string              ToString()  => name;    // not null
         
@@ -62,7 +63,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         [DebuggerBrowsable(Never)]
         private  readonly   ConcurrentDictionary<ShortString, EntityContainer>  containers;
         // ReSharper disable once UnusedMember.Local - expose Dictionary as list in Debugger
-        private             ICollection<EntityContainer>                    Containers => containers.Values;
+        private             ICollection<EntityContainer>                        Containers => containers.Values;
         
         /// <summary>
         /// An optional <see cref="DatabaseSchema"/> used to validate the JSON payloads in all write operations

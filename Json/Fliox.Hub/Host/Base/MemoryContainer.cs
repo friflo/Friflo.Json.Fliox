@@ -3,11 +3,13 @@
 
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host.Utils;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Utils;
+using static System.Diagnostics.DebuggerBrowsableState;
 
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.Host
@@ -15,6 +17,7 @@ namespace Friflo.Json.Fliox.Hub.Host
     public sealed class MemoryContainer : EntityContainer
     {
         private  readonly   IDictionary<JsonKey, JsonValue>             keyValues;
+        [DebuggerBrowsable(Never)]
         private  readonly   ConcurrentDictionary<JsonKey, JsonValue>    keyValuesConcurrent;
         private  readonly   int                                         smallValueSize;
         
