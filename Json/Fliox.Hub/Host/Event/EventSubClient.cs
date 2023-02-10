@@ -19,7 +19,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
     /// It send database changes and messages as events to the client for all subscriptions the client made. <br/>
     /// A client is identified by its <see cref="clientId"/>.
     /// </summary>
-    internal sealed class EventSubClient : ILogSource {
+    internal sealed class EventSubClient {
         internal readonly   ShortString                             clientId;   // key field
         internal readonly   EventSubUser                            user;
         internal            bool                                    queueEvents;
@@ -27,7 +27,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
 
         public              bool                                    Connected => eventReceiver?.IsOpen() ?? false;
         [DebuggerBrowsable(Never)]
-        public              IHubLogger                              Logger { get; }
+        private  readonly   IHubLogger                              logger;
         /// <summary>
         /// key: database. <b>Note</b> requires lock <see cref="EventDispatcherIntern.monitor"/>. <br/>
         /// Use thread safe <see cref="EventDispatcher.GetDatabaseSubs"/>
@@ -65,7 +65,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             in ShortString      clientId,
             EventDispatcher     dispatcher)
         {
-            Logger              = env.hubLogger;
+            logger              = env.hubLogger;
             this.clientId       = clientId;
             this.user           = user;
             this.dispatcher     = dispatcher;
@@ -80,7 +80,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                 $"eventReceiver changed - client id: {clientId}" :
                 $"eventReceiver new     - client id: {clientId}";
             this.eventReceiver = eventReceiver;
-            Logger.Log(HubLog.Info, msg);
+            logger.Log(HubLog.Info, msg);
             SendUnacknowledgedEvents();
             return true;
         }
@@ -211,7 +211,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                 }
                 catch (Exception e) {
                     var message = "SendEvents failed";
-                    Logger.Log(HubLog.Error, message, e);
+                    logger.Log(HubLog.Error, message, e);
                     Debug.Fail($"{message}, exception: {e}");
                 }
             }

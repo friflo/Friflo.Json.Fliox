@@ -17,6 +17,8 @@ using Friflo.Json.Fliox.Transform;
 using static Friflo.Json.Fliox.Hub.Remote.Rest.RestRequestType;
 using static Friflo.Json.Fliox.Hub.Remote.Rest.RestUtils;
 using static Friflo.Json.Fliox.Hub.Host.ExecutionType;
+using static System.Diagnostics.DebuggerBrowsableState;
+using Browse = System.Diagnostics.DebuggerBrowsableAttribute;
 
 // ReSharper disable MethodHasAsyncOverload
 // ReSharper disable once CheckNamespace
@@ -51,23 +53,22 @@ namespace Friflo.Json.Fliox.Hub.Remote
     /// </remarks>
     public sealed class HttpHost : ILogSource, IDisposable
     {
-        /// <summary>never null, ends with '/'</summary>
-        public   readonly   string                  endpoint; 
-        public   readonly   FlioxHub                hub;
-        public   readonly   SharedEnv               sharedEnv;
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public              IHubLogger              Logger      => sharedEnv.hubLogger;
+                        /// <summary>never null, ends with '/'</summary>
+                        public   readonly   string                  endpoint; 
+                        public   readonly   FlioxHub                hub;
+                        public   readonly   SharedEnv               sharedEnv;
+        [Browse(Never)] public              IHubLogger              Logger      => sharedEnv.hubLogger;
         
-        public   const      string                  DefaultCacheControl = "max-age=600";
+                        public   const      string                  DefaultCacheControl = "max-age=600";
         
         // --- private / internal
-        internal readonly   string                  endpointRoot;
-        private  readonly   SchemaHandler           schemaHandler   = new SchemaHandler();
-        private  readonly   RestHandler             restHandler     = new RestHandler();
-        private  readonly   List<IRequestHandler>   customHandlers  = new List<IRequestHandler>();
-        private  readonly   List<string>            hubRoutes;
+        [Browse(Never)] internal readonly   string                  endpointRoot;
+                        private  readonly   SchemaHandler           schemaHandler   = new SchemaHandler();
+                        private  readonly   RestHandler             restHandler     = new RestHandler();
+                        private  readonly   List<IRequestHandler>   customHandlers  = new List<IRequestHandler>();
+                        private  readonly   List<string>            hubRoutes;
 
-        public   override   string                  ToString() => $"endpoint: {endpoint}";
+                        public   override   string                  ToString() => $"endpoint: {endpoint}";
 
         private  static     bool    _titleDisplayed;
         private  const      string  JsonFlioxBanner =

@@ -153,10 +153,6 @@ namespace Friflo.Json.Fliox.Hub.Remote
             }
         }
         
-        /// <summary>
-        /// Method is not thread-safe<br/>
-        /// Expectation is method is called sequentially from the receive message loop- 
-        /// </summary>
         private void ExecuteRequest(SyncRequest syncRequest, ReaderPool pool)
         {
             var syncContext = CreateSyncContext();
