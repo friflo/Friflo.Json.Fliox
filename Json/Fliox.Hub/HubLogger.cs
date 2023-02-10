@@ -12,6 +12,9 @@ namespace Friflo.Json.Fliox.Hub
         Info    = 2
     }
 
+    /// <summary>
+    /// Implementations of <see cref="IHubLogger"/> must be thread safe
+    /// </summary>
     public interface IHubLogger {
         void        Log  (HubLog hubLog, string        message, Exception exception = null);
         void        Log  (HubLog hubLog, StringBuilder message, Exception exception = null);
