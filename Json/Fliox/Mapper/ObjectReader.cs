@@ -127,7 +127,8 @@ namespace Friflo.Json.Fliox.Mapper
         // --- Read()
         public T Read<T>(Bytes utf8Bytes) {
             InitJsonReaderBytes(ref utf8Bytes, ReaderPool != null);
-            T result =  ReadStart<T>(default);
+            var mapper = (TypeMapper<T>)intern.typeCache.GetTypeMapper(typeof(T));
+            T   result = ReadStart(default, mapper);
             JsonBurstError();
             return result;
         }
@@ -159,7 +160,8 @@ namespace Friflo.Json.Fliox.Mapper
         // --- Read()
         public T Read<T>(Stream utf8Stream) {
             InitJsonReaderStream(utf8Stream, ReaderPool != null);
-            T result = ReadStart<T>(default);
+            var mapper = (TypeMapper<T>)intern.typeCache.GetTypeMapper(typeof(T));
+            T   result = ReadStart(default, mapper);
             JsonBurstError();
             return result;
         }
@@ -191,7 +193,8 @@ namespace Friflo.Json.Fliox.Mapper
         // --- Read()
         public T Read<T>(string json) {
             InitJsonReaderString(json, ReaderPool != null);
-            T result = ReadStart<T>(default);
+            var mapper = (TypeMapper<T>)intern.typeCache.GetTypeMapper(typeof(T));
+            T   result = ReadStart(default, mapper);
             JsonBurstError();
             return result;
         }
@@ -224,7 +227,16 @@ namespace Friflo.Json.Fliox.Mapper
         // --- Read()
         public T Read<T>(in JsonValue json) {
             InitJsonReaderArray(json, ReaderPool != null);
-            T result = ReadStart<T>(default);
+            var mapper = (TypeMapper<T>)intern.typeCache.GetTypeMapper(typeof(T));
+            T   result = ReadStart(default, mapper);
+            JsonBurstError();
+            return result;
+        }
+        
+        /// Read() using micro optimization to avoid lookup of TypeMapper.
+        public T ReadMapper<T>(TypeMapper<T> mapper, in JsonValue json) {
+            InitJsonReaderArray(json, ReaderPool != null);
+            T   result = ReadStart(default, mapper);
             JsonBurstError();
             return result;
         }
@@ -252,7 +264,8 @@ namespace Friflo.Json.Fliox.Mapper
             return result;
         }
         
-        public T ReadTo<T>(TypeMapper<T> mapper, in JsonValue json, T obj, bool setMissingFields)  {
+        /// ReadTo() using micro optimization to avoid lookup of TypeMapper.
+        public T ReadToMapper<T>(TypeMapper<T> mapper, in JsonValue json, T obj, bool setMissingFields)  {
             InitJsonReaderArray(json, setMissingFields);
             T   result  = ReadToStart(obj, mapper);
             JsonBurstError();
@@ -298,9 +311,7 @@ namespace Friflo.Json.Fliox.Mapper
             }
         }
 
-        private T ReadStart<T>(T value) {
-            TypeMapper<T>  mapper  = (TypeMapper<T>)intern.typeCache.GetTypeMapper(typeof(T));
-
+        private T ReadStart<T>(T value, TypeMapper<T> mapper) {
             JsonEvent ev = intern.parser.NextEvent();
             switch (ev) {
                 case JsonEvent.ObjectStart:
