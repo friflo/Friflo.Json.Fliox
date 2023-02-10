@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
@@ -16,7 +15,7 @@ using static Friflo.Json.Fliox.Hub.Remote.TransportUtils;
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
 {
-    public sealed class UdpServerSync : IServer, IDisposable, ILogSource
+    public sealed class UdpServerSync : IServer, IDisposable
     {
         internal readonly   FlioxHub                                    hub;
         private             bool                                        running;
@@ -28,14 +27,12 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
         private  readonly   Dictionary<IPEndPoint, UdpSocketSyncHost>   clients;
         private             StringBuilder                               sbSend;
         private             StringBuilder                               sbRecv;
-        
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public              IHubLogger  Logger { get; }
+        private  readonly   IHubLogger                                  logger;
         
         public UdpServerSync(string endpoint, FlioxHub hub) {
             this.hub        = hub;
             ipEndPoint      = ParseEndpoint(endpoint) ?? throw new ArgumentException($"invalid endpoint: {endpoint}");
-            Logger          = hub.Logger;
+            logger          = hub.Logger;
             sendQueue       = new MessageBufferQueueSync<UdpMeta>();
             messages        = new List<MessageItem<UdpMeta>>();
             hostEnv         = hub.GetFeature<RemoteHostEnv>();
@@ -74,7 +71,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
                 SendMessageLoop();
             } catch (Exception e) {
                 var msg = GetExceptionMessage("UdpServer.RunSendMessageLoop()", ipEndPoint, e);
-                Logger.Log(HubLog.Info, msg);
+                logger.Log(HubLog.Info, msg);
             }
         }
         
@@ -85,7 +82,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
                 
                 // if (messages.Count >= 2) { Console.WriteLine("dequeued messages " + messages.Count); }
                 foreach (var message in messages) {
-                    if (hostEnv.logMessages) LogMessage(Logger, ref sbSend, " server ->", message.meta.remoteEndPoint, message.value);
+                    if (hostEnv.logMessages) LogMessage(logger, ref sbSend, " server ->", message.meta.remoteEndPoint, message.value);
                     var msg  = message.value;
                     socket.SendTo(msg.MutableArray, msg.start, msg.Count, SocketFlags.None, message.meta.remoteEndPoint);
                 }
@@ -100,7 +97,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
                 ReceiveMessageLoop();
             } catch (Exception e){
                 var msg = GetExceptionMessage("UdpServerSync.RunReceiveMessageLoop()", ipEndPoint, e);
-                Logger.Log(HubLog.Info, msg);
+                logger.Log(HubLog.Info, msg);
             }
         }
         
@@ -112,17 +109,19 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
         private void ReceiveMessageLoop() {
             var buffer = new byte[0x10000];
             while (running) {
-                // --- 1. Read request from datagram
+                // --- Read message from socket
                 EndPoint endpoint   = endPointCache;
                 int receivedBytes   = socket.ReceiveFrom(buffer, 0, buffer.Length, SocketFlags.None, ref endpoint);
                 
+                // --- Get remote host from IP address
                 var remoteEndpoint  = (IPEndPoint)endpoint;
                 if (!clients.TryGetValue(remoteEndpoint, out var remote)) {
                     remote                      = new UdpSocketSyncHost(this, remoteEndpoint);
                     clients[remote.endpoint]    = remote;
                 }
+                // --- Process message
                 var request = new JsonValue(buffer, receivedBytes);
-                if (hostEnv.logMessages) LogMessage(Logger, ref sbRecv, " server <-", remote.endpoint, request);
+                if (hostEnv.logMessages) LogMessage(logger, ref sbRecv, " server <-", remote.endpoint, request);
                 remote.OnReceive(request, ref hostEnv.metrics.udp);
             }
         }

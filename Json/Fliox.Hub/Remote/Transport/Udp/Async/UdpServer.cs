@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
@@ -15,7 +14,7 @@ using static Friflo.Json.Fliox.Hub.Remote.TransportUtils;
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
 {
-    public sealed class UdpServer : IServer, IDisposable, ILogSource
+    public sealed class UdpServer : IServer, IDisposable
     {
         internal readonly   FlioxHub                                hub;
         private             bool                                    running;
@@ -27,14 +26,12 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
         private  readonly   Dictionary<IPEndPoint, UdpSocketHost>   clients;
         private             StringBuilder                           sbSend;
         private             StringBuilder                           sbRecv;
-        
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public              IHubLogger  Logger { get; }
+        private  readonly   IHubLogger                              logger;
         
         public UdpServer(string endpoint, FlioxHub hub) {
             this.hub    = hub;
             ipEndPoint  = ParseEndpoint(endpoint) ?? throw new ArgumentException($"invalid endpoint: {endpoint}");
-            Logger      = hub.Logger;
+            logger      = hub.Logger;
             sendQueue   = new MessageBufferQueueAsync<UdpMeta>();
             messages    = new List<MessageItem<UdpMeta>>();
             hostEnv     = hub.GetFeature<RemoteHostEnv>();
@@ -73,7 +70,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
                 await SendMessageLoop().ConfigureAwait(false);
             } catch (Exception e) {
                 var msg = GetExceptionMessage("UdpServer.RunSendMessageLoop()", ipEndPoint, e);
-                Logger.Log(HubLog.Info, msg);
+                logger.Log(HubLog.Info, msg);
             }
         }
         
@@ -83,7 +80,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
                 var remoteEvent = await sendQueue.DequeMessagesAsync(messages).ConfigureAwait(false);
                 
                 foreach (var message in messages) {
-                    if (hostEnv.logMessages) LogMessage(Logger, ref sbSend, " server ->", message.meta.remoteEndPoint, message.value);
+                    if (hostEnv.logMessages) LogMessage(logger, ref sbSend, " server ->", message.meta.remoteEndPoint, message.value);
                     var array = message.value.AsMutableArraySegment();
                     await socket.SendToAsync(array, SocketFlags.None, message.meta.remoteEndPoint).ConfigureAwait(false);
                 }
@@ -105,17 +102,19 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
         private async Task ReceiveMessageLoop() {
             var buffer = new ArraySegment<byte>(new byte[0x10000]);
             while (running) {
-                // --- 1. Read request from datagram
+                // --- Read message from socket
                 var result = await socket.ReceiveFromAsync(buffer, SocketFlags.None, endPointCache).ConfigureAwait(false);
                 
+                // --- Get remote host from IP address
                 var remoteEndpoint  = (IPEndPoint)result.RemoteEndPoint;
-                if (!clients.TryGetValue(remoteEndpoint, out var socketHost)) {
-                    socketHost              = new UdpSocketHost(this, remoteEndpoint);
-                    clients[remoteEndpoint] = socketHost;
+                if (!clients.TryGetValue(remoteEndpoint, out var remote)) {
+                    remote                      = new UdpSocketHost(this, remoteEndpoint);
+                    clients[remote.endpoint]    = remote;
                 }
+                // --- Process message
                 var request = new JsonValue(buffer.Array, result.ReceivedBytes);
-                if (hostEnv.logMessages) LogMessage(Logger, ref sbRecv, " server <-", socketHost.remoteClient, request);
-                socketHost.OnReceive(request, ref hostEnv.metrics.udp);
+                if (hostEnv.logMessages) LogMessage(logger, ref sbRecv, " server <-", remote.endpoint, request);
+                remote.OnReceive(request, ref hostEnv.metrics.udp);
             }
         }
 

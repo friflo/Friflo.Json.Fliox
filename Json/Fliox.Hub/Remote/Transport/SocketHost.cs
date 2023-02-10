@@ -43,7 +43,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
     /// - Synchronous in case a request can be executed synchronous<br/>
     /// - Asynchronous in case a request requires asynchronous execution<br/>
     /// </remarks>
-    public abstract class SocketHost : EventReceiver, ILogSource
+    public abstract class SocketHost : EventReceiver
     {
         private   readonly  FlioxHub                    hub;
         private   readonly  TypeStore                   typeStore;
@@ -53,9 +53,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
         private   readonly  ObjectPool<ObjectMapper>    objectPool;
         private   readonly  bool                        useReaderPool;
         private   readonly  Stack<SyncContext>          syncContextPool;
-
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public              IHubLogger  Logger { get; }
+        protected readonly  IHubLogger                  logger;
+        
         protected abstract  void        SendMessage(in JsonValue message);
 
         protected SocketHost(FlioxHub hub) {
@@ -63,7 +62,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             sharedEnv       = env;
             typeStore       = sharedEnv.TypeStore;
             this.hub        = hub;
-            Logger          = hub.Logger;
+            logger          = hub.Logger;
             var pool        = sharedEnv.Pool;
             readerPool      = pool.ReaderPool;
             objectPool      = pool.ObjectMapper;
@@ -77,7 +76,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 SendMessage(clientEvent.message);
             }
             catch (Exception e) {
-                Logger.Log(HubLog.Error, "WebSocketHost.SendEvent", e);
+                logger.Log(HubLog.Error, "WebSocketHost.SendEvent", e);
             }
         }
         
@@ -205,7 +204,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                     return;
                 default:
                     var errorMsg = $"unexpected continuation task status {status}, reqId: {reqId}";
-                    Logger.Log(HubLog.Error, errorMsg);
+                    logger.Log(HubLog.Error, errorMsg);
                     Debug.Fail(errorMsg);
                     return;
             }

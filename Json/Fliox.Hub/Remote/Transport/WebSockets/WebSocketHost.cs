@@ -79,7 +79,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 await SendMessageLoop().ConfigureAwait(false);
             } catch (Exception e) {
                 var msg = GetExceptionMessage("RunSendMessageLoop()", remoteClient, e);
-                Logger.Log(HubLog.Info, msg);
+                logger.Log(HubLog.Info, msg);
             }
         }
         
@@ -90,7 +90,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             while (true) {
                 var remoteEvent = await sendQueue.DequeMessageValuesAsync(messages).ConfigureAwait(false);
                 foreach (var message in messages) {
-                    if (hostEnv.logMessages) LogMessage(Logger, ref sbSend, $" server ->", remoteClient, message);
+                    if (hostEnv.logMessages) LogMessage(logger, ref sbSend, $" server ->", remoteClient, message);
                     var arraySegment = message.AsReadOnlyMemory();
                     // if (sendMessage.Count > 100000) Console.WriteLine($"SendLoop. size: {sendMessage.Count}");
                     await webSocket.SendAsync(arraySegment, WebSocketMessageType.Text, true, CancellationToken.None).ConfigureAwait(false);
@@ -151,7 +151,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                     continue;
                 }
                 var request = new JsonValue(memoryStream.GetBuffer(), (int)memoryStream.Position);
-                if (hostEnv.logMessages) LogMessage(Logger, ref sbRecv, $" server <-", remoteClient, request);
+                if (hostEnv.logMessages) LogMessage(logger, ref sbRecv, $" server <-", remoteClient, request);
                 OnReceive(request, ref hostEnv.metrics.webSocket);
             }
         }

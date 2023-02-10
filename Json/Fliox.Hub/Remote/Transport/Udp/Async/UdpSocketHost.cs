@@ -14,14 +14,14 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
     /// </remarks>
     internal sealed class UdpSocketHost : SocketHost
     {
-        internal readonly   IPEndPoint  remoteClient;
+        internal readonly   IPEndPoint  endpoint;
         private  readonly   UdpServer   server;
 
-        internal UdpSocketHost (UdpServer server, IPEndPoint remoteClient)
+        internal UdpSocketHost (UdpServer server, IPEndPoint endpoint)
         : base (server.hub)
         {
-            this.server         = server;
-            this.remoteClient   = IPEndPointReuse.Create(remoteClient.Address, remoteClient.Port);
+            this.server     = server;
+            this.endpoint   = IPEndPointReuse.Create(endpoint.Address, endpoint.Port);
         }
         
         // --- IEventReceiver
@@ -30,7 +30,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
         
         // --- WebHost
         protected override void SendMessage(in JsonValue message) {
-            server.sendQueue.AddTail(message, new UdpMeta(remoteClient));
+            server.sendQueue.AddTail(message, new UdpMeta(endpoint));
         }
     }
 }
