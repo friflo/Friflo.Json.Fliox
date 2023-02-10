@@ -82,7 +82,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         }
         
         private SyncRequest ParseRequest(ObjectMapper mapper, in JsonValue request) {
-            var syncRequest = RemoteMessageUtils.ReadSyncRequest(mapper.reader, sharedEnv.types.protocol, request, out string error);
+            var syncRequest = RemoteMessageUtils.ReadSyncRequest(mapper.reader, sharedEnv, request, out string error);
             if (error == null) {
                 return syncRequest;
             }

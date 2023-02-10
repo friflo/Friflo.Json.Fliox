@@ -4,9 +4,9 @@
 using System;
 using System.Collections.Generic;
 using Friflo.Json.Burst;
+using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Mapper;
-using Friflo.Json.Fliox.Mapper.Map;
 
 // Note! - Must not have any dependency to System.Net or System.Net.Http (or other HTTP stuff)
 
@@ -94,12 +94,12 @@ namespace Friflo.Json.Fliox.Hub.Remote.Tools
         }
         
         public static SyncRequest ReadSyncRequest (
-            ObjectReader                reader,
-            TypeMapper<ProtocolMessage> type,
-            in JsonValue                jsonMessage,
-            out string                  error)
+            ObjectReader    reader,
+            SharedEnv       env,
+            in JsonValue    jsonMessage,
+            out string      error)
         {
-            var message = reader.ReadMapper(type, jsonMessage);
+            var message = reader.ReadMapper(env.types.protocol, jsonMessage);
             if (reader.Error.ErrSet) {
                 error = reader.Error.GetMessage();
                 return null;

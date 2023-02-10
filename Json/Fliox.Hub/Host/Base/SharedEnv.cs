@@ -39,7 +39,7 @@ namespace Friflo.Json.Fliox.Hub.Host
                         internal readonly   SharedCache                 sharedCache     = new SharedCache();
         [Browse(Never)] internal readonly   HubLogger                   hubLogger       = new HubLogger();
                         internal            Pool                        Pool            { get; }
-        [Browse(Never)] public   readonly   HubTypes                    types;
+        [Browse(Never)] internal readonly   HubTypes                    types;
         // --- public
                         public              TypeStore                   TypeStore       => typeStore;
                         public              ObjectPool<MemoryBuffer>    MemoryBuffer    => Pool.MemoryBuffer;
@@ -76,9 +76,9 @@ namespace Friflo.Json.Fliox.Hub.Host
         }
     }
     
-    public readonly struct HubTypes
+    internal readonly struct HubTypes
     {
-        public   readonly  TypeMapper<ProtocolMessage> protocol;
+        internal readonly  TypeMapper<ProtocolMessage>  protocol;
         
         internal HubTypes(TypeStore typeStore) {
             protocol    = typeStore.GetTypeMapper<ProtocolMessage>();   
