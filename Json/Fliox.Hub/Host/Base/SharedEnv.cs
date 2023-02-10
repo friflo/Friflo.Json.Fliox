@@ -2,8 +2,10 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
+using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Mapper;
+using Friflo.Json.Fliox.Mapper.Map;
 using Friflo.Json.Fliox.Schema.Validation;
 using Friflo.Json.Fliox.Utils;
 using static System.Diagnostics.DebuggerBrowsableState;
@@ -37,6 +39,7 @@ namespace Friflo.Json.Fliox.Hub.Host
                         internal readonly   SharedCache                 sharedCache     = new SharedCache();
         [Browse(Never)] internal readonly   HubLogger                   hubLogger       = new HubLogger();
                         internal            Pool                        Pool            { get; }
+        [Browse(Never)] public   readonly   HubTypes                    types;
         // --- public
                         public              TypeStore                   TypeStore       => typeStore;
                         public              ObjectPool<MemoryBuffer>    MemoryBuffer    => Pool.MemoryBuffer;
@@ -51,12 +54,14 @@ namespace Friflo.Json.Fliox.Hub.Host
         public  static          SharedEnv Default           => DefaultSharedEnv;
 
         public SharedEnv() {
-            Pool            = new Pool(typeStore);
+            types       = new HubTypes(typeStore);
+            Pool        = new Pool(typeStore);
         }
         
         public SharedEnv(string name) {
-            this.name       = name;
-            Pool            = new Pool(typeStore);
+            this.name   = name;
+            types       = new HubTypes(typeStore);
+            Pool        = new Pool(typeStore);
         }
 
         public void Dispose () {
@@ -70,6 +75,15 @@ namespace Friflo.Json.Fliox.Hub.Host
             Pool.Dispose();
         }
     }
+    
+    public readonly struct HubTypes
+    {
+        public   readonly  TypeMapper<ProtocolMessage> protocol;
+        
+        internal HubTypes(TypeStore typeStore) {
+            protocol    = typeStore.GetTypeMapper<ProtocolMessage>();   
+        }
+    } 
     
     /// <summary>
     /// <see cref="SharedCache"/> is a cache for shared instances directly or indirectly used by

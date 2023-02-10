@@ -16,6 +16,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.Tools
 {
     public static class RemoteHostUtils
     {
+        /// <summary> Use mapper from <see cref="SharedEnv.types"/> </summary>
         public static JsonResponse ExecuteJsonRequest(
             FlioxHub        hub,
             ObjectMapper    mapper,
@@ -25,7 +26,8 @@ namespace Friflo.Json.Fliox.Hub.Remote.Tools
             // used response assignment instead of return in each branch to provide copy/paste code to avoid an async call in caller
             JsonResponse response;
             try {
-                var syncRequest = RemoteMessageUtils.ReadSyncRequest(mapper.reader, jsonRequest, out string error);
+                var type        = hub.sharedEnv.types.protocol;
+                var syncRequest = RemoteMessageUtils.ReadSyncRequest(mapper.reader, type, jsonRequest, out string error);
                 if (error != null) {
                     response = JsonResponse.CreateError(mapper.writer, error, ErrorResponseType.BadResponse, null);
                 } else {

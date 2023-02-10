@@ -43,7 +43,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs
             using (var pooledMapper = syncContext.ObjectMapper.Get()) {
                 var mapper          = pooledMapper.instance;
                 var requestJson     = RemoteMessageUtils.CreateProtocolMessage(syncRequest, mapper.writer);
-                var requestCopy     = RemoteMessageUtils.ReadSyncRequest (mapper.reader, requestJson, out var _);
+                var requestCopy     = RemoteMessageUtils.ReadSyncRequest (mapper.reader, sharedEnv.types.protocol, requestJson, out var _);
                 hub.InitSyncRequest(requestCopy);
                 var syncResponse    = await hub.ExecuteRequestAsync(requestCopy, syncContext);
                 

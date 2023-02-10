@@ -170,7 +170,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                     // JsonResponse response  = await ExecuteJsonRequest(mapper, requestContent, syncContext).ConfigureAwait(false);
                     JsonResponse response;
                     try {
-                        var syncRequest = RemoteMessageUtils.ReadSyncRequest(mapper.reader, requestContent, out string error);
+                        var syncRequest = RemoteMessageUtils.ReadSyncRequest(mapper.reader, sharedEnv.types.protocol, requestContent, out string error);
                         if (error != null) {
                             response = JsonResponse.CreateError(writer, error, ErrorResponseType.BadResponse, null);
                         } else {
