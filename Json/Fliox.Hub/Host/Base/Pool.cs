@@ -58,13 +58,13 @@ namespace Friflo.Json.Fliox.Hub.Host
             return pool;
         }
 
-        internal Pool(SharedEnv sharedEnv) {
+        internal Pool(TypeStore typeStore) {
             JsonPatcher     = new ObjectPool<JsonPatcher>       (() => new JsonPatcher());
             JsonMerger      = new ObjectPool<JsonMerger>        (() => new JsonMerger());
             ScalarSelector  = new ObjectPool<ScalarSelector>    (() => new ScalarSelector());
             JsonEvaluator   = new ObjectPool<JsonEvaluator>     (() => new JsonEvaluator());
-            ObjectMapper    = new ObjectPool<ObjectMapper>      (() => new ObjectMapper(sharedEnv.TypeStore),  m => m.ErrorHandler = ObjectReader.NoThrow);
-            ReaderPool      = new ObjectPool<ReaderPool>        (() => new ReaderPool(sharedEnv.TypeStore));
+            ObjectMapper    = new ObjectPool<ObjectMapper>      (() => new ObjectMapper(typeStore),  m => m.ErrorHandler = ObjectReader.NoThrow);
+            ReaderPool      = new ObjectPool<ReaderPool>        (() => new ReaderPool(typeStore));
             EntityProcessor = new ObjectPool<EntityProcessor>   (() => new EntityProcessor());
             TypeValidator   = new ObjectPool<TypeValidator>     (() => new TypeValidator());
             MemoryBuffer    = new ObjectPool<MemoryBuffer>      (() => new MemoryBuffer(4 * 1024));

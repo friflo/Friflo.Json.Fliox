@@ -101,9 +101,6 @@ namespace Friflo.Json.Fliox.Mapper.Map
         } }
 
         public void Dispose() {
-            subSeqMember.Dispose(Untracked.Bytes);
-            firstMember.Dispose(Untracked.Bytes);
-            nameBytes.Dispose(Untracked.Bytes);
         }
         
         

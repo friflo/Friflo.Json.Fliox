@@ -20,7 +20,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
         
         public static void Init() {
             SharedTypeStore.Init();
-            Shared        = new SharedEnv();
+            Shared        = new SharedEnv("TestGlobals");
         }
         
         public static void Dispose() {

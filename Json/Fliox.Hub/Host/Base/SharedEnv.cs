@@ -2,11 +2,12 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
-using Friflo.Json.Fliox.Hub.Host.Utils;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Schema.Validation;
 using Friflo.Json.Fliox.Utils;
+using static System.Diagnostics.DebuggerBrowsableState;
+using Browse = System.Diagnostics.DebuggerBrowsableAttribute;
 
 // ReSharper disable ConvertToAutoProperty
 // ReSharper disable once CheckNamespace
@@ -28,53 +29,44 @@ namespace Friflo.Json.Fliox.Hub.Host
     /// <br/>
     /// Access to shared resources is thread safe.
     /// </remarks>
-    public class SharedEnv : IDisposable, ILogSource
+    public sealed class SharedEnv : IDisposable, ILogSource
     {
-        private  readonly   TypeStore                   typeStore;
-        internal readonly   SharedCache                 sharedCache;
-        public   virtual    TypeStore                   TypeStore       => typeStore;
-        internal            Pool                        Pool            { get; }
-        public              ObjectPool<MemoryBuffer>    MemoryBuffer    => Pool.MemoryBuffer;
-        internal readonly   HubLogger                   hubLogger       = new HubLogger();
-        public              IHubLogger                  Logger {
-            get => hubLogger.instance;
-            set => hubLogger.instance = value ?? throw new ArgumentNullException (nameof(Logger));
-        }
-        
-        private static readonly SharedEnv DefaultSharedEnv  = new DefaultSharedEnv();
+        // --- private / internal
+                        private  readonly   string                      name;
+        [Browse(Never)] private  readonly   TypeStore                   typeStore       = new TypeStore();
+                        internal readonly   SharedCache                 sharedCache     = new SharedCache();
+        [Browse(Never)] internal readonly   HubLogger                   hubLogger       = new HubLogger();
+                        internal            Pool                        Pool            { get; }
+        // --- public
+                        public              TypeStore                   TypeStore       => typeStore;
+                        public              ObjectPool<MemoryBuffer>    MemoryBuffer    => Pool.MemoryBuffer;
+                        public              IHubLogger                  Logger {
+                            get => hubLogger.instance;
+                            set => hubLogger.instance = value ?? throw new ArgumentNullException (nameof(Logger));
+                        }
+        public override                     string                      ToString() => name != null ? $"'{name}'" : base.ToString();
+
+        private static readonly SharedEnv DefaultSharedEnv  = new SharedEnv("DefaultSharedEnv");
         /// <summary>Set breakpoint to check if <see cref="DefaultSharedEnv"/> is used </summary>
         public  static          SharedEnv Default           => DefaultSharedEnv;
 
         public SharedEnv() {
-            typeStore       = new TypeStore();
-            Pool            = new Pool(this);
-            sharedCache     = new SharedCache();
+            Pool            = new Pool(typeStore);
         }
         
-        public SharedEnv(TypeStore typeStore) {
-            this.typeStore  = typeStore;
-            Pool            = new Pool(this);
-            sharedCache     = new SharedCache();
+        public SharedEnv(string name) {
+            this.name       = name;
+            Pool            = new Pool(typeStore);
         }
 
-        public virtual void Dispose () {
+        public void Dispose () {
             sharedCache.Dispose();
             Pool.Dispose();
             TypeStore.Dispose();
         }
         
+        /// obsolete - TODO remove
         public void DisposePool () {
-            Pool.Dispose();
-        }
-    }
-    
-    internal sealed class DefaultSharedEnv : SharedEnv
-    {
-        public  override    TypeStore   TypeStore   => SharedTypeStore.Get();
-
-        internal DefaultSharedEnv() : base (null) { }
-        
-        public override void Dispose () {
             Pool.Dispose();
         }
     }
