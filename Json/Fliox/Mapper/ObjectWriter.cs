@@ -93,14 +93,15 @@ namespace Friflo.Json.Fliox.Mapper
         // --------------- Bytes ---------------
         public void Write<T>(T value, ref Bytes bytes) {
             InitJsonWriterBytes();
-            WriteStart(value);
+            var mapper = (TypeMapper<T>)intern.typeCache.GetTypeMapper(typeof(T));
+            WriteStart(value, mapper);
             bytes.Clear();
             bytes.AppendBytes(ref intern.bytes);
         }
 
         public void WriteObject(object value, ref Bytes bytes) {
             InitJsonWriterBytes();
-            WriteStart(value);
+            WriteStartObject(value);
             bytes.Clear();
             bytes.AppendBytes(ref intern.bytes);
         }
@@ -109,62 +110,73 @@ namespace Friflo.Json.Fliox.Mapper
 
         public void Write<T>(T value, Stream stream) {
             InitJsonWriterStream(stream);
-            WriteStart(value);
+            var mapper = (TypeMapper<T>)intern.typeCache.GetTypeMapper(typeof(T));
+            WriteStart(value, mapper);
             intern.Flush();
         }
 
         public void WriteObject(object value, Stream stream) {
             InitJsonWriterStream(stream);
-            WriteStart(value);
+            WriteStartObject(value);
             intern.Flush();
         }
         
         // --------------- string ---------------
         public string Write<T>(T value) {
             InitJsonWriterString();
-            WriteStart(value);
+            var mapper = (TypeMapper<T>)intern.typeCache.GetTypeMapper(typeof(T));
+            WriteStart(value, mapper);
             return intern.bytes.AsString();
         }
 
         public string WriteObject(object value) {
             InitJsonWriterString();
-            WriteStart(value);
+            WriteStartObject(value);
             return intern.bytes.AsString();
         }
         
         // --------------- byte[] ---------------
         public JsonValue WriteAsValue<T>(T value) {
             InitJsonWriterString();
-            WriteStart(value);
+            var mapper = (TypeMapper<T>)intern.typeCache.GetTypeMapper(typeof(T));
+            WriteStart(value, mapper);
             return new JsonValue(intern.bytes.AsArray());
         }
 
         public byte[] WriteAsArray<T>(T value) {
             InitJsonWriterString();
-            WriteStart(value);
+            var mapper = (TypeMapper<T>)intern.typeCache.GetTypeMapper(typeof(T));
+            WriteStart(value, mapper);
             return intern.bytes.AsArray();
         }
         
         public Bytes WriteAsBytes<T>(T value) {
             InitJsonWriterString();
-            WriteStart(value);
+            var mapper = (TypeMapper<T>)intern.typeCache.GetTypeMapper(typeof(T));
+            WriteStart(value, mapper);
+            return intern.bytes;
+        }
+        
+        public Bytes WriteAsBytesMapper<T>(T value, TypeMapper<T> mapper) {
+            InitJsonWriterString();
+            WriteStart(value, mapper);
             return intern.bytes;
         }
 
         public byte[] WriteObjectAsArray(object value) {
             InitJsonWriterString();
-            WriteStart(value);
+            WriteStartObject(value);
             return intern.bytes.AsArray();
         }
         
         internal byte[] WriteVarAsArray(in Var value) {
             InitJsonWriterString();
-            WriteStart(value);
+            WriteStartVar(value);
             return intern.bytes.AsArray();
         }
 
         // --------------------------------------- private --------------------------------------- 
-        private void WriteStart(object value) {
+        private void WriteStartObject(object value) {
             if (value == null) {
                 intern.AppendNull();
                 return;
@@ -177,8 +189,7 @@ namespace Friflo.Json.Fliox.Mapper
                 throw new InvalidOperationException($"Unexpected level after JsonWriter.Write(). Expect 0, Found: {intern.level}");
         }
         
-        private void WriteStart<T>(T value) {
-            var mapper = (TypeMapper<T>)intern.typeCache.GetTypeMapper(typeof(T));
+        private void WriteStart<T>(T value, TypeMapper<T> mapper) {
             if (mapper.IsNull(ref value))
                 intern.AppendNull();
             else
@@ -188,7 +199,7 @@ namespace Friflo.Json.Fliox.Mapper
                 throw new InvalidOperationException($"Unexpected level after JsonWriter.Write(). Expect 0, Found: {intern.level}");
         }
         
-        private void WriteStart(in Var value) {
+        private void WriteStartVar(in Var value) {
             if (value.IsNull) {
                 intern.AppendNull();
                 return;

@@ -181,7 +181,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                                 case Queue: syncResult = await hub.QueueRequestAsync   (syncRequest, syncContext).ConfigureAwait(false); break;
                                 default:    syncResult =       hub.ExecuteRequest      (syncRequest, syncContext);                       break;
                             }
-                            response = RemoteHostUtils.CreateJsonResponse(syncResult, syncRequest.reqId, writer);
+                            response = RemoteHostUtils.CreateJsonResponse(syncResult, syncRequest.reqId, hub.sharedEnv, writer);
                         }
                     }
                     catch (Exception e) {

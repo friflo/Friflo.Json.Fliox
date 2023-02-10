@@ -32,7 +32,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.Tools
                     hub.InitSyncRequest(syncRequest);
                     var syncResult = hub.ExecuteRequest(syncRequest, syncContext);
                 
-                    response = CreateJsonResponse(syncResult, syncRequest.reqId, mapper.writer);
+                    response = CreateJsonResponse(syncResult, syncRequest.reqId, syncContext.sharedEnv, mapper.writer);
                 }
             }
             catch (Exception e) {
@@ -42,14 +42,14 @@ namespace Friflo.Json.Fliox.Hub.Remote.Tools
             return response;
         }
         
-        public static JsonResponse CreateJsonResponse(in ExecuteSyncResult response, in int? reqId, ObjectWriter writer) {
+        public static JsonResponse CreateJsonResponse(in ExecuteSyncResult response, in int? reqId, SharedEnv env, ObjectWriter writer) {
             var responseError = response.error;
             if (responseError != null) {
                 return JsonResponse.CreateError(writer, responseError.message, responseError.type, reqId);
             }
             SetContainerResults(response.success);
             response.Result.reqId   = reqId;
-            JsonValue jsonResponse  = RemoteMessageUtils.CreateProtocolMessage(response.Result, writer);
+            JsonValue jsonResponse  = RemoteMessageUtils.CreateProtocolMessage(response.Result, env, writer);
             return new JsonResponse(jsonResponse, JsonResponseStatus.Ok);
         }
         

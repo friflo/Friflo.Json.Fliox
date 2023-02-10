@@ -220,7 +220,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                     var errorResponse = JsonResponse.CreateError(writer, error.message, error.type, reqId);
                     SendMessage(errorResponse.body);
                 } else {
-                    var response = RemoteHostUtils.CreateJsonResponse(syncResult, reqId, writer);
+                    var response = RemoteHostUtils.CreateJsonResponse(syncResult, reqId, sharedEnv, writer);
                     SendMessage(response.body);
                 }
             }

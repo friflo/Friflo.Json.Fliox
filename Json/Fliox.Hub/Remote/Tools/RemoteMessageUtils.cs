@@ -55,9 +55,10 @@ namespace Friflo.Json.Fliox.Hub.Remote.Tools
         /// </summary>
         public static JsonValue CreateProtocolMessage (
             ProtocolMessage message,
+            SharedEnv       env,
             ObjectWriter    writer)
         {
-            var result              = writer.WriteAsBytes(message);
+            var result  = writer.WriteAsBytesMapper(message, env.types.protocol);
             return new JsonValue(result);
         }
         
@@ -114,10 +115,11 @@ namespace Friflo.Json.Fliox.Hub.Remote.Tools
         
         public static ProtocolMessage ReadProtocolMessage (
             in JsonValue    jsonMessage,
+            SharedEnv       env,
             ObjectReader    reader,
             out string      error)
         {
-            var message         = reader.Read<ProtocolMessage>(jsonMessage);
+            var message = reader.ReadMapper(env.types.protocol, jsonMessage);
             if (reader.Error.ErrSet) {
                 error = reader.Error.msg.ToString();
                 return null;
