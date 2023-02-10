@@ -19,20 +19,21 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
     public sealed class UdpServerSync : IServer, ILogSource, IDisposable
     {
         internal readonly   FlioxHub                                    hub;
+        private  readonly   int                                         recvCount;
         private             bool                                        running;
         private             Socket                                      socket;
         private  readonly   IPEndPoint                                  ipEndPoint;
         internal readonly   MessageBufferQueueSync<UdpMeta>             sendQueue;
         private  readonly   List<MessageItem<UdpMeta>>                  messages;
         private  readonly   RemoteHostEnv                               hostEnv;
-        private  readonly   Dictionary<IPEndPoint, UdpSocketSyncHost>   clients;
+        private  readonly   Dictionary<IPEndPoint, UdpSocketSyncHost>   clients;    // requires lock
         private             StringBuilder                               sbSend;
-        private             StringBuilder                               sbRecv;
         private  readonly   IHubLogger                                  logger;
         public              IHubLogger                                  Logger => logger;
         
-        public UdpServerSync(string endpoint, FlioxHub hub) {
+        public UdpServerSync(string endpoint, FlioxHub hub, int receiverCount = 1) {
             this.hub        = hub;
+            recvCount       = receiverCount;
             ipEndPoint      = ParseEndpoint(endpoint) ?? throw new ArgumentException($"invalid endpoint: {endpoint}");
             logger          = hub.Logger;
             sendQueue       = new MessageBufferQueueSync<UdpMeta>();
@@ -64,7 +65,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
         /// </summary>
         /// <remarks>
         /// A send loop reading from a queue is required as message can be sent from two different sources <br/>
-        /// 1. response messages created in <see cref="ReceiveMessageLoop"/> <br/>
+        /// 1. response messages created in <see cref="Receiver.ReceiveMessageLoop"/> <br/>
         /// 2. event messages send with <see cref="SocketHost.SendEvent"/>'s <br/>
         /// The loop ensures a UdpClient.SendAsync() is called only once at a time.
         /// </remarks>
@@ -96,35 +97,52 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
         
         private void RunReceiveMessageLoop() {
             try {
-                ReceiveMessageLoop();
+                var receiver = new Receiver(this);
+                receiver.ReceiveMessageLoop();
             } catch (Exception e){
                 var msg = GetExceptionMessage("UdpServerSync.RunReceiveMessageLoop()", ipEndPoint, e);
                 logger.Log(HubLog.Info, msg);
             }
         }
         
-        private readonly IPEndPoint endPointCache = IPEndPointCache.Create(IPAddress.Any, 0);
+        private class Receiver {
+            private  readonly   UdpServerSync                               server;
+            private  readonly   Socket                                      socket;
+            private  readonly   RemoteHostEnv                               hostEnv;
+            private  readonly   Dictionary<IPEndPoint, UdpSocketSyncHost>   clients;    // requires lock
+            private  readonly   IHubLogger                                  logger;
+            private             StringBuilder                               sbRecv;
+            private readonly    IPEndPoint                                  endPointCache = IPEndPointCache.Create(IPAddress.Any, 0);
+            
+            internal Receiver(UdpServerSync server) {
+                this.server = server;
+                socket      = server.socket;
+                hostEnv     = server.hostEnv;
+                clients     = server.clients;
+                logger      = server.logger;
+            }
         
-        /// <summary>
-        /// Parse, execute and send response message for all received request messages.<br/>
-        /// </summary>
-        private void ReceiveMessageLoop() {
-            var buffer = new byte[0x10000];
-            while (running) {
-                // --- Read message from socket
-                EndPoint endpoint   = endPointCache;
-                int receivedBytes   = socket.ReceiveFrom(buffer, 0, buffer.Length, SocketFlags.None, ref endpoint);
-                
-                // --- Get remote host from IP address
-                var remoteEndpoint  = (IPEndPoint)endpoint;
-                if (!clients.TryGetValue(remoteEndpoint, out var remote)) {
-                    remote                      = new UdpSocketSyncHost(this, remoteEndpoint);
-                    clients[remote.endpoint]    = remote;
+            /// <summary>
+            /// Parse, execute and send response message for all received request messages.<br/>
+            /// </summary>
+            internal void ReceiveMessageLoop() {
+                var buffer = new byte[0x10000];
+                while (server.running) {
+                    // --- Read message from socket
+                    EndPoint endpoint   = endPointCache;
+                    int receivedBytes   = socket.ReceiveFrom(buffer, 0, buffer.Length, SocketFlags.None, ref endpoint);
+                    
+                    // --- Get remote host from IP address
+                    var remoteEndpoint  = (IPEndPoint)endpoint;
+                    if (!clients.TryGetValue(remoteEndpoint, out var remote)) {
+                        remote                      = new UdpSocketSyncHost(server, remoteEndpoint);
+                        clients[remote.endpoint]    = remote;
+                    }
+                    // --- Process message
+                    var request = new JsonValue(buffer, receivedBytes);
+                    if (hostEnv.logMessages) LogMessage(logger, ref sbRecv, " server <-", remote.endpoint, request);
+                    remote.OnReceive(request, ref hostEnv.metrics.udp);
                 }
-                // --- Process message
-                var request = new JsonValue(buffer, receivedBytes);
-                if (hostEnv.logMessages) LogMessage(logger, ref sbRecv, " server <-", remote.endpoint, request);
-                remote.OnReceive(request, ref hostEnv.metrics.udp);
             }
         }
 
@@ -140,10 +158,14 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
             Thread sendLoop = null;
             try {
                 sendLoop        = new Thread(RunSendMessageLoop)    { Name = $"UDP:{ipEndPoint.Port} send" };
-                var recvLoop    = new Thread(RunReceiveMessageLoop) { Name = $"UDP:{ipEndPoint.Port} recv" };
+                var recvThreads = new List<Thread>();
+                for (int n = 0; n < recvCount; n++) {
+                    var thread  = new Thread(RunReceiveMessageLoop) { Name = $"UDP:{ipEndPoint.Port} recv-{n}" };
+                    recvThreads.Add(thread);
+                }
                 sendLoop.Start();
-                recvLoop.Start();
-                recvLoop.Join();
+                foreach (var thread in recvThreads) { thread.Start(); }
+                foreach (var thread in recvThreads) { thread.Join();  }
                 sendQueue.Close();
             }
             catch (Exception e) {

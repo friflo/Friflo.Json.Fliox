@@ -44,7 +44,7 @@ namespace Friflo.Json.Tests.Main
             // SharedEnv.Default.Logger = new HubLoggerStream("hub.log");
             using (var database     = new MemoryDatabase(TestDB))
             using (var hub          = new FlioxHub(database))
-            using (var server       = new UdpServer("127.0.0.1:5000", hub))
+            using (var server       = new UdpServerSync("127.0.0.1:5000", hub, 3))
             using (var remoteHub    = new UdpSocketClientHub(TestDB, "127.0.0.1:5000")) {
                 hub.GetFeature<RemoteHostEnv>().logMessages = false;
                 remoteHub.ClientEnv.logMessages             = false;
