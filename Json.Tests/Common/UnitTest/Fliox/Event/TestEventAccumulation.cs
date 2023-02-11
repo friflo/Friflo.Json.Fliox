@@ -82,6 +82,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Event
         {
             internal int count;
             
+            protected override string  Endpoint           => nameof(IgnoreReceiver);
             protected override bool    IsOpen()           => true;
             protected override bool    IsRemoteTarget()   => false;
             protected override void    SendEvent(in ClientEvent clientEvent) { count++; }

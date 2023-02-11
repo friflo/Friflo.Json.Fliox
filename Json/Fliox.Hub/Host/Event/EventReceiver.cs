@@ -12,6 +12,8 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
     /// <see cref="ClientEvent.dstClientId"/> is used.
     /// </summary>
     public abstract class EventReceiver {
+        /// <summary>Descriptive endpoint name. E.g. ws://.., IP:port for UDP or in-process</summary>
+        protected internal abstract string  Endpoint { get; }
         protected internal abstract bool    IsOpen ();
         protected internal abstract bool    IsRemoteTarget ();
         /// <summary>Send a serialized <see cref="EventMessage"/> to the receiver</summary>
