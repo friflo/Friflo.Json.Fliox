@@ -70,7 +70,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 SendMessage(clientEvent.message);
             }
             catch (Exception e) {
-                hub.Logger.Log(HubLog.Error, "WebSocketHost.SendEvent", e);
+                Logger.Log(HubLog.Error, "WebSocketHost.SendEvent", e);
             }
         }
         
@@ -194,7 +194,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                     return;
                 default:
                     var errorMsg = $"unexpected continuation task status {status}, reqId: {reqId}";
-                    hub.Logger.Log(HubLog.Error, errorMsg);
+                    Logger.Log(HubLog.Error, errorMsg);
                     Debug.Fail(errorMsg);
                     return;
             }
