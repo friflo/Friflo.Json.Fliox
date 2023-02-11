@@ -74,7 +74,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
         /// Has no SendMessageLoop() - client send only response messages via <see cref="SocketClientHub.OnReceive"/>
         /// </summary>
         private void ReceiveMessageLoop() {
-            using (var mapper = new ObjectMapper(sharedEnv.TypeStore)) {
+            using (var mapper = new ObjectMapper(sharedEnv.typeStore)) {
                 var reader = mapper.reader;
                 var buffer = new byte[0x10000];
                 while (true)

@@ -509,7 +509,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         /// <seealso cref="WebSocketHost.RunReceiveMessageLoop"/>
         private async Task RunSendEventLoop(IDataChannelReader<EventSubClient> clientEventReader) {
             try {
-                using (var mapper = new ObjectMapper(sharedEnv.TypeStore)) {
+                using (var mapper = new ObjectMapper(sharedEnv.typeStore)) {
                     var writer = RemoteMessageUtils.GetCompactWriter(mapper);
                     await SendEventLoop(clientEventReader, writer).ConfigureAwait(false);
                 }

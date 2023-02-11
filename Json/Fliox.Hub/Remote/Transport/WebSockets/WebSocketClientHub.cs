@@ -68,7 +68,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         } */
         
         private async Task RunReceiveMessageLoop(WebSocketConnection connection) {
-            using (var mapper = new ObjectMapper(sharedEnv.TypeStore)) {
+            using (var mapper = new ObjectMapper(sharedEnv.typeStore)) {
                 await ReceiveMessageLoop(connection, mapper.reader).ConfigureAwait(false);
             }
         }

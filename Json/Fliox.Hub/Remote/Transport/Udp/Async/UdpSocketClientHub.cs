@@ -81,7 +81,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
         }
         
         private async Task RunReceiveMessageLoop() {
-            using (var mapper = new ObjectMapper(sharedEnv.TypeStore)) {
+            using (var mapper = new ObjectMapper(sharedEnv.typeStore)) {
                 await ReceiveMessageLoop(mapper.reader).ConfigureAwait(false);
             }
         }

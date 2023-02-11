@@ -66,7 +66,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             : base(database, env)
         {
             eventReceivers          = new Dictionary<ShortString, EventReceiver>(ShortString.Equality);
-            responseReaderPool      = new ObjectPool<ReaderPool>(() => new ReaderPool(sharedEnv.TypeStore));
+            responseReaderPool      = new ObjectPool<ReaderPool>(() => new ReaderPool(sharedEnv.typeStore));
             this.protocolFeature    = protocolFeature;
             this.access             = access;     
         }

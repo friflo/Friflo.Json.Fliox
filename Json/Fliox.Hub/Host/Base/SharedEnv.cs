@@ -11,6 +11,7 @@ using Friflo.Json.Fliox.Utils;
 using static System.Diagnostics.DebuggerBrowsableState;
 using Browse = System.Diagnostics.DebuggerBrowsableAttribute;
 
+// ReSharper disable ConvertToAutoPropertyWhenPossible
 // ReSharper disable ConvertToAutoProperty
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.Host
@@ -35,7 +36,7 @@ namespace Friflo.Json.Fliox.Hub.Host
     {
         // --- private / internal
                         private  readonly   string                      name;
-        [Browse(Never)] private  readonly   TypeStore                   typeStore       = new TypeStore();
+        [Browse(Never)] internal readonly   TypeStore                   typeStore       = new TypeStore();
                         internal readonly   SharedCache                 sharedCache     = new SharedCache();
         [Browse(Never)] internal readonly   HubLogger                   hubLogger       = new HubLogger();
                         internal readonly   Pool                        pool;
@@ -67,7 +68,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         public void Dispose () {
             sharedCache.Dispose();
             pool.Dispose();
-            TypeStore.Dispose();
+            typeStore.Dispose();
         }
         
         /// obsolete - TODO remove
