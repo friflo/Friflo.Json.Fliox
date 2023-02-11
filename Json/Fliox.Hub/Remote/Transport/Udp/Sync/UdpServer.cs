@@ -134,9 +134,12 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
                     
                     // --- Get remote host from IP address
                     var remoteEndpoint  = (IPEndPoint)endpoint;
-                    if (!clients.TryGetValue(remoteEndpoint, out var remote)) {
-                        remote                      = new UdpSocketSyncHost(server, remoteEndpoint);
-                        clients[remote.endpoint]    = remote;
+                    UdpSocketSyncHost remote;
+                    lock (clients) {
+                        if (!clients.TryGetValue(remoteEndpoint, out remote)) {
+                            remote                      = new UdpSocketSyncHost(server, remoteEndpoint);
+                            clients[remote.endpoint]    = remote;
+                        }                        
                     }
                     // --- Process message
                     var request = new JsonValue(buffer, receivedBytes);
