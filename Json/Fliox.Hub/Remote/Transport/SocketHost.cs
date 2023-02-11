@@ -30,7 +30,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
     /// - parse serialized <see cref="SyncRequest"/> messages.<br/>
     /// - execute <see cref="SyncRequest"/>'s and send serialized <see cref="SyncResponse"/> to client<br/>
     /// <br/>
-    /// Instances of <see cref="SocketHost"/> are thread safe
+    /// <see cref="SocketHost"/> is thread safe.
     /// </summary>
     /// <remarks>
     /// The implementation aims to prevent <b>head-of-line blocking</b>.<br/>
@@ -48,6 +48,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
     /// </remarks>
     public abstract class SocketHost : EventReceiver
     {
+        // --- all fields are thread safe types
         private   readonly  FlioxHub                    hub;
         private   readonly  SharedEnv                   sharedEnv;
         private   readonly  TypeStore                   typeStore;
