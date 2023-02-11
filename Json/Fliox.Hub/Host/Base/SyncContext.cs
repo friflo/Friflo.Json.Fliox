@@ -77,7 +77,7 @@ namespace Friflo.Json.Fliox.Hub.Host
 
         public SyncContext (SharedEnv sharedEnv, EventReceiver eventReceiver, MemoryBuffer memoryBuffer) {
             this.sharedEnv      = sharedEnv;
-            this.pool           = sharedEnv.Pool;
+            this.pool           = sharedEnv.pool;
             this.eventReceiver  = eventReceiver;
             this.sharedCache    = sharedEnv.sharedCache;
             this.memoryBuffer   = memoryBuffer ?? throw new ArgumentNullException(nameof(memoryBuffer));
@@ -87,7 +87,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// <summary>Special constructor used to minimize heap allocation. <b>Note</b> <see cref="SyncBuffers"/> </summary>
         public SyncContext (SharedEnv sharedEnv, EventReceiver eventReceiver, in SyncBuffers syncBuffers, SyncPools syncPools) {
             this.sharedEnv      = sharedEnv;
-            this.pool           = sharedEnv.Pool;
+            this.pool           = sharedEnv.pool;
             this.eventReceiver  = eventReceiver;
             this.sharedCache    = sharedEnv.sharedCache;
             this.syncBuffers    = syncBuffers;
@@ -96,7 +96,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         
         public SyncContext (SharedEnv sharedEnv, EventReceiver eventReceiver) {
             this.sharedEnv      = sharedEnv;
-            this.pool           = sharedEnv.Pool;
+            this.pool           = sharedEnv.pool;
             this.eventReceiver  = eventReceiver;
             this.sharedCache    = sharedEnv.sharedCache;
         }

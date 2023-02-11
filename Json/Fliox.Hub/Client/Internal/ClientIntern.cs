@@ -117,7 +117,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             // --- readonly
             sharedEnv               = hub.sharedEnv;
             typeStore               = sharedEnv.TypeStore;
-            this.pool               = sharedEnv.Pool;
+            this.pool               = sharedEnv.pool;
             this.hubLogger          = sharedEnv.hubLogger;
             this.hub                = hub;
             this.database           = database ?? hub.database.name;

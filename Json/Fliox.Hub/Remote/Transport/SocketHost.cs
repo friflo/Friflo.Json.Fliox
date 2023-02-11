@@ -65,7 +65,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             this.hub        = hub;
             sharedEnv       = env;
             typeStore       = sharedEnv.TypeStore;
-            var pool        = sharedEnv.Pool;
+            var pool        = sharedEnv.pool;
             readerPool      = pool.ReaderPool;
             objectPool      = pool.ObjectMapper;
             useReaderPool   = hub.GetFeature<RemoteHostEnv>().useReaderPool;

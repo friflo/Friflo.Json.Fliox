@@ -293,7 +293,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             if (dispatching == EventDispatching.QueueSend) {
                 throw new InvalidOperationException($"must not be called if using {nameof(EventDispatcher)}.{EventDispatching.QueueSend}");
             }
-            using (var pooleMapper = sharedEnv.Pool.ObjectMapper.Get()) {
+            using (var pooleMapper = sharedEnv.pool.ObjectMapper.Get()) {
                 var writer = RemoteMessageUtils.GetCompactWriter(pooleMapper.instance);
                 if (eventCollector.DatabaseCount > 0) {
                     CopyDatabaseSubsMap(databaseSubsBuffer);

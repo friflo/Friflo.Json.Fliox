@@ -38,11 +38,11 @@ namespace Friflo.Json.Fliox.Hub.Host
         [Browse(Never)] private  readonly   TypeStore                   typeStore       = new TypeStore();
                         internal readonly   SharedCache                 sharedCache     = new SharedCache();
         [Browse(Never)] internal readonly   HubLogger                   hubLogger       = new HubLogger();
-                        internal            Pool                        Pool            { get; }
+                        internal readonly   Pool                        pool;
         [Browse(Never)] internal readonly   HubTypes                    types;
         // --- public
                         public              TypeStore                   TypeStore       => typeStore;
-                        public              ObjectPool<MemoryBuffer>    MemoryBuffer    => Pool.MemoryBuffer;
+                        public              ObjectPool<MemoryBuffer>    MemoryBuffer    => pool.MemoryBuffer;
                         public              IHubLogger                  Logger {
                             get => hubLogger.instance;
                             set => hubLogger.instance = value ?? throw new ArgumentNullException (nameof(Logger));
@@ -55,24 +55,24 @@ namespace Friflo.Json.Fliox.Hub.Host
 
         public SharedEnv() {
             types       = new HubTypes(typeStore);
-            Pool        = new Pool(typeStore);
+            pool        = new Pool(typeStore);
         }
         
         public SharedEnv(string name) {
             this.name   = name;
             types       = new HubTypes(typeStore);
-            Pool        = new Pool(typeStore);
+            pool        = new Pool(typeStore);
         }
 
         public void Dispose () {
             sharedCache.Dispose();
-            Pool.Dispose();
+            pool.Dispose();
             TypeStore.Dispose();
         }
         
         /// obsolete - TODO remove
         public void DisposePool () {
-            Pool.Dispose();
+            pool.Dispose();
         }
     }
     

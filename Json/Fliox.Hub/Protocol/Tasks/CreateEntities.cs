@@ -63,7 +63,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
 
             // may call patcher.Copy() always to ensure a valid JSON value
             if (entityContainer.Pretty) {
-                using (var pooled = env.Pool.JsonPatcher.Get()) {
+                using (var pooled = env.pool.JsonPatcher.Get()) {
                     JsonPatcher patcher = pooled.instance;
                     for (int n = 0; n < entities.Count; n++) {
                         var entity = entities[n];

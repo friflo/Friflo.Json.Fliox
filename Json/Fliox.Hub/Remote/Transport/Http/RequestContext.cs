@@ -45,7 +45,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         public              bool                        Handled             => handled;
         public              ObjectPool<ObjectMapper>    ObjectMapper        => Pool.ObjectMapper;
         // --- internal properties
-        internal            Pool                        Pool                => hub.sharedEnv.Pool;
+        internal            Pool                        Pool                => hub.sharedEnv.pool;
         internal            SharedCache                 SharedCache         => hub.sharedEnv.sharedCache;
 
         public    override  string                      ToString()          => $"{method} {route}{query}";

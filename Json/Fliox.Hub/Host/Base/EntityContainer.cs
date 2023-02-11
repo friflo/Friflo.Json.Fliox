@@ -158,7 +158,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             var targets     = new  List<JsonEntity>  (entities.Length);
             var container   = mergeEntities.container;
             List<EntityError> patchErrors = null;
-            using (var pooled = env.Pool.JsonMerger.Get())
+            using (var pooled = env.pool.JsonMerger.Get())
             {
                 JsonMerger merger   = pooled.instance;
                 merger.Pretty       = Pretty;
