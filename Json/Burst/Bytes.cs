@@ -268,9 +268,26 @@ namespace Friflo.Json.Burst
 #endif
         public bool IsEqual(in Bytes value)
         {
+            /*   perf notes: 500_000_000 "abc" == "123"  SequenceEqual: 2.5 sec,  for loop: 1.3 sec
             var span  = new ReadOnlySpan<byte>(buffer, start, end - start);
             var other = new ReadOnlySpan<byte>(value.buffer, value.start, value.end - value.start);
             return span.SequenceEqual(other);
+            */
+            var leftStart   = start; 
+            var rightStart  = value.start;
+            int len         = end - leftStart;
+            if (len != value.end - rightStart) {
+                return false;
+            }
+            var leftBuffer  = buffer;
+            var rightBuffer = value.buffer;
+            
+            for (int n = 0; n < len; n++) {
+                if (leftBuffer[leftStart + n] != rightBuffer[rightStart + n]) {
+                    return false;
+                }
+            }
+            return true;
         }
 
         public bool IsEqualString (string str) {
@@ -280,22 +297,17 @@ namespace Friflo.Json.Burst
         /// <summary>deprecated: Use <see cref="Utf8String"/> instead </summary>
         public bool IsEqualArray(byte[] array) {
             int len = end - start;
-#if UNITY_5_3_OR_NEWER
-            if (len != array.Length)
+            if (len != array.Length) {
                 return false;
-            int pos = 0;
-            var buf = buffer;
-            var endPos = end; 
-            for (int n = start; n < endPos; n++) {
-                if (buf[n] != array[pos++])
+            }
+            var buf         = buffer;
+            var bufStart    = start;
+            for (int n = 0; n < len; n++) {
+                if (buf[bufStart + n] != array[n]) {
                     return false;
+                }
             }
             return true;
-#else
-            var span  = new ReadOnlySpan<byte>(buffer, start, len);
-            var other = new ReadOnlySpan<byte>(array);
-            return span.SequenceEqual(other);
-#endif
         }
 
         public override bool Equals (object obj) {

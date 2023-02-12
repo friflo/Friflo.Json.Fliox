@@ -234,6 +234,16 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                 AreEqual(str, bytes.AsString());
             }
         }
+        
+        [Test]
+        public void TestBytesIsEqualPerf() {
+            int count = 5; // 500_000_000;
+            var left    = new Bytes ("abc");
+            var right   = new Bytes ("123");
+            for (int n = 0; n < count; n++) {
+                left.IsEqual(right);
+            }
+        }
     }
     
     struct StructAssign
