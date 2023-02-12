@@ -119,10 +119,11 @@ namespace Friflo.Json.Burst.Utils
                 return false;
             }
             // --- use string instance if JSON control characters included
-            var end = value.end;
-            var buf = value.buffer;
-            for (int i = value.start; i < end; i++) {
-                switch (buf[i]) {
+            var end     = value.end;
+            var start   = value.start;
+            var src     = value.buffer;
+            for (int i = start; i < end; i++) {
+                switch (src[i]) {
                     case (int)'"':
                     case (int)'\\':
                         lng     = 0;
@@ -130,9 +131,12 @@ namespace Friflo.Json.Burst.Utils
                         return false;
                 }
             }
-            Span<byte> src  = new Span<byte>(value.buffer, value.start, byteCount);
             Span<byte> dst  = stackalloc byte[ByteCount];
-            src.CopyTo(dst);                        // copy byteCount bytes to dst 
+            // Span<byte> srcSpan  = new Span<byte>(src, start, byteCount);
+            // srcSpan.CopyTo(dst);  // copy byteCount bytes to dst 
+            for (int n = 0; n < byteCount; n++) {
+                dst[n] = src[start + n];
+            }
             dst[LengthPos] = (byte)(byteCount + 1); // set highest byte to length
             
             fixed (byte*  bytesPtr  = dst) 

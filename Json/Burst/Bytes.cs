@@ -479,10 +479,15 @@ namespace Friflo.Json.Burst
                 bytesLongPtr[0]     = lng;
                 bytesLongPtr[1]     = lng2;
             }
-            var source  = bytes.Slice(0, len);
-            var target  = new Span<byte>(buffer, end, buffer.Length - end);
-            source.CopyTo(target);
-            end += len;
+            // var target  = new Span<byte>(buffer, end, buffer.Length - end);
+            // var source  = bytes.Slice(0, len);
+            // source.CopyTo(target);
+            var buf     = buffer;
+            var bufEnd  = end;
+            for (int n = 0; n < len; n++) {
+                buf[bufEnd + n] = bytes[n];
+            }
+            end = bufEnd + len;
         }
 
         public void Set (string val)
