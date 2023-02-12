@@ -213,6 +213,7 @@
                 "queued":      { "$ref": "./Standard.json#/definitions/int32", "description": "number of queued events not acknowledged by a client" },
                 "queueEvents": { "type": "boolean", "description": "true if client is instructed to queue events for reliable event delivery in case of reconnects" },
                 "connected":   { "type": "boolean", "description": "true if client is connected. Non remote client are always connected" },
+                "endpoint":    { "type": ["string", "null"], "description": "The endpoint of the client events are sent to.<br/>\nE.g. <c>ws:[::1]:52089</c> for WebSockets, <c>udp:127.0.0.1:60005</c> for UDP or <c>in-process</c>" },
                 "messageSubs": { "type": ["array", "null"], "items": { "type": "string" }, "description": "message / command subscriptions of a client" },
                 "changeSubs":  { "type": ["array", "null"], "items": { "$ref": "#/definitions/ChangeSubscription" }, "description": "change subscriptions of a client" }
             },

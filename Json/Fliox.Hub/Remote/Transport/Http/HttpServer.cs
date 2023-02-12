@@ -125,8 +125,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
             _ = Task.Run(async () => {
                 HttpListenerRequest  req  = context.Request;
                 if (requestCount++ == 0 || requestCount % 10000 == 0) {
-                    string reqMsg = $@"request {requestCount} {req.Url} {req.HttpMethod}"; // {req.UserAgent} {req.UserHostName} 
-                    LogInfo(reqMsg);
+                    string reqMsg = $@"request {requestCount} {req.Url} {req.HttpMethod}"; // {req.UserAgent} {req.UserHostName}
+                    Logger.Log(HubLog.Info, reqMsg);
                 }
                 var path = context.Request.Url.LocalPath;
                 if (IsFlioxRequest(path)) {
@@ -186,18 +186,18 @@ namespace Friflo.Json.Fliox.Hub.Remote
         public void Start() {
             // Create a Http server and start listening for incoming connections
             listener.Start();   // create and Bind() a Socket for each endpoint 
+
             var sb = new StringBuilder();
-            var startPage = GetStartPage();
-            sb.Append("Hub Explorer - ");
-            sb.Append(startPage);
-            sb.AppendLF();
-            sb.AppendLF();
-            sb.Append("Listening at:");
+            sb.Append("HttpServer listening at:");
             foreach (var prefix in listener.Prefixes) {
                 sb.Append(' ');
                 sb.Append(prefix);
             }
-            LogInfo(sb.ToString());
+            sb.AppendLine();
+            Logger.Log(HubLog.Info, sb.ToString());
+            
+            var startPage = GetStartPage();
+            Logger.Log(HubLog.Info, $"Hub Explorer - {startPage}\n");
         }
         
         public void Run()       => HandleIncomingConnections().GetAwaiter().GetResult();
@@ -210,10 +210,6 @@ namespace Friflo.Json.Fliox.Hub.Remote
 
         private void LogException(string msg, Exception exception) {
             Logger.Log(HubLog.Error, msg, exception);
-        }
-
-        private void LogInfo(string msg) {
-            Logger.Log(HubLog.Info, msg);
         }
         
         private string GetStartPage() {

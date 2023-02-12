@@ -24,6 +24,8 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         internal readonly   EventSubUser                            user;
         internal            bool                                    queueEvents;
         private             EventReceiver                           eventReceiver; // can be null if created by a REST request
+        
+        internal            string                                  Endpoint  => eventReceiver?.Endpoint;
 
         public              bool                                    Connected => eventReceiver?.IsOpen() ?? false;
         [DebuggerBrowsable(Never)]

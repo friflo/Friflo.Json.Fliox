@@ -125,6 +125,7 @@ public struct SubscriptionEvents {
     int                       queued;
     bool                      queueEvents;
     bool                      connected;
+    string                    endpoint;
     List<string>              messageSubs;
     List<ChangeSubscription>  changeSubs;
 }

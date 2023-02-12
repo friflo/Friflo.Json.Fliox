@@ -5338,6 +5338,16 @@
                     }
                 },
                 {
+                    "name": "endpoint",
+                    "description": "    /**\n     * The endpoint of the client events are sent to.  \n     * E.g. ws:[::1]:52089 for WebSockets, udp:127.0.0.1:60005 for UDP or in-process\n     */\n",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"SCALAR",
+                        "name": "String"
+                    }
+                },
+                {
                     "name": "messageSubs",
                     "description": "    /** message / command subscriptions of a client */\n",
                     "args": [
@@ -5428,6 +5438,16 @@
                             "kind":"SCALAR",
                             "name": "Boolean"
                         }
+                    }
+                },
+                {
+                    "name": "endpoint",
+                    "description": "    /**\n     * The endpoint of the client events are sent to.  \n     * E.g. ws:[::1]:52089 for WebSockets, udp:127.0.0.1:60005 for UDP or in-process\n     */\n",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"SCALAR",
+                        "name": "String"
                     }
                 },
                 {

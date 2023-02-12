@@ -62,6 +62,7 @@ class SubscriptionEvents {
     queued       : int32
     queueEvents  : boolean
     connected    : boolean
+    endpoint?    : string
     messageSubs? : string[]
     changeSubs?  : ChangeSubscription[]
 }

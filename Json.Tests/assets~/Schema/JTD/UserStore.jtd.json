@@ -272,6 +272,7 @@
                 "queued":      { "type": "int32" },
                 "queueEvents": { "type": "boolean" },
                 "connected":   { "type": "boolean" },
+                "endpoint":    { "type": "string", "nullable": true },
                 "messageSubs": { "elements": { "type": "string" }, "nullable": true },
                 "changeSubs":  { "elements": { "ref":  "ChangeSubscription" }, "nullable": true }
             }

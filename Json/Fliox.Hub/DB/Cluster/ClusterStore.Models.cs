@@ -177,6 +177,11 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
         public  bool                            queueEvents;
         /// <summary>true if client is connected. Non remote client are always connected</summary>
         public  bool                            connected;
+        /// <summary>
+        /// The endpoint of the client events are sent to.<br/>
+        /// E.g. <c>ws:[::1]:52089</c> for WebSockets, <c>udp:127.0.0.1:60005</c> for UDP or <c>in-process</c>
+        /// </summary>
+        public  string                          endpoint;
         /// <summary>message / command subscriptions of a client</summary>
         public  List<string>                    messageSubs;
         /// <summary>change subscriptions of a client</summary>

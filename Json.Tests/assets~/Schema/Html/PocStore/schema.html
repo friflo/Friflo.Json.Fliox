@@ -1251,6 +1251,12 @@ E.g. <b>ensureClientId</b> = true or <b>queueEvents</b> = true</docs></td>
             <td><docs>true if client is connected. Non remote client are always connected</docs></td>
         </tr>
         <tr>
+            <td><field>endpoint</field></td>
+            <td><type><predef>string</predef> | null</type></td>
+            <td><docs>The endpoint of the client events are sent to.<br/>
+E.g. <c>ws:[::1]:52089</c> for WebSockets, <c>udp:127.0.0.1:60005</c> for UDP or <c>in-process</c></docs></td>
+        </tr>
+        <tr>
             <td><field>messageSubs</field></td>
             <td><type><predef>string</predef>[] | null</type></td>
             <td><docs>message / command subscriptions of a client</docs></td>

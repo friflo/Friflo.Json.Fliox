@@ -121,6 +121,7 @@ data class SubscriptionEvents (
               val queued      : Int,
               val queueEvents : Boolean,
               val connected   : Boolean,
+              val endpoint    : String? = null,
               val messageSubs : List<String>? = null,
               val changeSubs  : List<ChangeSubscription>? = null,
 )

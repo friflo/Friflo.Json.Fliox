@@ -488,6 +488,7 @@ type SubscriptionEvents {
     queued      : Int!
     queueEvents : Boolean!
     connected   : Boolean!
+    endpoint    : String
     messageSubs : [String!]
     changeSubs  : [ChangeSubscription!]
 }
@@ -497,6 +498,7 @@ input SubscriptionEventsInput {
     queued      : Int!
     queueEvents : Boolean!
     connected   : Boolean!
+    endpoint    : String
     messageSubs : [String!]
     changeSubs  : [ChangeSubscriptionInput!]
 }

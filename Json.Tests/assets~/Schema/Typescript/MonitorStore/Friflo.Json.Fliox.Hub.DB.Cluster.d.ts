@@ -23,6 +23,11 @@ export class SubscriptionEvents {
     queueEvents  : boolean;
     /** true if client is connected. Non remote client are always connected */
     connected    : boolean;
+    /**
+     * The endpoint of the client events are sent to.  
+     * E.g. ws:[::1]:52089 for WebSockets, udp:127.0.0.1:60005 for UDP or in-process
+     */
+    endpoint?    : string | null;
     /** message / command subscriptions of a client */
     messageSubs? : string[] | null;
     /** change subscriptions of a client */

@@ -11,8 +11,9 @@ namespace Gen.Friflo.Json.Fliox.Hub.DB.Cluster
         private const int Gen_queued = 1;
         private const int Gen_queueEvents = 2;
         private const int Gen_connected = 3;
-        private const int Gen_messageSubs = 4;
-        private const int Gen_changeSubs = 5;
+        private const int Gen_endpoint = 4;
+        private const int Gen_messageSubs = 5;
+        private const int Gen_changeSubs = 6;
 
         private static bool ReadField (ref SubscriptionEvents obj, PropField field, ref Reader reader) {
             bool success;
@@ -21,6 +22,7 @@ namespace Gen.Friflo.Json.Fliox.Hub.DB.Cluster
                 case Gen_queued:      obj.queued      = reader.ReadInt32   (field, out success);  return success;
                 case Gen_queueEvents: obj.queueEvents = reader.ReadBoolean (field, out success);  return success;
                 case Gen_connected:   obj.connected   = reader.ReadBoolean (field, out success);  return success;
+                case Gen_endpoint:    obj.endpoint    = reader.ReadString  (field, obj.endpoint,    out success);  return success;
                 case Gen_messageSubs: obj.messageSubs = reader.ReadClass   (field, obj.messageSubs, out success);  return success;
                 case Gen_changeSubs:  obj.changeSubs  = reader.ReadClass   (field, obj.changeSubs,  out success);  return success;
             }
@@ -32,6 +34,7 @@ namespace Gen.Friflo.Json.Fliox.Hub.DB.Cluster
             writer.WriteInt32   (fields[Gen_queued],      obj.queued,      ref firstMember);
             writer.WriteBoolean (fields[Gen_queueEvents], obj.queueEvents, ref firstMember);
             writer.WriteBoolean (fields[Gen_connected],   obj.connected,   ref firstMember);
+            writer.WriteString  (fields[Gen_endpoint],    obj.endpoint,    ref firstMember);
             writer.WriteClass   (fields[Gen_messageSubs], obj.messageSubs, ref firstMember);
             writer.WriteClass   (fields[Gen_changeSubs],  obj.changeSubs,  ref firstMember);
         }

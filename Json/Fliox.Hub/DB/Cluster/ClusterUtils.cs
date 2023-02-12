@@ -28,6 +28,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
                 queued      = subscriber.QueuedEventsCount,
                 queueEvents = subscriber.queueEvents,
                 connected   = subscriber.Connected,
+                endpoint    = subscriber.Endpoint,
                 messageSubs = msgSubs,
                 changeSubs  = changeSubs
             };

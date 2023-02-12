@@ -25,7 +25,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
         }
         
         // --- IEventReceiver
-        protected internal override string  Endpoint            => endpoint.ToString();
+        protected internal override string  Endpoint            => $"udp:{endpoint}";
         protected internal override bool    IsRemoteTarget ()   => true;
         protected internal override bool    IsOpen ()           => true;
         

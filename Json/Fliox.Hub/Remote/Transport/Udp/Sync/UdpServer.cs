@@ -156,8 +156,13 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
         /// </summary>
         private void SendReceiveMessages()
         {
-            if (socket == null) throw new InvalidOperationException("server not started");
+            if (socket == null) {
+                var error = $"UdpServerSync requires Start() before Run() endpoint: {ipEndPoint}";
+                Logger.Log(HubLog.Error, error);
+                throw new InvalidOperationException(error);
+            }
             running         = true;
+            var startMsg = $"UdpServerSync listening at: {ipEndPoint}";
             Thread sendLoop = null;
             try {
                 sendLoop        = new Thread(RunSendMessageLoop)    { Name = $"UDP:{ipEndPoint.Port} send" };
