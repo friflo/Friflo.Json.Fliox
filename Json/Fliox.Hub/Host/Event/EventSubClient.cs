@@ -76,11 +76,12 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         
         internal bool UpdateTarget(EventReceiver eventReceiver) {
             if (eventReceiver == null) throw new ArgumentNullException(nameof(eventReceiver));
-            if (this.eventReceiver == eventReceiver)
+            var old = this.eventReceiver;
+            if (old == eventReceiver)
                 return false;
-            var msg = this.eventReceiver != null ?
-                $"eventReceiver changed - client id: {clientId}  endpoint: {eventReceiver.Endpoint}" :
-                $"eventReceiver new     - client id: {clientId}  endpoint: {eventReceiver.Endpoint}";
+            var msg = old != null ?
+                $"event receiver: changed  client id: {clientId}  endpoint: {eventReceiver.Endpoint}  was: {old.Endpoint}" :
+                $"event receiver: new      client id: {clientId}  endpoint: {eventReceiver.Endpoint}";
             this.eventReceiver = eventReceiver;
             logger.Log(HubLog.Info, msg);
             SendUnacknowledgedEvents();
