@@ -80,8 +80,8 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             if (old == eventReceiver)
                 return false;
             var msg = old != null ?
-                $"event receiver: changed  client id: {clientId}  endpoint: {eventReceiver.Endpoint}  was: {old.Endpoint}" :
-                $"event receiver: new      client id: {clientId}  endpoint: {eventReceiver.Endpoint}";
+                $"event receiver: changed  client: {clientId}  endpoint: {eventReceiver.Endpoint}  was: {old.Endpoint}" :
+                $"event receiver: new      client: {clientId}  endpoint: {eventReceiver.Endpoint}";
             this.eventReceiver = eventReceiver;
             logger.Log(HubLog.Info, msg);
             SendUnacknowledgedEvents();
