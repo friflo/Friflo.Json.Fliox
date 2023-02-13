@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Demo;
 using Friflo.Json.Fliox.Hub.Client;
 using Friflo.Json.Fliox.Hub.Remote;
+using Friflo.Json.Fliox.Hub.Remote.Transport.Udp;
 
 // ReSharper disable UnusedVariable
 namespace DemoTest {
@@ -41,7 +42,7 @@ clients   rate frames connected  average     50    90    95    96    97    98   
     {
         internal static async Task PubSubLatency()
         {
-            var hub     = new WebSocketClientHub("main_db", "ws://localhost:8010/fliox/");
+            var hub     = CreateClient();
             var sender  = new DemoClient(hub) { UserId = "admin", Token = "admin" };
             
             var rate    = 50; // tick rate
@@ -184,9 +185,18 @@ frames  = number of messages send / received events
             return percentiles;
         }
         
+        private const bool UseWebSockets = true;
+        
+        private static SocketClientHub CreateClient() {
+            if (UseWebSockets) {
+                return new WebSocketClientHub("main_db", "ws://127.0.0.1:8010/fliox/", access: RemoteClientAccess.Single);
+            }
+            return new UdpSocketClientHub("main_db", "127.0.0.1:5000", access: RemoteClientAccess.Single);
+        }
+        
         private static async Task<BenchmarkContext> ConnectClient(int frames)
         {
-            var hub     = new WebSocketClientHub("main_db", "ws://localhost:8010/fliox/");
+            var hub     = CreateClient();
             var client  = new DemoClient(hub) { UserId = "admin", Token = "admin" };
             var bc      = new BenchmarkContext { hub = hub, client = client, frames = frames };
             
@@ -207,7 +217,7 @@ frames  = number of messages send / received events
     
     internal class BenchmarkContext
     {
-        internal            WebSocketClientHub      hub;
+        internal            SocketClientHub         hub;
         internal            FlioxClient             client;
         internal readonly   List<double>            latencies = new List<double>(); // ms
         internal readonly   TaskCompletionSource    tcs = new TaskCompletionSource();

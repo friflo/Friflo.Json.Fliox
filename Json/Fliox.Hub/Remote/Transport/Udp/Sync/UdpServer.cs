@@ -163,6 +163,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
             }
             running         = true;
             var startMsg = $"UdpServerSync listening at: {ipEndPoint}";
+            Logger.Log(HubLog.Info, startMsg);
             Thread sendLoop = null;
             try {
                 sendLoop        = new Thread(RunSendMessageLoop)    { Name = $"UDP:{ipEndPoint.Port} send" };
