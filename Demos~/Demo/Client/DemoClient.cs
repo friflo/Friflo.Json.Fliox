@@ -13,7 +13,7 @@ namespace Demo
     /// <i>Info</i>: Use command <b>demo.FakeRecords</b> to create fake records in various containers. <br/>
     /// </summary>
     /// <remarks>Command handlers are implemented at <c>DemoHub/MessageHandler.cs</c> using <see cref="DemoClient"/> clients</remarks>
-    [OpenAPIServer(description : "public DemoHub API", url : "http://ec2-174-129-178-18.compute-1.amazonaws.com/fliox/rest/main_db")]
+    [OpenAPIServer(description : "public DemoHub API", url : "http://ec2-18-215-176-108.compute-1.amazonaws.com/fliox/rest/main_db")]
     [MessagePrefix("demo.")]
     public class DemoClient : FlioxClient
     {

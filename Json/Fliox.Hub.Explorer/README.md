@@ -9,7 +9,7 @@ namespace **`Friflo.Json.Fliox.Hub.Explorer`**
 The Hub Explorer is the admin page for a Fliox Hub.  
 It is a single page application used for development and administration of databases hosted by a **Fliox Hub**.
 
-Try out the online demo - running on AWS - [**DemoHub**](http://ec2-174-129-178-18.compute-1.amazonaws.com/) (EC2 instance: t2-micro, us-east-1).  
+Try out the online demo - running on AWS - [**DemoHub**](http://ec2-18-215-176-108.compute-1.amazonaws.com/) (EC2 instance: t2-micro, us-east-1).  
 An explanation of the Explorer is available at the [🐾 Examples - Walkthrough](https://github.com/friflo/Fliox.Examples#-walkthrough).
 
 

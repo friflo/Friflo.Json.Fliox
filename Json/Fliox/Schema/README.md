@@ -64,7 +64,7 @@ The links in the table above navigate to pages utilizing the generated schemas. 
 # 📷 Screenshots
 
 Try out the web pages shown as screenshots below.  
-They are linked by the online [**DemoHub Explorer**](http://ec2-174-129-178-18.compute-1.amazonaws.com/) (EC2 instance: t2-micro, us-east-1)  
+They are linked by the online [**DemoHub Explorer**](http://ec2-18-215-176-108.compute-1.amazonaws.com/) (EC2 instance: t2-micro, us-east-1)  
 
 | Link symbol                           | links to                                   |
 | ------------------------------------- | ---------------------------------- |

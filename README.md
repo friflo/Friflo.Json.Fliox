@@ -24,7 +24,7 @@ This improves performance and bypass the [object–relational impedance mismatch
 
 **TL;DR**
 
-Try the example Hub online running on AWS - [**DemoHub**](http://ec2-174-129-178-18.compute-1.amazonaws.com/) (EC2 instance: t2-micro, us-east-1)  
+Try the example Hub online running on AWS - [**DemoHub**](http://ec2-18-215-176-108.compute-1.amazonaws.com/) (EC2 instance: t2-micro, us-east-1)  
 The **DemoHub** .NET project is available at
 [**🚀 friflo/Fliox.Examples**](https://github.com/friflo/Fliox.Examples/blob/main/README.md#-content).
 
