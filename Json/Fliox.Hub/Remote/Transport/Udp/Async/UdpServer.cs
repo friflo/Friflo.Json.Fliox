@@ -47,6 +47,8 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
         // --- IServer
         public void     Start   () {
             socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
+            // socket.SendBufferSize    = 10 * 0x10000;
+            socket.ReceiveBufferSize    = 10 * 0x10000; // if too small received messages get dropped if buffer is full
             socket.Bind(ipEndPoint);
         }
         public void     Run     () => SendReceiveMessages().GetAwaiter().GetResult();
@@ -81,6 +83,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
             while (running) {
                 var remoteEvent = await sendQueue.DequeMessagesAsync(messages).ConfigureAwait(false);
                 
+                // if (messages.Count >= 2) { Console.WriteLine("dequeued messages " + messages.Count); }
                 foreach (var message in messages) {
                     if (hostEnv.logMessages) LogMessage(logger, ref sbSend, " server ->", message.meta.remoteEndPoint, message.value);
                     var array = message.value.AsMutableArraySegment();
@@ -104,19 +107,33 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
         private async Task ReceiveMessageLoop() {
             var buffer = new ArraySegment<byte>(new byte[0x10000]);
             while (running) {
-                // --- Read message from socket
-                var result = await socket.ReceiveFromAsync(buffer, SocketFlags.None, endPointCache).ConfigureAwait(false);
-                
-                // --- Get remote host from IP address
-                var remoteEndpoint  = (IPEndPoint)result.RemoteEndPoint;
-                if (!clients.TryGetValue(remoteEndpoint, out var remote)) {
-                    remote                      = new UdpSocketHost(this, remoteEndpoint);
-                    clients[remote.endpoint]    = remote;
+                try {
+                    // --- Read message from socket
+                    var result = await socket.ReceiveFromAsync(buffer, SocketFlags.None, endPointCache).ConfigureAwait(false);
+                    
+                    // --- Get remote host from IP address
+                    var remoteEndpoint  = (IPEndPoint)result.RemoteEndPoint;
+                    if (!clients.TryGetValue(remoteEndpoint, out var remote)) {
+                        remote                      = new UdpSocketHost(this, remoteEndpoint);
+                        clients[remote.endpoint]    = remote;
+                    }
+                    // --- Process message
+                    var request = new JsonValue(buffer.Array, result.ReceivedBytes);
+                    if (hostEnv.logMessages) LogMessage(logger, ref sbRecv, " server <-", remote.endpoint, request);
+                    remote.OnReceive(request, ref hostEnv.metrics.udp);
                 }
-                // --- Process message
-                var request = new JsonValue(buffer.Array, result.ReceivedBytes);
-                if (hostEnv.logMessages) LogMessage(logger, ref sbRecv, " server <-", remote.endpoint, request);
-                remote.OnReceive(request, ref hostEnv.metrics.udp);
+                catch (SocketException socketException) {
+                    if (UdpUtils.IsIgnorable(socketException))
+                        continue;
+                    var msg = GetExceptionMessage("UdpServer.ReceiveMessageLoop()", ipEndPoint, socketException);
+                    logger.Log(HubLog.Error, msg);
+                    return;
+                }
+                catch (Exception exception) {
+                    var msg = GetExceptionMessage("UdpServer.ReceiveMessageLoop()", ipEndPoint, exception);
+                    logger.Log(HubLog.Error, msg);
+                    return;
+                }
             }
         }
 

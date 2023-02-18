@@ -62,6 +62,11 @@ frames  = number of messages send / received events
             Console.WriteLine("            Hz               ms       ms     latency ms percentiles                              ms   ms/s  kb/s");
             Console.WriteLine("clients   rate frames connected  average     50    90    95    96    97    98    99   100  duration   main alloc");
             
+            for (int n = 0; n < 1; n++) {
+                if (n % 10 == 0) Console.WriteLine($"--- run {n}");
+                await PubSubLatencyCCU(sender,   1000,   rate, frames);
+            }
+            
             await PubSubLatencyCCU(sender,     2,   rate, frames);
             await PubSubLatencyCCU(sender,     2,   rate, frames);
             await PubSubLatencyCCU(sender,     5,   rate, frames);
@@ -161,14 +166,25 @@ frames  = number of messages send / received events
                 var task = context.client.SyncTasks();
                 tasks.Add(task);
             }
-            await Task.WhenAll(tasks);
 
+            if (LogUnsubscribe) {
+                for (int n = 0; n < tasks.Count; n++) {
+                    Console.Write($"unsubscribe {n} ... ");
+                    await tasks[n];
+                    Console.WriteLine("done");
+                }
+            } else {
+                await Task.WhenAll(tasks);
+            }
+            
             foreach (var context in contexts) {
                 context.client.Dispose();
                 await context.hub.Close();
                 context.hub.Dispose();
             }
         }
+        
+        private static readonly bool LogUnsubscribe = false;
         
         private static List<double> GetPercentiles(List<double> values, int count) {
             var sorted = values.OrderBy(s => s).ToList();
@@ -185,13 +201,15 @@ frames  = number of messages send / received events
             return percentiles;
         }
         
-        private const bool UseWebSockets = true;
+        private static readonly string SocketType = "ws";
         
         private static SocketClientHub CreateClient() {
-            if (UseWebSockets) {
-                return new WebSocketClientHub("main_db", "ws://127.0.0.1:8010/fliox/", access: RemoteClientAccess.Single);
+            switch (SocketType) {
+                case "ws":          return new WebSocketClientHub    ("main_db", "ws://127.0.0.1:8010/fliox/");
+                case "udp":         return new UdpSocketClientHub    ("main_db", "127.0.0.1:5000"); 
+                case "udp-sync":    return new UdpSocketSyncClientHub("main_db", "127.0.0.1:5000");
+                default:            throw new ArgumentException($"invalid SocketType: {SocketType}");
             }
-            return new UdpSocketClientHub("main_db", "127.0.0.1:5000", access: RemoteClientAccess.Single);
         }
         
         private static async Task<BenchmarkContext> ConnectClient(int frames)

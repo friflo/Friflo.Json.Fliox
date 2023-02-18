@@ -49,6 +49,8 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
         // --- IServer
         public void     Start   () {
             socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
+            // socket.SendBufferSize    = 10 * 0x10000;
+            socket.ReceiveBufferSize    = 10 * 0x10000; // if too small received messages get dropped if buffer is full
             socket.Bind(ipEndPoint);
         }
         public void     Run     () => SendReceiveMessages();
@@ -96,13 +98,8 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
         }
         
         private void RunReceiveMessageLoop() {
-            try {
-                var receiver = new Receiver(this);
-                receiver.ReceiveMessageLoop();
-            } catch (Exception e){
-                var msg = GetExceptionMessage("UdpServerSync.RunReceiveMessageLoop()", ipEndPoint, e);
-                logger.Log(HubLog.Info, msg);
-            }
+            var receiver = new Receiver(this);
+            receiver.ReceiveMessageLoop();
         }
         
         private class Receiver {
@@ -128,23 +125,37 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
             internal void ReceiveMessageLoop() {
                 var buffer = new byte[0x10000];
                 while (server.running) {
-                    // --- Read message from socket
-                    EndPoint endpoint   = endPointCache;
-                    int receivedBytes   = socket.ReceiveFrom(buffer, 0, buffer.Length, SocketFlags.None, ref endpoint);
-                    
-                    // --- Get remote host from IP address
-                    var remoteEndpoint  = (IPEndPoint)endpoint;
-                    UdpSocketSyncHost remote;
-                    lock (clients) {
-                        if (!clients.TryGetValue(remoteEndpoint, out remote)) {
-                            remote                      = new UdpSocketSyncHost(server, remoteEndpoint);
-                            clients[remote.endpoint]    = remote;
-                        }                        
+                    try {
+                        // --- Read message from socket
+                        EndPoint endpoint   = endPointCache;
+                        int receivedBytes   = socket.ReceiveFrom(buffer, 0, buffer.Length, SocketFlags.None, ref endpoint);
+                        
+                        // --- Get remote host from IP address
+                        var remoteEndpoint  = (IPEndPoint)endpoint;
+                        UdpSocketSyncHost remote;
+                        lock (clients) {
+                            if (!clients.TryGetValue(remoteEndpoint, out remote)) {
+                                remote                      = new UdpSocketSyncHost(server, remoteEndpoint);
+                                clients[remote.endpoint]    = remote;
+                            }                        
+                        }
+                        // --- Process message
+                        var request = new JsonValue(buffer, receivedBytes);
+                        if (hostEnv.logMessages) LogMessage(logger, ref sbRecv, " server <-", remote.endpoint, request);
+                        remote.OnReceive(request, ref hostEnv.metrics.udp);
                     }
-                    // --- Process message
-                    var request = new JsonValue(buffer, receivedBytes);
-                    if (hostEnv.logMessages) LogMessage(logger, ref sbRecv, " server <-", remote.endpoint, request);
-                    remote.OnReceive(request, ref hostEnv.metrics.udp);
+                    catch (SocketException socketException) {
+                        if (UdpUtils.IsIgnorable(socketException))
+                            continue;
+                        var msg = GetExceptionMessage("UdpServerSync.ReceiveMessageLoop()", server.ipEndPoint, socketException);
+                        logger.Log(HubLog.Error, msg);
+                        return;
+                    }
+                    catch (Exception exception) {
+                        var msg = GetExceptionMessage("UdpServerSync.ReceiveMessageLoop()", server.ipEndPoint, exception);
+                        logger.Log(HubLog.Error, msg);
+                        return;
+                    }
                 }
             }
         }

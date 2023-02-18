@@ -153,7 +153,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             extensionDbs    = new Dictionary<ShortString, EntityDatabase>(ShortString.Equality);
         }
         
-        public virtual void Dispose() { }  // todo - remove
+        public virtual void Dispose() { }
         
         public TFeature GetFeature<TFeature>() where TFeature : new() {
             if (features.TryGetValue(typeof(TFeature), out var value)) {

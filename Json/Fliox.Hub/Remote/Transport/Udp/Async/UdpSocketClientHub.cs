@@ -67,38 +67,32 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
             // Connect: enable using Socket.ReceiveAsync() & SendAsync() instead of ReceiveFromAsync() & SendToAsync()
             udp.socket.Connect(this.remoteHost);
             // TODO check if running loop from here is OK
-            var _ = RunReceiveMessageLoop();
+            var _ = ReceiveMessageLoop();
         }
-        
-        /* public override void Dispose() {
-            base.Dispose();
-            // websocket.CancelPendingRequests();
-        } */
         
         public override Task Close() {
+            // socket.Close()
+            // - unbind the local port
+            // - throw SocketException with SocketError.OperationAborted or ObjectDisposedException in Socket.ReceiveAsync()
             udp.socket.Close();
             return Task.CompletedTask;
-        }
-        
-        private async Task RunReceiveMessageLoop() {
-            using (var mapper = new ObjectMapper(sharedEnv.typeStore)) {
-                await ReceiveMessageLoop(mapper.reader).ConfigureAwait(false);
-            }
         }
         
         /// <summary>
         /// Has no SendMessageLoop() - client send only response messages via <see cref="SocketClientHub.OnReceive"/>
         /// </summary>
-        private async Task ReceiveMessageLoop(ObjectReader reader) {
+        private async Task ReceiveMessageLoop() {
+            using var   mapper = new ObjectMapper(sharedEnv.typeStore);
+            var         reader = mapper.reader;
             var buffer = new ArraySegment<byte>(new byte[0x10000]);
             while (true)
             {
                 try {
                     // --- read complete datagram message
                     var receivedBytes  = await udp.socket.ReceiveAsync(buffer, SocketFlags.None).ConfigureAwait(false);
-                    
+                        
                     var message = new JsonValue(buffer.Array, receivedBytes);
-                    
+                        
                     // note: using ReceiveFromAsync() is faster than ReceiveAsync() - did not analyzed reason
                     // int length  = await udpSocket.socket.ReceiveAsync(bufferSegment, SocketFlags.None).ConfigureAwait(false);
                     // message     = new JsonValue(bufferSegment.Array, length);
@@ -108,14 +102,20 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
                     OnReceive(message, udp.requestMap, reader);
                 }
                 catch (SocketException e) {
-                    Logger.Log(HubLog.Info, $"UdpSocketClientHub.ReceiveMessageLoop() receive error: {e.Message}");
+                    if (e.SocketErrorCode != SocketError.OperationAborted) {
+                        Logger.Log(HubLog.Info, $"UdpSocketClientHub receive error: {e.Message}");
+                    }
+                    udp.requestMap.CancelRequests();
+                    return;
+                }
+                catch (ObjectDisposedException) {
                     udp.requestMap.CancelRequests();
                     return;
                 }
                 catch (Exception e) {
-                    var message = $"WebSocketClientHub receive error: {e.Message}";
-                    Logger.Log(HubLog.Error, message, e);
+                    Logger.Log(HubLog.Error, $"UdpSocketClientHub receive error: {e.Message}", e);
                     udp.requestMap.CancelRequests();
+                    return;
                 }
             }
         }

@@ -3,6 +3,7 @@
 
 using System;
 using System.Net;
+using System.Net.Sockets;
 
 namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
 {
@@ -14,6 +15,17 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
 
         internal UdpMeta (IPEndPoint remoteEndPoint) {
             this.remoteEndPoint = remoteEndPoint ?? throw new ArgumentNullException(nameof(remoteEndPoint));
+        }
+    }
+    
+    internal static class UdpUtils
+    {
+        internal static bool IsIgnorable(SocketException socketException) {
+            switch (socketException.SocketErrorCode) {
+                case SocketError.ConnectionReset: // (10054): An existing connection was forcibly closed by the remote host.
+                    return true;
+            }
+            return false;
         }
     }
 }
