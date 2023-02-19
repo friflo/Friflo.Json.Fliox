@@ -33,3 +33,6 @@ riderModule.iml
 package-lock.json
 /Json.Tests/assets~/img
 yarn.lock
+
+# macos
+.DS_Store
