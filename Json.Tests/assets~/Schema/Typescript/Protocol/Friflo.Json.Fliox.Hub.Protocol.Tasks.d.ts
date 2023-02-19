@@ -93,8 +93,8 @@ export class ReadEntities extends SyncRequestTask {
 }
 
 export type Order =
-    | "Asc"
-    | "Desc"
+    | "asc"
+    | "desc"
 ;
 
 /**

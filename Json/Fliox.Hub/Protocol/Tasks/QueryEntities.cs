@@ -169,8 +169,9 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         public   override   string                  ToString()  => $"(container: {container})";
     }
     
+    // ReSharper disable InconsistentNaming
     public enum Order {
-        Asc     = 1,
-        Desc    = 2,
+        asc     = 1,
+        desc    = 2,
     }
 }

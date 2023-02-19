@@ -92,6 +92,19 @@ namespace Friflo.Json.Fliox.Hub.Remote.Rest
             return true;
         }
         
+        private static bool GerOrderByKey(RequestContext context, NameValueCollection queryParams, out Order? value) {
+            var orderByKey = queryParams["orderByKey"];
+            switch (orderByKey) {
+                case null:      value = null;       return true;
+                case "asc":     value = Order.asc;  return true;
+                case "desc":    value = Order.desc; return true;
+                default:
+                    context.WriteError("query parameter error", $"Expect asc|desc. was: {orderByKey}", 400);
+                    value = null;
+                    return false;
+            }
+        }
+        
         // -------------------------------------- resource access  --------------------------------------
         internal static async Task GetEntitiesById(RequestContext context, ShortString database, ShortString container, JsonKey[] keys) {
             if (database.IsEqual(context.hub.database.nameShort))
@@ -141,9 +154,14 @@ namespace Friflo.Json.Fliox.Hub.Remote.Rest
                 return;
             if (!TryParseParamAsInt(context, "limit",    queryParams, out int? limit))
                 return;
+            if (!GerOrderByKey(context, queryParams, out var orderByKey))
+                return;
             var cursor          = queryParams["cursor"];
             var hub             = context.hub;
-            var queryEntities   = new QueryEntities{ container = container, filterTree = filter, maxCount = maxCount, cursor = cursor, limit = limit };
+            var queryEntities   = new QueryEntities{
+                container = container, orderByKey = orderByKey, filterTree = filter,
+                maxCount = maxCount, cursor = cursor, limit = limit
+            };
             var syncRequest     = CreateSyncRequest(context, database, queryEntities, out var syncContext);
             var executionType   = hub.InitSyncRequest(syncRequest);
             ExecuteSyncResult syncResult;
@@ -167,8 +185,14 @@ namespace Friflo.Json.Fliox.Hub.Remote.Rest
             }
             var entityMap   = restResult.syncResponse.FindContainer(container).entityMap;
             var entities    = new List<JsonValue>(entityMap.Count);
-            foreach (var pair in entityMap) {
-                entities.Add(pair.Value.Json);
+            if (orderByKey == null) {
+                foreach (var pair in entityMap) {
+                    entities.Add(pair.Value.Json);
+                }
+            } else {
+                foreach (var id in taskResult.ids) {
+                    entities.Add(entityMap[id].Json);
+                }
             }
             context.AddHeader("len", entities.Count.ToString()); // added to simplify debugging experience
             using (var pooled = context.ObjectMapper.Get()) {

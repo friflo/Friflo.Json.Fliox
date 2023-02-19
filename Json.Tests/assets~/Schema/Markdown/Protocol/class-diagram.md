@@ -165,8 +165,8 @@ ReadEntities *-- "0..*" References : references
 
 class Order:::cssEnum {
     <<enumeration>>
-    Asc
-    Desc
+    asc
+    desc
 }
 
 

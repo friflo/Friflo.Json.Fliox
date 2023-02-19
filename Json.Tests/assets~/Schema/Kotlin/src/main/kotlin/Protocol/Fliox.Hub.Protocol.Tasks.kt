@@ -45,8 +45,8 @@ data class ReadEntities (
 ) : SyncRequestTask()
 
 enum class Order {
-    Asc,
-    Desc,
+    asc,
+    desc,
 }
 
 @Serializable

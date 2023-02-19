@@ -95,8 +95,8 @@
         },
         "Order": {
             "enum": [
-                "Asc",
-                "Desc"
+                "asc",
+                "desc"
             ]
         },
         "QueryEntities": {

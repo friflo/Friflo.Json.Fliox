@@ -84,7 +84,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Utils
             if (order == null)
                 return;
             keys.Sort(JsonKey.Comparer);
-            if (order == Order.Desc) {
+            if (order == Order.desc) {
                 keys.Reverse();
             }
         }
