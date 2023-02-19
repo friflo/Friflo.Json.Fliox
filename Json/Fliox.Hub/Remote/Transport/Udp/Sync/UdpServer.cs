@@ -57,7 +57,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
         public Task     RunAsync() => Task.Run(SendReceiveMessages);
         public void     Stop    () {
             running = false;
-            socket.Close();
+            UdpUtils.CloseSocket(socket);
             sendQueue.Close();
         }
         
