@@ -44,11 +44,17 @@ data class ReadEntities (
               val references : List<References>? = null,
 ) : SyncRequestTask()
 
+enum class Order {
+    Asc,
+    Desc,
+}
+
 @Serializable
 @SerialName("query")
 data class QueryEntities (
     override  val info       : JsonElement? = null,
               val cont       : String,
+              val orderByKey : Order? = null,
               val keyName    : String? = null,
               val isIntKey   : Boolean? = null,
               val filterTree : JsonElement? = null,

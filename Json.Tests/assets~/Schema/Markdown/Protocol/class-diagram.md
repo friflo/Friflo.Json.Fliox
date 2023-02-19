@@ -95,10 +95,12 @@ SyncEvent *-- "0..*" SyncRequestTask : tasks
 class References {
     selector    : string
     cont        : string
+    orderByKey? : Order
     keyName?    : string
     isIntKey?   : boolean
     references? : References[]
 }
+References *-- "0..1" Order : orderByKey
 References *-- "0..*" References : references
 
 class EntityError {
@@ -161,10 +163,18 @@ class ReadEntities {
 }
 ReadEntities *-- "0..*" References : references
 
+class Order:::cssEnum {
+    <<enumeration>>
+    Asc
+    Desc
+}
+
+
 SyncRequestTask <|-- QueryEntities
 class QueryEntities {
     task        : "query"
     cont        : string
+    orderByKey? : Order
     keyName?    : string
     isIntKey?   : boolean
     filterTree? : any
@@ -174,6 +184,7 @@ class QueryEntities {
     maxCount?   : int32
     cursor?     : string
 }
+QueryEntities *-- "0..1" Order : orderByKey
 QueryEntities *-- "0..*" References : references
 
 SyncRequestTask <|-- AggregateEntities

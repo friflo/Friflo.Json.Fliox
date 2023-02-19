@@ -85,6 +85,12 @@
             ],
             "additionalProperties": false
         },
+        "Order": {
+            "enum": [
+                "Asc",
+                "Desc"
+            ]
+        },
         "QueryEntities": {
             "type": "object",
             "extends": { "$ref": "#/definitions/SyncRequestTask" },
@@ -93,6 +99,7 @@
                 "task":       { "enum": ["query"] },
                 "info":       {  },
                 "cont":       { "type": "string", "description": "container name" },
+                "orderByKey": { "oneOf": [{ "$ref": "#/definitions/Order" }, {"type": "null"}] },
                 "keyName":    { "type": ["string", "null"], "description": "name of the primary key property of the returned entities" },
                 "isIntKey":   { "type": ["boolean", "null"] },
                 "filterTree": { "description": "query filter as JSON tree. <br/>\nIs used in favour of <b>filter</b> as its serialization is more performant" },

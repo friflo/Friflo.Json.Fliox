@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
+using Friflo.Json.Fliox.Hub.Host.Utils;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Transform;
 using Friflo.Json.Fliox.Transform.Query.Ops;
@@ -21,6 +22,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         /// <summary>container name</summary>
         [Serialize                            ("cont")]
         [Required]  public  ShortString         container;
+                    public  Order?              orderByKey;
         /// <summary>name of the primary key property of the returned entities</summary>
                     public  string              keyName;
                     public  bool?               isIntKey;
@@ -134,6 +136,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
             foreach (var entity in entities) {
                 ids.Add(entity.key);
             }
+            EntityUtils.OrderKeys(ids, orderByKey);
             result.ids          = ids;
             if (ids.Count > 0) {
                 result.len          = ids.Count;
@@ -164,5 +167,10 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         
         internal override   TaskType                TaskType    => TaskType.query;
         public   override   string                  ToString()  => $"(container: {container})";
+    }
+    
+    public enum Order {
+        Asc     = 1,
+        Desc    = 2,
     }
 }

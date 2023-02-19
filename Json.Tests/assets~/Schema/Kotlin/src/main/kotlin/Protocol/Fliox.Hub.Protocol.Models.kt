@@ -3,11 +3,13 @@ package Fliox.Hub.Protocol.Models
 
 import kotlinx.serialization.*
 import CustomSerializer.*
+import Fliox.Hub.Protocol.Tasks.*
 
 @Serializable
 data class References (
               val selector   : String,
               val cont       : String,
+              val orderByKey : Order? = null,
               val keyName    : String? = null,
               val isIntKey   : Boolean? = null,
               val references : List<References>? = null,

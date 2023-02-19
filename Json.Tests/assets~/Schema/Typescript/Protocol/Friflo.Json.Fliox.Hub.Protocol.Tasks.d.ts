@@ -92,6 +92,11 @@ export class ReadEntities extends SyncRequestTask {
     references? : References[] | null;
 }
 
+export type Order =
+    | "Asc"
+    | "Desc"
+;
+
 /**
  * Query entities from the given **container** using a **filter**  
  * To return entities referenced by fields of the query result use **references**
@@ -101,6 +106,7 @@ export class QueryEntities extends SyncRequestTask {
     task        : "query";
     /** container name */
     cont        : string;
+    orderByKey? : Order | null;
     /** name of the primary key property of the returned entities */
     keyName?    : string | null;
     isIntKey?   : boolean | null;

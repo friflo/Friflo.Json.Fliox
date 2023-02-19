@@ -9,15 +9,17 @@ namespace Gen.Friflo.Json.Fliox.Hub.Protocol.Models
     {
         private const int Gen_selector = 0;
         private const int Gen_container = 1;
-        private const int Gen_keyName = 2;
-        private const int Gen_isIntKey = 3;
-        private const int Gen_references = 4;
+        private const int Gen_orderByKey = 2;
+        private const int Gen_keyName = 3;
+        private const int Gen_isIntKey = 4;
+        private const int Gen_references = 5;
 
         private static bool ReadField (ref References obj, PropField field, ref Reader reader) {
             bool success;
             switch (field.genIndex) {
                 case Gen_selector:   obj.selector   = reader.ReadString      (field, obj.selector,   out success);  return success;
                 case Gen_container:  obj.container  = reader.ReadShortString (field, obj.container,  out success);  return success;
+                case Gen_orderByKey: obj.orderByKey = reader.ReadEnumNull    (field, obj.orderByKey, out success);  return success;
                 case Gen_keyName:    obj.keyName    = reader.ReadString      (field, obj.keyName,    out success);  return success;
                 case Gen_isIntKey:   obj.isIntKey   = reader.ReadBooleanNull (field, out success);  return success;
                 case Gen_references: obj.references = reader.ReadClass       (field, obj.references, out success);  return success;
@@ -28,6 +30,7 @@ namespace Gen.Friflo.Json.Fliox.Hub.Protocol.Models
         private static void Write(ref References obj, PropField[] fields, ref Writer writer, ref bool firstMember) {
             writer.WriteString      (fields[Gen_selector],   obj.selector,   ref firstMember);
             writer.WriteShortString (fields[Gen_container],  obj.container,  ref firstMember);
+            writer.WriteEnumNull    (fields[Gen_orderByKey], obj.orderByKey, ref firstMember);
             writer.WriteString      (fields[Gen_keyName],    obj.keyName,    ref firstMember);
             writer.WriteBooleanNull (fields[Gen_isIntKey],   obj.isIntKey,   ref firstMember);
             writer.WriteClass       (fields[Gen_references], obj.references, ref firstMember);

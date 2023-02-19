@@ -87,15 +87,23 @@
             "properties": {
                 "selector":   { "type": "string" },
                 "cont":       { "type": "string" },
+                "orderByKey": { "ref":  "Order", "nullable": true },
                 "keyName":    { "type": "string", "nullable": true },
                 "isIntKey":   { "type": "boolean", "nullable": true },
                 "references": { "elements": { "ref":  "References" }, "nullable": true }
             }
         },
+        "Order": {
+            "enum": [
+                "Asc",
+                "Desc"
+            ]
+        },
         "QueryEntities": {
             "properties": {
                 "info":       { "nullable": true },
                 "cont":       { "type": "string" },
+                "orderByKey": { "ref":  "Order", "nullable": true },
                 "keyName":    { "type": "string", "nullable": true },
                 "isIntKey":   { "type": "boolean", "nullable": true },
                 "filterTree": { "nullable": true },

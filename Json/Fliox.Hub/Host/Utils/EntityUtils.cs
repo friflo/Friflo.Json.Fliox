@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
+using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Utils;
 
 namespace Friflo.Json.Fliox.Hub.Host.Utils
@@ -78,7 +79,14 @@ namespace Friflo.Json.Fliox.Hub.Host.Utils
             error = null;
             return true;
         }
+        
+        internal static void OrderKeys (List<JsonKey> keys, Order? order) {
+            if (order == null)
+                return;
+            keys.Sort(JsonKey.Comparer);
+            if (order == Order.Desc) {
+                keys.Reverse();
+            }
+        }
     }
-    
-
 }

@@ -9,20 +9,22 @@ namespace Gen.Friflo.Json.Fliox.Hub.Protocol.Tasks
     {
         private const int Gen_info = 0;
         private const int Gen_container = 1;
-        private const int Gen_keyName = 2;
-        private const int Gen_isIntKey = 3;
-        private const int Gen_filterTree = 4;
-        private const int Gen_filter = 5;
-        private const int Gen_references = 6;
-        private const int Gen_limit = 7;
-        private const int Gen_maxCount = 8;
-        private const int Gen_cursor = 9;
+        private const int Gen_orderByKey = 2;
+        private const int Gen_keyName = 3;
+        private const int Gen_isIntKey = 4;
+        private const int Gen_filterTree = 5;
+        private const int Gen_filter = 6;
+        private const int Gen_references = 7;
+        private const int Gen_limit = 8;
+        private const int Gen_maxCount = 9;
+        private const int Gen_cursor = 10;
 
         private static bool ReadField (ref QueryEntities obj, PropField field, ref Reader reader) {
             bool success;
             switch (field.genIndex) {
                 case Gen_info:       obj.info       = reader.ReadJsonValue   (field, out success);  return success;
                 case Gen_container:  obj.container  = reader.ReadShortString (field, obj.container,  out success);  return success;
+                case Gen_orderByKey: obj.orderByKey = reader.ReadEnumNull    (field, obj.orderByKey, out success);  return success;
                 case Gen_keyName:    obj.keyName    = reader.ReadString      (field, obj.keyName,    out success);  return success;
                 case Gen_isIntKey:   obj.isIntKey   = reader.ReadBooleanNull (field, out success);  return success;
                 case Gen_filterTree: obj.filterTree = reader.ReadJsonValue   (field, out success);  return success;
@@ -38,6 +40,7 @@ namespace Gen.Friflo.Json.Fliox.Hub.Protocol.Tasks
         private static void Write(ref QueryEntities obj, PropField[] fields, ref Writer writer, ref bool firstMember) {
             writer.WriteJsonValue   (fields[Gen_info],       obj.info,       ref firstMember);
             writer.WriteShortString (fields[Gen_container],  obj.container,  ref firstMember);
+            writer.WriteEnumNull    (fields[Gen_orderByKey], obj.orderByKey, ref firstMember);
             writer.WriteString      (fields[Gen_keyName],    obj.keyName,    ref firstMember);
             writer.WriteBooleanNull (fields[Gen_isIntKey],   obj.isIntKey,   ref firstMember);
             writer.WriteJsonValue   (fields[Gen_filterTree], obj.filterTree, ref firstMember);

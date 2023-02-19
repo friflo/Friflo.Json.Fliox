@@ -310,6 +310,7 @@ namespace Friflo.Json.Fliox.Hub.Host
                         foreach (var id in set) {
                             ids.Add(id);
                         }
+                        EntityUtils.OrderKeys(ids, references[n].orderByKey);
                         if (ids.Count > 0) {
                             referenceResult.len = ids.Count;     
                         }

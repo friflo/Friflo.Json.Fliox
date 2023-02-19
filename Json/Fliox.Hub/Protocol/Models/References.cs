@@ -4,6 +4,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Friflo.Json.Fliox.Hub.Client;
+using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 
 namespace Friflo.Json.Fliox.Hub.Protocol.Models
 {
@@ -23,6 +24,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Models
         /// <summary>the <see cref="container"/> storing the entities referenced by the specified <see cref="selector"/></summary>
         [Serialize                            ("cont")]
         [Required]  public  ShortString         container;
+                    public  Order?              orderByKey;
                     public  string              keyName;
                     public  bool?               isIntKey;
                     public  List<References>    references;
