@@ -375,7 +375,10 @@ namespace Friflo.Json.Fliox.Schema.JSON
 
         /// <summary>Read a set of <see cref="JSONSchema"/>'s stored as files in the given <paramref name="folder"/>.</summary>
         public static List<JSONSchema> ReadSchemas(string folder) {
-            string[] fileNames = Directory.GetFiles(folder, "*.json", SearchOption.TopDirectoryOnly);
+            var fileNames = Directory.GetFiles(folder, "*.json", SearchOption.TopDirectoryOnly);
+            // Sort() of schema files not schema relevant. But useful to maintain a deterministic order of types to
+            // simplify: validation of schemas by tests, merging different version using git, easier to memorize by humans. 
+            Array.Sort(fileNames);
             var schemas = new List<JSONSchema>();
             using (var typeStore    = new TypeStore())
             using (var reader       = new ObjectReader(typeStore)) {
