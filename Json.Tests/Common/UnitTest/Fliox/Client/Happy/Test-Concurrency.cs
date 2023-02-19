@@ -160,9 +160,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 });
             }
         }
-        
-#if !UNITY_5_3_OR_NEWER
-        // TODO run successful in Unity but closing Editor afterwards will hang forever 
+
+        // Fixed: run successful in Unity but closing Editor afterwards will hang forever 
         [Test] public static void   TestConcurrentUdp()         { SingleThreadSynchronizationContext.Run(TestConcurrentUdpAsync); }
         
         private static async Task   TestConcurrentUdpAsync () {
@@ -178,8 +177,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 });
             }
         }
-#endif
-        
+
         [Test] public static void  TestConcurrentWebSocket()    { SingleThreadSynchronizationContext.Run(TestConcurrentWebSocketAsync); }
         
         /// <summary>
