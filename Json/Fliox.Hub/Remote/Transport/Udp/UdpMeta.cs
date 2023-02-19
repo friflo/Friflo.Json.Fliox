@@ -36,12 +36,10 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
         // see [UdpClient hangs when Receive is waiting and gets a Close() in macos · Issue #64551 · dotnet/runtime]
         //     https://github.com/dotnet/runtime/issues/64551
         internal static void CloseSocket(Socket socket) {
-            switch (Environment.OSVersion.Platform) {
-                case PlatformID.MacOSX:
-                case PlatformID.Unix:
-                    // throw SocketException with SocketErrorCode == SocketError.OperationAborted in blocking Socket.Receive()
-                    Close(socket.Handle);
-                    return;                
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX)) {
+                // throw SocketException with SocketErrorCode == SocketError.OperationAborted in blocking Socket.Receive()
+                Close(socket.Handle);
+                return;                
             }
             socket.Close();
         }
