@@ -123,13 +123,13 @@ namespace Friflo.Json.Fliox.Hub.Host
         
         // --- private / internal fields & properties 
         /// <summary><see cref="Routes"/> exposed by the Host - available via command <b>std.Host</b> </summary>
-                        internal            IReadOnlyList<string>   Routes          => routes;
-                        private  readonly   Dictionary<Type,object> features        = new Dictionary<Type, object>();
-                        internal readonly   HostStats               hostStats       = new HostStats{ requestCount = new RequestCount{ db = new ShortString("*")} };
-        [Browse(Never)] internal readonly   List<string>            routes          = new List<string>();
-        [Browse(Never)] private             HubInfo                 info            = new HubInfo();
-        [Browse(Never)] private             Authenticator           authenticator   = CreateDefaultAuthenticator();
-        [Browse(Never)] private             ClientController        clientController= new IncrementClientController();
+                        internal            IReadOnlyCollection<string> Routes          => routes;
+                        private  readonly   Dictionary<Type,object>     features        = new Dictionary<Type, object>();
+                        internal readonly   HostStats                   hostStats       = new HostStats{ requestCount = new RequestCount{ db = new ShortString("*")} };
+        [Browse(Never)] internal readonly   SortedSet<string>           routes          = new SortedSet<string>();
+        [Browse(Never)] private             HubInfo                     info            = new HubInfo();
+        [Browse(Never)] private             Authenticator               authenticator   = CreateDefaultAuthenticator();
+        [Browse(Never)] private             ClientController            clientController= new IncrementClientController();
         
         /// <see cref="Authenticator"/> is mutable => create new instance per Hub 
         private static Authenticator CreateDefaultAuthenticator() {

@@ -66,7 +66,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                         private  readonly   SchemaHandler           schemaHandler   = new SchemaHandler();
                         private  readonly   RestHandler             restHandler     = new RestHandler();
                         private  readonly   List<IRequestHandler>   customHandlers  = new List<IRequestHandler>();
-                        private  readonly   List<string>            hubRoutes;
+                        private  readonly   SortedSet<string>       hubRoutes;
 
                         public   override   string                  ToString() => $"endpoint: {endpoint}";
 
@@ -104,8 +104,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 WriteBanner();
             }
             hubRoutes = hub.routes;
-            hubRoutes.AddRange(restHandler.Routes);
-            hubRoutes.AddRange(schemaHandler.Routes);
+            hubRoutes.UnionWith(restHandler.Routes);
+            hubRoutes.UnionWith(schemaHandler.Routes);
             
             if (endpoint == null)           throw new ArgumentNullException(nameof(endpoint), "common values: \"/fliox/\" or \"/\"");
             if (!endpoint.StartsWith("/"))  throw new ArgumentException("endpoint requires '/' as first character");
@@ -136,7 +136,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         public void AddHandler(IRequestHandler requestHandler) {
             if (requestHandler == null) throw new ArgumentNullException(nameof(requestHandler));
             customHandlers.Add(requestHandler);
-            hubRoutes.AddRange(requestHandler.Routes);
+            hubRoutes.UnionWith(requestHandler.Routes);
         }
         
         public void RemoveHandler(IRequestHandler requestHandler) {
