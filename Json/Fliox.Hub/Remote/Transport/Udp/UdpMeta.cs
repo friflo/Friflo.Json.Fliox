@@ -32,9 +32,15 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
         [DllImport("libc", EntryPoint = "close", SetLastError = true)]
         private static extern int Close(IntPtr handle);
 
-        // Workaround for blocking Socket.Close() on macos
-        // see [UdpClient hangs when Receive is waiting and gets a Close() in macos · Issue #64551 · dotnet/runtime]
-        //     https://github.com/dotnet/runtime/issues/64551
+        /// <summary>
+        /// Close passed <paramref name="socket"/>.<br/>
+        /// </summary>
+        /// <remarks>
+        /// Close also unbind a socket from the local port previously associated to with <see cref="Socket.Bind"/>.<br/> 
+        /// Includes a workaround to close a <see cref="Socket"/> using synchronous Receive() or Send() methods on macos.<br/>
+        /// See: [UdpClient hangs when Receive is waiting and gets a Close() in macos · Issue #64551 · dotnet/runtime]
+        /// https://github.com/dotnet/runtime/issues/64551
+        /// </remarks>
         internal static void CloseSocket(Socket socket) {
             if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX)) {
                 // throw SocketException with SocketErrorCode == SocketError.OperationAborted in blocking Socket.Receive()

@@ -55,7 +55,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
             // socket.Close()
             // - unbind the local port
             // - throw SocketException with SocketError.Interrupted or ObjectDisposedException in Socket.Receive()
-            udp.socket.Close();
+            UdpUtils.CloseSocket(udp.socket);
             return Task.CompletedTask;
         }
         
