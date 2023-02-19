@@ -93,7 +93,7 @@ GET {{base}}/rest/main_db
 }
 
 ###
-GET {{base}}/rest/main_db/articles
+GET {{base}}/rest/main_db/articles?orderByKey=asc
 # StatusCode:   200
 # Content-Type: application/json
 
@@ -140,7 +140,7 @@ GET {{base}}/rest/main_db/articles/article-1
 }
 
 ###
-GET {{base}}/rest/main_db/articles?filter=o=>o.producer=='producer-samsung'
+GET {{base}}/rest/main_db/articles?filter=o=>o.producer=='producer-samsung'&orderByKey=asc
 # StatusCode:   200
 # Content-Type: application/json
 
