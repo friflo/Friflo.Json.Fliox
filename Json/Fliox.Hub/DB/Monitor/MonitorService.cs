@@ -23,12 +23,11 @@ namespace Friflo.Json.Fliox.Hub.DB.Monitor
             var pool = syncContext.pool;
             using (var pooled  = pool.Type(() => new MonitorStore(monitorDB.monitorHub)).Get()) {
                 var monitor = pooled.instance;
-                monitor.hostName = hub.hostName;
                 var tasks = syncContext.request.tasks;
                 if (MonitorDB.FindTask(nameof(MonitorStore.clients),  tasks)) monitor.UpdateClients  (hub, monitorDB.name);
                 if (MonitorDB.FindTask(nameof(MonitorStore.users),    tasks)) monitor.UpdateUsers    (hub.Authenticator, monitorDB.name);
                 if (MonitorDB.FindTask(nameof(MonitorStore.histories),tasks)) monitor.UpdateHistories(hub.hostStats.requestHistories);
-                if (MonitorDB.FindTask(nameof(MonitorStore.hosts),    tasks)) monitor.UpdateHost     (hub.hostStats);
+                if (MonitorDB.FindTask(nameof(MonitorStore.hosts),    tasks)) monitor.UpdateHost     (hub.Info.hostName, hub.hostStats);
                 
                 monitor.TrySyncTasksSynchronous();
             }

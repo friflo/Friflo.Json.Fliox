@@ -83,9 +83,9 @@
             "type": "object",
             "description": "general information about a Hub",
             "properties": {
+                "hostName":       { "type": "string", "description": "host name used to identify a specific host in a network. Default: 'host'<br/>\nUsed as key in <b>hosts</b> of database <b>monitor</b>" },
                 "hostVersion":    { "type": "string", "description": "host version" },
                 "flioxVersion":   { "type": "string", "description": "Fliox library version" },
-                "hostName":       { "type": ["string", "null"], "description": "host name. Used as <b>id</b> in\n<b>hosts</b> of database <b>monitor</b>" },
                 "projectName":    { "type": ["string", "null"], "description": "project name" },
                 "projectWebsite": { "type": ["string", "null"], "description": "link to a website describing project and Hub" },
                 "envName":        { "type": ["string", "null"], "description": "environment name. e.g. 'dev', 'test', 'staging', 'prod'" },
@@ -95,6 +95,7 @@
                 "memory":         { "oneOf": [{ "$ref": "#/definitions/HostMemory" }, {"type": "null"}] }
             },
             "required": [
+                "hostName",
                 "hostVersion",
                 "flioxVersion",
                 "pubSub",

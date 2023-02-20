@@ -55,10 +55,11 @@ public class HostParam {
 
 public class HostInfo {
     [Required]
+    string        hostName;
+    [Required]
     string        hostVersion;
     [Required]
     string        flioxVersion;
-    string        hostName;
     string        projectName;
     string        projectWebsite;
     string        envName;

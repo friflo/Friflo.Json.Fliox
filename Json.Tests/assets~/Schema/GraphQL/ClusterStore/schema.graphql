@@ -143,9 +143,9 @@ input HostParamInput {
 }
 
 type HostInfo {
+    hostName       : String!
     hostVersion    : String!
     flioxVersion   : String!
-    hostName       : String
     projectName    : String
     projectWebsite : String
     envName        : String
@@ -156,9 +156,9 @@ type HostInfo {
 }
 
 input HostInfoInput {
+    hostName       : String!
     hostVersion    : String!
     flioxVersion   : String!
-    hostName       : String
     projectName    : String
     projectWebsite : String
     envName        : String

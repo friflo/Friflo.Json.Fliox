@@ -16,7 +16,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs
     {
         private readonly    FlioxHub  local;
 
-        public AsyncDatabaseHub(EntityDatabase database, SharedEnv env, string hostName = null) : base(database, env, hostName) {
+        public AsyncDatabaseHub(EntityDatabase database, SharedEnv env) : base(database, env) {
             local = new FlioxHub(database, env);
         }
         

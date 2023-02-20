@@ -80,13 +80,15 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
     
     /// <summary>general information about a Hub</summary>
     public sealed class HostInfo {
+        /// <summary>
+        /// host name used to identify a specific host in a network. Default: 'host'<br/>
+        /// Used as key in <see cref="DB.Monitor.MonitorStore.hosts"/> of database <b>monitor</b>
+        /// </summary>
+        [Required]  public  string              hostName;       // not null
         /// <summary>host version</summary>
-        [Required]  public  string              hostVersion;
+        [Required]  public  string              hostVersion;    // not null
         /// <summary>Fliox library version</summary>
-        [Required]  public  string              flioxVersion;
-        /// <summary>host name. Used as <see cref="DB.Monitor.HostHits.id"/> in
-        /// <see cref="DB.Monitor.MonitorStore.hosts"/> of database <b>monitor</b></summary>
-                    public  string              hostName;
+        [Required]  public  string              flioxVersion;   // not null
         /// <summary>project name</summary>
                     public  string              projectName;
         /// <summary>link to a website describing project and Hub</summary>

@@ -1,7 +1,6 @@
 // Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
-using System;
 using System.Collections.Generic;
 using Friflo.Json.Fliox.Hub.DB.Cluster;
 using Friflo.Json.Fliox.Hub.Host;
@@ -24,7 +23,6 @@ namespace Friflo.Json.Fliox.Hub.DB.Monitor
         // --- private / internal
         internal readonly   EntityDatabase      stateDB;
         internal readonly   FlioxHub            monitorHub;
-        private  readonly   FlioxHub            hub;
 
         public   override   string              StorageType => stateDB.StorageType;
 
@@ -32,7 +30,6 @@ namespace Friflo.Json.Fliox.Hub.DB.Monitor
             : base (dbName, new MonitorService(hub), opt)
         {
             ((MonitorService)service).monitorDB = this;
-            this.hub        = hub  ?? throw new ArgumentNullException(nameof(hub));
             var typeSchema  = NativeTypeSchema.Create(typeof(MonitorStore));
             Schema          = new DatabaseSchema(typeSchema);
             stateDB         = new MemoryDatabase(dbName, null, MemoryType.NonConcurrent);
@@ -118,10 +115,13 @@ namespace Friflo.Json.Fliox.Hub.DB.Monitor
             }
         }
         
-        internal void UpdateHost(HostStats hostStats) {
-            var hostNameKey = new ShortString(hostName);
-            if (!hosts.Local.TryGetEntity(hostNameKey, out var hostHits)) {
-                hostHits = new HostHits { id = hostNameKey };
+        internal void UpdateHost(string hostName, HostStats hostStats) {
+            var name = new ShortString(hostName);
+            HostHits hostHits;
+            if (hosts.Local.Count == 0) {
+                hostHits = new HostHits { id = name };
+            } else {
+                hostHits = hosts.Local[name];
             }
             hostHits.counts = hostStats.requestCount;
             hosts.Upsert(hostHits);

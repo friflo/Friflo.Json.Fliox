@@ -105,12 +105,6 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// </summary>
         public              ClientController    ClientController{ get => clientController; set => clientController = value ?? throw new ArgumentNullException(nameof(ClientController)); }
         
-        /// <summary>
-        /// A host name that is assigned to a default database.
-        /// Its only purpose is to use it as id in <see cref="HostHits.id"/>.
-        /// </summary>
-        public   readonly   string              hostName;
-        
         /// <summary>host <see cref="HostVersion"/> - available via command <b>std.Host</b></summary>
         public              string              HostVersion    { get; set; } = "1.0.0";
         
@@ -144,12 +138,10 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// </summary>
         public FlioxHub (
             EntityDatabase      database,
-            SharedEnv           env                 = null,
-            string              hostName            = null)
+            SharedEnv           env                 = null)
         {
             sharedEnv       = env  ?? SharedEnv.Default;
             this.database   = database ?? throw new ArgumentNullException(nameof(database));
-            this.hostName   = hostName ?? "host";
             extensionDbs    = new Dictionary<ShortString, EntityDatabase>(ShortString.Equality);
         }
         

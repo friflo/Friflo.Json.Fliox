@@ -199,9 +199,9 @@
         },
         "HostInfo": {
             "properties": {
+                "hostName":       { "type": "string" },
                 "hostVersion":    { "type": "string" },
                 "flioxVersion":   { "type": "string" },
-                "hostName":       { "type": "string", "nullable": true },
                 "projectName":    { "type": "string", "nullable": true },
                 "projectWebsite": { "type": "string", "nullable": true },
                 "envName":        { "type": "string", "nullable": true },

@@ -44,8 +44,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs
         public  readonly    Dictionary<string, Func<ExecuteSyncResult>> syncErrors  = new Dictionary<string, Func<ExecuteSyncResult>>();
         private readonly    TestDatabase testDatabase;
 
-        public TestDatabaseHub(EntityDatabase database, SharedEnv env, string hostName = null)
-            : base(new TestDatabase (database), env, hostName)
+        public TestDatabaseHub(EntityDatabase database, SharedEnv env)
+            : base(new TestDatabase (database), env)
         {
             testDatabase = (TestDatabase)this.database;
         }

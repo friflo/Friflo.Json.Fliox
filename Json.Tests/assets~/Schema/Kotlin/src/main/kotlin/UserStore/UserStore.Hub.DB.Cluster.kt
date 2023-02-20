@@ -48,9 +48,9 @@ data class HostParam (
 
 @Serializable
 data class HostInfo (
+              val hostName       : String,
               val hostVersion    : String,
               val flioxVersion   : String,
-              val hostName       : String? = null,
               val projectName    : String? = null,
               val projectWebsite : String? = null,
               val envName        : String? = null,

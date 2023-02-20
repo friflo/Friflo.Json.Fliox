@@ -25,14 +25,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
 {
     public partial class TestHappy
     {
-        private static readonly string HostName  = "Test";
+        private static readonly string HostName  = "test-host";
         
         [Test]
         public static async Task TestMonitoringFile() {
             using (var _                = SharedEnv.Default) // for LeakTestsFixture
             using (var database         = new FileDatabase(TestGlobals.DB, TestGlobals.PocStoreFolder))
-            using (var hub          	= new FlioxHub(database, TestGlobals.Shared, HostName))
+            using (var hub          	= new FlioxHub(database, TestGlobals.Shared))
             using (var monitorDB        = new MonitorDB(TestGlobals.Monitor, hub)) {
+                hub.Info.hostName = HostName;
                 hub.AddExtensionDB(monitorDB);
                 // assert same behavior with default Authenticator or UserAuthenticator
                 await AssertNoAuthMonitoringDB  (hub);
@@ -44,9 +45,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         public static async Task TestMonitoringLoopback() {
             using (var _                = SharedEnv.Default) // for LeakTestsFixture
             using (var database         = new FileDatabase(TestGlobals.DB, TestGlobals.PocStoreFolder))
-            using (var hub          	= new FlioxHub(database, TestGlobals.Shared, HostName))
+            using (var hub          	= new FlioxHub(database, TestGlobals.Shared))
             using (var monitor          = new MonitorDB(TestGlobals.Monitor, hub))
             using (var loopbackHub      = new LoopbackHub(hub)) {
+                hub.Info.hostName = HostName;
                 hub.AddExtensionDB(monitor);
                 // assert same behavior with default Authenticator or UserAuthenticator 
                 await AssertNoAuthMonitoringDB  (loopbackHub);
@@ -58,11 +60,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         public static async Task TestMonitoringHttp() {
             using (var _            = SharedEnv.Default) // for LeakTestsFixture
             using (var database     = new FileDatabase(TestGlobals.DB, TestGlobals.PocStoreFolder))
-            using (var hub          = new FlioxHub(database, TestGlobals.Shared, HostName))
+            using (var hub          = new FlioxHub(database, TestGlobals.Shared))
             using (var httpHost     = new HttpHost(hub, "/"))
             using (var server       = new HttpServer("http://+:8080/", httpHost)) 
             using (var monitor      = new MonitorDB(TestGlobals.Monitor, hub))
             using (var remoteHub    = new HttpClientHub(TestGlobals.DB, "http://localhost:8080/", TestGlobals.Shared)) {
+                hub.Info.hostName = HostName;
                 hub.AddExtensionDB(monitor);
                 await RunServer(server, async () => {
                     // assert same behavior with default Authenticator or UserAuthenticator
@@ -130,8 +133,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             var hosts   = result.hosts.Result;
             AreEqual(1, hosts.Count);
             
-            var host    = hosts.Find(i => i.id.IsEqual(new ShortString("Test")));
-            AreEqual("{'id':'Test','counts':{'requests':2,'tasks':3}}", host.ToString());
+            var host    = hosts[0];
+            AreEqual("{'id':'test-host','counts':{'requests':2,'tasks':3}}", host.ToString());
             
             // --- users
             var users   = result.users.Result;

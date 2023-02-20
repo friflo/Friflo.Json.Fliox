@@ -7,9 +7,9 @@ namespace Gen.Friflo.Json.Fliox.Hub.DB.Cluster
 {
     static class Gen_HostInfo
     {
-        private const int Gen_hostVersion = 0;
-        private const int Gen_flioxVersion = 1;
-        private const int Gen_hostName = 2;
+        private const int Gen_hostName = 0;
+        private const int Gen_hostVersion = 1;
+        private const int Gen_flioxVersion = 2;
         private const int Gen_projectName = 3;
         private const int Gen_projectWebsite = 4;
         private const int Gen_envName = 5;
@@ -21,9 +21,9 @@ namespace Gen.Friflo.Json.Fliox.Hub.DB.Cluster
         private static bool ReadField (ref HostInfo obj, PropField field, ref Reader reader) {
             bool success;
             switch (field.genIndex) {
+                case Gen_hostName:       obj.hostName       = reader.ReadString  (field, obj.hostName,       out success);  return success;
                 case Gen_hostVersion:    obj.hostVersion    = reader.ReadString  (field, obj.hostVersion,    out success);  return success;
                 case Gen_flioxVersion:   obj.flioxVersion   = reader.ReadString  (field, obj.flioxVersion,   out success);  return success;
-                case Gen_hostName:       obj.hostName       = reader.ReadString  (field, obj.hostName,       out success);  return success;
                 case Gen_projectName:    obj.projectName    = reader.ReadString  (field, obj.projectName,    out success);  return success;
                 case Gen_projectWebsite: obj.projectWebsite = reader.ReadString  (field, obj.projectWebsite, out success);  return success;
                 case Gen_envName:        obj.envName        = reader.ReadString  (field, obj.envName,        out success);  return success;
@@ -36,9 +36,9 @@ namespace Gen.Friflo.Json.Fliox.Hub.DB.Cluster
         }
 
         private static void Write(ref HostInfo obj, PropField[] fields, ref Writer writer, ref bool firstMember) {
+            writer.WriteString  (fields[Gen_hostName],       obj.hostName,       ref firstMember);
             writer.WriteString  (fields[Gen_hostVersion],    obj.hostVersion,    ref firstMember);
             writer.WriteString  (fields[Gen_flioxVersion],   obj.flioxVersion,   ref firstMember);
-            writer.WriteString  (fields[Gen_hostName],       obj.hostName,       ref firstMember);
             writer.WriteString  (fields[Gen_projectName],    obj.projectName,    ref firstMember);
             writer.WriteString  (fields[Gen_projectWebsite], obj.projectWebsite, ref firstMember);
             writer.WriteString  (fields[Gen_envName],        obj.envName,        ref firstMember);

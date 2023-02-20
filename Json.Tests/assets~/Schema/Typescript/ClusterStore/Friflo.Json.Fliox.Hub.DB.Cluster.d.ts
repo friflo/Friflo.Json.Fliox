@@ -102,15 +102,15 @@ export class HostParam {
 
 /** general information about a Hub */
 export class HostInfo {
+    /**
+     * host name used to identify a specific host in a network. Default: 'host'  
+     * Used as key in **hosts** of database **monitor**
+     */
+    hostName        : string;
     /** host version */
     hostVersion     : string;
     /** Fliox library version */
     flioxVersion    : string;
-    /**
-     * host name. Used as **id** in
-     * **hosts** of database **monitor**
-     */
-    hostName?       : string | null;
     /** project name */
     projectName?    : string | null;
     /** link to a website describing project and Hub */

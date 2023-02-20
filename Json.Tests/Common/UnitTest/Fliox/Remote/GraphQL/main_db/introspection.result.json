@@ -4284,6 +4284,19 @@
             "description": "/** general information about a Hub */\n",
             "fields": [
                 {
+                    "name": "hostName",
+                    "description": "    /**\n     * host name used to identify a specific host in a network. Default: 'host'  \n     * Used as key in **hosts** of database **monitor**\n     */\n",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "String"
+                        }
+                    }
+                },
+                {
                     "name": "hostVersion",
                     "description": "    /** host version */\n",
                     "args": [
@@ -4307,16 +4320,6 @@
                             "kind":"SCALAR",
                             "name": "String"
                         }
-                    }
-                },
-                {
-                    "name": "hostName",
-                    "description": "    /**\n     * host name. Used as **id** in\n     * **hosts** of database **monitor**\n     */\n",
-                    "args": [
-                    ],
-                    "type": {
-                        "kind":"SCALAR",
-                        "name": "String"
                     }
                 },
                 {
@@ -4411,6 +4414,19 @@
             "description": "/** general information about a Hub */\n",
             "inputFields": [
                 {
+                    "name": "hostName",
+                    "description": "    /**\n     * host name used to identify a specific host in a network. Default: 'host'  \n     * Used as key in **hosts** of database **monitor**\n     */\n",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "String"
+                        }
+                    }
+                },
+                {
                     "name": "hostVersion",
                     "description": "    /** host version */\n",
                     "args": [
@@ -4434,16 +4450,6 @@
                             "kind":"SCALAR",
                             "name": "String"
                         }
-                    }
-                },
-                {
-                    "name": "hostName",
-                    "description": "    /**\n     * host name. Used as **id** in\n     * **hosts** of database **monitor**\n     */\n",
-                    "args": [
-                    ],
-                    "type": {
-                        "kind":"SCALAR",
-                        "name": "String"
                     }
                 },
                 {

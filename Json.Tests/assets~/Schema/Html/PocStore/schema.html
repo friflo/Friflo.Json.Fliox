@@ -992,6 +992,12 @@ Each JSON Schema is identified by its unique path</docs></td>
     </desc>
     <table class='fields'>
         <tr>
+            <td><field>hostName</field></td>
+            <td><type><predef>string</predef></type></td>
+            <td><docs>host name used to identify a specific host in a network. Default: 'host'<br/>
+Used as key in <b>hosts</b> of database <b>monitor</b></docs></td>
+        </tr>
+        <tr>
             <td><field>hostVersion</field></td>
             <td><type><predef>string</predef></type></td>
             <td><docs>host version</docs></td>
@@ -1000,12 +1006,6 @@ Each JSON Schema is identified by its unique path</docs></td>
             <td><field>flioxVersion</field></td>
             <td><type><predef>string</predef></type></td>
             <td><docs>Fliox library version</docs></td>
-        </tr>
-        <tr>
-            <td><field>hostName</field></td>
-            <td><type><predef>string</predef> | null</type></td>
-            <td><docs>host name. Used as <b>id</b> in
-<b>hosts</b> of database <b>monitor</b></docs></td>
         </tr>
         <tr>
             <td><field>projectName</field></td>

@@ -79,9 +79,9 @@ GET {{base}}/rest/main_db?cmd=std.Host
 # Content-Type: application/json
 
 {
+    "hostName": "test-server",
     "hostVersion": "1.0.0",
     "flioxVersion": "0.0.0",
-    "hostName": "host",
     "projectName": "Test Hub",
     "projectWebsite": "https://github.com/friflo/Friflo.Json.Fliox/tree/main/Json.Tests/Main",
     "envName": "dev",
