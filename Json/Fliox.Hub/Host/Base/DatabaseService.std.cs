@@ -65,7 +65,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             var httpInfo    = hub.TryGetFeature<HttpInfo>() ?? DefaultHttpInfo;
             var routes      = new List<string>(httpInfo.routes);
             var result      = new HostInfo {
-                hostName        = httpInfo.hostName,
+                hostName        = hub.HostName,
                 hostVersion     = hub.HostVersion,
                 flioxVersion    = FlioxHub.FlioxVersion,
                 projectName     = info.projectName,
@@ -79,7 +79,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             return result;
         }
         
-        private static readonly HttpInfo DefaultHttpInfo = new HttpInfo("NONE");
+        private static readonly HttpInfo DefaultHttpInfo = new HttpInfo();
         
         private static HostMemory GetHostMemory () {
 #if UNITY_5_3_OR_NEWER

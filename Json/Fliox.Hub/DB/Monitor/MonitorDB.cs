@@ -117,8 +117,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Monitor
         }
         
         internal void UpdateHost(FlioxHub hub, HostStats hostStats) {
-            var httpInfo    = hub.GetFeature<HttpInfo>();
-            var name        = new ShortString(httpInfo.hostName);
+            var name = new ShortString(hub.HostName);
             HostHits hostHits;
             if (hosts.Local.Count == 0) {
                 hostHits = new HostHits { id = name };

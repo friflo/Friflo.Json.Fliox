@@ -25,19 +25,12 @@ namespace Friflo.Json.Fliox.Hub.Remote
 {
     public sealed class HttpInfo
     {
-        public      readonly   string                       hostName;
         public                 IReadOnlyCollection<string>  Routes => routes;
         
         // --- internal
         internal    readonly   SortedSet<string>            routes = new SortedSet<string>();
 
-        public      override   string                       ToString() => $"hostName: {hostName}";
-
-        public HttpInfo() => throw new NotImplementedException();
-
-        public HttpInfo(string hostName) {
-            this.hostName = hostName;
-        }
+        public HttpInfo() { }
     }
     
     /// <summary>
@@ -50,7 +43,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
     /// In detail:
     /// <list type="bullet">
     ///   <item>hosted databases are given by the <see cref="FlioxHub"/> passed via its constructor
-    ///     <see cref="HttpHost(FlioxHub, string, string, SharedEnv)"/>
+    ///     <see cref="HttpHost(FlioxHub, string, SharedEnv)"/>
     ///   </item>
     ///   <item>exposed schemas are retrieved from the hosted databases</item>
     ///   <item>static web files are exposed by adding a <see cref="StaticFileHandler"/> using <see cref="AddHandler"/></item>
@@ -82,7 +75,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                         private  readonly   SchemaHandler           schemaHandler   = new SchemaHandler();
                         private  readonly   RestHandler             restHandler     = new RestHandler();
                         private  readonly   List<IRequestHandler>   customHandlers  = new List<IRequestHandler>();
-                        private  readonly   HttpInfo                httpInfo;
+                        private  readonly   HttpInfo                httpInfo        = new HttpInfo();
 
                         public   override   string                  ToString() => $"endpoint: {endpoint}, host";
 
@@ -106,12 +99,10 @@ namespace Friflo.Json.Fliox.Hub.Remote
             Console.ForegroundColor = old;
         }
 
-        public HttpHost(FlioxHub hub, string endpoint, string hostName = "host", SharedEnv env = null)
+        public HttpHost(FlioxHub hub, string endpoint, SharedEnv env = null)
         {
-            if (hostName == null) throw new ArgumentNullException(nameof(hostName));
             sharedEnv   = env  ?? SharedEnv.Default;
             this.hub    = hub;
-            httpInfo    = new HttpInfo(hostName);
             var msg = $"create HttpHost db: {hub.DatabaseName} ({hub.database.StorageType})";
             Logger.Log(HubLog.Info, msg);
             if (!_titleDisplayed) {

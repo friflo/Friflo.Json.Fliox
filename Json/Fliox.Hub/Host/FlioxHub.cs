@@ -104,9 +104,12 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// It also enables monitoring execution statistics of <see cref="ExecuteRequestAsync"/> 
         /// </summary>
         public              ClientController    ClientController{ get => clientController; set => clientController = value ?? throw new ArgumentNullException(nameof(ClientController)); }
-        
+
+        /// <summary>host name used to identify a specific host in a network.</summary>
+        public              string              HostName        { get; init; } = "host-1";
+
         /// <summary>host <see cref="HostVersion"/> - available via command <b>std.Host</b></summary>
-        public              string              HostVersion    { get; set; } = "1.0.0";
+        public              string              HostVersion     { get; set; } = "1.0.0";
         
         public   static     string              FlioxVersion    => GetFlioxVersion();
         
@@ -133,9 +136,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// <summary>
         /// Construct a <see cref="FlioxHub"/> with the given default <paramref name="database"/>.
         /// </summary>
-        public FlioxHub (
-            EntityDatabase      database,
-            SharedEnv           env                 = null)
+        public FlioxHub (EntityDatabase database, SharedEnv env = null)
         {
             sharedEnv       = env  ?? SharedEnv.Default;
             this.database   = database ?? throw new ArgumentNullException(nameof(database));
@@ -327,4 +328,10 @@ namespace Friflo.Json.Fliox.Hub.Host
         }
         #endregion
     }
+}
+
+namespace System.Runtime.CompilerServices
+{
+    // this is needed to enable the record feature in .NET framework and .NET core <= 3.1 projects
+    internal static class IsExternalInit { }
 }
