@@ -3,6 +3,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Client;
 using Friflo.Json.Fliox.Hub.Host;
@@ -201,6 +202,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 hostHub.hub.GetFeature<RemoteHostEnv>().fakeOpenClosedSockets = true;
                 hub.EventDispatcher = eventDispatcher;
                 await RunServer(server, async () => {
+                    var stopWatch = new Stopwatch();
+                    stopWatch.Start();
                     // await remoteHub.Connect();
                     var listenSubscriber    = await CreatePocStoreSubscriber(listenDb, EventAssertion.Changes);
                     using (var createStore  = new PocStore(hub) { UserId = "createStore", ClientId = "create-client"}) {
@@ -217,8 +220,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                         AreEqual(0, listenDb.Tasks.Count);
                         await listenDb.SyncTasks();  // an empty SyncTasks() is sufficient initiate re-sending all not-received change events
 
-                        while (!listenSubscriber.receivedAll ) { await Task.Delay(1); }
-                        
+                        while (!listenSubscriber.receivedAll) {
+                            if (stopWatch.ElapsedMilliseconds  > 1000) throw new InvalidOperationException("WebSocketReconnect timeout");
+                            await Task.Delay(1);
+                        }
                         listenSubscriber.AssertCreateStoreChanges();
 
                         await listenDb.SyncTasks();  // all changes are received => state of store remains unchanged

@@ -61,6 +61,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
         
         // --- WebHost
         protected override void SendMessage(in JsonValue message) {
+            if (webSocket.State != WebSocketState.Open)
+                return;
             sendQueue.AddTail(message);
         }
         
