@@ -74,6 +74,7 @@ namespace Friflo.Json.Fliox.Utils
         private             void            SetBufferPos(int pos) { if (writeBuffer == 0) buffer0Pos = pos; else buffer1Pos = pos; }
         
         public              int             Count           => deque.Count;
+        public              bool            Closed          => closed;
 
         private  readonly   Deque<MessageItem<TMeta>> deque;
         

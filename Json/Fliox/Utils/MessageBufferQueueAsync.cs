@@ -17,7 +17,8 @@ namespace Friflo.Json.Fliox.Utils
         private  readonly   MessageBufferQueue<TMeta>   queue;
         private  readonly   SemaphoreSlim               messageAvailable;
 
-        public   override   string                      ToString() => GetString();
+        public              bool                        Closed { get { lock (queue) { return queue.Closed; } }}
+        public   override   string                      ToString()  => GetString();
 
         public MessageBufferQueueAsync(int capacity = 4) {
             queue               = new MessageBufferQueue<TMeta>(capacity);
