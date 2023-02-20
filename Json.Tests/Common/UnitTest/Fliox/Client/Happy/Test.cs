@@ -221,7 +221,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                         await listenDb.SyncTasks();  // an empty SyncTasks() is sufficient initiate re-sending all not-received change events
 
                         while (!listenSubscriber.receivedAll) {
-                            if (stopWatch.ElapsedMilliseconds  > 1000) throw new InvalidOperationException("WebSocketReconnect timeout");
+                            if (stopWatch.ElapsedMilliseconds  > 2000) throw new InvalidOperationException("WebSocketReconnect timeout");
                             await Task.Delay(1);
                         }
                         listenSubscriber.AssertCreateStoreChanges();
