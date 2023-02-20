@@ -60,7 +60,7 @@ namespace Friflo.Json.Tests.Main
             var database            = CreateDatabase(c, databaseSchema, new PocService());
             
             var hub                 = new FlioxHub(database, c.env);
-            hub.Info.projectName    = "Test Hub"; hub.Info.hostName = "test-server";                            // optional
+            hub.Info.projectName    = "Test Hub";                                                               // optional
             hub.Info.projectWebsite = "https://github.com/friflo/Friflo.Json.Fliox/tree/main/Json.Tests/Main";  // optional
             hub.Info.envName        = "dev"; hub.Info.envColor = "rgb(34 140 0)";                               // optional
             hub.AddExtensionDB (new ClusterDB("cluster", hub));         // optional - expose info of hosted databases. Required by Hub Explorer
@@ -72,7 +72,7 @@ namespace Friflo.Json.Tests.Main
                 .SubscribeUserDbChanges(hub.EventDispatcher);               // optional - apply user_db changes instantaneously
             hub.AddExtensionDB(userDB);                                     // optional - expose userStore as extension database
             
-            var httpHost            = new HttpHost(hub, "/fliox/", c.env) { CacheControl = c.cache };
+            var httpHost            = new HttpHost(hub, "/fliox/", "test-server", c.env) { CacheControl = c.cache };
             httpHost.AddHandler      (new GraphQLHandler());
             httpHost.AddHandler      (new StaticFileHandler(c.Www) { CacheControl = c.cache }); // optional - serve static web files of Hub Explorer
             httpHost.AddSchemaGenerator("jtd", "JSON Type Definition", JsonTypeDefinition.GenerateJTD);  // optional - add code generator

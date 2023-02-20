@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Protocol;
@@ -24,6 +23,23 @@ using Browse = System.Diagnostics.DebuggerBrowsableAttribute;
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.Remote
 {
+    public sealed class HttpInfo
+    {
+        public      readonly   string                       hostName;
+        public                 IReadOnlyCollection<string>  Routes => routes;
+        
+        // --- internal
+        internal    readonly   SortedSet<string>            routes = new SortedSet<string>();
+
+        public      override   string                       ToString() => $"hostName: {hostName}";
+
+        public HttpInfo() => throw new NotImplementedException();
+
+        public HttpInfo(string hostName) {
+            this.hostName = hostName;
+        }
+    }
+    
     /// <summary>
     /// A <see cref="HttpHost"/> enables remote access to databases, schemas and static web files via
     /// <b>HTTP</b> or <b>WebSockets</b>.
@@ -34,7 +50,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
     /// In detail:
     /// <list type="bullet">
     ///   <item>hosted databases are given by the <see cref="FlioxHub"/> passed via its constructor
-    ///     <see cref="HttpHost(FlioxHub, string, SharedEnv)"/>
+    ///     <see cref="HttpHost(FlioxHub, string, string, SharedEnv)"/>
     ///   </item>
     ///   <item>exposed schemas are retrieved from the hosted databases</item>
     ///   <item>static web files are exposed by adding a <see cref="StaticFileHandler"/> using <see cref="AddHandler"/></item>
@@ -66,9 +82,9 @@ namespace Friflo.Json.Fliox.Hub.Remote
                         private  readonly   SchemaHandler           schemaHandler   = new SchemaHandler();
                         private  readonly   RestHandler             restHandler     = new RestHandler();
                         private  readonly   List<IRequestHandler>   customHandlers  = new List<IRequestHandler>();
-                        private  readonly   SortedSet<string>       hubRoutes;
+                        private  readonly   HttpInfo                httpInfo;
 
-                        public   override   string                  ToString() => $"endpoint: {endpoint}";
+                        public   override   string                  ToString() => $"endpoint: {endpoint}, host";
 
         private  static     bool    _titleDisplayed;
         private  const      string  JsonFlioxBanner =
@@ -90,10 +106,12 @@ namespace Friflo.Json.Fliox.Hub.Remote
             Console.ForegroundColor = old;
         }
 
-        public HttpHost(FlioxHub hub, string endpoint, SharedEnv env = null)
+        public HttpHost(FlioxHub hub, string endpoint, string hostName = "host", SharedEnv env = null)
         {
+            if (hostName == null) throw new ArgumentNullException(nameof(hostName));
             sharedEnv   = env  ?? SharedEnv.Default;
             this.hub    = hub;
+            httpInfo    = new HttpInfo(hostName);
             var msg = $"create HttpHost db: {hub.DatabaseName} ({hub.database.StorageType})";
             Logger.Log(HubLog.Info, msg);
             if (!_titleDisplayed) {
@@ -103,9 +121,9 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 Logger.Log(HubLog.Info, $"{hubLabel}Friflo.Json.Fliox - v{FlioxHub.FlioxVersion}");
                 WriteBanner();
             }
-            hubRoutes = hub.routes;
-            hubRoutes.UnionWith(restHandler.Routes);
-            hubRoutes.UnionWith(schemaHandler.Routes);
+            hub.SetFeature(httpInfo);
+            httpInfo.routes.UnionWith(restHandler.Routes);
+            httpInfo.routes.UnionWith(schemaHandler.Routes);
             
             if (endpoint == null)           throw new ArgumentNullException(nameof(endpoint), "common values: \"/fliox/\" or \"/\"");
             if (!endpoint.StartsWith("/"))  throw new ArgumentException("endpoint requires '/' as first character");
@@ -136,13 +154,13 @@ namespace Friflo.Json.Fliox.Hub.Remote
         public void AddHandler(IRequestHandler requestHandler) {
             if (requestHandler == null) throw new ArgumentNullException(nameof(requestHandler));
             customHandlers.Add(requestHandler);
-            hubRoutes.UnionWith(requestHandler.Routes);
+            httpInfo.routes.UnionWith(requestHandler.Routes);
         }
         
         public void RemoveHandler(IRequestHandler requestHandler) {
             customHandlers.Remove(requestHandler);
             foreach (var route in requestHandler.Routes) {
-                hubRoutes.Remove(route);
+                httpInfo.routes.Remove(route);
             }
         }
         

@@ -10,6 +10,7 @@ using Friflo.Json.Fliox.Hub.Client;
 using Friflo.Json.Fliox.Hub.DB.Cluster;
 using Friflo.Json.Fliox.Hub.Host.Auth;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
+using Friflo.Json.Fliox.Hub.Remote;
 
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.Host
@@ -57,13 +58,14 @@ namespace Friflo.Json.Fliox.Hub.Host
             if (hostParam?.gcCollect == true) {
                 GC.Collect();
             }
-            var memory  = hostParam?.memory == true ? GetHostMemory() : null;
-            var hub     = context.Hub;
-            var pubSub  = hub.EventDispatcher != null;
-            var info    = hub.Info;
-            var routes  = new List<string>(hub.Routes);
-            var result  = new HostInfo {
-                hostName        = info.hostName,
+            var memory      = hostParam?.memory == true ? GetHostMemory() : null;
+            var hub         = context.Hub;
+            var pubSub      = hub.EventDispatcher != null;
+            var info        = hub.Info;
+            var httpInfo    = hub.TryGetFeature<HttpInfo>() ?? DefaultHttpInfo;
+            var routes      = new List<string>(httpInfo.routes);
+            var result      = new HostInfo {
+                hostName        = httpInfo.hostName,
                 hostVersion     = hub.HostVersion,
                 flioxVersion    = FlioxHub.FlioxVersion,
                 projectName     = info.projectName,
@@ -76,6 +78,8 @@ namespace Friflo.Json.Fliox.Hub.Host
             };
             return result;
         }
+        
+        private static readonly HttpInfo DefaultHttpInfo = new HttpInfo("NONE");
         
         private static HostMemory GetHostMemory () {
 #if UNITY_5_3_OR_NEWER

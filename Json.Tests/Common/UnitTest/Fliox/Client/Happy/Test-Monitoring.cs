@@ -25,7 +25,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
 {
     public partial class TestHappy
     {
-        private static readonly string HostName  = "test-host";
+        private static readonly HttpInfo HttpInfo  = new HttpInfo("test-host");
         
         [Test]
         public static async Task TestMonitoringFile() {
@@ -33,7 +33,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             using (var database         = new FileDatabase(TestGlobals.DB, TestGlobals.PocStoreFolder))
             using (var hub          	= new FlioxHub(database, TestGlobals.Shared))
             using (var monitorDB        = new MonitorDB(TestGlobals.Monitor, hub)) {
-                hub.Info.hostName = HostName;
+                hub.SetFeature(HttpInfo);
                 hub.AddExtensionDB(monitorDB);
                 // assert same behavior with default Authenticator or UserAuthenticator
                 await AssertNoAuthMonitoringDB  (hub);
@@ -48,7 +48,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             using (var hub          	= new FlioxHub(database, TestGlobals.Shared))
             using (var monitor          = new MonitorDB(TestGlobals.Monitor, hub))
             using (var loopbackHub      = new LoopbackHub(hub)) {
-                hub.Info.hostName = HostName;
+                hub.SetFeature(HttpInfo);
                 hub.AddExtensionDB(monitor);
                 // assert same behavior with default Authenticator or UserAuthenticator 
                 await AssertNoAuthMonitoringDB  (loopbackHub);
@@ -65,7 +65,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             using (var server       = new HttpServer("http://+:8080/", httpHost)) 
             using (var monitor      = new MonitorDB(TestGlobals.Monitor, hub))
             using (var remoteHub    = new HttpClientHub(TestGlobals.DB, "http://localhost:8080/", TestGlobals.Shared)) {
-                hub.Info.hostName = HostName;
+                hub.SetFeature(HttpInfo);
                 hub.AddExtensionDB(monitor);
                 await RunServer(server, async () => {
                     // assert same behavior with default Authenticator or UserAuthenticator

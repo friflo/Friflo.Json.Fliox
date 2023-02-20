@@ -4285,7 +4285,7 @@
             "fields": [
                 {
                     "name": "hostName",
-                    "description": "    /**\n     * host name used to identify a specific host in a network. Default: 'host'  \n     * Used as key in **hosts** of database **monitor**\n     */\n",
+                    "description": "    /** host name used to identify a specific host in a network. */\n",
                     "args": [
                     ],
                     "type": {
@@ -4415,7 +4415,7 @@
             "inputFields": [
                 {
                     "name": "hostName",
-                    "description": "    /**\n     * host name used to identify a specific host in a network. Default: 'host'  \n     * Used as key in **hosts** of database **monitor**\n     */\n",
+                    "description": "    /** host name used to identify a specific host in a network. */\n",
                     "args": [
                     ],
                     "type": {

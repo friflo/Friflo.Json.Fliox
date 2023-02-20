@@ -4,6 +4,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Client;
 using Friflo.Json.Fliox.Hub.Host;
@@ -116,8 +117,20 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             }
         }
         
+        [Test]
+        public static void TestHttpInfo() {
+            var database    = new MemoryDatabase("test");
+            var hub         = new FlioxHub(database);
+            var _           = new HttpHost(hub, "/", "host-name"); // set hub feature: HttpInfo 
+            var info        = hub.GetFeature<HttpInfo>();
+            var routes      = info.Routes.ToArray();
+            AreEqual("host-name",   info.hostName);
+            // HttpHost standard routes
+            AreEqual("/rest",       routes[0]);
+            AreEqual("/schema",     routes[1]);
+        }
 
-        
+
         [UnityTest] public IEnumerator HttpCreateCoroutine() { yield return RunAsync.Await(HttpCreate()); }
         [Test]      public async Task  HttpCreateAsync() { await HttpCreate(); }
         
@@ -159,7 +172,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             using (var eventDispatcher  = new EventDispatcher(EventDispatching.Send))
             using (var database         = new FileDatabase(TestGlobals.DB, TestGlobals.PocStoreFolder, new PocService()))
             using (var hub          	= new FlioxHub(database, TestGlobals.Shared))
-            using (var httpHost         = new HttpHost(hub, "/", TestGlobals.Shared))
+            using (var httpHost         = new HttpHost(hub, "/", env: TestGlobals.Shared))
             using (var server           = new HttpServer("http://+:8080/", httpHost))
             using (var remoteHub        = new WebSocketClientHub(TestGlobals.DB, "ws://localhost:8080/", TestGlobals.Shared))
             using (var listenDb         = new PocStore(remoteHub) { UserId = "listenDb", ClientId = "listen-client"}) {

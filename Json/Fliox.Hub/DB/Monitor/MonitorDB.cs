@@ -7,6 +7,7 @@ using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.Auth;
 using Friflo.Json.Fliox.Hub.Host.Stats;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
+using Friflo.Json.Fliox.Hub.Remote;
 using Friflo.Json.Fliox.Schema.Native;
 
 namespace Friflo.Json.Fliox.Hub.DB.Monitor
@@ -115,8 +116,9 @@ namespace Friflo.Json.Fliox.Hub.DB.Monitor
             }
         }
         
-        internal void UpdateHost(string hostName, HostStats hostStats) {
-            var name = new ShortString(hostName);
+        internal void UpdateHost(FlioxHub hub, HostStats hostStats) {
+            var httpInfo    = hub.GetFeature<HttpInfo>();
+            var name        = new ShortString(httpInfo.hostName);
             HostHits hostHits;
             if (hosts.Local.Count == 0) {
                 hostHits = new HostHits { id = name };

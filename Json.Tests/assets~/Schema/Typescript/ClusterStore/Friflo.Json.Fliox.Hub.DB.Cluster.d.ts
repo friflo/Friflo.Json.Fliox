@@ -102,10 +102,7 @@ export class HostParam {
 
 /** general information about a Hub */
 export class HostInfo {
-    /**
-     * host name used to identify a specific host in a network. Default: 'host'  
-     * Used as key in **hosts** of database **monitor**
-     */
+    /** host name used to identify a specific host in a network. */
     hostName        : string;
     /** host version */
     hostVersion     : string;

@@ -123,9 +123,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             var hostResult = stdHost.Result;
             // AreEqual("0.0.0",        hostResult.flioxVersion); -> will fail at CD tests
             AreEqual("1.0.0",           hostResult.hostVersion);
-            AreEqual("host",            hostResult.hostName);
+            AreEqual("NONE",            hostResult.hostName);
             NotNull(hostResult.memory);
             NotNull(hostResult.routes);
+            AreEqual(0, hostResult.routes.Count);
             
             AreEqual("Command3",        command3.Result);
             AreEqual("Command4",        command4.Result);

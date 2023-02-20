@@ -83,7 +83,7 @@
             "type": "object",
             "description": "general information about a Hub",
             "properties": {
-                "hostName":       { "type": "string", "description": "host name used to identify a specific host in a network. Default: 'host'<br/>\nUsed as key in <b>hosts</b> of database <b>monitor</b>" },
+                "hostName":       { "type": "string", "description": "host name used to identify a specific host in a network." },
                 "hostVersion":    { "type": "string", "description": "host version" },
                 "flioxVersion":   { "type": "string", "description": "Fliox library version" },
                 "projectName":    { "type": ["string", "null"], "description": "project name" },

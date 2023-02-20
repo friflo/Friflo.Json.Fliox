@@ -116,11 +116,8 @@ namespace Friflo.Json.Fliox.Hub.Host
         public   readonly   SharedEnv           sharedEnv;
         
         // --- private / internal fields & properties 
-        /// <summary><see cref="Routes"/> exposed by the Host - available via command <b>std.Host</b> </summary>
-                        internal            IReadOnlyCollection<string> Routes          => routes;
                         private  readonly   Dictionary<Type,object>     features        = new Dictionary<Type, object>();
                         internal readonly   HostStats                   hostStats       = new HostStats{ requestCount = new RequestCount{ db = new ShortString("*")} };
-        [Browse(Never)] internal readonly   SortedSet<string>           routes          = new SortedSet<string>();
         [Browse(Never)] private             HubInfo                     info            = new HubInfo();
         [Browse(Never)] private             Authenticator               authenticator   = CreateDefaultAuthenticator();
         [Browse(Never)] private             ClientController            clientController= new IncrementClientController();
@@ -146,6 +143,13 @@ namespace Friflo.Json.Fliox.Hub.Host
         }
         
         public virtual void Dispose() { }
+        
+        public TFeature TryGetFeature<TFeature>() where TFeature : new() {
+            if (features.TryGetValue(typeof(TFeature), out var value)) {
+                return (TFeature)value;
+            }
+            return default;
+        }
         
         public TFeature GetFeature<TFeature>() where TFeature : new() {
             if (features.TryGetValue(typeof(TFeature), out var value)) {
