@@ -16,6 +16,7 @@ namespace Friflo.Json.Fliox.Utils
         private  readonly   MessageBufferQueue<TMeta>   queue;
         private  readonly   ManualResetEvent            messageAvailable;
 
+        public              bool                        Closed { get { lock (queue) { return queue.Closed; } }}
         public   override   string                      ToString() => GetString();
 
         public MessageBufferQueueSync(int capacity = 4) {
