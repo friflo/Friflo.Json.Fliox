@@ -31,7 +31,10 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
         
         // --- WebHost
         protected override void SendMessage(in JsonValue message) {
-            server.sendQueue.AddTail(message, new UdpMeta(endpoint));
+            var queue = server.sendQueue;
+            if (queue.Closed)
+                return;
+            queue.AddTail(message, new UdpMeta(endpoint));
         }
     }
 }
