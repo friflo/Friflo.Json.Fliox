@@ -10,22 +10,21 @@ namespace Friflo.Json.Fliox.Hub.Cosmos
 {
     public sealed class CosmosDatabase : EntityDatabase
     {
-        public   bool                   Pretty { get; init; } = false;
+        public              bool        Pretty      { get; init; } = false;
+        public              int?        Throughput  { get; init; } = null;
         
         private  readonly   Database    cosmosDatabase;
-        private  readonly   int?        throughput;
         
         public   override   string      StorageType => "CosmosDB";
         
-        public CosmosDatabase(string dbName, Database cosmosDatabase, DatabaseService service = null, int? throughput = null)
+        public CosmosDatabase(string dbName, Database cosmosDatabase, DatabaseService service = null)
             : base(dbName, service)
         {
             this.cosmosDatabase = cosmosDatabase;
-            this.throughput     = throughput;
         }
         
         public override EntityContainer CreateContainer(in ShortString name, EntityDatabase database) {
-            var options = new ContainerOptions(cosmosDatabase, throughput);
+            var options = new ContainerOptions(cosmosDatabase, Throughput);
             return new CosmosContainer(name.AsString(), database, options, Pretty);
         }
     }
