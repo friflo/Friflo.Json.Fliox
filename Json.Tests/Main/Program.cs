@@ -110,7 +110,7 @@ namespace Friflo.Json.Tests.Main
             fileDb.Schema = schema;
             if (!c.useMemoryDb)
                 return fileDb;
-            var memoryDB = new MemoryDatabase("main_db", service, c.memoryType);
+            var memoryDB = new MemoryDatabase("main_db", service) { ContainerType = c.memoryType };
             memoryDB.Schema = schema;
             memoryDB.SeedDatabase(fileDb).Wait();
             return memoryDB;
