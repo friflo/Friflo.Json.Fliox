@@ -16,8 +16,8 @@ namespace Friflo.Json.Fliox.Hub.Cosmos
         
         public   override   string      StorageType => "CosmosDB";
         
-        public CosmosDatabase(string dbName, Database cosmosDatabase, DatabaseService service = null, DbOpt opt = null, int? throughput = null, bool pretty = false)
-            : base(dbName, service, opt)
+        public CosmosDatabase(string dbName, Database cosmosDatabase, DatabaseService service = null, int? throughput = null, bool pretty = false)
+            : base(dbName, service)
         {
             this.cosmosDatabase = cosmosDatabase;
             this.throughput     = throughput;

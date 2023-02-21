@@ -19,17 +19,6 @@ using static System.Diagnostics.DebuggerBrowsableState;
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.Host
 {
-    public sealed class DbOpt {
-        /// <see cref="EntityDatabase.customContainerName"/>
-        public  readonly    CustomContainerName customContainerName;
-        
-        public DbOpt(CustomContainerName customContainerName = null) {
-            this.customContainerName    = customContainerName   ?? (name => name);
-        }
-        
-        internal static readonly DbOpt Default = new DbOpt();
-    }
-    
     public delegate string CustomContainerName(string name);
     
     /// <summary>
@@ -77,7 +66,9 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// By having the mapping function in <see cref="EntityContainer"/> it enables uniform mapping across different
         /// <see cref="EntityContainer"/> implementations.
         /// </remarks>
-        public   readonly   CustomContainerName customContainerName;
+        public          CustomContainerName CustomContainerName { get; init; } = DefaultCustomContainerName;
+
+        private static readonly CustomContainerName DefaultCustomContainerName = name => name;
         
         /// <summary>
         /// The <see cref="service"/> execute all <see cref="SyncRequest.tasks"/> send by a client.
@@ -94,13 +85,11 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// constructor parameters are mandatory to force implementations having them in their constructors also or
         /// pass null by implementations.
         /// </summary>
-        protected EntityDatabase(string dbName, DatabaseService service, DbOpt opt){
-            containers  = new ConcurrentDictionary<ShortString, EntityContainer>(ShortString.Equality);
-            name        = dbName ?? throw new ArgumentNullException(nameof(dbName));
-            nameShort   = new ShortString(dbName);
-            
-            customContainerName = (opt ?? DbOpt.Default).customContainerName;
-            this.service        = service ?? new DatabaseService();
+        protected EntityDatabase(string dbName, DatabaseService service){
+            containers      = new ConcurrentDictionary<ShortString, EntityContainer>(ShortString.Equality);
+            name            = dbName ?? throw new ArgumentNullException(nameof(dbName));
+            nameShort       = new ShortString(dbName);
+            this.service    = service ?? new DatabaseService();
         }
         
         public virtual void Dispose() {

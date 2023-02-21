@@ -26,8 +26,8 @@ namespace Friflo.Json.Fliox.Hub.DB.Monitor
 
         public   override   string              StorageType => stateDB.StorageType;
 
-        public MonitorDB (string dbName, FlioxHub hub, DbOpt opt = null)
-            : base (dbName, new MonitorService(hub), opt)
+        public MonitorDB (string dbName, FlioxHub hub)
+            : base (dbName, new MonitorService(hub))
         {
             ((MonitorService)service).monitorDB = this;
             var typeSchema  = NativeTypeSchema.Create(typeof(MonitorStore));

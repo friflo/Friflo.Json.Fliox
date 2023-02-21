@@ -40,7 +40,6 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// <param name="dbName"></param>
         /// <param name="service"></param>
         /// <param name="type"></param>
-        /// <param name="opt"></param>
         /// <param name="pretty"></param>
         /// <param name="smallValueSize"> Intended for write heavy containers. <br/>
         /// Byte arrays used to store container values are reused in case their length is less or equal this size. 
@@ -49,10 +48,9 @@ namespace Friflo.Json.Fliox.Hub.Host
             string          dbName,
             DatabaseService service         = null,
             MemoryType?     type            = null,
-            DbOpt           opt             = null,
             bool            pretty          = false,
             int             smallValueSize  = -1)
-            : base(dbName, service, opt)
+            : base(dbName, service)
         {
             this.pretty         = pretty;
             this.smallValueSize = smallValueSize;

@@ -52,7 +52,7 @@ namespace DemoHub
             hub.AddExtensionDB (new MonitorDB("monitor", hub));     // optional - expose monitor stats as extension database
             hub.EventDispatcher     = new EventDispatcher(EventDispatching.QueueSend);   // optional - enables Pub-Sub (sending events for subscriptions)
             
-            var userDB              = new FileDatabase("user_db", "../Test/DB/user_db", new UserDBService(), null, false);
+            var userDB              = new FileDatabase("user_db", "../Test/DB/user_db", new UserDBService(), false);
             hub.Authenticator       = new UserAuthenticator(userDB) // optional - otherwise all tasks are authorized
                 .SubscribeUserDbChanges(hub.EventDispatcher);       // optional - apply user_db changes instantaneously
             hub.AddExtensionDB(userDB);                             // optional - expose user_db as extension database

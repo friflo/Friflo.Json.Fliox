@@ -27,8 +27,8 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
 
         public   override   string              StorageType => stateDB.StorageType;
 
-        public ClusterDB (string dbName, FlioxHub hub, DbOpt opt = null)
-            : base (dbName, new ClusterService(), opt)
+        public ClusterDB (string dbName, FlioxHub hub)
+            : base (dbName, new ClusterService())
         {
             ((ClusterService)service).clusterDB = this;
             this.hub        = hub  ?? throw new ArgumentNullException(nameof(hub));
