@@ -120,10 +120,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         [Test]
         public static void TestHttpInfo() {
             var database    = new MemoryDatabase("test");
-            var hub         = new FlioxHub(database) { HostName = "host-name" };
-            var _           = new HttpHost(hub, "/"); // set hub feature: HttpInfo 
-            var info        = hub.GetFeature<HttpInfo>();
-            var routes      = info.Routes.ToArray();
+            var hub         = new FlioxHub(database);
+            var host        = new HttpHost(hub, "/"); // set hub feature: HttpInfo 
+            var routes      = host.Routes;
             // HttpHost standard routes
             AreEqual("/rest",       routes[0]);
             AreEqual("/schema",     routes[1]);

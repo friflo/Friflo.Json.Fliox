@@ -39,6 +39,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         public              ObjectPool<EntityProcessor> EntityProcessor => pool.EntityProcessor;
         public              MemoryBuffer                MemoryBuffer    => memoryBuffer;
         public              SyncRequest                 Request         => request;
+        public              IHost                       Host            { get => host; init => host = value ?? throw new ArgumentNullException(nameof(Host)); }
 
         public override     string                      ToString()      => GetString();
         // --- internal / private by intention
@@ -53,6 +54,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         [Browse(Never)] internal  readonly  SharedCache         sharedCache;
         [Browse(Never)] internal  readonly  SyncBuffers         syncBuffers;
         [Browse(Never)] internal  readonly  SyncPools           syncPools;
+        [Browse(Never)] private   readonly  IHost               host;
         [Browse(Never)] internal            AuthState           authState;
         [Browse(Never)] internal            Action              canceler = () => {};
         [Browse(Never)] internal            FlioxHub            hub;
@@ -61,7 +63,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         [Browse(Never)] internal            ClientIdValidation  clientIdValidation;
         [Browse(Never)] internal            SyncRequest         request;
         [Browse(Never)] private             MemoryBuffer        memoryBuffer;
-        [Browse(Never)] internal            ReaderPool          responseReaderPool;   
+        [Browse(Never)] internal            ReaderPool          responseReaderPool;
         
         public void Init () {
             authState           = default;
@@ -149,6 +151,8 @@ namespace Friflo.Json.Fliox.Hub.Host
             canceler(); // canceler.Invoke();
         }
     }
+    
+    public interface IHost { }
     
     /// <summary>
     /// <see cref="SyncBuffers"/> can be used to minimize heap allocations by passing to <see cref="SyncContext"/> constructor. <br/>

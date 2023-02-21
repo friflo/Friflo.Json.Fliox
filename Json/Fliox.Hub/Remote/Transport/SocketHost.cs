@@ -50,6 +50,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
     {
         // --- all fields are thread safe types
         private   readonly  FlioxHub                    hub;
+        private   readonly  IHost                       host;
         private   readonly  Pool                        pool;
         private   readonly  bool                        useReaderPool;
         private   readonly  Stack<SyncContext>          syncContextPool; // requires lock
@@ -58,8 +59,9 @@ namespace Friflo.Json.Fliox.Hub.Remote
         
         protected abstract  void        SendMessage(in JsonValue message);
 
-        protected SocketHost(FlioxHub hub) {
+        protected SocketHost(FlioxHub hub, IHost host) {
             this.hub        = hub;
+            this.host       = host;
             pool            = hub.sharedEnv.pool;
             useReaderPool   = hub.GetFeature<RemoteHostEnv>().useReaderPool;
             syncContextPool = new Stack<SyncContext>();
@@ -95,7 +97,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             var syncPools       = new SyncPools(hub.sharedEnv.typeStore);
             var syncBuffers     = new SyncBuffers(new List<SyncRequestTask>(), new List<SyncRequestTask>(), new List<JsonValue>());
             var memoryBuffer    = new MemoryBuffer(4 * 1024);
-            syncContext         = new SyncContext(hub.sharedEnv, this, syncBuffers, syncPools); // reused context
+            syncContext         = new SyncContext(hub.sharedEnv, this, syncBuffers, syncPools) { Host = host }; // reused context
             syncContext.SetMemoryBuffer(memoryBuffer);
             return syncContext;
         }

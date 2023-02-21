@@ -28,6 +28,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
     {
         // --- fields
         public    readonly  FlioxHub                    hub;
+        public    readonly  IHost                       host;
         public    readonly  string                      method;
         public    readonly  string                      route;
         public    readonly  string                      query;
@@ -61,6 +62,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             MemoryBuffer    memoryBuffer)
         {
             this.hub            = host.hub;
+            this.host           = host;
             this.method         = method;
             this.route          = route;
             this.query          = query;

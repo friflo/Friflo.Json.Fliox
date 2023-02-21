@@ -125,8 +125,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             AreEqual("1.0.0",           hostResult.hostVersion);
             AreEqual("host-1",          hostResult.hostName);
             NotNull(hostResult.memory);
-            NotNull(hostResult.routes);
-            AreEqual(0, hostResult.routes.Count);
+            IsNull (hostResult.routes);
             
             AreEqual("Command3",        command3.Result);
             AreEqual("Command4",        command4.Result);

@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Protocol;
@@ -23,16 +24,6 @@ using Browse = System.Diagnostics.DebuggerBrowsableAttribute;
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.Remote
 {
-    public sealed class HttpInfo
-    {
-        public                 IReadOnlyCollection<string>  Routes => routes;
-        
-        // --- internal
-        internal    readonly   SortedSet<string>            routes = new SortedSet<string>();
-
-        public HttpInfo() { }
-    }
-    
     /// <summary>
     /// A <see cref="HttpHost"/> enables remote access to databases, schemas and static web files via
     /// <b>HTTP</b> or <b>WebSockets</b>.
@@ -60,12 +51,13 @@ namespace Friflo.Json.Fliox.Hub.Remote
     ///   <item><b>GraphQL</b> via an endpoint like <b><c>/fliox/graphql/database</c></b> - requires package: Friflo.Json.Fliox.Hub.GraphQL</item>
     /// </list>
     /// </remarks>
-    public sealed class HttpHost : ILogSource, IDisposable
+    public sealed class HttpHost : IHost, ILogSource, IDisposable
     {
                         /// <summary>never null, ends with '/'</summary>
                         public   readonly   string                  endpoint; 
                         public   readonly   FlioxHub                hub;
                         public   readonly   SharedEnv               sharedEnv;
+                        public              List<string>            Routes      => routes.ToList();
         [Browse(Never)] public              IHubLogger              Logger      => sharedEnv.hubLogger;
         
                         public   const      string                  DefaultCacheControl = "max-age=600";
@@ -75,7 +67,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                         private  readonly   SchemaHandler           schemaHandler   = new SchemaHandler();
                         private  readonly   RestHandler             restHandler     = new RestHandler();
                         private  readonly   List<IRequestHandler>   customHandlers  = new List<IRequestHandler>();
-                        private  readonly   HttpInfo                httpInfo        = new HttpInfo();
+        [Browse(Never)] private  readonly   SortedSet<string>       routes          = new SortedSet<string>();
 
                         public   override   string                  ToString() => $"endpoint: {endpoint}, host";
 
@@ -112,9 +104,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 Logger.Log(HubLog.Info, $"{hubLabel}Friflo.Json.Fliox - v{FlioxHub.FlioxVersion}");
                 WriteBanner();
             }
-            hub.SetFeature(httpInfo);
-            httpInfo.routes.UnionWith(restHandler.Routes);
-            httpInfo.routes.UnionWith(schemaHandler.Routes);
+            routes.UnionWith(restHandler.Routes);
+            routes.UnionWith(schemaHandler.Routes);
             
             if (endpoint == null)           throw new ArgumentNullException(nameof(endpoint), "common values: \"/fliox/\" or \"/\"");
             if (!endpoint.StartsWith("/"))  throw new ArgumentException("endpoint requires '/' as first character");
@@ -145,13 +136,13 @@ namespace Friflo.Json.Fliox.Hub.Remote
         public void AddHandler(IRequestHandler requestHandler) {
             if (requestHandler == null) throw new ArgumentNullException(nameof(requestHandler));
             customHandlers.Add(requestHandler);
-            httpInfo.routes.UnionWith(requestHandler.Routes);
+            routes.UnionWith(requestHandler.Routes);
         }
         
         public void RemoveHandler(IRequestHandler requestHandler) {
             customHandlers.Remove(requestHandler);
             foreach (var route in requestHandler.Routes) {
-                httpInfo.routes.Remove(route);
+                routes.Remove(route);
             }
         }
         
@@ -172,7 +163,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
 
                 // Each request require its own pool as multiple request running concurrently. Could cache a Pool instance per connection.
                 var pool        = sharedEnv.pool;
-                var syncContext = new SyncContext(sharedEnv, null, cx.memoryBuffer); // new context per request
+                var syncContext = new SyncContext(sharedEnv, null, cx.memoryBuffer) { Host = cx.host }; // new context per request
                 using (var pooledMapper = pool.ObjectMapper.Get()) {
                     var mapper  = pooledMapper.instance;
                     var writer  = RemoteMessageUtils.GetPrettyWriter(mapper);

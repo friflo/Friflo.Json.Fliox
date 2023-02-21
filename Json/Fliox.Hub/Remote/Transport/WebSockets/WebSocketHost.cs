@@ -36,8 +36,9 @@ namespace Friflo.Json.Fliox.Hub.Remote
         private WebSocketHost (
             WebSocket       webSocket,
             IPEndPoint      remoteClient,
-            FlioxHub        hub)
-        : base (hub)
+            FlioxHub        hub,
+            IHost           host)
+        : base (hub, host)
         {
             hostEnv                 = hub.GetFeature<RemoteHostEnv>();
             this.webSocket          = webSocket;
@@ -167,9 +168,10 @@ namespace Friflo.Json.Fliox.Hub.Remote
         public static async Task SendReceiveMessages(
             WebSocket       websocket,
             IPEndPoint      remoteClient,
-            FlioxHub        hub)
+            HttpHost        host)
         {
-            var  target     = new WebSocketHost(websocket, remoteClient, hub);
+            var hub         = host.hub; 
+            var  target     = new WebSocketHost(websocket, remoteClient, hub, host);
             Task sendLoop   = null;
             try {
                 sendLoop = target.RunSendMessageLoop();

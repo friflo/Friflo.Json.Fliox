@@ -18,7 +18,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
         private  readonly   UdpServerSync   server;
 
         internal UdpSocketSyncHost (UdpServerSync server, IPEndPoint endpoint)
-        : base (server.hub)
+        : base (server.hub, server)
         {
             this.server     = server;
             this.endpoint   = IPEndPointReuse.Create(endpoint.Address, endpoint.Port);

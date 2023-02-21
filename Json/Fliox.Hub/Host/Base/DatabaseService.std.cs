@@ -62,8 +62,8 @@ namespace Friflo.Json.Fliox.Hub.Host
             var hub         = context.Hub;
             var pubSub      = hub.EventDispatcher != null;
             var info        = hub.Info;
-            var httpInfo    = hub.TryGetFeature<HttpInfo>() ?? DefaultHttpInfo;
-            var routes      = new List<string>(httpInfo.routes);
+            var host        = context.SyncContext.Host as HttpHost;
+            var routes      = host?.Routes;
             var result      = new HostInfo {
                 hostName        = hub.HostName,
                 hostVersion     = hub.HostVersion,
@@ -78,8 +78,6 @@ namespace Friflo.Json.Fliox.Hub.Host
             };
             return result;
         }
-        
-        private static readonly HttpInfo DefaultHttpInfo = new HttpInfo();
         
         private static HostMemory GetHostMemory () {
 #if UNITY_5_3_OR_NEWER

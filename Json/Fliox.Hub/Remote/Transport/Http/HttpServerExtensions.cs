@@ -44,7 +44,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             if (websocket != null) {
                 var remoteClient  = request.RemoteEndPoint;
                 // awaits until thew websocket is closed or disconnected
-                await WebSocketHost.SendReceiveMessages (websocket, remoteClient, httpHost.hub).ConfigureAwait(false);
+                await WebSocketHost.SendReceiveMessages (websocket, remoteClient, httpHost).ConfigureAwait(false);
                 
                 return null;
             }

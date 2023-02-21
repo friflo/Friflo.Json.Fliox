@@ -16,7 +16,7 @@ using static Friflo.Json.Fliox.Hub.Remote.TransportUtils;
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
 {
-    public sealed class UdpServerSync : IServer, ILogSource, IDisposable
+    public sealed class UdpServerSync : IHost, IServer, ILogSource, IDisposable
     {
         internal readonly   FlioxHub                                    hub;
         private  readonly   int                                         recvCount;

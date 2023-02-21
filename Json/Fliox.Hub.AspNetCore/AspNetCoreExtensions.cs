@@ -49,7 +49,7 @@ namespace Friflo.Json.Fliox.Hub.AspNetCore
                 var httpConnection  = context.Features.Get<IHttpConnectionFeature>();
                 var remoteClient    = new IPEndPoint(httpConnection.RemoteIpAddress, httpConnection.RemotePort);
                 // awaits until the websocket is closed or disconnected
-                await WebSocketHost.SendReceiveMessages(websocket, remoteClient, httpHost.hub).ConfigureAwait(false);
+                await WebSocketHost.SendReceiveMessages(websocket, remoteClient, httpHost).ConfigureAwait(false);
                 
                 return null;
             }

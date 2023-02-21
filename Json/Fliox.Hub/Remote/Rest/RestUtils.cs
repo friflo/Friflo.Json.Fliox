@@ -547,7 +547,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.Rest
                 clientId    = new ShortString(clientId)
             };
             var hub         = context.hub;
-            syncContext     = new SyncContext(hub.sharedEnv, null, context.memoryBuffer); // new context per request
+            syncContext     = new SyncContext(hub.sharedEnv, null, context.memoryBuffer) { Host = context.host }; // new context per request
             return syncRequest;
         }
         
