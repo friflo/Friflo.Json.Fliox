@@ -42,7 +42,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         public              Func<HttpListenerContext, Task> customRequestHandler;
         public              bool                            IsRunning => running;
         
-        public   override   string                          ToString() => $"endpoint: {httpHost.endpoint}";
+        public   override   string                          ToString() => $"endpoint: {httpHost.baseRoute}";
         
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         public              IHubLogger                      Logger { get; }
@@ -111,10 +111,10 @@ namespace Friflo.Json.Fliox.Hub.Remote
         }
         
         private bool IsFlioxRequest (string path) {
-            if (path.StartsWith(httpHost.endpoint)) {
+            if (path.StartsWith(httpHost.baseRoute)) {
                 return true;
             }
-            return path == httpHost.endpointRoot;
+            return path == httpHost.baseRouteRoot;
         }
         
         private async Task HandleRequest()
@@ -160,8 +160,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
         public async Task ExecuteRequest(HttpListenerContext context) {
             var path        = context.Request.Url.LocalPath;
             var response    = context.Response;
-            if (path == "/" && httpHost.endpoint != "/") {
-                var location = httpHost.endpoint;
+            if (path == "/" && httpHost.baseRoute != "/") {
+                var location = httpHost.baseRoute;
                 var headers = new Dictionary<string, string> { { "Location", location }};
                 await response.WriteResponseString("text/plain", 302, $"redirect -> {location}", headers).ConfigureAwait(false);
                 response.OutputStream.Close(); // required by HttpListener in Unity for redirect. CLR does this automatically.
@@ -224,7 +224,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 if (prefix.Contains("+")) {
                     var url     = prefix.Replace("+", "127.0.0.1");
                     var trimEnd = url.EndsWith("/") ? 1 : 0;
-                    return url.Substring(0, url.Length - trimEnd) + httpHost.endpoint;
+                    return url.Substring(0, url.Length - trimEnd) + httpHost.baseRoute;
                 }
             }
             foreach (var prefix in listener.Prefixes) {

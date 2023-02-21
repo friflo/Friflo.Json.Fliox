@@ -54,7 +54,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
     public sealed class HttpHost : IHost, ILogSource, IDisposable
     {
                         /// <summary>never null, ends with '/'</summary>
-                        public   readonly   string                  endpoint; 
+                        public   readonly   string                  baseRoute; 
                         public   readonly   FlioxHub                hub;
                         public   readonly   SharedEnv               sharedEnv;
                         public              List<string>            Routes      => routes.ToList();
@@ -63,13 +63,13 @@ namespace Friflo.Json.Fliox.Hub.Remote
                         public   const      string                  DefaultCacheControl = "max-age=600";
         
         // --- private / internal
-        [Browse(Never)] internal readonly   string                  endpointRoot;
+        [Browse(Never)] internal readonly   string                  baseRouteRoot;
                         private  readonly   SchemaHandler           schemaHandler   = new SchemaHandler();
                         private  readonly   RestHandler             restHandler     = new RestHandler();
                         private  readonly   List<IRequestHandler>   customHandlers  = new List<IRequestHandler>();
         [Browse(Never)] private  readonly   SortedSet<string>       routes          = new SortedSet<string>();
 
-                        public   override   string                  ToString() => $"endpoint: {endpoint}, host";
+                        public   override   string                  ToString() => $"route: {baseRoute} hostName: {hub.HostName}";
 
         private  static     bool    _titleDisplayed;
         private  const      string  JsonFlioxBanner =
@@ -91,7 +91,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             Console.ForegroundColor = old;
         }
 
-        public HttpHost(FlioxHub hub, string endpoint, SharedEnv env = null)
+        public HttpHost(FlioxHub hub, string baseRoute, SharedEnv env = null)
         {
             sharedEnv   = env  ?? SharedEnv.Default;
             this.hub    = hub;
@@ -107,11 +107,11 @@ namespace Friflo.Json.Fliox.Hub.Remote
             routes.UnionWith(restHandler.Routes);
             routes.UnionWith(schemaHandler.Routes);
             
-            if (endpoint == null)           throw new ArgumentNullException(nameof(endpoint), "common values: \"/fliox/\" or \"/\"");
-            if (!endpoint.StartsWith("/"))  throw new ArgumentException("endpoint requires '/' as first character");
-            if (!endpoint.EndsWith("/"))    throw new ArgumentException("endpoint requires '/' as last character");
-            this.endpoint           = endpoint;
-            endpointRoot            = this.endpoint.Substring(0, this.endpoint.Length - 1);
+            if (baseRoute == null)           throw new ArgumentNullException(nameof(baseRoute), "common values: \"/fliox/\" or \"/\"");
+            if (!baseRoute.StartsWith("/"))  throw new ArgumentException("endpoint requires '/' as first character");
+            if (!baseRoute.EndsWith("/"))    throw new ArgumentException("endpoint requires '/' as last character");
+            this.baseRoute          = baseRoute;
+            baseRouteRoot            = baseRoute.Substring(0, baseRoute.Length - 1);
             var protocolSchema      = NativeTypeSchema.Create(typeof(ProtocolMessage));
             var types               = ProtocolMessage.Types;
             var sepTypes            = protocolSchema.TypesAsTypeDefs(types);

@@ -32,7 +32,7 @@ public static class StartupAsp6
         app.MapGet("hello/", () => "Hello World");
         // add redirect only to enable using http://localhost:8010 for debugging  
         app.MapGet("/", async context => {
-            context.Response.Redirect(httpHost.endpoint, false);
+            context.Response.Redirect(httpHost.baseRoute, false);
             await context.Response.WriteAsync("redirect");
         });
         app.Map("/fliox/{*path}", async context =>  {

@@ -96,10 +96,10 @@ namespace Friflo.Json.Fliox.Hub.AspNetCore
                 var portPos = address.LastIndexOf(':');
                 if (portPos != -1) {
                     var port = address.Substring(portPos + 1);
-                    return $"http://localhost:{port}{httpHost.endpoint}";
+                    return $"http://localhost:{port}{httpHost.baseRoute}";
                 }
             }
-            return $"http://localhost{httpHost.endpoint}";
+            return $"http://localhost{httpHost.baseRoute}";
         }
     }
     

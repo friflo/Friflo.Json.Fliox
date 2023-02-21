@@ -38,7 +38,7 @@ namespace Friflo.Json.Tests.Main
                     await context.Response.WriteAsync("Hello World!");
                 });
                 endpoints.Map("/", async context => {
-                    context.Response.Redirect(hostHub.endpoint, false);
+                    context.Response.Redirect(hostHub.baseRoute, false);
                     await context.Response.WriteAsync("redirect");
                 });
                 endpoints.Map("/fliox/{*path}", async context => {
