@@ -67,7 +67,7 @@ namespace Friflo.Json.Tests.Main
             hub.AddExtensionDB (new MonitorDB("monitor", hub));         // optional - expose monitor stats as extension database
             hub.EventDispatcher     = new EventDispatcher(EventDispatching.QueueSend, c.env); // optional - enables Pub-Sub (sending events for subscriptions)
             
-            var userDB              = new FileDatabase("user_db", c.UserDbPath, new UserDBService(), false);
+            var userDB              = new FileDatabase("user_db", c.UserDbPath, new UserDBService()) { Pretty = false };
             hub.Authenticator       = new UserAuthenticator(userDB, c.env)  // optional - otherwise all request tasks are authorized
                 .SubscribeUserDbChanges(hub.EventDispatcher);               // optional - apply user_db changes instantaneously
             hub.AddExtensionDB(userDB);                                     // optional - expose userStore as extension database
@@ -106,7 +106,7 @@ namespace Friflo.Json.Tests.Main
         }
         
         private static EntityDatabase CreateDatabase(Config c, DatabaseSchema schema, DatabaseService service) {
-            var fileDb = new FileDatabase("main_db", c.MainDbPath, service, false);
+            var fileDb = new FileDatabase("main_db", c.MainDbPath, service) { Pretty = false };
             fileDb.Schema = schema;
             if (!c.useMemoryDb)
                 return fileDb;

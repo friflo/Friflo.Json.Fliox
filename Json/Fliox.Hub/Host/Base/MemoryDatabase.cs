@@ -31,7 +31,8 @@ namespace Friflo.Json.Fliox.Hub.Host
     /// </remarks>
     public sealed class MemoryDatabase : EntityDatabase
     {
-        private  readonly   bool        pretty;
+        public              bool        Pretty { get; init; } = false;
+        
         private  readonly   MemoryType  containerType;
         private  readonly   int         smallValueSize;
         
@@ -40,7 +41,6 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// <param name="dbName"></param>
         /// <param name="service"></param>
         /// <param name="type"></param>
-        /// <param name="pretty"></param>
         /// <param name="smallValueSize"> Intended for write heavy containers. <br/>
         /// Byte arrays used to store container values are reused in case their length is less or equal this size. 
         /// </param>
@@ -48,17 +48,15 @@ namespace Friflo.Json.Fliox.Hub.Host
             string          dbName,
             DatabaseService service         = null,
             MemoryType?     type            = null,
-            bool            pretty          = false,
             int             smallValueSize  = -1)
             : base(dbName, service)
         {
-            this.pretty         = pretty;
             this.smallValueSize = smallValueSize;
             containerType       = type ?? MemoryType.Concurrent;
         }
         
         public override EntityContainer CreateContainer(in ShortString name, EntityDatabase database) {
-            return new MemoryContainer(name.AsString(), database, containerType, pretty, smallValueSize);
+            return new MemoryContainer(name.AsString(), database, containerType, Pretty, smallValueSize);
         }
         
         public override bool IsSyncTask(SyncRequestTask task) {

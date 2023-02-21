@@ -10,23 +10,23 @@ namespace Friflo.Json.Fliox.Hub.Cosmos
 {
     public sealed class CosmosDatabase : EntityDatabase
     {
-        private  readonly   bool        pretty;
+        public   bool                   Pretty { get; init; } = false;
+        
         private  readonly   Database    cosmosDatabase;
         private  readonly   int?        throughput;
         
         public   override   string      StorageType => "CosmosDB";
         
-        public CosmosDatabase(string dbName, Database cosmosDatabase, DatabaseService service = null, int? throughput = null, bool pretty = false)
+        public CosmosDatabase(string dbName, Database cosmosDatabase, DatabaseService service = null, int? throughput = null)
             : base(dbName, service)
         {
             this.cosmosDatabase = cosmosDatabase;
             this.throughput     = throughput;
-            this.pretty         = pretty;
         }
         
         public override EntityContainer CreateContainer(in ShortString name, EntityDatabase database) {
             var options = new ContainerOptions(cosmosDatabase, throughput);
-            return new CosmosContainer(name.AsString(), database, options, pretty);
+            return new CosmosContainer(name.AsString(), database, options, Pretty);
         }
     }
     
@@ -39,6 +39,12 @@ namespace Friflo.Json.Fliox.Hub.Cosmos
             this.throughput = throughput;
         }
     }
+}
+
+namespace System.Runtime.CompilerServices
+{
+    // this is needed to enable the record feature in .NET framework and .NET core <= 3.1 projects
+    internal static class IsExternalInit { }
 }
 
 #endif

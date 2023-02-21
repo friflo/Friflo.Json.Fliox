@@ -32,20 +32,20 @@ namespace Friflo.Json.Fliox.Hub.Host
     /// </remarks>
     public sealed class FileDatabase : EntityDatabase
     {
+        public   bool                   Pretty { get; init; } = true;
+        
         private  readonly   string      databaseFolder;
-        private  readonly   bool        pretty;
         public   override   string      StorageType => "file-system";
         
-        public FileDatabase(string dbName, string databaseFolder, DatabaseService service = null, bool pretty = true)
+        public FileDatabase(string dbName, string databaseFolder, DatabaseService service = null)
             : base(dbName, service)
         {
-            this.pretty = pretty;
             this.databaseFolder = databaseFolder + "/";
             Directory.CreateDirectory(databaseFolder);
         }
 
         public override EntityContainer CreateContainer(in ShortString name, EntityDatabase database) {
-            return new FileContainer(name.AsString(), this, databaseFolder, pretty);
+            return new FileContainer(name.AsString(), this, databaseFolder, Pretty);
         }
         
         protected override Task<string[]> GetContainers() {
