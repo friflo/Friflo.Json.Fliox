@@ -200,8 +200,15 @@ namespace Friflo.Json.Fliox.Hub.Remote
             Logger.Log(HubLog.Info, $"Hub Explorer - {startPage}\n");
         }
         
-        public void Run()       => HandleIncomingConnections().GetAwaiter().GetResult();
-        public Task RunAsync()  => HandleIncomingConnections();
+        public void Run() {
+            HandleIncomingConnections().GetAwaiter().GetResult();
+            Logger.Log(HubLog.Info, "HttpServer stopped");
+        }
+
+        public async Task RunAsync() {
+            await HandleIncomingConnections();
+            Logger.Log(HubLog.Info, "HttpServer stopped");
+        }
 
         public void Stop() {
             running = false;
