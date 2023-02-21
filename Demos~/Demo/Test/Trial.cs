@@ -45,6 +45,9 @@ namespace DemoTest {
             var hub         = CreateHub("ws");
             var client      = new DemoClient(hub) { UserId = "admin", Token = "admin" };
             client.articles.SubscribeChanges(Change.All, (changes, context) => {
+                foreach (var entity in changes.Patches) {
+                    Console.WriteLine($"EventSeq: {context.EventSeq} - merge article: {entity.key}, patch: {entity.patch}");
+                }
                 foreach (var entity in changes.Upserts) {
                     Console.WriteLine($"EventSeq: {context.EventSeq} - upsert article: {entity.id}, name: {entity.name}");
                 }
