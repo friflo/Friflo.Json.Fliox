@@ -46,7 +46,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
             var cookies         = CreateDefaultCookies();
             var headers         = new TestHttpHeaders(null, cookies);
             using(var memoryBuffer = _httpHost.sharedEnv.MemoryBuffer.Get()) {
-                var requestContext  = new RequestContext(_httpHost.hub, "POST", route, "", body, bodyLength, headers, memoryBuffer.instance);
+                var requestContext  = new RequestContext(_httpHost, "POST", route, "", body, bodyLength, headers, memoryBuffer.instance);
                 // execute synchronous to enable tests running in Unity Test Runner
                 _httpHost.ExecuteHttpRequest(requestContext).Wait();
                 
@@ -78,7 +78,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
             restFile.AppendFileHeader(sb);
             foreach (var req in restFile.requests) {
                 var stream      = req.GetBody(out var length);
-                var context     = new RequestContext(_httpHost.hub, req.method, req.path, req.query, stream, length, req.headers, memoryBuffer);
+                var context     = new RequestContext(_httpHost, req.method, req.path, req.query, stream, length, req.headers, memoryBuffer);
                 // execute synchronous to enable tests running in Unity Test Runner
                 _httpHost.ExecuteHttpRequest(context).Wait();
                 
@@ -95,7 +95,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
             var cookies         = CreateDefaultCookies();
             var headers         = new TestHttpHeaders(null, cookies);
             var memoryBuffer    = new MemoryBuffer(4 * 1024);
-            var requestContext  = new RequestContext(_httpHost.hub, method, route, query, bodyStream, length, headers, memoryBuffer);
+            var requestContext  = new RequestContext(_httpHost, method, route, query, bodyStream, length, headers, memoryBuffer);
             // execute synchronous to enable tests running in Unity Test Runner
             _httpHost.ExecuteHttpRequest(requestContext).Wait();
             

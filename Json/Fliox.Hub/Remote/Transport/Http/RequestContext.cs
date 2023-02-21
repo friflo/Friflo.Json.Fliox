@@ -51,7 +51,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         public    override  string                      ToString()          => $"{method} {route}{query}";
 
         public RequestContext (
-            FlioxHub        hub,
+            HttpHost        host,
             string          method,
             string          route,
             string          query,
@@ -60,7 +60,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             IHttpHeaders    headers,
             MemoryBuffer    memoryBuffer)
         {
-            this.hub            = hub;
+            this.hub            = host.hub;
             this.method         = method;
             this.route          = route;
             this.query          = query;
