@@ -42,7 +42,7 @@ namespace Friflo.Json.Fliox.Hub.Host
     ///     To enable this assign a <see cref="DB.UserAuth.UserAuthenticator"/> to <see cref="Authenticator"/>.
     ///   </item>
     ///   <item>
-    ///     <b>Monitoring</b> of database access (requests) by adding a <see cref="MonitorDB"/> with
+    ///     <b>Monitoring</b> of database access (requests) by adding a <see cref="DB.Monitor.MonitorDB"/> with
     ///     <see cref="AddExtensionDB"/>.
     ///   </item>
     /// </list>
