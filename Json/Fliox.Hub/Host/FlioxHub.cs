@@ -105,7 +105,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// </summary>
         public              ClientController    ClientController{ get => clientController; set => clientController = value ?? throw new ArgumentNullException(nameof(ClientController)); }
 
-        /// <summary>host name used to identify a specific host in a network.</summary>
+        /// <summary>Name used to identify a specific host if used within a set of network hosts.</summary>
         public              string              HostName        { get; init; } = "host";
 
         /// <summary>host <see cref="HostVersion"/> - available via command <b>std.Host</b></summary>
