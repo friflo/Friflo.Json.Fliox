@@ -147,16 +147,16 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
                     catch (SocketException socketException) {
                         if (UdpUtils.IsIgnorable(socketException))
                             continue;
-                        if (socketException.SocketErrorCode == SocketError.Interrupted) {
-                            logger.Log(HubLog.Info, "UdpServerSync stopped");
+                        if (UdpUtils.IsClosed(socketException)) {
+                            logger.Log(HubLog.Info, $"UdpServerSync stopped: {socketException.Message}");
                             return;
                         }
-                        var msg = GetExceptionMessage("UdpServerSync.ReceiveMessageLoop()", server.ipEndPoint, socketException);
+                        var msg = GetExceptionMessage("UdpServerSync stopped", server.ipEndPoint, socketException);
                         logger.Log(HubLog.Error, msg);
                         return;
                     }
                     catch (Exception exception) {
-                        var msg = GetExceptionMessage("UdpServerSync.ReceiveMessageLoop()", server.ipEndPoint, exception);
+                        var msg = GetExceptionMessage("UdpServerSync stopped", server.ipEndPoint, exception);
                         logger.Log(HubLog.Error, msg);
                         return;
                     }

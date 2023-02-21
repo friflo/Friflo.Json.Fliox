@@ -28,6 +28,15 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
             }
             return false;
         }
+        
+        internal static bool IsClosed(SocketException socketException) {
+            switch (socketException.SocketErrorCode) {
+                case SocketError.Interrupted:
+                case SocketError.TimedOut:      // (10060): socket is closed in Mono/Unity macos
+                    return true;
+            }
+            return false;
+        }
 
         [DllImport("libc", EntryPoint = "close", SetLastError = true)]
         private static extern int Close(IntPtr handle);
@@ -42,11 +51,13 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
         /// https://github.com/dotnet/runtime/issues/64551
         /// </remarks>
         internal static void CloseSocket(Socket socket) {
+#if !UNITY_5_3_OR_NEWER
             if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX)) {
                 // throw SocketException with SocketErrorCode == SocketError.OperationAborted in blocking Socket.Receive()
                 Close(socket.Handle);
                 return;                
             }
+#endif
             socket.Close();
         }
     }
