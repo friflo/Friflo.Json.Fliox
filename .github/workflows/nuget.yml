@@ -35,9 +35,7 @@ jobs:
       run: dotnet test --no-build --verbosity normal -c Release
 
     - name: Pack
-      run: dotnet pack --no-restore --no-build -p:PackageVersion=${{ steps.version.outputs.version-without-v }} -p:SymbolPackageFormat=snupkg --output ${{ env.PACKAGE_DIRECTORY }} -c Release
-      with:
-        dotnet-version: 6.0.405
+      run: dotnet pack --no-restore --no-build -p:PackageVersion=${{ steps.version.outputs.version-without-v }} -p:SymbolPackageFormat=snupkg -p:PackageOutputPath={path}${{ env.PACKAGE_DIRECTORY }} -c Release
 
     - name: Push
       run: |
