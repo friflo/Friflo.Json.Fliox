@@ -34,7 +34,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Event
         public static  void TestEventAccumulation_Changes()
         {
             using (var sharedEnv = SharedEnv.Default) {
-                var database        = new MemoryDatabase("remote-memory", smallValueSize: 1024);
+                var database        = new MemoryDatabase("remote-memory") { SmallValueSize = 1024 };
                 var hub             = new FlioxHub(database, sharedEnv);
                 var dispatcher      = new EventDispatcher(EventDispatching.Queue);
                 dispatcher.EnableChangeAccumulation(database);
@@ -116,7 +116,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Event
             IgnoreReceiver  receiver)
         {
             using (var sharedEnv = SharedEnv.Default) {
-                var database        = new MemoryDatabase("remote-memory", smallValueSize: 1024);
+                var database        = new MemoryDatabase("remote-memory") { SmallValueSize = 1024 };
                 var hub             = new FlioxHub(database, sharedEnv);
                 var dispatcher      = new EventDispatcher(EventDispatching.Queue);
                 dispatcher.EnableChangeAccumulation(database);

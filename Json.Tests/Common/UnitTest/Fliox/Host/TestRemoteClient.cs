@@ -43,7 +43,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
         private static long UpsertMemory() {
             var sharedEnv = SharedEnv.Default;
             var cx = new ClientCx();
-            cx.database = new MemoryDatabase("test", smallValueSize: 1024) { ContainerType = MemoryType.NonConcurrent };
+            cx.database = new MemoryDatabase("test") { SmallValueSize = 1024, ContainerType = MemoryType.NonConcurrent };
             cx.hub      = new FlioxHub(cx.database, sharedEnv);
             cx.client   = new GameClient(cx.hub);
             
@@ -78,7 +78,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
         private static  long ReadMemory() {
             var sharedEnv = SharedEnv.Default;
             var cx = new ClientCx();
-            cx.database = new MemoryDatabase("test", smallValueSize: 1024) { ContainerType = MemoryType.NonConcurrent };
+            cx.database = new MemoryDatabase("test") { SmallValueSize = 1024, ContainerType = MemoryType.NonConcurrent };
             cx.hub      = new FlioxHub(cx.database, sharedEnv);
             cx.client   = new GameClient(cx.hub);
             

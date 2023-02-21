@@ -115,7 +115,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
         {
             var cx = new RemoteCx();
             var typeStore       = sharedEnv.TypeStore;
-            var database        = new MemoryDatabase("remote-memory", smallValueSize: 1024);
+            var database        = new MemoryDatabase("remote-memory") { SmallValueSize = 1024 };
             cx.hub              = new FlioxHub(database, sharedEnv);
             cx.memoryBuffer     = new MemoryBuffer (4 * 1024);
             cx.mapper           = new ObjectMapper(typeStore);
