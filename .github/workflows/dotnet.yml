@@ -16,7 +16,7 @@ jobs:
     - name: Setup .NET 6.0
       uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: 6.0.x
+        dotnet-version: 6.0.405
     - name: Restore dependencies
       env:
         GITHUB_PACKAGE_TOKEN: ${{ secrets.PACKAGE_TOKEN }}
