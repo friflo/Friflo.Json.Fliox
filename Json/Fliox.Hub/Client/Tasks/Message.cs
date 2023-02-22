@@ -82,7 +82,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         public   override   string          Details     => $"CommandTask (name: {name.AsString()})";
 
         /// <summary>Return the result of a command used as a command as JSON.
-        /// JSON is "null" if the command doesnt return a result.
+        /// JSON is "null" if the command doesn't return a result.
         /// For type safe access of the result use <see cref="ReadResult{T}"/></summary>
         public              JsonValue       RawResult  => IsOk("CommandTask.RawResult", out Exception e) ? result : throw e;
         
@@ -94,7 +94,7 @@ namespace Friflo.Json.Fliox.Hub.Client
 
         /// <summary>
         /// Return a type safe result of a command.
-        /// The result is null if the command doesnt return a result.
+        /// The result is null if the command doesn't return a result.
         /// Throws <see cref="JsonReaderException"/> if read fails.
         /// </summary>
         public T ReadResult<T>() {
@@ -114,7 +114,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         
         /// <summary>
         /// Return a type safe result of a command.
-        /// The result is null if the command doesnt return a result.
+        /// The result is null if the command doesn't return a result.
         /// Return false if read fails and set <paramref name="error"/>.
         /// </summary>
         public bool TryReadResult<T>(out T resultValue, out JsonReaderException error) {

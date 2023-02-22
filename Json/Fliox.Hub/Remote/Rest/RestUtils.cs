@@ -10,7 +10,6 @@ using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
-using Friflo.Json.Fliox.Hub.Remote.Tools;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Schema.Validation;
 using Friflo.Json.Fliox.Transform;
@@ -138,7 +137,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.Rest
             }
             context.AddHeader("len", entities.Count.ToString()); // added to simplify debugging experience
             using (var pooled = context.ObjectMapper.Get()) {
-                var writer          = RemoteMessageUtils.GetPrettyWriter(pooled.instance);
+                var writer          = MessageUtils.GetPrettyWriter(pooled.instance);
                 var entitiesJson    = writer.WriteAsValue(entities);
                 context.Write(entitiesJson, "application/json", 200);
             }
@@ -196,7 +195,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.Rest
             }
             context.AddHeader("len", entities.Count.ToString()); // added to simplify debugging experience
             using (var pooled = context.ObjectMapper.Get()) {
-                var writer      = RemoteMessageUtils.GetPrettyWriter(pooled.instance);
+                var writer      = MessageUtils.GetPrettyWriter(pooled.instance);
                 var response    = writer.WriteAsValue(entities);
                 context.Write(response, "application/json", 200);
             }

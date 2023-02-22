@@ -39,7 +39,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Internal
         public    override  string              ToString()  => name;
         internal  abstract  bool                IsSynchronous     { get; }
         
-        // return type could be a ValueTask but Unity doesnt support this. 2021-10-25
+        // return type could be a ValueTask but Unity doesn't support this. 2021-10-25
         internal  virtual   Task<InvokeResult> InvokeDelegateAsync(SyncRequestTask task, ShortString messageName, JsonValue messageValue, SyncContext syncContext)
             => throw new InvalidOperationException("expect asynchronous implementation");
         

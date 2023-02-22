@@ -64,7 +64,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
                 AreEqualTrimStack(@"UnhandledException ~ SimulationException: simulated create task exception", producerException.Error.Message);
             }
 
-            /*  // not required as TestContainer as database doesnt mutate
+            /*  // not required as TestContainer as database doesn't mutate
                 patchArticle.Result.producer = default; // restore precondition
                 store.LogChanges();
                 await store.SyncTasks();

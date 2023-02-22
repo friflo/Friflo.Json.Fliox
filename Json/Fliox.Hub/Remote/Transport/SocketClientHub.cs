@@ -109,7 +109,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         /// </summary>
         protected void OnReceive(in JsonValue message, RemoteRequestMap requestMap, ObjectReader reader) {
             // --- determine message type
-            var messageHead = RemoteMessageUtils.ReadMessageHead(ref messageParser, message);
+            var messageHead = MessageUtils.ReadMessageHead(ref messageParser, message);
                     
             // --- handle either response or event message
             switch (messageHead.type) {

@@ -103,8 +103,8 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
             try {
                 // requires its own mapper - method can be called from multiple threads simultaneously
                 using (var pooledMapper = syncContext.ObjectMapper.Get()) {
-                    var writer      = RemoteMessageUtils.GetCompactWriter(pooledMapper.instance);
-                    var rawRequest  = RemoteMessageUtils.CreateProtocolMessage(syncRequest, sharedEnv, writer);
+                    var writer      = MessageUtils.GetCompactWriter(pooledMapper.instance);
+                    var rawRequest  = MessageUtils.CreateProtocolMessage(syncRequest, sharedEnv, writer);
                     // request need to be queued _before_ sending it to be prepared for handling the response.
                     var request     = new RemoteRequest(syncContext, cancellationToken);
                     udp.requestMap.Add(sendReqId, request);

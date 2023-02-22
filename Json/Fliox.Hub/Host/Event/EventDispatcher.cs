@@ -12,7 +12,6 @@ using Friflo.Json.Fliox.Hub.Host.Auth;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Hub.Remote;
-using Friflo.Json.Fliox.Hub.Remote.Tools;
 using Friflo.Json.Fliox.Hub.Threading;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Transform;
@@ -294,7 +293,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                 throw new InvalidOperationException($"must not be called if using {nameof(EventDispatcher)}.{EventDispatching.QueueSend}");
             }
             using (var pooleMapper = sharedEnv.pool.ObjectMapper.Get()) {
-                var writer = RemoteMessageUtils.GetCompactWriter(pooleMapper.instance);
+                var writer = MessageUtils.GetCompactWriter(pooleMapper.instance);
                 if (eventCollector.DatabaseCount > 0) {
                     CopyDatabaseSubsMap(databaseSubsBuffer);
                     changeCombiner.AccumulateChanges(databaseSubsBuffer, writer);
@@ -441,7 +440,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                 syncEvent.usr    = syncRequest.userId;
             }
             using (var pooled = syncContext.ObjectMapper.Get()) {
-                var writer = RemoteMessageUtils.GetCompactWriter(pooled.instance);
+                var writer = MessageUtils.GetCompactWriter(pooled.instance);
                 
                 foreach (var clientSub in databaseSubsArray) {
                     var client = clientSub.client;
@@ -458,7 +457,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                     SerializeEventTasks(syncEvent.tasks, ref syncEvent.tasksJson, writer, memoryBuffer);
                     bool sendClientId       = SendEventClientId || syncContext.clientId.IsEqual(client.clientId);
                     syncEvent.clt           = sendClientId ? syncContext.clientId : default;
-                    JsonValue rawSyncEvent  = RemoteMessageUtils.SerializeSyncEvent(syncEvent, writer);
+                    JsonValue rawSyncEvent  = MessageUtils.SerializeSyncEvent(syncEvent, writer);
                     client.EnqueueSyncEvent(rawSyncEvent);
                 }
             }
@@ -510,7 +509,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         private async Task RunSendEventLoop(IDataChannelReader<EventSubClient> clientEventReader) {
             try {
                 using (var mapper = new ObjectMapper(sharedEnv.typeStore)) {
-                    var writer = RemoteMessageUtils.GetCompactWriter(mapper);
+                    var writer = MessageUtils.GetCompactWriter(mapper);
                     await SendEventLoop(clientEventReader, writer).ConfigureAwait(false);
                 }
             } catch (Exception e) {

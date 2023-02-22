@@ -25,12 +25,12 @@ namespace Friflo.Json.Fliox.Hub.Protocol
     /// <para>
     ///     General principle of <see cref="Fliox"/> message protocol:<br/>
     ///     All messages like requests (their tasks), responses (their results) and events are stateless.<br/>
-    ///     In other words: All messages are self-contained and doesnt (and must not) rely and previous sent messages.
+    ///     In other words: All messages are self-contained and doesn't (and must not) rely and previous sent messages.
     ///     The technical aspect of having a connection e.g. HTTP or WebSocket is not relevant.
     ///     This enables two fundamental features:<br/>
     ///     1. embedding all messages in various communication protocols like HTTP, WebSockets, TCP, WebRTC or datagram based protocols.<br/>
     ///     2. multiplexing of messages from different clients, servers or peers in a shared connection.<br/>
-    ///     This also means all <see cref="Fliox"/> messages doesnt (and must not) require a session.<br/>
+    ///     This also means all <see cref="Fliox"/> messages doesn't (and must not) require a session.<br/>
     ///     This principle also enables using a single <see cref="FlioxHub"/> by multiple clients like
     ///     <see cref="Client.FlioxClient"/> even for remote clients like <see cref="Remote.SocketClientHub"/>.
     /// </para>

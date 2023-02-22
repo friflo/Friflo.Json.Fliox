@@ -7,7 +7,6 @@ using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Protocol;
-using Friflo.Json.Fliox.Hub.Remote.Tools;
 
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.Remote
@@ -47,8 +46,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
             // requires its own mapper - method can be called from multiple threads simultaneously
             using (var pooledMapper = syncContext.ObjectMapper.Get()) {
                 var mapper              = pooledMapper.instance;
-                var writer              = RemoteMessageUtils.GetPrettyWriter(mapper);
-                var jsonRequest         = RemoteMessageUtils.CreateProtocolMessage(syncRequest, sharedEnv, writer);
+                var writer              = MessageUtils.GetPrettyWriter(mapper);
+                var jsonRequest         = MessageUtils.CreateProtocolMessage(syncRequest, sharedEnv, writer);
                 var content             = jsonRequest.AsByteArrayContent();
                 content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
                 // body.Headers.ContentEncoding = new string[]{"charset=utf-8"};
@@ -58,7 +57,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                     
                     var bodyArray       = await httpResponse.Content.ReadAsByteArrayAsync().ConfigureAwait(false);
                     var jsonBody        = new JsonValue(bodyArray);
-                    var response        = RemoteMessageUtils.ReadProtocolMessage (jsonBody, sharedEnv, mapper.reader, out string error);
+                    var response        = MessageUtils.ReadProtocolMessage (jsonBody, sharedEnv, mapper.reader, out string error);
                     switch (response) {
                         case null:
                             return  new ExecuteSyncResult(error, ErrorResponseType.BadResponse);

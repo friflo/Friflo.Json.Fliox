@@ -30,7 +30,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         internal    ObjectPool<JsonMerger>      JsonMerger      { get; }
         internal    ObjectPool<ScalarSelector>  ScalarSelector  { get; }
         internal    ObjectPool<JsonEvaluator>   JsonEvaluator   { get; }
-        /// <summary> Returned <see cref="Mapper.ObjectMapper"/> doesnt throw Read() exceptions. To handle errors its
+        /// <summary> Returned <see cref="Mapper.ObjectMapper"/> doesn't throw Read() exceptions. To handle errors its
         /// <see cref="Mapper.ObjectMapper.reader"/> -> <see cref="ObjectReader.Error"/> need to be checked. </summary>
         internal    ObjectPool<ObjectMapper>    ObjectMapper    { get; }
         internal    ObjectPool<ReaderPool>      ReaderPool      { get; }

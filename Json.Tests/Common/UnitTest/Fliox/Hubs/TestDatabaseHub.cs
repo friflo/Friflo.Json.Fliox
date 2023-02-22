@@ -137,7 +137,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs
     /// <para>3. One or more <see cref="SimValue"/> entity errors</para>
     /// <para>4. One or more <see cref="SimWriteError"/> entity errors</para>
     /// <br></br>
-    /// Note: The <see cref="TestContainer"/> doesnt modify the underlying <see cref="local"/> <see cref="EntityContainer"/>
+    /// Note: The <see cref="TestContainer"/> doesn't modify the underlying <see cref="local"/> <see cref="EntityContainer"/>
     /// to avoid side effects by error tests.
     /// </summary>
     public class TestContainer : EntityContainer

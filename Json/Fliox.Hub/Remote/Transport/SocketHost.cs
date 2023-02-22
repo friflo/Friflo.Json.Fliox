@@ -77,7 +77,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         }
         
         private SyncRequest ParseRequest(ObjectMapper mapper, in JsonValue request) {
-            var syncRequest = RemoteMessageUtils.ReadSyncRequest(mapper.reader, hub.sharedEnv, request, out string error);
+            var syncRequest = MessageUtils.ReadSyncRequest(mapper.reader, hub.sharedEnv, request, out string error);
             if (error == null) {
                 return syncRequest;
             }
@@ -206,7 +206,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             var error   = syncResult.error;
             using (var pooled = pool.ObjectMapper.Get()) {
                 var mapper  = pooled.instance;
-                var writer  = RemoteMessageUtils.GetCompactWriter(mapper);
+                var writer  = MessageUtils.GetCompactWriter(mapper);
                 if (error != null) {
                     var errorResponse = JsonResponse.CreateError(writer, error.message, error.type, reqId);
                     SendMessage(errorResponse.body);

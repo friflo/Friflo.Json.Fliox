@@ -42,8 +42,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs
         public override async Task<ExecuteSyncResult> ExecuteRequestAsync(SyncRequest syncRequest, SyncContext syncContext) {
             using (var pooledMapper = syncContext.ObjectMapper.Get()) {
                 var mapper          = pooledMapper.instance;
-                var requestJson     = RemoteMessageUtils.CreateProtocolMessage(syncRequest, sharedEnv, mapper.writer);
-                var requestCopy     = RemoteMessageUtils.ReadSyncRequest (mapper.reader, sharedEnv, requestJson, out var _);
+                var requestJson     = MessageUtils.CreateProtocolMessage(syncRequest, sharedEnv, mapper.writer);
+                var requestCopy     = MessageUtils.ReadSyncRequest (mapper.reader, sharedEnv, requestJson, out var _);
                 hub.InitSyncRequest(requestCopy);
                 var syncResponse    = await hub.ExecuteRequestAsync(requestCopy, syncContext);
                 
@@ -51,8 +51,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs
                     return syncResponse;
                 }
                 RemoteHostUtils.SetContainerResults(syncResponse.success);
-                var responseJson    = RemoteMessageUtils.CreateProtocolMessage(syncResponse.success, sharedEnv, mapper.writer);
-                var responseMessage = RemoteMessageUtils.ReadProtocolMessage (responseJson, sharedEnv, mapper.reader, out _);
+                var responseJson    = MessageUtils.CreateProtocolMessage(syncResponse.success, sharedEnv, mapper.writer);
+                var responseMessage = MessageUtils.ReadProtocolMessage (responseJson, sharedEnv, mapper.reader, out _);
                 var responseCopy    = (SyncResponse)responseMessage;
                 
                 return new ExecuteSyncResult(responseCopy);

@@ -102,7 +102,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// The <paramref name="name"/> is used to simplify finding a <see cref="SyncTask"/> in the source code while debugging.
         /// It also simplifies finding a <see cref="TaskError"/> by its <see cref="TaskError.Message"/>
         /// or a <see cref="TaskResultException"/> by its <see cref="Exception.Message"/>.
-        /// The library itself doesnt use the <paramref name="name"/> internally - its purpose is only to enhance debugging
+        /// The library itself doesn't use the <paramref name="name"/> internally - its purpose is only to enhance debugging
         /// or post-mortem debugging of application code.
         /// </summary>
         public static T TaskName<T> (this T task, string name) where T : SyncFunction {

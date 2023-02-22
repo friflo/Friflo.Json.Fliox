@@ -176,7 +176,7 @@ namespace Friflo.Json.Fliox.Schema.Definition
 
         public override bool Equals(object obj) {
             // ReSharper disable once PossibleNullReferenceException
-            var other = (TypeDefKey)obj; // boxes - doesnt matter
+            var other = (TypeDefKey)obj; // boxes - doesn't matter
             return @namespace == other.@namespace && name == other.name;
         }
     }

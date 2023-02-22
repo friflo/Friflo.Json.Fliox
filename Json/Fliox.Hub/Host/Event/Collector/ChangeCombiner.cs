@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using Friflo.Json.Fliox.Hub.Protocol;
-using Friflo.Json.Fliox.Hub.Remote.Tools;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Utils;
 
@@ -125,7 +124,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event.Collector
             if (syncEvent.tasksJson.Count == 0) {
                 return default;
             }
-            return RemoteMessageUtils.SerializeSyncEvent(syncEvent, writer);
+            return MessageUtils.SerializeSyncEvent(syncEvent, writer);
         }
     }
 }

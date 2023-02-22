@@ -219,7 +219,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                     var listenSubscriber    = await CreatePocStoreSubscriber(listenDb, EventAssertion.Changes);
                     using (var createStore  = new PocStore(hub) { UserId = "createStore", ClientId = "create-client"}) {
                         await remoteHub.Close();
-                        // all change events sent by createStore doesnt arrive at listenDb
+                        // all change events sent by createStore doesn't arrive at listenDb
                         await TestRelationPoC.CreateStore(createStore);
                         AreEqual(0, listenSubscriber.EventCount);
                         

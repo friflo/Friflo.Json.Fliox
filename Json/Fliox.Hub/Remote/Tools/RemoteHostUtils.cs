@@ -25,7 +25,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.Tools
             // used response assignment instead of return in each branch to provide copy/paste code to avoid an async call in caller
             JsonResponse response;
             try {
-                var syncRequest = RemoteMessageUtils.ReadSyncRequest(mapper.reader, hub.sharedEnv, jsonRequest, out string error);
+                var syncRequest = MessageUtils.ReadSyncRequest(mapper.reader, hub.sharedEnv, jsonRequest, out string error);
                 if (error != null) {
                     response = JsonResponse.CreateError(mapper.writer, error, ErrorResponseType.BadResponse, null);
                 } else {
@@ -49,7 +49,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.Tools
             }
             SetContainerResults(response.success);
             response.Result.reqId   = reqId;
-            JsonValue jsonResponse  = RemoteMessageUtils.CreateProtocolMessage(response.Result, env, writer);
+            JsonValue jsonResponse  = MessageUtils.CreateProtocolMessage(response.Result, env, writer);
             return new JsonResponse(jsonResponse, JsonResponseStatus.Ok);
         }
         

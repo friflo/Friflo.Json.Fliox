@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using Friflo.Json.Fliox.Hub.Protocol;
-using Friflo.Json.Fliox.Hub.Remote.Tools;
 using Friflo.Json.Fliox.Utils;
 using static System.Diagnostics.DebuggerBrowsableState;
 
@@ -125,7 +124,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                 int seq = ++eventCounter;
                 // access to syncEvents is valid. DequeMessages() is called sequentially
                 var client       = context.sendTargetClientId ? clientId : default;
-                var eventMessage = RemoteMessageUtils.CreateEventMessage(syncEvents, client, seq, context.writer);
+                var eventMessage = MessageUtils.CreateEventMessage(syncEvents, client, seq, context.writer);
                 eventMessages.Add(eventMessage);
                 if (queueEvents) {
                     lock (unsentSyncEvents) {

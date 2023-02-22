@@ -10,7 +10,8 @@ using Friflo.Json.Fliox.Mapper;
 
 // Note! - Must not have any dependency to System.Net or System.Net.Http (or other HTTP stuff)
 
-namespace Friflo.Json.Fliox.Hub.Remote.Tools
+// ReSharper disable once CheckNamespace
+namespace Friflo.Json.Fliox.Hub.Host
 {
     /// <summary> Reflect the shape of a <see cref="EventMessage"/> </summary>
     public struct RemoteEventMessage
@@ -34,7 +35,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.Tools
     /// <b>Attention</b> all <c>Create</c> methods return a <see cref="JsonValue"/> which are only valid until the
     /// passed <see cref="ObjectReader"/> it reused 
     /// </summary>
-    public static class RemoteMessageUtils
+    public static class MessageUtils
     {
         public static ObjectWriter GetCompactWriter (ObjectMapper mapper) {
             var writer              = mapper.writer;

@@ -166,12 +166,12 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 var syncContext = new SyncContext(sharedEnv, null, cx.memoryBuffer) { Host = cx.host }; // new context per request
                 using (var pooledMapper = pool.ObjectMapper.Get()) {
                     var mapper  = pooledMapper.instance;
-                    var writer  = RemoteMessageUtils.GetPrettyWriter(mapper);
+                    var writer  = MessageUtils.GetPrettyWriter(mapper);
                     // inlined ExecuteJsonRequest() to avoid async call:
                     // JsonResponse response  = await ExecuteJsonRequest(mapper, requestContent, syncContext).ConfigureAwait(false);
                     JsonResponse response;
                     try {
-                        var syncRequest = RemoteMessageUtils.ReadSyncRequest(mapper.reader, sharedEnv, requestContent, out string error);
+                        var syncRequest = MessageUtils.ReadSyncRequest(mapper.reader, sharedEnv, requestContent, out string error);
                         if (error != null) {
                             response = JsonResponse.CreateError(writer, error, ErrorResponseType.BadResponse, null);
                         } else {
