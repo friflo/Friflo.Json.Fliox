@@ -15,7 +15,7 @@ namespace Friflo.Json.Fliox.Hub.Host
     /// </summary>
     /// <remarks>
     /// The intention is having a shared database which can be used in high performance scenarios. <br/>
-    /// E.g. on a 4 Core CPU it is able to achieve more than 500.000 request / second. <br/>
+    /// E.g. on a 4 Core CPU it is able to achieve more than 1.000.000 request / second. <br/>
     /// Following use-cases are suitable for a <see cref="MemoryDatabase"/>
     /// <list type="bullet">
     ///   <item>Run a big amount of unit tests fast and efficient as instantiation of <see cref="MemoryDatabase"/> take only some micro seconds. </item>
