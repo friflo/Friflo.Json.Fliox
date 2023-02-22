@@ -95,7 +95,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         {
             sharedEnv   = env  ?? SharedEnv.Default;
             this.hub    = hub;
-            var msg = $"create HttpHost db: {hub.DatabaseName} ({hub.database.StorageType})";
+            var msg = $"create HttpHost db: {hub.database.name} ({hub.database.StorageType})";
             Logger.Log(HubLog.Info, msg);
             if (!_titleDisplayed) {
                 _titleDisplayed = true;

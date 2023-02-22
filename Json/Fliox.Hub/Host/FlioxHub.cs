@@ -71,10 +71,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         public   readonly   EntityDatabase      database;                           // not null
         // ReSharper disable once UnusedMember.Local - show as property to list it within the first members in Debugger
         private             EntityDatabase      Database        => database;        // not null
-        /// <summary> name of the default <see cref="database"/> assigned to the <see cref="FlioxHub"/> </summary>
-        public              string              DatabaseName    => database.name;   // not null
-        public   override   string              ToString()      => database.name;   // not null
-        
+
         [Browse(Never)]
         public              IHubLogger          Logger          => sharedEnv.hubLogger;
         
@@ -116,6 +113,9 @@ namespace Friflo.Json.Fliox.Hub.Host
         public              HubInfo             Info { get => info; set => info = value ?? throw new ArgumentNullException(nameof(Info)); }
         
         public   readonly   SharedEnv           sharedEnv;
+        
+        public   override   string              ToString()      => database.name;   // not null
+
         
         // --- private / internal fields & properties 
                         private  readonly   Dictionary<Type,object>     features        = new Dictionary<Type, object>();
