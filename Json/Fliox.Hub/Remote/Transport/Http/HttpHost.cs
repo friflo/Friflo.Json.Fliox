@@ -69,7 +69,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                         private  readonly   List<IRequestHandler>   customHandlers  = new List<IRequestHandler>();
         [Browse(Never)] private  readonly   SortedSet<string>       routes          = new SortedSet<string>();
 
-                        public   override   string                  ToString() => $"route: {baseRoute} hostName: {hub.HostName}";
+                        public   override   string                  ToString() => $"{baseRoute}  hostName: {hub.HostName}";
 
         private  static     bool    _titleDisplayed;
         private  const      string  JsonFlioxBanner =
