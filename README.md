@@ -80,7 +80,7 @@ Compact list of features supported by Clients and Hubs
 - ASP.NET Core & HttpListener integration
     - REST API - JSON Schema / OpenAPI
     - GraphQL API
-    - Batch API - HTTP & WebSocket
+    - Batch API - HTTP, WebSocket & UDP
 - CRUD
 - Queries - LINQ expressions
 - Container relations (associations)
@@ -142,7 +142,7 @@ The `MyClient` can be used to declare custom database commands using DTO's as in
 
 A `HttpHost` instance is used to host multiple NoSQL databases.  
 It is designed to be integrated into HTTP servers like **ASP.NET Core**.  
-This enables access to hosted databases via HTTP or WebSocket supporting the following Web API's:
+This enables access to hosted databases via HTTP, WebSocket or UDP supporting the following Web API's:
 - REST
 - GraphQL
 - Batch API
