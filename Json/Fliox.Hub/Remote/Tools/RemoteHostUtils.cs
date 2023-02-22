@@ -49,7 +49,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.Tools
             }
             SetContainerResults(response.success);
             response.Result.reqId   = reqId;
-            JsonValue jsonResponse  = MessageUtils.CreateProtocolMessage(response.Result, env, writer);
+            JsonValue jsonResponse  = MessageUtils.WriteProtocolMessage(response.Result, env, writer);
             return new JsonResponse(jsonResponse, JsonResponseStatus.Ok);
         }
         

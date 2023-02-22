@@ -124,7 +124,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event.Collector
             if (syncEvent.tasksJson.Count == 0) {
                 return default;
             }
-            return MessageUtils.SerializeSyncEvent(syncEvent, writer);
+            return MessageUtils.WriteSyncEvent(syncEvent, writer);
         }
     }
 }

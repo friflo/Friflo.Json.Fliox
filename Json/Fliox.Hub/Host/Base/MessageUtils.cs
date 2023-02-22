@@ -53,7 +53,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// <summary>
         /// <b>Attention</b> returned <see cref="JsonValue"/> is <b>only</b> valid until the passed <paramref name="writer"/> is reused
         /// </summary>
-        public static JsonValue CreateProtocolMessage (
+        public static JsonValue WriteProtocolMessage (
             ProtocolMessage message,
             SharedEnv       env,
             ObjectWriter    writer)
@@ -66,7 +66,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// Creates a serialized <see cref="EventMessage"/><br/>
         /// <b>Attention</b> returned <see cref="JsonValue"/> is <b>only</b> valid until the passed <paramref name="writer"/> is reused
         /// </summary>
-        public static JsonValue CreateEventMessage (
+        public static JsonValue WriteEventMessage (
             List<JsonValue>     syncEvents,
             in ShortString      dstClientId,
             int                 seq,
@@ -80,7 +80,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// <summary>
         /// <b>Attention</b> returned <see cref="JsonValue"/> is <b>only</b> valid until the passed <paramref name="writer"/> in  is reused
         /// </summary>
-        public static JsonValue SerializeSyncEvent (
+        public static JsonValue WriteSyncEvent (
             in SyncEvent        syncEvent,
             ObjectWriter        writer)       
         {
