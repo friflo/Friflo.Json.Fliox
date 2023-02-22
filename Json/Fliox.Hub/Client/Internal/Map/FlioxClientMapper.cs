@@ -46,7 +46,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal.Map
                 fieldInfo.SetValue(this, fields);
             }
             
-            var messageInfos = MessageUtils.GetMessageInfos(type, typeStore);
+            var messageInfos = HubMessagesUtils.GetMessageInfos(type, typeStore);
             AddMessages(typeStore, messageInfos);
         }
         

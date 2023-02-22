@@ -226,8 +226,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                     mappers[n] = (IEntitySetMapper)typeStore.GetTypeMapper(entitySetType);
                 }
                 var error           = ValidateMappers(mappers, entityInfos);
-                var messagePrefix   = MessageUtils.GetMessagePrefix(clientType.CustomAttributes);
-                var clientInfo      = new ClientTypeInfo (mappers, messagePrefix, error);
+                var prefix          = HubMessagesUtils.GetMessagePrefix(clientType.CustomAttributes);
+                var clientInfo      = new ClientTypeInfo (mappers, prefix, error);
                 cache.Add(clientType, clientInfo);
                 return clientInfo;
             }

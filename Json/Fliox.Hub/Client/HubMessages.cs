@@ -55,7 +55,7 @@ namespace Friflo.Json.Fliox.Hub.Client
                 }
             }
             var attributes  = type.CustomAttributes;
-            prefix          = MessageUtils.GetMessagePrefix(attributes);
+            prefix          = HubMessagesUtils.GetMessagePrefix(attributes);
             lock (PrefixCache) {
                 PrefixCache.TryAdd(type, prefix);    
             }

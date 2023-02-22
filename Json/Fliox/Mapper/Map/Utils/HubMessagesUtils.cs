@@ -8,7 +8,7 @@ using Friflo.Json.Fliox.Mapper.Utils;
 
 namespace Friflo.Json.Fliox.Mapper.Map.Utils
 {
-    public static class MessageUtils
+    public static class HubMessagesUtils
     {
         private static readonly Dictionary<Type, MessageInfo[]> MessageInfoCache = new Dictionary<Type, MessageInfo[]>();
 

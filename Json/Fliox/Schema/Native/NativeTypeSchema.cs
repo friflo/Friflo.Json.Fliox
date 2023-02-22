@@ -139,7 +139,7 @@ namespace Friflo.Json.Fliox.Schema.Native
                             typeDef.fields.Add(fieldDef);
                         }
                     }
-                    var commands = MessageUtils.GetMessageInfos(typeDef.native, typeStore);
+                    var commands = HubMessagesUtils.GetMessageInfos(typeDef.native, typeStore);
                     AddMessages(typeDef, commands);
 
                     if (typeDef.Discriminant != null) {
