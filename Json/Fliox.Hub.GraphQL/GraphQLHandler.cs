@@ -26,6 +26,8 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
         private readonly    ObjectPool<JsonProjector>               projectorPool;                
         private const       string                                  GraphQLRoute    = "/graphql";
         
+        public override     string                                  ToString() => GraphQLRoute;
+        
         public string[]     Routes => new [] { GraphQLRoute };
         
         public GraphQLHandler() {

@@ -15,7 +15,9 @@ namespace Friflo.Json.Fliox.Hub.Remote.Rest
         private const   string      RestBase = "/rest";
         
         public          string[]    Routes => new []{ RestBase };
-        
+
+        public override string      ToString() => RestBase;
+
         internal static bool IsMatch(RequestContext context) {
             return RequestContext.IsBasePath(RestBase, context.route);
         }

@@ -29,7 +29,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.Schema
         private             string                              cacheControl    = HttpHost.DefaultCacheControl;
         internal            ICollection<CustomGenerator>        Generators      => generators;
 
-        public    override  string                              ToString()      => $"schemas: {schemas.Count}";
+        public    override  string                              ToString()      => $"{SchemaBase} schemas: {schemas.Count}";
 
         internal SchemaHandler() {
             this.zip = ZipUtils.Zip;
