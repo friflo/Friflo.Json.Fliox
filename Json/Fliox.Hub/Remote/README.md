@@ -9,15 +9,16 @@
 The namespace `Friflo.Json.Fliox.Hub.Remote` contains classes to enable access to databases via **HTTP**, **WebSockets** and **UDP**. 
 
 
-``` 
-    HttpClientHub        <=>   HttpHost  ->  FlioxHub(database)
-                        HTTP
+```
+    Client               Protocol    Server
+                            |
+    HttpClientHub         HTTP       HttpHost  ->  FlioxHub(database)
+                            |
+    WebSocketClientHub  WebSocket    HttpHost  ->  FlioxHub(database)
+                            |
+    UdpSocketClientHub     UDP       UdpServer ->  FlioxHub(database)
 
-    WebSocketClientHub   <=>   HttpHost  ->  FlioxHub(database)
-                      WebSocket
-
-    UdpSocketClientHub   <=>   UdpServer ->  FlioxHub(database)
-                         UDP
+       -> depends on
 ```
 
 
