@@ -11,7 +11,6 @@ using Friflo.Json.Fliox.Hub.Host.Event;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
-using Friflo.Json.Fliox.Hub.Remote.Tools;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Utils;
 
@@ -268,7 +267,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         
         /// Map <see cref="ContainerEntities.entities"/>, <see cref="ContainerEntities.notFound"/> and
         /// <see cref="ContainerEntities.errors"/> to <see cref="ContainerEntities.entityMap"/>.
-        /// These properties are set by <see cref="RemoteHostUtils.SetContainerResults"/>.
+        /// These properties are set by <see cref="Remote.Tools.RemoteHostUtils.SetContainerResults"/>.
         private void GetContainerResults(SyncResponse response) {
             var containers = response.containers;
             if (containers == null) {
