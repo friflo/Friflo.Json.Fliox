@@ -11,7 +11,6 @@ using Friflo.Json.Fliox.Hub.Host.Event.Collector;
 using Friflo.Json.Fliox.Hub.Host.Auth;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
-using Friflo.Json.Fliox.Hub.Remote;
 using Friflo.Json.Fliox.Hub.Threading;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Transform;
@@ -55,9 +54,9 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         public              bool                                SendEventClientId       { get; set; } = false;
         /// <summary>
         /// If true the target client id is set in <see cref="EventMessage"/>'s sent to clients<br/>
-        /// By sending the client id multiple <see cref="FlioxClient"/>'s can use a single <see cref="WebSocketClientHub"/>
+        /// By sending the client id multiple <see cref="FlioxClient"/>'s can use a single <see cref="Remote.WebSocketClientHub"/>
         /// to receive events.<br/>
-        /// If false remote clients like <see cref="SocketClientHub"/> must be initialized with <see cref="RemoteClientAccess.Single"/>
+        /// If false remote clients like <see cref="Remote.SocketClientHub"/> must be initialized with <see cref="Remote.RemoteClientAccess.Single"/>
         /// </summary>
         public              bool                                SendTargetClientId      { get; set; } = true;
         internal readonly   SharedEnv                           sharedEnv;
@@ -505,7 +504,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         /// Loop is purely I/O bound => don't wrap in
         /// return Task.Run(async () => { ... });
         /// </summary>
-        /// <seealso cref="WebSocketHost.RunReceiveMessageLoop"/>
+        /// <seealso cref="Remote.WebSocketHost.RunReceiveMessageLoop"/>
         private async Task RunSendEventLoop(IDataChannelReader<EventSubClient> clientEventReader) {
             try {
                 using (var mapper = new ObjectMapper(sharedEnv.typeStore)) {
