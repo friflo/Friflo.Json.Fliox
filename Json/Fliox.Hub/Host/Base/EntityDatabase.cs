@@ -66,6 +66,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// By having the mapping function in <see cref="EntityContainer"/> it enables uniform mapping across different
         /// <see cref="EntityContainer"/> implementations.
         /// </remarks>
+        [DebuggerBrowsable(Never)]
         public          CustomContainerName CustomContainerName { get; init; } = DefaultCustomContainerName;
 
         private static readonly CustomContainerName DefaultCustomContainerName = name => name;
