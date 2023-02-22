@@ -14,8 +14,9 @@ namespace Friflo.Json.Fliox.Hub.Host
     /// A <see cref="MemoryDatabase"/> is a non-persistent database used to store records in memory.
     /// </summary>
     /// <remarks>
-    /// The intention is having a shared database which can be used in high performance scenarios. <br/>
-    /// E.g. on a 4 Core CPU it is able to achieve more than 1.000.000 request / second. <br/>
+    /// The intention is having a shared database which can be used in high performance scenarios. E.g:<br/>
+    /// 4 Core i7-4790K CPU 4.00GHz: 1.000.000 requests / second. <br/>
+    /// Mac Mini M2:                 1.800.000 requests / second. <br/>
     /// Following use-cases are suitable for a <see cref="MemoryDatabase"/>
     /// <list type="bullet">
     ///   <item>Run a big amount of unit tests fast and efficient as instantiation of <see cref="MemoryDatabase"/> take only some micro seconds. </item>
