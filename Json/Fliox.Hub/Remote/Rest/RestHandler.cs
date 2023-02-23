@@ -8,6 +8,8 @@ using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using static Friflo.Json.Fliox.Hub.Remote.Rest.RestRequestType;
 
+// Note! - Must not have any dependency to System.Net or System.Net.Http (or other HTTP stuff)
+
 namespace Friflo.Json.Fliox.Hub.Remote.Rest
 {
     internal sealed class RestHandler

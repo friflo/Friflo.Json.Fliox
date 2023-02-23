@@ -16,6 +16,8 @@ using Friflo.Json.Fliox.Transform;
 using Friflo.Json.Fliox.Transform.Query.Ops;
 using static Friflo.Json.Fliox.Hub.Host.ExecutionType;
 
+// Note! - Must not have any dependency to System.Net or System.Net.Http (or other HTTP stuff)
+
 // ReSharper disable MethodHasAsyncOverload
 // ReSharper disable SwitchStatementHandlesSomeKnownEnumValuesWithDefault
 // ReSharper disable ForeachCanBePartlyConvertedToQueryUsingAnotherGetEnumerator
