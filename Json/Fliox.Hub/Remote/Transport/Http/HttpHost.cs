@@ -51,7 +51,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
     ///   <item><b>GraphQL</b> via an endpoint like <b><c>/fliox/graphql/database</c></b> - requires package: Friflo.Json.Fliox.Hub.GraphQL</item>
     /// </list>
     /// </remarks>
-    public sealed class HttpHost : IHost, ILogSource, IDisposable
+    public sealed class HttpHost : IHttpHost, ILogSource, IDisposable
     {
                         /// <summary>never null, ends with '/'</summary>
                         public   readonly   string                  baseRoute; 

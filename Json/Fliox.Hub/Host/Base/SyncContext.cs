@@ -154,6 +154,10 @@ namespace Friflo.Json.Fliox.Hub.Host
     
     public interface IHost { }
     
+    public interface IHttpHost : IHost {
+        List<string>    Routes { get; }
+    }
+    
     /// <summary>
     /// <see cref="SyncBuffers"/> can be used to minimize heap allocations by passing to <see cref="SyncContext"/> constructor. <br/>
     /// <b>Note</b> The the caller of <see cref="FlioxHub.ExecuteRequestAsync"/> <b>must</b> ensure that only one call to

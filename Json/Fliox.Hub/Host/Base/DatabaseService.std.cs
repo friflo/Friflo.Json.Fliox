@@ -10,7 +10,6 @@ using Friflo.Json.Fliox.Hub.Client;
 using Friflo.Json.Fliox.Hub.DB.Cluster;
 using Friflo.Json.Fliox.Hub.Host.Auth;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
-using Friflo.Json.Fliox.Hub.Remote;
 
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.Host
@@ -62,7 +61,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             var hub         = context.Hub;
             var pubSub      = hub.EventDispatcher != null;
             var info        = hub.Info;
-            var host        = context.SyncContext.Host as HttpHost;
+            var host        = context.SyncContext.Host as IHttpHost;
             var routes      = host?.Routes;
             var result      = new HostInfo {
                 hostName        = hub.HostName,
