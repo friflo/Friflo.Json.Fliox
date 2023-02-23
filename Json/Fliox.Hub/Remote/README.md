@@ -8,19 +8,21 @@
 ## General
 The namespace `Friflo.Json.Fliox.Hub.Remote` contains classes to enable access to databases via **HTTP**, **WebSockets** and **UDP**. 
 
-
 ```
-    Client               Protocol    Server
-                            |
-    HttpClientHub         HTTP       HttpHost  ->  FlioxHub(database)
-                            |
-    WebSocketClientHub  WebSocket    HttpHost  ->  FlioxHub(database)
-                            |
-    UdpSocketClientHub     UDP       UdpServer ->  FlioxHub(database)
+    client          protocol          server
+                        |
+HttpClientHub         HTTP       HttpServer or ASP.NET -> HttpHost -> FlioxHub(database)
+                        |
+WebSocketClientHub  WebSocket    HttpServer or ASP.NET -> HttpHost -> FlioxHub(database)
+                        |
+UdpSocketClientHub     UDP       UdpServer                         -> FlioxHub(database)
 
-       -> depends on
+    -> depends on
 ```
 
+The same `FlioxHub` instance can be used by multiple servers.  
+So a single process can run multiple servers using the same databases and serve them
+with different protocols (HTTP, WebSocket, UDP) at the same time.
 
 # `HttpHost`
 namespace **`Friflo.Json.Fliox.Hub.Remote`**
