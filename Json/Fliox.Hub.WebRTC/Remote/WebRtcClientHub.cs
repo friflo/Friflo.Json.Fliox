@@ -37,9 +37,10 @@ namespace Friflo.Json.Fliox.Hub.WebRTC.Remote
         /// Incrementing requests id used to map a <see cref="ProtocolResponse"/>'s to its related <see cref="SyncRequest"/>.
         private             int                         reqId;
         public   override   bool                        IsConnected => rtcConnection?.channel.readyState == RTCDataChannelState.open;
-
-        private             WebRtcConnection            rtcConnection;
         private  readonly   ObjectReader                reader;
+
+        private             WebRtcConnection                        rtcConnection;
+        private             TaskCompletionSource<WebRtcConnection>  connected;
         
         private  readonly   CancellationTokenSource     cancellationToken = new CancellationTokenSource();
         
@@ -52,6 +53,7 @@ namespace Friflo.Json.Fliox.Hub.WebRTC.Remote
             rtcPeerConnection.ondatachannel += (dc) => {
                 rtcConnection = new WebRtcConnection(dc);
                 dc.onmessage += OnMessage;
+                connected?.SetResult(rtcConnection);
             };
             var mapper = new ObjectMapper(sharedEnv.TypeStore);
             reader = mapper.reader;
@@ -63,14 +65,15 @@ namespace Friflo.Json.Fliox.Hub.WebRTC.Remote
             return Task.CompletedTask;
         }
         
-        private WebRtcConnection GetWebRtcConnection() {
-            return rtcConnection;
-        }
-        
         /* public override void Dispose() {
             base.Dispose();
             // websocket.CancelPendingRequests();
         } */
+        
+        private Task<WebRtcConnection> Connect() {
+            connected ??= new TaskCompletionSource<WebRtcConnection>();
+            return connected.Task;
+        }
         
         private void OnMessage(RTCDataChannel dc, DataChannelPayloadProtocols protocol, byte[] data) {
             var message     = new JsonValue(data);
@@ -80,10 +83,9 @@ namespace Friflo.Json.Fliox.Hub.WebRTC.Remote
         }
         
         public override async Task<ExecuteSyncResult> ExecuteRequestAsync(SyncRequest syncRequest, SyncContext syncContext) {
-            var socket = GetWebRtcConnection();
-            if (socket == null) {
-                throw new NullReferenceException("");
-                // socket = await Connect().ConfigureAwait(false);
+            var conn = rtcConnection;
+            if (conn == null) {
+                conn = await Connect().ConfigureAwait(false);
             }
             int sendReqId       = Interlocked.Increment(ref reqId);
             syncRequest.reqId   = sendReqId;
@@ -94,11 +96,11 @@ namespace Friflo.Json.Fliox.Hub.WebRTC.Remote
                     var rawRequest  = MessageUtils.WriteProtocolMessage(syncRequest, sharedEnv, writer);
                     // request need to be queued _before_ sending it to be prepared for handling the response.
                     var request     = new RemoteRequest(syncContext, cancellationToken);
-                    socket.requestMap.Add(sendReqId, request);
+                    conn.requestMap.Add(sendReqId, request);
                     var sendBuffer  = rawRequest.MutableArray;
                     if (env.logMessages) TransportUtils.LogMessage(Logger, ref sbSend, "client  ->", remoteHost, rawRequest);
                     // --- Send message
-                    socket.channel.send(sendBuffer);
+                    conn.channel.send(sendBuffer);
                     
                     // --- Wait for response
                     var response = await request.response.Task.ConfigureAwait(false);
