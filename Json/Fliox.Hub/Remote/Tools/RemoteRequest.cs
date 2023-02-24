@@ -12,15 +12,15 @@ using Friflo.Json.Fliox.Pools;
 
 namespace Friflo.Json.Fliox.Hub.Remote.Tools
 {
-    internal readonly struct RemoteRequest
+    public readonly struct RemoteRequest
     {
         /// <summary>
         /// After a client send a remote request to the host the <see cref="response"/> is used to await its completion
         /// </summary>
-        internal readonly   TaskCompletionSource<ProtocolResponse>  response;
+        public   readonly   TaskCompletionSource<ProtocolResponse>  response;
         internal readonly   ReaderPool                              responseReaderPool;   
         
-        internal RemoteRequest(SyncContext syncContext, CancellationTokenSource cancellationToken) {
+        public RemoteRequest(SyncContext syncContext, CancellationTokenSource cancellationToken) {
             response            = new TaskCompletionSource<ProtocolResponse>();
             responseReaderPool  = syncContext.responseReaderPool; 
             
@@ -33,7 +33,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.Tools
     public sealed class RemoteRequestMap {
         private  readonly  Dictionary<int, RemoteRequest> requestMap = new Dictionary<int, RemoteRequest>();
         
-        internal void Add(int reqId, RemoteRequest request) {
+        public void Add(int reqId, RemoteRequest request) {
             lock (requestMap) {
                 requestMap.Add(reqId, request);    
             }
@@ -45,7 +45,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.Tools
             }
         }
 
-        internal void CancelRequests() {
+        public void CancelRequests() {
             Dictionary<int, RemoteRequest>.ValueCollection requests;
             lock (requestMap) {
                 requests = requestMap.Values;

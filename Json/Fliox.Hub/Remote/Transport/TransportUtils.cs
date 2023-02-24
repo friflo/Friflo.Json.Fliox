@@ -10,7 +10,7 @@ using System.Text;
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.Remote
 {
-    internal static class TransportUtils
+    public static class TransportUtils
     {
         internal static IPEndPoint ParseEndpoint(string endpoint) {
             if (endpoint == null) {

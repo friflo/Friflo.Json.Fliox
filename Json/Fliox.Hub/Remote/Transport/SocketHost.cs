@@ -116,7 +116,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             }
         }
         
-        internal void OnReceive(in JsonValue request, ref SocketMetrics metrics)
+        protected internal void OnReceive(in JsonValue request, ref SocketMetrics metrics)
         {
             ReaderPool readerPool = null; 
             if (useReaderPool) {

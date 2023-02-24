@@ -21,7 +21,7 @@ namespace Friflo.Json.Fliox.Hub
     }
     
     /// <summary> Used unify log interface and identify all classes generating logs </summary>
-    internal interface ILogSource {
+    public interface ILogSource {
         IHubLogger  Logger { get; }
     }
     
