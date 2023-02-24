@@ -19,6 +19,7 @@ namespace Friflo.Json.Fliox.Hub.WebRTC.Remote
 {
     public sealed class WebRtcHost : SocketHost, IDisposable
     {
+        private  readonly   RTCPeerConnection                   connection;
         private             RTCDataChannel                      channel;
         private  readonly   MessageBufferQueueAsync<VoidMeta>   sendQueue;
         private  readonly   List<JsonValue>                     messages;
@@ -38,8 +39,11 @@ namespace Friflo.Json.Fliox.Hub.WebRTC.Remote
             this.remoteClient   = remoteClient;
             sendQueue           = new MessageBufferQueueAsync<VoidMeta>();
             messages            = new List<JsonValue>();
-            var rtcConnection   = new RTCPeerConnection(config);
-            rtcConnection.ondatachannel += (rdc) => {
+            connection          = new RTCPeerConnection(config);
+            connection.onconnectionstatechange += (state) => {
+                Logger.Log(HubLog.Info, $"on WebRTC host connection state change: {state}");
+            };
+            connection.ondatachannel += (rdc) => {
                 channel = rdc;
                 channel.onmessage += OnMessage;
             };
@@ -101,10 +105,11 @@ namespace Friflo.Json.Fliox.Hub.WebRTC.Remote
         public static async Task SendReceiveMessages(
             RTCConfiguration    config,
             IPEndPoint          remoteClient,
-            HttpHost            host)
+            FlioxHub            hub)
         {
-            var hub         = host.hub; 
-            var  target     = new WebRtcHost(config, remoteClient, hub, host);
+            var  target     = new WebRtcHost(config, remoteClient, hub, null);
+            await target.connection.createDataChannel("test");
+            
             Task sendLoop   = null;
             try {
                 sendLoop = target.RunSendMessageLoop();

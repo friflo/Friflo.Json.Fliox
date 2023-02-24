@@ -9,16 +9,20 @@ namespace Friflo.Json.Fliox.Hub.WebRTC.DB
 {
     // ---------------------------------- entity models ----------------------------------
     public sealed class WebRtcPeer {
-        /// <summary>database name</summary>
+        /// <summary>client id</summary>
         [Required]  public  string                          id;
-        /// <summary><see cref="storage"/> type. e.g. memory, file-system, ...</summary>
-        [Required]  public  string                          storage;
-        /// <summary>list of database <see cref="containers"/></summary>
-        [Required]  public  string[]                        containers;
-        /// <summary>true if the database is the default database of a Hub</summary>
-                    public  bool?                           defaultDB;
                         
         public override     string                          ToString() => JsonSerializer.Serialize(this).Replace("\"", "'");
     }
+    
+    
+    public sealed class AddHost {
+        public string name;
+    }
+    
+    public sealed class AddHostResult {
+
+    }
+    
 
 }

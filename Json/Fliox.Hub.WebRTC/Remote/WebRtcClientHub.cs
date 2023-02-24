@@ -39,8 +39,10 @@ namespace Friflo.Json.Fliox.Hub.WebRTC.Remote
         public   override   bool                        IsConnected => rtcConnection?.channel.readyState == RTCDataChannelState.open;
         private  readonly   ObjectReader                reader;
 
-        private             WebRtcConnection                        rtcConnection;
-        private             TaskCompletionSource<WebRtcConnection>  connected;
+        private  readonly  object                       connectLock = new object();
+        private             Task<WebRtcConnection>      connectTask;
+        private  readonly   RTCPeerConnection           peerConnection;
+        private             WebRtcConnection            rtcConnection;
         
         private  readonly   CancellationTokenSource     cancellationToken = new CancellationTokenSource();
         
@@ -49,19 +51,54 @@ namespace Friflo.Json.Fliox.Hub.WebRTC.Remote
         public WebRtcClientHub(string dbName, RTCConfiguration config, SharedEnv env = null, RemoteClientAccess access = RemoteClientAccess.Single)
             : base(new RemoteDatabase(dbName), env, 0, access)
         {
-            var rtcPeerConnection = new RTCPeerConnection(config);
-            rtcPeerConnection.ondatachannel += (dc) => {
+            peerConnection  = new RTCPeerConnection(config);
+            var mapper      = new ObjectMapper(sharedEnv.TypeStore);
+            reader          = mapper.reader;
+            this.config     = config;
+            peerConnection.onconnectionstatechange += state => {
+                Logger.Log(HubLog.Info, $"on WebRTC client connection state change: {state}");
+            };
+        }
+        
+        private Task<WebRtcConnection> JoinConnects(out TaskCompletionSource<WebRtcConnection> tcs, out WebRtcConnection connection) {
+            lock (connectLock) {
+                if (connectTask != null) {
+                    connection  = null;
+                    tcs         = null;
+                    return connectTask;
+                }
+                connection  = rtcConnection;
+                tcs         = new TaskCompletionSource<WebRtcConnection>();
+                connectTask = tcs.Task;
+                return connectTask;
+            }
+        }
+        
+        private async Task<WebRtcConnection> Connect() {
+            var task = JoinConnects(out var tcs, out WebRtcConnection connection);
+            if (tcs == null) {
+                connection = await task.ConfigureAwait(false);
+                return connection;
+            }
+            try {
+                var dc = await peerConnection.createDataChannel("test");
+                
                 rtcConnection = new WebRtcConnection(dc);
                 dc.onmessage += OnMessage;
-                connected?.SetResult(rtcConnection);
-            };
-            var mapper = new ObjectMapper(sharedEnv.TypeStore);
-            reader = mapper.reader;
-            this.config = config;
+
+                connectTask = null;
+                tcs.SetResult(connection);
+            } catch (Exception e) {
+                connectTask = null;
+                tcs.SetException(e);
+                throw;
+            }
+            return rtcConnection;
         }
         
         public override Task Close() {
             rtcConnection.channel.close();
+            rtcConnection = null;
             return Task.CompletedTask;
         }
         
@@ -70,10 +107,7 @@ namespace Friflo.Json.Fliox.Hub.WebRTC.Remote
             // websocket.CancelPendingRequests();
         } */
         
-        private Task<WebRtcConnection> Connect() {
-            connected ??= new TaskCompletionSource<WebRtcConnection>();
-            return connected.Task;
-        }
+
         
         private void OnMessage(RTCDataChannel dc, DataChannelPayloadProtocols protocol, byte[] data) {
             var message     = new JsonValue(data);
