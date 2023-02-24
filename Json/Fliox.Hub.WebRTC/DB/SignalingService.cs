@@ -1,9 +1,10 @@
 using System.Collections.Generic;
 using Friflo.Json.Fliox.Hub.Host;
-using Friflo.Json.Fliox.Hub.WebRTC.Remote;
+using Friflo.Json.Fliox.Hub.Remote.Transport.WebRTC;
 using SIPSorcery.Net;
 
-namespace Friflo.Json.Fliox.Hub.WebRTC.DB
+// ReSharper disable once CheckNamespace
+namespace Friflo.Json.Fliox.Hub.DB.WebRTC
 {
     public class SignalingService : DatabaseService
     {

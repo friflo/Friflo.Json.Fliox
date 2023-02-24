@@ -15,7 +15,7 @@ using SIPSorcery.Net;
 using static Friflo.Json.Fliox.Hub.Remote.TransportUtils;
 
 // ReSharper disable once CheckNamespace
-namespace Friflo.Json.Fliox.Hub.WebRTC.Remote
+namespace Friflo.Json.Fliox.Hub.Remote.Transport.WebRTC
 {
     public sealed class WebRtcHost : SocketHost, IDisposable
     {

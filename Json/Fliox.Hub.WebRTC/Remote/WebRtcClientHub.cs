@@ -14,7 +14,7 @@ using Friflo.Json.Fliox.Mapper;
 using SIPSorcery.Net;
 
 // ReSharper disable once CheckNamespace
-namespace Friflo.Json.Fliox.Hub.WebRTC.Remote
+namespace Friflo.Json.Fliox.Hub.Remote.Transport.WebRTC
 {
     /// <summary>
     /// Store send requests in the <see cref="requestMap"/> to map received response messages to its related <see cref="SyncRequest"/>

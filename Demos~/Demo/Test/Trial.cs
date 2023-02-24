@@ -7,7 +7,7 @@ using Friflo.Json.Fliox.Hub.Client;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Remote;
 using Friflo.Json.Fliox.Hub.Remote.Transport.Udp;
-using Friflo.Json.Fliox.Hub.WebRTC.Remote;
+using Friflo.Json.Fliox.Hub.Remote.Transport.WebRTC;
 using SIPSorcery.Net;
 
 namespace DemoTest {
