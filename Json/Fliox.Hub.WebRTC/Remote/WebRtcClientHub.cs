@@ -4,16 +4,14 @@
 #if !UNITY_5_3_OR_NEWER
 
 using System;
-using System.IO;
-using System.Net.WebSockets;
 using System.Threading;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Remote;
 using Friflo.Json.Fliox.Hub.Remote.Tools;
-using Friflo.Json.Fliox.Hub.Remote.Transport.Udp;
 using Friflo.Json.Fliox.Mapper;
+using SIPSorcery.Net;
 
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.WebRTC.Remote
@@ -23,47 +21,50 @@ namespace Friflo.Json.Fliox.Hub.WebRTC.Remote
     /// </summary>
     internal sealed class WebRtcConnection
     {
-        internal  readonly  ClientWebSocket     socket;
+        internal  readonly  RTCDataChannel      channel;
         internal  readonly  RemoteRequestMap    requestMap;
         
-        internal WebRtcConnection() {
-            socket      = new ClientWebSocket();
-            requestMap  = new RemoteRequestMap();
+        internal WebRtcConnection(RTCDataChannel channel) {
+            this.channel    = channel;
+            requestMap      = new RemoteRequestMap();
         }
     }
 
-
-    /// <summary>
-    /// A <see cref="FlioxHub"/> accessed remotely  using a <see cref="WebSocket"/> connection
-    /// </summary>
-    /// <remarks>
-    /// Counterpart of <see cref="WebSocketHost"/> used by clients.<br/>
-    /// Implementation aligned with <see cref="UdpSocketClientHub"/>
-    /// </remarks>
-    public  sealed partial class WebRtcClientHub : SocketClientHub
+    public  sealed class WebRtcClientHub : SocketClientHub
     {
-        private  readonly   Uri                         remoteHost;
+        private  readonly   RTCConfiguration            config;
+        private  readonly   string                      remoteHost = "---";                  
         /// Incrementing requests id used to map a <see cref="ProtocolResponse"/>'s to its related <see cref="SyncRequest"/>.
         private             int                         reqId;
-        public   override   bool                        IsConnected => wsConnection?.socket.State == WebSocketState.Open;
+        public   override   bool                        IsConnected => rtcConnection?.channel.readyState == RTCDataChannelState.open;
 
-        /// lock (<see cref="websocketLock"/>) {
-        private readonly    object                      websocketLock = new object();
-        private             WebRtcConnection         wsConnection;
-        private             Task<WebRtcConnection>   connectTask;
-        // }
+        private             WebRtcConnection            rtcConnection;
+        private  readonly   ObjectReader                reader;
         
         private  readonly   CancellationTokenSource     cancellationToken = new CancellationTokenSource();
         
-        public   override   string                      ToString() => $"{database.name} - endpoint: {remoteHost}";
+        public   override   string                      ToString() => $"{database.name} - config: {config}";
         
-        /// <summary>
-        /// Create a remote <see cref="FlioxHub"/> by using a <see cref="WebSocket"/> connection
-        /// </summary>
-        public WebRtcClientHub(string dbName, string remoteHost, SharedEnv env = null, RemoteClientAccess access = RemoteClientAccess.Multi)
+        public WebRtcClientHub(string dbName, RTCConfiguration config, SharedEnv env = null, RemoteClientAccess access = RemoteClientAccess.Single)
             : base(new RemoteDatabase(dbName), env, 0, access)
         {
-            this.remoteHost = new Uri(remoteHost);
+            var rtcPeerConnection = new RTCPeerConnection(config);
+            rtcPeerConnection.ondatachannel += (dc) => {
+                rtcConnection = new WebRtcConnection(dc);
+                dc.onmessage += OnMessage;
+            };
+            var mapper = new ObjectMapper(sharedEnv.TypeStore);
+            reader = mapper.reader;
+            this.config = config;
+        }
+        
+        public override Task Close() {
+            rtcConnection.channel.close();
+            return Task.CompletedTask;
+        }
+        
+        private WebRtcConnection GetWebRtcConnection() {
+            return rtcConnection;
         }
         
         /* public override void Dispose() {
@@ -71,63 +72,18 @@ namespace Friflo.Json.Fliox.Hub.WebRTC.Remote
             // websocket.CancelPendingRequests();
         } */
         
-        private async Task RunReceiveMessageLoop(WebRtcConnection connection) {
-            using (var mapper = new ObjectMapper(sharedEnv.TypeStore)) {
-                await ReceiveMessageLoop(connection, mapper.reader).ConfigureAwait(false);
-            }
-        }
-        
-        /// <summary>
-        /// Has no SendMessageLoop() - client send only response messages via <see cref="SocketClientHub.OnReceive"/>
-        /// </summary>
-        private async Task ReceiveMessageLoop(WebRtcConnection connection, ObjectReader reader) {
-            var buffer  = new ArraySegment<byte>(new byte[8192]);
-            var socket  = connection.socket;
-            var memoryStream    = new MemoryStream();
-            while (true)
-            {
-                memoryStream.Position = 0;
-                memoryStream.SetLength(0);
-                try {
-                    // --- read complete WebSocket message
-                    WebSocketReceiveResult wsResult;
-                    do {
-                        if (socket.State != WebSocketState.Open) {
-                            // Logger.Log(HubLog.Info, $"Pre-ReceiveAsync. State: {ws.State}");
-                            return;
-                        }
-                        wsResult = await socket.ReceiveAsync(buffer, cancellationToken.Token).ConfigureAwait(false);
-                        memoryStream.Write(buffer.Array, buffer.Offset, wsResult.Count);
-                    }
-                    while(!wsResult.EndOfMessage);
-
-                    if (socket.State != WebSocketState.Open) {
-                        // Logger.Log(HubLog.Info, $"Post-ReceiveAsync. State: {ws.State}");
-                        return;
-                    }
-                    if (wsResult.MessageType != WebSocketMessageType.Text) {
-                        Logger.Log(HubLog.Error, $"Expect WebSocket message type text. type: {wsResult.MessageType} {remoteHost}");
-                        continue;
-                    }
-                    var message     = new JsonValue(memoryStream.GetBuffer(), (int)memoryStream.Position);
-
-                    // --- process received message
-                    if (env.logMessages) TransportUtils.LogMessage(Logger, ref sbRecv, "client  <-", remoteHost, message);
-                    OnReceive(message, connection.requestMap, reader);
-                }
-                catch (Exception e)
-                {
-                    var message = $"WebSocketClientHub receive error: {e.Message}";
-                    Logger.Log(HubLog.Error, message, e);
-                    connection.requestMap.CancelRequests();
-                }
-            }
+        private void OnMessage(RTCDataChannel dc, DataChannelPayloadProtocols protocol, byte[] data) {
+            var message     = new JsonValue(data);
+            // --- process received message
+            if (env.logMessages) TransportUtils.LogMessage(Logger, ref sbRecv, "client  <-", remoteHost, message);
+            OnReceive(message, rtcConnection.requestMap, reader);
         }
         
         public override async Task<ExecuteSyncResult> ExecuteRequestAsync(SyncRequest syncRequest, SyncContext syncContext) {
-            var socket = GetWebsocketConnection();
+            var socket = GetWebRtcConnection();
             if (socket == null) {
-                socket = await Connect().ConfigureAwait(false);
+                throw new NullReferenceException("");
+                // socket = await Connect().ConfigureAwait(false);
             }
             int sendReqId       = Interlocked.Increment(ref reqId);
             syncRequest.reqId   = sendReqId;
@@ -139,10 +95,10 @@ namespace Friflo.Json.Fliox.Hub.WebRTC.Remote
                     // request need to be queued _before_ sending it to be prepared for handling the response.
                     var request     = new RemoteRequest(syncContext, cancellationToken);
                     socket.requestMap.Add(sendReqId, request);
-                    var sendBuffer  = rawRequest.AsReadOnlyMemory();
+                    var sendBuffer  = rawRequest.MutableArray;
                     if (env.logMessages) TransportUtils.LogMessage(Logger, ref sbSend, "client  ->", remoteHost, rawRequest);
                     // --- Send message
-                    await socket.socket.SendAsync(sendBuffer, WebSocketMessageType.Text, true, CancellationToken.None).ConfigureAwait(false);
+                    socket.channel.send(sendBuffer);
                     
                     // --- Wait for response
                     var response = await request.response.Task.ConfigureAwait(false);
