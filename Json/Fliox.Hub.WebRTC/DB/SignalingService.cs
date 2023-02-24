@@ -2,7 +2,6 @@
 // See LICENSE file in the project root for full license information.
 
 using Friflo.Json.Fliox.Hub.Host;
-using SIPSorcery.Net;
 
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.WebRTC
@@ -32,7 +31,9 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
             if (!param.GetValidate(out var value, out string error)) {
                 return command.Error<AddHostResult>(error);
             }
+#if !UNITY_5_3_OR_NEWER
             _ = WebRtcHost.SendReceiveMessages(config, null, hub);
+#endif
             return new AddHostResult();
         }
     }
