@@ -20,8 +20,7 @@ namespace TodoHub
         private static HttpHost CreateHttpHost()
         {
             var database        = new FileDatabase("main_db", "../Test/DB/main_db"); // uses records stored in 'main_db/jobs' folder
-            var typeSchema      = NativeTypeSchema.Create(typeof(TodoClient));
-            database.Schema     = new DatabaseSchema(typeSchema);
+            database.Schema     = new DatabaseSchema(typeof(TodoClient));
 
             var hub             = new FlioxHub(database);
             hub.Info.projectName= "TodoHub";

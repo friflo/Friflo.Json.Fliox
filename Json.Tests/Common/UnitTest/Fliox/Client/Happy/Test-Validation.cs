@@ -27,8 +27,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             using (var database         = new FileDatabase(TestGlobals.DB, TestGlobals.PocStoreFolder, new PocService()))
             using (var hub          	= new FlioxHub(database, TestGlobals.Shared))
             using (var createStore      = new PocStore(hub) { UserId = "createStore"}) {
-                var nativeSchema    = NativeTypeSchema.Create(typeof(PocStore));
-                database.Schema     = new DatabaseSchema(nativeSchema); 
+                database.Schema     = new DatabaseSchema(typeof(PocStore)); 
                 // All write operation performed in following call produce JSON payload which meet the types defined
                 // in the assigned schema => the call succeed without any validation error. 
                 await TestRelationPoC.CreateStore(createStore);

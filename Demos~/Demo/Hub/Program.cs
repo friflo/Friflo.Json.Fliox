@@ -40,8 +40,7 @@ namespace DemoHub
         /// </summary>
         internal static HttpHost CreateHttpHost()
         {
-            var typeSchema          = NativeTypeSchema.Create(typeof(DemoClient)); // optional - create TypeSchema from Type
-            var databaseSchema      = new DatabaseSchema(typeSchema);
+            var databaseSchema      = new DatabaseSchema(typeof(DemoClient));           // optional - create TypeSchema from Type
             var database            = CreateDatabase(databaseSchema, new DemoService());
 
             var hub                 = new FlioxHub(database);

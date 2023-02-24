@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Demo;
@@ -6,6 +7,8 @@ using Friflo.Json.Fliox.Hub.Client;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Remote;
 using Friflo.Json.Fliox.Hub.Remote.Transport.Udp;
+using Friflo.Json.Fliox.Hub.WebRTC.Remote;
+using SIPSorcery.Net;
 
 namespace DemoTest {
 
@@ -42,7 +45,7 @@ namespace DemoTest {
         // changing records in 'articles' trigger the subscription handler in this method.  
         private static async Task SubscribeChanges()
         {
-            var hub         = CreateHub("ws");
+            var hub         = CreateHub("webrtc");
             var client      = new DemoClient(hub) { UserId = "admin", Token = "admin" };
             client.articles.SubscribeChanges(Change.All, (changes, context) => {
                 foreach (var entity in changes.Patches) {
@@ -60,6 +63,11 @@ namespace DemoTest {
             Console.WriteLine("\n wait for events ... (exit with: CTRL + C)\n note: generate events by clicking 'Save' on a record in the Hub Explorer\n");
             await Task.Delay(3_600_000); // wait 1 hour
         }
+        private const string STUN_URL = "stun:stun.sipsorcery.com";
+        
+        static RTCConfiguration config = new RTCConfiguration {
+            iceServers = new List<RTCIceServer> { new RTCIceServer { urls = STUN_URL } }
+        };
             
         private static FlioxHub CreateHub(string option)
         {
@@ -67,6 +75,7 @@ namespace DemoTest {
                 case "http":    return new HttpClientHub              ("main_db", "http://localhost:8010/fliox/");
                 case "ws":      return new WebSocketClientHub         ("main_db", "ws://localhost:8010/fliox/");
                 case "udp":     return new UdpSocketClientHub         ("main_db", "localhost:5000");
+                case "webrtc":  return new WebRtcClientHub            ("main_db", config);
                 case "file":    return new FlioxHub(new FileDatabase  ("main_db", "./DB/main_db"));
                 case "memory":  return new FlioxHub(new MemoryDatabase("main_db"));
             }

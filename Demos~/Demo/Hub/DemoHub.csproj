@@ -25,6 +25,7 @@
       <ProjectReference Include="..\..\..\Json\Fliox.Hub.AspNetCore\Friflo.Json.Fliox.Hub.AspNetCore.csproj" />
       <ProjectReference Include="..\..\..\Json\Fliox.Hub.Explorer\Friflo.Json.Fliox.Hub.Explorer.csproj" />
       <ProjectReference Include="..\..\..\Json\Fliox.Hub.GraphQL\Friflo.Json.Fliox.Hub.GraphQL.csproj" />
+      <ProjectReference Include="..\..\..\Json\Fliox.Hub.WebRTC\Friflo.Json.Fliox.Hub.WebRTC.csproj" />
       <ProjectReference Include="..\Client\Demo.csproj" />
     </ItemGroup>
 </Project>

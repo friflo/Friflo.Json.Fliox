@@ -8,27 +8,24 @@ namespace Friflo.Json.Fliox.Hub.WebRTC.DB
 {
     public class SignalingService : DatabaseService
     {
-        private readonly FlioxHub hub;
-        
+        private readonly FlioxHub       hub;
+
+        public  static  DatabaseSchema  Schema => GetSchema();
+        private static  DatabaseSchema  _schema;
+
+        private const string STUN_URL = "stun:stun.sipsorcery.com";
+
         public SignalingService(FlioxHub hub) {
             this.hub = hub;
             AddMessageHandlers(this, null);
         }
-
-        public static DatabaseSchema Schema => GetSchema();
-        
-        private static DatabaseSchema _schema;
         
         private static DatabaseSchema GetSchema() {
             if (_schema != null) {
                 return _schema;
             }
-            var typeSchema  = NativeTypeSchema.Create(typeof(Signaling));
-            _schema          = new DatabaseSchema(typeSchema);
-            return _schema;
+            return _schema = new DatabaseSchema(typeof(Signaling));
         }
-        
-        private const string STUN_URL = "stun:stun.sipsorcery.com";
         
         private AddHostResult AddHost (Param<AddHost> param, MessageContext command) {
             if (!param.GetValidate(out var value, out string error)) {
