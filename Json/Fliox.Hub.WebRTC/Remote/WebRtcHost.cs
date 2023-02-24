@@ -15,7 +15,7 @@ using SIPSorcery.Net;
 using static Friflo.Json.Fliox.Hub.Remote.TransportUtils;
 
 // ReSharper disable once CheckNamespace
-namespace Friflo.Json.Fliox.Hub.Remote.Transport.WebRTC
+namespace Friflo.Json.Fliox.Hub.WebRTC
 {
     public sealed class WebRtcHost : SocketHost, IDisposable
     {
@@ -103,11 +103,12 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.WebRTC
         }
         
         public static async Task SendReceiveMessages(
-            RTCConfiguration    config,
-            IPEndPoint          remoteClient,
-            FlioxHub            hub)
+            WebRtcConfig    config,
+            IPEndPoint      remoteClient,
+            FlioxHub        hub)
         {
-            var  target     = new WebRtcHost(config, remoteClient, hub, null);
+            var rtcConfig   = config.GetRtcConfiguration(); 
+            var target      = new WebRtcHost(rtcConfig, remoteClient, hub, null);
             await target.connection.createDataChannel("test");
             
             Task sendLoop   = null;

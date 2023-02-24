@@ -6,7 +6,7 @@ using Friflo.Json.Fliox.Hub.Host;
 
 // ReSharper disable UnassignedReadonlyField
 // ReSharper disable once CheckNamespace
-namespace Friflo.Json.Fliox.Hub.DB.WebRTC
+namespace Friflo.Json.Fliox.Hub.WebRTC
 {
     public class Signaling : FlioxClient
     {

@@ -1,22 +1,23 @@
-using System.Collections.Generic;
+// Copyright (c) Ullrich Praetz. All rights reserved.
+// See LICENSE file in the project root for full license information.
+
 using Friflo.Json.Fliox.Hub.Host;
-using Friflo.Json.Fliox.Hub.Remote.Transport.WebRTC;
 using SIPSorcery.Net;
 
 // ReSharper disable once CheckNamespace
-namespace Friflo.Json.Fliox.Hub.DB.WebRTC
+namespace Friflo.Json.Fliox.Hub.WebRTC
 {
     public class SignalingService : DatabaseService
     {
-        private readonly FlioxHub       hub;
+        private readonly    FlioxHub            hub;
+        private readonly    WebRtcConfig        config;
 
-        public  static  DatabaseSchema  Schema => GetSchema();
-        private static  DatabaseSchema  _schema;
+        public  static      DatabaseSchema      Schema => GetSchema();
+        private static      DatabaseSchema      _schema;
 
-        private const string STUN_URL = "stun:stun.sipsorcery.com";
-
-        public SignalingService(FlioxHub hub) {
-            this.hub = hub;
+        public SignalingService(FlioxHub hub, WebRtcConfig config) {
+            this.hub    = hub;
+            this.config = config;
             AddMessageHandlers(this, null);
         }
         
@@ -31,9 +32,6 @@ namespace Friflo.Json.Fliox.Hub.DB.WebRTC
             if (!param.GetValidate(out var value, out string error)) {
                 return command.Error<AddHostResult>(error);
             }
-            RTCConfiguration config = new RTCConfiguration {
-                iceServers = new List<RTCIceServer> { new RTCIceServer { urls = STUN_URL } }
-            };
             _ = WebRtcHost.SendReceiveMessages(config, null, hub);
             return new AddHostResult();
         }

@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable once CheckNamespace
-namespace Friflo.Json.Fliox.Hub.DB.WebRTC
+namespace Friflo.Json.Fliox.Hub.WebRTC
 {
     // ---------------------------------- entity models ----------------------------------
     public sealed class WebRtcPeer {

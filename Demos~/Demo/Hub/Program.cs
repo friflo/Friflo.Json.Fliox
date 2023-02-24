@@ -3,12 +3,12 @@ using Demo;
 using Friflo.Json.Fliox.Hub.DB.Cluster;
 using Friflo.Json.Fliox.Hub.DB.Monitor;
 using Friflo.Json.Fliox.Hub.DB.UserAuth;
-using Friflo.Json.Fliox.Hub.DB.WebRTC;
 using Friflo.Json.Fliox.Hub.Explorer;
 using Friflo.Json.Fliox.Hub.GraphQL;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.Event;
 using Friflo.Json.Fliox.Hub.Remote;
+using Friflo.Json.Fliox.Hub.WebRTC;
 
 namespace DemoHub
 {
@@ -56,7 +56,8 @@ namespace DemoHub
                 .SubscribeUserDbChanges(hub.EventDispatcher);       // optional - apply user_db changes instantaneously
             hub.AddExtensionDB(userDB);                             // optional - expose user_db as extension database
             
-            var signalingDB         = new MemoryDatabase("signaling", new SignalingService(hub));
+            var config              = new WebRtcConfig { StunUrl = "stun:stun.sipsorcery.com" };
+            var signalingDB         = new MemoryDatabase("signaling", new SignalingService(hub, config));
             signalingDB.Schema      = SignalingService.Schema;
             hub.AddExtensionDB(signalingDB);
             

@@ -14,7 +14,7 @@ using Friflo.Json.Fliox.Mapper;
 using SIPSorcery.Net;
 
 // ReSharper disable once CheckNamespace
-namespace Friflo.Json.Fliox.Hub.Remote.Transport.WebRTC
+namespace Friflo.Json.Fliox.Hub.WebRTC
 {
     /// <summary>
     /// Store send requests in the <see cref="requestMap"/> to map received response messages to its related <see cref="SyncRequest"/>
@@ -32,7 +32,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.WebRTC
 
     public  sealed class WebRtcClientHub : SocketClientHub
     {
-        private  readonly   RTCConfiguration            config;
+        private  readonly   WebRtcConfig                config;
         private  readonly   string                      remoteHost = "---";                  
         /// Incrementing requests id used to map a <see cref="ProtocolResponse"/>'s to its related <see cref="SyncRequest"/>.
         private             int                         reqId;
@@ -48,10 +48,10 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.WebRTC
         
         public   override   string                      ToString() => $"{database.name} - config: {config}";
         
-        public WebRtcClientHub(string dbName, RTCConfiguration config, SharedEnv env = null, RemoteClientAccess access = RemoteClientAccess.Single)
+        public WebRtcClientHub(string dbName, WebRtcConfig config, SharedEnv env = null, RemoteClientAccess access = RemoteClientAccess.Single)
             : base(new RemoteDatabase(dbName), env, 0, access)
         {
-            peerConnection  = new RTCPeerConnection(config);
+            peerConnection  = new RTCPeerConnection(config.GetRtcConfiguration());
             var mapper      = new ObjectMapper(sharedEnv.TypeStore);
             reader          = mapper.reader;
             this.config     = config;
