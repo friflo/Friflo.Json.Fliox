@@ -3,7 +3,6 @@ using Friflo.Json.Fliox.Hub.Explorer;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.Event;
 using Friflo.Json.Fliox.Hub.Remote;
-using Friflo.Json.Fliox.Schema.Native;
 using Todo;
 
 namespace TodoHub

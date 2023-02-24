@@ -8,7 +8,7 @@ using Friflo.Json.Fliox.Hub.GraphQL;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.Event;
 using Friflo.Json.Fliox.Hub.Remote;
-using Friflo.Json.Fliox.Schema.Native;
+using Friflo.Json.Fliox.Hub.WebRTC.DB;
 
 namespace DemoHub
 {
@@ -55,6 +55,10 @@ namespace DemoHub
             hub.Authenticator       = new UserAuthenticator(userDB) // optional - otherwise all tasks are authorized
                 .SubscribeUserDbChanges(hub.EventDispatcher);       // optional - apply user_db changes instantaneously
             hub.AddExtensionDB(userDB);                             // optional - expose user_db as extension database
+            
+            var signalingDB         = new MemoryDatabase("signaling", new SignalingService(hub));
+            signalingDB.Schema      = SignalingService.Schema;
+            hub.AddExtensionDB(signalingDB);
             
             var httpHost            = new HttpHost(hub, "/fliox/");
             httpHost.AddHandler      (new GraphQLHandler());

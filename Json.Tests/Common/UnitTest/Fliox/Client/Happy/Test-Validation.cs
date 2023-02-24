@@ -5,7 +5,6 @@ using System.Collections;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Schema.JSON;
-using Friflo.Json.Fliox.Schema.Native;
 using Friflo.Json.Tests.Common.Utils;
 using UnityEngine.TestTools;
 
