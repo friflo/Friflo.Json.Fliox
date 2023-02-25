@@ -35,7 +35,7 @@ namespace TodoWPF
 		{
 			var hub = new WebSocketClientHub("main_db", "ws://localhost:8010/fliox/");
 			client = new TodoClient(hub) { UserId = "admin", Token = "admin" };
-			client.SetEventProcessor(new SynchronizationContextProcessor());
+			client.SetEventProcessor(new EventProcessorContext());
 
 			var jobs = client.jobs.QueryAll();
 
