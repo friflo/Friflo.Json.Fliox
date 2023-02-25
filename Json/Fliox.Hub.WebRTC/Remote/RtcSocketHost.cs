@@ -102,7 +102,7 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
             OnReceive(request, ref hostEnv.metrics.webSocket);
         }
         
-        public static async Task SendReceiveMessages(
+        internal static async Task SendReceiveMessages(
             WebRtcConfig    config,
             IPEndPoint      remoteClient,
             FlioxHub        hub)

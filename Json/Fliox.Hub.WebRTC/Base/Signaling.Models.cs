@@ -15,12 +15,22 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
         public override     string                          ToString() => JsonSerializer.Serialize(this).Replace("\"", "'");
     }
     
-    
+    // ---------------------------- command models - aka DTO's ---------------------------
+    // ---
     public sealed class RegisterHost {
         public string name;
     }
     
     public sealed class RegisterHostResult {
+
+    }
+    
+    // ---
+    public sealed class ConnectClient {
+        public string name;
+    }
+    
+    public sealed class ConnectClientResult {
 
     }
 }

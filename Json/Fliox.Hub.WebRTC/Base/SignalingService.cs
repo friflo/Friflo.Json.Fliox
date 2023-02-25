@@ -28,5 +28,15 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
 #endif
             return new RegisterHostResult();
         }
+        
+        private ConnectClientResult ConnectClient (Param<ConnectClient> param, MessageContext command) {
+            if (!param.GetValidate(out var value, out string error)) {
+                return command.Error<ConnectClientResult>(error);
+            }
+#if !UNITY_5_3_OR_NEWER
+            _ = RtcSocketHost.SendReceiveMessages(config, null, hub);
+#endif
+            return new ConnectClientResult();
+        }
     }
 }

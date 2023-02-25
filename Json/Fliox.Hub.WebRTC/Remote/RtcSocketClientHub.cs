@@ -6,6 +6,7 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Web;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Remote;
@@ -33,13 +34,15 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
     public  sealed class RtcSocketClientHub : SocketClientHub
     {
         private  readonly   WebRtcConfig                config;
-        private  readonly   string                      remoteHost = "---";                  
+        private  readonly   string                      remoteHost;
+        private  readonly   string                      remoteHostName;
         /// Incrementing requests id used to map a <see cref="ProtocolResponse"/>'s to its related <see cref="SyncRequest"/>.
         private             int                         reqId;
         public   override   bool                        IsConnected => rtcConnection?.channel.readyState == RTCDataChannelState.open;
         private  readonly   ObjectReader                reader;
+        private  readonly   Signaling                   signaling;
 
-        private  readonly  object                       connectLock = new object();
+        private  readonly   object                      connectLock = new object();
         private             Task<WebRtcConnection>      connectTask;
         private  readonly   RTCPeerConnection           peerConnection;
         private             WebRtcConnection            rtcConnection;
@@ -48,13 +51,24 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
         
         public   override   string                      ToString() => $"{database.name} - config: {config}";
         
-        public RtcSocketClientHub(string dbName, WebRtcConfig config, SharedEnv env = null, RemoteClientAccess access = RemoteClientAccess.Single)
+        public RtcSocketClientHub(
+            string              dbName,
+            string              remoteHost,
+            WebRtcConfig        config,
+            SharedEnv           env = null,
+            RemoteClientAccess  access = RemoteClientAccess.Single)
             : base(new RemoteDatabase(dbName), env, 0, access)
         {
-            peerConnection  = new RTCPeerConnection(config.GetRtcConfiguration());
-            var mapper      = new ObjectMapper(sharedEnv.TypeStore);
-            reader          = mapper.reader;
-            this.config     = config;
+            this.remoteHost     = remoteHost;
+            var uri             = new Uri(remoteHost);
+            var query           = HttpUtility.ParseQueryString(uri.Query);
+            remoteHostName      = query.Get("host");
+            var signalingSocket = new WebSocketClientHub("signaling", remoteHost, env, RemoteClientAccess.Single);
+            signaling           = new Signaling(signalingSocket);
+            peerConnection      = new RTCPeerConnection(config.GetRtcConfiguration());
+            var mapper          = new ObjectMapper(sharedEnv.TypeStore);
+            reader              = mapper.reader;
+            this.config         = config;
             peerConnection.onconnectionstatechange += state => {
                 Logger.Log(HubLog.Info, $"on WebRTC client connection state change: {state}");
             };
@@ -75,6 +89,9 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
         }
         
         private async Task<WebRtcConnection> Connect() {
+            var connectResult = signaling.ConnectClient(new ConnectClient { name = remoteHostName });
+            await signaling.SyncTasks();
+            
             var task = JoinConnects(out var tcs, out WebRtcConnection connection);
             if (tcs == null) {
                 connection = await task.ConfigureAwait(false);
