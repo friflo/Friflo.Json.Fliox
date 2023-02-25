@@ -23,7 +23,7 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
             SubscribeMessage<IceCandidate>("IceCandidate", (message, context) => {
             });
             RegisterHost(new RegisterHost { name = name });
-            await SyncTasks();
+            await SyncTasks().ConfigureAwait(false);
         }
     }
 }

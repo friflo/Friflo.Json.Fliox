@@ -109,7 +109,7 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
         {
             var rtcConfig   = config.GetRtcConfiguration(); 
             var target      = new RtcSocketHost(rtcConfig, remoteClient, hub, null);
-            await target.connection.createDataChannel("test");
+            await target.connection.createDataChannel("test").ConfigureAwait(false);
             
             Task sendLoop   = null;
             try {

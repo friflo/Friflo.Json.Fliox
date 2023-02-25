@@ -112,10 +112,10 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
                 });
                 // --- send offer SDP -> Signaling Server -> WebRTC Host
                 var connectResult   = signaling.ConnectClient(new ConnectClient { name = remoteHostName, offerSDP = offerSDP });
-                await signaling.SyncTasks();
+                await signaling.SyncTasks().ConfigureAwait(false);
                 
                 var result              = connectResult.Result;
-                var dc                  = await peerConnection.createDataChannel("test");
+                var dc                  = await peerConnection.createDataChannel("test").ConfigureAwait(false);
                 var answerDescription   = new RTCSessionDescriptionInit { type = RTCSdpType.answer, sdp = result.answerSDP.AsString() };
                 peerConnection.setRemoteDescription(answerDescription);
                 
