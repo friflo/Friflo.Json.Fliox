@@ -69,6 +69,11 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
             var mapper          = new ObjectMapper(sharedEnv.TypeStore);
             reader              = mapper.reader;
             this.config         = config;
+            peerConnection.onicecandidate += candidate => {
+                var value   = new JsonValue(candidate.candidate);
+                var msg     = signaling.SendMessage(nameof(IceCandidate), new IceCandidate { value = value });
+                _ = signaling.SyncTasks();
+            };
             peerConnection.onconnectionstatechange += state => {
                 Logger.Log(HubLog.Info, $"on WebRTC client connection state change: {state}");
             };
@@ -89,19 +94,30 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
         }
         
         private async Task<WebRtcConnection> Connect() {
-            var connectResult = signaling.ConnectClient(new ConnectClient { name = remoteHostName });
-            signaling.SubscribeMessage<IceCandidate>("IceCandidate", (message, context) => {
-                
-            });
-            await signaling.SyncTasks();
-            
             var task = JoinConnects(out var tcs, out WebRtcConnection connection);
             if (tcs == null) {
                 connection = await task.ConfigureAwait(false);
                 return connection;
             }
             try {
-                var dc = await peerConnection.createDataChannel("test");
+                // --- create offer SDP 
+                var offer = peerConnection.createOffer();
+                await peerConnection.setLocalDescription(offer).ConfigureAwait(false);
+                
+                var offerSDP        = new JsonValue(offer.sdp);
+                signaling.SubscribeMessage<IceCandidate>("IceCandidate", (message, context) => {
+                    message.GetParam(out var value, out _);
+                    RTCIceCandidateInit.TryParse(value.value.AsString(), out var iceCandidateInit);
+                    peerConnection.addIceCandidate(iceCandidateInit);
+                });
+                // --- send offer SDP -> Signaling Server -> WebRTC Host
+                var connectResult   = signaling.ConnectClient(new ConnectClient { name = remoteHostName, offerSDP = offerSDP });
+                await signaling.SyncTasks();
+                
+                var result              = connectResult.Result;
+                var dc                  = await peerConnection.createDataChannel("test");
+                var answerDescription   = new RTCSessionDescriptionInit { type = RTCSdpType.answer, sdp = result.answerSDP.AsString() };
+                peerConnection.setRemoteDescription(answerDescription);
                 
                 rtcConnection = new WebRtcConnection(dc);
                 dc.onmessage += OnMessage;
