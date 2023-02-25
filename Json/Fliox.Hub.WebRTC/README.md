@@ -15,6 +15,34 @@ Contains classes to enable WebRTC connections of HTTP clients to other HTTP clie
 
 * Process 3: HTTP client establish a WebRTC connection to a WebRTC-Host via Signaling-Server
 
+``` mermaid
+sequenceDiagram
+  autonumber
+    WebRTC-Host   ->>   Server:         RegisterHost() with name
+    Server        ->>   WebRTC-Host:    RegisterHost() result
+
+    WebRTC-Client ->>   WebRTC-Client:  create peer connection and channel
+    WebRTC-Client ->>   Server:         ConnectClient() with offer SDP
+
+    Server        ->>   WebRTC-Host:    offer SDP
+    WebRTC-Host   ->>   WebRTC-Host:    process offer / create answer SDP
+    WebRTC-Host   ->>   Server:         answer SDP
+
+    Server        ->>   WebRTC-Client:  ConnectClient() result with answer SDP
+
+  autonumber off
+  par
+    WebRTC-Client ->>   WebRTC-Client:  create IceCandidate
+    WebRTC-Client ->>   Server:         IceCandidate
+    Server        ->>   WebRTC-Host:    IceCandidate
+  and
+    WebRTC-Host   ->>   WebRTC-Host:    create IceCandidate
+    WebRTC-Host   ->>   Server:         IceCandidate
+    Server        ->>   WebRTC-Client:  IceCandidate
+  end
+
+``` 
+
 
 
 ## Project
