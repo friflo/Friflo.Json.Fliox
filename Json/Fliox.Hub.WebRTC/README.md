@@ -5,7 +5,16 @@
 This package is part of the project described below.
 
 **Content**  
-Contains classes to enable a remote access for a FlioxHub using WebRTC.
+Contains classes to enable WebRTC connections of HTTP clients to other HTTP clients with Host capabilities.
+
+* Process 1: WebRTC Signaling-Server
+  - Register HTTP clients with Host capabilities or short: WebRTC-Host
+  - Enable WebRTC connections of WebRTC-Clients to WebRTC-Hosts by forwarding signaling messages
+
+* Process 2: HTTP client register as a WebRTC-Host at the Signaling-Server with permanent id/name
+
+* Process 3: HTTP client establish a WebRTC connection to a WebRTC-Host via Signaling-Server
+
 
 
 ## Project
