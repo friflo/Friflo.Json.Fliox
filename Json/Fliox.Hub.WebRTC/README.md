@@ -7,38 +7,38 @@ This package is part of the project described below.
 **Content**  
 Contains classes to enable WebRTC connections of HTTP clients to other HTTP clients with Host capabilities.
 
-* Process 1: WebRTC Signaling-Server
-  - Register HTTP clients with Host capabilities or short: WebRTC-Host
+* Process 1: WebRTC Signaling Server
+  - Register HTTP clients with Host capabilities or short: WebRTC Host
   - Enable WebRTC connections of WebRTC-Clients to WebRTC-Hosts by forwarding signaling messages
 
-* Process 2: HTTP client register as a WebRTC-Host at the Signaling-Server with permanent id/name
+* Process 2: HTTP client register as a WebRTC Host at the Signaling Server with permanent id/name
 
-* Process 3: HTTP client establish a WebRTC connection to a WebRTC-Host via Signaling-Server
+* Process 3: HTTP client establish a WebRTC connection to a WebRTC Host via Signaling Server
 
 ``` mermaid
 sequenceDiagram
   autonumber
-    WebRTC-Host   ->>   Server:         RegisterHost() with name
-    Server        ->>   WebRTC-Host:    RegisterHost() result
+    WebRTC Host      ->>    Signaling Server:   RegisterHost() with name
+    Signaling Server ->>    WebRTC Host:        RegisterHost() result
 
-    WebRTC-Client ->>   WebRTC-Client:  create peer connection and channel
-    WebRTC-Client ->>   Server:         ConnectClient() with offer SDP
+    WebRTC Client    ->>    WebRTC Client:      create peer connection and channel
+    WebRTC Client    ->>    Signaling Server:   ConnectClient() with offer SDP
 
-    Server        ->>   WebRTC-Host:    offer SDP
-    WebRTC-Host   ->>   WebRTC-Host:    process offer / create answer SDP
-    WebRTC-Host   ->>   Server:         answer SDP
+    Signaling Server ->>    WebRTC Host:        offer SDP
+    WebRTC Host      ->>    WebRTC Host:        process offer / create answer SDP
+    WebRTC Host      ->>    Signaling Server:   answer SDP
 
-    Server        ->>   WebRTC-Client:  ConnectClient() result with answer SDP
+    Signaling Server ->>    WebRTC Client:      ConnectClient() result with answer SDP
 
   autonumber off
   par
-    WebRTC-Client ->>   WebRTC-Client:  create IceCandidate
-    WebRTC-Client ->>   Server:         IceCandidate
-    Server        ->>   WebRTC-Host:    IceCandidate
+    WebRTC Client    ->>    WebRTC Client:      create IceCandidate
+    WebRTC Client    ->>    Signaling Server:   IceCandidate
+    Signaling Server ->>    WebRTC Host:        IceCandidate
   and
-    WebRTC-Host   ->>   WebRTC-Host:    create IceCandidate
-    WebRTC-Host   ->>   Server:         IceCandidate
-    Server        ->>   WebRTC-Client:  IceCandidate
+    WebRTC Host      ->>    WebRTC Host:        create IceCandidate
+    WebRTC Host      ->>    Signaling Server:   IceCandidate
+    Signaling Server ->>    WebRTC Client:      IceCandidate
   end
 
 ``` 
