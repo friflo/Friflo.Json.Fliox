@@ -10,32 +10,32 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
     // ---------------------------------- entity models ----------------------------------
     public sealed class WebRtcHost {
         /// <summary>WebRtc host id</summary>
-        [Required]  public  string                          id;
-        [Required]  public  string                          client;
+        [Required]  public  string      id;
+        [Required]  public  string      client;
                         
-        public override     string                          ToString() => JsonSerializer.Serialize(this).Replace("\"", "'");
+        public override     string      ToString() => JsonSerializer.Serialize(this).Replace("\"", "'");
     }
     
     // ---------------------------- command models - aka DTO's ---------------------------
     // ---
     public sealed class RegisterHost {
-        public string name;
+        [Required]  public  string      name;
     }
     
     public sealed class RegisterHostResult { }
     
     // ---
     public sealed class ConnectClient {
-        public string       name;
-        public JsonValue    sdpOffer;
+        [Required]  public  string      name;
+        [Required]  public  JsonValue   sdpOffer;
     }
     
     public sealed class ConnectClientResult {
-        public JsonValue    sdpAnswer;
+        [Required]  public  JsonValue   sdpAnswer;
     }
     
     // ------------------------------------ event models ---------------------------------
     public sealed class IceCandidate {
-        public JsonValue    value;
+        [Required]  public  JsonValue   value;
     }
 }
