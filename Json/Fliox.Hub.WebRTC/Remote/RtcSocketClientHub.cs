@@ -13,6 +13,7 @@ using Friflo.Json.Fliox.Hub.Remote;
 using Friflo.Json.Fliox.Hub.Remote.Tools;
 using Friflo.Json.Fliox.Mapper;
 using SIPSorcery.Net;
+using TinyJson;
 
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.WebRTC
@@ -70,7 +71,7 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
             reader              = mapper.reader;
             this.config         = config;
             peerConnection.onicecandidate += candidate => {
-                var value   = new JsonValue(candidate.candidate);
+                var value   = new JsonValue(candidate.candidate.ToJson());
                 var msg     = signaling.SendMessage(nameof(IceCandidate), new IceCandidate { value = value });
                 _ = signaling.SyncTasks();
             };
@@ -104,19 +105,18 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
                 var offer = peerConnection.createOffer();
                 await peerConnection.setLocalDescription(offer).ConfigureAwait(false);
                 
-                var offerSDP = new JsonValue(JsonSerializer.Serialize(offer.sdp));
                 signaling.SubscribeMessage<IceCandidate>("IceCandidate", (message, context) => {
                     message.GetParam(out var value, out _);
                     RTCIceCandidateInit.TryParse(value.value.AsString(), out var iceCandidateInit);
                     peerConnection.addIceCandidate(iceCandidateInit);
                 });
                 // --- send offer SDP -> Signaling Server -> WebRTC Host
-                var connectResult   = signaling.ConnectClient(new ConnectClient { name = remoteHostName, offerSDP = offerSDP });
+                var connectResult   = signaling.ConnectClient(new ConnectClient { name = remoteHostName, offerSDP = offer.sdp });
                 await signaling.SyncTasks().ConfigureAwait(false);
                 
                 var result              = connectResult.Result;
                 var dc                  = await peerConnection.createDataChannel("test").ConfigureAwait(false);
-                var answerDescription   = new RTCSessionDescriptionInit { type = RTCSdpType.answer, sdp = result.answerSDP.AsString() };
+                var answerDescription   = new RTCSessionDescriptionInit { type = RTCSdpType.answer, sdp = result.answerSDP };
                 peerConnection.setRemoteDescription(answerDescription);
                 
                 rtcConnection = new WebRtcConnection(dc);
