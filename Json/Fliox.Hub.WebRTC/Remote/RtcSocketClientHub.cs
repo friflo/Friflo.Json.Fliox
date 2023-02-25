@@ -64,7 +64,7 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
             var query           = HttpUtility.ParseQueryString(uri.Query);
             remoteHostName      = query.Get("host");
             var signalingSocket = new WebSocketClientHub("signaling", remoteHost, env, RemoteClientAccess.Single);
-            signaling           = new Signaling(signalingSocket);
+            signaling           = new Signaling(signalingSocket) { UserId = "admin", Token = "admin" };
             peerConnection      = new RTCPeerConnection(config.GetRtcConfiguration());
             var mapper          = new ObjectMapper(sharedEnv.TypeStore);
             reader              = mapper.reader;
@@ -104,7 +104,7 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
                 var offer = peerConnection.createOffer();
                 await peerConnection.setLocalDescription(offer).ConfigureAwait(false);
                 
-                var offerSDP        = new JsonValue(offer.sdp);
+                var offerSDP = new JsonValue(JsonSerializer.Serialize(offer.sdp));
                 signaling.SubscribeMessage<IceCandidate>("IceCandidate", (message, context) => {
                     message.GetParam(out var value, out _);
                     RTCIceCandidateInit.TryParse(value.value.AsString(), out var iceCandidateInit);
