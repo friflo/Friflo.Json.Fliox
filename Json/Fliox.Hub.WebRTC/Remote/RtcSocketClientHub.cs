@@ -90,6 +90,9 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
         
         private async Task<WebRtcConnection> Connect() {
             var connectResult = signaling.ConnectClient(new ConnectClient { name = remoteHostName });
+            signaling.SubscribeMessage<IceCandidate>("IceCandidate", (message, context) => {
+                
+            });
             await signaling.SyncTasks();
             
             var task = JoinConnects(out var tcs, out WebRtcConnection connection);

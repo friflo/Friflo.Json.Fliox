@@ -6,6 +6,7 @@ using Friflo.Json.Fliox.Hub.GraphQL;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.Event;
 using Friflo.Json.Fliox.Hub.Remote;
+using Friflo.Json.Fliox.Hub.WebRTC;
 using Friflo.Json.Fliox.Schema.Definition;
 using Friflo.Json.Fliox.Schema.JSON;
 using Friflo.Json.Fliox.Schema.Native;
@@ -71,6 +72,11 @@ namespace Friflo.Json.Tests.Main
             hub.Authenticator       = new UserAuthenticator(userDB, c.env)  // optional - otherwise all request tasks are authorized
                 .SubscribeUserDbChanges(hub.EventDispatcher);               // optional - apply user_db changes instantaneously
             hub.AddExtensionDB(userDB);                                     // optional - expose userStore as extension database
+            
+            var config              = new WebRtcConfig { StunUrl = "stun:stun.sipsorcery.com" };
+            var signalingDB         = new MemoryDatabase("signaling", new SignalingService(hub, config));
+            signalingDB.Schema      = SignalingService.Schema;
+            hub.AddExtensionDB(signalingDB);
             
             var httpHost            = new HttpHost(hub, "/fliox/", c.env) { CacheControl = c.cache };
             httpHost.AddHandler      (new GraphQLHandler());

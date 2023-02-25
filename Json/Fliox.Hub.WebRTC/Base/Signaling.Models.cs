@@ -11,6 +11,7 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
     public sealed class WebRtcHost {
         /// <summary>WebRtc host id</summary>
         [Required]  public  string                          id;
+        [Required]  public  string                          client;
                         
         public override     string                          ToString() => JsonSerializer.Serialize(this).Replace("\"", "'");
     }
@@ -32,5 +33,9 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
     
     public sealed class ConnectClientResult {
 
+    }
+    
+    // ---
+    public sealed class IceCandidate {
     }
 }
