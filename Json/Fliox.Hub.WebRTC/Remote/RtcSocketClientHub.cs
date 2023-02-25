@@ -30,7 +30,7 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
         }
     }
 
-    public  sealed class WebRtcClientHub : SocketClientHub
+    public  sealed class RtcSocketClientHub : SocketClientHub
     {
         private  readonly   WebRtcConfig                config;
         private  readonly   string                      remoteHost = "---";                  
@@ -48,7 +48,7 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
         
         public   override   string                      ToString() => $"{database.name} - config: {config}";
         
-        public WebRtcClientHub(string dbName, WebRtcConfig config, SharedEnv env = null, RemoteClientAccess access = RemoteClientAccess.Single)
+        public RtcSocketClientHub(string dbName, WebRtcConfig config, SharedEnv env = null, RemoteClientAccess access = RemoteClientAccess.Single)
             : base(new RemoteDatabase(dbName), env, 0, access)
         {
             peerConnection  = new RTCPeerConnection(config.GetRtcConfiguration());

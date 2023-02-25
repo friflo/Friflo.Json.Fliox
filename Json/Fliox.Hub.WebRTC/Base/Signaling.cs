@@ -10,10 +10,10 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
 {
     public class Signaling : FlioxClient
     {
-        public CommandTask<AddHostResult>     AddHost (AddHost param) => send.Command<AddHost, AddHostResult>   (param);
+        public CommandTask<RegisterHostResult>     RegisterHost (RegisterHost param) => send.Command<RegisterHost, RegisterHostResult>   (param);
         
         // --- containers
-        public  readonly    EntitySet <string, WebRtcPeer>         peers;
+        public  readonly    EntitySet <string, WebRtcHost>         hosts;
 
         public Signaling (FlioxHub hub, string dbName = null) : base(hub, dbName) { }
     }

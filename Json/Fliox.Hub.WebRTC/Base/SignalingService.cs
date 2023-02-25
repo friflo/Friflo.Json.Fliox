@@ -11,8 +11,7 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
         private readonly    FlioxHub            hub;
         private readonly    WebRtcConfig        config;
 
-        public  static      DatabaseSchema      Schema => GetSchema();
-        private static      DatabaseSchema      _schema;
+        public  static      DatabaseSchema      Schema { get; } = new DatabaseSchema(typeof(Signaling));
 
         public SignalingService(FlioxHub hub, WebRtcConfig config) {
             this.hub    = hub;
@@ -20,21 +19,14 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
             AddMessageHandlers(this, null);
         }
         
-        private static DatabaseSchema GetSchema() {
-            if (_schema != null) {
-                return _schema;
-            }
-            return _schema = new DatabaseSchema(typeof(Signaling));
-        }
-        
-        private AddHostResult AddHost (Param<AddHost> param, MessageContext command) {
+        private RegisterHostResult RegisterHost (Param<RegisterHost> param, MessageContext command) {
             if (!param.GetValidate(out var value, out string error)) {
-                return command.Error<AddHostResult>(error);
+                return command.Error<RegisterHostResult>(error);
             }
 #if !UNITY_5_3_OR_NEWER
-            _ = WebRtcHost.SendReceiveMessages(config, null, hub);
+            _ = RtcSocketHost.SendReceiveMessages(config, null, hub);
 #endif
-            return new AddHostResult();
+            return new RegisterHostResult();
         }
     }
 }

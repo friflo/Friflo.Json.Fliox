@@ -8,19 +8,19 @@ using System.ComponentModel.DataAnnotations;
 namespace Friflo.Json.Fliox.Hub.WebRTC
 {
     // ---------------------------------- entity models ----------------------------------
-    public sealed class WebRtcPeer {
-        /// <summary>client id</summary>
+    public sealed class WebRtcHost {
+        /// <summary>WebRtc host id</summary>
         [Required]  public  string                          id;
                         
         public override     string                          ToString() => JsonSerializer.Serialize(this).Replace("\"", "'");
     }
     
     
-    public sealed class AddHost {
+    public sealed class RegisterHost {
         public string name;
     }
     
-    public sealed class AddHostResult {
+    public sealed class RegisterHostResult {
 
     }
 }
