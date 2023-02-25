@@ -21,23 +21,32 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
             AddMessageHandlers(this, null);
         }
         
-        private async Task<RegisterHostResult> RegisterHost (Param<RegisterHost> param, MessageContext command) {
+        private async Task<RegisterHostResult> RegisterHost (Param<RegisterHost> param, MessageContext command)
+        {
             if (!param.GetValidate(out var value, out string error)) {
                 return command.Error<RegisterHostResult>(error);
             }
-            var signaling  = new Signaling(command.Hub, command.Database.name)  { UserInfo = command.UserInfo };
-            var webRtcHost = new WebRtcHost { id = value.name, client = command.ClientId.AsString() };
+            var signaling   = new Signaling(command.Hub, command.Database.name)  { UserInfo = command.UserInfo };
+            var webRtcHost  = new WebRtcHost { id = value.name, client = command.ClientId.AsString() };
             signaling.hosts.Upsert(webRtcHost);
             await signaling.SyncTasks().ConfigureAwait(false);
-            
-#if !UNITY_5_3_OR_NEWER
-            _ = RtcSocketHost.SendReceiveMessages(config, null, hub);
-#endif
+
             return new RegisterHostResult();
         }
-        private ConnectClientResult ConnectClient (Param<ConnectClient> param, MessageContext command) {
+        
+        private async Task<ConnectClientResult> ConnectClient (Param<ConnectClient> param, MessageContext command)
+        {
             if (!param.GetValidate(out var value, out string error)) {
                 return command.Error<ConnectClientResult>(error);
+            }
+            var hostId      = value.name;
+            var signaling   = new Signaling(command.Hub, command.Database.name)  { UserInfo = command.UserInfo };
+            var findHost    = signaling.hosts.Read().Find(hostId);
+            await signaling.SyncTasks().ConfigureAwait(false);
+            
+            var webRtcHost = findHost.Result;
+            if (webRtcHost == null) {
+                return command.Error<ConnectClientResult>($"host not found. name: {hostId}");
             }
 
 #if !UNITY_5_3_OR_NEWER

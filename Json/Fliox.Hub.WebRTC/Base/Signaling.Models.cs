@@ -22,20 +22,20 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
         public string name;
     }
     
-    public sealed class RegisterHostResult {
-
-    }
+    public sealed class RegisterHostResult { }
     
     // ---
     public sealed class ConnectClient {
-        public string name;
+        public string       name;
+        public JsonValue    sdpOffer;
     }
     
     public sealed class ConnectClientResult {
-
+        public JsonValue    sdpAnswer;
     }
     
-    // ---
+    // ------------------------------------ event models ---------------------------------
     public sealed class IceCandidate {
+        public JsonValue    value;
     }
 }

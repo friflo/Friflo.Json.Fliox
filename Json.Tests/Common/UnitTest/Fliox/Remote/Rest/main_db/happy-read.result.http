@@ -68,6 +68,13 @@ GET {{base}}/rest
                 "roles",
                 "targets"
             ]
+        },
+        {
+            "id": "signaling",
+            "storage": "in-memory",
+            "containers": [
+                "hosts"
+            ]
         }
     ]
 }
