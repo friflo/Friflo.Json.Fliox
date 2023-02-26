@@ -11,15 +11,11 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
 {
     public class SignalingService : DatabaseService
     {
-        private readonly    FlioxHub                                hub;
-        private readonly    WebRtcConfig                            config;
         private readonly    Dictionary<ShortString, ConnectRequest> connectMap;
 
         public  static      DatabaseSchema      Schema { get; } = new DatabaseSchema(typeof(Signaling));
 
-        public SignalingService(FlioxHub hub, WebRtcConfig config) {
-            this.hub    = hub;
-            this.config = config;
+        public SignalingService() {
             connectMap  = new Dictionary<ShortString, ConnectRequest>(ShortString.Equality);
             AddMessageHandlers(this, null);
         }

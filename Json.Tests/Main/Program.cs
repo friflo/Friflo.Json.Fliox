@@ -73,8 +73,7 @@ namespace Friflo.Json.Tests.Main
                 .SubscribeUserDbChanges(hub.EventDispatcher);               // optional - apply user_db changes instantaneously
             hub.AddExtensionDB(userDB);                                     // optional - expose userStore as extension database
             
-            var config              = new WebRtcConfig { StunUrl = "stun:stun.sipsorcery.com" };
-            var signalingDB         = new MemoryDatabase("signaling", new SignalingService(hub, config));
+            var signalingDB         = new MemoryDatabase("signaling", new SignalingService());
             signalingDB.Schema      = SignalingService.Schema;
             hub.AddExtensionDB(signalingDB);
             
