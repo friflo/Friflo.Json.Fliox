@@ -112,7 +112,7 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
                 // --- create offer SDP 
                 peerConnection = new RTCPeerConnection(config.GetRtcConfiguration()); // fire onicecandidate
                 peerConnection.onicecandidate += candidate => {
-                    var jsonCandidate   = new JsonValue(candidate.candidate.ToJson());
+                    var jsonCandidate   = new JsonValue(candidate.ToJson());
                     var iceCandidate    = new ClientIce { candidate = jsonCandidate };
                     // send ICE candidate to WebRTC Host
                     var msg             = signaling.SendMessage(nameof(ClientIce), iceCandidate);

@@ -41,7 +41,7 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
                 
                 rtcConnection.onicecandidate += candidate => {
                     // send ICE candidate to WebRTC client
-                    var jsonCandidate   = new JsonValue(candidate.candidate.ToJson());
+                    var jsonCandidate   = new JsonValue(candidate.ToJson());
                     var msg             = signaling.SendMessage(nameof(HostIce), new HostIce { candidate = jsonCandidate });
                     msg.EventTargetClient(offer.client);
                     _ = signaling.SyncTasks();
