@@ -1,6 +1,7 @@
 // Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 
 // ReSharper disable once CheckNamespace
@@ -22,10 +23,12 @@ namespace Friflo.Json.Fliox.Hub.Client
         
         // --- user
         public void AddUser(string user) {
+            if (user == null) throw new ArgumentNullException(nameof(user));
             AddUser (new ShortString(user));
         }
         
         public void AddUser(in ShortString user) {
+            if (user.IsNull()) throw new ArgumentNullException(nameof(user));
             if (users == null) {
                 users = new List<ShortString> { user };
                 return;
@@ -48,10 +51,12 @@ namespace Friflo.Json.Fliox.Hub.Client
         
         // --- client
         public void AddClient(string client) {
+            if (client == null) throw new ArgumentNullException(nameof(client));
             AddClient (new ShortString(client));
         }
 
         public void AddClient(in ShortString client) {
+            if (client.IsNull()) throw new ArgumentNullException(nameof(client));
             if (clients == null) {
                 clients = new List<ShortString> { client };
                 return;
@@ -74,6 +79,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         
         // --- group
         public void AddGroup(string group) {
+            if (group == null) throw new ArgumentNullException(nameof(group));
             if (groups == null) {
                 groups = new List<ShortString> { new ShortString(group) };
                 return;
