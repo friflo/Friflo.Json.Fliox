@@ -15,6 +15,11 @@ riderModule.iml
 *.user
 **/.vs/
 
+# Ignore lab-* solutions to enable using multiple Rider instances
+lab-*
+.idea.lab-*/
+
+
 /nupkgs
 *.nupkg
 
