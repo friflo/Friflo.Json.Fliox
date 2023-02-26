@@ -18,14 +18,14 @@ Contains classes to enable WebRTC connections of HTTP clients to other HTTP clie
 ``` mermaid
 sequenceDiagram
   autonumber
-    WebRTC Host      ->>    Signaling Server:   RegisterHost(name)
+    WebRTC Host      ->>    Signaling Server:   RegisterHost(hostName)
     Signaling Server ->>    WebRTC Host:        RegisterHostResult()
 
-    WebRTC Client    ->>    WebRTC Client:      create peer connection and channel
-    WebRTC Client    ->>    Signaling Server:   ConnectClient(offerSDP)
+    WebRTC Client    ->>    WebRTC Client:      create peer connection and offerSDP
+    WebRTC Client    ->>    Signaling Server:   ConnectClient(hostName, offerSDP)
 
     Signaling Server ->>    WebRTC Host:        Offer(SDP, client) message
-    WebRTC Host      ->>    WebRTC Host:        process offer / create answer SDP
+    WebRTC Host      ->>    WebRTC Host:        process offer, create peer connection and answerSDP
     WebRTC Host      ->>    Signaling Server:   Answer(SDP, client) message
 
     Signaling Server ->>    WebRTC Client:      ConnectClientResult(answerSDP)

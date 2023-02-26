@@ -71,9 +71,10 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
             reader              = mapper.reader;
             this.config         = config;
             peerConnection.onicecandidate += candidate => {
-                var value           = new JsonValue(candidate.candidate.ToJson());
-                var iceCandidate    = new ClientIceCandidate { value = value };
-                var msg             = signaling.SendMessage(nameof(ClientIceCandidate), iceCandidate);
+                var jsonCandidate   = new JsonValue(candidate.candidate.ToJson());
+                var iceCandidate    = new ClientIce { candidate = jsonCandidate };
+                // send ICE candidate to WebRTC Host
+                var msg             = signaling.SendMessage(nameof(ClientIce), iceCandidate);
                 msg.EventTargets.AddClient(signaling.ClientId);
                 _ = signaling.SyncTasks();
             };
@@ -107,9 +108,12 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
                 var offer = peerConnection.createOffer();
                 await peerConnection.setLocalDescription(offer).ConfigureAwait(false);
                 
-                signaling.SubscribeMessage<HostIceCandidate>(nameof(HostIceCandidate), (message, context) => {
+                signaling.SubscribeMessage<HostIce>(nameof(HostIce), (message, context) => {
                     message.GetParam(out var value, out _);
-                    RTCIceCandidateInit.TryParse(value.value.AsString(), out var iceCandidateInit);
+                    if (!RTCIceCandidateInit.TryParse(value.candidate.AsString(), out var iceCandidateInit)) {
+                        Logger.Log(HubLog.Error, "invalid ICE candidate");
+                        return;
+                    }
                     peerConnection.addIceCandidate(iceCandidateInit);
                 });
                 // --- send offer SDP -> Signaling Server -> WebRTC Host
