@@ -1,7 +1,6 @@
 // Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
-using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Client;
 using Friflo.Json.Fliox.Hub.Host;
 
@@ -18,12 +17,5 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
         public  readonly    EntitySet <string, WebRtcHost>         hosts;
 
         public Signaling (FlioxHub hub, string dbName = null) : base(hub, dbName) { }
-        
-        public async Task Register(string name) {
-            SubscribeMessage<IceCandidate>("IceCandidate", (message, context) => {
-            });
-            RegisterHost(new RegisterHost { name = name });
-            await SyncTasks().ConfigureAwait(false);
-        }
     }
 }

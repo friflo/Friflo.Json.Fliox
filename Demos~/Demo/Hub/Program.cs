@@ -56,13 +56,15 @@ namespace DemoHub
                 .SubscribeUserDbChanges(hub.EventDispatcher);       // optional - apply user_db changes instantaneously
             hub.AddExtensionDB(userDB);                             // optional - expose user_db as extension database
             
-            var signalingHub        = new WebSocketClientHub ("signaling", "ws://localhost:8010/fliox/");
-            var signaling           = new Signaling(signalingHub) { UserId = "admin", Token = "admin" };
-            signaling.Register("abc").Wait();
-
             var httpHost            = new HttpHost(hub, "/fliox/");
             httpHost.AddHandler      (new GraphQLHandler());
             httpHost.AddHandler      (new StaticFileHandler(HubExplorer.Path)); // optional - serve static web files of Hub Explorer
+            
+            var signalingHub        = new WebSocketClientHub ("signaling", "ws://localhost:8010/fliox/");
+            var signaling           = new Signaling(signalingHub) { UserId = "admin", Token = "admin" };
+            var rtcHost             = new RtcHost(signaling);
+            rtcHost.Register("abc", httpHost, new WebRtcConfig { StunUrl = "stun:stun.sipsorcery.com" }).Wait();
+
             return httpHost;
         }
         

@@ -1,6 +1,7 @@
 // Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
 
@@ -10,14 +11,16 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
 {
     public class SignalingService : DatabaseService
     {
-        private readonly    FlioxHub            hub;
-        private readonly    WebRtcConfig        config;
+        private readonly    FlioxHub                                hub;
+        private readonly    WebRtcConfig                            config;
+        private readonly    Dictionary<ShortString, ConnectRequest> connectMap;
 
         public  static      DatabaseSchema      Schema { get; } = new DatabaseSchema(typeof(Signaling));
 
         public SignalingService(FlioxHub hub, WebRtcConfig config) {
             this.hub    = hub;
             this.config = config;
+            connectMap  = new Dictionary<ShortString, ConnectRequest>(ShortString.Equality);
             AddMessageHandlers(this, null);
         }
         
@@ -39,6 +42,7 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
             if (!param.GetValidate(out var value, out string error)) {
                 return command.Error<ConnectClientResult>(error);
             }
+            // --- find WebRTC Host in database
             var hostId      = value.name;
             var signaling   = new Signaling(command.Hub, command.Database.name)  { UserInfo = command.UserInfo };
             var findHost    = signaling.hosts.Read().Find(hostId);
@@ -48,11 +52,40 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
             if (webRtcHost == null) {
                 return command.Error<ConnectClientResult>($"host not found. name: {hostId}");
             }
+            // --- send offer SDP to WebRTC host 
+            var clientId    = command.ClientId;
+            var offer       = new Offer { sdp = value.offerSDP, client = clientId };
+            var offerMsg    = signaling.SendMessage(nameof(Offer), offer);
+            offerMsg.EventTargets.AddClient(webRtcHost.client);
+            await signaling.SyncTasks().ConfigureAwait(false);
+            
+            var connectRequest  = new ConnectRequest(clientId);
+            connectMap.Add(clientId, connectRequest);
+            var answerSDP       = await connectRequest.response.Task.ConfigureAwait(false);
 
-#if !UNITY_5_3_OR_NEWER
-            _ = RtcSocketHost.SendReceiveMessages(config, null, hub);
-#endif
-            return new ConnectClientResult();
+            return new ConnectClientResult { answerSDP = answerSDP.sdp };
+        }
+        
+        private void AnswerSDP (Param<Answer> param, MessageContext command)
+        {
+            if (!param.GetValidate(out var answerSDP, out string error)) {
+                return;
+            }
+            if (!connectMap.TryGetValue(answerSDP.client, out var connectRequest)) {
+                return;
+            }
+            connectRequest.response.SetResult(answerSDP);
+        }
+    }
+    
+    public readonly struct ConnectRequest
+    {
+        public   readonly   ShortString                     clientId;
+        public   readonly   TaskCompletionSource<Answer> response;
+        
+        public ConnectRequest(in ShortString clientId) {
+            this.clientId   = clientId;
+            response        = new TaskCompletionSource<Answer>();
         }
     }
 }

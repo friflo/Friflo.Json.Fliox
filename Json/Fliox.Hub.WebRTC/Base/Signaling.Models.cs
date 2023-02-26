@@ -9,7 +9,7 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
 {
     // ---------------------------------- entity models ----------------------------------
     public sealed class WebRtcHost {
-        /// <summary>WebRtc host id</summary>
+        /// <summary>WebRTC Host id</summary>
         [Required]  public  string      id;
         [Required]  public  string      client;
                         
@@ -35,7 +35,21 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
     }
     
     // ------------------------------------ event models ---------------------------------
-    public sealed class IceCandidate {
+    public sealed class ClientIceCandidate {
         [Required]  public  JsonValue   value;
+    }
+    
+    public sealed class HostIceCandidate {
+        [Required]  public  JsonValue   value;
+    }
+
+    public sealed class Offer {
+        [Required]  public  ShortString client;
+        [Required]  public  string      sdp;
+    }
+    
+    public sealed class Answer {
+        [Required]  public  ShortString client;
+        [Required]  public  string      sdp;
     }
 }

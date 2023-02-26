@@ -19,18 +19,18 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
 {
     public sealed class RtcSocketHost : SocketHost, IDisposable
     {
-        private  readonly   RTCPeerConnection                   connection;
+        internal readonly   RTCPeerConnection                   connection;
         private             RTCDataChannel                      channel;
         private  readonly   MessageBufferQueueAsync<VoidMeta>   sendQueue;
         private  readonly   List<JsonValue>                     messages;
-        private  readonly   IPEndPoint                          remoteClient;
+        private  readonly   string                              remoteClient;
         private  readonly   RemoteHostEnv                       hostEnv;
         private             StringBuilder                       sbSend;
         private             StringBuilder                       sbRecv;
 
-        private RtcSocketHost (
+        internal RtcSocketHost (
             RTCConfiguration    config,
-            IPEndPoint          remoteClient,
+            string              remoteClient,
             FlioxHub            hub,
             IHost               host)
         : base (hub, host)
@@ -102,35 +102,28 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
             OnReceive(request, ref hostEnv.metrics.webSocket);
         }
         
-        internal static async Task SendReceiveMessages(
-            WebRtcConfig    config,
-            IPEndPoint      remoteClient,
-            FlioxHub        hub)
+        internal async Task SendReceiveMessages()
         {
-            var rtcConfig   = config.GetRtcConfiguration(); 
-            var target      = new RtcSocketHost(rtcConfig, remoteClient, hub, null);
-            await target.connection.createDataChannel("test").ConfigureAwait(false);
-            
             Task sendLoop   = null;
             try {
-                sendLoop = target.RunSendMessageLoop();
+                sendLoop = RunSendMessageLoop();
 
-                target.sendQueue.Close();
+                sendQueue.Close();
             }
             catch (Exception e) {
                 var msg = GetExceptionMessage("WebSocketHost.SendReceiveMessages()", remoteClient, e);
-                hub.Logger.Log(HubLog.Info, msg);
+                Logger.Log(HubLog.Info, msg);
             }
             finally {
                 if (sendLoop != null) {
                     await sendLoop.ConfigureAwait(false);
                 }
-                target.Dispose();
-                target.channel.close();
+                Dispose();
+                channel.close();
             }
         }
         
-        private static string GetExceptionMessage(string location, IPEndPoint remoteEndPoint, Exception e) {
+        private static string GetExceptionMessage(string location, string remoteEndPoint, Exception e) {
             if (e.InnerException is HttpListenerException listenerException) {
                 e = listenerException;
                 // observed ErrorCode:

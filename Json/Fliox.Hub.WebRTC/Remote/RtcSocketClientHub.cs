@@ -71,8 +71,10 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
             reader              = mapper.reader;
             this.config         = config;
             peerConnection.onicecandidate += candidate => {
-                var value   = new JsonValue(candidate.candidate.ToJson());
-                var msg     = signaling.SendMessage(nameof(IceCandidate), new IceCandidate { value = value });
+                var value           = new JsonValue(candidate.candidate.ToJson());
+                var iceCandidate    = new ClientIceCandidate { value = value };
+                var msg             = signaling.SendMessage(nameof(ClientIceCandidate), iceCandidate);
+                msg.EventTargets.AddClient(signaling.ClientId);
                 _ = signaling.SyncTasks();
             };
             peerConnection.onconnectionstatechange += state => {
@@ -105,7 +107,7 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
                 var offer = peerConnection.createOffer();
                 await peerConnection.setLocalDescription(offer).ConfigureAwait(false);
                 
-                signaling.SubscribeMessage<IceCandidate>("IceCandidate", (message, context) => {
+                signaling.SubscribeMessage<HostIceCandidate>(nameof(HostIceCandidate), (message, context) => {
                     message.GetParam(out var value, out _);
                     RTCIceCandidateInit.TryParse(value.value.AsString(), out var iceCandidateInit);
                     peerConnection.addIceCandidate(iceCandidateInit);
