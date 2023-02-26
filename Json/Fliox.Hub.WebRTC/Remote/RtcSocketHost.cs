@@ -103,9 +103,8 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
         
         internal async Task SendReceiveMessages()
         {
-            Task sendLoop   = null;
             try {
-                sendLoop = RunSendMessageLoop();
+                await RunSendMessageLoop().ConfigureAwait(false);
 
                 sendQueue.Close();
             }
@@ -114,9 +113,6 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
                 Logger.Log(HubLog.Info, msg);
             }
             finally {
-                if (sendLoop != null) {
-                    await sendLoop.ConfigureAwait(false);
-                }
                 Dispose();
                 channel.close();
             }
