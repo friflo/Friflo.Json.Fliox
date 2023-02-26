@@ -148,9 +148,7 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
             base.Dispose();
             // websocket.CancelPendingRequests();
         } */
-        
 
-        
         private void OnMessage(RTCDataChannel dc, DataChannelPayloadProtocols protocol, byte[] data) {
             var message     = new JsonValue(data);
             // --- process received message

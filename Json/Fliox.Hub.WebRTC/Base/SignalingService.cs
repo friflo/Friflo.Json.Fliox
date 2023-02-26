@@ -80,9 +80,11 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
     
     public readonly struct ConnectRequest
     {
-        public   readonly   ShortString                     clientId;
-        public   readonly   TaskCompletionSource<Answer> response;
-        
+        private  readonly   ShortString                     clientId;
+        public   readonly   TaskCompletionSource<Answer>    response;
+
+        public   override   string                          ToString() => $"client: {clientId}";
+
         public ConnectRequest(in ShortString clientId) {
             this.clientId   = clientId;
             response        = new TaskCompletionSource<Answer>();

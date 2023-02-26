@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Remote;
 using SIPSorcery.Net;
 using TinyJson;
-using WebSocketSharp;
 
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.WebRTC

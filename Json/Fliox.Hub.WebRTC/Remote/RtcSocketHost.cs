@@ -5,7 +5,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
@@ -124,12 +123,6 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
         }
         
         private static string GetExceptionMessage(string location, string remoteEndPoint, Exception e) {
-            if (e.InnerException is HttpListenerException listenerException) {
-                e = listenerException;
-                // observed ErrorCode:
-                // 995 The I/O operation has been aborted because of either a thread exit or an application request.
-                return $"{location} {e.GetType().Name}: {e.Message} ErrorCode: {listenerException.ErrorCode}, remote: {remoteEndPoint} ";
-            }
             return $"{location} {e.GetType().Name}: {e.Message}, remote: {remoteEndPoint}";
         }
     }
