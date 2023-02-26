@@ -15,30 +15,35 @@ Contains classes to enable WebRTC connections of HTTP clients to other HTTP clie
 
 * Process 3: HTTP client establish a WebRTC connection to a WebRTC Host via Signaling Server
 
+## Signaling sequence diagram
+```
+SDP - Session Description Protocol  
+ICE - Interactive Connectivity Establishment  
+```
 ``` mermaid
 sequenceDiagram
   autonumber
     WebRTC Host      ->>    Signaling Server:   RegisterHost(hostName)
     Signaling Server ->>    WebRTC Host:        RegisterHostResult()
 
-    WebRTC Client    ->>    WebRTC Client:      create peer connection and offerSDP
+    WebRTC Client    ->>    WebRTC Client:      create peer connection and offer SDP
     WebRTC Client    ->>    Signaling Server:   ConnectClient(hostName, offerSDP)
 
     Signaling Server ->>    WebRTC Host:        Offer(SDP, client) message
-    WebRTC Host      ->>    WebRTC Host:        process offer, create peer connection and answerSDP
+    WebRTC Host      ->>    WebRTC Host:        process offer, create peer connection and answer SDP
     WebRTC Host      ->>    Signaling Server:   Answer(SDP, client) message
 
     Signaling Server ->>    WebRTC Client:      ConnectClientResult(answerSDP)
 
   autonumber off
   par
-    WebRTC Client    ->>    WebRTC Client:      create IceCandidate
-    WebRTC Client    ->>    Signaling Server:   ClientIceCandidate() message
-    Signaling Server ->>    WebRTC Host:        ClientIceCandidate() message
+    WebRTC Client    ->>    WebRTC Client:      create ICE candidate
+    WebRTC Client    ->>    Signaling Server:   ClientIce(candidate) message
+    Signaling Server ->>    WebRTC Host:        ClientIce(candidate) message
   and
-    WebRTC Host      ->>    WebRTC Host:        create IceCandidate
-    WebRTC Host      ->>    Signaling Server:   HostIceCandidate() message
-    Signaling Server ->>    WebRTC Client:      HostIceCandidate() message
+    WebRTC Host      ->>    WebRTC Host:        create ICE candidate
+    WebRTC Host      ->>    Signaling Server:   HostIce(candidate) message
+    Signaling Server ->>    WebRTC Client:      HostIce(candidate) message
   end
 
 ``` 
