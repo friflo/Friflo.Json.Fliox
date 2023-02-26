@@ -323,6 +323,7 @@ This is enabled by supporting Pub-Sub with sub millisecond latency on *localhost
 | ------------------------------------------------------------------------- | ----------- | -------------------------------------------------------------------- |
 | [NUnit](https://nunit.org/)                                               | C#          | unit testing of the library in the CLR and Unity                     |
 | [FluentAssertions](https://github.com/fluentassertions/fluentassertions)  | C#          | unit testing of the library                                          |
+| [SIPSorcery](https://github.com/sipsorcery-org/sipsorcery)                | C#          | WebRTC - Real-time communication between Web clients without server  |
 | [GraphQL.NET Parser](https://github.com/graphql-dotnet/parser)            | C#          | used by package: Friflo.Json.Fliox.Hub.GraphQL                       |
 | [MdDocs](https://github.com/ap0llo/mddocs)                                | C#          | for [fliox-docs API Reference](https://github.com/friflo/fliox-docs) |
 | [.NET platform](https://dotnet.microsoft.com/en-us/)                      | C# .NET     | the platform providing compiler, runtime, IDE's & ASP.NET Core       |
