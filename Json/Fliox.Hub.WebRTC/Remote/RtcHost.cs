@@ -4,6 +4,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Client;
+using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Remote;
 using SIPSorcery.Net;
 using TinyJson;
@@ -13,22 +14,26 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
 {
     public class RtcHost
     {
+        private readonly string                                 name;
+        private readonly WebRtcConfig                           config;
         private readonly Signaling                              signaling;
         private readonly Dictionary<ShortString, RtcSocketHost> clients;
-        private readonly IHubLogger                             Logger;
+        private readonly IHubLogger                             logger;
         
-        public RtcHost (Signaling signaling) {
-            this.signaling  = signaling;
-            Logger          = this.signaling.Logger;
-            clients         = new Dictionary<ShortString, RtcSocketHost>(ShortString.Equality);
+        public RtcHost (SocketClientHub signalingHub, string name, WebRtcConfig config, string user, string token, SharedEnv env = null) {
+            this.name   = name;
+            this.config = config;
+            clients     = new Dictionary<ShortString, RtcSocketHost>(ShortString.Equality);
+            signaling   = new Signaling(signalingHub) { UserId = user, Token = token };
+            logger      = signaling.Logger;
         }
         
-        public async Task Register(string name, HttpHost host, WebRtcConfig config)
+        public async Task Register(HttpHost host)
         {
             signaling.SubscribeMessage<Offer>(nameof(Offer), async (message, context) =>
             {
                 if (!message.GetParam(out var offer, out var error)) {
-                    Logger.Log(HubLog.Error, $"invalid Offer. error: {error}");
+                    logger.Log(HubLog.Error, $"invalid Offer. error: {error}");
                     return;
                 }
                 var rtcConfig       = config.GetRtcConfiguration();
@@ -58,15 +63,15 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
             });
             signaling.SubscribeMessage<ClientIce>(nameof(ClientIce), (message, context) => {
                 if (!message.GetParam(out var value, out var error)) {
-                    Logger.Log(HubLog.Error, $"invalid client ICE candidate. error: {error}");
+                    logger.Log(HubLog.Error, $"invalid client ICE candidate. error: {error}");
                     return;                    
                 }
                 if (!clients.TryGetValue(context.SrcClient, out var socketHost)) {
-                    Logger.Log(HubLog.Error, $"client not found. client: {context.SrcClient}");
+                    logger.Log(HubLog.Error, $"client not found. client: {context.SrcClient}");
                     return;
                 }
                 if (!RTCIceCandidateInit.TryParse(value.candidate.AsString(), out var iceCandidateInit)) {
-                    Logger.Log(HubLog.Error, "invalid ICE candidate");
+                    logger.Log(HubLog.Error, "invalid ICE candidate");
                     return;
                 }
                 socketHost.connection.addIceCandidate(iceCandidateInit);

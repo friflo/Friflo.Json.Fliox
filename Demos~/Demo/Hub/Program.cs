@@ -61,9 +61,8 @@ namespace DemoHub
             httpHost.AddHandler      (new StaticFileHandler(HubExplorer.Path)); // optional - serve static web files of Hub Explorer
             
             var signalingHub        = new WebSocketClientHub ("signaling", "ws://localhost:8010/fliox/");
-            var signaling           = new Signaling(signalingHub) { UserId = "admin", Token = "admin" };
-            var rtcHost             = new RtcHost(signaling);
-            rtcHost.Register("abc", httpHost, new WebRtcConfig { StunUrl = "stun:stun.sipsorcery.com" }).Wait();
+            var rtcHost             = new RtcHost(signalingHub, "abc", new WebRtcConfig { StunUrl = "stun:stun.sipsorcery.com" }, "admin", "admin");
+            rtcHost.Register(httpHost).Wait();
 
             return httpHost;
         }
