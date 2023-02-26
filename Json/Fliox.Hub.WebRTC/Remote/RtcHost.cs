@@ -3,6 +3,7 @@
 
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Friflo.Json.Fliox.Hub.Client;
 using Friflo.Json.Fliox.Hub.Remote;
 using SIPSorcery.Net;
 using TinyJson;
@@ -26,8 +27,11 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
         {
             signaling.SubscribeMessage<Offer>(nameof(Offer), async (message, context) =>
             {
-                var rtcConfig   = config.GetRtcConfiguration();
-                message.GetParam(out var offer, out _);
+                if (!message.GetParam(out var offer, out var error)) {
+                    Logger.Log(HubLog.Error, $"invalid Offer. error: {error}");
+                    return;
+                }
+                var rtcConfig       = config.GetRtcConfiguration();
                 var socketHost      = new RtcSocketHost(rtcConfig, offer.client.ToString(), host.hub, null);
                 var rtcConnection   = socketHost.connection;
                 var rtcOffer        = new RTCSessionDescriptionInit { type = RTCSdpType.offer, sdp = offer.sdp };
@@ -39,7 +43,7 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
                     // send ICE candidate to WebRTC client
                     var jsonCandidate   = new JsonValue(candidate.candidate.ToJson());
                     var msg             = signaling.SendMessage(nameof(HostIce), new HostIce { candidate = jsonCandidate });
-                    msg.EventTargets.AddClient(context.SrcClient);
+                    msg.EventTargetClient(context.SrcClient);
                     _ = signaling.SyncTasks();
                 };
                 await rtcConnection.setLocalDescription(answer).ConfigureAwait(false);
@@ -47,13 +51,16 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
                 // send answer SDP -> Signaling Server
                 var answerSDP = new Answer { client = offer.client, sdp = answer.sdp };
                 var answerMsg = signaling.SendMessage(nameof(Answer), answerSDP);
-                answerMsg.EventTargets.AddClients(new List<string>()); // send message only to SignalingService not to clients
+                answerMsg.EventTargets = new EventTargets(); // send message only to SignalingService not to clients
                 await signaling.SyncTasks();
 
                 _ = socketHost.SendReceiveMessages();
             });
             signaling.SubscribeMessage<ClientIce>(nameof(ClientIce), (message, context) => {
-                message.GetParam(out var value, out _);
+                if (!message.GetParam(out var value, out var error)) {
+                    Logger.Log(HubLog.Error, $"invalid client ICE candidate. error: {error}");
+                    return;                    
+                }
                 if (!clients.TryGetValue(context.SrcClient, out var socketHost)) {
                     Logger.Log(HubLog.Error, $"client not found. client: {context.SrcClient}");
                     return;

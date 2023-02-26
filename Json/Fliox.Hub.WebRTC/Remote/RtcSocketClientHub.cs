@@ -7,6 +7,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
+using Friflo.Json.Fliox.Hub.Client;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Remote;
@@ -45,7 +46,7 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
 
         private  readonly   object                      connectLock = new object();
         private             Task<WebRtcConnection>      connectTask;
-        private  readonly   RTCPeerConnection           peerConnection;
+        private             RTCPeerConnection           peerConnection;
         private             WebRtcConnection            rtcConnection;
         
         private  readonly   CancellationTokenSource     cancellationToken = new CancellationTokenSource();
@@ -66,21 +67,9 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
             remoteHostName      = query.Get("host");
             var signalingSocket = new WebSocketClientHub("signaling", remoteHost, env, RemoteClientAccess.Single);
             signaling           = new Signaling(signalingSocket) { UserId = "admin", Token = "admin" };
-            peerConnection      = new RTCPeerConnection(config.GetRtcConfiguration());
             var mapper          = new ObjectMapper(sharedEnv.TypeStore);
             reader              = mapper.reader;
             this.config         = config;
-            peerConnection.onicecandidate += candidate => {
-                var jsonCandidate   = new JsonValue(candidate.candidate.ToJson());
-                var iceCandidate    = new ClientIce { candidate = jsonCandidate };
-                // send ICE candidate to WebRTC Host
-                var msg             = signaling.SendMessage(nameof(ClientIce), iceCandidate);
-                msg.EventTargets.AddClient(signaling.ClientId);
-                _ = signaling.SyncTasks();
-            };
-            peerConnection.onconnectionstatechange += state => {
-                Logger.Log(HubLog.Info, $"on WebRTC client connection state change: {state}");
-            };
         }
         
         private Task<WebRtcConnection> JoinConnects(out TaskCompletionSource<WebRtcConnection> tcs, out WebRtcConnection connection) {
@@ -104,18 +93,39 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
                 return connection;
             }
             try {
-                // --- create offer SDP 
-                var offer = peerConnection.createOffer();
-                await peerConnection.setLocalDescription(offer).ConfigureAwait(false);
-                
+                // subscription cause assigning client id by server
                 signaling.SubscribeMessage<HostIce>(nameof(HostIce), (message, context) => {
-                    message.GetParam(out var value, out _);
+                    if (!message.GetParam(out var value, out var error)) {
+                        Logger.Log(HubLog.Error, $"invalid host ICE candidate. error: {error}");
+                        return;
+                    }
                     if (!RTCIceCandidateInit.TryParse(value.candidate.AsString(), out var iceCandidateInit)) {
                         Logger.Log(HubLog.Error, "invalid ICE candidate");
                         return;
                     }
                     peerConnection.addIceCandidate(iceCandidateInit);
                 });
+                await signaling.SyncTasks();
+                
+                if (signaling.UserInfo.clientId.IsNull()) throw new InvalidOperationException("expect client id not null");
+                
+                // --- create offer SDP 
+                peerConnection = new RTCPeerConnection(config.GetRtcConfiguration()); // fire onicecandidate
+                peerConnection.onicecandidate += candidate => {
+                    var jsonCandidate   = new JsonValue(candidate.candidate.ToJson());
+                    var iceCandidate    = new ClientIce { candidate = jsonCandidate };
+                    // send ICE candidate to WebRTC Host
+                    var msg             = signaling.SendMessage(nameof(ClientIce), iceCandidate);
+                    msg.EventTargetClient(signaling.ClientId);
+                    _ = signaling.SyncTasks();
+                };
+                peerConnection.onconnectionstatechange += state => {
+                    Logger.Log(HubLog.Info, $"on WebRTC client connection state change: {state}");
+                };
+                var offer = peerConnection.createOffer();
+                await peerConnection.setLocalDescription(offer).ConfigureAwait(false);
+                
+
                 // --- send offer SDP -> Signaling Server -> WebRTC Host
                 var connectResult   = signaling.ConnectClient(new ConnectClient { name = remoteHostName, offerSDP = offer.sdp });
                 await signaling.SyncTasks().ConfigureAwait(false);

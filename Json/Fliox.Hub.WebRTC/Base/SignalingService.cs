@@ -3,6 +3,7 @@
 
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Friflo.Json.Fliox.Hub.Client;
 using Friflo.Json.Fliox.Hub.Host;
 
 // ReSharper disable UnusedMember.Local
@@ -52,7 +53,7 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
             var clientId    = command.ClientId;
             var offer       = new Offer { sdp = value.offerSDP, client = clientId };
             var offerMsg    = signaling.SendMessage(nameof(Offer), offer);
-            offerMsg.EventTargets.AddClient(webRtcHost.client);
+            offerMsg.EventTargetClient(webRtcHost.client);
             await signaling.SyncTasks().ConfigureAwait(false);
             
             var connectRequest  = new ConnectRequest(clientId);
