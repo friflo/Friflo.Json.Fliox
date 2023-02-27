@@ -22,14 +22,14 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
         public  WebRtcConfig    WebRtcConfig    { get; init; }
     }
     
-    public class RtcHost : IHost
+    public class RtcServer : IHost
     {
         private readonly WebRtcConfig                           config;
         private readonly Signaling                              signaling;
         private readonly Dictionary<ShortString, RtcSocketHost> clients;
         private readonly IHubLogger                             logger;
         
-        public RtcHost (RtcHostConfig rtcConfig, SharedEnv env = null) {
+        public RtcServer (RtcHostConfig rtcConfig, SharedEnv env = null) {
             config          = rtcConfig.WebRtcConfig;
             clients         = new Dictionary<ShortString, RtcSocketHost>(ShortString.Equality);
             var signalingHub= new WebSocketClientHub (rtcConfig.SignalingDB, rtcConfig.SignalingHost);
@@ -97,7 +97,7 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
                 }
                 socketHost.pc.addIceCandidate(iceCandidateInit);
             });
-            signaling.RegisterHost(new RegisterHost { name = hostId });
+            signaling.RegisterHost(new RegisterHost { hostId = hostId });
             await signaling.SyncTasks().ConfigureAwait(false);
         }
     }

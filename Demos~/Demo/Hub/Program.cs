@@ -65,8 +65,8 @@ namespace DemoHub
                 User            = "admin", Token = "admin",
                 WebRtcConfig    = new WebRtcConfig { StunUrl = "stun:stun.sipsorcery.com" },
             };
-            var rtcHost = new RtcHost(rtcConfig);
-            rtcHost.Register("abc", httpHost).Wait();
+            var rtcServer = new RtcServer(rtcConfig);
+            rtcServer.Register("abc", httpHost).Wait();
 
             return httpHost;
         }

@@ -4,8 +4,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Demo", "Demo\Client\Demo.cs
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DemoHub", "Demo\Hub\DemoHub.csproj", "{644223F1-42F1-4850-875A-46CF195545B4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DemoTest", "Demo\Test\DemoTest.csproj", "{BD443D16-6E06-489E-A8E1-32DCDE323C47}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Friflo.Json.Burst", "..\Json\Burst\Friflo.Json.Burst.csproj", "{3D9FD80C-27E3-455F-9A30-F7B225AFE6E9}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Friflo.Json.Fliox", "..\Json\Fliox\Friflo.Json.Fliox.csproj", "{E65DE1B5-5CD2-47D2-8112-8D1F967AB2BC}"
@@ -30,10 +28,6 @@ Global
 		{644223F1-42F1-4850-875A-46CF195545B4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{644223F1-42F1-4850-875A-46CF195545B4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{644223F1-42F1-4850-875A-46CF195545B4}.Release|Any CPU.Build.0 = Release|Any CPU
-		{BD443D16-6E06-489E-A8E1-32DCDE323C47}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BD443D16-6E06-489E-A8E1-32DCDE323C47}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BD443D16-6E06-489E-A8E1-32DCDE323C47}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BD443D16-6E06-489E-A8E1-32DCDE323C47}.Release|Any CPU.Build.0 = Release|Any CPU
 		{3D9FD80C-27E3-455F-9A30-F7B225AFE6E9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{3D9FD80C-27E3-455F-9A30-F7B225AFE6E9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3D9FD80C-27E3-455F-9A30-F7B225AFE6E9}.Release|Any CPU.ActiveCfg = Release|Any CPU

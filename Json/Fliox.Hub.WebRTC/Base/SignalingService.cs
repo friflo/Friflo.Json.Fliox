@@ -27,7 +27,7 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
                 return command.Error<RegisterHostResult>(error);
             }
             var signaling   = new Signaling(command.Hub, command.Database.name)  { UserInfo = command.UserInfo };
-            var webRtcHost  = new WebRtcHost { id = value.name, client = command.ClientId.AsString() };
+            var webRtcHost  = new WebRtcHost { id = value.hostId, client = command.ClientId.AsString() };
             signaling.hosts.Upsert(webRtcHost);
             await signaling.SyncTasks().ConfigureAwait(false);
 

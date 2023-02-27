@@ -20,7 +20,7 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
     // --- register host
     /// request: WebRTC Host -> Signaling Server
     public sealed class RegisterHost {
-        [Required]  public  string      name;
+        [Required]  public  string      hostId;
     }
     
     /// response: Signaling Server -> WebRTC Host 
