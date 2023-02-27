@@ -195,10 +195,10 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
                     // request need to be queued _before_ sending it to be prepared for handling the response.
                     var request     = new RemoteRequest(syncContext, cancellationToken);
                     conn.requestMap.Add(sendReqId, request);
-                    var sendBuffer  = rawRequest.MutableArray;
+                    var sendBuffer  = rawRequest.AsByteArray();
                     if (env.logMessages) TransportUtils.LogMessage(Logger, ref sbSend, "client  ->", remoteHost, rawRequest);
                     // --- Send message
-                    conn.channel.send(sendBuffer);
+                    conn.channel.send(sendBuffer); // requires byte[] an individual byte[] :(
                     
                     // --- Wait for response
                     var response = await request.response.Task.ConfigureAwait(false);

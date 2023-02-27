@@ -12,7 +12,7 @@ using TinyJson;
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.WebRTC
 {
-    public class RtcHost
+    public class RtcHost : IHost
     {
         private readonly string                                 name;
         private readonly WebRtcConfig                           config;
@@ -37,7 +37,7 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
                     return;
                 }
                 var rtcConfig   = config.GetRtcConfiguration();
-                var socketHost  = new RtcSocketHost(rtcConfig, offer.client.ToString(), host.hub, null);
+                var socketHost  = new RtcSocketHost(rtcConfig, offer.client.ToString(), host.hub, this);
                 var pc          = socketHost.pc;
                 var dc          = await pc.createDataChannel("test").ConfigureAwait(false); // right after connection creation. Otherwise: NoRemoteMedia 
                 dc.onmessage += (channel, protocol, data) => {
