@@ -21,17 +21,17 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
             AddMessageHandlers(this, null);
         }
         
-        private async Task<RegisterHostResult> RegisterHost (Param<RegisterHost> param, MessageContext command)
+        private static async Task<AddHostResult> AddHost (Param<AddHost> param, MessageContext command)
         {
             if (!param.GetValidate(out var value, out string error)) {
-                return command.Error<RegisterHostResult>(error);
+                return command.Error<AddHostResult>(error);
             }
             var signaling   = new Signaling(command.Hub, command.Database.name)  { UserInfo = command.UserInfo };
             var webRtcHost  = new WebRtcHost { id = value.hostId, client = command.ClientId.AsString() };
             signaling.hosts.Upsert(webRtcHost);
             await signaling.SyncTasks().ConfigureAwait(false);
 
-            return new RegisterHostResult();
+            return new AddHostResult();
         }
         
         private async Task<ConnectClientResult> ConnectClient (Param<ConnectClient> param, MessageContext command)

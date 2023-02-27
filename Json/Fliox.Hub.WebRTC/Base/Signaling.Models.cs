@@ -19,12 +19,12 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
     // ---------------------------- command models - aka DTO's ---------------------------
     // --- register host
     /// request: WebRTC Host -> Signaling Server
-    public sealed class RegisterHost {
+    public sealed class AddHost {
         [Required]  public  string      hostId;
     }
     
     /// response: Signaling Server -> WebRTC Host 
-    public sealed class RegisterHostResult { }
+    public sealed class AddHostResult { }
     
     // --- connect client
     /// request: WebRTC Client -> Signaling Server

@@ -47,7 +47,7 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
             signaling.SubscribeMessage<ClientIce>(nameof(ClientIce), (message, context) => {
                 ProcessIceCandidate(message, context);
             });
-            signaling.RegisterHost(new RegisterHost { hostId = hostId });
+            signaling.AddHost(new AddHost { hostId = hostId });
             await signaling.SyncTasks().ConfigureAwait(false);
         }
         
