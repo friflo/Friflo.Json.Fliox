@@ -29,7 +29,7 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
     // --- connect client
     /// request: WebRTC Client -> Signaling Server
     public sealed class ConnectClient {
-        [Required]  public  string      name;
+        [Required]  public  string      hostId;
         [Required]  public  string      offerSDP;
     }
     

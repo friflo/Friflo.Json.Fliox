@@ -37,7 +37,7 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
     {
         private  readonly   WebRtcConfig                config;
         private  readonly   string                      remoteHost;
-        private  readonly   string                      remoteHostName;
+        private  readonly   string                      remoteHostId;
         /// Incrementing requests id used to map a <see cref="ProtocolResponse"/>'s to its related <see cref="SyncRequest"/>.
         private             int                         reqId;
         public   override   bool                        IsConnected => rtcConnection?.channel.readyState == RTCDataChannelState.open;
@@ -46,7 +46,7 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
 
         private  readonly   object                      connectLock = new object();
         private             Task<WebRtcConnection>      connectTask;
-        private             RTCPeerConnection           peerConnection;
+        private             RTCPeerConnection           pc;
         private             WebRtcConnection            rtcConnection;
         
         private  readonly   CancellationTokenSource     cancellationToken = new CancellationTokenSource();
@@ -64,7 +64,7 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
             this.remoteHost     = remoteHost;
             var uri             = new Uri(remoteHost);
             var query           = HttpUtility.ParseQueryString(uri.Query);
-            remoteHostName      = query.Get("host");
+            remoteHostId      = query.Get("host");
             var signalingSocket = new WebSocketClientHub("signaling", remoteHost, env, RemoteClientAccess.Single);
             signaling           = new Signaling(signalingSocket) { UserId = "admin", Token = "admin" };
             var mapper          = new ObjectMapper(sharedEnv.TypeStore);
@@ -99,19 +99,30 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
                         Logger.Log(HubLog.Error, $"invalid host ICE candidate. error: {error}");
                         return;
                     }
-                    if (!RTCIceCandidateInit.TryParse(value.candidate.AsString(), out var iceCandidateInit)) {
-                        Logger.Log(HubLog.Error, "invalid ICE candidate");
-                        return;
+                    var parseCandidate = RTCIceCandidateInit.TryParse(value.candidate.AsString(), out var iceCandidateInit);
+                    if (!parseCandidate) {
+                        Logger.Log(HubLog.Error, "invalid ICE candidate"); // TODO why TryParse() return false
                     }
-                    peerConnection.addIceCandidate(iceCandidateInit);
+                    pc.addIceCandidate(iceCandidateInit);
                 });
                 await signaling.SyncTasks();
                 
                 if (signaling.UserInfo.clientId.IsNull()) throw new InvalidOperationException("expect client id not null");
                 
                 // --- create offer SDP 
-                peerConnection = new RTCPeerConnection(config.GetRtcConfiguration()); // fire onicecandidate
-                peerConnection.onicecandidate += candidate => {
+                pc      = new RTCPeerConnection(config.GetRtcConfiguration());
+                var dc  = await pc.createDataChannel("test").ConfigureAwait(false); // right after connection creation. Otherwise: NoRemoteMedia
+                var changeOpened = new TaskCompletionSource<bool>();
+                dc.onopen    += ()      => {
+                    Logger.Log(HubLog.Info, "datachannel onopen");
+                    changeOpened.SetResult(true);
+                };
+                dc.onmessage += OnMessage;
+                dc.onclose   += ()      => { Logger.Log(HubLog.Info, "datachannel onclose"); };
+                dc.onerror   += dcError => { Logger.Log(HubLog.Error, $"datachannel onerror: {dcError}"); };
+                
+                pc.onicecandidate += candidate => {
+                    // is called on separate thread
                     var jsonCandidate   = new JsonValue(candidate.ToJson());
                     var iceCandidate    = new ClientIce { candidate = jsonCandidate };
                     // send ICE candidate to WebRTC Host
@@ -119,24 +130,27 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
                     msg.EventTargetClient(signaling.ClientId);
                     _ = signaling.SyncTasks();
                 };
-                peerConnection.onconnectionstatechange += state => {
+                pc.onconnectionstatechange += state => {
                     Logger.Log(HubLog.Info, $"on WebRTC client connection state change: {state}");
                 };
-                var offer = peerConnection.createOffer();
-                await peerConnection.setLocalDescription(offer).ConfigureAwait(false);
+                var offer = pc.createOffer();  // fire onicecandidate
+                await pc.setLocalDescription(offer).ConfigureAwait(false);
                 
 
                 // --- send offer SDP -> Signaling Server -> WebRTC Host
-                var connectResult   = signaling.ConnectClient(new ConnectClient { name = remoteHostName, offerSDP = offer.sdp });
+                var connectResult   = signaling.ConnectClient(new ConnectClient { hostId = remoteHostId, offerSDP = offer.sdp });
                 await signaling.SyncTasks().ConfigureAwait(false);
                 
                 var result              = connectResult.Result;
-                var dc                  = await peerConnection.createDataChannel("test").ConfigureAwait(false);
+
                 var answerDescription   = new RTCSessionDescriptionInit { type = RTCSdpType.answer, sdp = result.answerSDP };
-                peerConnection.setRemoteDescription(answerDescription);
-                
+                var setRemoteResult     = pc.setRemoteDescription(answerDescription);
+                if (setRemoteResult != SetDescriptionResultEnum.OK) {
+                    throw new InvalidOperationException($"setRemoteDescription failed. result: {setRemoteResult}");
+                }
                 rtcConnection = new WebRtcConnection(dc);
-                dc.onmessage += OnMessage;
+                
+                await changeOpened.Task.ConfigureAwait(false);
 
                 connectTask = null;
                 tcs.SetResult(connection);

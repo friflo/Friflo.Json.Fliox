@@ -40,7 +40,7 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
                 return command.Error<ConnectClientResult>(error);
             }
             // --- find WebRTC Host in database
-            var hostId      = value.name;
+            var hostId      = value.hostId;
             var signaling   = new Signaling(command.Hub, command.Database.name)  { UserInfo = command.UserInfo };
             var findHost    = signaling.hosts.Read().Find(hostId);
             await signaling.SyncTasks().ConfigureAwait(false);
@@ -63,7 +63,7 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
             return new ConnectClientResult { answerSDP = answerSDP.sdp };
         }
         
-        private void AnswerSDP (Param<Answer> param, MessageContext command)
+        private void Answer (Param<Answer> param, MessageContext command)
         {
             if (!param.GetValidate(out var answerSDP, out string error)) {
                 return;
