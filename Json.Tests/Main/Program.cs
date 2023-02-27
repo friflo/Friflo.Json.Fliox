@@ -73,8 +73,7 @@ namespace Friflo.Json.Tests.Main
                 .SubscribeUserDbChanges(hub.EventDispatcher);               // optional - apply user_db changes instantaneously
             hub.AddExtensionDB(userDB);                                     // optional - expose userStore as extension database
             
-            var signalingDB         = new MemoryDatabase("signaling", new SignalingService());
-            signalingDB.Schema      = SignalingService.Schema;
+            var signalingDB         = new MemoryDatabase("signaling", new SignalingService()) { Schema = SignalingService.Schema };
             hub.AddExtensionDB(signalingDB);
             
             var httpHost            = new HttpHost(hub, "/fliox/", c.env) { CacheControl = c.cache };
