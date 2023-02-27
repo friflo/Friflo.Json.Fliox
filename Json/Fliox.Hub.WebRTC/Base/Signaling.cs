@@ -8,7 +8,7 @@ using Friflo.Json.Fliox.Hub.Host;
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.WebRTC
 {
-    public class Signaling : FlioxClient
+    public sealed class Signaling : FlioxClient
     {
         public CommandTask<AddHostResult>       AddHost      (AddHost  param)       => send.Command<AddHost,       AddHostResult>        (param);
         public CommandTask<ConnectClientResult> ConnectClient(ConnectClient param)  => send.Command<ConnectClient, ConnectClientResult>  (param);

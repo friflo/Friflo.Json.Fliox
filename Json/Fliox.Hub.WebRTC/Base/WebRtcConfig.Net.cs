@@ -9,7 +9,7 @@ using SIPSorcery.Net;
 
 namespace Friflo.Json.Fliox.Hub.WebRTC
 {
-    public partial class WebRtcConfig
+    public sealed partial class WebRtcConfig
     {
         internal RTCConfiguration GetRtcConfiguration() {
             var iceServers = IceServerUrls.Select(server => new RTCIceServer { urls = server }  ); 

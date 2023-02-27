@@ -6,7 +6,7 @@ using System.Collections.Generic;
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.WebRTC
 {
-    public partial class WebRtcConfig
+    public sealed partial class WebRtcConfig
     {
         public              IReadOnlyCollection<string> IceServerUrls { get; init; }
 

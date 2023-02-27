@@ -14,7 +14,7 @@ using TinyJson;
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.WebRTC
 {
-    public class RtcHostConfig {
+    public sealed class RtcHostConfig {
         public  string          SignalingDB     { get; init; } = "signaling";
         public  string          SignalingHost   { get; init; }
         public  string          User            { get; init; }
@@ -22,7 +22,7 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
         public  WebRtcConfig    WebRtcConfig    { get; init; }
     }
     
-    public class RtcServer : IHost
+    public sealed class RtcServer : IHost
     {
         private readonly WebRtcConfig                           config;
         private readonly Signaling                              signaling;

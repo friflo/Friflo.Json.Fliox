@@ -10,7 +10,7 @@ using Friflo.Json.Fliox.Hub.Host;
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.WebRTC
 {
-    public class SignalingService : DatabaseService
+    public sealed class SignalingService : DatabaseService
     {
         private readonly    Dictionary<ShortString, ConnectRequest> connectMap;
 
