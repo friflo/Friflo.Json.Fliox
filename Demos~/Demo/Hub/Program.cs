@@ -63,7 +63,7 @@ namespace DemoHub
             var rtcConfig = new RtcHostConfig {
                 SignalingDB     = "signaling", SignalingHost  = "ws://localhost:8010/fliox/",
                 User            = "admin", Token = "admin",
-                WebRtcConfig    = new WebRtcConfig { StunUrl = "stun:stun.sipsorcery.com" },
+                WebRtcConfig    = new WebRtcConfig { IceServerUrls = new [] { "stun:stun.sipsorcery.com" } },
             };
             var rtcServer = new RtcServer(rtcConfig);
             rtcServer.AddHost("abc", httpHost).Wait();

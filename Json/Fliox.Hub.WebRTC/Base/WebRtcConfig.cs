@@ -8,8 +8,8 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
 {
     public partial class WebRtcConfig
     {
-        public  string      StunUrl { get; init; }
+        public              IReadOnlyCollection<string> IceServerUrls { get; init; }
 
-        public  override    string  ToString() => $"StunUrl: {StunUrl}";
+        public  override    string                      ToString() => $"IceServerUrls: {string.Join(", ", IceServerUrls)}";
     }
 }

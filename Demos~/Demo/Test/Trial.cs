@@ -68,7 +68,7 @@ namespace DemoTest {
                 case "http":    return new HttpClientHub              ("main_db", "http://localhost:8010/fliox/");
                 case "ws":      return new WebSocketClientHub         ("main_db", "ws://localhost:8010/fliox/");
                 case "udp":     return new UdpSocketClientHub         ("main_db", "localhost:5000");
-                case "webrtc":  return new RtcSocketClientHub         ("main_db", "ws://localhost:8010/fliox/?host=abc", new WebRtcConfig { StunUrl = "stun:stun.sipsorcery.com" });
+                case "webrtc":  return new RtcSocketClientHub         ("main_db", "ws://localhost:8010/fliox/?host=abc", new WebRtcConfig { IceServerUrls = new [] { "stun:stun.sipsorcery.com" } });
                 case "file":    return new FlioxHub(new FileDatabase  ("main_db", "./DB/main_db"));
                 case "memory":  return new FlioxHub(new MemoryDatabase("main_db"));
             }

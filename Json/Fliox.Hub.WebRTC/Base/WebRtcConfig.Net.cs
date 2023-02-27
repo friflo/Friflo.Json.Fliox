@@ -4,6 +4,7 @@
 #if !UNITY_5_3_OR_NEWER
 
 using System.Collections.Generic;
+using System.Linq;
 using SIPSorcery.Net;
 
 namespace Friflo.Json.Fliox.Hub.WebRTC
@@ -11,8 +12,9 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
     public partial class WebRtcConfig
     {
         internal RTCConfiguration GetRtcConfiguration() {
+            var iceServers = IceServerUrls.Select(server => new RTCIceServer { urls = server }  ); 
             var config = new RTCConfiguration {
-                iceServers = new List<RTCIceServer> { new RTCIceServer { urls = StunUrl } }
+                iceServers = iceServers.ToList()
             };
             return config;
         }
