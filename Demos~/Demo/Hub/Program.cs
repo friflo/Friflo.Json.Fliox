@@ -66,7 +66,7 @@ namespace DemoHub
                 WebRtcConfig    = new WebRtcConfig { StunUrl = "stun:stun.sipsorcery.com" },
             };
             var rtcServer = new RtcServer(rtcConfig);
-            rtcServer.Register("abc", httpHost).Wait();
+            rtcServer.AddHost("abc", httpHost).Wait();
 
             return httpHost;
         }
