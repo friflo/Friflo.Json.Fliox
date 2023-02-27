@@ -12,23 +12,30 @@ using TinyJson;
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.WebRTC
 {
+    public class RtcHostConfig {
+        public  string          SignalingDB     { get; init; } = "signaling";
+        public  string          SignalingHost   { get; init; }
+        public  string          User            { get; init; }
+        public  string          Token           { get; init; }
+        public  WebRtcConfig    WebRtcConfig    { get; init; }
+    }
+    
     public class RtcHost : IHost
     {
-        private readonly string                                 name;
         private readonly WebRtcConfig                           config;
         private readonly Signaling                              signaling;
         private readonly Dictionary<ShortString, RtcSocketHost> clients;
         private readonly IHubLogger                             logger;
         
-        public RtcHost (SocketClientHub signalingHub, string name, WebRtcConfig config, string user, string token, SharedEnv env = null) {
-            this.name   = name;
-            this.config = config;
-            clients     = new Dictionary<ShortString, RtcSocketHost>(ShortString.Equality);
-            signaling   = new Signaling(signalingHub) { UserId = user, Token = token };
-            logger      = signaling.Logger;
+        public RtcHost (RtcHostConfig rtcConfig, SharedEnv env = null) {
+            config          = rtcConfig.WebRtcConfig;
+            clients         = new Dictionary<ShortString, RtcSocketHost>(ShortString.Equality);
+            var signalingHub= new WebSocketClientHub (rtcConfig.SignalingDB, rtcConfig.SignalingHost);
+            signaling       = new Signaling(signalingHub) { UserId = rtcConfig.User, Token = rtcConfig.Token };
+            logger          = signaling.Logger;
         }
         
-        public async Task Register(HttpHost host)
+        public async Task Register(string hostId, HttpHost host)
         {
             signaling.SubscribeMessage<Offer>(nameof(Offer), async (message, context) =>
             {
@@ -88,7 +95,7 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
                 }
                 socketHost.pc.addIceCandidate(iceCandidateInit);
             });
-            signaling.RegisterHost(new RegisterHost { name = name });
+            signaling.RegisterHost(new RegisterHost { name = hostId });
             await signaling.SyncTasks().ConfigureAwait(false);
         }
     }

@@ -64,7 +64,7 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
             this.remoteHost     = remoteHost;
             var uri             = new Uri(remoteHost);
             var query           = HttpUtility.ParseQueryString(uri.Query);
-            remoteHostId      = query.Get("host");
+            remoteHostId        = query.Get("host");
             var signalingSocket = new WebSocketClientHub("signaling", remoteHost, env, RemoteClientAccess.Single);
             signaling           = new Signaling(signalingSocket) { UserId = "admin", Token = "admin" };
             var mapper          = new ObjectMapper(sharedEnv.TypeStore);
