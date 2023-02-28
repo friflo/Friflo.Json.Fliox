@@ -16,7 +16,7 @@ using static Friflo.Json.Fliox.Hub.Remote.TransportUtils;
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.WebRTC
 {
-    public sealed class RtcSocketHost : SocketHost, IDisposable
+    internal sealed class RtcSocketHost : SocketHost, IDisposable
     {
         internal readonly   RTCPeerConnection                   pc;
         internal            RTCDataChannel                      remoteDc;

@@ -33,7 +33,7 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
         }
     }
 
-    public  sealed class RtcSocketClientHub : SocketClientHub
+    public sealed class RtcSocketClientHub : SocketClientHub
     {
         private  readonly   WebRtcConfig                config;
         private  readonly   string                      remoteHost;
@@ -124,9 +124,11 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
             
             if (signaling.UserInfo.clientId.IsNull()) throw new InvalidOperationException("expect client id not null");
             
-            // --- create offer SDP 
-            pc      = new RTCPeerConnection(config.GetRtcConfiguration());
-            var dc  = await pc.createDataChannel("test").ConfigureAwait(false); // right after connection creation. Otherwise: NoRemoteMedia
+            // --- create offer SDP
+            var rtcConfig   = config.GetRtcConfiguration();
+            pc              = new RTCPeerConnection(rtcConfig);
+            var dc          = await pc.createDataChannel("test").ConfigureAwait(false); // right after connection creation. Otherwise: NoRemoteMedia
+            
             var changeOpened = new TaskCompletionSource<bool>();
             dc.onopen    += ()      => {
                 Logger.Log(HubLog.Info, "datachannel onopen");

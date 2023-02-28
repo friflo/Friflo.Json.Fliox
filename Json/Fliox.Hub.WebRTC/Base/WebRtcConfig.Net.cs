@@ -12,11 +12,14 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
     public sealed partial class WebRtcConfig
     {
         internal RTCConfiguration GetRtcConfiguration() {
+            if (rtcConfiguration != null) {
+                return rtcConfiguration;
+            }
             var iceServers = IceServerUrls.Select(server => new RTCIceServer { urls = server }  ); 
-            var config = new RTCConfiguration {
+            rtcConfiguration = new RTCConfiguration {
                 iceServers = iceServers.ToList()
             };
-            return config;
+            return rtcConfiguration;
         }
     }
 }
