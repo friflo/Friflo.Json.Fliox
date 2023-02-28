@@ -93,73 +93,78 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
                 return connection;
             }
             try {
-                // subscription cause assigning client id by server
-                signaling.SubscribeMessage<HostIce>(nameof(HostIce), (message, context) => {
-                    if (!message.GetParam(out var value, out var error)) {
-                        Logger.Log(HubLog.Error, $"invalid host ICE candidate. error: {error}");
-                        return;
-                    }
-                    var parseCandidate = RTCIceCandidateInit.TryParse(value.candidate.AsString(), out var iceCandidateInit);
-                    if (!parseCandidate) {
-                        Logger.Log(HubLog.Error, "invalid ICE candidate"); // TODO why TryParse() return false
-                    }
-                    pc.addIceCandidate(iceCandidateInit);
-                });
-                await signaling.SyncTasks();
+                await ConnectToRtcHost();
                 
-                if (signaling.UserInfo.clientId.IsNull()) throw new InvalidOperationException("expect client id not null");
-                
-                // --- create offer SDP 
-                pc      = new RTCPeerConnection(config.GetRtcConfiguration());
-                var dc  = await pc.createDataChannel("test").ConfigureAwait(false); // right after connection creation. Otherwise: NoRemoteMedia
-                var changeOpened = new TaskCompletionSource<bool>();
-                dc.onopen    += ()      => {
-                    Logger.Log(HubLog.Info, "datachannel onopen");
-                    changeOpened.SetResult(true);
-                };
-                dc.onmessage += OnMessage;
-                dc.onclose   += ()      => { Logger.Log(HubLog.Info, "datachannel onclose"); };
-                dc.onerror   += dcError => { Logger.Log(HubLog.Error, $"datachannel onerror: {dcError}"); };
-                
-                pc.onicecandidate += candidate => {
-                    // is called on separate thread
-                    var jsonCandidate   = new JsonValue(candidate.ToJson());
-                    var iceCandidate    = new ClientIce { candidate = jsonCandidate };
-                    // send ICE candidate to WebRTC Host
-                    var msg             = signaling.SendMessage(nameof(ClientIce), iceCandidate);
-                    msg.EventTargetClient(signaling.ClientId);
-                    _ = signaling.SyncTasks();
-                };
-                pc.onconnectionstatechange += state => {
-                    Logger.Log(HubLog.Info, $"on WebRTC client connection state change: {state}");
-                };
-                var offer = pc.createOffer();  // fire onicecandidate
-                await pc.setLocalDescription(offer).ConfigureAwait(false);
-                
-
-                // --- send offer SDP -> Signaling Server -> WebRTC Host
-                var connectResult   = signaling.ConnectClient(new ConnectClient { hostId = remoteHostId, offerSDP = offer.sdp });
-                await signaling.SyncTasks().ConfigureAwait(false);
-                
-                var result              = connectResult.Result;
-
-                var answerDescription   = new RTCSessionDescriptionInit { type = RTCSdpType.answer, sdp = result.answerSDP };
-                var setRemoteResult     = pc.setRemoteDescription(answerDescription);
-                if (setRemoteResult != SetDescriptionResultEnum.OK) {
-                    throw new InvalidOperationException($"setRemoteDescription failed. result: {setRemoteResult}");
-                }
-                rtcConnection = new WebRtcConnection(dc);
-                
-                await changeOpened.Task.ConfigureAwait(false);
-
                 connectTask = null;
                 tcs.SetResult(connection);
-            } catch (Exception e) {
+            }
+            catch (Exception e) {
                 connectTask = null;
                 tcs.SetException(e);
                 throw;
             }
             return rtcConnection;
+        }
+        
+        private async Task ConnectToRtcHost()
+        {
+            // subscription cause assigning client id by server
+            signaling.SubscribeMessage<HostIce>(nameof(HostIce), (message, context) => {
+                if (!message.GetParam(out var value, out var error)) {
+                    Logger.Log(HubLog.Error, $"invalid host ICE candidate. error: {error}");
+                    return;
+                }
+                var parseCandidate = RTCIceCandidateInit.TryParse(value.candidate.AsString(), out var iceCandidateInit);
+                if (!parseCandidate) {
+                    Logger.Log(HubLog.Error, "invalid ICE candidate"); // TODO why TryParse() return false
+                }
+                pc.addIceCandidate(iceCandidateInit);
+            });
+            await signaling.SyncTasks();
+            
+            if (signaling.UserInfo.clientId.IsNull()) throw new InvalidOperationException("expect client id not null");
+            
+            // --- create offer SDP 
+            pc      = new RTCPeerConnection(config.GetRtcConfiguration());
+            var dc  = await pc.createDataChannel("test").ConfigureAwait(false); // right after connection creation. Otherwise: NoRemoteMedia
+            var changeOpened = new TaskCompletionSource<bool>();
+            dc.onopen    += ()      => {
+                Logger.Log(HubLog.Info, "datachannel onopen");
+                changeOpened.SetResult(true);
+            };
+            dc.onmessage += OnMessage;
+            dc.onclose   += ()      => { Logger.Log(HubLog.Info, "datachannel onclose"); };
+            dc.onerror   += dcError => { Logger.Log(HubLog.Error, $"datachannel onerror: {dcError}"); };
+            
+            pc.onicecandidate += candidate => {
+                // is called on separate thread
+                var jsonCandidate   = new JsonValue(candidate.ToJson());
+                var iceCandidate    = new ClientIce { candidate = jsonCandidate };
+                // send ICE candidate to WebRTC Host
+                var msg             = signaling.SendMessage(nameof(ClientIce), iceCandidate);
+                msg.EventTargetClient(signaling.ClientId);
+                _ = signaling.SyncTasks();
+            };
+            pc.onconnectionstatechange += state => {
+                Logger.Log(HubLog.Info, $"on WebRTC client connection state change: {state}");
+            };
+            var offer = pc.createOffer();  // fire onicecandidate
+            await pc.setLocalDescription(offer).ConfigureAwait(false);
+
+            // --- send offer SDP -> Signaling Server -> WebRTC Host
+            var connectResult   = signaling.ConnectClient(new ConnectClient { hostId = remoteHostId, offerSDP = offer.sdp });
+            await signaling.SyncTasks().ConfigureAwait(false);
+            
+            var result              = connectResult.Result;
+
+            var answerDescription   = new RTCSessionDescriptionInit { type = RTCSdpType.answer, sdp = result.answerSDP };
+            var setRemoteResult     = pc.setRemoteDescription(answerDescription);
+            if (setRemoteResult != SetDescriptionResultEnum.OK) {
+                throw new InvalidOperationException($"setRemoteDescription failed. result: {setRemoteResult}");
+            }
+            rtcConnection = new WebRtcConnection(dc);
+            
+            await changeOpened.Task.ConfigureAwait(false);
         }
         
         public override Task Close() {
