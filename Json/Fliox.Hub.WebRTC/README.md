@@ -23,15 +23,15 @@ ICE - Interactive Connectivity Establishment
 ``` mermaid
 sequenceDiagram
   autonumber
-    WebRTC Host      ->>    Signaling Server:   RegisterHost(hostName)
+    WebRTC Host      ->>    Signaling Server:   RegisterHost(hostId)
     Signaling Server ->>    WebRTC Host:        RegisterHostResult()
 
     WebRTC Client    ->>    WebRTC Client:      create peer connection and offer SDP
-    WebRTC Client    ->>    Signaling Server:   ConnectClient(hostName, offerSDP)
+    WebRTC Client    ->>    Signaling Server:   ConnectClient(hostId, offerSDP)
 
-    Signaling Server ->>    WebRTC Host:        Offer(SDP, client) message
+    Signaling Server ->>    WebRTC Host:        Offer(SDP, clientId) message
     WebRTC Host      ->>    WebRTC Host:        process offer, create peer connection and answer SDP
-    WebRTC Host      ->>    Signaling Server:   Answer(SDP, client) message
+    WebRTC Host      ->>    Signaling Server:   Answer(SDP, clientId) message
 
     Signaling Server ->>    WebRTC Client:      ConnectClientResult(answerSDP)
 
