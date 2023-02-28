@@ -57,18 +57,18 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
                 return;
             }
             var rtcConfig   = config.GetRtcConfiguration();
-            var socketHost  = new RtcSocketHost(rtcConfig, offer.client.ToString(), host.hub, this);
-            var pc          = socketHost.pc;
-            var dc          = await pc.createDataChannel("test").ConfigureAwait(false); // right after connection creation. Otherwise: NoRemoteMedia 
-            dc.onmessage += (channel, protocol, data) => {
-                logger.Log(HubLog.Info, "onmessage");
-            };
-            dc.onopen += ()         => { logger.Log(HubLog.Info, "datachannel onopen"); };
-            dc.onclose += ()        => { logger.Log(HubLog.Info, "datachannel onclose"); };
-            dc.onerror += dcError   => { logger.Log(HubLog.Error, $"datachannel onerror: {dcError}"); };
-            
+            var pc          = new RTCPeerConnection(rtcConfig);
+            var socketHost  = new RtcSocketHost(pc, offer.client.ToString(), host.hub, this);
             clients.Add(offer.client, socketHost);
             
+            // --- add peer connection event callbacks
+            pc.onconnectionstatechange += (state) => {
+                logger.Log(HubLog.Info, $"on WebRTC host connection state change: {state}");
+            };
+            pc.ondatachannel += (remoteDc) => {
+                socketHost.remoteDc = remoteDc; // note: remoteDc != dc created bellow
+                remoteDc.onmessage += socketHost.OnMessage;
+            };
             pc.onicecandidate += candidate => {
                 // send ICE candidate to WebRTC client
                 var jsonCandidate   = new JsonValue(candidate.ToJson());
@@ -76,6 +76,10 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
                 msg.EventTargetClient(offer.client);
                 _ = signaling.SyncTasks();
             };
+            var dc = await pc.createDataChannel("test").ConfigureAwait(false); // right after connection creation. Otherwise: NoRemoteMedia
+            
+            dc.onerror += dcError   => { logger.Log(HubLog.Error, $"datachannel onerror: {dcError}"); };
+
             var rtcOffer = new RTCSessionDescriptionInit { type = RTCSdpType.offer, sdp = offer.sdp };
             var setRemoteResult = pc.setRemoteDescription(rtcOffer);
             if (setRemoteResult != SetDescriptionResultEnum.OK) {
@@ -85,7 +89,7 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
             var answer = pc.createAnswer();
             await pc.setLocalDescription(answer).ConfigureAwait(false);
             
-            // send answer SDP -> Signaling Server
+            // --- send answer SDP -> Signaling Server
             var answerSDP = new Answer { client = offer.client, sdp = answer.sdp };
             var answerMsg = signaling.SendMessage(nameof(Answer), answerSDP);
             answerMsg.EventTargets = new EventTargets(); // send message only to SignalingService not to clients

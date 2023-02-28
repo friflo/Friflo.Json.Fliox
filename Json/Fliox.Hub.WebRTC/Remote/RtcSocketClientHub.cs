@@ -24,12 +24,12 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
     /// </summary>
     internal sealed class WebRtcConnection
     {
-        internal  readonly  RTCDataChannel      channel;
+        internal  readonly  RTCDataChannel      dc;
         internal  readonly  RemoteRequestMap    requestMap;
         
-        internal WebRtcConnection(RTCDataChannel channel) {
-            this.channel    = channel;
-            requestMap      = new RemoteRequestMap();
+        internal WebRtcConnection(RTCDataChannel dataChannel) {
+            dc          = dataChannel;
+            requestMap  = new RemoteRequestMap();
         }
     }
 
@@ -40,7 +40,7 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
         private  readonly   string                      remoteHostId;
         /// Incrementing requests id used to map a <see cref="ProtocolResponse"/>'s to its related <see cref="SyncRequest"/>.
         private             int                         reqId;
-        public   override   bool                        IsConnected => rtcConnection?.channel.readyState == RTCDataChannelState.open;
+        public   override   bool                        IsConnected => rtcConnection?.dc.readyState == RTCDataChannelState.open;
         private  readonly   ObjectReader                reader;
         private  readonly   Signaling                   signaling;
 
@@ -168,7 +168,7 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
         }
         
         public override Task Close() {
-            rtcConnection.channel.close();
+            rtcConnection.dc.close();
             rtcConnection = null;
             return Task.CompletedTask;
         }
@@ -203,7 +203,7 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
                     var sendBuffer  = rawRequest.AsByteArray();
                     if (env.logMessages) TransportUtils.LogMessage(Logger, ref sbSend, "client  ->", remoteHost, rawRequest);
                     // --- Send message
-                    conn.channel.send(sendBuffer); // requires byte[] an individual byte[] :(
+                    conn.dc.send(sendBuffer); // requires byte[] an individual byte[] :(
                     
                     // --- Wait for response
                     var response = await request.response.Task.ConfigureAwait(false);

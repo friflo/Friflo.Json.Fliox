@@ -19,7 +19,7 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
     public sealed class RtcSocketHost : SocketHost, IDisposable
     {
         internal readonly   RTCPeerConnection                   pc;
-        private             RTCDataChannel                      channel;
+        internal            RTCDataChannel                      remoteDc;
         private  readonly   MessageBufferQueueAsync<VoidMeta>   sendQueue;
         private  readonly   List<JsonValue>                     messages;
         private  readonly   string                              remoteClient;
@@ -28,7 +28,7 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
         private             StringBuilder                       sbRecv;
 
         internal RtcSocketHost (
-            RTCConfiguration    config,
+            RTCPeerConnection   peerConnection,
             string              remoteClient,
             FlioxHub            hub,
             IHost               host)
@@ -38,14 +38,7 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
             this.remoteClient   = remoteClient;
             sendQueue           = new MessageBufferQueueAsync<VoidMeta>();
             messages            = new List<JsonValue>();
-            pc                  = new RTCPeerConnection(config);
-            pc.onconnectionstatechange += (state) => {
-                Logger.Log(HubLog.Info, $"on WebRTC host connection state change: {state}");
-            };
-            pc.ondatachannel += (rdc) => {
-                channel = rdc;
-                channel.onmessage += OnMessage;
-            };
+            pc                  = peerConnection;
         }
         
         public void Dispose() {
@@ -58,7 +51,7 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
         protected override bool    IsOpen () {
             if (hostEnv.fakeOpenClosedSockets)
                 return true;
-            return channel.readyState == RTCDataChannelState.open;
+            return remoteDc.readyState == RTCDataChannelState.open;
         }
         
         // --- WebHost
@@ -87,7 +80,7 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
                     if (hostEnv.logMessages) LogMessage(Logger, ref sbSend, " server ->", remoteClient, message);
                     var array = message.AsByteArray();
                     // if (sendMessage.Count > 100000) Console.WriteLine($"SendLoop. size: {sendMessage.Count}");
-                    channel.send(array); // requires byte[] an individual byte[] :(
+                    remoteDc.send(array); // requires byte[] an individual byte[] :(
                 }
                 if (remoteEvent == MessageBufferEvent.Closed) {
                     return;
@@ -95,7 +88,7 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
             }
         }
         
-        private void OnMessage(RTCDataChannel dc, DataChannelPayloadProtocols protocol, byte[] data) {
+        internal void OnMessage(RTCDataChannel dc, DataChannelPayloadProtocols protocol, byte[] data) {
             var request = new JsonValue(data);
             if (hostEnv.logMessages) LogMessage(Logger, ref sbRecv, " server <-", remoteClient, request);
             OnReceive(request, ref hostEnv.metrics.webSocket);
@@ -114,7 +107,7 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
             }
             finally {
                 Dispose();
-                channel.close();
+                remoteDc.close();
             }
         }
         
