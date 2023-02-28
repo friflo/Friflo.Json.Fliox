@@ -7,7 +7,6 @@ using System;
 using System.Threading.Tasks;
 using Unity.WebRTC;
 
-
 // ReSharper disable InconsistentNaming
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.WebRTC
@@ -45,33 +44,35 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
             };
         }
         
-        internal async Task<DataChannel> CreateDataChannel(string label) {
-            var dc = await impl.CreateDataChannel(label);
-            return new DataChannel(dc);
+        internal Task<DataChannel> CreateDataChannel(string label) {
+            var dcImpl = impl.CreateDataChannel(label);
+            var dc = new DataChannel(dcImpl);
+            return Task.FromResult(dc);
         }
         
         internal SessionDescription CreateOffer() {
-            var asyncOp = impl.CreateOffer();
+            var asyncOp = impl.CreateOffer();                       // TODO
             return new SessionDescription(asyncOp.Desc);  
         }
         
         internal SessionDescription CreateAnswer() {
-            var asyncOp = impl.CreateAnswer();
+            var asyncOp = impl.CreateAnswer();                      // TODO
             return new SessionDescription(asyncOp.Desc);  
         }
         
         internal  bool SetRemoteDescription(SessionDescription desc, out string error) {
-            var result = impl.SetRemoteDescription(ref desc.impl);
-            if (!result.IsError) {
+            var asyncOp = impl.SetRemoteDescription(ref desc.impl); // TODO
+            if (!asyncOp.IsError) {
                 error = null;
                 return true;
             }
-            error = result.ToString();
+            error = asyncOp.ToString();
             return false;
         }
         
-        internal async Task SetLocalDescription(SessionDescription desc) {
-            await impl.SetLocalDescription(ref desc.impl);
+        internal Task SetLocalDescription(SessionDescription desc) {
+            var asyncOp = impl.SetLocalDescription(ref desc.impl);  // TODO 
+            return Task.CompletedTask;
         }
         
         internal void AddIceCandidate(IceCandidate candidate) {
@@ -117,6 +118,7 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
     
     internal sealed class IceCandidate
     {
+        
         internal readonly RTCIceCandidate impl;
         
         internal IceCandidate(RTCIceCandidate impl) {
@@ -124,14 +126,25 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
         }
         
         internal string ToJson() {
-            return impl.toJSON();
+            var model = new IceCandidateModel {
+                candidate           = impl.Candidate,
+                sdpMid              = impl.SdpMid,
+                sdpMLineIndex       = impl.SdpMLineIndex ?? 0,
+                usernameFragment    = impl.UserNameFragment
+            };
+            return JsonSerializer.Serialize(model);
         }
 
         public static bool TryParse(string value, out IceCandidate candidate) {
-            bool success        = RTCIceCandidateInit.TryParse(value, out var candidateInit);
-            var rtcIceCandidate = new RTCIceCandidate (candidateInit);
-            candidate           = new IceCandidate(rtcIceCandidate);
-            return success;
+            var model   = JsonSerializer.Deserialize<IceCandidateModel>(value);
+            var init    = new RTCIceCandidateInit {
+                candidate           = model.candidate,
+                sdpMid              = model.sdpMid,
+                sdpMLineIndex       = model.sdpMLineIndex,
+            };
+            var iceCandidate    = new RTCIceCandidate (init);
+            candidate           = new IceCandidate(iceCandidate);
+            return true;
         }
     }
 }

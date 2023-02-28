@@ -120,8 +120,8 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
         }
     }
     
-    internal sealed class IceCandidate
-    {
+    internal sealed class IceCandidate {
+        
         internal readonly RTCIceCandidate impl;
         
         internal IceCandidate(RTCIceCandidate impl) {
@@ -129,14 +129,26 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
         }
         
         internal string ToJson() {
-            return impl.toJSON();
+            var model = new IceCandidateModel {
+                candidate           = impl.candidate,
+                sdpMid              = impl.sdpMid,
+                sdpMLineIndex       = impl.sdpMLineIndex,
+                usernameFragment    = impl.usernameFragment
+            };
+            return JsonSerializer.Serialize(model);
         }
 
         public static bool TryParse(string value, out IceCandidate candidate) {
-            bool success        = RTCIceCandidateInit.TryParse(value, out var candidateInit);
-            var rtcIceCandidate = new RTCIceCandidate (candidateInit);
-            candidate           = new IceCandidate(rtcIceCandidate);
-            return success;
+            var model   = JsonSerializer.Deserialize<IceCandidateModel>(value);
+            var init    = new RTCIceCandidateInit {
+                candidate           = model.candidate,
+                sdpMid              = model.sdpMid,
+                sdpMLineIndex       = (ushort)model.sdpMLineIndex,
+                usernameFragment    = model.usernameFragment,
+            };
+            var iceCandidate    = new RTCIceCandidate (init);
+            candidate           = new IceCandidate(iceCandidate);
+            return true;
         }
     }
 }

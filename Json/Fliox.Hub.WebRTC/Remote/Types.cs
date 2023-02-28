@@ -15,11 +15,18 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
         connected,
     }
     
-    public enum DataChannelState
+    internal enum DataChannelState
     {
         connecting,
         open,
         closing,
         closed,
+    }
+    
+    internal sealed class IceCandidateModel {
+        public  string  candidate;
+        public  string  sdpMid;
+        public  int     sdpMLineIndex;
+        public  string  usernameFragment;
     }
 }
