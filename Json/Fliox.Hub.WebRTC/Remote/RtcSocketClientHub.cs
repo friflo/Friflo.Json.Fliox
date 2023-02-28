@@ -1,8 +1,6 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
-#if !UNITY_5_3_OR_NEWER
-
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -13,8 +11,6 @@ using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Remote;
 using Friflo.Json.Fliox.Hub.Remote.Tools;
 using Friflo.Json.Fliox.Mapper;
-using SIPSorcery.Net;
-using TinyJson;
 
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.WebRTC
@@ -24,10 +20,10 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
     /// </summary>
     internal sealed class WebRtcConnection
     {
-        internal  readonly  RTCDataChannel      dc;
+        internal  readonly  DataChannel         dc;
         internal  readonly  RemoteRequestMap    requestMap;
         
-        internal WebRtcConnection(RTCDataChannel dataChannel) {
+        internal WebRtcConnection(DataChannel dataChannel) {
             dc          = dataChannel;
             requestMap  = new RemoteRequestMap();
         }
@@ -40,13 +36,13 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
         private  readonly   string                      remoteHostId;
         /// Incrementing requests id used to map a <see cref="ProtocolResponse"/>'s to its related <see cref="SyncRequest"/>.
         private             int                         reqId;
-        public   override   bool                        IsConnected => rtcConnection?.dc.readyState == RTCDataChannelState.open;
+        public   override   bool                        IsConnected => rtcConnection?.dc.ReadyState == DataChannelState.open;
         private  readonly   ObjectReader                reader;
         private  readonly   Signaling                   signaling;
 
         private  readonly   object                      connectLock = new object();
         private             Task<WebRtcConnection>      connectTask;
-        private             RTCPeerConnection           pc;
+        private             PeerConnection              pc;
         private             WebRtcConnection            rtcConnection;
         
         private  readonly   CancellationTokenSource     cancellationToken = new CancellationTokenSource();
@@ -110,35 +106,34 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
         {
             // subscription cause assigning client id by server
             signaling.SubscribeMessage<HostIce>(nameof(HostIce), (message, context) => {
-                if (!message.GetParam(out var value, out var error)) {
-                    Logger.Log(HubLog.Error, $"invalid host ICE candidate. error: {error}");
+                if (!message.GetParam(out var value, out var hostIceError)) {
+                    Logger.Log(HubLog.Error, $"invalid host ICE candidate. error: {hostIceError}");
                     return;
                 }
-                var parseCandidate = RTCIceCandidateInit.TryParse(value.candidate.AsString(), out var iceCandidateInit);
+                var parseCandidate = IceCandidate.TryParse(value.candidate.AsString(), out var iceCandidate);
                 if (!parseCandidate) {
                     Logger.Log(HubLog.Error, "invalid ICE candidate"); // TODO why TryParse() return false
                 }
-                pc.addIceCandidate(iceCandidateInit);
+                pc.AddIceCandidate(iceCandidate);
             });
             await signaling.SyncTasks().ConfigureAwait(false);
             
             if (signaling.UserInfo.clientId.IsNull()) throw new InvalidOperationException("expect client id not null");
             
             // --- create offer SDP
-            var rtcConfig   = config.GetRtcConfiguration();
-            pc              = new RTCPeerConnection(rtcConfig);
-            var dc          = await pc.createDataChannel("test").ConfigureAwait(false); // right after connection creation. Otherwise: NoRemoteMedia
+            pc              = new PeerConnection(config);
+            var dc          = await pc.CreateDataChannel("test").ConfigureAwait(false); // right after connection creation. Otherwise: NoRemoteMedia
             
             var changeOpened = new TaskCompletionSource<bool>();
-            dc.onopen    += ()      => {
+            dc.OnOpen    += ()      => {
                 Logger.Log(HubLog.Info, "datachannel onopen");
                 changeOpened.SetResult(true);
             };
-            dc.onmessage += (_, _, data)    => OnMessage(data); 
-            dc.onclose   += ()              => { Logger.Log(HubLog.Info, "datachannel onclose"); };
-            dc.onerror   += dcError         => { Logger.Log(HubLog.Error, $"datachannel onerror: {dcError}"); };
+            dc.OnMessage += (data)      => OnMessage(data); 
+            dc.OnClose   += ()          => { Logger.Log(HubLog.Info, "datachannel onclose"); };
+            dc.OnError   += dcError     => { Logger.Log(HubLog.Error, $"datachannel onerror: {dcError}"); };
             
-            pc.onicecandidate += candidate => {
+            pc.OnIceCandidate += candidate => {
                 // is called on separate thread
                 var jsonCandidate   = new JsonValue(candidate.ToJson());
                 var iceCandidate    = new ClientIce { candidate = jsonCandidate };
@@ -147,11 +142,11 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
                 msg.EventTargetClient(signaling.ClientId);
                 _ = signaling.SyncTasks();
             };
-            pc.onconnectionstatechange += state => {
+            pc.OnConnectionStateChange += state => {
                 Logger.Log(HubLog.Info, $"on WebRTC client connection state change: {state}");
             };
-            var offer = pc.createOffer();  // fire onicecandidate
-            await pc.setLocalDescription(offer).ConfigureAwait(false);
+            var offer = pc.CreateOffer();  // fire onicecandidate
+            await pc.SetLocalDescription(offer).ConfigureAwait(false);
 
             // --- send offer SDP -> Signaling Server -> WebRTC Host
             var connectResult   = signaling.ConnectClient(new ConnectClient { hostId = remoteHostId, offerSDP = offer.sdp });
@@ -159,10 +154,9 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
             
             var result              = connectResult.Result;
 
-            var answerDescription   = new RTCSessionDescriptionInit { type = RTCSdpType.answer, sdp = result.answerSDP };
-            var setRemoteResult     = pc.setRemoteDescription(answerDescription);
-            if (setRemoteResult != SetDescriptionResultEnum.OK) {
-                throw new InvalidOperationException($"setRemoteDescription failed. result: {setRemoteResult}");
+            var answerDescription   = new SessionDescription { type = SdpType.answer, sdp = result.answerSDP };
+            if (!pc.SetRemoteDescription(answerDescription, out var error)) {
+                throw new InvalidOperationException($"setRemoteDescription failed. error: {error}");
             }
             rtcConnection = new WebRtcConnection(dc);
             
@@ -170,7 +164,7 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
         }
         
         public override Task Close() {
-            rtcConnection.dc.close();
+            rtcConnection.dc.Close();
             rtcConnection = null;
             return Task.CompletedTask;
         }
@@ -205,7 +199,7 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
                     var sendBuffer  = rawRequest.AsByteArray();
                     if (env.logMessages) TransportUtils.LogMessage(Logger, ref sbSend, "client  ->", remoteHost, rawRequest);
                     // --- Send message
-                    conn.dc.send(sendBuffer); // requires byte[] an individual byte[] :(
+                    conn.dc.Send(sendBuffer); // requires byte[] an individual byte[] :(
                     
                     // --- Wait for response
                     var response = await request.response.Task.ConfigureAwait(false);
@@ -219,5 +213,3 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
         }
     }
 }
-
-#endif

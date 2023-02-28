@@ -1,8 +1,6 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
-#if !UNITY_5_3_OR_NEWER
-
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -10,7 +8,6 @@ using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Remote;
 using Friflo.Json.Fliox.Utils;
-using SIPSorcery.Net;
 using static Friflo.Json.Fliox.Hub.Remote.TransportUtils;
 
 // ReSharper disable once CheckNamespace
@@ -18,8 +15,8 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
 {
     internal sealed class RtcSocketHost : SocketHost, IDisposable
     {
-        internal readonly   RTCPeerConnection                   pc;
-        internal            RTCDataChannel                      remoteDc;
+        internal readonly   PeerConnection                      pc;
+        internal            DataChannel                         remoteDc;
         private  readonly   MessageBufferQueueAsync<VoidMeta>   sendQueue;
         private  readonly   List<JsonValue>                     messages;
         private  readonly   string                              remoteClient;
@@ -28,7 +25,7 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
         private             StringBuilder                       sbRecv;
 
         internal RtcSocketHost (
-            RTCPeerConnection   peerConnection,
+            PeerConnection      peerConnection,
             string              remoteClient,
             FlioxHub            hub,
             IHost               host)
@@ -51,7 +48,7 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
         protected override bool    IsOpen () {
             if (hostEnv.fakeOpenClosedSockets)
                 return true;
-            return remoteDc.readyState == RTCDataChannelState.open;
+            return remoteDc.ReadyState == DataChannelState.open;
         }
         
         // --- WebHost
@@ -80,7 +77,7 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
                     if (hostEnv.logMessages) LogMessage(Logger, ref sbSend, " server ->", remoteClient, message);
                     var array = message.AsByteArray();
                     // if (sendMessage.Count > 100000) Console.WriteLine($"SendLoop. size: {sendMessage.Count}");
-                    remoteDc.send(array); // requires byte[] an individual byte[] :(
+                    remoteDc.Send(array); // requires byte[] an individual byte[] :(
                 }
                 if (remoteEvent == MessageBufferEvent.Closed) {
                     return;
@@ -107,7 +104,7 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
             }
             finally {
                 Dispose();
-                remoteDc.close();
+                remoteDc.Close();
             }
         }
         
@@ -116,5 +113,3 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
         }
     }
 }
-
-#endif

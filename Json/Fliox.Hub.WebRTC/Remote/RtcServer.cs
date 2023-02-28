@@ -1,15 +1,11 @@
 // Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
-#if !UNITY_5_3_OR_NEWER
-
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Client;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Remote;
-using SIPSorcery.Net;
-using TinyJson;
 
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.WebRTC
@@ -56,38 +52,36 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
                 logger.Log(HubLog.Error, $"invalid Offer. error: {error}");
                 return;
             }
-            var rtcConfig   = config.GetRtcConfiguration();
-            var pc          = new RTCPeerConnection(rtcConfig);
+            var pc          = new PeerConnection(config);
             var socketHost  = new RtcSocketHost(pc, offer.client.ToString(), host.hub, this);
             clients.Add(offer.client, socketHost);
             
             // --- add peer connection event callbacks
-            pc.onconnectionstatechange += (state) => {
+            pc.OnConnectionStateChange += (state) => {
                 logger.Log(HubLog.Info, $"on WebRTC host connection state change: {state}");
             };
-            pc.ondatachannel += (remoteDc) => {
+            pc.OnDataChannel += (remoteDc) => {
                 socketHost.remoteDc = remoteDc; // note: remoteDc != dc created bellow
-                remoteDc.onmessage += (_, _, data) => socketHost.OnMessage(data);
+                remoteDc.OnMessage += (data) => socketHost.OnMessage(data);
             };
-            pc.onicecandidate += candidate => {
+            pc.OnIceCandidate += candidate => {
                 // send ICE candidate to WebRTC client
                 var jsonCandidate   = new JsonValue(candidate.ToJson());
                 var msg             = signaling.SendMessage(nameof(HostIce), new HostIce { candidate = jsonCandidate });
                 msg.EventTargetClient(offer.client);
                 _ = signaling.SyncTasks();
             };
-            var dc = await pc.createDataChannel("test").ConfigureAwait(false); // right after connection creation. Otherwise: NoRemoteMedia
+            var dc = await pc.CreateDataChannel("test").ConfigureAwait(false); // right after connection creation. Otherwise: NoRemoteMedia
             
-            dc.onerror += dcError   => { logger.Log(HubLog.Error, $"datachannel onerror: {dcError}"); };
+            dc.OnError += dcError   => { logger.Log(HubLog.Error, $"datachannel onerror: {dcError}"); };
 
-            var rtcOffer = new RTCSessionDescriptionInit { type = RTCSdpType.offer, sdp = offer.sdp };
-            var setRemoteResult = pc.setRemoteDescription(rtcOffer);
-            if (setRemoteResult != SetDescriptionResultEnum.OK) {
-                logger.Log(HubLog.Error, $"setRemoteDescription failed. result: {setRemoteResult}");
+            var rtcOffer = new SessionDescription { type = SdpType.offer, sdp = offer.sdp };
+            if (!pc.SetRemoteDescription(rtcOffer, out var descError)) {
+                logger.Log(HubLog.Error, $"setRemoteDescription failed. error: {descError}");
                 return;
             }
-            var answer = pc.createAnswer();
-            await pc.setLocalDescription(answer).ConfigureAwait(false);
+            var answer = pc.CreateAnswer();
+            await pc.SetLocalDescription(answer).ConfigureAwait(false);
             
             // --- send answer SDP -> Signaling Server
             var answerSDP = new Answer { client = offer.client, sdp = answer.sdp };
@@ -107,13 +101,11 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
                 logger.Log(HubLog.Error, $"client not found. client: {context.SrcClient}");
                 return;
             }
-            var parseCandidate= RTCIceCandidateInit.TryParse(value.candidate.AsString(), out var iceCandidateInit);
+            var parseCandidate= IceCandidate.TryParse(value.candidate.AsString(), out var iceCandidate);
             if (!parseCandidate) {
                 logger.Log(HubLog.Error, "invalid ICE candidate");
             }
-            socketHost.pc.addIceCandidate(iceCandidateInit);
+            socketHost.pc.AddIceCandidate(iceCandidate);
         }
     }
 }
-
-#endif
