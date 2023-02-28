@@ -93,7 +93,7 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
                 return connection;
             }
             try {
-                await ConnectToRtcHost();
+                await ConnectToRtcHost().ConfigureAwait(false);
                 
                 connectTask = null;
                 tcs.SetResult(connection);
@@ -120,7 +120,7 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
                 }
                 pc.addIceCandidate(iceCandidateInit);
             });
-            await signaling.SyncTasks();
+            await signaling.SyncTasks().ConfigureAwait(false);
             
             if (signaling.UserInfo.clientId.IsNull()) throw new InvalidOperationException("expect client id not null");
             

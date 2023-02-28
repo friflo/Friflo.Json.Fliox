@@ -93,7 +93,7 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
             var answerSDP = new Answer { client = offer.client, sdp = answer.sdp };
             var answerMsg = signaling.SendMessage(nameof(Answer), answerSDP);
             answerMsg.EventTargets = new EventTargets(); // send message only to SignalingService not to clients
-            await signaling.SyncTasks();
+            await signaling.SyncTasks().ConfigureAwait(false);
 
             _ = socketHost.SendReceiveMessages();
         }
