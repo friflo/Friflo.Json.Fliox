@@ -67,7 +67,7 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
             };
             pc.ondatachannel += (remoteDc) => {
                 socketHost.remoteDc = remoteDc; // note: remoteDc != dc created bellow
-                remoteDc.onmessage += socketHost.OnMessage;
+                remoteDc.onmessage += (_, _, data) => socketHost.OnMessage(data);
             };
             pc.onicecandidate += candidate => {
                 // send ICE candidate to WebRTC client

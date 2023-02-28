@@ -134,9 +134,9 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
                 Logger.Log(HubLog.Info, "datachannel onopen");
                 changeOpened.SetResult(true);
             };
-            dc.onmessage += OnMessage;
-            dc.onclose   += ()      => { Logger.Log(HubLog.Info, "datachannel onclose"); };
-            dc.onerror   += dcError => { Logger.Log(HubLog.Error, $"datachannel onerror: {dcError}"); };
+            dc.onmessage += (_, _, data)    => OnMessage(data); 
+            dc.onclose   += ()              => { Logger.Log(HubLog.Info, "datachannel onclose"); };
+            dc.onerror   += dcError         => { Logger.Log(HubLog.Error, $"datachannel onerror: {dcError}"); };
             
             pc.onicecandidate += candidate => {
                 // is called on separate thread
@@ -180,7 +180,7 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
             // websocket.CancelPendingRequests();
         } */
 
-        private void OnMessage(RTCDataChannel dc, DataChannelPayloadProtocols protocol, byte[] data) {
+        private void OnMessage(byte[] data) {
             var message     = new JsonValue(data);
             // --- process received message
             if (env.logMessages) TransportUtils.LogMessage(Logger, ref sbRecv, "client  <-", remoteHost, message);

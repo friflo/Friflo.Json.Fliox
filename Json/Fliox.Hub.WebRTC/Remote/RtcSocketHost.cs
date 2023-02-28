@@ -88,7 +88,7 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
             }
         }
         
-        internal void OnMessage(RTCDataChannel dc, DataChannelPayloadProtocols protocol, byte[] data) {
+        internal void OnMessage(byte[] data) {
             var request = new JsonValue(data);
             if (hostEnv.logMessages) LogMessage(Logger, ref sbRecv, " server <-", remoteClient, request);
             OnReceive(request, ref hostEnv.metrics.webSocket);
