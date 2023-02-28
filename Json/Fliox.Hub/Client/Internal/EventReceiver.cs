@@ -15,9 +15,9 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         } 
             
         // --- IEventReceiver
-        protected internal override string  Endpoint            => "in-process";
-        protected internal override bool    IsRemoteTarget ()   => false;
-        protected internal override bool    IsOpen ()           => true;
+        public override string  Endpoint            => "in-process";
+        public override bool    IsRemoteTarget ()   => false;
+        public override bool    IsOpen ()           => true;
 
         protected internal override void    SendEvent(in ClientEvent clientEvent) {
             if (!clientEvent.dstClientId.IsNull() && !clientEvent.dstClientId.IsEqual(client._intern.clientId)) {

@@ -14,11 +14,11 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
     public abstract class EventReceiver {
         /// <summary>The endpoint events are sent to.<br/>
         /// E.g. <c>ws:[::1]:52089</c> for WebSockets, <c>udp:127.0.0.1:60005</c> for UDP or <c>in-process</c></summary>
-        protected internal abstract string  Endpoint { get; }
-        protected internal abstract bool    IsOpen ();
-        protected internal abstract bool    IsRemoteTarget ();
+        public              abstract string Endpoint { get; }
+        public              abstract bool   IsOpen ();
+        public              abstract bool   IsRemoteTarget ();
         /// <summary>Send a serialized <see cref="EventMessage"/> to the receiver</summary>
-        protected internal abstract void    SendEvent(in ClientEvent clientEvent);
+        protected internal  abstract void   SendEvent(in ClientEvent clientEvent);
     }
     
     public readonly struct ClientEvent

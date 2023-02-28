@@ -52,9 +52,9 @@ namespace Friflo.Json.Fliox.Hub.Remote
         }
 
         // --- IEventReceiver
-        protected internal override string  Endpoint            => $"ws:{remoteClient}";
-        protected internal override bool    IsRemoteTarget ()   => true;
-        protected internal override bool    IsOpen () {
+        public override string  Endpoint            => $"ws:{remoteClient}";
+        public override bool    IsRemoteTarget ()   => true;
+        public override bool    IsOpen () {
             if (hostEnv.fakeOpenClosedSockets)
                 return true;
             return webSocket.State == WebSocketState.Open;

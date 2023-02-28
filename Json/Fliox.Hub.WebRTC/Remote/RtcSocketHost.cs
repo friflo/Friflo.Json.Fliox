@@ -43,9 +43,9 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
         }
 
         // --- IEventReceiver
-        protected override string  Endpoint            => $"ws:{remoteClient}";
-        protected override bool    IsRemoteTarget ()   => true;
-        protected override bool    IsOpen () {
+        public override string  Endpoint            => $"ws:{remoteClient}";
+        public override bool    IsRemoteTarget ()   => true;
+        public override bool    IsOpen () {
             if (hostEnv.fakeOpenClosedSockets)
                 return true;
             return remoteDc.ReadyState == DataChannelState.open;
