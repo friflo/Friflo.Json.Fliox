@@ -19,7 +19,7 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
         internal    event       Action<IceCandidate>        OnIceCandidate;
 
         internal PeerConnection (WebRtcConfig config) {
-            impl = new RTCPeerConnection(config.GetRtcConfiguration());
+            impl = new RTCPeerConnection(config.Get().impl);
             impl.onconnectionstatechange += state => {
                 PeerConnectionState connState;
                 switch (state) {

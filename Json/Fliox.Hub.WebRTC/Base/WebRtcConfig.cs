@@ -6,14 +6,18 @@ using System.Collections.Generic;
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.WebRTC
 {
-    public sealed partial class WebRtcConfig
+    public sealed class WebRtcConfig
     {
-        public  IReadOnlyCollection<string>     IceServerUrls { get; init; }
+        public      IReadOnlyCollection<string> IceServerUrls { get; init; }
+        private     RtcConfig                   cache;
         
-#if !UNITY_5_3_OR_NEWER
-        private SIPSorcery.Net.RTCConfiguration rtcConfiguration;    
-#endif
+        internal    RtcConfig                   Get() {
+            if (cache != null) {
+                return cache;
+            }
+            return cache = RtcConfig.GetRtcConfiguration(this);
+        }
 
-        public  override    string                      ToString() => $"IceServerUrls: {string.Join(", ", IceServerUrls)}";
+        public  override    string              ToString() => $"IceServerUrls: {string.Join(", ", IceServerUrls)}";
     }
 }

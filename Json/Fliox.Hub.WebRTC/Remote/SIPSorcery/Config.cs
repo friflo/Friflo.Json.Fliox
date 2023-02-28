@@ -6,19 +6,24 @@
 using System.Linq;
 using SIPSorcery.Net;
 
+// ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.WebRTC
 {
-    public sealed partial class WebRtcConfig
+    internal sealed class RtcConfig
     {
-        internal RTCConfiguration GetRtcConfiguration() {
-            if (rtcConfiguration != null) {
-                return rtcConfiguration;
-            }
-            var iceServers = IceServerUrls.Select(server => new RTCIceServer { urls = server }  ); 
-            rtcConfiguration = new RTCConfiguration {
+        internal readonly RTCConfiguration impl;
+        
+        private RtcConfig(RTCConfiguration impl) {
+            this.impl = impl;
+        }
+        
+        internal static RtcConfig GetRtcConfiguration(WebRtcConfig config)
+        {
+            var iceServers = config.IceServerUrls.Select(server => new RTCIceServer { urls = server }  ); 
+            var impl = new RTCConfiguration {
                 iceServers = iceServers.ToList()
             };
-            return rtcConfiguration;
+            return new RtcConfig(impl);
         }
     }
 }
@@ -30,4 +35,5 @@ namespace System.Runtime.CompilerServices
     // - record types
     internal static class IsExternalInit { }
 }
+
 #endif
