@@ -1,11 +1,12 @@
 // Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
-#if !UNITY_5_3_OR_NEWER
+#if UNITY_5_3_OR_NEWER
 
 using System;
 using System.Threading.Tasks;
-using SIPSorcery.Net;
+using Unity.WebRTC;
+
 
 // ReSharper disable InconsistentNaming
 // ReSharper disable once CheckNamespace
@@ -20,46 +21,48 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
 
         internal PeerConnection (WebRtcConfig config) {
             impl = new RTCPeerConnection(config.GetRtcConfiguration());
-            impl.onconnectionstatechange += state => {
+            impl.OnConnectionStateChange += state => {
                 PeerConnectionState connState;
                 switch (state) {
-                    case RTCPeerConnectionState.closed:         connState = PeerConnectionState.closed;         break;
-                    case RTCPeerConnectionState.failed:         connState = PeerConnectionState.failed;         break;
-                    case RTCPeerConnectionState.disconnected:   connState = PeerConnectionState.disconnected;   break;
-                    case RTCPeerConnectionState.@new:           connState = PeerConnectionState.@new;           break;
-                    case RTCPeerConnectionState.connecting:     connState = PeerConnectionState.connecting;     break;
-                    case RTCPeerConnectionState.connected:      connState = PeerConnectionState.connected;      break;
+                    case RTCPeerConnectionState.Closed:         connState = PeerConnectionState.closed;         break;
+                    case RTCPeerConnectionState.Failed:         connState = PeerConnectionState.failed;         break;
+                    case RTCPeerConnectionState.Disconnected:   connState = PeerConnectionState.disconnected;   break;
+                    case RTCPeerConnectionState.New:            connState = PeerConnectionState.@new;           break;
+                    case RTCPeerConnectionState.Connecting:     connState = PeerConnectionState.connecting;     break;
+                    case RTCPeerConnectionState.Connected:      connState = PeerConnectionState.connected;      break;
                     default:
                         throw new InvalidOperationException($"unexpected connection state: {state}");
                     
                 }
                 OnConnectionStateChange?.Invoke(connState);
             };
-            impl.ondatachannel += channel => {
+            impl.OnDataChannel += channel => {
                 var dc = new DataChannel(channel);
                 OnDataChannel?.Invoke(dc);
             };
-            impl.onicecandidate += candidate => {
+            impl.OnIceCandidate += candidate => {
                 OnIceCandidate?.Invoke(new IceCandidate(candidate));
             };
         }
         
         internal async Task<DataChannel> CreateDataChannel(string label) {
-            var dc = await impl.createDataChannel(label);
+            var dc = await impl.CreateDataChannel(label);
             return new DataChannel(dc);
         }
         
         internal SessionDescription CreateOffer() {
-            return new SessionDescription(impl.createOffer());  
+            var asyncOp = impl.CreateOffer();
+            return new SessionDescription(asyncOp.Desc);  
         }
         
         internal SessionDescription CreateAnswer() {
-            return new SessionDescription(impl.createAnswer());  
+            var asyncOp = impl.CreateAnswer();
+            return new SessionDescription(asyncOp.Desc);  
         }
         
         internal  bool SetRemoteDescription(SessionDescription desc, out string error) {
-            var result = impl.setRemoteDescription(desc.impl);
-            if (result == SetDescriptionResultEnum.OK) {
+            var result = impl.SetRemoteDescription(ref desc.impl);
+            if (!result.IsError) {
                 error = null;
                 return true;
             }
@@ -68,18 +71,11 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
         }
         
         internal async Task SetLocalDescription(SessionDescription desc) {
-            await impl.setLocalDescription(desc.impl);
+            await impl.SetLocalDescription(ref desc.impl);
         }
         
         internal void AddIceCandidate(IceCandidate candidate) {
-            var i       = candidate.impl;
-            var iceInit = new RTCIceCandidateInit {
-                candidate           = i.candidate,
-                sdpMid              = i.sdpMid,
-                usernameFragment    = i.usernameFragment,
-                sdpMLineIndex       = i.sdpMLineIndex
-            };
-            impl.addIceCandidate(iceInit);
+            impl.AddIceCandidate(candidate.impl);
         }
     }
     
@@ -91,31 +87,30 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
     
     internal class SessionDescription
     {
-        internal readonly   RTCSessionDescriptionInit   impl;
-        
-        internal    string  sdp { get => impl.sdp; init => impl.sdp = value; }
-        internal    SdpType  type {
+        internal    RTCSessionDescription   impl;
+        internal    string                  sdp { get => impl.sdp; init => impl.sdp = value; }
+        internal    SdpType                 type {
             get {
                 switch (impl.type) {
-                    case RTCSdpType.answer: return SdpType.answer;
-                    case RTCSdpType.offer:  return SdpType.offer;
+                    case RTCSdpType.Answer: return SdpType.answer;
+                    case RTCSdpType.Offer:  return SdpType.offer;
                     default: throw new InvalidOperationException($"unexpected type: {impl.type}");
                 }
             }
             init {
                 switch (value) {
-                    case SdpType.answer:    impl.type = RTCSdpType.answer;  return;
-                    case SdpType.offer:     impl.type = RTCSdpType.offer;   return;
+                    case SdpType.answer:    impl.type = RTCSdpType.Answer;  return;
+                    case SdpType.offer:     impl.type = RTCSdpType.Offer;   return;
                     default: throw new InvalidOperationException($"unexpected type: {value}");
                 }
             }
         }
         
         internal SessionDescription() {
-            impl = new RTCSessionDescriptionInit();
+            impl = new RTCSessionDescription();
         }
 
-        internal SessionDescription(RTCSessionDescriptionInit impl) {
+        internal SessionDescription(in RTCSessionDescription impl) {
             this.impl = impl;
         }
     }

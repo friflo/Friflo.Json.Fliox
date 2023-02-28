@@ -1,7 +1,8 @@
 {
     "name": "Friflo.Json.Fliox",
     "references": [
-        "Unity.Burst"
+        "Unity.Burst",
+        "Unity.WebRTC"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
