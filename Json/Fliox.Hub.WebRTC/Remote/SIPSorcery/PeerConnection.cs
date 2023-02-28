@@ -11,7 +11,7 @@ using SIPSorcery.Net;
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.WebRTC
 {
-    internal class PeerConnection
+    internal sealed class PeerConnection
     {
         private     readonly    RTCPeerConnection           impl;
         internal    event       Action<PeerConnectionState> OnConnectionStateChange;
@@ -89,7 +89,7 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
         offer,
     }
     
-    internal class SessionDescription
+    internal sealed class SessionDescription
     {
         internal readonly   RTCSessionDescriptionInit   impl;
         
@@ -120,7 +120,7 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
         }
     }
     
-    internal class IceCandidate
+    internal sealed class IceCandidate
     {
         internal readonly RTCIceCandidate impl;
         

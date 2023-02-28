@@ -12,7 +12,7 @@ using Unity.WebRTC;
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.WebRTC
 {
-    internal class PeerConnection
+    internal sealed class PeerConnection
     {
         private     readonly    RTCPeerConnection           impl;
         internal    event       Action<PeerConnectionState> OnConnectionStateChange;
@@ -85,7 +85,7 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
         offer,
     }
     
-    internal class SessionDescription
+    internal sealed class SessionDescription
     {
         internal    RTCSessionDescription   impl;
         internal    string                  sdp { get => impl.sdp; init => impl.sdp = value; }
@@ -115,7 +115,7 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
         }
     }
     
-    internal class IceCandidate
+    internal sealed class IceCandidate
     {
         internal readonly RTCIceCandidate impl;
         
