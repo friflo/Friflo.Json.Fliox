@@ -156,8 +156,9 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
             var result              = connectResult.Result;
 
             var answerDescription   = new SessionDescription { type = SdpType.answer, sdp = result.answerSDP };
-            if (!await pc.SetRemoteDescription(answerDescription, out var error).ConfigureAwait(false)) {
-                throw new InvalidOperationException($"setRemoteDescription failed. error: {error}");
+            var descError = await pc.SetRemoteDescription(answerDescription).ConfigureAwait(false);
+            if (descError != null) {
+                throw new InvalidOperationException($"setRemoteDescription failed. error: {descError}");
             }
             rtcConnection = new WebRtcConnection(dc);
             

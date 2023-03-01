@@ -50,29 +50,30 @@ namespace Friflo.Json.Fliox.Hub.WebRTC.Impl
             return Task.FromResult(dc);
         }
         
-        internal Task<SessionDescription> CreateOffer() {
-            var asyncOp = impl.CreateOffer();                       // TODO
-            return Task.FromResult(new SessionDescription(asyncOp.Desc));  
+        internal async Task<SessionDescription> CreateOffer() {
+            var asyncOp = impl.CreateOffer();
+            await UnityWebRtc.Context.Await(asyncOp);
+            return new SessionDescription(asyncOp.Desc);  
         }
         
-        internal Task<SessionDescription> CreateAnswer() {
-            var asyncOp = impl.CreateAnswer();                      // TODO
-            return Task.FromResult(new SessionDescription(asyncOp.Desc));  
+        internal async Task<SessionDescription> CreateAnswer() {
+            var asyncOp = impl.CreateAnswer();
+            await UnityWebRtc.Context.Await(asyncOp);
+            return new SessionDescription(asyncOp.Desc);  
         }
         
-        internal Task<bool> SetRemoteDescription(SessionDescription desc, out string error) {
-            var asyncOp = impl.SetRemoteDescription(ref desc.impl); // TODO
+        internal async Task<string> SetRemoteDescription(SessionDescription desc) {
+            var asyncOp = impl.SetRemoteDescription(ref desc.impl);
+            await UnityWebRtc.Context.Await(asyncOp);
             if (!asyncOp.IsError) {
-                error = null;
-                return Task.FromResult(true);
+                return null;
             }
-            error = asyncOp.ToString();
-            return Task.FromResult(false);
+            return asyncOp.Error.errorType.ToString();
         }
         
-        internal Task SetLocalDescription(SessionDescription desc) {
-            var asyncOp = impl.SetLocalDescription(ref desc.impl);  // TODO 
-            return Task.CompletedTask;
+        internal async Task SetLocalDescription(SessionDescription desc) {
+            var asyncOp = impl.SetLocalDescription(ref desc.impl); 
+            await UnityWebRtc.Context.Await(asyncOp);
         }
         
         internal void AddIceCandidate(IceCandidate candidate) {

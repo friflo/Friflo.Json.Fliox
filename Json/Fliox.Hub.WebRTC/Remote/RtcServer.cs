@@ -77,7 +77,8 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
             dc.OnError += dcError   => { logger.Log(HubLog.Error, $"datachannel onerror: {dcError}"); };
 
             var rtcOffer = new SessionDescription { type = SdpType.offer, sdp = offer.sdp };
-            if (!await pc.SetRemoteDescription(rtcOffer, out var descError).ConfigureAwait(false)) {
+            var descError = await pc.SetRemoteDescription(rtcOffer).ConfigureAwait(false);
+            if (descError != null) {
                 logger.Log(HubLog.Error, $"setRemoteDescription failed. error: {descError}");
                 return;
             }

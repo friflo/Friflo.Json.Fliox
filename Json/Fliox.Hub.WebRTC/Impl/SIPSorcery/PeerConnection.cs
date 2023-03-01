@@ -59,14 +59,10 @@ namespace Friflo.Json.Fliox.Hub.WebRTC.Impl
             return Task.FromResult(new SessionDescription(descImpl));  
         }
         
-        internal Task<bool> SetRemoteDescription(SessionDescription desc, out string error) {
-            var result = impl.setRemoteDescription(desc.impl);
-            if (result == SetDescriptionResultEnum.OK) {
-                error = null;
-                return Task.FromResult(true);
-            }
-            error = result.ToString();
-            return Task.FromResult(false);
+        internal Task<string> SetRemoteDescription(SessionDescription desc) {
+            var result      = impl.setRemoteDescription(desc.impl);
+            string error    = result == SetDescriptionResultEnum.OK ? null : result.ToString();
+            return Task.FromResult(error);
         }
         
         internal async Task SetLocalDescription(SessionDescription desc) {
