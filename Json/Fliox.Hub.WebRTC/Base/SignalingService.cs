@@ -47,7 +47,7 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
             
             var webRtcHost = findHost.Result;
             if (webRtcHost == null) {
-                return command.Error<ConnectClientResult>($"host not found. name: {hostId}");
+                return command.Error<ConnectClientResult>($"WebRTC connect failed. host not found. host: '{hostId}'");
             }
             // --- send offer SDP to WebRTC host 
             var clientId    = command.ClientId;
@@ -57,7 +57,7 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
                 added = connectMap.TryAdd(clientId, connectRequest);
             }
             if (!added) {
-                return command.Error<ConnectClientResult>($"client connect pending. client: {clientId}");
+                return command.Error<ConnectClientResult>($"WebRTC connect already pending. host: '{hostId}' client: {clientId}");
             }
             var offer       = new Offer { sdp = value.offerSDP, client = clientId };
             var offerMsg    = signaling.SendMessage(nameof(Offer), offer);
@@ -68,9 +68,10 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
                 lock (connectMap) {
                     connectMap.Remove(clientId);
                 }
-                return command.Error<ConnectClientResult>($"connect to WebRTC host failed. client: {clientId}");
+                return command.Error<ConnectClientResult>($"WebRTC connect failed. host: '{hostId}' client: {clientId} error: {offerMsg.Error.Message}");
             }
             var answerSDP = await connectRequest.response.Task.ConfigureAwait(false);
+            command.Logger.Log(HubLog.Info, $"WebRTC connect successful. host: '{hostId}' client: {clientId}");
             
             return new ConnectClientResult { answerSDP = answerSDP.sdp };
         }
