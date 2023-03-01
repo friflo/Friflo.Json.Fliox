@@ -45,7 +45,7 @@ namespace Friflo.Json.Fliox.Hub.WebRTC.Impl
         }
         
         internal async Task<DataChannel> CreateDataChannel(string label) {
-            var dc = await impl.createDataChannel(label);
+            var dc = await impl.createDataChannel(label).ConfigureAwait(false);
             return new DataChannel(dc);
         }
         
@@ -66,7 +66,7 @@ namespace Friflo.Json.Fliox.Hub.WebRTC.Impl
         }
         
         internal async Task SetLocalDescription(SessionDescription desc) {
-            await impl.setLocalDescription(desc.impl);
+            await impl.setLocalDescription(desc.impl).ConfigureAwait(false);
         }
         
         internal void AddIceCandidate(IceCandidate candidate) {
