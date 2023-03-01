@@ -20,25 +20,29 @@ namespace Friflo.Json.Fliox.Hub.WebRTC.Impl
         private         readonly List<AsyncOperation>   operations  = new List<AsyncOperation>();
         private         readonly List<AsyncOperation>   done        = new List<AsyncOperation>();
         
-        internal static readonly UnityWebRtc            Singleton   = new UnityWebRtc();
+        public static   readonly UnityWebRtc            Singleton   = new UnityWebRtc();
             
         internal async Task Await(AsyncOperationBase operation) {
             var asyncOperation = new AsyncOperation(operation);
-            operations.Add(asyncOperation);
+            lock (operations) {
+                operations.Add(asyncOperation);
+            }
             await asyncOperation.tcs.Task.ConfigureAwait(false);
         }
         
-        internal void ProcessOperations() {
+        public void ProcessOperations() {
             done.Clear();
-            foreach (var operation in operations) {
-                if (!operation.value.IsDone) {
-                    continue;
+            lock (operations) {
+                foreach (var operation in operations) {
+                    if (!operation.value.IsDone) {
+                        continue;
+                    }
+                    done.Add(operation);
+                    operations.Remove(operation);
                 }
-                done.Add(operation);
-                operation.tcs.SetResult(true);
             }
             foreach (var op in done) {
-                operations.Remove(op);
+                op.tcs.SetResult(true);
             }
         }
     }

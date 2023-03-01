@@ -60,6 +60,11 @@ namespace DemoHub
             httpHost.AddHandler      (new GraphQLHandler());
             httpHost.AddHandler      (new StaticFileHandler(HubExplorer.Path)); // optional - serve static web files of Hub Explorer
             
+            CreateWebRtcServer(httpHost);
+            return httpHost;
+        }
+        
+        private static void CreateWebRtcServer(HttpHost httpHost) {
             var rtcConfig = new RtcHostConfig {
                 SignalingDB     = "signaling", SignalingHost  = "ws://localhost:8010/fliox/",
                 User            = "admin", Token = "admin",
@@ -67,8 +72,6 @@ namespace DemoHub
             };
             var rtcServer = new RtcServer(rtcConfig);
             rtcServer.AddHost("abc", httpHost).Wait();
-
-            return httpHost;
         }
         
         private static readonly bool UseMemoryDbClone = true;
