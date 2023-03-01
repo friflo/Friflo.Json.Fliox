@@ -30,7 +30,8 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
             var webRtcHost  = new WebRtcHost { id = value.hostId, client = command.ClientId.AsString() };
             signaling.hosts.Upsert(webRtcHost);
             await signaling.SyncTasks().ConfigureAwait(false);
-
+            
+            command.Logger.Log(HubLog.Info, $"WebRTC host added. host: '{value.hostId}' client: {command.ClientId}");
             return new AddHostResult();
         }
         
