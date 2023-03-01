@@ -52,19 +52,19 @@ namespace Friflo.Json.Fliox.Hub.WebRTC.Impl
         
         internal async Task<SessionDescription> CreateOffer() {
             var asyncOp = impl.CreateOffer();
-            await UnityWebRtc.Context.Await(asyncOp);
+            await UnityWebRtc.Singleton.Await(asyncOp);
             return new SessionDescription(asyncOp.Desc);  
         }
         
         internal async Task<SessionDescription> CreateAnswer() {
             var asyncOp = impl.CreateAnswer();
-            await UnityWebRtc.Context.Await(asyncOp);
+            await UnityWebRtc.Singleton.Await(asyncOp);
             return new SessionDescription(asyncOp.Desc);  
         }
         
         internal async Task<string> SetRemoteDescription(SessionDescription desc) {
             var asyncOp = impl.SetRemoteDescription(ref desc.impl);
-            await UnityWebRtc.Context.Await(asyncOp);
+            await UnityWebRtc.Singleton.Await(asyncOp);
             if (!asyncOp.IsError) {
                 return null;
             }
@@ -73,7 +73,7 @@ namespace Friflo.Json.Fliox.Hub.WebRTC.Impl
         
         internal async Task SetLocalDescription(SessionDescription desc) {
             var asyncOp = impl.SetLocalDescription(ref desc.impl); 
-            await UnityWebRtc.Context.Await(asyncOp);
+            await UnityWebRtc.Singleton.Await(asyncOp);
         }
         
         internal void AddIceCandidate(IceCandidate candidate) {
