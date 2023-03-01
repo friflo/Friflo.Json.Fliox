@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Unity.WebRTC;
 
+// ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.WebRTC.Impl
 {
     /// <summary>
