@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Client;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Remote;
+using Friflo.Json.Fliox.Hub.WebRTC.Impl;
 
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.WebRTC
@@ -76,11 +77,11 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
             dc.OnError += dcError   => { logger.Log(HubLog.Error, $"datachannel onerror: {dcError}"); };
 
             var rtcOffer = new SessionDescription { type = SdpType.offer, sdp = offer.sdp };
-            if (!pc.SetRemoteDescription(rtcOffer, out var descError)) {
+            if (!await pc.SetRemoteDescription(rtcOffer, out var descError).ConfigureAwait(false)) {
                 logger.Log(HubLog.Error, $"setRemoteDescription failed. error: {descError}");
                 return;
             }
-            var answer = pc.CreateAnswer();
+            var answer = await pc.CreateAnswer().ConfigureAwait(false);
             await pc.SetLocalDescription(answer).ConfigureAwait(false);
             
             // --- send answer SDP -> Signaling Server

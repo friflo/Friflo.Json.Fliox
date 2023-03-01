@@ -7,7 +7,7 @@ using System.Linq;
 using Unity.WebRTC;
 
 // ReSharper disable once CheckNamespace
-namespace Friflo.Json.Fliox.Hub.WebRTC
+namespace Friflo.Json.Fliox.Hub.WebRTC.Impl
 {
     internal sealed class RtcConfig
     {

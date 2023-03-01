@@ -10,6 +10,7 @@ using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Remote;
 using Friflo.Json.Fliox.Hub.Remote.Tools;
+using Friflo.Json.Fliox.Hub.WebRTC.Impl;
 using Friflo.Json.Fliox.Mapper;
 
 // ReSharper disable once CheckNamespace
@@ -145,7 +146,7 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
             pc.OnConnectionStateChange += state => {
                 Logger.Log(HubLog.Info, $"on WebRTC client connection state change: {state}");
             };
-            var offer = pc.CreateOffer();  // fire onicecandidate
+            var offer = await pc.CreateOffer().ConfigureAwait(false);  // fire onicecandidate
             await pc.SetLocalDescription(offer).ConfigureAwait(false);
 
             // --- send offer SDP -> Signaling Server -> WebRTC Host
@@ -155,7 +156,7 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
             var result              = connectResult.Result;
 
             var answerDescription   = new SessionDescription { type = SdpType.answer, sdp = result.answerSDP };
-            if (!pc.SetRemoteDescription(answerDescription, out var error)) {
+            if (!await pc.SetRemoteDescription(answerDescription, out var error).ConfigureAwait(false)) {
                 throw new InvalidOperationException($"setRemoteDescription failed. error: {error}");
             }
             rtcConnection = new WebRtcConnection(dc);

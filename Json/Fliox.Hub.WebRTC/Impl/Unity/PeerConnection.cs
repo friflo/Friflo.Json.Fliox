@@ -9,7 +9,7 @@ using Unity.WebRTC;
 
 // ReSharper disable InconsistentNaming
 // ReSharper disable once CheckNamespace
-namespace Friflo.Json.Fliox.Hub.WebRTC
+namespace Friflo.Json.Fliox.Hub.WebRTC.Impl
 {
     internal sealed class PeerConnection
     {
@@ -50,24 +50,24 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
             return Task.FromResult(dc);
         }
         
-        internal SessionDescription CreateOffer() {
+        internal Task<SessionDescription> CreateOffer() {
             var asyncOp = impl.CreateOffer();                       // TODO
-            return new SessionDescription(asyncOp.Desc);  
+            return Task.FromResult(new SessionDescription(asyncOp.Desc));  
         }
         
-        internal SessionDescription CreateAnswer() {
+        internal Task<SessionDescription> CreateAnswer() {
             var asyncOp = impl.CreateAnswer();                      // TODO
-            return new SessionDescription(asyncOp.Desc);  
+            return Task.FromResult(new SessionDescription(asyncOp.Desc));  
         }
         
-        internal  bool SetRemoteDescription(SessionDescription desc, out string error) {
+        internal Task<bool> SetRemoteDescription(SessionDescription desc, out string error) {
             var asyncOp = impl.SetRemoteDescription(ref desc.impl); // TODO
             if (!asyncOp.IsError) {
                 error = null;
-                return true;
+                return Task.FromResult(true);
             }
             error = asyncOp.ToString();
-            return false;
+            return Task.FromResult(false);
         }
         
         internal Task SetLocalDescription(SessionDescription desc) {
@@ -78,12 +78,6 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
         internal void AddIceCandidate(IceCandidate candidate) {
             impl.AddIceCandidate(candidate.impl);
         }
-    }
-    
-    internal enum SdpType
-    {
-        answer,
-        offer,
     }
     
     internal sealed class SessionDescription

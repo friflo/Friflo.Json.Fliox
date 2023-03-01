@@ -9,7 +9,7 @@ using SIPSorcery.Net;
 
 // ReSharper disable InconsistentNaming
 // ReSharper disable once CheckNamespace
-namespace Friflo.Json.Fliox.Hub.WebRTC
+namespace Friflo.Json.Fliox.Hub.WebRTC.Impl
 {
     internal sealed class PeerConnection
     {
@@ -49,22 +49,24 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
             return new DataChannel(dc);
         }
         
-        internal SessionDescription CreateOffer() {
-            return new SessionDescription(impl.createOffer());  
+        internal Task<SessionDescription> CreateOffer() {
+            var descImpl = impl.createOffer();
+            return Task.FromResult(new SessionDescription(descImpl));  
         }
         
-        internal SessionDescription CreateAnswer() {
-            return new SessionDescription(impl.createAnswer());  
+        internal Task<SessionDescription> CreateAnswer() {
+            var descImpl = impl.createAnswer();
+            return Task.FromResult(new SessionDescription(descImpl));  
         }
         
-        internal  bool SetRemoteDescription(SessionDescription desc, out string error) {
+        internal Task<bool> SetRemoteDescription(SessionDescription desc, out string error) {
             var result = impl.setRemoteDescription(desc.impl);
             if (result == SetDescriptionResultEnum.OK) {
                 error = null;
-                return true;
+                return Task.FromResult(true);
             }
             error = result.ToString();
-            return false;
+            return Task.FromResult(false);
         }
         
         internal async Task SetLocalDescription(SessionDescription desc) {
@@ -82,13 +84,7 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
             impl.addIceCandidate(iceInit);
         }
     }
-    
-    internal enum SdpType
-    {
-        answer,
-        offer,
-    }
-    
+
     internal sealed class SessionDescription
     {
         internal readonly   RTCSessionDescriptionInit   impl;

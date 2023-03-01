@@ -1,13 +1,13 @@
 // Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
-#if UNITY_5_3_OR_NEWER
+#if !UNITY_5_3_OR_NEWER
 
 using System;
-using Unity.WebRTC;
+using SIPSorcery.Net;
 
 // ReSharper disable once CheckNamespace
-namespace Friflo.Json.Fliox.Hub.WebRTC
+namespace Friflo.Json.Fliox.Hub.WebRTC.Impl
 {
     internal sealed class DataChannel
     {
@@ -18,37 +18,37 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
         internal    event       Action<byte[]>      OnMessage;
         
         internal                DataChannelState    ReadyState { get {
-            switch (impl.ReadyState) {
-                case RTCDataChannelState.Connecting:    return DataChannelState.connecting; 
-                case RTCDataChannelState.Open:          return DataChannelState.open; 
-                case RTCDataChannelState.Closing:       return DataChannelState.closing; 
-                case RTCDataChannelState.Closed:        return DataChannelState.closed; 
-                default: throw new InvalidOperationException($"unexpected state: {impl.ReadyState}");
+            switch (impl.readyState) {
+                case RTCDataChannelState.connecting:    return DataChannelState.connecting; 
+                case RTCDataChannelState.open:          return DataChannelState.open; 
+                case RTCDataChannelState.closing:       return DataChannelState.closing; 
+                case RTCDataChannelState.closed:        return DataChannelState.closed; 
+                default: throw new InvalidOperationException($"unexpected state: {impl.readyState}");
             }
         } }
 
         internal DataChannel (RTCDataChannel impl) {
             this.impl = impl;
-            impl.OnOpen += () => {
+            impl.onopen += () => {
                 OnOpen?.Invoke();  
             };
-            impl.OnClose += () => {
+            impl.onclose += () => {
                 OnClose?.Invoke();  
             };
-            /* impl.onerror += error => {
+            impl.onerror += error => {
                 OnError?.Invoke(error);
-            }; */
-            impl.OnMessage += bytes => {
-                OnMessage?.Invoke(bytes);  
+            };
+            impl.onmessage += (dc, protocol, data) => {
+                OnMessage?.Invoke(data);  
             };
         }
         
         internal void Close() {
-            impl.Close();
+            impl.close();
         }
         
         internal void Send(byte[] data) {
-            impl.Send(data);
+            impl.send(data);
         }
     }
 }
