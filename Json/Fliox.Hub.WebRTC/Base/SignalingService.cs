@@ -51,24 +51,44 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
             }
             // --- send offer SDP to WebRTC host 
             var clientId    = command.ClientId;
+            var connectRequest  = new ConnectRequest(clientId);
+            bool added;
+            lock (connectMap) {
+                added = connectMap.TryAdd(clientId, connectRequest);
+            }
+            if (!added) {
+                return command.Error<ConnectClientResult>($"client connect pending. client: {clientId}");
+            }
             var offer       = new Offer { sdp = value.offerSDP, client = clientId };
             var offerMsg    = signaling.SendMessage(nameof(Offer), offer);
             offerMsg.EventTargetClient(webRtcHost.client);
-            await signaling.SyncTasks().ConfigureAwait(false);
+            await signaling.TrySyncTasks().ConfigureAwait(false);
             
-            var connectRequest  = new ConnectRequest(clientId);
-            connectMap.Add(clientId, connectRequest);
-            var answerSDP       = await connectRequest.response.Task.ConfigureAwait(false);
-
+            if (!offerMsg.Success) {
+                lock (connectMap) {
+                    connectMap.Remove(clientId);
+                }
+                return command.Error<ConnectClientResult>($"connect to WebRTC host failed. client: {clientId}");
+            }
+            var answerSDP = await connectRequest.response.Task.ConfigureAwait(false);
+            
             return new ConnectClientResult { answerSDP = answerSDP.sdp };
         }
         
         private void Answer (Param<Answer> param, MessageContext command)
         {
+            var logger = command.Logger;
             if (!param.GetValidate(out var answerSDP, out string error)) {
+                logger.Log(HubLog.Error, $"invalid answer SDP from '{command.ClientId}' error: {error}");
                 return;
             }
-            if (!connectMap.TryGetValue(answerSDP.client, out var connectRequest)) {
+            bool found;
+            ConnectRequest connectRequest;
+            lock (connectMap) {
+                found = connectMap.Remove(answerSDP.client, out connectRequest);
+            }
+            if (!found) {
+                logger.Log(HubLog.Error, $"no target for answer SDP. target: {answerSDP.client}");
                 return;
             }
             connectRequest.response.SetResult(answerSDP);

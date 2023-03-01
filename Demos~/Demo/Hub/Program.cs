@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Threading.Tasks;
 using Demo;
 using Friflo.Json.Fliox.Hub.DB.Cluster;
 using Friflo.Json.Fliox.Hub.DB.Monitor;
@@ -60,18 +61,18 @@ namespace DemoHub
             httpHost.AddHandler      (new GraphQLHandler());
             httpHost.AddHandler      (new StaticFileHandler(HubExplorer.Path)); // optional - serve static web files of Hub Explorer
             
-            CreateWebRtcServer(httpHost);
+            CreateWebRtcServer(httpHost).Wait();
             return httpHost;
         }
         
-        private static void CreateWebRtcServer(HttpHost httpHost) {
+        private static async Task CreateWebRtcServer(HttpHost httpHost) {
             var rtcConfig = new RtcHostConfig {
                 SignalingDB     = "signaling", SignalingHost  = "ws://localhost:8010/fliox/",
                 User            = "admin", Token = "admin",
                 WebRtcConfig    = new WebRtcConfig { IceServerUrls = new [] { "stun:stun.sipsorcery.com" } },
             };
             var rtcServer = new RtcServer(rtcConfig);
-            rtcServer.AddHost("abc", httpHost).Wait();
+            await rtcServer.AddHost("abc", httpHost);
         }
         
         private static readonly bool UseMemoryDbClone = true;

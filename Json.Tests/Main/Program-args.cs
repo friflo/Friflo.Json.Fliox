@@ -39,7 +39,7 @@ namespace Friflo.Json.Tests.Main
 
             var rootCommand = new RootCommand {
                 moduleOpt,
-                new Option<string>("--endpoint", () => "http://+:8010/",    "endpoint the server listen at"),
+                new Option<string>("--endpoint", () => "http://+:8011/",    "endpoint the server listen at"),
                 new Option<string>("--client",   () => null,                "client id")
             };
             rootCommand.Description = "small tests within Friflo.Json.Tests";
