@@ -38,7 +38,9 @@ namespace Friflo.Json.Fliox.Hub.WebRTC.Impl
                         continue;
                     }
                     done.Add(operation);
-                    operations.Remove(operation);
+                }
+                foreach (var op in done) {
+                    operations.Remove(op);
                 }
             }
             foreach (var op in done) {
