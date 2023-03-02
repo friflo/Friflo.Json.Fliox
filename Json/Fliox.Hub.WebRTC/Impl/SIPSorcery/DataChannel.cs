@@ -16,6 +16,7 @@ namespace Friflo.Json.Fliox.Hub.WebRTC.Impl
         internal    event       Action              OnClose;
         internal    event       Action<string>      OnError;
         internal    event       Action<byte[]>      OnMessage;
+        internal                string              Label => impl.label;
         
         internal                DataChannelState    ReadyState { get {
             switch (impl.readyState) {

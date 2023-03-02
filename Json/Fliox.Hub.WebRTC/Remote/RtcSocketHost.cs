@@ -77,7 +77,6 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
                 foreach (var message in messages) {
                     if (hostEnv.logMessages) LogMessage(Logger, ref sbSend, " server ->", remoteClient, message);
                     var array = message.AsByteArray();
-                    // if (sendMessage.Count > 100000) Console.WriteLine($"SendLoop. size: {sendMessage.Count}");
                     remoteDc.Send(array); // requires byte[] an individual byte[] :(
                 }
                 if (remoteEvent == MessageBufferEvent.Closed) {

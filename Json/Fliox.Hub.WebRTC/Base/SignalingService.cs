@@ -12,12 +12,13 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
 {
     public sealed class SignalingService : DatabaseService
     {
-        private readonly    Dictionary<ShortString, ConnectRequest> connectMap;
+        private readonly    Dictionary<ShortString, OfferRequest>   offerMap;
+        private const       string                                  LogName = "Signaling";
 
         public  static      DatabaseSchema      Schema { get; } = new DatabaseSchema(typeof(Signaling));
 
         public SignalingService() {
-            connectMap  = new Dictionary<ShortString, ConnectRequest>(ShortString.Equality);
+            offerMap  = new Dictionary<ShortString, OfferRequest>(ShortString.Equality);
             AddMessageHandlers(this, null);
         }
         
@@ -31,7 +32,7 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
             signaling.hosts.Upsert(webRtcHost);
             await signaling.SyncTasks().ConfigureAwait(false);
             
-            command.Logger.Log(HubLog.Info, $"WebRTC host added. host: '{value.hostId}' client: {command.ClientId}");
+            command.Logger.Log(HubLog.Info, $"{LogName}: host added. host: '{value.hostId}' client: {command.ClientId}");
             return new AddHostResult();
         }
         
@@ -51,11 +52,11 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
                 return command.Error<ConnectClientResult>($"WebRTC connect failed. host not found. host: '{hostId}'");
             }
             // --- send offer SDP to WebRTC host 
-            var clientId    = command.ClientId;
-            var connectRequest  = new ConnectRequest(clientId);
+            var clientId        = command.ClientId;
+            var offerRequest    = new OfferRequest(clientId);
             bool added;
-            lock (connectMap) {
-                added = connectMap.TryAdd(clientId, connectRequest);
+            lock (offerMap) {
+                added = offerMap.TryAdd(clientId, offerRequest);
             }
             if (!added) {
                 return command.Error<ConnectClientResult>($"WebRTC connect already pending. host: '{hostId}' client: {clientId}");
@@ -66,13 +67,13 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
             await signaling.TrySyncTasks().ConfigureAwait(false);
             
             if (!offerMsg.Success) {
-                lock (connectMap) {
-                    connectMap.Remove(clientId);
+                lock (offerMap) {
+                    offerMap.Remove(clientId);
                 }
                 return command.Error<ConnectClientResult>($"WebRTC connect failed. host: '{hostId}' client: {clientId} error: {offerMsg.Error.Message}");
             }
-            var answerSDP = await connectRequest.response.Task.ConfigureAwait(false);
-            command.Logger.Log(HubLog.Info, $"WebRTC connect successful. host: '{hostId}' client: {clientId}");
+            var answerSDP = await offerRequest.response.Task.ConfigureAwait(false);
+            command.Logger.Log(HubLog.Info, $"{LogName}: received offer from host: '{hostId}' client: {clientId}");
             
             return new ConnectClientResult { answerSDP = answerSDP.sdp };
         }
@@ -81,30 +82,30 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
         {
             var logger = command.Logger;
             if (!param.GetValidate(out var answerSDP, out string error)) {
-                logger.Log(HubLog.Error, $"invalid answer SDP from '{command.ClientId}' error: {error}");
+                logger.Log(HubLog.Error, $"{LogName}: invalid answer SDP from '{command.ClientId}' error: {error}");
                 return;
             }
             bool found;
-            ConnectRequest connectRequest;
-            lock (connectMap) {
-                found = connectMap.Remove(answerSDP.client, out connectRequest);
+            OfferRequest offerRequest;
+            lock (offerMap) {
+                found = offerMap.Remove(answerSDP.client, out offerRequest);
             }
             if (!found) {
-                logger.Log(HubLog.Error, $"no target for answer SDP. target: {answerSDP.client}");
+                logger.Log(HubLog.Error, $"{LogName}: no target for answer SDP. target: {answerSDP.client}");
                 return;
             }
-            connectRequest.response.SetResult(answerSDP);
+            offerRequest.response.SetResult(answerSDP);
         }
     }
     
-    public readonly struct ConnectRequest
+    public readonly struct OfferRequest
     {
         private  readonly   ShortString                     clientId;
         public   readonly   TaskCompletionSource<Answer>    response;
 
         public   override   string                          ToString() => $"client: {clientId}";
 
-        public ConnectRequest(in ShortString clientId) {
+        public OfferRequest(in ShortString clientId) {
             this.clientId   = clientId;
             response        = new TaskCompletionSource<Answer>();
         }
