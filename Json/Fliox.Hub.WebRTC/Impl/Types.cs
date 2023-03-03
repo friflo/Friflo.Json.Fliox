@@ -22,17 +22,21 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
         closing,
         closed,
     }
+    
+    internal enum SignalingState
+    {
+        Stable,
+        HaveLocalOffer,
+        HaveLocalPrAnswer,
+        HaveRemoteOffer,
+        HaveRemotePrAnswer,
+        Closed
+    }
 
     internal enum SdpType
     {
         answer,
         offer,
     }
-    
-    internal sealed class IceCandidateModel {
-        public  string  candidate;
-        public  string  sdpMid;
-        public  int     sdpMLineIndex;
-        public  string  usernameFragment;
-    }
+
 }

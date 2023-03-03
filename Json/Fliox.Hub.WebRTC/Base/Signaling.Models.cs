@@ -35,7 +35,7 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
     
     /// response: Signaling Server -> WebRTC Client
     public sealed class ConnectClientResult {
-        [Required]  public  string      answerSDP;
+        [Required]  public  string      hostClientId;
     }
     
     // ------------------------------------ event models ---------------------------------
@@ -53,11 +53,13 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
     
     /// WebRTC Client -> WebRTC Host
     public sealed class ClientIce {
+        [Required]  public  ShortString client;
         [Required]  public  JsonValue   candidate;
     }
     
     /// WebRTC Host -> WebRTC Client 
     public sealed class HostIce {
+        [Required]  public  ShortString client;
         [Required]  public  JsonValue   candidate;
     }
 }

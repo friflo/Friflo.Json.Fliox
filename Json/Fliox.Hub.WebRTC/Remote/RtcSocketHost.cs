@@ -17,6 +17,7 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
     internal sealed class RtcSocketHost : SocketHost, IDisposable
     {
         internal readonly   PeerConnection                      pc;
+        internal readonly   List<IceCandidate>                  iceCandidates = new List<IceCandidate>(); 
         internal            DataChannel                         remoteDc;
         private  readonly   MessageBufferQueueAsync<VoidMeta>   sendQueue;
         private  readonly   List<JsonValue>                     messages;

@@ -17,16 +17,7 @@ namespace Friflo.Json.Fliox.Hub.WebRTC.Impl
         internal    event       Action<string>      OnError;
         internal    event       Action<byte[]>      OnMessage;
         internal                string              Label => impl.Label;
-        
-        internal                DataChannelState    ReadyState { get {
-            switch (impl.ReadyState) {
-                case RTCDataChannelState.Connecting:    return DataChannelState.connecting; 
-                case RTCDataChannelState.Open:          return DataChannelState.open; 
-                case RTCDataChannelState.Closing:       return DataChannelState.closing; 
-                case RTCDataChannelState.Closed:        return DataChannelState.closed; 
-                default: throw new InvalidOperationException($"unexpected state: {impl.ReadyState}");
-            }
-        } }
+        internal                DataChannelState    ReadyState => GetReadyState();
 
         internal DataChannel (RTCDataChannel impl) {
             this.impl = impl;
@@ -50,6 +41,16 @@ namespace Friflo.Json.Fliox.Hub.WebRTC.Impl
         
         internal void Send(byte[] data) {
             impl.Send(data);
+        }
+        
+        private DataChannelState GetReadyState() {
+            switch (impl.ReadyState) {
+                case RTCDataChannelState.Connecting:    return DataChannelState.connecting; 
+                case RTCDataChannelState.Open:          return DataChannelState.open; 
+                case RTCDataChannelState.Closing:       return DataChannelState.closing; 
+                case RTCDataChannelState.Closed:        return DataChannelState.closed; 
+                default: throw new InvalidOperationException($"unexpected state: {impl.ReadyState}");
+            }
         }
     }
 }

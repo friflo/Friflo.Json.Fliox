@@ -14,6 +14,7 @@ namespace Friflo.Json.Fliox.Hub.WebRTC.Impl
     internal sealed class PeerConnection
     {
         private     readonly    RTCPeerConnection           impl;
+        internal                SignalingState              SignalingState => GetSignalingState();  
         internal    event       Action<PeerConnectionState> OnConnectionStateChange;
         internal    event       Action<DataChannel>         OnDataChannel;
         internal    event       Action<IceCandidate>        OnIceCandidate;
@@ -79,6 +80,18 @@ namespace Friflo.Json.Fliox.Hub.WebRTC.Impl
             };
             impl.addIceCandidate(iceInit);
         }
+        
+        private SignalingState GetSignalingState() {
+            switch (impl.signalingState) {
+                case RTCSignalingState.stable:                  return SignalingState.Stable;
+                case RTCSignalingState.have_local_offer:        return SignalingState.HaveLocalOffer;
+                case RTCSignalingState.have_local_pranswer:     return SignalingState.HaveLocalPrAnswer;
+                case RTCSignalingState.have_remote_offer:       return SignalingState.HaveRemoteOffer;
+                case RTCSignalingState.have_remote_pranswer:    return SignalingState.HaveRemotePrAnswer;
+                case RTCSignalingState.closed:                  return SignalingState.Closed;
+                default: throw new InvalidOperationException($"unexpected signaling state: {impl.signalingState}");
+            }
+        }
     }
 
     internal sealed class SessionDescription
@@ -121,17 +134,22 @@ namespace Friflo.Json.Fliox.Hub.WebRTC.Impl
         }
         
         internal string ToJson() {
-            var model = new IceCandidateModel {
+            return impl.toJSON();
+            /* var model = new IceCandidateModel {
                 candidate           = impl.candidate,
                 sdpMid              = impl.sdpMid,
                 sdpMLineIndex       = impl.sdpMLineIndex,
                 usernameFragment    = impl.usernameFragment
             };
-            return JsonSerializer.Serialize(model);
+            return JsonSerializer.Serialize(model); */
         }
 
         public static bool TryParse(string value, out IceCandidate candidate) {
-            var model   = JsonSerializer.Deserialize<IceCandidateModel>(value);
+            RTCIceCandidateInit.TryParse(value, out var init);
+            var iceCandidate    = new RTCIceCandidate (init);
+            candidate           = new IceCandidate(iceCandidate);
+            return true;
+            /* var model   = JsonSerializer.Deserialize<IceCandidateModel>(value);
             var init    = new RTCIceCandidateInit {
                 candidate           = model.candidate,
                 sdpMid              = model.sdpMid,
@@ -140,7 +158,7 @@ namespace Friflo.Json.Fliox.Hub.WebRTC.Impl
             };
             var iceCandidate    = new RTCIceCandidate (init);
             candidate           = new IceCandidate(iceCandidate);
-            return true;
+            return true;*/
         }
     }
 }

@@ -14,6 +14,7 @@ namespace Friflo.Json.Fliox.Hub.WebRTC.Impl
     internal sealed class PeerConnection
     {
         private     readonly    RTCPeerConnection           impl;
+        internal                SignalingState              SignalingState => GetSignalingState();          
         internal    event       Action<PeerConnectionState> OnConnectionStateChange;
         internal    event       Action<DataChannel>         OnDataChannel;
         internal    event       Action<IceCandidate>        OnIceCandidate;
@@ -45,7 +46,8 @@ namespace Friflo.Json.Fliox.Hub.WebRTC.Impl
         }
         
         internal Task<DataChannel> CreateDataChannel(string label) {
-            var dcImpl = impl.CreateDataChannel(label);
+            var init = new RTCDataChannelInit { ordered = true, maxPacketLifeTime = 10000 };
+            var dcImpl = impl.CreateDataChannel(label, init);
             var dc = new DataChannel(dcImpl);
             return Task.FromResult(dc);
         }
@@ -78,6 +80,18 @@ namespace Friflo.Json.Fliox.Hub.WebRTC.Impl
         
         internal void AddIceCandidate(IceCandidate candidate) {
             impl.AddIceCandidate(candidate.impl);
+        }
+        
+        private SignalingState GetSignalingState() {
+            switch (impl.SignalingState) {
+                case RTCSignalingState.Stable:              return SignalingState.Stable;
+                case RTCSignalingState.HaveLocalOffer:      return SignalingState.HaveLocalOffer;
+                case RTCSignalingState.HaveLocalPrAnswer:   return SignalingState.HaveLocalPrAnswer;
+                case RTCSignalingState.HaveRemoteOffer:     return SignalingState.HaveRemoteOffer;
+                case RTCSignalingState.HaveRemotePrAnswer:  return SignalingState.HaveRemotePrAnswer;
+                case RTCSignalingState.Closed:              return SignalingState.Closed;
+                    default: throw new InvalidOperationException($"unexpected signaling state: {impl.SignalingState}");
+            }
         }
     }
     
@@ -124,7 +138,7 @@ namespace Friflo.Json.Fliox.Hub.WebRTC.Impl
             var model = new IceCandidateModel {
                 candidate           = impl.Candidate,
                 sdpMid              = impl.SdpMid,
-                sdpMLineIndex       = impl.SdpMLineIndex ?? 0,
+                sdpMLineIndex       = impl.SdpMLineIndex,
                 usernameFragment    = impl.UserNameFragment
             };
             return JsonSerializer.Serialize(model);
@@ -141,6 +155,13 @@ namespace Friflo.Json.Fliox.Hub.WebRTC.Impl
             candidate           = new IceCandidate(iceCandidate);
             return true;
         }
+    }
+    
+    internal sealed class IceCandidateModel {
+        public  string  candidate;
+        public  string  sdpMid;
+        public  int?    sdpMLineIndex;
+        public  string  usernameFragment;
     }
 }
 
