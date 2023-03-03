@@ -201,10 +201,6 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                         if (!FilterMessage(messageTask.name)) {
                             continue;
                         }
-                        // don't leak userId's & clientId's to subscribed clients
-                        messageTask.users   = null;
-                        messageTask.clients = null;
-                        messageTask.groups  = null;
                         AddTask(messageTask, ref eventTasks);
                         tasksAdded = true;
                     break;

@@ -482,7 +482,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             tasksJson.Clear();
             foreach (var task in tasks) {
                 if (task.intern.json == null) {
-                    var serializedTask  = new JsonValue(writer.WriteAsBytes(task));
+                    var serializedTask  = MessageUtils.WriteSyncTask(task, writer);
                     serializedTask      = memoryBuffer.Add(serializedTask); // avoid byte[] allocation
                     task.intern.json    = serializedTask;
                 }

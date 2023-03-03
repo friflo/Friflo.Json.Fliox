@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using Friflo.Json.Burst;
 using Friflo.Json.Fliox.Hub.Protocol;
+using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Mapper;
 
 // ReSharper disable once CheckNamespace
@@ -26,6 +27,14 @@ namespace Friflo.Json.Fliox.Hub.Host
         /** map to <see cref="SyncEvent.db"/> */                public  ShortString     db;
         /** map to <see cref="SyncEvent.clt"/> */               public  ShortString     clt;
         /** map to <see cref="SyncEvent.tasks"/> */             public  List<JsonValue> tasks;
+    }
+    
+    /// <summary> Reflect the shape of a <see cref="SyncMessageTask"/> </summary>
+    public struct RemoteMessageTask
+    {
+        /** map to <see cref="SyncMessageTask"/> discriminator*/public  string          task;
+        /** map to <see cref="SyncMessageTask.name"/> */        public  ShortString     name;
+        /** map to <see cref="SyncMessageTask.param"/> */       public  JsonValue       param;
     }
     
     /// <summary>
@@ -73,6 +82,20 @@ namespace Friflo.Json.Fliox.Hub.Host
             var remoteEventMessage  = new RemoteEventMessage { msg = "ev", clt = dstClientId, seq = seq, ev = syncEvents };
             var result              = writer.WriteAsBytes(remoteEventMessage);
             return new JsonValue(result);
+        }
+        
+        /// <summary>
+        /// <b>Attention</b> returned <see cref="JsonValue"/> is <b>only</b> valid until the passed <paramref name="writer"/> in  is reused
+        /// </summary>
+        internal static JsonValue WriteSyncTask (SyncRequestTask task, ObjectWriter writer) {
+            if (task is SyncMessageTask message) {
+                // Note: Serialize only message name & param. Not users, clients & groups.
+                // This avoids leaking information of other network participants to subscribers.
+                var discriminant  = message.TaskType == TaskType.message ? "msg" : "cmd";
+                var remoteMessage = new RemoteMessageTask { task = discriminant, name = message.name, param = message.param };
+                return new JsonValue(writer.WriteAsBytes(remoteMessage));
+            }
+            return new JsonValue(writer.WriteAsBytes(task));
         }
         
         /// <summary>
