@@ -15,6 +15,16 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
         connected,
     }
     
+    public enum IceConnectionState
+    {
+        closed,
+        failed,
+        disconnected,
+        @new,
+        checking,
+        connected,
+    }
+    
     internal enum DataChannelState
     {
         connecting,
@@ -32,7 +42,7 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
         HaveRemotePrAnswer,
         Closed
     }
-
+    
     internal enum SdpType
     {
         answer,

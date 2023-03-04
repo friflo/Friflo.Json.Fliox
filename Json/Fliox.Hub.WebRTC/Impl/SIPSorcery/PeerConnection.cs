@@ -18,6 +18,7 @@ namespace Friflo.Json.Fliox.Hub.WebRTC.Impl
         internal    event       Action<PeerConnectionState> OnConnectionStateChange;
         internal    event       Action<DataChannel>         OnDataChannel;
         internal    event       Action<IceCandidate>        OnIceCandidate;
+        internal    event       Action<IceConnectionState>  OnIceConnectionStateChange;
 
         internal PeerConnection (WebRtcConfig config) {
             impl = new RTCPeerConnection(config.Get().impl);
@@ -32,7 +33,6 @@ namespace Friflo.Json.Fliox.Hub.WebRTC.Impl
                     case RTCPeerConnectionState.connected:      connState = PeerConnectionState.connected;      break;
                     default:
                         throw new InvalidOperationException($"unexpected connection state: {state}");
-                    
                 }
                 OnConnectionStateChange?.Invoke(connState);
             };
@@ -43,10 +43,25 @@ namespace Friflo.Json.Fliox.Hub.WebRTC.Impl
             impl.onicecandidate += candidate => {
                 OnIceCandidate?.Invoke(new IceCandidate(candidate));
             };
+            impl.oniceconnectionstatechange += state => {
+                IceConnectionState connState;
+                switch (state) {
+                    case RTCIceConnectionState.closed:          connState = IceConnectionState.closed;         break;
+                    case RTCIceConnectionState.failed:          connState = IceConnectionState.failed;         break;
+                    case RTCIceConnectionState.disconnected:    connState = IceConnectionState.disconnected;   break;
+                    case RTCIceConnectionState.@new:            connState = IceConnectionState.@new;           break;
+                    case RTCIceConnectionState.checking:        connState = IceConnectionState.checking;       break;
+                    case RTCIceConnectionState.connected:       connState = IceConnectionState.connected;      break;
+                    default:
+                        throw new InvalidOperationException($"unexpected ice connection state: {state}");
+                }
+                OnIceConnectionStateChange?.Invoke(connState);
+            };
         }
         
         internal async Task<DataChannel> CreateDataChannel(string label) {
-            var dc = await impl.createDataChannel(label).ConfigureAwait(false);
+            var init = new RTCDataChannelInit { ordered = true };
+            var dc = await impl.createDataChannel(label, init).ConfigureAwait(false);
             return new DataChannel(dc);
         }
         
