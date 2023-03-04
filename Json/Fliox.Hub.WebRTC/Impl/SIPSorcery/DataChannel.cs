@@ -63,8 +63,10 @@ namespace Friflo.Json.Fliox.Hub.WebRTC.Impl
             impl.close();
         }
         
-        internal void Send(byte[] data) {
-            impl.send(data);
+        internal void Send(byte[] data, int offset, int count) {
+            var array = new byte[count];
+            Buffer.BlockCopy(data, offset, array, 0, count);
+            impl.send(array);  // requires an individual byte[] :(
         }
         
         private DataChannelState GetReadyState() {

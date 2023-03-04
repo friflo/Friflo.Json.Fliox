@@ -4,6 +4,7 @@
 #if UNITY_5_3_OR_NEWER
 
 using System;
+using Unity.Collections;
 using Unity.WebRTC;
 
 // ReSharper disable once CheckNamespace
@@ -55,8 +56,20 @@ namespace Friflo.Json.Fliox.Hub.WebRTC.Impl
             impl.Close();
         }
         
-        internal void Send(byte[] data) {
-            impl.Send(data);
+        
+        private readonly    object              sendBufferLock  = new object();
+        private             NativeArray<byte>   sendBuffer      = new NativeArray<byte>(64, Allocator.Persistent);
+            
+        internal void Send(byte[] data, int offset, int count) {
+            lock(sendBufferLock) {
+                if (sendBuffer.Length < count) {
+                    sendBuffer.Dispose();
+                    sendBuffer = new NativeArray<byte>(count + 32, Allocator.Persistent, NativeArrayOptions.UninitializedMemory); // + 32 to avoid many reallocation
+                }
+                NativeArray<byte>.Copy(data, offset, sendBuffer, 0, count);
+                var slice = sendBuffer.Slice(0, count);
+                impl.Send(slice);
+            }
         }
         
         private DataChannelState GetReadyState() {

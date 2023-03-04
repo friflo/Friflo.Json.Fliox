@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Client;
 using Friflo.Json.Fliox.Hub.Host;
@@ -23,6 +24,7 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
     public sealed class RtcServer : IHost
     {
         private readonly    WebRtcConfig                           config;
+        private readonly    SemaphoreSlim                          signalingLock;
         private readonly    Signaling                              signaling;
         private readonly    Dictionary<ShortString, RtcSocketHost> clients;
         private readonly    IHubLogger                             logger;
@@ -34,12 +36,14 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
             config          = rtcConfig.WebRtcConfig;
             clients         = new Dictionary<ShortString, RtcSocketHost>(ShortString.Equality);
             var signalingHub= new WebSocketClientHub (rtcConfig.SignalingDB, rtcConfig.SignalingHost, env);
+            signalingLock   = new SemaphoreSlim(1);
             signaling       = new Signaling(signalingHub) { UserId = rtcConfig.User, Token = rtcConfig.Token };
             logger.Log(HubLog.Info, $"{LogName}: listening at: {rtcConfig.SignalingHost} db: '{rtcConfig.SignalingDB}'");
             LogInfo         = message => logger.Log(HubLog.Info, message); 
         }
         
-        private event Action<string> LogInfo; 
+        private event Action<string> LogInfo;
+        private event Action<string> LogNull; 
         
         private void LogError(string message, Exception exception = null) {
             logger.Log(HubLog.Error, message, exception); 
@@ -48,6 +52,7 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
         public async Task AddHost(string hostId, HttpHost host)
         {
             LogInfo?.Invoke($"{LogName}: add host: '{hostId}'");
+            await signalingLock.WaitAsync().ConfigureAwait(false);
             signaling.SubscribeMessage<Offer>(nameof(Offer), (message, context) => {
                 ProcessOffer(host, message);
             });
@@ -56,6 +61,7 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
             });
             signaling.AddHost(new AddHost { hostId = hostId });
             await signaling.SyncTasks().ConfigureAwait(false);
+            signalingLock.Release();
         }
         
         private async void ProcessOffer(HttpHost host, Message<Offer> message) {
@@ -73,24 +79,27 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
             };
             // var channelOpen = new TaskCompletionSource<bool>();
             // var dc = await pc.CreateDataChannel("test").ConfigureAwait(false); // right after connection creation. Otherwise: NoRemoteMedia
-            pc.OnDataChannel += (remoteDc) => {
+            pc.OnDataChannel += async (remoteDc) => {
+                LogInfo?.Invoke($"{LogName}: add data channel. label: {remoteDc.Label}");
                 socketHost.remoteDc = remoteDc; // note: remoteDc != dc created bellow
                 remoteDc.OnMessage += (data) => socketHost.OnMessage(data);
-                remoteDc.OnError += dcError   => { LogError($"{LogName}: datachannel onerror: {dcError}"); };
-                LogInfo?.Invoke($"{LogName}: add data channel. label: {remoteDc.Label}");
-                _ = socketHost.SendReceiveMessages();
-                // channelOpen.SetResult(true);  
+                var readState = remoteDc.ReadyState;
+                if (readState != DataChannelState.open) { LogError($"Expect ReadyState == open. was {readState}"); }
+                await Task.Delay(1).ConfigureAwait(false);  // move execution to ThreadPool Worker to proceed WebRTC thread execution
+                _ = socketHost.SendReceiveMessages().ConfigureAwait(false);
             };
-            pc.OnIceCandidate += candidate => {
+            pc.OnIceCandidate += async (candidate) => {
                 // send ICE candidate to WebRTC client
                 var jsonCandidate   = new JsonValue(candidate.ToJson());
                 var hostIce         = new HostIce { client = offer.client, candidate = jsonCandidate };
+                await signalingLock.WaitAsync().ConfigureAwait(false);
                 var msg             = signaling.SendMessage(nameof(HostIce), hostIce);
                 msg.EventTargetClient(offer.client);
-                _ = signaling.SyncTasks();
+                _ = signaling.SyncTasks().ConfigureAwait(false);
+                signalingLock.Release();
             };
             
-            LogInfo?.Invoke($"{LogName}: --- SetRemoteDescription");
+            LogInfo?.Invoke($"{LogName}: ProcessOffer - SetRemoteDescription");
             var rtcOffer = new SessionDescription { type = SdpType.offer, sdp = offer.sdp };
             var descError = await pc.SetRemoteDescription(rtcOffer).ConfigureAwait(false);
             if (descError != null) {
@@ -102,16 +111,20 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
                 pc.AddIceCandidate(candidate);
             }
             socketHost.iceCandidates.Clear();
+            LogInfo?.Invoke($"{LogName}: ProcessOffer - CreateAnswer");
             var answer = await pc.CreateAnswer().ConfigureAwait(false);
             await pc.SetLocalDescription(answer).ConfigureAwait(false);
             
-            // await channelOpen.Task.ConfigureAwait(false);
-            
             // --- send answer SDP -> Signaling Server
             var answerSDP = new Answer { client = offer.client, sdp = answer.sdp };
+            await signalingLock.WaitAsync().ConfigureAwait(false);
+            LogInfo?.Invoke($"{LogName}: ProcessOffer - SendAnswer");
             var answerMsg = signaling.SendMessage(nameof(Answer), answerSDP);
             answerMsg.EventTargetClient(offer.client);
-            await signaling.SyncTasks().ConfigureAwait(false);
+            _ = signaling.SyncTasks().ConfigureAwait(false);
+            signalingLock.Release();
+            
+            LogInfo?.Invoke($"{LogName}: ProcessOffer - finished");
         }
         
         private void ProcessIceCandidate(Message<ClientIce> message, EventContext context) {
