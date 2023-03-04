@@ -181,7 +181,7 @@ namespace Friflo.Json.Fliox.Hub.WebRTC.Impl
             return JsonSerializer.Serialize(model);
         }
 
-        public static bool TryParse(string value, out IceCandidate candidate) {
+        internal static bool TryParse(string value, out IceCandidate candidate) {
             var model   = JsonSerializer.Deserialize<IceCandidateModel>(value);
             var init    = new RTCIceCandidateInit {
                 candidate           = model.candidate,

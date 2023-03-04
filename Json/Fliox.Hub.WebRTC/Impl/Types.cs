@@ -15,7 +15,7 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
         connected,
     }
     
-    public enum IceConnectionState
+    internal enum IceConnectionState
     {
         closed,
         failed,
