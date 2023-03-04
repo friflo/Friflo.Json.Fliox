@@ -13,14 +13,6 @@ using Friflo.Json.Fliox.Hub.WebRTC.Impl;
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.WebRTC
 {
-    public sealed class RtcHostConfig {
-        public  string          SignalingDB     { get; init; } = "signaling";
-        public  string          SignalingHost   { get; init; }
-        public  string          User            { get; init; }
-        public  string          Token           { get; init; }
-        public  WebRtcConfig    WebRtcConfig    { get; init; }
-    }
-    
     public sealed class RtcServer : IHost
     {
         private readonly    WebRtcConfig                           config;
@@ -30,7 +22,7 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
         private readonly    IHubLogger                             logger;
         private const       string                                 LogName = "RTC-host";
         
-        public RtcServer (RtcHostConfig rtcConfig, SharedEnv env = null) {
+        public RtcServer (SignalingConfig rtcConfig, SharedEnv env = null) {
             var sharedEnv   = env  ?? SharedEnv.Default;
             logger          = sharedEnv.Logger;
             config          = rtcConfig.WebRtcConfig;

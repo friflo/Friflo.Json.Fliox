@@ -7,6 +7,14 @@ using Friflo.Json.Fliox.Hub.WebRTC.Impl;
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.WebRTC
 {
+    public sealed class SignalingConfig {
+        public  string          SignalingDB     { get; init; } = "signaling";
+        public  string          SignalingHost   { get; init; }
+        public  string          User            { get; init; }
+        public  string          Token           { get; init; }
+        public  WebRtcConfig    WebRtcConfig    { get; init; }
+    }
+    
     public sealed class WebRtcConfig
     {
         public      IReadOnlyCollection<string> IceServerUrls { get; init; }

@@ -29,6 +29,17 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
             requestMap  = new RemoteRequestMap();
         }
     }
+    
+    internal sealed class ConnectCredentials
+    {
+        internal  readonly  ShortString     userId; 
+        internal  readonly  ShortString     token;
+        
+        internal ConnectCredentials(in ShortString userId, in ShortString token) {
+            this.userId = userId;
+            this.token  = token;
+        }
+    }
 
     public sealed class RtcSocketClientHub : SocketClientHub
     {
@@ -67,7 +78,7 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
             var query           = HttpUtility.ParseQueryString(uri.Query);
             remoteHostId        = query.Get("host");
             var signalingSocket = new WebSocketClientHub("signaling", remoteHost, env, RemoteClientAccess.Single);
-            signaling           = new Signaling(signalingSocket) { UserId = "admin", Token = "admin" };
+            signaling           = new Signaling(signalingSocket); // user / token assigned on connect
             var mapper          = new ObjectMapper(sharedEnv.TypeStore);
             reader              = mapper.reader;
             this.config         = config;
@@ -95,14 +106,14 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
             }
         }
         
-        private async Task<WebRtcConnection> Connect() {
+        private async Task<WebRtcConnection> Connect(ConnectCredentials credentials) {
             var task = JoinConnects(out var tcs, out WebRtcConnection connection);
             if (tcs == null) {
                 connection = await task.ConfigureAwait(false);
                 return connection;
             }
             try {
-                await ConnectToRtcHost().ConfigureAwait(false);
+                await ConnectToRtcHost(credentials).ConfigureAwait(false);
                 
                 connectTask = null;
                 tcs.SetResult(connection);
@@ -115,10 +126,12 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
             return rtcConnection;
         }
         
-        private async Task ConnectToRtcHost()
+        private async Task ConnectToRtcHost(ConnectCredentials credentials)
         {
             LogInfo?.Invoke("--- ConnectToRtcHost() start");
             // subscription cause assigning client id by server
+            signaling.UserId    = credentials.userId.AsString();
+            signaling.Token     = credentials.token.AsString();
             signaling.SubscribeMessage<Answer>(nameof(Answer), async (message, context) => {
                 if (!message.GetParam(out var answer, out var answerError)) {
                     LogError($"invalid Answer message. error: {answerError}");
@@ -245,7 +258,8 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
         public override async Task<ExecuteSyncResult> ExecuteRequestAsync(SyncRequest syncRequest, SyncContext syncContext) {
             var conn = rtcConnection;
             if (conn == null) {
-                conn = await Connect().ConfigureAwait(false);
+                var cred    = new ConnectCredentials (syncRequest.userId, syncRequest.token);
+                conn        = await Connect(cred).ConfigureAwait(false);
                 Logger.Log(HubLog.Info, "ExecuteRequestAsync connected");
             }
             int sendReqId       = Interlocked.Increment(ref reqId);
