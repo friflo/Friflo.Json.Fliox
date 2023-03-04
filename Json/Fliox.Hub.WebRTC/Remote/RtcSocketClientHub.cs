@@ -74,7 +74,8 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
             LogInfo             = message => Logger.Log(HubLog.Info, $"RTC-client({ClientId}): {message}");
         }
         
-        private event Action<string> LogInfo; 
+        private event Action<string> LogInfo;
+        private event Action<string> LogNull; 
         
         private void LogError(string message, Exception exception = null) {
             Logger.Log(HubLog.Error, $"RTC-client({ClientId}): {message}", exception);
@@ -116,7 +117,7 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
         
         private async Task ConnectToRtcHost()
         {
-            LogInfo?.Invoke("ConnectToRtcHost()");
+            LogInfo?.Invoke("--- ConnectToRtcHost() start");
             // subscription cause assigning client id by server
             signaling.SubscribeMessage<Answer>(nameof(Answer), async (message, context) => {
                 if (!message.GetParam(out var answer, out var answerError)) {
@@ -128,14 +129,14 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
                     LogError($"received answer with invalid client: {answer.client}");
                     return;
                 }
-                LogInfo?.Invoke("--- SetRemoteDescription");
+                LogInfo?.Invoke("SetRemoteDescription");
                 var answerDescription   = new SessionDescription { type = SdpType.answer, sdp = answer.sdp };
                 var descError           = await pc.SetRemoteDescription(answerDescription).ConfigureAwait(false);
                 if (descError != null) {
                     throw new InvalidOperationException($"setRemoteDescription failed. error: {descError}");
                 }
                 foreach (var candidate in iceCandidates) {
-                    LogInfo?.Invoke("--- AddIceCandidate");
+                    LogNull?.Invoke("--- AddIceCandidate");
                     pc.AddIceCandidate(candidate);
                 }
                 iceCandidates.Clear();
@@ -145,7 +146,7 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
                     LogError($"invalid HostIce message. error: {hostIceError}");
                     return;
                 }
-                LogInfo?.Invoke($"received ICE candidate. client: {ice.client}");
+                LogNull?.Invoke($"received ICE candidate. client: {ice.client}");
                 if (!ice.client.IsEqual(ClientId)) {
                     LogError($"received ICE candidate with invalid client: {ice.client}");
                     return;
@@ -157,7 +158,7 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
                 }
                 var signalingState = pc.SignalingState;
                 if (signalingState == SignalingState.HaveRemotePrAnswer || signalingState == SignalingState.Stable) {
-                    LogInfo?.Invoke("--- AddIceCandidate");
+                    LogNull?.Invoke("--- AddIceCandidate");
                     pc.AddIceCandidate(iceCandidate);
                 } else {
                     iceCandidates.Add(iceCandidate);
@@ -181,7 +182,7 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
             dc.OnClose   += ()          => { LogInfo?.Invoke("datachannel closed"); };
             dc.OnError   += dcError     => { LogError($"datachannel error: {dcError}"); };
             
-            pc.OnIceCandidate += candidate => {
+            pc.OnIceCandidate += async (candidate) => {
                 // is called on separate thread
                 var jsonCandidate   = new JsonValue(candidate.ToJson());
                 var iceCandidate    = new ClientIce { client = ClientId, candidate = jsonCandidate };
@@ -191,7 +192,7 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
                 } else {
                     var msg             = signaling.SendMessage(nameof(ClientIce), iceCandidate);
                     msg.EventTargetClient(hostClientId);
-                    _ = signaling.SyncTasks();
+                    _ = signaling.SyncTasks().ConfigureAwait(false);
                 }
             };
             pc.OnConnectionStateChange += state => {
@@ -212,11 +213,13 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
             foreach (var localIceCandidate in localIceCandidates) {
                 var msg = signaling.SendMessage(nameof(ClientIce), localIceCandidate);
                 msg.EventTargetClient(hostClientId);
-                _ = signaling.SyncTasks();
+                _ = signaling.SyncTasks().ConfigureAwait(false);
             }
-            await channelOpen.Task.ConfigureAwait(false);
-            
-            LogInfo?.Invoke("ConnectToRtcHost() finished");
+            LogInfo?.Invoke("--- ConnectToRtcHost() wait");
+            await channelOpen.Task.ConfigureAwait(false);   // continues on WebRTC callback thread 
+            await Task.Delay(1).ConfigureAwait(false);      // move execution to ThreadPool Worker
+
+            LogInfo?.Invoke("--- ConnectToRtcHost() finished");
             rtcConnection.dc = dc;
         }
         
@@ -243,6 +246,7 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
             var conn = rtcConnection;
             if (conn == null) {
                 conn = await Connect().ConfigureAwait(false);
+                Logger.Log(HubLog.Info, "ExecuteRequestAsync connected");
             }
             int sendReqId       = Interlocked.Increment(ref reqId);
             syncRequest.reqId   = sendReqId;
