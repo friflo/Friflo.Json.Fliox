@@ -76,8 +76,9 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
             this.signalingHost  = signalingHost;
             var uri             = new Uri(signalingHost);
             var query           = HttpUtility.ParseQueryString(uri.Query);
-            remoteHostId        = query.Get("host");
-            var signalingSocket = new WebSocketClientHub("signaling", signalingHost, env, RemoteClientAccess.Single);
+            remoteHostId        = query.Get("host") ?? throw new ArgumentException($"missing host parameter in signalingHost: {signalingHost}");
+            var signalingDB     = query.Get("db")   ?? "signaling";
+            var signalingSocket = new WebSocketClientHub(signalingDB, signalingHost, env, RemoteClientAccess.Single);
             signaling           = new Signaling(signalingSocket); // user / token assigned on connect
             var mapper          = new ObjectMapper(sharedEnv.TypeStore);
             reader              = mapper.reader;

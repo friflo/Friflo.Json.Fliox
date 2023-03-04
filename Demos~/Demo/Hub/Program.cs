@@ -67,7 +67,7 @@ namespace DemoHub
         
         private static async Task CreateWebRtcServer(HttpHost httpHost) {
             var rtcConfig = new SignalingConfig {
-                SignalingDB     = "signaling", SignalingHost  = "ws://localhost:8011/fliox/",
+                SignalingHost   = "ws://localhost:8011/fliox/",
                 User            = "admin", Token = "admin",
                 WebRtcConfig    = new WebRtcConfig { IceServerUrls = new [] { "stun:stun.sipsorcery.com" } },
             };
