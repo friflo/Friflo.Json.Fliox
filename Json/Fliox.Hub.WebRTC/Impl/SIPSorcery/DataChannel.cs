@@ -12,27 +12,51 @@ namespace Friflo.Json.Fliox.Hub.WebRTC.Impl
     internal sealed class DataChannel
     {
         private     readonly    RTCDataChannel      impl;
-        internal    event       Action              OnOpen;
-        internal    event       Action              OnClose;
-        internal    event       Action<string>      OnError;
-        internal    event       Action<byte[]>      OnMessage;
         internal                string              Label => impl.label;
         internal                DataChannelState    ReadyState => GetReadyState();
+        
+        private     Action          onOpen;
+        internal    Action          OnOpen      { get => onOpen; set => SetOnOpen (value); }
+        
+        private     Action          onClose;
+        internal    Action          OnClose     { get => onClose; set => SetOnClose(value); }
+        
+        private     Action<byte[]>  onMessage;
+        internal    Action<byte[]>  OnMessage   { get => onMessage; set => SetOnMessage(value); }
+        
+        private     Action<string>  onError;
+        internal    Action<string>  OnError    { get => onError; set => SetOnError(value); }
+        
+        private void SetOnOpen(Action action) {
+            onOpen         = action;
+            impl.onopen   += () => {
+                action();
+            };
+        }
+        
+        private void SetOnClose(Action action) {
+            onClose         = action;
+            impl.onclose   += () => {
+                action();
+            };
+        }
+        
+        private void SetOnMessage(Action<byte[]> action) {
+            onMessage         = action;
+            impl.onmessage   += (dc, protocol, data) => {
+                action(data);
+            };
+        }
+        
+        private void SetOnError(Action<string> action) {
+            onError         = action;
+            impl.onerror   += error => {
+                action(error);
+            };
+        }
 
         internal DataChannel (RTCDataChannel impl) {
             this.impl = impl;
-            impl.onopen += () => {
-                OnOpen?.Invoke();  
-            };
-            impl.onclose += () => {
-                OnClose?.Invoke();  
-            };
-            impl.onerror += error => {
-                OnError?.Invoke(error);
-            };
-            impl.onmessage += (dc, protocol, data) => {
-                OnMessage?.Invoke(data);  
-            };
         }
         
         internal void Close() {

@@ -12,27 +12,43 @@ namespace Friflo.Json.Fliox.Hub.WebRTC.Impl
     internal sealed class DataChannel
     {
         private     readonly    RTCDataChannel      impl;
-        internal    event       Action              OnOpen;
-        internal    event       Action              OnClose;
-        internal    event       Action<string>      OnError;
-        internal    event       Action<byte[]>      OnMessage;
         internal                string              Label => impl.Label;
         internal                DataChannelState    ReadyState => GetReadyState();
+        
+        private     Action          onOpen;
+        internal    Action          OnOpen      { get => onOpen; set => SetOnOpen (value); }
+        
+        private     Action          onClose;
+        internal    Action          OnClose     { get => onClose; set => SetOnClose(value); }
+        
+        private     Action<byte[]>  onMessage;
+        internal    Action<byte[]>  OnMessage   { get => onMessage; set => SetOnMessage(value); }
+        
+        internal    Action<string>  OnError;
+        
+        private void SetOnOpen(Action action) {
+            onOpen         = action;
+            impl.OnOpen    = () => {
+                action();
+            };
+        }
+        
+        private void SetOnClose(Action action) {
+            onClose         = action;
+            impl.OnClose    = () => {
+                action();
+            };
+        }
+        
+        private void SetOnMessage(Action<byte[]> action) {
+            onMessage         = action;
+            impl.OnMessage    = bytes => {
+                action(bytes);
+            };
+        }
 
         internal DataChannel (RTCDataChannel impl) {
             this.impl = impl;
-            impl.OnOpen += () => {
-                OnOpen?.Invoke();  
-            };
-            impl.OnClose += () => {
-                OnClose?.Invoke();  
-            };
-            /* impl.onerror += error => {
-                OnError?.Invoke(error);
-            }; */
-            impl.OnMessage += bytes => {
-                OnMessage?.Invoke(bytes);  
-            };
         }
         
         internal void Close() {

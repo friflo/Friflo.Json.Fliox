@@ -14,15 +14,23 @@ namespace Friflo.Json.Fliox.Hub.WebRTC.Impl
     internal sealed class PeerConnection
     {
         private     readonly    RTCPeerConnection           impl;
-        internal                SignalingState              SignalingState => GetSignalingState();          
-        internal    event       Action<PeerConnectionState> OnConnectionStateChange;
-        internal    event       Action<DataChannel>         OnDataChannel;
-        internal    event       Action<IceCandidate>        OnIceCandidate;
-        internal    event       Action<IceConnectionState>  OnIceConnectionStateChange;
-
-        internal PeerConnection (WebRtcConfig config) {
-            impl = new RTCPeerConnection(ref config.Get().impl);
-            impl.OnConnectionStateChange += state => {
+        internal                SignalingState              SignalingState => GetSignalingState();
+        
+        private     Action<PeerConnectionState> onConnectionStateChange;
+        internal    Action<PeerConnectionState> OnConnectionStateChange     { get => onConnectionStateChange; set => SetOnConnectionStateChange(value); }
+        
+        private     Action<DataChannel>         onDataChannel;
+        internal    Action<DataChannel>         OnDataChannel               { get => onDataChannel; set => SetOnDataChannel(value); }
+        
+        private     Action<IceCandidate>        onIceCandidate;
+        internal    Action<IceCandidate>        OnIceCandidate              { get => onIceCandidate; set => SetOnIceCandidate(value); }
+        
+        private     Action<IceConnectionState>  onIceConnectionStateChange;
+        internal    Action<IceConnectionState>  OnIceConnectionStateChange  { get => onIceConnectionStateChange; set => SetOnIceConnectionStateChange(value); }
+        
+        private void SetOnConnectionStateChange(Action<PeerConnectionState> action) {
+            onConnectionStateChange         = action;
+            impl.OnConnectionStateChange    = state => {
                 PeerConnectionState connState;
                 switch (state) {
                     case RTCPeerConnectionState.Closed:         connState = PeerConnectionState.closed;         break;
@@ -34,16 +42,27 @@ namespace Friflo.Json.Fliox.Hub.WebRTC.Impl
                     default:
                         throw new InvalidOperationException($"unexpected connection state: {state}");
                 }
-                OnConnectionStateChange?.Invoke(connState);
+                action.Invoke(connState);
             };
-            impl.OnDataChannel += channel => {
-                var dc = new DataChannel(channel);
-                OnDataChannel?.Invoke(dc);
+        }
+        
+        private void SetOnDataChannel(Action<DataChannel> action) {
+            onDataChannel       = action;
+            impl.OnDataChannel  = channel => {
+                var dc = new DataChannel(channel); action.Invoke(dc);
             };
-            impl.OnIceCandidate += candidate => {
-                OnIceCandidate?.Invoke(new IceCandidate(candidate));
+        }
+        
+        private void SetOnIceCandidate(Action<IceCandidate> action) {
+            onIceCandidate       = action;
+            impl.OnIceCandidate  = candidate => {
+                var dc = new IceCandidate(candidate); action.Invoke(dc);
             };
-            impl.OnIceConnectionChange += state => {
+        }
+        
+        private void SetOnIceConnectionStateChange(Action<IceConnectionState> action) {
+            onIceConnectionStateChange  = action;
+            impl.OnIceConnectionChange  = state => {
                 IceConnectionState connState;
                 switch (state) {
                     case RTCIceConnectionState.Closed:          connState = IceConnectionState.closed;         break;
@@ -55,8 +74,12 @@ namespace Friflo.Json.Fliox.Hub.WebRTC.Impl
                     default:
                         throw new InvalidOperationException($"unexpected ice connection state: {state}");
                 }
-                OnIceConnectionStateChange?.Invoke(connState);
+                action(connState);
             };
+        }
+
+        internal PeerConnection (WebRtcConfig config) {
+            impl = new RTCPeerConnection(ref config.Get().impl);
         }
         
         internal Task<DataChannel> CreateDataChannel(string label) {

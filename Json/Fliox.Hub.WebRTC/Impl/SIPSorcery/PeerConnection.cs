@@ -14,15 +14,23 @@ namespace Friflo.Json.Fliox.Hub.WebRTC.Impl
     internal sealed class PeerConnection
     {
         private     readonly    RTCPeerConnection           impl;
-        internal                SignalingState              SignalingState => GetSignalingState();  
-        internal    event       Action<PeerConnectionState> OnConnectionStateChange;
-        internal    event       Action<DataChannel>         OnDataChannel;
-        internal    event       Action<IceCandidate>        OnIceCandidate;
-        internal    event       Action<IceConnectionState>  OnIceConnectionStateChange;
-
-        internal PeerConnection (WebRtcConfig config) {
-            impl = new RTCPeerConnection(config.Get().impl);
-            impl.onconnectionstatechange += state => {
+        internal                SignalingState              SignalingState => GetSignalingState();
+        
+        private     Action<PeerConnectionState> onConnectionStateChange;
+        internal    Action<PeerConnectionState> OnConnectionStateChange     { get => onConnectionStateChange; set => SetOnConnectionStateChange(value); }
+        
+        private     Action<DataChannel>         onDataChannel;
+        internal    Action<DataChannel>         OnDataChannel               { get => onDataChannel; set => SetOnDataChannel(value); }
+        
+        private     Action<IceCandidate>        onIceCandidate;
+        internal    Action<IceCandidate>        OnIceCandidate              { get => onIceCandidate; set => SetOnIceCandidate(value); }
+        
+        private     Action<IceConnectionState>  onIceConnectionStateChange;
+        internal    Action<IceConnectionState>  OnIceConnectionStateChange  { get => onIceConnectionStateChange; set => SetOnIceConnectionStateChange(value); }
+        
+        private void SetOnConnectionStateChange(Action<PeerConnectionState> action) {
+            onConnectionStateChange         = action;
+            impl.onconnectionstatechange   += state => {
                 PeerConnectionState connState;
                 switch (state) {
                     case RTCPeerConnectionState.closed:         connState = PeerConnectionState.closed;         break;
@@ -34,15 +42,26 @@ namespace Friflo.Json.Fliox.Hub.WebRTC.Impl
                     default:
                         throw new InvalidOperationException($"unexpected connection state: {state}");
                 }
-                OnConnectionStateChange?.Invoke(connState);
+                action.Invoke(connState);
             };
+        }
+        
+        private void SetOnDataChannel(Action<DataChannel> action) {
+            onDataChannel       = action;
             impl.ondatachannel += channel => {
-                var dc = new DataChannel(channel);
-                OnDataChannel?.Invoke(dc);
+                var dc = new DataChannel(channel); action.Invoke(dc);
             };
+        }
+        
+        private void SetOnIceCandidate(Action<IceCandidate> action) {
+            onIceCandidate       = action;
             impl.onicecandidate += candidate => {
-                OnIceCandidate?.Invoke(new IceCandidate(candidate));
+                var dc = new IceCandidate(candidate); action.Invoke(dc);
             };
+        }
+        
+        private void SetOnIceConnectionStateChange(Action<IceConnectionState> action) {
+            onIceConnectionStateChange       = action;
             impl.oniceconnectionstatechange += state => {
                 IceConnectionState connState;
                 switch (state) {
@@ -55,8 +74,12 @@ namespace Friflo.Json.Fliox.Hub.WebRTC.Impl
                     default:
                         throw new InvalidOperationException($"unexpected ice connection state: {state}");
                 }
-                OnIceConnectionStateChange?.Invoke(connState);
+                action(connState);
             };
+        }
+
+        internal PeerConnection (WebRtcConfig config) {
+            impl = new RTCPeerConnection(config.Get().impl);
         }
         
         internal async Task<DataChannel> CreateDataChannel(string label) {
@@ -140,7 +163,8 @@ namespace Friflo.Json.Fliox.Hub.WebRTC.Impl
         }
     }
     
-    internal sealed class IceCandidate {
+    internal sealed class IceCandidate
+    {
         
         internal readonly RTCIceCandidate impl;
         
