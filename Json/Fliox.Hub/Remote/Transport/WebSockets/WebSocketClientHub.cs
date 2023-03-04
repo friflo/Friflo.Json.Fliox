@@ -51,7 +51,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         
         private  readonly   CancellationTokenSource     cancellationToken = new CancellationTokenSource();
         
-        public   override   string                      ToString() => $"{database.name} - endpoint: {remoteHost}";
+        public   override   string                      ToString() => $"{database.name} - host: {remoteHost}";
         
         /// <summary>
         /// Create a remote <see cref="FlioxHub"/> by using a <see cref="WebSocket"/> connection

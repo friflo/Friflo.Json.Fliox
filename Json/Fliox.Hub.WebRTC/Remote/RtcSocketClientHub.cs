@@ -44,7 +44,7 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
     public sealed class RtcSocketClientHub : SocketClientHub
     {
         private  readonly   WebRtcConfig                config;
-        private  readonly   string                      remoteHost;
+        private  readonly   string                      signalingHost;
         private  readonly   string                      remoteHostId;
         private             string                      hostClientId;
         /// Incrementing requests id used to map a <see cref="ProtocolResponse"/>'s to its related <see cref="SyncRequest"/>.
@@ -63,21 +63,21 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
         
         private  readonly   CancellationTokenSource     cancellationToken = new CancellationTokenSource();
         
-        public   override   string                      ToString() => $"{database.name} - webrtc: {remoteHost}";
+        public   override   string                      ToString() => $"{database.name} - host: {signalingHost}";
         
         public RtcSocketClientHub(
             string              dbName,
-            string              remoteHost,
+            string              signalingHost,
             WebRtcConfig        config,
             SharedEnv           env = null,
             RemoteClientAccess  access = RemoteClientAccess.Single)
             : base(new RemoteDatabase(dbName), env, 0, access)
         {
-            this.remoteHost     = remoteHost;
-            var uri             = new Uri(remoteHost);
+            this.signalingHost  = signalingHost;
+            var uri             = new Uri(signalingHost);
             var query           = HttpUtility.ParseQueryString(uri.Query);
             remoteHostId        = query.Get("host");
-            var signalingSocket = new WebSocketClientHub("signaling", remoteHost, env, RemoteClientAccess.Single);
+            var signalingSocket = new WebSocketClientHub("signaling", signalingHost, env, RemoteClientAccess.Single);
             signaling           = new Signaling(signalingSocket); // user / token assigned on connect
             var mapper          = new ObjectMapper(sharedEnv.TypeStore);
             reader              = mapper.reader;
@@ -187,13 +187,13 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
             
             var channelOpen     = new TaskCompletionSource<bool>();
             dc.OnOpen    += ()      => {
-                LogInfo?.Invoke("datachannel onopen");
+                LogInfo?.Invoke("data channel onopen");
                 if (dc.ReadyState != DataChannelState.open) { LogError("expect ReadyState==open"); }
                 channelOpen.SetResult(true);
             };
             dc.OnMessage += (data)      => OnMessage(data);
-            dc.OnClose   += ()          => { LogInfo?.Invoke("datachannel closed"); };
-            dc.OnError   += dcError     => { LogError($"datachannel error: {dcError}"); };
+            dc.OnClose   += ()          => { LogInfo?.Invoke("data channel closed"); };
+            dc.OnError   += dcError     => { LogError($"data channel error: {dcError}"); };
             
             pc.OnIceCandidate += async (candidate) => {
                 // is called on separate thread
@@ -211,7 +211,7 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
             pc.OnConnectionStateChange += state => {
                 LogInfo?.Invoke($"connection state change: {state}");
             };
-            var offer = await pc.CreateOffer().ConfigureAwait(false);  // fire onicecandidate
+            var offer = await pc.CreateOffer().ConfigureAwait(false);  // fire OnIceCandidate
             await pc.SetLocalDescription(offer).ConfigureAwait(false);
 
             // --- send offer SDP -> Signaling Server -> WebRTC Host
@@ -251,7 +251,7 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
             var message     = new JsonValue(data);
             // LogInfo?.Invoke($"received message: {message}");
             // --- process received message
-            if (env.logMessages) TransportUtils.LogMessage(Logger, ref sbRecv, "client  <-", remoteHost, message);
+            if (env.logMessages) TransportUtils.LogMessage(Logger, ref sbRecv, "client  <-", signalingHost, message);
             OnReceive(message, rtcConnection.requestMap, reader);
         }
         
@@ -273,7 +273,7 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
                     var request     = new RemoteRequest(syncContext, cancellationToken);
                     conn.requestMap.Add(sendReqId, request);
                     var sendBuffer  = rawRequest.MutableArray;
-                    if (env.logMessages) TransportUtils.LogMessage(Logger, ref sbSend, "client  ->", remoteHost, rawRequest);
+                    if (env.logMessages) TransportUtils.LogMessage(Logger, ref sbSend, "client  ->", signalingHost, rawRequest);
                     // --- Send message
                     conn.dc.Send(sendBuffer, rawRequest.start, rawRequest.Count);
                     
@@ -284,7 +284,7 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
                 }
             }
             catch (Exception e) {
-                return CreateSyncError(e, remoteHost);
+                return CreateSyncError(e, signalingHost);
             }
         }
     }
