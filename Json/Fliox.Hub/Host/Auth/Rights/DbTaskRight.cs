@@ -53,7 +53,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth.Rights
                 case TaskType.closeCursors:        return new AuthorizeTaskType(TaskType.closeCursors,      database);
                 //
                 case TaskType.message:             return new AuthorizeTaskType(TaskType.message,           database);
-                case TaskType.command:             return new AuthorizeTaskType(TaskType.message,           database);
+                case TaskType.command:             return new AuthorizeTaskType(TaskType.command,           database);
                 case TaskType.subscribeChanges:    return new AuthorizeTaskType(TaskType.subscribeChanges,  database);
                 case TaskType.subscribeMessage:    return new AuthorizeTaskType(TaskType.subscribeMessage,  database);
             }
