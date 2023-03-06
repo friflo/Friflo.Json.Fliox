@@ -16,20 +16,22 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
     /// <see cref="hubPermission"/> for general - non task specific - permissions.<br/>
     /// </summary>
     /// <remarks>
-    /// <see cref="User"/> instances are <b>immutable</b>.<br/>
     /// <b>Important:</b> <see cref="User"/> instances must be used only within the execution of a single <see cref="Protocol.SyncRequest"/>. <br/>
     /// Caching them may result in dealing with outdated <see cref="User"/> instances as new instances created by an
     /// <see cref="Authenticator"/> whenever its credentials or permissions changes.
     /// </remarks>
     public sealed class User {
         // --- public
-        public   readonly   ShortString     userId;         // not null
-        public   readonly   ShortString     token;          // nullable
-        public   readonly   TaskAuthorizer  taskAuthorizer; // not null
-        public   readonly   HubPermission   hubPermission;  // not null
-        public   readonly   string[]        roles;          // nullable
+        /** immutable, not null */ public readonly   ShortString            userId;         
+        /** immutable, nullable */ public readonly   ShortString            token;
+        /** immutable, not null */ public readonly   TaskAuthorizer         taskAuthorizer;
+        /** immutable, not null */ public readonly   HubPermission          hubPermission;
+        /** immutable, not null */ public            IReadOnlyList<string>  Roles => roles ?? Array.Empty<string>();
+        
+        // --- private
+        /** immutable, nullable */ internal readonly string[]               roles;
 
-        public   override   string          ToString() => userId.AsString();
+        public   override                            string                 ToString() => userId.AsString();
         
         // --- internal
         internal readonly   ConcurrentDictionary<ShortString, Empty>    clients;        // key: clientId
