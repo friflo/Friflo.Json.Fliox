@@ -112,11 +112,10 @@ namespace Friflo.Json.Fliox.Hub.Host
                 sb.Append(". ");
                 sb.Append(authError);
             }
-            var anonymous = syncContext.hub.Authenticator.anonymousUser;
-            var user = syncContext.User;
-            if (user != anonymous) {
+            var request = syncContext.request;
+            if (!request.userId.IsNull()) {
                 sb.Append(". user: ");
-                sb.Append(user.userId);
+                sb.Append(request.userId);
             }
             var message = sb.ToString();
             error = SyncRequestTask.PermissionDenied(message);

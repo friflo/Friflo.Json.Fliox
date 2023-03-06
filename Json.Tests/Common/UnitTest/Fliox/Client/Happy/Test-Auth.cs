@@ -80,8 +80,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 var tasks = new ReadWriteTasks(unknownUser, newArticle);
                 var sync = await unknownUser.TrySyncTasks();
                 AreEqual(3, sync.Failed.Count);
-                AreEqual("PermissionDenied ~ not authorized. user authentication requires 'token'", tasks.findArticle.Error.Message);
-                AreEqual("PermissionDenied ~ not authorized. user authentication requires 'token'", tasks.upsertArticles.Error.Message);
+                AreEqual("PermissionDenied ~ not authorized. user authentication requires 'token'. user: 'unknown'", tasks.findArticle.Error.Message);
+                AreEqual("PermissionDenied ~ not authorized. user authentication requires 'token'. user: 'unknown'", tasks.upsertArticles.Error.Message);
                 
                 // test: invalid token 
                 unknownUser.Token = "some token";
@@ -90,8 +90,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 tasks = new ReadWriteTasks(unknownUser, newArticle);
                 sync = await unknownUser.TrySyncTasks();
                 AreEqual(3, sync.Failed.Count);
-                AreEqual("PermissionDenied ~ not authorized. Authentication failed", tasks.findArticle.Error.Message);
-                AreEqual("PermissionDenied ~ not authorized. Authentication failed", tasks.upsertArticles.Error.Message);
+                AreEqual("PermissionDenied ~ not authorized. Authentication failed. user: 'unknown'", tasks.findArticle.Error.Message);
+                AreEqual("PermissionDenied ~ not authorized. Authentication failed. user: 'unknown'", tasks.upsertArticles.Error.Message);
             }
         }
 
@@ -126,8 +126,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 tasks = new ReadWriteTasks(mutateUser, newArticle);
                 sync = await mutateUser.TrySyncTasks();
                 AreEqual(3, sync.Failed.Count);
-                AreEqual("PermissionDenied ~ not authorized. user authentication requires 'token'", tasks.findArticle.Error.Message);
-                AreEqual("PermissionDenied ~ not authorized. user authentication requires 'token'", tasks.upsertArticles.Error.Message);
+                AreEqual("PermissionDenied ~ not authorized. user authentication requires 'token'. user: 'test-operation'", tasks.findArticle.Error.Message);
+                AreEqual("PermissionDenied ~ not authorized. user authentication requires 'token'. user: 'test-operation'", tasks.upsertArticles.Error.Message);
             }
             using (var readUser         = new PocStore(hub) { UserId = "test-task"}) {
                 // test: allow read
