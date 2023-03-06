@@ -59,17 +59,18 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
         }
         
         private void RoleChange(Changes<string, Role> changes, EventContext context) {
-            var changedRoles    = new List<string>();
+            var roles    = new List<string>();
             
-            foreach (var entity in changes.Upserts) { changedRoles.Add(entity.id); }
-            foreach (var id     in changes.Deletes) { changedRoles.Add(id); }
-            foreach (var patch  in changes.Patches) { changedRoles.Add(patch.key); }
+            foreach (var entity in changes.Upserts) { roles.Add(entity.id); }
+            foreach (var id     in changes.Deletes) { roles.Add(id); }
+            foreach (var patch  in changes.Patches) { roles.Add(patch.key); }
             
-            var affectedUsers = new List<ShortString>();
+            var changedRoles    = roles.ToArray();
+            var affectedUsers   = new List<ShortString>();
             foreach (var changedRole in changedRoles) {
-                if(!userAuthenticator.roleCache.TryRemove(changedRole, out var role))
+                if(!userAuthenticator.roleCache.TryRemove(changedRole, out _))
                     continue;
-                AddAffectedUsers(affectedUsers, role.taskAuthorizers);
+                AddAffectedUsers(affectedUsers, changedRoles);
             }
             foreach (var user in affectedUsers) {
                 userAuthenticator.users.TryRemove(user, out _);
@@ -93,24 +94,28 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
             }
         }
         
-        /// Iterate all authorized users and remove those having an <see cref="TaskAuthorizer"/> which was modified.
+        /// Iterate all authorized users and add users to <paramref name="affectedUsers"/> if having given <paramref name="roles"/>.
         /// Used iteration instead of an additional map (role -> users) to avoid long lived objects in heap.
-        private void AddAffectedUsers(List<ShortString> affectedUsers, TaskAuthorizer[] search) {
+        private void AddAffectedUsers(List<ShortString> affectedUsers, string[] roles) {
             foreach (var pair in userAuthenticator.users) {
                 var user = pair.Value;
-                if (user.taskAuthorizer is AuthorizeAny any) {
-                    foreach (var authorizer in any.list) {
-                        if (search.Contains(authorizer)) {
-                            affectedUsers.Add(user.userId);
-                            break;
-                        }
-                    }
+                if (IsUnionEmpty(user.roles, roles)) {
                     continue;
                 }
-                if (search.Contains(user.taskAuthorizer)) {
-                    affectedUsers.Add(user.userId);                    
+                affectedUsers.Add(user.userId);
+            }
+        }
+        
+        private static bool IsUnionEmpty (string[] rolesLeft, string[] rolesRight) {
+            if (rolesLeft == null) {
+                return true;
+            }
+            foreach (var roleRight in rolesRight) {
+                if (rolesLeft.Contains(roleRight)) {
+                    return false;
                 }
             }
+            return true;
         }
     }
 }

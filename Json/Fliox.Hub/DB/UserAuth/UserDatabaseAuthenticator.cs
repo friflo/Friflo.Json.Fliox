@@ -62,7 +62,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
                 user = anonymousUser;
             } else {
                 if (!users.TryGetValue(userId, out  user)) {
-                    user = new User(userId, default);
+                    user = new User(userId, default, null);
                     users.TryAdd(userId, user);
                 }
             }

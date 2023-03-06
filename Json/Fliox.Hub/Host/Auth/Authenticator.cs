@@ -50,7 +50,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
         protected Authenticator () {
             registeredPredicates    = new Dictionary<string, AuthorizePredicate>();
             users                   = new ConcurrentDictionary <ShortString, User>(ShortString.Equality);
-            anonymousUser           = new User(User.AnonymousId, default);
+            anonymousUser           = new User(User.AnonymousId, default, null);
             users.TryAdd(User.AnonymousId, anonymousUser);
         }
         

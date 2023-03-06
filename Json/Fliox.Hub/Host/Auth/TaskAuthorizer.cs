@@ -8,7 +8,8 @@ using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 namespace Friflo.Json.Fliox.Hub.Host.Auth
 {
     /// <summary>
-    /// Authorize a given task.
+    /// Used to authorize <see cref="SyncRequestTask"/>'s.<br/>
+    /// All <see cref="TaskAuthorizer"/> implementations are immutable.
     /// </summary>
     /// <remarks>
     /// This <see cref="TaskAuthorizer"/> it stored at <see cref="AuthState.taskAuthorizer"/>.
