@@ -27,18 +27,6 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
         internal  readonly  ConcurrentDictionary<ShortString, User> users;  // todo make private
         // ReSharper disable once UnusedMember.Local - expose Dictionary as list in Debugger
         private             ICollection<User>                       Users => users.Values;
-        internal  readonly  User                                    anonymousUser;
-        
-        // not null
-        public  TaskAuthorizer  AnonymousTaskAuthorizer {
-            get => anonymousUser.taskAuthorizer;
-            set => anonymousUser.taskAuthorizer = value ?? throw new ArgumentNullException(nameof(AnonymousTaskAuthorizer));
-        }
-        // not null
-        public  HubPermission   AnonymousHubPermission {
-            get => anonymousUser.hubPermission;
-            set => anonymousUser.hubPermission = value ?? throw new ArgumentNullException(nameof(AnonymousHubPermission));
-        }
         
         public    override  string                                  ToString() => $"users: {users.Count}";
 
@@ -50,8 +38,6 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
         protected Authenticator () {
             registeredPredicates    = new Dictionary<string, AuthorizePredicate>();
             users                   = new ConcurrentDictionary <ShortString, User>(ShortString.Equality);
-            anonymousUser           = new User(User.AnonymousId, default, null);
-            users.TryAdd(User.AnonymousId, anonymousUser);
         }
         
         /// <summary>

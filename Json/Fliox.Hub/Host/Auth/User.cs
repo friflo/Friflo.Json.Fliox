@@ -16,17 +16,18 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
     /// <see cref="hubPermission"/> for general - non task specific - permissions.<br/>
     /// </summary>
     /// <remarks>
+    /// <see cref="User"/> instances are <b>immutable</b>.<br/>
     /// <b>Important:</b> <see cref="User"/> instances must be used only within the execution of a single <see cref="Protocol.SyncRequest"/>. <br/>
     /// Caching them may result in dealing with outdated <see cref="User"/> instances as new instances created by an
     /// <see cref="Authenticator"/> whenever its credentials or permissions changes.
     /// </remarks>
     public sealed class User {
         // --- public
-        public   readonly   ShortString     userId;
-        public   readonly   ShortString     token;
-        internal readonly   string[]        roles;                                  // nullable
-        internal            TaskAuthorizer  taskAuthorizer  = TaskAuthorizer.None;  // not null
-        internal            HubPermission   hubPermission   = HubPermission.None;   // not null
+        public   readonly   ShortString     userId;         // not null
+        public   readonly   ShortString     token;          // nullable
+        public   readonly   TaskAuthorizer  taskAuthorizer; // not null
+        public   readonly   HubPermission   hubPermission;  // not null
+        public   readonly   string[]        roles;          // nullable
 
         public   override   string          ToString() => userId.AsString();
         
@@ -39,12 +40,21 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
         public static readonly  ShortString   AnonymousId = new ShortString("anonymous");
 
 
-        internal User (in ShortString userId, in ShortString token, List<string> roles) {
+        internal User (
+            in ShortString  userId,
+            in ShortString  token,
+            TaskAuthorizer  taskAuthorizer,
+            HubPermission   hubPermission,
+            List<string>    roles)
+        {
+            if (userId.IsNull()) throw new ArgumentNullException(nameof(userId));
             clients             = new ConcurrentDictionary<ShortString, Empty>(ShortString.Equality);
             requestCounts       = new Dictionary<ShortString, RequestCount>   (ShortString.Equality);
-            this.roles          = roles?.ToArray();
             this.userId         = userId;
             this.token          = token;
+            this.taskAuthorizer = taskAuthorizer ?? throw new ArgumentNullException(nameof(taskAuthorizer));
+            this.hubPermission  = hubPermission  ?? throw new ArgumentNullException(nameof(hubPermission));
+            this.roles          = roles?.ToArray();
         }
         
         public  IReadOnlyCollection<ShortString> GetGroups() {

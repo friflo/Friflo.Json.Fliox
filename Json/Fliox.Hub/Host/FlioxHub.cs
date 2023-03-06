@@ -129,7 +129,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         
         /// <see cref="Authenticator"/> is mutable => create new instance per Hub 
         private static Authenticator CreateDefaultAuthenticator() {
-            return new AuthenticateNone { AnonymousTaskAuthorizer = TaskAuthorizer.Full, AnonymousHubPermission = HubPermission.Full };
+            return new AuthenticateNone (TaskAuthorizer.Full, HubPermission.Full);
         }
 
         #endregion

@@ -135,10 +135,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             
             // --- users
             var users   = result.users.Result;
-            AreEqual(3, users.Count);
+            AreEqual(2, users.Count);
             
-            var anonymousInfo = users.Find(i => i.id.IsEqual(User.AnonymousId)).ToString();
-            AreEqual("{'id':'anonymous','clients':[],'counts':[]}",     anonymousInfo);
+            var anonymousInfo = users.Find(i => i.id.IsEqual(User.AnonymousId));
+            IsNull(anonymousInfo);
             
             var adminInfo = users.Find(i => i.id.IsEqual(new ShortString("monitor-admin"))).ToString();
             AreEqual("{'id':'monitor-admin','clients':['monitor-client'],'counts':[{'db':'monitor','requests':1,'tasks':1}]}", adminInfo);

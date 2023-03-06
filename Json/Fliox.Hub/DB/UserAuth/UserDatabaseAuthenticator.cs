@@ -26,7 +26,8 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
     /// </remarks>
     public sealed class UserDatabaseAuthenticator : Authenticator
     {
-        private readonly        Dictionary<ShortString, TaskAuthorizer> userRights;
+        private  readonly   Dictionary<ShortString, TaskAuthorizer> userRights;
+        private  readonly   User                                    anonymous;
         
         public UserDatabaseAuthenticator(string userDbName) {
             var changes         = new [] { EntityChange.create, EntityChange.upsert, EntityChange.delete, EntityChange.merge };
@@ -46,6 +47,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
                 { new ShortString(UserStore.AuthenticationUser),    authUserRights },
                 { new ShortString(UserStore.Server),                serverRights   },
             };
+            anonymous = new User(User.AnonymousId, default, TaskAuthorizer.None, HubPermission.None, null);
         }
 
         public override Task AuthenticateAsync(SyncRequest syncRequest, SyncContext syncContext) {
@@ -59,19 +61,19 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
             ref var userId = ref syncRequest.userId;
             User user;
             if (userId.IsNull()) {
-                user = anonymousUser;
+                user = anonymous;
             } else {
                 if (!users.TryGetValue(userId, out  user)) {
-                    user = new User(userId, default, null);
+                    user = new User(userId, default, TaskAuthorizer.None, HubPermission.None, null);
                     users.TryAdd(userId, user);
                 }
             }
             if (userRights.TryGetValue(userId, out TaskAuthorizer taskAuthorizer)) {
-                syncContext.AuthenticationSucceed(user, taskAuthorizer, AnonymousHubPermission);
+                syncContext.AuthenticationSucceed(user, taskAuthorizer, anonymous.hubPermission);
                 return;
             }
             // AuthenticationFailed() is not called to avoid giving a hint for a valid userId (user)
-            syncContext.AuthenticationSucceed(user, AnonymousTaskAuthorizer, AnonymousHubPermission);
+            syncContext.AuthenticationSucceed(user, anonymous.taskAuthorizer, anonymous.hubPermission);
         }
     }
 }

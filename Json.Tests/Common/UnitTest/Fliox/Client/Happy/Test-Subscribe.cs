@@ -415,7 +415,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             using (var hub              = new FlioxHub(database, TestGlobals.Shared))
             using (var testQueueEvents  = new FlioxClient(hub) { UserId = "test-queue-events" }) {
                 {
-                    AreEqual(HubPermission.Full, hub.Authenticator.AnonymousHubPermission); // default permission
+                    var authenticator = hub.Authenticator as AuthenticateNone;
+                    AreEqual(HubPermission.Full, authenticator.anonymous.hubPermission); // default permission
                     var sub = testQueueEvents.std.Client(new ClientParam { queueEvents = true });
                     await testQueueEvents.TrySyncTasks();
                     
@@ -428,7 +429,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                     IsTrue(clientTask.Success);
                     IsTrue(clientTask.Result.queueEvents);
                 } {
-                    hub.Authenticator.AnonymousHubPermission = HubPermission.None;
+                    hub.Authenticator = new AuthenticateNone(TaskAuthorizer.Full, HubPermission.None);
                     var clientTask = testQueueEvents.std.Client(new ClientParam { queueEvents = true });
                     await testQueueEvents.TrySyncTasks();
                     
