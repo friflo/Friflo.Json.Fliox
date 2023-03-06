@@ -1,0 +1,11 @@
+{
+    "id": "webrtc-client",
+    "description": "enable connecting WebRTC host added to the signaling service",
+    "taskRights": [
+        {
+            "type": "dbTask",
+            "database": "signaling",
+            "types": ["subscribeMessage", "command", "read"]
+        }
+    ]
+}

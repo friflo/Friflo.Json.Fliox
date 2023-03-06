@@ -1,7 +1,7 @@
 {
     "data": {
         "queryRoles": {
-    "count": 13,
+    "count": 14,
     "items": [
         {
             "id": "all-allow",
@@ -201,6 +201,20 @@
                         "std.*"
                     ],
                     "__typename": "SendMessageRight"
+                }
+            ]
+        },
+        {
+            "id": "webrtc-client",
+            "taskRights": [
+                {
+                    "database": "signaling",
+                    "types": [
+                        "subscribeMessage",
+                        "command",
+                        "read"
+                    ],
+                    "__typename": "DbTaskRight"
                 }
             ]
         }
