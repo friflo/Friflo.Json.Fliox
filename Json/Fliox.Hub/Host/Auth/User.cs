@@ -19,7 +19,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
     /// </summary>
     public sealed class User {
         // --- public
-        /** not null */ public          ShortString             UserId          => userId;
+        /** not null */ public readonly ShortString             userId;
         /** not null */ public          TaskAuthorizer          TaskAuthorizer  => taskAuthorizer;
         /** not null */ public          HubPermission           HubPermission   => hubPermission;
         /** not null */ public          IReadOnlyList<string>   Roles           => roles ?? Array.Empty<string>();
@@ -27,7 +27,6 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
                         public override string                  ToString() => userId.AsString();
 
         // --- internal
-        /** not null */ [Browse(Never)] internal readonly   ShortString     userId;
         /** nullable */ [Browse(Never)] internal            ShortString     token;
         /** not null */ [Browse(Never)] internal            TaskAuthorizer  taskAuthorizer = TaskAuthorizer.None;
         /** not null */ [Browse(Never)] internal            HubPermission   hubPermission  = HubPermission.None;
