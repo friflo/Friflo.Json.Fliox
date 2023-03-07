@@ -41,10 +41,8 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
             foreach (var entity in changes.Upserts) { changedUsers.Add(entity.id); }
             foreach (var id     in changes.Deletes) { changedUsers.Add(id); }
             foreach (var patch  in changes.Patches) { changedUsers.Add(patch.key); }
-                
-            foreach (var changedUser in changedUsers) {
-                userAuthenticator.users.TryRemove(changedUser, out _);
-            }
+            
+            userAuthenticator.InvalidateUsers(changedUsers);
         }
         
         private void PermissionChange(Changes<ShortString, UserPermission> changes, EventContext context) {
@@ -53,9 +51,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
             foreach (var id     in changes.Deletes) { changedUsers.Add(id); }
             foreach (var patch  in changes.Patches) { changedUsers.Add(patch.key); }
                 
-            foreach (var changedUser in changedUsers) {
-                userAuthenticator.users.TryRemove(changedUser, out _);
-            }
+            userAuthenticator.InvalidateUsers(changedUsers);
         }
         
         private void RoleChange(Changes<string, Role> changes, EventContext context) {
@@ -72,9 +68,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
                     continue;
                 AddAffectedUsers(affectedUsers, changedRoles);
             }
-            foreach (var user in affectedUsers) {
-                userAuthenticator.users.TryRemove(user, out _);
-            }
+            userAuthenticator.InvalidateUsers(affectedUsers);
         }
         
         private void TargetChange(Changes<ShortString, UserTarget> changes, EventContext context) {

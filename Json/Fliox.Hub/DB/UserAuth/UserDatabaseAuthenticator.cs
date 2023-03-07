@@ -47,7 +47,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
                 { new ShortString(UserStore.AuthenticationUser),    authUserRights },
                 { new ShortString(UserStore.Server),                serverRights   },
             };
-            anonymous = new User(User.AnonymousId, default, TaskAuthorizer.None, HubPermission.None, null);
+            anonymous = new User(User.AnonymousId).Set(default, TaskAuthorizer.None, HubPermission.None, null);
         }
 
         public override Task AuthenticateAsync(SyncRequest syncRequest, SyncContext syncContext) {
@@ -64,7 +64,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
                 user = anonymous;
             } else {
                 if (!users.TryGetValue(userId, out  user)) {
-                    user = new User(userId, default, TaskAuthorizer.None, HubPermission.None, null);
+                    user = new User(userId).Set(default, TaskAuthorizer.None, HubPermission.None, null);
                     users.TryAdd(userId, user);
                 }
             }

@@ -17,7 +17,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
         public  readonly   User    anonymous;
         
         public AuthenticateNone(TaskAuthorizer taskAuthorizer, HubPermission hubPermission) {
-            anonymous = new User(User.AnonymousId, default, taskAuthorizer, hubPermission, null);
+            anonymous = new User(User.AnonymousId).Set(default, taskAuthorizer, hubPermission, null);
         }
 
         public override Task AuthenticateAsync(SyncRequest syncRequest, SyncContext syncContext) {
@@ -34,7 +34,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
                 user = anonymous;
             } else {
                 if (!users.TryGetValue(userId, out user)) {
-                    user = new User(userId, default, anonymous.taskAuthorizer, anonymous.hubPermission, null);
+                    user = new User(userId).Set(default, anonymous.taskAuthorizer, anonymous.hubPermission, null);
                     users.TryAdd(userId, user);
                 }
             }

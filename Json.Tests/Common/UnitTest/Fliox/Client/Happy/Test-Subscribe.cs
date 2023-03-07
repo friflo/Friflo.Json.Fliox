@@ -416,7 +416,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             using (var testQueueEvents  = new FlioxClient(hub) { UserId = "test-queue-events" }) {
                 {
                     var authenticator = hub.Authenticator as AuthenticateNone;
-                    AreEqual(HubPermission.Full, authenticator.anonymous.hubPermission); // default permission
+                    AreEqual(HubPermission.Full, authenticator.anonymous.HubPermission); // default permission
                     var sub = testQueueEvents.std.Client(new ClientParam { queueEvents = true });
                     await testQueueEvents.TrySyncTasks();
                     

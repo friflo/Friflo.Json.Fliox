@@ -6,33 +6,34 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using Friflo.Json.Fliox.Hub.DB.Cluster;
+using static System.Diagnostics.DebuggerBrowsableState;
+using Browse = System.Diagnostics.DebuggerBrowsableAttribute;
 
 namespace Friflo.Json.Fliox.Hub.Host.Auth
 {
     /// <summary>
     /// A <see cref="User"/> instance store credentials, <see cref="clients"/> and permissions of a user. <br/>
     /// Permissions: <br/>
-    /// <see cref="taskAuthorizer"/> to authorize task execution.<br/>
-    /// <see cref="hubPermission"/> for general - non task specific - permissions.<br/>
+    /// <see cref="TaskAuthorizer"/> to authorize task execution.<br/>
+    /// <see cref="HubPermission"/> for general - non task specific - permissions.<br/>
     /// </summary>
-    /// <remarks>
-    /// <b>Important:</b> <see cref="User"/> instances must be used only within the execution of a single <see cref="Protocol.SyncRequest"/>. <br/>
-    /// Caching them may result in dealing with outdated <see cref="User"/> instances as new instances created by an
-    /// <see cref="Authenticator"/> whenever its credentials or permissions changes.
-    /// </remarks>
     public sealed class User {
         // --- public
-        /** immutable, not null */ public readonly   ShortString            userId;         
-        /** immutable, nullable */ public readonly   ShortString            token;
-        /** immutable, not null */ public readonly   TaskAuthorizer         taskAuthorizer;
-        /** immutable, not null */ public readonly   HubPermission          hubPermission;
-        /** immutable, not null */ public            IReadOnlyList<string>  Roles => roles ?? Array.Empty<string>();
-        
-        // --- private
-        /** immutable, nullable */ internal readonly string[]               roles;
+        /** not null */ public          ShortString             UserId          => userId;
+        /** not null */ public          TaskAuthorizer          TaskAuthorizer  => taskAuthorizer;
+        /** not null */ public          HubPermission           HubPermission   => hubPermission;
+        /** not null */ public          IReadOnlyList<string>   Roles           => roles ?? Array.Empty<string>();
 
-        public   override                            string                 ToString() => userId.AsString();
-        
+                        public override string                  ToString() => userId.AsString();
+
+        // --- internal
+        /** not null */ [Browse(Never)] internal readonly   ShortString     userId;
+        /** nullable */ [Browse(Never)] internal            ShortString     token;
+        /** not null */ [Browse(Never)] internal            TaskAuthorizer  taskAuthorizer = TaskAuthorizer.None;
+        /** not null */ [Browse(Never)] internal            HubPermission   hubPermission  = HubPermission.None;
+        /** nullable */ [Browse(Never)] internal            string[]        roles;
+                                        internal            bool            invalidated = true;
+
         // --- internal
         internal readonly   ConcurrentDictionary<ShortString, Empty>    clients;        // key: clientId
         /// <b>Note</b> requires lock when accessing. Did not use ConcurrentDictionary to avoid heap allocation
@@ -41,22 +42,20 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
         
         public static readonly  ShortString   AnonymousId = new ShortString("anonymous");
 
-
-        internal User (
-            in ShortString  userId,
-            in ShortString  token,
-            TaskAuthorizer  taskAuthorizer,
-            HubPermission   hubPermission,
-            List<string>    roles)
-        {
+        internal User (in ShortString  userId) {
             if (userId.IsNull()) throw new ArgumentNullException(nameof(userId));
+            this.userId         = userId;
             clients             = new ConcurrentDictionary<ShortString, Empty>(ShortString.Equality);
             requestCounts       = new Dictionary<ShortString, RequestCount>   (ShortString.Equality);
-            this.userId         = userId;
+        }
+        
+        internal User Set (in ShortString token, TaskAuthorizer taskAuthorizer, HubPermission hubPermission, List<string> roles) {
             this.token          = token;
             this.taskAuthorizer = taskAuthorizer ?? throw new ArgumentNullException(nameof(taskAuthorizer));
             this.hubPermission  = hubPermission  ?? throw new ArgumentNullException(nameof(hubPermission));
             this.roles          = roles?.ToArray();
+            invalidated         = false;
+            return this;
         }
         
         public  IReadOnlyCollection<ShortString> GetGroups() {
@@ -94,9 +93,10 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
         None            = 0,
         MissingUserId   = 1,
         MissingToken    = 2,
-        Unknown         = 3,
-        Failed          = 4,
-        Success         = 5,
+        Failed          = 3,
+        Success         = 4,
+        UserUnknown     = 5,
+        UserInvalidated = 6,
     }
     
     internal struct Empty { }

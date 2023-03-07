@@ -53,7 +53,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
         internal  readonly  FlioxHub                                    userHub;
         private   readonly  IUserAuth                                   userAuth;
         internal  readonly  ConcurrentDictionary<string, RoleRights>    roleCache = new ConcurrentDictionary <string, RoleRights>();
-        private             User                                        anonymous;
+        private   readonly  User                                        anonymous;
 
         public UserAuthenticator (EntityDatabase userDatabase, SharedEnv env = null, IUserAuth userAuth = null)
         {
@@ -64,6 +64,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
             userHub        	        = new FlioxHub(userDatabase, sharedEnv);
             userHub.Authenticator   = new UserDatabaseAuthenticator(userDatabase.name);  // authorize access to userDatabase
             this.userAuth           = userAuth;
+            anonymous               = new User(User.AnonymousId);
         }
         
         public void Dispose() {
@@ -127,6 +128,14 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
                 }
             }
         }
+        
+        internal void InvalidateUsers(IEnumerable<ShortString> userIds) {
+            foreach (var userId in userIds) {
+                if (!users.TryGetValue(userId, out var user))
+                    continue;
+                user.invalidated = true;
+            }
+        }
 
         // --- Authenticator 
         /// <summary>
@@ -149,22 +158,26 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
             if (syncRequest.userId.IsNull()) {
                 user = null;
                 type = PreAuthType.MissingUserId;
-                return anonymous != null;
+                return !anonymous.invalidated;
             }
             if (syncRequest.token.IsNull()) {
                 user = null;
                 type = PreAuthType.MissingToken;
-                return anonymous != null;
+                return !anonymous.invalidated;
             }
             if (users.TryGetValue(syncRequest.userId, out user)) {
                 if (!user.token.IsEqual(syncRequest.token)) {
                     type = PreAuthType.Failed;
                     return false;
                 }
+                if (user.invalidated) {
+                    type = PreAuthType.UserInvalidated;
+                    return false;
+                }
                 type = PreAuthType.Success;
                 return true;
             }
-            type = PreAuthType.Unknown;
+            type = PreAuthType.UserUnknown;
             return false;
         }
         
@@ -205,7 +218,8 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
                         await GetAnonymousUserAuthAsync(userStore); // ensure anonymous is set 
                         AuthenticateSynchronous(type, user, syncContext);
                         return;
-                    case PreAuthType.Unknown:
+                    case PreAuthType.UserUnknown:
+                    case PreAuthType.UserInvalidated:
                         break;
                     default:
                         throw new InvalidOperationException($"unexpected PreAuthType type: {type}");
@@ -224,8 +238,9 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
                         return;
                     }
                     var ua  = userAuthInfo.value;
-                    user    = new User (userId, token, ua.taskAuthorizer, ua.hubPermission, ua.roles);
-                    user.SetGroups(userAuthInfo.value.groups);
+                    user ??= new User(userId);
+                    user.Set(token, ua.taskAuthorizer, ua.hubPermission, ua.roles);
+                    user.SetGroups(ua.groups);
                     users.TryAdd(userId, user);
                 }
                 if (user == null || !token.IsEqual(user.token)) {
@@ -297,11 +312,12 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
         
         private async Task<User> GetAnonymousUserAuthAsync(UserStore userStore) {
             var anonymousAuthInfo = await GetUserAuthInfoAsync(userStore, User.AnonymousId);
+            users.TryAdd(anonymous.userId, anonymous);
             if (!anonymousAuthInfo.Success) {
-                return anonymous = new User(User.AnonymousId, default, TaskAuthorizer.None, HubPermission.None, null);
+                return anonymous.Set(default, TaskAuthorizer.None, HubPermission.None, null);
             }
             var ua = anonymousAuthInfo.value;
-            return anonymous = new User(User.AnonymousId, default, ua.taskAuthorizer, ua.hubPermission, ua.roles);
+            return anonymous.Set(default, ua.taskAuthorizer, ua.hubPermission, ua.roles);
         }
 
         private async Task<Result<UserAuthInfo>> GetUserAuthInfoAsync(UserStore userStore, ShortString userId) {
