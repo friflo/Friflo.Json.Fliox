@@ -120,7 +120,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
             }
         }
         
-        private void ValidateRoles(UserStore userStore, RoleValidation roleValidation) {
+        private static void ValidateRoles(UserStore userStore, RoleValidation roleValidation) {
             var roles = userStore.roles.Local.Entities;
             foreach (var role in roles) {
                 var validation = new RoleValidation(roleValidation, role);
