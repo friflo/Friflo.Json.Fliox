@@ -10,7 +10,7 @@ using Friflo.Json.Fliox.Hub.Host.Auth;
 namespace Friflo.Json.Fliox.Hub.DB.UserAuth
 {
     /// <summary>
-    /// used to remove users from cached <see cref="Host.Auth.Authenticator.users"/> in case:
+    /// Used to invalidate cached see cref="Host.Auth.Authenticator.users"/> in case:
     /// - a user permission changes
     /// - a role assigned to a user changes
     /// </summary>
