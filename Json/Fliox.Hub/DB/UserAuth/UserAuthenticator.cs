@@ -401,48 +401,4 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
             return new AuthorizeAny(authorizers);
         }
     }
-
-    internal sealed class UserAuthInfo
-    {
-        internal readonly   TaskAuthorizer      taskAuthorizer;
-        internal readonly   HubPermission       hubPermission;
-        internal readonly   List<ShortString>   groups;
-        internal readonly   List<string>        roles;
-        
-        internal UserAuthInfo(
-            IList<TaskAuthorizer>   authorizers,
-            IList<HubPermission>    hubPermissions,
-            List<ShortString>       groups,
-            List<string>            roles)
-        {
-            var taskAuthorizers = new List<TaskAuthorizer>();
-            foreach (var authorizer in authorizers) {
-                switch (authorizer) {
-                    case AuthorizeDatabase _:
-                    case AuthorizeTaskType _:
-                    case AuthorizeContainer _:
-                    case AuthorizeSendMessage _:
-                    case AuthorizeSubscribeMessage _:
-                    case AuthorizeSubscribeChanges _:
-                    case AuthorizePredicate _:
-                    case AuthorizeAny _:
-                        taskAuthorizers.Add(authorizer);
-                        break;
-                    case AuthorizeDeny _:
-                        break;
-                    default:
-                        throw new InvalidOperationException($"unexpected authorizer: {authorizer}");
-                }
-            }
-            this.taskAuthorizer = TaskAuthorizer.ToAuthorizer(taskAuthorizers);
-            this.groups         = groups;
-            this.roles          = roles;
-            
-            bool queueEvents = false;
-            foreach (var permission in hubPermissions) {
-                queueEvents |= permission.queueEvents;
-            }
-            hubPermission  = new HubPermission(queueEvents);
-        }
-    }
 }

@@ -20,6 +20,9 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth.Rights
         public  override                string      ToString() => "dbFull";
 
         public override TaskAuthorizer ToAuthorizer() {
+            if (database == "*") {
+                return TaskAuthorizer.Full;
+            }
             return new AuthorizeDatabase(database);
         }
         

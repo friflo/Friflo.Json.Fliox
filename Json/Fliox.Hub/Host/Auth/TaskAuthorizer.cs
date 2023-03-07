@@ -18,7 +18,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
     /// </remarks> 
     public abstract class TaskAuthorizer
     {
-        public static readonly TaskAuthorizer Full = new AuthorizeDatabase ("*");
+        public static readonly TaskAuthorizer Full = new AuthorizeGrant();
         public static readonly TaskAuthorizer None = new AuthorizeDeny ();
 
         /// <summary>
