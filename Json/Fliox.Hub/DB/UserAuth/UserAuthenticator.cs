@@ -43,7 +43,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
     /// </summary>
     /// <remarks>
     /// If authentication succeed it set the <see cref="AuthState.taskAuthorizer"/> derived from the roles assigned to the user. <br/>
-    /// If authentication fails the given default <see cref="TaskAuthorizer"/> is used for the user.
+    /// If authentication fails <b>anonymous</b> <see cref="UserPermission"/> <see cref="UserPermission.roles"/> are assigned to the user. <br/>
     /// <br/>
     /// <b>Note:</b> User permissions and roles are cached for successful authenticated users.<br/>
     /// This enables instant task authorization and reduces the number of reads to the <b>user_db</b> significant.
