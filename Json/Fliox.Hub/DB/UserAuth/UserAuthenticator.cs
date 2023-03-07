@@ -14,6 +14,7 @@ using Friflo.Json.Fliox.Hub.Host.Event;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Utils;
 
+// ReSharper disable InlineTemporaryVariable
 // ReSharper disable UseObjectOrCollectionInitializer
 namespace Friflo.Json.Fliox.Hub.DB.UserAuth
 {
@@ -311,13 +312,15 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
         }
         
         private async Task<User> GetAnonymousUserAuthAsync(UserStore userStore) {
-            var anonymousAuthInfo = await GetUserAuthInfoAsync(userStore, User.AnonymousId);
-            users.TryAdd(anonymous.userId, anonymous);
+            var anonymousAuthInfo   = await GetUserAuthInfoAsync(userStore, User.AnonymousId);
+            
+            var anon = anonymous;
+            users.TryAdd(anon.userId, anon);
             if (!anonymousAuthInfo.Success) {
-                return anonymous.Set(default, TaskAuthorizer.None, HubPermission.None, null);
+                return anon.Set(default, TaskAuthorizer.None, HubPermission.None, null);
             }
             var ua = anonymousAuthInfo.value;
-            return anonymous.Set(default, ua.taskAuthorizer, ua.hubPermission, ua.roles);
+            return anon.Set(default, ua.taskAuthorizer, ua.hubPermission, ua.roles);
         }
 
         private async Task<Result<UserAuthInfo>> GetUserAuthInfoAsync(UserStore userStore, ShortString userId) {

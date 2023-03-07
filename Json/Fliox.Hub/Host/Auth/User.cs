@@ -28,10 +28,10 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
 
         // --- internal
         /** nullable */ [Browse(Never)] internal            ShortString     token;
-        /** not null */ [Browse(Never)] internal            TaskAuthorizer  taskAuthorizer = TaskAuthorizer.None;
-        /** not null */ [Browse(Never)] internal            HubPermission   hubPermission  = HubPermission.None;
+        /** not null */ [Browse(Never)] internal            TaskAuthorizer  taskAuthorizer  = TaskAuthorizer.None;
+        /** not null */ [Browse(Never)] internal            HubPermission   hubPermission   = HubPermission.None;
         /** nullable */ [Browse(Never)] internal            string[]        roles;
-                                        internal            bool            invalidated = true;
+                                        internal            bool            invalidated     = true;
 
         // --- internal
         internal readonly   ConcurrentDictionary<ShortString, Empty>    clients;        // key: clientId
