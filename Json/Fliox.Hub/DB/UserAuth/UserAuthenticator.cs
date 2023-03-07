@@ -17,14 +17,6 @@ using Friflo.Json.Fliox.Hub.Utils;
 // ReSharper disable UseObjectOrCollectionInitializer
 namespace Friflo.Json.Fliox.Hub.DB.UserAuth
 {
-    internal sealed class AuthCred {
-        internal readonly   ShortString     token;
-        
-        internal AuthCred (in ShortString token) {
-            this.token  = token;
-        }
-    }
-    
     public interface IUserAuth {
         Task<AuthResult> AuthenticateAsync(Credentials value);
     }
@@ -225,7 +217,6 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
                 var result  = await auth.AuthenticateAsync(command).ConfigureAwait(false);
                 
                 if (result.isValid) {
-                    var authCred        = new AuthCred(token);
                     var userAuthInfo    = await GetUserAuthInfoAsync(userStore, userId).ConfigureAwait(false);
                     if (!userAuthInfo.Success) {
                         var anon = await GetAnonymousUserAuthAsync(userStore);
@@ -233,7 +224,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
                         return;
                     }
                     var ua  = userAuthInfo.value;
-                    user    = new User (userId, authCred.token, ua.taskAuthorizer, ua.hubPermission, ua.roles);
+                    user    = new User (userId, token, ua.taskAuthorizer, ua.hubPermission, ua.roles);
                     user.SetGroups(userAuthInfo.value.groups);
                     users.TryAdd(userId, user);
                 }
@@ -304,10 +295,8 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
             await base.SetUserOptionsAsync(user, param).ConfigureAwait(false); 
         }
         
-        private static readonly ShortString AnonymousId = new ShortString("anonymous");
-        
         private async Task<User> GetAnonymousUserAuthAsync(UserStore userStore) {
-            var anonymousAuthInfo = await GetUserAuthInfoAsync(userStore, AnonymousId);
+            var anonymousAuthInfo = await GetUserAuthInfoAsync(userStore, User.AnonymousId);
             if (!anonymousAuthInfo.Success) {
                 return anonymous = new User(User.AnonymousId, default, TaskAuthorizer.None, HubPermission.None, null);
             }
