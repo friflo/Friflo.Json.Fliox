@@ -22,7 +22,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
         /** not null */ public readonly ShortString                     userId;
         /** not null */ public          TaskAuthorizer                  TaskAuthorizer  => taskAuthorizer;
         /** not null */ public          HubPermission                   HubPermission   => hubPermission;
-        /** not null */ public          IReadOnlyList<string>           Roles           => roles ?? Array.Empty<string>();
+        /** not null */ public          IReadOnlyCollection<string>     Roles           => roles ?? Array.Empty<string>();
 
                         public override string                          ToString() => userId.AsString();
 

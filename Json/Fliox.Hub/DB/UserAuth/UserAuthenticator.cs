@@ -27,12 +27,14 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
     /// </summary>
     internal sealed class RoleRights
     {
+        internal readonly   string              id;
         /// <summary> assigned by <see cref="Role.taskRights"/> </summary>
         internal readonly   TaskAuthorizer[]    taskAuthorizers;
         /// <summary> assigned by <see cref="Role.hubRights"/> </summary>
         internal readonly   HubPermission       hubPermission;
         
-        internal RoleRights(TaskAuthorizer[] taskAuthorizers, HubPermission hubPermission) {
+        internal RoleRights(string id, TaskAuthorizer[] taskAuthorizers, HubPermission hubPermission) {
+            this.id                 = id;
             this.taskAuthorizers    = taskAuthorizers;
             this.hubPermission      = hubPermission;
         }
@@ -340,14 +342,16 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
             
             var taskAuthorizers = new List<TaskAuthorizer>(roleNames.Count);
             var hubPermissions  = new List<HubPermission> (roleNames.Count);
+            var roleIds         = new List<string>        (roleNames.Count);
             foreach (var roleName in roleNames) {
                 // existence is checked already in AddNewRoles()
                 if (!roleCache.TryGetValue(roleName, out var role))
                     throw new InvalidOperationException($"roleAuthorizers not found: {roleName}");
                 taskAuthorizers.AddRange(role.taskAuthorizers);
                 hubPermissions.Add(role.hubPermission);
+                roleIds.Add(role.id);   // using role.id to use same string instance by multiple User.role's 
             }
-            return new UserAuthInfo(taskAuthorizers, hubPermissions, targetGroups, roleNames);
+            return new UserAuthInfo(taskAuthorizers, hubPermissions, targetGroups, roleIds);
         }
         
         private async Task<string> AddNewRoles(UserStore userStore, List<string> roles) {
@@ -381,7 +385,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
                     taskAuthorizers.Add(authorizer);
                 }
                 var hubPermission   = new HubPermission (newRole.hubRights?.queueEvents == true);
-                var roleRights      = new RoleRights (taskAuthorizers.ToArray(), hubPermission);
+                var roleRights      = new RoleRights (role, taskAuthorizers.ToArray(), hubPermission);
                 roleCache.TryAdd(role, roleRights);
             }
             return null;
