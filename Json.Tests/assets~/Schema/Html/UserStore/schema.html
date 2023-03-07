@@ -1309,10 +1309,13 @@ Note: commands are messages - so permission of subscribing commands is same as f
         <a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.HubRights'>HubRights</a>
         <keyword>class</keyword>
     </h3>
+    <desc><b>HubRights</b> used to set general request / connection permissions.
+    </desc>
     <table class='fields'>
         <tr>
             <td><field>queueEvents</field></td>
             <td><type><predef>boolean</predef> | null</type></td>
+            <td><docs>If <b>true</b> the hub store all unacknowledged events for a client in a FIFO queue and send them on reconnects.<br/></docs></td>
         </tr>
     </table>
     </div>

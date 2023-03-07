@@ -121,7 +121,9 @@ export class PredicateRight extends TaskRight {
     names        : string[];
 }
 
+/** **HubRights** used to set general request / connection permissions. */
 export class HubRights {
+    /** If **true** the hub store all unacknowledged events for a client in a FIFO queue and send them on reconnects.   */
     queueEvents? : boolean | null;
 }
 

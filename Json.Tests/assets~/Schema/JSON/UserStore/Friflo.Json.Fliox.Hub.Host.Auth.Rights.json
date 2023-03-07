@@ -160,8 +160,9 @@
         },
         "HubRights": {
             "type": "object",
+            "description": "<b>HubRights</b> used to set general request / connection permissions.",
             "properties": {
-                "queueEvents": { "type": ["boolean", "null"] }
+                "queueEvents": { "type": ["boolean", "null"], "description": "If <b>true</b> the hub store all unacknowledged events for a client in a FIFO queue and send them on reconnects.<br/>" }
             },
             "additionalProperties": false
         }
