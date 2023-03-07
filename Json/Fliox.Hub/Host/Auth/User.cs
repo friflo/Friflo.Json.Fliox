@@ -19,19 +19,19 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
     /// </summary>
     public sealed class User {
         // --- public
-        /** not null */ public readonly ShortString             userId;
-        /** not null */ public          TaskAuthorizer          TaskAuthorizer  => taskAuthorizer;
-        /** not null */ public          HubPermission           HubPermission   => hubPermission;
-        /** not null */ public          IReadOnlyList<string>   Roles           => roles ?? Array.Empty<string>();
+        /** not null */ public readonly ShortString                     userId;
+        /** not null */ public          TaskAuthorizer                  TaskAuthorizer  => taskAuthorizer;
+        /** not null */ public          HubPermission                   HubPermission   => hubPermission;
+        /** not null */ public          IReadOnlyList<string>           Roles           => roles ?? Array.Empty<string>();
 
-                        public override string                  ToString() => userId.AsString();
+                        public override string                          ToString() => userId.AsString();
 
         // --- internal
-        /** nullable */ [Browse(Never)] internal            ShortString     token;
-        /** not null */ [Browse(Never)] internal            TaskAuthorizer  taskAuthorizer  = TaskAuthorizer.None;
-        /** not null */ [Browse(Never)] internal            HubPermission   hubPermission   = HubPermission.None;
-        /** nullable */ [Browse(Never)] internal            string[]        roles;
-                                        internal            bool            invalidated     = true;
+        /** nullable */ [Browse(Never)] internal    ShortString         token;
+        /** not null */ [Browse(Never)] internal    TaskAuthorizer      taskAuthorizer  = TaskAuthorizer.None;
+        /** not null */ [Browse(Never)] internal    HubPermission       hubPermission   = HubPermission.None;
+        /** nullable */ [Browse(Never)] internal    string[]            roles;
+                                        internal    bool                invalidated     = true;
 
         // --- internal
         internal readonly   ConcurrentDictionary<ShortString, Empty>    clients;        // key: clientId
