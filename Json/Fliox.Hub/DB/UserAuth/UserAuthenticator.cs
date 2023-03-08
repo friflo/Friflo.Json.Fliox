@@ -23,24 +23,6 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
     }
 
     /// <summary>
-    /// Used to store the rights given by <see cref="Role.taskRights"/> and <see cref="Role.hubRights"/>
-    /// </summary>
-    internal sealed class RoleRights
-    {
-        internal readonly   string              id;
-        /// <summary> assigned by <see cref="Role.taskRights"/> </summary>
-        internal readonly   TaskAuthorizer[]    taskAuthorizers;
-        /// <summary> assigned by <see cref="Role.hubRights"/> </summary>
-        internal readonly   HubPermission       hubPermission;
-        
-        internal RoleRights(string id, TaskAuthorizer[] taskAuthorizers, HubPermission hubPermission) {
-            this.id                 = id;
-            this.taskAuthorizers    = taskAuthorizers;
-            this.hubPermission      = hubPermission;
-        }
-    }
-
-    /// <summary>
     /// Performs user authentication by validating the "userId" and the "token" assigned to a <see cref="Client.FlioxClient"/>
     /// </summary>
     /// <remarks>
@@ -143,7 +125,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
         // --- Authenticator 
         /// <summary>
         /// <see cref="Authenticate"/> can run synchronous if already successful authenticated or a general
-        /// authentication error occured.
+        /// authentication error occurred.
         /// </summary>
         public override bool IsSynchronous(SyncRequest syncRequest) {
             return PreAuth(syncRequest, out syncRequest.intern.preAuthType, out syncRequest.intern.preAuthUser);
@@ -340,7 +322,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
             if (error != null)
                 return error;
             
-            var taskAuthorizers = new List<TaskAuthorizer>(roleNames.Count);
+            var taskAuthorizers = new List<TaskAuthorizer>(); // multiple authorizers per role
             var hubPermissions  = new List<HubPermission> (roleNames.Count);
             var roleIds         = new List<string>        (roleNames.Count);
             foreach (var roleName in roleNames) {

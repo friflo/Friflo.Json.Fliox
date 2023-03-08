@@ -7,6 +7,27 @@ using Friflo.Json.Fliox.Hub.Host.Auth;
 
 namespace Friflo.Json.Fliox.Hub.DB.UserAuth
 {
+    /// <summary>
+    /// Used to store the rights given by <see cref="Role.taskRights"/> and <see cref="Role.hubRights"/>
+    /// </summary>
+    internal sealed class RoleRights
+    {
+        internal readonly   string              id;
+        /// <summary> assigned by <see cref="Role.taskRights"/> </summary>
+        internal readonly   TaskAuthorizer[]    taskAuthorizers;
+        /// <summary> assigned by <see cref="Role.hubRights"/> </summary>
+        internal readonly   HubPermission       hubPermission;
+        
+        internal RoleRights(string id, TaskAuthorizer[] taskAuthorizers, HubPermission hubPermission) {
+            this.id                 = id;
+            this.taskAuthorizers    = taskAuthorizers;
+            this.hubPermission      = hubPermission;
+        }
+    }
+    
+    /// <summary>
+    /// Aggregated authorizer, permissions, groups and roles for a specific user. 
+    /// </summary>
     internal sealed class UserAuthInfo
     {
         internal readonly   TaskAuthorizer      taskAuthorizer;
