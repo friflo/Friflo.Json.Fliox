@@ -37,7 +37,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
         // --- private / internal
         internal  readonly  FlioxHub                                    userHub;
         private   readonly  IUserAuth                                   userAuth;
-        internal  readonly  ConcurrentDictionary<string, RoleRights>    roleCache = new ConcurrentDictionary <string, RoleRights>();
+        internal  readonly  ConcurrentDictionary<string, UserAuthRole>  roleCache;
         private   readonly  User                                        anonymous;
 
         public UserAuthenticator (EntityDatabase userDatabase, SharedEnv env = null, IUserAuth userAuth = null)
@@ -49,6 +49,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
             userHub        	        = new FlioxHub(userDatabase, sharedEnv);
             userHub.Authenticator   = new UserDatabaseAuthenticator(userDatabase.name);  // authorize access to userDatabase
             this.userAuth           = userAuth;
+            roleCache               = new ConcurrentDictionary <string, UserAuthRole>();
             anonymous               = new User(User.AnonymousId);
         }
         
@@ -215,17 +216,17 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
                 var command = new Credentials { userId = userId, token = token };
                 var result  = await auth.AuthenticateAsync(command).ConfigureAwait(false);
                 
+                var ua = new UserAuthInfo();
                 if (result.isValid) {
-                    var userAuthInfo    = await GetUserAuthInfoAsync(userStore, userId).ConfigureAwait(false);
-                    if (!userAuthInfo.Success) {
+                    var error = await GetUserAuthInfoAsync(userStore, userId, ua).ConfigureAwait(false);
+                    if (error != null) {
                         var anon = await GetAnonymousUserAuthAsync(userStore);
-                        syncContext.AuthenticationFailed(anon, userAuthInfo.error, anon.taskAuthorizer, anon.hubPermission);
+                        syncContext.AuthenticationFailed(anon, error, anon.taskAuthorizer, anon.hubPermission);
                         return;
                     }
-                    var ua  = userAuthInfo.value;
                     user ??= new User(userId);
-                    user.Set(token, ua.taskAuthorizer, ua.hubPermission, ua.roles);
-                    user.SetGroups(ua.groups);
+                    user.Set(token, ua.GetTaskAuthorizer(), ua.GetHubPermission(), ua.GetRoles());
+                    user.SetGroups(ua.GetGroups());
                     users.TryAdd(userId, user);
                 }
                 if (user == null || !token.IsEqual(user.token)) {
@@ -296,18 +297,18 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
         }
         
         private async Task<User> GetAnonymousUserAuthAsync(UserStore userStore) {
-            var anonymousAuthInfo   = await GetUserAuthInfoAsync(userStore, User.AnonymousId);
+            var ua      = new UserAuthInfo();
+            var error   = await GetUserAuthInfoAsync(userStore, User.AnonymousId, ua);
             
             var anon = anonymous;
             users.TryAdd(anon.userId, anon);
-            if (!anonymousAuthInfo.Success) {
+            if (error != null) {
                 return anon.Set(default, TaskAuthorizer.None, HubPermission.None, null);
             }
-            var ua = anonymousAuthInfo.value;
-            return anon.Set(default, ua.taskAuthorizer, ua.hubPermission, ua.roles);
+            return anon.Set(default, ua.GetTaskAuthorizer(), ua.GetHubPermission(), ua.GetRoles());
         }
 
-        private async Task<Result<UserAuthInfo>> GetUserAuthInfoAsync(UserStore userStore, ShortString userId) {
+        private async Task<string> GetUserAuthInfoAsync(UserStore userStore, ShortString userId, UserAuthInfo result) {
             var readPermission  = userStore.permissions.Read().Find(userId);
             var readTarget      = userStore.targets.Read().Find(userId);
             await userStore.SyncTasks().ConfigureAwait(false);
@@ -316,24 +317,20 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
             UserPermission permission = readPermission.Result;
             var roleNames = permission?.roles;
             if (roleNames == null || roleNames.Count == 0) {
-                return new UserAuthInfo(ArraySegment<TaskAuthorizer>.Empty, ArraySegment<HubPermission>.Empty, targetGroups, null);
+                return null;
             }
             var error = await AddNewRoles(userStore, roleNames).ConfigureAwait(false);
             if (error != null)
                 return error;
             
-            var taskAuthorizers = new List<TaskAuthorizer>(); // multiple authorizers per role
-            var hubPermissions  = new List<HubPermission> (roleNames.Count);
-            var roleIds         = new List<string>        (roleNames.Count);
             foreach (var roleName in roleNames) {
                 // existence is checked already in AddNewRoles()
                 if (!roleCache.TryGetValue(roleName, out var role))
                     throw new InvalidOperationException($"roleAuthorizers not found: {roleName}");
-                taskAuthorizers.AddRange(role.taskAuthorizers);
-                hubPermissions.Add(role.hubPermission);
-                roleIds.Add(role.id);   // using role.id to use same string instance by multiple User.role's 
+                result.AddRole(role);
             }
-            return new UserAuthInfo(taskAuthorizers, hubPermissions, targetGroups, roleIds);
+            result.AddGroups(targetGroups);
+            return null;
         }
         
         private async Task<string> AddNewRoles(UserStore userStore, List<string> roles) {
@@ -367,7 +364,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
                     taskAuthorizers.Add(authorizer);
                 }
                 var hubPermission   = new HubPermission (newRole.hubRights?.queueEvents == true);
-                var roleRights      = new RoleRights (role, taskAuthorizers.ToArray(), hubPermission);
+                var roleRights      = new UserAuthRole (role, taskAuthorizers.ToArray(), hubPermission);
                 roleCache.TryAdd(role, roleRights);
             }
             return null;

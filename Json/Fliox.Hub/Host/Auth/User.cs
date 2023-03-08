@@ -48,11 +48,11 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
             requestCounts       = new Dictionary<ShortString, RequestCount>   (ShortString.Equality);
         }
         
-        internal User Set (in ShortString token, TaskAuthorizer taskAuthorizer, HubPermission hubPermission, List<string> roles) {
+        internal User Set (in ShortString token, TaskAuthorizer taskAuthorizer, HubPermission hubPermission, string[] roles) {
             this.token          = token;
             this.taskAuthorizer = taskAuthorizer ?? throw new ArgumentNullException(nameof(taskAuthorizer));
             this.hubPermission  = hubPermission  ?? throw new ArgumentNullException(nameof(hubPermission));
-            this.roles          = roles?.ToArray();
+            this.roles          = roles;
             invalidated         = false;
             return this;
         }
@@ -64,7 +64,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
         }
         
         internal void SetGroups(IReadOnlyCollection<ShortString> groups) {
-            this.groups = groups?.ToHashSet(ShortString.Equality);
+            this.groups = groups?.Count > 0 ? groups.ToHashSet(ShortString.Equality) : null;
         }
         
         public void SetUserOptions(UserParam param) {
