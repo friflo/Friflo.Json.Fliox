@@ -93,14 +93,14 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
         private void AddAffectedUsers(List<ShortString> affectedUsers, string[] roles) {
             foreach (var pair in userAuthenticator.users) {
                 var user = pair.Value;
-                if (IsUnionEmpty(user.roles, roles)) {
+                if (IsIntersectionEmpty(user.roles, roles)) {
                     continue;
                 }
                 affectedUsers.Add(user.userId);
             }
         }
         
-        private static bool IsUnionEmpty (string[] rolesLeft, string[] rolesRight) {
+        private static bool IsIntersectionEmpty (string[] rolesLeft, string[] rolesRight) {
             if (rolesLeft == null) {
                 return true;
             }
