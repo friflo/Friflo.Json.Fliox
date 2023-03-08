@@ -88,8 +88,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
             }
         }
         
-        /// Iterate all authorized users and add users to <paramref name="affectedUsers"/> if having given <paramref name="roles"/>.
-        /// Used iteration instead of an additional map (role -> users) to avoid long lived objects in heap.
+        /// Iterate all users and those to <paramref name="affectedUsers"/> having any of the given <paramref name="roles"/>.
         private void AddAffectedUsers(List<ShortString> affectedUsers, string[] roles) {
             foreach (var pair in userAuthenticator.users) {
                 var user = pair.Value;
