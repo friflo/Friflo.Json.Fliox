@@ -4,7 +4,7 @@ import { EntityChange } from "./Friflo.Json.Fliox.Hub.Protocol.Tasks";
 
 /**
  * Each **Role** has a set of **taskRights**.   
- * Each **TaskRight** is a rule used to grant or deny a specific database operation or command execution.  
+ * Each **TaskRight** is a rule used to grant a specific database operation or command execution.  
  * The database operation or command execution is granted if any of it **taskRights**
  * grant access.
  */
