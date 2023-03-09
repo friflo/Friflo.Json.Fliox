@@ -100,7 +100,7 @@ export class Explorer {
         e.cursor = response.headers.get("cursor");
         const entities = await this.readResponse(response, null);
         const type = app.getContainerSchema(e.database, e.container);
-        this.updateExplorerEntities(entities, type, "All");
+        this.updateEntitiesInternal(entities, type, "All");
     }
     initExplorer(database, container, query, entityType) {
         this.explorer = {
@@ -162,7 +162,7 @@ export class Explorer {
         table.append(head);
         table.classList.value = "entities";
         table.onclick = async (ev) => this.explorerOnClick(ev, p);
-        this.updateExplorerEntities(entities, entityType, "All");
+        this.updateEntitiesInternal(entities, entityType, "All");
         this.setColumnWidths();
         entityExplorer.innerText = "";
         entityExplorer.appendChild(table);
@@ -196,7 +196,7 @@ export class Explorer {
         const selectedIds = this.getSelectionFromPath(path, select);
         if (selectedIds === null)
             return;
-        this.setSelectedEntities(selectedIds);
+        this.setSelectedEntitiesInternal(selectedIds);
         const params = { database: p.database, container: p.container, ids: selectedIds };
         await app.editor.loadEntities(params, false, null);
         const json = app.entityEditor.getValue();
@@ -475,7 +475,7 @@ export class Explorer {
     }
     async selectExplorerEntities(ids) {
         const explorer = this.explorer;
-        this.setSelectedEntities(ids);
+        this.setSelectedEntitiesInternal(ids);
         const params = { database: explorer.database, container: explorer.container, ids: ids };
         await app.editor.loadEntities(params, false, null);
     }
@@ -504,7 +504,15 @@ export class Explorer {
         }
         return null;
     }
-    setSelectedEntities(ids) {
+    setSelectedEntities(database, container, ids) {
+        const e = this.explorer;
+        if (e.database != database || e.container != container) {
+            this.setSelectedEntitiesInternal([]);
+            return;
+        }
+        this.setSelectedEntitiesInternal(ids);
+    }
+    setSelectedEntitiesInternal(ids) {
         const oldSelection = this.selectedRows;
         for (const [, value] of oldSelection) {
             value.classList.remove("selected");
@@ -820,7 +828,13 @@ export class Explorer {
             column.th.style.width = `${column.width + 10}px`;
         }
     }
-    updateExplorerEntities(entities, entityType, updateCell) {
+    updateEntities(database, container, entities, entityType, updateCell) {
+        const e = this.explorer;
+        if (database != e.database || container != e.container)
+            return;
+        this.updateEntitiesInternal(entities, entityType, updateCell);
+    }
+    updateEntitiesInternal(entities, entityType, updateCell) {
         // console.log("entities", entities);
         const keyName = EntityEditor.getEntityKeyName(entityType);
         const entityFields = this.entityFields;

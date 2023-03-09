@@ -164,7 +164,7 @@ export class Explorer
 
         const type      = app.getContainerSchema(e.database, e.container);
 
-        this.updateExplorerEntities(entities, type, "All");
+        this.updateEntitiesInternal(entities, type, "All");
     }
 
     private static selectAllHtml=
@@ -245,7 +245,7 @@ export class Explorer
         table.classList.value   = "entities";
         table.onclick = async (ev) => this.explorerOnClick(ev, p);        
 
-        this.updateExplorerEntities(entities, entityType, "All");
+        this.updateEntitiesInternal(entities, entityType, "All");
         this.setColumnWidths();
         entityExplorer.innerText    = "";
         entityExplorer.appendChild(table);
@@ -279,7 +279,7 @@ export class Explorer
         const selectedIds   = this.getSelectionFromPath(path, select);
         if (selectedIds === null)
             return;
-        this.setSelectedEntities(selectedIds);
+        this.setSelectedEntitiesInternal(selectedIds);
         const params: Resource  = { database: p.database, container: p.container, ids: selectedIds };
         await app.editor.loadEntities(params, false, null);
 
@@ -571,7 +571,7 @@ export class Explorer
 
     private async selectExplorerEntities(ids: string[]) {
         const explorer  = this.explorer;
-        this.setSelectedEntities(ids);
+        this.setSelectedEntitiesInternal(ids);
         const params: Resource  = { database: explorer.database, container: explorer.container, ids: ids };
         await app.editor.loadEntities(params, false, null);
     }
@@ -603,7 +603,16 @@ export class Explorer
         return null;
     }
 
-    public setSelectedEntities(ids: string[]) : void {
+    public setSelectedEntities(database: string, container: string, ids: string[]) : void {
+        const e = this.explorer;
+        if (e.database != database || e.container != container) {
+            this.setSelectedEntitiesInternal([]);
+            return;
+        }
+        this.setSelectedEntitiesInternal(ids);
+    }
+
+    private setSelectedEntitiesInternal(ids: string[]) : void {
         const oldSelection = this.selectedRows;
         for (const [,value] of oldSelection) {
             value.classList.remove("selected");
@@ -933,7 +942,14 @@ export class Explorer
         }
     }
 
-    public updateExplorerEntities(entities: Entity[], entityType: JsonType, updateCell: UpdateCell) : void {
+    public updateEntities(database: string, container: string, entities: Entity[], entityType: JsonType, updateCell: UpdateCell) : void {
+        const e = this.explorer;
+        if (database != e.database || container != e.container)
+            return;
+        this.updateEntitiesInternal(entities, entityType, updateCell);
+    }
+
+    private updateEntitiesInternal(entities: Entity[], entityType: JsonType, updateCell: UpdateCell) : void {
         // console.log("entities", entities);
         const keyName       = EntityEditor.getEntityKeyName(entityType);
         const entityFields  = this.entityFields;

@@ -221,7 +221,7 @@ export class EntityEditor {
             this.entityHistory[++this.entityHistoryPos] = { route: Object.assign({}, p) };
             this.entityHistory.length = this.entityHistoryPos + 1;
         }
-        this.entityIdentity = {
+        const ei = this.entityIdentity = {
             database: p.database,
             container: p.container,
             entityIds: [...p.ids]
@@ -236,6 +236,7 @@ export class EntityEditor {
             return null;
         }
         // console.log(entityJson);
+        app.explorer.setSelectedEntities(ei.database, ei.container, ei.entityIds);
         this.setEntityValue(p.database, p.container, content);
         if (selection)
             this.entityEditor.setSelection(selection);
@@ -260,7 +261,11 @@ export class EntityEditor {
         let len = ids.length;
         if (len == 1 && ids[0] == "")
             len = 0;
-        entityIdsContainer.onclick = () => app.explorer.loadContainer({ database: database, container: container, ids: null }, null);
+        entityIdsContainer.onclick = async () => {
+            await app.explorer.loadContainer({ database: database, container: container, ids: null }, null);
+            const ei = this.entityIdentity;
+            app.explorer.setSelectedEntities(ei.database, ei.container, ei.entityIds);
+        };
         entityIdsContainer.innerText = `« ${container}`;
         entityIdsCount.innerText = len > 0 ? `(${len})` : "";
         let getUrl;
@@ -303,7 +308,7 @@ export class EntityEditor {
                 json = [json];
         }
         const type = app.getContainerSchema(database, container);
-        app.explorer.updateExplorerEntities(json, type, "All");
+        app.explorer.updateEntities(database, container, json, type, "All");
         this.selectEntities(database, container, ids);
     }
     onEntityIdsKeyDown(event, database, container) {
@@ -373,17 +378,18 @@ export class EntityEditor {
         writeResult.innerHTML = EntityEditor.formatResult(action, response.status, response.statusText, "");
         // add or update explorer entities
         const updateCell = method == "PUT" ? "All" : "NotNull";
-        app.explorer.updateExplorerEntities(entities, type, updateCell);
+        app.explorer.updateEntities(database, container, entities, type, updateCell);
         if (EntityEditor.arraysEquals(this.entityIdentity.entityIds, ids))
             return;
         this.selectEntities(database, container, ids);
     }
     selectEntities(database, container, ids) {
         var _a;
-        this.entityIdentity.entityIds = ids;
+        const ei = this.entityIdentity;
+        ei.entityIds = ids;
         this.setEntitiesIds(database, container, ids);
         const rowIndices = app.explorer.findRowIndices(ids);
-        app.explorer.setSelectedEntities(ids);
+        app.explorer.setSelectedEntities(ei.database, ei.container, ei.entityIds);
         const firstRow = rowIndices[ids[0]];
         if (firstRow) {
             const focusedCell = app.explorer.getFocusedCell();
