@@ -1,4 +1,4 @@
 {
     "id": "monitor-admin",
-    "roles": ["monitor-allow", "cluster-info"]
+    "roles": ["monitor-allow"]
 }

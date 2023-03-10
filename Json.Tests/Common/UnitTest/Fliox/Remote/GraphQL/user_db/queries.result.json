@@ -4,19 +4,19 @@
     "count": 14,
     "items": [
         {
-            "id": "all-allow",
+            "id": "cluster-info",
             "taskRights": [
                 {
-                    "database": "*",
+                    "database": "cluster",
                     "__typename": "DbFullRight"
                 }
             ]
         },
         {
-            "id": "cluster-info",
+            "id": "hub-admin",
             "taskRights": [
                 {
-                    "database": "cluster",
+                    "database": "*",
                     "__typename": "DbFullRight"
                 }
             ]

@@ -37,8 +37,12 @@ GET {{base}}/rest/cluster/containers
 
 ###
 GET {{base}}/rest/cluster/containers
-# StatusCode:   403
-# Content-Type: text/plain
+# StatusCode:   200
+# Content-Type: application/json
 
-PermissionDenied > not authorized. user: 'user-readonly'
+[
+    {"id":"cluster","storage":"in-memory","containers":["containers","messages","schemas"]},
+    {"id":"user_db","storage":"file-system","containers":["credentials","permissions","roles","targets"]},
+    {"id":"signaling","storage":"in-memory","containers":["hosts"]}
+]
 

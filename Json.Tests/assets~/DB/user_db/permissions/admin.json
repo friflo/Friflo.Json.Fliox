@@ -1,4 +1,4 @@
 {
     "id": "admin",
-    "roles": ["all-allow"]
+    "roles": ["hub-admin"]
 }

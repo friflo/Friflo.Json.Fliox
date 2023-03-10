@@ -1,5 +1,5 @@
 {
-    "id": "all-allow",
+    "id": "hub-admin",
     "description": "Allow unrestricted access to all databases",
     "taskRights": [
         {
