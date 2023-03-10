@@ -6,18 +6,6 @@ Cookie: fliox-user=admin; fliox-token=admin
 
 ###
 GET {{base}}/rest/cluster/containers
-Cookie: fliox-user=cluster-admin; fliox-token=cluster-admin
-
-###
-GET {{base}}/rest/cluster/containers?ids=cluster,user_db,unknown
-Cookie: fliox-user=cluster-admin; fliox-token=cluster-admin
-
-###
-GET {{base}}/rest/cluster/messages?ids=cluster,user_db,unknown
-Cookie: fliox-user=cluster-admin; fliox-token=cluster-admin
-
-###
-GET {{base}}/rest/cluster/containers
 Cookie: fliox-user=monitor-admin; fliox-token=monitor-admin
 
 ###

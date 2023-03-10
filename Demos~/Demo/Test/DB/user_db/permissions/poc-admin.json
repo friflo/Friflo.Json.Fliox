@@ -1,4 +1,4 @@
 {
     "id": "poc-admin",
-    "roles": ["main_db-allow", "cluster-allow"]
+    "roles": ["main_db-allow", "cluster-info"]
 }

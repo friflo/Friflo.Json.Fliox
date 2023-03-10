@@ -1,7 +1,0 @@
-{
-    "id": "cluster-allow",
-    "description": "Allow unrestricted access to cluster database",
-    "taskRights": [        
-        { "type": "dbFull", "database": "cluster" }        
-    ]
-}

@@ -61,7 +61,7 @@ namespace DemoHub
             httpHost.AddHandler      (new GraphQLHandler());
             httpHost.AddHandler      (new StaticFileHandler(HubExplorer.Path)); // optional - serve static web files of Hub Explorer
             
-            CreateWebRtcServer(httpHost).Wait();
+            // CreateWebRtcServer(httpHost).Wait();
             return httpHost;
         }
         

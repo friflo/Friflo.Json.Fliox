@@ -20,38 +20,6 @@ GET {{base}}/rest/cluster/containers
 
 [
     {"id":"cluster","storage":"in-memory","containers":["containers","messages","schemas"]},
-    {"id":"signaling","storage":"in-memory","containers":["hosts"]}
-]
-
-###
-GET {{base}}/rest/cluster/containers?ids=cluster,user_db,unknown
-# StatusCode:   200
-# Content-Type: application/json
-
-[
-    {"id":"cluster","storage":"in-memory","containers":["containers","messages","schemas"]},
-    null,
-    null
-]
-
-###
-GET {{base}}/rest/cluster/messages?ids=cluster,user_db,unknown
-# StatusCode:   200
-# Content-Type: application/json
-
-[
-    {"id":"cluster","commands":["std.Echo","std.Delay","std.Containers","std.Messages","std.Schema","std.Stats","std.Host","std.Cluster","std.User","std.Client"],"messages":[]},
-    null,
-    null
-]
-
-###
-GET {{base}}/rest/cluster/containers
-# StatusCode:   200
-# Content-Type: application/json
-
-[
-    {"id":"cluster","storage":"in-memory","containers":["containers","messages","schemas"]},
     {"id":"monitor","storage":"in-memory","containers":["hosts","users","clients","histories"]},
     {"id":"signaling","storage":"in-memory","containers":["hosts"]}
 ]

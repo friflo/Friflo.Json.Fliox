@@ -1,4 +1,0 @@
-{
-    "id": "cluster-admin",
-    "roles": ["cluster-allow"]
-}

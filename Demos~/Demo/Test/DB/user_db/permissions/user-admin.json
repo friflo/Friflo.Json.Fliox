@@ -1,4 +1,4 @@
 {
     "id": "user-admin",
-    "roles": ["user_db-allow", "cluster-allow"]
+    "roles": ["user_db-allow", "cluster-info"]
 }
