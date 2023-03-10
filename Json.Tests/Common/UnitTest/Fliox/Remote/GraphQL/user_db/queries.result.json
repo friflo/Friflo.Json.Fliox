@@ -212,7 +212,8 @@
                     "types": [
                         "subscribeMessage",
                         "command",
-                        "read"
+                        "read",
+                        "query"
                     ],
                     "__typename": "DbTaskRight"
                 }

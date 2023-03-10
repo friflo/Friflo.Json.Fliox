@@ -19,7 +19,8 @@ GET {{base}}/rest/cluster/containers
 # Content-Type: application/json
 
 [
-    {"id":"cluster","storage":"in-memory","containers":["containers","messages","schemas"]}
+    {"id":"cluster","storage":"in-memory","containers":["containers","messages","schemas"]},
+    {"id":"signaling","storage":"in-memory","containers":["hosts"]}
 ]
 
 ###
@@ -51,7 +52,8 @@ GET {{base}}/rest/cluster/containers
 
 [
     {"id":"cluster","storage":"in-memory","containers":["containers","messages","schemas"]},
-    {"id":"monitor","storage":"in-memory","containers":["hosts","users","clients","histories"]}
+    {"id":"monitor","storage":"in-memory","containers":["hosts","users","clients","histories"]},
+    {"id":"signaling","storage":"in-memory","containers":["hosts"]}
 ]
 
 ###
@@ -61,7 +63,8 @@ GET {{base}}/rest/cluster/containers
 
 [
     {"id":"cluster","storage":"in-memory","containers":["containers","messages","schemas"]},
-    {"id":"user_db","storage":"file-system","containers":["credentials","permissions","roles","targets"]}
+    {"id":"user_db","storage":"file-system","containers":["credentials","permissions","roles","targets"]},
+    {"id":"signaling","storage":"in-memory","containers":["hosts"]}
 ]
 
 ###

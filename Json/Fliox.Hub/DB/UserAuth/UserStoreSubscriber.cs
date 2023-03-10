@@ -62,7 +62,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
             foreach (var patch  in changes.Patches) { roles.Add(patch.key); }
             
             var changedRoles    = roles.ToArray();
-            var affectedUsers   = new List<ShortString>();
+            var affectedUsers   = new HashSet<ShortString>(ShortString.Equality);
             foreach (var changedRole in changedRoles) {
                 if(!userAuthenticator.roleCache.TryRemove(changedRole, out _))
                     continue;
@@ -89,7 +89,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
         }
         
         /// Iterate all users and those to <paramref name="affectedUsers"/> having any of the given <paramref name="roles"/>.
-        private void AddAffectedUsers(List<ShortString> affectedUsers, string[] roles) {
+        private void AddAffectedUsers(HashSet<ShortString> affectedUsers, string[] roles) {
             foreach (var pair in userAuthenticator.users) {
                 var user = pair.Value;
                 if (IsIntersectionEmpty(user.roles, roles)) {

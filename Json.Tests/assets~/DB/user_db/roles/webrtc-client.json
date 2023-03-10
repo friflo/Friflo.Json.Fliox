@@ -5,7 +5,7 @@
         {
             "type": "dbTask",
             "database": "signaling",
-            "types": ["subscribeMessage", "command", "read"]
+            "types": ["subscribeMessage", "command", "read", "query"]
         }
     ]
 }

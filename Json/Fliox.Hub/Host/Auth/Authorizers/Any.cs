@@ -11,6 +11,8 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
     public sealed class AuthorizeAny : TaskAuthorizer {
         internal  readonly  TaskAuthorizer[]     list;
         
+        public   override   string  ToString() => $"Count: {list.Length}";
+        
         public AuthorizeAny(IReadOnlyList<TaskAuthorizer> list) {
             this.list = list.ToArray();
         }

@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Friflo.Json.Fliox.Hub.Host.Auth;
 
 namespace Friflo.Json.Fliox.Hub.DB.UserAuth
@@ -33,7 +34,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
         private  readonly   List<TaskAuthorizer>    taskAuthorizers = new List<TaskAuthorizer>();
         private  readonly   List<HubPermission>     hubPermissions  = new List<HubPermission>();
         private  readonly   HashSet<ShortString>    groups          = new HashSet<ShortString>(ShortString.Equality);
-        private  readonly   List<string>            roles           = new List<string>();
+        private  readonly   HashSet<string>         roles           = new HashSet<string>();
         
         internal void AddRole(UserAuthRole role) {
             if (roles.Contains(role.id)) {
@@ -47,9 +48,14 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
         internal void AddGroups(List<ShortString> groups) {
             if (groups == null)
                 return;
-            foreach (var group in groups) {
-                this.groups.Add(group);
-            }
+            this.groups.UnionWith(groups);
+        }
+        
+        internal void AddUserAuth(User user) {
+            roles.UnionWith(user.Roles);
+            groups.UnionWith(user.GetGroups());
+            taskAuthorizers.Add(user.taskAuthorizer);
+            hubPermissions.Add(user.HubPermission);
         }
         
         internal string[] GetRoles() {
@@ -72,28 +78,42 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
         }
         
         internal TaskAuthorizer GetTaskAuthorizer() {
-            var authorizers = new List<TaskAuthorizer>(); 
+            var authorizers = new List<TaskAuthorizer>();
+            // convert hierarchy to flat list
             foreach (var authorizer in taskAuthorizers) {
-                switch (authorizer) {
-                    case AuthorizeDatabase          _:
-                    case AuthorizeTaskType          _:
-                    case AuthorizeContainer         _:
-                    case AuthorizeSendMessage       _:
-                    case AuthorizeSubscribeMessage  _:
-                    case AuthorizeSubscribeChanges  _:
-                    case AuthorizePredicate         _:
-                    case AuthorizeAny               _:
-                        authorizers.Add(authorizer);
-                        break;
-                    case AuthorizeGrant             _:
-                        return TaskAuthorizer.Full;
-                    case AuthorizeDeny _:
-                        break;
-                    default:
-                        throw new InvalidOperationException($"unexpected authorizer: {authorizer}");
+                AddTaskAuthorizer(authorizers, authorizer);
+            }
+            foreach (var authorizer in authorizers) {
+                if (authorizer is AuthorizeGrant) {
+                    return TaskAuthorizer.Full;
                 }
+                if (authorizer is AuthorizeAny) throw new InvalidOperationException("expect flat list");
             }
             return TaskAuthorizer.ToAuthorizer(authorizers);
+        }
+        
+        private static void AddTaskAuthorizer(List<TaskAuthorizer> authorizers, TaskAuthorizer authorizer) {
+            switch (authorizer) {
+                case AuthorizeDatabase          _:
+                case AuthorizeTaskType          _:
+                case AuthorizeContainer         _:
+                case AuthorizeSendMessage       _:
+                case AuthorizeSubscribeMessage  _:
+                case AuthorizeSubscribeChanges  _:
+                case AuthorizePredicate         _:
+                case AuthorizeGrant             _:
+                    authorizers.Add(authorizer);
+                    break;
+                case AuthorizeAny               any:
+                    foreach (var item in any.list) {
+                        AddTaskAuthorizer(authorizers, item);
+                    }
+                    break;
+                case AuthorizeDeny _:
+                    break;
+                default:
+                    throw new InvalidOperationException($"unexpected authorizer: {authorizer}");
+            }
         }
     }
 }
