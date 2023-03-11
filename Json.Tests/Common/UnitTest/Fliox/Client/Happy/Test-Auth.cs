@@ -243,12 +243,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         
         private static async Task AssertUserStore(UserStore store, string user) {
             var allCredentials  = store.credentials.QueryAll();
-            var createTask      = store.credentials.Create(new UserCredential{ id= new ShortString("create-id") });
+            // create credential is granted - to enable creating default admin token
+            // var createTask      = store.credentials.Create(new UserCredential{ id= new ShortString("create-id") });
             var upsertTask      = store.credentials.Upsert(new UserCredential{ id= new ShortString("upsert-id") });
             await store.TrySyncTasks();
             
             AreEqual($"PermissionDenied ~ not authorized. user: '{user}'", allCredentials.Error.Message);
-            AreEqual($"PermissionDenied ~ not authorized. user: '{user}'", createTask.Error.Message);
             AreEqual($"PermissionDenied ~ not authorized. user: '{user}'", upsertTask.Error.Message);
         }
         

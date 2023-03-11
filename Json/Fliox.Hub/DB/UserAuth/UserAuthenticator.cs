@@ -36,8 +36,12 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
     {
         // --- public
         /// <summary>
-        /// If true (default) the permission <b>admin</b> using the role <b>hub-admin</b> are set in the user database.<br/>
-        /// This setup enables full access to all Hub databases as user <b>admin</b>. 
+        /// If true (default) default permissions are set in the user database.<br/>
+        /// - create user credential: <b>admin</b> if not exist<br/>
+        /// - set user permission: <b>admin</b> with role <b>hub-admin</b><br/>
+        /// - set role: <b>hub-admin</b> granting full access to all databases<br/>
+        /// <br/>
+        /// This enables access to all Hub databases as user <b>admin</b> without accessing the user database directly. 
         /// </summary>
         public              bool                                        UseDefaultPermissions { get; init; } = true;
         
@@ -68,15 +72,20 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
             anonymous               = new User(User.AnonymousId);
             allUsers                = new User(AllUsersId);
             if (UseDefaultPermissions) {
-                Task.Run(async () => {
-                    await WriteDefaultPermissions();
-                });
+                var task = Task.Run(async () => await WriteDefaultPermissions());
+                task.Wait();
+                var error = task.Result;
+                if (error != null) throw new InvalidOperationException($"Failed writing default permissions. error: {error}");
             }
         }
         
-        private async Task WriteDefaultPermissions() {
+        private async Task<string> WriteDefaultPermissions() {
             var userStore           = new UserStore(userHub) { UserId = UserStore.Server };
             userStore.WritePretty   = true;
+            var adminCredential     = new UserCredential {
+                id      = new ShortString(AdminId),
+                token   = new ShortString(AdminId),
+            };
             var adminPermission     = new UserPermission {
                 id      = new ShortString(AdminId),
                 roles   = new List<string> { HubAdminId }
@@ -87,9 +96,15 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
                 hubRights   = new HubRights { queueEvents = true },
                 description = "Grant unrestricted access to all databases"
             };
-            userStore.permissions.Upsert(adminPermission);
-            userStore.roles.Upsert(hubAdmin);
-            await userStore.SyncTasks();
+            userStore.credentials.Create(adminCredential);
+            var upsertPermission    = userStore.permissions.Upsert(adminPermission);
+            var upsertRole          = userStore.roles.Upsert(hubAdmin);
+            var sync = await userStore.TrySyncTasks();
+            
+            if (upsertPermission.Success && upsertRole.Success) {
+                return null;
+            }
+            return sync.Message;
         }
         
         public void Dispose() {

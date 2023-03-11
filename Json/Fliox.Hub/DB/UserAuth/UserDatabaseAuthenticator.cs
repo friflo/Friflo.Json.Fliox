@@ -42,7 +42,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
                 new AuthorizeSubscribeChanges(nameof(UserStore.targets),     changes, userDbName)
             });
             var serverRights    = new AuthorizeAny(new TaskAuthorizer[] {
-                new AuthorizeContainer       (nameof(UserStore.credentials), new []{ OperationType.read },   userDbName),
+                new AuthorizeContainer       (nameof(UserStore.credentials), new []{ OperationType.read, OperationType.create },   userDbName),
                 new AuthorizeContainer       (nameof(UserStore.permissions), new []{ OperationType.upsert }, userDbName),
                 new AuthorizeContainer       (nameof(UserStore.roles),       new []{ OperationType.upsert }, userDbName)
             });
