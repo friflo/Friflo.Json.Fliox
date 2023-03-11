@@ -36,6 +36,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
                 new AuthorizeContainer       (nameof(UserStore.permissions), new []{ OperationType.read, OperationType.query },  userDbName),
                 new AuthorizeContainer       (nameof(UserStore.roles),       new []{ OperationType.read, OperationType.query },  userDbName),
                 new AuthorizeContainer       (nameof(UserStore.targets),     new []{ OperationType.read, OperationType.upsert }, userDbName),
+                new AuthorizeSubscribeChanges(nameof(UserStore.credentials), changes, userDbName),
                 new AuthorizeSubscribeChanges(nameof(UserStore.permissions), changes, userDbName),
                 new AuthorizeSubscribeChanges(nameof(UserStore.roles),       changes, userDbName),
                 new AuthorizeSubscribeChanges(nameof(UserStore.targets),     changes, userDbName)

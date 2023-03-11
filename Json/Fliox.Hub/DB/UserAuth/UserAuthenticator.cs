@@ -163,12 +163,12 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
                 return !allUsers.invalidated;
             }
             if (users.TryGetValue(syncRequest.userId, out user)) {
-                if (!user.token.IsEqual(syncRequest.token)) {
-                    type = PreAuthType.Failed;
-                    return false;
-                }
                 if (user.invalidated) {
                     type = PreAuthType.UserInvalidated;
+                    return false;
+                }
+                if (!user.token.IsEqual(syncRequest.token)) {
+                    type = PreAuthType.Failed;
                     return false;
                 }
                 type = PreAuthType.Success;
@@ -233,23 +233,22 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
                 var command = new Credentials { userId = userId, token = token };
                 var result  = await auth.AuthenticateAsync(command).ConfigureAwait(false);
                 
-                if (result.isValid) {
-                    var error = await GetUserAuthInfoAsync(userStore, userId, ua).ConfigureAwait(false);
-                    if (error != null) {
-                        users.TryAdd(anonymous.userId, anonymous);
-                        syncContext.AuthenticationFailed(anonymous, error, all.taskAuthorizer, all.hubPermission);
-                        return;
-                    }
-                    user ??= new User(userId);
-                    user.Set(token, ua.GetTaskAuthorizer(), ua.GetHubPermission(), ua.GetRoles());
-                    user.SetGroups(ua.GetGroups());
-                    users.TryAdd(userId, user);
-                }
-                if (user == null || !token.IsEqual(user.token)) {
+                // authentication failed?
+                if (!result.isValid) {
                     users.TryAdd(anonymous.userId, anonymous);
                     syncContext.AuthenticationFailed(anonymous, InvalidUserToken, all.taskAuthorizer, all.hubPermission);
                     return;
                 }
+                var error = await GetUserAuthInfoAsync(userStore, userId, ua).ConfigureAwait(false);
+                if (error != null) {
+                    users.TryAdd(anonymous.userId, anonymous);
+                    syncContext.AuthenticationFailed(anonymous, error, all.taskAuthorizer, all.hubPermission);
+                    return;
+                }
+                user ??= new User(userId);
+                user.Set(token, ua.GetTaskAuthorizer(), ua.GetHubPermission(), ua.GetRoles());
+                user.SetGroups(ua.GetGroups());
+                users.TryAdd(userId, user);
                 syncContext.AuthenticationSucceed(user, user.taskAuthorizer, user.hubPermission);
             }
         }
