@@ -23,26 +23,32 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
     }
 
     /// <summary>
-    /// Performs user authentication by validating the "userId" and the "token" assigned to a <see cref="Client.FlioxClient"/>
+    /// Performs user authentication by validating <b>userId</b> and <b>token</b> assigned to a <see cref="Client.FlioxClient"/><br/>
+    /// Successful authenticated users are able to access the Hub using their assigned permissions.<br/>
+    /// The permission assigned to <b>all-users</b> - if available - is used for authenticated and anonymous users.<br/>
     /// </summary>
     /// <remarks>
-    /// If authentication succeed it set the <see cref="AuthState.taskAuthorizer"/> derived from the roles assigned to the user. <br/>
-    /// If authentication fails <b>anonymous</b> <see cref="UserPermission"/> <see cref="UserPermission.roles"/> are assigned to the user. <br/>
-    /// <br/>
     /// <b>Note:</b> User permissions and roles are cached for successful authenticated users.<br/>
-    /// This enables instant task authorization and reduces the number of reads to the <b>user_db</b> significant.
-    /// </remarks> 
+    /// This enables instant task authorization and reduces the number of reads to the <b>user_db</b> significant.<br/>
+    /// <br/>
+    /// <b>Note:</b> All user permissions are transparently defined and available via <see cref="UserStore"/>
+    /// <see cref="UserStore.permissions"/> and <see cref="UserStore.roles"/>.<br/>
+    /// So authorization is fully documented by these two containers. 
+    /// </remarks>
     public sealed class UserAuthenticator : Authenticator, IDisposable
     {
         // --- public
         /// <summary>
-        /// If true (default) default permissions are set in the user database.<br/>
+        /// If true (default) default permissions are set in the user database to enable Hub access.<br/>
+        /// If false the user database have to provide basic permissions to enable Hub access.<br/>
+        /// </summary>
+        /// <remarks>
         /// - create user credential: <b>admin</b> if not exist<br/>
         /// - set user permission: <b>admin</b> with role <b>hub-admin</b><br/>
         /// - set role: <b>hub-admin</b> granting full access to all databases<br/>
         /// <br/>
-        /// This enables access to all Hub databases as user <b>admin</b> without accessing the user database directly. 
-        /// </summary>
+        /// This enables access to all Hub databases as user <b>admin</b> without accessing the user database directly.
+        /// </remarks> 
         public              bool                                        UseDefaultPermissions { get; init; } = true;
         
         // --- private / internal
