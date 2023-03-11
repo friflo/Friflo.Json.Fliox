@@ -12,13 +12,13 @@ namespace Friflo.Json.Fliox.Schema.Validation
 {
     public sealed class NativeValidationSet : IDisposable
     {
-        private  readonly   HashSet<Type>                                   clientTypes;
+        private  readonly   ConcurrentDictionary<Type, bool>                clientTypes;
         private  readonly   ConcurrentDictionary<Type, ValidationType>      validationTypes;
         private  readonly   ConcurrentDictionary<Type, ValidationTypeDef>   validationTypeDefs;
         private  readonly   TypeStore                                       typeStore;
         
         public NativeValidationSet() {
-            clientTypes         = new HashSet<Type>();
+            clientTypes         = new ConcurrentDictionary<Type, bool>();
             validationTypes     = new ConcurrentDictionary<Type, ValidationType>();
             validationTypeDefs  = new ConcurrentDictionary<Type, ValidationTypeDef>();
             typeStore           = new TypeStore();
@@ -76,7 +76,7 @@ namespace Friflo.Json.Fliox.Schema.Validation
         /// high memory locality as only a single <see cref="ValidationSet"/> is created for a single database schema.
         /// </summary>
         public void AddRootType (Type rootType) {
-            if (!clientTypes.Add(rootType))
+            if (!clientTypes.TryAdd(rootType, true))
                 return;
             var nativeSchema    = NativeTypeSchema.Create(rootType);
             var validationSet   = new ValidationSet(nativeSchema);

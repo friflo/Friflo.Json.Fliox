@@ -3,7 +3,10 @@
 
 using System.Linq;
 using System.Threading.Tasks;
+using Friflo.Json.Fliox.Hub.Client;
 using Friflo.Json.Fliox.Hub.Host;
+using Friflo.Json.Fliox.Hub.Protocol;
+using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 
 namespace Friflo.Json.Fliox.Hub.DB.UserAuth
 {
@@ -13,6 +16,34 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
             AddCommandHandlerAsync<Credentials, AuthResult>         (nameof(AuthenticateUser),  AuthenticateUser);
             AddCommandHandlerAsync<JsonValue, ValidateUserDbResult> (nameof(ValidateUserDb),    ValidateUserDb);
             AddCommandHandler<JsonValue, bool>                      (nameof(ClearAuthCache),    ClearAuthCache);
+        }
+        
+        public override async Task<SyncTaskResult> ExecuteTaskAsync (SyncRequestTask task, EntityDatabase database, SyncResponse response, SyncContext syncContext) {
+            if (!AuthorizeTask(task, syncContext, out var error)) {
+                return error;
+            }
+            if (syncContext.hub.Authenticator is UserAuthenticator) {
+                if (!ValidateTask(task, out var validationError)) {
+                    return validationError;
+                }
+            }
+            return await task.ExecuteAsync(database, response, syncContext).ConfigureAwait(false);
+        }
+        
+        private static readonly    JsonKey      AdminId     = new JsonKey(UserAuthenticator.AdminId);
+        private static readonly    JsonKey      HubAdminId  = new JsonKey(UserAuthenticator.HubAdminId);
+        
+        private static bool ValidateTask(SyncRequestTask task, out TaskErrorResult error) {
+            if (task.ContainsEntityChange(Change.All, new ShortString(nameof(UserStore.permissions)), AdminId)) {
+                error = new TaskErrorResult (TaskErrorResultType.PermissionDenied, $"permission '{AdminId}' must not be changed");
+                return false;
+            }
+            if (task.ContainsEntityChange(Change.All, new ShortString(nameof(UserStore.roles)), HubAdminId)) {
+                error = new TaskErrorResult (TaskErrorResultType.PermissionDenied, $"role '{HubAdminId}' must not be changed");
+                return false;
+            }
+            error = null;
+            return true;
         }
         
         private async Task<AuthResult> AuthenticateUser (Param<Credentials> param, MessageContext command) {

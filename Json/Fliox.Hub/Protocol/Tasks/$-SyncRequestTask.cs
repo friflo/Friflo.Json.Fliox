@@ -103,6 +103,74 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
             error = null;
             return true;
         }
+        
+        public bool ContainsEntityChange (Change change, in ShortString container, in JsonKey id) {
+            switch (TaskType) {
+                case TaskType.create:   if ((change & Change.create) != 0)  break;   return false;
+                case TaskType.upsert:   if ((change & Change.upsert) != 0)  break;   return false;
+                case TaskType.merge:    if ((change & Change.merge)  != 0)  break;   return false;
+                case TaskType.delete:   if ((change & Change.delete) != 0)  break;   return false;
+                default:
+                    return false;
+            }
+            return ContainsEntity(container, new HashSet<JsonKey>(JsonKey.Equality) { id });
+        }
+        
+        private bool ContainsEntity (in ShortString container, HashSet<JsonKey> ids) {
+            switch (TaskType) {
+                case TaskType.read:
+                    var read = (ReadEntities) this;
+                    if (!read.container.IsEqual(container))
+                        return false;
+                    foreach (var readIds in read.ids) {
+                        if (ids.Contains(readIds)) {
+                            return true;
+                        }
+                    }
+                    return false;
+                case TaskType.create:
+                    var create = (CreateEntities) this;
+                    if (!create.container.IsEqual(container))
+                        return false;
+                    foreach (var entity in create.entities) {
+                        if (ids.Contains(entity.key)) {
+                            return true;
+                        }
+                    }
+                    return false;
+                case TaskType.upsert:
+                    var upsert = (UpsertEntities) this;
+                    if (!upsert.container.IsEqual(container))
+                        return false;
+                    foreach (var entity in upsert.entities) {
+                        if (ids.Contains(entity.key)) {
+                            return true;
+                        }
+                    }
+                    return false;
+                case TaskType.merge:
+                    var merge = (MergeEntities) this;
+                    if (!merge.container.IsEqual(container))
+                        return false;
+                    foreach (var patch in merge.patches) {
+                        if (ids.Contains(patch.key)) {
+                            return true;
+                        }
+                    }
+                    return false;
+                case TaskType.delete:
+                    var delete = (DeleteEntities) this;
+                    if (!delete.container.IsEqual(container))
+                        return false;
+                    foreach (var id in delete.ids) {
+                        if (ids.Contains(id)) {
+                            return true;
+                        }
+                    }
+                    return false;
+            }
+            return false;
+        }
     }
     
     /// <summary>

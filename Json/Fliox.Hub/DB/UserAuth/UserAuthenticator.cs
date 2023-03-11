@@ -34,6 +34,13 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
     /// </remarks> 
     public sealed class UserAuthenticator : Authenticator, IDisposable
     {
+        // --- public
+        /// <summary>
+        /// If true (default) the permission <b>admin</b> using the role <b>hub-admin</b> are set in the user database.<br/>
+        /// This setup enables full access to all Hub databases as user <b>admin</b>. 
+        /// </summary>
+        public              bool                                        UseDefaultPermissions { get; init; } = true;
+        
         // --- private / internal
         internal  readonly  FlioxHub                                    userHub;
         private   readonly  IUserAuth                                   userAuth;
@@ -42,10 +49,12 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
         private   readonly  User                                        anonymous;
         /// <summary>Contains authorization permissions for all users</summary>
         private   readonly  User                                        allUsers;
-        
-        public static readonly  ShortString   AllUsersId = new ShortString("all-users");
 
-        private UserAuthenticator (EntityDatabase userDatabase, SharedEnv env = null, IUserAuth userAuth = null)
+        public   static readonly    ShortString AllUsersId  = new ShortString("all-users");
+        internal static readonly    string      AdminId     = "admin";
+        internal static readonly    string      HubAdminId  = "hub-admin";
+
+        public UserAuthenticator (EntityDatabase userDatabase, SharedEnv env = null, IUserAuth userAuth = null)
         {
             var service = userDatabase.service;
             if (!(service is UserDBService))
@@ -58,11 +67,29 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
             roleCache               = new ConcurrentDictionary <string, UserAuthRole>();
             anonymous               = new User(User.AnonymousId);
             allUsers                = new User(AllUsersId);
+            if (UseDefaultPermissions) {
+                Task.Run(async () => {
+                    await WriteDefaultPermissions();
+                });
+            }
         }
         
-        public static UserAuthenticator Create(EntityDatabase userDatabase, SharedEnv env = null, IUserAuth userAuth = null) {
-            var userAuthenticator = new UserAuthenticator(userDatabase, env, userAuth);
-            return userAuthenticator;
+        private async Task WriteDefaultPermissions() {
+            var userStore           = new UserStore(userHub) { UserId = UserStore.Server };
+            userStore.WritePretty   = true;
+            var adminPermission     = new UserPermission {
+                id      = new ShortString(AdminId),
+                roles   = new List<string> { HubAdminId }
+            };
+            var hubAdmin            = new Role {
+                id          = HubAdminId,
+                taskRights  = new List<TaskRight> { new DbFullRight { database = "*"} },
+                hubRights   = new HubRights { queueEvents = true },
+                description = "Grant unrestricted access to all databases"
+            };
+            userStore.permissions.Upsert(adminPermission);
+            userStore.roles.Upsert(hubAdmin);
+            await userStore.SyncTasks();
         }
         
         public void Dispose() {

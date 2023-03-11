@@ -1,13 +1,13 @@
 {
     "id": "hub-admin",
-    "description": "Allow unrestricted access to all databases",
     "taskRights": [
         {
-            "type": "dbFull",
+            "type":"dbFull",
             "database": "*"
         }
     ],
     "hubRights": {
         "queueEvents": true
-    }
+    },
+    "description": "Grant unrestricted access to all databases"
 }

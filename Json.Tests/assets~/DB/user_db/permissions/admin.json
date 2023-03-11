@@ -1,4 +1,6 @@
 {
     "id": "admin",
-    "roles": ["hub-admin"]
+    "roles": [
+        "hub-admin"
+    ]
 }
