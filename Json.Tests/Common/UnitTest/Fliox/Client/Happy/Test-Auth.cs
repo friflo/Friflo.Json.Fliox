@@ -24,7 +24,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             {
                 SingleThreadSynchronizationContext.Run(async () => {
                     using (var userDatabase     = new FileDatabase(TestGlobals.UserDB, CommonUtils.GetBasePath() + "assets~/DB/user_db", new UserDBService()))
-                    using (var authenticator    = new UserAuthenticator(userDatabase, TestGlobals.Shared))
+                    using (var authenticator    = UserAuthenticator.Create(userDatabase, TestGlobals.Shared))
                     using (var database         = new MemoryDatabase(TestGlobals.DB))
                     using (var hub          	= new FlioxHub(database, TestGlobals.Shared))
                     using (var eventDispatcher  = new EventDispatcher(EventDispatching.Send)) // required for SubscribeMessage() and SubscribeChanges()

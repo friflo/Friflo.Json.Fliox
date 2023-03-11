@@ -45,7 +45,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
         
         public static readonly  ShortString   AllUsersId = new ShortString("all-users");
 
-        public UserAuthenticator (EntityDatabase userDatabase, SharedEnv env = null, IUserAuth userAuth = null)
+        private UserAuthenticator (EntityDatabase userDatabase, SharedEnv env = null, IUserAuth userAuth = null)
         {
             var service = userDatabase.service;
             if (!(service is UserDBService))
@@ -58,6 +58,11 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
             roleCache               = new ConcurrentDictionary <string, UserAuthRole>();
             anonymous               = new User(User.AnonymousId);
             allUsers                = new User(AllUsersId);
+        }
+        
+        public static UserAuthenticator Create(EntityDatabase userDatabase, SharedEnv env = null, IUserAuth userAuth = null) {
+            var userAuthenticator = new UserAuthenticator(userDatabase, env, userAuth);
+            return userAuthenticator;
         }
         
         public void Dispose() {
