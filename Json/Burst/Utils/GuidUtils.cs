@@ -8,7 +8,11 @@ namespace Friflo.Json.Burst.Utils
     public static class GuidUtils
     {
         public static unsafe Guid LongLongToGuid(in long lng, in long lng2) {
+#if NETSTANDARD2_0
+            var bytes = new byte[16]; // NETSTANDARD2_0_ALLOC
+#else
             ReadOnlySpan<byte> bytes = stackalloc byte[16];
+#endif
             fixed (byte*  bytesPtr  = &bytes[0]) 
             fixed (long*  lngPtr    = &lng)
             fixed (long*  lngPtr2   = &lng2)
@@ -21,8 +25,12 @@ namespace Friflo.Json.Burst.Utils
         }
         
         public static unsafe void GuidToLongLong(in Guid guid, out long lng, out long lng2) {
+#if NETSTANDARD2_0
+            var bytes = guid.ToByteArray(); // NETSTANDARD2_0_ALLOC
+#else
             Span<byte> bytes = stackalloc byte[16];
             guid.TryWriteBytes(bytes);
+#endif
             fixed (byte*  bytesPtr  = &bytes[0]) 
             fixed (long*  lngPtr    = &lng)
             fixed (long*  lngPtr2   = &lng2)

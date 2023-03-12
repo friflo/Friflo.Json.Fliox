@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 using System.Collections.Generic;
+using System.Globalization;
 
 // ReSharper disable CheckNamespace
 namespace System.Collections.Generic
@@ -8,7 +9,7 @@ namespace System.Collections.Generic
     public static class Helper
     {
         public static HashSet<T> CreateHashSet<T>(int capacity) {
-#if NET_4_6 || NET_2_0
+#if NET_4_6 || NET_2_0 || NETSTANDARD2_0
             return new HashSet<T>();
 #else
             return new HashSet<T>(capacity);
@@ -16,7 +17,7 @@ namespace System.Collections.Generic
         }
         
         public static HashSet<T> CreateHashSet<T>(int capacity, IEqualityComparer<T> comparer) {
-#if NET_4_6 || NET_2_0
+#if NET_4_6 || NET_2_0 || NETSTANDARD2_0
             return new HashSet<T>(comparer);
 #else
             return new HashSet<T>(capacity, comparer);
@@ -46,6 +47,70 @@ namespace System.Text
             sb.Append(value);
             return sb.Append('\n');
         }
+        
+#if NETSTANDARD2_0
+        public static unsafe int GetChars(this Encoding encoding, ReadOnlySpan<byte> bytes, Span<char> chars) {
+            fixed (byte*  bytesPtr  = &bytes[0])
+            fixed (char*  charPtr   = &chars[0]) {
+                return Encoding.UTF8.GetChars(bytesPtr, bytes.Length, charPtr, chars.Length);
+            }
+        }
+        
+        public static unsafe int GetBytes(this Encoding encoding, ReadOnlySpan<char> chars, Span<byte> bytes) {
+            fixed (byte*  bytesPtr  = &bytes[0])
+            fixed (char*  charPtr   = &chars[0]) {
+                return Encoding.UTF8.GetBytes(charPtr, chars.Length, bytesPtr, bytes.Length);
+            }
+        }
+
+        public static unsafe StringBuilder Append(this StringBuilder stringBuilder, ReadOnlySpan<char> value) {
+            fixed (char*  charPtr   = &value[0]) {
+                return stringBuilder.Append(charPtr, value.Length);
+            }
+        }
+#endif
+    }
+}
+
+namespace System
+{
+    public static class MathExt
+    {
+        public static bool TryParseDouble(ReadOnlySpan<char> span, NumberStyles style, IFormatProvider provider, out double result) {
+#if NETSTANDARD2_0
+            var str = span.ToString();  // NETSTANDARD2_0_ALLOC
+            return double.TryParse(str, style, provider, out result);
+#else
+            return double.TryParse(span, style, provider, out result);
+#endif
+        }
+        
+        public static bool TryParseFloat(ReadOnlySpan<char> span, NumberStyles style, IFormatProvider provider, out float result) {
+#if NETSTANDARD2_0
+            var str = span.ToString();  // NETSTANDARD2_0_ALLOC
+            return float.TryParse(str, style, provider, out result);
+#else
+            return float.TryParse(span, style, provider, out result);
+#endif
+        }
+        
+        public static bool TryParseLong(ReadOnlySpan<char> span, NumberStyles style, IFormatProvider provider, out long result) {
+#if NETSTANDARD2_0
+            var str = span.ToString();  // NETSTANDARD2_0_ALLOC
+            return long.TryParse(str, style, provider, out result);
+#else
+            return long.TryParse(span, style, provider, out result);
+#endif
+        }
+        
+        public static bool TryParseInt(ReadOnlySpan<char> span, NumberStyles style, IFormatProvider provider, out int result) {
+#if NETSTANDARD2_0
+            var str = span.ToString();  // NETSTANDARD2_0_ALLOC
+            return int.TryParse(str, style, provider, out result);
+#else
+            return int.TryParse(span, style, provider, out result);
+#endif
+        }
     }
 }
 
@@ -61,6 +126,14 @@ namespace System.Collections.Generic
             
             dictionary.Add(key, value);
             return true;
+        }
+        
+        public static bool Remove<TKey,TValue>(this IDictionary<TKey,TValue> dictionary, TKey key, out TValue value) {
+            if (dictionary.TryGetValue(key, out value)) {
+                dictionary.Remove(key);
+                return true;
+            }
+            return false;
         }
 
         public static int EnsureCapacity<TKey,TValue>(this Dictionary<TKey,TValue> dictionary, int capacity) {
@@ -79,6 +152,15 @@ namespace System.Collections.Generic
             result = default;
             return false;
         }
+        
+        public static bool TryPop<T>(this Stack<T> stack, out T result) {
+            if (stack.Count == 0) {
+                result = default;
+                return false;
+            } 
+            result = stack.Pop();
+            return true;
+        }
     }
 }
 
@@ -94,6 +176,7 @@ namespace System.Collections.Concurrent
 
 namespace System.Linq
 {
+#if !NETSTANDARD2_0
     public static class UnityExtensionLinq
     {
         public static HashSet<T> ToHashSet<T>(this IEnumerable<T> source) {
@@ -117,6 +200,7 @@ namespace System.Linq
             */
         }
     }
+#endif
 }
 
 namespace System

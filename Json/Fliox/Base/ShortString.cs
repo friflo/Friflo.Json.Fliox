@@ -262,7 +262,7 @@ namespace Friflo.Json.Fliox
             Span<char> chars    = stackalloc char[MaxCharCount];
             var length          = GetChars(lng, lng2, chars);
             var readOnlySpan    = chars.Slice(0, length);
-            return new string(readOnlySpan);
+            return readOnlySpan.ToString();
         }
         
         public void AppendTo(ref Bytes dest) {

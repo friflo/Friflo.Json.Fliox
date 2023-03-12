@@ -43,7 +43,7 @@ namespace Friflo.Json.Fliox.Mapper.Utils
         
         public static Action<TInstance, TField> CreateFieldSetter<TInstance,TField>(FieldInfo field)
         {
-#if ENABLE_IL2CPP
+#if ENABLE_IL2CPP || NETSTANDARD2_0
             return (instance, value) => field.SetValue(instance, value);
 #else
             string methodName = "set_" + field.Name;

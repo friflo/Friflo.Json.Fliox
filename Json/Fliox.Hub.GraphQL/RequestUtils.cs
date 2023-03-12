@@ -5,6 +5,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Text;
 using GraphQLParser.AST;
 
@@ -30,7 +31,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
         internal static int? TryGetIntArg(in QueryContext cx, GraphQLValue gqlValue, string name, out QueryError? error) {
             if (gqlValue is GraphQLIntValue gqlIntValue) {
                 var strVal = gqlIntValue.Value.Span;
-                if (!int.TryParse(strVal, out var intValue)) {
+                if (!MathExt.TryParseInt(strVal, NumberStyles.None, CultureInfo.InvariantCulture, out var intValue)) {
                     error = QueryError(name, "invalid int", gqlValue, cx.doc);
                     return null;
                 }

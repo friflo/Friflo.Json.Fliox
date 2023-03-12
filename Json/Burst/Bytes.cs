@@ -217,7 +217,7 @@ namespace Friflo.Json.Burst
                 guid = new Guid();
                 return false;
             }
-#if UNITY_5_3_OR_NEWER
+#if UNITY_5_3_OR_NEWER || NETSTANDARD2_0
             str = AsString();
             return Guid.TryParse(str, out guid);
 #else
@@ -231,7 +231,7 @@ namespace Friflo.Json.Burst
         }
         
         public void AppendGuid(in Guid guid) {
-#if UNITY_5_3_OR_NEWER
+#if UNITY_5_3_OR_NEWER || NETSTANDARD2_0
             var str = guid.ToString();
             AppendString(str);
 #else
@@ -560,7 +560,7 @@ namespace Friflo.Json.Burst
         }
         
         public void AppendGuid (in Guid guid, char[] buf) {
-#if UNITY_5_3_OR_NEWER
+#if UNITY_5_3_OR_NEWER || NETSTANDARD2_0
             AppendString(guid.ToString());
 #else
             var dest = new Span<char>(buf);

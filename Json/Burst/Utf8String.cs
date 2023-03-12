@@ -47,7 +47,7 @@ namespace Friflo.Json.Burst
                 dst[n] = src[n + start];
         }
 
-#if UNITY_5_3_OR_NEWER
+#if UNITY_5_3_OR_NEWER || NETSTANDARD2_0
         public static bool ArraysEqual(byte[] left, int leftStart, byte[] right, int len) {
             var pos     = leftStart;
             for (int n = 0; n < len; n++) {
@@ -70,7 +70,7 @@ namespace Friflo.Json.Burst
         public bool IsEqual (ref Bytes value) {
             if (len != value.Len)
                 return false;
-#if UNITY_5_3_OR_NEWER
+#if UNITY_5_3_OR_NEWER || NETSTANDARD2_0
             return ArraysEqual(buffer.Buf, start, value.buffer, len);
 #else
             var left   = ReadOnlySpan;
@@ -98,7 +98,7 @@ namespace Friflo.Json.Burst
     /// </summary>
     public interface IUtf8Buffer
     {
-#if UNITY_5_3_OR_NEWER
+#if UNITY_5_3_OR_NEWER || NETSTANDARD2_0
         Utf8String  GetOrAdd    (string value);
         Utf8String  Add         (string value);
 
@@ -129,7 +129,7 @@ namespace Friflo.Json.Burst
             strings.Clear();
         }
         
-#if UNITY_5_3_OR_NEWER
+#if UNITY_5_3_OR_NEWER || NETSTANDARD2_0
         public Utf8String GetOrAdd (string value) {
             var len         = Utf8.GetByteCount(value);
             var temp        = new byte[len];

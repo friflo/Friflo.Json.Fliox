@@ -111,7 +111,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             List<JsonEntity> entities = null;
             foreach (var argument in arguments) {
                 var argName = argument.Name.Value.Span;
-                if (argName.SequenceEqual("entities")) {
+                if (argName.SequenceEqual("entities".AsSpan())) {
                     entities    = RequestUtils.TryGetAnyList(cx, argument.Value, "entities", out error);
                 } else {
                     error       = new QueryError(argument.Name.StringValue, RequestUtils.UnknownArgument);
@@ -135,7 +135,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             JsonValue result = default;
             foreach (var argument in arguments) {
                 var argName = argument.Name.Value.Span;
-                if (argName.SequenceEqual("param")) {
+                if (argName.SequenceEqual("param".AsSpan())) {
                     result  = RequestUtils.TryGetAny(cx, argument.Value, "param", out error);
                 } else {
                     error   = new QueryError(argument.Name.StringValue, RequestUtils.UnknownArgument);
@@ -156,7 +156,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
         private static bool FindArgument (GraphQLArguments arguments, string name, out GraphQLArgument argument) {
             foreach (var args in arguments) {
                 var argName = args.Name.Value.Span;
-                if (!argName.SequenceEqual(name))
+                if (!argName.SequenceEqual(name.AsSpan()))
                     continue;
                 argument = args;
                 return true;

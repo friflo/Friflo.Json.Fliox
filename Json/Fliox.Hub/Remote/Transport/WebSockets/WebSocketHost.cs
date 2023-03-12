@@ -95,7 +95,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 var remoteEvent = await sendQueue.DequeMessageValuesAsync(messages).ConfigureAwait(false);
                 foreach (var message in messages) {
                     if (hostEnv.logMessages) LogMessage(Logger, ref sbSend, " server ->", remoteClient, message);
-                    var arraySegment = message.AsReadOnlyMemory();
+                    var arraySegment = message.AsMutableArraySegment();
                     // if (sendMessage.Count > 100000) Console.WriteLine($"SendLoop. size: {sendMessage.Count}");
                     await webSocket.SendAsync(arraySegment, WebSocketMessageType.Text, true, CancellationToken.None).ConfigureAwait(false);
                 }

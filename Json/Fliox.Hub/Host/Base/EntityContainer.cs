@@ -301,7 +301,7 @@ namespace Friflo.Json.Fliox.Hub.Host
                         var entityRefs      = selectorResults[n].AsJsonKeys();
                         var referenceResult = referenceResults[n];
                         var ids             = referenceResult.ids;
-                        var set             = new HashSet<JsonKey>(ids.Count, JsonKey.Equality);
+                        var set             = Helper.CreateHashSet(ids.Count, JsonKey.Equality);
                         foreach (var id in ids) {
                             set.Add(id);
                         }

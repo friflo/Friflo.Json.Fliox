@@ -41,7 +41,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
             success     = true;
             var chars   = reader.parser.value.GetChars(ref reader.charBuf, out int len);
             if (value != null) {
-                if (new Span<char> (chars, 0, len).SequenceEqual(value))
+                if (new Span<char> (chars, 0, len).SequenceEqual(value.AsSpan()))
                     return value;
             }
             return new string(chars, 0, len);

@@ -64,7 +64,7 @@ namespace Friflo.Json.Burst.Utils
             if (byteCount <= MaxLength) {
                 Span<byte> bytes        = stackalloc byte[ByteCount];
                 bytes[LengthPos]        = (byte)(byteCount + 1); // set highest byte to length
-                Encoding.UTF8.GetBytes(value, bytes);
+                Encoding.UTF8.GetBytes(value.AsSpan(), bytes);
                 fixed (byte*  bytesPtr  = &bytes[0]) 
                 fixed (long*  lngPtr    = &lng)
                 fixed (long*  lngPtr2   = &lng2)

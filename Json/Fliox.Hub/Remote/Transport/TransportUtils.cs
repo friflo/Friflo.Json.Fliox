@@ -36,7 +36,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             if (addressLength == endpoint.Length) {
                 return null;
             }
-            if (!int.TryParse(endpoint.AsSpan(addressLength + 1), NumberStyles.None, CultureInfo.InvariantCulture, out int port)) {
+            if (!MathExt.TryParseInt(endpoint.AsSpan(addressLength + 1), NumberStyles.None, CultureInfo.InvariantCulture, out int port)) {
                 return null;
             }
             if (port > IPEndPoint.MaxPort) {

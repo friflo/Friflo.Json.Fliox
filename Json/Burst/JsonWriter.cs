@@ -182,7 +182,7 @@ namespace Friflo.Json.Burst
         public static void AppendEscString(ref Bytes dst, in string src) {
             int maxByteLen = Utf8.GetMaxByteCount(src.Length) + 2; // + 2 * '"'
             dst.EnsureCapacityAbs(dst.end + maxByteLen);
-#if UNITY_5_3_OR_NEWER
+#if UNITY_5_3_OR_NEWER || NETSTANDARD2_0
             var span = src;
 #else
             ReadOnlySpan<char> span = src;

@@ -3,6 +3,7 @@
 
 #if !UNITY_5_3_OR_NEWER
 
+using System;
 using System.Collections.Generic;
 using Friflo.Json.Burst;
 using Friflo.Json.Fliox.Transform.Project;
@@ -55,9 +56,13 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                     var fieldNameSpan   = fieldName.Value.Span;
                     var selectionField  = objectType.FindField(fieldNameSpan);
                     var span            = fieldName.Value.Span;
+#if NETSTANDARD2_1
+                    throw new NotImplementedException("for NETSTANDARD2_1");
+#else
                     var fieldNameUtf8   = buffer.Add(span);
                     var node            = CreateNode(fieldNameUtf8, gqlField.SelectionSet, buffer, selectionField.objectType);
                     nodeList.Add(node);
+#endif
                 }
                 else if (selection is GraphQLInlineFragment gqlFragment) {
                     var condition           = gqlFragment.TypeCondition;

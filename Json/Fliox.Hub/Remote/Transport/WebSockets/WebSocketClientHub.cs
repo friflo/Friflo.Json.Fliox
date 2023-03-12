@@ -135,7 +135,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                     // request need to be queued _before_ sending it to be prepared for handling the response.
                     var request     = new RemoteRequest(syncContext, cancellationToken);
                     socket.requestMap.Add(sendReqId, request);
-                    var sendBuffer  = rawRequest.AsReadOnlyMemory();
+                    var sendBuffer  = rawRequest.AsMutableArraySegment();
                     if (env.logMessages) TransportUtils.LogMessage(Logger, ref sbSend, "client  ->", remoteHost, rawRequest);
                     // --- Send message
                     await socket.socket.SendAsync(sendBuffer, WebSocketMessageType.Text, true, CancellationToken.None).ConfigureAwait(false);

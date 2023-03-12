@@ -45,7 +45,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc
                 char[] charBuf = new char[30];
                 charBuf[0] = '1';
                 ReadOnlySpan<char> span = new ReadOnlySpan<char>(charBuf, 0, 1);
-                int.TryParse(span, out int result);
+                MathExt.TryParseInt(span, NumberStyles.None, CultureInfo.InvariantCulture, out int result);
                 AreEqual(1, result);
             } {
                 char[] charBuf = new char[30];
@@ -54,7 +54,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc
                 charBuf[2] = '.';
                 charBuf[3] = '5';
                 ReadOnlySpan<char> span = new ReadOnlySpan<char>(charBuf, 0, 4);
-                double.TryParse(span, NumberStyles.Float, NumberFormatInfo.InvariantInfo, out double result);
+                MathExt.TryParseDouble(span, NumberStyles.Float, NumberFormatInfo.InvariantInfo, out double result);
                 AreEqual(12.5d, result);
             }
 #endif

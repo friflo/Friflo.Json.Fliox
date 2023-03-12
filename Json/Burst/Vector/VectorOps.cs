@@ -18,7 +18,7 @@ namespace Friflo.Json.Burst.Vector
         } 
         
         /// <summary>
-        /// Using a specific SIMD implementation like <see cref="VectorOpsCLR"/> gain performance boost by factor 3   
+        /// Using a specific SIMD implementation like VectorOpsCLR gain performance boost by factor 3   
         /// </summary>
         public virtual void Xor(
             byte[] dest,    int destPos,

@@ -58,7 +58,7 @@ namespace Friflo.Json.Fliox
         
         public static readonly  object  LONG            = new Type(JsonKeyType.LONG);
         public static readonly  object  GUID            = new Type(JsonKeyType.GUID);
-        public static readonly  object  STRING_SHORT    = new string("STRING_SHORT"); // literal length must be <= 15 for IsEqual() 
+        public static readonly  object  STRING_SHORT    = "STRING_SHORT"; // literal length must be <= 15 for IsEqual() 
 
         /// <summary>
         /// Calling this constructor should be the last option as it may force a string creation. <br/>
@@ -126,7 +126,7 @@ namespace Friflo.Json.Fliox
             ShortStringUtils.GetChars(value.lng, value.lng2, chars);
             int len             = value.GetShortLength();
             var readOnlySpan    = chars.Slice(0, len);
-            if (long.TryParse(readOnlySpan, NumberStyles.Float, NumberFormatInfo.InvariantInfo, out lng)) {
+            if (MathExt.TryParseLong(readOnlySpan, NumberStyles.Float, NumberFormatInfo.InvariantInfo, out lng)) {
                 keyObj  = LONG;
                 lng2    = 0;
                 return;
@@ -248,7 +248,7 @@ namespace Friflo.Json.Fliox
                 Span<char> chars    = stackalloc char[ShortString.MaxCharCount];
                 var length          = ShortStringUtils.GetChars(lng, lng2, chars);
                 var readOnlySpan    = chars.Slice(0, length);
-                return new string(readOnlySpan);
+                return readOnlySpan.ToString();
             }
             if (obj is string) {
                 return (string)obj;
@@ -301,7 +301,7 @@ namespace Friflo.Json.Fliox
                 return;
             }
             if (obj == GUID) {
-#if UNITY_5_3_OR_NEWER
+#if UNITY_5_3_OR_NEWER || NETSTANDARD2_0
                 var guidStr = Guid.ToString();
                 sb.Append(guidStr);
 #else

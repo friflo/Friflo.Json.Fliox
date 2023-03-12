@@ -263,7 +263,7 @@ namespace Friflo.Json.Burst.Utils
             for (int n = 0; n < len; n++)
                 charBuf[n] = (char)arr[pos + n];
             var span = charBuf.Slice(0, len);
-            return double.TryParse(span, NumberStyles.Float, NumberFormatInfo.InvariantInfo, out result);
+            return MathExt.TryParseDouble(span, NumberStyles.Float, NumberFormatInfo.InvariantInfo, out result);
         }
 
         public static double ParseDoubleStd(ref Bytes bytes, ref Bytes valueError, out bool success) {
@@ -290,7 +290,7 @@ namespace Friflo.Json.Burst.Utils
             for (int n = 0; n < len; n++)
                 charBuf[n] = (char)arr[pos + n];
             var span = charBuf.Slice(0 , len);
-            return float.TryParse(span, NumberStyles.Float, NumberFormatInfo.InvariantInfo, out result);
+            return MathExt.TryParseFloat(span, NumberStyles.Float, NumberFormatInfo.InvariantInfo, out result);
         }
 
         public static float ParseFloatStd(ref Bytes bytes, ref Bytes valueError, out bool success) {
