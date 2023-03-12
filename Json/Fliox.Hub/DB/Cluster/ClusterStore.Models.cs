@@ -112,7 +112,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
         public  HostGCMemory    gc;
     }
     
-    /// <summary> <see cref="System.GCMemoryInfo"/> </summary>
+    /// <summary> See <a href="https://learn.microsoft.com/en-us/dotnet/api/system.gcmemoryinfo">GCMemoryInfo</a></summary>
     public sealed class HostGCMemory {
         public  long            highMemoryLoadThresholdBytes;
         public  long            totalAvailableMemoryBytes;

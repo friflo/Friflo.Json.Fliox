@@ -96,7 +96,7 @@ export class HostMemory {
     gc?                  : HostGCMemory | null;
 }
 
-/** **GCMemoryInfo** */
+/** See [GCMemoryInfo](https://learn.microsoft.com/en-us/dotnet/api/system.gcmemoryinfo) */
 export class HostGCMemory {
     highMemoryLoadThresholdBytes  : int64;
     totalAvailableMemoryBytes     : int64;

@@ -118,7 +118,7 @@
         },
         "HostGCMemory": {
             "type": "object",
-            "description": "<b>GCMemoryInfo</b>",
+            "description": "See <a href='https://learn.microsoft.com/en-us/dotnet/api/system.gcmemoryinfo'>GCMemoryInfo</a>",
             "properties": {
                 "highMemoryLoadThresholdBytes": { "$ref": "./Standard.json#/definitions/int64" },
                 "totalAvailableMemoryBytes":    { "$ref": "./Standard.json#/definitions/int64" },

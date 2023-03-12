@@ -4627,7 +4627,7 @@
         {
             "kind":"OBJECT",
             "name": "HostGCMemory",
-            "description": "/** **GCMemoryInfo** */\n",
+            "description": "/** See [GCMemoryInfo](https://learn.microsoft.com/en-us/dotnet/api/system.gcmemoryinfo) */\n",
             "fields": [
                 {
                     "name": "highMemoryLoadThresholdBytes",
@@ -4701,7 +4701,7 @@
         {
             "kind":"INPUT_OBJECT",
             "name": "HostGCMemoryInput",
-            "description": "/** **GCMemoryInfo** */\n",
+            "description": "/** See [GCMemoryInfo](https://learn.microsoft.com/en-us/dotnet/api/system.gcmemoryinfo) */\n",
             "inputFields": [
                 {
                     "name": "highMemoryLoadThresholdBytes",
