@@ -3,7 +3,7 @@
 
 # .NET Standard 2.0
 
-Current target framwork configuration
+Current target framework configuration
 
 ```xml
 <TargetFrameworks>netcoreapp3.1;netstandard2.0;netstandard2.1</TargetFrameworks>

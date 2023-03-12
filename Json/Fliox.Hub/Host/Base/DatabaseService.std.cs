@@ -79,7 +79,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         }
         
         private static HostMemory GetHostMemory () {
-#if UNITY_5_3_OR_NEWER || NETSTANDARD2_1
+#if UNITY_5_3_OR_NEWER || NETSTANDARD2_0 || NETSTANDARD2_1
             return new HostMemory {
                 totalMemory                     = GC.GetTotalMemory(true),
             };

@@ -114,7 +114,7 @@ namespace System
     }
 }
 
-#if NET_4_6 || NET_2_0
+#if NET_4_6 || NET_2_0 || NETSTANDARD2_0
 
 namespace System.Collections.Generic
 {
@@ -176,7 +176,6 @@ namespace System.Collections.Concurrent
 
 namespace System.Linq
 {
-#if !NETSTANDARD2_0
     public static class UnityExtensionLinq
     {
         public static HashSet<T> ToHashSet<T>(this IEnumerable<T> source) {
@@ -200,16 +199,15 @@ namespace System.Linq
             */
         }
     }
-#endif
 }
 
 namespace System
 {
     public static class SystemExtensions
     {
-        /// don't use this method. Use T[] from ArraySegment<T>.Array directly to
-        /// - improve performance
-        /// - enable access to array index operator this[]
+        // don't use this method. Use T[] from ArraySegment<T>.Array directly to
+        // - improve performance
+        // - enable access to array index operator this[]
         public static void CopyTo<T>(this ArraySegment<T> segment, T[] destination, int destinationIndex) {
             throw new InvalidOperationException("don't use this method. Use T[] from ArraySegment<T>.Array directly");
         }

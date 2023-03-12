@@ -59,6 +59,7 @@
         "NETCOREAPP",
         "NETFX",
         "netsh",
+        "NETSTANDARD",
         "neuecc",
         "Newtonsoft",
         "noopener",

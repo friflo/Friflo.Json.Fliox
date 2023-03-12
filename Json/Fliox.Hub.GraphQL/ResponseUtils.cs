@@ -56,7 +56,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                     var fieldNameSpan   = fieldName.Value.Span;
                     var selectionField  = objectType.FindField(fieldNameSpan);
                     var span            = fieldName.Value.Span;
-#if NETSTANDARD2_1
+#if NETSTANDARD2_0 || NETSTANDARD2_1
                     throw new NotImplementedException("for NETSTANDARD2_1");
 #else
                     var fieldNameUtf8   = buffer.Add(span);
