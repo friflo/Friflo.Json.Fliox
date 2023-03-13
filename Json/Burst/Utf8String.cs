@@ -47,36 +47,18 @@ namespace Friflo.Json.Burst
                 dst[n] = src[n + start];
         }
 
-#if UNITY_5_3_OR_NEWER || NETSTANDARD2_0
-        public static bool ArraysEqual(byte[] left, int leftStart, byte[] right, int len) {
-            var pos     = leftStart;
-            for (int n = 0; n < len; n++) {
-                if (left[pos++] != right[n])
-                    return false;
-            }
-            return true;
-        }
-        
-        public bool IsEqual (in Utf8String value) {
-            throw new NotImplementedException();
-        }
-#else
         public ReadOnlySpan<byte> ReadOnlySpan => new ReadOnlySpan<byte> (buffer.Buf, start, len);
 
         public bool IsEqual (in Utf8String value) {
             return ReadOnlySpan.SequenceEqual(value.ReadOnlySpan);
         }
-#endif
+
         public bool IsEqual (ref Bytes value) {
             if (len != value.Len)
                 return false;
-#if UNITY_5_3_OR_NEWER || NETSTANDARD2_0
-            return ArraysEqual(buffer.Buf, start, value.buffer, len);
-#else
             var left   = ReadOnlySpan;
             var right  = new ReadOnlySpan<byte> (value.buffer, value.start, value.Len);
             return left.SequenceEqual(right);
-#endif
         }
         
         public string AsString() {
@@ -98,14 +80,10 @@ namespace Friflo.Json.Burst
     /// </summary>
     public interface IUtf8Buffer
     {
-#if UNITY_5_3_OR_NEWER || NETSTANDARD2_0
         Utf8String  GetOrAdd    (string value);
-        Utf8String  Add         (string value);
-
-#else
         Utf8String  GetOrAdd    (ReadOnlySpan<char> value);
+        Utf8String  Add         (string value);
         Utf8String  Add         (ReadOnlySpan<char> value);
-#endif
     }
     
     public sealed class Utf8Buffer : IUtf8Buffer {
@@ -129,29 +107,10 @@ namespace Friflo.Json.Burst
             strings.Clear();
         }
         
-#if UNITY_5_3_OR_NEWER || NETSTANDARD2_0
         public Utf8String GetOrAdd (string value) {
-            var len         = Utf8.GetByteCount(value);
-            var temp        = new byte[len];
-            Utf8.GetBytes(value, 0, value.Length, temp, 0);
-            foreach (var str in strings) {
-                if (len == str.len) {
-                    if (Utf8String.ArraysEqual(buf, str.start, temp, len))
-                        return str;
-                }
-            }
-            return Add(value);
+            return GetOrAdd(value.AsSpan());
         }
         
-        public Utf8String Add (string value) {
-            var len     = Utf8.GetByteCount(value);
-            int destPos = Reserve(len);
-            Utf8.GetBytes(value, 0, value.Length, buf, destPos);
-            var utf8    = new Utf8String(this, destPos, len);
-            strings.Add(utf8);
-            return utf8;
-        }
-#else
         public Utf8String GetOrAdd (ReadOnlySpan<char> value) {
             var len         = Utf8.GetByteCount(value);
             Span<byte> temp = stackalloc byte[len];
@@ -163,6 +122,10 @@ namespace Friflo.Json.Burst
             return Add(value);
         }
         
+        public Utf8String Add (string value) {
+            return Add(value.AsSpan());
+        }
+        
         public Utf8String Add (ReadOnlySpan<char> value) {
             var len     = Utf8.GetByteCount(value);
             int destPos = Reserve(len);
@@ -172,7 +135,7 @@ namespace Friflo.Json.Burst
             strings.Add(utf8);
             return utf8;
         }
-#endif
+
         
         public Utf8String Add (Bytes bytes, bool reusable) {
             var len     = bytes.Len;

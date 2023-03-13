@@ -48,6 +48,12 @@ namespace System.Text
             return sb.Append('\n');
         }
         
+        public static unsafe StringBuilder Append(this StringBuilder stringBuilder, ReadOnlySpan<char> value) {
+            fixed (char*  charPtr   = &value[0]) {
+                return stringBuilder.Append(charPtr, value.Length);
+            }
+        }
+        
 #if NETSTANDARD2_0
         public static unsafe int GetChars(this Encoding encoding, ReadOnlySpan<byte> bytes, Span<char> chars) {
             if (bytes.Length == 0) {
@@ -68,10 +74,13 @@ namespace System.Text
                 return encoding.GetBytes(charPtr, chars.Length, bytesPtr, bytes.Length);
             }
         }
-
-        public static unsafe StringBuilder Append(this StringBuilder stringBuilder, ReadOnlySpan<char> value) {
-            fixed (char*  charPtr   = &value[0]) {
-                return stringBuilder.Append(charPtr, value.Length);
+        
+        public static unsafe int GetByteCount(this Encoding encoding, ReadOnlySpan<char> chars) {
+            if (chars.Length == 0) {
+                return 0;
+            }
+            fixed (char*  charPtr   = &chars[0]) {
+                return encoding.GetByteCount(charPtr, chars.Length);
             }
         }
 #endif
