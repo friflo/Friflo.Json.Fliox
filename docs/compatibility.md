@@ -13,9 +13,12 @@ Goal is to maintain compatibility to [.NET Standard 2.0](https://learn.microsoft
 to support **.NET Framework 4.6.1** or higher
 
 This requires conditional compilation depending on `NETSTANDARD2_0` and `NETSTANDARD2_1`.  
-See preprocessor symbols at [Target frameworks in SDK-style projects](https://learn.microsoft.com/en-us/dotnet/standard/frameworks)
+**CLR**   preprocessor symbols [Target frameworks in SDK-style projects](https://learn.microsoft.com/en-us/dotnet/standard/frameworks)  
+**Unity** preprocessor symbols [Unity Manual - Conditional Compilation](https://docs.unity3d.com/Manual/PlatformDependentCompilation.html)
 
-Mainly all all affected code is related to performance focused code using `ReadOnlySpan<>`'s
+Mainly all all affected code is related to performance focused code using `Span<>`'s or `ReadOnlySpan<>`'s.
+
+Majority of `NETSTANDARD2_0` implementation is in [Standard-Extensions.cs](https://github.com/friflo/Friflo.Json.Fliox/blob/main/Json/Burst/Standard-Extensions.cs)
 
 
 ## BCL dependencies

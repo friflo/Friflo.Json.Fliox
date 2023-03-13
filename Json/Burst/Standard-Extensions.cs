@@ -1,7 +1,17 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
+
 using System.Collections.Generic;
 using System.Globalization;
+
+/*
+ * File contains extension methods to maintain compatibility to netstandard2.0.
+ * This enables compatibility for
+ * - .NET Framework 4.6.1 or higher
+ * - Unity with: Project Settings > Player > Configuration > Api Compatibility Level: .NET Framework (untested)
+ *
+ * See: https://github.com/friflo/Friflo.Json.Fliox/blob/main/docs/compatibility.md
+ */
 
 // ReSharper disable CheckNamespace
 namespace System.Collections.Generic
@@ -9,7 +19,7 @@ namespace System.Collections.Generic
     public static class Helper
     {
         public static HashSet<T> CreateHashSet<T>(int capacity) {
-#if NET_4_6 || NET_2_0 || NETSTANDARD2_0
+#if NET_2_0 || NETSTANDARD2_0
             return new HashSet<T>();
 #else
             return new HashSet<T>(capacity);
@@ -17,7 +27,7 @@ namespace System.Collections.Generic
         }
         
         public static HashSet<T> CreateHashSet<T>(int capacity, IEqualityComparer<T> comparer) {
-#if NET_4_6 || NET_2_0 || NETSTANDARD2_0
+#if NET_2_0 || NETSTANDARD2_0
             return new HashSet<T>(comparer);
 #else
             return new HashSet<T>(capacity, comparer);
@@ -35,7 +45,7 @@ namespace System.Collections.Generic
 
 namespace System.Text
 {
-    public static class TextExtensions
+    public static class StandardTextExtensions
     {
         public static StringBuilder AppendLF(this StringBuilder sb) {
             sb.Append('\n');
@@ -129,11 +139,11 @@ namespace System
     }
 }
 
-#if NET_4_6 || NET_2_0 || NETSTANDARD2_0
+#if NET_2_0 || NETSTANDARD2_0
 
 namespace System.Collections.Generic
 {
-    public static class UnityExtensionGeneric
+    public static class StandardCollectionExtensions
     {
         public static bool TryAdd<TKey,TValue>(this IDictionary<TKey,TValue> dictionary, TKey key, TValue value) {
             if (dictionary.ContainsKey(key))
@@ -181,7 +191,7 @@ namespace System.Collections.Generic
 
 namespace System.Collections.Concurrent
 {
-    public static class UnityExtensionConcurrent
+    public static class StandardConcurrentExtensions
     {
         public static void Clear<T>(this ConcurrentQueue<T> queue) {
             while (queue.TryDequeue(out T _)) { }
@@ -191,7 +201,7 @@ namespace System.Collections.Concurrent
 
 namespace System.Linq
 {
-    public static class UnityExtensionLinq
+    public static class StandardLinqExtensions
     {
         public static HashSet<T> ToHashSet<T>(this IEnumerable<T> source) {
             return new HashSet<T>(source, null);
@@ -218,7 +228,7 @@ namespace System.Linq
 
 namespace System
 {
-    public static class SystemExtensions
+    public static class StandardSystemExtensions
     {
         // don't use this method. Use T[] from ArraySegment<T>.Array directly to
         // - improve performance
