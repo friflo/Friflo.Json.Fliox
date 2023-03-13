@@ -14,7 +14,11 @@ namespace Friflo.Json.Tests.Common
     public static class Mem
     {
         public static long GetAllocatedBytes() {
+#if NET6_0_OR_GREATER
             return GC.GetAllocatedBytesForCurrentThread();
+#else
+            return 0;
+#endif
         }
     }
 }

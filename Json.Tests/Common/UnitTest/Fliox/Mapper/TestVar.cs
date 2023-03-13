@@ -1,6 +1,7 @@
 // Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System;
 using Friflo.Json.Fliox.Mapper.Map;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
@@ -36,8 +37,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
             AreEqual(testObj1, obj1A.Object);
             
             // --- string
-            var abc1 = new string("abc");
-            var abc2 = new string("abc");
+            var abcSpan = new Span<char>("abc".ToCharArray());
+            var abc1 = abcSpan.ToString();
+            var abc2 = abcSpan.ToString();
             IsFalse(ReferenceEquals(abc1, abc2));
             
             var str1A   = new Var(abc1);

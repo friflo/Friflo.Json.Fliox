@@ -38,8 +38,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc
         {
             int len = 0;
             var start = Mem.GetAllocatedBytes();
+            var strSpan = new Span<char>("0123456789".ToCharArray());
             for (int n = 0; n < Count; n++) {
-                var str  = new string("0123456789"); 
+                var str  = strSpan.ToString();
                 len     += str.Length;
             }
             var dif  = Mem.GetAllocatedBytes() - start;

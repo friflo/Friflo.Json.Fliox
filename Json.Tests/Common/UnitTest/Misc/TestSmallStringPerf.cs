@@ -15,8 +15,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
     public static class TestSmallStringPerf
     {
         private const           long    Count = 40; // 40_000_000;
-        public  static readonly string  Str1 = new string("---1");
-        public  static readonly string  Str2 = new string("---2");
+        public  static readonly string  Str1 = new Span<char>("---1".ToCharArray()).ToString();
+        public  static readonly string  Str2 = new Span<char>("---2".ToCharArray()).ToString();
         
         [Test]
         public static void SmallString_Init() {

@@ -16,7 +16,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Utils
         [Test]
         public static void TestStreamBufferCapacity1() {
             MemoryStream ms = new MemoryStream();
-            ms.Write(Hello);
+            ms.Write(Hello, 0, Hello.Length);
             ms.Position = 0;
             
             var buffer = new StreamBuffer(1);

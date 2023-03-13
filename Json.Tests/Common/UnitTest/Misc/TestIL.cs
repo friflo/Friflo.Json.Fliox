@@ -2,7 +2,7 @@
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
 
-#if !UNITY_5_3_OR_NEWER
+#if NET6_0_OR_GREATER
 
 namespace Friflo.Json.Tests.Common.UnitTest.Misc
 {
