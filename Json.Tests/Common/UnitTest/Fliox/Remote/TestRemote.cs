@@ -4,6 +4,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Threading.Tasks;
 using Friflo.Json.Fliox;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Remote;
@@ -47,9 +48,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
             var headers         = new TestHttpHeaders(null, cookies);
             using(var memoryBuffer = _httpHost.sharedEnv.MemoryBuffer.Get()) {
                 var requestContext  = new RequestContext(_httpHost, "POST", route, "", body, bodyLength, headers, memoryBuffer.instance);
-                // execute synchronous to enable tests running in Unity Test Runner
-                _httpHost.ExecuteHttpRequest(requestContext).Wait();
-                
+                ExecuteRequest(requestContext);
                 return requestContext;
             }
         }
@@ -79,9 +78,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
             foreach (var req in restFile.requests) {
                 var stream      = req.GetBody(out var length);
                 var context     = new RequestContext(_httpHost, req.method, req.path, req.query, stream, length, req.headers, memoryBuffer);
-                // execute synchronous to enable tests running in Unity Test Runner
-                _httpHost.ExecuteHttpRequest(context).Wait();
-                
+                ExecuteRequest(context);
                 HttpFile.AppendRequest(sb, context);
             }
             var fullResult      = httpFolder + resultPath;
@@ -96,12 +93,17 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
             var headers         = new TestHttpHeaders(null, cookies);
             var memoryBuffer    = new MemoryBuffer(4 * 1024);
             var requestContext  = new RequestContext(_httpHost, method, route, query, bodyStream, length, headers, memoryBuffer);
-            // execute synchronous to enable tests running in Unity Test Runner
-            _httpHost.ExecuteHttpRequest(requestContext).Wait();
-            
+            ExecuteRequest(requestContext);
             return requestContext;
         }
         
+        private static void ExecuteRequest(RequestContext cx) {
+            // execute synchronous to enable tests running in Unity Test Runner
+            Task.Run(async () => {
+                await _httpHost.ExecuteHttpRequest(cx);    
+            }).Wait();
+        }
+
         private static Dictionary<string, string> CreateDefaultCookies() {
             return new Dictionary<string, string> {
                 { "fliox-user", "admin" },  { "fliox-token", "admin" }
