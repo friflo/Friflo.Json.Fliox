@@ -21,6 +21,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
     {
         internal  readonly  ClientWebSocket     socket;
         internal  readonly  RemoteRequestMap    requestMap;
+        internal  readonly  SemaphoreSlim       sendLock    = new SemaphoreSlim(1);
         
         internal WebSocketConnection() {
             socket      = new ClientWebSocket();
@@ -138,7 +139,12 @@ namespace Friflo.Json.Fliox.Hub.Remote
                     var sendBuffer  = rawRequest.AsMutableArraySegment();
                     if (env.logMessages) TransportUtils.LogMessage(Logger, ref sbSend, "client  ->", remoteHost, rawRequest);
                     // --- Send message
+                    // ClientWebSocket.SendAsync() must be called only once at the same time.
+                    // WebSocketClientHub instances must support concurrent usage => lock SendAsync() - otherwise fails in: netstandard2.1
+                    await socket.sendLock.WaitAsync().ConfigureAwait(false);
                     await socket.socket.SendAsync(sendBuffer, WebSocketMessageType.Text, true, CancellationToken.None).ConfigureAwait(false);
+                    
+                    socket.sendLock.Release();
                     
                     // --- Wait for response
                     var response = await request.response.Task.ConfigureAwait(false);
