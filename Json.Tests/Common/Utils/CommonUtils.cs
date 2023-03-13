@@ -152,7 +152,7 @@ namespace Friflo.Json.Tests.Common.Utils
             if (memoryLog == MemoryLog.Disabled)
                 return;
             if (snapshotCount++ % snapshotInterval == 0)
-                totalMemory[totalMemoryCount++] = GC.GetAllocatedBytesForCurrentThread();
+                totalMemory[totalMemoryCount++] = Mem.GetAllocatedBytes();
         }
 
         public void AssertNoAllocations() {

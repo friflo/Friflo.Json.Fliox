@@ -138,10 +138,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             stopwatch.Stop();
             Console.WriteLine($"client instantiation count: {count}, ms: {stopwatch.ElapsedMilliseconds}");
             
-            var start = GC.GetAllocatedBytesForCurrentThread();
+            var start = Mem.GetAllocatedBytes();
             // ReSharper disable once UnusedVariable
             var store = new PocStore(hub);
-            var diff = GC.GetAllocatedBytesForCurrentThread() - start;
+            var diff = Mem.GetAllocatedBytes() - start;
             var platform    = Environment.OSVersion.Platform;
             var isWindows   = platform == PlatformID.Win32NT; 
             var expected    = isWindows ? 2464 : 2464;  // Test Windows & Linux
@@ -175,9 +175,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             Console.WriteLine($"get pool client count: {count}, ms: {stopwatch.ElapsedMilliseconds}");
             
             var store = new PocStore(hub);
-            var start = GC.GetAllocatedBytesForCurrentThread();
+            var start = Mem.GetAllocatedBytes();
             store.Reset();
-            var diff = GC.GetAllocatedBytesForCurrentThread() - start;
+            var diff = Mem.GetAllocatedBytes() - start;
             var platform    = Environment.OSVersion.Platform;
             Console.WriteLine($"PocStore Reset. platform: {platform}, memory: {diff}");
             AreEqual(72, diff);
@@ -193,12 +193,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             // GC.Collect();
             var stopwatch = new Stopwatch();
             stopwatch.Start();
-            var start       = GC.GetAllocatedBytesForCurrentThread();
+            var start       = Mem.GetAllocatedBytes();
             int count = 1; // 1_000_000;
             for (int n = 0; n < count; n++) {
                 await store.SyncTasks();                    // ~ 0.59 µs (Release)
             }
-            var diff        = GC.GetAllocatedBytesForCurrentThread() - start;
+            var diff        = Mem.GetAllocatedBytes() - start;
             stopwatch.Stop();
             Console.WriteLine($"SyncTasks() count: {count}, ms: {stopwatch.ElapsedMilliseconds}");
             var expected    = IsDebug() ? 784 : 624;  // Test Debug & Release
@@ -220,12 +220,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             
             long start = 0;
             for (int n = 0; n < 5; n++) {
-                if (n > 0) start = GC.GetAllocatedBytesForCurrentThread();
+                if (n > 0) start = Mem.GetAllocatedBytes();
                 read = store.intEntities.Read();
                 read.FindRange(ids);
                 await store.SyncTasks();
             }
-            var diff = GC.GetAllocatedBytesForCurrentThread() - start;
+            var diff = Mem.GetAllocatedBytes() - start;
             var expected = IsDebug() ? Is.InRange(27136, 27500) : Is.InRange(24576, 25000); // Test Debug & Release
             That(diff, expected);
         }
@@ -238,11 +238,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             var hub         = new FlioxHub(db);
             var client      = new FlioxClient(hub);
             sub.ProcessEvent(client, syncEvent, 0);   // force initial allocations
-            var start = GC.GetAllocatedBytesForCurrentThread();
+            var start = Mem.GetAllocatedBytes();
             for (int n = 0; n < 10; n++) {
                 sub.ProcessEvent(client, syncEvent, 0);
             }
-            var diff = GC.GetAllocatedBytesForCurrentThread() - start;
+            var diff = Mem.GetAllocatedBytes() - start;
             AreEqual(0, diff);
         }
         
@@ -256,12 +256,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             var pooled  = pool.Get();
             pool.Return(pooled.instance);
 
-            var start   = GC.GetAllocatedBytesForCurrentThread();
+            var start   = Mem.GetAllocatedBytes();
             for (int n = 0; n < 10; n++) {
                 pooled  = pool.Get();
                 pool.Return(pooled.instance);
             }
-            var diff    = GC.GetAllocatedBytesForCurrentThread() - start;
+            var diff    = Mem.GetAllocatedBytes() - start;
             AreEqual(0, diff);
         }
 #endif

@@ -1,4 +1,4 @@
-#if !UNITY_2020_1_OR_NEWER
+#if NET6_0_OR_GREATER
 
 using System.Net;
 using Microsoft.AspNetCore.Hosting;

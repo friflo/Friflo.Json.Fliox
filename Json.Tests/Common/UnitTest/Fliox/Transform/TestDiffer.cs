@@ -80,11 +80,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 
                 AssertMergePatch(left, right, patch, mapper);
                 
-                var start = GC.GetAllocatedBytesForCurrentThread();
+                var start = Mem.GetAllocatedBytes();
                 for (int n = 0; n < 10; n++) {
                     differ.GetDiff(left, right, DiffKind.DiffArrays);
                 }
-                var diffAlloc =  GC.GetAllocatedBytesForCurrentThread() - start;
+                var diffAlloc =  Mem.GetAllocatedBytes() - start;
                 AreEqual(0, diffAlloc);
                 Console.WriteLine($"Diff allocations: {diffAlloc}");
                 
@@ -269,9 +269,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
         }
         
         private static void AssertMergePatchAlloc(DiffNode diff, JsonMergeWriter mergeWriter) {
-            var start = GC.GetAllocatedBytesForCurrentThread();
+            var start = Mem.GetAllocatedBytes();
             mergeWriter.WriteMergePatchBytes(diff);
-            var alloc = GC.GetAllocatedBytesForCurrentThread() - start;
+            var alloc = Mem.GetAllocatedBytes() - start;
             AreEqual(0, alloc);
         }
         
@@ -294,11 +294,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 var result  = new DiffBase();
                 
                 mapper.ReadTo(json, result, false);
-                var start = GC.GetAllocatedBytesForCurrentThread();
+                var start = Mem.GetAllocatedBytes();
                 for (int n = 0; n < 10; n++) {
                     mapper.ReadTo(json, result, false);
                 }
-                var diffAlloc =  GC.GetAllocatedBytesForCurrentThread() - start;
+                var diffAlloc =  Mem.GetAllocatedBytes() - start;
                 // AreEqual(0, diffAlloc);
                 Console.WriteLine($"Diff allocations: {diffAlloc}");
             }

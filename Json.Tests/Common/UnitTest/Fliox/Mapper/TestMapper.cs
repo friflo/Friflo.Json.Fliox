@@ -45,20 +45,20 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
                 write.Write(enumValue2);
                 
                 // --- check allocation Read()
-                var start = GC.GetAllocatedBytesForCurrentThread();
+                var start = Mem.GetAllocatedBytes();
                 enumValue1  = enc.Read<EnumClass>(value1);
                 enumValue2  = enc.Read<EnumClass?>(value2);
-                var dif = GC.GetAllocatedBytesForCurrentThread() - start;
+                var dif = Mem.GetAllocatedBytes() - start;
                 AreEqual(0, dif);
                 AreEqual(EnumClass.Value1, enumValue1);
                 AreEqual(EnumClass.Value2, enumValue2);
                 
                 // --- check allocation Write()
                 if (typeAccess == TypeAccess.Reflection) {
-                    start = GC.GetAllocatedBytesForCurrentThread();
+                    start = Mem.GetAllocatedBytes();
                     write.WriteAsBytes(enumValue1);
                     write.WriteAsBytes(enumValue2);
-                    dif = GC.GetAllocatedBytesForCurrentThread() - start;
+                    dif = Mem.GetAllocatedBytes() - start;
                     AreEqual(0, dif);
                 }
 

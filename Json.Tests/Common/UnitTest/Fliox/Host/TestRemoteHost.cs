@@ -48,13 +48,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
                 cx.contextRead  = cx.CreateSyncContext();   // reused context
                 long dif = 0;
                 for (int n = 0; n < 10; n++) {
-                    long start      = GC.GetAllocatedBytesForCurrentThread();
+                    long start      = Mem.GetAllocatedBytes();
                     cx.contextRead.Init();
                     cx.contextRead.SetMemoryBuffer(cx.memoryBuffer);
                     cx.mapper.reader.ReaderPool.Reuse();
                     var response    = RemoteHostUtils.ExecuteJsonRequest(cx.hub, cx.mapper, cx.readReq, cx.contextRead);
                     
-                    dif = GC.GetAllocatedBytesForCurrentThread() - start;
+                    dif = Mem.GetAllocatedBytes() - start;
                     if (response.status != JsonResponseStatus.Ok)   Fail("Expect OK");
                 }
                 AreEqual(736, dif);
@@ -69,13 +69,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
                 
                 long dif = 0;
                 for (int n = 0; n < 10; n++) {
-                    long start      = GC.GetAllocatedBytesForCurrentThread();
+                    long start      = Mem.GetAllocatedBytes();
                     cx.contextRead.Init();
                     cx.contextRead.SetMemoryBuffer(cx.memoryBuffer);
                     cx.mapper.reader.ReaderPool.Reuse();
                     var response    = RemoteHostUtils.ExecuteJsonRequest(cx.hub, cx.mapper, cx.writeReq, cx.contextRead);
                     
-                    dif = GC.GetAllocatedBytesForCurrentThread() - start;
+                    dif = Mem.GetAllocatedBytes() - start;
                     if (response.status != JsonResponseStatus.Ok)   Fail("Expect OK");
                 }
                 AreEqual(72, dif);
@@ -97,14 +97,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
 
                 long dif = 0;
                 for (int n = 0; n < 10; n++) {
-                    long start      = GC.GetAllocatedBytesForCurrentThread();
+                    long start      = Mem.GetAllocatedBytes();
                     cx.contextRead.Init();
                     cx.contextRead.SetMemoryBuffer(cx.memoryBuffer);
                     cx.mapper.reader.ReaderPool.Reuse();
                     var response    = RemoteHostUtils.ExecuteJsonRequest(cx.hub, cx.mapper, cx.writeReq, cx.contextRead);
                     cx.hub.EventDispatcher?.SendQueuedEvents();
                     
-                    dif = GC.GetAllocatedBytesForCurrentThread() - start;
+                    dif = Mem.GetAllocatedBytes() - start;
                     if (response.status != JsonResponseStatus.Ok)   Fail("Expect OK");
                 }
                 AreEqual(72, dif);

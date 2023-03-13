@@ -22,9 +22,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
             GC.Collect();
             LookupDictionaryJsonKey(dict, 2); // ensure subsequent calls dont allocate memory on heap
 
-            var start   = GC.GetAllocatedBytesForCurrentThread();
+            var start   = Mem.GetAllocatedBytes();
             LookupDictionaryJsonKey(dict, 100);
-            var diff    = GC.GetAllocatedBytesForCurrentThread() - start;
+            var diff    = Mem.GetAllocatedBytes() - start;
 
             Console.Out.WriteLine($"diff: {diff}");
             
@@ -57,12 +57,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
         private static void TestNoBoxing<TKey>(TKey left, TKey right) {
             IsTrue(EqualityComparer<TKey>.Default.Equals(left, right)); // force caching of default TKey 
             
-            var start   = GC.GetAllocatedBytesForCurrentThread();
+            var start   = Mem.GetAllocatedBytes();
             var equal   = false;   
             for (int n = 0; n < 100; n++) {
                 equal = EqualityComparer<TKey>.Default.Equals(left, right);
             }
-            var diff    = GC.GetAllocatedBytesForCurrentThread() - start;
+            var diff    = Mem.GetAllocatedBytes() - start;
             
             AreEqual(0, diff);
             IsTrue(equal);

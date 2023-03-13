@@ -90,7 +90,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
             var _   = map[key1];
             var __  = map[key1]; // force one time allocations
             
-            long start = GC.GetAllocatedBytesForCurrentThread();
+            long start = Mem.GetAllocatedBytes();
             
             var value1 = map[key1];
             var value2 = map[key2];

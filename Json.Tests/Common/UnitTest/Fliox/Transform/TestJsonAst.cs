@@ -25,11 +25,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             var ast = astReader.CreateAst(json); // allocate buffers
             AreEqual(41, ast.NodesCount);
             
-            var start = GC.GetAllocatedBytesForCurrentThread();
+            var start = Mem.GetAllocatedBytes();
             for (int n = 0; n < 1; n++) {
                 astReader.CreateAst(json);
             }
-            var dif = GC.GetAllocatedBytesForCurrentThread() - start;
+            var dif = Mem.GetAllocatedBytes() - start;
             AreEqual(0, dif);
             
             var count = TraverseNode(ast, 0);
@@ -71,11 +71,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             var result      = astWriter.WriteAst(ast);
             AreEqual(json.AsString(), result.AsString());
             
-            var start = GC.GetAllocatedBytesForCurrentThread();
+            var start = Mem.GetAllocatedBytes();
             for (int n = 0; n < 1; n++) {
                 astWriter.WriteAstBytes(ast);
             }
-            var dif = GC.GetAllocatedBytesForCurrentThread() - start;
+            var dif = Mem.GetAllocatedBytes() - start;
             AreEqual(0, dif);
         }
         

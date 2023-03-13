@@ -113,7 +113,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc
             var intField = typeof(TestClass).GetField("intValue");
             var objField = typeof(TestClass).GetField("objValue");
 
-            var start = GC.GetAllocatedBytesForCurrentThread();
+            var start = Mem.GetAllocatedBytes();
             
             var intValue = new BuildInValue(1,BuildInType.Int32);
             for (int n = 0; n < 50; n++) {
@@ -126,7 +126,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc
                 // BuildInValue value = getObj.GetValue(testClass);     // 50_000_000   121 ms, memory             0 bytes
                 // var value = objField.GetValue(testClass);            // 50_000_000  1336 ms, memory             0 bytes
             }
-            var dif2 = GC.GetAllocatedBytesForCurrentThread() - start;
+            var dif2 = Mem.GetAllocatedBytes() - start;
             
             Console.WriteLine($"TestStruct: {testClass.intValue} - {dif2}");
         }

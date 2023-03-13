@@ -52,9 +52,11 @@ namespace Friflo.Json.Tests.Main
                     case Module.TestServer:
                         TestServer(endpoint);
                         break;
+#if NET6_0_OR_GREATER
                     case Module.FlioxServerAspNetCore:
                         FlioxServerAspNetCore(endpoint);
                         break;
+#endif
                     case Module.ListenEvents:
                         await PocClient.ListenEvents(client);
                         break;

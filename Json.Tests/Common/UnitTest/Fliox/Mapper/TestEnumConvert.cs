@@ -26,9 +26,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
         [Test]
         public static void TestEnumConvertInt() {
             var convert = EnumConvert.GetEnumConvert<EnumInt>();
-            var start   = GC.GetAllocatedBytesForCurrentThread();
+            var start   = Mem.GetAllocatedBytes();
             var e       = convert.LongToEnum(Int32.MaxValue);
-            var dif     = GC.GetAllocatedBytesForCurrentThread() - start;
+            var dif     = Mem.GetAllocatedBytes() - start;
             AreEqual(EnumInt.Value1, e);
             AreEqual(0, dif);
         }

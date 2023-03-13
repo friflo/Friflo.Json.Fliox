@@ -19,9 +19,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Utils
             AssertDequeAddTail(deque); // increases capacity 
             
             deque = new Deque<int>(2);
-            var start = GC.GetAllocatedBytesForCurrentThread();
+            var start = Mem.GetAllocatedBytes();
             AssertDequeAddTail(deque);
-            var dif = GC.GetAllocatedBytesForCurrentThread() - start;
+            var dif = Mem.GetAllocatedBytes() - start;
             
             AreEqual(0, dif);
         }
@@ -65,9 +65,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Utils
             AssertAddHead(deque); // increases capacity
             
             deque = new Deque<int>(2);
-            var start = GC.GetAllocatedBytesForCurrentThread();
+            var start = Mem.GetAllocatedBytes();
             AssertAddHead(deque);
-            var dif = GC.GetAllocatedBytesForCurrentThread() - start;
+            var dif = Mem.GetAllocatedBytes() - start;
             
             AreEqual(0, dif);
         }
@@ -111,9 +111,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Utils
             AssertDequeResize(deque); // increases capacity
             
             deque = new Deque<int>(3);
-            var start = GC.GetAllocatedBytesForCurrentThread();
+            var start = Mem.GetAllocatedBytes();
             AssertDequeResize(deque);
-            var dif = GC.GetAllocatedBytesForCurrentThread() - start;
+            var dif = Mem.GetAllocatedBytes() - start;
             
             AreEqual(0, dif);
         }
@@ -145,9 +145,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Utils
             AssertAddHeadQueue(deque); // increases capacity
             
             deque = new Deque<int>(2);
-            var start = GC.GetAllocatedBytesForCurrentThread();
+            var start = Mem.GetAllocatedBytes();
             AssertAddHeadQueue(deque);
-            var dif = GC.GetAllocatedBytesForCurrentThread() - start;
+            var dif = Mem.GetAllocatedBytes() - start;
             
             AreEqual(0, dif);
         }

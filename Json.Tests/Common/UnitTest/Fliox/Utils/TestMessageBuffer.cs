@@ -71,14 +71,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Utils
             long start = -1;
             for (int n = 0; n < 10; n++) {
                 if (n == 1) {
-                    start = GC.GetAllocatedBytesForCurrentThread();
+                    start = Mem.GetAllocatedBytes();
                 }
                 queue.AddTail(msg1, 1);
                 queue.AddHead(msg2, 2);
                 queue.Clear();
                 if (queue.Count != 0) throw new InvalidCastException("Expect Count == 0");
             }
-            var dif  = GC.GetAllocatedBytesForCurrentThread() - start;
+            var dif  = Mem.GetAllocatedBytes() - start;
             AreEqual(0, dif);
         }
     }

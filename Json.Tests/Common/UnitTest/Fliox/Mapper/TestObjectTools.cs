@@ -73,11 +73,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
                 {
                     var src = new ToolsClass { child = new ToolsChild { inVal = 1 } };
                     var dst = new ToolsClass { child = new ToolsChild { inVal = 2 } };
-                    var start = GC.GetAllocatedBytesForCurrentThread();
+                    var start = Mem.GetAllocatedBytes();
                     for (int n = 0; n < 1; n++) {
                         tools.DeepCopy(src, ref dst);
                     }
-                    var diff =  GC.GetAllocatedBytesForCurrentThread() - start;
+                    var diff =  Mem.GetAllocatedBytes() - start;
                     AreEqual(0, diff);
                 }
             }
@@ -230,9 +230,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
         }
         
         private static void AssertDeepCopyAllocation<T>(T src, ref T dst, ObjectTools tools) {
-            var start = GC.GetAllocatedBytesForCurrentThread();
+            var start = Mem.GetAllocatedBytes();
             tools.DeepCopy(src , ref dst);
-            var diff = GC.GetAllocatedBytesForCurrentThread() - start;
+            var diff = Mem.GetAllocatedBytes() - start;
             AreEqual(0, diff);
         }
     }

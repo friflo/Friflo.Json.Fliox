@@ -52,13 +52,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
 
             long start = 0;
             for (int n = 0; n < 10; n++) {
-                start = GC.GetAllocatedBytesForCurrentThread();
+                start = Mem.GetAllocatedBytes();
                 cx.client.players.UpsertRange(players);
                 cx.result = cx.client.SyncTasksSynchronous();
                 
                 cx.result.Reuse(cx.client);
             }
-            return GC.GetAllocatedBytesForCurrentThread() - start;
+            return Mem.GetAllocatedBytes() - start;
         }
         
         [Test]
@@ -88,13 +88,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
 
             long start = 0;
             for (int n = 0; n < 10; n++) {
-                start = GC.GetAllocatedBytesForCurrentThread();
+                start = Mem.GetAllocatedBytes();
                 cx.client.players.Read().Find(1);
                 cx.result = cx.client.SyncTasksSynchronous();
                 
                 cx.result.Reuse(cx.client);
             }
-            return GC.GetAllocatedBytesForCurrentThread() - start;
+            return Mem.GetAllocatedBytes() - start;
         }
     }
 }

@@ -97,9 +97,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
             {
                 read.ReadObject("1", typeof(int));  // initiate one time allocations
                 {
-                    var start   = GC.GetAllocatedBytesForCurrentThread();
+                    var start   = Mem.GetAllocatedBytes();
                     var result  = read.ReadObject("1", typeof(int));
-                    var dif     = GC.GetAllocatedBytesForCurrentThread() - start;
+                    var dif     = Mem.GetAllocatedBytes() - start;
                     IsTrue(read.Success);
                     AreEqual(1, result);
                     AreEqual(24, dif); // 24 bytes for boxing an int in the returned object

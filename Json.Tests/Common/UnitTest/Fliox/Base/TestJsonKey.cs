@@ -83,12 +83,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Base
             var value       = new Bytes("0---------1----"); // 15 characters. 
             var list        = new List<JsonKey>(count);
             var _           = new JsonKey (ref value, default); // force one time allocations
-            var start       = GC.GetAllocatedBytesForCurrentThread();
+            var start       = Mem.GetAllocatedBytes();
             for (int n = 0; n < count; n++) {
                 var key = new JsonKey (ref value, default);
                 list.Add(key);
             }
-            var dif = GC.GetAllocatedBytesForCurrentThread() - start;
+            var dif = Mem.GetAllocatedBytes() - start;
             AreEqual(count, list.Count);
             AreEqual(0, dif, "allocated bytes");
         }

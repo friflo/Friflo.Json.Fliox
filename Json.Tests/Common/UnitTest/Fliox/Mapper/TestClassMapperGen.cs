@@ -42,14 +42,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
             AreEqual(12, dest.intVal1);
             AreEqual(22, dest.child.val);
             
-            var start = GC.GetAllocatedBytesForCurrentThread();
+            var start = Mem.GetAllocatedBytes();
             for (int n = 0; n < 10; n++) {
                 mapper.writer.WriteAsBytes(genClass);
             }
             for (int n = 0; n < 10; n++) {
                 mapper.ReadTo(json, dest, false);
             }
-            var dif = GC.GetAllocatedBytesForCurrentThread() - start;
+            var dif = Mem.GetAllocatedBytes() - start;
             AreEqual(0, dif);
         }
         

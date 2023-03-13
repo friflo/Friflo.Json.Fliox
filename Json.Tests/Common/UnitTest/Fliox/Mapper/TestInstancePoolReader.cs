@@ -57,12 +57,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
             long start = 0;
             for (int n = 0; n < Count; n++) {
                 if (n == 1) {
-                    start = GC.GetAllocatedBytesForCurrentThread();
+                    start = Mem.GetAllocatedBytes();
                 }
                 pool.Reuse();
                 reader.Read<ProtocolMessage>(json);
             }
-            var dif = GC.GetAllocatedBytesForCurrentThread() - start;
+            var dif = Mem.GetAllocatedBytes() - start;
             AreEqual($"count: 4, used: 4, types: 4, version: {Count}", pool.ToString());
             AreEqual(0, dif);
         }

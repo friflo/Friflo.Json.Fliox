@@ -71,7 +71,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
             long start = 0;
             var objects = new List<object>();
             for (int n = 0; n < Count; n++) {
-                if (n == 1) start = GC.GetAllocatedBytesForCurrentThread();
+                if (n == 1) start = Mem.GetAllocatedBytes();
                 objects.Clear();
                 
                 var syncRequest = pool.CreateObject(syncRequestMapper);
@@ -88,7 +88,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
                 
                 pool.Reuse();
             }
-            var dif = GC.GetAllocatedBytesForCurrentThread() - start;
+            var dif = Mem.GetAllocatedBytes() - start;
             AreEqual(5, objects.Count);
             AreEqual(0, dif);
         }
@@ -116,7 +116,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
             long start = 0;
             var objects = new List<object>();
             for (int n = 0; n < Count; n++) {
-                if (n == 1) start = GC.GetAllocatedBytesForCurrentThread();
+                if (n == 1) start = Mem.GetAllocatedBytes();
                 objects.Clear();
                 
                 var syncRequest = syncRequestMapper.Create();
@@ -133,7 +133,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
                 
                 pools.Reuse();
             }
-            var dif = GC.GetAllocatedBytesForCurrentThread() - start;
+            var dif = Mem.GetAllocatedBytes() - start;
             AreEqual(5, objects.Count);
             AreEqual(0, dif);
         }

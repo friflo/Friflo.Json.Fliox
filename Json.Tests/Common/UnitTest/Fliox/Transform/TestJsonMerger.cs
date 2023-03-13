@@ -296,11 +296,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
         private static void AssertAlloc(JsonValue value, JsonValue patch, int count, JsonMerger merger) {
             merger.MergeBytes(value, patch);
 
-            var start   = GC.GetAllocatedBytesForCurrentThread();
+            var start   = Mem.GetAllocatedBytes();
             for (int n = 0; n < count; n++) {
                 merger.MergeBytes(value, patch);
             }
-            var dif     = GC.GetAllocatedBytesForCurrentThread() - start;
+            var dif     = Mem.GetAllocatedBytes() - start;
             AreEqual(0, dif);
         }
         

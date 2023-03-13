@@ -21,11 +21,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc
             };
             set.GetOrAdd("key", "key");
 
-            var start = GC.GetAllocatedBytesForCurrentThread();
+            var start = Mem.GetAllocatedBytes();
             var keyAbc = "abc";
             var valAbc = set.GetOrAdd("abc", keyAbc);
 
-            var dif  = GC.GetAllocatedBytesForCurrentThread() - start;
+            var dif  = Mem.GetAllocatedBytes() - start;
             
             AreSame(valAbc, abc);
             AreEqual(0, dif);
@@ -37,12 +37,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc
         public void ConcurrentPerf()
         {
             int len = 0;
-            var start = GC.GetAllocatedBytesForCurrentThread();
+            var start = Mem.GetAllocatedBytes();
             for (int n = 0; n < Count; n++) {
                 var str  = new string("0123456789"); 
                 len     += str.Length;
             }
-            var dif  = GC.GetAllocatedBytesForCurrentThread() - start;
+            var dif  = Mem.GetAllocatedBytes() - start;
             Console.WriteLine($"{len}, dif: {dif}");
         }
         
@@ -56,12 +56,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc
             intern.Get(ref key);
             intern.Get(ref key);
             
-            var start = GC.GetAllocatedBytesForCurrentThread();
+            var start = Mem.GetAllocatedBytes();
             for (int n = 0; n < Count; n++) {
                 var str  = intern.Get(ref key);
                 len     += str.Length;
             }
-            var dif  = GC.GetAllocatedBytesForCurrentThread() - start;
+            var dif  = Mem.GetAllocatedBytes() - start;
             AreEqual(0, dif);
             Console.WriteLine($"{len}, dif: {dif}");
         }
