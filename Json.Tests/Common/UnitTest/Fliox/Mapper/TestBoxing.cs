@@ -28,7 +28,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
 
             Console.Out.WriteLine($"diff: {diff}");
             
-            AreEqual(0, diff); // fails if running without debugger
+            Mem.NoAlloc(diff); // fails if running without debugger
         }
         
         private static void LookupDictionaryJsonKey(Dictionary<JsonKey, int> dict, int count) {
@@ -64,7 +64,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
             }
             var diff    = Mem.GetAllocatedBytes() - start;
             
-            AreEqual(0, diff);
+            Mem.NoAlloc(diff);
             IsTrue(equal);
         }
     }

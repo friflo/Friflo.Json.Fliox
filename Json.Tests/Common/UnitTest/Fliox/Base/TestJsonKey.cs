@@ -90,7 +90,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Base
             }
             var dif = Mem.GetAllocatedBytes() - start;
             AreEqual(count, list.Count);
-            AreEqual(0, dif, "allocated bytes");
+            Mem.NoAlloc(dif);
         }
     }
 }

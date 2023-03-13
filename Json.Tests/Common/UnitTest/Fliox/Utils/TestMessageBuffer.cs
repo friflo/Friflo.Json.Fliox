@@ -79,7 +79,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Utils
                 if (queue.Count != 0) throw new InvalidCastException("Expect Count == 0");
             }
             var dif  = Mem.GetAllocatedBytes() - start;
-            AreEqual(0, dif);
+            Mem.NoAlloc(dif);
         }
     }
 }

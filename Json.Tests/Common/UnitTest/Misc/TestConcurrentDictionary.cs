@@ -28,7 +28,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc
             var dif  = Mem.GetAllocatedBytes() - start;
             
             AreSame(valAbc, abc);
-            AreEqual(0, dif);
+            Mem.NoAlloc(dif);
         }
 
         private const int Count = 10;
@@ -63,7 +63,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc
                 len     += str.Length;
             }
             var dif  = Mem.GetAllocatedBytes() - start;
-            AreEqual(0, dif);
+            Mem.NoAlloc(dif);
             Console.WriteLine($"{len}, dif: {dif}");
         }
     }

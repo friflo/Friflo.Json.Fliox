@@ -30,7 +30,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
             var e       = convert.LongToEnum(Int32.MaxValue);
             var dif     = Mem.GetAllocatedBytes() - start;
             AreEqual(EnumInt.Value1, e);
-            AreEqual(0, dif);
+            Mem.NoAlloc(dif);
         }
         
         [Test]

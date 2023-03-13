@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
-using System;
 using System.Text.RegularExpressions;
 using Friflo.Json.Fliox;
 using Friflo.Json.Fliox.Mapper;
@@ -301,7 +300,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 merger.MergeBytes(value, patch);
             }
             var dif     = Mem.GetAllocatedBytes() - start;
-            AreEqual(0, dif);
+            Mem.NoAlloc(dif);
         }
         
         private static string NormalizeJson(string value) {

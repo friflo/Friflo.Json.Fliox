@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
-using System;
 using System.Collections.Generic;
 using Friflo.Json.Fliox;
 using Friflo.Json.Fliox.Mapper;
@@ -78,7 +77,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
                         tools.DeepCopy(src, ref dst);
                     }
                     var diff =  Mem.GetAllocatedBytes() - start;
-                    AreEqual(0, diff);
+                    Mem.NoAlloc(diff);
                 }
             }
         }
@@ -233,7 +232,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
             var start = Mem.GetAllocatedBytes();
             tools.DeepCopy(src , ref dst);
             var diff = Mem.GetAllocatedBytes() - start;
-            AreEqual(0, diff);
+            Mem.NoAlloc(diff);
         }
     }
 }

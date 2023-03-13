@@ -22,6 +22,18 @@ namespace Friflo.Json.Tests.Common
 #endif
         }
         
+        /// <summary>Assert no allocation were performed</summary>
+        public static void NoAlloc(long actual) {
+            if (actual == 0) {
+                return;
+            }
+#if NET6_0_OR_GREATER
+            var msg = $"expected no allocation.\n but was: {actual}";
+            throw new AssertionException(msg);
+#endif
+        }
+        
+        /// <summary>Assert expected amount of allocated bytes</summary>
         public static void AreEqual(long expected, long actual) {
             if (expected == actual) {
                 return;

@@ -1,7 +1,6 @@
 // Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
-using System;
 using Friflo.Json.Fliox;
 using Friflo.Json.Fliox.Mapper;
 using NUnit.Framework;
@@ -50,7 +49,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
                 mapper.ReadTo(json, dest, false);
             }
             var dif = Mem.GetAllocatedBytes() - start;
-            AreEqual(0, dif);
+            Mem.NoAlloc(dif);
         }
         
         //[Test]

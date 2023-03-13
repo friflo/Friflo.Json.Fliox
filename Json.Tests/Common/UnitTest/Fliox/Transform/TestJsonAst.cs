@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
-using System;
 using Friflo.Json.Fliox;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Transform.Tree;
@@ -30,7 +29,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 astReader.CreateAst(json);
             }
             var dif = Mem.GetAllocatedBytes() - start;
-            AreEqual(0, dif);
+            Mem.NoAlloc(dif);
             
             var count = TraverseNode(ast, 0);
             AreEqual(41, count);
@@ -76,7 +75,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 astWriter.WriteAstBytes(ast);
             }
             var dif = Mem.GetAllocatedBytes() - start;
-            AreEqual(0, dif);
+            Mem.NoAlloc(dif);
         }
         
         [Test]

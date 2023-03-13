@@ -23,7 +23,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Utils
             AssertDequeAddTail(deque);
             var dif = Mem.GetAllocatedBytes() - start;
             
-            AreEqual(0, dif);
+            Mem.NoAlloc(dif);
         }
 
         private static void AssertDequeAddTail(Deque<int> deque)
@@ -69,7 +69,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Utils
             AssertAddHead(deque);
             var dif = Mem.GetAllocatedBytes() - start;
             
-            AreEqual(0, dif);
+            Mem.NoAlloc(dif);
         }
 
         private static void AssertAddHead(Deque<int> deque)
@@ -115,7 +115,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Utils
             AssertDequeResize(deque);
             var dif = Mem.GetAllocatedBytes() - start;
             
-            AreEqual(0, dif);
+            Mem.NoAlloc(dif);
         }
 
         /// Ensure setting Deque{T}.first in Deque{T}.Resize()
@@ -149,7 +149,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Utils
             AssertAddHeadQueue(deque);
             var dif = Mem.GetAllocatedBytes() - start;
             
-            AreEqual(0, dif);
+            Mem.NoAlloc(dif);
         }
 
         private static readonly Queue<int> Queue2 = new Queue<int> ( new [] { 1, 2 }  );

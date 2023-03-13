@@ -1,7 +1,6 @@
 // Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox;
@@ -64,7 +63,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
             }
             var dif = Mem.GetAllocatedBytes() - start;
             AreEqual($"count: 4, used: 4, types: 4, version: {Count}", pool.ToString());
-            AreEqual(0, dif);
+            Mem.NoAlloc(dif);
         }
     }
 }

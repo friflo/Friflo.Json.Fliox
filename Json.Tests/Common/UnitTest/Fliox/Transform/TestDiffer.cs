@@ -85,7 +85,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                     differ.GetDiff(left, right, DiffKind.DiffArrays);
                 }
                 var diffAlloc =  Mem.GetAllocatedBytes() - start;
-                AreEqual(0, diffAlloc);
+                Mem.NoAlloc(diffAlloc);
                 Console.WriteLine($"Diff allocations: {diffAlloc}");
                 
                 AssertMergePatchAlloc(diff, mergeWriter);
@@ -272,7 +272,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             var start = Mem.GetAllocatedBytes();
             mergeWriter.WriteMergePatchBytes(diff);
             var alloc = Mem.GetAllocatedBytes() - start;
-            AreEqual(0, alloc);
+            Mem.NoAlloc(alloc);
         }
         
         [Test]
@@ -299,7 +299,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                     mapper.ReadTo(json, result, false);
                 }
                 var diffAlloc =  Mem.GetAllocatedBytes() - start;
-                // AreEqual(0, diffAlloc);
+                // Mem.NoAlloc(diffAlloc);
                 Console.WriteLine($"Diff allocations: {diffAlloc}");
             }
         }

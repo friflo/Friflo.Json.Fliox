@@ -243,7 +243,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
                 sub.ProcessEvent(client, syncEvent, 0);
             }
             var diff = Mem.GetAllocatedBytes() - start;
-            AreEqual(0, diff);
+            Mem.NoAlloc(diff);
         }
         
         class PooledClass : IDisposable {
@@ -262,7 +262,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
                 pool.Return(pooled.instance);
             }
             var diff    = Mem.GetAllocatedBytes() - start;
-            AreEqual(0, diff);
+            Mem.NoAlloc(diff);
         }
 #endif
         
