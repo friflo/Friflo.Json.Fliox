@@ -7,7 +7,7 @@ using System.Globalization;
 /*
  * File contains extension methods to maintain compatibility to netstandard2.0.
  * This enables compatibility for
- * - .NET Framework 4.6.1 or higher
+ * - .NET Framework 4.6.2 or higher
  * - Unity with: Project Settings > Player > Configuration > Api Compatibility Level: .NET Framework (untested)
  *
  * See: https://github.com/friflo/Friflo.Json.Fliox/blob/main/docs/compatibility.md

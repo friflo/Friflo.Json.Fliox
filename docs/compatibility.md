@@ -10,7 +10,7 @@ Current target framework configuration
 ```
 
 Goal is to maintain compatibility to [.NET Standard 2.0](https://learn.microsoft.com/en-us/dotnet/standard/net-standard?tabs=net-standard-2-0)
-to support **.NET Framework 4.6.1** or higher
+to support **.NET Framework 4.6.2** or higher
 
 This requires conditional compilation depending on `NETSTANDARD2_0` and `NETSTANDARD2_1`.  
 **CLR**   preprocessor symbols [Target frameworks in SDK-style projects](https://learn.microsoft.com/en-us/dotnet/standard/frameworks)  

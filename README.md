@@ -251,7 +251,8 @@ They fit mostly the aspects described in [CUPID-for joyful coding](https://danno
 Topics of the CUPID properties focused by this project are
 - Composable
     - **No 3rd party dependencies**
-    - Compatibility **.NET Core 3.1** and higher, **Unity 2020.1** and higher
+    - [Compatibility](./docs/compatibility.md)
+      **.NET Core 3.1** or higher, **.NET Framework 4.6.2** or higher and **Unity 2020.1** or higher
     - Seamless integration into existing ASP.NET Core applications with a handful lines of code
     - Independence from other parts of existing applications
     - Fliox Clients and Hubs are unit testable without mocking
