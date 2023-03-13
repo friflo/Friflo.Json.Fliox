@@ -138,7 +138,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 context.WriteError("list directory", msg, 404);
                 return;
             }
-            Array.Sort(fileNames);
+            Array.Sort(fileNames, StringComparer.Ordinal);
             using (var mapper = context.Pool.ObjectMapper.Get()) {
                 var writer      = MessageUtils.GetPrettyWriter(mapper.instance);
                 var jsonList    = writer.Write(fileNames);
