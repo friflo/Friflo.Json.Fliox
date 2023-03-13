@@ -20,24 +20,36 @@ Mainly all all affected code is related to performance focused code using `ReadO
 
 ## BCL dependencies
 
+Following nuget packages of BCL - Base Class Library - are required for TargetFrameworks:
+<b>netstandard2.0</b> and <b>netstandard2.1</b>
+
 [System.Memory](https://www.nuget.org/packages/System.Memory)
 
 [System.ComponentModel.Annotations](https://www.nuget.org/packages/System.ComponentModel.Annotations)
 
+[System.Threading.Channels](https://www.nuget.org/packages/System.Threading.Channels)
 
-
+Some implementation specific for <b>netstandard2.0</b> require heap allocations.  
+These implementation are marked with
+```c#
+// NETSTANDARD2_0_ALLOC
+```
 ## 3rd Party dependencies
 
-[GraphQL-Parser](https://github.com/graphql-dotnet/parser) at
-[nuget](https://www.nuget.org/packages/SIPSorcery/) uses:
+[GraphQL-Parser](https://github.com/graphql-dotnet/parser) -
+[nuget](https://www.nuget.org/packages/SIPSorcery/)
+used by [Fliox GraphQL](https://github.com/friflo/Friflo.Json.Fliox/tree/main/Json/Fliox.Hub.GraphQL)
+uses:
 
 ```xml
 <TargetFrameworks>netstandard2.0;netstandard2.1;net6</TargetFrameworks>
 ```
 
-[SIPSorcery](https://github.com/sipsorcery-org/sipsorcery) at
+[SIPSorcery](https://github.com/sipsorcery-org/sipsorcery) -
 [nuget](https://www.nuget.org/packages/GraphQL-Parser)
+used by [Fliox WebRTC](https://github.com/friflo/Friflo.Json.Fliox/tree/main/Json/Fliox.Hub.WebRTC)
 uses:
+
 ```xml
 <TargetFrameworks>netstandard2.0;netstandard2.1;netcoreapp3.1;net461;net5.0;net6.0;</TargetFrameworks>
 ```
