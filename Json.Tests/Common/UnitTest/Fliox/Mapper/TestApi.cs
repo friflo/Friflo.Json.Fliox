@@ -102,7 +102,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
                     var dif     = Mem.GetAllocatedBytes() - start;
                     IsTrue(read.Success);
                     AreEqual(1, result);
-                    AreEqual(24, dif); // 24 bytes for boxing an int in the returned object
+                    Mem.AreEqual(24, dif); // 24 bytes for boxing an int in the returned object
                 } {
                     var result = read.ReadObject("true", typeof(int));
                     AreEqual(0, result);

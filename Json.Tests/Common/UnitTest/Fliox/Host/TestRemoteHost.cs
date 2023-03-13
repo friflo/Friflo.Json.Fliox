@@ -57,7 +57,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
                     dif = Mem.GetAllocatedBytes() - start;
                     if (response.status != JsonResponseStatus.Ok)   Fail("Expect OK");
                 }
-                AreEqual(736, dif);
+                Mem.AreEqual(736, dif);
             }
         }
         
@@ -78,7 +78,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
                     dif = Mem.GetAllocatedBytes() - start;
                     if (response.status != JsonResponseStatus.Ok)   Fail("Expect OK");
                 }
-                AreEqual(72, dif);
+                Mem.AreEqual(72, dif);
             }
         }
         
@@ -107,7 +107,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
                     dif = Mem.GetAllocatedBytes() - start;
                     if (response.status != JsonResponseStatus.Ok)   Fail("Expect OK");
                 }
-                AreEqual(72, dif);
+                Mem.AreEqual(72, dif);
             }
         }
 
