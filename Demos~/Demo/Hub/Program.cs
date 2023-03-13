@@ -9,7 +9,6 @@ using Friflo.Json.Fliox.Hub.GraphQL;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.Event;
 using Friflo.Json.Fliox.Hub.Remote;
-using Friflo.Json.Fliox.Hub.WebRTC;
 
 namespace DemoHub
 {
@@ -65,7 +64,7 @@ namespace DemoHub
             return httpHost;
         }
         
-        private static async Task CreateWebRtcServer(HttpHost httpHost) {
+        /* private static async Task CreateWebRtcServer(HttpHost httpHost) {
             var rtcConfig = new SignalingConfig {
                 SignalingHost   = "ws://localhost:8011/fliox/",
                 User            = "admin", Token = "admin",
@@ -73,7 +72,7 @@ namespace DemoHub
             };
             var rtcServer = new RtcServer(rtcConfig);
             await rtcServer.AddHost("abc", httpHost);
-        }
+        } */
         
         private static readonly bool UseMemoryDbClone = true;
         
