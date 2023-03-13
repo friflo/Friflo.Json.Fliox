@@ -18,9 +18,9 @@ namespace Friflo.Json.Fliox.Hub.Utils
                 stack   = stack.Substring(0, stack.Length - 1); // remove trailing LF
             }
             
-#if UNITY_5_3_OR_NEWER
+#if UNITY_5_3_OR_NEWER || NETSTANDARD2_0 || NETSTANDARD2_1
             if (stack != null) {
-                // Unity add StackTrace sections starting with:
+                // Unity, NETSTANDARD2_0 & NETSTANDARD2_1 add StackTrace sections starting with:
                 // --- End of stack trace from previous location where exception was thrown ---
                 // Remove these sections as they bloat the stacktrace assuming the relevant part of the stacktrace
                 // is at the beginning.
