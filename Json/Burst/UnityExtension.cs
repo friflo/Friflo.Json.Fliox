@@ -50,16 +50,22 @@ namespace System.Text
         
 #if NETSTANDARD2_0
         public static unsafe int GetChars(this Encoding encoding, ReadOnlySpan<byte> bytes, Span<char> chars) {
+            if (bytes.Length == 0) {
+                return 0;
+            }
             fixed (byte*  bytesPtr  = &bytes[0])
             fixed (char*  charPtr   = &chars[0]) {
-                return Encoding.UTF8.GetChars(bytesPtr, bytes.Length, charPtr, chars.Length);
+                return encoding.GetChars(bytesPtr, bytes.Length, charPtr, chars.Length);
             }
         }
         
         public static unsafe int GetBytes(this Encoding encoding, ReadOnlySpan<char> chars, Span<byte> bytes) {
+            if (chars.Length == 0) {
+                return 0;
+            }
             fixed (byte*  bytesPtr  = &bytes[0])
             fixed (char*  charPtr   = &chars[0]) {
-                return Encoding.UTF8.GetBytes(charPtr, chars.Length, bytesPtr, bytes.Length);
+                return encoding.GetBytes(charPtr, chars.Length, bytesPtr, bytes.Length);
             }
         }
 
