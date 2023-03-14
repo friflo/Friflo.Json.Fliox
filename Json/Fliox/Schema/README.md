@@ -101,8 +101,33 @@ They are linked by the online [**DemoHub Explorer**](http://ec2-18-215-176-108.c
 *screenshot: `monitor` database with GraphiQL*
 
 
-## Examples
+# Examples
 
+## JSON Schema Validation
+
+The input for `JsonValidator.Validate()` is the JSON string and the Type defining the schema: `Person`.
+
+More examples are at [Fliox.Examples](https://github.com/friflo/Fliox.Examples/tree/main/SchemaValidation).
+
+```csharp
+    class Person
+    {
+                    public  int     age;
+        [Required]  public  string  name;
+    }
+    
+    public static class SchemaValidation
+    {
+        [Test]
+        public static void Run() {
+            var json = "{\"age\":42,\"name\":\"Peter\"}";
+            var success = JsonValidator.Validate(json, typeof(Person), out var error);
+            Assert.IsTrue(success);
+        }
+    }
+```
+
+## More examples
 - A code example showing code generation based on a C# `Type` is shown at [FlioxClient](../../Fliox.Hub/Client/README.md#schema-generation)
 
 - Examples for code generation and JSON type validation at:  
