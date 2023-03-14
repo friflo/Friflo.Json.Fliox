@@ -125,6 +125,11 @@ More examples are at [Fliox.Examples](https://github.com/friflo/Fliox.Examples/t
             var json = "{\"age\":42,\"name\":\"Peter\"}";
             var success = JsonValidator.Validate(json, typeof(Person), out var error);
             Assert.IsTrue(success);
+
+            json = "{\"age\":42}";
+            success = JsonValidator.Validate(json, typeof(Person), out error);
+            Assert.IsFalse(success);
+            Assert.AreEqual("Missing required fields: [name] at Person > (root), pos: 10", error);
         }
     }
 ```

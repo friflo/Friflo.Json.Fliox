@@ -21,6 +21,11 @@ namespace Friflo.Json.Tests.Common.Examples.Schema
             var json = "{\"age\":42,\"name\":\"Peter\"}";
             var success = JsonValidator.Validate(json, typeof(Person), out var error);
             Assert.IsTrue(success);
+            
+            json = "{\"age\":42}";
+            success = JsonValidator.Validate(json, typeof(Person), out error);
+            Assert.IsFalse(success);
+            Assert.AreEqual("Missing required fields: [name] at Person > (root), pos: 10", error);
         }
 
         /// Generate types for: C#, GraphQL, HTML, JSON Schema, Kotlin, Markdown and Typescript in folder: ./schema
