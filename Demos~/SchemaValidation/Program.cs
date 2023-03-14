@@ -12,6 +12,8 @@ namespace SchemaValidation
             TestValidation.TestValidateRequiredFields();
             TestValidation.TestValidatePolymorphType();
             
+            TestValidation.GenerateSchemaModels();
+            
             Console.WriteLine("tests successful");
         }
     }
