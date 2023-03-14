@@ -36,6 +36,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Friflo.Json.Fliox.Hub.WebRT
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetFramework-Example", "Demos~\NetFramework\NetFramework-Example.csproj", "{9E41A45D-6C97-4F18-AD78-4C025DC4BB61}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SchemaValidation", "Demos~\SchemaValidation\SchemaValidation.csproj", "{140D71F8-86C7-4294-9E1F-15445A0AAEA0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -114,5 +116,9 @@ Global
 		{9E41A45D-6C97-4F18-AD78-4C025DC4BB61}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9E41A45D-6C97-4F18-AD78-4C025DC4BB61}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9E41A45D-6C97-4F18-AD78-4C025DC4BB61}.Release|Any CPU.Build.0 = Release|Any CPU
+		{140D71F8-86C7-4294-9E1F-15445A0AAEA0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{140D71F8-86C7-4294-9E1F-15445A0AAEA0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{140D71F8-86C7-4294-9E1F-15445A0AAEA0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{140D71F8-86C7-4294-9E1F-15445A0AAEA0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
