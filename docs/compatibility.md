@@ -40,7 +40,7 @@ These implementation are marked with
 ## 3rd Party dependencies
 
 [GraphQL-Parser](https://github.com/graphql-dotnet/parser) -
-[nuget](https://www.nuget.org/packages/SIPSorcery/)
+[nuget](https://www.nuget.org/packages/GraphQL-Parser)
 used by [Fliox GraphQL](https://github.com/friflo/Friflo.Json.Fliox/tree/main/Json/Fliox.Hub.GraphQL)
 uses:
 
@@ -49,7 +49,7 @@ uses:
 ```
 
 [SIPSorcery](https://github.com/sipsorcery-org/sipsorcery) -
-[nuget](https://www.nuget.org/packages/GraphQL-Parser)
+[nuget](https://www.nuget.org/packages/SIPSorcery/)
 used by [Fliox WebRTC](https://github.com/friflo/Friflo.Json.Fliox/tree/main/Json/Fliox.Hub.WebRTC)
 uses:
 
