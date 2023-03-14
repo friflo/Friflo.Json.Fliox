@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Friflo.Json.Fliox.Schema;
+using Friflo.Json.Fliox.Schema.Language;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
 
@@ -92,6 +93,16 @@ namespace SchemaValidation
                 var success = JsonValidator.Validate(json, typeof(Vehicle), out var  error);
                 IsFalse(success);
                 AreEqual("Expect discriminator as first member. was: ObjectEnd, expect: 'vehicleType' at Vehicle > (root), pos: 2", error);
+            }
+        }
+        
+        /// Generate types for: C#, GraphQL, HTML, JSON Schema, Kotlin, Markdown and Typescript in folder: ./schema
+        [Test]
+        public static void GenerateSchemaModels() {
+            var schemaModels = SchemaModel.GenerateSchemaModels(typeof(RequiredFields));
+            foreach (var schemaModel in schemaModels) {
+                var folder = $"./schema/{schemaModel.type}";
+                schemaModel.WriteFiles(folder);
             }
         }
     }
