@@ -105,7 +105,8 @@ They are linked by the online [**DemoHub Explorer**](http://ec2-18-215-176-108.c
 
 ## JSON Schema Validation
 
-The input for `JsonValidator.Validate()` is the JSON string and the Type defining the schema: `Person`.
+The input for `JsonValidator.Validate()` is the JSON string and the Type defining the schema - `Person` in the example below.  
+Requires nuget package [Friflo.Json.Fliox ](https://www.nuget.org/packages/Friflo.Json.Fliox/).
 
 More examples are at [Fliox.Examples](https://github.com/friflo/Fliox.Examples/tree/main/SchemaValidation).
 
