@@ -1,3 +1,5 @@
+#pragma warning disable CS0649
+
 using System.ComponentModel.DataAnnotations;
 using Friflo.Json.Fliox.Schema;
 using Friflo.Json.Fliox.Schema.Language;
