@@ -28,7 +28,7 @@ namespace Friflo.Json.Tests.Common.Examples.Schema
             Assert.AreEqual("Missing required fields: [name] at Person > (root), pos: 10", error);
         }
 
-        /// Generate types for: C#, GraphQL, HTML, JSON Schema, Kotlin, Markdown and Typescript in folder: ./schema
+        /// Generate: C#, GraphQL, HTML, JSON Schema, Kotlin, Markdown and Typescript in folder: ./schema
         [Test]
         public static void GenerateSchemaModels() {
             var schemaModels = SchemaModel.GenerateSchemaModels(typeof(Person));

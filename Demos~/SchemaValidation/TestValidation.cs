@@ -96,7 +96,7 @@ namespace SchemaValidation
             }
         }
         
-        /// Generate types for: C#, GraphQL, HTML, JSON Schema, Kotlin, Markdown and Typescript in folder: ./schema
+        /// Generate: C#, GraphQL, HTML, JSON Schema, Kotlin, Markdown and Typescript in folder: ./schema
         [Test]
         public static void GenerateSchemaModels() {
             var schemaModels = SchemaModel.GenerateSchemaModels(typeof(RequiredFields));
