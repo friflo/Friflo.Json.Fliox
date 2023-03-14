@@ -1,7 +1,7 @@
 // Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
-#pragma warning disable CS0649
+#pragma warning disable CS0649 // classes at not instantiated in tests
 
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -51,19 +51,26 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema.Validation
             }
         }
         
-        // --- optional class fields
+        // --- class type
         class OptionalFields
         {
             public  int?    age;
             public  string  name;
+            public  Gender? gender;
             public  int[]   intArray;
         }
         
         class RequiredFields
         {
-            public   int     age;
-            [Required] public   string  name;
-            [Required] public   int[]   intArray;
+                        public  int     age;
+            [Required]  public  string  name;
+                        public  Gender gender;
+            [Required]  public  int[]   intArray;
+        }
+        
+        enum Gender {
+            male,
+            female
         }
         
         [Test]
@@ -73,7 +80,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema.Validation
                 var success = JsonValidator.Validate(json, typeof(OptionalFields), out var error);
                 IsTrue(success);
             } {
-                var json = "{\"age\":42,\"name\":\"Peter\",\"intArray\":[1]}";
+                var json = "{\"age\":42,\"name\":\"Peter\",\"gender\":\"male\",\"intArray\":[1]}";
                 var success = JsonValidator.Validate(json, typeof(OptionalFields), out var error);
                 IsTrue(success);
             } {
@@ -93,18 +100,18 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema.Validation
         [Test]
         public static void TestValidateRequiredFields() {
             {
-                var json = "{\"age\":42,\"name\":\"Peter\",\"intArray\":[1]}";
+                var json = "{\"age\":42,\"name\":\"Peter\",\"gender\":\"male\",\"intArray\":[1]}";
                 var success = JsonValidator.Validate(json, typeof(RequiredFields), out var  error);
                 IsTrue(success);
             } {
                 var json = "{}";
                 var success = JsonValidator.Validate(json, typeof(RequiredFields), out var  error);
                 IsFalse(success);
-                AreEqual("Missing required fields: [age, name, intArray] at RequiredFields > (root), pos: 2", error);
+                AreEqual("Missing required fields: [age, name, gender, intArray] at RequiredFields > (root), pos: 2", error);
             }
         }
         
-        // --- polymorph type
+        // --- polymorph class type
         [Discriminator("vehicleType")]
         [PolymorphType(typeof(Car),     "car")]
         [PolymorphType(typeof(Bike),    "bike")]
