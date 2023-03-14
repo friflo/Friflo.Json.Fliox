@@ -210,18 +210,16 @@ namespace Friflo.Json.Burst
         public const int GuidLength = 36; // 12345678-1234-1234-1234-123456789abc
 
         /// In case of Unity <paramref name="str"/> is not null. Otherwise null.
-        public bool TryParseGuid(out Guid guid, out string str) {
+        public bool TryParseGuid(out Guid guid) {
             int len = end - start;
             if (len != GuidLength) {
-                str = null;
                 guid = new Guid();
                 return false;
             }
 #if UNITY_5_3_OR_NEWER || NETSTANDARD2_0
-            str = AsString();
+            var str = AsString();
             return Guid.TryParse(str, out guid);
 #else
-            str = null;
             Span<char> span = stackalloc char[len];
             var array   = buffer;
             for (int n = 0; n < len; n++)

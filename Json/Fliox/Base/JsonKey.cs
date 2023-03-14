@@ -101,7 +101,7 @@ namespace Friflo.Json.Fliox
                 return;
             }
             var bytesLen = bytes.end - bytes.start;
-            if (bytesLen == Bytes.GuidLength && bytes.TryParseGuid(out var guid, out _)) { // out value not null in Unity. Otherwise null
+            if (bytesLen == Bytes.GuidLength && bytes.TryParseGuid(out var guid)) {
                 keyObj  = GUID;
                 GuidUtils.GuidToLongLong(guid, out lng, out lng2);
                 return;

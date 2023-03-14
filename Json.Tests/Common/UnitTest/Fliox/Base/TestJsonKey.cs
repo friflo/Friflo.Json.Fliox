@@ -30,6 +30,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Base
                 AreEqual ("11111111-2222-3333-4444-555555555555", sb.ToString());
             } {
                 var sb = new StringBuilder();
+                var key = new JsonKey (new Guid("f0f1f2f3-f4f5-f6f7-f8f9-fafbfcfdfeff"));
+                key.AppendTo(sb);
+                AreEqual ("f0f1f2f3-f4f5-f6f7-f8f9-fafbfcfdfeff", sb.ToString());
+            } {
+                var sb = new StringBuilder();
                 var key = new JsonKey ("abc");
                 key.AppendTo(sb);
                 AreEqual ("abc", sb.ToString());

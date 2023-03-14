@@ -227,7 +227,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
             using (var bytes = new Bytes(str))
             using (var dest  = new Bytes(0))
             {
-                IsTrue(bytes.TryParseGuid(out Guid result, out _));
+                IsTrue(bytes.TryParseGuid(out Guid result));
                 AreEqual(guid, result);
                 
                 dest.AppendGuid(guid);
