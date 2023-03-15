@@ -164,20 +164,22 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
 
         internal override void AddDeletes  (List<JsonKey> ids) {
+            var deletes = Deletes;
             foreach (var id in ids) {
                 TKey    key      = KeyConvert.IdToKey(id);
-                Deletes.Add(new Delete<TKey>(key));
+                deletes.Add(new Delete<TKey>(key));
             }
             changeInfo.deletes += ids.Count;
         }
         
         internal override void AddPatches(List<JsonEntity> entityPatches, FlioxClient client) {
             GetKeysFromEntities (client, keyName, entityPatches);
+            var patches = Patches;
             for (int n = 0; n < entityPatches.Count; n++) {
                 var     entityPatch = entityPatches[n];
                 TKey    key         = KeyConvert.IdToKey(entityPatch.key);
                 var     patch       = new Patch<TKey>(key, entityPatch.value);
-                Patches.Add(patch);
+                patches.Add(patch);
             }
             changeInfo.merges += entityPatches.Count;
         }
