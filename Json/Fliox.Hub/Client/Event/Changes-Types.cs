@@ -9,9 +9,10 @@ namespace Friflo.Json.Fliox.Hub.Client
 {
     public readonly struct Create<TKey, T>
     {
-        public readonly TKey    key;
-        public readonly T       entity;
-        
+        public  readonly    TKey        key;
+        public  readonly    T           entity;
+        public  override    string      ToString() => key.ToString();
+
         internal Create (TKey key, T entity) {
             this.key    = key;
             this.entity = entity;
@@ -20,8 +21,9 @@ namespace Friflo.Json.Fliox.Hub.Client
     
     public readonly struct Upsert<TKey, T>
     {
-        public readonly TKey    key;
-        public readonly T       entity;
+        public  readonly    TKey        key;
+        public  readonly    T           entity;
+        public  override    string      ToString() => key.ToString();
         
         internal Upsert (TKey key, T entity) {
             this.key    = key;
@@ -30,9 +32,8 @@ namespace Friflo.Json.Fliox.Hub.Client
     }
     
     public readonly struct Patch<TKey> {
-        public    readonly  JsonValue   patch;
-        public    readonly  TKey        key;
-        
+        public  readonly    JsonValue   patch;
+        public  readonly    TKey        key;
         public  override    string      ToString() => key.ToString();
         
         internal Patch(TKey key, JsonValue patch) {
@@ -43,7 +44,8 @@ namespace Friflo.Json.Fliox.Hub.Client
     
     public readonly struct Delete<TKey>
     {
-        public readonly TKey    key;
+        public  readonly    TKey        key;
+        public  override    string      ToString() => key.ToString();
         
         internal Delete (TKey key) {
             this.key    = key;
@@ -61,12 +63,12 @@ namespace Friflo.Json.Fliox.Hub.Client
     }
     
     public readonly struct ApplyInfo<TKey, T> where T : class {
-        public readonly ApplyInfoType   type;
-        public readonly TKey            key;
-        public readonly T               entity;
-        public readonly JsonValue       rawEntity;
+        public  readonly    ApplyInfoType   type;
+        public  readonly    TKey            key;
+        public  readonly    T               entity;
+        public  readonly    JsonValue       rawEntity;
 
-        public override string          ToString() => $"{type} key: {key}"; 
+        public  override    string          ToString() => $"{type} key: {key}"; 
 
         internal ApplyInfo(ApplyInfoType type, TKey key, T entity, in JsonValue rawEntity) {
             this.type       = type;
