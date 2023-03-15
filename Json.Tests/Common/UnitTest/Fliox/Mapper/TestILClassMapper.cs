@@ -10,21 +10,19 @@ using NUnit.Framework;
 // using static NUnit.Framework.Assert;
 using static Friflo.Json.Tests.Common.Utils.SimpleAssert;
 
-#if !UNITY_5_3_OR_NEWER
-
 namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
 {
 
     public class TestILClassMapper : LeakTestsFixture
     {
-        readonly string boxedStr = $@"
+        static readonly string boxedStr = $@"
 {{
     ""bigInt""      : ""123"",
     ""dateTime""    : ""2021-01-14T09:59:40.101Z"",
     ""enumIL""      : ""two""
 }}";
         [Test]
-        public void ReadWriteBoxed() {
+        public static void ReadWriteBoxed() {
             string payloadTrimmed = string.Concat(boxedStr.Where(c => !char.IsWhiteSpace(c)));
             
             using (var typeStore   = new TypeStore(new StoreConfig(TypeAccess.IL)))
@@ -39,8 +37,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
                 AreEqual(payloadTrimmed, jsonResult);
             }
         }
-        
-        static readonly string structJson = $@"
+
+        private static readonly string StructJson = $@"
 {{
     ""structInt"": 200,
     ""child1"" : {{
@@ -54,11 +52,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
 }}
 ";
 
-        [Test] public void  WriteStructReflect()   { WriteStruct(TypeAccess.Reflection); }
-        [Test] public void  WriteStructIL()        { WriteStruct(TypeAccess.IL); }
+        [Test] public static void  WriteStructReflect()   { WriteStruct(TypeAccess.Reflection); }
+        [Test] public static void  WriteStructIL()        { WriteStruct(TypeAccess.IL); }
 
-        private void        WriteStruct(TypeAccess typeAccess) {
-            string payloadTrimmed = string.Concat(structJson.Where(c => !char.IsWhiteSpace(c)));
+        private static void        WriteStruct(TypeAccess typeAccess) {
+            string payloadTrimmed = string.Concat(StructJson.Where(c => !char.IsWhiteSpace(c)));
             
             using (var typeStore   = new TypeStore(new StoreConfig(typeAccess)))
             using (var writer      = new ObjectWriter(typeStore))
@@ -70,7 +68,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
             }
         }
         
-        private void AssertStructIL(ref StructIL structIL) {
+        private static void AssertStructIL(ref StructIL structIL) {
             AreEqual(200,   structIL.structInt);
             
             AreEqual(201,   structIL.child1.Value.val2);
@@ -80,14 +78,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
             AreEqual(202,   structIL.childClass2.val);
         }
         
-        [Test] public void  ReadStructReflect()   { ReadStruct(TypeAccess.Reflection); }
-        [Test] public void  ReadStructIL()        { ReadStruct(TypeAccess.IL); }
+        [Test] public static void  ReadStructReflect()   { ReadStruct(TypeAccess.Reflection); }
+        [Test] public static void  ReadStructIL()        { ReadStruct(TypeAccess.IL); }
         
-        private void        ReadStruct(TypeAccess typeAccess) {
+        private static void        ReadStruct(TypeAccess typeAccess) {
             using (var typeStore   = new TypeStore(new StoreConfig(typeAccess)))
             using (var reader      = new ObjectReader(typeStore) { ErrorHandler =  ObjectReader.NoThrow} )
             {
-                var result = reader.Read<StructIL>(structJson);
+                var result = reader.Read<StructIL>(StructJson);
                 if (reader.Error.ErrSet)
                     Fail(reader.Error.msg.ToString());
 
@@ -95,7 +93,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
             }
         }
 
-        readonly string payloadStr = $@"
+        private static readonly string PayloadStr = $@"
 {{
     ""enumIL1""          : ""three"",
     ""enumIL2""          : null,
@@ -128,7 +126,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
         ""val"": 42
     }},
     ""childNull"": null,
-    ""structIL"": {structJson},
+    ""structIL"": {StructJson},
     ""dbl"":   22.5,
     ""flt"":   33.5,
 
@@ -140,7 +138,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
     ""bln"":   true
 }}
 ";
-        private void AssertSampleIL(SampleIL sample) {
+        private static void AssertSampleIL(SampleIL sample) {
             // ReSharper disable PossibleInvalidOperationException
             AreEqual(null,  sample.enumIL2);
             AreEqual(false, sample.childStructNull1.HasValue);
@@ -184,11 +182,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
             AreEqual(112,   sample.childStruct2.val2);
         }
 
-        [Test] public void  WriteJsonReflect()   { WriteJson(TypeAccess.Reflection); }
-        [Test] public void  WriteJsonIL()        { WriteJson(TypeAccess.IL); }
+        [Test] public static void  WriteJsonReflect()   { WriteJson(TypeAccess.Reflection); }
+        [Test] public static void  WriteJsonIL()        { WriteJson(TypeAccess.IL); }
 
-        private void        WriteJson(TypeAccess typeAccess) {
-            string payloadTrimmed = string.Concat(payloadStr.Where(c => !char.IsWhiteSpace(c)));
+        private static  void        WriteJson(TypeAccess typeAccess) {
+            string payloadTrimmed = string.Concat(PayloadStr.Where(c => !char.IsWhiteSpace(c)));
             
             using (var typeStore   = new TypeStore(new StoreConfig(typeAccess)))
             using (var writer      = new ObjectWriter(typeStore))
@@ -200,14 +198,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
             }
         }
         
-        [Test] public void  ReadClassReflect()   { ReadClassIL(TypeAccess.Reflection); }
-        [Test] public void  ReadClassIL()        { ReadClassIL(TypeAccess.IL); }
+        [Test] public static  void  ReadClassReflect()   { ReadClassIL(TypeAccess.Reflection); }
+        [Test] public static  void  ReadClassIL()        { ReadClassIL(TypeAccess.IL); }
         
-        private void        ReadClassIL(TypeAccess typeAccess) {
+        private static  void        ReadClassIL(TypeAccess typeAccess) {
             using (var typeStore   = new TypeStore(new StoreConfig(typeAccess)))
             using (var reader      = new ObjectReader(typeStore) { ErrorHandler =  ObjectReader.NoThrow} )
             {
-                var result = reader.Read<SampleIL>(payloadStr);
+                var result = reader.Read<SampleIL>(PayloadStr);
                 if (reader.Error.ErrSet)
                     Fail(reader.Error.msg.ToString());
 
@@ -215,10 +213,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
             }
         }
         
-        [Test]  public void  NoAllocWriteClassReflect()   { NoAllocWriteClass(TypeAccess.Reflection); }
-                public void  NoAllocWriteClassIL()        { NoAllocWriteClass(TypeAccess.IL); }
+        [Test]  public static void  NoAllocWriteClassReflect()   { NoAllocWriteClass(TypeAccess.Reflection); }
+                public static void  NoAllocWriteClassIL()        { NoAllocWriteClass(TypeAccess.IL); }
         
-        private void        NoAllocWriteClass (TypeAccess typeAccess) {
+        private static void        NoAllocWriteClass (TypeAccess typeAccess) {
 
             var memLog      = new MemoryLogger(100, 100, MemoryLog.Enabled);
 
@@ -237,15 +235,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
                 memLog.AssertNoAllocations();
         }
         
-        [Test]  public void  NoAllocReadClassReflect()   { NoAllocReadClass(TypeAccess.Reflection); }
-                public void  NoAllocReadClassIL()        { NoAllocReadClass(TypeAccess.IL); }
+        [Test]  public static  void  NoAllocReadClassReflect()   { NoAllocReadClass(TypeAccess.Reflection); }
+                public static  void  NoAllocReadClassIL()        { NoAllocReadClass(TypeAccess.IL); }
         
-        private void        NoAllocReadClass (TypeAccess typeAccess) {
+        private static  void        NoAllocReadClass (TypeAccess typeAccess) {
             var memLog      = new MemoryLogger(100, 100, MemoryLog.Enabled);
 
             using (var typeStore   = new TypeStore(new StoreConfig(typeAccess)))
             using (var reader      = new ObjectReader(typeStore) { ErrorHandler =  ObjectReader.NoThrow} )
-            using (var json        = new Bytes(payloadStr))
+            using (var json        = new Bytes(PayloadStr))
             {
                 var obj = new SampleIL();
                 obj.Init();
@@ -262,10 +260,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
                 memLog.AssertNoAllocations();
         }
         
-        [Test] public void  ReadWriteStructReflect()   { ReadWriteStruct(TypeAccess.Reflection); }
-        [Test] public void  ReadWriteStructIL()        { ReadWriteStruct(TypeAccess.IL); }
+        [Test] public static void  ReadWriteStructReflect()   { ReadWriteStruct(TypeAccess.Reflection); }
+        [Test] public static void  ReadWriteStructIL()        { ReadWriteStruct(TypeAccess.IL); }
         
-        private void        ReadWriteStruct (TypeAccess typeAccess) {
+        private static void        ReadWriteStruct (TypeAccess typeAccess) {
             using (var typeStore   = new TypeStore(new StoreConfig(typeAccess)))
             using (var reader      = new ObjectReader(typeStore) { ErrorHandler =  ObjectReader.NoThrow} )
             using (var writer      = new ObjectWriter(typeStore))
@@ -280,10 +278,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
             }
         }
         
-        [Test]  public void NoAllocListClassReflect()   { NoAllocListClass(TypeAccess.Reflection); }
-                public void NoAllocListClassIL()        { NoAllocListClass(TypeAccess.IL); }
+        [Test]  public static void NoAllocListClassReflect()   { NoAllocListClass(TypeAccess.Reflection); }
+                public static void NoAllocListClassIL()        { NoAllocListClass(TypeAccess.IL); }
         
-        private void        NoAllocListClass (TypeAccess typeAccess) {
+        private static void        NoAllocListClass (TypeAccess typeAccess) {
             var memLog      = new MemoryLogger(100, 100, MemoryLog.Enabled);
 
             using (var typeStore   = new TypeStore(new StoreConfig(typeAccess)))
@@ -307,10 +305,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
                 memLog.AssertNoAllocations();
         }
         
-        [Test]  public void NoAllocListStructReflect()   { NoAllocListStruct(TypeAccess.Reflection); }
-                public void NoAllocListStructIL()        { NoAllocListStruct(TypeAccess.IL); } 
+        [Test]  public static void NoAllocListStructReflect()   { NoAllocListStruct(TypeAccess.Reflection); }
+                public static void NoAllocListStructIL()        { NoAllocListStruct(TypeAccess.IL); } 
         
-        private void        NoAllocListStruct (TypeAccess typeAccess) {
+        private static void        NoAllocListStruct (TypeAccess typeAccess) {
             var memLog      = new MemoryLogger(100, 100, MemoryLog.Enabled);
 
             using (var typeStore   = new TypeStore(new StoreConfig(typeAccess)))
@@ -334,10 +332,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
                 memLog.AssertNoAllocations();
         }
 
-        [Test]  public void NoAllocArrayClassReflect()   { NoAllocArrayClass(TypeAccess.Reflection); }
-                public void NoAllocArrayClassIL()        { NoAllocArrayClass(TypeAccess.IL); } 
+        [Test]  public static void NoAllocArrayClassReflect()   { NoAllocArrayClass(TypeAccess.Reflection); }
+                public static void NoAllocArrayClassIL()        { NoAllocArrayClass(TypeAccess.IL); } 
         
-        private void        NoAllocArrayClass (TypeAccess typeAccess) {
+        private static void        NoAllocArrayClass (TypeAccess typeAccess) {
             var memLog      = new MemoryLogger(100, 100, MemoryLog.Enabled);
 
             using (var typeStore   = new TypeStore(new StoreConfig(typeAccess)))
@@ -361,10 +359,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
                 memLog.AssertNoAllocations();
         }
         
-        [Test]  public void NoAllocArrayStructReflect()   { NoAllocArrayStruct(TypeAccess.Reflection); }
-                public void NoAllocArrayStructIL()        { NoAllocArrayStruct(TypeAccess.IL); }
+        [Test]  public static void NoAllocArrayStructReflect()   { NoAllocArrayStruct(TypeAccess.Reflection); }
+                public static void NoAllocArrayStructIL()        { NoAllocArrayStruct(TypeAccess.IL); }
         
-        private void        NoAllocArrayStruct (TypeAccess typeAccess) {
+        private static void        NoAllocArrayStruct (TypeAccess typeAccess) {
             var memLog      = new MemoryLogger(100, 100, MemoryLog.Enabled);
 
             using (var typeStore   = new TypeStore(new StoreConfig(typeAccess)))
@@ -390,8 +388,3 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
 
     }
 }
-
-#endif
-
-
-
