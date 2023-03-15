@@ -75,7 +75,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// <summary> return the entities upserted in a container </summary>
         public              List<Upsert<TKey,T>>    Upserts         => GetUpserts();
         /// <summary> return the keys of removed container entities </summary>
-        public              List<Delete<TKey>>         Deletes { get; } = new List<Delete<TKey>>();
+        public              List<Delete<TKey>>      Deletes { get; } = new List<Delete<TKey>>();
         /// <summary> return patches applied to container entities </summary>
         public              List<Patch<TKey>>       Patches { get; } = new List<Patch<TKey>>();
         
