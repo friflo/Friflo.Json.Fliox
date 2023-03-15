@@ -2,22 +2,31 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox;
 using Friflo.Json.Fliox.Utils;
-using NUnit.Framework;
+using Friflo.Json.Tests.Common.Utils;
+using UnityEngine.TestTools;
 using static NUnit.Framework.Assert;
 
+#if UNITY_5_3_OR_NEWER
+    using UnitTest.Dummy;
+#else
+    using NUnit.Framework;
+#endif
 
 namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Utils
 {
-    public class TestMessageBufferAsync
+    public static class TestMessageBufferAsync
     {
-        [Test]
-        public async Task TestMessageBufferQueueAsync() {
+        [UnityTest] public static IEnumerator  TestMessageBufferQueueAsync_Unity() { yield return RunAsync.Await(MessageBufferQueueAsync()); }
+        [Test]      public static async Task   TestMessageBufferQueueAsync() { await MessageBufferQueueAsync(); }
+        
+        private static async Task MessageBufferQueueAsync() {
             var queue = new MessageBufferQueueAsync<VoidMeta>(5);
             
             var msg1 = new JsonValue("msg-1");
@@ -44,8 +53,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Utils
             AreEqual(MessageBufferEvent.NewMessage, ev);
         }
         
-        [Test]
-        public async Task TestMessageBufferQueueAsyncClose() {
+        [UnityTest] public static IEnumerator  TestMessageBufferQueueAsyncClose_Unity() { yield return RunAsync.Await(MessageBufferQueueAsyncClose()); }
+        [Test]      public static async Task   TestMessageBufferQueueAsyncClose() { await MessageBufferQueueAsyncClose(); }
+        
+        private static async Task MessageBufferQueueAsyncClose() {
             var queue = new MessageBufferQueueAsync<VoidMeta>(2);
             
             var msg1 = new JsonValue("msg-1");
@@ -60,9 +71,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Utils
             AreEqual("msg-1", messages[0].AsString());
             AreEqual(MessageBufferEvent.Closed, ev);
         }
-        
-        [Test]
-        public async Task TestMessageBufferQueueAsyncWait() {
+
+        [UnityTest] public static IEnumerator  TestMessageBufferQueueAsyncWait_Unity() { yield return RunAsync.Await(MessageBufferQueueAsyncWait()); }
+        [Test]      public static async Task   TestMessageBufferQueueAsyncWait() { await MessageBufferQueueAsyncWait(); }
+
+        private static async Task MessageBufferQueueAsyncWait() {
             var queue = new MessageBufferQueueAsync<VoidMeta>(2);
             
             var messages = new List<JsonValue>();
@@ -82,8 +95,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Utils
             AreEqual(MessageBufferEvent.NewMessage, ev);
         }
         
-        [Test]
-        public async Task TestMessageBufferAsyncConcurrent() {
+        [UnityTest] public static IEnumerator  TestMessageBufferAsyncConcurrent_Unity() { yield return RunAsync.Await(MessageBufferAsyncConcurrent()); }
+        [Test]      public static async Task   TestMessageBufferAsyncConcurrent() { await MessageBufferAsyncConcurrent(); }
+        
+        private static async Task MessageBufferAsyncConcurrent() {
             var queue       = new MessageBufferQueueAsync<VoidMeta>(2);
             var duration    = 10;
             var bulkSize    = 1000;

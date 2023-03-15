@@ -33,6 +33,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
     
     public static class TestServiceRequestQueue
     {
+#if !UNITY_5_3_OR_NEWER
         [Test]
         public static async Task TestServiceRequestQueueRun() {
             var service     = new QueueingService();
@@ -54,6 +55,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
                 }
             }
         }
+#endif
         
         [Test]
         public static void TestServiceRequestQueueThreaded() {

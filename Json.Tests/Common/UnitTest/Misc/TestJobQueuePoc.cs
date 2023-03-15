@@ -2,10 +2,19 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections;
 using System.Collections.Concurrent;
 using System.Threading;
 using System.Threading.Tasks;
-using NUnit.Framework;
+using Friflo.Json.Tests.Common.Utils;
+using UnityEngine.TestTools;
+using static NUnit.Framework.Assert;
+
+#if UNITY_5_3_OR_NEWER
+    using UnitTest.Dummy;
+#else
+    using NUnit.Framework;
+#endif
 
 namespace Friflo.Json.Tests.Common.UnitTest.Misc
 {
@@ -13,8 +22,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc
     {
         private static readonly ConcurrentQueue<Job> Queue = new ConcurrentQueue<Job>();
 
-        [Test]
-        public static async Task Test() {
+        [UnityTest] public static IEnumerator  TestConcurrentQueueAsync_Unity() { yield return RunAsync.Await(ConcurrentQueueAsync()); }
+        [Test]      public static async Task   TestConcurrentQueueAsync() { await ConcurrentQueueAsync(); }
+
+        private static async Task ConcurrentQueueAsync() {
             
             var thread = new Thread(() =>
             {
