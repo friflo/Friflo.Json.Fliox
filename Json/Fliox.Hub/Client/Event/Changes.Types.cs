@@ -32,8 +32,8 @@ namespace Friflo.Json.Fliox.Hub.Client
     }
     
     public readonly struct Patch<TKey> {
-        public  readonly    JsonValue   patch;
         public  readonly    TKey        key;
+        public  readonly    JsonValue   patch;
         public  override    string      ToString() => key.ToString();
         
         internal Patch(TKey key, JsonValue patch) {
