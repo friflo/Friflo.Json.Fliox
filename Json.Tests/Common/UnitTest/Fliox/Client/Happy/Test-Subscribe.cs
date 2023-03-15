@@ -268,12 +268,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             switch (EventCount) {
                 case 2:
                     AreEqual("creates: 0, upserts: 2, deletes: 0, merges: 0", articleChanges.ChangeInfo.ToString());
-                    var ipad = articleChanges.Upserts.Find(e => e.id == "article-ipad");
-                    AreEqual("iPad Pro", ipad.name);
+                    var upsert = articleChanges.Upserts.Find(upsert => upsert.key == "article-ipad");
+                    AreEqual("iPad Pro", upsert.entity.name);
                     break;
                 case 5:
                     AreEqual("creates: 0, upserts: 0, deletes: 1, merges: 4", articleChanges.ChangeInfo.ToString());
-                    IsTrue(articleChanges.Deletes.Contains("article-delete"));
+                    NotNull(articleChanges.Deletes.Find(delete => delete.key == "article-delete"));
                     Patch<string> articlePatch = articleChanges.Patches.Find(p => p.key == "article-1");
                     AreEqual("article-1",               articlePatch.ToString());
                     var articleMerge =   articlePatch.patch;
@@ -497,7 +497,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 store.articles.SubscribeChangesFilter(Change.upsert, a => a.name == "Name1", (changes, context) => {
                     var upserts = changes.Upserts; 
                     AreEqual(1, upserts.Count);
-                    AreEqual("a-1", upserts[0].id);
+                    AreEqual("a-1", upserts[0].key);
                     foundArticle1 = true;
                 });
                 store.customers.SubscribeChangesFilter(Change.create, c => c.name == "Json", (changes, context) => {
@@ -508,7 +508,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 store.employees.SubscribeChangesByFilter(Change.upsert, filterJohn, (changes, context) => {
                     var upserts = changes.Upserts;
                     AreEqual(1, upserts.Count);
-                    AreEqual("e-2", upserts[0].id);
+                    AreEqual("e-2", upserts[0].key);
                     foundPaul = true;
                 });
                 await store.SyncTasks();

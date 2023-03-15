@@ -48,8 +48,8 @@ namespace DemoTest {
                 foreach (var entity in changes.Patches) {
                     Console.WriteLine($"EventSeq: {context.EventSeq} - merge article: {entity.key}, patch: {entity.patch}");
                 }
-                foreach (var entity in changes.Upserts) {
-                    Console.WriteLine($"EventSeq: {context.EventSeq} - upsert article: {entity.id}, name: {entity.name}");
+                foreach (var upsert in changes.Upserts) {
+                    Console.WriteLine($"EventSeq: {context.EventSeq} - upsert article: {upsert.key}, name: {upsert.entity.name}");
                 }
                 foreach (var key in changes.Deletes) {
                     Console.WriteLine($"EventSeq: {context.EventSeq} - delete article: {key}");

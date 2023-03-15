@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.Text;
 using Friflo.Json.Fliox.Hub.Client.Internal;
 using Friflo.Json.Fliox.Hub.Client.Internal.Key;
+using Friflo.Json.Fliox.Hub.Client.Internal.KeyEntity;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Mapper;
 using static System.Diagnostics.DebuggerBrowsableState;
@@ -70,24 +71,26 @@ namespace Friflo.Json.Fliox.Hub.Client
     public sealed class Changes<TKey, T> : Changes where T : class
     {
         /// <summary> return the entities created in a container </summary>
-        public              List<T>             Creates         => GetCreates();
+        public              List<Create<TKey,T>>    Creates         => GetCreates();
         /// <summary> return the entities upserted in a container </summary>
-        public              List<T>             Upserts         => GetUpserts();
+        public              List<Upsert<TKey,T>>    Upserts         => GetUpserts();
         /// <summary> return the keys of removed container entities </summary>
-        public              List<TKey>          Deletes { get; } = new List<TKey>();
+        public              List<Delete<TKey>>         Deletes { get; } = new List<Delete<TKey>>();
         /// <summary> return patches applied to container entities </summary>
-        public              List<Patch<TKey>>   Patches { get; } = new List<Patch<TKey>>();
+        public              List<Patch<TKey>>       Patches { get; } = new List<Patch<TKey>>();
         
         private   readonly  List<ApplyInfo<TKey,T>> applyInfos  = new List<ApplyInfo<TKey,T>>();
 
-        public    override  string              ToString()      => FormatToString();       
-        public    override  string              Container       { get; }
-        public    override  ShortString         ContainerShort  { get; }
+        public    override  string                  ToString()      => FormatToString();       
+        public    override  string                  Container       { get; }
+        public    override  ShortString             ContainerShort  { get; }
         
-        [DebuggerBrowsable(Never)] private          List<T>         creates;
-        [DebuggerBrowsable(Never)] private          List<T>         upserts;
-        [DebuggerBrowsable(Never)] private readonly ObjectMapper    objectMapper;
-        [DebuggerBrowsable(Never)] private readonly string          keyName;
+        [DebuggerBrowsable(Never)] private          List<Create<TKey,T>>    creates;
+        [DebuggerBrowsable(Never)] private          List<Upsert<TKey,T>>    upserts;
+        [DebuggerBrowsable(Never)] private readonly ObjectMapper            objectMapper;
+        [DebuggerBrowsable(Never)] private readonly string                  keyName;
+        
+        private static  readonly    EntityKeyT<TKey, T> EntityKeyTMap   = EntityKey.GetEntityKeyT<TKey, T>();
 
         
         private static readonly KeyConverter<TKey>  KeyConvert = KeyConverter.GetConverter<TKey>();
@@ -98,6 +101,17 @@ namespace Friflo.Json.Fliox.Hub.Client
             Container       = entitySet.name;
             ContainerShort  = entitySet.nameShort;
             objectMapper    = mapper;
+        }
+        
+        /// <summary>
+        /// add the keys of all <see cref="Creates"/>, <see cref="Upserts"/>, <see cref="Deletes"/> and <see cref="Patches"/>
+        /// to the passed <paramref name="keys"/> collection. 
+        /// </summary>
+        public void GetKeys(ICollection<TKey> keys) {
+            foreach (var create in Creates) { keys.Add(create.key); }
+            foreach (var upsert in Upserts) { keys.Add(upsert.key); }
+            foreach (var delete in Deletes) { keys.Add(delete.key); }    
+            foreach (var patch  in Patches) { keys.Add(patch.key);  }
         }
         
         private string FormatToString() {
@@ -121,28 +135,30 @@ namespace Friflo.Json.Fliox.Hub.Client
             changeInfo.Clear();
         }
         
-        private List<T> GetCreates() {
+        private List<Create<TKey,T>> GetCreates() {
             if (creates != null)
                 return creates;
             // create entities on demand
             var entities = rawCreates;
-            creates = new List<T>(entities.Count); // list could be reused
+            creates = new List<Create<TKey,T>>(entities.Count); // list could be reused
             foreach (var create in entities) {
-                var entity = objectMapper.Read<T>(create.value);
-                creates.Add(entity);
+                var entity  = objectMapper.Read<T>(create.value);
+                var key     = EntityKeyTMap.GetKey(entity);
+                creates.Add(new Create<TKey, T>(key, entity));
             }
             return creates;
         }
         
-        private List<T> GetUpserts() {
+        private List<Upsert<TKey,T>> GetUpserts() {
             if (upserts != null)
                 return upserts;
             // create entities on demand
             var entities = rawUpserts;
-            upserts = new List<T>(entities.Count); // list could be reused
+            upserts = new List<Upsert<TKey,T>>(entities.Count); // list could be reused
             foreach (var upsert in entities) {
                 var entity = objectMapper.Read<T>(upsert.value);
-                upserts.Add(entity);
+                var key     = EntityKeyTMap.GetKey(entity);
+                upserts.Add(new Upsert<TKey, T>(key, entity));
             }
             return upserts;
         }
@@ -150,7 +166,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         internal override void AddDeletes  (List<JsonKey> ids) {
             foreach (var id in ids) {
                 TKey    key      = KeyConvert.IdToKey(id);
-                Deletes.Add(key);
+                Deletes.Add(new Delete<TKey>(key));
             }
             changeInfo.deletes += ids.Count;
         }
@@ -208,18 +224,6 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
     }
     
-    public readonly struct Patch<TKey> {
-        public    readonly  JsonValue   patch;
-        public    readonly  TKey        key;
-        
-        public  override    string      ToString() => key.ToString();
-        
-        public Patch(TKey key, JsonValue patch) {
-            this.key        = key;
-            this.patch      = patch;
-        }
-    }
-
     internal abstract class ChangeCallback {
         internal abstract void InvokeCallback(Changes entityChanges, EventContext context);
     }
@@ -235,41 +239,6 @@ namespace Friflo.Json.Fliox.Hub.Client
         internal override void InvokeCallback(Changes entityChanges, EventContext context) {
             var changes = (Changes<TKey,T>)entityChanges;
             handler(changes, context);
-        }
-    }
-    
-    [Flags]
-    public enum ApplyInfoType {
-        EntityCreated   = 0x01,
-        EntityUpdated   = 0x02,
-        EntityDeleted   = 0x04,
-        EntityPatched   = 0x08,
-        ParseError      = 0x80,
-    }
-    
-    public readonly struct ApplyInfo<TKey, T> where T : class {
-        public readonly ApplyInfoType   type;
-        public readonly TKey            key;
-        public readonly T               entity;
-        public readonly JsonValue       rawEntity;
-
-        public override string          ToString() => $"{type} key: {key}"; 
-
-        internal ApplyInfo(ApplyInfoType type, TKey key, T entity, in JsonValue rawEntity) {
-            this.type       = type;
-            this.key        = key;
-            this.entity     = entity;
-            this.rawEntity  = rawEntity;
-        }
-    }
-
-    public readonly struct ApplyResult<TKey, T> where T : class {
-        public readonly List<ApplyInfo<TKey,T>> applyInfos;
-        
-        public override string  ToString() => applyInfos != null ? $"Count: {applyInfos.Count}" : "error";
-        
-        internal ApplyResult(List<ApplyInfo<TKey,T>> applyInfos) {
-            this.applyInfos = applyInfos;
         }
     }
 }

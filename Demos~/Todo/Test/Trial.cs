@@ -38,7 +38,8 @@ namespace TodoTest {
             var hub         = CreateHub("ws");
             var client      = new TodoClient(hub) { UserId = "admin", Token = "admin" };
             client.jobs.SubscribeChanges(Change.All, (changes, context) => {
-                foreach (var job in changes.Upserts) {
+                foreach (var upsert in changes.Upserts) {
+                    var job = upsert.entity;
                     Console.WriteLine($"EventSeq: {context.EventSeq} - upsert job: {job.id}, name: {job.title}");
                 }
                 foreach (var key in changes.Deletes) {

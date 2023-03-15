@@ -150,7 +150,7 @@ namespace DemoTest {
             var subClient       = new DemoClient(hub) { UserId = "admin", Token = "admin", ClientId = "sub-1" };
             var createdArticles = new List<long[]>();
             subClient.articles.SubscribeChanges(Change.All, (changes, context) => {
-                var created = changes.Creates.Select(o => o.id).ToArray();
+                var created = changes.Creates.Select(create => create.key).ToArray();
                 createdArticles.Add(created);
             });
             await subClient.SyncTasks();

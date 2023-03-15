@@ -38,28 +38,19 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
         // ReSharper disable once UnusedParameter.Local
         private void CredentialChange(Changes<ShortString, UserCredential> changes, EventContext context) {
             var changedUsers = new HashSet<ShortString>(ShortString.Equality);
-            foreach (var entity in changes.Upserts) { changedUsers.Add(entity.id); }
-            foreach (var id     in changes.Deletes) { changedUsers.Add(id); }
-            foreach (var patch  in changes.Patches) { changedUsers.Add(patch.key); }
-            
+            changes.GetKeys(changedUsers);
             userAuthenticator.InvalidateUsers(changedUsers);
         }
         
         private void PermissionChange(Changes<ShortString, UserPermission> changes, EventContext context) {
             var changedUsers = new HashSet<ShortString>(ShortString.Equality);
-            foreach (var entity in changes.Upserts) { changedUsers.Add(entity.id); }
-            foreach (var id     in changes.Deletes) { changedUsers.Add(id); }
-            foreach (var patch  in changes.Patches) { changedUsers.Add(patch.key); }
-                
+            changes.GetKeys(changedUsers);
             userAuthenticator.InvalidateUsers(changedUsers);
         }
         
         private void RoleChange(Changes<string, Role> changes, EventContext context) {
             var roles    = new List<string>();
-            
-            foreach (var entity in changes.Upserts) { roles.Add(entity.id); }
-            foreach (var id     in changes.Deletes) { roles.Add(id); }
-            foreach (var patch  in changes.Patches) { roles.Add(patch.key); }
+            changes.GetKeys(roles);
             
             var changedRoles    = roles.ToArray();
             var affectedUsers   = new HashSet<ShortString>(ShortString.Equality);
@@ -74,15 +65,16 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
         private void TargetChange(Changes<ShortString, UserTarget> changes, EventContext context) {
             var dispatcher  = userAuthenticator.userHub.EventDispatcher;
             var users       = userAuthenticator.users;
-            foreach (var userTarget in changes.Upserts) {
+            foreach (var upsert in changes.Upserts) {
+                var userTarget = upsert.entity;
                 dispatcher.UpdateSubUserGroups(userTarget.id, userTarget.groups);
                 if (!users.TryGetValue(userTarget.id, out User user))
                     continue;
                 user.SetGroups(userTarget.groups);
             }
-            foreach (var id in changes.Deletes) {
-                dispatcher.UpdateSubUserGroups(id, null);
-                if (!users.TryGetValue(id, out User user))
+            foreach (var delete in changes.Deletes) {
+                dispatcher.UpdateSubUserGroups(delete.key, null);
+                if (!users.TryGetValue(delete.key, out User user))
                     continue;
                 user.SetGroups(null);
             }
