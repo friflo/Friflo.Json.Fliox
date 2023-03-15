@@ -40,7 +40,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc
         public void TryParse() {
             double.TryParse("123", NumberStyles.Float, NumberFormatInfo.InvariantInfo, out double result2);
             // var span = "123".AsSpan();
-#if !UNITY_5_3_OR_NEWER
             {
                 char[] charBuf = new char[30];
                 charBuf[0] = '1';
@@ -57,7 +56,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc
                 MathExt.TryParseDouble(span, NumberStyles.Float, NumberFormatInfo.InvariantInfo, out double result);
                 AreEqual(12.5d, result);
             }
-#endif
         }
 
         [Test]

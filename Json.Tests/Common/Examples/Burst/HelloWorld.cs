@@ -4,8 +4,6 @@ using NUnit.Framework;
 
 namespace Friflo.Json.Tests.Common.Examples.Burst
 {
-#if !UNITY_5_3_OR_NEWER  // no clean up of native containers for Unity/JSON_BURST
-    
     public class TestHelloWorld
     {
         [Test]
@@ -33,7 +31,5 @@ namespace Friflo.Json.Tests.Common.Examples.Burst
             Console.WriteLine($"Output: {s.json.AsString()}");
             // Output: {"say":"Hello","to":"World 🌎"}
         }
-
     }
-#endif
 }

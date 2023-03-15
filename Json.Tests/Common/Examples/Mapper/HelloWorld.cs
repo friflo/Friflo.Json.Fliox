@@ -4,8 +4,6 @@ using NUnit.Framework;
 
 namespace Friflo.Json.Tests.Common.Examples.Mapper
 {
-#if !UNITY_5_3_OR_NEWER  // no clean up of native containers for Unity/JSON_BURST
-    
     public class TestHelloWorld
     {
         class Message {
@@ -30,5 +28,4 @@ namespace Friflo.Json.Tests.Common.Examples.Mapper
         }
 
     }
-#endif
 }
