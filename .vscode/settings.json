@@ -17,7 +17,7 @@
         // root files / folders
         "package-lock.json": true,
         "node_modules": true,
-        "Directory.Build.props": true,
+        "Directory.Build.props": false,
         "BannedSymbols.txt": true,
         "Friflo.Json.asmdef": true,
         "csc.rsp": true,
