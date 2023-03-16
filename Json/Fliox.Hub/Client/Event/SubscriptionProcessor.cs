@@ -152,6 +152,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             var entityChanges = GetChanges(set);
             AddChanges(entityChanges);
             entityChanges.AddDeletes(ids);
+            entityChanges.changeInfo.deletes += ids.Count;
         }
         
         private void ProcessPatch(FlioxClient client, MergeEntities patchEntities) {
@@ -166,6 +167,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             var entityChanges = GetChanges(set);
             AddChanges(entityChanges);
             entityChanges.AddPatches(patches, client);
+            entityChanges.changeInfo.merges += patches.Count;
         }
         
         private void ProcessMessage(SyncMessageTask task) {

@@ -11,6 +11,7 @@ using Friflo.Json.Fliox.Hub.Client.Internal.KeyEntity;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Mapper;
 using static System.Diagnostics.DebuggerBrowsableState;
+using Browse = System.Diagnostics.DebuggerBrowsableAttribute;
 
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.Client
@@ -32,21 +33,17 @@ namespace Friflo.Json.Fliox.Hub.Client
     public abstract class Changes
     {
         /// <summary> total number of container changes </summary>
-        public                                          int                 Count       => changeInfo.Count;
+                        public              int                 Count       => changeInfo.Count;
         /// <summary> number of changes per mutation type: creates, upserts, deletes and patches </summary>
-        public                                          ChangeInfo          ChangeInfo  => changeInfo;
+                        public              ChangeInfo          ChangeInfo  => changeInfo;
         /// <summary> name of the container the changes are referring to </summary>
-        public    abstract                              string              Container       { get; }
-        public    abstract                              ShortString         ContainerShort  { get; }
-        /// <summary> raw JSON values of created container entities </summary>
-        public                                          List<JsonEntity>    RawCreates  => rawCreates;
-        /// <summary> raw JSON values of upserted container entities </summary>
-        public                                          List<JsonEntity>    RawUpserts  => rawUpserts;
-        
-        [DebuggerBrowsable(Never)]  internal            bool                added;
-        [DebuggerBrowsable(Never)]  internal            ChangeInfo          changeInfo;
-        [DebuggerBrowsable(Never)]  internal  readonly  List<JsonEntity>    rawCreates  = new List<JsonEntity>();
-        [DebuggerBrowsable(Never)]  internal  readonly  List<JsonEntity>    rawUpserts  = new List<JsonEntity>();
+                        public    abstract  string              Container       { get; }
+        // --- internal
+        [Browse(Never)] public    abstract  ShortString         ContainerShort  { get; }
+        [Browse(Never)] internal            bool                added;
+        [Browse(Never)] internal            ChangeInfo          changeInfo;
+        [Browse(Never)] internal  readonly  List<JsonEntity>    rawCreates  = new List<JsonEntity>();
+        [Browse(Never)] internal  readonly  List<JsonEntity>    rawUpserts  = new List<JsonEntity>();
 
         internal  abstract  void        Clear       ();
         internal  abstract  void        AddDeletes  (List<JsonKey> ids);
@@ -71,24 +68,24 @@ namespace Friflo.Json.Fliox.Hub.Client
     public sealed class Changes<TKey, T> : Changes where T : class
     {
         /// <summary> return the entities created in a container </summary>
-        public              List<Create<TKey,T>>    Creates         => GetCreates();
+                        public              List<Create<TKey,T>>    Creates         => GetCreates();
         /// <summary> return the entities upserted in a container </summary>
-        public              List<Upsert<TKey,T>>    Upserts         => GetUpserts();
+                        public              List<Upsert<TKey,T>>    Upserts         => GetUpserts();
         /// <summary> return the keys of removed container entities </summary>
-        public              List<Delete<TKey>>      Deletes { get; } = new List<Delete<TKey>>();
+                        public              List<Delete<TKey>>      Deletes { get; } = new List<Delete<TKey>>();
         /// <summary> return patches applied to container entities </summary>
-        public              List<Patch<TKey>>       Patches { get; } = new List<Patch<TKey>>();
+                        public              List<Patch<TKey>>       Patches { get; } = new List<Patch<TKey>>();
         
-        private   readonly  List<ApplyInfo<TKey,T>> applyInfos  = new List<ApplyInfo<TKey,T>>();
+                        private readonly    List<ApplyInfo<TKey,T>> applyInfos  = new List<ApplyInfo<TKey,T>>();
 
-        public    override  string                  ToString()      => FormatToString();       
-        public    override  string                  Container       { get; }
-        public    override  ShortString             ContainerShort  { get; }
+                        public  override    string                  ToString()      => FormatToString();       
+                        public  override    string                  Container       { get; }
+        [Browse(Never)] public  override    ShortString             ContainerShort  { get; }
         
-        [DebuggerBrowsable(Never)] private          List<Create<TKey,T>>    creates;
-        [DebuggerBrowsable(Never)] private          List<Upsert<TKey,T>>    upserts;
-        [DebuggerBrowsable(Never)] private readonly ObjectMapper            objectMapper;
-        [DebuggerBrowsable(Never)] private readonly string                  keyName;
+        [Browse(Never)] private             List<Create<TKey,T>>    creates;
+        [Browse(Never)] private             List<Upsert<TKey,T>>    upserts;
+        [Browse(Never)] private readonly    ObjectMapper            objectMapper;
+        [Browse(Never)] private readonly    string                  keyName;
         
         private static  readonly    EntityKeyT<TKey, T> EntityKeyTMap   = EntityKey.GetEntityKeyT<TKey, T>();
 
@@ -169,7 +166,6 @@ namespace Friflo.Json.Fliox.Hub.Client
                 TKey    key      = KeyConvert.IdToKey(id);
                 deletes.Add(new Delete<TKey>(key));
             }
-            changeInfo.deletes += ids.Count;
         }
         
         internal override void AddPatches(List<JsonEntity> entityPatches, FlioxClient client) {
@@ -181,7 +177,6 @@ namespace Friflo.Json.Fliox.Hub.Client
                 var     patch       = new Patch<TKey>(key, entityPatch.value);
                 patches.Add(patch);
             }
-            changeInfo.merges += entityPatches.Count;
         }
         
         internal override void ApplyChangesToInternal  (EntitySet entitySet) {
