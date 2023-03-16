@@ -58,10 +58,12 @@ namespace Friflo.Json.Fliox.Hub.Client
     {
         public  readonly    List<JsonEntity>    creates;
         public  readonly    List<JsonEntity>    upserts;
+        public  readonly    List<JsonKey>       deletes;
         
         internal RawChanges (object _) {
-            creates  = new List<JsonEntity>();
-            upserts  = new List<JsonEntity>();
+            creates = new List<JsonEntity>();
+            upserts = new List<JsonEntity>();
+            deletes = new List<JsonKey>();
         }
     }
     

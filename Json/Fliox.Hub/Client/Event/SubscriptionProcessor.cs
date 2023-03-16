@@ -151,7 +151,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             // --- update changes
             var entityChanges = GetChanges(set);
             AddChanges(entityChanges);
-            entityChanges.AddDeletes(ids);
+            entityChanges.raw.deletes.AddRange(ids);
             entityChanges.changeInfo.deletes += ids.Count;
         }
         

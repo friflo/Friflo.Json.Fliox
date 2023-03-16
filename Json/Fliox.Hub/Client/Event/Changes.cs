@@ -45,7 +45,6 @@ namespace Friflo.Json.Fliox.Hub.Client
         [Browse(Never)] internal            ChangeInfo          changeInfo;
 
         internal  abstract  void        Clear       ();
-        internal  abstract  void        AddDeletes  (List<JsonKey> ids);
         internal  abstract  void        AddPatches  (List<JsonEntity> patches, FlioxClient client);
         internal  abstract  void        ApplyChangesToInternal  (EntitySet entitySet);
         
@@ -75,7 +74,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// <summary> return the entities upserted in a container </summary>
                         public              List<Upsert<TKey,T>>    Upserts         => GetUpserts();
         /// <summary> return the keys of removed container entities </summary>
-                        public              List<Delete<TKey>>      Deletes { get; } = new List<Delete<TKey>>();
+                        public              List<Delete<TKey>>      Deletes         => GetDeletes();
         /// <summary> return patches applied to container entities </summary>
                         public              List<Patch<TKey>>       Patches { get; } = new List<Patch<TKey>>();
         
@@ -87,6 +86,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         
         [Browse(Never)] private             List<Create<TKey,T>>    creates;
         [Browse(Never)] private             List<Upsert<TKey,T>>    upserts;
+        [Browse(Never)] private             List<Delete<TKey>>      deletes;
         [Browse(Never)] private readonly    ObjectMapper            objectMapper;
         [Browse(Never)] private readonly    string                  keyName;
         
@@ -126,11 +126,12 @@ namespace Friflo.Json.Fliox.Hub.Client
             added   = false;
             creates = null;
             upserts = null;
-            Deletes.Clear();
+            deletes = null;
             Patches.Clear();
             
             raw.creates.Clear();
             raw.upserts.Clear();
+            raw.deletes.Clear();
             //
             changeInfo.Clear();
         }
@@ -163,12 +164,16 @@ namespace Friflo.Json.Fliox.Hub.Client
             return upserts;
         }
 
-        internal override void AddDeletes  (List<JsonKey> ids) {
-            var deletes = Deletes;
+        private List<Delete<TKey>> GetDeletes  () {
+            if (deletes != null)
+                return deletes;
+            var ids = raw.deletes;
+            deletes = new List<Delete<TKey>>(ids.Count);
             foreach (var id in ids) {
                 TKey    key      = KeyConvert.IdToKey(id);
                 deletes.Add(new Delete<TKey>(key));
             }
+            return deletes;
         }
         
         internal override void AddPatches(List<JsonEntity> entityPatches, FlioxClient client) {
