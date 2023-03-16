@@ -24,8 +24,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// <summary> contain only <see cref="Changes"/> where <see cref="Changes.Count"/> > 0 </summary>
         internal readonly   List<Changes>                   contextChanges  = new List<Changes>();
         internal readonly   List<Message>                   messages        = new List<Message>();
-        private             ObjectMapper                    objectMapper;
-        private  readonly   EntityProcessor                 entityProcessor;
+        internal readonly   SubscriptionIntern              intern;
         internal            int                             EventCount { get; private set ; }
         private  readonly   List<MessageCallback>           tempCallbackHandlers    = new List<MessageCallback>();
         private  readonly   List<MessageSubscriber>         tempSubscriptionsPrefix = new List<MessageSubscriber>();
@@ -34,11 +33,11 @@ namespace Friflo.Json.Fliox.Hub.Client
         
         public SubscriptionProcessor() {
             eventContext    = new EventContext(this);
-            entityProcessor = new EntityProcessor();
+            intern          = new SubscriptionIntern();
         }
 
         public void Dispose() {
-            objectMapper?.Dispose();
+            intern.objectMapper?.Dispose();
         }
 
         /// <summary>
@@ -51,10 +50,10 @@ namespace Friflo.Json.Fliox.Hub.Client
             eventContext.Init(client, syncEvent, seq);
             if (client._intern.disposed)  // store may already be disposed
                 return;
-            if (objectMapper == null) {
+            if (intern.objectMapper == null) {
                 // use individual ObjectMapper for messages as they are used by App outside the pooled scope below
-                objectMapper = new ObjectMapper(client._intern.typeStore);
-                objectMapper.ErrorHandler = ObjectReader.NoThrow;
+                intern.objectMapper = new ObjectMapper(client._intern.typeStore);
+                intern.objectMapper.ErrorHandler = ObjectReader.NoThrow;
             }
             messages.Clear();
             // clear all changes from the last event
@@ -177,7 +176,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             // callbacks require their own reader as store._intern.jsonMapper.reader cannot be used.
             // This jsonMapper is used in various threads caused by .ConfigureAwait(false) continuations
             // and ProcessEvent() can be called concurrently from the 'main' thread.
-            var invokeContext   = new InvokeContext(task.name, task.param, objectMapper.reader, tempCallbackHandlers);
+            var invokeContext   = new InvokeContext(task.name, task.param, intern.objectMapper.reader, tempCallbackHandlers);
             var message         = new Message(invokeContext);
             messages.Add(message);
         }
@@ -192,7 +191,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         internal Changes GetChanges (EntitySet entitySet) {
             if (changes.TryGetValue(entitySet.nameShort, out var change))
                 return change;
-            object[] constructorParams = { entitySet, objectMapper, entityProcessor };
+            object[] constructorParams = { entitySet, intern };
             var keyType     = entitySet.KeyType;
             var entityType  = entitySet.EntityType;
             var genericArgs = new[] { keyType, entityType };

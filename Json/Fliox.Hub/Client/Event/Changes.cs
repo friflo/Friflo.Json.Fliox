@@ -9,7 +9,6 @@ using Friflo.Json.Fliox.Hub.Client.Internal.Key;
 using Friflo.Json.Fliox.Hub.Client.Internal.KeyEntity;
 using Friflo.Json.Fliox.Hub.Host.Utils;
 using Friflo.Json.Fliox.Hub.Protocol;
-using Friflo.Json.Fliox.Mapper;
 using static System.Diagnostics.DebuggerBrowsableState;
 using Browse = System.Diagnostics.DebuggerBrowsableAttribute;
 
@@ -88,8 +87,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         [Browse(Never)] private             List<Upsert<TKey,T>>    upserts;
         [Browse(Never)] private             List<Delete<TKey>>      deletes;
         [Browse(Never)] private             List<Patch<TKey>>       patches;
-        [Browse(Never)] private readonly    ObjectMapper            objectMapper;
-        [Browse(Never)] private readonly    EntityProcessor         entityProcessor;
+        [Browse(Never)] private readonly    SubscriptionIntern      intern;
         [Browse(Never)] private readonly    string                  keyName;
         
         private static  readonly    EntityKeyT<TKey, T> EntityKeyTMap   = EntityKey.GetEntityKeyT<TKey, T>();
@@ -98,12 +96,11 @@ namespace Friflo.Json.Fliox.Hub.Client
         private static readonly KeyConverter<TKey>  KeyConvert = KeyConverter.GetConverter<TKey>();
 
         /// <summary> called via <see cref="SubscriptionProcessor.GetChanges"/> </summary>
-        internal Changes(EntitySet<TKey, T> entitySet, ObjectMapper mapper, EntityProcessor processor) {
+        internal Changes(EntitySet<TKey, T> entitySet, SubscriptionIntern intern) {
             keyName         = entitySet.GetKeyName();
             Container       = entitySet.name;
             ContainerShort  = entitySet.nameShort;
-            objectMapper    = mapper;
-            entityProcessor = processor;
+            this.intern     = intern;
         }
         
         /// <summary>
@@ -145,9 +142,10 @@ namespace Friflo.Json.Fliox.Hub.Client
                 return creates;
             // create entities on demand
             var entities = raw.creates;
-            creates = new List<Create<TKey,T>>(entities.Count);         // list could be reused
+            creates     = new List<Create<TKey,T>>(entities.Count);         // list could be reused
+            var mapper  = intern.objectMapper;
             foreach (var create in entities) {
-                var entity  = objectMapper.Read<T>(create.value);
+                var entity  = mapper.Read<T>(create.value);
                 var key     = EntityKeyTMap.GetKey(entity);
                 creates.Add(new Create<TKey, T>(key, entity));
             }
@@ -160,8 +158,9 @@ namespace Friflo.Json.Fliox.Hub.Client
             // create entities on demand
             var entities = raw.upserts;
             upserts = new List<Upsert<TKey,T>>(entities.Count);         // list could be reused
+            var mapper  = intern.objectMapper;
             foreach (var upsert in entities) {
-                var entity  = objectMapper.Read<T>(upsert.value);
+                var entity  = mapper.Read<T>(upsert.value);
                 var key     = EntityKeyTMap.GetKey(entity);
                 upserts.Add(new Upsert<TKey, T>(key, entity));
             }
@@ -183,8 +182,9 @@ namespace Friflo.Json.Fliox.Hub.Client
         private List<Patch<TKey>> GetPatches() {
             if (patches != null)
                 return patches;
-            var rawPatches  = raw.patches;
-            patches         = new List<Patch<TKey>>(rawPatches.Count);  // list could be reused
+            var rawPatches      = raw.patches;
+            patches             = new List<Patch<TKey>>(rawPatches.Count);  // list could be reused
+            var entityProcessor = intern.entityProcessor;
             GetKeysFromEntities (entityProcessor, keyName, rawPatches);
             for (int n = 0; n < rawPatches.Count; n++) {
                 var     entityPatch = rawPatches[n];
@@ -207,16 +207,16 @@ namespace Friflo.Json.Fliox.Hub.Client
                 return new ApplyResult<TKey,T>(applyInfos);
             var localCreates    = raw.creates;
             if ((change & Change.create) != 0 && localCreates.Count > 0) {
-                GetKeysFromEntities (entityProcessor, keyName, localCreates);
-                entitySet.SyncPeerEntities(localCreates, objectMapper, applyInfos);
+                GetKeysFromEntities (intern.entityProcessor, keyName, localCreates);
+                entitySet.SyncPeerEntities(localCreates, intern.objectMapper, applyInfos);
             }
             var localUpserts    = raw.upserts;
             if ((change & Change.upsert) != 0 && localUpserts.Count > 0) {
-                GetKeysFromEntities (entityProcessor, keyName, localUpserts);
-                entitySet.SyncPeerEntities(localUpserts, objectMapper, applyInfos);
+                GetKeysFromEntities (intern.entityProcessor, keyName, localUpserts);
+                entitySet.SyncPeerEntities(localUpserts, intern.objectMapper, applyInfos);
             }
             if ((change & Change.merge)  != 0 && raw.patches.Count > 0) {
-                entitySet.PatchPeerEntities(Patches, objectMapper, applyInfos);
+                entitySet.PatchPeerEntities(Patches, intern.objectMapper, applyInfos);
             }
             if ((change & Change.delete) != 0 && raw.deletes.Count > 0) {
                 entitySet.DeletePeerEntities(Deletes, applyInfos);

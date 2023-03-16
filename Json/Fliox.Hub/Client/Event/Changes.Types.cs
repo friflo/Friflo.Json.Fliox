@@ -3,6 +3,8 @@
 
 using System;
 using System.Collections.Generic;
+using Friflo.Json.Fliox.Hub.Host.Utils;
+using Friflo.Json.Fliox.Mapper;
 
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.Client
@@ -100,6 +102,16 @@ namespace Friflo.Json.Fliox.Hub.Client
         
         internal ApplyResult(List<ApplyInfo<TKey,T>> applyInfos) {
             this.applyInfos = applyInfos;
+        }
+    }
+    
+    internal class SubscriptionIntern
+    {
+        internal             ObjectMapper       objectMapper;
+        internal  readonly   EntityProcessor    entityProcessor;
+        
+        internal SubscriptionIntern() {
+            entityProcessor = new EntityProcessor();
         }
     }
 }
