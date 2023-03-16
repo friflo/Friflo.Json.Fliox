@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using Friflo.Json.Fliox.Hub.Client.Event;
 using Friflo.Json.Fliox.Hub.Client.Internal;
+using Friflo.Json.Fliox.Hub.Host.Utils;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Mapper;
@@ -24,6 +25,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         internal readonly   List<Changes>                   contextChanges  = new List<Changes>();
         internal readonly   List<Message>                   messages        = new List<Message>();
         private             ObjectMapper                    objectMapper;
+        private  readonly   EntityProcessor                 entityProcessor;
         internal            int                             EventCount { get; private set ; }
         private  readonly   List<MessageCallback>           tempCallbackHandlers    = new List<MessageCallback>();
         private  readonly   List<MessageSubscriber>         tempSubscriptionsPrefix = new List<MessageSubscriber>();
@@ -31,7 +33,8 @@ namespace Friflo.Json.Fliox.Hub.Client
         public   override   string                          ToString()  => $"EventCount: {EventCount}";
         
         public SubscriptionProcessor() {
-            eventContext = new EventContext(this);
+            eventContext    = new EventContext(this);
+            entityProcessor = new EntityProcessor();
         }
 
         public void Dispose() {
@@ -166,7 +169,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             // --- update changes
             var entityChanges = GetChanges(set);
             AddChanges(entityChanges);
-            entityChanges.AddPatches(patches, client);
+            entityChanges.raw.patches.AddRange(patches);
             entityChanges.changeInfo.merges += patches.Count;
         }
         
@@ -189,7 +192,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         internal Changes GetChanges (EntitySet entitySet) {
             if (changes.TryGetValue(entitySet.nameShort, out var change))
                 return change;
-            object[] constructorParams = { entitySet, objectMapper };
+            object[] constructorParams = { entitySet, objectMapper, entityProcessor };
             var keyType     = entitySet.KeyType;
             var entityType  = entitySet.EntityType;
             var genericArgs = new[] { keyType, entityType };

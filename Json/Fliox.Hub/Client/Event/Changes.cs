@@ -7,6 +7,7 @@ using System.Text;
 using Friflo.Json.Fliox.Hub.Client.Internal;
 using Friflo.Json.Fliox.Hub.Client.Internal.Key;
 using Friflo.Json.Fliox.Hub.Client.Internal.KeyEntity;
+using Friflo.Json.Fliox.Hub.Host.Utils;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Mapper;
 using static System.Diagnostics.DebuggerBrowsableState;
@@ -45,7 +46,6 @@ namespace Friflo.Json.Fliox.Hub.Client
         [Browse(Never)] internal            ChangeInfo          changeInfo;
 
         internal  abstract  void        Clear       ();
-        internal  abstract  void        AddPatches  (List<JsonEntity> patches, FlioxClient client);
         internal  abstract  void        ApplyChangesToInternal  (EntitySet entitySet);
         
         protected Changes() {
@@ -76,7 +76,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// <summary> return the keys of removed container entities </summary>
                         public              List<Delete<TKey>>      Deletes         => GetDeletes();
         /// <summary> return patches applied to container entities </summary>
-                        public              List<Patch<TKey>>       Patches { get; } = new List<Patch<TKey>>();
+                        public              List<Patch<TKey>>       Patches         => GetPatches();
         
                         private readonly    List<ApplyInfo<TKey,T>> applyInfos  = new List<ApplyInfo<TKey,T>>();
 
@@ -87,7 +87,9 @@ namespace Friflo.Json.Fliox.Hub.Client
         [Browse(Never)] private             List<Create<TKey,T>>    creates;
         [Browse(Never)] private             List<Upsert<TKey,T>>    upserts;
         [Browse(Never)] private             List<Delete<TKey>>      deletes;
+        [Browse(Never)] private             List<Patch<TKey>>       patches;
         [Browse(Never)] private readonly    ObjectMapper            objectMapper;
+        [Browse(Never)] private readonly    EntityProcessor         entityProcessor;
         [Browse(Never)] private readonly    string                  keyName;
         
         private static  readonly    EntityKeyT<TKey, T> EntityKeyTMap   = EntityKey.GetEntityKeyT<TKey, T>();
@@ -96,11 +98,12 @@ namespace Friflo.Json.Fliox.Hub.Client
         private static readonly KeyConverter<TKey>  KeyConvert = KeyConverter.GetConverter<TKey>();
 
         /// <summary> called via <see cref="SubscriptionProcessor.GetChanges"/> </summary>
-        internal Changes(EntitySet<TKey, T> entitySet, ObjectMapper mapper) {
+        internal Changes(EntitySet<TKey, T> entitySet, ObjectMapper mapper, EntityProcessor processor) {
             keyName         = entitySet.GetKeyName();
             Container       = entitySet.name;
             ContainerShort  = entitySet.nameShort;
             objectMapper    = mapper;
+            entityProcessor = processor;
         }
         
         /// <summary>
@@ -127,11 +130,12 @@ namespace Friflo.Json.Fliox.Hub.Client
             creates = null;
             upserts = null;
             deletes = null;
-            Patches.Clear();
+            patches = null;
             
             raw.creates.Clear();
             raw.upserts.Clear();
             raw.deletes.Clear();
+            raw.patches.Clear();
             //
             changeInfo.Clear();
         }
@@ -141,7 +145,7 @@ namespace Friflo.Json.Fliox.Hub.Client
                 return creates;
             // create entities on demand
             var entities = raw.creates;
-            creates = new List<Create<TKey,T>>(entities.Count); // list could be reused
+            creates = new List<Create<TKey,T>>(entities.Count);         // list could be reused
             foreach (var create in entities) {
                 var entity  = objectMapper.Read<T>(create.value);
                 var key     = EntityKeyTMap.GetKey(entity);
@@ -155,9 +159,9 @@ namespace Friflo.Json.Fliox.Hub.Client
                 return upserts;
             // create entities on demand
             var entities = raw.upserts;
-            upserts = new List<Upsert<TKey,T>>(entities.Count); // list could be reused
+            upserts = new List<Upsert<TKey,T>>(entities.Count);         // list could be reused
             foreach (var upsert in entities) {
-                var entity = objectMapper.Read<T>(upsert.value);
+                var entity  = objectMapper.Read<T>(upsert.value);
                 var key     = EntityKeyTMap.GetKey(entity);
                 upserts.Add(new Upsert<TKey, T>(key, entity));
             }
@@ -168,7 +172,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             if (deletes != null)
                 return deletes;
             var ids = raw.deletes;
-            deletes = new List<Delete<TKey>>(ids.Count);
+            deletes = new List<Delete<TKey>>(ids.Count);                // list could be reused
             foreach (var id in ids) {
                 TKey    key      = KeyConvert.IdToKey(id);
                 deletes.Add(new Delete<TKey>(key));
@@ -176,15 +180,19 @@ namespace Friflo.Json.Fliox.Hub.Client
             return deletes;
         }
         
-        internal override void AddPatches(List<JsonEntity> entityPatches, FlioxClient client) {
-            GetKeysFromEntities (client, keyName, entityPatches);
-            var patches = Patches;
-            for (int n = 0; n < entityPatches.Count; n++) {
-                var     entityPatch = entityPatches[n];
+        private List<Patch<TKey>> GetPatches() {
+            if (patches != null)
+                return patches;
+            var rawPatches  = raw.patches;
+            patches         = new List<Patch<TKey>>(rawPatches.Count);  // list could be reused
+            GetKeysFromEntities (entityProcessor, keyName, rawPatches);
+            for (int n = 0; n < rawPatches.Count; n++) {
+                var     entityPatch = rawPatches[n];
                 TKey    key         = KeyConvert.IdToKey(entityPatch.key);
                 var     patch       = new Patch<TKey>(key, entityPatch.value);
                 patches.Add(patch);
             }
+            return patches;
         }
         
         internal override void ApplyChangesToInternal  (EntitySet entitySet) {
@@ -197,28 +205,26 @@ namespace Friflo.Json.Fliox.Hub.Client
             applyInfos.Clear();
             if (Count == 0)
                 return new ApplyResult<TKey,T>(applyInfos);
-            var client = entitySet.intern.store;
             var localCreates    = raw.creates;
             if ((change & Change.create) != 0 && localCreates.Count > 0) {
-                GetKeysFromEntities (client, keyName, localCreates);
+                GetKeysFromEntities (entityProcessor, keyName, localCreates);
                 entitySet.SyncPeerEntities(localCreates, objectMapper, applyInfos);
             }
             var localUpserts    = raw.upserts;
             if ((change & Change.upsert) != 0 && localUpserts.Count > 0) {
-                GetKeysFromEntities (client, keyName, localUpserts);
+                GetKeysFromEntities (entityProcessor, keyName, localUpserts);
                 entitySet.SyncPeerEntities(localUpserts, objectMapper, applyInfos);
             }
-            if ((change & Change.merge) != 0) {
+            if ((change & Change.merge)  != 0 && raw.patches.Count > 0) {
                 entitySet.PatchPeerEntities(Patches, objectMapper, applyInfos);
             }
-            if ((change & Change.delete) != 0) {
+            if ((change & Change.delete) != 0 && raw.deletes.Count > 0) {
                 entitySet.DeletePeerEntities(Deletes, applyInfos);
             }
             return new ApplyResult<TKey,T>(applyInfos);
         }
         
-        private static void GetKeysFromEntities(FlioxClient client, string keyName, List<JsonEntity> entities) {
-            var processor   = client._intern.EntityProcessor();
+        private static void GetKeysFromEntities(EntityProcessor processor, string keyName, List<JsonEntity> entities) {
             var count       = entities.Count;
             for (int n = 0; n < count; n++) {
                 var entity  = entities[n];
