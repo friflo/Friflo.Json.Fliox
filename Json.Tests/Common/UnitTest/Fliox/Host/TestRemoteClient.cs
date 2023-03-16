@@ -7,7 +7,6 @@ using Friflo.Json.Fliox.Hub.Client;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Tests.Common.UnitTest.Fliox.Client;
 using NUnit.Framework;
-using static NUnit.Framework.Assert;
 
 // ReSharper disable UseObjectOrCollectionInitializer
 namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
