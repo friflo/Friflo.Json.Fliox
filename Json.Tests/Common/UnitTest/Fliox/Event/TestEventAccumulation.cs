@@ -51,10 +51,17 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Event
                             AreEqual(1, changes.Creates.Count);
                             AreEqual(2, changes.Upserts.Count);
                             AreEqual(1, changes.Deletes.Count);
+                            // raw changes
+                            AreEqual(1, changes.raw.creates.Count);
+                            AreEqual(2, changes.raw.upserts.Count);
+                            AreEqual(1, changes.raw.deletes.Count);
+                            AreEqual(3, changes.raw.deletes[0].AsLong());
                             break;
                         case 1:
                             changeEvents++;
                             AreEqual(1, changes.Patches.Count);
+                            // raw changes
+                            AreEqual(1, changes.raw.patches.Count);
                             break;
                     }
                 });
