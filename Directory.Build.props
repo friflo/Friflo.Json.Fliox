@@ -1,7 +1,7 @@
 <Project>
   <PropertyGroup>
-    <!-- Custom property defining all supported TargetFrameworks of all nuget assemblies -->
-    <AssemblyFrameworks>netcoreapp3.1;netstandard2.0;netstandard2.1</AssemblyFrameworks>
+    <!-- Custom property defining all supported standard TargetFrameworks of all nuget assemblies -->
+    <StandardFrameworks>netstandard2.0;netstandard2.1</StandardFrameworks>
     
     <!-- Renamed default output folders obj & bin to .obj & .bin to avoid importing them by Unity -->
     <BaseIntermediateOutputPath>.obj\$(MSBuildProjectName)\</BaseIntermediateOutputPath>
