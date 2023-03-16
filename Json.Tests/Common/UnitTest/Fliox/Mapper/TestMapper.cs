@@ -48,8 +48,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
                 var start = Mem.GetAllocatedBytes();
                 enumValue1  = enc.Read<EnumClass>(value1);
                 enumValue2  = enc.Read<EnumClass?>(value2);
-                var dif = Mem.GetAllocatedBytes() - start;
-                Mem.NoAlloc(dif);
+                var diff    = Mem.GetAllocationDiff(start);
+                Mem.NoAlloc(diff);
                 AreEqual(EnumClass.Value1, enumValue1);
                 AreEqual(EnumClass.Value2, enumValue2);
                 
@@ -58,8 +58,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
                     start = Mem.GetAllocatedBytes();
                     write.WriteAsBytes(enumValue1);
                     write.WriteAsBytes(enumValue2);
-                    dif = Mem.GetAllocatedBytes() - start;
-                    Mem.NoAlloc(dif);
+                    diff = Mem.GetAllocatedBytes() - start;
+                    Mem.NoAlloc(diff);
                 }
 
                 AreEqual(EnumClass.Value1, enc.Read<EnumClass>(value1));

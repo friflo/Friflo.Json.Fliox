@@ -22,6 +22,14 @@ namespace Friflo.Json.Tests.Common
 #endif
         }
         
+        public static long GetAllocationDiff(long start) {
+#if NET6_0_OR_GREATER
+            return GC.GetAllocatedBytesForCurrentThread() - start;
+#else
+            return 0;
+#endif
+        }
+        
         /// <summary>Assert no allocation were performed</summary>
         public static void NoAlloc(long actual) {
             if (actual == 0) {

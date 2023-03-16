@@ -48,8 +48,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
             for (int n = 0; n < 10; n++) {
                 mapper.ReadTo(json, dest, false);
             }
-            var dif = Mem.GetAllocatedBytes() - start;
-            Mem.NoAlloc(dif);
+            var diff = Mem.GetAllocationDiff(start);
+            Mem.NoAlloc(diff);
         }
         
         //[Test]

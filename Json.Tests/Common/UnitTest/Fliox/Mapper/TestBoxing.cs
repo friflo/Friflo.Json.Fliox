@@ -23,7 +23,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
 
             var start   = Mem.GetAllocatedBytes();
             LookupDictionaryJsonKey(dict, 100);
-            var diff    = Mem.GetAllocatedBytes() - start;
+            var diff    = Mem.GetAllocationDiff(start);
 
             Console.Out.WriteLine($"diff: {diff}");
             
@@ -61,7 +61,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
             for (int n = 0; n < 100; n++) {
                 equal = EqualityComparer<TKey>.Default.Equals(left, right);
             }
-            var diff    = Mem.GetAllocatedBytes() - start;
+            var diff    = Mem.GetAllocationDiff(start);
             
             Mem.NoAlloc(diff);
             IsTrue(equal);

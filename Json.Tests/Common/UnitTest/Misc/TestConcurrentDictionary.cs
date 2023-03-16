@@ -21,14 +21,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc
             };
             set.GetOrAdd("key", "key");
 
-            var start = Mem.GetAllocatedBytes();
-            var keyAbc = "abc";
-            var valAbc = set.GetOrAdd("abc", keyAbc);
+            var start   = Mem.GetAllocatedBytes();
+            var keyAbc  = "abc";
+            var valAbc  = set.GetOrAdd("abc", keyAbc);
 
-            var dif  = Mem.GetAllocatedBytes() - start;
+            var diff    = Mem.GetAllocationDiff(start);
             
             AreSame(valAbc, abc);
-            Mem.NoAlloc(dif);
+            Mem.NoAlloc(diff);
         }
 
         private const int Count = 10;
@@ -43,8 +43,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc
                 var str  = strSpan.ToString();
                 len     += str.Length;
             }
-            var dif  = Mem.GetAllocatedBytes() - start;
-            Console.WriteLine($"{len}, dif: {dif}");
+            var diff = Mem.GetAllocationDiff(start);
+            Console.WriteLine($"{len}, dif: {diff}");
         }
         
         [Test]
@@ -62,9 +62,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc
                 var str  = intern.Get(ref key);
                 len     += str.Length;
             }
-            var dif  = Mem.GetAllocatedBytes() - start;
-            Mem.NoAlloc(dif);
-            Console.WriteLine($"{len}, dif: {dif}");
+            var diff = Mem.GetAllocationDiff(start);
+            Mem.NoAlloc(diff);
+            Console.WriteLine($"{len}, dif: {diff}");
         }
     }
     

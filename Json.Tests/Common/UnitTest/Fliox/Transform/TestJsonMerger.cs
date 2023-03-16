@@ -299,8 +299,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             for (int n = 0; n < count; n++) {
                 merger.MergeBytes(value, patch);
             }
-            var dif     = Mem.GetAllocatedBytes() - start;
-            Mem.NoAlloc(dif);
+            var diff = Mem.GetAllocationDiff(start);
+            Mem.NoAlloc(diff);
         }
         
         private static string NormalizeJson(string value) {

@@ -45,7 +45,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
             using (var sharedEnv = SharedEnv.Default) { // for LeakTestsFixture
                 var cx          = PrepareRemoteHost(sharedEnv);
                 cx.contextRead  = cx.CreateSyncContext();   // reused context
-                long dif = 0;
+                long diff = 0;
                 for (int n = 0; n < 10; n++) {
                     long start      = Mem.GetAllocatedBytes();
                     cx.contextRead.Init();
@@ -53,10 +53,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
                     cx.mapper.reader.ReaderPool.Reuse();
                     var response    = RemoteHostUtils.ExecuteJsonRequest(cx.hub, cx.mapper, cx.readReq, cx.contextRead);
                     
-                    dif = Mem.GetAllocatedBytes() - start;
+                    diff = Mem.GetAllocationDiff(start);
                     if (response.status != JsonResponseStatus.Ok)   Fail("Expect OK");
                 }
-                Mem.AreEqual(736, dif);
+                Mem.AreEqual(736, diff);
             }
         }
         
@@ -66,7 +66,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
                 var cx          = PrepareRemoteHost(sharedEnv);
                 cx.contextRead  = cx.CreateSyncContext();   // reused context
                 
-                long dif = 0;
+                long diff = 0;
                 for (int n = 0; n < 10; n++) {
                     long start      = Mem.GetAllocatedBytes();
                     cx.contextRead.Init();
@@ -74,10 +74,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
                     cx.mapper.reader.ReaderPool.Reuse();
                     var response    = RemoteHostUtils.ExecuteJsonRequest(cx.hub, cx.mapper, cx.writeReq, cx.contextRead);
                     
-                    dif = Mem.GetAllocatedBytes() - start;
+                    diff = Mem.GetAllocationDiff(start);
                     if (response.status != JsonResponseStatus.Ok)   Fail("Expect OK");
                 }
-                Mem.AreEqual(72, dif);
+                Mem.AreEqual(72, diff);
             }
         }
         
@@ -94,7 +94,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
                     client.SyncTasksSynchronous();
                 }
 
-                long dif = 0;
+                long diff = 0;
                 for (int n = 0; n < 10; n++) {
                     long start      = Mem.GetAllocatedBytes();
                     cx.contextRead.Init();
@@ -103,10 +103,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
                     var response    = RemoteHostUtils.ExecuteJsonRequest(cx.hub, cx.mapper, cx.writeReq, cx.contextRead);
                     cx.hub.EventDispatcher?.SendQueuedEvents();
                     
-                    dif = Mem.GetAllocatedBytes() - start;
+                    diff = Mem.GetAllocationDiff(start);
                     if (response.status != JsonResponseStatus.Ok)   Fail("Expect OK");
                 }
-                Mem.AreEqual(72, dif);
+                Mem.AreEqual(72, diff);
             }
         }
 

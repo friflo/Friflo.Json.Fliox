@@ -19,11 +19,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Utils
             AssertDequeAddTail(deque); // increases capacity 
             
             deque = new Deque<int>(2);
-            var start = Mem.GetAllocatedBytes();
+            var start   = Mem.GetAllocatedBytes();
             AssertDequeAddTail(deque);
-            var dif = Mem.GetAllocatedBytes() - start;
+            var diff    = Mem.GetAllocationDiff(start);
             
-            Mem.NoAlloc(dif);
+            Mem.NoAlloc(diff);
         }
 
         private static void AssertDequeAddTail(Deque<int> deque)
@@ -67,9 +67,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Utils
             deque = new Deque<int>(2);
             var start = Mem.GetAllocatedBytes();
             AssertAddHead(deque);
-            var dif = Mem.GetAllocatedBytes() - start;
+            var diff    = Mem.GetAllocationDiff(start);
             
-            Mem.NoAlloc(dif);
+            Mem.NoAlloc(diff);
         }
 
         private static void AssertAddHead(Deque<int> deque)
@@ -110,12 +110,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Utils
             var deque = new Deque<int>(2);
             AssertDequeResize(deque); // increases capacity
             
-            deque = new Deque<int>(3);
-            var start = Mem.GetAllocatedBytes();
+            deque       = new Deque<int>(3);
+            var start   = Mem.GetAllocatedBytes();
             AssertDequeResize(deque);
-            var dif = Mem.GetAllocatedBytes() - start;
+            var diff    = Mem.GetAllocationDiff(start);
             
-            Mem.NoAlloc(dif);
+            Mem.NoAlloc(diff);
         }
 
         /// Ensure setting Deque{T}.first in Deque{T}.Resize()
@@ -144,12 +144,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Utils
             var deque = new Deque<int>(1);
             AssertAddHeadQueue(deque); // increases capacity
             
-            deque = new Deque<int>(2);
-            var start = Mem.GetAllocatedBytes();
+            deque       = new Deque<int>(2);
+            var start   = Mem.GetAllocatedBytes();
             AssertAddHeadQueue(deque);
-            var dif = Mem.GetAllocatedBytes() - start;
+            var diff    = Mem.GetAllocationDiff(start);
             
-            Mem.NoAlloc(dif);
+            Mem.NoAlloc(diff);
         }
 
         private static readonly Queue<int> Queue2 = new Queue<int> ( new [] { 1, 2 }  );

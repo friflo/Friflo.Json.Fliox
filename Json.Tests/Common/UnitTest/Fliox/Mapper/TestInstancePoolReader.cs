@@ -61,9 +61,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
                 pool.Reuse();
                 reader.Read<ProtocolMessage>(json);
             }
-            var dif = Mem.GetAllocatedBytes() - start;
+            var diff = Mem.GetAllocationDiff(start);
             AreEqual($"count: 4, used: 4, types: 4, version: {Count}", pool.ToString());
-            Mem.NoAlloc(dif);
+            Mem.NoAlloc(diff);
         }
     }
 }

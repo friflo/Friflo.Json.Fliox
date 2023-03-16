@@ -28,9 +28,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
             var convert = EnumConvert.GetEnumConvert<EnumInt>();
             var start   = Mem.GetAllocatedBytes();
             var e       = convert.LongToEnum(Int32.MaxValue);
-            var dif     = Mem.GetAllocatedBytes() - start;
+            var diff    = Mem.GetAllocationDiff(start);
             AreEqual(EnumInt.Value1, e);
-            Mem.NoAlloc(dif);
+            Mem.NoAlloc(diff);
         }
         
         [Test]

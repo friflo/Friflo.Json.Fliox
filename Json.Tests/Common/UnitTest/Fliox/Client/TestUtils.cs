@@ -140,8 +140,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             
             var start = Mem.GetAllocatedBytes();
             // ReSharper disable once UnusedVariable
-            var store = new PocStore(hub);
-            var diff = Mem.GetAllocatedBytes() - start;
+            var store       = new PocStore(hub);
+            var diff        = Mem.GetAllocationDiff(start);
             var platform    = Environment.OSVersion.Platform;
             var isWindows   = platform == PlatformID.Win32NT; 
             var expected    = isWindows ? 2464 : 2464;  // Test Windows & Linux
@@ -177,7 +177,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             var store = new PocStore(hub);
             var start = Mem.GetAllocatedBytes();
             store.Reset();
-            var diff = Mem.GetAllocatedBytes() - start;
+            var diff        = Mem.GetAllocationDiff(start);
             var platform    = Environment.OSVersion.Platform;
             Console.WriteLine($"PocStore Reset. platform: {platform}, memory: {diff}");
             Mem.AreEqual(72, diff);
@@ -198,7 +198,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             for (int n = 0; n < count; n++) {
                 await store.SyncTasks();                    // ~ 0.59 µs (Release)
             }
-            var diff        = Mem.GetAllocatedBytes() - start;
+            var diff = Mem.GetAllocationDiff(start);
             stopwatch.Stop();
             Console.WriteLine($"SyncTasks() count: {count}, ms: {stopwatch.ElapsedMilliseconds}");
             var expected    = IsDebug() ? 784 : 624;  // Test Debug & Release
@@ -225,7 +225,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
                 read.FindRange(ids);
                 await store.SyncTasks();
             }
-            var diff = Mem.GetAllocatedBytes() - start;
+            var diff = Mem.GetAllocationDiff(start);
             var expected = IsDebug() ? new LongRange(27136, 27500) : new LongRange(24576, 25000); // Test Debug & Release
             Mem.InRange(expected, diff);
         }
@@ -242,7 +242,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             for (int n = 0; n < 10; n++) {
                 sub.ProcessEvent(client, syncEvent, 0);
             }
-            var diff = Mem.GetAllocatedBytes() - start;
+            var diff = Mem.GetAllocationDiff(start);
             Mem.NoAlloc(diff);
         }
         
@@ -261,7 +261,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
                 pooled  = pool.Get();
                 pool.Return(pooled.instance);
             }
-            var diff    = Mem.GetAllocatedBytes() - start;
+            var diff = Mem.GetAllocationDiff(start);
             Mem.NoAlloc(diff);
         }
 #endif

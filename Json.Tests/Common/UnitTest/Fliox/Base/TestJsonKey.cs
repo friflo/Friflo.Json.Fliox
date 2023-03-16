@@ -93,7 +93,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Base
                 var key = new JsonKey (ref value, default);
                 list.Add(key);
             }
-            var dif = Mem.GetAllocatedBytes() - start;
+            var dif = Mem.GetAllocationDiff(start);
             AreEqual(count, list.Count);
             Mem.NoAlloc(dif);
         }

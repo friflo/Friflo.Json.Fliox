@@ -76,7 +76,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
                     for (int n = 0; n < 1; n++) {
                         tools.DeepCopy(src, ref dst);
                     }
-                    var diff =  Mem.GetAllocatedBytes() - start;
+                    var diff = Mem.GetAllocationDiff(start);
                     Mem.NoAlloc(diff);
                 }
             }
@@ -231,7 +231,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
         private static void AssertDeepCopyAllocation<T>(T src, ref T dst, ObjectTools tools) {
             var start = Mem.GetAllocatedBytes();
             tools.DeepCopy(src , ref dst);
-            var diff = Mem.GetAllocatedBytes() - start;
+            var diff = Mem.GetAllocationDiff(start);
             Mem.NoAlloc(diff);
         }
     }

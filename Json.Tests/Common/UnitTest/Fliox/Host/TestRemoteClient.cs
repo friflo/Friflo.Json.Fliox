@@ -56,7 +56,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
                 
                 cx.result.Reuse(cx.client);
             }
-            return Mem.GetAllocatedBytes() - start;
+            return Mem.GetAllocationDiff(start);
         }
         
         [Test]
@@ -92,7 +92,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
                 
                 cx.result.Reuse(cx.client);
             }
-            return Mem.GetAllocatedBytes() - start;
+            return Mem.GetAllocationDiff(start);
         }
     }
 }

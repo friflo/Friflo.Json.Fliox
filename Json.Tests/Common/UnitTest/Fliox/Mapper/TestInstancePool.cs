@@ -87,9 +87,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
                 
                 pool.Reuse();
             }
-            var dif = Mem.GetAllocatedBytes() - start;
+            var diff = Mem.GetAllocationDiff(start);
             AreEqual(5, objects.Count);
-            Mem.NoAlloc(dif);
+            Mem.NoAlloc(diff);
         }
         
         [Test]
@@ -132,9 +132,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
                 
                 pools.Reuse();
             }
-            var dif = Mem.GetAllocatedBytes() - start;
+            var diff = Mem.GetAllocationDiff(start);
             AreEqual(5, objects.Count);
-            Mem.NoAlloc(dif);
+            Mem.NoAlloc(diff);
         }
     }
 }
