@@ -239,16 +239,18 @@ namespace Friflo.Json.Fliox.Hub.Client
         
         /// Similar to <see cref="SyncPeerEntityMap"/> but operates on a key and value list.
         internal void SyncPeerEntities(
-            List<JsonEntity>        entities,
+            List<JsonValue>         values,
+            List<JsonKey>           keys,
             ObjectMapper            mapper,
             List<ApplyInfo<TKey,T>> applyInfos)
         {
+            if (values.Count != keys.Count) throw new InvalidOperationException("expect values.Count == keys.Count");
             var reader      = mapper.reader;
-            var count       = entities.Count;
+            var count       = values.Count;
             var typeMapper  = intern.GetTypeMapper();
             for (int n = 0; n < count; n++) {
-                var jsonEntity  = entities[n];
-                var peer        = GetPeerById(jsonEntity.key);
+                var id          = keys[n];
+                var peer        = GetPeerById(id);
 
                 peer.error  = null;
                 var entity  = peer.NullableEntity;
@@ -256,19 +258,20 @@ namespace Friflo.Json.Fliox.Hub.Client
                 if (entity == null) {
                     applyType   = ApplyInfoType.EntityCreated;
                     entity      = (T)typeMapper.NewInstance();
-                    SetEntityId(entity, jsonEntity.key);
+                    SetEntityId(entity, id);
                     peer.SetEntity(entity);
                 } else {
                     applyType   = ApplyInfoType.EntityUpdated;
                 }
-                reader.ReadToMapper(typeMapper, jsonEntity.value, entity, false);
+                var value = values[n];
+                reader.ReadToMapper(typeMapper, value, entity, false);
                 if (reader.Success) {
-                    peer.SetPatchSource(jsonEntity.value);
+                    peer.SetPatchSource(value);
                 } else {
                     applyType |= ApplyInfoType.ParseError;
                 }
-                var key = Static.KeyConvert.IdToKey(jsonEntity.key);
-                applyInfos.Add(new ApplyInfo<TKey,T>(applyType, key, entity, jsonEntity.value));
+                var key = Static.KeyConvert.IdToKey(id);
+                applyInfos.Add(new ApplyInfo<TKey,T>(applyType, key, entity, value));
             }
         }
         

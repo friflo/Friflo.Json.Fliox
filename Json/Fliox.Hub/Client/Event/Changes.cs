@@ -7,7 +7,6 @@ using System.Text;
 using Friflo.Json.Fliox.Hub.Client.Internal;
 using Friflo.Json.Fliox.Hub.Client.Internal.Key;
 using Friflo.Json.Fliox.Hub.Client.Internal.KeyEntity;
-using Friflo.Json.Fliox.Hub.Host.Utils;
 using Friflo.Json.Fliox.Hub.Protocol;
 using static System.Diagnostics.DebuggerBrowsableState;
 using Browse = System.Diagnostics.DebuggerBrowsableAttribute;
@@ -145,7 +144,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             creates     = new List<Create<TKey,T>>(entities.Count);         // list could be reused
             var mapper  = intern.objectMapper;
             foreach (var create in entities) {
-                var entity  = mapper.Read<T>(create.value);
+                var entity  = mapper.Read<T>(create);
                 var key     = EntityKeyTMap.GetKey(entity);
                 creates.Add(new Create<TKey, T>(key, entity));
             }
@@ -160,7 +159,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             upserts = new List<Upsert<TKey,T>>(entities.Count);         // list could be reused
             var mapper  = intern.objectMapper;
             foreach (var upsert in entities) {
-                var entity  = mapper.Read<T>(upsert.value);
+                var entity  = mapper.Read<T>(upsert);
                 var key     = EntityKeyTMap.GetKey(entity);
                 upserts.Add(new Upsert<TKey, T>(key, entity));
             }
@@ -184,12 +183,10 @@ namespace Friflo.Json.Fliox.Hub.Client
                 return patches;
             var rawPatches      = raw.patches;
             patches             = new List<Patch<TKey>>(rawPatches.Count);  // list could be reused
-            var entityProcessor = intern.entityProcessor;
-            GetKeysFromEntities (entityProcessor, keyName, rawPatches);
+            GetKeysFromEntities (rawPatches, intern.keys);
             for (int n = 0; n < rawPatches.Count; n++) {
-                var     entityPatch = rawPatches[n];
-                TKey    key         = KeyConvert.IdToKey(entityPatch.key);
-                var     patch       = new Patch<TKey>(key, entityPatch.value);
+                TKey    key     = KeyConvert.IdToKey(intern.keys[n]);
+                var     patch   = new Patch<TKey>(key, rawPatches[n]);
                 patches.Add(patch);
             }
             return patches;
@@ -207,13 +204,13 @@ namespace Friflo.Json.Fliox.Hub.Client
                 return new ApplyResult<TKey,T>(applyInfos);
             var localCreates    = raw.creates;
             if ((change & Change.create) != 0 && localCreates.Count > 0) {
-                GetKeysFromEntities (intern.entityProcessor, keyName, localCreates);
-                entitySet.SyncPeerEntities(localCreates, intern.objectMapper, applyInfos);
+                GetKeysFromEntities (localCreates, intern.keys);
+                entitySet.SyncPeerEntities(localCreates, intern.keys, intern.objectMapper, applyInfos);
             }
             var localUpserts    = raw.upserts;
             if ((change & Change.upsert) != 0 && localUpserts.Count > 0) {
-                GetKeysFromEntities (intern.entityProcessor, keyName, localUpserts);
-                entitySet.SyncPeerEntities(localUpserts, intern.objectMapper, applyInfos);
+                GetKeysFromEntities (localUpserts, intern.keys);
+                entitySet.SyncPeerEntities(localUpserts, intern.keys, intern.objectMapper, applyInfos);
             }
             if ((change & Change.merge)  != 0 && raw.patches.Count > 0) {
                 entitySet.PatchPeerEntities(Patches, intern.objectMapper, applyInfos);
@@ -224,13 +221,15 @@ namespace Friflo.Json.Fliox.Hub.Client
             return new ApplyResult<TKey,T>(applyInfos);
         }
         
-        private static void GetKeysFromEntities(EntityProcessor processor, string keyName, List<JsonEntity> entities) {
-            var count       = entities.Count;
+        private void GetKeysFromEntities(List<JsonValue> entities, List<JsonKey> keys) {
+            var entityProcessor = intern.entityProcessor;
+            var count           = entities.Count;
+            keys.Clear();
             for (int n = 0; n < count; n++) {
                 var entity  = entities[n];
-                if (!processor.GetEntityKey(entity.value, keyName, out JsonKey key, out string error))
+                if (!entityProcessor.GetEntityKey(entity, keyName, out JsonKey key, out string error))
                     throw new InvalidOperationException($"CreateEntityKeys() error: {error}");
-                entities[n] = new JsonEntity(key, entity.value);
+                keys.Add(key);
             }
         }
     }

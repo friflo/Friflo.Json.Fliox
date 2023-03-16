@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using Friflo.Json.Fliox.Hub.Client.Event;
 using Friflo.Json.Fliox.Hub.Client.Internal;
-using Friflo.Json.Fliox.Hub.Host.Utils;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Mapper;
@@ -24,7 +23,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// <summary> contain only <see cref="Changes"/> where <see cref="Changes.Count"/> > 0 </summary>
         internal readonly   List<Changes>                   contextChanges  = new List<Changes>();
         internal readonly   List<Message>                   messages        = new List<Message>();
-        internal readonly   SubscriptionIntern              intern;
+        private  readonly   SubscriptionIntern              intern;
         internal            int                             EventCount { get; private set ; }
         private  readonly   List<MessageCallback>           tempCallbackHandlers    = new List<MessageCallback>();
         private  readonly   List<MessageSubscriber>         tempSubscriptionsPrefix = new List<MessageSubscriber>();
@@ -112,6 +111,12 @@ namespace Friflo.Json.Fliox.Hub.Client
             }
         }
         
+        private static void AddEntitiesToValues(List<JsonEntity> entities, List<JsonValue> values) {
+            foreach (var entity in entities) {
+                values.Add(entity.value);
+            }
+        }
+        
         private void ProcessCreate(FlioxClient client, CreateEntities create) {
             var entities = create.entities;
             if (entities.Count == 0)
@@ -123,7 +128,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             // --- update changes
             var entityChanges = GetChanges(set);
             AddChanges(entityChanges);
-            entityChanges.raw.creates.AddRange(entities);
+            AddEntitiesToValues(entities, entityChanges.raw.creates);
             entityChanges.changeInfo.creates += entities.Count;
         }
         
@@ -138,7 +143,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             // --- update changes
             var entityChanges = GetChanges(set);
             AddChanges(entityChanges);
-            entityChanges.raw.upserts.AddRange(entities);
+            AddEntitiesToValues(entities, entityChanges.raw.upserts);
             entityChanges.changeInfo.upserts += entities.Count;
         }
         
@@ -168,7 +173,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             // --- update changes
             var entityChanges = GetChanges(set);
             AddChanges(entityChanges);
-            entityChanges.raw.patches.AddRange(patches);
+            AddEntitiesToValues(patches, entityChanges.raw.patches);
             entityChanges.changeInfo.merges += patches.Count;
         }
         

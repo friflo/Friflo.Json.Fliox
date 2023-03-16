@@ -56,16 +56,16 @@ namespace Friflo.Json.Fliox.Hub.Client
     
     public readonly struct RawChanges
     {
-        public  readonly    List<JsonEntity>    creates;
-        public  readonly    List<JsonEntity>    upserts;
-        public  readonly    List<JsonKey>       deletes;
-        public  readonly    List<JsonEntity>    patches;
+        public  readonly    List<JsonValue>    creates;
+        public  readonly    List<JsonValue>    upserts;
+        public  readonly    List<JsonKey>      deletes;
+        public  readonly    List<JsonValue>    patches;
         
         internal RawChanges (object _) {
-            creates = new List<JsonEntity>();
-            upserts = new List<JsonEntity>();
+            creates = new List<JsonValue>();
+            upserts = new List<JsonValue>();
             deletes = new List<JsonKey>();
-            patches = new List<JsonEntity>();
+            patches = new List<JsonValue>();
         }
     }
     
@@ -107,11 +107,13 @@ namespace Friflo.Json.Fliox.Hub.Client
     
     internal class SubscriptionIntern
     {
-        internal             ObjectMapper       objectMapper;
-        internal  readonly   EntityProcessor    entityProcessor;
+        internal            ObjectMapper    objectMapper;
+        internal  readonly  EntityProcessor entityProcessor;
+        internal  readonly  List<JsonKey>   keys;
         
         internal SubscriptionIntern() {
             entityProcessor = new EntityProcessor();
+            keys            = new List<JsonKey>();
         }
     }
 }
