@@ -1,6 +1,8 @@
 <Project>
   <PropertyGroup>
-    <!-- Custom property defining all supported standard TargetFrameworks of all nuget assemblies -->
+    <!-- Custom property defining all supported standard TargetFrameworks of all nuget assemblies
+    During development in Rider StandardFrameworks is overriden (cleared) to: StandardFrameworks=
+    Rider: Preferences > Build, Execution, Deployment > Toolset and Build > MSBuild Global Properties > Edit -->
     <StandardFrameworks>netstandard2.0;netstandard2.1</StandardFrameworks>
     
     <!-- Renamed default output folders obj & bin to .obj & .bin to avoid importing them by Unity -->
