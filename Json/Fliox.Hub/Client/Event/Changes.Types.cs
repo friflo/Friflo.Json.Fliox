@@ -3,6 +3,8 @@
 
 using System;
 using System.Collections.Generic;
+using static System.Diagnostics.DebuggerBrowsableState;
+using Browse = System.Diagnostics.DebuggerBrowsableAttribute;
 
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.Client
@@ -49,6 +51,17 @@ namespace Friflo.Json.Fliox.Hub.Client
         
         internal Delete (TKey key) {
             this.key    = key;
+        }
+    }
+    
+    public readonly struct RawChanges
+    {
+        public  readonly    List<JsonEntity>    creates;
+        public  readonly    List<JsonEntity>    upserts;
+        
+        internal RawChanges (object _) {
+            creates  = new List<JsonEntity>();
+            upserts  = new List<JsonEntity>();
         }
     }
     

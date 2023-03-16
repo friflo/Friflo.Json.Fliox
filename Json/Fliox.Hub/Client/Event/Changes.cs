@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Text;
 using Friflo.Json.Fliox.Hub.Client.Internal;
 using Friflo.Json.Fliox.Hub.Client.Internal.Key;
@@ -38,17 +37,21 @@ namespace Friflo.Json.Fliox.Hub.Client
                         public              ChangeInfo          ChangeInfo  => changeInfo;
         /// <summary> name of the container the changes are referring to </summary>
                         public    abstract  string              Container       { get; }
+        
+                        public    readonly  RawChanges          raw;
         // --- internal
         [Browse(Never)] public    abstract  ShortString         ContainerShort  { get; }
         [Browse(Never)] internal            bool                added;
         [Browse(Never)] internal            ChangeInfo          changeInfo;
-        [Browse(Never)] internal  readonly  List<JsonEntity>    rawCreates  = new List<JsonEntity>();
-        [Browse(Never)] internal  readonly  List<JsonEntity>    rawUpserts  = new List<JsonEntity>();
 
         internal  abstract  void        Clear       ();
         internal  abstract  void        AddDeletes  (List<JsonKey> ids);
         internal  abstract  void        AddPatches  (List<JsonEntity> patches, FlioxClient client);
         internal  abstract  void        ApplyChangesToInternal  (EntitySet entitySet);
+        
+        protected Changes() {
+            raw = new RawChanges(null);
+        }
     }
     
     /// <summary>
@@ -126,8 +129,8 @@ namespace Friflo.Json.Fliox.Hub.Client
             Deletes.Clear();
             Patches.Clear();
             
-            rawCreates.Clear();
-            rawUpserts.Clear();
+            raw.creates.Clear();
+            raw.upserts.Clear();
             //
             changeInfo.Clear();
         }
@@ -136,7 +139,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             if (creates != null)
                 return creates;
             // create entities on demand
-            var entities = rawCreates;
+            var entities = raw.creates;
             creates = new List<Create<TKey,T>>(entities.Count); // list could be reused
             foreach (var create in entities) {
                 var entity  = objectMapper.Read<T>(create.value);
@@ -150,7 +153,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             if (upserts != null)
                 return upserts;
             // create entities on demand
-            var entities = rawUpserts;
+            var entities = raw.upserts;
             upserts = new List<Upsert<TKey,T>>(entities.Count); // list could be reused
             foreach (var upsert in entities) {
                 var entity = objectMapper.Read<T>(upsert.value);
@@ -190,12 +193,12 @@ namespace Friflo.Json.Fliox.Hub.Client
             if (Count == 0)
                 return new ApplyResult<TKey,T>(applyInfos);
             var client = entitySet.intern.store;
-            var localCreates    = rawCreates;
+            var localCreates    = raw.creates;
             if ((change & Change.create) != 0 && localCreates.Count > 0) {
                 GetKeysFromEntities (client, keyName, localCreates);
                 entitySet.SyncPeerEntities(localCreates, objectMapper, applyInfos);
             }
-            var localUpserts    = rawUpserts;
+            var localUpserts    = raw.upserts;
             if ((change & Change.upsert) != 0 && localUpserts.Count > 0) {
                 GetKeysFromEntities (client, keyName, localUpserts);
                 entitySet.SyncPeerEntities(localUpserts, objectMapper, applyInfos);
