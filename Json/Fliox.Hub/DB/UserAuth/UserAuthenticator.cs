@@ -37,20 +37,6 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
     /// </remarks>
     public sealed class UserAuthenticator : Authenticator, IDisposable
     {
-        // --- public
-        /// <summary>
-        /// If true (default) default permissions are set in the user database to enable Hub access.<br/>
-        /// If false the user database have to provide basic permissions to enable Hub access.<br/>
-        /// </summary>
-        /// <remarks>
-        /// - create user credential: <b>admin</b> if not exist<br/>
-        /// - set user permission: <b>admin</b> with role <b>hub-admin</b><br/>
-        /// - set role: <b>hub-admin</b> granting full access to all databases<br/>
-        /// <br/>
-        /// This enables access to all Hub databases as user <b>admin</b> without accessing the user database directly.
-        /// </remarks> 
-        public              bool                                        UseDefaultPermissions { get; init; } = true;
-        
         // --- private / internal
         internal  readonly  FlioxHub                                    userHub;
         private   readonly  IUserAuth                                   userAuth;
@@ -77,12 +63,24 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
             roleCache               = new ConcurrentDictionary <string, UserAuthRole>();
             anonymous               = new User(User.AnonymousId);
             allUsers                = new User(AllUsersId);
-            if (UseDefaultPermissions) {
-                var task = Task.Run(async () => await WriteDefaultPermissions());
-                task.Wait();
-                var error = task.Result;
-                if (error != null) throw new InvalidOperationException($"Failed writing default permissions. error: {error}");
-            }
+        }
+
+        /// <summary>
+        /// Set default permissions records in the user database to enable Hub access.<br/>
+        /// </summary>
+        /// <remarks>
+        /// - create user credential: <b>admin</b> if not exist<br/>
+        /// - set user permission: <b>admin</b> with role <b>hub-admin</b><br/>
+        /// - set role: <b>hub-admin</b> granting full access to all databases<br/>
+        /// <br/>
+        /// This enables access to all Hub databases as user <b>admin</b> without accessing the user database directly.
+        /// </remarks> 
+        public UserAuthenticator SetDefaultPermissions() {
+            var task = Task.Run(async () => await WriteDefaultPermissions());
+            task.Wait();
+            var error = task.Result;
+            if (error != null) throw new InvalidOperationException($"Failed writing default permissions. error: {error}");
+            return this;
         }
         
         private async Task<string> WriteDefaultPermissions() {

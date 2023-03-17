@@ -24,7 +24,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 using (var hub          	= new FlioxHub(database, TestGlobals.Shared))
                 using (var eventDispatcher  = new EventDispatcher(EventDispatching.Send)) // required for SubscribeMessage() and SubscribeChanges()
                 {
-                    hub.Authenticator   = authenticator;
+                    hub.Authenticator   = authenticator.SetDefaultPermissions();
                     hub.EventDispatcher = eventDispatcher;
                     hub.AddExtensionDB(userDatabase);
                     authenticator.SubscribeUserDbChanges(hub.EventDispatcher);

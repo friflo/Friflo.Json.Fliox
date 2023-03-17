@@ -70,7 +70,7 @@ namespace Friflo.Json.Tests.Main
             
             var userDB              = new FileDatabase("user_db", c.UserDbPath, new UserDBService()) { Pretty = false };
             hub.Authenticator       = new UserAuthenticator(userDB, c.env)  // optional - otherwise all request tasks are authorized
-                { UseDefaultPermissions = true }
+                .SetDefaultPermissions()                                    // optional - enable hub access with user/token: admin/admin
                 .SubscribeUserDbChanges(hub.EventDispatcher);               // optional - apply user_db changes instantaneously
             hub.AddExtensionDB(userDB);                                     // optional - expose userStore as extension database
             
