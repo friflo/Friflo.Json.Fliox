@@ -34,6 +34,10 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
         private static readonly    JsonKey      HubAdminId  = new JsonKey(UserAuthenticator.HubAdminId);
         
         private static bool ValidateTask(SyncRequestTask task, out TaskErrorResult error) {
+            if (task.ContainsEntityChange(Change.delete, new ShortString(nameof(UserStore.credentials)), AdminId)) {
+                error = new TaskErrorResult (TaskErrorResultType.PermissionDenied, $"credentials '{AdminId}' must not be deleted");
+                return false;
+            }
             if (task.ContainsEntityChange(Change.All, new ShortString(nameof(UserStore.permissions)), AdminId)) {
                 error = new TaskErrorResult (TaskErrorResultType.PermissionDenied, $"permission '{AdminId}' must not be changed");
                 return false;

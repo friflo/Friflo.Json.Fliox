@@ -23,17 +23,29 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
     }
 
     /// <summary>
-    /// Performs user authentication by validating <b>userId</b> and <b>token</b> assigned to a <see cref="Client.FlioxClient"/><br/>
-    /// Successful authenticated users are able to access the Hub using their assigned permissions.<br/>
-    /// The permission assigned to <b>all-users</b> - if available - is used for authenticated and anonymous users.<br/>
+    /// Performs user authentication by validating the <b>user</b> and <b>token</b> of every requests<br/>
+    /// Performs authorization for successful authenticated users by applying their assigned permissions.<br/>
     /// </summary>
     /// <remarks>
-    /// <b>Note:</b> User permissions and roles are cached for successful authenticated users.<br/>
-    /// This enables instant task authorization and reduces the number of reads to the <b>user_db</b> significant.<br/>
-    /// <br/>
-    /// <b>Note:</b> All user permissions are transparently defined and available via <see cref="UserStore"/>
-    /// <see cref="UserStore.permissions"/> and <see cref="UserStore.roles"/>.<br/>
-    /// So authorization is fully documented by these two containers. 
+    /// <list type="bullet">
+    ///   <item>
+    ///     To avoid loosing access to the Hub accidentally following operations are not permitted:<br/>
+    ///     - Delete user <b>admin</b><br/>
+    ///     - Change permission <b>admin</b><br/>
+    ///     - Change role <b>hub-admin</b>
+    ///   </item>
+    ///   <item>
+    ///     The permission assigned to <b>all-users</b> - if available - is used for authenticated and anonymous users.<br/>
+    ///   </item>
+    ///   <item>
+    ///     User permissions and roles are transparently defined and stored in the <b>user_db</b>.<br/>
+    ///     So authorization is fully documented by these two containers.
+    ///   </item>
+    ///   <item>
+    ///     User permissions and roles are cached for successful authenticated users.<br/>
+    ///     This enables instant task authorization and reduces the number of reads to the <b>user_db</b> significant.
+    ///   </item>
+    /// </list>
     /// </remarks>
     public sealed class UserAuthenticator : Authenticator, IDisposable
     {
@@ -75,20 +87,20 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
         /// <br/>
         /// This enables access to all Hub databases as user <b>admin</b> without accessing the user database directly.
         /// </remarks> 
-        public UserAuthenticator SetDefaultPermissions() {
-            var task = Task.Run(async () => await WriteDefaultPermissions());
+        public UserAuthenticator SetAdminPermissions(string token = "admin") {
+            var task = Task.Run(async () => await WriteAdminPermissions(token));
             task.Wait();
             var error = task.Result;
             if (error != null) throw new InvalidOperationException($"Failed writing default permissions. error: {error}");
             return this;
         }
         
-        private async Task<string> WriteDefaultPermissions() {
+        private async Task<string> WriteAdminPermissions(string token) {
             var userStore           = new UserStore(userHub) { UserId = UserStore.Server };
             userStore.WritePretty   = true;
             var adminCredential     = new UserCredential {
                 id      = new ShortString(AdminId),
-                token   = new ShortString(AdminId),
+                token   = new ShortString(token),
             };
             var adminPermission     = new UserPermission {
                 id      = new ShortString(AdminId),
