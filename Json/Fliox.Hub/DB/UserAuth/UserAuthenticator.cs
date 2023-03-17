@@ -23,7 +23,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
     }
 
     /// <summary>
-    /// Performs user authentication by validating the <b>user</b> and <b>token</b> of every requests<br/>
+    /// Performs user authentication by validating the <b>user</b> and <b>token</b> of every request<br/>
     /// Performs authorization for successful authenticated users by applying their assigned permissions.<br/>
     /// </summary>
     /// <remarks>
@@ -35,7 +35,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
     ///     - Change role <b>hub-admin</b>
     ///   </item>
     ///   <item>
-    ///     The permission assigned to <b>all-users</b> - if available - is used for authenticated and anonymous users.<br/>
+    ///     The permission <b>all-users</b> - if available - is used for authenticated and anonymous users.<br/>
     ///   </item>
     ///   <item>
     ///     User permissions and roles are transparently defined and stored in the <b>user_db</b>.<br/>
