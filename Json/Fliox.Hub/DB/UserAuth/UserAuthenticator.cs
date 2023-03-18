@@ -93,7 +93,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
         /// <br/>
         /// This enables access to all Hub databases as user <b>admin</b> without accessing the user database directly.
         /// </remarks> 
-        public UserAuthenticator SetAdminPermissions(string token = "admin") {
+        public UserAuthenticator SetAdminPermissions(string token = ID.Admin) {
             var userStore           = new UserStore(userHub) { UserId = UserStore.Server };
             userStore.WritePretty   = true;
             var adminCredential     = new UserCredential {
