@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.DB.Cluster;
 using Friflo.Json.Fliox.Hub.DB.Monitor;
 using Friflo.Json.Fliox.Hub.DB.UserAuth;
@@ -31,7 +32,7 @@ namespace Friflo.Json.Tests.Main
         //     $env:UserName
         //     $env:UserDomain 
         private static void TestServer(string endpoint) {
-            var hostHub = CreateHttpHost(new Config());
+            var hostHub = CreateHttpHost(new Config()).Result;
         //  var hostHub = CreateMiniHost();
             var httpListener = new HttpListener();
             httpListener.Prefixes.Add(endpoint);
@@ -54,7 +55,7 @@ namespace Friflo.Json.Tests.Main
         /// Blueprint method showing how to setup a <see cref="HttpHost"/> utilizing all features available
         /// via HTTP and WebSockets.
         /// </summary>
-        public static HttpHost CreateHttpHost(Config c) {
+        public static async Task<HttpHost> CreateHttpHost(Config c) {
             var typeSchema          = NativeTypeSchema.Create(typeof(PocStore)); // optional - create TypeSchema from Type 
         //  var typeSchema          = CreateTypeSchema();               // alternatively create TypeSchema from JSON Schema
             var databaseSchema      = new DatabaseSchema(typeSchema);
@@ -69,11 +70,12 @@ namespace Friflo.Json.Tests.Main
             hub.EventDispatcher     = new EventDispatcher(EventDispatching.QueueSend, c.env); // optional - enables Pub-Sub (sending events for subscriptions)
             
             var userDB              = new FileDatabase("user_db", c.UserDbPath, new UserDBService()) { Pretty = false };
-            hub.Authenticator       = new UserAuthenticator(userDB, c.env)  // optional - otherwise all request tasks are authorized
-                .SetAdminPermissions()                                      // optional - enable Hub access with user/token: admin/admin
-                .SetClusterPermissions("cluster", Users.Authenticated)
-                .SubscribeUserDbChanges(hub.EventDispatcher);               // optional - apply user_db changes instantaneously
-            hub.AddExtensionDB(userDB);                                     // optional - expose userStore as extension database
+            var userAuthenticator   = new UserAuthenticator(userDB, c.env);
+            await userAuthenticator.SetAdminPermissions();                                  // optional - enable Hub access with user/token: admin/admin
+            await userAuthenticator.SetClusterPermissions("cluster", Users.Authenticated);
+            await userAuthenticator.SubscribeUserDbChanges(hub.EventDispatcher);            // optional - apply user_db changes instantaneously
+            hub.AddExtensionDB(userDB);                                                     // optional - expose userStore as extension database
+            hub.Authenticator       = userAuthenticator;                                    // optional - otherwise all request tasks are authorized
             
             var signalingDB         = new MemoryDatabase("signaling", new SignalingService()) { Schema = SignalingService.Schema };
             hub.AddExtensionDB(signalingDB);

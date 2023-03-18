@@ -18,7 +18,7 @@ public static class StartupAsp6
 {
     public static void Run(string[] args)
     {
-        var httpHost    = Program.CreateHttpHost();
+        var httpHost    = Program.CreateHttpHost().Result;
         
         var builder     = WebApplication.CreateBuilder(args);
         builder.WebHost.ConfigureKestrel(options => options.ListenAnyIP(8010));

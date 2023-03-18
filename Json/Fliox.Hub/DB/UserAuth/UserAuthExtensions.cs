@@ -27,8 +27,8 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
         /// - set role: <b>hub-admin</b> granting full access to all databases<br/>
         /// <br/>
         /// This enables access to all Hub databases as user <b>admin</b> without accessing the user database directly.
-        /// </remarks> 
-        public static UserAuthenticator SetAdminPermissions(this UserAuthenticator userAuthenticator, string token = "admin") {
+        /// </remarks>
+        public static async Task SetAdminPermissions(this UserAuthenticator userAuthenticator, string token = "admin") {
             var userStore           = new UserStore(userAuthenticator.userHub) { UserId = UserDB.ID.Server };
             userStore.WritePretty   = true;
             var adminCredential     = new UserCredential { id = Admin, token   = token };
@@ -44,14 +44,14 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
             };
             var upsertPermission    = userStore.permissions.Upsert(adminPermission);
             var upsertRole          = userStore.roles.Upsert(hubAdmin);
-            var sync = userStore.TrySyncTasks().Result;
+            var sync = await userStore.TrySyncTasks();
             if (upsertPermission.Success && upsertRole.Success) {
-                return userAuthenticator;                
+                return;                
             }
             throw new InvalidOperationException($"Failed writing default permissions. error: {sync.Message}");
         }
-        
-        public static UserAuthenticator SetClusterPermissions(this UserAuthenticator userAuthenticator, string clusterDB, Users users) {
+
+        public static async Task SetClusterPermissions(this UserAuthenticator userAuthenticator, string clusterDB, Users users) {
             var userStore           = new UserStore(userAuthenticator.userHub) { UserId = UserDB.ID.Server };
             userStore.WritePretty   = true;
 
@@ -66,8 +66,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
             userStore.permissions.Create(authenticatedPermission);
             userStore.roles.Create(clusterInfo);
 
-            userStore.TrySyncTasks().Wait();
-            return userAuthenticator;
+            await userStore.TrySyncTasks();
         }
         
         /// <summary>
@@ -77,11 +76,10 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
         /// Without subscribing <b>user_db</b> changes they are effective after a call to <see cref="UserStore.ClearAuthCache"/>
         /// or after a server restart.
         /// </summary>
-        public static UserAuthenticator SubscribeUserDbChanges(this UserAuthenticator userAuthenticator, EventDispatcher eventDispatcher) {
+        public static async Task SubscribeUserDbChanges(this UserAuthenticator userAuthenticator, EventDispatcher eventDispatcher) {
             userAuthenticator.userHub.EventDispatcher = eventDispatcher ?? throw new ArgumentNullException(nameof(eventDispatcher));
             var subscriber          = new UserStoreSubscriber(userAuthenticator);
-            subscriber.SetupSubscriptions ().Wait();
-            return userAuthenticator;
+            await subscriber.SetupSubscriptions ();
         }
         
         public static async Task<List<string>> ValidateUserDb(this UserAuthenticator userAuthenticator, HashSet<string> databases) {

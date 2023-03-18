@@ -23,10 +23,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 using (var hub          	= new FlioxHub(database, TestGlobals.Shared))
                 using (var eventDispatcher  = new EventDispatcher(EventDispatching.Send)) // required for SubscribeMessage() and SubscribeChanges()
                 {
-                    hub.Authenticator   = authenticator.SetAdminPermissions();
+                    hub.Authenticator   = authenticator;
+                    await authenticator.SetAdminPermissions();
                     hub.EventDispatcher = eventDispatcher;
                     hub.AddExtensionDB(userDatabase);
-                    authenticator.SubscribeUserDbChanges(hub.EventDispatcher);
+                    await authenticator.SubscribeUserDbChanges(hub.EventDispatcher);
                     
                     var client      = new FlioxClient(hub)                      { UserId = "unknown", Token = "ddd" };
                     var userStore   = new UserStore(hub, TestGlobals.UserDB)    { UserId = "admin",   Token = "admin" };

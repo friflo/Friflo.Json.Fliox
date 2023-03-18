@@ -31,7 +31,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
             _mapper         = new ObjectMapper(_env.TypeStore);
             // use NonConcurrent in-memory DB to preserve entity order of query results
             var config      = new Program.Config(_env, baseFolder, true, MemoryType.NonConcurrent, "max-age=600");
-            _httpHost       = Program.CreateHttpHost(config);
+            // Task.Run() required for Unity Test Runner having a SynchronizationContext
+            Task.Run(() => {
+                _httpHost = Program.CreateHttpHost(config).Result;    
+            }).Wait();
         }
         [OneTimeTearDown] public static void  Dispose() {
             _httpHost.Dispose();
@@ -98,7 +101,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
         }
         
         private static void ExecuteRequest(RequestContext cx) {
-            // execute synchronous to enable tests running in Unity Test Runner
+            // Task.Run() required for Unity Test Runner having a SynchronizationContext
             Task.Run(async () => {
                 await _httpHost.ExecuteHttpRequest(cx);    
             }).Wait();
