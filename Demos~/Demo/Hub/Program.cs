@@ -52,11 +52,11 @@ namespace DemoHub
             hub.EventDispatcher     = new EventDispatcher(EventDispatching.QueueSend);   // optional - enables Pub-Sub (sending events for subscriptions)
             
             var userDB              = new FileDatabase("user_db", "../Test/DB/user_db", new UserDBService()) { Pretty = false };
-            hub.Authenticator       = new UserAuthenticator(userDB) // optional - otherwise all tasks are authorized
-                .SetAdminPermissions()                              // optional - enable Hub access with user/token: admin/admin
-                .SetClusterPermissions("cluster")
-                .SubscribeUserDbChanges(hub.EventDispatcher);       // optional - apply user_db changes instantaneously
-            hub.AddExtensionDB(userDB);                             // optional - expose user_db as extension database
+            hub.Authenticator       = new UserAuthenticator(userDB)     // optional - otherwise all tasks are authorized
+                .SetAdminPermissions()                                  // optional - enable Hub access with user/token: admin/admin
+                .SetClusterPermissions("cluster", Users.Authenticated)
+                .SubscribeUserDbChanges(hub.EventDispatcher);           // optional - apply user_db changes instantaneously
+            hub.AddExtensionDB(userDB);                                 // optional - expose user_db as extension database
             
             var httpHost            = new HttpHost(hub, "/fliox/");
             httpHost.AddHandler      (new GraphQLHandler());
