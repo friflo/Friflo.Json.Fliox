@@ -59,11 +59,13 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
         private   readonly  User                                        allUsers;
         private   readonly  User                                        authenticatedUsers;
 
-        public   static readonly    string      AllUsersId              = "all-users";
-        public   static readonly    string      AuthenticatedUsersId    = "authenticate-users";
-        internal static readonly    string      AdminId                 = "admin";
-        internal static readonly    string      HubAdminId              = "hub-admin";
-        public   static readonly    string      ClusterInfoId           = "cluster-info";
+        public static class ID {
+            public  const string    AllUsers            = "all-users";
+            public  const string    AuthenticatedUsers  = "authenticate-users";
+            public  const string    Admin               = "admin";
+            public  const string    HubAdmin            = "hub-admin";
+            public  const string    ClusterInfo         = "cluster-info";
+        }
 
         public UserAuthenticator (EntityDatabase userDatabase, SharedEnv env = null, IUserAuth userAuth = null)
         {
@@ -77,8 +79,8 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
             this.userAuth           = userAuth;
             roleCache               = new ConcurrentDictionary <string, UserAuthRole>();
             anonymous               = new User(User.AnonymousId);
-            allUsers                = new User(AllUsersId);
-            authenticatedUsers      = new User(AuthenticatedUsersId);
+            allUsers                = new User(ID.AllUsers);
+            authenticatedUsers      = new User(ID.AuthenticatedUsers);
         }
 
         /// <summary>
@@ -95,18 +97,18 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
             var userStore           = new UserStore(userHub) { UserId = UserStore.Server };
             userStore.WritePretty   = true;
             var adminCredential     = new UserCredential {
-                id      = AdminId,
+                id      = ID.Admin,
                 token   = token,
             };
             userStore.credentials.Create(adminCredential);
             
             // --- admin / hub-admin
             var adminPermission     = new UserPermission {
-                id      = AdminId,
-                roles   = new List<string> { HubAdminId }
+                id      = ID.Admin,
+                roles   = new List<string> { ID.HubAdmin }
             };
             var hubAdmin            = new Role {
-                id          = HubAdminId,
+                id          = ID.HubAdmin,
                 taskRights  = new List<TaskRight> { new DbFullRight { database = "*"} },
                 hubRights   = new HubRights { queueEvents = true },
                 description = "Grant unrestricted access to all databases"
@@ -126,11 +128,11 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
 
             // --- admin / hub-admin
             var authenticatedPermission     = new UserPermission {
-                id      = AuthenticatedUsersId,
-                roles   = new List<string> { ClusterInfoId }
+                id      = ID.AuthenticatedUsers,
+                roles   = new List<string> { ID.ClusterInfo }
             };
             var clusterInfo            = new Role {
-                id          = ClusterInfoId,
+                id          = ID.ClusterInfo,
                 taskRights  = new List<TaskRight> { new DbFullRight { database = clusterDB} },
                 description = "Allow reading the cluster database"
             };
