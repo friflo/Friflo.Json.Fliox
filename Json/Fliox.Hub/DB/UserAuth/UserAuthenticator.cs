@@ -57,10 +57,13 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
         private   readonly  User                                        anonymous;
         /// <summary>Contains authorization permissions for all users</summary>
         private   readonly  User                                        allUsers;
+        private   readonly  User                                        authenticatedUsers;
 
-        public   static readonly    ShortString AllUsersId  = new ShortString("all-users");
-        internal static readonly    string      AdminId     = "admin";
-        internal static readonly    string      HubAdminId  = "hub-admin";
+        public   static readonly    ShortString AllUsersId              = new ShortString("all-users");
+        public   static readonly    ShortString AuthenticatedUsersId    = new ShortString("authenticate-users");
+        internal static readonly    string      AdminId                 = "admin";
+        internal static readonly    string      HubAdminId              = "hub-admin";
+        public   static readonly    string      ClusterInfoId           = "cluster-info";
 
         public UserAuthenticator (EntityDatabase userDatabase, SharedEnv env = null, IUserAuth userAuth = null)
         {
@@ -75,10 +78,11 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
             roleCache               = new ConcurrentDictionary <string, UserAuthRole>();
             anonymous               = new User(User.AnonymousId);
             allUsers                = new User(AllUsersId);
+            authenticatedUsers      = new User(AuthenticatedUsersId);
         }
 
         /// <summary>
-        /// Set default permissions records in the user database to enable Hub access.<br/>
+        /// Set default admin permissions records in the user database to enable Hub access with user admin.<br/>
         /// </summary>
         /// <remarks>
         /// - create user credential: <b>admin</b> if not exist<br/>
@@ -88,20 +92,15 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
         /// This enables access to all Hub databases as user <b>admin</b> without accessing the user database directly.
         /// </remarks> 
         public UserAuthenticator SetAdminPermissions(string token = "admin") {
-            var task = Task.Run(async () => await WriteAdminPermissions(token));
-            task.Wait();
-            var error = task.Result;
-            if (error != null) throw new InvalidOperationException($"Failed writing default permissions. error: {error}");
-            return this;
-        }
-        
-        private async Task<string> WriteAdminPermissions(string token) {
             var userStore           = new UserStore(userHub) { UserId = UserStore.Server };
             userStore.WritePretty   = true;
             var adminCredential     = new UserCredential {
                 id      = new ShortString(AdminId),
                 token   = new ShortString(token),
             };
+            userStore.credentials.Create(adminCredential);
+            
+            // --- admin / hub-admin
             var adminPermission     = new UserPermission {
                 id      = new ShortString(AdminId),
                 roles   = new List<string> { HubAdminId }
@@ -112,17 +111,36 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
                 hubRights   = new HubRights { queueEvents = true },
                 description = "Grant unrestricted access to all databases"
             };
-            userStore.credentials.Create(adminCredential);
             var upsertPermission    = userStore.permissions.Upsert(adminPermission);
             var upsertRole          = userStore.roles.Upsert(hubAdmin);
-            var sync = await userStore.TrySyncTasks();
-            
+            var sync = userStore.TrySyncTasks().Result;
             if (upsertPermission.Success && upsertRole.Success) {
-                return null;
+                return this;                
             }
-            return sync.Message;
+            throw new InvalidOperationException($"Failed writing default permissions. error: {sync.Message}");
         }
         
+        public UserAuthenticator SetClusterPermissions(string clusterDB) {
+            var userStore           = new UserStore(userHub) { UserId = UserStore.Server };
+            userStore.WritePretty   = true;
+
+            // --- admin / hub-admin
+            var authenticatedPermission     = new UserPermission {
+                id      = AuthenticatedUsersId,
+                roles   = new List<string> { ClusterInfoId }
+            };
+            var clusterInfo            = new Role {
+                id          = ClusterInfoId,
+                taskRights  = new List<TaskRight> { new DbFullRight { database = clusterDB} },
+                description = "Allow reading the cluster database"
+            };
+            userStore.permissions.Create(authenticatedPermission);
+            userStore.roles.Create(clusterInfo);
+
+            userStore.TrySyncTasks().Wait();
+            return this;
+        }
+
         public void Dispose() {
             userHub.Dispose();
         }
@@ -186,10 +204,18 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
         }
         
         internal void InvalidateUsers(ICollection<ShortString> userIds) {
+            bool invalidateAll = false;
             if (userIds.Contains(allUsers.userId)) {
                 allUsers.invalidated = true;
+                invalidateAll = true;
+            }
+            if (userIds.Contains(authenticatedUsers.userId)) {
+                authenticatedUsers.invalidated = true;
+                invalidateAll = true;
+            }
+            if (invalidateAll) {
                 foreach (var user in users) { user.Value.invalidated = true; }
-                return;                
+                return;
             }
             foreach (var userId in userIds) {
                 if (!users.TryGetValue(userId, out var user))
@@ -272,13 +298,12 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
                 userStore.UserId    = UserStore.AuthenticationUser;
                 var type            = syncRequest.intern.preAuthType;
                 var user            = syncRequest.intern.preAuthUser;
-                var ua              = new UserAuthInfo();
                 var all             = allUsers;
                 if (all.invalidated) {
-                    await GetAllUsersAuthAsync(userStore, ua); // ensure anonymous is not invalidated
-                } else {
-                    ua.AddUserAuth(all);
+                    await SetUserAuthAsync(all, userStore); // ensure anonymous is not invalidated
                 }
+                var ua = new UserAuthInfo();
+                ua.AddUserAuth(all);
                 switch (type) {
                     case PreAuthType.MissingUserId:
                     case PreAuthType.MissingToken:
@@ -309,6 +334,11 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
                     syncContext.AuthenticationFailed(anonymous, error, all.taskAuthorizer, all.hubPermission);
                     return;
                 }
+                var authenticated = authenticatedUsers;
+                if (authenticated.invalidated) {
+                    await SetUserAuthAsync(authenticated, userStore);
+                }
+                ua.AddUserAuth(authenticated);
                 user ??= new User(userId);
                 user.Set(token, ua.GetTaskAuthorizer(), ua.GetHubPermission(), ua.GetRoles());
                 user.SetGroups(ua.GetGroups());
@@ -375,13 +405,14 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
             await base.SetUserOptionsAsync(user, param).ConfigureAwait(false); 
         }
         
-        private async Task GetAllUsersAuthAsync(UserStore userStore, UserAuthInfo ua) {
-            var error   = await GetUserAuthInfoAsync(userStore, allUsers.userId, ua);
+        private async Task SetUserAuthAsync(User user, UserStore userStore) {
+            var ua = new UserAuthInfo();
+            var error   = await GetUserAuthInfoAsync(userStore, user.userId, ua);
             if (error != null) {
-                allUsers.Set(default, TaskAuthorizer.None, HubPermission.None, null);
+                user.Set(default, TaskAuthorizer.None, HubPermission.None, null);
                 return;
             }
-            allUsers.Set(default, ua.GetTaskAuthorizer(), ua.GetHubPermission(), ua.GetRoles());
+            user.Set(default, ua.GetTaskAuthorizer(), ua.GetHubPermission(), ua.GetRoles());
         }
 
         private async Task<string> GetUserAuthInfoAsync(UserStore userStore, ShortString userId, UserAuthInfo result) {

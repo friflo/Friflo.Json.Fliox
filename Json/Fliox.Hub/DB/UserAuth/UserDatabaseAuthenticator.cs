@@ -5,9 +5,9 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.Auth;
-using Friflo.Json.Fliox.Hub.Host.Auth.Rights;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
+using static Friflo.Json.Fliox.Hub.Host.Auth.Rights.OperationType;
 
 namespace Friflo.Json.Fliox.Hub.DB.UserAuth
 {
@@ -33,18 +33,18 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
             var changes         = new [] { EntityChange.create, EntityChange.upsert, EntityChange.delete, EntityChange.merge };
             var authUserRights  = new AuthorizeAny(new TaskAuthorizer[] {
                 new AuthorizeSendMessage     (nameof(UserStore.AuthenticateUser), userDbName),
-                new AuthorizeContainer       (nameof(UserStore.permissions), new []{ OperationType.read, OperationType.query },  userDbName),
-                new AuthorizeContainer       (nameof(UserStore.roles),       new []{ OperationType.read, OperationType.query },  userDbName),
-                new AuthorizeContainer       (nameof(UserStore.targets),     new []{ OperationType.read, OperationType.upsert }, userDbName),
+                new AuthorizeContainer       (nameof(UserStore.permissions), new []{ read, query },  userDbName),
+                new AuthorizeContainer       (nameof(UserStore.roles),       new []{ read, query },  userDbName),
+                new AuthorizeContainer       (nameof(UserStore.targets),     new []{ read, upsert }, userDbName),
                 new AuthorizeSubscribeChanges(nameof(UserStore.credentials), changes, userDbName),
                 new AuthorizeSubscribeChanges(nameof(UserStore.permissions), changes, userDbName),
                 new AuthorizeSubscribeChanges(nameof(UserStore.roles),       changes, userDbName),
                 new AuthorizeSubscribeChanges(nameof(UserStore.targets),     changes, userDbName)
             });
             var serverRights    = new AuthorizeAny(new TaskAuthorizer[] {
-                new AuthorizeContainer       (nameof(UserStore.credentials), new []{ OperationType.read, OperationType.create },   userDbName),
-                new AuthorizeContainer       (nameof(UserStore.permissions), new []{ OperationType.upsert }, userDbName),
-                new AuthorizeContainer       (nameof(UserStore.roles),       new []{ OperationType.upsert }, userDbName)
+                new AuthorizeContainer       (nameof(UserStore.credentials), new []{ read, create },   userDbName),
+                new AuthorizeContainer       (nameof(UserStore.permissions), new []{ upsert, create }, userDbName),
+                new AuthorizeContainer       (nameof(UserStore.roles),       new []{ upsert, create }, userDbName)
             });
             userRights = new Dictionary<ShortString, TaskAuthorizer> (ShortString.Equality) {
                 { new ShortString(UserStore.AuthenticationUser),    authUserRights },

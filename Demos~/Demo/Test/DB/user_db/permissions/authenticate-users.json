@@ -1,0 +1,6 @@
+{
+    "id": "authenticate-users",
+    "roles": [
+        "cluster-info"
+    ]
+}
