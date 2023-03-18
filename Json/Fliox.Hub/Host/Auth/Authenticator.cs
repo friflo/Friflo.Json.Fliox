@@ -5,6 +5,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.DB.Cluster;
 using Friflo.Json.Fliox.Hub.Host.Auth.Rights;
@@ -27,6 +28,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
         internal  readonly  ConcurrentDictionary<ShortString, User> users;  // todo make private
         // ReSharper disable once UnusedMember.Local - expose Dictionary as list in Debugger
         private             ICollection<User>                       Users => users.Values;
+        internal            HashSet<string>                         GetRegisteredPredicates() => registeredPredicates.Keys.ToHashSet();
         
         public    override  string                                  ToString() => $"users: {users.Count}";
 
