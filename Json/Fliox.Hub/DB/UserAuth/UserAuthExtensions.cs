@@ -6,10 +6,16 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host.Auth.Rights;
 using Friflo.Json.Fliox.Hub.Host.Event;
-using static Friflo.Json.Fliox.Hub.DB.UserAuth.UserAuthenticator;
+using static Friflo.Json.Fliox.Hub.DB.UserAuth.UserStore.ID;
 
 namespace Friflo.Json.Fliox.Hub.DB.UserAuth
 {
+    public enum Users
+    {
+        All,
+        Authenticated
+    }
+    
     public static class UserAuthExtensions
     {
         /// <summary>
@@ -25,19 +31,13 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
         public static UserAuthenticator SetAdminPermissions(this UserAuthenticator userAuthenticator, string token = "admin") {
             var userStore           = new UserStore(userAuthenticator.userHub) { UserId = UserStore.Server };
             userStore.WritePretty   = true;
-            var adminCredential     = new UserCredential {
-                id      = ID.Admin,
-                token   = token,
-            };
+            var adminCredential     = new UserCredential { id = Admin, token   = token };
             userStore.credentials.Create(adminCredential);
             
             // --- admin / hub-admin
-            var adminPermission     = new UserPermission {
-                id      = ID.Admin,
-                roles   = new List<string> { ID.HubAdmin }
-            };
+            var adminPermission     = new UserPermission { id = Admin, roles   = new List<string> { HubAdmin } };
             var hubAdmin            = new Role {
-                id          = ID.HubAdmin,
+                id          = HubAdmin,
                 taskRights  = new List<TaskRight> { new DbFullRight { database = "*"} },
                 hubRights   = new HubRights { queueEvents = true },
                 description = "Grant unrestricted access to all databases"
@@ -51,17 +51,15 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
             throw new InvalidOperationException($"Failed writing default permissions. error: {sync.Message}");
         }
         
-        public static UserAuthenticator SetClusterPermissions(this UserAuthenticator userAuthenticator, string clusterDB) {
+        public static UserAuthenticator SetClusterPermissions(this UserAuthenticator userAuthenticator, string clusterDB, Users users) {
             var userStore           = new UserStore(userAuthenticator.userHub) { UserId = UserStore.Server };
             userStore.WritePretty   = true;
 
             // --- admin / hub-admin
-            var authenticatedPermission     = new UserPermission {
-                id      = ID.AuthenticatedUsers,
-                roles   = new List<string> { ID.ClusterInfo }
-            };
-            var clusterInfo            = new Role {
-                id          = ID.ClusterInfo,
+            var id = users == Users.All ? AllUsers : AuthenticatedUsers;
+            var authenticatedPermission = new UserPermission { id = id, roles = new List<string> { ClusterInfo } };
+            var clusterInfo             = new Role {
+                id          = ClusterInfo,
                 taskRights  = new List<TaskRight> { new DbFullRight { database = clusterDB} },
                 description = "Allow reading the cluster database"
             };

@@ -30,6 +30,14 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
         /// <summary>"userId" used for a <see cref="UserStore"/> to request a user authentication with its token</summary>
         public const string AuthenticationUser  = "AuthenticationUser";
         
+        public static class ID {
+            public  const string    AllUsers            = "all-users";
+            public  const string    AuthenticatedUsers  = "authenticate-users";
+            public  const string    Admin               = "admin";
+            public  const string    HubAdmin            = "hub-admin";
+            public  const string    ClusterInfo         = "cluster-info";
+        }
+        
         public UserStore(FlioxHub hub, string dbName = null) : base(hub, dbName) { }
         
         // --- commands

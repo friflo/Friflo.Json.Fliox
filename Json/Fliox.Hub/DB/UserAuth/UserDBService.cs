@@ -30,8 +30,8 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
             return await task.ExecuteAsync(database, response, syncContext).ConfigureAwait(false);
         }
         
-        private static readonly    JsonKey      AdminId     = new JsonKey(UserAuthenticator.ID.Admin);
-        private static readonly    JsonKey      HubAdminId  = new JsonKey(UserAuthenticator.ID.HubAdmin);
+        private static readonly    JsonKey      AdminId     = new JsonKey(UserStore.ID.Admin);
+        private static readonly    JsonKey      HubAdminId  = new JsonKey(UserStore.ID.HubAdmin);
         
         private static bool ValidateTask(SyncRequestTask task, out TaskErrorResult error) {
             if (task.ContainsEntityChange(Change.delete, new ShortString(nameof(UserStore.credentials)), AdminId)) {

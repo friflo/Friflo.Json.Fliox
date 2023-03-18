@@ -12,6 +12,7 @@ using Friflo.Json.Fliox.Hub.Host.Auth;
 using Friflo.Json.Fliox.Hub.Host.Auth.Rights;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Utils;
+using static Friflo.Json.Fliox.Hub.DB.UserAuth.UserStore;
 
 // ReSharper disable InlineTemporaryVariable
 // ReSharper disable UseObjectOrCollectionInitializer
@@ -57,14 +58,6 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
         /// <summary>Contains authorization permissions for all users</summary>
         private   readonly  User                                        allUsers;
         private   readonly  User                                        authenticatedUsers;
-
-        public static class ID {
-            public  const string    AllUsers            = "all-users";
-            public  const string    AuthenticatedUsers  = "authenticate-users";
-            public  const string    Admin               = "admin";
-            public  const string    HubAdmin            = "hub-admin";
-            public  const string    ClusterInfo         = "cluster-info";
-        }
 
         public UserAuthenticator (EntityDatabase userDatabase, SharedEnv env = null, IUserAuth userAuth = null)
         {
