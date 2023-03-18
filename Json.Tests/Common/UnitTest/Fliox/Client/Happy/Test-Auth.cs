@@ -245,7 +245,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             var allCredentials  = store.credentials.QueryAll();
             // create credential is granted - to enable creating default admin token
             // var createTask      = store.credentials.Create(new UserCredential{ id= new ShortString("create-id") });
-            var upsertTask      = store.credentials.Upsert(new UserCredential{ id= new ShortString("upsert-id") });
+            var upsertTask      = store.credentials.Upsert(new UserCredential{ id= "upsert-id" });
             await store.TrySyncTasks();
             
             AreEqual($"PermissionDenied ~ not authorized. user: '{user}'", allCredentials.Error.Message);
@@ -253,15 +253,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         }
         
         private static async Task AssertServerStore(UserStore store) {
-            var credTask        = store.credentials.Read().Find(new ShortString("test-operation"));
+            var credTask        = store.credentials.Read().Find("test-operation");
             await store.TrySyncTasks();
             
             var cred = credTask.Result;
-            AreEqual("test-operation-token", cred.token.AsString());
+            AreEqual("test-operation-token", cred.token);
         }
         
         private static async Task AssertAuthUserStore(UserStore store) {
-            var credTask        = store.credentials.Read().Find(new ShortString("test-operation"));
+            var credTask        = store.credentials.Read().Find("test-operation");
             await store.TrySyncTasks();
             
             AreEqual("PermissionDenied ~ not authorized. user: 'AuthenticationUser'", credTask.Error.Message);

@@ -59,8 +59,8 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
         private   readonly  User                                        allUsers;
         private   readonly  User                                        authenticatedUsers;
 
-        public   static readonly    ShortString AllUsersId              = new ShortString("all-users");
-        public   static readonly    ShortString AuthenticatedUsersId    = new ShortString("authenticate-users");
+        public   static readonly    string      AllUsersId              = "all-users";
+        public   static readonly    string      AuthenticatedUsersId    = "authenticate-users";
         internal static readonly    string      AdminId                 = "admin";
         internal static readonly    string      HubAdminId              = "hub-admin";
         public   static readonly    string      ClusterInfoId           = "cluster-info";
@@ -95,14 +95,14 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
             var userStore           = new UserStore(userHub) { UserId = UserStore.Server };
             userStore.WritePretty   = true;
             var adminCredential     = new UserCredential {
-                id      = new ShortString(AdminId),
-                token   = new ShortString(token),
+                id      = AdminId,
+                token   = token,
             };
             userStore.credentials.Create(adminCredential);
             
             // --- admin / hub-admin
             var adminPermission     = new UserPermission {
-                id      = new ShortString(AdminId),
+                id      = AdminId,
                 roles   = new List<string> { HubAdminId }
             };
             var hubAdmin            = new Role {
@@ -187,7 +187,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
                 foreach (var role in permission.roles) {
                     if (userStore.roles.Local.ContainsKey(role))
                         continue;
-                    var error = $"role not found. role: '{role}' in permission: {permission.id}";
+                    var error = $"role not found. role: '{role}' in permission: '{permission.id}'";
                     errors.Add(error);
                 }
             }
@@ -201,6 +201,11 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
                     taskRight.Validate(validation);
                 }
             }
+        }
+        
+        internal void InvalidateUsers(IEnumerable<string> userIds) {
+            var ids = userIds.Select(id => new ShortString(id)).ToHashSet(ShortString.Equality);
+            InvalidateUsers(ids);
         }
         
         internal void InvalidateUsers(ICollection<ShortString> userIds) {
@@ -316,11 +321,12 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
                     default:
                         throw new InvalidOperationException($"unexpected PreAuthType type: {type}");
                 }
-                var auth    = userAuth ?? userStore;
-                var userId  = syncRequest.userId;
-                var token   = syncRequest.token;
-                var command = new Credentials { userId = userId, token = token };
-                var result  = await auth.AuthenticateAsync(command).ConfigureAwait(false);
+                var auth        = userAuth ?? userStore;
+                var userIdShort = syncRequest.userId;
+                var userId      = userIdShort.AsString();
+                var token       = syncRequest.token;
+                var command     = new Credentials { userId = userId, token = token.AsString() };
+                var result      = await auth.AuthenticateAsync(command).ConfigureAwait(false);
                 
                 // authentication failed?
                 if (!result.isValid) {
@@ -339,10 +345,10 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
                     await SetUserAuthAsync(authenticated, userStore);
                 }
                 ua.AddUserAuth(authenticated);
-                user ??= new User(userId);
+                user ??= new User(userIdShort);
                 user.Set(token, ua.GetTaskAuthorizer(), ua.GetHubPermission(), ua.GetRoles());
                 user.SetGroups(ua.GetGroups());
-                users.TryAdd(userId, user);
+                users.TryAdd(userIdShort, user);
                 syncContext.AuthenticationSucceed(user, user.taskAuthorizer, user.hubPermission);
             }
         }
@@ -393,10 +399,11 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
         public override async Task SetUserOptionsAsync (User user, UserParam param) {
             var store       = new UserStore(userHub);
             store.UserId    = UserStore.AuthenticationUser;
-            var read        = store.targets.Read().Find(user.userId);
+            var userId      = user.userId.AsString();
+            var read        = store.targets.Read().Find(userId);
             await store.SyncTasks().ConfigureAwait(false);
             
-            var userTarget      = read.Result ?? new UserTarget { id = user.userId, groups = new List<ShortString>() };
+            var userTarget      = read.Result ?? new UserTarget { id = userId, groups = new List<string>() };
             var groups          = User.UpdateGroups(userTarget.groups, param);
             userTarget.groups   = groups.ToList();
             store.targets.Upsert(userTarget);
@@ -407,7 +414,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
         
         private async Task SetUserAuthAsync(User user, UserStore userStore) {
             var ua = new UserAuthInfo();
-            var error   = await GetUserAuthInfoAsync(userStore, user.userId, ua);
+            var error   = await GetUserAuthInfoAsync(userStore, user.userId.AsString(), ua);
             if (error != null) {
                 user.Set(default, TaskAuthorizer.None, HubPermission.None, null);
                 return;
@@ -415,7 +422,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
             user.Set(default, ua.GetTaskAuthorizer(), ua.GetHubPermission(), ua.GetRoles());
         }
 
-        private async Task<string> GetUserAuthInfoAsync(UserStore userStore, ShortString userId, UserAuthInfo result) {
+        private async Task<string> GetUserAuthInfoAsync(UserStore userStore, string userId, UserAuthInfo result) {
             var readPermission  = userStore.permissions.Read().Find(userId);
             var readTarget      = userStore.targets.Read().Find(userId);
             await userStore.SyncTasks().ConfigureAwait(false);

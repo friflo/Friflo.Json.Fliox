@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Client;
@@ -191,15 +192,16 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             }
         }
         
-        internal void UpdateSubUserGroups(in ShortString userId, IReadOnlyCollection<ShortString> groups) {
+        internal void UpdateSubUserGroups(string userId, IReadOnlyCollection<string> groups) {
             EventSubUser subUser;
             lock (intern.monitor) {
-                if (!intern.subUsers.TryGetValue(userId, out subUser))
+                if (!intern.subUsers.TryGetValue(new ShortString(userId), out subUser))
                     return;
             }
             subUser.groups.Clear();
             if (groups != null) {
-                subUser.groups.UnionWith(groups);
+                var groupsShort = groups.Select(group => new ShortString(group)); 
+                subUser.groups.UnionWith(groupsShort);
             }
         }
         

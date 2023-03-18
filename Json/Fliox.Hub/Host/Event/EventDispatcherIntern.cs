@@ -83,7 +83,8 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                 return subClient;
             }
             if (!subUsers.TryGetValue(user.userId, out var subUser)) {
-                subUser = new EventSubUser (user.userId, user.GetGroups());
+                var groups = user.GetGroups().Select(group => new ShortString(group));
+                subUser = new EventSubUser (user.userId, groups);
                 subUsers.TryAdd(user.userId, subUser);
             }
             var dispatcher = eventDispatcher.dispatching == EventDispatching.QueueSend ? eventDispatcher : null;

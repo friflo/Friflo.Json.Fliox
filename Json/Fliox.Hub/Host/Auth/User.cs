@@ -24,7 +24,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
         /** not null */ public          HubPermission                   HubPermission   => hubPermission;
         /** not null */ public          IReadOnlyCollection<string>     Roles           => roles ?? Array.Empty<string>();
 
-                        public override string                          ToString() => userId.AsString();
+                        public override string                          ToString()      => userId.AsString();
 
         // --- internal
         /** nullable */ [Browse(Never)] internal    ShortString         token;
@@ -37,10 +37,12 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
         internal readonly   ConcurrentDictionary<ShortString, Empty>    clients;        // key: clientId
         /// <b>Note</b> requires lock when accessing. Did not use ConcurrentDictionary to avoid heap allocation
         internal readonly   Dictionary<ShortString, RequestCount>       requestCounts;  // key: database
-        private             HashSet<ShortString>                        groups;         // can be null
+        private             HashSet<string>                             groups;         // can be null
         
-        public static readonly  ShortString   AnonymousId = new ShortString("anonymous");
+        public static readonly  string   AnonymousId = "anonymous";
 
+        internal User (string  userId) : this (new ShortString(userId)) { }
+        
         internal User (in ShortString  userId) {
             if (userId.IsNull()) throw new ArgumentNullException(nameof(userId));
             this.userId         = userId;
@@ -57,29 +59,27 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
             return this;
         }
         
-        public  IReadOnlyCollection<ShortString> GetGroups() {
+        public  IReadOnlyCollection<string> GetGroups() {
             if (groups != null)
                 return groups;
-            return Array.Empty<ShortString>();
+            return Array.Empty<string>();
         }
         
-        internal void SetGroups(IReadOnlyCollection<ShortString> groups) {
-            this.groups = groups?.Count > 0 ? groups.ToHashSet(ShortString.Equality) : null;
+        internal void SetGroups(IReadOnlyCollection<string> groups) {
+            this.groups = groups?.Count > 0 ? groups.ToHashSet() : null;
         }
         
         public void SetUserOptions(UserParam param) {
             groups = UpdateGroups(groups, param);
         }
         
-        public static HashSet<ShortString> UpdateGroups(ICollection<ShortString> groups, UserParam param) {
-            var result = groups != null ? new HashSet<ShortString>(groups, ShortString.Equality) : new HashSet<ShortString>(ShortString.Equality);
-            var addGroups = param.addGroups;
-            if (addGroups != null) {
-                result.UnionWith(addGroups);
+        public static HashSet<string> UpdateGroups(ICollection<string> groups, UserParam param) {
+            var result = groups != null ? new HashSet<string>(groups) : new HashSet<string>();
+            if (param.addGroups != null) {
+                result.UnionWith(param.addGroups);
             }
-            var removeGroups = param.removeGroups;
-            if (removeGroups != null) {
-                foreach (var item in removeGroups) {
+            if (param.removeGroups != null) {
+                foreach (var item in param.removeGroups) {
                     result.Remove(item);                    
                 }
             }

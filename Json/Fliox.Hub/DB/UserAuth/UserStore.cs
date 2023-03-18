@@ -20,10 +20,10 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
     public sealed class UserStore : FlioxClient, IUserAuth
     {
         // --- containers
-        public   readonly   EntitySet <ShortString, UserCredential> credentials;
-        public   readonly   EntitySet <ShortString, UserPermission> permissions;
-        public   readonly   EntitySet <string,      Role>           roles;
-        public   readonly   EntitySet <ShortString, UserTarget>     targets;
+        public   readonly   EntitySet <string, UserCredential> credentials;
+        public   readonly   EntitySet <string, UserPermission> permissions;
+        public   readonly   EntitySet <string, Role>           roles;
+        public   readonly   EntitySet <string, UserTarget>     targets;
         
         /// <summary>"userId" used for a <see cref="UserStore"/> to perform user authentication.</summary>
         public const string Server              = "Server";

@@ -165,7 +165,7 @@ namespace Friflo.Json.Fliox.Hub.Host
                 var authenticator = context.Hub.Authenticator;
                 await authenticator.SetUserOptionsAsync(context.User, options).ConfigureAwait(false);
                 
-                eventDispatcher.UpdateSubUserGroups(user.userId, groups);
+                eventDispatcher.UpdateSubUserGroups(user.userId.AsString(), groups);
             }
             
             var counts = new List<RequestCount>();
@@ -175,7 +175,8 @@ namespace Friflo.Json.Fliox.Hub.Host
             foreach (var clientPair in user.clients) {
                 clients.Add(clientPair.Key);
             }
-            return new UserResult { groups = groups.ToArray(), counts = counts, clients = clients };
+            var groupArray = groups.ToArray();
+            return new UserResult { groups = groupArray, counts = counts, clients = clients };
         }
         
         /// <summary>

@@ -27,7 +27,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             {
                 client1.ClientId    = "client-1";
                 client1.UserId      = "user-1";
-                var userParam       = new UserParam { addGroups = new List<ShortString> { new ShortString("group-1") } };
+                var userParam       = new UserParam { addGroups = new List<string> { "group-1" } };
                 client1.std.User(userParam);
                 client1.SyncTasks().Wait();
                 

@@ -137,7 +137,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             var users   = result.users.Result;
             AreEqual(2, users.Count);
             
-            var anonymousInfo = users.Find(i => i.id.IsEqual(User.AnonymousId));
+            var anonymousInfo = users.Find(i => i.id.IsEqual(new ShortString(User.AnonymousId)));
             IsNull(anonymousInfo);
             
             var adminInfo = users.Find(i => i.id.IsEqual(new ShortString("monitor-admin"))).ToString();

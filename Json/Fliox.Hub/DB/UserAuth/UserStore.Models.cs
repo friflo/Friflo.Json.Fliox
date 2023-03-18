@@ -14,9 +14,9 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
     /// <summary>contains a <see cref="token"/> assigned to a user used for authentication</summary>
     public sealed class UserCredential {
         /// <summary>user id</summary>
-        [Required]  public  ShortString     id;
+        [Required]  public  string          id;
         /// <summary>user token</summary>
-                    public  ShortString     token;
+                    public  string          token;
                         
         public override     string          ToString() => JsonSerializer.Serialize(this);
     }
@@ -24,7 +24,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
     /// <summary>Set of <see cref="roles"/> assigned to a user used for authorization</summary>
     public sealed class UserPermission {
         /// <summary>user id</summary>
-        [Required]  public  ShortString     id;
+        [Required]  public  string          id;
         /// <summary>set of <see cref="roles"/> assigned to a user</summary>
         [Relation(nameof(UserStore.roles))]
                     public  List<string>    roles;
@@ -52,9 +52,9 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
     /// </summary>
     public sealed class UserTarget {
         /// <summary>user id</summary>
-        [Required]  public  ShortString         id;
+        [Required]  public  string              id;
         /// <summary>list of <see cref="groups"/> assigned to a user</summary>
-        [Required]  public  List<ShortString>   groups;
+        [Required]  public  List<string>        groups;
                         
         public override     string              ToString() => JsonSerializer.Serialize(this);
     }
@@ -62,8 +62,8 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
     // ---------------------------- command models - aka DTO's ---------------------------
     /// <summary>user <see cref="Credentials"/> used for authentication</summary>
     public sealed class Credentials {
-        [Required]  public  ShortString     userId;
-        [Required]  public  ShortString     token;
+        [Required]  public  string          userId;
+        [Required]  public  string          token;
 
         public override     string          ToString() => $"userId: {userId}";
     }

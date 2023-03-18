@@ -36,14 +36,14 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
         
         // ReSharper disable once UnusedMember.Local
         // ReSharper disable once UnusedParameter.Local
-        private void CredentialChange(Changes<ShortString, UserCredential> changes, EventContext context) {
-            var changedUsers = new HashSet<ShortString>(ShortString.Equality);
+        private void CredentialChange(Changes<string, UserCredential> changes, EventContext context) {
+            var changedUsers = new List<string>();
             changes.GetKeys(changedUsers);
             userAuthenticator.InvalidateUsers(changedUsers);
         }
         
-        private void PermissionChange(Changes<ShortString, UserPermission> changes, EventContext context) {
-            var changedUsers = new HashSet<ShortString>(ShortString.Equality);
+        private void PermissionChange(Changes<string, UserPermission> changes, EventContext context) {
+            var changedUsers = new List<string>();
             changes.GetKeys(changedUsers);
             userAuthenticator.InvalidateUsers(changedUsers);
         }
@@ -62,19 +62,19 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
             userAuthenticator.InvalidateUsers(affectedUsers);
         }
         
-        private void TargetChange(Changes<ShortString, UserTarget> changes, EventContext context) {
+        private void TargetChange(Changes<string, UserTarget> changes, EventContext context) {
             var dispatcher  = userAuthenticator.userHub.EventDispatcher;
             var users       = userAuthenticator.users;
             foreach (var upsert in changes.Upserts) {
                 var userTarget = upsert.entity;
                 dispatcher.UpdateSubUserGroups(userTarget.id, userTarget.groups);
-                if (!users.TryGetValue(userTarget.id, out User user))
+                if (!users.TryGetValue(new ShortString(userTarget.id), out User user))
                     continue;
                 user.SetGroups(userTarget.groups);
             }
             foreach (var delete in changes.Deletes) {
                 dispatcher.UpdateSubUserGroups(delete.key, null);
-                if (!users.TryGetValue(delete.key, out User user))
+                if (!users.TryGetValue(new ShortString(delete.key), out User user))
                     continue;
                 user.SetGroups(null);
             }

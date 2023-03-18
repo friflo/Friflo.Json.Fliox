@@ -19,7 +19,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
 
         public    override  string                                      ToString() => $"user: {userId.AsString()}";
 
-        internal EventSubUser (in ShortString userId, IReadOnlyCollection<ShortString> groups) {
+        internal EventSubUser (in ShortString userId, IEnumerable<ShortString> groups) {
             this.clients    = new ConcurrentDictionary<EventSubClient, bool>();
             this. groups    = new HashSet<ShortString>(ShortString.Equality);
             this.userId = userId;

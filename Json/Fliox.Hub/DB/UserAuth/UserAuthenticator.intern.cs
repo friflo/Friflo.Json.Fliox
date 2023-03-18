@@ -33,7 +33,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
     {
         private  readonly   List<TaskAuthorizer>    taskAuthorizers = new List<TaskAuthorizer>();
         private  readonly   List<HubPermission>     hubPermissions  = new List<HubPermission>();
-        private  readonly   HashSet<ShortString>    groups          = new HashSet<ShortString>(ShortString.Equality);
+        private  readonly   HashSet<string>         groups          = new HashSet<string>();
         private  readonly   HashSet<string>         roles           = new HashSet<string>();
         
         internal void AddRole(UserAuthRole role) {
@@ -45,7 +45,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
             hubPermissions.Add(role.hubPermission);
         }
         
-        internal void AddGroups(List<ShortString> groups) {
+        internal void AddGroups(List<string> groups) {
             if (groups == null)
                 return;
             this.groups.UnionWith(groups);
@@ -65,7 +65,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
             return roles.ToArray();
         }
         
-        internal IReadOnlyCollection<ShortString> GetGroups() {
+        internal IReadOnlyCollection<string> GetGroups() {
             return groups;
         }
         
