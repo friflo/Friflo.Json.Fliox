@@ -17,7 +17,7 @@ namespace Gen.Friflo.Json.Fliox.Hub.DB.Cluster
             switch (field.genIndex) {
                 case Gen_queueEvents:        obj.queueEvents        = reader.ReadBoolean (field, out success);  return success;
                 case Gen_queuedEvents:       obj.queuedEvents       = reader.ReadInt32   (field, out success);  return success;
-                case Gen_clientId:           obj.clientId           = reader.ReadShortString (field, obj.clientId,           out success);  return success;
+                case Gen_clientId:           obj.clientId           = reader.ReadString  (field, obj.clientId,           out success);  return success;
                 case Gen_subscriptionEvents: obj.subscriptionEvents = reader.ReadStructNull (field, obj.subscriptionEvents, out success);  return success;
             }
             return false;
@@ -26,7 +26,7 @@ namespace Gen.Friflo.Json.Fliox.Hub.DB.Cluster
         private static void Write(ref ClientResult obj, PropField[] fields, ref Writer writer, ref bool firstMember) {
             writer.WriteBoolean (fields[Gen_queueEvents],        obj.queueEvents,        ref firstMember);
             writer.WriteInt32   (fields[Gen_queuedEvents],       obj.queuedEvents,       ref firstMember);
-            writer.WriteShortString (fields[Gen_clientId],           obj.clientId,           ref firstMember);
+            writer.WriteString  (fields[Gen_clientId],           obj.clientId,           ref firstMember);
             writer.WriteStructNull (fields[Gen_subscriptionEvents], obj.subscriptionEvents, ref firstMember);
         }
     }

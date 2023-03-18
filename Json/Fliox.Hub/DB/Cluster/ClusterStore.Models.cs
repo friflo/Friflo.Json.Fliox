@@ -134,7 +134,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
 
     public sealed class UserResult {
         [Required]  public  string[]            groups;
-        [Required]  public  List<ShortString>   clients;
+        [Required]  public  List<string>        clients;
         /// <summary>number executed requests and tasks per database</summary>
         [Required]  public  List<RequestCount>  counts = new List<RequestCount>();
     }
@@ -161,7 +161,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
         /// <summary>return the client id set in the <see cref="Protocol.SyncRequest"/>. Can be null.<br/>
         /// A new client id is created in case any task requires a client id and the <see cref="Protocol.SyncRequest"/> did not set a client id.<br/>
         /// E.g. <see cref="ClientParam.ensureClientId"/> = true or <see cref="ClientParam.queueEvents"/> = true </summary>
-                    public  ShortString         clientId;
+                    public  string              clientId;
         /// <summary>number of sent or queued client events and its message and change subscriptions</summary>
                     public  SubscriptionEvents? subscriptionEvents;
     }
@@ -191,7 +191,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
     public sealed class ChangeSubscription
     {
         /// <summary>name of subscribed container</summary>
-        [Required]  public  ShortString         container;
+        [Required]  public  string              container;
         /// <summary>type of subscribed changes like create, upsert, delete and patch</summary>
         [Required]  public  List<EntityChange>  changes;
         /// <summary>filter to narrow the amount of change events</summary>

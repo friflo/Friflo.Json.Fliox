@@ -171,9 +171,9 @@ namespace Friflo.Json.Fliox.Hub.Host
             var counts = new List<RequestCount>();
             ClusterUtils.CountsMapToList(counts, user.requestCounts, null);
             
-            var clients = new List<ShortString>();
+            var clients = new List<string>();
             foreach (var clientPair in user.clients) {
-                clients.Add(clientPair.Key);
+                clients.Add(clientPair.Key.AsString());
             }
             var groupArray = groups.ToArray();
             return new UserResult { groups = groupArray, counts = counts, clients = clients };
@@ -200,7 +200,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             }
             var hub         = context.Hub;
             var dispatcher  = hub.EventDispatcher;
-            var result      = new ClientResult { clientId = context.ClientId };
+            var result      = new ClientResult { clientId = context.ClientId.AsString() };
             if (dispatcher != null && !context.ClientId.IsNull() && dispatcher.TryGetSubscriber(context.ClientId, out var client)) {
                 result.queueEvents          = client.queueEvents;
                 result.queuedEvents         = client.QueuedEventsCount;

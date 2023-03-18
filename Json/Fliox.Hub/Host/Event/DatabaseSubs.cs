@@ -107,7 +107,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             subs.Capacity = changeSubsLength;
             foreach (var sub in changeSubs) {
                 var changeSubscription = new ChangeSubscription {
-                    container   = sub.container,
+                    container   = sub.container.AsString(),
                     changes     = EntityChangeUtils.FlagsToList(sub.changes),
                     filter      = sub.filter
                 };
