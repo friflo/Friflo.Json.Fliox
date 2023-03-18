@@ -49,7 +49,13 @@ namespace Friflo.Json.Fliox.Hub.Host
                     var entity  = entities[n];
                     // if (payload.json == null)  continue; // TAG_ENTITY_NULL
                     var key     = entity.key;
-                    var path = FilePath(key.AsString());
+                    var path    = FilePath(key.AsString());
+                    // use File.Exists() to avoid throwing exception when calling new FileStream()
+                    if (File.Exists(path)) {
+                        var error = new EntityError(EntityErrorType.WriteError, nameShort, key, "file already exist");
+                        AddEntityError(ref createErrors, key, error);
+                        continue;
+                    }
                     try {
                         await FileUtils.WriteText(path, entity.value, FileMode.CreateNew).ConfigureAwait(false);
                     } catch (Exception e) {
