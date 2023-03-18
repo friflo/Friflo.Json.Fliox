@@ -53,7 +53,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
         private async Task<AuthResult> AuthenticateUser (Param<Credentials> param, MessageContext command) {
             using(var pooled = command.Pool.Type(() => new UserStore(command.Hub)).Get()) {
                 var store           = pooled.instance;
-                store.UserId        = UserStore.Server;
+                store.UserId        = UserDB.ID.Server;
                 if (!param.GetValidate(out var authenticate, out var error)) {
                     command.Error(error);
                     return null;

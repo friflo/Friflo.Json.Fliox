@@ -25,11 +25,6 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
         public   readonly   EntitySet <string, Role>           roles;
         public   readonly   EntitySet <string, UserTarget>     targets;
         
-        /// <summary>"userId" used for a <see cref="UserStore"/> to perform user authentication.</summary>
-        public const string Server              = "Server";
-        /// <summary>"userId" used for a <see cref="UserStore"/> to request a user authentication with its token</summary>
-        public const string AuthenticationUser  = "AuthenticationUser";
-        
         public static class ID {
             /// <summary>user id in <see cref="UserStore.permissions"/> used for all users - authenticated and anonymous</summary>
             public  const string    AllUsers            = "all-users";

@@ -24,7 +24,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
             
         internal async Task SetupSubscriptions() {
             var store       = new UserStore (userAuthenticator.userHub);
-            store.UserId    = UserStore.AuthenticationUser;
+            store.UserId    = UserDB.ID.AuthenticationUser;
             store.ClientId  = "user_db_subscriber";
             store.SetEventProcessor(new SynchronousEventProcessor());
             store.credentials.SubscribeChanges  (Change.All, CredentialChange);

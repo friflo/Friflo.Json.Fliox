@@ -176,7 +176,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
             // UserStore is not thread safe, create new one per Authenticate request.
             using (var pooled = syncContext.pool.Type(() => new UserStore (userHub)).Get()) {
                 var userStore       = pooled.instance;
-                userStore.UserId    = UserStore.AuthenticationUser;
+                userStore.UserId    = UserDB.ID.AuthenticationUser;
                 var type            = syncRequest.intern.preAuthType;
                 var user            = syncRequest.intern.preAuthUser;
                 var all             = allUsers;
@@ -274,7 +274,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
         
         public override async Task SetUserOptionsAsync (User user, UserParam param) {
             var store       = new UserStore(userHub);
-            store.UserId    = UserStore.AuthenticationUser;
+            store.UserId    = UserDB.ID.AuthenticationUser;
             var userId      = user.userId.AsString();
             var read        = store.targets.Read().Find(userId);
             await store.SyncTasks().ConfigureAwait(false);

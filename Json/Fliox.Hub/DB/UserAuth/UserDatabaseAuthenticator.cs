@@ -11,6 +11,16 @@ using static Friflo.Json.Fliox.Hub.Host.Auth.Rights.OperationType;
 
 namespace Friflo.Json.Fliox.Hub.DB.UserAuth
 {
+    public static class UserDB
+    {
+        public static class ID {
+            /// <summary>"userId" used for a <see cref="UserStore"/> to perform user authentication.</summary>
+            public const string Server              = "Server";
+            /// <summary>"userId" used for a <see cref="UserStore"/> to request a user authentication with its token</summary>
+            public const string AuthenticationUser  = "AuthenticationUser";
+        }
+    }
+    
     /// <summary>
     /// Authenticate users stored in the user database.
     /// </summary>
@@ -19,16 +29,16 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
     /// The schema of the user database is defined in <see cref="UserStore"/>.
     /// <br/>
     /// The access to the user database itself requires also authentication by one of the predefined users:
-    /// <see cref="UserStore.AuthenticationUser"/> or <see cref="UserStore.Server"/>.
+    /// <see cref="UserDB.ID.AuthenticationUser"/> or <see cref="UserDB.ID.Server"/>.
     /// <br></br>
-    /// A <see cref="UserStore.AuthenticationUser"/> user is only able to <see cref="AuthenticateAsync"/> itself.
-    /// A <see cref="UserStore.Server"/> user is able to read credentials and roles stored in a user database.
+    /// A <see cref="UserDB.ID.AuthenticationUser"/> user is only able to <see cref="AuthenticateAsync"/> itself.
+    /// A <see cref="UserDB.ID.Server"/> user is able to read credentials and roles stored in a user database.
     /// </remarks>
     public sealed class UserDatabaseAuthenticator : Authenticator
     {
         private  readonly   Dictionary<ShortString, TaskAuthorizer> userRights;
         private  readonly   User                                    anonymous;
-        
+
         public UserDatabaseAuthenticator(string userDbName) {
             var changes         = new [] { EntityChange.create, EntityChange.upsert, EntityChange.delete, EntityChange.merge };
             var authUserRights  = new AuthorizeAny(new TaskAuthorizer[] {
@@ -47,8 +57,8 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
                 new AuthorizeContainer       (nameof(UserStore.roles),       new []{ upsert, create }, userDbName)
             });
             userRights = new Dictionary<ShortString, TaskAuthorizer> (ShortString.Equality) {
-                { new ShortString(UserStore.AuthenticationUser),    authUserRights },
-                { new ShortString(UserStore.Server),                serverRights   },
+                { new ShortString(UserDB.ID.AuthenticationUser),    authUserRights },
+                { new ShortString(UserDB.ID.Server),                serverRights   },
             };
             anonymous = new User(User.AnonymousId).Set(default, TaskAuthorizer.None, HubPermission.None, null);
         }
