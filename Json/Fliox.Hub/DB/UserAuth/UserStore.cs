@@ -31,10 +31,15 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
         public const string AuthenticationUser  = "AuthenticationUser";
         
         public static class ID {
+            /// <summary>user id in <see cref="UserStore.permissions"/> used for all users - authenticated and anonymous</summary>
             public  const string    AllUsers            = "all-users";
+            /// <summary>user id in <see cref="UserStore.permissions"/> used for authenticated users</summary>
             public  const string    AuthenticatedUsers  = "authenticate-users";
+            /// <summary>user id in <see cref="UserStore.permissions"/> used for Hub administrator</summary>
             public  const string    Admin               = "admin";
+            /// <summary>role id in <see cref="UserStore.roles"/> used to enable full Hub access</summary>
             public  const string    HubAdmin            = "hub-admin";
+            /// <summary>role id in <see cref="UserStore.roles"/> used to enable reading cluster database</summary>
             public  const string    ClusterInfo         = "cluster-info";
         }
         
