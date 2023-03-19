@@ -4,6 +4,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Client;
+using Friflo.Json.Fliox.Hub.DB.Cluster;
 using Friflo.Json.Fliox.Hub.DB.UserAuth;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.Event;
@@ -28,6 +29,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             var hub          	= new FlioxHub(database, TestGlobals.Shared);
             var eventDispatcher = new EventDispatcher(EventDispatching.Send); // required for SubscribeMessage() and SubscribeChanges()
             
+            hub.AddExtensionDB (new ClusterDB("cluster", hub));     // optional - expose info of hosted databases. cluster is required by Hub Explorer
             hub.Authenticator   = authenticator;
             hub.EventDispatcher = eventDispatcher;
             hub.AddExtensionDB(userDatabase);
@@ -67,6 +69,31 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 await client.TrySyncTasks();
                 IsFalse(message.Success);
                 AreEqual("PermissionDenied ~ not authorized. Authentication failed. user: 'unknown'", message.Error.Message);
+            });
+        }
+        
+        // [Test]
+        public static void TestUserAuth_ClusterAccess () {
+            SingleThreadSynchronizationContext.Run(async () => {
+                var cx          = await CreateHub();
+                var hub         = cx.hub;
+                var cluster     = new ClusterStore(hub, "cluster")    { UserId = "unknown",   Token = "unknown" };
+                
+                var containers = cluster.containers.QueryAll();
+                await cluster.TrySyncTasks();
+                IsFalse(containers.Success);
+                AreEqual("PermissionDenied ~ not authorized. Authentication failed. user: 'unknown'", containers.Error.Message);
+                
+                await cx.authenticator.SetClusterPermissions("cluster", Users.All);
+                containers = cluster.containers.QueryAll();
+                await cluster.TrySyncTasks();
+                IsTrue(containers.Success);
+                
+                await cx.authenticator.SetClusterPermissions("cluster", Users.Authenticated);
+                containers = cluster.containers.QueryAll();
+                await cluster.TrySyncTasks();
+                IsFalse(containers.Success);
+                AreEqual("PermissionDenied ~ not authorized. Authentication failed. user: 'unknown'", containers.Error.Message);
             });
         }
     }

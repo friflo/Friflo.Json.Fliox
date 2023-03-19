@@ -63,10 +63,10 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
                 taskRights  = new List<TaskRight> { new DbFullRight { database = clusterDB} },
                 description = "Allow reading the cluster database"
             };
-            userStore.permissions.Create(authenticatedPermission);
-            userStore.roles.Create(clusterInfo);
+            userStore.permissions.Upsert(authenticatedPermission);
+            userStore.roles.Upsert(clusterInfo);
 
-            await userStore.TrySyncTasks();
+            await userStore.SyncTasks();
         }
         
         /// <summary>

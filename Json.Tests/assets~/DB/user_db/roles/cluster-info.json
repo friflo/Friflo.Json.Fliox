@@ -1,7 +1,10 @@
 {
     "id": "cluster-info",
-    "description": "Allow reading the cluster database",
-    "taskRights": [        
-        { "type": "dbFull", "database": "cluster" }        
-    ]
+    "taskRights": [
+        {
+            "type":"dbFull",
+            "database": "cluster"
+        }
+    ],
+    "description": "Allow reading the cluster database"
 }
