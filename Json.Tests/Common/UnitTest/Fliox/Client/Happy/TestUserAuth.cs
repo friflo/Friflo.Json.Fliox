@@ -73,7 +73,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         }
         
         [Test]
-        public static void TestUserAuth_ClusterAccess () {
+        public static void TestUserAuth_ClusterAccessAll () {
             SingleThreadSynchronizationContext.Run(async () => {
                 var cx          = await CreateHub();
                 var hub         = cx.hub;
@@ -94,6 +94,30 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 await cluster.TrySyncTasks();
                 IsFalse(containers.Success);
                 AreEqual("PermissionDenied ~ not authorized. Authentication failed. user: 'unknown'", containers.Error.Message);
+            });
+        }
+        
+        [Test]
+        public static void TestUserAuth_ClusterAccessAuthenticated () {
+            SingleThreadSynchronizationContext.Run(async () => {
+                var cx          = await CreateHub();
+                var hub         = cx.hub;
+                var peterCred   = new UserCredential { id = "Peter", token = "Peter" };
+                var userStore   = new UserStore(hub, TestGlobals.UserDB)    { UserId = "admin",   Token = "admin" };
+                userStore.credentials.Create(peterCred);
+                await userStore.SyncTasks();
+                
+                //
+                var cluster     = new ClusterStore(hub, "cluster")    { UserId = "Peter",   Token = "Peter" };
+                var containers = cluster.containers.QueryAll();
+                await cluster.TrySyncTasks();
+                IsFalse(containers.Success);
+                AreEqual("PermissionDenied ~ not authorized. user: 'Peter'", containers.Error.Message);
+                
+                await cx.authenticator.SetClusterPermissions("cluster", Users.Authenticated);
+                containers = cluster.containers.QueryAll();
+                await cluster.TrySyncTasks();
+                IsTrue(containers.Success);
             });
         }
     }

@@ -12,6 +12,7 @@ using Friflo.Json.Fliox.Hub.Host.Auth;
 using Friflo.Json.Fliox.Hub.Host.Auth.Rights;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Utils;
+using Friflo.Json.Fliox.Utils;
 using static Friflo.Json.Fliox.Hub.DB.UserAuth.UserStore;
 
 // ReSharper disable InlineTemporaryVariable
@@ -58,6 +59,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
         /// <summary>Contains authorization permissions for all users</summary>
         private   readonly  User                                        allUsers;
         private   readonly  User                                        authenticatedUsers;
+        private   readonly  ObjectPool<UserStore>                       storePool;
 
         public UserAuthenticator (EntityDatabase userDatabase, SharedEnv env = null, IUserAuth userAuth = null)
         {
@@ -67,12 +69,13 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
             var sharedEnv           = env  ?? SharedEnv.Default;
             userDatabase.Schema     = new DatabaseSchema(typeof(UserStore));
             userHub        	        = new FlioxHub(userDatabase, sharedEnv);
-            userHub.Authenticator   = new UserDatabaseAuthenticator(userDatabase.name);  // authorize access to userDatabase
+            userHub.Authenticator   = new UserDatabaseAuthenticator(userHub);  // authorize access to userDatabase
             this.userAuth           = userAuth;
             roleCache               = new ConcurrentDictionary <string, UserAuthRole>();
             anonymous               = new User(User.AnonymousId);
             allUsers                = new User(ID.AllUsers);
             authenticatedUsers      = new User(ID.AuthenticatedUsers);
+            storePool               = new ObjectPool<UserStore>(() => new UserStore(userHub));
         }
 
         public void Dispose() {
@@ -174,57 +177,59 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
         {
             // Note: UserStore could be cached. This requires a FlioxClient.ClearEntities()
             // UserStore is not thread safe, create new one per Authenticate request.
-            var userStore       = new UserStore (userHub);
-            userStore.UserId    = UserDB.ID.AuthenticationUser;
-            var type            = syncRequest.intern.preAuthType;
-            var user            = syncRequest.intern.preAuthUser;
-            var all             = allUsers;
-            if (all.invalidated) {
-                await SetUserAuthAsync(all, userStore); // ensure anonymous is not invalidated
-            }
-            var ua = new UserAuthInfo();
-            ua.AddUserAuth(all);
-            switch (type) {
-                case PreAuthType.MissingUserId:
-                case PreAuthType.MissingToken:
-                case PreAuthType.Failed:
-                    AuthenticateSynchronous(type, user, syncContext);
+            using (var pooled = storePool.Get()) {
+                var userStore       = pooled.instance;
+                userStore.UserId    = UserDB.ID.AuthenticationUser;
+                var type            = syncRequest.intern.preAuthType;
+                var user            = syncRequest.intern.preAuthUser;
+                var all             = allUsers;
+                if (all.invalidated) {
+                    await SetUserAuthAsync(all, userStore); // ensure anonymous is not invalidated
+                }
+                var ua = new UserAuthInfo();
+                ua.AddUserAuth(all);
+                switch (type) {
+                    case PreAuthType.MissingUserId:
+                    case PreAuthType.MissingToken:
+                    case PreAuthType.Failed:
+                        AuthenticateSynchronous(type, user, syncContext);
+                        return;
+                    case PreAuthType.UserUnknown:
+                    case PreAuthType.UserInvalidated:
+                        break;
+                    default:
+                        throw new InvalidOperationException($"unexpected PreAuthType type: {type}");
+                }
+                var auth        = userAuth ?? userStore;
+                var userIdShort = syncRequest.userId;
+                var userId      = userIdShort.AsString();
+                var token       = syncRequest.token;
+                var command     = new Credentials { userId = userId, token = token.AsString() };
+                var result      = await auth.AuthenticateAsync(command).ConfigureAwait(false);
+                
+                // authentication failed?
+                if (!result.isValid) {
+                    users.TryAdd(anonymous.userId, anonymous);
+                    syncContext.AuthenticationFailed(anonymous, InvalidUserToken, all.taskAuthorizer, all.hubPermission);
                     return;
-                case PreAuthType.UserUnknown:
-                case PreAuthType.UserInvalidated:
-                    break;
-                default:
-                    throw new InvalidOperationException($"unexpected PreAuthType type: {type}");
+                }
+                var error = await GetUserAuthInfoAsync(userStore, userId, ua).ConfigureAwait(false);
+                if (error != null) {
+                    users.TryAdd(anonymous.userId, anonymous);
+                    syncContext.AuthenticationFailed(anonymous, error, all.taskAuthorizer, all.hubPermission);
+                    return;
+                }
+                var authenticated = authenticatedUsers;
+                if (authenticated.invalidated) {
+                    await SetUserAuthAsync(authenticated, userStore);
+                }
+                ua.AddUserAuth(authenticated);
+                user ??= new User(userIdShort);
+                user.Set(token, ua.GetTaskAuthorizer(), ua.GetHubPermission(), ua.GetRoles());
+                user.SetGroups(ua.GetGroups());
+                users.TryAdd(userIdShort, user);
+                syncContext.AuthenticationSucceed(user, user.taskAuthorizer, user.hubPermission);
             }
-            var auth        = userAuth ?? userStore;
-            var userIdShort = syncRequest.userId;
-            var userId      = userIdShort.AsString();
-            var token       = syncRequest.token;
-            var command     = new Credentials { userId = userId, token = token.AsString() };
-            var result      = await auth.AuthenticateAsync(command).ConfigureAwait(false);
-            
-            // authentication failed?
-            if (!result.isValid) {
-                users.TryAdd(anonymous.userId, anonymous);
-                syncContext.AuthenticationFailed(anonymous, InvalidUserToken, all.taskAuthorizer, all.hubPermission);
-                return;
-            }
-            var error = await GetUserAuthInfoAsync(userStore, userId, ua).ConfigureAwait(false);
-            if (error != null) {
-                users.TryAdd(anonymous.userId, anonymous);
-                syncContext.AuthenticationFailed(anonymous, error, all.taskAuthorizer, all.hubPermission);
-                return;
-            }
-            var authenticated = authenticatedUsers;
-            if (authenticated.invalidated) {
-                await SetUserAuthAsync(authenticated, userStore);
-            }
-            ua.AddUserAuth(authenticated);
-            user ??= new User(userIdShort);
-            user.Set(token, ua.GetTaskAuthorizer(), ua.GetHubPermission(), ua.GetRoles());
-            user.SetGroups(ua.GetGroups());
-            users.TryAdd(userIdShort, user);
-            syncContext.AuthenticationSucceed(user, user.taskAuthorizer, user.hubPermission);
         }
         
         public override ClientIdValidation ValidateClientId(ClientController clientController, SyncContext syncContext) {

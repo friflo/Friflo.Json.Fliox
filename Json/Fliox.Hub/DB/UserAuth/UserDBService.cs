@@ -1,6 +1,7 @@
 // Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Client;
@@ -50,10 +51,12 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
             return true;
         }
         
-        private async Task<AuthResult> AuthenticateUser (Param<Credentials> param, MessageContext command) {
-            using(var pooled = command.Pool.Type(() => new UserStore(command.Hub)).Get()) {
-                var store           = pooled.instance;
-                store.UserId        = UserDB.ID.Server;
+        private async Task<AuthResult> AuthenticateUser (Param<Credentials> param, MessageContext command)
+        {
+            var authenticator = command.Hub.Authenticator as UserDatabaseAuthenticator ?? throw new InvalidOperationException("expect UserDatabaseAuthenticator");
+            using (var pooled = authenticator.storePool.Get()) {
+                var store       = pooled.instance;
+                store.UserId    = UserDB.ID.Server;
                 if (!param.GetValidate(out var authenticate, out var error)) {
                     command.Error(error);
                     return null;
