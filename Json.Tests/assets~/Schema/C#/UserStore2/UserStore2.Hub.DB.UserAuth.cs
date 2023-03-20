@@ -28,6 +28,7 @@ public class UserCredential {
 public class UserPermission {
     [Required]
     string        id;
+    [Required]
     List<string>  roles;
 }
 

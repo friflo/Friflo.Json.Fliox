@@ -26,7 +26,7 @@ class UserCredential:::cssEntity {
 class UserPermission:::cssEntity {
     <<Entity · id>>
     id     : string
-    roles? : string[]
+    roles  : string[]
 }
 UserPermission o.. "0..*" Role : roles
 

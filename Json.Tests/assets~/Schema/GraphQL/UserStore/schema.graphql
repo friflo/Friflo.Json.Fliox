@@ -102,12 +102,12 @@ input UserCredentialInput {
 
 type UserPermission {
     id    : String!
-    roles : [String!]
+    roles : [String!]!
 }
 
 input UserPermissionInput {
     id    : String!
-    roles : [String!]
+    roles : [String!]!
 }
 
 type Role {

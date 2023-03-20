@@ -53,7 +53,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
             });
             var serverRights    = new AuthorizeAny(new TaskAuthorizer[] {
                 new AuthorizeContainer       (nameof(UserStore.credentials), new []{ read, create },   userDbName),
-                new AuthorizeContainer       (nameof(UserStore.permissions), new []{ upsert, create }, userDbName),
+                new AuthorizeContainer       (nameof(UserStore.permissions), new []{ upsert, create, read }, userDbName),
                 new AuthorizeContainer       (nameof(UserStore.roles),       new []{ upsert, create }, userDbName)
             });
             userRights = new Dictionary<ShortString, TaskAuthorizer> (ShortString.Equality) {

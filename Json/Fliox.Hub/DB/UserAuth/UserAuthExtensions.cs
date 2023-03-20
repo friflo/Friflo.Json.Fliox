@@ -31,11 +31,11 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
         public static async Task SetAdminPermissions(this UserAuthenticator userAuthenticator, string token = "admin") {
             var userStore           = new UserStore(userAuthenticator.userHub) { UserId = UserDB.ID.Server };
             userStore.WritePretty   = true;
+            
             var adminCredential     = new UserCredential { id = Admin, token   = token };
             userStore.credentials.Create(adminCredential);
             
-            // --- admin / hub-admin
-            var adminPermission     = new UserPermission { id = Admin, roles   = new List<string> { HubAdmin } };
+            var adminPermission     = new UserPermission { id = Admin, roles   = new HashSet<string> { HubAdmin } };
             var hubAdmin            = new Role {
                 id          = HubAdmin,
                 taskRights  = new List<TaskRight> { new DbFullRight { database = "*"} },
@@ -55,14 +55,26 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
             var userStore           = new UserStore(userAuthenticator.userHub) { UserId = UserDB.ID.Server };
             userStore.WritePretty   = true;
 
-            // --- admin / hub-admin
-            var id = users == Users.All ? AllUsers : AuthenticatedUsers;
-            var authenticatedPermission = new UserPermission { id = id, roles = new List<string> { ClusterInfo } };
+            var readPermissions = userStore.permissions.Read();
+            var findAllUsers            = readPermissions.Find(AllUsers);
+            var findAuthenticatedUsers  = readPermissions.Find(AuthenticatedUsers);
+            await userStore.SyncTasks();
+            
+            var allPermission             = findAllUsers.Result             ?? new UserPermission { id = AllUsers, roles = new HashSet<string>()};
+            var authenticatedPermission   = findAuthenticatedUsers.Result   ?? new UserPermission { id = AuthenticatedUsers, roles = new HashSet<string>() };
+            
+            if (users == Users.All) {
+                allPermission.roles.Add(ClusterInfo);
+            } else {
+                allPermission.roles.Remove(ClusterInfo);
+                authenticatedPermission.roles.Add(ClusterInfo);
+            }
             var clusterInfo             = new Role {
                 id          = ClusterInfo,
                 taskRights  = new List<TaskRight> { new DbFullRight { database = clusterDB} },
                 description = "Allow reading the cluster database"
             };
+            userStore.permissions.Upsert(allPermission);
             userStore.permissions.Upsert(authenticatedPermission);
             userStore.roles.Upsert(clusterInfo);
 

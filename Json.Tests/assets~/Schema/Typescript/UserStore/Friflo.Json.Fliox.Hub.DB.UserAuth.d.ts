@@ -68,7 +68,7 @@ export class UserPermission {
     /** user id */
     id     : string;
     /** set of **roles** assigned to a user */
-    roles? : string[] | null;
+    roles  : string[];
 }
 
 /** Contains a set of **taskRights** used for task authorization */

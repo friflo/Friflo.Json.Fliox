@@ -174,59 +174,57 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
         {
             // Note: UserStore could be cached. This requires a FlioxClient.ClearEntities()
             // UserStore is not thread safe, create new one per Authenticate request.
-            using (var pooled = syncContext.pool.Type(() => new UserStore (userHub)).Get()) {
-                var userStore       = pooled.instance;
-                userStore.UserId    = UserDB.ID.AuthenticationUser;
-                var type            = syncRequest.intern.preAuthType;
-                var user            = syncRequest.intern.preAuthUser;
-                var all             = allUsers;
-                if (all.invalidated) {
-                    await SetUserAuthAsync(all, userStore); // ensure anonymous is not invalidated
-                }
-                var ua = new UserAuthInfo();
-                ua.AddUserAuth(all);
-                switch (type) {
-                    case PreAuthType.MissingUserId:
-                    case PreAuthType.MissingToken:
-                    case PreAuthType.Failed:
-                        AuthenticateSynchronous(type, user, syncContext);
-                        return;
-                    case PreAuthType.UserUnknown:
-                    case PreAuthType.UserInvalidated:
-                        break;
-                    default:
-                        throw new InvalidOperationException($"unexpected PreAuthType type: {type}");
-                }
-                var auth        = userAuth ?? userStore;
-                var userIdShort = syncRequest.userId;
-                var userId      = userIdShort.AsString();
-                var token       = syncRequest.token;
-                var command     = new Credentials { userId = userId, token = token.AsString() };
-                var result      = await auth.AuthenticateAsync(command).ConfigureAwait(false);
-                
-                // authentication failed?
-                if (!result.isValid) {
-                    users.TryAdd(anonymous.userId, anonymous);
-                    syncContext.AuthenticationFailed(anonymous, InvalidUserToken, all.taskAuthorizer, all.hubPermission);
-                    return;
-                }
-                var error = await GetUserAuthInfoAsync(userStore, userId, ua).ConfigureAwait(false);
-                if (error != null) {
-                    users.TryAdd(anonymous.userId, anonymous);
-                    syncContext.AuthenticationFailed(anonymous, error, all.taskAuthorizer, all.hubPermission);
-                    return;
-                }
-                var authenticated = authenticatedUsers;
-                if (authenticated.invalidated) {
-                    await SetUserAuthAsync(authenticated, userStore);
-                }
-                ua.AddUserAuth(authenticated);
-                user ??= new User(userIdShort);
-                user.Set(token, ua.GetTaskAuthorizer(), ua.GetHubPermission(), ua.GetRoles());
-                user.SetGroups(ua.GetGroups());
-                users.TryAdd(userIdShort, user);
-                syncContext.AuthenticationSucceed(user, user.taskAuthorizer, user.hubPermission);
+            var userStore       = new UserStore (userHub);
+            userStore.UserId    = UserDB.ID.AuthenticationUser;
+            var type            = syncRequest.intern.preAuthType;
+            var user            = syncRequest.intern.preAuthUser;
+            var all             = allUsers;
+            if (all.invalidated) {
+                await SetUserAuthAsync(all, userStore); // ensure anonymous is not invalidated
             }
+            var ua = new UserAuthInfo();
+            ua.AddUserAuth(all);
+            switch (type) {
+                case PreAuthType.MissingUserId:
+                case PreAuthType.MissingToken:
+                case PreAuthType.Failed:
+                    AuthenticateSynchronous(type, user, syncContext);
+                    return;
+                case PreAuthType.UserUnknown:
+                case PreAuthType.UserInvalidated:
+                    break;
+                default:
+                    throw new InvalidOperationException($"unexpected PreAuthType type: {type}");
+            }
+            var auth        = userAuth ?? userStore;
+            var userIdShort = syncRequest.userId;
+            var userId      = userIdShort.AsString();
+            var token       = syncRequest.token;
+            var command     = new Credentials { userId = userId, token = token.AsString() };
+            var result      = await auth.AuthenticateAsync(command).ConfigureAwait(false);
+            
+            // authentication failed?
+            if (!result.isValid) {
+                users.TryAdd(anonymous.userId, anonymous);
+                syncContext.AuthenticationFailed(anonymous, InvalidUserToken, all.taskAuthorizer, all.hubPermission);
+                return;
+            }
+            var error = await GetUserAuthInfoAsync(userStore, userId, ua).ConfigureAwait(false);
+            if (error != null) {
+                users.TryAdd(anonymous.userId, anonymous);
+                syncContext.AuthenticationFailed(anonymous, error, all.taskAuthorizer, all.hubPermission);
+                return;
+            }
+            var authenticated = authenticatedUsers;
+            if (authenticated.invalidated) {
+                await SetUserAuthAsync(authenticated, userStore);
+            }
+            ua.AddUserAuth(authenticated);
+            user ??= new User(userIdShort);
+            user.Set(token, ua.GetTaskAuthorizer(), ua.GetHubPermission(), ua.GetRoles());
+            user.SetGroups(ua.GetGroups());
+            users.TryAdd(userIdShort, user);
+            syncContext.AuthenticationSucceed(user, user.taskAuthorizer, user.hubPermission);
         }
         
         public override ClientIdValidation ValidateClientId(ClientController clientController, SyncContext syncContext) {
@@ -323,7 +321,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
             return null;
         }
         
-        private async Task<string> AddNewRoles(UserStore userStore, List<string> roles) {
+        private async Task<string> AddNewRoles(UserStore userStore, HashSet<string> roles) {
             var newRoles = new List<string>();
             foreach (var role in roles) {
                 if (!roleCache.TryGetValue(role, out _)) {

@@ -27,7 +27,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
         [Required]  public  string          id;
         /// <summary>set of <see cref="roles"/> assigned to a user</summary>
         [Relation(nameof(UserStore.roles))]
-                    public  List<string>    roles;
+        [Required]  public  HashSet<string> roles;
 
         public override     string          ToString() => JsonSerializer.Serialize(this);
     }

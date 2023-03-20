@@ -8,10 +8,11 @@
             "description": "Set of <b>roles</b> assigned to a user used for authorization",
             "properties": {
                 "id":    { "type": "string", "description": "user id" },
-                "roles": { "type": ["array", "null"], "items": { "type": "string" }, "relation": "roles", "description": "set of <b>roles</b> assigned to a user" }
+                "roles": { "type": "array", "items": { "type": "string" }, "relation": "roles", "description": "set of <b>roles</b> assigned to a user" }
             },
             "required": [
-                "id"
+                "id",
+                "roles"
             ],
             "additionalProperties": false
         }

@@ -53,7 +53,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 IsFalse(message.Success);
                 AreEqual("PermissionDenied ~ not authorized. Authentication failed. user: 'unknown'", message.Error.Message);
                 
-                var allUsersPermission = new UserPermission { id = "all-users", roles = new List<string> { "hub-admin"} };
+                var allUsersPermission = new UserPermission { id = "all-users", roles = new HashSet<string> { "hub-admin"} };
                 userStore.permissions.Create(allUsersPermission);
                 await userStore.SyncTasks();
                 
@@ -72,7 +72,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             });
         }
         
-        // [Test]
+        [Test]
         public static void TestUserAuth_ClusterAccess () {
             SingleThreadSynchronizationContext.Run(async () => {
                 var cx          = await CreateHub();

@@ -22,7 +22,7 @@ data class UserCredential (
 @Serializable
 data class UserPermission (
               val id    : String,
-              val roles : List<String>? = null,
+              val roles : List<String>,
 )
 
 @Serializable
