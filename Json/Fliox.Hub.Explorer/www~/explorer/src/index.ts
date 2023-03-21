@@ -93,8 +93,14 @@ export class App {
         userList.innerHTML = "";
         for (const user in users) {
             const div = document.createElement("div");
-            div.onclick = (ev) => { app.selectUser(ev.target as HTMLElement); };
-            div.innerText = user;
+            const divSelect = document.createElement("span");
+            div.onclick = () => { app.selectUser(user); };
+            divSelect.innerText = user;
+            const divRemove = document.createElement("span");
+            divRemove.classList.add("remove-user");
+            divRemove.onclick = (ev) => { app.removeUser(ev, user); };
+            div.appendChild(divRemove);
+            div.appendChild(divSelect);
             userList.appendChild(div);
         }
     }
@@ -126,12 +132,20 @@ export class App {
         this.setConfig("users", users);
     }
 
-    public selectUser (element: HTMLElement) : void {
-        const user = element.innerText;
+    public selectUser (user: string) : void {
         this.setUser(user);
         const users = this.getConfig("users");
         const token = users[user].token;
         this.setToken(token);
+    }
+
+    public removeUser (ev: MouseEvent,  user: string) : void {
+        const users = this.getConfig("users");
+        delete users[user];
+        this.setConfig("users", users);
+        const element = (ev.target as HTMLElement).parentNode;
+        element.parentNode.removeChild(element);
+        ev.stopPropagation();
     }
 
     public togglePassword() : void {

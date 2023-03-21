@@ -76,8 +76,14 @@ export class App {
         userList.innerHTML = "";
         for (const user in users) {
             const div = document.createElement("div");
-            div.onclick = (ev) => { app.selectUser(ev.target); };
-            div.innerText = user;
+            const divSelect = document.createElement("span");
+            div.onclick = () => { app.selectUser(user); };
+            divSelect.innerText = user;
+            const divRemove = document.createElement("span");
+            divRemove.classList.add("remove-user");
+            divRemove.onclick = (ev) => { app.removeUser(ev, user); };
+            div.appendChild(divRemove);
+            div.appendChild(divSelect);
             userList.appendChild(div);
         }
     }
@@ -105,12 +111,19 @@ export class App {
         users[user] = { token: token };
         this.setConfig("users", users);
     }
-    selectUser(element) {
-        const user = element.innerText;
+    selectUser(user) {
         this.setUser(user);
         const users = this.getConfig("users");
         const token = users[user].token;
         this.setToken(token);
+    }
+    removeUser(ev, user) {
+        const users = this.getConfig("users");
+        delete users[user];
+        this.setConfig("users", users);
+        const element = ev.target.parentNode;
+        element.parentNode.removeChild(element);
+        ev.stopPropagation();
     }
     togglePassword() {
         const type = defaultToken.type == "password" ? "text" : "password";
