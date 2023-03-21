@@ -247,7 +247,7 @@
 
         .auth-pending::after                { content: "◠"; color: var(--color); animation: spin 1s linear infinite; display: inline-block;  }
         .auth-success::after                { content: "✔"; color: green; }
-        .auth-error::after                  { content: "🞪"; color: red;   }
+        .auth-error::after                  { content: "🕶"; color: var(--color); }
         .remove-user                        { margin-right: 5px;   }
         .remove-user::after                 { content: "🞨";   }
         .remove-user:hover::after           { content: "🞪"; color: red; text-shadow: 2px 2px 6px #000000;  }
@@ -582,7 +582,7 @@
           </div>
         </div>
         <span class="dropdown">
-          <div id="authState" style="font-size: 14px; width: 14px;" class="auth-pending"></div>
+          <div id="authState" style="font-size: 14px; width: 16px;" class="auth-pending"></div>
         </span>
       </div>
     </span>

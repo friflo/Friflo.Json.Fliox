@@ -57,7 +57,7 @@ export class App {
         window.addEventListener("keydown", event => this.onKeyDown(event), true);
         window.addEventListener("keyup", event => this.onKeyUp(event), true);
     }
-    getCookie(name) {
+    static getCookie(name) {
         const value = `; ${document.cookie}`;
         const parts = value.split(`; ${name}=`);
         if (parts.length === 2)
@@ -66,8 +66,8 @@ export class App {
     }
     initUserToken() {
         var _a, _b;
-        const user = (_a = this.getCookie("fliox-user")) !== null && _a !== void 0 ? _a : "admin";
-        const token = (_b = this.getCookie("fliox-token")) !== null && _b !== void 0 ? _b : "admin";
+        const user = (_a = App.getCookie("fliox-user")) !== null && _a !== void 0 ? _a : "admin";
+        const token = (_b = App.getCookie("fliox-token")) !== null && _b !== void 0 ? _b : "admin";
         this.setUser(user);
         this.setToken(token);
     }
@@ -137,12 +137,13 @@ export class App {
         authState.title = "authentication pending ...";
         App.postRequestTasks(null, [], null);
     }
-    static setAuthState(authError) {
+    static setAuthState(user, authError) {
         const success = !authError;
         authState.className = "";
         authState.classList.add(success ? "auth-success" : "auth-error");
         this.setClass(authState, false, "auth-pending");
-        authState.title = success ? "authentication successful" : authError;
+        const state = success ? "authentication successful" : authError;
+        authState.title = `user: ${user} · ${state}`;
     }
     static getCssRuleByName(name) {
         const cssRules = document.styleSheets[0].cssRules;
@@ -249,16 +250,17 @@ export class App {
             headers: { 'Content-Type': 'application/json' },
             body: request
         };
+        const user = App.getCookie("fliox-user");
         try {
             const path = `${flioxRoot}?${tag}`;
             const rawResponse = await fetch(path, init);
             const text = await rawResponse.text();
             const json = JSON.parse(text);
-            this.setAuthState(json.authError);
+            this.setAuthState(user, json.authError);
             return { text: text, json: json };
         }
         catch (error) {
-            this.setAuthState(`authentication error: ${error.message}`);
+            this.setAuthState(user, `authentication error: ${error.message}`);
             return {
                 text: error.message,
                 json: {

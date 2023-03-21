@@ -73,7 +73,7 @@ export class App {
         window.addEventListener("keyup",   event => this.onKeyUp(event),   true);
     }
 
-    private getCookie  (name: string) {
+    private static getCookie  (name: string) : string {
         const value = `; ${document.cookie}`;
         const parts = value.split(`; ${name}=`);
         if (parts.length === 2)
@@ -82,8 +82,8 @@ export class App {
     }
 
     private initUserToken  () {
-        const user    = this.getCookie("fliox-user")   ?? "admin";
-        const token   = this.getCookie("fliox-token")  ?? "admin";
+        const user    = App.getCookie("fliox-user")   ?? "admin";
+        const token   = App.getCookie("fliox-token")  ?? "admin";
         this.setUser(user);
         this.setToken(token);
     }
@@ -162,12 +162,13 @@ export class App {
         App.postRequestTasks(null, [], null);
     }
 
-    private static setAuthState(authError: string) {
+    private static setAuthState(user: string, authError: string) {
         const success = !authError;
         authState.className = "";
         authState.classList.add(success ? "auth-success" : "auth-error");
         this.setClass(authState, false, "auth-pending");
-        authState.title = success ? "authentication successful" : authError;
+        const state = success ? "authentication successful" : authError;
+        authState.title = `user: ${user} · ${state}`;
     }
 
     private lastCtrlKey:        boolean;
@@ -288,15 +289,16 @@ export class App {
             headers: { 'Content-Type': 'application/json' },
             body:    request
         };
+        const user          = App.getCookie("fliox-user");
         try {
             const path          = `${flioxRoot}?${tag}`;
             const rawResponse   = await fetch(path, init);
             const text          = await rawResponse.text();
             const json          = JSON.parse(text);
-            this.setAuthState(json.authError);
+            this.setAuthState(user, json.authError);
             return { text: text, json: json };            
         } catch (error) {
-            this.setAuthState(`authentication error: ${error.message}`);
+            this.setAuthState(user, `authentication error: ${error.message}`);
             return {
                 text: error.message,
                 json: {
