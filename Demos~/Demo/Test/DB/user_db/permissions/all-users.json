@@ -1,4 +1,6 @@
 {
     "id": "all-users",
-    "roles": ["cluster-info"]
+    "roles": [
+        "cluster-info"
+    ]
 }

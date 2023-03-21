@@ -1,7 +1,0 @@
-{
-    "id": "monitor-allow",
-    "description": "Allow unrestricted access to a database: monitor",
-    "taskRights": [
-        { "type": "dbFull", "database": "monitor" }
-    ]
-}

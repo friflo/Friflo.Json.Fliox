@@ -1,7 +1,0 @@
-{
-    "id": "main_db-task",
-    "description": "Allow execution of the specified task types. E.g. 'read' enables reads on all containers.",
-    "taskRights": [
-        { "type": "dbTask", "database": "main_db", "types": ["read"] }
-    ]
-}

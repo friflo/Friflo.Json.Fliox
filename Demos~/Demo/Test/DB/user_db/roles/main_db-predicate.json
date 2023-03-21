@@ -1,7 +1,0 @@
-{
-    "id": "main_db-predicate",
-    "description": "Predicates are registered functions performing authorization via code and returning true to allow task execution. They enable filtering tasks by type and their specific properties",
-    "taskRights": [
-        { "type": "predicate", "names": ["TestPredicate"] }
-    ]
-}

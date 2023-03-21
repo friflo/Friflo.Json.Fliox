@@ -1,8 +1,0 @@
-{
-    "id": "main_db-message",
-    "description": "Allow sending the specified messages and subscribing to messages. Commands are messages too",
-    "taskRights": [
-        { "type": "sendMessage",      "database": "main_db", "names": ["test-mess*"] },
-        { "type": "subscribeMessage", "database": "main_db", "names": ["test-sub*"] }
-    ]
-}

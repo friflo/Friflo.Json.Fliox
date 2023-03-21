@@ -1,4 +1,0 @@
-{
-    "id": "user-readonly",
-    "roles": ["user_db-readonly"]
-}
