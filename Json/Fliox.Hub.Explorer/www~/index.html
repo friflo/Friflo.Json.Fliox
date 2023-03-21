@@ -214,6 +214,12 @@
         }
         .dropbtn::before { opacity: 0.4; content: "▼"; }
         .authInput { width: 70px; }
+        .authInputEye {
+            margin-left: -20px;
+            padding-right: 7px;
+            cursor: pointer;
+        }
+        .authInputEye::after { opacity: 0.6; content: "👁"; }
         .dropdown {
             position: relative;
             display: inline-block;
@@ -558,7 +564,11 @@
     <span style="border-bottom: 1px solid var(--tab-border); font-size: 13px;">
       <div style="background: var(--background); padding: 1px 1px 1px 10px; border-radius: 2px; border: 1px solid var(--tab-border)">
         <label for="user">user</label>   <input onchange="app.setUser(value)"  spellcheck="false" type="text" id="user"  class="authInput" value="admin">&nbsp;
-        <label for="token">token</label> <input onchange="app.setToken(value)" spellcheck="false" type="text" id="token" class="authInput" value="admin">    
+        <label for="token">token</label>
+        <span>
+            <input onchange="app.setToken(value)" spellcheck="false" type="password" id="token" class="authInput" value="admin">
+            <i class="authInputEye" id="togglePassword" onclick="app.togglePassword()"></i>
+        </span>
         <div class="dropdown">
           <button class="dropbtn" aria-label="selectUser"></button>
           <div id="userList" class="dropdown-content">

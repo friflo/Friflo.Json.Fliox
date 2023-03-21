@@ -110,6 +110,9 @@ export class App {
         const token = users[user].token;
         this.setToken(token);
     }
+    togglePassword() {
+        defaultToken.type = defaultToken.type == "password" ? "text" : "password";
+    }
     static getCssRuleByName(name) {
         const cssRules = document.styleSheets[0].cssRules;
         for (let n = 0; n < cssRules.length; n++) {

@@ -131,6 +131,10 @@ export class App {
         this.setToken(token);
     }
 
+    public togglePassword() : void {
+        defaultToken.type = defaultToken.type == "password" ? "text" : "password";
+    }
+
 
     private lastCtrlKey:        boolean;
     public  refLinkDecoration:  CSSStyleRule;
