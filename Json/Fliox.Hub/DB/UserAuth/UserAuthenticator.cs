@@ -63,19 +63,20 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
 
         public UserAuthenticator (EntityDatabase userDatabase, SharedEnv env = null, IUserAuth userAuth = null)
         {
-            var service = userDatabase.service;
-            if (!(service is UserDBService))
-                throw new ArgumentException($"userDatabase requires service: {nameof(UserDBService)}. was: {service.GetType().Name}");
+            var service             = userDatabase.service;
+            var userDbService       = service as UserDBService
+                                      ?? throw new ArgumentException($"userDatabase requires service: {nameof(UserDBService)}. was: {service.GetType().Name}");
             var sharedEnv           = env  ?? SharedEnv.Default;
             userDatabase.Schema     = new DatabaseSchema(typeof(UserStore));
             userHub        	        = new FlioxHub(userDatabase, sharedEnv);
-            userHub.Authenticator   = new UserDatabaseAuthenticator(userHub);  // authorize access to userDatabase
+            userHub.Authenticator   = new UserDatabaseAuthenticator(userDatabase.name);  // authorize access to userDatabase
             this.userAuth           = userAuth;
             roleCache               = new ConcurrentDictionary <string, UserAuthRole>();
             anonymous               = new User(User.AnonymousId);
             allUsers                = new User(ID.AllUsers);
             authenticatedUsers      = new User(ID.AuthenticatedUsers);
             storePool               = new ObjectPool<UserStore>(() => new UserStore(userHub));
+            userDbService.Init(userHub);
         }
 
         public void Dispose() {

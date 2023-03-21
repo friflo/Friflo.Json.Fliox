@@ -1,14 +1,12 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.Auth;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
-using Friflo.Json.Fliox.Utils;
 using static Friflo.Json.Fliox.Hub.Host.Auth.Rights.OperationType;
 
 namespace Friflo.Json.Fliox.Hub.DB.UserAuth
@@ -40,13 +38,8 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
     {
         private  readonly   Dictionary<ShortString, TaskAuthorizer> userRights;
         private  readonly   User                                    anonymous;
-        internal readonly   ObjectPool<UserStore>                   storePool;
 
-        public UserDatabaseAuthenticator(FlioxHub userHub) {
-            var service = userHub.database.service;
-            if (!(service is UserDBService))
-                throw new ArgumentException($"expect userHub.database.service: {nameof(UserDBService)}. was: {service.GetType().Name}");
-            var userDbName = userHub.database.name;
+        public UserDatabaseAuthenticator(string userDbName) {
             var changes         = new [] { EntityChange.create, EntityChange.upsert, EntityChange.delete, EntityChange.merge };
             var authUserRights  = new AuthorizeAny(new TaskAuthorizer[] {
                 new AuthorizeSendMessage     (nameof(UserStore.AuthenticateUser), userDbName),
@@ -68,7 +61,6 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
                 { new ShortString(UserDB.ID.Server),                serverRights   },
             };
             anonymous   = new User(User.AnonymousId).Set(default, TaskAuthorizer.None, HubPermission.None, null);
-            storePool   = new ObjectPool<UserStore>(() => new UserStore(userHub));
         }
 
         public override Task AuthenticateAsync(SyncRequest syncRequest, SyncContext syncContext) {

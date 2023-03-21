@@ -8,15 +8,25 @@ using Friflo.Json.Fliox.Hub.Client;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
+using Friflo.Json.Fliox.Utils;
 
 namespace Friflo.Json.Fliox.Hub.DB.UserAuth
 {
     public sealed class UserDBService : DatabaseService
     {
+        private     FlioxHub                userHub;
+        private     ObjectPool<UserStore>   storePool;
+
         public UserDBService() {
             AddCommandHandlerAsync<Credentials, AuthResult>         (nameof(AuthenticateUser),  AuthenticateUser);
             AddCommandHandlerAsync<JsonValue, ValidateUserDbResult> (nameof(ValidateUserDb),    ValidateUserDb);
             AddCommandHandler<JsonValue, bool>                      (nameof(ClearAuthCache),    ClearAuthCache);
+        }
+        
+        internal void Init(FlioxHub userHub) {
+            if (this.userHub != null) throw new InvalidOperationException($"{nameof(UserDBService)} already initialized");
+            this.userHub    = userHub;
+            storePool       = new ObjectPool<UserStore>(() => new UserStore(userHub));
         }
         
         public override async Task<SyncTaskResult> ExecuteTaskAsync (SyncRequestTask task, EntityDatabase database, SyncResponse response, SyncContext syncContext) {
@@ -53,8 +63,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
         
         private async Task<AuthResult> AuthenticateUser (Param<Credentials> param, MessageContext command)
         {
-            var authenticator = command.Hub.Authenticator as UserDatabaseAuthenticator ?? throw new InvalidOperationException("expect UserDatabaseAuthenticator");
-            using (var pooled = authenticator.storePool.Get()) {
+            using (var pooled = storePool.Get()) {
                 var store       = pooled.instance;
                 store.UserId    = UserDB.ID.Server;
                 if (!param.GetValidate(out var authenticate, out var error)) {

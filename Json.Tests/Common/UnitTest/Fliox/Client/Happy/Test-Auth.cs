@@ -230,7 +230,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                     using (var userHub        	= new FlioxHub  (userDatabase, TestGlobals.Shared))
                     using (var serverStore      = new UserStore (userHub) { UserId = UserDB.ID.Server })
                     using (var userStore        = new UserStore (userHub) { UserId = UserDB.ID.AuthenticationUser }) {
-                        userHub.Authenticator   = new UserDatabaseAuthenticator(userHub);
+                        userHub.Authenticator   = new UserDatabaseAuthenticator(userDatabase.name);
                         // assert access to user database with different users: "Server" & "AuthenticationUser"
                         await AssertUserStore       (serverStore,   "Server");
                         await AssertUserStore       (userStore,     "AuthenticationUser");
