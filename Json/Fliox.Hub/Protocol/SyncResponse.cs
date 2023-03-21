@@ -28,6 +28,8 @@ namespace Friflo.Json.Fliox.Hub.Protocol
         /// grouped by container</summary>
                     public  List<ContainerEntities> containers;
                     public  JsonValue               info;
+        /// <summary>error message if authentication failed. null for successful authentication</summary>
+                    public  string                  authError;
                         
         internal override   MessageType             MessageType => MessageType.resp;
         
@@ -91,6 +93,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol
             response.tasks      = tasks;
             response.containers = null;
             response.info       = default;
+            response.authError  = null;
             return response;
         }
     }

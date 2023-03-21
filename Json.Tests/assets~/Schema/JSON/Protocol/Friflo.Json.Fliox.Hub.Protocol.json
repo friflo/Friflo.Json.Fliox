@@ -34,7 +34,8 @@
                 "db":         { "type": ["string", "null"], "description": "for debugging - not used by Protocol" },
                 "tasks":      { "type": ["array", "null"], "items": { "$ref": "./Friflo.Json.Fliox.Hub.Protocol.Tasks.json#/definitions/SyncTaskResult" }, "description": "list of task results corresponding to the <b>tasks</b> in a <b>SyncRequest</b>" },
                 "containers": { "type": ["array", "null"], "items": { "$ref": "#/definitions/ContainerEntities" }, "description": "entities as results from the <b>tasks</b> in a <b>SyncRequest</b>\ngrouped by container" },
-                "info":       {  }
+                "info":       {  },
+                "authError":  { "type": ["string", "null"], "description": "error message if authentication failed. null for successful authentication" }
             },
             "required": [
                 "msg"

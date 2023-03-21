@@ -41,6 +41,7 @@ class SyncResponse {
     tasks?      : SyncTaskResult[]
     containers? : ContainerEntities[]
     info?       : any
+    authError?  : string
 }
 SyncResponse *-- "0..*" SyncTaskResult : tasks
 SyncResponse *-- "0..*" ContainerEntities : containers

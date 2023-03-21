@@ -247,7 +247,8 @@ namespace Friflo.Json.Fliox.Hub.Host
             // - Note: Only relevant for Push messages when using a bidirectional protocol like WebSocket
             // As a client is required to use response.clientId it is set to null if given clientId was invalid.
             // So next request will create a new valid client id.
-            response.clientId = syncContext.clientIdValidation == ClientIdValidation.Invalid ? new ShortString() : syncContext.clientId;
+            response.clientId   = syncContext.clientIdValidation == ClientIdValidation.Invalid ? new ShortString() : syncContext.clientId;
+            response.authError  = syncContext.authState.error;
             
             response.AssertResponse(syncRequest);
             

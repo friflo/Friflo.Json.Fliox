@@ -118,6 +118,8 @@ export class SyncResponse extends ProtocolResponse {
      */
     containers? : ContainerEntities[] | null;
     info?       : any | null;
+    /** error message if authentication failed. null for successful authentication */
+    authError?  : string | null;
 }
 
 /**

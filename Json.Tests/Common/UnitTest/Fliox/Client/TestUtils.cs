@@ -201,7 +201,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             var diff = Mem.GetAllocationDiff(start);
             stopwatch.Stop();
             Console.WriteLine($"SyncTasks() count: {count}, ms: {stopwatch.ElapsedMilliseconds}");
-            var expected    = IsDebug() ? 784 : 624;  // Test Debug & Release
+            var expected    = IsDebug() ? 792 : 632;  // Test Debug & Release
             Mem.AreEqual(expected, diff);
         }
         

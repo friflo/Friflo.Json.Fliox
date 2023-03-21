@@ -41,6 +41,7 @@ data class SyncResponse (
               val tasks      : List<SyncTaskResult>? = null,
               val containers : List<ContainerEntities>? = null,
               val info       : JsonElement? = null,
+              val authError  : String? = null,
 ) : ProtocolResponse()
 
 @Serializable

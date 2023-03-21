@@ -75,7 +75,8 @@ POST {{base}}/
 {
     "msg":"resp",
     "tasks": [
-    ]
+    ],
+    "authError": "Authentication failed"
 }
 
 ###
@@ -91,7 +92,8 @@ POST {{base}}/
             "type": "PermissionDenied",
             "message": "not authorized. Authentication failed. user: 'admin'"
         }
-    ]
+    ],
+    "authError": "Authentication failed"
 }
 
 ###
