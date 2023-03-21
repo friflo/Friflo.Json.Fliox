@@ -216,7 +216,6 @@
         .authInput { width: 70px; }
         .authInputEye {
             margin-left: -20px;
-            padding-right: 7px;
             cursor: pointer;
         }
         .authInputEye::after { content: "👁"; }
@@ -566,7 +565,7 @@
         <label for="user">user</label>   <input onchange="app.setUser(value)"  spellcheck="false" type="text" id="user"  class="authInput" value="admin">&nbsp;
         <label for="token">token</label>
         <span>
-            <input onchange="app.setToken(value)" spellcheck="false" type="password" id="token" class="authInput" value="admin">
+            <input onchange="app.setToken(value)" spellcheck="false" type="password" id="token" class="authInput" value="admin" style="padding-right: 16px;">
             <i class="authInputEye" id="togglePassword" onclick="app.togglePassword()" style="opacity: 0.3;"></i>
         </span>
         <div class="dropdown">
