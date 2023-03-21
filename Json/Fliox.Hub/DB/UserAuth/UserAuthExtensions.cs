@@ -44,7 +44,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
             };
             var upsertPermission    = userStore.permissions.Upsert(adminPermission);
             var upsertRole          = userStore.roles.Upsert(hubAdmin);
-            var sync = await userStore.TrySyncTasks();
+            var sync = await userStore.TrySyncTasks().ConfigureAwait(false);
             if (upsertPermission.Success && upsertRole.Success) {
                 return;                
             }
@@ -58,7 +58,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
             var readPermissions = userStore.permissions.Read();
             var findAllUsers            = readPermissions.Find(AllUsers);
             var findAuthenticatedUsers  = readPermissions.Find(AuthenticatedUsers);
-            await userStore.SyncTasks();
+            await userStore.SyncTasks().ConfigureAwait(false);
             
             var allPermission             = findAllUsers.Result             ?? new UserPermission { id = AllUsers, roles = new HashSet<string>()};
             var authenticatedPermission   = findAuthenticatedUsers.Result   ?? new UserPermission { id = AuthenticatedUsers, roles = new HashSet<string>() };
@@ -78,7 +78,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
             userStore.permissions.Upsert(authenticatedPermission);
             userStore.roles.Upsert(clusterInfo);
 
-            await userStore.SyncTasks();
+            await userStore.SyncTasks().ConfigureAwait(false);
         }
         
         /// <summary>
@@ -91,7 +91,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
         public static async Task SubscribeUserDbChanges(this UserAuthenticator userAuthenticator, EventDispatcher eventDispatcher) {
             userAuthenticator.userHub.EventDispatcher = eventDispatcher ?? throw new ArgumentNullException(nameof(eventDispatcher));
             var subscriber          = new UserStoreSubscriber(userAuthenticator);
-            await subscriber.SetupSubscriptions ();
+            await subscriber.SetupSubscriptions ().ConfigureAwait(false);
         }
         
         public static async Task<List<string>> ValidateUserDb(this UserAuthenticator userAuthenticator, HashSet<string> databases) {

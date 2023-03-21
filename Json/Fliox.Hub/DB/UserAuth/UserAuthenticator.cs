@@ -185,7 +185,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
                 var user            = syncRequest.intern.preAuthUser;
                 var all             = allUsers;
                 if (all.invalidated) {
-                    await SetUserAuthAsync(all, userStore); // ensure anonymous is not invalidated
+                    await SetUserAuthAsync(all, userStore).ConfigureAwait(false); // ensure anonymous is not invalidated
                 }
                 var ua = new UserAuthInfo();
                 ua.AddUserAuth(all);
@@ -222,7 +222,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
                 }
                 var authenticated = authenticatedUsers;
                 if (authenticated.invalidated) {
-                    await SetUserAuthAsync(authenticated, userStore);
+                    await SetUserAuthAsync(authenticated, userStore).ConfigureAwait(false);
                 }
                 ua.AddUserAuth(authenticated);
                 user ??= new User(userIdShort);
@@ -294,7 +294,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
         
         private async Task SetUserAuthAsync(User user, UserStore userStore) {
             var ua = new UserAuthInfo();
-            var error   = await GetUserAuthInfoAsync(userStore, user.userId.AsString(), ua);
+            var error   = await GetUserAuthInfoAsync(userStore, user.userId.AsString(), ua).ConfigureAwait(false);
             if (error != null) {
                 user.Set(default, TaskAuthorizer.None, HubPermission.None, null);
                 return;
