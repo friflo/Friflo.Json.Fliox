@@ -153,6 +153,7 @@ export class UserParam {
 }
 
 export class UserResult {
+    roles    : string[];
     groups   : string[];
     clients  : string[];
     /** number executed requests and tasks per database */

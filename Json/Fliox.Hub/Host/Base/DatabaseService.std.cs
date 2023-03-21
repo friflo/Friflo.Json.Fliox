@@ -171,12 +171,13 @@ namespace Friflo.Json.Fliox.Hub.Host
             var counts = new List<RequestCount>();
             ClusterUtils.CountsMapToList(counts, user.requestCounts, null);
             
-            var clients = new List<string>();
+            var clients = new List<string>(user.clients.Count);
             foreach (var clientPair in user.clients) {
                 clients.Add(clientPair.Key.AsString());
             }
-            var groupArray = groups.ToArray();
-            return new UserResult { groups = groupArray, counts = counts, clients = clients };
+            var groupList   = groups.ToList();
+            var roles       = user.roles != null ? user.roles.ToList() : new List<string>();
+            return new UserResult { roles = roles, groups = groupList, counts = counts, clients = clients  };
         }
         
         /// <summary>

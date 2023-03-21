@@ -89,6 +89,7 @@ data class UserParam (
 
 @Serializable
 data class UserResult (
+              val roles   : List<String>,
               val groups  : List<String>,
               val clients : List<String>,
               val counts  : List<RequestCount>,

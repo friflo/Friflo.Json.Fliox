@@ -96,6 +96,8 @@ public class UserParam {
 
 public class UserResult {
     [Required]
+    List<string>        roles;
+    [Required]
     List<string>        groups;
     [Required]
     List<string>        clients;

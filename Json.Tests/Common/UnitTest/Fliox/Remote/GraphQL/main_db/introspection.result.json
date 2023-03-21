@@ -4910,6 +4910,25 @@
             "description": "",
             "fields": [
                 {
+                    "name": "roles",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"LIST",
+                            "ofType": {
+                                "kind":"NON_NULL",
+                                "ofType": {
+                                    "kind":"SCALAR",
+                                    "name": "String"
+                                }
+                            }
+                        }
+                    }
+                },
+                {
                     "name": "groups",
                     "description": "",
                     "args": [
@@ -4975,6 +4994,25 @@
             "name": "UserResultInput",
             "description": "",
             "inputFields": [
+                {
+                    "name": "roles",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"LIST",
+                            "ofType": {
+                                "kind":"NON_NULL",
+                                "ofType": {
+                                    "kind":"SCALAR",
+                                    "name": "String"
+                                }
+                            }
+                        }
+                    }
+                },
                 {
                     "name": "groups",
                     "description": "",

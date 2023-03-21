@@ -104,6 +104,11 @@ GET {{base}}/rest/main_db?cmd=std.User
 # Content-Type: application/json
 
 {
+    "roles": [
+        "cluster-info",
+        "webrtc-client",
+        "hub-admin"
+    ],
     "groups": [
     ],
     "clients": [

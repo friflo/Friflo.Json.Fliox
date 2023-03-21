@@ -7,13 +7,15 @@ namespace Gen.Friflo.Json.Fliox.Hub.DB.Cluster
 {
     static class Gen_UserResult
     {
-        private const int Gen_groups = 0;
-        private const int Gen_clients = 1;
-        private const int Gen_counts = 2;
+        private const int Gen_roles = 0;
+        private const int Gen_groups = 1;
+        private const int Gen_clients = 2;
+        private const int Gen_counts = 3;
 
         private static bool ReadField (ref UserResult obj, PropField field, ref Reader reader) {
             bool success;
             switch (field.genIndex) {
+                case Gen_roles:   obj.roles   = reader.ReadClass (field, obj.roles,   out success);  return success;
                 case Gen_groups:  obj.groups  = reader.ReadClass (field, obj.groups,  out success);  return success;
                 case Gen_clients: obj.clients = reader.ReadClass (field, obj.clients, out success);  return success;
                 case Gen_counts:  obj.counts  = reader.ReadClass (field, obj.counts,  out success);  return success;
@@ -22,6 +24,7 @@ namespace Gen.Friflo.Json.Fliox.Hub.DB.Cluster
         }
 
         private static void Write(ref UserResult obj, PropField[] fields, ref Writer writer, ref bool firstMember) {
+            writer.WriteClass (fields[Gen_roles],   obj.roles,   ref firstMember);
             writer.WriteClass (fields[Gen_groups],  obj.groups,  ref firstMember);
             writer.WriteClass (fields[Gen_clients], obj.clients, ref firstMember);
             writer.WriteClass (fields[Gen_counts],  obj.counts,  ref firstMember);

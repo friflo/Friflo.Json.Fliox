@@ -457,12 +457,14 @@ input UserParamInput {
 }
 
 type UserResult {
+    roles   : [String!]!
     groups  : [String!]!
     clients : [String!]!
     counts  : [RequestCount!]!
 }
 
 input UserResultInput {
+    roles   : [String!]!
     groups  : [String!]!
     clients : [String!]!
     counts  : [RequestCountInput!]!

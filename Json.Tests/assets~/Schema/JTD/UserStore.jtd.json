@@ -240,6 +240,7 @@
         },
         "UserResult": {
             "properties": {
+                "roles":   { "elements": { "type": "string" } },
                 "groups":  { "elements": { "type": "string" } },
                 "clients": { "elements": { "type": "string" } },
                 "counts":  { "elements": { "ref":  "RequestCount" } }

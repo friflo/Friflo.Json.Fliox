@@ -157,11 +157,13 @@
         "UserResult": {
             "type": "object",
             "properties": {
+                "roles":   { "type": "array", "items": { "type": "string" } },
                 "groups":  { "type": "array", "items": { "type": "string" } },
                 "clients": { "type": "array", "items": { "type": "string" } },
                 "counts":  { "type": "array", "items": { "$ref": "#/definitions/RequestCount" }, "description": "number executed requests and tasks per database" }
             },
             "required": [
+                "roles",
                 "groups",
                 "clients",
                 "counts"
