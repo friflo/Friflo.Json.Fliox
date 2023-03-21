@@ -132,7 +132,10 @@ export class App {
     }
 
     public togglePassword() : void {
-        defaultToken.type = defaultToken.type == "password" ? "text" : "password";
+        const type = defaultToken.type == "password" ? "text" : "password";
+        defaultToken.type = type;
+        const eyeEl = el("togglePassword");
+        eyeEl.style.opacity = type == "password" ? "0.3" : "1";
     }
 
 

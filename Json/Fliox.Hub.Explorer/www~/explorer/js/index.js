@@ -111,7 +111,10 @@ export class App {
         this.setToken(token);
     }
     togglePassword() {
-        defaultToken.type = defaultToken.type == "password" ? "text" : "password";
+        const type = defaultToken.type == "password" ? "text" : "password";
+        defaultToken.type = type;
+        const eyeEl = el("togglePassword");
+        eyeEl.style.opacity = type == "password" ? "0.3" : "1";
     }
     static getCssRuleByName(name) {
         const cssRules = document.styleSheets[0].cssRules;

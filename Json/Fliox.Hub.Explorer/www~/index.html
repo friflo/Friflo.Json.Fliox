@@ -219,7 +219,7 @@
             padding-right: 7px;
             cursor: pointer;
         }
-        .authInputEye::after { opacity: 0.6; content: "👁"; }
+        .authInputEye::after { content: "👁"; }
         .dropdown {
             position: relative;
             display: inline-block;
@@ -567,7 +567,7 @@
         <label for="token">token</label>
         <span>
             <input onchange="app.setToken(value)" spellcheck="false" type="password" id="token" class="authInput" value="admin">
-            <i class="authInputEye" id="togglePassword" onclick="app.togglePassword()"></i>
+            <i class="authInputEye" id="togglePassword" onclick="app.togglePassword()" style="opacity: 0.3;"></i>
         </span>
         <div class="dropdown">
           <button class="dropbtn" aria-label="selectUser"></button>
