@@ -29,6 +29,8 @@ const envEl                 = el("envEl");
 const defaultUser           = el("user")            as HTMLInputElement;
 const defaultToken          = el("token")           as HTMLInputElement;
 const userList              = el("userList");
+const authState             = el("authState");
+
 const clusterExplorer       = el("clusterExplorer");
 const entityExplorer        = el("entityExplorer");
 
@@ -116,6 +118,7 @@ export class App {
 
         const user =  defaultUser.value;
         const users = this.getConfig("users");
+        this.checkAuth();
         if (users[user]?.token == token) {
             return;
         }
@@ -138,6 +141,20 @@ export class App {
         eyeEl.style.opacity = type == "password" ? "0.3" : "1";
     }
 
+    private checkAuth() {
+        authState.className = "";
+        authState.classList.add("auth-pending");
+        authState.title = "authentication pending ...";
+        App.postRequestTasks(null, [], null);
+    }
+
+    private static setAuthState(authError: string) {
+        const success = !authError;
+        authState.className = "";
+        authState.classList.add(success ? "auth-success" : "auth-error");
+        this.setClass(authState, false, "auth-pending");
+        authState.title = success ? "authentication successful" : authError;
+    }
 
     private lastCtrlKey:        boolean;
     public  refLinkDecoration:  CSSStyleRule;
@@ -261,11 +278,11 @@ export class App {
             const path          = `${flioxRoot}?${tag}`;
             const rawResponse   = await fetch(path, init);
             const text          = await rawResponse.text();
-            return {
-                text: text,
-                json: JSON.parse(text)
-            };            
+            const json          = JSON.parse(text);
+            this.setAuthState(json.authError);
+            return { text: text, json: json };            
         } catch (error) {
+            this.setAuthState(`authentication error: ${error.message}`);
             return {
                 text: error.message,
                 json: {

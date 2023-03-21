@@ -245,6 +245,9 @@
         .dropdown:hover .dropdown-content   { display: block;}
         .dropdown:hover .dropbtn            { background-color: var(--tab-hover); }
 
+        .auth-pending::after                { content: "◠"; color: var(--color); animation: spin 1s linear infinite; display: inline-block;  }
+        .auth-success::after                { content: "✔"; color: green; }
+        .auth-error::after                  { content: "✗"; color: red;   }
         
 
         html            { max-width: 100%; overflow-x: hidden; } /* disable horizontal scrollbar */
@@ -575,6 +578,9 @@
             <div onclick="app.selectUser(this)">admin</div>
           </div>
         </div>
+        <span class="dropdown">
+          <div id="authState" style="font-size: 14px;" class="auth-pending"></div>
+        </span>
       </div>
     </span>
     <span title="toggle theme dark / light" style="border-bottom: 1px solid var(--tab-border); padding-left: 5px; padding-right: 5px;">
