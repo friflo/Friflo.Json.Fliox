@@ -561,13 +561,8 @@
         <label for="token">token</label> <input onchange="app.setToken(value)" spellcheck="false" type="text" id="token" class="authInput" value="admin">    
         <div class="dropdown">
           <button class="dropbtn" aria-label="selectUser"></button>
-          <div class="dropdown-content">
+          <div id="userList" class="dropdown-content">
             <div onclick="app.selectUser(this)">admin</div>
-            <div onclick="app.selectUser(this)">poc-admin</div>
-            <div onclick="app.selectUser(this)">poc-readonly</div>
-            <div onclick="app.selectUser(this)">monitor-admin</div>
-            <div onclick="app.selectUser(this)">user-admin</div>
-            <div onclick="app.selectUser(this)">user-readonly</div>
           </div>
         </div>
       </div>

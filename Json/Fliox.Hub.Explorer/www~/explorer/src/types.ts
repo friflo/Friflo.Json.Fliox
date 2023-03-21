@@ -10,6 +10,10 @@ export type Resource = {
     readonly ids:        string[];
 };
 
+export type ExplorerUser = {
+    [user: string]: { token: string }
+};
+
 export const defaultConfig = {
     showLineNumbers : false,
     showMinimap     : false,
@@ -17,7 +21,8 @@ export const defaultConfig = {
     formatResponses : true,
     activeTab       : "explorer",
     showDescription : false,
-    filters         : {} as { [database: string]: { [container: string]: string[]}}
+    filters         : {} as { [database: string]: { [container: string]: string[]}},
+    users           : { "admin": { token: "admin"} } as ExplorerUser
 };
 
 export type Config     = typeof defaultConfig

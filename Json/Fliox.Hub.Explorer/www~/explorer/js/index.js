@@ -12,6 +12,7 @@ const projectUrl = el("projectUrl");
 const envEl = el("envEl");
 const defaultUser = el("user");
 const defaultToken = el("token");
+const userList = el("userList");
 const clusterExplorer = el("clusterExplorer");
 const entityExplorer = el("entityExplorer");
 const entityFilter = el("entityFilter");
@@ -69,18 +70,45 @@ export class App {
         this.setUser(user);
         this.setToken(token);
     }
+    setUserList() {
+        const users = this.getConfig("users");
+        userList.innerHTML = "";
+        for (const user in users) {
+            const div = document.createElement("div");
+            div.onclick = (ev) => { app.selectUser(ev.target); };
+            div.innerText = user;
+            userList.appendChild(div);
+        }
+    }
     setUser(user) {
         defaultUser.value = user;
         document.cookie = `fliox-user=${user};`;
+        const users = this.getConfig("users");
+        if (users[user]) {
+            return;
+        }
+        this.setConfig("users", users);
+        this.setToken(user);
+        this.setUserList();
     }
     setToken(token) {
+        var _a;
         defaultToken.value = token;
         document.cookie = `fliox-token=${token};`;
+        const user = defaultUser.value;
+        const users = this.getConfig("users");
+        if (((_a = users[user]) === null || _a === void 0 ? void 0 : _a.token) == token) {
+            return;
+        }
+        users[user] = { token: token };
+        this.setConfig("users", users);
     }
     selectUser(element) {
-        const value = element.innerText;
-        this.setUser(value);
-        this.setToken(value);
+        const user = element.innerText;
+        this.setUser(user);
+        const users = this.getConfig("users");
+        const token = users[user].token;
+        this.setToken(token);
     }
     static getCssRuleByName(name) {
         const cssRules = document.styleSheets[0].cssRules;
@@ -515,6 +543,11 @@ export class App {
         const url = `./rest/${this.filter.database}/${this.filter.container}${query}`;
         el("filterLink").href = url;
     }
+    saveUser(user, token) {
+        const users = this.config.users;
+        users[user] = { token: token };
+        this.setConfig("users", users);
+    }
     // --------------------------------------- monaco editor ---------------------------------------
     // [Monaco Editor Playground] https://microsoft.github.io/monaco-editor/playground.html#extending-language-services-configure-json-defaults
     static addSchema(prefix, jsonSchema, schemas) {
@@ -756,6 +789,7 @@ export class App {
         this.initConfigValue("activeTab");
         this.initConfigValue("showDescription");
         this.initConfigValue("filters");
+        this.initConfigValue("users");
     }
     changeConfig(key, value) {
         this.setConfig(key, value);
@@ -909,6 +943,7 @@ export class App {
     initApp() {
         // --- methods without network requests
         this.loadConfig();
+        this.setUserList();
         this.initUserToken();
         this.openTab(app.getConfig("activeTab"));
         // --- methods performing network requests - note: methods are not awaited

@@ -6,7 +6,8 @@ export const defaultConfig = {
     formatResponses: true,
     activeTab: "explorer",
     showDescription: false,
-    filters: {}
+    filters: {},
+    users: { "admin": { token: "admin" } }
 };
 export function el(id) {
     return document.getElementById(id);
