@@ -140,11 +140,11 @@ export class App {
         authState.title = "authentication pending ...";
         App.postRequestTasks(null, [], null);
     }
-    static setAuthState(user, authError) {
+    static setAuthState(user, failed, authError) {
         const success = !authError;
+        const authClass = failed ? "auth-failed" : (success ? "auth-success" : "auth-error");
         authState.className = "";
-        authState.classList.add(success ? "auth-success" : "auth-error");
-        this.setClass(authState, false, "auth-pending");
+        authState.classList.add(authClass);
         const state = success ? "authentication successful" : authError;
         authState.title = `user: ${user} · ${state}`;
     }
@@ -259,11 +259,11 @@ export class App {
             const rawResponse = await fetch(path, init);
             const text = await rawResponse.text();
             const json = JSON.parse(text);
-            this.setAuthState(user, json.authError);
+            this.setAuthState(user, false, json.authError);
             return { text: text, json: json };
         }
         catch (error) {
-            this.setAuthState(user, `authentication error: ${error.message}`);
+            this.setAuthState(user, true, `authentication error: ${error.message}`);
             return {
                 text: error.message,
                 json: {
