@@ -80,8 +80,11 @@ export class App {
             div.onclick = () => { app.selectUser(user); };
             divSelect.innerText = user;
             const divRemove = document.createElement("span");
-            divRemove.classList.add("remove-user");
-            divRemove.onclick = (ev) => { app.removeUser(ev, user); };
+            divRemove.classList.add("user-list");
+            if (user != "admin" && user != "unknown") {
+                divRemove.classList.add("remove");
+                divRemove.onclick = (ev) => { app.removeUser(ev, user); };
+            }
             div.appendChild(divRemove);
             div.appendChild(divSelect);
             userList.appendChild(div);

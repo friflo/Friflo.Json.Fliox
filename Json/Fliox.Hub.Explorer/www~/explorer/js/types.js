@@ -7,7 +7,7 @@ export const defaultConfig = {
     activeTab: "explorer",
     showDescription: false,
     filters: {},
-    users: { "admin": { token: "admin" } }
+    users: { "admin": { token: "admin" }, "unknown": { token: "" } }
 };
 export function el(id) {
     return document.getElementById(id);

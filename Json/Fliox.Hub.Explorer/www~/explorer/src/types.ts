@@ -22,7 +22,7 @@ export const defaultConfig = {
     activeTab       : "explorer",
     showDescription : false,
     filters         : {} as { [database: string]: { [container: string]: string[]}},
-    users           : { "admin": { token: "admin"} } as ExplorerUser
+    users           : { "admin": { token: "admin"}, "unknown": { token: ""} } as ExplorerUser
 };
 
 export type Config     = typeof defaultConfig
