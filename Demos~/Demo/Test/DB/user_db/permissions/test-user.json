@@ -1,0 +1,6 @@
+{
+    "id": "test-user",
+    "roles": [
+        "main_db-admin"
+    ]
+}

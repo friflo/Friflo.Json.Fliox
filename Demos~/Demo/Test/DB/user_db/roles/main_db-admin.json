@@ -1,0 +1,7 @@
+{
+    "id": "main_db-admin",
+    "description": "Allow unrestricted access to main_db.",
+    "taskRights": [
+        { "type": "dbFull", "database": "main_db" }
+    ]
+}

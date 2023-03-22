@@ -1,7 +1,0 @@
-{
-    "id": "main_db-allow",
-    "description": "Allow unrestricted access to default database.",
-    "taskRights": [
-        { "type": "dbFull", "database": "main_db" }
-    ]
-}

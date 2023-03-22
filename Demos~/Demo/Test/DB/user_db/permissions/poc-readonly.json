@@ -1,4 +1,0 @@
-{
-    "id": "poc-readonly",
-    "roles": ["main_db-readonly"]
-}

@@ -1,5 +1,5 @@
 {
-    "id": "main_db-readonly",
+    "id": "main_db-read",
     "description": "Allow readonly access to default database and execution of the given commands",
     "taskRights": [
         { "type": "dbTask",      "database": "main_db", "types": ["read", "query", "subscribeChanges", "subscribeMessage"] },
