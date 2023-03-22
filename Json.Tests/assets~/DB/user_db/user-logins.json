@@ -1,0 +1,9 @@
+{
+  "admin":          { "token": "admin"          },
+  "unknown":        { "token": ""               },
+  "poc-admin":      { "token": "poc-admin"      },
+  "poc-readonly":   { "token": "poc-readonly"   },
+  "monitor-admin":  { "token": "monitor-admin"  },
+  "user-admin":     { "token": "user-admin"     },
+  "user-readonly":  { "token": "user-readonly"  }
+}
