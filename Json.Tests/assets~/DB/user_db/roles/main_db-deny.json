@@ -1,5 +1,0 @@
-{
-    "id": "main_db-deny",
-    "description": "Empty 'taskRights' - grant no access to any database",
-    "taskRights": [ ]
-}

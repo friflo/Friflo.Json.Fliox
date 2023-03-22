@@ -152,17 +152,17 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         
         /// test authorization of subscribing to container changes. E.g. create, upsert, delete and patch.
         private static async Task AssertAuthAccessSubscriptions(FlioxHub hub) {
-            using (var mutateUser       = new PocStore(hub) { UserId = "test-deny", ClientId = "auth-1" }) {
-                mutateUser.Token = "test-deny-token";
+            using (var mutateUser       = new PocStore(hub) { UserId = "test-empty", ClientId = "auth-1" }) {
+                mutateUser.Token = "test-empty-token";
                 await mutateUser.TrySyncTasks(); // authenticate to simplify debugging below
 
                 var articleChanges = mutateUser.articles.SubscribeChanges(Change.upsert, (changes, context) => { });
                 await mutateUser.TrySyncTasks();
-                AreEqual("PermissionDenied ~ not authorized. user: 'test-deny'", articleChanges.Error.Message);
+                AreEqual("PermissionDenied ~ not authorized. user: 'test-empty'", articleChanges.Error.Message);
                 
                 var articleDeletes = mutateUser.articles.SubscribeChanges(Change.delete, (changes, context) => { });
                 await mutateUser.TrySyncTasks();
-                AreEqual("PermissionDenied ~ not authorized. user: 'test-deny'", articleDeletes.Error.Message);
+                AreEqual("PermissionDenied ~ not authorized. user: 'test-empty'", articleDeletes.Error.Message);
             }
             using (var mutateUser       = new PocStore(hub) { UserId = "test-operation", ClientId = "auth-2" }) {
                 mutateUser.Token = "test-operation-token";
@@ -181,17 +181,17 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         
         /// test authorization of sending messages and subscriptions to messages. Commands are messages too.
         private static async Task AssertAuthMessage(FlioxHub hub) {
-            using (var denyUser      = new PocStore(hub) { UserId = "test-deny", ClientId = "auth-3" })
+            using (var denyUser      = new PocStore(hub) { UserId = "test-empty", ClientId = "auth-3" })
             {
                 // test: deny message
-                denyUser.Token = "test-deny-token";
+                denyUser.Token = "test-empty-token";
                 await denyUser.TrySyncTasks(); // authenticate to simplify debugging below
                 
                 var message     = denyUser.SendMessage("test-message");
                 var subscribe   = denyUser.SubscribeMessage("test-subscribe", (msg, context) => {});
                 await denyUser.TrySyncTasks();
-                AreEqual("PermissionDenied ~ not authorized. user: 'test-deny'", message.Error.Message);
-                AreEqual("PermissionDenied ~ not authorized. user: 'test-deny'", subscribe.Error.Message);
+                AreEqual("PermissionDenied ~ not authorized. user: 'test-empty'", message.Error.Message);
+                AreEqual("PermissionDenied ~ not authorized. user: 'test-empty'", subscribe.Error.Message);
             }
             using (var messageUser   = new PocStore(hub) { UserId = "test-message", ClientId = "auth-4" }){
                 // test: allow message

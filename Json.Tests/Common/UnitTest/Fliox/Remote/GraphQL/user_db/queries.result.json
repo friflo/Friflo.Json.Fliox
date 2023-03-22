@@ -1,7 +1,7 @@
 {
     "data": {
         "queryRoles": {
-    "count": 14,
+    "count": 13,
     "items": [
         {
             "id": "cluster-info",
@@ -40,11 +40,6 @@
                     "database": "main_db",
                     "__typename": "DbFullRight"
                 }
-            ]
-        },
-        {
-            "id": "main_db-deny",
-            "taskRights": [
             ]
         },
         {
