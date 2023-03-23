@@ -1,4 +1,4 @@
 {
-    "id": "all-users",
+    "id": ".all-users",
     "roles": ["cluster-info", "webrtc-client"]
 }

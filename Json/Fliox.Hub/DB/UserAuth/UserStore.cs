@@ -27,9 +27,9 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
         
         public static class ID {
             /// <summary>user id in <see cref="UserStore.permissions"/> used for all users - authenticated and anonymous</summary>
-            public  const string    AllUsers            = "all-users";
+            public  const string    AllUsers            = ".all-users";
             /// <summary>user id in <see cref="UserStore.permissions"/> used for authenticated users</summary>
-            public  const string    AuthenticatedUsers  = "authenticated-users";
+            public  const string    AuthenticatedUsers  = ".authenticated-users";
             /// <summary>user id in <see cref="UserStore.permissions"/> used for Hub administrator</summary>
             public  const string    Admin               = "admin";
             /// <summary>role id in <see cref="UserStore.roles"/> used to enable full Hub access</summary>
