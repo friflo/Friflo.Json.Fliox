@@ -34,7 +34,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         private             string                                      cacheControl;
         private  readonly   List<FileExt>                               fileExtensions;
 
-        public   override   string                                      ToString()  => $"cached files: {cache.Count}";
+        public   override   string                                      ToString()  => string.Join(" ", Routes);
 
         private StaticFileHandler() {
             cache           = new ConcurrentDictionary<string, CacheEntry>();
