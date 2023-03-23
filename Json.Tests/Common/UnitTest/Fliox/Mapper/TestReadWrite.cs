@@ -111,6 +111,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
             var dateTime =   "2021-01-14T09:59:40.101Z";
             var dateTimeStr= "\"2021-01-14T09:59:40.101Z\"";
              // --- arrays
+            var arrEmpty =   "[]";
             var arrNum =     "[1,2,3]";
             var arrBigInt=   "[\"1\",\"2\",\"1234567890123456789012345678901234567890\"]";
             var arrStr =     "[\"A\",\"B\",\"C\"]";
@@ -288,6 +289,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
                         AreEqual(new[] {"A","B","C"}, ReadTo(arrStr, reused));
                         AreEqual(JsonEvent.EOF, enc.JsonEvent);
                     }
+                    
+                    // --- empty array
+                    AreEqual(new int[] {},              Read   <long[]>            (arrEmpty)); AreEqual(JsonEvent.EOF, enc.JsonEvent);
+                    AreEqual(new TestMapperClass[] {},  Read   <TestMapperClass[]> (arrEmpty)); AreEqual(JsonEvent.EOF, enc.JsonEvent);
+                    
                     // --- array non nullable
                     AreEqual(new [] {1,2,3},      Read   <long[]>    (arrNum));          AreEqual(JsonEvent.EOF, enc.JsonEvent);
                     AreEqual(new [] {1,2,3},      Read    <int[]>    (arrNum));          AreEqual(JsonEvent.EOF, enc.JsonEvent);
@@ -553,7 +559,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
 
                     // Ensure minimum required type lookups
                     if (n > 0) {
-                        AreEqual(137, enc.TypeCache.LookupCount);
+                        AreEqual(139, enc.TypeCache.LookupCount);
                         AreEqual(  0, enc.TypeCache.StoreLookupCount);
                         AreEqual(  0, enc.TypeCache.TypeCreationCount);
                     }

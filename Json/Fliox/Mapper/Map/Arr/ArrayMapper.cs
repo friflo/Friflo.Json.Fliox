@@ -138,7 +138,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Arr
                         if (index != len)
                             array = CopyArray(array, index);
                         success = true;
-                        return array;
+                        return array ?? Array.Empty<TElm>();
                     case JsonEvent.Error:
                         success = false;
                         return default;
