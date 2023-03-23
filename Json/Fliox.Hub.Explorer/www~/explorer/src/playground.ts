@@ -199,7 +199,10 @@ export class Playground
         app.requestModel.setValue(value);
     }
 
-    public async loadExampleRequestList () : Promise<void> {
+    groupPrefix = "0";
+    groupCount  = 0; 
+
+    public async initExampleRequestList () : Promise<void> {
         // [html - How do I make a placeholder for a 'select' box? - Stack Overflow] https://stackoverflow.com/questions/5805059/how-do-i-make-a-placeholder-for-a-select-box
         let option      = createEl("option");
         option.value    = "";
@@ -208,27 +211,26 @@ export class Playground
         option.hidden   = true;
         option.text     = "Select request ...";
         selectExample.add(option);
-        let   groupPrefix       = "0";
-        let   groupCount        = 0;
 
         // --- add default examples
         for (const example in defaultExamples) {
             const name = example.replace(".sync.json", "");
-            if (groupPrefix != name[0]) {
-                groupPrefix = name[0];
-                groupCount++;
+            if (this.groupPrefix != name[0]) {
+                this.groupPrefix = name[0];
+                this.groupCount++;
             }
             option = createEl("option");
             option.value                    = name;
             option.dataset["source"]        = "default";
-            option.text                     = (groupCount % 2 ? "\xA0\xA0" : "") + name;
-            option.style.backgroundColor    = groupCount % 2 ? "#ffffff" : "#eeeeff";
+            option.text                     = (this.groupCount % 2 ? "\xA0\xA0" : "") + name;
+            option.style.backgroundColor    = this.groupCount % 2 ? "#ffffff" : "#eeeeff";
             selectExample.add(option);
         }
+    }
 
+    public async addRemoteExamples (examplesPath: string) : Promise<void> {
         // --- add examples from remote folder
-        const folder    = './examples';
-        const response  = await fetch(folder);
+        const response  = await fetch(examplesPath);
         if (!response.ok)
             return;
         const exampleRequests   = await response.json() as string[];
@@ -237,18 +239,18 @@ export class Playground
             if (!example.endsWith(".json"))
                 continue;
             const name = example.replace(".sync.json", "");
-            if (groupPrefix != name[0]) {
-                groupPrefix = name[0];
-                groupCount++;
+            if (this.groupPrefix != name[0]) {
+                this.groupPrefix = name[0];
+                this.groupCount++;
             }
-            option = createEl("option");
-            option.value                    = folder + "/" + example;
+            const option = createEl("option");
+            option.value                    = examplesPath + "/" + example;
             option.dataset["source"]        = "remote";
-            option.text                     = (groupCount % 2 ? "\xA0\xA0" : "") + name;
-            option.style.backgroundColor    = groupCount % 2 ? "#ffffff" : "#eeeeff";
+            option.text                     = (this.groupCount % 2 ? "\xA0\xA0" : "") + name;
+            option.style.backgroundColor    = this.groupCount % 2 ? "#ffffff" : "#eeeeff";
             selectExample.add(option);
         }
-    }    
+    }
 }
 
 export const defaultExamples: {[name: string ]: SyncRequest} = {

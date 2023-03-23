@@ -1117,16 +1117,19 @@ export class App {
         this.setEditorOptions();
     }
 
-    public initApp(): void {
+    public initApp() : void {
         // --- methods without network requests
         this.loadConfig();
         this.setUserList();
         this.initUserToken();
         this.openTab(app.getConfig("activeTab"));
-
+        this.playground.initExampleRequestList();
         // --- methods performing network requests - note: methods are not awaited
-        this.playground.loadExampleRequestList();
-        this.loadCluster();
+        this.loadCluster().then(() => {
+            if (this.hostInfo.routes.includes("/examples")) {
+                this.playground.addRemoteExamples("./examples");
+            }
+        });
     }
 }
 
