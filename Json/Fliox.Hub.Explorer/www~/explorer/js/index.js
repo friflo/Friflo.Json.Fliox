@@ -138,7 +138,7 @@ export class App {
         authState.className = "";
         authState.classList.add("auth-pending");
         authState.title = "authentication pending ...";
-        App.postRequestTasks(null, [], null);
+        App.postRequestTasks(undefined, []);
     }
     static setAuthState(user, failed, authError) {
         const success = !authError;
@@ -255,7 +255,7 @@ export class App {
         };
         const user = App.getCookie("fliox-user");
         try {
-            const path = `${flioxRoot}?${tag}`;
+            const path = `${flioxRoot}${tag}`;
             const rawResponse = await fetch(path, init);
             const text = await rawResponse.text();
             const json = JSON.parse(text);
@@ -273,7 +273,7 @@ export class App {
             };
         }
     }
-    static async postRequestTasks(database, tasks, tag) {
+    static async postRequestTasks(database, tasks) {
         const db = database == "main_db" ? undefined : database;
         const sync = {
             "msg": "sync",
@@ -283,8 +283,8 @@ export class App {
             "token": defaultToken.value
         };
         const request = JSON.stringify(sync);
-        tag = tag ? tag : "";
-        return await App.postRequest(request, `${database}/${tag}`);
+        const tag = database ? `?${database}` : "";
+        return await App.postRequest(request, tag);
     }
     static getRestPath(database, container, query) {
         let path = `${flioxRoot}rest/${database}`;
@@ -394,7 +394,7 @@ export class App {
             { "task": "query", "cont": "schemas" },
         ];
         clusterExplorer.innerHTML = 'read databases <span class="spinner"></span>';
-        const response = await App.postRequestTasks("cluster", tasks, null);
+        const response = await App.postRequestTasks("cluster", tasks);
         const content = response.json;
         const error = App.getTaskError(content, 0);
         if (error) {

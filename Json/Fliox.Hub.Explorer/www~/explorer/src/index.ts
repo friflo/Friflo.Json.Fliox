@@ -162,7 +162,7 @@ export class App {
         authState.className = "";
         authState.classList.add("auth-pending");
         authState.title = "authentication pending ...";
-        App.postRequestTasks(null, [], null);
+        App.postRequestTasks(undefined, []);
     }
 
     private static setAuthState(user: string, failed: boolean, authError: string) {
@@ -294,7 +294,7 @@ export class App {
         };
         const user          = App.getCookie("fliox-user");
         try {
-            const path          = `${flioxRoot}?${tag}`;
+            const path          = `${flioxRoot}${tag}`;
             const rawResponse   = await fetch(path, init);
             const text          = await rawResponse.text();
             const json          = JSON.parse(text);
@@ -312,7 +312,7 @@ export class App {
         }
     }
 
-    private static async postRequestTasks (database: string, tasks: SyncRequestTask_Union[], tag: string) {
+    private static async postRequestTasks (database: string, tasks: SyncRequestTask_Union[]) {
         const db = database == "main_db" ? undefined : database;
         const sync: SyncRequest = {
             "msg":      "sync",
@@ -322,8 +322,8 @@ export class App {
             "token":    defaultToken.value
         };
         const request = JSON.stringify(sync);
-        tag = tag ? tag : "";
-        return await App.postRequest(request, `${database}/${tag}`);
+        const tag = database ? `?${database}` : "";
+        return await App.postRequest(request, tag);
     }
 
     private static getRestPath(database: string, container: string, query: string) : string {
@@ -444,7 +444,7 @@ export class App {
             { "task": "query", "cont": "schemas"},
         ];
         clusterExplorer.innerHTML = 'read databases <span class="spinner"></span>';
-        const response  = await App.postRequestTasks("cluster", tasks, null);
+        const response  = await App.postRequestTasks("cluster", tasks);
         const content   = response.json as SyncResponse;
         const error     = App.getTaskError (content, 0);
         if (error) {

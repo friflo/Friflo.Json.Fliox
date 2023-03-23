@@ -143,7 +143,7 @@ export class Playground {
         const start = performance.now();
         let duration;
         try {
-            const response = await App.postRequest(jsonRequest, "POST");
+            const response = await App.postRequest(jsonRequest, "?POST");
             let content = response.text;
             content = app.formatJson(app.config.formatResponses, content);
             duration = performance.now() - start;
