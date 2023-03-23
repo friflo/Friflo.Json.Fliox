@@ -17,7 +17,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
     {
         string[]    Routes          { get; }
         bool        IsMatch         (RequestContext context);
-        Task        HandleRequest   (RequestContext context);
+        Task<bool>  HandleRequest   (RequestContext context);
     }
     
     /// <summary>

@@ -42,23 +42,23 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             return RequestContext.IsBasePath(GraphQLRoute, context.route);
         }
         
-        public async Task HandleRequest(RequestContext context) {
+        public async Task<bool> HandleRequest(RequestContext context) {
             if (context.route == GraphQLRoute) {
                 context.WriteError("invalid path", "expect: graphql/database", 400);
-                return;
+                return true;
             }
             var dbName  = context.route.Substring(GraphQLRoute.Length + 1);
             var schema  = GetSchema(context, dbName, out string error);
             if (schema == null) {
                 context.WriteString($"error: {error}, database: {dbName}", "text/plain", 404);
-                return;
+                return true;
             }
             var method  = context.method;
             // ------------------    GET            /graphql/{database}
             if (method == "GET") {
                 var html = HtmlGraphiQL.Get(dbName, schema.schemaName);
                 context.WriteString(html, "text/html", 200);
-                return;
+                return true;
             }
             if (method == "POST") {
                 using (var pooled = context.ObjectMapper.Get()) {
@@ -67,13 +67,13 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                     var gqlRequest      = ReadRequestBody(mapper, body, out error);
                     if (error != null) {
                         context.WriteError("invalid request body", error, 400);
-                        return;
+                        return true;
                     }
                     var doc             = gqlRequest.query;
                     var query           = ParseGraphQL(doc, out error);
                     if (error != null) {
                         context.WriteError("invalid GraphQL query", error, 400);
-                        return;
+                        return true;
                     }
                     var operationName   = gqlRequest.operationName;
                     
@@ -81,7 +81,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                     if (operationName == "IntrospectionQuery") {
                         var schemaResponse = IntrospectionQuery(mapper, query, schema.schemaResponse);
                         context.Write(schemaResponse, "application/json", 200);
-                        return;
+                        return true;
                     }
                     // --------------    POST           /graphql/{database}     case: any other "operationName"
                     var request         = schema.requestHandler.CreateRequest(mapper, gqlRequest, query, doc);
@@ -101,14 +101,15 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                     }
                     if (syncResult.error != null) {
                         context.WriteError("execution error", syncResult.error.message, 500);
-                        return;
+                        return true;
                     }
                     var opResponse = QLResponseHandler.Process(mapper, projectorPool, request.queries, syncResult.success);
                     context.Write(opResponse, "application/json", 200);
-                    return;
+                    return true;
                 }
             }
             context.WriteError("invalid request", context.ToString(), 400);
+            return true;
         }
         
         private static GqlRequest ReadRequestBody(ObjectMapper mapper, in JsonValue body, out string error) {

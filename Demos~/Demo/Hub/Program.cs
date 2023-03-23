@@ -62,7 +62,7 @@ namespace DemoHub
             var httpHost            = new HttpHost(hub, "/fliox/");
             httpHost.AddHandler      (new GraphQLHandler());
             httpHost.AddHandler      (new StaticFileHandler(HubExplorer.Path)); // optional - serve static web files of Hub Explorer
-            
+            httpHost.AddHandler      (new StaticFileHandler("www", typeof(Program)));
             // CreateWebRtcServer(httpHost).Wait();
             return httpHost;
         }

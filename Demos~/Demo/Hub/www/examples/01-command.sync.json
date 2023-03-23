@@ -1,0 +1,16 @@
+{
+  "msg": "sync",
+  "tasks": [
+    {
+      "task": "cmd",
+      "name": "std.Echo",
+      "param": "Hello World"
+    }
+  ],
+  "info": [
+      "Send a command with an optional param.",
+      "Requires a message handler to return a result.",
+      "'std.Echo' is a standard host command echoing the param.",
+      "The host forward command as an event to subscribed clients."
+  ]
+}

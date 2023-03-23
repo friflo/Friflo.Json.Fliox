@@ -43,8 +43,15 @@ namespace Friflo.Json.Fliox.Hub.Remote
         }
         
         public StaticFileHandler (string rootFolder) : this() {
-            fileHandler         = new FileHandler(rootFolder);
+            if (!Directory.Exists(rootFolder)) {
+                throw new DirectoryNotFoundException(rootFolder);
+            }
+            fileHandler     = new FileHandler(rootFolder);
         }
+        
+        public StaticFileHandler (string rootFolder, Type type)
+            : this(GetPath(type, rootFolder))
+        { }
 
         // e.g. new StaticFileHandler(wwwPath + ".zip", "www~"));
         public StaticFileHandler (string zipPath, string baseFolder) : this() {
@@ -53,6 +60,14 @@ namespace Friflo.Json.Fliox.Hub.Remote
         
         public StaticFileHandler (Stream zipStream, string baseFolder) : this() {
             fileHandler = new ZipFileHandler(zipStream, baseFolder);
+        }
+        
+        private static string GetPath(Type type, string path) {
+            var assembly = type.Assembly;
+            if (assembly == null)
+                throw new InvalidOperationException($"{type.Name}.Assembly == null");
+            var folder = Path.GetDirectoryName(assembly.Location);
+            return folder + "/" + path;
         }
         
         public string CacheControl {
@@ -68,6 +83,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 new FileExt(".css",   "text/css"),
                 new FileExt(".svg",   "image/svg+xml"),
                 new FileExt(".ico",   "image/x-icon"),
+                new FileExt(".json",  "application/json"),
             };
             return result;
         }
@@ -83,60 +99,59 @@ namespace Friflo.Json.Fliox.Hub.Remote
             return context.method == "GET";
         }
             
-        public async Task HandleRequest(RequestContext context) {
+        public async Task<bool> HandleRequest(RequestContext context) {
             try {
                 if (cacheControl == null) {
-                    await GetHandler(context).ConfigureAwait(false);
-                    return;                    
+                    return await GetHandler(context).ConfigureAwait(false);
                 }
                 if (cache.TryGetValue(context.route, out CacheEntry entry)) {
                     context.Write(entry.body, entry.mediaType, entry.status);
                     context.SetHeaders(entry.headers);
-                    return;
+                    return true;
                 }
-                await GetHandler(context).ConfigureAwait(false);
+                bool found = await GetHandler(context).ConfigureAwait(false);
+                if (!found) {
+                    return false;
+                }
                 if (cacheControl != null) {
                     context.AddHeader("Cache-Control", cacheControl); // seconds
                 }
-                if (context.StatusCode != 200)
-                    return;
                 var path = context.route;
                 entry = new CacheEntry(path, context);
                 cache[path] = entry;
+                return true;
             }
             catch (Exception e) {
                 var response = $"method: {context.method}, url: {context.route}\n{e.Message}";
                 context.WriteError("request exception", response, 500);
+                return true;
             }
         }
         
-        private async Task GetHandler (RequestContext context) {
+        private async Task<bool> GetHandler (RequestContext context) {
             var path = context.route;
             if (path.EndsWith("/")) {
                 path += "index.html";
             }
             string ext = Path.GetExtension (path);
             if (string.IsNullOrEmpty(ext)) {
-                ListDirectory(context);
-                return;
+                return ListDirectory(context);
             }
             var content = await fileHandler.ReadFile(path).ConfigureAwait(false);
             if (content == null) {
-                context.WriteError("file error", $"file not found: {path}", 404);
-                return;
+                return false;
             }
             var contentType = ContentTypeFromPath(path);
             var body        = new JsonValue(content);
             context.Write(body, contentType, 200);
+            return true;
         }
         
-        private void ListDirectory (RequestContext context) {
+        private bool ListDirectory (RequestContext context) {
             var folder = context.route;
             string[] fileNames = fileHandler.GetFiles(folder);
             if (fileNames == null) {
-                var msg = $"folder not found: {folder}";
-                context.WriteError("list directory", msg, 404);
-                return;
+                return false;
             }
             Array.Sort(fileNames, StringComparer.Ordinal);
             using (var mapper = context.Pool.ObjectMapper.Get()) {
@@ -144,6 +159,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 var jsonList    = writer.Write(fileNames);
                 context.WriteString(jsonList, "application/json", 200);
             }
+            return true;
         }
         
         private string ContentTypeFromPath(string path) {
@@ -158,8 +174,10 @@ namespace Friflo.Json.Fliox.Hub.Remote
     internal readonly struct FileExt {
         internal  readonly  string  extension;
         internal  readonly  string  mediaType;
-        
-        internal  FileExt (string  extension, string  mediaType) {
+
+        public    override  string  ToString() => $"{extension} - {mediaType}";
+
+        internal  FileExt (string  extension, string mediaType) {
             this.extension  = extension;
             this.mediaType  = mediaType;
         }

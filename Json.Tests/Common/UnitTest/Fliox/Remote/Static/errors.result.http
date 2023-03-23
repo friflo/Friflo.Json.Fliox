@@ -6,5 +6,5 @@ GET {{base}}/folder_unknown
 # StatusCode:   404
 # Content-Type: text/plain
 
-list directory > folder not found: /folder_unknown
+file not found > path: /folder_unknown
 

@@ -227,10 +227,13 @@ namespace Friflo.Json.Fliox.Hub.Remote
             foreach (var handler in customHandlers) {
                 if (!handler.IsMatch(cx))
                     continue;
-                await handler.HandleRequest(cx).ConfigureAwait(false);
-                cx.handled = true;
-                return;
+                if (await handler.HandleRequest(cx).ConfigureAwait(false)) {
+                    cx.handled = true;
+                    return;
+                }
             }
+            cx.WriteError("file not found", $"path: {cx.route}", 404);
+            cx.handled = true;
         }
     }
 }

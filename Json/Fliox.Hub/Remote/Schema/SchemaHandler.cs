@@ -48,10 +48,10 @@ namespace Friflo.Json.Fliox.Hub.Remote.Schema
             return RequestContext.IsBasePath(SchemaBase, context.route);
         }
         
-        public Task HandleRequest(RequestContext context) {
+        public Task<bool> HandleRequest(RequestContext context) {
             if (context.route.Length == SchemaBase.Length) {
                 context.WriteError("invalid schema path", "missing database / protocol name", 400);
-                return Task.CompletedTask;
+                return Task.FromResult(true);
             }
             var hub         = context.hub;
             var route       = context.route.Substring(SchemaBase.Length + 1);
@@ -60,23 +60,23 @@ namespace Friflo.Json.Fliox.Hub.Remote.Schema
             var schema      = GetSchemaResource(hub, name, out string error);
             if (schema == null) {
                 context.WriteError(error, name, 404);
-                return Task.CompletedTask;
+                return Task.FromResult(true);
             }
             var schemaPath  = route.Substring(firstSlash + 1);
             var result      = schema.GetSchemaFile(schemaPath, this, context);
             if (!result.success) {
                 context.WriteError("schema error", result.content, 404);
-                return Task.CompletedTask;
+                return Task.FromResult(true);
             }
             if (cacheControl != null) {
                 context.AddHeader("Cache-Control", cacheControl); // seconds
             }
             if (result.isText) {
                 context.WriteString(result.content, result.contentType, 200);
-                return Task.CompletedTask;
+                return Task.FromResult(true);
             }
             context.Write(result.bytes, result.contentType, 200);
-            return Task.CompletedTask;
+            return Task.FromResult(true);
         }
         
         private SchemaResource GetSchemaResource(FlioxHub hub, string name, out string error) {
