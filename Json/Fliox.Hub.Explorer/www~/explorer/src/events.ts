@@ -383,10 +383,12 @@ export class Events
                     const allMessageSub = databaseSub.messageSubs["*"];
                     allMessageSub.events++;
                     this.uiMessageText(db, "*", allMessageSub, "event");
-
                     const messageSub = databaseSub.messageSubs[task.name];
-                    messageSub.events++;
-                    this.uiMessageText(db, task.name, messageSub, "event");
+                    // update UI if messages or command is defined in API
+                    if (messageSub) {
+                        messageSub.events++;
+                        this.uiMessageText(db, task.name, messageSub, "event");
+                    }
                     break;
                 }
                 case "upsert": 

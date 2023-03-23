@@ -167,6 +167,7 @@ export class Playground {
             const response = await fetch(exampleName);
             const example = await response.text();
             app.requestModel.setValue(example);
+            return;
         }
         const value = JSON.stringify(defaultExamples[exampleName], null, 4);
         app.requestModel.setValue(value);
