@@ -188,9 +188,14 @@ export class Playground
             app.requestModel.setValue("");
             return;
         }
-        const response = await fetch(exampleName);
-        const example = await response.text();
-        app.requestModel.setValue(example);
+        const option = selectExample.options[selectExample.selectedIndex];
+        if (option.dataset["source"] == "remote") {
+            const response = await fetch(exampleName);
+            const example = await response.text();
+            app.requestModel.setValue(example);
+        }
+        const value = JSON.stringify(defaultExamples[exampleName], null, 4);
+        app.requestModel.setValue(value);
     }
 
     public async loadExampleRequestList () : Promise<void> {
@@ -202,14 +207,31 @@ export class Playground
         option.hidden   = true;
         option.text     = "Select request ...";
         selectExample.add(option);
+        let   groupPrefix       = "0";
+        let   groupCount        = 0;
 
+        // --- add default examples
+        for (const example in defaultExamples) {
+            const name = example.replace(".sync.json", "");
+            if (groupPrefix != name[0]) {
+                groupPrefix = name[0];
+                groupCount++;
+            }
+            option = createEl("option");
+            option.value                    = name;
+            option.dataset["source"]        = "default";
+            option.text                     = (groupCount % 2 ? "\xA0\xA0" : "") + name;
+            option.style.backgroundColor    = groupCount % 2 ? "#ffffff" : "#eeeeff";
+            selectExample.add(option);
+        }
+
+        // --- add examples from remote folder
         const folder    = './examples';
         const response  = await fetch(folder);
         if (!response.ok)
             return;
-        const exampleRequests   = await response.json();
-        let   groupPrefix       = "0";
-        let   groupCount        = 0;
+        const exampleRequests   = await response.json() as string[];
+
         for (const example of exampleRequests) {
             if (!example.endsWith(".json"))
                 continue;
@@ -220,9 +242,56 @@ export class Playground
             }
             option = createEl("option");
             option.value                    = folder + "/" + example;
+            option.dataset["source"]        = "remote";
             option.text                     = (groupCount % 2 ? "\xA0\xA0" : "") + name;
             option.style.backgroundColor    = groupCount % 2 ? "#ffffff" : "#eeeeff";
             selectExample.add(option);
         }
     }    
 }
+
+export const defaultExamples: {[name: string ]: SyncRequest} = {
+    "00-empty": {
+        "msg": "sync",
+        "tasks": [
+            {
+                "task":  "cmd",
+                "name":  "std.Echo",
+                "param": "Hello World"
+          }
+        ]
+    },
+    "01-command": {
+        "msg": "sync",
+        "tasks": [
+            {
+                "task": "cmd",
+                "name": "std.Echo",
+                "param": "Hello World"
+            }
+        ],
+        "info": [
+            "Send a command with an optional param.",
+            "Requires a message handler to return a result.",
+            "'std.Echo' is a standard host command echoing the param.",
+            "The host forward command as an event to subscribed clients."
+        ]
+    },
+    "02-message": {
+        "msg": "sync",
+        "tasks": [
+            {
+                "task": "msg",
+                "name": "SomeMessage",
+                "param": "Hello Message"
+          }
+        ],
+        "info": [
+            "Send a message with an optional param.",
+            "The host simply confirm its arrival.",
+            "In contrast to a command it returns no result.",
+            "A message handler at the host is optional.",
+            "The host forward message as an event to subscribed clients."
+        ]
+    }
+};

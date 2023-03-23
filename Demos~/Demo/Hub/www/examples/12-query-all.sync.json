@@ -1,0 +1,14 @@
+{
+  "msg": "sync",
+  "tasks": [
+    {
+      "task": "query",
+      "cont": "articles",
+      "filter": null
+    }
+  ],
+  "info": [
+    "query all articles",
+    "'filter': null - a predicate function - means return all"
+  ]
+}

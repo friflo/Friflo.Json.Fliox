@@ -1,0 +1,26 @@
+{
+  "msg": "sync",
+  "tasks": [
+    {
+      "task": "query",
+      "cont": "articles",
+      "references": [
+        {
+          "selector": ".producer",
+          "cont":     "producers",
+          "references": [
+            {
+              "selector": ".employees[*]",
+              "cont":     "employees"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "info": [
+    "query all articles",
+    "their referenced .producer",
+    "and the .employees[*] referenced by .producer"
+  ]
+}

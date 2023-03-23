@@ -1,0 +1,18 @@
+{
+  "msg": "sync",
+  "tasks": [
+    {
+      "task": "read",
+      "cont": "orders",
+      "ids": ["14"],
+      "references": [
+        {
+          "selector": ".customer",
+          "cont":     "customers"
+        }
+      ]
+    }
+  ],
+  "info": "read entity 'order-1' and its reference to .customer"
+}
+  

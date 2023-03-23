@@ -1,0 +1,27 @@
+{
+  "msg": "sync",
+  "tasks": [
+    {
+      "task": "query",
+      "cont": "articles",
+      "filter": "o => o.name == 'Smartphone'",
+      "filterTree": {
+        "op":  "filter",
+        "arg": "o",
+        "body": {
+          "op"    : "equal",
+          "left"  : { "op": "field" , "name":  "o.name" },
+          "right" : { "op": "string", "value": "Smartphone" }
+        }
+      }
+    }
+  ],
+  "info": [
+    "query articles with filter: o => o.name == 'Smartphone'",
+
+    "the expressions 'filter' and 'filterTree' are equal",
+    " 'filter':     infix notation  - easy to read by humans",
+    " 'filterTree': expression tree - suitable to read by code",
+    "'filterTree' has priority in protocol. Remove to use 'filter'"
+  ]  
+}

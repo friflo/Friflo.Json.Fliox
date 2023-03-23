@@ -44,9 +44,6 @@ GET {{base}}/examples
 
 [
     ".post-config",
-    "00-empty.sync.json",
-    "01-command.sync.json",
-    "02-message.sync.json",
     "10-read.sync.json",
     "11-read-references.sync.json",
     "12-query-all.sync.json",
