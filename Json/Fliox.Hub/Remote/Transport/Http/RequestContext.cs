@@ -15,8 +15,18 @@ namespace Friflo.Json.Fliox.Hub.Remote
 {
     public interface IRequestHandler
     {
+        /// <summary>
+        /// The handled routes of an <see cref="IRequestHandler"/> implementation  
+        /// </summary>
         string[]    Routes          { get; }
+        /// <summary>
+        /// Return true if request can be handled by <see cref="IRequestHandler"/> implementation
+        /// </summary>
         bool        IsMatch         (RequestContext context);
+        /// <summary>
+        /// return true if request was handled.
+        /// Otherwise false to enable subsequent handlers processing the request  
+        /// </summary>
         Task<bool>  HandleRequest   (RequestContext context);
     }
     
