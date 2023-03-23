@@ -264,6 +264,25 @@ export const defaultExamples = {
             "A message handler at the host is optional.",
             "The host forward message as an event to subscribed clients."
         ]
+    },
+    "03-batch": {
+        "msg": "sync",
+        "tasks": [
+            {
+                "task": "cmd",
+                "name": "std.Echo",
+                "param": "Hello Moon"
+            },
+            {
+                "task": "cmd",
+                "name": "std.Echo",
+                "param": "Hello Sun"
+            }
+        ],
+        "info": [
+            "A single request can contain multiple tasks.",
+            "E.g. two commands in this this example"
+        ]
     }
 };
 //# sourceMappingURL=playground.js.map
