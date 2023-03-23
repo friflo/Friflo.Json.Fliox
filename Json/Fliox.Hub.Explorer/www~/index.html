@@ -575,10 +575,10 @@
     </span>
     <span style="border-bottom: 1px solid var(--tab-border); font-size: 13px;">
       <div style="background: var(--background); padding: 1px 1px 1px 10px; border-radius: 2px; border: 1px solid var(--tab-border)">
-        <label for="user">user</label>   <input onchange="app.setUser(value)"  spellcheck="false" type="text" id="user"  class="authInput" value="admin">&nbsp;
+        <label for="user">user</label>   <input onchange="app.setUser(value); app.checkAuth();"  spellcheck="false" type="text" id="user"  class="authInput" value="admin">&nbsp;
         <label for="token">token</label>
         <span>
-            <input onchange="app.setToken(value)" spellcheck="false" type="password" id="token" class="authInput" value="admin" style="padding-right: 16px;">
+            <input onchange="app.setToken(value); app.checkAuth();" spellcheck="false" type="password" id="token" class="authInput" value="admin" style="padding-right: 16px;">
             <span class="authInputEye" id="togglePassword" onclick="app.togglePassword()" style="opacity: 0.3;"></span>
         </span>
         <div class="dropdown">

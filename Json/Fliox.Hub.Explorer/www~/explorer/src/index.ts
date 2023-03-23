@@ -127,7 +127,6 @@ export class App {
 
         const user =  defaultUser.value;
         const users = this.getConfig("users");
-        this.checkAuth();
         if (users[user]?.token == token) {
             return;
         }
@@ -140,6 +139,7 @@ export class App {
         const users = this.getConfig("users");
         const token = users[user].token;
         this.setToken(token);
+        this.checkAuth();
     }
 
     public removeUser (ev: MouseEvent,  user: string) : void {
@@ -158,7 +158,7 @@ export class App {
         eyeEl.style.opacity = type == "password" ? "0.3" : "1";
     }
 
-    private checkAuth() {
+    public checkAuth() : void {
         authState.className = "";
         authState.classList.add("auth-pending");
         authState.title = "authentication pending ...";

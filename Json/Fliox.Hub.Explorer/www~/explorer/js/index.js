@@ -107,7 +107,6 @@ export class App {
         document.cookie = `fliox-token=${token};`;
         const user = defaultUser.value;
         const users = this.getConfig("users");
-        this.checkAuth();
         if (((_a = users[user]) === null || _a === void 0 ? void 0 : _a.token) == token) {
             return;
         }
@@ -119,6 +118,7 @@ export class App {
         const users = this.getConfig("users");
         const token = users[user].token;
         this.setToken(token);
+        this.checkAuth();
     }
     removeUser(ev, user) {
         const users = this.getConfig("users");
