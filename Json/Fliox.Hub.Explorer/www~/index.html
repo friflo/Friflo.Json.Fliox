@@ -255,8 +255,8 @@
         .auth-failed::after                 { content: "!"; color: #ff3c3c; }
 
         .user-list                          { width: 18px; display: inline-flex; }
-        .user-list.remove::after            { content: "×";   }
-        .user-list:hover::after             { content: "×"; color: red; text-shadow: 2px 2px 6px #000000;  }
+        .user-list.remove::after            { content: "×"; }
+        .user-list:hover::after             { color: red; text-shadow: 2px 2px 6px #000000;  }
         
 
         html            { max-width: 100%; overflow-x: hidden; } /* disable horizontal scrollbar */
@@ -581,8 +581,8 @@
             <input onchange="app.setToken(value); app.checkAuth();" spellcheck="false" type="password" id="token" class="authInput" value="admin" style="padding-right: 16px;">
             <span class="authInputEye" id="togglePassword" onclick="app.togglePassword()" style="opacity: 0.3;"></span>
         </span>
-        <div class="dropdown">
-          <button class="dropbtn" aria-label="selectUser"></button>
+        <div class="dropdown" >
+          <button class="dropbtn" aria-label="selectUser" title="recent user list"></button>
           <div id="userList" class="dropdown-content">
             <div onclick="app.selectUser(this)">admin</div>
           </div>
