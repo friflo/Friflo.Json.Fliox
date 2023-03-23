@@ -38,7 +38,7 @@ GET {{base}}/graphiql
 ]
 
 ###
-GET {{base}}/explorer/example-requests
+GET {{base}}/examples
 # StatusCode:   200
 # Content-Type: application/json
 

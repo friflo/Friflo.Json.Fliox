@@ -16,7 +16,7 @@ Cookie: {{auth}}
 
 
 ###
-GET {{base}}/explorer/example-requests
+GET {{base}}/examples
 Cookie: {{auth}}
 
 

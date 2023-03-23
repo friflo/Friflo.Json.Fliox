@@ -88,6 +88,7 @@ GET {{base}}/rest/main_db?cmd=std.Host
     "envColor": "rgb(34 140 0)",
     "pubSub": true,
     "routes": [
+        "/examples",
         "/explorer",
         "/graphiql",
         "/graphql",

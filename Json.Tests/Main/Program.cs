@@ -81,8 +81,8 @@ namespace Friflo.Json.Tests.Main
             
             var httpHost            = new HttpHost(hub, "/fliox/", c.env) { CacheControl = c.cache };
             httpHost.AddHandler      (new GraphQLHandler());
-            httpHost.AddHandler      (new StaticFileHandler(c.Www)          { CacheControl = c.cache }); // optional - serve static web files of Hub Explorer
-            httpHost.AddHandler      (new StaticFileHandler("./assets~/www"){ CacheControl = c.cache });
+            httpHost.AddHandler      (new StaticFileHandler(c.Www)      { CacheControl = c.cache }); // optional - serve static web files of Hub Explorer
+            httpHost.AddHandler      (new StaticFileHandler(c.Examples) { CacheControl = c.cache });
             httpHost.AddSchemaGenerator("jtd", "JSON Type Definition", JsonTypeDefinition.GenerateJTD);  // optional - add code generator
             return httpHost;
         }
@@ -93,6 +93,7 @@ namespace Friflo.Json.Tests.Main
             internal            string      MainDbPath  => rootPath + "./assets~/DB/main_db";
             internal            string      UserDbPath  => rootPath + "./assets~/DB/user_db";
             internal            string      Www         => rootPath + "../Json/Fliox.Hub.Explorer/www~"; // HubExplorer.Path;
+            internal            string      Examples    => rootPath + "./assets~/www";
             internal readonly   string      cache       = null; // "max-age=600"; // HTTP Cache-Control
             internal readonly   bool        useMemoryDb = true;
             internal readonly   MemoryType  memoryType  = MemoryType.Concurrent;
