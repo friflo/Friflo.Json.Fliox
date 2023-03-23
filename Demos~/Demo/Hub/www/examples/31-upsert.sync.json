@@ -1,0 +1,21 @@
+{
+  "msg": "sync",
+  "tasks": [
+    {
+      "task": "upsert",
+      "cont": "articles",
+      "set": [
+        {
+          "id":       1,
+          "name":     "New Article S10",
+          "producer": 15
+        }
+      ]
+    }
+  ],
+  "info": [
+      "upsert an article in the given container",
+      "update if entity exists or insert a new one"
+  ]
+}
+  

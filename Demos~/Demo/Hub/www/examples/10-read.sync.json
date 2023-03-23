@@ -4,9 +4,7 @@
     {
       "task": "read",
       "cont": "articles",
-      "ids": [
-        "article-galaxy"
-      ]
+      "ids": [11, 21]
     }
   ],
   "info": "read entities by their ids in the given container"

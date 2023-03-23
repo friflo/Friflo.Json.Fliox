@@ -1,0 +1,21 @@
+{
+  "msg": "sync",
+  "tasks": [
+    {
+      "task": "subscribeMessage",
+      "name": "*",
+      "remove": false
+    }
+  ],  
+  "info": [
+    "Add subscription for all messages / commands",
+
+    "Note: Websocket only. Requires client id: 'clt'",
+      
+    "Subscribe all messages         'name': '*'",
+    "Subscribe messages with prefix 'name': 'std.*'",
+    "Subscribe a specific message   'name': 'std.Echo'",
+      
+    "Get subscription events by sending a message or command"
+  ]
+}

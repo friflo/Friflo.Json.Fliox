@@ -1,0 +1,13 @@
+{
+  "msg": "sync",
+  "tasks": [
+    {
+      "task": "aggregate",
+      "type": "count",
+      "cont": "articles"
+    }
+  ],
+  "info": [
+    "count all articles"
+  ]
+}

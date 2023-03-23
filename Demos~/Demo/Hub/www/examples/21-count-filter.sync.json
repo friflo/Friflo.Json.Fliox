@@ -2,12 +2,13 @@
   "msg": "sync",
   "tasks": [
     {
-      "task": "query",
+      "task": "aggregate",
+      "type": "count",
       "cont": "articles",
       "filter": "o => o.name == 'Smartphone'"
     }
   ],
   "info": [
-    "query articles with filter: o => o.name == 'Smartphone'"
+    "count articles with filter: o => o.name == 'Smartphone'"
   ]
 }

@@ -1,0 +1,16 @@
+{
+  "msg": "sync",
+  "tasks": [
+    {
+      "task": "merge",
+      "cont": "articles",
+      "set": [
+        {
+          "id":   1,
+          "name": "patched Name"
+        }
+      ]
+    }
+  ],
+  "info": "merge (patch) article member .name (article need to be present)"
+}

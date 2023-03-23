@@ -1,0 +1,12 @@
+{
+  "msg": "sync",
+  "tasks": [
+    {
+      "task": "delete",
+      "cont": "articles",
+      "ids": ["1"]
+    }
+  ],
+  "info":   "delete an article in the given container"
+}
+  

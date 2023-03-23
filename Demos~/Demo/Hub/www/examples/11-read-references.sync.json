@@ -4,7 +4,7 @@
     {
       "task": "read",
       "cont": "orders",
-      "ids": ["14"],
+      "ids": [14],
       "references": [
         {
           "selector": ".customer",
