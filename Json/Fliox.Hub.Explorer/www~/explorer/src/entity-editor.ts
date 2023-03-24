@@ -32,6 +32,9 @@ const entityIdsCount    = el("entityIdsCount");
 const entityIdsGET      = el("entityIdsGET")    as HTMLAnchorElement;
 const entityIdsInput    = el("entityIdsInput")  as HTMLInputElement;
 const entityIdsReload   = el("entityIdsReload");
+const entityDelete      = el("entityDelete")    as HTMLButtonElement;
+const entitySave        = el("entitySave")      as HTMLButtonElement;
+const entityPatch       = el("entityPatch")     as HTMLButtonElement;
 
 const entityFilter      = el("entityFilter")    as HTMLInputElement;
 const filterRow         = el("filterRow");
@@ -77,6 +80,12 @@ export class EntityEditor
     public initEditor(entityEditor: CodeEditor, commandValueEditor: CodeEditor) : void {
         this.entityEditor       = entityEditor;
         this.commandValueEditor = commandValueEditor;
+        entityEditor.onDidChangeModelContent(() => {
+            const length    = entityEditor.getModel().getValueLength();
+            const isEmpty   = length == 0;
+            entitySave.disabled  = isEmpty;
+            entityPatch.disabled = isEmpty;     
+        });
     }
 
     private setEditorHeader(show: "entity" | "command" | "database" | "none") {
@@ -329,6 +338,7 @@ export class EntityEditor
     private updateGetEntitiesAnchor(database: string, container: string) {
         // console.log("updateGetEntitiesAnchor");
         const idsStr = entityIdsInput.value;
+        entityDelete.disabled = idsStr == "";
         const ids    = idsStr.split(",");
         let   len    = ids.length;
         if (len == 1 && ids[0] == "") len = 0;
@@ -353,6 +363,7 @@ export class EntityEditor
         entityIdsReload.onclick     = () => this.loadInputEntityIds      (database, container);
         entityIdsInput.onchange     = () => this.updateGetEntitiesAnchor (database, container);
         entityIdsInput.onkeydown    = e => this.onEntityIdsKeyDown   (e, database, container);
+        entityIdsInput.oninput      = () => { entityDelete.disabled = true; };
         entityIdsInput.value        = ids.join (",");
         this.updateGetEntitiesAnchor(database, container);
     }
@@ -443,7 +454,8 @@ export class EntityEditor
             writeResult.innerHTML = `<span style="color:red">${action} failed: ${error}</code>`;
             return;
         }
-        const entities          = Array.isArray(value) ? value : [value];
+        const values            = Array.isArray(value) ? value : [value];
+        const entities          = values.filter((el) => el != null);
         const type              = app.getContainerSchema(database, container);
         const keyName           = EntityEditor.getEntityKeyName(type as JsonType);
         const ids               = entities.map(entity => String(entity[keyName]));
@@ -505,6 +517,7 @@ export class EntityEditor
             return;
         }
         this.entityIdentity.entityIds = [];
+        this.setEntitiesIds(database, container, []);
         writeResult.innerHTML = EntityEditor.formatResult("Delete", response.status, response.statusText, "");
         this.setEntityValue(database, container, "");
         app.explorer.removeExplorerIds(ids);        
@@ -516,7 +529,7 @@ export class EntityEditor
         }
         const idsStr = JSON.stringify(ids);
         return await App.restRequest("POST", idsStr, database, `${container}/bulk-delete`, null);
-}
+    }
 
     private entityModel:    monaco.editor.ITextModel;
     private entityModels:   {[key: string]: monaco.editor.ITextModel} = { };
