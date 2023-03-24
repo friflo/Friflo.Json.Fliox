@@ -107,9 +107,8 @@ GET {{base}}/rest/main_db/articles?maxCount=1
 
 [
     {
-    "id": "article-1",
-    "name": "Changed name",
-    "producer": "producer-canon"
+    "id": ".hidden-test",
+    "name": "test hidden file"
 }
 ]
 

@@ -92,7 +92,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             AreEqual(2,                 ordersAllAmountGreater0.Result.Count);
             NotNull(ordersAllAmountGreater0.Result.Find(i => i.id == "order-1"));
 
-            AreEqual(6,                 allArticles.Result.Count);
+            AreEqual(7,                 allArticles.Result.Count);
             AreEqual("Galaxy S10",      allArticles.Result.Find(i => i.id =="article-galaxy").name);
             AreEqual("iPad Pro",        allArticles.Result.Find(i => i.id =="article-ipad").name);
             
@@ -132,7 +132,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 queryAll        = articles.QueryAll();
                 queryAll.cursor = cursor;
             }
-            AreEqual(6, count);
+            AreEqual(7, count);
             AreEqual(2, iterations);
             
             var closeCursors = articles.CloseCursors(null);

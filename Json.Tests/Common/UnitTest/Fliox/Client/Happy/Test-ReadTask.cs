@@ -115,8 +115,8 @@ article-missing", string.Join("\n", store.Functions));
             var localArticleEntities    = localArticles.Entities;
             var localArticleKeys        = localArticles.Keys;
             
-            AreEqual(7,                 localArticleEntities.Length);
-            AreEqual(7,                 localArticleKeys.Length);
+            AreEqual(8,                 localArticleEntities.Length);
+            AreEqual(8,                 localArticleKeys.Length);
             NotNull(localArticles["article-galaxy"]);
             IsNull (localArticles["article-missing"]);
             e = Throws<KeyNotFoundException>(() => { var _ = localArticles["foo"]; });
@@ -124,7 +124,7 @@ article-missing", string.Join("\n", store.Functions));
 
             int count = 0;
             foreach (var article in localArticles) { count++; }
-            AreEqual(7, count);
+            AreEqual(8, count);
         }
         
         [Test]

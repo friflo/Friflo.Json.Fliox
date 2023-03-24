@@ -30,6 +30,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             producers.Delete("producer-canon");
             articles. Delete("article-1");
             articles. Delete("article-2");
+            articles. Delete(".hidden-test");
             employees.Delete("apple-0001");
             customers.Delete("customer-1");
             await store.SyncTasks();
@@ -85,10 +86,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             var order           = new Order { id = "order-1", created = new DateTime(2021, 7, 22, 6, 0, 0, DateTimeKind.Utc)};
             var cameraCreate    = new Article { id = "article-1", name = "Camera", producer = canon.id };
             var notebook        = new Article { id = "article-notebook-💻-unicode", name = "Notebook", producer = samsung.id };
+            var hiddenCreate    = new Article { id = ".hidden-test", name = "test hidden file" };
             var derivedClass    = new DerivedClass{ article = cameraCreate.id };
             var type1           = new TestType { id = "type-1", dateTime = new DateTime(2021, 7, 22, 6, 0, 0, DateTimeKind.Utc), derivedClass = derivedClass };
             var createCam1      = articles.Create(cameraCreate);
                                   articles.Upsert(notebook);
+                                  articles.Create(hiddenCreate);
             AreEqual("CreateTask<Article> (entities: 1)", createCam1.ToString());
 
             var newBulkArticles = new List<Article>();
@@ -102,31 +105,32 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             var readArticles    = articles.Read();
             var cameraUnknown   = readArticles.Find("article-missing");
             var camera          = readArticles.Find("article-1");
+            var hidden          = readArticles.Find(".hidden-test");
             
             var camForDelete    = new Article { id = "article-delete", name = "Camera-Delete" };
             articles.Upsert(camForDelete);
             // ClientInfo is accessible via property an ToString()
-            AreEqual(11, store.ClientInfo.peers);
-            AreEqual(6,  store.ClientInfo.tasks); 
-            AreSimilar("entities: 11, tasks: 6 [container: 6]",                     store.ClientInfo);
-            AreSimilar("articles:  7, tasks: 5 [create: 1, upsert: 3, read: 1]",    articles);
+            AreEqual(12, store.ClientInfo.peers);
+            AreEqual(7,  store.ClientInfo.tasks); 
+            AreSimilar("entities: 12, tasks: 7 [container: 7]",                     store.ClientInfo);
+            AreSimilar("articles:  8, tasks: 6 [create: 2, upsert: 3, read: 1]",    articles);
             AreSimilar("producers: 3, tasks: 1 [create: 1]",                        producers);
             AreSimilar("employees: 1",                                              employees);
             
             await store.SyncTasks(); // ----------------
-            AreSimilar("entities: 12",                                  store.ClientInfo); // tasks cleared
+            AreSimilar("entities: 13",                                  store.ClientInfo); // tasks cleared
             
             IsTrue(createCam1.Success);
             IsTrue(createCanon.Success);
             
 
             articles.DeleteRange(newBulkArticles);
-            AreSimilar("entities: 12, tasks: 1 [container: 1]",         store.ClientInfo);
-            AreSimilar("articles:  8, tasks: 1 [delete: 1]",            articles);
+            AreSimilar("entities: 13, tasks: 1 [container: 1]",         store.ClientInfo);
+            AreSimilar("articles:  9, tasks: 1 [delete: 1]",            articles);
             
             await store.SyncTasks(); // ----------------
-            AreSimilar("entities: 10",                                  store.ClientInfo); // tasks cleared
-            AreSimilar("articles:  6",                                  articles);
+            AreSimilar("entities: 11",                                  store.ClientInfo); // tasks cleared
+            AreSimilar("articles:  7",                                  articles);
 
             cameraCreate.name = "Changed name";
             var entityPatches     = articles.DetectPatches(cameraCreate);
@@ -152,8 +156,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             AreEqual(1,             storePatches4.PatchCount);
             var deleteCamera =      articles.Delete(camForDelete.id);
             
-            AreSimilar("entities: 10, tasks: 5 [container: 5]",         store.ClientInfo);
-            AreSimilar("articles:  6, tasks: 5 [merge: 4, delete: 1]",  articles);
+            AreSimilar("entities: 11, tasks: 5 [container: 5]",         store.ClientInfo);
+            AreSimilar("articles:  7, tasks: 5 [merge: 4, delete: 1]",  articles);
             
             await store.SyncTasks(); // ----------------
             
@@ -162,19 +166,20 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             IsTrue(storePatches3.Success);
             IsTrue(storePatches4.Success);
             IsTrue(deleteCamera.Success);
-            AreSimilar("entities: 9",                           store.ClientInfo);       // tasks executed and cleared
+            AreSimilar("entities: 10",                          store.ClientInfo);       // tasks executed and cleared
 
-            AreSimilar("articles: 5",                           articles);
+            AreSimilar("articles: 6",                           articles);
             var readArticles2   = articles.Read();
             var cameraNotSynced = readArticles2.Find("article-1");
-            AreSimilar("entities: 9, tasks: 1 [container: 1]",  store.ClientInfo);
-            AreSimilar("articles: 5, tasks: 1 [read: 1]",       articles);
+            AreSimilar("entities: 10, tasks: 1 [container: 1]",  store.ClientInfo);
+            AreSimilar("articles: 6, tasks: 1 [read: 1]",       articles);
             
             var e = Throws<TaskNotSyncedException>(() => { var _ = cameraNotSynced.Result; });
             AreSimilar("Find.Result requires SyncTasks(). Find<Article> (id: 'article-1')", e.Message);
             
             IsNull(cameraUnknown.Result);
             AreSame(camera.Result, cameraCreate);
+            AreSame(hidden.Result, hiddenCreate);
             
             var customer    = new Customer { id = "customer-1", name = "Smith Ltd." };
             customers.Create(customer);
@@ -188,20 +193,20 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             order.items.AddRange(new [] { item1, item2, item3 });
             order.customer = customer.id;
             
-            AreSimilar("entities: 11, tasks: 3 [container: 3]",         store.ClientInfo);
+            AreSimilar("entities: 12, tasks: 3 [container: 3]",         store.ClientInfo);
             
             AreSimilar("orders:    0",                                  orders);
             orders.Upsert(order);
             types.Upsert(type1);
-            AreSimilar("entities: 13, tasks: 5 [container: 5]",         store.ClientInfo);
+            AreSimilar("entities: 14, tasks: 5 [container: 5]",         store.ClientInfo);
             AreSimilar("orders:    1, tasks: 1 [upsert: 1]",            orders);     // created order
             
-            AreSimilar("articles:  6, tasks: 2 [create: 1, read: 1]",   articles);
+            AreSimilar("articles:  7, tasks: 2 [create: 1, read: 1]",   articles);
             AreSimilar("customers: 1, tasks: 1 [create: 1]",            customers);
             var orderPatches = orders.DetectPatches();
             AreEqual(0, orderPatches.Patches.Count);
-            AreSimilar("entities: 13, tasks: 6 [container: 6]",         store.ClientInfo);
-            AreSimilar("articles:  6, tasks: 2 [create: 1, read: 1]",   articles);
+            AreSimilar("entities: 14, tasks: 6 [container: 6]",         store.ClientInfo);
+            AreSimilar("articles:  7, tasks: 2 [create: 1, read: 1]",   articles);
             AreSimilar("customers: 1, tasks: 1 [create: 1]",            customers);
             AreSimilar("orders:    1, tasks: 2 [upsert: 1, merge: 1]",  orders);
             AreSimilar("types:     1, tasks: 1 [upsert: 1]",            types);
@@ -212,14 +217,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             var storePatches2 = store.DetectAllPatches();
             AreEqual(0, storePatches2.PatchCount);
             
-            AreSimilar("entities: 13, tasks: 6 [container: 6]",         store.ClientInfo);      // no new changes
+            AreSimilar("entities: 14, tasks: 6 [container: 6]",         store.ClientInfo);      // no new changes
 
             await store.SyncTasks(); // ----------------
             
             IsTrue(orderPatches.Success);
             IsTrue(storePatches1.Success);
             IsTrue(storePatches2.Success);
-            AreSimilar("entities: 13",                                  store.ClientInfo);      // tasks executed and cleared
+            AreSimilar("entities: 14",                                  store.ClientInfo);      // tasks executed and cleared
             
             
             customers.Upsert(new Customer{id = "log-patch-entity-read-error",   name = "used for successful read"});

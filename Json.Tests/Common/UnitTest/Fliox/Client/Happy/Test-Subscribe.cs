@@ -245,13 +245,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             var eventInfo = context.EventInfo;
             switch (context.EventCount) {
                 case 3:
-                    AreEqual(6, eventInfo.Count);
-                    AreEqual(6, eventInfo.changes.Count);
-                    AreEqual("creates: 2, upserts: 4, deletes: 0, merges: 0, messages: 0", eventInfo.ToString());
+                    AreEqual(7, eventInfo.Count);
+                    AreEqual(7, eventInfo.changes.Count);
+                    AreEqual("creates: 3, upserts: 4, deletes: 0, merges: 0, messages: 0", eventInfo.ToString());
                     var articleChanges  = context.GetChanges(client.articles);
                     var producerChanges = context.GetChanges(client.producers);
-                    AreEqual(1, articleChanges.Creates.Count);
-                    AreEqual("articles - creates: 1, upserts: 4, deletes: 0, merges: 0", articleChanges.ToString());
+                    AreEqual(2, articleChanges.Creates.Count);
+                    AreEqual("articles - creates: 2, upserts: 4, deletes: 0, merges: 0", articleChanges.ToString());
                     AreEqual("producers - creates: 1, upserts: 0, deletes: 0, merges: 0", producerChanges.ToString());
                     break;
                 case 8:
@@ -296,7 +296,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             
             AreSimilar("creates: 0, upserts: 2, deletes: 0, merges: 0", orderSum);
             AreSimilar("creates: 1, upserts: 6, deletes: 1, merges: 0", customerSum);
-            AreSimilar("creates: 2, upserts: 7, deletes: 5, merges: 4", articleSum);
+            AreSimilar("creates: 3, upserts: 7, deletes: 6, merges: 4", articleSum);
             AreSimilar("creates: 3, upserts: 0, deletes: 3, merges: 0", producerSum);
             AreSimilar("creates: 1, upserts: 0, deletes: 1, merges: 0", employeeSum);
             AreSimilar("creates: 0, upserts: 1, deletes: 0, merges: 0", typesSum);
@@ -309,8 +309,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             
             var allChanges = orderSum.Count + customerSum.Count + articleSum.Count + producerSum.Count + employeeSum.Count + typesSum.Count;
             
-            AreEqual(37, allChanges);
-            AreEqual(37, countAllChanges);
+            AreEqual(39, allChanges);
+            AreEqual(39, countAllChanges);
         }
     }
     

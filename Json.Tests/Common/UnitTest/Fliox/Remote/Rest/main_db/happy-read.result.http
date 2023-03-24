@@ -106,6 +106,10 @@ GET {{base}}/rest/main_db/articles?orderByKey=asc
 
 [
     {
+    "id": ".hidden-test",
+    "name": "test hidden file"
+},
+    {
     "id": "article-1",
     "name": "Changed name",
     "producer": "producer-canon"

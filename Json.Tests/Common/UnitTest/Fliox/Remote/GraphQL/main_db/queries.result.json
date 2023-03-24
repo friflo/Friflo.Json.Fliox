@@ -24,7 +24,10 @@
         "id": "article-galaxy"
     }
 ],
-        "queryAll": {"count":6,"items":[{
+        "queryAll": {"count":7,"items":[{
+    "id": ".hidden-test",
+    "name": "test hidden file"
+},{
     "id": "article-1",
     "name": "Changed name",
     "producer": "producer-canon"
@@ -90,7 +93,7 @@
         },
         {
             "name": "articles",
-            "count": 6
+            "count": 7
         },
         {
             "name": "articles2",
