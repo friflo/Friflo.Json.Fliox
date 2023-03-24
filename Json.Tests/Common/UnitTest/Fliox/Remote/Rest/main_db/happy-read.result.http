@@ -208,7 +208,5 @@ POST {{base}}/rest/main_db/articles/bulk-get
 # Content-Type: application/json
 
 [
-    null,
-    null
 ]
 

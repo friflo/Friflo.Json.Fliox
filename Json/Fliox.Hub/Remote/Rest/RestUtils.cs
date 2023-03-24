@@ -135,7 +135,10 @@ namespace Friflo.Json.Fliox.Hub.Remote.Rest
             var entityMap   = restResult.syncResponse.FindContainer(container).entityMap;
             var entities    = new List<JsonValue>(entityMap.Count);
             foreach (var pair in entityMap) {
-                entities.Add(pair.Value.Json);
+                var json = pair.Value.Json;
+                if (json.IsNull())
+                    continue;
+                entities.Add(json);
             }
             context.AddHeader("len", entities.Count.ToString()); // added to simplify debugging experience
             using (var pooled = context.ObjectMapper.Get()) {
