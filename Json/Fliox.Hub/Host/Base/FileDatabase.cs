@@ -116,9 +116,12 @@ namespace Friflo.Json.Fliox.Hub.Host
             enumerator = Directory.EnumerateFiles(folder, "*.json", SearchOption.TopDirectoryOnly).GetEnumerator();
 #else
             var options = new EnumerationOptions {
-                MatchCasing             = MatchCasing.CaseSensitive,
-                MatchType               = MatchType.Simple,
-                RecurseSubdirectories   = false
+                MatchCasing                 = MatchCasing.CaseSensitive,
+                MatchType                   = MatchType.Simple,
+                RecurseSubdirectories       = false,
+                AttributesToSkip            = FileAttributes.System, // include Hidden files
+                ReturnSpecialDirectories    = false,
+                IgnoreInaccessible          = true
             };
             enumerator = Directory.EnumerateFiles(folder, "*.json", options).GetEnumerator();
 #endif
