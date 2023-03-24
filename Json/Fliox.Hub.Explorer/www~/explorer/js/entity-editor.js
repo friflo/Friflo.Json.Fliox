@@ -310,16 +310,17 @@ export class EntityEditor {
         const response = await this.loadEntities(p, true, null);
         if (unchangedSelection)
             return;
-        let json = JSON.parse(response);
-        if (json == null) {
-            json = [];
+        let values = JSON.parse(response);
+        if (values == null) {
+            values = [];
         }
         else {
-            if (!Array.isArray(json))
-                json = [json];
+            if (!Array.isArray(values))
+                values = [values];
         }
+        const entities = values.filter(value => value != null);
         const type = app.getContainerSchema(database, container);
-        app.explorer.updateEntities(database, container, json, type, "All");
+        app.explorer.updateEntities(database, container, entities, type, "All");
         this.selectEntities(database, container, ids);
     }
     onEntityIdsKeyDown(event, database, container) {
