@@ -82,10 +82,13 @@ export class EntityEditor
         this.commandValueEditor = commandValueEditor;
         entityEditor.onDidChangeModelContent(() => {
             const length    = entityEditor.getModel().getValueLength();
-            const isEmpty   = length == 0;
-            entitySave.disabled  = isEmpty;
-            entityPatch.disabled = isEmpty;     
+            this.enableSaveButton(length != 0);
         });
+    }
+
+    private enableSaveButton(enable: boolean) {
+        entitySave.disabled  = !enable;
+        entityPatch.disabled = !enable;    
     }
 
     private setEditorHeader(show: "entity" | "command" | "database" | "none") {
@@ -550,6 +553,7 @@ export class EntityEditor
         const model = this.getModel(url);
         model.setValue(value);
         this.entityEditor.setModel (model);
+        this.enableSaveButton(value != "");
         if (value == "")
             return null;
         const ast = parseAst(value);

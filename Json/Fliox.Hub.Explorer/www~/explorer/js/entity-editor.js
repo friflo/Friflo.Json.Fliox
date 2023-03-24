@@ -45,10 +45,12 @@ export class EntityEditor {
         this.commandValueEditor = commandValueEditor;
         entityEditor.onDidChangeModelContent(() => {
             const length = entityEditor.getModel().getValueLength();
-            const isEmpty = length == 0;
-            entitySave.disabled = isEmpty;
-            entityPatch.disabled = isEmpty;
+            this.enableSaveButton(length != 0);
         });
+    }
+    enableSaveButton(enable) {
+        entitySave.disabled = !enable;
+        entityPatch.disabled = !enable;
     }
     setEditorHeader(show) {
         const displayEntity = show == "entity" ? "contents" : "none";
@@ -460,6 +462,7 @@ export class EntityEditor {
         const model = this.getModel(url);
         model.setValue(value);
         this.entityEditor.setModel(model);
+        this.enableSaveButton(value != "");
         if (value == "")
             return null;
         const ast = parseAst(value);
