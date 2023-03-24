@@ -383,7 +383,7 @@ export class EntityEditor {
         const keyName = EntityEditor.getEntityKeyName(type);
         const ids = entities.map(entity => String(entity[keyName]));
         writeResult.innerHTML = `${action} <span class="spinner"></span>`;
-        const containerPath = ids.length == 1 ? `${container}/${ids[0]}` : container;
+        const containerPath = Array.isArray(value) ? container : `${container}/${ids[0]}`;
         const response = await App.restRequest(method, jsonValue, database, containerPath, null);
         if (!response.ok) {
             const error = await response.text();
