@@ -146,9 +146,13 @@ export class Explorer {
         const maxCount = "maxCount=100";
         const queryParams = query == null ? maxCount : `${query}&${maxCount}`;
         const response = await App.restRequest("GET", null, p.database, p.container, queryParams);
-        const reload = `<span class="reload" title='reload container' onclick='app.explorer.loadContainer(${JSON.stringify(p)})'></span>`;
+        const reload = createEl('span');
+        reload.className = "reload";
+        reload.title = "reload container";
+        reload.onclick = () => { app.explorer.loadContainer(p, query); };
         writeResult.innerHTML = "";
-        readEntities.innerHTML = `${containerLink} ${apiLinks}${reload}`;
+        readEntities.innerHTML = `${containerLink} ${apiLinks}`;
+        readEntities.appendChild(reload);
         if (!response.ok) {
             const error = await response.text();
             entityExplorer.innerHTML = App.errorAsHtml(error, p);
