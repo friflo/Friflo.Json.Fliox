@@ -215,12 +215,12 @@
         .dropbtn::before { opacity: 0.4; content: "▼"; }
         .authInput { width: 70px; }
         .authInputEye {
-            margin-left: -20px;
-            padding-right: 3px;
+            margin-left: -16px;
+            padding-right: 2px;
             cursor: pointer;
             color:  fieldtext;
         }
-        .authInputEye::after { content: "👁️‍🗨️"; font-size: 10px;}
+        .authInputEye::after { content: "⚇";  }
         .dropdown {
             position: relative;
             display: inline-block;
@@ -580,7 +580,7 @@
         <label for="token">token</label>
         <span>
             <input onchange="app.setToken(value); app.checkAuth();" spellcheck="false" type="password" id="token" class="authInput" value="admin" style="padding-right: 16px;">
-            <span class="authInputEye" id="togglePassword" onclick="app.togglePassword()" style="opacity: 0.3;"></span>
+            <span class="authInputEye" id="togglePassword" onclick="app.togglePassword()" style="opacity: 0.4;"></span>
         </span>
         <div class="dropdown" >
           <button class="dropbtn" aria-label="selectUser" title="recent logins"></button>
