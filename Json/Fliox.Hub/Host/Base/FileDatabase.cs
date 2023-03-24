@@ -119,7 +119,7 @@ namespace Friflo.Json.Fliox.Hub.Host
                 MatchCasing                 = MatchCasing.CaseSensitive,
                 MatchType                   = MatchType.Simple,
                 RecurseSubdirectories       = false,
-                AttributesToSkip            = FileAttributes.System, // include Hidden files
+                // AttributesToSkip            = FileAttributes.System, // include Hidden files
                 ReturnSpecialDirectories    = false,
                 IgnoreInaccessible          = true
             };
