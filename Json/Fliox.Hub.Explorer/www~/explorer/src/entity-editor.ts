@@ -338,8 +338,10 @@ export class EntityEditor
         
     }
 
+    // updateCount = 0;
+
     private updateGetEntitiesAnchor(database: string, container: string) {
-        // console.log("updateGetEntitiesAnchor");
+        // console.trace(`updateGetEntitiesAnchor ${++this.updateCount}`);
         const idsStr = entityIdsInput.value;
         entityDelete.disabled = idsStr == "";
         const ids    = idsStr.split(",");
@@ -351,7 +353,7 @@ export class EntityEditor
             app.explorer.setSelectedEntities(ei.database, ei.container, ei.entityIds);
         };
         entityIdsContainer.innerText    = `« ${container}`;
-        entityIdsCount.innerText        = len > 0 ? `(${len})` : "";
+        entityIdsCount.innerText        = len > 0 ? `· ${len}` : "";
 
         let getUrl: string;        
         if (len == 1) {
@@ -364,7 +366,7 @@ export class EntityEditor
 
     private setEntitiesIds (database: string, container: string, ids: string[]) {
         entityIdsReload.onclick     = () => this.loadEntitiesById        (database, container);
-        entityIdsInput.onchange     = () => this.updateGetEntitiesAnchor (database, container);
+        // entityIdsInput.onchange     = () => this.updateGetEntitiesAnchor (database, container);
         entityIdsInput.onkeydown    = e  => this.onEntityIdsKeyDown   (e, database, container);
         entityIdsInput.oninput      = () => { entityDelete.disabled = true; };
         entityIdsInput.value        = ids.join (",");
@@ -381,7 +383,8 @@ export class EntityEditor
     }
 
     private async loadEntitiesById (database: string, container: string) {
-        const ids               = entityIdsInput.value == "" ? [] : entityIdsInput.value.split(",");
+        const text              = entityIdsInput.value;
+        const ids               = text == "" ? [] : text.split(",");
         const unchangedSelection= EntityEditor.arraysEquals(this.entityIdentity.entityIds, ids);
         const p: Resource       = { database, container, ids };
         const response          = await this.loadEntities(p, true, null);
@@ -394,9 +397,12 @@ export class EntityEditor
             if (!Array.isArray(entities))
                 entities = [entities];
         }
-        const type      = app.getContainerSchema(database, container);
+        const type                  = app.getContainerSchema(database, container);
         app.explorer.updateEntities(database, container, entities, type, "All");
         this.selectEntities(database, container, ids);
+        if (entities.length != ids.length) {
+            entityIdsCount.innerText    = `· ${entities.length}/${ids.length}`;
+        }
     }
 
     private onEntityIdsKeyDown(event: KeyboardEvent, database: string, container: string) {
@@ -475,13 +481,14 @@ export class EntityEditor
         app.explorer.updateEntities(database, container, entities, type, updateCell);
         if (EntityEditor.arraysEquals(this.entityIdentity.entityIds, ids))
             return;
+        this.setEntitiesIds(database, container, ids);
         this.selectEntities(database, container, ids);        
     }
 
     private selectEntities(database: string, container: string, ids: string[]) {
         const ei = this.entityIdentity;
         ei.entityIds = ids;
-        this.setEntitiesIds(database, container, ids);
+        // this.setEntitiesIds(database, container, ids);
         const rowIndices = app.explorer.findRowIndices(ids);
 
         app.explorer.setSelectedEntities(ei.database, ei.container, ei.entityIds);
