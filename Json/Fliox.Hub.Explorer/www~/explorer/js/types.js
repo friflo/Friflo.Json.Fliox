@@ -2,7 +2,7 @@
 export const defaultConfig = {
     showLineNumbers: false,
     showMinimap: false,
-    formatEntities: false,
+    formatEntities: true,
     formatResponses: true,
     activeTab: "explorer",
     showDescription: false,
