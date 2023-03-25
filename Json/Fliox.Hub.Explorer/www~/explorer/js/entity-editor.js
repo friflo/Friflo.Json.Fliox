@@ -241,7 +241,7 @@ export class EntityEditor {
         const response = await EntityEditor.requestIds(p.database, p.container, p.ids);
         let content = await response.text();
         content = app.formatJson(app.config.formatEntities, content);
-        this.setEntitiesIds(p.database, p.container, p.ids);
+        // this.setEntitiesIds(p.database, p.container, p.ids);
         if (!response.ok) {
             this.setEntityValue(p.database, p.container, content);
             return null;
@@ -290,7 +290,7 @@ export class EntityEditor {
         entityIdsGET.href = getUrl;
     }
     setEntitiesIds(database, container, ids) {
-        entityIdsReload.onclick = () => this.loadInputEntityIds(database, container);
+        entityIdsReload.onclick = () => this.loadEntitiesById(database, container);
         entityIdsInput.onchange = () => this.updateGetEntitiesAnchor(database, container);
         entityIdsInput.onkeydown = e => this.onEntityIdsKeyDown(e, database, container);
         entityIdsInput.oninput = () => { entityDelete.disabled = true; };
@@ -305,22 +305,21 @@ export class EntityEditor {
             <span>${message}</span>
         </span>`;
     }
-    async loadInputEntityIds(database, container) {
+    async loadEntitiesById(database, container) {
         const ids = entityIdsInput.value == "" ? [] : entityIdsInput.value.split(",");
         const unchangedSelection = EntityEditor.arraysEquals(this.entityIdentity.entityIds, ids);
         const p = { database, container, ids };
         const response = await this.loadEntities(p, true, null);
         if (unchangedSelection)
             return;
-        let values = JSON.parse(response);
-        if (values == null) {
-            values = [];
+        let entities = JSON.parse(response);
+        if (entities == null) {
+            entities = [];
         }
         else {
-            if (!Array.isArray(values))
-                values = [values];
+            if (!Array.isArray(entities))
+                entities = [entities];
         }
-        const entities = values.filter(value => value != null);
         const type = app.getContainerSchema(database, container);
         app.explorer.updateEntities(database, container, entities, type, "All");
         this.selectEntities(database, container, ids);
@@ -328,7 +327,7 @@ export class EntityEditor {
     onEntityIdsKeyDown(event, database, container) {
         if (event.code != 'Enter')
             return;
-        this.loadInputEntityIds(database, container);
+        this.loadEntitiesById(database, container);
     }
     clearEntity(database, container) {
         this.setExplorerEditor("entity");
@@ -377,8 +376,7 @@ export class EntityEditor {
             writeResult.innerHTML = `<span style="color:red">${action} failed: ${error}</code>`;
             return;
         }
-        const values = Array.isArray(value) ? value : [value];
-        const entities = values.filter((el) => el != null);
+        const entities = Array.isArray(value) ? value : [value];
         const type = app.getContainerSchema(database, container);
         const keyName = EntityEditor.getEntityKeyName(type);
         const ids = entities.map(entity => String(entity[keyName]));
