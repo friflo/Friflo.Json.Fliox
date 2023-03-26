@@ -64,7 +64,6 @@
             --oas-color:            #55cf42;
             --graphql-color:        #ff6dcf;
             --diagram-color:        #6c6cff;
-            --schemaExports-color:  #a0a0a0;
             --sub-color:            #909090;
             --sub-hover:            #b5ffae;
             --update-start:         #66ff66;
@@ -93,7 +92,6 @@
             --oas-color:            #009900;
             --graphql-color:        #de33a6;
             --diagram-color:        #0000ee;
-            --schemaExports-color:  #555555;
             --sub-color:            #a0a0a0;
             --sub-hover:            #277f1e;
             --update-start:         #0e8e00;
@@ -400,9 +398,9 @@
         a.diagram:link,
         a.diagram:visited           { color: white; }
 
-         .schemaExports             { background-color: var(--schemaExports-color); padding: 0px 2px; font-size: 12px; border-radius: 3px; font-weight: bold; }
+         .schemaExports             { color: var(--doc-link); }
         a.schemaExports:link,
-        a.schemaExports:visited     { color: white; }
+        a.schemaExports:visited     { color: var(--doc-link); }
 
         .entities                       { width: 100%; padding-left: 0px; font-size: 14px; border-collapse: collapse; margin: 0 0 4px 0px;
                                           table-layout: fixed;
