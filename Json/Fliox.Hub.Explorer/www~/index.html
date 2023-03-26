@@ -40,6 +40,7 @@
             --tab-height:    40px;
             --bar-width:      6px;
             --vbar-width:    16px;
+            --shadow:        0px 0px 4px 0px rgba(0,0,0,0.2);
             --mono-font: 'Consolas', 'Courier New', Courier, monospace;
             --mono-size:  14px;
             --sans-serif: 'Arial', 'Helvetica', 'sans-serif';
@@ -307,7 +308,7 @@
         .tab.selected   { background-color: var(--background);  border-bottom: 1px solid #ffffff00; }
         .tabContent     { display: none; border-top: none; background-color: var(--background); }
 
-        .project        { margin: 0; overflow: hidden; display: flex; box-shadow: 0px 0.5px 4px 0px rgba(0,0,0,0.2); background-color: rgba(0,0,0,0.1);  }
+        .project        { margin: 0; overflow: hidden; display: flex; box-shadow: var(--shadow); background-color: rgba(0,0,0,0.1);  }
 
         .project-name   { height: 18px; padding: 0px 4px; margin: 0; background-color: var(--background2);   color: var(--color);
                           border-top-left-radius:  3px;  border-bottom-left-radius: 3px; border: 1px solid  var(--background2); border-right: 0; }
@@ -574,7 +575,7 @@
       </a>
     </span>
     <span style="border-bottom: 1px solid var(--tab-border); font-size: 13px;">
-      <div style="background: var(--background); padding: 1px 1px 1px 10px; border-radius: 2px; border: 1px solid var(--tab-border)">
+      <div style="background: var(--background); box-shadow: var(--shadow); padding: 1px 1px 1px 10px; border-radius: 2px; border: 1px solid var(--tab-border)">
         <label for="user">user</label>   <input onchange="app.setUser(value); app.checkAuth();"  spellcheck="false" type="text" id="user"  class="authInput" value="admin">&nbsp;
         <label for="token">token</label>
         <span>
@@ -593,7 +594,7 @@
       </div>
     </span>
     <span title="toggle theme dark / light" style="border-bottom: 1px solid var(--tab-border); padding-left: 5px; padding-right: 5px;">
-        <div onclick='app.toggleTheme()' class="toggleTheme">
+        <div onclick='app.toggleTheme()' class="toggleTheme" style="box-shadow: var(--shadow);">
             <toggleTheme ></toggleTheme>
         </div>
     </span>
