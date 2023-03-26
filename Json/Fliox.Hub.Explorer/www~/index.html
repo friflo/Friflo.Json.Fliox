@@ -146,7 +146,7 @@
                 "body-events"
                 "body-settings";
             grid-template-columns:  1fr;
-            grid-template-rows:     var(--header-height) var(--tab-height) 0 1fr 0; /* dynamically overwritten by body.style */
+            grid-template-rows:     0 var(--tab-height) 0 1fr 0; /* dynamically overwritten by body.style */
             grid-gap:   0px;
             margin:     0;
             height:     100vh;
@@ -501,8 +501,9 @@
     </style>
 </head>
 
-<body style="grid-template-rows: var(--header-height) var(--tab-height) 0 1fr 0;
-             font-family: var(--sans-serif); background-color: var(--background2);">
+<body style="grid-template-rows: 0 var(--tab-height) 0 1fr 0;
+             font-family: var(--sans-serif); background-color: var(--background2);"
+             class="miniHeader">
   <!--- [monaco-editor-samples/index.html at main · microsoft/monaco-editor-samples]
         https://github.com/microsoft/monaco-editor-samples/blob/main/browser-script-editor/index.html --->
   <link rel="stylesheet" data-name="vs/editor/editor.main" href="./monaco-editor/min/vs/editor/editor.main.css"/>
