@@ -316,9 +316,16 @@
                           border-top-right-radius: 3px; border-bottom-right-radius: 3px; border: 1px solid var(--background2); border-left: 0; }
 
         .applyFilter        { cursor: pointer; border-radius: 2px; width: 28px; height: 14px; display:inline-block; text-align: center;
-                              margin-right: 1px; font-size: 11px; padding-top: 5px; padding-bottom: 5px; margin-top: 2px; }
+                              margin-right: 1px; font-size: 11px; padding-top: 3px; padding-bottom: 3px; margin-top: 2px; }
         .applyFilter:hover  { background-color: var(--tab-hover); }
         .applyFilter:active { background-color: var(--background3); font-size: 10px; box-shadow: inset 1px 1px 1px #00000010; }
+
+                      #entityFilter         { opacity: 0.3; }
+                      #removeFilter         { visibility: hidden; }
+                      #entityFilter:focus,
+        .filterActive #entityFilter         { opacity: 1; }
+        .filterActive #removeFilter         { visibility: visible; }
+        
 
         .input          { height: 18px; font-size: var(--mono-size); color: var(--color); font-family: var(--mono-font); 
                           background-color: transparent;  margin: 0px 0px 5px 0px; padding: 0px 3px;    border: 0.5px solid #88888800;       }
@@ -656,7 +663,7 @@
     <!-- ------- filter ------- -->
     <div id="filterRow" style="grid-area: ex-filter; visibility: hidden; margin-top: -2px;">
       <div style="float: right; overflow: hidden; height: 28px;">
-         <a id="removeFilter" style="width: 20px; color: red; font-weight: bold; visibility: hidden; margin-left: 2px;"
+         <a id="removeFilter" style="width: 20px; color: red; font-weight: bold; margin-left: 2px;"
             href="#" class="applyFilter" title="Remove filter" onclick="app.removeFilter()">✖</a><!--
       --><a href="#" class="applyFilter" title="Apply filter"  onclick="app.applyFilter()">🔎</a><!--
       --><a id="filterLink" title="open filter in new tab" style="opacity: 0.7;" href="#" target="_blank" onclick="app.updateFilterLink()"><!--
@@ -668,7 +675,7 @@
     <div style="grid-area: ex-filter-input; display: flex;">
       <input id="entityFilter" style="visibility: hidden; width: 100%;" class="input" type="text" spellcheck="false"
             title       = 'lambda expression predicate ⊂ LINQ where ≈ SQL WHERE&#013;e.g.  o => o.id=="abc"'
-            placeholder = 'lambda expression predicate ⊂ LINQ where ≈ SQL WHERE      e.g.  o => o.id=="abc"'
+            placeholder = 'filter expression'
             onkeydown="app.filterOnKeyDown(event)" onchange="app.updateFilterLink()">     
     </div>
 

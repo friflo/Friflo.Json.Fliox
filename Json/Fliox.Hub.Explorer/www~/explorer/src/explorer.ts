@@ -1,7 +1,7 @@
 
 import { FieldType, JsonType }  from "../../../../../Json.Tests/assets~/Schema/Typescript/JSONSchema/Friflo.Json.Fliox.Schema.JSON";
 import { Resource, Config, el, createEl, Entity, parseAst }     from "./types.js";
-import { App, app }                                             from "./index.js";
+import { App, app, setClass }                                   from "./index.js";
 import { EntityEditor }                                         from "./entity-editor.js";
 
 function createMeasureTextWidth(width: number) : HTMLElement {
@@ -49,6 +49,7 @@ type ParseResult = {
     readonly error?: string
 }
 
+const explorerEl        = el("explorer");
 const entityExplorer    = el("entityExplorer");
 const writeResult       = el("writeResult");
 const readEntitiesDB    = el("readEntitiesDB");
@@ -196,11 +197,10 @@ export class Explorer
 
     public async loadContainer (p: Resource, query: string)  : Promise<void> {
         const storedFilter  = this.config.filters[p.database]?.[p.container];
-        const filter        = storedFilter && storedFilter[0] != undefined ? storedFilter[0] : 'o => o.id=="abc"';
+        const filter        = storedFilter && storedFilter[0] != undefined ? storedFilter[0] : 'o => o.id == "abc"';
         entityFilter.value  = filter;
 
-        const removeFilterVisibility = query ? "" : "hidden";
-        el("removeFilter").style.visibility = removeFilterVisibility;
+        setClass(explorerEl, !!query, "filterActive");
         
         const entityType        = app.getContainerSchema(p.database, p.container);
         app.filter.database    = p.database;

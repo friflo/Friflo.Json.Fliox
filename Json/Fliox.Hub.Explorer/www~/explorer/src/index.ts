@@ -55,6 +55,14 @@ const eventsContainer       = el("eventsContainer");
 
 export const flioxRoot = "./";
 
+export const setClass = function (element: Element, enable: boolean, className: string) : void {
+    const classList = element.classList;
+    if (enable) {
+        classList.add(className);
+        return;
+    }
+    classList.remove(className);        
+};
 
 export class App {
     readonly explorer:      Explorer;
@@ -403,7 +411,7 @@ export class App {
     public openTab (tabName: string) : void {
         const config            = this.config;
         config.activeTab        = tabName;
-        App.setClass(document.body, !config.showDescription, "miniHeader");
+        setClass(document.body, !config.showDescription, "miniHeader");
         const tabContents       = document.getElementsByClassName("tabContent");
         const tabs              = document.getElementsByClassName("tab");
         const gridTemplateRows  = document.body.style.gridTemplateRows.split(" ");
@@ -415,7 +423,7 @@ export class App {
             tabContent.style.display    = isActiveContent ? "grid" : "none";
             gridTemplateRows[i + 2]     = isActiveContent ? "1fr" : "0"; // + 2  ->  "body-header" & "body-tabs"
             const isActiveTab           = tabs[i].getAttribute('value') == tabName;
-            App.setClass(tabs[i], isActiveTab, "selected");
+            setClass(tabs[i], isActiveTab, "selected");
         }
         document.body.style.gridTemplateRows = gridTemplateRows.join(" ");
         this.layoutEditors();
@@ -424,14 +432,7 @@ export class App {
         }
     }
     
-    private static setClass(element: Element, enable: boolean, className: string) {
-        const classList = element.classList;
-        if (enable) {
-            classList.add(className);
-            return;
-        }
-        classList.remove(className);        
-    }
+
 
     private             hostInfo:       HostInfo;
     public  readonly    clusterTree:    ClusterTree;

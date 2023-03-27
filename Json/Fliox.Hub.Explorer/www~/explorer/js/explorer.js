@@ -1,5 +1,5 @@
 import { el, createEl, parseAst } from "./types.js";
-import { App, app } from "./index.js";
+import { App, app, setClass } from "./index.js";
 import { EntityEditor } from "./entity-editor.js";
 function createMeasureTextWidth(width) {
     const div = document.createElement("div");
@@ -15,6 +15,7 @@ function createMeasureTextWidth(width) {
     return div;
 }
 const measureTextWidth = createMeasureTextWidth(14);
+const explorerEl = el("explorer");
 const entityExplorer = el("entityExplorer");
 const writeResult = el("writeResult");
 const readEntitiesDB = el("readEntitiesDB");
@@ -122,10 +123,9 @@ export class Explorer {
     async loadContainer(p, query) {
         var _a;
         const storedFilter = (_a = this.config.filters[p.database]) === null || _a === void 0 ? void 0 : _a[p.container];
-        const filter = storedFilter && storedFilter[0] != undefined ? storedFilter[0] : 'o => o.id=="abc"';
+        const filter = storedFilter && storedFilter[0] != undefined ? storedFilter[0] : 'o => o.id == "abc"';
         entityFilter.value = filter;
-        const removeFilterVisibility = query ? "" : "hidden";
-        el("removeFilter").style.visibility = removeFilterVisibility;
+        setClass(explorerEl, !!query, "filterActive");
         const entityType = app.getContainerSchema(p.database, p.container);
         app.filter.database = p.database;
         app.filter.container = p.container;
