@@ -33,12 +33,12 @@ namespace Friflo.Json.Fliox.Transform.Query.Arity
             leftResult  = binaryResult.leftResult;
             rightResult = binaryResult.rightResult;
             if (leftResult.Count == 1)
-                leftValue = leftResult.values[0];
+                leftValue = leftResult.values[leftResult.StartIndex];
             else {
                 leftValue = null;
             }
             if (rightResult.Count == 1)
-                rightValue = rightResult.values[0];
+                rightValue = rightResult.values[rightResult.StartIndex];
             else
                 rightValue = null;
             last = GetLast(leftResult, rightResult);

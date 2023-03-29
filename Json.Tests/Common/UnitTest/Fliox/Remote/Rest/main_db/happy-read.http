@@ -49,17 +49,25 @@ Cookie: {{auth}}
 [1,2]
 
 ###
-GET {{base}}/rest/main_db/orders?filter=o=>o.items.Any(i=>i.name=="Camera")&orderByKey=asc
+GET {{base}}/rest/main_db/orders?filter=o => o.items.Any(i => i.name == "Camera")&orderByKey=asc
 Cookie: {{auth}}
 
 ###
-GET {{base}}/rest/main_db/orders?filter=o=>o.items.Any(i=>i.name=="xxx")
+GET {{base}}/rest/main_db/orders?filter=o=>o.items.Any(i => i.name == "xxx")
 Cookie: {{auth}}
 
 ###
-GET {{base}}/rest/main_db/orders?filter=o=>o.items.Any(i=>i.article.StartsWith("article-"))&orderByKey=asc
+GET {{base}}/rest/main_db/orders?filter=o=>o.items.Any(i => i.article.StartsWith("article-"))&orderByKey=asc
 Cookie: {{auth}}
 
 ###
-GET {{base}}/rest/main_db/orders?filter=o=>o.items.Any(i=>i.article.StartsWith("xxx"))
+GET {{base}}/rest/main_db/orders?filter=o=>o.items.Any(i => i.article.StartsWith("xxx"))
+Cookie: {{auth}}
+
+###
+GET {{base}}/rest/main_db/orders?filter=o => o.items.All(i => i.amount >= 1)
+Cookie: {{auth}}
+
+###
+GET {{base}}/rest/main_db/orders?filter=o => o.items.All(i => i.amount > 1)
 Cookie: {{auth}}
