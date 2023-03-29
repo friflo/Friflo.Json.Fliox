@@ -71,3 +71,43 @@ Cookie: {{auth}}
 ###
 GET {{base}}/rest/main_db/orders?filter=o => o.items.All(i => i.amount > 1)
 Cookie: {{auth}}
+
+###
+GET {{base}}/rest/main_db/orders?filter=o => o.items.Max(i=>i.amount) > 2
+Cookie: {{auth}}
+
+###
+GET {{base}}/rest/main_db/orders?filter=o => o.items.Max(i=>i.amount) > 3
+Cookie: {{auth}}
+
+###
+GET {{base}}/rest/main_db/orders?filter=o => o.items.Min(i=>i.amount) < 2
+Cookie: {{auth}}
+
+###
+GET {{base}}/rest/main_db/orders?filter=o => o.items.Min(i=>i.amount) < 1
+Cookie: {{auth}}
+
+###
+GET {{base}}/rest/main_db/orders?filter=o => o.items.Sum(i=>i.amount) < 6
+Cookie: {{auth}}
+
+###
+GET {{base}}/rest/main_db/orders?filter=o => o.items.Sum(i=>i.amount) == 6
+Cookie: {{auth}}
+
+###
+GET {{base}}/rest/main_db/orders?filter=o => o.items.Sum(i=>i.amount) > 6
+Cookie: {{auth}}
+
+###
+GET {{base}}/rest/main_db/orders?filter=o => o.items.Count(i=>i.name == "Camera") < 2
+Cookie: {{auth}}
+
+###
+GET {{base}}/rest/main_db/orders?filter=o => o.items.Count(i=>i.name == "Camera") <= 2
+Cookie: {{auth}}
+
+###
+GET {{base}}/rest/main_db/orders?filter=o => o.items.Count(i=>i.name == "Camera") == 2
+Cookie: {{auth}}

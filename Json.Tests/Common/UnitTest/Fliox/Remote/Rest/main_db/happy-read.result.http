@@ -338,3 +338,214 @@ GET {{base}}/rest/main_db/orders?filter=o => o.items.All(i => i.amount > 1)
 }
 ]
 
+###
+GET {{base}}/rest/main_db/orders?filter=o => o.items.Max(i=>i.amount) > 2
+# StatusCode:   200
+# Content-Type: application/json
+
+[
+    {
+    "id": "order-1",
+    "customer": "customer-1",
+    "created": "2021-07-22T06:00:00.000Z",
+    "items": [
+        {
+            "article": "article-1",
+            "amount": 1,
+            "name": "Camera"
+        },
+        {
+            "article": "article-2",
+            "amount": 2,
+            "name": "Smartphone"
+        },
+        {
+            "article": "article-1",
+            "amount": 3,
+            "name": "Camera"
+        }
+    ]
+}
+]
+
+###
+GET {{base}}/rest/main_db/orders?filter=o => o.items.Max(i=>i.amount) > 3
+# StatusCode:   200
+# Content-Type: application/json
+
+[
+]
+
+###
+GET {{base}}/rest/main_db/orders?filter=o => o.items.Min(i=>i.amount) < 2
+# StatusCode:   200
+# Content-Type: application/json
+
+[
+    {
+    "id": "order-1",
+    "customer": "customer-1",
+    "created": "2021-07-22T06:00:00.000Z",
+    "items": [
+        {
+            "article": "article-1",
+            "amount": 1,
+            "name": "Camera"
+        },
+        {
+            "article": "article-2",
+            "amount": 2,
+            "name": "Smartphone"
+        },
+        {
+            "article": "article-1",
+            "amount": 3,
+            "name": "Camera"
+        }
+    ]
+}
+]
+
+###
+GET {{base}}/rest/main_db/orders?filter=o => o.items.Min(i=>i.amount) < 1
+# StatusCode:   200
+# Content-Type: application/json
+
+[
+]
+
+###
+GET {{base}}/rest/main_db/orders?filter=o => o.items.Sum(i=>i.amount) < 6
+# StatusCode:   200
+# Content-Type: application/json
+
+[
+    {
+    "id": "order-2",
+    "customer": "read-task-error",
+    "created": "2021-07-22T06:01:00.000Z",
+    "items": [
+    ]
+}
+]
+
+###
+GET {{base}}/rest/main_db/orders?filter=o => o.items.Sum(i=>i.amount) == 6
+# StatusCode:   200
+# Content-Type: application/json
+
+[
+    {
+    "id": "order-1",
+    "customer": "customer-1",
+    "created": "2021-07-22T06:00:00.000Z",
+    "items": [
+        {
+            "article": "article-1",
+            "amount": 1,
+            "name": "Camera"
+        },
+        {
+            "article": "article-2",
+            "amount": 2,
+            "name": "Smartphone"
+        },
+        {
+            "article": "article-1",
+            "amount": 3,
+            "name": "Camera"
+        }
+    ]
+}
+]
+
+###
+GET {{base}}/rest/main_db/orders?filter=o => o.items.Sum(i=>i.amount) > 6
+# StatusCode:   200
+# Content-Type: application/json
+
+[
+]
+
+###
+GET {{base}}/rest/main_db/orders?filter=o => o.items.Count(i=>i.name == "Camera") < 2
+# StatusCode:   200
+# Content-Type: application/json
+
+[
+    {
+    "id": "order-2",
+    "customer": "read-task-error",
+    "created": "2021-07-22T06:01:00.000Z",
+    "items": [
+    ]
+}
+]
+
+###
+GET {{base}}/rest/main_db/orders?filter=o => o.items.Count(i=>i.name == "Camera") <= 2
+# StatusCode:   200
+# Content-Type: application/json
+
+[
+    {
+    "id": "order-1",
+    "customer": "customer-1",
+    "created": "2021-07-22T06:00:00.000Z",
+    "items": [
+        {
+            "article": "article-1",
+            "amount": 1,
+            "name": "Camera"
+        },
+        {
+            "article": "article-2",
+            "amount": 2,
+            "name": "Smartphone"
+        },
+        {
+            "article": "article-1",
+            "amount": 3,
+            "name": "Camera"
+        }
+    ]
+},
+    {
+    "id": "order-2",
+    "customer": "read-task-error",
+    "created": "2021-07-22T06:01:00.000Z",
+    "items": [
+    ]
+}
+]
+
+###
+GET {{base}}/rest/main_db/orders?filter=o => o.items.Count(i=>i.name == "Camera") == 2
+# StatusCode:   200
+# Content-Type: application/json
+
+[
+    {
+    "id": "order-1",
+    "customer": "customer-1",
+    "created": "2021-07-22T06:00:00.000Z",
+    "items": [
+        {
+            "article": "article-1",
+            "amount": 1,
+            "name": "Camera"
+        },
+        {
+            "article": "article-2",
+            "amount": 2,
+            "name": "Smartphone"
+        },
+        {
+            "article": "article-1",
+            "amount": 3,
+            "name": "Camera"
+        }
+    ]
+}
+]
+
