@@ -548,16 +548,16 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
         public static void TestQueryAggregateMethods() {
             {
                 var op = Parse("o.children.Min(child => child.age)", out _, TestEnv);
-                AreEqual(".children.Min(child => child.age)", op.Linq);
+                AreEqual("o.children.Min(child => child.age)", op.Linq);
             } {
                 var op = Parse("o.children.Max(child => child.age)", out _, TestEnv);
-                AreEqual(".children.Max(child => child.age)", op.Linq);
+                AreEqual("o.children.Max(child => child.age)", op.Linq);
             } {
                 var op = Parse("o.children.Sum(child => child.age)", out _, TestEnv);
-                AreEqual(".children.Sum(child => child.age)", op.Linq);
+                AreEqual("o.children.Sum(child => child.age)", op.Linq);
             } {
                 var op = Parse("o.children.Average(child => child.age)", out _, TestEnv);
-                AreEqual(".children.Average(child => child.age)", op.Linq);
+                AreEqual("o.children.Average(child => child.age)", op.Linq);
             }
         }
         
@@ -590,22 +590,22 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 var node = QueryParser.CreateTree("o.children.Any(child => child.age == 20)", out _);
                 AreEqual("o.children.Any() {child, => {== {child.age, 20}}}", node.ToString());
                 var op = OperationFromNode(node, out _, TestEnv);
-                AreEqual(".children.Any(child => child.age == 20)", op.Linq);
+                AreEqual("o.children.Any(child => child.age == 20)", op.Linq);
             } {
                 var node = QueryParser.CreateTree("o.children.All(child => child.age == 20)", out _);
                 AreEqual("o.children.All() {child, => {== {child.age, 20}}}", node.ToString());
                 var op = OperationFromNode(node, out _, TestEnv);
-                AreEqual(".children.All(child => child.age == 20)", op.Linq);
+                AreEqual("o.children.All(child => child.age == 20)", op.Linq);
             } {
                 var node = QueryParser.CreateTree("o.children.Count(child => child.age == 20)", out _);
                 AreEqual("o.children.Count() {child, => {== {child.age, 20}}}", node.ToString());
                 var op = OperationFromNode(node, out _, TestEnv);
-                AreEqual(".children.Count(child => child.age == 20)", op.Linq);
+                AreEqual("o.children.Count(child => child.age == 20)", op.Linq);
             } {
                 var node = QueryParser.CreateTree("o.items.Max(item => item.amount) > 1", out _);
                 AreEqual("> {o.items.Max() {item, => {item.amount}}, 1}", node.ToString());
                 var op = OperationFromNode(node, out _, TestEnv);
-                AreEqual(".items.Max(item => item.amount) > 1", op.Linq);
+                AreEqual("o.items.Max(item => item.amount) > 1", op.Linq);
             }
         }
 
@@ -613,16 +613,16 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
         public static void TestQueryStringMethods() {
             {
                 var op = Parse("o.name.Contains('Smartphone')", out _, TestEnv);
-                AreEqual(".name.Contains('Smartphone')", op.Linq);
+                AreEqual("o.name.Contains('Smartphone')", op.Linq);
             } {
                 var op = Parse("o.name.StartsWith('Smartphone')", out _, TestEnv);
-                AreEqual(".name.StartsWith('Smartphone')", op.Linq);
+                AreEqual("o.name.StartsWith('Smartphone')", op.Linq);
             } {
                 var op = Parse("o.name.EndsWith('Smartphone')", out _, TestEnv);
-                AreEqual(".name.EndsWith('Smartphone')", op.Linq);
+                AreEqual("o.name.EndsWith('Smartphone')", op.Linq);
             } {
                 var op = Parse("o.foo.EndsWith(a)", out _, TestEnv);
-                AreEqual(".foo.EndsWith(a)", op.Linq);
+                AreEqual("o.foo.EndsWith(a)", op.Linq);
             }
         }
         
@@ -630,7 +630,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
         public static void TestQueryMisc() {
             {
                 var op = Parse("o.name=='Smartphone'", out _, TestEnv);
-                AreEqual(".name == 'Smartphone'", op.Linq);
+                AreEqual("o.name == 'Smartphone'", op.Linq);
             }
         }
         

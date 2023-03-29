@@ -31,9 +31,6 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
 
         public   override string    OperationName => "name";
         public   override void      AppendLinq(AppendCx cx) {
-            if (name[0] == '.') { // TODO remove '.' check
-                cx.Append(cx.lambdaArg);
-            }
             cx.Append(name);
         }
 

@@ -197,10 +197,6 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                 field = null;
                 return false;
             }
-            if (cx.IsLambdaParam(param)) {
-                // field names referencing lambda argument start with . e.g. ".name"
-                symbol = symbol.Substring(param.Length);
-            }
             field = new Field(symbol);
             return Success(true, out error);
         }
