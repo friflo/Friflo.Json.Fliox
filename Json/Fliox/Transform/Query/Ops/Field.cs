@@ -31,8 +31,8 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
 
         public   override string    OperationName => "name";
         public   override void      AppendLinq(AppendCx cx) {
-            if (name[0] == '.') {
-                cx.Append(cx.lambdaArg);    
+            if (name[0] == '.') { // TODO remove '.' check
+                cx.Append(cx.lambdaArg);
             }
             cx.Append(name);
         }
@@ -40,29 +40,28 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         public Field() { }
         public Field(string name) { this.name = name; }
 
-        internal override void Init(OperationContext cx, InitFlags flags) {
+        internal override void Init(OperationContext cx, InitFlags flags)
+        {
             bool isArrayField = (flags & InitFlags.ArrayField) != 0;
-            if (name.StartsWith(".")) {
-                selector = LambdaArg.Instance.GetName(isArrayField, name);
-            } else {
-                var dotPos = name.IndexOf('.');
-                if (dotPos == -1) {
-                    cx.Error($"invalid field name '{name}'");
-                    return;
-                }
-                var arg     = name.Substring(0, dotPos);
-                if (!cx.variables.TryGetValue(arg, out var lambda)) {
-                    cx.Error($"symbol '{arg}' not found");
-                    return;
-                }
-                var path    = name.Substring(dotPos);
-                selector    = lambda.GetName(isArrayField, path);
+
+            var dotPos = name.IndexOf('.');
+            if (dotPos <= 0) {
+                cx.Error($"invalid field name '{name}'");
+                return;
             }
+            var arg     = name.Substring(0, dotPos);
+            if (!cx.variables.TryGetValue(arg, out var lambda)) {
+                cx.Error($"symbol '{arg}' not found");
+                return;
+            }
+            var path    = name.Substring(dotPos);
+            selector    = lambda.GetName(isArrayField, path);
+
             cx.selectors.Add(this);
         }
         
         public string GetName(bool isArrayField, string path) {
-            return name + "[*]" + path;
+            return selector + path; // .e.g  selector = ".items[*]"
         }
 
         internal override EvalResult Eval(EvalCx cx) {

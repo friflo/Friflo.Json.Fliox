@@ -221,7 +221,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 container   = set.nameShort,
                 keyName     = SyncKeyName(set.GetKeyName()),
                 isIntKey    = IsIntKey(set.IsIntKey()),
-                filterTree  = filterTree,
+                // using filter is sufficient. Pass filterTree to avoid parsing filter in Protocol.Tasks.QueryEntities
+                filterTree  = filterTree, // default,
                 filter      = query.filterLinq,
                 references  = references,
                 limit       = query.limit,

@@ -69,8 +69,21 @@ namespace Friflo.Json.Fliox.Transform.Query
                 default:
                     throw NotSupported($"MemberExpression.Expression not supported: {member}", cx); 
             }
-            var memberName = cx.queryPath.GetQueryPath(member, cx);
-            return new Field(cx.parameter + "." + memberName); // field refers to object root (.) or a lambda parameter
+            var memberName  = cx.queryPath.GetQueryPath(member, cx);
+            var paramName   = GetParameterName(member);
+            return new Field(paramName + "." + memberName); // field refers to object root (.) or a lambda parameter
+        }
+        
+        private static string GetParameterName(MemberExpression member) {
+            var expression = member;
+            while (expression != null) {
+                var memberExpression = expression.Expression;
+                if (memberExpression is ParameterExpression param) {
+                    return param.Name;
+                }
+                expression = (MemberExpression)memberExpression;
+            }
+            throw new InvalidOperationException();
         }
         
         public static string GetMemberName(MemberExpression member, QueryCx cx) {

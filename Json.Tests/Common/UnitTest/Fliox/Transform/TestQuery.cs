@@ -105,7 +105,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 var john  = jsonMapper.Write(John);
 
                 // ---
-                var  isPeter         = new Filter("p", new Equal(new Field (".name"), new StringLiteral ("Peter"))).Filter();
+                var  isPeter         = new Filter("p", new Equal(new Field ("p.name"), new StringLiteral ("Peter"))).Filter();
                 AreEqual("p => p.name == 'Peter'",  isPeter.Linq);
                 Cosmos  ("c.name = 'Peter'",        isPeter.Query.Cosmos);
                 var  isPeter2        = JsonFilter.Create<Person>(p => p.name == "Peter");
@@ -113,11 +113,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 
                 bool IsPeter(Person p) => p.name == "Peter";
 
-                var  isAgeGreater35Op = new Greater(new Field(".age"), new LongLiteral(35));
-                var  isAgeGreater35  = isAgeGreater35Op.Filter();
+                var  isAgeGreater35Op = new Greater(new Field("p.age"), new LongLiteral(35));
+                var  isAgeGreater35  = isAgeGreater35Op.Filter("p");
                 bool IsAgeGreater35(Person p) => p.age > 35;
                 
-                var isNotAgeGreater35  = new Not(isAgeGreater35Op).Filter();
+                var isNotAgeGreater35  = new Not(isAgeGreater35Op).Filter("p");
             
                 IsTrue  (IsPeter(Peter));
                 IsTrue  (eval.Filter(peter, isPeter));
@@ -130,14 +130,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 IsFalse (eval.Filter(peter, isNotAgeGreater35));
                 IsTrue  (eval.Filter(john,  isNotAgeGreater35));
                 
-                var  equalUnknownField         = new Equal(new Field (".unknown"), new StringLiteral ("SomeString")).Filter();
+                var  equalUnknownField         = new Equal(new Field ("p.unknown"), new StringLiteral ("SomeString")).Filter("p");
                 IsFalse(eval.Filter(john, equalUnknownField));
 
                 // --- Any
-                var  hasChildPaul = new Any (new Field (".children"), "child", new Equal (new Field ("child.name"), new StringLiteral ("Paul"))).Filter();
+                var hasChildPaul = new Any (new Field ("p.children"), "child", new Equal (new Field ("child.name"), new StringLiteral ("Paul"))).Filter("p");;
                 bool HasChildPaul(Person p) => p.children.Any(child => child.name == "Paul");
                 
-                var hasChildAgeLess12 = new Any (new Field (".children"), "child", new Less (new Field ("child.age"), new LongLiteral (12))).Filter();
+                var hasChildAgeLess12 = new Any (new Field ("p.children"), "child", new Less (new Field ("child.age"), new LongLiteral (12))).Filter("p");
                 
                 IsTrue (HasChildPaul(Peter));
                 IsTrue (eval.Filter(peter, hasChildPaul));
@@ -146,28 +146,28 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 IsFalse(eval.Filter(peter, hasChildAgeLess12));
                 IsTrue (eval.Filter(john,  hasChildAgeLess12));
 
-                var  anyEqualUnknownField  = new Any (new Field (".children"), "child", new Equal (new Field ("child.unknown"), new StringLiteral ("SomeString"))).Filter();
+                var  anyEqualUnknownField  = new Any (new Field ("p.children"), "child", new Equal (new Field ("child.unknown"), new StringLiteral ("SomeString"))).Filter("p");
                 IsFalse(eval.Filter(john, anyEqualUnknownField));
 
                 // --- All
-                var allChildAgeEquals20 = new All (new Field (".children"), "child", new Equal(new Field ("child.age"), new LongLiteral (20))).Filter();
+                var allChildAgeEquals20 = new All (new Field ("p.children"), "child", new Equal(new Field ("child.age"), new LongLiteral (20))).Filter("p");
                 IsTrue (eval.Filter(peter, allChildAgeEquals20));
                 IsFalse(eval.Filter(john,  allChildAgeEquals20));
                 
-                var  allEqualUnknownField  = new All (new Field (".children"), "child", new Equal (new Field ("child.unknown"), new StringLiteral ("SomeString"))).Filter();
+                var  allEqualUnknownField  = new All (new Field ("p.children"), "child", new Equal (new Field ("child.unknown"), new StringLiteral ("SomeString"))).Filter("p");
                 IsTrue(eval.Filter(john, allEqualUnknownField));
                 
                 // --- Count() with lambda parameter -> is not a Filter
-                var countChildAgeEquals20 = new CountWhere (new Field (".children"), "child", new Equal(new Field ("child.age"), new LongLiteral (20))).Lambda();
+                var countChildAgeEquals20 = new Lambda ("p", new CountWhere (new Field ("p.children"), "child", new Equal(new Field ("child.age"), new LongLiteral (20)))).Lambda();
                 AreEqual(2, eval.Eval(peter, countChildAgeEquals20));
                 AreEqual(0, eval.Eval(john,  countChildAgeEquals20));
 
                 // --- test with arithmetic operations
-                var  isAge40  = new Equal(new Field (".age"), new Add(new LongLiteral (35), new LongLiteral(5))).Filter();
+                var  isAge40  = new Equal(new Field ("p.age"), new Add(new LongLiteral (35), new LongLiteral(5))).Filter("p");
                 IsTrue  (eval.Filter(peter, isAge40));
                 
                 // var  isChildAge20  = new Equal(new Field (".children[*].age"), new Add(new LongLiteral (15), new LongLiteral(5))).Filter();
-                var isChildAge20 = new Filter("p", new All(new Field (".children"), "child", new Equal(new Field ("child.age"), new LongLiteral (20)))).Filter();
+                var isChildAge20 = new Filter("p", new All(new Field ("p.children"), "child", new Equal(new Field ("child.age"), new LongLiteral (20)))).Filter();
                 var isChildAge20Expect = Operation.FromFilter((Person p) => p.children.All(child => child.age == 20));
                 AreEqual(isChildAge20Expect.Linq, isChildAge20.Linq);
                 IsTrue  (eval.Filter(peter, isChildAge20));
@@ -177,8 +177,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 // ------------------------------ Test runtime assertions ------------------------------
                 Exception e;
                 // --- compare operations must not be reused
-                e = Throws<InvalidOperationException>(() => _ = new Equal(isAgeGreater35Op, isAgeGreater35Op).Filter());
-                AreEqual("Used operation instance is not applicable for reuse. Use a clone. Type: Greater, instance: .age > 35", e.Message);
+                e = Throws<InvalidOperationException>(() => _ = new Equal(isAgeGreater35Op, isAgeGreater35Op).Filter("p"));
+                AreEqual("Used operation instance is not applicable for reuse. Use a clone. Type: Greater, instance: p.age > 35", e.Message);
                 
                 // --- group operations must not be reused
                 var testGroupOp = new And(new List<FilterOperation> {new Equal(new StringLiteral("A"), new StringLiteral("B"))});
@@ -190,8 +190,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 var reuseLiterals = new Equal(testLiteral, testLiteral).Filter();
                 eval.Filter(peter, reuseLiterals);
                 
-                var testField = new Field (".name");
-                var reuseField = new Equal(testField, testField).Filter();
+                var testField = new Field ("p.name");
+                var reuseField = new Equal(testField, testField).Filter("p");
                 eval.Filter(peter, reuseField);
             }
         }
@@ -227,10 +227,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 // --- Any
                 // var  hasChildHobbySurfing = new Any (new Field (".children"), "child", new Equal (new Field ("child.hobbies[*].name"), new StringLiteral ("Surfing"))).Filter();
                 var hasHobbySurfing      = new Any (new Field("child.hobbies"), "hobby", new Equal(new Field("hobby.name"), new StringLiteral ("Surfing")));
-                var hasChildHobbySurfing = new Any (new Field (".children"), "child", hasHobbySurfing).Filter();
+                var hasChildHobbySurfing = new Any (new Field ("p.children"), "child", hasHobbySurfing);
                 var hasChildHobbySurfingExp = Filter((Person p) => p.children.Any(child => child.hobbies.Any(hobby => hobby.name == "Surfing")), out string body);
                 AreEqual("p.children.Any(child => child.hobbies.Any(hobby => (hobby.name == 'Surfing')))", body);
-                AreEqual (".children.Any(child => child.hobbies.Any(hobby => hobby.name == 'Surfing'))", hasChildHobbySurfing.Linq);
+                AreEqual ("p.children.Any(child => child.hobbies.Any(hobby => hobby.name == 'Surfing'))", hasChildHobbySurfing.Linq);
                 IsTrue (hasChildHobbySurfingExp(Peter));
             //  IsTrue (eval.Filter(peter, hasChildHobbySurfing)); todo
             //  IsFalse(eval.Filter(john,  hasChildHobbySurfing)); todo
@@ -341,28 +341,28 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             
             // --- unary aggregate operations
             {
-                var min         = new Lambda("o", new Min(new Field(".children"), "child", new Field("child.age")));
-                AssertJson(mapper, min, "{'op':'lambda','arg':'o','body':{'op':'min','field':{'name':'.children'},'arg':'child','array':{'op':'field','name':'child.age'}}}");
+                var min         = new Lambda("o", new Min(new Field("o.children"), "child", new Field("child.age")));
+                AssertJson(mapper, min, "{'op':'lambda','arg':'o','body':{'op':'min','field':{'name':'o.children'},'arg':'child','array':{'op':'field','name':'child.age'}}}");
                 AreEqual(10,         eval.Eval(john, min.Lambda()));
                 AreEqual("o => o.children.Min(child => child.age)", min.Linq);
             } {
-                var max         = new Lambda("o", new Max(new Field(".children"), "child", new Field("child.age")));
-                AssertJson(mapper, max, "{'op':'lambda','arg':'o','body':{'op':'max','field':{'name':'.children'},'arg':'child','array':{'op':'field','name':'child.age'}}}");
+                var max         = new Lambda("o", new Max(new Field("o.children"), "child", new Field("child.age")));
+                AssertJson(mapper, max, "{'op':'lambda','arg':'o','body':{'op':'max','field':{'name':'o.children'},'arg':'child','array':{'op':'field','name':'child.age'}}}");
                 AreEqual(11,         eval.Eval(john, max.Lambda()));
                 AreEqual("o => o.children.Max(child => child.age)", max.Linq);
             } {
-                var sum         = new Lambda("o", new Sum(new Field(".children"), "child", new Field("child.age")));
-                AssertJson(mapper, sum, "{'op':'lambda','arg':'o','body':{'op':'sum','field':{'name':'.children'},'arg':'child','array':{'op':'field','name':'child.age'}}}");
+                var sum         = new Lambda("o", new Sum(new Field("o.children"), "child", new Field("child.age")));
+                AssertJson(mapper, sum, "{'op':'lambda','arg':'o','body':{'op':'sum','field':{'name':'o.children'},'arg':'child','array':{'op':'field','name':'child.age'}}}");
                 AreEqual(21,         eval.Eval(john, sum.Lambda()));
                 AreEqual("o => o.children.Sum(child => child.age)", sum.Linq);
             } {
-                var average     = new Lambda("o", new Average(new Field(".children"), "child", new Field("child.age")));
-                AssertJson(mapper, average, "{'op':'lambda','arg':'o','body':{'op':'average','field':{'name':'.children'},'arg':'child','array':{'op':'field','name':'child.age'}}}");
+                var average     = new Lambda("o", new Average(new Field("o.children"), "child", new Field("child.age")));
+                AssertJson(mapper, average, "{'op':'lambda','arg':'o','body':{'op':'average','field':{'name':'o.children'},'arg':'child','array':{'op':'field','name':'child.age'}}}");
                 AreEqual(10.5,       eval.Eval(john, average.Lambda()));
                 AreEqual("o => o.children.Average(child => child.age)", average.Linq);
             } {
-                var count       = new Lambda("o", new Count(new Field(".children")));
-                AssertJson(mapper, count, "{'op':'lambda','arg':'o','body':{'op':'count','field':{'name':'.children'}}}");
+                var count       = new Lambda("o", new Count(new Field("o.children")));
+                AssertJson(mapper, count, "{'op':'lambda','arg':'o','body':{'op':'count','field':{'name':'o.children'}}}");
                 AreEqual(2,          eval.Eval(john, count.Lambda()));
                 AreEqual("o => o.children.Count()", count.Linq);
             }
@@ -419,83 +419,83 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             // --- comparision operations
             {
                 var isEqual =           (Equal)             FromFilter((Person p) => p.name == "Peter");
-                AssertJson(mapper, isEqual, "{'op':'equal','left':{'op':'field','name':'.name'},'right':{'op':'string','value':'Peter'}}");
-                AreEqual(".name == 'Peter'",  isEqual.Linq);
-                Cosmos  ("c.name = 'Peter'",  isEqual.query.Cosmos);
+                AssertJson(mapper, isEqual, "{'op':'equal','left':{'op':'field','name':'p.name'},'right':{'op':'string','value':'Peter'}}");
+                AreEqual("p.name == 'Peter'",  isEqual.Linq);
+                Cosmos  ("p.name = 'Peter'",  isEqual.query.Cosmos);
             } {
                 var isNotEqual =        (NotEqual)          FromFilter((Person p) => p.name != "Peter");
-                AssertJson(mapper, isNotEqual, "{'op':'notEqual','left':{'op':'field','name':'.name'},'right':{'op':'string','value':'Peter'}}");
-                AreEqual(".name != 'Peter'",  isNotEqual.Linq);
-                Cosmos  ("c.name != 'Peter'", isNotEqual.query.Cosmos);
+                AssertJson(mapper, isNotEqual, "{'op':'notEqual','left':{'op':'field','name':'p.name'},'right':{'op':'string','value':'Peter'}}");
+                AreEqual("p.name != 'Peter'",  isNotEqual.Linq);
+                Cosmos  ("p.name != 'Peter'", isNotEqual.query.Cosmos);
             } {
                 var isLess =            (Less)          FromFilter((Person p) => p.age < 20);
-                AssertJson(mapper, isLess, "{'op':'less','left':{'op':'field','name':'.age'},'right':{'op':'int64','value':20}}");
-                AreEqual(".age < 20",         isLess.Linq);
-                Cosmos  ("c.age < 20",        isLess.query.Cosmos);
+                AssertJson(mapper, isLess, "{'op':'less','left':{'op':'field','name':'p.age'},'right':{'op':'int64','value':20}}");
+                AreEqual("p.age < 20",        isLess.Linq);
+                Cosmos  ("p.age < 20",        isLess.query.Cosmos);
             } {            
                 var isLessOrEqual =     (LessOrEqual)   FromFilter((Person p) => p.age <= 20);
-                AssertJson(mapper, isLessOrEqual, "{'op':'lessOrEqual','left':{'op':'field','name':'.age'},'right':{'op':'int64','value':20}}");
-                AreEqual(".age <= 20",        isLessOrEqual.Linq);
-                Cosmos  ("c.age <= 20",       isLessOrEqual.query.Cosmos);
+                AssertJson(mapper, isLessOrEqual, "{'op':'lessOrEqual','left':{'op':'field','name':'p.age'},'right':{'op':'int64','value':20}}");
+                AreEqual("p.age <= 20",        isLessOrEqual.Linq);
+                Cosmos  ("p.age <= 20",       isLessOrEqual.query.Cosmos);
             } {
                 var isGreater =         (Greater)       FromFilter((Person p) => p.age > 20);
-                AssertJson(mapper, isGreater, "{'op':'greater','left':{'op':'field','name':'.age'},'right':{'op':'int64','value':20}}");
-                AreEqual(".age > 20",         isGreater.Linq);
-                Cosmos  ("c.age > 20",        isGreater.query.Cosmos);
+                AssertJson(mapper, isGreater, "{'op':'greater','left':{'op':'field','name':'p.age'},'right':{'op':'int64','value':20}}");
+                AreEqual("p.age > 20",         isGreater.Linq);
+                Cosmos  ("p.age > 20",        isGreater.query.Cosmos);
             } {            
                 var isGreaterOrEqual =  (GreaterOrEqual)FromFilter((Person p) => p.age >= 20);
-                AssertJson(mapper, isGreaterOrEqual, "{'op':'greaterOrEqual','left':{'op':'field','name':'.age'},'right':{'op':'int64','value':20}}");
-                AreEqual(".age >= 20",        isGreaterOrEqual.Linq);
-                Cosmos  ("c.age >= 20",       isGreaterOrEqual.query.Cosmos);
+                AssertJson(mapper, isGreaterOrEqual, "{'op':'greaterOrEqual','left':{'op':'field','name':'p.age'},'right':{'op':'int64','value':20}}");
+                AreEqual("p.age >= 20",        isGreaterOrEqual.Linq);
+                Cosmos  ("p.age >= 20",       isGreaterOrEqual.query.Cosmos);
             }
             
             // --- group operations
             {
                 var or =    (Or)        FromFilter((Person p) => p.age >= 20 || p.name == "Peter");
-                AssertJson(mapper, or, "{'op':'or','operands':[{'op':'greaterOrEqual','left':{'op':'field','name':'.age'},'right':{'op':'int64','value':20}},{'op':'equal','left':{'op':'field','name':'.name'},'right':{'op':'string','value':'Peter'}}]}");
-                AreEqual(".age >= 20 || .name == 'Peter'",    or.Linq);
-                Cosmos  ("c.age >= 20 || c.name = 'Peter'",   or.query.Cosmos);
+                AssertJson(mapper, or, "{'op':'or','operands':[{'op':'greaterOrEqual','left':{'op':'field','name':'p.age'},'right':{'op':'int64','value':20}},{'op':'equal','left':{'op':'field','name':'p.name'},'right':{'op':'string','value':'Peter'}}]}");
+                AreEqual("p.age >= 20 || p.name == 'Peter'",    or.Linq);
+                Cosmos  ("p.age >= 20 || p.name = 'Peter'",   or.query.Cosmos);
             } {            
                 var and =   (And)       FromFilter((Person p) => p.age >= 20 && p.name == "Peter");
-                AssertJson(mapper, and, "{'op':'and','operands':[{'op':'greaterOrEqual','left':{'op':'field','name':'.age'},'right':{'op':'int64','value':20}},{'op':'equal','left':{'op':'field','name':'.name'},'right':{'op':'string','value':'Peter'}}]}");
-                AreEqual(".age >= 20 && .name == 'Peter'",    and.Linq);
-                Cosmos  ("c.age >= 20 && c.name = 'Peter'",   and.query.Cosmos);
+                AssertJson(mapper, and, "{'op':'and','operands':[{'op':'greaterOrEqual','left':{'op':'field','name':'p.age'},'right':{'op':'int64','value':20}},{'op':'equal','left':{'op':'field','name':'p.name'},'right':{'op':'string','value':'Peter'}}]}");
+                AreEqual("p.age >= 20 && p.name == 'Peter'",    and.Linq);
+                Cosmos  ("p.age >= 20 && p.name = 'Peter'",   and.query.Cosmos);
             } {            
                 var or2 =   (Or)        FromLambda((Person p) => p.age == 1 || p.age == 2 );
-                AssertJson(mapper, or2, "{'op':'or','operands':[{'op':'equal','left':{'op':'field','name':'.age'},'right':{'op':'int64','value':1}},{'op':'equal','left':{'op':'field','name':'.age'},'right':{'op':'int64','value':2}}]}");
-                AreEqual(".age == 1 || .age == 2",            or2.Linq);
-                Cosmos  ("c.age = 1 || c.age = 2",            or2.query.Cosmos);
+                AssertJson(mapper, or2, "{'op':'or','operands':[{'op':'equal','left':{'op':'field','name':'p.age'},'right':{'op':'int64','value':1}},{'op':'equal','left':{'op':'field','name':'p.age'},'right':{'op':'int64','value':2}}]}");
+                AreEqual("p.age == 1 || p.age == 2",            or2.Linq);
+                Cosmos  ("p.age = 1 || p.age = 2",            or2.query.Cosmos);
             } {            
                 var and2 =  (And)       FromLambda((Person p) => p.age == 1 && p.age == 2 );
-                AssertJson(mapper, and2, "{'op':'and','operands':[{'op':'equal','left':{'op':'field','name':'.age'},'right':{'op':'int64','value':1}},{'op':'equal','left':{'op':'field','name':'.age'},'right':{'op':'int64','value':2}}]}");
-                AreEqual(".age == 1 && .age == 2",            and2.Linq);
-                Cosmos  ("c.age = 1 && c.age = 2",            and2.query.Cosmos);
+                AssertJson(mapper, and2, "{'op':'and','operands':[{'op':'equal','left':{'op':'field','name':'p.age'},'right':{'op':'int64','value':1}},{'op':'equal','left':{'op':'field','name':'p.age'},'right':{'op':'int64','value':2}}]}");
+                AreEqual("p.age == 1 && p.age == 2",            and2.Linq);
+                Cosmos  ("p.age = 1 && p.age = 2",            and2.query.Cosmos);
             } { 
                 var or3 =   (Or)        FromLambda((Person p) => p.age == 1 || p.age == 2 || p.age == 3);
-                AssertJson(mapper, or3, "{'op':'or','operands':[{'op':'or','operands':[{'op':'equal','left':{'op':'field','name':'.age'},'right':{'op':'int64','value':1}},{'op':'equal','left':{'op':'field','name':'.age'},'right':{'op':'int64','value':2}}]},{'op':'equal','left':{'op':'field','name':'.age'},'right':{'op':'int64','value':3}}]}");
-                AreEqual(".age == 1 || .age == 2 || .age == 3",   or3.Linq);
-                Cosmos  ("c.age = 1 || c.age = 2 || c.age = 3",   or3.query.Cosmos);
+                AssertJson(mapper, or3, "{'op':'or','operands':[{'op':'or','operands':[{'op':'equal','left':{'op':'field','name':'p.age'},'right':{'op':'int64','value':1}},{'op':'equal','left':{'op':'field','name':'p.age'},'right':{'op':'int64','value':2}}]},{'op':'equal','left':{'op':'field','name':'p.age'},'right':{'op':'int64','value':3}}]}");
+                AreEqual("p.age == 1 || p.age == 2 || p.age == 3",   or3.Linq);
+                Cosmos  ("p.age = 1 || p.age = 2 || p.age = 3",   or3.query.Cosmos);
             }
             
             // --- unary operations
             {
                 var isNot = (Not)       FromFilter((Person p) => !(p.age >= 20));
-                AssertJson(mapper, isNot, "{'op':'not','operand':{'op':'greaterOrEqual','left':{'op':'field','name':'.age'},'right':{'op':'int64','value':20}}}");
-                AreEqual("!(.age >= 20)",     isNot.Linq);
-                Cosmos  ("!(c.age >= 20)",    isNot.query.Cosmos);
+                AssertJson(mapper, isNot, "{'op':'not','operand':{'op':'greaterOrEqual','left':{'op':'field','name':'p.age'},'right':{'op':'int64','value':20}}}");
+                AreEqual("!(p.age >= 20)",     isNot.Linq);
+                Cosmos  ("!(p.age >= 20)",    isNot.query.Cosmos);
             }
             
             // --- quantifier operations
             {
                 var any =   (Any)       FromFilter((Person p) => p.children.Any(child => child.age == 20));
-                AssertJson(mapper, any, "{'op':'any','field':{'name':'.children'},'arg':'child','predicate':{'op':'equal','left':{'op':'field','name':'child.age'},'right':{'op':'int64','value':20}}}");
-                AreEqual(".children.Any(child => child.age == 20)",                                     any.Linq);
-                Cosmos  ("EXISTS(SELECT VALUE child FROM child IN c.children WHERE child.age = 20)",    any.query.Cosmos);
+                AssertJson(mapper, any, "{'op':'any','field':{'name':'p.children'},'arg':'child','predicate':{'op':'equal','left':{'op':'field','name':'child.age'},'right':{'op':'int64','value':20}}}");
+                AreEqual("p.children.Any(child => child.age == 20)",                                     any.Linq);
+                Cosmos  ("EXISTS(SELECT VALUE child FROM child IN p.children WHERE child.age = 20)",    any.query.Cosmos);
             } { 
                 var all =   (All)       FromFilter((Person p) => p.children.All(child => child.age == 20));
-                AssertJson(mapper, all, "{'op':'all','field':{'name':'.children'},'arg':'child','predicate':{'op':'equal','left':{'op':'field','name':'child.age'},'right':{'op':'int64','value':20}}}");
-                AreEqual(".children.All(child => child.age == 20)", all.Linq);
-                Cosmos  ("(SELECT VALUE Count(1) FROM child IN c.children WHERE child.age = 20) = ARRAY_LENGTH(c.children)", all.query.Cosmos);
+                AssertJson(mapper, all, "{'op':'all','field':{'name':'p.children'},'arg':'child','predicate':{'op':'equal','left':{'op':'field','name':'child.age'},'right':{'op':'int64','value':20}}}");
+                AreEqual("p.children.All(child => child.age == 20)", all.Linq);
+                Cosmos  ("(SELECT VALUE Count(1) FROM child IN p.children WHERE child.age = 20) = ARRAY_LENGTH(p.children)", all.query.Cosmos);
             }
             
             // --- literals
@@ -558,25 +558,25 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             // --- unary aggregate operations
             {
                 var min      = (Min)  FromLambda((Person p) => p.children.Min(child => child.age));
-                AreEqual(".children.Min(child => child.age)", min.Linq);
+                AreEqual("p.children.Min(child => child.age)", min.Linq);
             } { 
                 var max      = (Max)  FromLambda((Person p) => p.children.Max(child => child.age));
-                AreEqual(".children.Max(child => child.age)", max.Linq);
+                AreEqual("p.children.Max(child => child.age)", max.Linq);
             } {
                 var sum      = (Sum)  FromLambda((Person p) => p.children.Sum(child => child.age));
-                AreEqual(".children.Sum(child => child.age)", sum.Linq);
+                AreEqual("p.children.Sum(child => child.age)", sum.Linq);
             } {
                 var count    = (CountWhere)  FromLambda((Person p) => p.children.Count(child => child.age == 20));
-                AreEqual(".children.Count(child => child.age == 20)", count.Linq);
+                AreEqual("p.children.Count(child => child.age == 20)", count.Linq);
             } {
                 var count    = (Count)  FromLambda((Person p) => p.children.Count()); // () -> method call
-                AreEqual(".children.Count()", count.Linq);
+                AreEqual("p.children.Count()", count.Linq);
             } { 
                 var count2   = (Count)  FromLambda((Person p) => p.children.Count); // no () -> Count property 
-                AreEqual(".children.Count()", count2.Linq);
+                AreEqual("p.children.Count()", count2.Linq);
             } {
                 var average  = (Average)  FromLambda((Person p) => p.children.Average(child => child.age));
-                AreEqual(".children.Average(child => child.age)", average.Linq);
+                AreEqual("p.children.Average(child => child.age)", average.Linq);
             }
             
             // --- binary string operations
@@ -598,13 +598,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
           using (var mapper = new ObjectMapper()) {
             {
                 var is20 =          (Equal)          FromFilter((Person p) => p.age == 20);
-                AreEqual(".age == 20", is20.Linq);
+                AreEqual("p.age == 20", is20.Linq);
             } {
                 var isSf =          (Equal)          FromFilter((Person p) => p.address.cityName == "San Francisco");
-                AreEqual(".address.city == 'San Francisco'", isSf.Linq);
+                AreEqual("p.address.city == 'San Francisco'", isSf.Linq);
             } {
                 var isLombardSt =   (Equal)          FromFilter((Person p) => p.address.street.name == "Lombard St");
-                AreEqual(".address.street.name == 'Lombard St'", isLombardSt.Linq);
+                AreEqual("p.address.street.name == 'Lombard St'", isLombardSt.Linq);
             }
           }
         }

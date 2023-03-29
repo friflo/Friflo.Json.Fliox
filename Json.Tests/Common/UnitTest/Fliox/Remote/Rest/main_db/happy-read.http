@@ -47,3 +47,19 @@ POST {{base}}/rest/main_db/articles/bulk-get
 Cookie: {{auth}}
 
 [1,2]
+
+###
+GET {{base}}/rest/main_db/orders?filter=o=>o.items.Any(i=>i.name=="Camera")&orderByKey=asc
+Cookie: {{auth}}
+
+###
+GET {{base}}/rest/main_db/orders?filter=o=>o.items.Any(i=>i.name=="xxx")
+Cookie: {{auth}}
+
+###
+GET {{base}}/rest/main_db/orders?filter=o=>o.items.Any(i=>i.article.StartsWith("article-"))&orderByKey=asc
+Cookie: {{auth}}
+
+###
+GET {{base}}/rest/main_db/orders?filter=o=>o.items.Any(i=>i.article.StartsWith("xxx"))
+Cookie: {{auth}}

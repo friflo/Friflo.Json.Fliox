@@ -210,3 +210,79 @@ POST {{base}}/rest/main_db/articles/bulk-get
 [
 ]
 
+###
+GET {{base}}/rest/main_db/orders?filter=o=>o.items.Any(i=>i.name=="Camera")&orderByKey=asc
+# StatusCode:   200
+# Content-Type: application/json
+
+[
+    {
+    "id": "order-1",
+    "customer": "customer-1",
+    "created": "2021-07-22T06:00:00.000Z",
+    "items": [
+        {
+            "article": "article-1",
+            "amount": 1,
+            "name": "Camera"
+        },
+        {
+            "article": "article-2",
+            "amount": 2,
+            "name": "Smartphone"
+        },
+        {
+            "article": "article-1",
+            "amount": 3,
+            "name": "Camera"
+        }
+    ]
+}
+]
+
+###
+GET {{base}}/rest/main_db/orders?filter=o=>o.items.Any(i=>i.name=="xxx")
+# StatusCode:   200
+# Content-Type: application/json
+
+[
+]
+
+###
+GET {{base}}/rest/main_db/orders?filter=o=>o.items.Any(i=>i.article.StartsWith("article-"))&orderByKey=asc
+# StatusCode:   200
+# Content-Type: application/json
+
+[
+    {
+    "id": "order-1",
+    "customer": "customer-1",
+    "created": "2021-07-22T06:00:00.000Z",
+    "items": [
+        {
+            "article": "article-1",
+            "amount": 1,
+            "name": "Camera"
+        },
+        {
+            "article": "article-2",
+            "amount": 2,
+            "name": "Smartphone"
+        },
+        {
+            "article": "article-1",
+            "amount": 3,
+            "name": "Camera"
+        }
+    ]
+}
+]
+
+###
+GET {{base}}/rest/main_db/orders?filter=o=>o.items.Any(i=>i.article.StartsWith("xxx"))
+# StatusCode:   200
+# Content-Type: application/json
+
+[
+]
+

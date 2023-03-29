@@ -11,9 +11,6 @@ namespace Friflo.Json.Fliox.Transform.Query
     internal static class QueryCosmos
     {
         internal static string ToCosmos(string collection, FilterOperation filterOperation) {
-            if (filterOperation is Filter filter) {
-                filterOperation = filter.body;
-            }
             var cx      = new ConvertContext(collection, filterOperation);
             var result  = cx.Traverse(filterOperation);
             return result;
@@ -22,18 +19,25 @@ namespace Friflo.Json.Fliox.Transform.Query
     
     internal sealed class ConvertContext {
         private readonly   string           collection;
-        private readonly   FilterOperation  filter;
+        private readonly   string           collectionStart;
+        private readonly   FilterOperation  filterOp;
         
-        internal ConvertContext (string collection, FilterOperation filter) {
+        internal ConvertContext (string collection, FilterOperation filterOp) {
             this.collection = collection;
-            this.filter     = filter;
+            if (filterOp is Filter filter) {
+                collectionStart = $"{filter.arg}.";
+            }
+            this.filterOp     = filterOp;
         }
         
         internal string Traverse(Operation operation) {
             switch (operation) {
-                case Field field:
-                    return $"{collection}{field.name}";
-                
+                case Field field: {
+                    if (collectionStart != null && field.name.StartsWith(collectionStart)) {
+                        return $"{collection}.{field.name.Substring(collectionStart.Length)}";
+                    }
+                    return field.name;
+                }
                 case StringLiteral stringLiteral:
                     return $"'{stringLiteral.value}'";
                 case DoubleLiteral doubleLiteral:
@@ -84,30 +88,30 @@ namespace Friflo.Json.Fliox.Transform.Query
                     return string.Join(" && ", operands);
                 
                 case Filter filterOp:
-                    var cx              = new ConvertContext (collection, filter);
+                    var cx              = new ConvertContext (collection, this.filterOp);
                     operand             = cx.Traverse(filterOp.body);
-                    return $"WHERE {operand}";
+                    return $"{operand}";
                 case Any any:
-                    cx                  = new ConvertContext ("", filter);
+                    cx                  = new ConvertContext ("", filterOp);
                     operand             = cx.Traverse(any.predicate);
                     string fieldName    = Traverse(any.field);
                     string arg          = any.arg;
                     return $"EXISTS(SELECT VALUE {arg} FROM {arg} IN {fieldName} WHERE {operand})";
                 case All all:
-                    cx                  = new ConvertContext ("", filter);
+                    cx                  = new ConvertContext ("", filterOp);
                     operand             = cx.Traverse(all.predicate);
                     fieldName           = Traverse(all.field);
                     arg                 = all.arg;
                     return $"(SELECT VALUE Count(1) FROM {arg} IN {fieldName} WHERE {operand}) = ARRAY_LENGTH({fieldName})";
                 case CountWhere countWhere:
-                    cx                  = new ConvertContext ("", filter);
+                    cx                  = new ConvertContext ("", filterOp);
                     operand             = cx.Traverse(countWhere.predicate);
                     fieldName           = Traverse(countWhere.field);
                     arg                 = countWhere.arg;
                     return $"(SELECT VALUE Count(1) FROM {arg} IN {fieldName} WHERE {operand})";
                 
                 default:
-                    throw new NotImplementedException($"missing conversion for operation: {operation}, filter: {filter}");
+                    throw new NotImplementedException($"missing conversion for operation: {operation}, filter: {filterOp}");
             }
         }
         
