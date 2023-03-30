@@ -147,7 +147,12 @@ namespace Friflo.Json.Fliox.Hub.Cosmos
             if (command.limit != null) {
                 sql += $" OFFSET 0 LIMIT {command.limit}";
             }
-            using (FeedIterator iterator    = cosmosContainer.GetItemQueryStreamIterator(sql))
+            QueryRequestOptions queryOptions = null;
+            if (command.maxCount != null) {
+                queryOptions = new QueryRequestOptions { MaxItemCount = command.maxCount };
+            }
+            string continuationToken = null;
+            using (FeedIterator iterator    = cosmosContainer.GetItemQueryStreamIterator(sql, command.cursor, queryOptions))
             using (var pooled               = syncContext.ObjectMapper.Get()) {
                 while (iterator.HasMoreResults) {
                     using(ResponseMessage response = await iterator.ReadNextAsync().ConfigureAwait(false)) {
@@ -156,6 +161,10 @@ namespace Friflo.Json.Fliox.Hub.Cosmos
                         if (docs == null)
                             throw new InvalidOperationException($"no Documents in Cosmos ResponseMessage. command: {command}");
                         documents.AddRange(docs);
+                        continuationToken = response.ContinuationToken;
+                        if (continuationToken != null) {
+                            break;
+                        }
                     }
                 }
             }
@@ -165,7 +174,7 @@ namespace Friflo.Json.Fliox.Hub.Cosmos
                 throw new NotImplementedException();
                 // return FilterEntities(command, entities, syncContext);
             }
-            return new QueryEntitiesResult{ entities = entities.ToArray() };
+            return new QueryEntitiesResult{ entities = entities.ToArray(), cursor = continuationToken};
         }
         
         public override async Task<AggregateEntitiesResult> AggregateEntitiesAsync (AggregateEntities command, SyncContext syncContext) {
@@ -180,7 +189,7 @@ namespace Friflo.Json.Fliox.Hub.Cosmos
                 var result = new AggregateEntitiesResult { container = command.container, value = count };
                 return result;
             }
-            return new AggregateEntitiesResult { Error = new CommandError($"aggregate {command.type} - unexpected query result") };
+            return new AggregateEntitiesResult { Error = new CommandError($"aggregate {command.type} - unexpected query result" ) };
         }
         
         public override async Task<DeleteEntitiesResult> DeleteEntitiesAsync(DeleteEntities command, SyncContext syncContext) {
