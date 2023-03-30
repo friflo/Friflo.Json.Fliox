@@ -1,5 +1,9 @@
 import { Article, Order, TestType } from "../PocStore/UnitTest.Fliox.Client"
 
+const PI:   number = 3.141592653589793;
+const E:    number = 2.718281828459045;
+const Tau:  number = 6.283185307179586;
+
 function Abs    (value: number) : number { return 0; }
 function Log    (value: number) : number { return 0; }
 function Exp    (value: number) : number { return 0; }
@@ -33,7 +37,7 @@ export type Filter<TModel> = {
 }; */
 
 // type Without<T, K> = Pick<T, Exclude<keyof T, K>>;
-type Str = Exclude<string, "length"> | { Length: number };
+// type Str = Exclude<string, "length"> | { Length: number };
 
 type StringFilter = {
     readonly Length : number,
@@ -72,14 +76,14 @@ query<Order>(o => o.customer != "dddd");
 
 query<Order>(o => o.items.Length == 1);
 
-query<Order>(o => o.items.Any   (o => o.amount == 1));
-query<Order>(o => o.items.All   (o => o.amount == 1));
+query<Order>(o => o.items.Any(o => o.amount == 1));
+query<Order>(o => o.items.All(o => o.amount == 1));
 
-query<Order>(o => o.items.Min    (o => o.amount) == 1);
-query<Order>(o => o.items.Max    (o => o.amount) == 2);
-query<Order>(o => o.items.Sum    (o => o.amount) == 6);
-query<Order>(o => o.items.Average(o => o.amount) == 3);
+query<Order>(o => o.items.Min     (o => o.amount)           == 1);
+query<Order>(o => o.items.Max     (o => o.amount)           == 2);
+query<Order>(o => o.items.Sum     (o => o.amount)           == 6);
+query<Order>(o => o.items.Average (o => o.amount)           == 3);
 
-query<Order>(o => o.items.Count (o => o.name == "Camera") == 2);
+query<Order>(o => o.items.Count   (o => o.name == "Camera") == 2);
 
 query<Order>(o => Abs(o.items.Length) == 1);
