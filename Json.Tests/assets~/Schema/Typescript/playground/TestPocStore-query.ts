@@ -11,7 +11,8 @@ function Sqrt   (value: number) : number { return 0; }
 function Floor  (value: number) : number { return 0; }
 function Ceiling(value: number) : number { return 0; }
 
-type Field = string | number | boolean;
+/** Scalar object property like string, number or boolean. */
+type Property = string | number | boolean;
 
 type List<T> = {
     /** Return the length of the array. */
@@ -22,13 +23,13 @@ type List<T> = {
     Any     (filter: (o: T) => boolean) : boolean;
 
     /** Return the minimum value of an array. */
-    Min     (filter: (o: T) => Field) : number;
+    Min     (filter: (o: T) => Property) : number;
     /** Return the maximum value of an array. */
-    Max     (filter: (o: T) => Field) : number;
+    Max     (filter: (o: T) => Property) : number;
     /** Return the sum of all values. */
-    Sum     (filter: (o: T) => Field) : number;
+    Sum     (filter: (o: T) => Property) : number;
     /** Return the average of all values. */
-    Average (filter: (o: T) => Field) : number;
+    Average (filter: (o: T) => Property) : number;
 
     /** Counts the elements in an array which satisfy the filter condition. */
     Count   (filter: (o: T) => boolean) : number;
