@@ -1,7 +1,6 @@
 // Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
@@ -22,10 +21,9 @@ namespace Friflo.Json.Fliox.Hub.Host.Utils
             string              keyName,
             bool?               isIntKey,
             string              newKeyName,
-            EntityValue[]       destEntities,
+            List<EntityValue>   destEntities,
             SyncContext         syncContext)
         {
-            if (entities.Count != destEntities.Length) throw new InvalidOperationException("Expect entities.Count == destEntities.Length");
             var asIntKey = isIntKey == true;
             using (var pooled = syncContext.EntityProcessor.Get()) {
                 var processor = pooled.instance;
@@ -35,7 +33,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Utils
                     if (json.IsNull()) {
                         continue;
                     }
-                    destEntities[n] = new EntityValue(keyValue, json);
+                    destEntities.Add(new EntityValue(keyValue, json));
                 }
             }
         }

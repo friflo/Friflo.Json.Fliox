@@ -106,9 +106,10 @@ namespace Friflo.Json.Fliox.Hub.Cosmos
         }
         
         private async Task<ReadEntitiesResult> ReadManyEntities(ReadEntities command, SyncContext syncContext) {
-            var keys        = command.ids;
-            var entities    = new EntityValue[keys.Count];
-            var list        = new List<(string, PartitionKey)>(keys.Count);
+            var keys            = command.ids;
+            var entities        = new EntityValue[keys.Count];
+            var destEntities    = new List<EntityValue>(keys.Count);
+            var list            = new List<(string, PartitionKey)>(keys.Count);
             foreach (var key in keys) {
                 var id = key.AsString();
                 list.Add((id, new PartitionKey(id)));
@@ -119,14 +120,21 @@ namespace Friflo.Json.Fliox.Hub.Cosmos
                 var buffer      = new StreamBuffer();
                 var reader      = pooled.instance.reader;
                 var documents   = await CosmosUtils.ReadDocuments(reader, response.Content, buffer).ConfigureAwait(false);
-                EntityUtils.CopyEntities(documents, "id", command.isIntKey, command.keyName, entities, syncContext);
-                /* foreach (var key in keys) {
-                    if (entities.ContainsKey(key))
-                        continue;
-                    entities.Add(new EntityValue(key));
-                } */
+                EntityUtils.CopyEntities(documents, "id", command.isIntKey, command.keyName, destEntities, syncContext);
+                var entitiesMap = new Dictionary<JsonKey, EntityValue>(destEntities.Count, JsonKey.Equality);
+                foreach (var entityValue in destEntities) {
+                    entitiesMap.Add(entityValue.key, entityValue);
+                }
+                for (int n = 0; n < keys.Count; n++) {
+                    var key = keys[n];
+                    if (entitiesMap.TryGetValue(key, out var value)) {
+                        entities[n] = value;
+                    } else {
+                        entities[n] = new EntityValue(key);
+                    }
+                }
             }
-            return new ReadEntitiesResult{entities = entities };
+            return new ReadEntitiesResult{ entities = entities };
         }
 
         private readonly bool filterByClient = false; // true: used for development => query all and filter thereafter
@@ -136,6 +144,9 @@ namespace Friflo.Json.Fliox.Hub.Cosmos
             var buffer      = new StreamBuffer();
             var documents   = new List<JsonValue>();
             var sql         = filterByClient ? null : "SELECT * FROM c WHERE " + command.GetFilter().query.Cosmos;
+            if (command.limit != null) {
+                sql += $" OFFSET 0 LIMIT {command.limit}";
+            }
             using (FeedIterator iterator    = cosmosContainer.GetItemQueryStreamIterator(sql))
             using (var pooled               = syncContext.ObjectMapper.Get()) {
                 while (iterator.HasMoreResults) {
@@ -148,13 +159,13 @@ namespace Friflo.Json.Fliox.Hub.Cosmos
                     }
                 }
             }
-            var entities    = new EntityValue[documents.Count];
+            var entities    = new List<EntityValue>(documents.Count);
             EntityUtils.CopyEntities(documents, "id", command.isIntKey, command.keyName, entities, syncContext);
             if (filterByClient) {
                 throw new NotImplementedException();
                 // return FilterEntities(command, entities, syncContext);
             }
-            return new QueryEntitiesResult{entities = entities };
+            return new QueryEntitiesResult{ entities = entities.ToArray() };
         }
         
         public override Task<AggregateEntitiesResult> AggregateEntitiesAsync (AggregateEntities command, SyncContext syncContext) {
