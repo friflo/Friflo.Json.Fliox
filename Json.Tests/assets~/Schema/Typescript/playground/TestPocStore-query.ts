@@ -43,7 +43,7 @@ type StringFilter = {
 }
 
 type FilterTypes<T> =
-    T extends string         ? StringFilter & string : // Exclude<StringFilter & string, "length"> :
+    T extends string         ? StringFilter & (string | { }) :
     T extends Array<infer U> ? List<U>
     : Filter<T>
 
@@ -60,7 +60,10 @@ query<Article>(o => o.id.StartsWith("abc"));
 query<Article>(o => o.id.EndsWith  ("abc"));
 query<Article>(o => o.id.Contains  ("abc"));
 
-query<Article>(o => o.id.length == 3); // expect error!
+// @ts-expect-error
+query<Article>(o => o.id.length == 3);  // expect error!
+// @ts-expect-error
+query<Article>(o => o.id.at(1) == "d"); // expect error!
 
 query<TestType>(o => o.derivedClass.amount == 1);
 
