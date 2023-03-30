@@ -64,9 +64,9 @@ query<Article>(o => o.id.StartsWith("abc"));
 query<Article>(o => o.id.EndsWith  ("abc"));
 query<Article>(o => o.id.Contains  ("abc"));
 
-// @ts-expect-error
+// @ts-expect-error : Property 'length' does not exist on type 'StringFilter'.
 query<Article>(o => o.id.length == 3);  // expect error!
-// @ts-expect-error
+// @ts-expect-error : Property 'at' does not exist on type 'StringFilter'.
 query<Article>(o => o.id.at(1) == "d"); // expect error!
 
 query<TestType>(o => o.derivedClass.amount == 1);
