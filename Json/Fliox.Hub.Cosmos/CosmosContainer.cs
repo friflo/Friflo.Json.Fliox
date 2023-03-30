@@ -168,9 +168,19 @@ namespace Friflo.Json.Fliox.Hub.Cosmos
             return new QueryEntitiesResult{ entities = entities.ToArray() };
         }
         
-        public override Task<AggregateEntitiesResult> AggregateEntitiesAsync (AggregateEntities command, SyncContext syncContext) {
-            var result = new AggregateEntitiesResult { Error = new CommandError($"aggregate {command.type} not implement") };
-            return Task.FromResult(result);
+        public override async Task<AggregateEntitiesResult> AggregateEntitiesAsync (AggregateEntities command, SyncContext syncContext) {
+            var sql     = "SELECT  VALUE COUNT(0) FROM c";
+            var filter  = command.GetFilter();
+            if (!filter.IsTrue) {
+                sql += $" WHERE {filter.query.Cosmos}";
+            }
+            var query           = new QueryDefinition (sql);
+            var queryIterator   = cosmosContainer.GetItemQueryIterator<int>(query);
+            foreach (int count in await queryIterator.ReadNextAsync()) {
+                var result = new AggregateEntitiesResult { container = command.container, value = count };
+                return result;
+            }
+            return new AggregateEntitiesResult { Error = new CommandError($"aggregate {command.type} - unexpected query result") };
         }
         
         public override async Task<DeleteEntitiesResult> DeleteEntitiesAsync(DeleteEntities command, SyncContext syncContext) {
