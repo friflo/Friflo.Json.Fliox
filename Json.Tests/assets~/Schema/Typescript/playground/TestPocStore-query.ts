@@ -11,17 +11,26 @@ function Sqrt   (value: number) : number { return 0; }
 function Floor  (value: number) : number { return 0; }
 function Ceiling(value: number) : number { return 0; }
 
+type Field = string | number | boolean;
+
 type List<T> = {
+    /** Return the length of the array. */
     readonly Length : number,
-
-    Any     (filter: (o: T) => boolean) : boolean;
+    /** Return **true** if *all* the elements in a sequence satisfy the filter condition. */
     All     (filter: (o: T) => boolean) : boolean;
+    /** Return **true** if *any* element in a sequence satisfy the filter condition. */
+    Any     (filter: (o: T) => boolean) : boolean;
 
-    Min     (filter: (o: T) => string | number | boolean) : number;
-    Max     (filter: (o: T) => string | number | boolean) : number;
-    Sum     (filter: (o: T) => string | number | boolean) : number;
-    Average (filter: (o: T) => string | number | boolean) : number;
+    /** Return the minimum value of an array. */
+    Min     (filter: (o: T) => Field) : number;
+    /** Return the maximum value of an array. */
+    Max     (filter: (o: T) => Field) : number;
+    /** Return the sum of all values. */
+    Sum     (filter: (o: T) => Field) : number;
+    /** Return the average of all values. */
+    Average (filter: (o: T) => Field) : number;
 
+    /** Counts the elements in an array which satisfy the filter condition. */
     Count   (filter: (o: T) => boolean) : number;
 }
 
@@ -40,10 +49,15 @@ export type Filter<TModel> = {
 // type Str = Exclude<string, "length"> | { Length: number };
 
 type StringFilter = {
+    /** Return the length of the string. */
     readonly Length : number,
-             StartsWith  (str: string) : boolean,
-             EndsWith    (str: string) : boolean,
-             Contains    (str: string) : boolean,
+    
+    /** Return **true** if the value matches the beginning of the string. */
+    StartsWith  (value: string) : boolean,
+    /** Return **true** if the value matches the end of the string. */
+    EndsWith    (value: string) : boolean,
+    /** Return **true** if the value occurs within the string. */
+    Contains    (value: string) : boolean,
 }
 
 type FilterTypes<T> =
