@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Friflo.Json.Fliox;
-using EntityIdStore2.Hub.Protocol.Tasks;
 
 #pragma warning disable 0169 // [CS0169] The field '...' is never used
 
@@ -135,10 +134,17 @@ public struct SubscriptionEvents {
 
 public class ChangeSubscription {
     [Required]
-    string              container;
+    string            container;
     [Required]
-    List<EntityChange>  changes;
-    string              filter;
+    List<ChangeType>  changes;
+    string            filter;
+}
+
+public enum ChangeType {
+    create,
+    upsert,
+    merge,
+    delete,
 }
 
 }

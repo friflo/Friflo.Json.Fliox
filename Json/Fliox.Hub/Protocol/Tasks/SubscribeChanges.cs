@@ -92,15 +92,6 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     
     internal static class EntityChangeUtils
     {
-        internal static List<EntityChange> FlagsToList(EntityChange flags) {
-            var result = new List<EntityChange>(4);
-            if ((flags & EntityChange.create) != 0) result.Add(EntityChange.create);
-            if ((flags & EntityChange.upsert) != 0) result.Add(EntityChange.upsert);
-            if ((flags & EntityChange.merge)  != 0) result.Add(EntityChange.merge);
-            if ((flags & EntityChange.delete) != 0) result.Add(EntityChange.delete);
-            return result;
-        }
-        
         internal static EntityChange ListToFlags(List<EntityChange> list) {
             EntityChange flags = 0;
             foreach (var change in list) {

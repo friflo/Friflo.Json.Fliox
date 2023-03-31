@@ -233,11 +233,11 @@
         "ChangeSubscription": {
             "properties": {
                 "container": { "type": "string" },
-                "changes":   { "elements": { "ref":  "EntityChange" } },
+                "changes":   { "elements": { "ref":  "ChangeType" } },
                 "filter":    { "type": "string", "nullable": true }
             }
         },
-        "EntityChange": {
+        "ChangeType": {
             "enum": [
                 "create",
                 "upsert",

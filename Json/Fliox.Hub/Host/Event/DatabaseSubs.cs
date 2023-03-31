@@ -108,14 +108,14 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             foreach (var sub in changeSubs) {
                 var changeSubscription = new ChangeSubscription {
                     container   = sub.container.AsString(),
-                    changes     = EntityChangeUtils.FlagsToList(sub.changes),
+                    changes     = ClusterUtils.FlagsToList(sub.changes),
                     filter      = sub.filter
                 };
                 subs.Add(changeSubscription);
             }
             return subs;
         }
-
+        
         internal void RemoveMessageSubscription(string name) {
             var prefix = SubscribeMessage.GetPrefix(name);
             if (prefix.IsNull()) {

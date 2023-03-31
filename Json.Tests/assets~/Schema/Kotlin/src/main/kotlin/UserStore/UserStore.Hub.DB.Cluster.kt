@@ -4,7 +4,6 @@ package UserStore.Hub.DB.Cluster
 import kotlinx.serialization.*
 import CustomSerializer.*
 import kotlinx.serialization.json.*
-import UserStore.Hub.Protocol.Tasks.*
 
 @Serializable
 data class DbContainers (
@@ -130,7 +129,14 @@ data class SubscriptionEvents (
 @Serializable
 data class ChangeSubscription (
               val container : String,
-              val changes   : List<EntityChange>,
+              val changes   : List<ChangeType>,
               val filter    : String? = null,
 )
+
+enum class ChangeType {
+    create,
+    upsert,
+    merge,
+    delete,
+}
 

@@ -1,9 +1,9 @@
 // Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnassignedField.Global
@@ -194,7 +194,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
         /// <summary>name of subscribed container</summary>
         [Required]  public  string              container;
         /// <summary>type of subscribed changes like create, upsert, delete and patch</summary>
-        [Required]  public  List<EntityChange>  changes;
+        [Required]  public  List<ChangeType>    changes;
         /// <summary>filter to narrow the amount of change events</summary>
                     public  string              filter;
     }
@@ -209,5 +209,21 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
         public              int         tasks;
 
         public override     string      ToString() => $"db: {db}, requests: {requests}, tasks: {tasks}";
+    }
+    
+
+    /// <summary>Filter type used to specify the type of an entity change</summary>
+    // ReSharper disable InconsistentNaming
+    [Flags]
+    public enum ChangeType
+    {
+        /// <summary>filter change events of created entities.</summary>
+        create  = 1,
+        /// <summary>filter change events of upserted entities.</summary>
+        upsert  = 2,
+        /// <summary>filter change events of entity patches.</summary>
+        merge   = 4,
+        /// <summary>filter change events of deleted entities.</summary>
+        delete  = 8,
     }
 }

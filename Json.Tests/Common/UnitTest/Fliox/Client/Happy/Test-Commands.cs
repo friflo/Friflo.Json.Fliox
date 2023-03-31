@@ -56,7 +56,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             AreEqual("in-memory",       containersResult.storage);
             
             var schemaResult = schema.Result;
-            AreEqual(11,                schemaResult.jsonSchemas.Count);
+            AreEqual(10,                schemaResult.jsonSchemas.Count);
             AreEqual("SubPocStore",     schemaResult.schemaName);
             AreEqual("Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy.json", schemaResult.schemaPath);
             

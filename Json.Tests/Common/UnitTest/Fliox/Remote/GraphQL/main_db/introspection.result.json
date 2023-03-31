@@ -5559,7 +5559,7 @@
                                 "kind":"NON_NULL",
                                 "ofType": {
                                     "kind":"SCALAR",
-                                    "name": "EntityChange"
+                                    "name": "ChangeType"
                                 }
                             }
                         }
@@ -5610,7 +5610,7 @@
                                 "kind":"NON_NULL",
                                 "ofType": {
                                     "kind":"SCALAR",
-                                    "name": "EntityChange"
+                                    "name": "ChangeType"
                                 }
                             }
                         }
@@ -5630,7 +5630,7 @@
         },
         {
             "kind":"ENUM",
-            "name": "EntityChange",
+            "name": "ChangeType",
             "description": "/** Filter type used to specify the type of an entity change */\n",
             "enumValues": [
                 {

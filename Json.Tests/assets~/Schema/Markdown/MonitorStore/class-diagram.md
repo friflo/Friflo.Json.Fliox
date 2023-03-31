@@ -70,12 +70,12 @@ SubscriptionEvents *-- "0..*" ChangeSubscription : changeSubs
 
 class ChangeSubscription {
     container  : string
-    changes    : EntityChange[]
+    changes    : ChangeType[]
     filter?    : string
 }
-ChangeSubscription *-- "0..*" EntityChange : changes
+ChangeSubscription *-- "0..*" ChangeType : changes
 
-class EntityChange:::cssEnum {
+class ChangeType:::cssEnum {
     <<enumeration>>
     create
     upsert

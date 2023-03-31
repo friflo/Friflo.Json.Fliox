@@ -528,17 +528,17 @@ input SubscriptionEventsInput {
 
 type ChangeSubscription {
     container : String!
-    changes   : [EntityChange!]!
+    changes   : [ChangeType!]!
     filter    : String
 }
 
 input ChangeSubscriptionInput {
     container : String!
-    changes   : [EntityChange!]!
+    changes   : [ChangeType!]!
     filter    : String
 }
 
-enum EntityChange {
+enum ChangeType {
     create
     upsert
     merge

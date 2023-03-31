@@ -4,10 +4,11 @@
 using System.Collections.Generic;
 using Friflo.Json.Fliox.Hub.Host.Event;
 using Friflo.Json.Fliox.Hub.Protocol;
+using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 
 namespace Friflo.Json.Fliox.Hub.DB.Cluster
 {
-    public static class ClusterUtils
+    internal static class ClusterUtils
     {
         // --- SubscriptionEvents
         internal static SubscriptionEvents? GetSubscriptionEvents (
@@ -70,6 +71,15 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
                 }
             }
             dst.Sort((c1, c2) => c1.db.Compare(c2.db));
+        }
+
+        internal static List<ChangeType> FlagsToList(EntityChange flags) {
+            var result = new List<ChangeType>(4);
+            if ((flags & EntityChange.create) != 0) result.Add(ChangeType.create);
+            if ((flags & EntityChange.upsert) != 0) result.Add(ChangeType.upsert);
+            if ((flags & EntityChange.merge)  != 0) result.Add(ChangeType.merge);
+            if ((flags & EntityChange.delete) != 0) result.Add(ChangeType.delete);
+            return result;
         }
     }
 }

@@ -233,7 +233,7 @@
             "description": "change subscription for a specific container",
             "properties": {
                 "container": { "type": "string", "description": "name of subscribed container" },
-                "changes":   { "type": "array", "items": { "$ref": "./Friflo.Json.Fliox.Hub.Protocol.Tasks.json#/definitions/EntityChange" }, "description": "type of subscribed changes like create, upsert, delete and patch" },
+                "changes":   { "type": "array", "items": { "$ref": "#/definitions/ChangeType" }, "description": "type of subscribed changes like create, upsert, delete and patch" },
                 "filter":    { "type": ["string", "null"], "description": "filter to narrow the amount of change events" }
             },
             "required": [
@@ -241,6 +241,21 @@
                 "changes"
             ],
             "additionalProperties": false
+        },
+        "ChangeType": {
+            "enum": [
+                "create",
+                "upsert",
+                "merge",
+                "delete"
+            ],
+            "descriptions": {
+                "create": "filter change events of created entities.",
+                "upsert": "filter change events of upserted entities.",
+                "merge":  "filter change events of entity patches.",
+                "delete": "filter change events of deleted entities."
+            }
+
         }
     }
 }

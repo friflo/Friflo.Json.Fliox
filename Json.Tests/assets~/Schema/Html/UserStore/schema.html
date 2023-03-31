@@ -317,6 +317,7 @@
             <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.ClientResult'><div><span>ClientResult</span></div></a></li>
             <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.SubscriptionEvents'><div><span>SubscriptionEvents</span></div></a></li>
             <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.ChangeSubscription'><div><span>ChangeSubscription</span></div></a></li>
+            <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.ChangeType'><div><span>ChangeType</span><keyword>enum</keyword></div></a></li>
         </ul>
     </li>
     <li><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights'>Friflo.Json.Fliox.Hub.Host.Auth.Rights</a>
@@ -1056,7 +1057,7 @@ E.g. <c>ws:[::1]:52089</c> for WebSockets, <c>udp:127.0.0.1:60005</c> for UDP or
         </tr>
         <tr>
             <td><field>changes</field></td>
-            <td><type><a href='#Friflo.Json.Fliox.Hub.Protocol.Tasks.EntityChange'>EntityChange</a>[]</type></td>
+            <td><type><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.ChangeType'>ChangeType</a>[]</type></td>
             <td><docs>type of subscribed changes like create, upsert, delete and patch</docs></td>
         </tr>
         <tr>
@@ -1064,6 +1065,19 @@ E.g. <c>ws:[::1]:52089</c> for WebSockets, <c>udp:127.0.0.1:60005</c> for UDP or
             <td><type><predef>string</predef> | null</type></td>
             <td><docs>filter to narrow the amount of change events</docs></td>
         </tr>
+    </table>
+    </div>
+    <div class='type enum'>
+    <h3 id='Friflo.Json.Fliox.Hub.DB.Cluster.ChangeType'>
+        <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.ChangeType'>ChangeType</a>
+        <keyword>enum</keyword>
+    </h3>
+    <desc>Filter type used to specify the type of an entity change</desc>
+    <table>
+        <tr><td>create</td><td><docs>filter change events of created entities.</docs></td></tr>
+        <tr><td>upsert</td><td><docs>filter change events of upserted entities.</docs></td></tr>
+        <tr><td>merge</td><td><docs>filter change events of entity patches.</docs></td></tr>
+        <tr><td>delete</td><td><docs>filter change events of deleted entities.</docs></td></tr>
     </table>
     </div>
 </div>
