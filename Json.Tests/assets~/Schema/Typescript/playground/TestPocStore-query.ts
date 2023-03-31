@@ -62,7 +62,8 @@ type StringFilter = {
 }
 
 type FilterTypes<T> =
-    T extends string         ? StringFilter & (string | { }) :
+    T extends string         ? StringFilter & (string | { }) : // remove string methods: at(), length, ...
+    T extends number         ? number | { }                  : // remove Number methods: toFixed(), toString(), ...
     T extends Array<infer U> ? List<U>
     : Filter<T>
 
@@ -74,21 +75,27 @@ function query<T>(filter: (o: FilterTypes<T>) => boolean) { }
 
 query(o => true);
 
+// --- ensure presence string filter methods
 query<Article>(o => o.id.Length == 3);
 query<Article>(o => o.id.StartsWith("abc"));
 query<Article>(o => o.id.EndsWith  ("abc"));
 query<Article>(o => o.id.Contains  ("abc"));
 
+// --- ensure absence of standard string & number methods
 // @ts-expect-error : Property 'length' does not exist on type 'StringFilter'.
 query<Article>(o => o.id.length == 3);  // expect error!
 // @ts-expect-error : Property 'at' does not exist on type 'StringFilter'.
 query<Article>(o => o.id.at(1) == "d"); // expect error!
+// @ts-expect-error : Property 'toFixed' does not exist on type 'number | {}'.
+query<TestType>(o => o.int32.toFixed() == 1);
 
-query<TestType>(o => o.derivedClass.amount == 1);
+// --- ensure presence standard scalar operator
+query<TestType> (o => o.derivedClass.amount == 1);
+query<Order>    (o => o.customer == "dddd");
+query<Order>    (o => o.customer != "dddd");
+query<TestType> (o => o.int32 == 1);
 
-query<Order>(o => o.customer == "dddd");
-query<Order>(o => o.customer != "dddd");
-
+// --- ensure presence List<> / array filter methods
 query<Order>(o => o.items.Length == 1);
 
 query<Order>(o => o.items.Any(o => o.amount == 1));
@@ -102,3 +109,4 @@ query<Order>(o => o.items.Average (o => o.amount)           == 3);
 query<Order>(o => o.items.Count   (o => o.name == "Camera") == 2);
 
 query<Order>(o => Abs(o.items.Length) == 1);
+
