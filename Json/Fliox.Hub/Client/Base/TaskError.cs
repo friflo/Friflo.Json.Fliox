@@ -6,29 +6,29 @@ using System.Collections.Generic;
 using System.Text;
 using Friflo.Json.Fliox.Hub.Client.Internal;
 using Friflo.Json.Fliox.Hub.Host;
-using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.Client
 {
+    /*
     /// <summary>Describe the type of a <see cref="TaskError"/></summary>
-    public enum TaskErrorType
+    public enum TaskErrorType2
     {
         Undefined           = 0, // Prevent implicit initialization of underlying value 0 to a valid value (UnhandledException)
         
         /// <summary>
         /// Inform about an unhandled exception in a <see cref="EntityContainer"/> implementation which need to be fixed.
         /// More information at <see cref="FlioxHub.ExecuteRequestAsync"/>.
-        /// Maps to <see cref="TaskErrorResultType.UnhandledException"/>.
+        /// Maps to <see cref="TaskErrorType.UnhandledException"/>.
         /// </summary>
         UnhandledException  = 1,
         
         /// <summary>A general database error.</summary>
         /// <remarks>
         /// E.g. the access is currently not available or accessing a missing table.
-        /// maps to <see cref="TaskErrorResultType.DatabaseError"/>
+        /// maps to <see cref="TaskErrorType.DatabaseError"/>
         /// </remarks>
         DatabaseError       = 2,
         /// <summary>Invalid query filter</summary>
@@ -50,13 +50,13 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// <see cref="Dictionary{K,V}"/> fields containing <see cref="EntityErrors"/> for entities accessed via a CRUD
         /// command by the <see cref="SyncTask"/>.
         /// The entity errors are available via <see cref="TaskError.entityErrors"/>.  
-        /// No mapping to a <see cref="TaskErrorResultType"/> value.
+        /// No mapping to a <see cref="TaskErrorType"/> value.
         /// </summary>
         EntityErrors        = 10,
         /// <summary> Use to indicate an invalid response.</summary>
-        /// <remarks>No mapping to a <see cref="TaskErrorResultType"/> value.</remarks>
+        /// <remarks>No mapping to a <see cref="TaskErrorType"/> value.</remarks>
         InvalidResponse     = 11,
-    }
+    } */
     
     /// <summary>
     /// Contains the <see cref="type"/> and the error <see cref="Message"/> of task in case its execution failed.
@@ -76,7 +76,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         private static readonly IDictionary<JsonKey, EntityError> NoErrors = new EmptyDictionary<JsonKey, EntityError>();
 
         internal TaskError(TaskErrorResult error) {
-            type                = TaskToSyncError(error.type);
+            type                = error.type;
             taskMessage         = error.message;
             stacktrace          = error.stacktrace;
             entityErrors        = NoErrors;
@@ -94,21 +94,6 @@ namespace Friflo.Json.Fliox.Hub.Client
             this.entityErrors   = entityErrors ?? throw new ArgumentException("entityErrors must not be null");
             type                = TaskErrorType.EntityErrors;
             taskMessage         = "EntityErrors";
-        }
-        
-        private static TaskErrorType TaskToSyncError(TaskErrorResultType type) {
-            switch (type) {
-                case TaskErrorResultType.UnhandledException:    return TaskErrorType.UnhandledException;
-                case TaskErrorResultType.DatabaseError:         return TaskErrorType.DatabaseError;
-                case TaskErrorResultType.FilterError:           return TaskErrorType.FilterError;
-                case TaskErrorResultType.ValidationError:       return TaskErrorType.ValidationError;
-                case TaskErrorResultType.CommandError:          return TaskErrorType.CommandError;
-                case TaskErrorResultType.InvalidTask:           return TaskErrorType.InvalidTask;
-                case TaskErrorResultType.NotImplemented:        return TaskErrorType.NotImplemented;
-                case TaskErrorResultType.PermissionDenied:      return TaskErrorType.PermissionDenied;
-                case TaskErrorResultType.SyncError:             return TaskErrorType.SyncError;
-            }
-            throw new ArgumentException($"cant convert error type: {type}");
         }
         
         /// Note: The library itself set <param name="showStack"/> to true only when called from <see cref="object.ToString"/>

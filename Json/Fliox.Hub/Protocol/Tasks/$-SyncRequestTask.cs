@@ -60,7 +60,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         
         internal static TaskErrorResult InvalidTaskError(string error) {
             // error = $"{message} {TaskType} ({TaskName})";
-            return new TaskErrorResult (TaskErrorResultType.InvalidTask, error);   
+            return new TaskErrorResult (TaskErrorType.InvalidTask, error);   
         }
         
         internal static TaskErrorResult MissingField(string field) {
@@ -77,7 +77,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         
         public static TaskErrorResult PermissionDenied(string message) {
             // message = $"{message} {TaskType} ({TaskName})";
-            return new TaskErrorResult (TaskErrorResultType.PermissionDenied, message);
+            return new TaskErrorResult (TaskErrorType.PermissionDenied, message);
         }
 
         internal static bool ValidReferences(List<References> references, out TaskErrorResult error) {

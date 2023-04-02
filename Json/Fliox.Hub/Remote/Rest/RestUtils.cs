@@ -568,17 +568,17 @@ namespace Friflo.Json.Fliox.Hub.Remote.Rest
             if (taskResult is TaskErrorResult errorResult) {
                 int status;
                 switch (errorResult.type) {
-                    case TaskErrorResultType.InvalidTask:           status = 400;   break;
-                    case TaskErrorResultType.PermissionDenied:      status = 403;   break;
-                    case TaskErrorResultType.DatabaseError:         status = 500;   break;
-                    case TaskErrorResultType.FilterError:           status = 400;   break;
-                    case TaskErrorResultType.ValidationError:       status = 400;   break;
-                    case TaskErrorResultType.CommandError:          status = 400;   break;
-                    case TaskErrorResultType.None:                  status = 500;   break;
-                    case TaskErrorResultType.UnhandledException:    status = 500;   break;
-                    case TaskErrorResultType.NotImplemented:        status = 501;   break;
-                    case TaskErrorResultType.SyncError:             status = 500;   break;
-                    default:                                        status = 500;   break;
+                    case TaskErrorType.InvalidTask:           status = 400;   break;
+                    case TaskErrorType.PermissionDenied:      status = 403;   break;
+                    case TaskErrorType.DatabaseError:         status = 500;   break;
+                    case TaskErrorType.FilterError:           status = 400;   break;
+                    case TaskErrorType.ValidationError:       status = 400;   break;
+                    case TaskErrorType.CommandError:          status = 400;   break;
+                    case TaskErrorType.None:                  status = 500;   break;
+                    case TaskErrorType.UnhandledException:    status = 500;   break;
+                    case TaskErrorType.NotImplemented:        status = 501;   break;
+                    case TaskErrorType.SyncError:             status = 500;   break;
+                    default:                                  status = 500;   break;
                 }
                 var errorMessage    = errorResult.message;
                 var stacktrace      = errorResult.stacktrace;

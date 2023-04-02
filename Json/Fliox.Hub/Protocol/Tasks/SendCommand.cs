@@ -23,7 +23,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
             }
             if (callback == null) {
                 var msg = $"no command handler for: '{name.AsString()}'";
-                return new TaskErrorResult (TaskErrorResultType.NotImplemented, msg);
+                return new TaskErrorResult (TaskErrorType.NotImplemented, msg);
             }
             return null;
         }
@@ -36,7 +36,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
             var result  = await callback.InvokeDelegateAsync(this, name, param, syncContext).ConfigureAwait(false);
             if (result.error == null)
                 return new SendCommandResult { result = result.value };
-            return new TaskErrorResult (TaskErrorResultType.CommandError, result.error);
+            return new TaskErrorResult (TaskErrorType.CommandError, result.error);
         }
         
         public override SyncTaskResult Execute(EntityDatabase database, SyncResponse response, SyncContext syncContext) {
@@ -47,7 +47,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
             var result  = callback.InvokeDelegate(this, name, param, syncContext);
             if (result.error == null)
                 return new SendCommandResult { result = result.value };
-            return new TaskErrorResult (TaskErrorResultType.CommandError, result.error);
+            return new TaskErrorResult (TaskErrorType.CommandError, result.error);
         }
     }
     

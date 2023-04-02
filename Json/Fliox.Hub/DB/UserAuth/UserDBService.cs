@@ -46,15 +46,15 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
         
         private static bool ValidateTask(SyncRequestTask task, out TaskErrorResult error) {
             if (task.ContainsEntityChange(Change.delete, new ShortString(nameof(UserStore.credentials)), AdminId)) {
-                error = new TaskErrorResult (TaskErrorResultType.PermissionDenied, $"credentials '{AdminId}' must not be deleted");
+                error = new TaskErrorResult (TaskErrorType.PermissionDenied, $"credentials '{AdminId}' must not be deleted");
                 return false;
             }
             if (task.ContainsEntityChange(Change.All, new ShortString(nameof(UserStore.permissions)), AdminId)) {
-                error = new TaskErrorResult (TaskErrorResultType.PermissionDenied, $"permission '{AdminId}' must not be changed");
+                error = new TaskErrorResult (TaskErrorType.PermissionDenied, $"permission '{AdminId}' must not be changed");
                 return false;
             }
             if (task.ContainsEntityChange(Change.All, new ShortString(nameof(UserStore.roles)), HubAdminId)) {
-                error = new TaskErrorResult (TaskErrorResultType.PermissionDenied, $"role '{HubAdminId}' must not be changed");
+                error = new TaskErrorResult (TaskErrorType.PermissionDenied, $"role '{HubAdminId}' must not be changed");
                 return false;
             }
             error = null;

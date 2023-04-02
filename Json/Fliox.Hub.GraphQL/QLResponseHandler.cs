@@ -47,7 +47,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                     var path    = new List<string>(2) { name };
                     if (queryError.argName != null)
                         path.Add(queryError.argName);
-                    var ext     = new GqlErrorExtensions { type =  TaskErrorResultType.InvalidTask };
+                    var ext     = new GqlErrorExtensions { type =  TaskErrorType.InvalidTask };
                     var error   = new GqlError { message = queryError.message, path = path, extensions = ext };
                     errors.Add(error);
                     continue;

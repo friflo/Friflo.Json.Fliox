@@ -190,7 +190,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             }
             var valError = database.Schema?.ValidateEntities(container, targets, env, EntityErrorType.PatchError, ref patchErrors);
             if (valError != null) {
-                return new MergeEntitiesResult{Error = new TaskExecuteError(TaskErrorResultType.ValidationError, valError)};
+                return new MergeEntitiesResult{Error = new TaskExecuteError(TaskErrorType.ValidationError, valError)};
             }
             
             // --- write merged entities back
@@ -252,7 +252,7 @@ namespace Friflo.Json.Fliox.Hub.Host
                 }
             }
             enumerator  = null;
-            error       = new TaskExecuteError(TaskErrorResultType.InvalidTask, $"cursor '{cursor}' not found");
+            error       = new TaskExecuteError(TaskErrorType.InvalidTask, $"cursor '{cursor}' not found");
             return false;
         }
 

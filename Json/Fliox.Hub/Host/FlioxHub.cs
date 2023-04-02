@@ -269,7 +269,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             var exceptionName   = e.GetType().Name;
             var msg             = $"{exceptionName}: {e.Message}";
             var stack           = StackTraceUtils.GetStackTrace(e, false);
-            return new TaskErrorResult (TaskErrorResultType.UnhandledException,msg, stack);
+            return new TaskErrorResult (TaskErrorType.UnhandledException,msg, stack);
         }
         
         private static string GetLogMessage (string database, in ShortString user, int taskIndex, SyncRequestTask task) {

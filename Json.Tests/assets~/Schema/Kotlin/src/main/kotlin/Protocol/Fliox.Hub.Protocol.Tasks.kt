@@ -269,12 +269,12 @@ data class ReservedKeys (
 @Serializable
 @SerialName("error")
 data class TaskErrorResult (
-              val type       : TaskErrorResultType,
+              val type       : TaskErrorType,
               val message    : String? = null,
               val stacktrace : String? = null,
 ) : SyncTaskResult()
 
-enum class TaskErrorResultType {
+enum class TaskErrorType {
     None,
     UnhandledException,
     DatabaseError,
@@ -285,5 +285,7 @@ enum class TaskErrorResultType {
     NotImplemented,
     PermissionDenied,
     SyncError,
+    EntityErrors,
+    InvalidResponse,
 }
 

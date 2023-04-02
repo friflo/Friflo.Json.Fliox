@@ -365,12 +365,12 @@
         },
         "TaskErrorResult": {
             "properties": {
-                "type":       { "ref":  "TaskErrorResultType" },
+                "type":       { "ref":  "TaskErrorType" },
                 "message":    { "type": "string", "nullable": true },
                 "stacktrace": { "type": "string", "nullable": true }
             }
         },
-        "TaskErrorResultType": {
+        "TaskErrorType": {
             "enum": [
                 "None",
                 "UnhandledException",
@@ -381,7 +381,9 @@
                 "InvalidTask",
                 "NotImplemented",
                 "PermissionDenied",
-                "SyncError"
+                "SyncError",
+                "EntityErrors",
+                "InvalidResponse"
             ]
         },
         "ContainerEntities": {

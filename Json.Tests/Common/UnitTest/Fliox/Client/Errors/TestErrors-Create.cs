@@ -2,8 +2,8 @@
 // See LICENSE file in the project root for full license information.
 
 using System.Threading.Tasks;
-using Friflo.Json.Fliox.Hub.Client;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
+using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs;
 using static Friflo.Json.Tests.Common.Utils.AssertUtils;
 using static NUnit.Framework.Assert;

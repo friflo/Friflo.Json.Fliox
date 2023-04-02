@@ -28,9 +28,9 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Models
         [Serialize] public  string              message;
             
         [Ignore]    public  ShortString         container;
-        /// <summary>Is != <see cref="TaskErrorResultType.None"/> if the error is caused indirectly by a <see cref="SyncRequestTask"/> error.</summary>
-        [Ignore]    public  TaskErrorResultType taskErrorType;
-        /// <summary>Show the stacktrace if <see cref="taskErrorType"/> == <see cref="TaskErrorResultType.UnhandledException"/>
+        /// <summary>Is != <see cref="TaskErrorType.None"/> if the error is caused indirectly by a <see cref="SyncRequestTask"/> error.</summary>
+        [Ignore]    public  TaskErrorType taskErrorType;
+        /// <summary>Show the stacktrace if <see cref="taskErrorType"/> == <see cref="TaskErrorType.UnhandledException"/>
         /// and the accessed <see cref="EntityContainer"/> implementation expose this data.</summary>
         [Ignore]    public  string              stacktrace;
 
@@ -59,7 +59,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Models
             sb.Append(" [");
             id.AppendTo(sb);
             sb.Append("], ");
-            if (taskErrorType != TaskErrorResultType.None) {
+            if (taskErrorType != TaskErrorType.None) {
                 sb.Append(taskErrorType);
                 sb.Append(" - ");
             }

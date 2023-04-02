@@ -384,13 +384,13 @@ class ReservedKeys {
 SyncTaskResult <|-- TaskErrorResult
 class TaskErrorResult {
     task        : "error"
-    type        : TaskErrorResultType
+    type        : TaskErrorType
     message?    : string
     stacktrace? : string
 }
-TaskErrorResult *-- "1" TaskErrorResultType : type
+TaskErrorResult *-- "1" TaskErrorType : type
 
-class TaskErrorResultType:::cssEnum {
+class TaskErrorType:::cssEnum {
     <<enumeration>>
     None
     UnhandledException
@@ -402,6 +402,8 @@ class TaskErrorResultType:::cssEnum {
     NotImplemented
     PermissionDenied
     SyncError
+    EntityErrors
+    InvalidResponse
 }
 
 

@@ -271,7 +271,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 EntitySet               refContainer = set.intern.store._intern.GetSetByName(reference.container);
                 ReadRelationsFunction   subRelation  = relations[reference.selector];
                 if (refResult.error != null) {
-                    var taskError       = new TaskErrorResult (TaskErrorResultType.DatabaseError, refResult.error);
+                    var taskError       = new TaskErrorResult (TaskErrorType.DatabaseError, refResult.error);
                     var taskErrorInfo   = new TaskErrorInfo (taskError);
                     subRelation.state.SetError(taskErrorInfo);
                     continue;

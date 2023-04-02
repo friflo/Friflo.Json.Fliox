@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Friflo.Json.Fliox.Hub.Host;
 
@@ -14,17 +15,17 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     public sealed class TaskErrorResult : SyncTaskResult
     {
         /// <summary>task error type</summary>
-        [Required]  public      TaskErrorResultType type;
+        [Required]  public      TaskErrorType   type;
         /// <summary>task error details</summary>
-                    public      string              message;
-        /// <summary>stacktrace in case the error <see cref="type"/> is a <see cref="TaskErrorResultType.UnhandledException"/></summary>
-                    public      string              stacktrace;
+                    public      string          message;
+        /// <summary>stacktrace in case the error <see cref="type"/> is a <see cref="TaskErrorType.UnhandledException"/></summary>
+                    public      string          stacktrace;
 
-        internal override       TaskType            TaskType => TaskType.error;
-        public   override       string              ToString() => $"type: {type}, message: {message}";
+        internal override       TaskType        TaskType => TaskType.error;
+        public   override       string          ToString() => $"type: {type}, message: {message}";
         
         public TaskErrorResult() {}
-        public TaskErrorResult(TaskErrorResultType type, string message, string stacktrace = null) {
+        public TaskErrorResult(TaskErrorType type, string message, string stacktrace = null) {
             this.type       = type;
             this.message    = message;
             this.stacktrace = stacktrace;
@@ -32,7 +33,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     }
     
     /// <summary>Type of a task error used in <see cref="TaskErrorResult"/></summary>
-    public enum TaskErrorResultType {
+    public enum TaskErrorType {
         /// HTTP status: 500
         None                = 0,
         /// <summary>
@@ -62,6 +63,19 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         /// <summary>task execution not authorized  <br/>maps to HTTP status: 403</summary>
         PermissionDenied    = 8,
         /// <summary>The entire <see cref="SyncRequest"/> containing a task failed  <br/>maps to HTTP status: 500</summary>
-        SyncError           = 9
+        SyncError           = 9,
+        
+        // ------------------------------- client specific errors -------------------------------
+        /// <summary>
+        /// It is set for a <see cref="Client.SyncTask"/> if a <see cref="SyncResponse"/> contains errors in its
+        /// <see cref="Dictionary{TKey,TValue}"/> fields containing <see cref="EntityErrors"/> for entities accessed via a CRUD
+        /// command by the <see cref="Client.SyncTask"/>.
+        /// The entity errors are available via <see cref="Client.TaskError.entityErrors"/>.  
+        /// No mapping to a <see cref="TaskErrorType"/> value.
+        /// </summary>
+        EntityErrors        = 10,
+        /// <summary> Use to indicate an invalid response.</summary>
+        /// <remarks>No mapping to a <see cref="TaskErrorType"/> value.</remarks>
+        InvalidResponse     = 11,
     }
 }

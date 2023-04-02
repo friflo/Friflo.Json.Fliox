@@ -41,13 +41,13 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
     }
     
     internal struct GqlErrorLocation {
-        public  int                     line;
-        public  int                     column;
+        public  int             line;
+        public  int             column;
     }
     
     internal struct GqlErrorExtensions {
-        public  TaskErrorResultType     type;
-        public  string                  stacktrace;
+        public  TaskErrorType   type;
+        public  string          stacktrace;
     }
     
     internal static class ModelUtils

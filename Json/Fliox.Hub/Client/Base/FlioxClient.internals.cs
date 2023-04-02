@@ -382,7 +382,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             
             if (error != null) {
                 // ----------- handle ErrorResponse -----------
-                var syncError       = new TaskErrorResult (TaskErrorResultType.SyncError, error.message);
+                var syncError       = new TaskErrorResult (TaskErrorType.SyncError, error.message);
                 var emptyResults    = new List<ContainerEntities>();
                 // process all task using by passing an error 
                 for (int n = 0; n < tasks.Count; n++) {

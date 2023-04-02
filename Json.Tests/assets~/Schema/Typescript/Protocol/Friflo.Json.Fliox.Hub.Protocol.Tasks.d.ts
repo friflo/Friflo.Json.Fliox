@@ -428,7 +428,7 @@ export class TaskErrorResult extends SyncTaskResult {
     /** task result type */
     task        : "error";
     /** task error type */
-    type        : TaskErrorResultType;
+    type        : TaskErrorType;
     /** task error details */
     message?    : string | null;
     /** stacktrace in case the error **type** is a **UnhandledException** */
@@ -436,7 +436,7 @@ export class TaskErrorResult extends SyncTaskResult {
 }
 
 /** Type of a task error used in **TaskErrorResult** */
-export type TaskErrorResultType =
+export type TaskErrorType =
     | "None"
     | "UnhandledException"      /**
        * Unhandled exception while executing a task.  
@@ -454,5 +454,13 @@ export type TaskErrorResultType =
     | "NotImplemented"          /** database message / command not implemented       maps to HTTP status: 501 */
     | "PermissionDenied"        /** task execution not authorized    maps to HTTP status: 403 */
     | "SyncError"               /** The entire **SyncRequest** containing a task failed    maps to HTTP status: 500 */
+    | "EntityErrors"            /**
+       * It is set for a **SyncTask** if a **SyncResponse** contains errors in its
+       * **Dictionary`2** fields containing **EntityErrors** for entities accessed via a CRUD
+       * command by the **SyncTask**.
+       * The entity errors are available via **entityErrors**.  
+       * No mapping to a **TaskErrorType** value.
+       */
+    | "InvalidResponse"         /** Use to indicate an invalid response. */
 ;
 
