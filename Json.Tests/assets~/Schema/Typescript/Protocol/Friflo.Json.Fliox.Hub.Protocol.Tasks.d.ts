@@ -458,8 +458,7 @@ export type TaskErrorType =
        * It is set for a **SyncTask** if a **SyncResponse** contains errors in its
        * **Dictionary`2** fields containing **EntityErrors** for entities accessed via a CRUD
        * command by the **SyncTask**.
-       * The entity errors are available via **entityErrors**.  
-       * No mapping to a **TaskErrorType** value.
+       * The entity errors are available via **entityErrors**.
        */
     | "InvalidResponse"         /** Use to indicate an invalid response. */
 ;
