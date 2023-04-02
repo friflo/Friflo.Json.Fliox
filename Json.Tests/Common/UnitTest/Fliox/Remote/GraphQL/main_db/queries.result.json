@@ -122,6 +122,7 @@
         "Command1",
         "CommandInt",
         "CommandIntArray",
+        "CommandClassArray",
         "test.Command2",
         "test.CommandHello",
         "test.CommandExecutionError",

@@ -44,6 +44,7 @@ type Query {
     Command1                       : String!
     CommandInt                    (param: Int!) : Int!
     CommandIntArray               (param: [Int!]) : [Int!]!
+    CommandClassArray             (param: [ArticleInput!]) : [Article!]!
     test_Command2                  : String!
     test_CommandHello             (param: String) : String!
     test_CommandExecutionError     : Int!

@@ -246,6 +246,33 @@
         }
       }
     },
+    "/?cmd=CommandClassArray": {
+      "post": {
+        "summary":    "",
+        "tags":       ["commands"],
+        "requestBody": {          
+          "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "UnitTest.Fliox.Client.Article.json#/definitions/Article"
+                }
+              }
+            }
+        },
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "UnitTest.Fliox.Client.Article.json#/definitions/Article"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/?cmd=test.Command2": {
       "post": {
         "summary":    "",

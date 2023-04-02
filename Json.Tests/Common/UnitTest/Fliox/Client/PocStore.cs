@@ -55,7 +55,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
         public CommandTask<string>      AsyncCommand (string param) => send.Command<string, string>  (param);
         public CommandTask<string>      Command1 ()                 => send.Command<string>          ();
         public CommandTask<int>         CommandInt (int param)      => send.Command<int>             ();     // test required param (value type)
-        public CommandTask<int[]>       CommandIntArray(int[] param)=> send.Command<int[],int[]>         (param);
+        public CommandTask<int[]>       CommandIntArray(int[] param)=> send.Command<int[],int[]>     (param);
+        public CommandTask<Article[]>   CommandClassArray(Article[] param)=> send.Command<Article[],Article[]>(param);
         
         // --- messages
         public MessageTask              Message1    (string param)  => send.Message  (param);

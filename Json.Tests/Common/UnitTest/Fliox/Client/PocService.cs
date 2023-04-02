@@ -22,13 +22,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             AddMessageHandlers(empty,   "empty.");
             
             // add command handlers individually
-            AddCommandHandler       <string,string> ("SyncCommand",     TestHandlerManual.SyncCommand);
-            AddCommandHandlerAsync  <string,string> ("AsyncCommand",    TestHandlerManual.AsyncCommand);
-            AddCommandHandler       <string,string> ("Command1",        manual.Command1);
-            AddCommandHandler       <int,   int>    ("CommandInt",      manual.CommandInt);
-            AddMessageHandler       <string>        ("Message1",        manual.Message1);
-            AddMessageHandlerAsync  <string>        ("AsyncMessage",    manual.AsyncMessage);
-            AddCommandHandler       <int[], int[]>  ("CommandIntArray", manual.CommandIntArray);
+            AddCommandHandler       <string,string>         ("SyncCommand",         TestHandlerManual.SyncCommand);
+            AddCommandHandlerAsync  <string,string>         ("AsyncCommand",        TestHandlerManual.AsyncCommand);
+            AddCommandHandler       <string,string>         ("Command1",            manual.Command1);
+            AddCommandHandler       <int,   int>            ("CommandInt",          manual.CommandInt);
+            AddMessageHandler       <string>                ("Message1",            manual.Message1);
+            AddMessageHandlerAsync  <string>                ("AsyncMessage",        manual.AsyncMessage);
+            AddCommandHandler       <int[], int[]>          ("CommandIntArray",     manual.CommandIntArray);
+            AddCommandHandler       <Article[], Article[]>  ("CommandClassArray",   manual.CommandClassArray);
         }
         
         private static bool TestCommand(Param<TestCommand> param, MessageContext command) {
@@ -126,6 +127,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             }
             if (value == null)
                 return new int[] { 1, 2, 3 };
+            return value;
+        }
+        
+        public Article[] CommandClassArray(Param<Article[]> param, MessageContext command) {
+            if (!param.Get(out Article[] value, out var error)) {
+                command.Error(error);
+            }
+            if (value == null)
+                return new Article[] { new Article { id = "foo", name = "bar" } };
             return value;
         }
     }

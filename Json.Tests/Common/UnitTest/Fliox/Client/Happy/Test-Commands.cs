@@ -67,7 +67,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             AreEqual("in-memory",       database0.storage);
             
             var commandsResult = commands.Result;
-            AreEqual(23,                commandsResult.commands.Length);
+            AreEqual(24,                commandsResult.commands.Length);
             AreEqual(5,                 commandsResult.messages.Length);
         }
         
@@ -80,6 +80,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
 
             var command1        = store.Command1();
             var commandIntArray = store.CommandIntArray(new int [] { 42 });
+            var commandClassArray = store.CommandClassArray(new Article [] { new Article { id = "foo", name = "bar" } });
             var command2        = store.test.Command2();
             var commandHello    = store.test.CommandHello("hello");
             var containers      = store.std.Containers();
@@ -99,6 +100,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             
             AreEqual("test message1",   command1.Result);
             AreEqual(new int[] { 42 },  commandIntArray.Result);
+            
+            var articlesResult = commandClassArray.Result;
+            AreEqual(1,                 articlesResult.Length);
+            AreEqual("foo",             articlesResult[0].id);
+            AreEqual("bar",             articlesResult[0].name);
+            
             AreEqual("test message2",   command2.Result);
             
             AreEqual("hello",           commandHello.Result);
@@ -117,7 +124,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             AreEqual("in-memory",       database0.storage);
             
             var commandsResult = commands.Result;
-            AreEqual(23,                commandsResult.commands.Length);
+            AreEqual(24,                commandsResult.commands.Length);
             AreEqual(3,                 commandsResult.messages.Length);
             //
             var hostResult = stdHost.Result;

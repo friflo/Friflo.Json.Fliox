@@ -888,6 +888,38 @@
                     }
                 },
                 {
+                    "name": "CommandClassArray",
+                    "description": "",
+                    "args": [
+                        {
+                            "name": "param",
+                            "type": {
+                                "kind":"LIST",
+                                "ofType": {
+                                    "kind":"NON_NULL",
+                                    "ofType": {
+                                        "kind":"SCALAR",
+                                        "name": "ArticleInput"
+                                    }
+                                }
+                            }
+                        }
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"LIST",
+                            "ofType": {
+                                "kind":"NON_NULL",
+                                "ofType": {
+                                    "kind":"SCALAR",
+                                    "name": "Article"
+                                }
+                            }
+                        }
+                    }
+                },
+                {
                     "name": "test_Command2",
                     "description": "",
                     "args": [
