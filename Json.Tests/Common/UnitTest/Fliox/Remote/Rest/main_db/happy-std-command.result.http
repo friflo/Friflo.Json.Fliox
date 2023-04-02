@@ -49,6 +49,7 @@ GET {{base}}/rest/main_db?cmd=std.Messages
         "AsyncCommand",
         "Command1",
         "CommandInt",
+        "CommandIntArray",
         "test.Command2",
         "test.CommandHello",
         "test.CommandExecutionError",

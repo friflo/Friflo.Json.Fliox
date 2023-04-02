@@ -67,7 +67,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             AreEqual("in-memory",       database0.storage);
             
             var commandsResult = commands.Result;
-            AreEqual(22,                commandsResult.commands.Length);
+            AreEqual(23,                commandsResult.commands.Length);
             AreEqual(5,                 commandsResult.messages.Length);
         }
         
@@ -79,6 +79,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             var messageAsync    = store.AsyncMessage("async message param");
 
             var command1        = store.Command1();
+            var commandIntArray = store.CommandIntArray(new int [] { 42 });
             var command2        = store.test.Command2();
             var commandHello    = store.test.CommandHello("hello");
             var containers      = store.std.Containers();
@@ -97,6 +98,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             AreEqual("async message param", service.manual.AsyncMessageParam);
             
             AreEqual("test message1",   command1.Result);
+            AreEqual(new int[] { 42 },  commandIntArray.Result);
             AreEqual("test message2",   command2.Result);
             
             AreEqual("hello",           commandHello.Result);
@@ -115,7 +117,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             AreEqual("in-memory",       database0.storage);
             
             var commandsResult = commands.Result;
-            AreEqual(22,                commandsResult.commands.Length);
+            AreEqual(23,                commandsResult.commands.Length);
             AreEqual(3,                 commandsResult.messages.Length);
             //
             var hostResult = stdHost.Result;

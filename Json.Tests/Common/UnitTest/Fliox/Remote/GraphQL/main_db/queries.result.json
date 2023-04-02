@@ -121,6 +121,7 @@
         "AsyncCommand",
         "Command1",
         "CommandInt",
+        "CommandIntArray",
         "test.Command2",
         "test.CommandHello",
         "test.CommandExecutionError",

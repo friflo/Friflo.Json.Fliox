@@ -163,19 +163,23 @@ namespace Friflo.Json.Fliox.Schema.JSON
             JsonValue   jsonType    = field.type;
             FieldType   addProps    = field.additionalProperties;
             if (field.reference != null) {
+                // "$ref": "./Standard.json#/definitions/int64"  | ...
                 return FindRef(field.reference, context);
             }
             if (items?.reference != null) {
+                // "items": { "type": "string" } | { "$ref": "#/definitions/CustomTypeName" }  | ...
                 attr.isArray = true;
-                return FindFieldType(field, items, context);
+                return FindTypeFromJson(field, jsonType, items, context, ref attr);
             }
             if (field.oneOf != null) {
+                // "oneOf": [{ "$ref": "./Standard.json#/definitions/uint8" }, {"type": "null"}]  | ...
                 TypeDef oneOfType = null; 
                 foreach (var item in field.oneOf) {
                     if (item.type.AsString() == "\"null\"") {
                         attr.isNullable = true;
                         continue;
                     }
+                    // var itemType = FindTypeFromJson(field, jsonType, item, context, ref attr);
                     var itemType = FindFieldType(field, item, context);
                     if (itemType == null)
                         continue;
@@ -188,11 +192,14 @@ namespace Friflo.Json.Fliox.Schema.JSON
             if (addProps != null) {
                 attr.isDictionary = true;
                 if (addProps.reference != null) {
+                    // "additionalProperties": { "$ref": "#/definitions/CustomTypeName" }  | ...
                     return FindRef(addProps.reference, context);
                 }
+                // "additionalProperties": {  }
                 return FindTypeFromJson(field, jsonType, items, context, ref attr);
             }
             if (!jsonType.IsNull()) {
+                // "type": "string" | ["string", "null"] | "array" | ["array", "null]  | ...
                 return FindTypeFromJson(field, jsonType, items, context, ref attr);
             }
             // throw new InvalidOperationException($"cannot determine field type. type: {type}, field: {field}");
@@ -237,34 +244,42 @@ namespace Friflo.Json.Fliox.Schema.JSON
             in JsonTypeContext  context,
             ref FieldAttributes attr)
         {
+            if (jsonArray.IsNull()) {
+                return FindFieldType (field, items, context);
+            }
             var json = jsonArray.AsString();
-            if     (json.StartsWith("\"")) {
+            if (json.StartsWith("\"")) {
                 var jsonValue = json.Substring(1, json.Length - 2);
-                if (jsonValue == "array") {
-                    attr.isArray = true;
-                    return FindFieldType (field, items, context);
+                switch (jsonValue) {
+                    case "array":
+                        attr.isArray = true;
+                        return FindFieldType (field, items, context);
+                    case "null":
+                        return null; // null is not a type. Cause intentionally a NullReferenceException
+                    default:
+                        return FindType(jsonValue, context);
                 }
-                if (jsonValue == "null")
-                    return null;
-                return FindType(jsonValue, context);
             }
             if (json.StartsWith("[")) {
                 // handle nullable field types
                 TypeDef elementType = null;
                 var fieldTypes = context.reader.Read<List<string>>(json);
                 foreach (var itemType in fieldTypes) {
-                    if (itemType == "null") {
-                        attr.isNullable = true;
-                        continue;
-                    }
-                    if (itemType == "array") {
-                        attr.isArray = true;
-                        return FindFieldType (field, items, context);
+                    switch (itemType) {
+                        case "null":
+                            attr.isNullable = true;
+                            continue;
+                        case "array":
+                            attr.isArray = true;
+                            continue;
                     }
                     var elementTypeDef = FindType(itemType, context);
                     if (elementTypeDef != null) {
                         elementType = elementTypeDef;
                     }
+                }
+                if (attr.isArray) {
+                    return FindFieldType (field, items, context);
                 }
                 if (elementType == null)
                     throw new InvalidOperationException("additionalProperties requires '$ref'");

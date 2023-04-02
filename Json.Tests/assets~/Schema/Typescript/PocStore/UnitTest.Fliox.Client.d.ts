@@ -44,6 +44,7 @@ export interface PocStore {
     ["AsyncCommand"]                       (param: string | null) : string;
     ["Command1"]                           () : string;
     ["CommandInt"]                         (param: int32) : int32;
+    ["CommandIntArray"]                    (param: int32[] | null) : int32[];
     ["test.Command2"]                      () : string;
     ["test.CommandHello"]                  (param: string | null) : string;
     ["test.CommandExecutionError"]         () : int32;

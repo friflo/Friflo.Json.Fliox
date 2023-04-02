@@ -43,6 +43,7 @@ type Query {
     AsyncCommand                  (param: String) : String!
     Command1                       : String!
     CommandInt                    (param: Int!) : Int!
+    CommandIntArray               (param: [Int!]) : [Int!]!
     test_Command2                  : String!
     test_CommandHello             (param: String) : String!
     test_CommandExecutionError     : Int!

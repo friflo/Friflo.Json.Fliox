@@ -33,6 +33,7 @@
                 "AsyncCommand":                   { "param": { "type": ["string", "null"] }, "result": { "type": "string" } },
                 "Command1":                       { "result": { "type": "string" } },
                 "CommandInt":                     { "param": { "$ref": "./Standard.json#/definitions/int32" }, "result": { "$ref": "./Standard.json#/definitions/int32" } },
+                "CommandIntArray":                { "param": { "type": ["array", "null"], "items": { "$ref": "./Standard.json#/definitions/int32" } }, "result": { "type": "array", "items": { "$ref": "./Standard.json#/definitions/int32" } } },
                 "test.Command2":                  { "result": { "type": "string" } },
                 "test.CommandHello":              { "param": { "type": ["string", "null"] }, "result": { "type": "string" } },
                 "test.CommandExecutionError":     { "result": { "$ref": "./Standard.json#/definitions/int32" } },

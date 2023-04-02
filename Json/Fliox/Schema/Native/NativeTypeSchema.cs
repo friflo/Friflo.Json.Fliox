@@ -213,7 +213,7 @@ namespace Friflo.Json.Fliox.Schema.Native
                 return null;
             var attr        = GetArgAttributes(type);
             required       |= attr.required;
-            return new FieldDef(name, null, required, false, false, attr.typeDef, false, false, false, null, null, null, Utf8Buffer);
+            return new FieldDef(name, null, required, false, false, attr.typeDef, attr.isArray, false, false, null, null, null, Utf8Buffer);
         }
         
         private void AddType(List<TypeDef> types, TypeMapper typeMapper, TypeStore typeStore) {
@@ -273,14 +273,21 @@ namespace Friflo.Json.Fliox.Schema.Native
         
         private ArgAttributes GetArgAttributes(Type type) {
             var underlyingType  = Nullable.GetUnderlyingType(type);
+            NativeTypeDef   typeDef;
+            bool            required   = false;
+            bool            isArray    = false;
             if (underlyingType != null) {
-                var typeDef     = nativeTypes[underlyingType];
-                return new ArgAttributes(false, typeDef);
+                typeDef     = nativeTypes[underlyingType];
             } else {
-                var typeDef     = nativeTypes[type];
-                bool required   = !type.IsClass;
-                return new ArgAttributes(required, typeDef);
+                typeDef     = nativeTypes[type];
+                required   = !type.IsClass;
+                isArray     = typeDef.mapper.IsArray;
+                if (isArray) {
+                    var elementType = typeDef.mapper.GetElementMapper();
+                    typeDef = nativeTypes[elementType.type];
+                }
             }
+            return new ArgAttributes(required, typeDef, isArray);
         }
     }
     
@@ -288,10 +295,12 @@ namespace Friflo.Json.Fliox.Schema.Native
     {
         internal  readonly  bool            required;
         internal  readonly  NativeTypeDef   typeDef;
+        internal  readonly  bool            isArray;
         
-        internal ArgAttributes (bool required, NativeTypeDef typeDef) {
-            this.required       = required;
-            this.typeDef        = typeDef;
+        internal ArgAttributes (bool required, NativeTypeDef typeDef, bool isArray) {
+            this.required   = required;
+            this.typeDef    = typeDef;
+            this.isArray    = isArray;
         }
     }
 }
