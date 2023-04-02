@@ -33,8 +33,10 @@ namespace Friflo.Json.Tests.Common.Examples.Hub
         }
         
         private static string Hello(Param<string> param, MessageContext command) {
-            if (!param.GetValidate(out string value, out string error))
-                return command.Error<string>(error);
+            if (!param.GetValidate(out string value, out string error)) {
+                command.Error(error);
+                return null;
+            }
             return $"hello {value}!";
         } 
     }

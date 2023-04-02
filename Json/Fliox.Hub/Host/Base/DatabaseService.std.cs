@@ -41,7 +41,8 @@ namespace Friflo.Json.Fliox.Hub.Host
         
         private static async Task<int> Delay (Param<int> param, MessageContext context) {
             if (!param.Get(out var delay, out var error)) {
-                return context.Error<int>(error);
+                context.Error(error);
+                return 0;
             }
             var start = Stopwatch.GetTimestamp();
             await Task.Delay(delay).ConfigureAwait(false);
@@ -52,7 +53,8 @@ namespace Friflo.Json.Fliox.Hub.Host
         
         private static HostInfo HostInfo (Param<HostParam> param, MessageContext context) {
             if (!param.Get(out var hostParam, out var error)) {
-                return context.Error<HostInfo>(error);
+                context.Error(error);
+                return null;
             }
             if (hostParam?.gcCollect == true) {
                 GC.Collect();
@@ -122,8 +124,10 @@ namespace Friflo.Json.Fliox.Hub.Host
         private static async Task<DbStats> Stats (Param<string> param, MessageContext context) {
             var database        = context.Database;
             string[] containerNames;
-            if (!param.GetValidate(out var containerName, out var error))
-                return context.Error<DbStats>(error);
+            if (!param.GetValidate(out var containerName, out var error)) {
+                context.Error(error);
+                return null;
+            }
 
             if (containerName == null) {
                 var dbContainers    = await database.GetDbContainers(database.name, context.Hub).ConfigureAwait(false);
@@ -152,7 +156,8 @@ namespace Friflo.Json.Fliox.Hub.Host
         
         private static async Task<UserResult> User (Param<UserParam> param, MessageContext context) {
             if (!param.GetValidate(out UserParam options, out var error)) {
-                return context.Error<UserResult>(error);
+                context.Error(error);
+                return null;
             }
             var user    = context.User;
             var groups  = user.GetGroups();
@@ -160,7 +165,8 @@ namespace Friflo.Json.Fliox.Hub.Host
             if (options?.addGroups != null || options?.removeGroups != null) {
                 var eventDispatcher  = context.Hub.EventDispatcher;
                 if (eventDispatcher == null) {
-                    return context.Error<UserResult>("command requires a Hub with an EventDispatcher");
+                    context.Error("command requires a Hub with an EventDispatcher");
+                    return null;
                 }
                 var authenticator = context.Hub.Authenticator;
                 await authenticator.SetUserOptionsAsync(context.User, options).ConfigureAwait(false);
@@ -188,16 +194,19 @@ namespace Friflo.Json.Fliox.Hub.Host
             /* if (context.ClientId.IsNull()) {
                 return context.Error<ClientResult>("Missing client id (clt)");
             } */
-            if (!param.GetValidate(out var clientParam, out string error)) {
-                return context.Error<ClientResult>(error);
+            if (!param.GetValidate(out var clientParam, out string error)) { 
+                context.Error(error);
+                return null;
             }
             error = EnsureClientId(clientParam, context);
             if (error != null) {
-                return context.Error<ClientResult>(error);
+                context.Error(error);
+                return null;
             }
             error = SetQueueEvents(clientParam, context);
             if (error != null) {
-                return context.Error<ClientResult>(error);
+                context.Error(error);
+                return null;
             }
             var hub         = context.Hub;
             var dispatcher  = hub.EventDispatcher;

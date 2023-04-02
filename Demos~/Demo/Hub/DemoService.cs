@@ -41,9 +41,10 @@ namespace DemoHub
             client.UserInfo     = command.UserInfo;
             client.WritePretty  = true;
             
-            if (!param.GetValidate(out var fake, out var error))
-                return command.Error<Records>(error);
-            
+            if (!param.GetValidate(out var fake, out var error)) {
+                command.Error(error);
+                return null;
+            }
             var result = FakeUtils.CreateFakes(fake);
             
             if (result.articles     != null)    client.articles  .UpsertRange(result.articles);
@@ -70,8 +71,10 @@ namespace DemoHub
             var client      = new DemoClient(command.Hub);
             client.UserInfo = command.UserInfo;
             
-            if (!param.GetValidate(out var duration, out var error))
-                return command.Error<Counts>(error);
+            if (!param.GetValidate(out var duration, out var error)) {
+                command.Error(error);
+                return null;
+            }
             
             var seconds         = duration ?? 60;
             var from            = DateTime.Now.AddSeconds(-seconds);
@@ -99,9 +102,10 @@ namespace DemoHub
             var client      = new DemoClient(command.Hub);
             client.UserInfo = command.UserInfo;
             
-            if (!param.GetValidate(out var duration, out var error))
-                return command.Error<Records>(error);
-            
+            if (!param.GetValidate(out var duration, out var error)) {
+                command.Error(error);
+                return null;
+            }
             var seconds         = duration ?? 60;
             var from            = DateTime.Now.AddSeconds(-seconds);
 
@@ -134,8 +138,10 @@ namespace DemoHub
         /// use synchronous handler only when no async methods need to be awaited  
         private static double Add(Param<Operands> param, MessageContext command)
         {
-            if (!param.GetValidate(out var operands, out var error))
-                return command.Error<double>(error);
+            if (!param.GetValidate(out var operands, out var error)) {
+                command.Error(error);
+                return 0;
+            }
             if (operands == null)
                 return 0;
             return operands.left + operands.right;

@@ -61,19 +61,6 @@ namespace Friflo.Json.Fliox.Hub.Host
             error = message;
         }
 
-        /// <summary>Set result of <see cref="MessageContext"/> execution to an error. <br/>
-        /// It returns the default value of the given <typeparamref name="TResult"/> to simplify
-        /// returning from a command handler with a single statement like:
-        /// <code>
-        /// if (!command.ValidateParam(out var param, out var error))
-        ///     return command.Error &lt;int&gt;(error);
-        /// </code>  
-        /// </summary>
-        public TResult Error<TResult>(string message) {
-            error = message;
-            return default;
-        }
-        
         private UserInfo GetUserInfo() { 
             var user = syncContext.User;
             return new UserInfo (user.userId, user.token, syncContext.clientId);

@@ -112,13 +112,15 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
         
         internal List<ModelFiles> ModelFiles (Param<ModelFilesQuery> param, MessageContext command) {
             if (!param.GetValidate(out var query, out string error)) {
-                return command.Error<List<ModelFiles>>(error);
+                command.Error(error);
+                return null;
             }
             var allDatabases = command.Hub.GetDatabases();
             EntityDatabase[] databases;
             if (query?.db != null) {
                 if (!allDatabases.TryGetValue(query.db, out var database)) {
-                    return command.Error<List<ModelFiles>>($"database not found: {query.db}");
+                    command.Error($"database not found: {query.db}");
+                    return null;
                 }
                 databases = new [] { database };
             } else {

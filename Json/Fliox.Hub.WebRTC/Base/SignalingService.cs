@@ -22,7 +22,8 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
         private static async Task<AddHostResult> AddHost (Param<AddHost> param, MessageContext command)
         {
             if (!param.GetValidate(out var value, out string error)) {
-                return command.Error<AddHostResult>(error);
+                command.Error(error);
+                return null;
             }
             var signaling   = new Signaling(command.Hub, command.Database.name)  { UserInfo = command.UserInfo };
             var webRtcHost  = new WebRtcHost { id = value.hostId, client = command.ClientId.AsString() };
@@ -36,7 +37,8 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
         private async Task<ConnectClientResult> ConnectClient (Param<ConnectClient> param, MessageContext command)
         {
             if (!param.GetValidate(out var value, out string error)) {
-                return command.Error<ConnectClientResult>(error);
+                command.Error(error);
+                return null;
             }
             // --- find WebRTC Host in database
             var hostId      = value.hostId;
@@ -46,7 +48,8 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
             
             var webRtcHost = findHost.Result;
             if (webRtcHost == null) {
-                return command.Error<ConnectClientResult>($"WebRTC connect failed. host not found. host: '{hostId}'");
+                command.Error($"WebRTC connect failed. host not found. host: '{hostId}'");
+                return null;
             }
             // --- send offer SDP to WebRTC host 
             var clientId        = command.ClientId;
