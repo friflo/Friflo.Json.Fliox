@@ -67,7 +67,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         
         // ------------------------------- client specific errors -------------------------------
         /// <summary>
-        /// Is set for a <see cref="Client.SyncTask"/> if <see cref="SyncResponse"/> <see cref="SyncResponse.containers"/>
+        /// Is set for a <see cref="Client.SyncTask"/> if <see cref="SyncResponse"/>.<see cref="SyncResponse.containers"/>
         /// contains <see cref="ContainerEntities.errors"/> for entities accessed via a CRUD task.<br/>
         /// The entity errors are available via <see cref="Client.TaskError.entityErrors"/>.  
         /// </summary>

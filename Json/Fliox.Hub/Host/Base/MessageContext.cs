@@ -1,6 +1,7 @@
 // Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System;
 using System.Diagnostics;
 using Friflo.Json.Fliox.Hub.Client;
 using Friflo.Json.Fliox.Hub.Host.Auth;
@@ -45,6 +46,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         [DebuggerBrowsable(Never)]
         private  readonly   SyncContext     syncContext;
         internal            string          error;
+        internal            TaskErrorType   errorType;
         
         public   override   string          ToString()      => nameShort.AsString();
 
@@ -58,7 +60,8 @@ namespace Friflo.Json.Fliox.Hub.Host
         
         /// <summary>Set result of <see cref="MessageContext"/> execution to an error</summary>
         public void Error(string message) {
-            error = message;
+            error       = message ?? throw new ArgumentNullException(nameof(message));
+            errorType   = TaskErrorType.CommandError;
         }
 
         private UserInfo GetUserInfo() { 

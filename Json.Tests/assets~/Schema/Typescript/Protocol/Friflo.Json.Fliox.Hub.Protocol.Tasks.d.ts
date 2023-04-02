@@ -455,9 +455,8 @@ export type TaskErrorType =
     | "PermissionDenied"        /** task execution not authorized    maps to HTTP status: 403 */
     | "SyncError"               /** The entire **SyncRequest** containing a task failed    maps to HTTP status: 500 */
     | "EntityErrors"            /**
-       * It is set for a **SyncTask** if a **SyncResponse** contains errors in its
-       * **Dictionary`2** fields containing **EntityErrors** for entities accessed via a CRUD
-       * command by the **SyncTask**.
+       * Is set for a **SyncTask** if **SyncResponse**.**containers**
+       * contains **errors** for entities accessed via a CRUD task.  
        * The entity errors are available via **entityErrors**.
        */
     | "InvalidResponse"         /** Use to indicate an invalid response. */

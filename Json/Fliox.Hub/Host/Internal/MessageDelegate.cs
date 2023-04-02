@@ -9,19 +9,22 @@ namespace Friflo.Json.Fliox.Hub.Host.Internal
 {
     internal readonly struct InvokeResult
     {
-        internal readonly   JsonValue   value;
-        internal readonly   string      error;
+        internal readonly   JsonValue       value;
+        internal readonly   string          error;
+        internal readonly   TaskErrorType   errorType;
 
-        public override     string      ToString() => error ?? value.AsString();
+        public override     string          ToString() => error ?? value.AsString();
 
         internal InvokeResult(in JsonValue value) {
             this.value  = value;
-            this.error  = null;
+            error       = null;
+            errorType   = default;
         }
         
-        internal InvokeResult(string error) {
-            this.value  = default;
-            this.error  = error;
+        internal InvokeResult(string error, TaskErrorType errorType) {
+            this.value      = default;
+            this.error      = error;
+            this.errorType  = errorType;
         }
     }
     
@@ -69,7 +72,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Internal
             
             var error = cmd.error;
             if (error != null) {
-                return new InvokeResult(error);
+                return new InvokeResult(error, cmd.errorType);
             }
             return new InvokeResult(new JsonValue());
         }
@@ -93,7 +96,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Internal
             
             var error   = cmd.error;
             if (error != null) {
-                return new InvokeResult(error);
+                return new InvokeResult(error, cmd.errorType);
             }
             return new InvokeResult(new JsonValue());
         }
@@ -117,7 +120,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Internal
             
             var error = cmd.error;
             if (error != null) {
-                return new InvokeResult(error);
+                return new InvokeResult(error, cmd.errorType);
             }
             using (var pooled = syncContext.ObjectMapper.Get()) {
                 var writer = pooled.instance.writer;
@@ -148,7 +151,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Internal
             
             var error   = cmd.error;
             if (error != null) {
-                return new InvokeResult(error);
+                return new InvokeResult(error, cmd.errorType);
             }
             using (var pooled = syncContext.ObjectMapper.Get()) {
                 var writer = pooled.instance;

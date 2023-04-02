@@ -68,7 +68,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
             if (callback != null) {
                 var result  = await callback.InvokeDelegateAsync(this, name, param, syncContext).ConfigureAwait(false);
                 if (result.error != null) {
-                    return new TaskErrorResult (TaskErrorType.CommandError, result.error);
+                    return new TaskErrorResult (result.errorType, result.error);
                 }
             }
             return SendMessageResult.Create(syncContext);
@@ -80,7 +80,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
             if (callback != null) {
                 var result  = callback.InvokeDelegate(this, name, param, syncContext);
                 if (result.error != null) {
-                    return new TaskErrorResult (TaskErrorType.CommandError, result.error);
+                    return new TaskErrorResult (result.errorType, result.error);
                 }
             }
             return SendMessageResult.Create(syncContext);
