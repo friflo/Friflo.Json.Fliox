@@ -89,11 +89,10 @@ export class ModelFilesQuery {
 }
 
 export class ModelFiles {
-    db          : string;
-    schemaName  : string;
-    type        : string;
-    label       : string;
-    files       : ModelFile[];
+    db     : string;
+    type   : string;
+    label  : string;
+    files  : ModelFile[];
 }
 
 export class ModelFile {

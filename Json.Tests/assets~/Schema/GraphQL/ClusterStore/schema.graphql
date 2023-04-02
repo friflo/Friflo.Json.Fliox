@@ -126,19 +126,17 @@ input ModelFilesQueryInput {
 }
 
 type ModelFiles {
-    db         : String!
-    schemaName : String!
-    type       : String!
-    label      : String!
-    files      : [ModelFile!]!
+    db    : String!
+    type  : String!
+    label : String!
+    files : [ModelFile!]!
 }
 
 input ModelFilesInput {
-    db         : String!
-    schemaName : String!
-    type       : String!
-    label      : String!
-    files      : [ModelFileInput!]!
+    db    : String!
+    type  : String!
+    label : String!
+    files : [ModelFileInput!]!
 }
 
 type ModelFile {

@@ -236,7 +236,6 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
 
     public class ModelFiles {
         [Required]  public          string              db;
-        [Required]  public          string              schemaName;
         [Required]  public          string              type;
         [Required]  public          string              label;
         [Required]  public          List<ModelFile>     files;
